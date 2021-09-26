@@ -2,178 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791CE418B8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5597418B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhIZWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 18:38:46 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:48333 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230331AbhIZWip (ORCPT
+        id S230479AbhIZWoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 18:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhIZWoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:38:45 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 4810C82C75F;
-        Mon, 27 Sep 2021 08:37:00 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mUclW-00H5s5-TN; Mon, 27 Sep 2021 08:36:58 +1000
-Date:   Mon, 27 Sep 2021 08:36:58 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Howells <dhowells@redhat.com>, hch@lst.de,
-        trond.myklebust@primarydata.com, Theodore Ts'o <tytso@mit.edu>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-Message-ID: <20210926223658.GE1756565@dread.disaster.area>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <20210925234243.GA1756565@dread.disaster.area>
- <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
+        Sun, 26 Sep 2021 18:44:04 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDF8C061570;
+        Sun, 26 Sep 2021 15:42:27 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id t10so68463230lfd.8;
+        Sun, 26 Sep 2021 15:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ODs6zhlkLMHshS4JHU5fhllhmsoNHoota6CZoe8HKXI=;
+        b=EkHmL4ABihxW4SssDBIHuIY/eDwr54e5Ytg7Q7Ktu9ft8PY97Z0GvHh8jY+TXG3YGS
+         tG6sNz8EB+EgXKgY1UUhTjgYg46rytuQpX/igb4p/t2/yivDqzjoTIP0Rj4a8UXitJFG
+         NRbBXmH8m02A2hjfALc1+8tpbX/lHLuxH3e7WwJyXDo+aFhCgPdL6tqo58LYxIwf9uuM
+         x+v8wpxQAUYroeI2KmLTz5jXzxKv5rW7eDTBAmOPeZdLdwF+OfZfaOZwU1izqJzFvCYe
+         fBNn5z/ubFhJpgw6OFxj4HLwr+eymwun1pelRRBSxcE7yWgZHL/vuZ/A1DZEWk0r7xNn
+         hKjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ODs6zhlkLMHshS4JHU5fhllhmsoNHoota6CZoe8HKXI=;
+        b=VLPmAPzV42jY2QiL6LE+1/YGLtqrvPvzRfI2IU7Yny51sN0hXexHJmVxnMEWxlZ+D2
+         7SrLgw9cMTP4mE17U7dJ7X3pwqZMtpBoAFVJjN7ftr7bKIs43vOZSPt1ej9h5TUJ0Muv
+         eT+9+fOWZNcxPQrGA4IUKRAxV78Bp13iBPhqaWJpGROHkeO/tRX87T756xg5WI/y3VUk
+         vHqkVhkolqOnETqv5+KNt3muqQFi+8PS111DMf/yZkJQh4jSsv0MX/632y39Dved0Ieh
+         Ma3P7plikbbw91kUwdRfnYUJOfVq2q/J4XiCDJJJFXfkZdSv0oPR9wriJFGYtGDXOObi
+         VdLA==
+X-Gm-Message-State: AOAM533NeSxqTpd33UwBCoOHe/zVuzQzF6kpEERSjtge/TzIQqw5EpGr
+        KwRfuw/pximnhysKcuS3qAc=
+X-Google-Smtp-Source: ABdhPJyS3Wy6JAbPibwRzUbxuaTS20mWaQUVTBz2SvN5TuZB2dAM9fG3nH4rhnduRVz0bmM5M/xNxA==
+X-Received: by 2002:a05:6512:688:: with SMTP id t8mr21344530lfe.49.1632696145424;
+        Sun, 26 Sep 2021 15:42:25 -0700 (PDT)
+Received: from localhost.localdomain (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
+        by smtp.gmail.com with ESMTPSA id m10sm1408899lfr.272.2021.09.26.15.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 15:42:25 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH v13 00/35] NVIDIA Tegra power management patches for 5.16
+Date:   Mon, 27 Sep 2021 01:40:23 +0300
+Message-Id: <20210926224058.1252-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=bMojAixK84Ma9oYoJFgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 04:10:43AM +0100, Matthew Wilcox wrote:
-> On Sun, Sep 26, 2021 at 09:42:43AM +1000, Dave Chinner wrote:
-> > Ok, so if the filesystem is doing block mapping in the IO path now,
-> > why does the swap file still need to map the file into a private
-> > block mapping now?  i.e all the work that iomap_swapfile_activate()
-> > does for filesystems like XFS and ext4 - it's this completely
-> > redundant now that we are doing block mapping during swap file IO
-> > via iomap_dio_rw()?
-> 
-> Hi Dave,
-> 
-> Thanks for bringing up all these points.  I think they all deserve to go
-> into the documentation as "things to consider" for people implementing
-> ->swap_rw for their filesystem.
-> 
-> Something I don't think David perhaps made sufficiently clear is that
-> regular DIO from userspace gets handled by ->read_iter and ->write_iter.
-> This ->swap_rw op is used exclusive for, as the name suggests, swap DIO.
-> So filesystems don't have to handle swap DIO and regular DIO the same
-> way, and can split the allocation work between ->swap_activate and the
-> iomap callback as they see fit (as long as they can guarantee the lack
-> of deadlocks under memory pressure).
+This series adds runtime PM support to Tegra drivers and enables core
+voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
 
-I understand this completely.
+All patches in this series are interdependent and should go via Tegra tree.
 
-The point is that the implementation of ->swap_rw is to call
-iomap_dio_rw() with the same ops as the normal DIO read/write path
-uses. IOWs, apart from the IOCB_SWAP flag, there is no practical
-difference between the "swap DIO" and "normal DIO" I/O paths.
+Changelog:
 
-> There are several advantages to using the DIO infrastructure for
-> swap:
-> 
->  - unify block & net swap paths
->  - allow filesystems to _see_ swap IOs instead of being bypassed
->  - get rid of the swap extent rbtree
->  - allow writing compound pages to swap files instead of splitting
->    them
->  - allow ->readpage to be synchronous for better error reporting
->  - remove page_file_mapping() and page_file_offset()
-> 
-> I suspect there are several problems with this patchset, but I'm not
-> likely to have a chance to read it closely for a few days.  If you
-> have time to give the XFS parts a good look, that would be fantastic.
+v13: - Fixed compile-test error reported by build bot by reverting the
+       mmc/ patch to v11. The sdhci_suspend/resume_host() functions aren't
+       available with the disabled CONFIG_PM_SLEEP, some code needs the
+       ifdef.
 
-That's what I've already done, and all the questions I've raised are
-from asking a simple question: what happens if a transaction is
-required to complete the iomap_dio_rw() swap write operation?
+     - Added last r-b from Rob Herring for the DT patches.
 
-I mean, this is similar to the problems with IOCB_NOWAIT - we're
-supposed to return -EAGAIN if we might block during IO submission,
-and one of those situations we have to consider is "do we need to
-run a transaction". If we get it wrong (and we do!), then the worst
-thing that happens is that there is a long latency for IO
-submission. It's a minor performance issue, not the end of the
-world.
+     - Corrected clk/ PM domain-support patch by not using the
+       devm_tegra_core_dev_init_opp_table_common() helper, which I
+       utilized in v12. The clk driver implements its own power domain
+       state syncing and common helper shouldn't be used. This fixes driver
+       probing for some clocks on some devices. It was reported by
+       Svyatoslav Ryhel for PLLE OPP error on T30 Asus Transformer tablet.
 
-The difference with IOCB_SWAP is that "don't do transactions during
-iomap_dio_rw()" is a _hard requirement_ on both IO submission and
-completion. That means, from now and forever, we will have to
-guarantee a path through iomap_dio_rw() that will never run
-transactions on an IO. That requirement needs to be enforced in
-every block mapping callback into each filesystem, as this is
-something the iomap infrastructure cannot enforce. Hence we'll have
-to plumb IOCB_SWAP into a new IOMAP_SWAP iterator flag to pass to
-the ->iomap_begin() DIO methods to ensure they do the right thing.
+v12: - Added r-b from Rob Herring to the host1x binding patch.
 
-And then the question becomes: what happens if the filesystem cannot
-do the right thing? Can the swap code handle an error? e.g. the
-first thing that xfs_direct_write_iomap_begin() and
-xfs_read_iomap_begin() do is check if the filesystem is shut down
-and returns -EIO in that case. IOWs, we've now got normal filesystem
-"reject all IO" corruption protection mechanisms in play. Using
-iomap_dio_rw() as it stands means that _all swapfile IO will fail_
-if the filesystem shuts down.
+     - Added acks from Hans Verkuil to the video decoder patches.
 
-Right now the swap file IO can keep going blissfully unaware of the
-filesystem failure status. The open swapfile will prevent the
-filesystem from being unmounted. Hence to unmount the shutdown
-filesystem to correct the problem, first the swap file has to be
-turned off, which means we have a fail-safe behaviour. Using the
-iomap_dio_rw() path means that swapfile IO _can and will fail_.
+     - In the v11 changelog I forgot to mention that the clk-binding
+       patch was also changed with a corrected regex pattern and removed
+       'clocks' sub-node. This patch needs r-b or ack too.
 
-AFAICT, swap IO errors are pretty much thrown away by the mm code;
-the swap_writepage() return value is ignored or placed on the swap
-cache address space and ignored. And it looks like the new read path
-just sets PageError() and leaves it to callers to detect and deal
-with a swapin failure because swap_readpage() is now void...
+     - Added new "Rename 3d power domains" patch to match the DT schema
+       naming requirement. Thanks to David Heidelberg for spotting this
+       problem.
 
-So it seems like there's a whole new set of failure cases using the
-DIO path introduces into the swap IO path that haven't been
-considered here. I can't see why we wouldn't be able to solve them,
-but these considerations lead me to think that use of the DIO is
-based on an incorrect assumption - DIO is not a "simple low level
-IO" interface.
+     - Replaced #ifdef CONFIG_PM_SLEEP with maybe_unused in the MMC patch
+       to make code cleaner.
 
-Hence I suspect that we'd be much better off with a new
-iomap_swap_rw() implementation that just does what swap needs
-without any of the complexity of the DIO API. Internally iomap can
-share what it needs to share with the DIO path, but at this point
-I'm not sure we should be overloading the iomap_dio_rw() path with
-the semantics required by swap.
+v11: - Added acks and r-b from Rob Herring, Mark Brown and Miquel Raynal
+       that were given to v8.
 
-e.g. we limit iomap_swap_rw() to only accept written or unwritten
-block mappings within file size on inodes with clean metadata (i.e.
-pure overwrite to guarantee no modification transactions), and then
-the fs provided ->iomap_begin callback can ignore shutdown state,
-elide inode level locking, do read-only mappings, etc without adding
-extra overhead to the existing DIO code path...
+     - Corrected order of the new memory controller reset entry in
+       device-trees and host1x DT binding patch, which was requested by
+       Rob Herring.
 
-Cheers,
+     - Switched consumer drivers to use power domain state syncing done
+       by new Tegra's common OPP-initialization helper.
 
-Dave.
+     - Made use of new devm_pm_runtime_enable() helper that was added to
+       v5.15 kernel, where appropriate.
+
+     - Added "fuse: Use resource-managed helpers" patch.
+
+     - Converted Tegra20/30 clk drivers to a proper platform drivers,
+       which was requested by Thierry Reding.
+
+     - Removed clk-bulk API usage from the MMC patch, which was requested
+       by Thierry Reding.
+
+     - Changed CORE power domain name to "core" in a new patch
+       "Change name of core power domain".
+
+     - Misc small fixes for problems that I found since v8, like couple
+       typos in error code paths and restored working RPM for Tegra DRM
+       UAPI v1 that was removed in v8 by accident.
+
+v9-v10: Figured out remaining GENPD API changes with Ulf Hansson and
+        Viresh Kumar. The OPP-sync helper that was used in v8 isn't needed
+        anymore because GENPD API now allows consumer drivers to
+        init rpm_pstate of power domains.
+
+v8: - Added new generic dev_pm_opp_sync() helper that syncs OPP state with
+      hardware. All drivers changed to use it. This replaces GENPD attach_dev
+      callback hacks that were used in v7.
+
+    - Added new patch patch "soc/tegra: regulators: Prepare for suspend"
+      that fixes dying Tegra20 SoC after enabling VENC power domain during
+      resume from suspend. It matches to what downstream kernel does on
+      suspend/resume.
+
+    - After a second thought, I dropped patches which added RPM to memory
+      drivers since hardware is always-on and RPM not needed.
+
+    - Replaced the "dummy host1x driver" patch with new "Disable unused
+      host1x hardware" patch, since it's a cleaner solution.
+
+Dmitry Osipenko (35):
+  opp: Change type of dev_pm_opp_attach_genpd(names) argument
+  soc/tegra: Add devm_tegra_core_dev_init_opp_table_common()
+  soc/tegra: pmc: Disable PMC state syncing
+  soc/tegra: Don't print error message when OPPs not available
+  dt-bindings: clock: tegra-car: Document new clock sub-nodes
+  clk: tegra: Support runtime PM and power domain
+  dt-bindings: host1x: Document OPP and power domain properties
+  dt-bindings: host1x: Document Memory Client resets of Host1x, GR2D and
+    GR3D
+  gpu: host1x: Add runtime PM and OPP support
+  gpu: host1x: Add host1x_channel_stop()
+  drm/tegra: dc: Support OPP and SoC core voltage scaling
+  drm/tegra: hdmi: Add OPP support
+  drm/tegra: gr2d: Support generic power domain and runtime PM
+  drm/tegra: gr3d: Support generic power domain and runtime PM
+  drm/tegra: vic: Support system suspend
+  usb: chipidea: tegra: Add runtime PM and OPP support
+  bus: tegra-gmi: Add runtime PM and OPP support
+  pwm: tegra: Add runtime PM and OPP support
+  mmc: sdhci-tegra: Add runtime PM and OPP support
+  mtd: rawnand: tegra: Add runtime PM and OPP support
+  spi: tegra20-slink: Add OPP support
+  media: dt: bindings: tegra-vde: Convert to schema
+  media: dt: bindings: tegra-vde: Document OPP and power domain
+  media: staging: tegra-vde: Support generic power domain
+  soc/tegra: fuse: Reset hardware
+  soc/tegra: fuse: Use resource-managed helpers
+  soc/tegra: regulators: Prepare for suspend
+  soc/tegra: pmc: Rename 3d power domains
+  soc/tegra: pmc: Rename core power domain
+  soc/tegra: pmc: Enable core domain support for Tegra20 and Tegra30
+  ARM: tegra: Add OPP tables and power domains to Tegra20 device-trees
+  ARM: tegra: Add OPP tables and power domains to Tegra30 device-trees
+  ARM: tegra: Add Memory Client resets to Tegra20 GR2D, GR3D and Host1x
+  ARM: tegra: Add Memory Client resets to Tegra30 GR2D, GR3D and Host1x
+  ARM: tegra20/30: Disable unused host1x hardware
+
+ .../bindings/clock/nvidia,tegra20-car.yaml    |   37 +
+ .../display/tegra/nvidia,tegra20-host1x.txt   |   53 +
+ .../bindings/media/nvidia,tegra-vde.txt       |   64 -
+ .../bindings/media/nvidia,tegra-vde.yaml      |  119 ++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |    1 +
+ arch/arm/boot/dts/tegra20-colibri.dtsi        |    3 +-
+ arch/arm/boot/dts/tegra20-harmony.dts         |    3 +-
+ arch/arm/boot/dts/tegra20-paz00.dts           |    1 +
+ .../arm/boot/dts/tegra20-peripherals-opp.dtsi |  941 +++++++++++
+ arch/arm/boot/dts/tegra20-seaboard.dts        |    3 +-
+ arch/arm/boot/dts/tegra20-tamonten.dtsi       |    3 +-
+ arch/arm/boot/dts/tegra20-trimslice.dts       |    9 +
+ arch/arm/boot/dts/tegra20-ventana.dts         |    1 +
+ arch/arm/boot/dts/tegra20.dtsi                |  116 +-
+ .../tegra30-asus-nexus7-grouper-common.dtsi   |    1 +
+ arch/arm/boot/dts/tegra30-beaver.dts          |    1 +
+ arch/arm/boot/dts/tegra30-cardhu.dtsi         |    1 +
+ arch/arm/boot/dts/tegra30-colibri.dtsi        |   17 +-
+ arch/arm/boot/dts/tegra30-ouya.dts            |    1 +
+ .../arm/boot/dts/tegra30-peripherals-opp.dtsi | 1412 +++++++++++++++++
+ arch/arm/boot/dts/tegra30.dtsi                |  175 +-
+ drivers/bus/tegra-gmi.c                       |   52 +-
+ drivers/clk/tegra/Makefile                    |    1 +
+ drivers/clk/tegra/clk-device.c                |  230 +++
+ drivers/clk/tegra/clk-pll.c                   |    2 +-
+ drivers/clk/tegra/clk-super.c                 |    2 +-
+ drivers/clk/tegra/clk-tegra20.c               |   77 +-
+ drivers/clk/tegra/clk-tegra30.c               |  116 +-
+ drivers/clk/tegra/clk.c                       |   75 +-
+ drivers/clk/tegra/clk.h                       |    2 +
+ drivers/gpu/drm/tegra/dc.c                    |   74 +
+ drivers/gpu/drm/tegra/dc.h                    |    2 +
+ drivers/gpu/drm/tegra/gr2d.c                  |  155 +-
+ drivers/gpu/drm/tegra/gr3d.c                  |  388 ++++-
+ drivers/gpu/drm/tegra/hdmi.c                  |   16 +-
+ drivers/gpu/drm/tegra/vic.c                   |    4 +
+ drivers/gpu/host1x/channel.c                  |    8 +
+ drivers/gpu/host1x/debug.c                    |   15 +
+ drivers/gpu/host1x/dev.c                      |  151 +-
+ drivers/gpu/host1x/dev.h                      |    3 +-
+ drivers/gpu/host1x/hw/channel_hw.c            |   44 +-
+ drivers/gpu/host1x/intr.c                     |    3 -
+ drivers/gpu/host1x/syncpt.c                   |    5 +-
+ drivers/mmc/host/sdhci-tegra.c                |   82 +-
+ drivers/mtd/nand/raw/tegra_nand.c             |   55 +-
+ drivers/opp/core.c                            |    6 +-
+ drivers/pwm/pwm-tegra.c                       |   88 +-
+ drivers/soc/tegra/common.c                    |    4 +-
+ drivers/soc/tegra/fuse/fuse-tegra.c           |   51 +-
+ drivers/soc/tegra/fuse/fuse-tegra20.c         |   33 +-
+ drivers/soc/tegra/fuse/fuse.h                 |    1 +
+ drivers/soc/tegra/pmc.c                       |   27 +-
+ drivers/soc/tegra/regulators-tegra20.c        |   99 ++
+ drivers/soc/tegra/regulators-tegra30.c        |  122 ++
+ drivers/spi/spi-tegra20-slink.c               |   10 +-
+ drivers/staging/media/tegra-vde/vde.c         |   57 +-
+ drivers/usb/chipidea/ci_hdrc_tegra.c          |   53 +-
+ include/linux/host1x.h                        |    1 +
+ include/linux/pm_opp.h                        |    8 +-
+ include/soc/tegra/common.h                    |   24 +
+ 60 files changed, 4751 insertions(+), 357 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
+ create mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+ create mode 100644 drivers/clk/tegra/clk-device.c
+
 -- 
-Dave Chinner
-david@fromorbit.com
+2.32.0
+
