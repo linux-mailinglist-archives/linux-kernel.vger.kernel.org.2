@@ -2,216 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79558418A19
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 18:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1504A418A1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 18:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhIZQSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 12:18:52 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:20370 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhIZQSv (ORCPT
+        id S232096AbhIZQTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 12:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhIZQTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 12:18:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHW5M23ZhzRPLx;
-        Mon, 27 Sep 2021 00:12:55 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (7.193.23.208) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 00:17:10 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 00:17:09 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2308.008; Sun, 26 Sep 2021 17:17:07 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>
-Subject: RE: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Thread-Topic: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Thread-Index: AQHXr54pt96rmXk0YUaXSN2Kf89+2auxakgA///+2wCAACw6gIABM1JQgAMzv4CAAIdJsA==
-Date:   Sun, 26 Sep 2021 16:17:07 +0000
-Message-ID: <85743eabdae04d08bb5eba7b6857496e@huawei.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com> <YUxiPqShZT4bk0uL@unreal>
- <60989aa8-4231-0cdf-47bb-1e2026bd1f17@nvidia.com>
- <164439bb579d41639edf9a01a538a5ef@huawei.com>
- <078fc846-1f72-adc0-339c-1b638c6c6e33@nvidia.com>
-In-Reply-To: <078fc846-1f72-adc0-339c-1b638c6c6e33@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.87.241]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 26 Sep 2021 12:19:18 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B49C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 09:17:42 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so15221638otb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 09:17:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Oj2/ISSwvdwJiIU2LQC8td68cx6XDojK8kUtgDQ7Zpc=;
+        b=dXhHMwYOhll4Mt92/aHJSYc2w8XeDEZY0dEfxHowVM60PZrXRUypDmaRikuhBlO71k
+         qO9p5nr+Umv5wb6M4g6SbkQxqRFY2y0l6kUg3LUbtuKEG7biZKHyFJYfsFoJRlcrPF+S
+         aSLVEqNgApBlVnbyUCj48AoAWk0ktT/1mGPP5pLE/DU1nznA/91Cuwk8UmToh/imSn7I
+         rI3gnq1izWkttDVS0/3xIQDoEQ1hl1nZPNqKhih4e4UqJknjm3f/OkOwUE6+9tzVClKe
+         OjeGOFWrg9g+icQkLRf+9qxOKlERJ6I+A93u6FLcQRfHJulV2tdqqGMxJzZTP/2VtPQW
+         c2dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Oj2/ISSwvdwJiIU2LQC8td68cx6XDojK8kUtgDQ7Zpc=;
+        b=4hW638EsEO+5MP9gxQuwgh6xYvEF8pRHnu84/kI7tn2fKjNkKTsnYbnabb3lL2GgXx
+         +CThgkqYYAf+n7zvqee+sRkFNPHXGJvLg/NY071j/v8QYMTvHPVFJWDi7y517AobKo1k
+         BAhke8attk1aP39mgIYzbVYyf+7xD/Xl65apuHUp+e6cMO/GDzJZEproDvcRgsW9Xj9K
+         VeN/xIcy7YOcTJ9pbEvao5T/ATprMcLi7BoyShb9fKSWji41MTrctQLYpT5SyMSOKl0a
+         aW6oHSzlZ91joMyy9+WRexQ25W6/VnBt5mRLzkMQCC0Iu3b2YgIHI5PERAVeJHu4ZfQA
+         SWew==
+X-Gm-Message-State: AOAM532iTIEJrmCgGdqrZ7AKYGmZU1na89/yTRv+4tKJkilr6ud+csSB
+        eycqz97SGxVxntSdD+oXY02wvQ==
+X-Google-Smtp-Source: ABdhPJzF+woqLSPc7CGXZTMeZWaBWLEfmTbr3rMdkJx04bcsz6Dsa5ZSz144bn3FKz8qkU9LKIeI/g==
+X-Received: by 2002:a9d:8a7:: with SMTP id 36mr1052803otf.263.1632673061169;
+        Sun, 26 Sep 2021 09:17:41 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.73.83])
+        by smtp.gmail.com with ESMTPSA id d10sm3725993ooj.24.2021.09.26.09.17.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Sep 2021 09:17:40 -0700 (PDT)
+Subject: Re: [PATCH 5.14 00/98] 5.14.8-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210925120755.238551529@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <ec21dcf7-705a-8748-1c06-030a70c17d08@linaro.org>
+Date:   Sun, 26 Sep 2021 11:17:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210925120755.238551529@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWF4IEd1cnRvdm95IFtt
-YWlsdG86bWd1cnRvdm95QG52aWRpYS5jb21dDQo+IFNlbnQ6IDI2IFNlcHRlbWJlciAyMDIxIDEw
-OjEwDQo+IFRvOiBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIDxzaGFtZWVyYWxpLmtvbG90aHVt
-LnRob2RpQGh1YXdlaS5jb20+Ow0KPiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4N
-Cj4gQ2M6IERvdWcgTGVkZm9yZCA8ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3Jw
-ZQ0KPiA8amdnQG52aWRpYS5jb20+OyBZaXNoYWkgSGFkYXMgPHlpc2hhaWhAbnZpZGlhLmNvbT47
-IEFsZXggV2lsbGlhbXNvbg0KPiA8YWxleC53aWxsaWFtc29uQHJlZGhhdC5jb20+OyBCam9ybiBI
-ZWxnYWFzIDxiaGVsZ2Fhc0Bnb29nbGUuY29tPjsgRGF2aWQNCj4gUy4gTWlsbGVyIDxkYXZlbUBk
-YXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IEtpcnRpDQo+
-IFdhbmtoZWRlIDxrd2Fua2hlZGVAbnZpZGlhLmNvbT47IGt2bUB2Z2VyLmtlcm5lbC5vcmc7DQo+
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7
-DQo+IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBT
-YWVlZCBNYWhhbWVlZA0KPiA8c2FlZWRtQG52aWRpYS5jb20+OyBsaXVsb25nZmFuZyA8bGl1bG9u
-Z2ZhbmdAaHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCBtbHg1LW5leHQgMi83XSB2
-ZmlvOiBBZGQgYW4gQVBJIHRvIGNoZWNrIG1pZ3JhdGlvbiBzdGF0ZQ0KPiB0cmFuc2l0aW9uIHZh
-bGlkaXR5DQo+IA0KPiANCj4gT24gOS8yNC8yMDIxIDEwOjQ0IEFNLCBTaGFtZWVyYWxpIEtvbG90
-aHVtIFRob2RpIHdyb3RlOg0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
-ID4+IEZyb206IE1heCBHdXJ0b3ZveSBbbWFpbHRvOm1ndXJ0b3ZveUBudmlkaWEuY29tXQ0KPiA+
-PiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMSAxNDo1Ng0KPiA+PiBUbzogTGVvbiBSb21hbm92c2t5
-IDxsZW9uQGtlcm5lbC5vcmc+OyBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpDQo+ID4+IDxzaGFt
-ZWVyYWxpLmtvbG90aHVtLnRob2RpQGh1YXdlaS5jb20+DQo+ID4+IENjOiBEb3VnIExlZGZvcmQg
-PGRsZWRmb3JkQHJlZGhhdC5jb20+OyBKYXNvbiBHdW50aG9ycGUNCj4gPj4gPGpnZ0BudmlkaWEu
-Y29tPjsgWWlzaGFpIEhhZGFzIDx5aXNoYWloQG52aWRpYS5jb20+OyBBbGV4IFdpbGxpYW1zb24N
-Cj4gPj4gPGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tPjsgQmpvcm4gSGVsZ2FhcyA8YmhlbGdh
-YXNAZ29vZ2xlLmNvbT47DQo+ID4+IERhdmlkIFMuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5l
-dD47IEpha3ViIEtpY2luc2tpDQo+ID4+IDxrdWJhQGtlcm5lbC5vcmc+OyBLaXJ0aSBXYW5raGVk
-ZSA8a3dhbmtoZWRlQG52aWRpYS5jb20+Ow0KPiA+PiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+PiBsaW51eC1wY2lAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsNCj4gPj4gbmV0ZGV2QHZnZXIua2VybmVsLm9y
-ZzsgU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBudmlkaWEuY29tPg0KPiA+PiBTdWJqZWN0OiBSZTog
-W1BBVENIIG1seDUtbmV4dCAyLzddIHZmaW86IEFkZCBhbiBBUEkgdG8gY2hlY2sNCj4gPj4gbWln
-cmF0aW9uIHN0YXRlIHRyYW5zaXRpb24gdmFsaWRpdHkNCj4gPj4NCj4gPj4NCj4gPj4gT24gOS8y
-My8yMDIxIDI6MTcgUE0sIExlb24gUm9tYW5vdnNreSB3cm90ZToNCj4gPj4+IE9uIFRodSwgU2Vw
-IDIzLCAyMDIxIGF0IDEwOjMzOjEwQU0gKzAwMDAsIFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkN
-Cj4gPj4gd3JvdGU6DQo+ID4+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+Pj4+
-IEZyb206IExlb24gUm9tYW5vdnNreSBbbWFpbHRvOmxlb25Aa2VybmVsLm9yZ10NCj4gPj4+Pj4g
-U2VudDogMjIgU2VwdGVtYmVyIDIwMjEgMTE6MzkNCj4gPj4+Pj4gVG86IERvdWcgTGVkZm9yZCA8
-ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3JwZQ0KPiA+PiA8amdnQG52aWRpYS5j
-b20+DQo+ID4+Pj4+IENjOiBZaXNoYWkgSGFkYXMgPHlpc2hhaWhAbnZpZGlhLmNvbT47IEFsZXgg
-V2lsbGlhbXNvbg0KPiA+Pj4+PiA8YWxleC53aWxsaWFtc29uQHJlZGhhdC5jb20+OyBCam9ybiBI
-ZWxnYWFzIDxiaGVsZ2Fhc0Bnb29nbGUuY29tPjsNCj4gPj4gRGF2aWQNCj4gPj4+Pj4gUy4gTWls
-bGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9y
-Zz47DQo+ID4+Pj4+IEtpcnRpIFdhbmtoZWRlIDxrd2Fua2hlZGVAbnZpZGlhLmNvbT47IGt2bUB2
-Z2VyLmtlcm5lbC5vcmc7DQo+ID4+Pj4+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxp
-bnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4+Pj4+IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwu
-b3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBTYWVlZCBNYWhhbWVlZA0KPiA+Pj4+PiA8c2Fl
-ZWRtQG52aWRpYS5jb20+DQo+ID4+Pj4+IFN1YmplY3Q6IFtQQVRDSCBtbHg1LW5leHQgMi83XSB2
-ZmlvOiBBZGQgYW4gQVBJIHRvIGNoZWNrIG1pZ3JhdGlvbg0KPiA+Pj4+PiBzdGF0ZSB0cmFuc2l0
-aW9uIHZhbGlkaXR5DQo+ID4+Pj4+DQo+ID4+Pj4+IEZyb206IFlpc2hhaSBIYWRhcyA8eWlzaGFp
-aEBudmlkaWEuY29tPg0KPiA+Pj4+Pg0KPiA+Pj4+PiBBZGQgYW4gQVBJIGluIHRoZSBjb3JlIGxh
-eWVyIHRvIGNoZWNrIG1pZ3JhdGlvbiBzdGF0ZSB0cmFuc2l0aW9uDQo+ID4+Pj4+IHZhbGlkaXR5
-IGFzIHBhcnQgb2YgYSBtaWdyYXRpb24gZmxvdy4NCj4gPj4+Pj4NCj4gPj4+Pj4gVGhlIHZhbGlk
-IHRyYW5zaXRpb25zIGZvbGxvdyB0aGUgZXhwZWN0ZWQgdXNhZ2UgYXMgZGVzY3JpYmVkIGluDQo+
-ID4+Pj4+IHVhcGkvdmZpby5oIGFuZCB0cmlnZ2VyZWQgYnkgUUVNVS4NCj4gPj4+Pj4NCj4gPj4+
-Pj4gVGhpcyBlbnN1cmVzIHRoYXQgYWxsIG1pZ3JhdGlvbiBpbXBsZW1lbnRhdGlvbnMgZm9sbG93
-IGENCj4gPj4+Pj4gY29uc2lzdGVudCBtaWdyYXRpb24gc3RhdGUgbWFjaGluZS4NCj4gPj4+Pj4N
-Cj4gPj4+Pj4gU2lnbmVkLW9mZi1ieTogWWlzaGFpIEhhZGFzIDx5aXNoYWloQG52aWRpYS5jb20+
-DQo+ID4+Pj4+IFJldmlld2VkLWJ5OiBLaXJ0aSBXYW5raGVkZSA8a3dhbmtoZWRlQG52aWRpYS5j
-b20+DQo+ID4+Pj4+IFNpZ25lZC1vZmYtYnk6IEphc29uIEd1bnRob3JwZSA8amdnQG52aWRpYS5j
-b20+DQo+ID4+Pj4+IFNpZ25lZC1vZmYtYnk6IExlb24gUm9tYW5vdnNreSA8bGVvbnJvQG52aWRp
-YS5jb20+DQo+ID4+Pj4+IC0tLQ0KPiA+Pj4+PiAgICBkcml2ZXJzL3ZmaW8vdmZpby5jICB8IDQx
-DQo+ID4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4+Pj4+
-ICAgIGluY2x1ZGUvbGludXgvdmZpby5oIHwgIDEgKw0KPiA+Pj4+PiAgICAyIGZpbGVzIGNoYW5n
-ZWQsIDQyIGluc2VydGlvbnMoKykNCj4gPj4+Pj4NCj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvdmZpby92ZmlvLmMgYi9kcml2ZXJzL3ZmaW8vdmZpby5jIGluZGV4DQo+ID4+Pj4+IDNjMDM0
-ZmUxNGNjYi4uYzNjYTMzZTUxM2M4IDEwMDY0NA0KPiA+Pj4+PiAtLS0gYS9kcml2ZXJzL3ZmaW8v
-dmZpby5jDQo+ID4+Pj4+ICsrKyBiL2RyaXZlcnMvdmZpby92ZmlvLmMNCj4gPj4+Pj4gQEAgLTE2
-NjQsNiArMTY2NCw0NyBAQCBzdGF0aWMgaW50IHZmaW9fZGV2aWNlX2ZvcHNfcmVsZWFzZShzdHJ1
-Y3QNCj4gPj4gaW5vZGUNCj4gPj4+Pj4gKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZmlsZXApDQo+ID4+
-Pj4+ICAgIAlyZXR1cm4gMDsNCj4gPj4+Pj4gICAgfQ0KPiA+Pj4+Pg0KPiA+Pj4+PiArLyoqDQo+
-ID4+Pj4+ICsgKiB2ZmlvX2NoYW5nZV9taWdyYXRpb25fc3RhdGVfYWxsb3dlZCAtIENoZWNrcyB3
-aGV0aGVyIGENCj4gPj4+Pj4gK21pZ3JhdGlvbg0KPiA+PiBzdGF0ZQ0KPiA+Pj4+PiArICogICB0
-cmFuc2l0aW9uIGlzIHZhbGlkLg0KPiA+Pj4+PiArICogQG5ld19zdGF0ZTogVGhlIG5ldyBzdGF0
-ZSB0byBtb3ZlIHRvLg0KPiA+Pj4+PiArICogQG9sZF9zdGF0ZTogVGhlIG9sZCBzdGF0ZS4NCj4g
-Pj4+Pj4gKyAqIFJldHVybjogdHJ1ZSBpZiB0aGUgdHJhbnNpdGlvbiBpcyB2YWxpZC4NCj4gPj4+
-Pj4gKyAqLw0KPiA+Pj4+PiArYm9vbCB2ZmlvX2NoYW5nZV9taWdyYXRpb25fc3RhdGVfYWxsb3dl
-ZCh1MzIgbmV3X3N0YXRlLCB1MzINCj4gPj4gb2xkX3N0YXRlKQ0KPiA+Pj4+PiArew0KPiA+Pj4+
-PiArCWVudW0geyBNQVhfU1RBVEUgPSBWRklPX0RFVklDRV9TVEFURV9SRVNVTUlORyB9Ow0KPiA+
-Pj4+PiArCXN0YXRpYyBjb25zdCB1OCB2ZmlvX2Zyb21fc3RhdGVfdGFibGVbTUFYX1NUQVRFICsg
-MV1bTUFYX1NUQVRFICsNCj4gPj4gMV0gPSB7DQo+ID4+Pj4+ICsJCVtWRklPX0RFVklDRV9TVEFU
-RV9TVE9QXSA9IHsNCj4gPj4+Pj4gKwkJCVtWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXSA9IDEs
-DQo+ID4+Pj4+ICsJCQlbVkZJT19ERVZJQ0VfU1RBVEVfUkVTVU1JTkddID0gMSwNCj4gPj4+Pj4g
-KwkJfSwNCj4gPj4+Pj4gKwkJW1ZGSU9fREVWSUNFX1NUQVRFX1JVTk5JTkddID0gew0KPiA+Pj4+
-PiArCQkJW1ZGSU9fREVWSUNFX1NUQVRFX1NUT1BdID0gMSwNCj4gPj4+Pj4gKwkJCVtWRklPX0RF
-VklDRV9TVEFURV9TQVZJTkddID0gMSwNCj4gPj4+Pj4gKwkJCVtWRklPX0RFVklDRV9TVEFURV9T
-QVZJTkcgfA0KPiA+PiBWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXQ0KPiA+Pj4+PiA9IDEsDQo+
-ID4+Pj4gRG8gd2UgbmVlZCB0byBhbGxvdyBfUkVTVU1JTkcgc3RhdGUgaGVyZSBvciBub3Q/IEFz
-IHBlciB0aGUgIlN0YXRlDQo+ID4+IHRyYW5zaXRpb25zIg0KPiA+Pj4+IHNlY3Rpb24gZnJvbSB1
-YXBpL2xpbnV4L3ZmaW8uaCwNCj4gPj4+IEl0IGxvb2tzIGxpa2Ugd2UgbWlzc2VkIHRoaXMgc3Rh
-dGUgdHJhbnNpdGlvbi4NCj4gPj4+DQo+ID4+PiBUaGFua3MNCj4gPj4gSSdtIG5vdCBzdXJlIHRo
-aXMgc3RhdGUgdHJhbnNpdGlvbiBpcyB2YWxpZC4NCj4gPj4NCj4gPj4gS2lydGksIFdoZW4gd2Ug
-d291bGQgbGlrZSB0byBtb3ZlIGZyb20gUlVOTklORyB0byBSRVNVTUlORyA/DQo+ID4gSSBndWVz
-cyBpdCBkZXBlbmRzIG9uIHdoYXQgeW91IHJlcG9ydCBhcyB5b3VyIGRldiBkZWZhdWx0IHN0YXRl
-Lg0KPiA+DQo+ID4gRm9yIEhpU2lsaWNvbiBBQ0MgbWlncmF0aW9uIGRyaXZlciwgd2Ugc2V0IHRo
-ZSBkZWZhdWx0IHRvIF9SVU5OSU5HLg0KPiANCj4gV2hlcmUgZG8geW91IHNldCBpdCBhbmQgcmVw
-b3J0IGl0ID8NCg0KQ3VycmVudGx5LCBpbiBfb3Blbl9kZXZpY2UoKSB3ZSBzZXQgdGhlIGRldmlj
-ZV9zdGF0ZSB0byBfUlVOTklORy4NCg0KSSB0aGluayBpbiB5b3VyIGNhc2UgdGhlIGRlZmF1bHQg
-b2Ygdm1pZy0+dmZpb19kZXZfc3RhdGUgPT0gMCAoX1NUT1ApLg0KDQo+IA0KPiA+DQo+ID4gQW5k
-IHdoZW4gdGhlIG1pZ3JhdGlvbiBzdGFydHMsIHRoZSBkZXN0aW5hdGlvbiBzaWRlIFFlbXUsIHNl
-dCB0aGUNCj4gPiBkZXZpY2Ugc3RhdGUgdG8gX1JFU1VNSU5HKHZmaW9fbG9hZF9zdGF0ZSgpKS4N
-Cj4gPg0KPiA+ICBGcm9tIHRoZSBkb2N1bWVudGF0aW9uLCBpdCBsb29rcyBsaWtlIHRoZSBhc3N1
-bXB0aW9uIG9uIGRlZmF1bHQgc3RhdGUNCj4gPiBvZiB0aGUgVkZJTyBkZXYgaXMgX1JVTk5JTkcu
-DQo+ID4NCj4gPiAiDQo+ID4gKiAgMDAxYiA9PiBEZXZpY2UgcnVubmluZywgd2hpY2ggaXMgdGhl
-IGRlZmF1bHQgc3RhdGUgIg0KPiA+DQo+ID4+IFNhbWVlcmFsaSwgY2FuIHlvdSBwbGVhc2UgcmUt
-dGVzdCBhbmQgdXBkYXRlIGlmIHlvdSBzZWUgdGhpcyB0cmFuc2l0aW9uID8NCj4gPiBZZXMuIEFu
-ZCBpZiBJIGNoYW5nZSB0aGUgZGVmYXVsdCBzdGF0ZSB0byBfU1RPUCwgdGhlbiB0aGUgdHJhbnNp
-dGlvbg0KPiA+IGlzIGZyb20gX1NUT1AgLS0+IF9SRVNVTUlORy4NCj4gPg0KPiA+IEJ1dCB0aGUg
-ZG9jdW1lbnRhdGlvbiBvbiBTdGF0ZSB0cmFuc2l0aW9ucyBkb2Vzbid0IGhhdmUgX1NUT1AgLS0+
-DQo+ID4gX1JFU1VNSU5HIHRyYW5zaXRpb24gYXMgdmFsaWQuDQo+ID4NCj4gPiBUaGFua3MsDQo+
-ID4gU2hhbWVlcg0KPiA+DQo+ID4+DQo+ID4+Pj4gIiAqIDQuIFRvIHN0YXJ0IHRoZSByZXN1bWlu
-ZyBwaGFzZSwgdGhlIGRldmljZSBzdGF0ZSBzaG91bGQgYmUNCj4gPj4+PiB0cmFuc2l0aW9uZWQN
-Cj4gPj4gZnJvbQ0KPiA+Pj4+ICAgICogICAgdGhlIF9SVU5OSU5HIHRvIHRoZSBfUkVTVU1JTkcg
-c3RhdGUuIg0KPiA+Pj4+DQo+ID4+Pj4gSUlSQywgSSBoYXZlIHNlZW4gdGhhdCB0cmFuc2l0aW9u
-IGhhcHBlbmluZyBvbiB0aGUgZGVzdGluYXRpb24gZGV2DQo+ID4+Pj4gd2hpbGUNCj4gPj4gdGVz
-dGluZyB0aGUNCj4gPj4+PiBIaVNpbGljb24gQUNDIGRldiBtaWdyYXRpb24uDQo+ID4+Pj4NCj4g
-Pj4+PiBUaGFua3MsDQo+ID4+Pj4gU2hhbWVlcg0KPiA+Pj4+DQo+ID4+Pj4+ICsJCX0sDQo+ID4+
-Pj4+ICsJCVtWRklPX0RFVklDRV9TVEFURV9TQVZJTkddID0gew0KPiA+Pj4+PiArCQkJW1ZGSU9f
-REVWSUNFX1NUQVRFX1NUT1BdID0gMSwNCj4gPj4+Pj4gKwkJCVtWRklPX0RFVklDRV9TVEFURV9S
-VU5OSU5HXSA9IDEsDQo+ID4+Pj4+ICsJCX0sDQo+ID4+Pj4+ICsJCVtWRklPX0RFVklDRV9TVEFU
-RV9TQVZJTkcgfCBWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXQ0KPiA+PiA9IHsNCj4gPj4+Pj4g
-KwkJCVtWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXSA9IDEsDQo+ID4+Pj4+ICsJCQlbVkZJT19E
-RVZJQ0VfU1RBVEVfU0FWSU5HXSA9IDEsDQo+ID4+Pj4+ICsJCX0sDQo+ID4+Pj4+ICsJCVtWRklP
-X0RFVklDRV9TVEFURV9SRVNVTUlOR10gPSB7DQo+ID4+Pj4+ICsJCQlbVkZJT19ERVZJQ0VfU1RB
-VEVfUlVOTklOR10gPSAxLA0KPiA+Pj4+PiArCQkJW1ZGSU9fREVWSUNFX1NUQVRFX1NUT1BdID0g
-MSwNCj4gPj4+Pj4gKwkJfSwNCj4gPj4+Pj4gKwl9Ow0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsJaWYg
-KG5ld19zdGF0ZSA+IE1BWF9TVEFURSB8fCBvbGRfc3RhdGUgPiBNQVhfU1RBVEUpDQo+ID4+Pj4+
-ICsJCXJldHVybiBmYWxzZTsNCj4gPj4+Pj4gKw0KPiA+Pj4+PiArCXJldHVybiB2ZmlvX2Zyb21f
-c3RhdGVfdGFibGVbb2xkX3N0YXRlXVtuZXdfc3RhdGVdOw0KPiA+Pj4+PiArfQ0KPiA+Pj4+PiAr
-RVhQT1JUX1NZTUJPTF9HUEwodmZpb19jaGFuZ2VfbWlncmF0aW9uX3N0YXRlX2FsbG93ZWQpOw0K
-PiA+Pj4+PiArDQo+ID4+Pj4+ICAgIHN0YXRpYyBsb25nIHZmaW9fZGV2aWNlX2ZvcHNfdW5sX2lv
-Y3RsKHN0cnVjdCBmaWxlICpmaWxlcCwNCj4gPj4+Pj4gICAgCQkJCSAgICAgICB1bnNpZ25lZCBp
-bnQgY21kLCB1bnNpZ25lZCBsb25nIGFyZykNCj4gPj4+Pj4gICAgew0KPiA+Pj4+PiBkaWZmIC0t
-Z2l0IGEvaW5jbHVkZS9saW51eC92ZmlvLmggYi9pbmNsdWRlL2xpbnV4L3ZmaW8uaCBpbmRleA0K
-PiA+Pj4+PiBiNTNhOTU1Nzg4NGEuLmU2NTEzN2E3MDhmMSAxMDA2NDQNCj4gPj4+Pj4gLS0tIGEv
-aW5jbHVkZS9saW51eC92ZmlvLmgNCj4gPj4+Pj4gKysrIGIvaW5jbHVkZS9saW51eC92ZmlvLmgN
-Cj4gPj4+Pj4gQEAgLTgzLDYgKzgzLDcgQEAgZXh0ZXJuIHN0cnVjdCB2ZmlvX2RldmljZQ0KPiA+
-Pj4+PiAqdmZpb19kZXZpY2VfZ2V0X2Zyb21fZGV2KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ID4+
-Pj4+ICAgIGV4dGVybiB2b2lkIHZmaW9fZGV2aWNlX3B1dChzdHJ1Y3QgdmZpb19kZXZpY2UgKmRl
-dmljZSk7DQo+ID4+Pj4+DQo+ID4+Pj4+ICAgIGludCB2ZmlvX2Fzc2lnbl9kZXZpY2Vfc2V0KHN0
-cnVjdCB2ZmlvX2RldmljZSAqZGV2aWNlLCB2b2lkDQo+ID4+Pj4+ICpzZXRfaWQpOw0KPiA+Pj4+
-PiArYm9vbCB2ZmlvX2NoYW5nZV9taWdyYXRpb25fc3RhdGVfYWxsb3dlZCh1MzIgbmV3X3N0YXRl
-LCB1MzINCj4gPj4gb2xkX3N0YXRlKTsNCj4gPj4+Pj4gICAgLyogZXZlbnRzIGZvciB0aGUgYmFj
-a2VuZCBkcml2ZXIgbm90aWZ5IGNhbGxiYWNrICovDQo+ID4+Pj4+ICAgIGVudW0gdmZpb19pb21t
-dV9ub3RpZnlfdHlwZSB7DQo+ID4+Pj4+IC0tDQo+ID4+Pj4+IDIuMzEuMQ0K
+Hello!
+
+On 9/25/21 7:14 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.8 release.
+> There are 98 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 27 Sep 2021 12:07:36 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.8-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.4.149-rc2
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.4.y
+* git commit: e9755952d24071ff6f516d4c381e911abec76d27
+* git describe: v5.4.148-50-ge9755952d240
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.148-50-ge9755952d240
+
+## No regressions (compared to v5.4.148)
+
+## No fixes (compared to v5.4.148)
+
+## Test result summary
+total: 79795, pass: 65537, fail: 605, skip: 12468, xfail: 1185
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 288 total, 288 passed, 0 failed
+* arm64: 38 total, 38 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 19 total, 19 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
