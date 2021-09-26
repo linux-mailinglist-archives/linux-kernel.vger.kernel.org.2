@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B54189B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E625F4189BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhIZPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 11:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        id S232014AbhIZPLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbhIZPK4 (ORCPT
+        with ESMTP id S232012AbhIZPLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:10:56 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21694C061714
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:09:19 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id l6so9963053plh.9
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:09:19 -0700 (PDT)
+        Sun, 26 Sep 2021 11:11:04 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D856BC061604
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:09:27 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id s16so13479036pfk.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 08:09:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FFfX9t/Gdxc8i2a3P5GGQwEy4L+EoSDF+NLXSky3JF4=;
-        b=NJhQJgv8Gc3SvpbehA7iit7LoexOCx2iqMHh0zz3lYn99aEBtqfagPdf79YQRUDfRk
-         pUGhgn4gpL5QcltPoVOAvzp2n/E+P9f3P+E6wL10N6bHcHuHDO6wzI5X1w9LsNPA3a0j
-         TMY92jjQcFmnOM3NsoM7Z66nbr7BpTD7BtbGRRarGiCTJP6l0ZZC/uWT1rHLKqSeV+jE
-         0yF30kfYXPCF4WXYshePM6Bbdqty0fl8QMDVr+e71lsHeiJv9+Mg7Et4/dYIfv6KwLqN
-         gzKSAljpZJWD4fBTT1k3Ep42fc0s3n+BHDaZICai4GTg3y0g+dUmI/sMtm0Csld5JHkM
-         IDcw==
+        bh=4/S68dED0oqdXmV2OAUfrDjaQRBNIHwjHMwtcgk7Ews=;
+        b=lpRoO1nvGHZXCD97kcwlthOy1FD3D8T4XqXzwtvu9J+n5r+TuRcnob9JzjqvMlIxNX
+         w3o9yhpCwiYBBFvLIHQOJId2PJqeJEhCvs6yMEE4gWhsBu8gNeJLc9sd+xxp1Ugv55qI
+         9jWv/QDwahtNoU47l4YMev+sq1dsgIltJmRmU9IKRDRvSPOWoHxULm7mkPMAQovRrqf0
+         osV7c2FCgCwjPGcQ+DCb+Xe2Lx0eRlL5UqicsuGfWwF35cZ9Ts8VTM7PKqxQenFDRC+V
+         I68fm0gZUE1jQJSeJzeAV+knve1cfuG5eBvxrt/i+2FrvdMPiaoAOFlgQCPmRFsalkx8
+         2jCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FFfX9t/Gdxc8i2a3P5GGQwEy4L+EoSDF+NLXSky3JF4=;
-        b=IAP/LJAgteI4HmMsRzz2Kj3gMfeI3xOFTmjwQM/ua2NNs08Xbu4L7ZwQJXr1nyv+YX
-         XiCsgLVuyYyP04Z4NjUcXbSJILmvZ71gbKBrwz1TemsEZfsMax18w9Bk+lVy+tyiq2R9
-         6uk40Zr6mZdFnNECU7JbVYlMLHWJg719f3CRyofu+URBb8l814fchyQbIRMVHoPr3I1u
-         kUhKtrcPlms1xFPKixbYs0IomxZqwJg32Yy631VMKqMRkTPGJzr1G+YLQ7Ptry1Oulta
-         UrkgSBDsXyrIdQou5rPq4hU73ta/8IUWutGsFKBomwXtpvvU2xv1K103MR0X4L754KOL
-         KwfQ==
-X-Gm-Message-State: AOAM530n8is6fCzRqucQwB4lAvYCqY/LE2kc6UgtWrjGvzTlxAgt8Jf0
-        chHuBDpQyJ2ZWTuNvLgq7TnNcEozt/ki3g==
-X-Google-Smtp-Source: ABdhPJyLNrqSF9u/d6o4nmrpwY1OCsTT1Pn8OIFuM/RXb93LNvWmUhGYmYGkh1ucAN3xOICT1ORYPw==
-X-Received: by 2002:a17:902:9a04:b0:13a:1b2d:8a5c with SMTP id v4-20020a1709029a0400b0013a1b2d8a5cmr18181383plp.47.1632668958591;
-        Sun, 26 Sep 2021 08:09:18 -0700 (PDT)
+        bh=4/S68dED0oqdXmV2OAUfrDjaQRBNIHwjHMwtcgk7Ews=;
+        b=m73adhi8pEc/XZPV1SK3sMvJoNcF8Cw+2xomyCgRDNXJOGzauAPxCEqT3d7mSbwPWi
+         vl68+LoBmpLT+WYq/Z4koZ42cDVzrUahJ26/0TdCTfBitd6+HU4FDFwm7id/ib9q0buF
+         0rdflbzTTx/Aivp0dkWRihvIJeKIFlBCNash3OYNqp6+B9hjUCLIe/d6jsKknDa5kMyc
+         Xipa6ZL3p2/l5z+PtR7eFmaXhnH4W9aavc16pQLy+LqYL9e+E9eRdZ3ouYpnGj5mSHPp
+         dh5lquyARkkOINes/5Radaxi+JpVFeLFXSkoqGTUJoPPC8c2WnhxX8LXu1OZvQhZ2Pb9
+         r0Ug==
+X-Gm-Message-State: AOAM5331+ulqh1dYrdVtao7CGOYSPoOuvaP9lIKvQDDbiUnv1G8uSCf7
+        qfVo0xHkV3C90tv3oyDAKDgPFKy8OOgs8A==
+X-Google-Smtp-Source: ABdhPJz512/fI8gneVJTqHWpIrymbvXA1Km+P8mW1pX3VEIKpZTKWPnuVLqByfRYB7bOmdJ5qNHJVA==
+X-Received: by 2002:a63:215c:: with SMTP id s28mr12600515pgm.99.1632668967280;
+        Sun, 26 Sep 2021 08:09:27 -0700 (PDT)
 Received: from localhost ([47.88.60.64])
-        by smtp.gmail.com with ESMTPSA id s3sm611821pjr.1.2021.09.26.08.09.17
+        by smtp.gmail.com with ESMTPSA id n12sm6566420pff.166.2021.09.26.08.09.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Sep 2021 08:09:18 -0700 (PDT)
+        Sun, 26 Sep 2021 08:09:26 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Joerg Roedel <jroedel@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: [PATCH V2 06/41] x86: Mark __native_read_cr3() & native_write_cr3() as __always_inline
-Date:   Sun, 26 Sep 2021 23:08:03 +0800
-Message-Id: <20210926150838.197719-7-jiangshanlai@gmail.com>
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH V2 07/41] x86/traps: Move the declaration of native_irq_return_iret into proto.h
+Date:   Sun, 26 Sep 2021 23:08:04 +0800
+Message-Id: <20210926150838.197719-8-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20210926150838.197719-1-jiangshanlai@gmail.com>
 References: <20210926150838.197719-1-jiangshanlai@gmail.com>
@@ -74,37 +72,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-We need __native_read_cr3() & native_write_cr3() to be ensured noinstr.
-
-It is prepared for later patches which implement entry code in C file.
-Some of the code needs to handle KPTI and has to read/write CR3.
+The declaration of native_irq_return_iret is used in exc_double_fault()
+only by now.  But it will be used in other place later, so the declaration
+is moved to a header file for preparation.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/include/asm/special_insns.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/proto.h | 1 +
+ arch/x86/kernel/traps.c      | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index f3fbb84ff8a7..058995bb153c 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -42,14 +42,14 @@ static __always_inline void native_write_cr2(unsigned long val)
- 	asm volatile("mov %0,%%cr2": : "r" (val) : "memory");
- }
+diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
+index 8c5d1910a848..ee07b3cae213 100644
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -13,6 +13,7 @@ void syscall_init(void);
+ #ifdef CONFIG_X86_64
+ void entry_SYSCALL_64(void);
+ void entry_SYSCALL_64_safe_stack(void);
++extern unsigned char native_irq_return_iret[];
+ long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2);
+ #endif
  
--static inline unsigned long __native_read_cr3(void)
-+static __always_inline unsigned long __native_read_cr3(void)
- {
- 	unsigned long val;
- 	asm volatile("mov %%cr3,%0\n\t" : "=r" (val) : __FORCE_ORDER);
- 	return val;
- }
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index cc6de3a01293..cf852b5e347f 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -359,8 +359,6 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ #endif
  
--static inline void native_write_cr3(unsigned long val)
-+static __always_inline void native_write_cr3(unsigned long val)
- {
- 	asm volatile("mov %0,%%cr3": : "r" (val) : "memory");
- }
+ #ifdef CONFIG_X86_ESPFIX64
+-	extern unsigned char native_irq_return_iret[];
+-
+ 	/*
+ 	 * If IRET takes a non-IST fault on the espfix64 stack, then we
+ 	 * end up promoting it to a doublefault.  In that case, take
 -- 
 2.19.1.6.gb485710b
 
