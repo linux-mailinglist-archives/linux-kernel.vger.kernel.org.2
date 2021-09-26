@@ -2,667 +2,745 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD564185F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 05:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258944185F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 05:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhIZD0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 23:26:13 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55763 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230349AbhIZD0L (ORCPT
+        id S230400AbhIZD1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 23:27:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33303 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230349AbhIZD1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 23:26:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UpaL0Uv_1632626673;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UpaL0Uv_1632626673)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 26 Sep 2021 11:24:34 +0800
-Date:   Sun, 26 Sep 2021 11:24:34 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH v3 7/7] eni_vdpa: add vDPA driver for Alibaba ENI
-Message-ID: <20210926032434.GA32570@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <cover.1631621507.git.wuzongyong@linux.alibaba.com>
- <cover.1632313398.git.wuzongyong@linux.alibaba.com>
- <296014fa3b765f2088a3183bf04e09863651a584.1632313398.git.wuzongyong@linux.alibaba.com>
- <CACGkMEt5rQv8DFdsYuJ6SF2YOsh_3YP_yzSsdL3X_n3Mfz3Gag@mail.gmail.com>
+        Sat, 25 Sep 2021 23:27:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632626742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FoZSsu6xF3seg3asYmRqHDLDFkuLyw7D/ujF2Jeuyqc=;
+        b=ZetqvNBs20xPg/uYFaVl7lGd30M2Kmcb/2dZwLBYFQ+8K7EXmGSSLLW4I/qjhU/aIeBY4y
+        BhbdvQmoFpBwuErMtlGYjDdO7Rz7zSCwSSGrG2Hf9OhyQkGBVJKRsAVmGwsYWYGiHSzjXk
+        +c3RyGIaYRLMdA73QQaBbAHxNbG51Uk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589--MqPHGLrO-S7uLdUKnx4Rg-1; Sat, 25 Sep 2021 23:25:41 -0400
+X-MC-Unique: -MqPHGLrO-S7uLdUKnx4Rg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0859C1084681;
+        Sun, 26 Sep 2021 03:25:40 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D274652A3;
+        Sun, 26 Sep 2021 03:25:08 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 11:25:22 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        hare@suse.de
+Subject: Re: [PATCH v4 12/13] blk-mq: Use shared tags for shared sbitmap
+ support
+Message-ID: <YU/oIu2uQ420ol8F@T590>
+References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+ <1632472110-244938-13-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACGkMEt5rQv8DFdsYuJ6SF2YOsh_3YP_yzSsdL3X_n3Mfz3Gag@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1632472110-244938-13-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 10:24:21AM +0800, Jason Wang wrote:
-> On Wed, Sep 22, 2021 at 8:47 PM Wu Zongyong
-> <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
-> > Interface) which is build upon virtio 0.9.5 specification.
-> > And this driver doesn't support to run on BE host.
-> >
-> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > ---
-> >  drivers/vdpa/Kconfig            |   8 +
-> >  drivers/vdpa/Makefile           |   1 +
-> >  drivers/vdpa/alibaba/Makefile   |   3 +
-> >  drivers/vdpa/alibaba/eni_vdpa.c | 554 ++++++++++++++++++++++++++++++++
-> >  4 files changed, 566 insertions(+)
-> >  create mode 100644 drivers/vdpa/alibaba/Makefile
-> >  create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
-> >
-> > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> > index 3d91982d8371..9587b9177b05 100644
-> > --- a/drivers/vdpa/Kconfig
-> > +++ b/drivers/vdpa/Kconfig
-> > @@ -78,4 +78,12 @@ config VP_VDPA
-> >         help
-> >           This kernel module bridges virtio PCI device to vDPA bus.
-> >
-> > +config ALIBABA_ENI_VDPA
-> > +       tristate "vDPA driver for Alibaba ENI"
-> > +       select VIRTIO_PCI_LEGACY_LIB
-> > +       depends on PCI_MSI
-> > +       help
-> > +         VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
-> > +         virtio 0.9.5 specification.
-> > +
-> >  endif # VDPA
-> > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> > index f02ebed33f19..15665563a7f4 100644
-> > --- a/drivers/vdpa/Makefile
-> > +++ b/drivers/vdpa/Makefile
-> > @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
-> >  obj-$(CONFIG_IFCVF)    += ifcvf/
-> >  obj-$(CONFIG_MLX5_VDPA) += mlx5/
-> >  obj-$(CONFIG_VP_VDPA)    += virtio_pci/
-> > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
-> > diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
-> > new file mode 100644
-> > index 000000000000..ef4aae69f87a
-> > --- /dev/null
-> > +++ b/drivers/vdpa/alibaba/Makefile
-> > @@ -0,0 +1,3 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
-> > +
-> > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-> > new file mode 100644
-> > index 000000000000..b6eef696cec5
-> > --- /dev/null
-> > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> > @@ -0,0 +1,554 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
-> > + *
-> > + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
-> > + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > + *
-> > + */
-> > +
-> > +#include "linux/bits.h"
-> > +#include <linux/interrupt.h>
-> > +#include <linux/module.h>
-> > +#include <linux/pci.h>
-> > +#include <linux/vdpa.h>
-> > +#include <linux/virtio.h>
-> > +#include <linux/virtio_config.h>
-> > +#include <linux/virtio_ring.h>
-> > +#include <linux/virtio_pci.h>
-> > +#include <linux/virtio_pci_legacy.h>
-> > +#include <uapi/linux/virtio_net.h>
-> > +
-> > +#define ENI_MSIX_NAME_SIZE 256
-> > +
-> > +#define ENI_ERR(pdev, fmt, ...)        \
-> > +       dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> > +#define ENI_DBG(pdev, fmt, ...)        \
-> > +       dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> > +#define ENI_INFO(pdev, fmt, ...) \
-> > +       dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> > +
-> > +struct eni_vring {
-> > +       void __iomem *notify;
-> > +       char msix_name[ENI_MSIX_NAME_SIZE];
-> > +       struct vdpa_callback cb;
-> > +       int irq;
-> > +};
-> > +
-> > +struct eni_vdpa {
-> > +       struct vdpa_device vdpa;
-> > +       struct virtio_pci_legacy_device ldev;
-> > +       struct eni_vring *vring;
-> > +       struct vdpa_callback config_cb;
-> > +       char msix_name[ENI_MSIX_NAME_SIZE];
-> > +       int config_irq;
-> > +       int queues;
-> > +       int vectors;
-> > +};
-> > +
-> > +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
-> > +{
-> > +       return container_of(vdpa, struct eni_vdpa, vdpa);
-> > +}
-> > +
-> > +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +
-> > +       return &eni_vdpa->ldev;
-> > +}
-> > +
-> > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +       u64 features = vp_legacy_get_features(ldev);
-> > +
-> > +       features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
-> > +
-> > +       return features;
+On Fri, Sep 24, 2021 at 04:28:29PM +0800, John Garry wrote:
+> Currently we use separate sbitmap pairs and active_queues atomic_t for
+> shared sbitmap support.
 > 
-> I wonder if the following can work with ENI:
+> However a full sets of static requests are used per HW queue, which is
+> quite wasteful, considering that the total number of requests usable at
+> any given time across all HW queues is limited by the shared sbitmap depth.
 > 
-> -device virtio-net-pci,mrg_rxbuf=off
+> As such, it is considerably more memory efficient in the case of shared
+> sbitmap to allocate a set of static rqs per tag set or request queue, and
+> not per HW queue.
 > 
-> ?
+> So replace the sbitmap pairs and active_queues atomic_t with a shared
+> tags per tagset and request queue, which will hold a set of shared static
+> rqs.
+> 
+> Since there is now no valid HW queue index to be passed to the blk_mq_ops
+> .init and .exit_request callbacks, pass an invalid index token. This
+> changes the semantics of the APIs, such that the callback would need to
+> validate the HW queue index before using it. Currently no user of shared
+> sbitmap actually uses the HW queue index (as would be expected).
+> 
+> Continue to use term "shared sbitmap" for now, as the meaning is known.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  block/blk-mq-sched.c   | 82 ++++++++++++++++++-------------------
+>  block/blk-mq-tag.c     | 61 ++++++++++------------------
+>  block/blk-mq-tag.h     |  6 +--
+>  block/blk-mq.c         | 91 +++++++++++++++++++++++-------------------
+>  block/blk-mq.h         |  5 ++-
+>  include/linux/blk-mq.h | 15 ++++---
+>  include/linux/blkdev.h |  3 +-
+>  7 files changed, 125 insertions(+), 138 deletions(-)
+> 
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index d1b56bb9ac64..428da4949d80 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -519,6 +519,11 @@ static int blk_mq_sched_alloc_map_and_rqs(struct request_queue *q,
+>  					  struct blk_mq_hw_ctx *hctx,
+>  					  unsigned int hctx_idx)
+>  {
+> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
+> +		hctx->sched_tags = q->shared_sbitmap_tags;
+> +		return 0;
+> +	}
+> +
+>  	hctx->sched_tags = blk_mq_alloc_map_and_rqs(q->tag_set, hctx_idx,
+>  						    q->nr_requests);
+>  
+> @@ -527,61 +532,54 @@ static int blk_mq_sched_alloc_map_and_rqs(struct request_queue *q,
+>  	return 0;
+>  }
+>  
+> +static void blk_mq_exit_sched_shared_sbitmap(struct request_queue *queue)
+> +{
+> +	blk_mq_free_rq_map(queue->shared_sbitmap_tags);
+> +	queue->shared_sbitmap_tags = NULL;
+> +}
+> +
+>  /* called in queue's release handler, tagset has gone away */
+> -static void blk_mq_sched_tags_teardown(struct request_queue *q)
+> +static void blk_mq_sched_tags_teardown(struct request_queue *q, unsigned int flags)
+>  {
+>  	struct blk_mq_hw_ctx *hctx;
+>  	int i;
+>  
+>  	queue_for_each_hw_ctx(q, hctx, i) {
+>  		if (hctx->sched_tags) {
+> -			blk_mq_free_rq_map(hctx->sched_tags, hctx->flags);
+> +			if (!blk_mq_is_sbitmap_shared(q->tag_set->flags))
+> +				blk_mq_free_rq_map(hctx->sched_tags);
+>  			hctx->sched_tags = NULL;
+>  		}
+>  	}
+> +
+> +	if (blk_mq_is_sbitmap_shared(flags))
+> +		blk_mq_exit_sched_shared_sbitmap(q);
+>  }
+>  
+>  static int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
+>  {
+>  	struct blk_mq_tag_set *set = queue->tag_set;
+> -	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
+> -	struct blk_mq_hw_ctx *hctx;
+> -	int ret, i;
+>  
+>  	/*
+>  	 * Set initial depth at max so that we don't need to reallocate for
+>  	 * updating nr_requests.
+>  	 */
+> -	ret = blk_mq_init_bitmaps(&queue->sched_bitmap_tags,
+> -				  &queue->sched_breserved_tags,
+> -				  MAX_SCHED_RQ, set->reserved_tags,
+> -				  set->numa_node, alloc_policy);
+> -	if (ret)
+> -		return ret;
+> -
+> -	queue_for_each_hw_ctx(queue, hctx, i) {
+> -		hctx->sched_tags->bitmap_tags =
+> -					&queue->sched_bitmap_tags;
+> -		hctx->sched_tags->breserved_tags =
+> -					&queue->sched_breserved_tags;
+> -	}
+> +	queue->shared_sbitmap_tags = blk_mq_alloc_map_and_rqs(set,
+> +						BLK_MQ_NO_HCTX_IDX,
+> +						MAX_SCHED_RQ);
+> +	if (!queue->shared_sbitmap_tags)
+> +		return -ENOMEM;
+>  
+>  	blk_mq_tag_update_sched_shared_sbitmap(queue);
+>  
+>  	return 0;
+>  }
+>  
+> -static void blk_mq_exit_sched_shared_sbitmap(struct request_queue *queue)
+> -{
+> -	sbitmap_queue_free(&queue->sched_bitmap_tags);
+> -	sbitmap_queue_free(&queue->sched_breserved_tags);
+> -}
+> -
+>  int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>  {
+> +	unsigned int i, flags = q->tag_set->flags;
+>  	struct blk_mq_hw_ctx *hctx;
+>  	struct elevator_queue *eq;
+> -	unsigned int i;
+>  	int ret;
+>  
+>  	if (!e) {
+> @@ -598,21 +596,21 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>  	q->nr_requests = 2 * min_t(unsigned int, q->tag_set->queue_depth,
+>  				   BLKDEV_DEFAULT_RQ);
+>  
+> -	queue_for_each_hw_ctx(q, hctx, i) {
+> -		ret = blk_mq_sched_alloc_map_and_rqs(q, hctx, i);
+> +	if (blk_mq_is_sbitmap_shared(flags)) {
+> +		ret = blk_mq_init_sched_shared_sbitmap(q);
+>  		if (ret)
+> -			goto err_free_map_and_rqs;
+> +			return ret;
+>  	}
+>  
+> -	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
+> -		ret = blk_mq_init_sched_shared_sbitmap(q);
+> +	queue_for_each_hw_ctx(q, hctx, i) {
+> +		ret = blk_mq_sched_alloc_map_and_rqs(q, hctx, i);
+>  		if (ret)
+>  			goto err_free_map_and_rqs;
+>  	}
+>  
+>  	ret = e->ops.init_sched(q, e);
+>  	if (ret)
+> -		goto err_free_sbitmap;
+> +		goto err_free_map_and_rqs;
+>  
+>  	blk_mq_debugfs_register_sched(q);
+>  
+> @@ -632,12 +630,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>  
+>  	return 0;
+>  
+> -err_free_sbitmap:
+> -	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
+> -		blk_mq_exit_sched_shared_sbitmap(q);
+>  err_free_map_and_rqs:
+>  	blk_mq_sched_free_rqs(q);
+> -	blk_mq_sched_tags_teardown(q);
+> +	blk_mq_sched_tags_teardown(q, flags);
+> +
+>  	q->elevator = NULL;
+>  	return ret;
+>  }
+> @@ -651,9 +647,15 @@ void blk_mq_sched_free_rqs(struct request_queue *q)
+>  	struct blk_mq_hw_ctx *hctx;
+>  	int i;
+>  
+> -	queue_for_each_hw_ctx(q, hctx, i) {
+> -		if (hctx->sched_tags)
+> -			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
+> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
+> +		blk_mq_free_rqs(q->tag_set, q->shared_sbitmap_tags,
+> +				BLK_MQ_NO_HCTX_IDX);
+> +	} else {
+> +		queue_for_each_hw_ctx(q, hctx, i) {
+> +			if (hctx->sched_tags)
+> +				blk_mq_free_rqs(q->tag_set,
+> +						hctx->sched_tags, i);
+> +		}
+>  	}
+>  }
+>  
+> @@ -674,8 +676,6 @@ void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e)
+>  	blk_mq_debugfs_unregister_sched(q);
+>  	if (e->type->ops.exit_sched)
+>  		e->type->ops.exit_sched(e);
+> -	blk_mq_sched_tags_teardown(q);
+> -	if (blk_mq_is_sbitmap_shared(flags))
+> -		blk_mq_exit_sched_shared_sbitmap(q);
+> +	blk_mq_sched_tags_teardown(q, flags);
+>  	q->elevator = NULL;
+>  }
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index a0ecc6d88f84..4e71ce6b37ea 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -27,10 +27,11 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+>  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>  		struct request_queue *q = hctx->queue;
+>  		struct blk_mq_tag_set *set = q->tag_set;
+> +		struct blk_mq_tags *tags = set->shared_sbitmap_tags;
 
-ENI didn't work.
-I will remove F_MRG_RXBUF when get_features.
-> 
-> Thanks
-> 
-> > +}
-> > +
-> > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       vp_legacy_set_features(ldev, (u32)features);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static u8 eni_vdpa_get_status(struct vdpa_device *vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       return vp_legacy_get_status(ldev);
-> > +}
-> > +
-> > +static int eni_vdpa_get_vq_irq(struct vdpa_device *vdpa, u16 idx)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +       int irq = eni_vdpa->vring[idx].irq;
-> > +
-> > +       if (irq == VIRTIO_MSI_NO_VECTOR)
-> > +               return -EINVAL;
-> > +
-> > +       return irq;
-> > +}
-> > +
-> > +static void eni_vdpa_free_irq(struct eni_vdpa *eni_vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       struct pci_dev *pdev = ldev->pci_dev;
-> > +       int i;
-> > +
-> > +       for (i = 0; i < eni_vdpa->queues; i++) {
-> > +               if (eni_vdpa->vring[i].irq != VIRTIO_MSI_NO_VECTOR) {
-> > +                       vp_legacy_queue_vector(ldev, i, VIRTIO_MSI_NO_VECTOR);
-> > +                       devm_free_irq(&pdev->dev, eni_vdpa->vring[i].irq,
-> > +                                     &eni_vdpa->vring[i]);
-> > +                       eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
-> > +               }
-> > +       }
-> > +
-> > +       if (eni_vdpa->config_irq != VIRTIO_MSI_NO_VECTOR) {
-> > +               vp_legacy_config_vector(ldev, VIRTIO_MSI_NO_VECTOR);
-> > +               devm_free_irq(&pdev->dev, eni_vdpa->config_irq, eni_vdpa);
-> > +               eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
-> > +       }
-> > +
-> > +       if (eni_vdpa->vectors) {
-> > +               pci_free_irq_vectors(pdev);
-> > +               eni_vdpa->vectors = 0;
-> > +       }
-> > +}
-> > +
-> > +static irqreturn_t eni_vdpa_vq_handler(int irq, void *arg)
-> > +{
-> > +       struct eni_vring *vring = arg;
-> > +
-> > +       if (vring->cb.callback)
-> > +               return vring->cb.callback(vring->cb.private);
-> > +
-> > +       return IRQ_HANDLED;
-> > +}
-> > +
-> > +static irqreturn_t eni_vdpa_config_handler(int irq, void *arg)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = arg;
-> > +
-> > +       if (eni_vdpa->config_cb.callback)
-> > +               return eni_vdpa->config_cb.callback(eni_vdpa->config_cb.private);
-> > +
-> > +       return IRQ_HANDLED;
-> > +}
-> > +
-> > +static int eni_vdpa_request_irq(struct eni_vdpa *eni_vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       struct pci_dev *pdev = ldev->pci_dev;
-> > +       int i, ret, irq;
-> > +       int queues = eni_vdpa->queues;
-> > +       int vectors = queues + 1;
-> > +
-> > +       ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
-> > +       if (ret != vectors) {
-> > +               ENI_ERR(pdev,
-> > +                       "failed to allocate irq vectors want %d but %d\n",
-> > +                       vectors, ret);
-> > +               return ret;
-> > +       }
-> > +
-> > +       eni_vdpa->vectors = vectors;
-> > +
-> > +       for (i = 0; i < queues; i++) {
-> > +               snprintf(eni_vdpa->vring[i].msix_name, ENI_MSIX_NAME_SIZE,
-> > +                        "eni-vdpa[%s]-%d\n", pci_name(pdev), i);
-> > +               irq = pci_irq_vector(pdev, i);
-> > +               ret = devm_request_irq(&pdev->dev, irq,
-> > +                                      eni_vdpa_vq_handler,
-> > +                                      0, eni_vdpa->vring[i].msix_name,
-> > +                                      &eni_vdpa->vring[i]);
-> > +               if (ret) {
-> > +                       ENI_ERR(pdev, "failed to request irq for vq %d\n", i);
-> > +                       goto err;
-> > +               }
-> > +               vp_legacy_queue_vector(ldev, i, i);
-> > +               eni_vdpa->vring[i].irq = irq;
-> > +       }
-> > +
-> > +       snprintf(eni_vdpa->msix_name, ENI_MSIX_NAME_SIZE, "eni-vdpa[%s]-config\n",
-> > +                pci_name(pdev));
-> > +       irq = pci_irq_vector(pdev, queues);
-> > +       ret = devm_request_irq(&pdev->dev, irq, eni_vdpa_config_handler, 0,
-> > +                              eni_vdpa->msix_name, eni_vdpa);
-> > +       if (ret) {
-> > +               ENI_ERR(pdev, "failed to request irq for config vq %d\n", i);
-> > +               goto err;
-> > +       }
-> > +       vp_legacy_config_vector(ldev, queues);
-> > +       eni_vdpa->config_irq = irq;
-> > +
-> > +       return 0;
-> > +err:
-> > +       eni_vdpa_free_irq(eni_vdpa);
-> > +       return ret;
-> > +}
-> > +
-> > +static void eni_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       u8 s = eni_vdpa_get_status(vdpa);
-> > +
-> > +       if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
-> > +           !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
-> > +               eni_vdpa_request_irq(eni_vdpa);
-> > +       }
-> > +
-> > +       vp_legacy_set_status(ldev, status);
-> > +
-> > +       if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
-> > +           (s & VIRTIO_CONFIG_S_DRIVER_OK))
-> > +               eni_vdpa_free_irq(eni_vdpa);
-> > +}
-> > +
-> > +static int eni_vdpa_reset(struct vdpa_device *vdpa)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       u8 s = eni_vdpa_get_status(vdpa);
-> > +
-> > +       vp_legacy_set_status(ldev, 0);
-> > +
-> > +       if (s & VIRTIO_CONFIG_S_DRIVER_OK)
-> > +               eni_vdpa_free_irq(eni_vdpa);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static u16 eni_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       return vp_legacy_get_queue_size(ldev, 0);
-> > +}
-> > +
-> > +static u16 eni_vdpa_get_vq_num_min(struct vdpa_device *vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       return vp_legacy_get_queue_size(ldev, 0);
-> > +}
-> > +
-> > +static int eni_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
-> > +                               struct vdpa_vq_state *state)
-> > +{
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static int eni_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
-> > +                                const struct vdpa_vq_state *state)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +       const struct vdpa_vq_state_split *split = &state->split;
-> > +
-> > +       /* ENI is build upon virtio-pci specfication which not support
-> > +        * to set state of virtqueue. But if the state is equal to the
-> > +        * device initial state by chance, we can let it go.
-> > +        */
-> > +       if (!vp_legacy_get_queue_enable(ldev, qid)
-> > +           && split->avail_index == 0)
-> > +               return 0;
-> > +
-> > +       return -EOPNOTSUPP;
-> > +}
-> > +
-> > +
-> > +static void eni_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 qid,
-> > +                              struct vdpa_callback *cb)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +
-> > +       eni_vdpa->vring[qid].cb = *cb;
-> > +}
-> > +
-> > +static void eni_vdpa_set_vq_ready(struct vdpa_device *vdpa, u16 qid,
-> > +                                 bool ready)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       /* ENI is a legacy virtio-pci device. This is not supported
-> > +        * by specification. But we can disable virtqueue by setting
-> > +        * address to 0.
-> > +        */
-> > +       if (!ready)
-> > +               vp_legacy_set_queue_address(ldev, qid, 0);
-> > +}
-> > +
-> > +static bool eni_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       return vp_legacy_get_queue_enable(ldev, qid);
-> > +}
-> > +
-> > +static void eni_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
-> > +                              u32 num)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +       struct pci_dev *pdev = ldev->pci_dev;
-> > +       u16 n = vp_legacy_get_queue_size(ldev, qid);
-> > +
-> > +       /* ENI is a legacy virtio-pci device which not allow to change
-> > +        * virtqueue size. Just report a error if someone tries to
-> > +        * change it.
-> > +        */
-> > +       if (num != n)
-> > +               ENI_ERR(pdev,
-> > +                       "not support to set vq %u fixed num %u to %u\n",
-> > +                       qid, n, num);
-> > +}
-> > +
-> > +static int eni_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
-> > +                                  u64 desc_area, u64 driver_area,
-> > +                                  u64 device_area)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +       u32 pfn = desc_area >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
-> > +
-> > +       vp_legacy_set_queue_address(ldev, qid, pfn);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void eni_vdpa_kick_vq(struct vdpa_device *vdpa, u16 qid)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +
-> > +       iowrite16(qid, eni_vdpa->vring[qid].notify);
-> > +}
-> > +
-> > +static u32 eni_vdpa_get_device_id(struct vdpa_device *vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       return ldev->id.device;
-> > +}
-> > +
-> > +static u32 eni_vdpa_get_vendor_id(struct vdpa_device *vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > +
-> > +       return ldev->id.vendor;
-> > +}
-> > +
-> > +static u32 eni_vdpa_get_vq_align(struct vdpa_device *vdpa)
-> > +{
-> > +       return PAGE_SIZE;
-> > +}
-> > +
-> > +static size_t eni_vdpa_get_config_size(struct vdpa_device *vdpa)
-> > +{
-> > +       return sizeof(struct virtio_net_config);
-> > +}
-> > +
-> > +
-> > +static void eni_vdpa_get_config(struct vdpa_device *vdpa,
-> > +                               unsigned int offset,
-> > +                               void *buf, unsigned int len)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       void __iomem *ioaddr = ldev->ioaddr +
-> > +               VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
-> > +               offset;
-> > +       u8 *p = buf;
-> > +       int i;
-> > +
-> > +       for (i = 0; i < len; i++)
-> > +               *p++ = ioread8(ioaddr + i);
-> > +}
-> > +
-> > +static void eni_vdpa_set_config(struct vdpa_device *vdpa,
-> > +                               unsigned int offset, const void *buf,
-> > +                               unsigned int len)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       void __iomem *ioaddr = ldev->ioaddr +
-> > +               VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
-> > +               offset;
-> > +       const u8 *p = buf;
-> > +       int i;
-> > +
-> > +       for (i = 0; i < len; i++)
-> > +               iowrite8(*p++, ioaddr + i);
-> > +}
-> > +
-> > +static void eni_vdpa_set_config_cb(struct vdpa_device *vdpa,
-> > +                                  struct vdpa_callback *cb)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > +
-> > +       eni_vdpa->config_cb = *cb;
-> > +}
-> > +
-> > +static const struct vdpa_config_ops eni_vdpa_ops = {
-> > +       .get_features   = eni_vdpa_get_features,
-> > +       .set_features   = eni_vdpa_set_features,
-> > +       .get_status     = eni_vdpa_get_status,
-> > +       .set_status     = eni_vdpa_set_status,
-> > +       .reset          = eni_vdpa_reset,
-> > +       .get_vq_num_max = eni_vdpa_get_vq_num_max,
-> > +       .get_vq_num_min = eni_vdpa_get_vq_num_min,
-> > +       .get_vq_state   = eni_vdpa_get_vq_state,
-> > +       .set_vq_state   = eni_vdpa_set_vq_state,
-> > +       .set_vq_cb      = eni_vdpa_set_vq_cb,
-> > +       .set_vq_ready   = eni_vdpa_set_vq_ready,
-> > +       .get_vq_ready   = eni_vdpa_get_vq_ready,
-> > +       .set_vq_num     = eni_vdpa_set_vq_num,
-> > +       .set_vq_address = eni_vdpa_set_vq_address,
-> > +       .kick_vq        = eni_vdpa_kick_vq,
-> > +       .get_device_id  = eni_vdpa_get_device_id,
-> > +       .get_vendor_id  = eni_vdpa_get_vendor_id,
-> > +       .get_vq_align   = eni_vdpa_get_vq_align,
-> > +       .get_config_size = eni_vdpa_get_config_size,
-> > +       .get_config     = eni_vdpa_get_config,
-> > +       .set_config     = eni_vdpa_set_config,
-> > +       .set_config_cb  = eni_vdpa_set_config_cb,
-> > +       .get_vq_irq     = eni_vdpa_get_vq_irq,
-> > +};
-> > +
-> > +
-> > +static u16 eni_vdpa_get_num_queues(struct eni_vdpa *eni_vdpa)
-> > +{
-> > +       struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> > +       u32 features = vp_legacy_get_features(ldev);
-> > +       u16 num = 2;
-> > +
-> > +       if (features & BIT_ULL(VIRTIO_NET_F_MQ)) {
-> > +               __virtio16 max_virtqueue_pairs;
-> > +
-> > +               eni_vdpa_get_config(&eni_vdpa->vdpa,
-> > +                       offsetof(struct virtio_net_config, max_virtqueue_pairs),
-> > +                       &max_virtqueue_pairs,
-> > +                       sizeof(max_virtqueue_pairs));
-> > +               num = 2 * __virtio16_to_cpu(virtio_legacy_is_little_endian(),
-> > +                               max_virtqueue_pairs);
-> > +       }
-> > +
-> > +       if (features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> > +               num += 1;
-> > +
-> > +       return num;
-> > +}
-> > +
-> > +static void eni_vdpa_free_irq_vectors(void *data)
-> > +{
-> > +       pci_free_irq_vectors(data);
-> > +}
-> > +
-> > +#ifdef __LITTLE_ENDIAN
-> > +static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > +{
-> > +       struct device *dev = &pdev->dev;
-> > +       struct eni_vdpa *eni_vdpa;
-> > +       struct virtio_pci_legacy_device *ldev;
-> > +       int ret, i;
-> > +
-> > +       ret = pcim_enable_device(pdev);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       eni_vdpa = vdpa_alloc_device(struct eni_vdpa, vdpa,
-> > +                                    dev, &eni_vdpa_ops, NULL, false);
-> > +       if (IS_ERR(eni_vdpa)) {
-> > +               ENI_ERR(pdev, "failed to allocate vDPA structure\n");
-> > +               return PTR_ERR(eni_vdpa);
-> > +       }
-> > +
-> > +       ldev = &eni_vdpa->ldev;
-> > +       ldev->pci_dev = pdev;
-> > +
-> > +       ret = vp_legacy_probe(ldev);
-> > +       if (ret) {
-> > +               ENI_ERR(pdev, "failed to probe legacy PCI device\n");
-> > +               goto err;
-> > +       }
-> > +
-> > +       pci_set_master(pdev);
-> > +       pci_set_drvdata(pdev, eni_vdpa);
-> > +
-> > +       eni_vdpa->vdpa.dma_dev = &pdev->dev;
-> > +       eni_vdpa->queues = eni_vdpa_get_num_queues(eni_vdpa);
-> > +
-> > +       ret = devm_add_action_or_reset(dev, eni_vdpa_free_irq_vectors, pdev);
-> > +       if (ret) {
-> > +               ENI_ERR(pdev,
-> > +                       "failed for adding devres for freeing irq vectors\n");
-> > +               goto err;
-> > +       }
-> > +
-> > +       eni_vdpa->vring = devm_kcalloc(&pdev->dev, eni_vdpa->queues,
-> > +                                     sizeof(*eni_vdpa->vring),
-> > +                                     GFP_KERNEL);
-> > +       if (!eni_vdpa->vring) {
-> > +               ret = -ENOMEM;
-> > +               ENI_ERR(pdev, "failed to allocate virtqueues\n");
-> > +               goto err;
-> > +       }
-> > +
-> > +       for (i = 0; i < eni_vdpa->queues; i++) {
-> > +               eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
-> > +               eni_vdpa->vring[i].notify = ldev->ioaddr + VIRTIO_PCI_QUEUE_NOTIFY;
-> > +       }
-> > +       eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
-> > +
-> > +       ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
-> > +       if (ret) {
-> > +               ENI_ERR(pdev, "failed to register to vdpa bus\n");
-> > +               goto err;
-> > +       }
-> > +
-> > +       return 0;
-> > +
-> > +err:
-> > +       put_device(&eni_vdpa->vdpa.dev);
-> > +       return ret;
-> > +}
-> > +#else
-> > +static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > +{
-> > +       ENI_ERR(pdev, "this driver not supported on BE host\n");
-> > +       return -ENODEV;
-> > +}
-> > +#endif
-> > +
-> > +static void eni_vdpa_remove(struct pci_dev *pdev)
-> > +{
-> > +       struct eni_vdpa *eni_vdpa = pci_get_drvdata(pdev);
-> > +
-> > +       vdpa_unregister_device(&eni_vdpa->vdpa);
-> > +       vp_legacy_remove(&eni_vdpa->ldev);
-> > +}
-> > +
-> > +static struct pci_device_id eni_pci_ids[] = {
-> > +       { PCI_DEVICE_SUB(PCI_VENDOR_ID_REDHAT_QUMRANET,
-> > +                        VIRTIO_TRANS_ID_NET,
-> > +                        PCI_SUBVENDOR_ID_REDHAT_QUMRANET,
-> > +                        VIRTIO_ID_NET) },
-> > +       { 0 },
-> > +};
-> > +
-> > +static struct pci_driver eni_vdpa_driver = {
-> > +       .name           = "alibaba-eni-vdpa",
-> > +       .id_table       = eni_pci_ids,
-> > +       .probe          = eni_vdpa_probe,
-> > +       .remove         = eni_vdpa_remove,
-> > +};
-> > +
-> > +module_pci_driver(eni_vdpa_driver);
-> > +
-> > +MODULE_AUTHOR("Wu Zongyong <wuzongyong@linux.alibaba.com>");
-> > +MODULE_DESCRIPTION("Alibaba ENI vDPA driver");
-> > +MODULE_LICENSE("GPL v2");
-> > --
-> > 2.31.1
-> >
+The local variable of 'set' can be removed and just retrieve 'tags' from
+hctx->tags.
+
+>  
+>  		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags) &&
+>  		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
+> -			atomic_inc(&set->active_queues_shared_sbitmap);
+> +			atomic_inc(&tags->active_queues);
+>  	} else {
+>  		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state) &&
+>  		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+> @@ -61,10 +62,12 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+>  	struct blk_mq_tag_set *set = q->tag_set;
+>  
+>  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+> +		struct blk_mq_tags *tags = set->shared_sbitmap_tags;
+> +
+
+Same with above.
+
+>  		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_ACTIVE,
+>  					&q->queue_flags))
+>  			return;
+> -		atomic_dec(&set->active_queues_shared_sbitmap);
+> +		atomic_dec(&tags->active_queues);
+>  	} else {
+>  		if (!test_and_clear_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+>  			return;
+> @@ -510,38 +513,10 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
+>  	return 0;
+>  }
+>  
+> -int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set)
+> -{
+> -	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
+> -	int i, ret;
+> -
+> -	ret = blk_mq_init_bitmaps(&set->__bitmap_tags, &set->__breserved_tags,
+> -				  set->queue_depth, set->reserved_tags,
+> -				  set->numa_node, alloc_policy);
+> -	if (ret)
+> -		return ret;
+> -
+> -	for (i = 0; i < set->nr_hw_queues; i++) {
+> -		struct blk_mq_tags *tags = set->tags[i];
+> -
+> -		tags->bitmap_tags = &set->__bitmap_tags;
+> -		tags->breserved_tags = &set->__breserved_tags;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set)
+> -{
+> -	sbitmap_queue_free(&set->__bitmap_tags);
+> -	sbitmap_queue_free(&set->__breserved_tags);
+> -}
+> -
+>  struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
+>  				     unsigned int reserved_tags,
+> -				     int node, unsigned int flags)
+> +				     int node, int alloc_policy)
+>  {
+> -	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(flags);
+>  	struct blk_mq_tags *tags;
+>  
+>  	if (total_tags > BLK_MQ_TAG_MAX) {
+> @@ -557,9 +532,6 @@ struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
+>  	tags->nr_reserved_tags = reserved_tags;
+>  	spin_lock_init(&tags->lock);
+>  
+> -	if (blk_mq_is_sbitmap_shared(flags))
+> -		return tags;
+> -
+>  	if (blk_mq_init_bitmap_tags(tags, node, alloc_policy) < 0) {
+>  		kfree(tags);
+>  		return NULL;
+> @@ -567,12 +539,10 @@ struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
+>  	return tags;
+>  }
+>  
+> -void blk_mq_free_tags(struct blk_mq_tags *tags, unsigned int flags)
+> +void blk_mq_free_tags(struct blk_mq_tags *tags)
+>  {
+> -	if (!blk_mq_is_sbitmap_shared(flags)) {
+> -		sbitmap_queue_free(tags->bitmap_tags);
+> -		sbitmap_queue_free(tags->breserved_tags);
+> -	}
+> +	sbitmap_queue_free(tags->bitmap_tags);
+> +	sbitmap_queue_free(tags->breserved_tags);
+>  	kfree(tags);
+>  }
+>  
+> @@ -603,6 +573,13 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>  		if (tdepth > MAX_SCHED_RQ)
+>  			return -EINVAL;
+>  
+> +		/*
+> +		 * Only the sbitmap needs resizing since we allocated the max
+> +		 * initially.
+> +		 */
+> +		if (blk_mq_is_sbitmap_shared(set->flags))
+> +			return 0;
+> +
+>  		new = blk_mq_alloc_map_and_rqs(set, hctx->queue_num, tdepth);
+>  		if (!new)
+>  			return -ENOMEM;
+> @@ -623,12 +600,14 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>  
+>  void blk_mq_tag_resize_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int size)
+>  {
+> -	sbitmap_queue_resize(&set->__bitmap_tags, size - set->reserved_tags);
+> +	struct blk_mq_tags *tags = set->shared_sbitmap_tags;
+> +
+> +	sbitmap_queue_resize(&tags->__bitmap_tags, size - set->reserved_tags);
+>  }
+>  
+>  void blk_mq_tag_update_sched_shared_sbitmap(struct request_queue *q)
+>  {
+> -	sbitmap_queue_resize(&q->sched_bitmap_tags,
+> +	sbitmap_queue_resize(q->shared_sbitmap_tags->bitmap_tags,
+>  			     q->nr_requests - q->tag_set->reserved_tags);
+>  }
+>  
+> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+> index 88f3c6485543..e433e39a9cfa 100644
+> --- a/block/blk-mq-tag.h
+> +++ b/block/blk-mq-tag.h
+> @@ -30,16 +30,14 @@ struct blk_mq_tags {
+>  
+>  extern struct blk_mq_tags *blk_mq_init_tags(unsigned int nr_tags,
+>  					unsigned int reserved_tags,
+> -					int node, unsigned int flags);
+> -extern void blk_mq_free_tags(struct blk_mq_tags *tags, unsigned int flags);
+> +					int node, int alloc_policy);
+> +extern void blk_mq_free_tags(struct blk_mq_tags *tags);
+>  extern int blk_mq_init_bitmaps(struct sbitmap_queue *bitmap_tags,
+>  			       struct sbitmap_queue *breserved_tags,
+>  			       unsigned int queue_depth,
+>  			       unsigned int reserved,
+>  			       int node, int alloc_policy);
+>  
+> -extern int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set);
+> -extern void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set);
+>  extern unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data);
+>  extern void blk_mq_put_tag(struct blk_mq_tags *tags, struct blk_mq_ctx *ctx,
+>  			   unsigned int tag);
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 464ea20b9bcb..ece43855bcdf 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -2344,7 +2344,10 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>  	struct blk_mq_tags *drv_tags;
+>  	struct page *page;
+>  
+> -	drv_tags = set->tags[hctx_idx];
+> +	if (blk_mq_is_sbitmap_shared(set->flags))
+> +		drv_tags = set->shared_sbitmap_tags;
+> +	else
+> +		drv_tags = set->tags[hctx_idx];
+>  
+>  	if (tags->static_rqs && set->ops->exit_request) {
+>  		int i;
+> @@ -2373,21 +2376,20 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>  	}
+>  }
+>  
+> -void blk_mq_free_rq_map(struct blk_mq_tags *tags, unsigned int flags)
+> +void blk_mq_free_rq_map(struct blk_mq_tags *tags)
+>  {
+>  	kfree(tags->rqs);
+>  	tags->rqs = NULL;
+>  	kfree(tags->static_rqs);
+>  	tags->static_rqs = NULL;
+>  
+> -	blk_mq_free_tags(tags, flags);
+> +	blk_mq_free_tags(tags);
+>  }
+>  
+>  static struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+>  					       unsigned int hctx_idx,
+>  					       unsigned int nr_tags,
+> -					       unsigned int reserved_tags,
+> -					       unsigned int flags)
+> +					       unsigned int reserved_tags)
+>  {
+>  	struct blk_mq_tags *tags;
+>  	int node;
+> @@ -2396,7 +2398,8 @@ static struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+>  	if (node == NUMA_NO_NODE)
+>  		node = set->numa_node;
+>  
+> -	tags = blk_mq_init_tags(nr_tags, reserved_tags, node, flags);
+> +	tags = blk_mq_init_tags(nr_tags, reserved_tags, node,
+> +				BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags));
+>  	if (!tags)
+>  		return NULL;
+>  
+> @@ -2404,7 +2407,7 @@ static struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+>  				 GFP_NOIO | __GFP_NOWARN | __GFP_NORETRY,
+>  				 node);
+>  	if (!tags->rqs) {
+> -		blk_mq_free_tags(tags, flags);
+> +		blk_mq_free_tags(tags);
+>  		return NULL;
+>  	}
+>  
+> @@ -2413,7 +2416,7 @@ static struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+>  					node);
+>  	if (!tags->static_rqs) {
+>  		kfree(tags->rqs);
+> -		blk_mq_free_tags(tags, flags);
+> +		blk_mq_free_tags(tags);
+>  		return NULL;
+>  	}
+>  
+> @@ -2855,14 +2858,13 @@ struct blk_mq_tags *blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+>  	struct blk_mq_tags *tags;
+>  	int ret;
+>  
+> -	tags = blk_mq_alloc_rq_map(set, hctx_idx, depth, set->reserved_tags,
+> -				   set->flags);
+> +	tags = blk_mq_alloc_rq_map(set, hctx_idx, depth, set->reserved_tags);
+>  	if (!tags)
+>  		return NULL;
+>  
+>  	ret = blk_mq_alloc_rqs(set, tags, hctx_idx, depth);
+>  	if (ret) {
+> -		blk_mq_free_rq_map(tags, set->flags);
+> +		blk_mq_free_rq_map(tags);
+>  		return NULL;
+>  	}
+>  
+> @@ -2872,6 +2874,12 @@ struct blk_mq_tags *blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+>  static bool __blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+>  				       int hctx_idx)
+>  {
+> +	if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +		set->tags[hctx_idx] = set->shared_sbitmap_tags;
+> +
+> +		return true;
+> +	}
+> +
+>  	set->tags[hctx_idx] = blk_mq_alloc_map_and_rqs(set, hctx_idx,
+>  						       set->queue_depth);
+>  
+> @@ -2882,14 +2890,22 @@ void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+>  			     struct blk_mq_tags *tags,
+>  			     unsigned int hctx_idx)
+>  {
+> -	unsigned int flags = set->flags;
+> -
+>  	if (tags) {
+>  		blk_mq_free_rqs(set, tags, hctx_idx);
+> -		blk_mq_free_rq_map(tags, flags);
+> +		blk_mq_free_rq_map(tags);
+>  	}
+>  }
+>  
+> +static void __blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+> +				      struct blk_mq_tags *tags,
+> +				      unsigned int hctx_idx)
+> +{
+> +	if (blk_mq_is_sbitmap_shared(set->flags))
+> +		return;
+> +
+> +	blk_mq_free_map_and_rqs(set, tags, hctx_idx);
+> +}
+> +
+>  static void blk_mq_map_swqueue(struct request_queue *q)
+>  {
+>  	unsigned int i, j, hctx_idx;
+> @@ -2968,7 +2984,7 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+>  			 * allocation
+>  			 */
+>  			if (i && set->tags[i]) {
+> -				blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> +				__blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>  				set->tags[i] = NULL;
+>  			}
+>  
+> @@ -3266,7 +3282,7 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
+>  		struct blk_mq_hw_ctx *hctx = hctxs[j];
+>  
+>  		if (hctx) {
+> -			blk_mq_free_map_and_rqs(set, set->tags[j], j);
+> +			__blk_mq_free_map_and_rqs(set, set->tags[j], j);
+>  			set->tags[j] = NULL;
+>  			blk_mq_exit_hctx(q, set, hctx, j);
+>  			hctxs[j] = NULL;
+> @@ -3354,6 +3370,14 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
+>  {
+>  	int i;
+>  
+> +	if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +		set->shared_sbitmap_tags = blk_mq_alloc_map_and_rqs(set,
+> +						BLK_MQ_NO_HCTX_IDX,
+> +						set->queue_depth);
+> +		if (!set->shared_sbitmap_tags)
+> +			return -ENOMEM;
+> +	}
+> +
+>  	for (i = 0; i < set->nr_hw_queues; i++) {
+>  		if (!__blk_mq_alloc_map_and_rqs(set, i))
+>  			goto out_unwind;
+> @@ -3364,10 +3388,15 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
+>  
+>  out_unwind:
+>  	while (--i >= 0) {
+> -		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> +		__blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>  		set->tags[i] = NULL;
+>  	}
+>  
+> +	if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +		blk_mq_free_map_and_rqs(set, set->shared_sbitmap_tags,
+> +					BLK_MQ_NO_HCTX_IDX);
+> +	}
+> +
+>  	return -ENOMEM;
+>  }
+>  
+> @@ -3546,25 +3575,11 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
+>  	if (ret)
+>  		goto out_free_mq_map;
+>  
+> -	if (blk_mq_is_sbitmap_shared(set->flags)) {
+> -		atomic_set(&set->active_queues_shared_sbitmap, 0);
+> -
+> -		if (blk_mq_init_shared_sbitmap(set)) {
+> -			ret = -ENOMEM;
+> -			goto out_free_mq_rq_maps;
+> -		}
+> -	}
+> -
+>  	mutex_init(&set->tag_list_lock);
+>  	INIT_LIST_HEAD(&set->tag_list);
+>  
+>  	return 0;
+>  
+> -out_free_mq_rq_maps:
+> -	for (i = 0; i < set->nr_hw_queues; i++) {
+> -		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> -		set->tags[i] = NULL;
+> -	}
+>  out_free_mq_map:
+>  	for (i = 0; i < set->nr_maps; i++) {
+>  		kfree(set->map[i].mq_map);
+> @@ -3597,12 +3612,14 @@ void blk_mq_free_tag_set(struct blk_mq_tag_set *set)
+>  	int i, j;
+>  
+>  	for (i = 0; i < set->nr_hw_queues; i++) {
+> -		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> +		__blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>  		set->tags[i] = NULL;
+>  	}
+>  
+> -	if (blk_mq_is_sbitmap_shared(set->flags))
+> -		blk_mq_exit_shared_sbitmap(set);
+> +	if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +		blk_mq_free_map_and_rqs(set, set->shared_sbitmap_tags,
+> +					BLK_MQ_NO_HCTX_IDX);
+> +	}
+>  
+>  	for (j = 0; j < set->nr_maps; j++) {
+>  		kfree(set->map[j].mq_map);
+> @@ -3640,12 +3657,6 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>  		if (hctx->sched_tags) {
+>  			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
+>  						      nr, true);
+> -			if (blk_mq_is_sbitmap_shared(set->flags)) {
+> -				hctx->sched_tags->bitmap_tags =
+> -					&q->sched_bitmap_tags;
+> -				hctx->sched_tags->breserved_tags =
+> -					&q->sched_breserved_tags;
+> -			}
+>  		} else {
+>  			ret = blk_mq_tag_update_depth(hctx, &hctx->tags, nr,
+>  						      false);
+> diff --git a/block/blk-mq.h b/block/blk-mq.h
+> index bcb0ca89d37a..b34385211e0a 100644
+> --- a/block/blk-mq.h
+> +++ b/block/blk-mq.h
+> @@ -54,7 +54,7 @@ void blk_mq_put_rq_ref(struct request *rq);
+>   */
+>  void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>  		     unsigned int hctx_idx);
+> -void blk_mq_free_rq_map(struct blk_mq_tags *tags, unsigned int flags);
+> +void blk_mq_free_rq_map(struct blk_mq_tags *tags);
+>  struct blk_mq_tags *blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+>  				unsigned int hctx_idx, unsigned int depth);
+>  void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+> @@ -331,10 +331,11 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
+>  	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+>  		struct request_queue *q = hctx->queue;
+>  		struct blk_mq_tag_set *set = q->tag_set;
+> +		struct blk_mq_tags *tags = set->shared_sbitmap_tags;
+
+Same with above, tags can be retrieved from hctx->tags directly,
+and both 'q' and 'set' can be killed.
+
+>  
+>  		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
+>  			return true;
+> -		users = atomic_read(&set->active_queues_shared_sbitmap);
+> +		users = atomic_read(&tags->active_queues);
+>  	} else {
+>  		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+>  			return true;
+> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+> index 13ba1861e688..808854a8ebc4 100644
+> --- a/include/linux/blk-mq.h
+> +++ b/include/linux/blk-mq.h
+> @@ -232,13 +232,11 @@ enum hctx_type {
+>   * @flags:	   Zero or more BLK_MQ_F_* flags.
+>   * @driver_data:   Pointer to data owned by the block driver that created this
+>   *		   tag set.
+> - * @active_queues_shared_sbitmap:
+> - * 		   number of active request queues per tag set.
+> - * @__bitmap_tags: A shared tags sbitmap, used over all hctx's
+> - * @__breserved_tags:
+> - *		   A shared reserved tags sbitmap, used over all hctx's
+>   * @tags:	   Tag sets. One tag set per hardware queue. Has @nr_hw_queues
+>   *		   elements.
+> + * @shared_sbitmap_tags:
+> + *		   Shared sbitmap set of tags. Has @nr_hw_queues elements. If
+> + *		   set, shared by all @tags.
+>   * @tag_list_lock: Serializes tag_list accesses.
+>   * @tag_list:	   List of the request queues that use this tag set. See also
+>   *		   request_queue.tag_set_list.
+> @@ -255,12 +253,11 @@ struct blk_mq_tag_set {
+>  	unsigned int		timeout;
+>  	unsigned int		flags;
+>  	void			*driver_data;
+> -	atomic_t		active_queues_shared_sbitmap;
+>  
+> -	struct sbitmap_queue	__bitmap_tags;
+> -	struct sbitmap_queue	__breserved_tags;
+>  	struct blk_mq_tags	**tags;
+>  
+> +	struct blk_mq_tags	*shared_sbitmap_tags;
+> +
+>  	struct mutex		tag_list_lock;
+>  	struct list_head	tag_list;
+>  };
+> @@ -432,6 +429,8 @@ enum {
+>  	((policy & ((1 << BLK_MQ_F_ALLOC_POLICY_BITS) - 1)) \
+>  		<< BLK_MQ_F_ALLOC_POLICY_START_BIT)
+>  
+> +#define BLK_MQ_NO_HCTX_IDX	(-1U)
+> +
+>  struct gendisk *__blk_mq_alloc_disk(struct blk_mq_tag_set *set, void *queuedata,
+>  		struct lock_class_key *lkclass);
+>  #define blk_mq_alloc_disk(set, queuedata)				\
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index 4baf9435232d..17e50e5ef47b 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -459,8 +459,7 @@ struct request_queue {
+>  
+>  	atomic_t		nr_active_requests_shared_sbitmap;
+>  
+> -	struct sbitmap_queue	sched_bitmap_tags;
+> -	struct sbitmap_queue	sched_breserved_tags;
+> +	struct blk_mq_tags	*shared_sbitmap_tags;
+
+Maybe better with shared_sched_sbitmap_tags or sched_sbitmap_tags?
+
+Nice cleanup, once the above comments are addressed, feel free to
+add:
+
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+
+
+Thanks,
+Ming
+
