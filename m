@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60056418AC5
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3FA418AC7
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhIZT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhIZT22 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:28:28 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0E4C061604
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:26:51 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id l8so12183063edw.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5GrBVYKyGe3R4WdYLhUpWL5eCxBj8V0aX1OyU1mgO6s=;
-        b=eGWlTFMYyBzQ8KGJEy8oBccT7qiz60OJL/J6hXnLpZGOgWs3dxBDIfJUnzJGF+WKuD
-         sVY8Jb6ICIrKiyoAdPKRHuUVAkxeQ8HSXLU6g67Z+Z/fJvVzk1mYHUT52mcUl9EJBJ+t
-         jWPwbxHAWHJ1w/PayA8e5SJUry5H1q3rZadSoNuoRJ1L3n+RW72NjfaQTLQOmBnu5msw
-         rU63bng1pS9KO8JfqJGS31SMefCAcDNNye0Y9qHwkt43uyn8tU8N0zlVJXf+b34JbeLT
-         SDKpzmYwGIzcjxIpQB4jgq8A6O4YmIYLvzLFZHBxaAoWbHACfHI8+n0L6+fHQKZ3f/aT
-         F6NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5GrBVYKyGe3R4WdYLhUpWL5eCxBj8V0aX1OyU1mgO6s=;
-        b=0iGSP0UUkL17ptW+AsRpGfB+toG5tlgm1d8Yf9rzS/CwepUHG3ibtH7QN+cw7T28Ua
-         5irTCfS/YwJ5GXYtDpRQvtTgU4ddB7QcaAPcuW5rQTxccZU/fJazeaZksAhB7aBE5kZz
-         zAgohMTZwR7kHGRf3mVfUnNTE9T1vgocDhLU6aaAO3M7wDtq1e9VkB+T48IYcUqv9KCI
-         y56auyuvs8xE7DmW3VfY+vDDOA9+P3V7qRILtnrA05w7bawoTyEBbrfAPEDm/H1tvUoc
-         nbZup1FNgrTd0RXjiCs0m2LDVLILCE/rH1gT3Mtz7SA53zsuVy8f+pS8Zdbcimh23VXN
-         DENA==
-X-Gm-Message-State: AOAM533CvZWoySOj/H5fWR2mQ40tNZNic2luzyAeNZVn1HjMhfvOpwXC
-        QxoVGsNSMGNxsdS3t13hfOdQu2xop42Jsg==
-X-Google-Smtp-Source: ABdhPJzQ5pDL00oTPKYzM/A/GVu1jizKhJ0cRgwq7Oy2UYI29DA+H6TdRU3E9pKqYZ1FJnZTe2Lstg==
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr23056281ejc.494.1632684410181;
-        Sun, 26 Sep 2021 12:26:50 -0700 (PDT)
-Received: from neptune.. ([188.27.128.17])
-        by smtp.gmail.com with ESMTPSA id z18sm9183078edq.29.2021.09.26.12.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 12:26:49 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 2/2] iio: adc: Kconfig: add COMPILE_TEST dep for berlin2-adc
-Date:   Sun, 26 Sep 2021 22:26:42 +0300
-Message-Id: <20210926192642.4051329-2-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210926192642.4051329-1-aardelean@deviqon.com>
-References: <20210926192642.4051329-1-aardelean@deviqon.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229894AbhIZTch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 15:32:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229741AbhIZTcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 15:32:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8F51460F46;
+        Sun, 26 Sep 2021 19:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632684659;
+        bh=q3mSpO5epEm4gwABRooQm7+SAuOL2TG90lVfOmeqpcw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=IhZsHA4Na53rat/9lQrwbjLsOkVX+yK4+4R1nnOghnznGsfJARNyEUD4slI622IZ5
+         FfIrv8e+U7HW/CfTJeGZ7bsqHP+g1OK7Y7g5uJBYdr6QLLD4LrobIRz+4ae+HBKn8p
+         ffbSZaW9A5fxuTyPy+syhb3dYg+0dpHXpPvHc1cjwOHH6iFKXH6MOWZXctdz9BlyRr
+         eGXw0xxSM8NA+hadN6wDX5UPKgk5nnCekN0Vjlgh/sNSLh8OsZvBQVpeWqsxqiuhhQ
+         StHWXzM0QwiOEWjsKBzms1HjnI5TKtRO2QvYSSVUaOHNRuJKustbjlVNKq/zr26dsg
+         aPT53ww7oe6/g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8532760A12;
+        Sun, 26 Sep 2021 19:30:59 +0000 (UTC)
+Subject: Re: [GIT PULL] EDAC fixes for v5.15-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YVC6ZS+Z3T0Ky87i@zn.tnic>
+References: <YVC6ZS+Z3T0Ky87i@zn.tnic>
+X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YVC6ZS+Z3T0Ky87i@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.15_rc3
+X-PR-Tracked-Commit-Id: 54607282fae6148641a08d81a6e0953b541249c7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 996148ee05d08ef5163cad99c33a7b5e844ac494
+Message-Id: <163268465947.21680.1551934160178094239.pr-tracker-bot@kernel.org>
+Date:   Sun, 26 Sep 2021 19:30:59 +0000
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise most build checks will omit this driver from a compile-test due
-to it's dependency only on the BERLIN_ARCH symbol.
+The pull request you sent on Sun, 26 Sep 2021 20:22:29 +0200:
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/adc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.15_rc3
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 0ceea8e69e3c..8bf5b62a73f4 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -354,7 +354,7 @@ config BCM_IPROC_ADC
- 
- config BERLIN2_ADC
- 	tristate "Marvell Berlin2 ADC driver"
--	depends on ARCH_BERLIN
-+	depends on ARCH_BERLIN || COMPILE_TEST
- 	help
- 	  Marvell Berlin2 ADC driver. This ADC has 8 channels, with one used for
- 	  temperature measurement.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/996148ee05d08ef5163cad99c33a7b5e844ac494
+
+Thank you!
+
 -- 
-2.31.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
