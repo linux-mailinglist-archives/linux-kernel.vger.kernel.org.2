@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A9E4185AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1354185AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbhIZCbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 22:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        id S230350AbhIZCcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 22:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhIZCby (ORCPT
+        with ESMTP id S230232AbhIZCcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 22:31:54 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D954C061570;
-        Sat, 25 Sep 2021 19:30:18 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id l13so13439103qtv.3;
-        Sat, 25 Sep 2021 19:30:18 -0700 (PDT)
+        Sat, 25 Sep 2021 22:32:08 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D3BC061570;
+        Sat, 25 Sep 2021 19:30:32 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id w8so14131853pgf.5;
+        Sat, 25 Sep 2021 19:30:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=4CptpZWxpa9AD5XHSfeYvB2U2B9avHF1fdTnjBAOMds=;
-        b=SRinvHFKkR0Ezmdi+M/tbKzA3ip48XbpFvrTMmMc46ACmi/kSbbQFWVAYYOsCty2v8
-         lnWuma34k27fXugCE0q7JzOwcWCq40MZrckwjPyTTJ713gTQzO9idTpKpPDl1VBo3BwG
-         OddSavRsJFuDJt+nLgSoIX66dUC4IYJC8btojoYb1Ilw+bkfXa65NrQuMeCSilcHIXO0
-         FZNwj9QgkKyU6eHxMNM2l/O09vnRRaOJON9Wn7VBKMDsFDR0TRa0g2Znh97PyHcKMKjX
-         F6EtpJoHGhSLQ18iLOBKYDu3TiV6mgzLg7pNifeg1YRswRZLiQNrg/XzGkZ8yGSwB7Wp
-         C8BQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+UNinGt7TcWnbGmmdAZoGQxTYznnTlcEWz5rOMirJBE=;
+        b=a2FeDfrB+LPwOlmvdzu7W8SBrTu8IwGREWDzi6kwpUnTYz5eEws9V8U17ELv7viGFj
+         V2QyaPuEQIyaqrPMV4cPIDqnvCumX2yAW+kHCzE5t6sCjlhfPhonFEY7+01wJGyo6V9k
+         3YsJRHecrjE+z189SN6E6o9m6OCNIzcZYaBCge4glAI8e9F4eCz8IGkhki6mlR2/oZcl
+         T4zWTrRPMz190Mlax9jJZp34Tb7TSA58gYNRNv2KeUVlA4vEYb0kqtl1ELYW6puGs+CI
+         I7uQMDNjIXWtX8VUqbKReMykililuvqFXEVPC3V0rNBf0G/SXMbAAM6eGmaM7at2Z6Ig
+         +3/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4CptpZWxpa9AD5XHSfeYvB2U2B9avHF1fdTnjBAOMds=;
-        b=NNHZgJzVfjvgOUlE/HO7F8bzrZVvkP3FHb4J2qV4FhUIrbxz6gzkcVD766lKcOBEwY
-         nKK3y+iVu82apMeGlTZyYKIswrNKCqNvPFxgTkKtYTMRfpM4380TAq7DMonwB1Amexa0
-         KJwT/fTXGL+TvajDGW/RZQne8Y2BWrqVRiPTo3laHZthFBvFsQHRMZRXED54TOWTHrLO
-         G+ncpeRxMJ1V3HyOq1xk+Vc4wCrcta0TY3xeHlFk3F7vOQvUD2trIidGnSHRxI9XjdoI
-         fMG2xyJRwlxBXEtcihUJTDAkYlrZgWTLzJcFbhd+bDKTmXgDwgm1UWh/Qera5iGL+yNY
-         /Eig==
-X-Gm-Message-State: AOAM531s32DbOhjfvkzbJs16ThhOzCOVQmfV/VJZlDE6q081Ia+MSpyG
-        EEqHijX9guQj6VISxdu2bqw=
-X-Google-Smtp-Source: ABdhPJyv30VxeyPInxpyVrn8tv0GNTeDXZ5047MhsEGitAeotshJWlaZZ+L2U+fV+qBObxFxENc4Sw==
-X-Received: by 2002:a05:622a:650:: with SMTP id a16mr11959713qtb.157.1632623417715;
-        Sat, 25 Sep 2021 19:30:17 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:a90f:da5:ff6e:aa3e? ([2600:1700:dfe0:49f0:a90f:da5:ff6e:aa3e])
-        by smtp.gmail.com with ESMTPSA id 13sm9428930qka.56.2021.09.25.19.30.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Sep 2021 19:30:17 -0700 (PDT)
-Message-ID: <087d0551-25be-984c-ee89-acad4c80e00e@gmail.com>
-Date:   Sat, 25 Sep 2021 19:30:13 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 06/11] genirq: Export
- irq_gc_{unmask_enable,mask_disable}_reg
-Content-Language: en-US
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Russell King <linux@armlinux.org.uk>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
+        bh=+UNinGt7TcWnbGmmdAZoGQxTYznnTlcEWz5rOMirJBE=;
+        b=irG8SlTarCqUYkjLCN2VNffQjbOqPjlK7vJLl06zhFAfyZ2PUgEaWBf0JLPdwzFA0V
+         iMvEOZccVXDAMbVKXRn4YqYINukwv++ivNLl4ATCp4Fv6L0XgA5mrZIvCgtwni+Q/cGH
+         rAxO77wknf66zeCUBGxT0K595hBLKOj6sKmES/qvwP6JPWdAKKnRtrQukPqq8NtdRe3W
+         zS2FULqBV+/7w8Li/EtkFQlMoobMQAkuAz2Vz21x0GzSMNJ01Wlettvl9xKdcmZyPOE/
+         znRxoRu5AERBt2DOuHTn/z9RFrQEDq+U5j2BiB9g6X300H/bzjyqt8R/br51koggE/Ag
+         jvUg==
+X-Gm-Message-State: AOAM532bXt5VXzdngFHu+C7gVx5QrYAxXbwvBBoTxVNzYq2MPzigJFti
+        6WIYGjaAJepkSLy6r8u7GXA=
+X-Google-Smtp-Source: ABdhPJwBBemqdoBXP7qtNPG6w1x4pysc+d0E7oOPzclgARA1/MTXJxAMUGdzRmf8lvE9CFUNuwb/uA==
+X-Received: by 2002:a65:6a4b:: with SMTP id o11mr10138762pgu.278.1632623432000;
+        Sat, 25 Sep 2021 19:30:32 -0700 (PDT)
+Received: from titan.. ([2601:644:8300:136:a6bb:6dff:feb6:3500])
+        by smtp.gmail.com with ESMTPSA id x8sm5542553pjf.43.2021.09.25.19.30.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 19:30:31 -0700 (PDT)
+From:   Jinshan Xiong <jinshan.xiong@gmail.com>
+To:     jolsa@redhat.com
+Cc:     Jinshan Xiong <jinshan.xiong@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-References: <20210924170546.805663-1-f.fainelli@gmail.com>
- <20210924170546.805663-7-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210924170546.805663-7-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tools/lib/perf: make the static libperf complete
+Date:   Sat, 25 Sep 2021 19:30:24 -0700
+Message-Id: <20210926023028.2338342-1-jinshan.xiong@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch makes libperf.a complete. Initially it misses the symbols
+fdarray_* that makes it unusable:
+   $ nm tools/lib/perf/libperf.a | grep fdarray_
+                    U fdarray__add
+   0000000000002b3e t fdarray__available_entries
+                    U fdarray__exit
+                    U fdarray__filter
+                    U fdarray__grow
+                    U fdarray__init
+                    U fdarray__poll
 
+After this patch is applied:
+    $ nm tools/lib/perf/libperf.a | grep fdarray_
+    00000000000063f7 T fdarray__add
+    ......
+    00000000000065d4 T fdarray__poll
 
-On 9/24/2021 10:05 AM, Florian Fainelli wrote:
-> In order to allow drivers/irqchip/irq-brcmstb-l2.c to be built as a
-> module we need to export: irq_gc_unmask_enable_reg() and
-> irq_gc_mask_disable_reg().
+Signed-off-by: "Jinshan Xiong" <jinshan.xiong@gmail.com>
+---
+ tools/lib/perf/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Note to self: this needs to come before patch 5 to avoid a modular build 
-  linking failure.
+diff --git a/tools/lib/perf/Makefile b/tools/lib/perf/Makefile
+index 08fe6e3c4089..840366584fc1 100644
+--- a/tools/lib/perf/Makefile
++++ b/tools/lib/perf/Makefile
+@@ -121,8 +121,8 @@ $(LIBAPI)-clean:
+ $(LIBPERF_IN): FORCE
+ 	$(Q)$(MAKE) $(build)=libperf
+ 
+-$(LIBPERF_A): $(LIBPERF_IN)
+-	$(QUIET_AR)$(RM) $@ && $(AR) rcs $@ $(LIBPERF_IN)
++$(LIBPERF_A): $(LIBPERF_IN) $(LIBAPI)
++	$(QUIET_AR)$(RM) $@ && $(LD) -r -o libperf-ar.o $^ && $(AR) rcs $@ libperf-ar.o
+ 
+ $(LIBPERF_SO): $(LIBPERF_IN) $(LIBAPI)
+ 	$(QUIET_LINK)$(CC) --shared -Wl,-soname,libperf.so \
 -- 
-Florian
+2.30.2
+
