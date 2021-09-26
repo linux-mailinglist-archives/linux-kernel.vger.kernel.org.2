@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670114188B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2AB4188BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhIZMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 08:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24675 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230160AbhIZMtV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 08:49:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632660465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TIU1SliLHR0gPG253uhvPBnlkJkKd7zvq1PnYr5EWUg=;
-        b=KqMbSuLZtpd4EMUZqn3krJZ1ZVV7WInqAv3widCmxOaNNv0PffAOZttRAsqwvkLndp7soj
-        Z+P/uKug/FctFDlCqsIug9o7wHgzuznn8bipYQui0CAZ1v5V9ypJMAhssXJUBR0bzk31Db
-        0HtG0fS0OGuqpc8KEvYHuMqI+tBMRCE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-lrhylb9gPjypIXuBOSCoEw-1; Sun, 26 Sep 2021 08:47:43 -0400
-X-MC-Unique: lrhylb9gPjypIXuBOSCoEw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0D1A1006AA2;
-        Sun, 26 Sep 2021 12:47:41 +0000 (UTC)
-Received: from T590 (ovpn-8-24.pek2.redhat.com [10.72.8.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57D2F60C04;
-        Sun, 26 Sep 2021 12:47:32 +0000 (UTC)
-Date:   Sun, 26 Sep 2021 20:47:48 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Laibin Qiu <qiulaibin@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        hare@suse.de, asml.silence@gmail.com, bvanassche@acm.org
-Subject: Re: [PATCH -next] blk-mq: fix tag_get wait task can't be awakened
-Message-ID: <YVBr9Km1p7+uDioG@T590>
-References: <20210913081248.3201596-1-qiulaibin@huawei.com>
+        id S231491AbhIZMvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 08:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231469AbhIZMvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 08:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9691A60F6D;
+        Sun, 26 Sep 2021 12:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632660577;
+        bh=fdTguQ0s8aFkEqvA84sLuRe9n421hOEESNXVc2xoDok=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XKqPVFLqGIuUTJLekbl5VxrJOXCs1YvtETHsiQR0ZmHmpu8ZWuQaHsXj+wTshdRNB
+         R6Lk+z+M7LxwdIfJsjioCAL4a83Q1t1Kz0+RcObBkhBM86ueGta+Ij/9GaCubaycTP
+         VT9L+a3CKk5iJ5Ll/dOukBcMfztE9dzVQc0+RVK4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.285
+Date:   Sun, 26 Sep 2021 14:49:33 +0200
+Message-Id: <1632660573182224@kroah.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913081248.3201596-1-qiulaibin@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laibin,
+I'm announcing the release of the 4.4.285 kernel.
 
-On Mon, Sep 13, 2021 at 04:12:48PM +0800, Laibin Qiu wrote:
-> When multiple hctx share one tagset. The wake_batch is calculated
-> during initialization by queue_depth. But when multiple hctx share one
-> tagset. The queue depth assigned to each user may be smaller than
-> wakup_batch. This may cause the waiting queue to fail to wakup and leads
-> to Hang.
+All users of the 4.4 kernel series must upgrade.
 
-In case of shared tags, there might be more than one hctx which
-allocates tag from single tags, and each hctx is limited to allocate
-at most:
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
- 	hctx_max_depth = max((bt->sb.depth + users - 1) / users, 4U);
+thanks,
 
-	and
+greg k-h
 
-	users = atomic_read(&hctx->tags->active_queues)
+------------
 
-See hctx_may_queue().
+ Makefile                                          |    2 
+ arch/s390/net/bpf_jit_comp.c                      |   50 +++++++++++-----------
+ block/blk-throttle.c                              |    1 
+ drivers/base/power/wakeirq.c                      |    6 +-
+ drivers/dma/Kconfig                               |    2 
+ drivers/dma/acpi-dma.c                            |   11 +++-
+ drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c |    2 
+ drivers/parisc/dino.c                             |   18 +++----
+ drivers/thermal/samsung/exynos_tmu.c              |    1 
+ fs/ceph/caps.c                                    |    2 
+ fs/nilfs2/sysfs.c                                 |   26 ++++-------
+ include/net/sctp/structs.h                        |    2 
+ kernel/profile.c                                  |   21 ++++-----
+ kernel/sys.c                                      |    7 ---
+ net/9p/trans_virtio.c                             |    4 +
+ net/sctp/bind_addr.c                              |   20 ++++----
+ net/sctp/input.c                                  |    9 +++
+ net/sctp/ipv6.c                                   |    7 ++-
+ net/sctp/protocol.c                               |    7 ++-
+ net/sctp/sm_make_chunk.c                          |   42 +++++++++++-------
+ 20 files changed, 137 insertions(+), 103 deletions(-)
 
-tag idle detection is lazy, and may be delayed for 30sec, so
-there could be just one real active hctx(queue) but all others are
-actually idle and still accounted as active because of the lazy
-idle detection. Then if wake_batch is > hctx_max_depth, driver
-tag allocation may wait forever on this real active hctx.
+Andy Shevchenko (2):
+      dmaengine: acpi-dma: check for 64-bit MMIO address
+      dmaengine: acpi: Avoid comparison GSI with Linux vIRQ
 
-Correct me if my understanding is wrong.
+Cyrill Gorcunov (1):
+      prctl: allow to setup brk for et_dyn executables
 
-> 
-> Fix this by recalculating wake_batch when inc or dec active_queues.
-> 
-> Fixes: 0d2602ca30e41 ("blk-mq: improve support for shared tags maps")
-> Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
-> ---
->  block/blk-mq-tag.c      | 44 +++++++++++++++++++++++++++++++++++++++--
->  include/linux/sbitmap.h |  8 ++++++++
->  lib/sbitmap.c           |  3 ++-
->  3 files changed, 52 insertions(+), 3 deletions(-)
-> 
-> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-> index 86f87346232a..d02f5ac0004c 100644
-> --- a/block/blk-mq-tag.c
-> +++ b/block/blk-mq-tag.c
-> @@ -16,6 +16,27 @@
->  #include "blk-mq-sched.h"
->  #include "blk-mq-tag.h"
->  
-> +static void bt_update_wake_batch(struct sbitmap_queue *bt, unsigned int users)
-> +{
-> +	unsigned int depth;
-> +
-> +	depth = max((bt->sb.depth + users - 1) / users, 4U);
-> +	sbitmap_queue_update_wake_batch(bt, depth);
-> +}
+Dan Carpenter (1):
+      thermal/drivers/exynos: Fix an error code in exynos_tmu_probe()
 
-Use the hctx's max queue depth could reduce wake_batch a lot, then
-performance may be degraded.
+Greg Kroah-Hartman (1):
+      Linux 4.4.285
 
-Just wondering why not set sbq->wake_batch as hctx_max_depth if
-sbq->wake_batch is < hctx_max_depth?
+Guenter Roeck (2):
+      parisc: Move pci_dev_is_behind_card_dino to where it is used
+      drm/nouveau/nvkm: Replace -ENOSYS with -ENODEV
 
+Ilya Leoshkevich (1):
+      s390/bpf: Fix optimizing out zero-extensions
 
+Jeff Layton (1):
+      ceph: lockdep annotations for try_nonblocking_invalidate
 
-Thanks,
-Ming
+Johannes Berg (1):
+      dmaengine: ioat: depends on !UML
+
+Li Jinlin (1):
+      blk-throttle: fix UAF by deleteing timer in blk_throtl_exit()
+
+Marcelo Ricardo Leitner (3):
+      sctp: validate chunk size in __rcv_asconf_lookup
+      sctp: add param size validation for SCTP_PARAM_SET_PRIMARY
+      sctp: validate from_addr_param return
+
+Nanyong Sun (6):
+      nilfs2: fix memory leak in nilfs_sysfs_create_device_group
+      nilfs2: fix NULL pointer in nilfs_##name##_attr_release
+      nilfs2: fix memory leak in nilfs_sysfs_create_##name##_group
+      nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
+      nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
+      nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
+
+Pavel Skripkin (1):
+      profiling: fix shift-out-of-bounds bugs
+
+Tony Lindgren (1):
+      PM / wakeirq: Fix unbalanced IRQ enable for wakeirq
+
+Xie Yongji (1):
+      9p/trans_virtio: Remove sysfs file on probe failure
 
