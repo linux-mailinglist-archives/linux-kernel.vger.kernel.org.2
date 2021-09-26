@@ -2,66 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D092418850
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8754241884D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhIZL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 07:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59758 "EHLO mail.kernel.org"
+        id S230510AbhIZLZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 07:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230128AbhIZL0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 07:26:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF6B661038;
-        Sun, 26 Sep 2021 11:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632655488;
-        bh=hdC5CmMWTPJC2kSEAz1gAv00CBNEWwCqk0q4xy1IrYU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fRzSfChAc5cYckrtuAZPBZZdKh60R+DA5L3cyiVlKNUcC3cSY9L5Y0jvsLZ8m+b0c
-         jSBXOKs5fTtkDmKlPcFDFytzN02ESfMum6ZxrVLu4xK583mOKFBtz5Ak2XInZ02LOM
-         CWWpvo97YbLn5cfsuNBrQA6eoab2cDu1mDvlnKik=
-Date:   Sun, 26 Sep 2021 13:24:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jari Ruusu <jariruusu@protonmail.com>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aurelien Jarno <aurelien@aurel32.net>
-Subject: Re: glibc VETO for kernel version SUBLEVEL >= 255
-Message-ID: <YVBYfQY94j7K39qc@kroah.com>
-References: <qscod31lyVG7t-CW63o_pnsara-v9Wf6qXz9eSfUZnxtHk2AkeJ73yvER1XYO_311Wxo2wC8L2JuTdLJm8vgvhVVaGa5fdumXx5iHWarqwA=@protonmail.com>
- <YVAhOlTsb0NK0BVi@kroah.com>
- <YVArDZSq9oaTFakz@eldamar.lan>
- <YVA9l9svFyDgLPJy@kroah.com>
- <xxvm9EznCQoQ_-YYhxhEknGTxHEnVW584ypJShT__L09eV-JOfFtr-K4M33xRa3VTL5tNgOGvJSUqWthW-El4IwTi6Vt4B_XZA-xMB6vOEY=@protonmail.com>
+        id S230128AbhIZLZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 07:25:26 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56EA360F9B;
+        Sun, 26 Sep 2021 11:23:46 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 12:27:34 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [v7 00/11] Add support for ast2600 ADC
+Message-ID: <20210926122734.2fccf55a@jic23-huawei>
+In-Reply-To: <20210922081520.30580-1-billy_tsai@aspeedtech.com>
+References: <20210922081520.30580-1-billy_tsai@aspeedtech.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xxvm9EznCQoQ_-YYhxhEknGTxHEnVW584ypJShT__L09eV-JOfFtr-K4M33xRa3VTL5tNgOGvJSUqWthW-El4IwTi6Vt4B_XZA-xMB6vOEY=@protonmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 10:58:59AM +0000, Jari Ruusu wrote:
-> On Sunday, September 26th, 2021 at 12:29, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > On Sun, Sep 26, 2021 at 10:10:53AM +0200, Salvatore Bonaccorso wrote:
-> > > Recently prompted due to https://bugs.debian.org/987266 the check was
-> > > removed in the postinst script of libc in Debian:
-> > > https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=987266 .
-> >
-> > Wonderful, thanks for pointing this out!
-> > Jari, try asking whatever distro you are getting these rebuilt packages
-> > from to update their scripts and all should be good.
+On Wed, 22 Sep 2021 16:15:09 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+
+> This patch serials make aspeed_adc.c can support ast2600 and backward
+> compatible.
+
+Hi Billy,
+
+Series applied to the togreg branch of iio.git and pushed out as testing for
+0-day to poke at it.
+
+Note the fix for platform_set_drvdata() is in the fixes branch so there will
+be a bit of mess around context for patch 1 but that should all resolve in
+a trivial fashion.
+
+Thanks,
+
+Jonathan
+
 > 
-> It is/was mostly self-inflicted pain, using Rasbian distro userland and
-> self-compiled kernel.org kernel.
+> Change since v6:
+> aspeed_adc.c:
+>  - Fix the parameter error for aspeed_adc_unregister_fixed_divider.
+> 
+> Change since v5:
+> aspeed_adc.c:
+>   - Use devm_clk_hw_register_divider()
+>   - Enabling and setting the ADC to normal mode is a necessary flow, so
+>   take it out of the condition.
+> 
+> Change since v4:
+> dt-bindings:
+>   - Add clocks maxItems.
+>   - Rename the property to meet the property-units.yaml.
+>   - Add the description for the difference between adc0 and adc1.
+> aspeed_adc.c:
+>   - Use new property name to get internal reference voltage: units from mv
+>   to uv.
+>   - Fix -Wnonnull warning caused by snprintf parameters.
+>   - Add suffix mv to the vref parameters.
+>   - Use ARRAY_SIZE instead of 32.
+>   - Add a reset action for ADC power down and Use devm_iio_device_register.
+>   - Fix typo error.
+>   - Separate the offset interface of ch7 when battery sensing enable
+> 
+> Change since v3:
+> dt-bindings:
+>   - Fix properties:aspeed,int_vref_mv type error.
+> 
+> Change since v2:
+> dt-bindings:
+>   - Create a new dt-bindings for ast2600 adc
+> aspeed_adc.c:
+>   - Splits the patch for more details
+>   - Remove version enum and use the flags in model data to distinguish
+>   hardware feature
+>   - Support trimming data get and set.
+>   - Use devm_add_action_or_reset to simplify probe error handling.
+> 
+> Changes since v1:
+> dt-bindings:
+>   - Fix the aspeed,adc.yaml check error.
+>   - Add battery-sensing property.
+> aspeed_adc.c:
+>   - Change the init flow:
+>     Clock and reference voltage setting should be completed before adc
+>     engine enable.
+>   - Change the default sampling rate to meet most user case.
+>   - Add patch #8 to suppoert battery sensing mode.
+> 
+> Billy Tsai (11):
+>   iio: adc: aspeed: Keep model data to driver data.
+>   iio: adc: aspeed: Restructure the model data
+>   iio: adc: aspeed: Add vref config function
+>   iio: adc: aspeed: Use model_data to set clk scaler.
+>   iio: adc: aspeed: Use devm_add_action_or_reset.
+>   iio: adc: aspeed: Support ast2600 adc.
+>   iio: adc: aspeed: Fix the calculate error of clock.
+>   iio: adc: aspeed: Add func to set sampling rate.
+>   iio: adc: aspeed: Add compensation phase.
+>   iio: adc: aspeed: Support battery sensing.
+>   iio: adc: aspeed: Get and set trimming data.
+> 
+>  drivers/iio/adc/aspeed_adc.c | 554 +++++++++++++++++++++++++++++------
+>  1 file changed, 459 insertions(+), 95 deletions(-)
+> 
 
-Why use an older kernel tree on this device?  Rasbian seems to be on
-4.19.y at the least right now, is there something in those older kernel
-trees that you need?
-
-thanks,
-
-greg k-h
