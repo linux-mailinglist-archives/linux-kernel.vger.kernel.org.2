@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993C64189FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2B1418A04
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhIZPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 11:36:28 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60994 "EHLO vps0.lunn.ch"
+        id S232047AbhIZPkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:40:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231992AbhIZPg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:36:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=TosYvN8F9XPmP2GdzsLirbdEDXWltKbq+jzLBYNs1uA=; b=lgXgaJU+NygoIGrLWqijxOM0sL
-        GuI0Bb1HdLDi/QnP2HF0Sxusj8NJZDd4GT21+o8sJSrlH6GGn+Sm91A7DzilAjbs/8VUlhsP+QzP7
-        daB/Lrp6rLQKIXx+d2Hrln3dxyslJ7lf11LUVljQMpg+mKjKtYjx9qVLFgCf4cqc1ILg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mUWAq-008KRH-As; Sun, 26 Sep 2021 17:34:40 +0200
-Date:   Sun, 26 Sep 2021 17:34:40 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Yanfei Xu <yanfei.xu@windriver.com>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, p.zabel@pengutronix.de,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] net: mdiobus: Fix memory leak in __mdiobus_register
-Message-ID: <YVCTEBR/YolkQQyZ@lunn.ch>
-References: <20210926045313.2267655-1-yanfei.xu@windriver.com>
+        id S232009AbhIZPkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 11:40:32 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39F0A60F9C;
+        Sun, 26 Sep 2021 15:38:53 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 16:42:42 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
+        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [RFC 02/11] drivers: Add HTE subsystem
+Message-ID: <20210926164242.7447c0e2@jic23-huawei>
+In-Reply-To: <91744e4f-b1b8-399a-b521-aba0215a5dc4@nvidia.com>
+References: <20210625235532.19575-1-dipenp@nvidia.com>
+        <20210625235532.19575-3-dipenp@nvidia.com>
+        <20210704211525.4efb6ba0@jic23-huawei>
+        <52ecf0a6-07a6-ec43-4b1e-fb341ad969b6@nvidia.com>
+        <20210801171304.6e8d70d9@jic23-huawei>
+        <91744e4f-b1b8-399a-b521-aba0215a5dc4@nvidia.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926045313.2267655-1-yanfei.xu@windriver.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 12:53:13PM +0800, Yanfei Xu wrote:
-> Once device_register() failed, we should call put_device() to
-> decrement reference count for cleanup. Or it will cause memory
-> leak.
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888114032e00 (size 256):
->   comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
->     08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
->   backtrace:
->     [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
->     [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
->     [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
->     [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
->     [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
->     [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
->     [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
->     [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
->     [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
->     [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
->     [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
->     [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
->     [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
->     [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
->     [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
->     [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
->     [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
->     [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
->     [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
->     [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
->     [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
->     [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888116f06900 (size 32):
->   comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
->   hex dump (first 32 bytes):
->     75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
->     [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
->     [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
->     [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
->     [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
->     [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
->     [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
->     [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
->     [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
->     [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
->     [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
->     [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
->     [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
->     [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
->     [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
->     [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
->     [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
->     [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
->     [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
-> 
-> Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+On Mon, 13 Sep 2021 22:43:02 -0700
+Dipen Patel <dipenp@nvidia.com> wrote:
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Hi Jonathan,
+> 
+> I got some time to implement RFC version 2 while doing so I have a follow up comment
+> 
+> inline regarding clock source comment of yours.
+> 
+> Best Regards,
+> 
+> Dipen Patel
+> 
+...
 
-    Andrew
+> >>>> +/**
+> >>>> + * struct hte_clk_info - Clock source info that HTE provider uses.
+> >>>> + * The provider uses hardware clock as a source to timestamp real time. This
+> >>>> + * structure presents the clock information to consumers. 
+> >>>> + *
+> >>>> + * @hz: Clock rate in HZ, for example 1KHz clock = 1000.
+> >>>> + * @type: Clock type. CLOCK_* types.    
+> >>> So this is something we got a it wrong in IIO. It's much better to define
+> >>> a subset of clocks that can be potentially used.  There are some that make
+> >>> absolutely no sense and consumers really don't want to have to deal with them.    
+> >> Is there anything I have to change here?  
+> > Yes - specify which clocks would make sense.  You might not need to explicitly
+> > allow only those, but that might also be worthwhile. Otherwise, the chances are
+> > you'll end up with a bunch of special purpose code in consumers on the basis
+> > they might get CLOCK_TAI or similar and have to deal with it.
+> > As for exactly which clocks do make sense, that's one which may take some figuring
+> > out. Probably REALTIME, MONOTONIC and BOOTTIME depending on whether you care
+> > what happens when the time of the system gets adjusted, or whether it carries
+> > on measuring time across suspend.   Very application dependent but there are some
+> > you can definitely rule out. Don't repeat my mistake of leaving it vague
+> > (which incidentally was a follow up to picking a silly clock to use for timestamps
+> >  before we allowed it to be configured).  
+> 
+> I believe your comment is under assumption that providers have choice in selecting
+> 
+> clock source to timestamp in turns clients have it as well. For now, the provider
+> 
+> I have implemented has single clock source and hence I only implemented get_clock*
+> 
+> hook that provider implement and client can retrieve that information. I guess I can
+> 
+> always implement set_clock* hook as well for the future providers which support
+> 
+> multiple clock sources. Please let me if I missed your point.
+
+I'll be honest I can't really remember :(  too many sleeps.
+
+Sorry - if it is still relevant perhaps it'll come back to me on v2.
+
+Thanks,
+
+Jonathan
