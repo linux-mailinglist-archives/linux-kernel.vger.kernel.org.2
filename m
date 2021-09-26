@@ -2,142 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CFE418AC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60056418AC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhIZT2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
+        id S229961AbhIZT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 15:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhIZT21 (ORCPT
+        with ESMTP id S229761AbhIZT22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:28:27 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3264DC061570
+        Sun, 26 Sep 2021 15:28:28 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0E4C061604
         for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:26:51 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id b26so11427761edt.0
+Received: by mail-ed1-x531.google.com with SMTP id l8so12183063edw.2
         for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MjFc4qpdSBS8qeywuUDP1DYg3DGmfu9tyeJ/HZHA26w=;
-        b=URLhrsBbVcZzrEKxtP+L1BeVdakxp6+4O7NCymsdQvAbchVWa/q1imWa0N740vjQKj
-         ZMahEITTJPS3s3c8TiLmHK9E69KHzY3e6vWd6OB75fi4NkUcpo7tEiklYKTegyAJcyjI
-         LQRAeOeGoK7vMluCr5XuZoCdTfPpJ320ijXF9Tgw6Gb+vSFYw3JPojaS+5VVEuNyV4rv
-         ZJ4yxtrm+4t3TERQ7ycDf2jy2OI01JtWorlgevP8hOejejgZ72HCslpsOtaDRLxAvsey
-         psDEzso1M8D2a7u6lwLNJmEaBAJFS5cSUFe3Cf+UsITe0Mx0oYAHKQEwtz1XmNLI3Xqy
-         TN5w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5GrBVYKyGe3R4WdYLhUpWL5eCxBj8V0aX1OyU1mgO6s=;
+        b=eGWlTFMYyBzQ8KGJEy8oBccT7qiz60OJL/J6hXnLpZGOgWs3dxBDIfJUnzJGF+WKuD
+         sVY8Jb6ICIrKiyoAdPKRHuUVAkxeQ8HSXLU6g67Z+Z/fJvVzk1mYHUT52mcUl9EJBJ+t
+         jWPwbxHAWHJ1w/PayA8e5SJUry5H1q3rZadSoNuoRJ1L3n+RW72NjfaQTLQOmBnu5msw
+         rU63bng1pS9KO8JfqJGS31SMefCAcDNNye0Y9qHwkt43uyn8tU8N0zlVJXf+b34JbeLT
+         SDKpzmYwGIzcjxIpQB4jgq8A6O4YmIYLvzLFZHBxaAoWbHACfHI8+n0L6+fHQKZ3f/aT
+         F6NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MjFc4qpdSBS8qeywuUDP1DYg3DGmfu9tyeJ/HZHA26w=;
-        b=u0iy1KWAKZItFTMDPNTcTAgQYuU8Rqvo3R7tMAGTfRBfhe0lTJw9mRA+66fTH/ZyYr
-         FTV/79i5Nnoza1HBwNfp6VtJp0uVQ0SqZASclJPbuKipBm7d3tmMaFwg/J22MfkYFu2p
-         46PM46aIRqS/xuBKKEH/ShSHUR5GG6ByCe0EnYqIOQC/5M6qP6qs1kisNUyjWmLuK1z5
-         6OLqaBNEUygyv6jiYWtkarCimEurGFrE32W59rJS0bmufnwLWFObIfQdjBKOlgOkGkMa
-         hMYzYFkGLQTNvCBs7PY5tRqx4QHEy+cqehOeCERCV6PFKtprERqWLzOrtEAEebvXaKJQ
-         sehA==
-X-Gm-Message-State: AOAM532oJlymB34E2ccljST/dkhILXcLvJfLHjRfx4rnwyh24hhGFror
-        Dvui6qvbVeey3+vWDTTi4TFQhLMwD/zqsA==
-X-Google-Smtp-Source: ABdhPJz+wRgSGku9dd+vBllmqVI0rc2Rbxy2N4TLILRmNl6CW9Rdash0m8SMy9tRPXCs+nSzRE3ArA==
-X-Received: by 2002:a05:6402:1e88:: with SMTP id f8mr18443735edf.126.1632684409035;
-        Sun, 26 Sep 2021 12:26:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5GrBVYKyGe3R4WdYLhUpWL5eCxBj8V0aX1OyU1mgO6s=;
+        b=0iGSP0UUkL17ptW+AsRpGfB+toG5tlgm1d8Yf9rzS/CwepUHG3ibtH7QN+cw7T28Ua
+         5irTCfS/YwJ5GXYtDpRQvtTgU4ddB7QcaAPcuW5rQTxccZU/fJazeaZksAhB7aBE5kZz
+         zAgohMTZwR7kHGRf3mVfUnNTE9T1vgocDhLU6aaAO3M7wDtq1e9VkB+T48IYcUqv9KCI
+         y56auyuvs8xE7DmW3VfY+vDDOA9+P3V7qRILtnrA05w7bawoTyEBbrfAPEDm/H1tvUoc
+         nbZup1FNgrTd0RXjiCs0m2LDVLILCE/rH1gT3Mtz7SA53zsuVy8f+pS8Zdbcimh23VXN
+         DENA==
+X-Gm-Message-State: AOAM533CvZWoySOj/H5fWR2mQ40tNZNic2luzyAeNZVn1HjMhfvOpwXC
+        QxoVGsNSMGNxsdS3t13hfOdQu2xop42Jsg==
+X-Google-Smtp-Source: ABdhPJzQ5pDL00oTPKYzM/A/GVu1jizKhJ0cRgwq7Oy2UYI29DA+H6TdRU3E9pKqYZ1FJnZTe2Lstg==
+X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr23056281ejc.494.1632684410181;
+        Sun, 26 Sep 2021 12:26:50 -0700 (PDT)
 Received: from neptune.. ([188.27.128.17])
-        by smtp.gmail.com with ESMTPSA id z18sm9183078edq.29.2021.09.26.12.26.47
+        by smtp.gmail.com with ESMTPSA id z18sm9183078edq.29.2021.09.26.12.26.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 12:26:48 -0700 (PDT)
+        Sun, 26 Sep 2021 12:26:49 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
 Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 1/2] iio: adc: berlin2-adc: convert probe to device-managed only
-Date:   Sun, 26 Sep 2021 22:26:41 +0300
-Message-Id: <20210926192642.4051329-1-aardelean@deviqon.com>
+Subject: [PATCH 2/2] iio: adc: Kconfig: add COMPILE_TEST dep for berlin2-adc
+Date:   Sun, 26 Sep 2021 22:26:42 +0300
+Message-Id: <20210926192642.4051329-2-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210926192642.4051329-1-aardelean@deviqon.com>
+References: <20210926192642.4051329-1-aardelean@deviqon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver requires only a devm_add_action_or_reset() hook for the
-power-down of the device, and then devm_iio_device_register() can be used
-directly.
+Otherwise most build checks will omit this driver from a compile-test due
+to it's dependency only on the BERLIN_ARCH symbol.
 
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/iio/adc/berlin2-adc.c | 34 +++++++++++-----------------------
- 1 file changed, 11 insertions(+), 23 deletions(-)
+ drivers/iio/adc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/berlin2-adc.c b/drivers/iio/adc/berlin2-adc.c
-index 8b04b95b7b7a..03987d7e6b3d 100644
---- a/drivers/iio/adc/berlin2-adc.c
-+++ b/drivers/iio/adc/berlin2-adc.c
-@@ -280,6 +280,13 @@ static const struct iio_info berlin2_adc_info = {
- 	.read_raw	= berlin2_adc_read_raw,
- };
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index 0ceea8e69e3c..8bf5b62a73f4 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -354,7 +354,7 @@ config BCM_IPROC_ADC
  
-+static void berlin2_adc_powerdown(void *regmap)
-+{
-+	regmap_update_bits(regmap, BERLIN2_SM_CTRL,
-+			   BERLIN2_SM_CTRL_ADC_POWER, 0);
-+
-+}
-+
- static int berlin2_adc_probe(struct platform_device *pdev)
- {
- 	struct iio_dev *indio_dev;
-@@ -293,7 +300,6 @@ static int berlin2_adc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	priv = iio_priv(indio_dev);
--	platform_set_drvdata(pdev, indio_dev);
- 
- 	priv->regmap = syscon_node_to_regmap(parent_np);
- 	of_node_put(parent_np);
-@@ -333,29 +339,12 @@ static int berlin2_adc_probe(struct platform_device *pdev)
- 			   BERLIN2_SM_CTRL_ADC_POWER,
- 			   BERLIN2_SM_CTRL_ADC_POWER);
- 
--	ret = iio_device_register(indio_dev);
--	if (ret) {
--		/* Power down the ADC */
--		regmap_update_bits(priv->regmap, BERLIN2_SM_CTRL,
--				   BERLIN2_SM_CTRL_ADC_POWER, 0);
-+	ret = devm_add_action_or_reset(&pdev->dev, berlin2_adc_powerdown,
-+				       priv->regmap);
-+	if (ret)
- 		return ret;
--	}
--
--	return 0;
--}
--
--static int berlin2_adc_remove(struct platform_device *pdev)
--{
--	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
--	struct berlin2_adc_priv *priv = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--
--	/* Power down the ADC */
--	regmap_update_bits(priv->regmap, BERLIN2_SM_CTRL,
--			   BERLIN2_SM_CTRL_ADC_POWER, 0);
- 
--	return 0;
-+	return devm_iio_device_register(&pdev->dev, indio_dev);
- }
- 
- static const struct of_device_id berlin2_adc_match[] = {
-@@ -370,7 +359,6 @@ static struct platform_driver berlin2_adc_driver = {
- 		.of_match_table	= berlin2_adc_match,
- 	},
- 	.probe	= berlin2_adc_probe,
--	.remove	= berlin2_adc_remove,
- };
- module_platform_driver(berlin2_adc_driver);
- 
+ config BERLIN2_ADC
+ 	tristate "Marvell Berlin2 ADC driver"
+-	depends on ARCH_BERLIN
++	depends on ARCH_BERLIN || COMPILE_TEST
+ 	help
+ 	  Marvell Berlin2 ADC driver. This ADC has 8 channels, with one used for
+ 	  temperature measurement.
 -- 
 2.31.1
 
