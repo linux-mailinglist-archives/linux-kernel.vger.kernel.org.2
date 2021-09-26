@@ -2,182 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCACE418876
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9AD418877
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhIZL7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 07:59:43 -0400
-Received: from mout.web.de ([217.72.192.78]:41241 "EHLO mout.web.de"
+        id S231317AbhIZMBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 08:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhIZL7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 07:59:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1632657470;
-        bh=J4qoTt6C/OONDAY5IjSYz0lPj7Auvzjy0GBoisQgE8M=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Yl6uwEROqfriSQbyzGBfetI2dTB/WwLL+ZRGnbNeeqJTvi6+x52cDZDMHaojdvC//
-         kj1BVHfYDyPkvZIt6aWKUVWNqpnMx3/gwjX4HPCkNm/LVtyCjuhnhxy5vMhDNUuaY0
-         t7OezRYIJfl0E/RFKmtV/ys+kYRc/XxTxL454yMo=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.178.20] ([94.217.148.121]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MYeuk-1mHjLg0w2E-00VSI5; Sun, 26
- Sep 2021 13:57:50 +0200
-Subject: Re: [PATCH v4 6/6] arm64: dts: ti: iot2050: Add support for product
- generation 2 boards
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-References: <cover.1631708830.git.jan.kiszka@siemens.com>
- <a4d6ab1dd1f5582b940ac25395eb878e683b3a38.1631708830.git.jan.kiszka@siemens.com>
- <20210922155843.gjn5aezf4lmgtn3d@undecided>
-From:   Jan Kiszka <jan.kiszka@web.de>
-Message-ID: <f6933a10-4fa9-1abc-fd3f-583a462eb306@web.de>
-Date:   Sun, 26 Sep 2021 13:57:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230200AbhIZMBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 08:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3BE961038;
+        Sun, 26 Sep 2021 11:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632657578;
+        bh=JxAHqSs54HWLkzs8GGZKJGY7bzgrYrkSWME5INakZyI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pxh+fFUD1g/hRnnkLHEPpYjqqiYncuArFCrHTi931PG1iVh0J7kA2jONkBuRdolrI
+         LvrVp3x4PT1MaHv/ZG2c+JKJYhQI2D2HdD9Qt8gXaaT0s1wzxKdJMi+1rafk9R335h
+         rd6GSygsN+Xbg8q3IiPcHga74r7ykB63OXY8BLSgJzHaQDxDOtkAMF8JO1vcyyTjrw
+         9tzkdYpD7kE3Vm/GIc5Ee+B7THAxUw2UQveeIp0pMnXOPd9xz06DSJRzYtN92BZDsD
+         QKxBgcLFRQZ1hPAnrkaMQlmOMzM+lzqbPCu7pYrVuJ/Qb8tcDwGzi/C02J/EedKkUP
+         BssCo0M7lxZPw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3F460410A1; Sun, 26 Sep 2021 08:59:35 -0300 (-03)
+Date:   Sun, 26 Sep 2021 08:59:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        David Laight <David.Laight@aculab.com>,
+        Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: Re: [PATCH v4] x86/insn, tools/x86: Fix some potential undefined
+ behavior.
+Message-ID: <YVBgp57askJVro9S@kernel.org>
+References: <20210923161843.751834-1-irogers@google.com>
+ <YU4gyQg1ntTeTL98@kernel.org>
+ <20210925133944.a0648549c28b047bd9aeaeff@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210922155843.gjn5aezf4lmgtn3d@undecided>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:E5Fz6ZE82zMpdm1ViHQmq9kNh6Wmi6mWUy79jsOhXxe86wbyxWB
- fpHfbJZygFCAPcE0InT9At7/y3HScb+Bic3VGC/s+ktgCo9DP4Qrkw+fCD1ssFZg4tV01q6
- mIxYye78jIEl8y/EKjDC2YED+2YHdc+8WwOfgHeyORcLLUhlClaK6kBZp5xoWgv5XYoQk6D
- PzRO82dSgPzUuF26GgwpA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1r+CAaYzQBY=:b8EwiE2S1eg81LufvSneUJ
- sNtQayMBz2HrW3m2s6X5vhItFUWGk9dbl9ySf22NF8iDErmLkMZRbpyRhfhoziG0950GRn/s2
- QPSAitGHmJTrke+njBApRyVxrs3RlBDdvFor/M+pitYhXeLOy+siEYBBxwxVF9hwJ1G+Ha1Q2
- 9777g4zrsZ9T3sU2w6hbK09Wl+fmcJdkW+xdT2DcSYlcrZubzoUcwQIDEjiigQmRg57h9m+/c
- WzgT8yQXq9wa4kKDRPbmxumDTb2BwCekZoCUN5kTZbzZDoYtkngs6cBC2y/hlOfoUzKpTQrAQ
- mGhz6hHqWLmQBXD1jLi/KnXaDMzxyGD2lKiase9G7m63ZUEEv3cvIdEbn3H16LUF8C+GVzz0v
- ahyNRnctj6NrhYoPVjos2jzn8B58Cpxpel/HnrU0QRUhKwCKSkIBgpNaqdshCEynq64qQGisi
- QOibgjv7NzZxbcQ00hlTayaM9VyhugHRANekPhEJnkoF/lQ5QSLiooUhu2SI3dwn+JYH/Qk93
- Q2iGjBdCPkRWPC8uB0E7n2xZ8oSjiX9u7KEYL6l+mhM5OBp8Ev7GKbgSwoiAbYbBmXcwJ+y/r
- /Hy0lcIMU6+l0Q2+RCpfSUH6N3sNqR/0c4S9mRgue5ng/3nMCWdUcMeUmSx0IqL12fG0psPbS
- PPAaI9gxI6pHIoylXt7UVFF2ka9TzWkoMXHUstDOxCCTFZiEBrUzYTYhuHoUIZZmz8DZ/1bFS
- UO/xE8OTXmS14WmzpkyHZXjjTuj624aTK1g07O+5+ZrIZMvsOixV56Hiodac9e0G7XTt2pjwo
- TBS+gatEJ3Pu1nqkzN3XNfzG+GMgO+3RHbMdcxvdTOwmO8cbBgh75N11SWpfESM7ucOvWvnOt
- ci9+9YNRl8GgrT6BG3fGJUDUEdTPEtFuLSnhnicAYwop6JaANzaIPCq8T4vwtShLDRgjk51mz
- SUz3LHUf46Vuo/J9eRkp82PMikT3RTA2BVlaE6eKNENzFx17c5LcVtQbr6SewUNgPUvofTL4W
- 70ca5KQxcPPws8zFoodvPRCyM92GReMWEfZJvXOsBdjPUxk+tWLhnW/1xHYAHnGE3dpGISlpX
- Pu+wWFZXmhxgjI=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925133944.a0648549c28b047bd9aeaeff@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.21 17:58, Nishanth Menon wrote:
-> On 14:27-20210915, Jan Kiszka wrote:
->> From: Jan Kiszka <jan.kiszka@siemens.com>
->>
->> This adds the devices trees for IOT2050 Product Generation 2 (PG2)
->> boards. We have Basic and an Advanced variants again, differing in
->> number of cores, RAM size, availability of eMMC and further details.
->> The major difference to PG1 is the used silicon revision (SR2.x on
->> PG2).
->>
->> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->> ---
->>  arch/arm64/boot/dts/ti/Makefile               |  2 +
->>  .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
->>  .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
->>  .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
->>  4 files changed, 106 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.d=
-tsi
->>  create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.=
-dts
->>  create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-p=
-g2.dts
->>
->> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/M=
-akefile
->> index d56c742f5a10..41a4bc96e6bd 100644
->> --- a/arch/arm64/boot/dts/ti/Makefile
->> +++ b/arch/arm64/boot/dts/ti/Makefile
->> @@ -8,7 +8,9 @@
->>
->>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am654-base-board.dtb
->>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am6528-iot2050-basic.dtb
->> +dtb-$(CONFIG_ARCH_K3) +=3D k3-am6528-iot2050-basic-pg2.dtb
->>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am6548-iot2050-advanced.dtb
->> +dtb-$(CONFIG_ARCH_K3) +=3D k3-am6548-iot2050-advanced-pg2.dtb
->>
->>  dtb-$(CONFIG_ARCH_K3) +=3D k3-j721e-common-proc-board.dtb
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/a=
-rch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
->> new file mode 100644
->> index 000000000000..c25bce7339b7
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
->> @@ -0,0 +1,51 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) Siemens AG, 2021
->> + *
->> + * Authors:
->> + *   Chao Zeng <chao.zeng@siemens.com>
->> + *   Jan Kiszka <jan.kiszka@siemens.com>
->> + *
->> + * Common bits of the IOT2050 Basic and Advanced variants, PG2
->> + */
->> +
->> +&main_pmx0 {
->> +	cp2102n_reset_pin_default: cp2102n-reset-pin-default {
->> +		pinctrl-single,pins =3D <
->> +			/* (AF12) GPIO1_24, used as cp2102 reset */
->> +			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
->> +		>;
->> +	};
->> +};
->> +
->> +&main_gpio1 {
->> +	pinctrl-names =3D "default";
->> +	pinctrl-0 =3D <&cp2102n_reset_pin_default>;
->> +	gpio-line-names =3D
->> +		"", "", "", "", "", "", "", "", "", "",
->> +		"", "", "", "", "", "", "", "", "", "",
->> +		"", "", "", "", "CP2102N-RESET";
->> +};
->> +
->> +&dss {
->> +	/* Workaround needed to get DP clock of 154Mhz */
->> +	assigned-clocks =3D <&k3_clks 67 0>;
->> +};
->> +
->> +&serdes0 {
->> +	assigned-clocks =3D <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFC=
-LK>;
->> +	assigned-clock-parents =3D <&k3_clks 153 7>, <&k3_clks 153 4>;
->> +};
->> +
->> +&dwc3_0 {
->> +	assigned-clock-parents =3D <&k3_clks 151 4>,  /* set REF_CLK to 20MHz=
- i.e. PER0_PLL/48 */
->> +				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
->> +	phys =3D <&serdes0 PHY_TYPE_USB3 0>;
->> +	phy-names =3D "usb3-phy";
->> +};
->> +
->> +&usb0_phy {
->> +	maximum-speed =3D "super-speed";
->> +	snps,dis-u1-entry-quirk;
->> +	snps,dis-u2-entry-quirk;
->
-> ^^
-> 	did you mean &usb0?
-> usb0_phy uses Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> usb0 uses Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->
-> am i missing a "maximum-speed" there? quirks look like belonging to the
-> controller ?
->
+Em Sat, Sep 25, 2021 at 01:39:44PM +0900, Masami Hiramatsu escreveu:
+> On Fri, 24 Sep 2021 16:02:33 -0300
+> Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> 
+> > Em Thu, Sep 23, 2021 at 09:18:43AM -0700, Ian Rogers escreveu:
+> > > From: Numfor Mbiziwo-Tiapo <nums@google.com>
+> > > 
+> > > Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+> > > these are forms of undefined behavior.
+> > > 
+> > > These problems were identified using the undefined behavior sanitizer
+> > > (ubsan) with the tools version of the code and perf test. Part of this
+> > > patch was previously posted here:
+> > > https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+> > 
+> > Masami, if you're ok, just process it including the tools/ bit.
+> 
+> Hi Arnaldo,
+> 
+> This version updates the tools/ too, so I think this is OK.
+> (do I need re-Ack?)
 
-Yes, this was probably just a typo, must be "usb0" indeed. Colleagues
-confirmed this as well. I'll send an update.
+So you want me to process it?
 
-Jan
+- Arnaldo
+ 
+> Thank you, 
+> 
+> > 
+> > - Arnaldo
+> >  
+> > > v4. Fixes a typo.
+> > > 
+> > > v3. Is a rebase picking up a fix for big endian architectures.
+> > > 
+> > > v2. removes the validate_next check and merges the 2 changes into one as
+> > > requested by Masami Hiramatsu <mhiramat@kernel.org>
+> > > 
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+> > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > ---
+> > >  arch/x86/lib/insn.c       | 4 ++--
+> > >  tools/arch/x86/lib/insn.c | 4 ++--
+> > >  2 files changed, 4 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> > > index 058f19b20465..c565def611e2 100644
+> > > --- a/arch/x86/lib/insn.c
+> > > +++ b/arch/x86/lib/insn.c
+> > > @@ -37,10 +37,10 @@
+> > >  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+> > >  
+> > >  #define __get_next(t, insn)	\
+> > > -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> > > +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> > >  
+> > >  #define __peek_nbyte_next(t, insn, n)	\
+> > > -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
+> > > +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+> > >  
+> > >  #define get_next(t, insn)	\
+> > >  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> > > diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> > > index c41f95815480..797699462cd8 100644
+> > > --- a/tools/arch/x86/lib/insn.c
+> > > +++ b/tools/arch/x86/lib/insn.c
+> > > @@ -37,10 +37,10 @@
+> > >  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+> > >  
+> > >  #define __get_next(t, insn)	\
+> > > -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> > > +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> > >  
+> > >  #define __peek_nbyte_next(t, insn, n)	\
+> > > -	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
+> > > +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+> > >  
+> > >  #define get_next(t, insn)	\
+> > >  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> > > -- 
+> > > 2.33.0.464.g1972c5931b-goog
+> > 
+> > -- 
+> > 
+> > - Arnaldo
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
 
+-- 
+
+- Arnaldo
