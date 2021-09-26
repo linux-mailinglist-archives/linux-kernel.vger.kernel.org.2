@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB5941894D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 16:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D220D418951
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 16:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhIZOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 10:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhIZOHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 10:07:41 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D607C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 07:06:05 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id a13so14271187qtw.10
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 07:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=ainbBDsZyNM2KlhcmziZNUxGlsNd0TV3lP6dRXvfw3W/kQsE7MSlSHrXMySesZaWQ4
-         B7RxkxG1v8WcBlXSe+gwj5IPpHcmrB5uIlyGQJR8xlrR0WYOmKgn5I81TtVf7IJt4ngW
-         FhkBOoViG6LTmmmjAirNfq3rWkXv7cCAC644ntU8n3swwab7QZTWQdcTg1Bq/KyNmiTd
-         QOAmCxuih3ZHBKnAZvX/JH+nbinx310YmRzf5/8lDG5Z1CO0eRyTk146yDf+7a+oJjM5
-         /akGmahRl84y067fwJol6iTANPq9mACxKekKAJ2MiEPzSylE1qLCaQi3PAaqEPGmFZB0
-         F2Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=2STHbjdZwk9xaBVB/knDwrYWZQw5pBp2/rEztObYHZABormRUZnuoN5W+W2UMl/UMY
-         tJu/R6K8S4Uq39i5mtjiKfzL6zPfbHuSaPU2Pa6dCWInOvvIUoIVyQc0ICSz7sNdyuPn
-         m0/TyV+UmbPAdBDSRhw2lcq+pjwtCSgPd48MDnnaTMTnVmUOwlP+y5K+ImTeV+rB65lY
-         5y8NvCy6t4no7lJgPv7D4C7510An3jIKbxeu6KFEpZTC8aJBo3ORkcXbhkWfsX6M5q8v
-         79yvwVc2Vp0N5bg9OoNrEwOjoJNv7eNtp54fFHxaej5E0tuo5uI4vmjCpt9X9xcOVgNe
-         xnZQ==
-X-Gm-Message-State: AOAM532Y7djv/Ist5Nft7Qfe+bU0T4c31eamomspmpa9gH69/vTl0AI5
-        IcRToNbgY8BnqOsytr+ubw+92PRG/oGGgIksbaI=
-X-Google-Smtp-Source: ABdhPJxHEAGH4rwvmjZFum5iBkMj9pMoS4e6HkQFkiTWDTF8g1uhswGg3bfhUTAhew/E/Vnfzs0A3SHn2YzaxZFaozs=
-X-Received: by 2002:a05:622a:1d3:: with SMTP id t19mr14545316qtw.128.1632665164577;
- Sun, 26 Sep 2021 07:06:04 -0700 (PDT)
+        id S231820AbhIZOK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 10:10:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231743AbhIZOKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 10:10:24 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCC6460724;
+        Sun, 26 Sep 2021 14:08:45 +0000 (UTC)
+Date:   Sun, 26 Sep 2021 15:12:34 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/3] iio: imx8qxp-adc: Add driver support for NXP
+ IMX8QXP ADC
+Message-ID: <20210926151234.2b7b728b@jic23-huawei>
+In-Reply-To: <20210925020555.129-2-caihuoqing@baidu.com>
+References: <20210925020555.129-1-caihuoqing@baidu.com>
+        <20210925020555.129-2-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:ac8:6b55:0:0:0:0:0 with HTTP; Sun, 26 Sep 2021 07:06:04
- -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi960@gmail.com>
-Date:   Sun, 26 Sep 2021 07:06:04 -0700
-Message-ID: <CABELTfBbGxFEACfxdmkSZF6FQf0mnroc=jv5jp=WxHEjwWkCUQ@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Sat, 25 Sep 2021 10:05:45 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add
+> driver support for this ADC.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+Hi.  My local build tests throw up a "set but unused" warning which made me take
+another look.  I've fixed as commented below.  Shout if that was not the right fix!
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
 
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
 
-Your Urgent Reply Will Be Appreciated
+> +
+> +static void imx8qxp_adc_reg_config(struct imx8qxp_adc *adc, int channel)
+> +{
+> +	u32 adc_cfg, adc_tctrl, adc_cmdl, adc_cmdh;
+> +
+> +	/* ADC configuration */
+> +	adc_cfg = FIELD_PREP(IMX8QXP_ADC_CFG_PWREN_MASK, 1) |
+> +		  FIELD_PREP(IMX8QXP_ADC_CFG_PUDLY_MASK, 0x80)|
+> +		  FIELD_PREP(IMX8QXP_ADC_CFG_REFSEL_MASK, 0) |
+> +		  FIELD_PREP(IMX8QXP_ADC_CFG_PWRSEL_MASK, 3) |
+> +		  FIELD_PREP(IMX8QXP_ADC_CFG_TPRICTRL_MASK, 0);
+> +	writel(adc_cfg, adc->regs + IMX8QXP_ADR_ADC_CFG);
+> +
+> +	/* config the trigger control */
+> +	adc_tctrl = FIELD_PREP(IMX8QXP_ADC_TCTRL_TCMD_MASK, 1) |
+> +		    FIELD_PREP(IMX8QXP_ADC_TCTRL_TDLY_MASK, 0) |
+> +		    FIELD_PREP(IMX8QXP_ADC_TCTRL_TPRI_MASK, IMX8QXP_ADC_TCTRL_TPRI_PRIORITY_HIGH) |
+> +		    FIELD_PREP(IMX8QXP_ADC_TCTRL_HTEN_MASK, IMX8QXP_ADC_TCTRL_HTEN_HW_TIRG_DIS);
+> +	writel(adc_cfg, adc->regs + IMX8QXP_ADR_ADC_TCTRL(0));
+adc_tctrl I assume?  I've changed it to that so shout if that was not what was intented.
 
-Best Regards
-Mrs Aisha Al-Qaddafi
+> +
+> +	/* config the cmd */
+> +	adc_cmdl = FIELD_PREP(IMX8QXP_ADC_CMDL_CSCALE_MASK, IMX8QXP_ADC_CMDL_CHANNEL_SCALE_FULL) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDL_MODE_MASK, IMX8QXP_ADC_CMDL_STANDARD_RESOLUTION) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDL_DIFF_MASK, IMX8QXP_ADC_CMDL_MODE_SINGLE) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDL_ABSEL_MASK, IMX8QXP_ADC_CMDL_SEL_A_A_B_CHANNEL) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDL_ADCH_MASK, channel);
+> +	writel(adc_cmdl, adc->regs + IMX8QXP_ADR_ADC_CMDL(0));
+> +
+> +	adc_cmdh = FIELD_PREP(IMX8QXP_ADC_CMDH_NEXT_MASK, 0) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDH_LOOP_MASK, 0) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDH_AVGS_MASK, 7) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDH_STS_MASK, 0) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDH_LWI_MASK, IMX8QXP_ADC_CMDH_LWI_INCREMENT_DIS) |
+> +		   FIELD_PREP(IMX8QXP_ADC_CMDH_CMPEN_MASK, IMX8QXP_ADC_CMDH_CMPEN_DIS);
+> +	writel(adc_cmdh, adc->regs + IMX8QXP_ADR_ADC_CMDH(0));
+> +}
+> +
