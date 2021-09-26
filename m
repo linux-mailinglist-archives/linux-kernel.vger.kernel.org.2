@@ -2,73 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B38418A20
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 18:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34408418A22
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 18:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhIZQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 12:20:44 -0400
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:37259 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232078AbhIZQUn (ORCPT
+        id S232114AbhIZQW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 12:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232078AbhIZQW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 12:20:43 -0400
-Date:   Sun, 26 Sep 2021 16:18:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1632673144;
-        bh=IiLHe0uL/GJl0ZHp7NbOVHu7wAIspmD7PYQcfvjWkrw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=gQPw44IsE45jQH+VhnLwAW2tiVipAUbBmwZ0BcNAc2KI6Ne0KBnD5DjjRuXHm4mTd
-         Q18dQpoztXdEdg3m8UHWNiw5iQgkE7fJ9MNkFTQqfSOpcDoCqqLlWgIehV7lgrffr5
-         LA9wotpQaFBKLYRf7q6bQ+No5HH+OkiKyUwJQUGk=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aurelien Jarno <aurelien@aurel32.net>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Re: glibc VETO for kernel version SUBLEVEL >= 255
-Message-ID: <rnxxyl-NZoSBj8j2vUT0vtOtezAJ9BgDbgPppIcmKc1-XG-xhY72DQVkA_IPeKCfGPtxxfUvwvG5BM95aqbjXEvWxCZjHE7rT7v-L1rJ9jA=@protonmail.com>
-In-Reply-To: <YVBb9ZoDGgV4cbXb@kroah.com>
-References: <qscod31lyVG7t-CW63o_pnsara-v9Wf6qXz9eSfUZnxtHk2AkeJ73yvER1XYO_311Wxo2wC8L2JuTdLJm8vgvhVVaGa5fdumXx5iHWarqwA=@protonmail.com> <YVAhOlTsb0NK0BVi@kroah.com> <YVArDZSq9oaTFakz@eldamar.lan> <YVA9l9svFyDgLPJy@kroah.com> <xxvm9EznCQoQ_-YYhxhEknGTxHEnVW584ypJShT__L09eV-JOfFtr-K4M33xRa3VTL5tNgOGvJSUqWthW-El4IwTi6Vt4B_XZA-xMB6vOEY=@protonmail.com> <YVBYfQY94j7K39qc@kroah.com> <gjSfoj7RAJMOeVL1pzzsZl5SjMGR_BXqigZqgkJe4G_8PPfm3EhxRlrRi-I7-Z0guYL0DAFOWeSWmrt_R8RcgzNq6Bcnk7BlQ9g3_G9aT2w=@protonmail.com> <YVBb9ZoDGgV4cbXb@kroah.com>
+        Sun, 26 Sep 2021 12:22:56 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDD8C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 09:21:20 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id ba1so480939edb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 09:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELIGrQH/sMSDaYiXS07AXqkk+94JGp/aiOT+ALKxTU8=;
+        b=l3dZ3Q/CM6R2USTGYmG7/OugITD2xqAGhgPPFp/Rxld4C7u0GteD6zSXpgwds2Jw7q
+         N3nBrygDwPTMAcoHjHqFzlDGcePYWEavRqhmQgRFxHXSyoiSOZ1HmqJVvED+Dww5GolM
+         dClauktCGdGg4MWevB8c8iKRjoZUgJVT1QVKhJ9gJ5OlDWIs0bqdE9CHaQHaWE6M3/Tg
+         nN0Lhp8zkw21MxCrVevIhuflokY3sBVuUSMoseLFPT2ZS3J1BLV6czb+daPky3hP+w0I
+         PnjTEI8pRL37eA7UvRnJheIAPhy58gHpW0LbgtqRZXtH+/0x5d/4gh4Bd0OsN4kd/oTH
+         Wh/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELIGrQH/sMSDaYiXS07AXqkk+94JGp/aiOT+ALKxTU8=;
+        b=gCsOke6GmgpBTGXhmtt+HR2Ha/AgWszpr2xbLOG5iv3z+iY7RFz36ycWnkWIQPwSL1
+         QkVAanMTDvUt6qIlQNgRN7MKQTi388E9cHq2uJ/W42OH/5f8YyyvFkoN2D41aZBCaEnz
+         +vIdsQAplA1sMJdmi+YLod7Ajyc5x0Cy5aTPd/LkAaOUV8X8TdBLflq2BqjlirpYFt3b
+         Vg6b0wPwUk2GhkGILXqQdUrzOJ5cX0dMfo4IqWZ8GenH/muvYZzq5a1Cz62LxDd0CkzH
+         biP/rjRGTh0pfaNNIXJFJcBftupX9J+gfC8s1Wee2A5hBVu44g0pyj2zReWjdn4OPv0X
+         1zcg==
+X-Gm-Message-State: AOAM533DAkAZQqXZ/PMrJwlTvByfT7NJ/Iy11tg8Y+fl01nY4MkBgz7L
+        228fSJea96oj6wk9SRZykAkxT8guDzVYOQ==
+X-Google-Smtp-Source: ABdhPJwyJtjbg0DKAH9UOR1nJGQT+HJ9vEaIVAp32JxrPnrLkNoQZubLwiU7mHsd0/UsP+Mwc5ll0Q==
+X-Received: by 2002:a17:906:f0cc:: with SMTP id dk12mr9937096ejb.36.1632673278647;
+        Sun, 26 Sep 2021 09:21:18 -0700 (PDT)
+Received: from neptune.. ([188.27.128.17])
+        by smtp.gmail.com with ESMTPSA id ba29sm9202477edb.5.2021.09.26.09.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 09:21:18 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: adc: max1363: convert probe to full device-managed
+Date:   Sun, 26 Sep 2021 19:21:10 +0300
+Message-Id: <20210926162110.3536436-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, September 26th, 2021 at 14:39, Greg Kroah-Hartman <gregkh@linuxf=
-oundation.org> wrote:
-> On Sun, Sep 26, 2021 at 11:31:20AM +0000, Jari Ruusu wrote:
-> > Due to circumstances, I need "smallest possible" kernel with all extra
-> > stripped out. 4.9.y kernels are smaller than newer ones.
->
-> Smaller by how much, and what portion grew? Are we building things into
-> the kernel that previously was able to be compiled out? Or is there
-> something new added after 4.9 that adds a huge memory increase?
+For this conversion, the 2 regulators (being enabled) require each a
+devm_add_action_or_reset() hook registration.
 
-Byte sizes of different kernels for my laptop. Everything needed built-in,
-except for wifi modules. Same compiler, roughly same kernel configs:
+For the other functions, there are device-managed variants.
 
-6906816 vmlinuz-4.9.284
-7603200 vmlinuz-4.19.208
-8306752 vmlinuz-5.10.69
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/adc/max1363.c | 82 ++++++++++++++-------------------------
+ 1 file changed, 30 insertions(+), 52 deletions(-)
 
-> Figuring that out would be good as you only have 1 more year for 4.9.y
-> to be alive, that's not going to last for forever...
-
-I will deal with that when 4.9.y updates run dry, or when Raspbian
-userland starts requiring newer kernel.
-
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
+diff --git a/drivers/iio/adc/max1363.c b/drivers/iio/adc/max1363.c
+index f2b576c69949..eef55ed4814a 100644
+--- a/drivers/iio/adc/max1363.c
++++ b/drivers/iio/adc/max1363.c
+@@ -1577,6 +1577,11 @@ static const struct of_device_id max1363_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, max1363_of_match);
+ 
++static void max1363_reg_disable(void *reg)
++{
++	regulator_disable(reg);
++}
++
+ static int max1363_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *id)
+ {
+@@ -1590,7 +1595,8 @@ static int max1363_probe(struct i2c_client *client,
+ 	if (!indio_dev)
+ 		return -ENOMEM;
+ 
+-	ret = iio_map_array_register(indio_dev, client->dev.platform_data);
++	ret = devm_iio_map_array_register(&client->dev, indio_dev,
++					  client->dev.platform_data);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1598,17 +1604,16 @@ static int max1363_probe(struct i2c_client *client,
+ 
+ 	mutex_init(&st->lock);
+ 	st->reg = devm_regulator_get(&client->dev, "vcc");
+-	if (IS_ERR(st->reg)) {
+-		ret = PTR_ERR(st->reg);
+-		goto error_unregister_map;
+-	}
++	if (IS_ERR(st->reg))
++		return PTR_ERR(st->reg);
+ 
+ 	ret = regulator_enable(st->reg);
+ 	if (ret)
+-		goto error_unregister_map;
++		return ret;
+ 
+-	/* this is only used for device removal purposes */
+-	i2c_set_clientdata(client, indio_dev);
++	ret = devm_add_action_or_reset(&client->dev, max1363_reg_disable, st->reg);
++	if (ret)
++		return ret;
+ 
+ 	st->chip_info = device_get_match_data(&client->dev);
+ 	if (!st->chip_info)
+@@ -1622,13 +1627,17 @@ static int max1363_probe(struct i2c_client *client,
+ 
+ 		ret = regulator_enable(vref);
+ 		if (ret)
+-			goto error_disable_reg;
++			return ret;
++
++		ret = devm_add_action_or_reset(&client->dev, max1363_reg_disable, vref);
++		if (ret)
++			return ret;
++
+ 		st->vref = vref;
+ 		vref_uv = regulator_get_voltage(vref);
+-		if (vref_uv <= 0) {
+-			ret = -EINVAL;
+-			goto error_disable_reg;
+-		}
++		if (vref_uv <= 0)
++			return -EINVAL;
++
+ 		st->vref_uv = vref_uv;
+ 	}
+ 
+@@ -1640,13 +1649,12 @@ static int max1363_probe(struct i2c_client *client,
+ 		st->send = max1363_smbus_send;
+ 		st->recv = max1363_smbus_recv;
+ 	} else {
+-		ret = -EOPNOTSUPP;
+-		goto error_disable_reg;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	ret = max1363_alloc_scan_masks(indio_dev);
+ 	if (ret)
+-		goto error_disable_reg;
++		return ret;
+ 
+ 	indio_dev->name = id->name;
+ 	indio_dev->channels = st->chip_info->channels;
+@@ -1655,12 +1663,12 @@ static int max1363_probe(struct i2c_client *client,
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	ret = max1363_initial_setup(st);
+ 	if (ret < 0)
+-		goto error_disable_reg;
++		return ret;
+ 
+-	ret = iio_triggered_buffer_setup(indio_dev, NULL,
+-		&max1363_trigger_handler, NULL);
++	ret = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
++					      &max1363_trigger_handler, NULL);
+ 	if (ret)
+-		goto error_disable_reg;
++		return ret;
+ 
+ 	if (client->irq) {
+ 		ret = devm_request_threaded_irq(&client->dev, st->client->irq,
+@@ -1671,39 +1679,10 @@ static int max1363_probe(struct i2c_client *client,
+ 					   indio_dev);
+ 
+ 		if (ret)
+-			goto error_uninit_buffer;
++			return ret;
+ 	}
+ 
+-	ret = iio_device_register(indio_dev);
+-	if (ret < 0)
+-		goto error_uninit_buffer;
+-
+-	return 0;
+-
+-error_uninit_buffer:
+-	iio_triggered_buffer_cleanup(indio_dev);
+-error_disable_reg:
+-	if (st->vref)
+-		regulator_disable(st->vref);
+-	regulator_disable(st->reg);
+-error_unregister_map:
+-	iio_map_array_unregister(indio_dev);
+-	return ret;
+-}
+-
+-static int max1363_remove(struct i2c_client *client)
+-{
+-	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-	struct max1363_state *st = iio_priv(indio_dev);
+-
+-	iio_device_unregister(indio_dev);
+-	iio_triggered_buffer_cleanup(indio_dev);
+-	if (st->vref)
+-		regulator_disable(st->vref);
+-	regulator_disable(st->reg);
+-	iio_map_array_unregister(indio_dev);
+-
+-	return 0;
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ static const struct i2c_device_id max1363_id[] = {
+@@ -1756,7 +1735,6 @@ static struct i2c_driver max1363_driver = {
+ 		.of_match_table = max1363_of_match,
+ 	},
+ 	.probe = max1363_probe,
+-	.remove = max1363_remove,
+ 	.id_table = max1363_id,
+ };
+ module_i2c_driver(max1363_driver);
+-- 
+2.31.1
 
