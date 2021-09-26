@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FCE418ADE
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2ACC418ADF
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhIZUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 16:02:26 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:36811 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhIZUCZ (ORCPT
+        id S230029AbhIZUDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 16:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhIZUDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 16:02:25 -0400
-Received: by mail-lf1-f50.google.com with SMTP id b20so67527815lfv.3;
-        Sun, 26 Sep 2021 13:00:48 -0700 (PDT)
+        Sun, 26 Sep 2021 16:03:14 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B366AC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 13:01:37 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id s69so22653428oie.13
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 13:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=4i0ebcgiZSt3iiIIOoOHYoxW7mqy1o//v1PH4SJkf08=;
+        b=k66FBV1fxgJAOaMfc22JHJVjRD64cFQRTI28+9JDWm2+GCiACg8hB1gxPS2NPERyMh
+         yaYjpoyKJRegO56P+NZx8xfGcO6r+EYUYlEKWTbgzQQWqWmc8yzw4QsmeDRRh5vPseI9
+         /exdpKUc+ZVJWV0nK3YoLjhkjHT6Feg8bgvlWM35b4iP0eBnv3qrO30lOFAnqszvrXuE
+         Mtx9KE04Na19aomkyFMUC4HE4JOcmHDDWmbXJZlX4IJUJnU5A/3b9TBBsXKgxVtsY63K
+         nMrxOLHHArVoRcuENVAVECRMPa1pmyXYGu7T2LV6VUwT7FX8FZlplvwbW08bL99VsWQC
+         L9YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l3obkGQ+XpY0Vr97E+TyMlZ4RsCgsk4oyb1ai412+Ag=;
-        b=8H2qK8f9ZNk8XEdBKeMUt/UfTtoGJ5y0YYE5jav6dQUqJoeSIEpzl2clcEzJXZjzyR
-         bLbKCYLqI2j7ughnhBtcXnFOqeYBt0KcbTfH0vIaTGUlGY4loqJWlW/eci3pLWFhHZv6
-         4hhWJDiWgCAuH9WDrJnl5TZis7fPHHmBr8izuZWdZ2yUwGXJ6LBSFZxrtjLvdw0pPhok
-         FNFTzHHON/ED4rjDduwL9tSo5hzhNFgIUmdB8KnIGeFjrCdq+rJ5/bt7zL21X4o0dJB6
-         vSVrMHE5CLdVSFyKWHrhqaIrLY/cabqfEwFAOcBB3EJBXQKVoO9ILj5JaiNAXNWb8MJq
-         inlQ==
-X-Gm-Message-State: AOAM530RjHA9vkJ/ANWmotWQxh6qRPlAyWPYU++1R5T3lFgqjhGNM/7j
-        89IHtgPwY0QWHLCnvbyL0eo=
-X-Google-Smtp-Source: ABdhPJxcm3fL6YxDm0G2Ib4EFFXmfP0Dzirpyzk6SLisVl/uyN1ODO7vehPfeTEzaJt11+BWGOY99w==
-X-Received: by 2002:a2e:70a:: with SMTP id 10mr24301038ljh.187.1632686447374;
-        Sun, 26 Sep 2021 13:00:47 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id y14sm1373236lfk.237.2021.09.26.13.00.46
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=4i0ebcgiZSt3iiIIOoOHYoxW7mqy1o//v1PH4SJkf08=;
+        b=t45ywSswYJBvI3UHOARDXMtig/ivvO9pPynP5rXVIM0Ut3Tu6ftimYA/ehGPeob+mJ
+         zhWIJ7ze2TUxbE1bdjjR88WJUq9KIxBH1A8uJqDhgNrP8BztrsvWY2zADe95PiwBbB40
+         EnGFpqiNkQiFFI9VIu0W8FlyegWzNcOFvGc29qqZTHwYGS591VDpdkt8VThebp7RzrYW
+         GrCxuW9rPmNCqZaFpwRhDeM3fjyeZXLrO5FDMlBoyS+p1wqHVDpJaLELMgAMznuWD3FF
+         q4Ets3E4/VXbwbdu0WJf79C5187LSUXU9aHg/qQB2SoabuxWzOTshNfR6kwoQrODigdp
+         QzXg==
+X-Gm-Message-State: AOAM531jAMdyk847ERV3Lu9ovyB6bTRWCgzyKwposGx5UguYr+Gw7lPP
+        v0qg6yfHQc+SC3Ex4ewn5waqrQx34TAMDA==
+X-Google-Smtp-Source: ABdhPJx/Jtc2vnPaAEl/lYrasw3bxw2ZwcVy1vVPt9ZezefP6jfZJid8wAWv9Pmgd5C+CmpPqPjVPg==
+X-Received: by 2002:aca:bec2:: with SMTP id o185mr9463615oif.30.1632686496463;
+        Sun, 26 Sep 2021 13:01:36 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id i25sm3624270oto.26.2021.09.26.13.01.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 13:00:46 -0700 (PDT)
-Date:   Sun, 26 Sep 2021 22:00:45 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Zhenneng Li <lizhenneng@kylinos.cn>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI/sysfs: add write attribute for boot_vga
-Message-ID: <YVDRbRF5wbcJmTtb@rocinante>
-References: <20210926071539.636644-1-lizhenneng@kylinos.cn>
+        Sun, 26 Sep 2021 13:01:35 -0700 (PDT)
+Date:   Sun, 26 Sep 2021 13:01:21 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     liuyuntao <liuyuntao10@huawei.com>
+cc:     hughd@google.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, kirill@shutemov.name,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        liusirui@huawei.com, windspectator@gmail.com, wuxu.wu@huawei.com
+Subject: Re: [PATCH v2] fix judgment error in shmem_is_huge()
+In-Reply-To: <20210926064201.3416154-1-liuyuntao10@huawei.com>
+Message-ID: <b2b52cfc-20f2-3f7e-8fc0-ae9b54f34e93@google.com>
+References: <614538e2-16bb-2657-f374-64195c5c7c2@google.com> <20210926064201.3416154-1-liuyuntao10@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210926071539.636644-1-lizhenneng@kylinos.cn>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Huacai and Kai-Heng as they are working in this area] 
+On Sun, 26 Sep 2021, liuyuntao wrote:
+> On Sat, 25 Sep 2021, Hugh Dickins wrote:
+> > On Fri, 24 Sep 2021, Hugh Dickins wrote:
+> > > On Thu, 9 Sep 2021, Liu Yuntao wrote:
+> > > 
+> > > > In the case of SHMEM_HUGE_WITHIN_SIZE, the page index is not rounded
+> > > > up correctly. When the page index points to the first page in a huge
+> > > > page, round_up() cannot bring it to the end of the huge page, but
+> > > > to the end of the previous one.
+> > > > 
+> > > > an example:
+> > > > HPAGE_PMD_NR on my machine is 512(2 MB huge page size).
+> > > > After allcoating a 3000 KB buffer, I access it at location 2050 KB.
+> > > 
+> > > Your example is certainly helpful, but weird!  It's not impossible,
+> > > but wouldn't it be easier to understand if you said "2048 KB" there?
+> 
+> I wanted to emphasize that access to any bit in the first page will
+> trigger this problem, so I didn't use "2048 KB".
 
-Hi,
+Okay, thanks, I see your point now.  (And I have to admit that, in my
+confusion, I had thought 2050 KB would be index 514 - of course not!)
 
-Thank you for sending the patch over.
+> > > > In shmem_is_huge(), the corresponding index happens to be 512.
 
-I assume this is simply a resend (rather than a v2), as I see no code
-changes from the previous version you sent some time ago.
+...
 
-> Add writing attribute for boot_vga sys node,
-> so we can config default video display
-> output dynamically when there are two video
-> cards on a machine.
+> > Your patch makes within_size more sensible than it was for pre-sized
+> > files (and I think it's fair to say that the majority of files in
+> > shmem's internal mount, subject to thp/shmem_enabled, are likely to
+> > be fixed-size files); and better-defined than it used to be on
+> > growing files, but they won't get the huge pages they used to.
+> 
+> Although my patch changes shmem's behaviour, it makes shmem consistent
+> with the documentation. I think with the new code, it will be easier
+> for our users to understand.
 
-That's OK, but why are you adding this?  What problem does it solve and
-what is the intended user here?  Might be worth adding a little bit more
-details about why this new sysfs attribute is needed.
+Yes, I do agree with you.  But the change in behaviour when appending at
+EOF is significant, and needed to be called out - I think none of quite
+realized that effect at first.
 
-I also need to ask, as I am not sure myself, whether this is OK to do after
-booting during runtime?  What do you think Bjorn, Huacai and Kai-Heng?
-
-Also, please correctly capitalise the subject - have a look at previous
-commit messages to see how it should look like.
-
-> +static ssize_t boot_vga_store(struct device *dev, struct device_attribute *attr,
-> +			      const char *buf, size_t count)
-> +{
-> +	unsigned long val;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct pci_dev *vga_dev = vga_default_device();
-> +
-> +	if (kstrtoul(buf, 0, &val) < 0)
-> +		return -EINVAL;
-> +
-> +	if (val != 1)
-> +		return -EINVAL;
-
-Since this is a completely new API have a look at kstrtobool() over
-kstrtoul() as the former was created to handle user input more
-consistently.
-
-> +	if (!capable(CAP_SYS_ADMIN))
-> +		return -EPERM;
-> +
-
-Check for CAP_SYS_ADMIN is a good idea, but it has to take place before you
-attempt to accept and parse a input from the user.
-
-	Krzysztof
+Hugh
