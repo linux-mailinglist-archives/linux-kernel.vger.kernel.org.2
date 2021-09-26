@@ -2,203 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4B74185BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE914185C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 04:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhIZCsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 22:48:18 -0400
-Received: from mga09.intel.com ([134.134.136.24]:22443 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230314AbhIZCsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 22:48:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10118"; a="224340660"
-X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
-   d="scan'208";a="224340660"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2021 19:46:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,322,1624345200"; 
-   d="scan'208";a="475573998"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 25 Sep 2021 19:46:39 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Use second level for GPA->HPA translation
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210924022931.780963-1-baolu.lu@linux.intel.com>
- <BN9PR11MB54338F4F946F5E9BD3D4D5388CA49@BN9PR11MB5433.namprd11.prod.outlook.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <047dec82-4530-ab93-d8f1-a21405a1d955@linux.intel.com>
-Date:   Sun, 26 Sep 2021 10:43:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230352AbhIZCx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 22:53:27 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:22981 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhIZCx0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Sep 2021 22:53:26 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HH9D46bG2zbmkb;
+        Sun, 26 Sep 2021 10:47:32 +0800 (CST)
+Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 10:51:47 +0800
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Sun, 26 Sep 2021 10:51:46 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <oss@buserror.net>,
+        <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <paul.gortmaker@windriver.com>,
+        <Yuantian.Tang@feescale.com>, <chenhui.zhao@freescale.com>,
+        <linuxppc-dev@lists.ozlabs.org>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH] powerpc:85xx: fix timebase sync issue when CONFIG_HOTPLUG_CPU=n
+Date:   Sun, 26 Sep 2021 10:51:44 +0800
+Message-ID: <20210926025144.55674-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <BN9PR11MB54338F4F946F5E9BD3D4D5388CA49@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema774-chm.china.huawei.com (10.1.198.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+When CONFIG_SMP=y, timebase synchronization is required when the second
+ kernel is started.
+	arch/powerpc/kernel/smp.c:
+	int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+	{
+		...
+		if (smp_ops->give_timebase)
+			smp_ops->give_timebase();
+		...
+	}
 
-Thanks for reviewing my patch.
+	void start_secondary(void *unused)
+	{
+		...
+		if (smp_ops->take_timebase)
+			smp_ops->take_timebase();
+		...
+	}
 
-On 9/24/21 11:16 AM, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Friday, September 24, 2021 10:30 AM
->>
->> The IOMMU VT-d implementation uses the first level for GPA->HPA
->> translation
->> by default. Although both the first level and the second level could handle
->> the DMA translation, they are different in some way. For example, the
->> second
->> level translation has separate controls for the Access/Dirty page tracking
->> and the page-level forcing snoop. With first level translation, there're
->> no such controls. This uses the second level for GPA->HPA translation so
-> 
-> first-level has no page-granular snoop control, but has a global control
-> in pasid entry.
+When CONFIG_HOTPLUG_CPU=n and CONFIG_KEXEC_CORE=n,
+ smp_85xx_ops.give_timebase is NULL,
+ smp_85xx_ops.take_timebase is NULL,
+As a result, the timebase is not synchronized.
 
-Agreed. Will add this.
+Timebase  synchronization does not depend on CONFIG_HOTPLUG_CPU.
 
-> 
->> that it could provide a consistent hardware interface for use cases like
->> dirty page tracking during the VM live migration.
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   include/linux/intel-iommu.h |  7 ++-----
->>   drivers/iommu/intel/iommu.c | 21 +++++++++++++--------
->>   2 files changed, 15 insertions(+), 13 deletions(-)
->>
->> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
->> index 05a65eb155f7..a5fb20702201 100644
->> --- a/include/linux/intel-iommu.h
->> +++ b/include/linux/intel-iommu.h
->> @@ -517,22 +517,19 @@ struct context_entry {
->>   	u64 hi;
->>   };
->>
->> -/* si_domain contains mulitple devices */
->> -#define DOMAIN_FLAG_STATIC_IDENTITY		BIT(0)
-> 
-> this is a separate cleanup. better mention it in the commit msg or
-> put in another patch.
+Fixes: 56f1ba280719 ("powerpc/mpc85xx: refactor the PM operations")
+Cc: stable@vger.kernel.org #v4.6
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+---
+ arch/powerpc/platforms/85xx/Makefile         | 2 +-
+ arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c | 4 ++++
+ arch/powerpc/platforms/85xx/smp.c            | 9 ++++-----
+ 3 files changed, 9 insertions(+), 6 deletions(-)
 
-Sure.
+diff --git a/arch/powerpc/platforms/85xx/Makefile b/arch/powerpc/platforms/85xx/Makefile
+index 60e4e97a929d..71ce1f6b6966 100644
+--- a/arch/powerpc/platforms/85xx/Makefile
++++ b/arch/powerpc/platforms/85xx/Makefile
+@@ -3,7 +3,7 @@
+ # Makefile for the PowerPC 85xx linux kernel.
+ #
+ obj-$(CONFIG_SMP) += smp.o
+-obj-$(CONFIG_FSL_PMC)		  += mpc85xx_pm_ops.o
++obj-$(CONFIG_SMP) += mpc85xx_pm_ops.o
+ 
+ obj-y += common.o
+ 
+diff --git a/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c b/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
+index 7c0133f558d0..a5656b3e9701 100644
+--- a/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
++++ b/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
+@@ -17,6 +17,7 @@
+ 
+ static struct ccsr_guts __iomem *guts;
+ 
++#ifdef CONFIG_FSL_PMC
+ static void mpc85xx_irq_mask(int cpu)
+ {
+ 
+@@ -49,6 +50,7 @@ static void mpc85xx_cpu_up_prepare(int cpu)
+ {
+ 
+ }
++#endif
+ 
+ static void mpc85xx_freeze_time_base(bool freeze)
+ {
+@@ -76,10 +78,12 @@ static const struct of_device_id mpc85xx_smp_guts_ids[] = {
+ 
+ static const struct fsl_pm_ops mpc85xx_pm_ops = {
+ 	.freeze_time_base = mpc85xx_freeze_time_base,
++#ifdef CONFIG_FSL_PMC
+ 	.irq_mask = mpc85xx_irq_mask,
+ 	.irq_unmask = mpc85xx_irq_unmask,
+ 	.cpu_die = mpc85xx_cpu_die,
+ 	.cpu_up_prepare = mpc85xx_cpu_up_prepare,
++#endif
+ };
+ 
+ int __init mpc85xx_setup_pmc(void)
+diff --git a/arch/powerpc/platforms/85xx/smp.c b/arch/powerpc/platforms/85xx/smp.c
+index c6df294054fe..349298cd9671 100644
+--- a/arch/powerpc/platforms/85xx/smp.c
++++ b/arch/powerpc/platforms/85xx/smp.c
+@@ -40,7 +40,6 @@ struct epapr_spin_table {
+ 	u32	pir;
+ };
+ 
+-#ifdef CONFIG_HOTPLUG_CPU
+ static u64 timebase;
+ static int tb_req;
+ static int tb_valid;
+@@ -112,6 +111,7 @@ static void mpc85xx_take_timebase(void)
+ 	local_irq_restore(flags);
+ }
+ 
++#ifdef CONFIG_HOTPLUG_CPU
+ static void smp_85xx_cpu_offline_self(void)
+ {
+ 	unsigned int cpu = smp_processor_id();
+@@ -499,17 +499,16 @@ void __init mpc85xx_smp_init(void)
+ #ifdef CONFIG_FSL_CORENET_RCPM
+ 	fsl_rcpm_init();
+ #endif
+-
+-#ifdef CONFIG_FSL_PMC
+-	mpc85xx_setup_pmc();
+ #endif
++	mpc85xx_setup_pmc();
+ 	if (qoriq_pm_ops) {
+ 		smp_85xx_ops.give_timebase = mpc85xx_give_timebase;
+ 		smp_85xx_ops.take_timebase = mpc85xx_take_timebase;
++#ifdef CONFIG_HOTPLUG_CPU
+ 		smp_85xx_ops.cpu_offline_self = smp_85xx_cpu_offline_self;
+ 		smp_85xx_ops.cpu_die = qoriq_cpu_kill;
+-	}
+ #endif
++	}
+ 	smp_ops = &smp_85xx_ops;
+ 
+ #ifdef CONFIG_KEXEC_CORE
+-- 
+2.27.0
 
-> 
->> -
->>   /*
->>    * When VT-d works in the scalable mode, it allows DMA translation to
->>    * happen through either first level or second level page table. This
->>    * bit marks that the DMA translation for the domain goes through the
->>    * first level page table, otherwise, it goes through the second level.
->>    */
->> -#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(1)
->> +#define DOMAIN_FLAG_USE_FIRST_LEVEL		BIT(0)
->>
->>   /*
->>    * Domain represents a virtual machine which demands iommu nested
->>    * translation mode support.
->>    */
->> -#define DOMAIN_FLAG_NESTING_MODE		BIT(2)
->> +#define DOMAIN_FLAG_NESTING_MODE		BIT(1)
->>
->>   struct dmar_domain {
->>   	int	nid;			/* node id */
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index d75f59ae28e6..c814fea0522e 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -522,7 +522,7 @@ static inline void free_devinfo_mem(void *vaddr)
->>
->>   static inline int domain_type_is_si(struct dmar_domain *domain)
->>   {
->> -	return domain->flags & DOMAIN_FLAG_STATIC_IDENTITY;
->> +	return domain->domain.type == IOMMU_DOMAIN_IDENTITY;
->>   }
->>
->>   static inline bool domain_use_first_level(struct dmar_domain *domain)
->> @@ -1874,12 +1874,18 @@ static void free_dmar_iommu(struct
->> intel_iommu *iommu)
->>    * Check and return whether first level is used by default for
->>    * DMA translation.
->>    */
->> -static bool first_level_by_default(void)
->> +static bool first_level_by_default(unsigned int type)
->>   {
->> -	return scalable_mode_support() && intel_cap_flts_sanity();
->> +	if (type == IOMMU_DOMAIN_UNMANAGED)
->> +		return false;
->> +
-> 
-> I think the order is not correct. what about 2nd level is even not
-> present?
-
-Fair enough. How about
-
-#1) hardware only capable of first level, return true
-#2) hardware only capable of second level, return false
-
-(we fail iommu initialization if neither FL nor SL)
-Then, both FL and SL are supported.
-
-#3) domain is type of UNMANAGED, return false
-#4) otherwise, return true.
-
-Does this make sense?
-
-> 
-> 
->> +	if (!scalable_mode_support() || !intel_cap_flts_sanity())
->> +		return false;
->> +
->> +	return true;
->>   }
->>
->> -static struct dmar_domain *alloc_domain(int flags)
->> +static struct dmar_domain *alloc_domain(unsigned int type)
->>   {
->>   	struct dmar_domain *domain;
->>
->> @@ -1889,8 +1895,7 @@ static struct dmar_domain *alloc_domain(int flags)
->>
->>   	memset(domain, 0, sizeof(*domain));
->>   	domain->nid = NUMA_NO_NODE;
->> -	domain->flags = flags;
->> -	if (first_level_by_default())
->> +	if (first_level_by_default(type))
->>   		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
->>   	domain->has_iotlb_device = false;
->>   	INIT_LIST_HEAD(&domain->devices);
->> @@ -2708,7 +2713,7 @@ static int __init si_domain_init(int hw)
->>   	struct device *dev;
->>   	int i, nid, ret;
->>
->> -	si_domain = alloc_domain(DOMAIN_FLAG_STATIC_IDENTITY);
->> +	si_domain = alloc_domain(IOMMU_DOMAIN_IDENTITY);
->>   	if (!si_domain)
->>   		return -EFAULT;
->>
->> @@ -4517,7 +4522,7 @@ static struct iommu_domain
->> *intel_iommu_domain_alloc(unsigned type)
->>   	case IOMMU_DOMAIN_DMA:
->>   	case IOMMU_DOMAIN_DMA_FQ:
->>   	case IOMMU_DOMAIN_UNMANAGED:
->> -		dmar_domain = alloc_domain(0);
->> +		dmar_domain = alloc_domain(type);
->>   		if (!dmar_domain) {
->>   			pr_err("Can't allocate dmar_domain\n");
->>   			return NULL;
->> --
->> 2.25.1
-> 
-
-Best regards,
-baolu
