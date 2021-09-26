@@ -2,169 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27BF418B62
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA42418B73
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhIZWHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 18:07:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhIZWHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:07:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 178B161100;
-        Sun, 26 Sep 2021 22:05:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632693939;
-        bh=tS1/crAEA80D5CGqe8i59AVp9KB33+js3SpvHBXPsl0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=iZmH58jSpDQNmsmfnobzjpvDgVQKstAkCgWwC9bCMQ55qX/ElpLFE/uQXcqJukZhM
-         8PbcaUBesc60f3FhVpMYzkQfdzysSd7fWmErKnkdRMEk8ycZDLT2XSKmgdEP8pFTFY
-         45dILmh7RHQFYceO7eQoygm5IPmM66Ccrk5T3+Wr1dpLkB4WD4TrQeJ9zyMV4osuAv
-         J9lrni7dcyeR8YfH/PpTQ42DhzNCWmP89sNB31jVAnZaLK6nLpW8X5dvfDQh/pkDR+
-         XEqZ0tYeE8k0MMYRhYkn1hodQW/u5V58JAh/EPBqcGZPGSGTbSEsP+//h/dntNR8GQ
-         WaLSLStpG+K1A==
-Date:   Sun, 26 Sep 2021 17:05:37 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com
-Subject: Re: [RFC PATCH 1/4] PCI/ASPM: Remove struct pcie_link_state.parent
-Message-ID: <20210926220537.GA591345@bhelgaas>
+        id S230378AbhIZWe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 18:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhIZWe4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 18:34:56 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1760C061570;
+        Sun, 26 Sep 2021 15:33:19 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id v18so25851343edc.11;
+        Sun, 26 Sep 2021 15:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wk/Y/R5VR5GDX1mBfmj5o+efAe8gDibSjLgM5RqrMNk=;
+        b=KCm9fD3ZbVm4AXFVJQ5IgVVriJbzc+9nNnE/JGhHoBMu3wmmP1c4E4RngZS3iNvygi
+         zfR7T4vbrm5bKez/OfYKGzDj1HjsfvB6+TlXbsJtGLXgfp9izgyACRZlvq3YhKxFfHhm
+         AaVkKTkKkipaJKk0C7qRllsc3oLmkekVyXMc3GXSqkRrKsHLUsBxoO+bBMT0gZ+GhrHV
+         BWJHjM+Ga0umsazS2Tbb/dmeUPfpnwjMGrQrPatcH2oNHnScSoRfKtfXq7ap67bQHoi5
+         ouS9k94ty8SLnmxEo/riO0Darm2uaKbWs9YqnYO/6se1FpK4g6DAoXN0Orc7vqBRXyzW
+         hSKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wk/Y/R5VR5GDX1mBfmj5o+efAe8gDibSjLgM5RqrMNk=;
+        b=q+T+lWJNs1ZnqR2hUVmbiwPjcOyrdamStTaasZQTjEuj8eFCyqdl6yMaK+We+QGpNL
+         8s5PzxoBLv0hEctYYahJzxbgL8alB7aQ1WErC7NyW0PHZPLG0MDdTyE1MAQHkaFPH01t
+         OmOkgWwpPD+4Hn9xACeAy/juxNjE//jz8I7PcfVJ+7Q8swWSILU9PiLjsKtJlHJ2qNtM
+         sxm0UPS+ugomJ3baUsdccVM8+DQjPIj6JtncPwxh7nwW+0/tWOx5ZUwZcGanpf1NoXq5
+         P8lJTUAAPMUdreszxw9pjL7oRxcdM9zf3qDxsZL6HcRpAU8JCKaTtlxWuOO7bH4OpIa1
+         a5Fw==
+X-Gm-Message-State: AOAM531OLmcfhnHF8y21G0/w+RHdbQgJLbOG6KXz7P1yYR2fA0U9hJDh
+        HA35tg+6WpWwtjWVtvEeWlk=
+X-Google-Smtp-Source: ABdhPJwPuYe57o4R2vwPquxA9kJ9P7bMaowKjZvNpGHgJsYh874p5HBTAhpWAQE/PFBALYYKYLM2xw==
+X-Received: by 2002:a17:906:7754:: with SMTP id o20mr24629870ejn.475.1632695598513;
+        Sun, 26 Sep 2021 15:33:18 -0700 (PDT)
+Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
+        by smtp.gmail.com with ESMTPSA id l23sm204684ejn.15.2021.09.26.15.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 15:33:17 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 00:33:15 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     nicolas saenz julienne <nsaenz@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: bcm2711-rpi-4-b: Fix pcie0, pci warning.
+Message-ID: <20210926223315.GA39851@tom-desktop>
+References: <20210918143542.146060-1-tomm.merciai@gmail.com>
+ <408e5e27fae24f22a408afdaf538702858cc324c.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210916085206.2268-2-refactormyself@gmail.com>
+In-Reply-To: <408e5e27fae24f22a408afdaf538702858cc324c.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:52:03AM +0200, Saheed O. Bolarinwa wrote:
-> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
+On Mon, Sep 20, 2021 at 10:21:46AM +0200, nicolas saenz julienne wrote:
+> Hi Tommaso,
 > 
-> Information cached in struct pcie_link_state.parent is accessible
-> via struct pci_dev.
+> On Sat, 2021-09-18 at 16:35 +0200, Tommaso Merciai wrote:
+> > Fix the following warning:
+> > 
+> > ./scripts/dtc/include-prefixes/arm/bcm2711-rpi-4-b.dts:220.10-231.4:
+> > Warning (pci_device_reg):
+> > /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
+> > 
+> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > ---
 > 
-> This patch:
->  - removes *parent* from the *struct pcie_link_state*
->  - adjusts all references to it to access the information directly
+> This issue was already addressed here:
+> https://lore.kernel.org/all/20210831125843.1233488-2-nsaenzju@redhat.com/
 > 
-> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
-> ---
-> OPINION: the checkpatch.pl scring warns on this line:
-> 	`BUG_ON(root->pdev->bus->parent->self);`
-> however, I think if a root device reports a parent, that is serious!
-
-Do you mean this warning?
-
-  WARNING: Missing a blank line after declarations
-  #967: FILE: drivers/pci/pcie/aspm.c:967:
-  +	struct pcie_link_state *link;
-  +	BUG_ON(root->pdev->bus->parent->self);
-
-That's just complaining about a blank line, so no big deal.  You could
-resolve that by adding the blank line in this patch.
-
-The fact that we use BUG_ON() at all *is* a real problem.  See the
-comments at the BUG() definition.  We should rework this so that
-condition is either impossible and we can just remove the BUG_ON(), or
-we can deal with it gracefully.  But this would be material for a
-different patch.
-
->  drivers/pci/pcie/aspm.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
+> It's available in linux-next and will eventually show up upstream.
 > 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 013a47f587ce..48b83048aa30 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -50,7 +50,6 @@ struct pcie_link_state {
->  	struct pci_dev *pdev;		/* Upstream component of the Link */
->  	struct pci_dev *downstream;	/* Downstream component, function 0 */
->  	struct pcie_link_state *root;	/* pointer to the root port link */
-> -	struct pcie_link_state *parent;	/* pointer to the parent Link state */
->  	struct list_head sibling;	/* node in link_list */
->  
->  	/* ASPM state */
-> @@ -379,6 +378,7 @@ static void encode_l12_threshold(u32 threshold_us, u32 *scale, u32 *value)
->  static void pcie_aspm_check_latency(struct pci_dev *endpoint)
->  {
->  	u32 latency, l1_switch_latency = 0;
-> +	struct pci_dev *parent;
->  	struct aspm_latency *acceptable;
->  	struct pcie_link_state *link;
->  
-> @@ -419,7 +419,8 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
->  			link->aspm_capable &= ~ASPM_STATE_L1;
->  		l1_switch_latency += 1000;
->  
-> -		link = link->parent;
-> +		parent = link->pdev->bus->parent->self;
-> +		link = !parent ? NULL : parent->link_state;
+> Regards,
+> Nicolas
+>
+  Hi Nicolas,
+  Thanks for your feedback.
 
-I love the direction of this patch, but this chain of pointers
-(link->pdev->bus->parent->self) is a little over the top and is
-repeated several times here.
-
-Can we simplify it a bit by making a helper function?  It's similar
-but not quite the same as pci_upstream_bridge().
-
-And maybe reverse the condition to avoid the negation?
-
-  link = parent ? parent->link_state : NULL;
-
->  	}
->  }
->  
-> @@ -793,9 +794,11 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
->  
->  static void pcie_config_aspm_path(struct pcie_link_state *link)
->  {
-> +	struct pci_dev *parent;
->  	while (link) {
->  		pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> -		link = link->parent;
-> +		parent = link->pdev->bus->parent->self;
-> +		link = !parent ? NULL : parent->link_state;
->  	}
->  }
->  
-> @@ -872,8 +875,7 @@ static struct pcie_link_state *alloc_pcie_link_state(struct pci_dev *pdev)
->  			return NULL;
->  		}
->  
-> -		link->parent = parent;
-> -		link->root = link->parent->root;
-> +		link->root = parent->root;
->  	}
->  
->  	list_add(&link->sibling, &link_list);
-> @@ -962,7 +964,7 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev)
->  static void pcie_update_aspm_capable(struct pcie_link_state *root)
->  {
->  	struct pcie_link_state *link;
-> -	BUG_ON(root->parent);
-> +	BUG_ON(root->pdev->bus->parent->self);
->  	list_for_each_entry(link, &link_list, sibling) {
->  		if (link->root != root)
->  			continue;
-> @@ -985,6 +987,7 @@ static void pcie_update_aspm_capable(struct pcie_link_state *root)
->  /* @pdev: the endpoint device */
->  void pcie_aspm_exit_link_state(struct pci_dev *pdev)
->  {
-> +	struct pci_dev *parent_dev;
->  	struct pci_dev *parent = pdev->bus->self;
->  	struct pcie_link_state *link, *root, *parent_link;
->  
-> @@ -1002,7 +1005,8 @@ void pcie_aspm_exit_link_state(struct pci_dev *pdev)
->  
->  	link = parent->link_state;
->  	root = link->root;
-> -	parent_link = link->parent;
-> +	parent_dev = link->pdev->bus->parent->self;
-> +	parent_link = !parent_dev ? NULL : parent_dev->link_state;
->  
->  	/* All functions are removed, so just disable ASPM for the link */
->  	pcie_config_aspm_link(link, 0);
-> -- 
-> 2.20.1
-> 
+  Tommaso
