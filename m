@@ -2,143 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D694185FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 05:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1246D418610
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 05:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhIZD3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 23:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhIZD3g (ORCPT
+        id S230422AbhIZDlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 23:41:20 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48816 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230373AbhIZDlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 23:29:36 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B91C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 20:28:01 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id me1so9802191pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 20:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id;
-        bh=Orm3UeNHwghzj3N/xisLRG+91t3d+f7m71sow6oNdJA=;
-        b=X6SLIpTlDoVQDM/NHlvsid9wBtoz7sfRJSazyL4YgTj8NZvWjoOHq8Zn8uKIo6VVcn
-         nlqlumjDWwIiEb418ovlhqFNX2pl7ePJZO/UBcTq8FPmHlKD4rpGxufedADsMh3wRGZU
-         M1J4gOlXpuwdn+639U1RVk/NmMaQAhhbKbqawA+eQXR6F/U/ZKxR+X4TL6e0cTi7UH3m
-         Z5Jz2EO0czdnIcIB9RCP/7dzSMMJFrql6eI7g+oBRbnggh59OUg7yvdkvg7J4M14U/vR
-         YfP1bNnQ+73Yam1VqRgCxiKDhl/o7TUzCOCgU8yvMYey9D2+p9vZrZvbYrpbILu0M7NI
-         Qknw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=Orm3UeNHwghzj3N/xisLRG+91t3d+f7m71sow6oNdJA=;
-        b=MOiFT1cZnUE5F8AOM829CJ1hwweieChvS5A17SBE2ccq0wyZGWCyW0/AEB5esUMsbt
-         Z/DHrjGmTzXhHQu04UuZ2ga3o4w91+vFoaCA4kpH684p2balq0M3r40r1HN8TjDq8lF8
-         N0AgdcyjA0eolBaS9PNsJJTvs/8zHNi1lj4UUhgRYpL8Tc3Y/bQEbLZe4b1pHE6IIyRV
-         mfoGbYR0+I2FEWpvKe5WUDmRQVrCwnPW/keZZpGTGotLvOSycNWqBp+BZLvdEF/jcn4P
-         BeABOeZAb8ErGCzRMoB9gbaRZmA6T0Vr7XImvpLOXvM1Z9Y9IBP4jHw58SWTguPpIrYd
-         ZzrQ==
-X-Gm-Message-State: AOAM532MC/9DEeCsT4LUn0+phZCzBGlAPPMpUO2z6n0BoeoxiHjzWKfy
-        dRYGfDww0JBrtXo+aGwIfWs=
-X-Google-Smtp-Source: ABdhPJxURf/JddHBdbheKzORXay3uy/+T9lHFyy2OH2d4SKLBor1vDh2/Wi3QbWP681YSvbDtjbhAg==
-X-Received: by 2002:a17:90a:1942:: with SMTP id 2mr11561511pjh.36.1632626880873;
-        Sat, 25 Sep 2021 20:28:00 -0700 (PDT)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id x16sm14537878pgc.49.2021.09.25.20.27.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 Sep 2021 20:28:00 -0700 (PDT)
-From:   Huangzhaoyang <huangzhaoyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
-        ke.wang@unisoc.com
-Subject: [Resend PATCH] psi : calc cfs task memstall time more precisely
-Date:   Sun, 26 Sep 2021 11:27:16 +0800
-Message-Id: <1632626836-27923-1-git-send-email-huangzhaoyang@gmail.com>
-X-Mailer: git-send-email 1.7.9.5
+        Sat, 25 Sep 2021 23:41:19 -0400
+X-UUID: 93ab066e138e4c8faf3e5ccefc0535ec-20210926
+X-UUID: 93ab066e138e4c8faf3e5ccefc0535ec-20210926
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <irui.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 716607953; Sun, 26 Sep 2021 11:39:39 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 26 Sep 2021 11:39:38 +0800
+Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 26 Sep 2021 11:39:37 +0800
+From:   Irui Wang <irui.wang@mediatek.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Hirokazu Honda <hiroh@google.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH] media: mtk-vcodec: MT8173 h264/vp8 encoder min/max bitrate settings
+Date:   Sun, 26 Sep 2021 11:39:35 +0800
+Message-ID: <20210926033935.9258-1-irui.wang@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Set recommend min/max bitrate range for MT8173 h264/vp8 encoder.
 
-In an EAS enabled system, there are two scenarios discordant to current design,
-
-1. workload used to be heavy uneven among cores for sake of scheduler policy.
-RT task usually preempts CFS task in little core.
-2. CFS task's memstall time is counted as simple as exit - entry so far, which
-ignore the preempted time by RT, DL and Irqs.
-
-With these two constraints, the percpu nonidle time would be mainly consumed by
-none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
-via the proportion of cfs_rq's utilization on the whole rq.
-
-eg.
-Here is the scenario which this commit want to fix, that is the rt and irq consume
-some utilization of the whole rq. This scenario could be typical in a core
-which is assigned to deal with all irqs. Furthermore, the rt task used to run on
-little core under EAS.
-
-Binder:305_3-314    [002] d..1   257.880195: psi_memtime_fixup: original:30616,adjusted:25951,se:89,cfs:353,rt:139,dl:0,irq:18
-droid.phone-1525    [001] d..1   265.145492: psi_memtime_fixup: original:61616,adjusted:53492,se:55,cfs:225,rt:121,dl:0,irq:15
-
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 ---
- kernel/sched/psi.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+This patch dependents on "Clean redundant encoder format definition",
+which already accepted into linux-next.git:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/patch/?id=4093eb21538ae4f2861b26f4615939e1fa50dc67
+---
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3c..754a836 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+index 4489a9744cd7..5dce3681ce94 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+@@ -388,8 +388,8 @@ static const struct mtk_vcodec_enc_pdata mt8173_avc_pdata = {
+ 	.num_capture_formats = ARRAY_SIZE(mtk_video_formats_capture_h264),
+ 	.output_formats = mtk_video_formats_output,
+ 	.num_output_formats = ARRAY_SIZE(mtk_video_formats_output),
+-	.min_bitrate = 1,
+-	.max_bitrate = 4000000,
++	.min_bitrate = 64,
++	.max_bitrate = 60000000,
+ 	.core_id = VENC_SYS,
+ };
  
- static void psi_avgs_work(struct work_struct *work);
+@@ -400,7 +400,7 @@ static const struct mtk_vcodec_enc_pdata mt8173_vp8_pdata = {
+ 	.output_formats = mtk_video_formats_output,
+ 	.num_output_formats = ARRAY_SIZE(mtk_video_formats_output),
+ 	.min_bitrate = 64,
+-	.max_bitrate = 4000000,
++	.max_bitrate = 9000000,
+ 	.core_id = VENC_LT_SYS,
+ };
  
-+static unsigned long psi_memtime_fixup(u32 growth);
-+
- static void group_init(struct psi_group *group)
- {
- 	int cpu;
-@@ -492,6 +494,21 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
- 	return growth;
- }
- 
-+static unsigned long psi_memtime_fixup(u32 growth)
-+{
-+	struct rq *rq = task_rq(current);
-+	unsigned long growth_fixed = (unsigned long)growth;
-+
-+	if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
-+		return growth_fixed;
-+
-+	if (current->in_memstall)
-+		growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
-+					- rq->avg_irq.util_avg + 1) * growth, 1024);
-+
-+	return growth_fixed;
-+}
-+
- static void init_triggers(struct psi_group *group, u64 now)
- {
- 	struct psi_trigger *t;
-@@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
- 	}
- 
- 	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
-+		delta = psi_memtime_fixup(delta);
- 		groupc->times[PSI_MEM_SOME] += delta;
- 		if (groupc->state_mask & (1 << PSI_MEM_FULL))
- 			groupc->times[PSI_MEM_FULL] += delta;
-@@ -928,8 +946,8 @@ void psi_memstall_leave(unsigned long *flags)
- 	 */
- 	rq = this_rq_lock_irq(&rf);
- 
--	current->in_memstall = 0;
- 	psi_task_change(current, TSK_MEMSTALL, 0);
-+	current->in_memstall = 0;
- 
- 	rq_unlock_irq(rq, &rf);
- }
 -- 
-1.9.1
+2.25.1
 
