@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504BA4185E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 05:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434C04185EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 05:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhIZDRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Sep 2021 23:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
+        id S230394AbhIZDXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Sep 2021 23:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhIZDRD (ORCPT
+        with ESMTP id S230349AbhIZDXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Sep 2021 23:17:03 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0795CC061604
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 20:15:28 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id q23so12411805pfs.9
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Sep 2021 20:15:28 -0700 (PDT)
+        Sat, 25 Sep 2021 23:23:00 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407C8C061570;
+        Sat, 25 Sep 2021 20:21:25 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id k17so12453026pff.8;
+        Sat, 25 Sep 2021 20:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lBVREcbULLdqaPu2xVXA/zzEvcIr2XcW00aGGgEt1R0=;
-        b=AIt908PRuKK8faRpMJ6vdoIzcoydx21Jsb8fY7MrXRpJmjdkBtjzxlfPQLHCUXvqZK
-         DVOLTHIHa8EYlxC1ziWx5RVNhDDrFwtVgEJQavOLkucLoYFg91hCTvk+edMhvHzWrzIA
-         qQY+h1deTymLNbzXPLNvYsUXEHylU81xQ3UJP+oaphv2oWJ+6UeGctVlXDvL2XAL/2rQ
-         8VzPBewHjvvhGKcAJOcTB2cHkrRdvEJ+xEI+574MDWiFtj3KE5Q8Nu4SkeXEfdOwxFYp
-         QwMMm5vMMTeU+ytG6apzi2wRMvgqQM+kyH78VD9nQGBel77Duf619wZr/sYVdj+wlF0g
-         /ndA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JRqyf3B66XeAhUqakwcv2FRFo/oowQBy0SeUGcDW+Qk=;
+        b=K+RQ9HFFHe1nITI7EDxCYpkXA/W3FBMlb+5E5LgqaDMrsdkyu9+pxRJr3h6FT4hFDb
+         HfmWYlF/vhv9/hMZHbQIKzpcKIiM/m4+nNgs48qJkEXJHvrHvrNffLFbk5nzyzhTjo+3
+         SNo5aW51aJI0UAU6z1VBIbK2jh7G9bQ7xRTp8P8pm3TuKTrmdcyyc5KFfyMpp8CSQGt5
+         fGHkv0b1RzJ8LMLoc94lGPt6MFVtXbpI6yc35YVuSoLkBjLeEFDtzIyLal48K+h9z79F
+         c1hXVzFdWiz8K58rYKYswen7bC+DZILQndVNaiFMVwtNpORTk0ytNzjoYBEcE0CU2T/z
+         V20w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lBVREcbULLdqaPu2xVXA/zzEvcIr2XcW00aGGgEt1R0=;
-        b=iAdhfBiDBy+0j/V/I4z5d3WKSZ3NcSCqQYuJoXQxRL4beuWlM2ELtp4B5TJpV7Q5QN
-         AoI1EIRBQMJNOr/o2xKKW6qwaOgDuC423VCWkxvqtuhrXde6EkN5Bzw/PRe2peHw+hXg
-         KUzzSL71i6r0W0UfgiLEtpf5D7XoX/V+8RydDsw01VvaS3AyUqgH1PTm8bjV79MlllCP
-         7uLflwPCFht7Ls6IeaGNVLyvrf63BNmUmGnsc+kZBQDJRMGF6c8k8v8OezO0ewX3qB16
-         yURb3hHM2VfZglNu124b2aRM5VXztzw1HQqhRSej8JaQpqDXqltQfraD9Hfg+ABBVoEk
-         9dhw==
-X-Gm-Message-State: AOAM530fociP3ztHIvF+NGX5MBY+PeWqhN3hLWQnrSuv/K9GOw8bFzUc
-        aB5B4XH9P9OIi5fYlw0vCL5Ktg==
-X-Google-Smtp-Source: ABdhPJy4n8ITV5TO8x69HoiW/b5VWS7o6Hbt05+tkS6I4fn84pt8iljnvISDWFvfVDkdcEfSaiBJJg==
-X-Received: by 2002:a65:640f:: with SMTP id a15mr510106pgv.106.1632626127582;
-        Sat, 25 Sep 2021 20:15:27 -0700 (PDT)
-Received: from localhost.localdomain ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id v26sm13374862pfm.175.2021.09.25.20.15.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 Sep 2021 20:15:27 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, chenhuang5@huawei.com, bodeddub@amazon.com,
-        corbet@lwn.net, willy@infradead.org, 21cnbao@gmail.com
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        smuchun@gmail.com, zhengqi.arch@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 5/5] mm: sparsemem: move vmemmap related to HugeTLB to CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-Date:   Sun, 26 Sep 2021 11:13:39 +0800
-Message-Id: <20210926031339.40043-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210926031339.40043-1-songmuchun@bytedance.com>
-References: <20210926031339.40043-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JRqyf3B66XeAhUqakwcv2FRFo/oowQBy0SeUGcDW+Qk=;
+        b=F7L8ZnOw2TpYdloQeQoXKS7Sd3ODOKpyf87S5MhCpOsA7m5ybqeVPQ2qC/jexFzVaH
+         glEbJVbErtZWDkN185Lj6wq+CUz8K1B22E8M3k06GWvXNCUkyBMecEm45jkXnzVNPodp
+         7IYYgorGM+ZCb1tgGveR/gkk1M4ciwNiwuU9vqmeLhRs2f8RT5nsu2TPaMASc8I8NXZz
+         XrDWraBAa8XBlKJk6rw8i56yQiPqbCd1TM6ddlTG/mR6h817Vclypx8SnC+0JFb2S4Sq
+         e93Kb/7HfH9lB7Lw61onUxPLLPy6utykCCbvSJN4CVMsRlrlTX8Pw6SnsNVgr8a210d/
+         u2SQ==
+X-Gm-Message-State: AOAM531p+a2mKtKCuy4d19gzGaRlMHWm99ipE5n609yKzQjqC8jAlNVg
+        RbkdkgPEm1VfGBorXtd1RKr23kH7IxQ=
+X-Google-Smtp-Source: ABdhPJwy7PFJzX5k1hWzMRF3L8kXbaabvPU8xWGqfYD++XAqskRdVQfVyWuPcQQUE1yxj8XfGlOnxQ==
+X-Received: by 2002:a63:595f:: with SMTP id j31mr10726473pgm.109.1632626484266;
+        Sat, 25 Sep 2021 20:21:24 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id r13sm14205312pgl.90.2021.09.25.20.21.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Sep 2021 20:21:23 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET
+        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 0/4] net: bcmgenet: support for flow control
+Date:   Sat, 25 Sep 2021 20:21:10 -0700
+Message-Id: <20210926032114.1785872-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vmemmap_remap_free/alloc are relevant to HugeTLB, so move those
-functiongs to the scope of CONFIG_HUGETLB_PAGE_FREE_VMEMMAP.
+This patch series adds support for flow control to the GENET driver, the
+first 2 patches remove superfluous code, the 3rd one does re-organize
+code a little bit and the 4th one ads the support for flow control
+proper.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/mm.h  | 2 ++
- mm/sparse-vmemmap.c | 2 ++
- 2 files changed, 4 insertions(+)
+Doug Berger (4):
+  net: bcmgenet: remove netif_carrier_off from adjust_link
+  net: bcmgenet: remove old link state values
+  net: bcmgenet: pull mac_config from adjust_link
+  net: bcmgenet: add support for ethtool flow control
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 00bb2d938df4..a706e7ffda94 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3182,10 +3182,12 @@ static inline void print_vma_addr(char *prefix, unsigned long rip)
- }
- #endif
- 
-+#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
- int vmemmap_remap_free(unsigned long start, unsigned long end,
- 		       unsigned long reuse);
- int vmemmap_remap_alloc(unsigned long start, unsigned long end,
- 			unsigned long reuse, gfp_t gfp_mask);
-+#endif
- 
- void *sparse_buffer_alloc(unsigned long size);
- struct page * __populate_section_memmap(unsigned long pfn,
-diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-index d486a7a48512..3c7dd41c3164 100644
---- a/mm/sparse-vmemmap.c
-+++ b/mm/sparse-vmemmap.c
-@@ -34,6 +34,7 @@
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- 
-+#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
- /**
-  * struct vmemmap_remap_walk - walk vmemmap page table
-  *
-@@ -423,6 +424,7 @@ int vmemmap_remap_alloc(unsigned long start, unsigned long end,
- 
- 	return 0;
- }
-+#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
- 
- /*
-  * Allocate a block of memory to be used to back the virtual memory map
+ .../net/ethernet/broadcom/genet/bcmgenet.c    |  56 ++++++-
+ .../net/ethernet/broadcom/genet/bcmgenet.h    |   8 +-
+ drivers/net/ethernet/broadcom/genet/bcmmii.c  | 155 +++++++++---------
+ 3 files changed, 130 insertions(+), 89 deletions(-)
+
 -- 
-2.11.0
+2.25.1
 
