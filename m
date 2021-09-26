@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC054189F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993C64189FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 17:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhIZPb3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 26 Sep 2021 11:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        id S232025AbhIZPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 11:36:28 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60994 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231913AbhIZPb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 11:31:27 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7239B60E08;
-        Sun, 26 Sep 2021 15:29:49 +0000 (UTC)
-Date:   Sun, 26 Sep 2021 16:33:38 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>
-Subject: Re: [PATCH] iio: chemical: atlas-sensor: Avoid using irq_work
-Message-ID: <20210926163338.1170f73a@jic23-huawei>
-In-Reply-To: <3974817ea942f616b77450914aa23b181b062d87.camel@redhat.com>
-References: <20210624100046.1037159-1-nsaenzju@redhat.com>
-        <CAHp75VcG-0L+qG5JirWH21bnpVwRv_wfjM6Sfd2pJrq4-OqJ0Q@mail.gmail.com>
-        <3974817ea942f616b77450914aa23b181b062d87.camel@redhat.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231992AbhIZPg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 11:36:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=TosYvN8F9XPmP2GdzsLirbdEDXWltKbq+jzLBYNs1uA=; b=lgXgaJU+NygoIGrLWqijxOM0sL
+        GuI0Bb1HdLDi/QnP2HF0Sxusj8NJZDd4GT21+o8sJSrlH6GGn+Sm91A7DzilAjbs/8VUlhsP+QzP7
+        daB/Lrp6rLQKIXx+d2Hrln3dxyslJ7lf11LUVljQMpg+mKjKtYjx9qVLFgCf4cqc1ILg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mUWAq-008KRH-As; Sun, 26 Sep 2021 17:34:40 +0200
+Date:   Sun, 26 Sep 2021 17:34:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, p.zabel@pengutronix.de,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] net: mdiobus: Fix memory leak in __mdiobus_register
+Message-ID: <YVCTEBR/YolkQQyZ@lunn.ch>
+References: <20210926045313.2267655-1-yanfei.xu@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210926045313.2267655-1-yanfei.xu@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 13:13:47 +0200
-Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
-
-> Hi Andy, thanks for the review.
+On Sun, Sep 26, 2021 at 12:53:13PM +0800, Yanfei Xu wrote:
+> Once device_register() failed, we should call put_device() to
+> decrement reference count for cleanup. Or it will cause memory
+> leak.
 > 
-> On Thu, 2021-06-24 at 13:39 +0300, Andy Shevchenko wrote:
-> > On Thu, Jun 24, 2021 at 1:01 PM Nicolas Saenz Julienne
-> > <nsaenzju@redhat.com> wrote:  
-> > > 
-> > > The atlas sensor driver currently registers a threaded IRQ handler whose
-> > > sole responsibility is to trigger an irq_work which will in turn run
-> > > iio_trigger_poll() in IRQ context.
-> > > 
-> > > This seems overkill given the fact that there already was a opportunity  
-> > 
-> > an opportunity  
+> BUG: memory leak
+> unreferenced object 0xffff888114032e00 (size 256):
+>   comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
+>     08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
+>   backtrace:
+>     [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
+>     [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
+>     [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
+>     [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
+>     [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
+>     [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+>     [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+>     [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+>     [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+>     [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+>     [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+>     [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+>     [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+>     [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+>     [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+>     [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+>     [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+>     [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+>     [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
+>     [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
+>     [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
+>     [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
 > 
-> Thanks, noted.
+> BUG: memory leak
+> unreferenced object 0xffff888116f06900 (size 32):
+>   comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
+>   hex dump (first 32 bytes):
+>     75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
+>     [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
+>     [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+>     [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+>     [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
+>     [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
+>     [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+>     [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+>     [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+>     [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+>     [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+>     [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+>     [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+>     [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+>     [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+>     [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+>     [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+>     [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+>     [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
 > 
-> > > @@ -474,7 +465,7 @@ static irqreturn_t atlas_interrupt_handler(int irq, void *private)
-> > >         struct iio_dev *indio_dev = private;
-> > >         struct atlas_data *data = iio_priv(indio_dev);
-> > > 
-> > > -       irq_work_queue(&data->work);
-> > > +       iio_trigger_poll(data->trig);  
-> > 
-> > Have you considered dropping atlas_interrupt_trigger_ops() altogether?  
-> 
-> Not really, but it makes sense as a separate patch. I'll take care of it.
-> 
-> >   
-> > >         if (client->irq > 0) {
-> > >                 /* interrupt pin toggles on new conversion */
-> > >                 ret = devm_request_threaded_irq(&client->dev, client->irq,  
-> >   
-> > > -                               NULL, atlas_interrupt_handler,
-> > > +                               atlas_interrupt_handler, NULL,  
-> > 
-> > So, you move it from threaded IRQ to be a hard IRQ handler (we have a
-> > separate call for this).  
-> 
-> Noted.
-> 
-> > Can you guarantee that handling of those events will be fast enough?  
-> 
-> Do you mean the events triggered in iio_trigger_poll()? If so the amount of
-> time spent in IRQ context is going to be the same regardless of whether it's
-> handled through atlas' IRQ or later in irq_work IPI (or softirq context on some
-> weird platforms).
-> 
+> Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
 
-Hi Nicolas, Andy, Matt,
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Just been checking patchwork for IIO and noted that this one is still outstanding.
-
-My reading of above is that we kind of got to a conclusion - though I'd like
-Matt to sanity check the patch (and maybe test it if he still has hardware for
-this?)
-
-We have a generic form of this handler that may let you drop the atlas_interrupt_handler()
-function entirely iio_trigger_generic_data_rdy_poll().
-
-https://elixir.bootlin.com/linux/latest/source/drivers/iio/industrialio-trigger.c#L182
-
-Thanks,
-
-Jonathan
-
-
+    Andrew
