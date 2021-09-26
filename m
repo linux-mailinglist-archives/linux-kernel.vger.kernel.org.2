@@ -2,453 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9C5418B80
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791CE418B8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhIZWf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 18:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhIZWfX (ORCPT
+        id S230430AbhIZWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 18:38:46 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:48333 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230331AbhIZWip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:35:23 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9EFC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 15:33:46 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id 194so34516776qkj.11
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 15:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=blJvberSBtGAgP9ahJKdLib3J1pQn66IrJrwYCfOl4c=;
-        b=rjTZUeHw6RrX1AZLRp0U+0mBfHd6l2lMvV6Yfd89cs16P9t16XBegH1+a2wO9GNo70
-         LmlV2ALvr5KZPhW2og/Q3/sWSamOCBns+r3B6VXcEekFniWDQ6inIoI9bAYEUIJacdGQ
-         cjX2Ft50zwPCl8cQL0IyCyo1LLG5XaCU20vLdKDdk4MkmPsYgSva4zoORtQJrMjE+r58
-         eJpB8CiSVnhcdBnjfdcH1zqWR1MC3YF/ImmZDj99Tiyr+YH8LOi5xoaICyOIZtqQiBxb
-         fZREims52n2oDSy5XtH10lwPEkMoL6jsd1D+rrLrhS8pc7R3EwHW0QgVhmaQHtSpguQv
-         aIWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=blJvberSBtGAgP9ahJKdLib3J1pQn66IrJrwYCfOl4c=;
-        b=HMmAn2reKgmHACN2ok3vtCiQuWnl6v2I8zcl9UJ1PVM7n3EAfposRnaSeSllcnradX
-         ThaKVVi/95JuVt7W46i93iUIRxBViysAD+qTlcl3OLxSqlUH0GkZG8GNk8NB3G/kBIZD
-         3GJaC3yvUbEYys0euy/f9vbSpxcrGahYTC2y8jfjNpSW/pg4sE4jz2vI5DMUTBu36zx4
-         DlzhQUfpE54CWak++IwMvDOYAV5YWnrgPx9hhOQeAhbfxWXQc9I9rTjuKJiMe1ltUMYe
-         RRvRQnVBAqXGLpjqwA/9/Df5EUsjkTYbXI5bwx/+lTnf4qs/woOOrmSATXKpt+phVKVl
-         S/bw==
-X-Gm-Message-State: AOAM530GmOasNlI9wn3dBxw2FWFKakl/R6mSGfDEVp086jbBaEM3lkji
-        Fr3qzGkKGEFRe+oewItvUNxGEA==
-X-Google-Smtp-Source: ABdhPJwDCcZBgln9FPBztXIJpDdpAPiVATTg13vJGl/4tI5x/stUsQ9DSHm8+DLurUpf134IkBANXg==
-X-Received: by 2002:ae9:de83:: with SMTP id s125mr21392851qkf.248.1632695625209;
-        Sun, 26 Sep 2021 15:33:45 -0700 (PDT)
-Received: from aehse.localdomain ([2804:d41:bd1c:9100:f2e1:f671:7a83:1eb8])
-        by smtp.gmail.com with ESMTPSA id x6sm7244151qts.79.2021.09.26.15.33.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 15:33:44 -0700 (PDT)
-From:   Isabella Basso <isabellabdoamaral@usp.br>
-To:     geert@linux-m68k.org
-Cc:     ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
-        brendanhiggins@google.com, dlatypov@google.com,
-        davidgow@google.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com,
-        Isabella Basso <isabellabdoamaral@usp.br>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 5/5] test_hash.c: refactor into kunit
-Date:   Sun, 26 Sep 2021 19:33:22 -0300
-Message-Id: <20210926223322.848641-6-isabellabdoamaral@usp.br>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210926223322.848641-1-isabellabdoamaral@usp.br>
-References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
+        Sun, 26 Sep 2021 18:38:45 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 4810C82C75F;
+        Mon, 27 Sep 2021 08:37:00 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mUclW-00H5s5-TN; Mon, 27 Sep 2021 08:36:58 +1000
+Date:   Mon, 27 Sep 2021 08:36:58 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>, hch@lst.de,
+        trond.myklebust@primarydata.com, Theodore Ts'o <tytso@mit.edu>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+Message-ID: <20210926223658.GE1756565@dread.disaster.area>
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <20210925234243.GA1756565@dread.disaster.area>
+ <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=bMojAixK84Ma9oYoJFgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use KUnit framework to make tests more easily integrable with CIs. Even
-though these tests are not yet properly written as unit tests this
-change should help in debugging.
+On Sun, Sep 26, 2021 at 04:10:43AM +0100, Matthew Wilcox wrote:
+> On Sun, Sep 26, 2021 at 09:42:43AM +1000, Dave Chinner wrote:
+> > Ok, so if the filesystem is doing block mapping in the IO path now,
+> > why does the swap file still need to map the file into a private
+> > block mapping now?  i.e all the work that iomap_swapfile_activate()
+> > does for filesystems like XFS and ext4 - it's this completely
+> > redundant now that we are doing block mapping during swap file IO
+> > via iomap_dio_rw()?
+> 
+> Hi Dave,
+> 
+> Thanks for bringing up all these points.  I think they all deserve to go
+> into the documentation as "things to consider" for people implementing
+> ->swap_rw for their filesystem.
+> 
+> Something I don't think David perhaps made sufficiently clear is that
+> regular DIO from userspace gets handled by ->read_iter and ->write_iter.
+> This ->swap_rw op is used exclusive for, as the name suggests, swap DIO.
+> So filesystems don't have to handle swap DIO and regular DIO the same
+> way, and can split the allocation work between ->swap_activate and the
+> iomap callback as they see fit (as long as they can guarantee the lack
+> of deadlocks under memory pressure).
 
-Also remove kernel messages (i.e. through pr_info) as KUnit handles all
-debugging output and let it handle module init and exit details.
+I understand this completely.
 
-Changes since v1:
-- As suggested by David Gow:
-  1. Keep module support.
-  2. Reword commit message.
-- As reported by the kernel test bot:
-  1. Fix compilation for m68k and parisc architectures.
+The point is that the implementation of ->swap_rw is to call
+iomap_dio_rw() with the same ops as the normal DIO read/write path
+uses. IOWs, apart from the IOCB_SWAP flag, there is no practical
+difference between the "swap DIO" and "normal DIO" I/O paths.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Tested-by: David Gow <davidgow@google.com>
-Co-developed-by: Augusto Durães Camargo <augusto.duraes33@gmail.com>
-Signed-off-by: Augusto Durães Camargo <augusto.duraes33@gmail.com>
-Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
----
- lib/Kconfig.debug |  28 ++++---
- lib/Makefile      |   2 +-
- lib/test_hash.c   | 187 ++++++++++++++--------------------------------
- 3 files changed, 78 insertions(+), 139 deletions(-)
+> There are several advantages to using the DIO infrastructure for
+> swap:
+> 
+>  - unify block & net swap paths
+>  - allow filesystems to _see_ swap IOs instead of being bypassed
+>  - get rid of the swap extent rbtree
+>  - allow writing compound pages to swap files instead of splitting
+>    them
+>  - allow ->readpage to be synchronous for better error reporting
+>  - remove page_file_mapping() and page_file_offset()
+> 
+> I suspect there are several problems with this patchset, but I'm not
+> likely to have a chance to read it closely for a few days.  If you
+> have time to give the XFS parts a good look, that would be fantastic.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index eb6c4daf5fcb..04eec87c2964 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2204,15 +2204,6 @@ config TEST_RHASHTABLE
- 
- 	  If unsure, say N.
- 
--config TEST_HASH
--	tristate "Perform selftest on hash functions"
--	help
--	  Enable this option to test the kernel's integer (<linux/hash.h>), and
--	  string (<linux/stringhash.h>) hash functions on boot (or module load).
--
--	  This is intended to help people writing architecture-specific
--	  optimized versions.  If unsure, say N.
--
- config TEST_SIPHASH
- 	tristate "Perform selftest on siphash functions"
- 	help
-@@ -2361,6 +2352,25 @@ config BITFIELD_KUNIT
- 
- 	  If unsure, say N.
- 
-+config HASH_KUNIT_TEST
-+	tristate "KUnit Test for integer hash functions" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this option to test the kernel's string (<linux/stringhash.h>), and
-+	  integer (<linux/hash.h>) hash functions on boot.
-+
-+	  KUnit tests run during boot and output the results to the debug log
-+	  in TAP format (https://testanything.org/). Only useful for kernel devs
-+	  running the KUnit test harness, and not intended for inclusion into a
-+	  production build.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  This is intended to help people writing architecture-specific
-+	  optimized versions. If unsure, say N.
-+
- config RESOURCE_KUNIT_TEST
- 	tristate "KUnit test for resource API"
- 	depends on KUNIT
-diff --git a/lib/Makefile b/lib/Makefile
-index c2e81d0eb31c..0bc336d9d036 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -62,7 +62,7 @@ obj-$(CONFIG_TEST_BITOPS) += test_bitops.o
- CFLAGS_test_bitops.o += -Werror
- obj-$(CONFIG_TEST_SYSCTL) += test_sysctl.o
- obj-$(CONFIG_TEST_SIPHASH) += test_siphash.o
--obj-$(CONFIG_TEST_HASH) += test_hash.o
-+obj-$(CONFIG_HASH_KUNIT_TEST) += test_hash.o
- obj-$(CONFIG_TEST_IDA) += test_ida.o
- obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
- CFLAGS_test_kasan.o += -fno-builtin
-diff --git a/lib/test_hash.c b/lib/test_hash.c
-index db9dd18b4e8b..9cb8b1d2ab06 100644
---- a/lib/test_hash.c
-+++ b/lib/test_hash.c
-@@ -14,14 +14,12 @@
-  * and hash_64().
-  */
- 
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt "\n"
--
- #include <linux/compiler.h>
- #include <linux/types.h>
- #include <linux/module.h>
- #include <linux/hash.h>
- #include <linux/stringhash.h>
--#include <linux/printk.h>
-+#include <kunit/test.h>
- 
- /* 32-bit XORSHIFT generator.  Seed must not be zero. */
- static u32 __init __attribute_const__
-@@ -66,40 +64,32 @@ struct test_hash_params {
- };
- 
- #ifdef HAVE_ARCH__HASH_32
--static bool __init
--test_int__hash_32(struct test_hash_params *params)
-+static void __init
-+test_int__hash_32(struct kunit *test, struct test_hash_params *params)
- {
- 	params->hash_or[1][0] |= params->h2 = __hash_32_generic(params->h0);
- #if HAVE_ARCH__HASH_32 == 1
--	if (params->h1 != params->h2) {
--		pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
--		       params->h0, params->h1, params->h2);
--		return false;
--	}
-+	KUNIT_EXPECT_EQ_MSG(test, params->h1, params->h2,
-+			    "__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-+			    params->h0, params->h1, params->h2);
- #endif
--	return true;
- }
- #endif
- 
- #ifdef HAVE_ARCH_HASH_64
--static bool __init
--test_int_hash_64(struct test_hash_params *params, u32 const *m, int *k)
-+static void __init
-+test_int_hash_64(struct kunit *test, struct test_hash_params *params, u32 const *m, int *k)
- {
- 	params->h2 = hash_64_generic(*params->h64, *k);
- #if HAVE_ARCH_HASH_64 == 1
--	if (params->h1 != params->h2) {
--		pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
--		       *params->h64, *k, params->h1, params->h2);
--		return false;
--	}
-+	KUNIT_EXPECT_EQ_MSG(test, params->h1, params->h2,
-+			    "hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
-+			    *params->h64, *k, params->h1, params->h2);
- #else
--	if (params->h2 > *m) {
--		pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
--		       *params->h64, *k, params->h1, *m);
--		return false;
--	}
-+	KUNIT_EXPECT_LE_MSG(test, params->h1, params->h2,
-+			    "hash_64_generic(%#llx, %d) = %#x > %#x",
-+			    *params->h64, *k, params->h1, *m);
- #endif
--	return true;
- }
- #endif
- 
-@@ -112,8 +102,8 @@ test_int_hash_64(struct test_hash_params *params, u32 const *m, int *k)
-  * inline, the code being tested is actually in the module, and you can
-  * recompile and re-test the module without rebooting.
-  */
--static bool __init
--test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-+static void __init
-+test_int_hash(struct kunit *test, unsigned long long h64, u32 hash_or[2][33])
- {
- 	int k;
- 	struct test_hash_params params = { &h64, (u32)h64, 0, 0, hash_or };
-@@ -121,8 +111,7 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
- 	/* Test __hash32 */
- 	hash_or[0][0] |= params.h1 = __hash_32(params.h0);
- #ifdef HAVE_ARCH__HASH_32
--	if (!test_int__hash_32(&params))
--		return false;
-+	test_int__hash_32(test, &params);
- #endif
- 
- 	/* Test k = 1..32 bits */
-@@ -131,29 +120,24 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
- 
- 		/* Test hash_32 */
- 		hash_or[0][k] |= params.h1 = hash_32(params.h0, k);
--		if (params.h1 > m) {
--			pr_err("hash_32(%#x, %d) = %#x > %#x", params.h0, k, params.h1, m);
--			return false;
--		}
-+		KUNIT_EXPECT_LE_MSG(test, params.h1, m,
-+				    "hash_32(%#x, %d) = %#x > %#x",
-+				    params.h0, k, params.h1, m);
- 
- 		/* Test hash_64 */
- 		hash_or[1][k] |= params.h1 = hash_64(h64, k);
--		if (params.h1 > m) {
--			pr_err("hash_64(%#llx, %d) = %#x > %#x", h64, k, params.h1, m);
--			return false;
--		}
-+		KUNIT_EXPECT_LE_MSG(test, params.h1, m,
-+				    "hash_64(%#llx, %d) = %#x > %#x",
-+				    h64, k, params.h1, m);
- #ifdef HAVE_ARCH_HASH_64
--		if (!test_int_hash_64(&params, &m, &k))
--			return false;
-+		test_int_hash_64(test, &params, &m, &k);
- #endif
- 	}
--
--	return true;
- }
- 
- #define SIZE 256	/* Run time is cubic in SIZE */
- 
--static int __init test_string_or(void)
-+static void __init test_string_or(struct kunit *test)
- {
- 	char buf[SIZE+1];
- 	u32 string_or = 0;
-@@ -173,20 +157,15 @@ static int __init test_string_or(void)
- 	} /* j */
- 
- 	/* The OR of all the hash values should cover all the bits */
--	if (~string_or) {
--		pr_err("OR of all string hash results = %#x != %#x",
--		       string_or, -1u);
--		return -EINVAL;
--	}
--
--	return 0;
-+	KUNIT_EXPECT_FALSE_MSG(test, ~string_or,
-+			       "OR of all string hash results = %#x != %#x",
-+			       string_or, -1u);
- }
- 
--static int __init test_hash_or(void)
-+static void __init test_hash_or(struct kunit *test)
- {
- 	char buf[SIZE+1];
- 	u32 hash_or[2][33] = { { 0, } };
--	unsigned tests = 0;
- 	unsigned long long h64 = 0;
- 	int i, j;
- 
-@@ -201,39 +180,27 @@ static int __init test_hash_or(void)
- 			u32 h0 = full_name_hash(buf+i, buf+i, j-i);
- 
- 			/* Check that hashlen_string gets the length right */
--			if (hashlen_len(hashlen) != j-i) {
--				pr_err("hashlen_string(%d..%d) returned length"
--					" %u, expected %d",
--					i, j, hashlen_len(hashlen), j-i);
--				return -EINVAL;
--			}
-+			KUNIT_EXPECT_EQ_MSG(test, hashlen_len(hashlen), j-i,
-+					    "hashlen_string(%d..%d) returned length %u, expected %d",
-+					    i, j, hashlen_len(hashlen), j-i);
- 			/* Check that the hashes match */
--			if (hashlen_hash(hashlen) != h0) {
--				pr_err("hashlen_string(%d..%d) = %08x != "
--					"full_name_hash() = %08x",
--					i, j, hashlen_hash(hashlen), h0);
--				return -EINVAL;
--			}
-+			KUNIT_EXPECT_EQ_MSG(test, hashlen_hash(hashlen), h0,
-+					    "hashlen_string(%d..%d) = %08x != full_name_hash() = %08x",
-+					    i, j, hashlen_hash(hashlen), h0);
- 
- 			h64 = h64 << 32 | h0;	/* For use with hash_64 */
--			if (!test_int_hash(h64, hash_or))
--				return -EINVAL;
--			tests++;
-+			test_int_hash(test, h64, hash_or);
- 		} /* i */
- 	} /* j */
- 
--	if (~hash_or[0][0]) {
--		pr_err("OR of all __hash_32 results = %#x != %#x",
--			hash_or[0][0], -1u);
--		return -EINVAL;
--	}
-+	KUNIT_EXPECT_FALSE_MSG(test, ~hash_or[0][0],
-+			       "OR of all __hash_32 results = %#x != %#x",
-+			       hash_or[0][0], -1u);
- #ifdef HAVE_ARCH__HASH_32
- #if HAVE_ARCH__HASH_32 != 1	/* Test is pointless if results match */
--	if (~hash_or[1][0]) {
--		pr_err("OR of all __hash_32_generic results = %#x != %#x",
--			hash_or[1][0], -1u);
--		return -EINVAL;
--	}
-+	KUNIT_EXPECT_FALSE_MSG(test, ~hash_or[1][0],
-+			       "OR of all __hash_32_generic results = %#x != %#x",
-+			       hash_or[1][0], -1u);
- #endif
- #endif
- 
-@@ -241,65 +208,27 @@ static int __init test_hash_or(void)
- 	for (i = 1; i <= 32; i++) {
- 		u32 const m = ((u32)2 << (i-1)) - 1;	/* Low i bits set */
- 
--		if (hash_or[0][i] != m) {
--			pr_err("OR of all hash_32(%d) results = %#x "
--				"(%#x expected)", i, hash_or[0][i], m);
--			return -EINVAL;
--		}
--		if (hash_or[1][i] != m) {
--			pr_err("OR of all hash_64(%d) results = %#x "
--				"(%#x expected)", i, hash_or[1][i], m);
--			return -EINVAL;
--		}
-+		KUNIT_EXPECT_EQ_MSG(test, hash_or[0][i], m,
-+				    "OR of all hash_32(%d) results = %#x (%#x expected)",
-+				    i, hash_or[0][i], m);
-+		KUNIT_EXPECT_EQ_MSG(test, hash_or[1][i], m,
-+				    "OR of all hash_64(%d) results = %#x (%#x expected)",
-+				    i, hash_or[1][i], m);
- 	}
--
--	pr_notice("%u tests passed.", tests);
--
--	return 0;
--}
--
--static void __init notice_skipped_tests(void)
--{
--	/* Issue notices about skipped tests. */
--#ifdef HAVE_ARCH__HASH_32
--#if HAVE_ARCH__HASH_32 != 1
--	pr_info("__hash_32() is arch-specific; not compared to generic.");
--#endif
--#else
--	pr_info("__hash_32() has no arch implementation to test.");
--#endif
--#ifdef HAVE_ARCH_HASH_64
--#if HAVE_ARCH_HASH_64 != 1
--	pr_info("hash_64() is arch-specific; not compared to generic.");
--#endif
--#else
--	pr_info("hash_64() has no arch implementation to test.");
--#endif
- }
- 
--static int __init
--test_hash_init(void)
--{
--	int ret;
--
--	ret = test_string_or();
--	if (ret < 0)
--		return ret;
--
--	ret = test_hash_or();
--	if (ret < 0)
--		return ret;
--
--	notice_skipped_tests();
-+static struct kunit_case hash_test_cases[] __refdata = {
-+	KUNIT_CASE(test_string_or),
-+	KUNIT_CASE(test_hash_or),
-+	{}
-+};
- 
--	return ret;
--}
-+static struct kunit_suite hash_test_suite = {
-+	.name = "hash",
-+	.test_cases = hash_test_cases,
-+};
- 
--static void __exit test_hash_exit(void)
--{
--}
- 
--module_init(test_hash_init);	/* Does everything */
--module_exit(test_hash_exit);	/* Does nothing */
-+kunit_test_suite(hash_test_suite);
- 
- MODULE_LICENSE("GPL");
+That's what I've already done, and all the questions I've raised are
+from asking a simple question: what happens if a transaction is
+required to complete the iomap_dio_rw() swap write operation?
+
+I mean, this is similar to the problems with IOCB_NOWAIT - we're
+supposed to return -EAGAIN if we might block during IO submission,
+and one of those situations we have to consider is "do we need to
+run a transaction". If we get it wrong (and we do!), then the worst
+thing that happens is that there is a long latency for IO
+submission. It's a minor performance issue, not the end of the
+world.
+
+The difference with IOCB_SWAP is that "don't do transactions during
+iomap_dio_rw()" is a _hard requirement_ on both IO submission and
+completion. That means, from now and forever, we will have to
+guarantee a path through iomap_dio_rw() that will never run
+transactions on an IO. That requirement needs to be enforced in
+every block mapping callback into each filesystem, as this is
+something the iomap infrastructure cannot enforce. Hence we'll have
+to plumb IOCB_SWAP into a new IOMAP_SWAP iterator flag to pass to
+the ->iomap_begin() DIO methods to ensure they do the right thing.
+
+And then the question becomes: what happens if the filesystem cannot
+do the right thing? Can the swap code handle an error? e.g. the
+first thing that xfs_direct_write_iomap_begin() and
+xfs_read_iomap_begin() do is check if the filesystem is shut down
+and returns -EIO in that case. IOWs, we've now got normal filesystem
+"reject all IO" corruption protection mechanisms in play. Using
+iomap_dio_rw() as it stands means that _all swapfile IO will fail_
+if the filesystem shuts down.
+
+Right now the swap file IO can keep going blissfully unaware of the
+filesystem failure status. The open swapfile will prevent the
+filesystem from being unmounted. Hence to unmount the shutdown
+filesystem to correct the problem, first the swap file has to be
+turned off, which means we have a fail-safe behaviour. Using the
+iomap_dio_rw() path means that swapfile IO _can and will fail_.
+
+AFAICT, swap IO errors are pretty much thrown away by the mm code;
+the swap_writepage() return value is ignored or placed on the swap
+cache address space and ignored. And it looks like the new read path
+just sets PageError() and leaves it to callers to detect and deal
+with a swapin failure because swap_readpage() is now void...
+
+So it seems like there's a whole new set of failure cases using the
+DIO path introduces into the swap IO path that haven't been
+considered here. I can't see why we wouldn't be able to solve them,
+but these considerations lead me to think that use of the DIO is
+based on an incorrect assumption - DIO is not a "simple low level
+IO" interface.
+
+Hence I suspect that we'd be much better off with a new
+iomap_swap_rw() implementation that just does what swap needs
+without any of the complexity of the DIO API. Internally iomap can
+share what it needs to share with the DIO path, but at this point
+I'm not sure we should be overloading the iomap_dio_rw() path with
+the semantics required by swap.
+
+e.g. we limit iomap_swap_rw() to only accept written or unwritten
+block mappings within file size on inodes with clean metadata (i.e.
+pure overwrite to guarantee no modification transactions), and then
+the fs provided ->iomap_begin callback can ignore shutdown state,
+elide inode level locking, do read-only mappings, etc without adding
+extra overhead to the existing DIO code path...
+
+Cheers,
+
+Dave.
 -- 
-2.33.0
-
+Dave Chinner
+david@fromorbit.com
