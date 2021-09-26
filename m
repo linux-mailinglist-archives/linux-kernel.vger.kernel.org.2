@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EE6418D26
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 01:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE95D418D29
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 01:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhIZXrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 19:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S230438AbhIZXwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 19:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhIZXrl (ORCPT
+        with ESMTP id S229468AbhIZXwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 19:47:41 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FACC061570;
-        Sun, 26 Sep 2021 16:46:04 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id z62so16191090vsz.9;
-        Sun, 26 Sep 2021 16:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8c9UaZuAUrwYK0IVWso5zeXCprrmv1nwvjOP+NENb/0=;
-        b=ZkkgY6mAM1Kl6WSZUu5+KTBzdYRb0wrq4acUSpP3j3ITAhR69Hs8Dmd83BFKNgJ/XR
-         hNiAVKhOMKwimdLAL4JxYB6P8bmw8f/fKdcu1W61LHUOlcWlCQ0HTsH1nOY4/SbMGeoQ
-         3XGxfyP5+5Or7LfKeLUu9govzXoEccSyy+pXlvvmsgMZjSdgXAsByg1VePlf7VOws0xV
-         nynb6x3U6RUa1lvu8imdu9eZGsLts9LGVo1cIaoQ1/5ePULgcAxsb7J+pQD1nAYZfbX4
-         zRIpmoGFD6GrYtZu9SF/DwLp8cUj/ZRKzCNNh5KwnV8kqXIcbXpGxxK5EgwLXHvxKjrW
-         iUqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8c9UaZuAUrwYK0IVWso5zeXCprrmv1nwvjOP+NENb/0=;
-        b=DLOsyRZsV3p0sHAiVrnRK50ACO3LUfKd0I238NqpCoffSmf08S0TZGZLOmkcj1y+yW
-         6+u+r8CEAbdh5gRS5tHc8p0/EER4nVboCvBW7Q60QdPlC72hm4pic0BgiLITdzJFU2a0
-         teyBanno2Pq7+hg6uNiVHixjH5OJY3669eZxkwfKvFzKF0HMvTLcULnF58Jr6oVOcRlK
-         Fvbz6dQH56TtwYB3Rrr363/ecxjNEyImql816jsIko58TfcrEnNbm0zDfHAsLODr70oh
-         X/k5NXvgcB+e6bfCRhTIRvT5pAIiR/UTgqXerM4DMsBpRiwSlkSNiQXcYaPnzVwPkRrA
-         UsSQ==
-X-Gm-Message-State: AOAM5322ofXrovI20e3zUgg1rmr3s3tEAVttwQEBuLKDuUXhRzXQiGb+
-        dCaMHdJZjBBmovkEHLg5ZeKiUGEvx6pkL+UL6k2tlcUj
-X-Google-Smtp-Source: ABdhPJzIhZ27ZvekEPFk06fEY1qJM/EFhpzbe0YoNntTaFo/FqG5wbczXQ1KZFQxIrZyjRNNNBTCps3XZoQlxjckGh4=
-X-Received: by 2002:a67:2e4f:: with SMTP id u76mr17483265vsu.39.1632699963186;
- Sun, 26 Sep 2021 16:46:03 -0700 (PDT)
+        Sun, 26 Sep 2021 19:52:07 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F01BC061570;
+        Sun, 26 Sep 2021 16:50:30 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHjFJ00yLz4wgv;
+        Mon, 27 Sep 2021 09:50:27 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632700228;
+        bh=aii5h+3EAHKiS9SNEcuZB+Rk9zSBTEMBdKvDV4h26/Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=goGzyK/RiC71AfUD+6MragVKp53bmZ8U6ddwwpGPCkon6dVYXBsIQS6aruCwBqzyS
+         yHnA39WIkQECgk8UIHy9IHUJknci7txHUj62A45DLaCqbAlQeDgKI9J4DmVeMLNkmi
+         9B0dJaUkrbOww8nzNOIMJQikvYmRFDPA7poAJlr8EUban08AxQLbBqSGi5lBGNDL4k
+         6EiJDZXWIliYsRtFo7E7hOEUdpWCfwiEXoU0bTPGsH7teizQZpFVXY01BCghoHViDf
+         SjFGsPp7/n2wsZ341Zqafol/Vrb0iAsC9KiCMBSzJ1Qqx/n1NR2MWBq0gZc6PO+9wK
+         8ugkDOYdpMaxw==
+Date:   Mon, 27 Sep 2021 09:50:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Antoine Tenart <atenart@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the thermal tree with Linus' tree
+Message-ID: <20210927095027.11b0066a@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210925124629.250-1-caihuoqing@baidu.com>
-In-Reply-To: <20210925124629.250-1-caihuoqing@baidu.com>
-From:   Govindarajulu Varadarajan <govindarajulu90@gmail.com>
-Date:   Sun, 26 Sep 2021 16:45:27 -0700
-Message-ID: <CACG_+vJC-V-n68XWY-6zb_VBTfRTv57xsaC-Fge1s1-dJf2BYA@mail.gmail.com>
-Subject: Re: [PATCH] net: cisco: Fix a function name in comments
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Christian Benvenuti <benve@cisco.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/uoWWWX_68Yogj0fmPVZZoQh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 5:46 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
->
-> Use dma_alloc_coherent() instead of pci_alloc_consistent(),
-> because only dma_alloc_coherent() is called here.
->
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+--Sig_/uoWWWX_68Yogj0fmPVZZoQh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+Hi all,
 
-Reviewed-by: Govindarajulu Varadarajan <gvaradar@cisco.com>
+Today's linux-next merge of the thermal tree got a conflict in:
+
+  drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
+
+between commit:
+
+  8b4bd2566747 ("thermal/drivers/int340x: Do not set a wrong tcc offset on =
+resume")
+
+from Linus' tree and commit:
+
+  fc26023f8816 ("thermal/drivers/int340x: Fix tcc offset on resume")
+
+from the thermal tree.
+
+I fixed it up (I just used the latter) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uoWWWX_68Yogj0fmPVZZoQh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFRB0MACgkQAVBC80lX
+0GyCfgf/brT1qq4PDyrzDcGYY0Eym9KcFqUXHCVlJBbU5xumgA1/+08AeuLcbxFJ
+7LAZ6ZaBH1JOM+mjJV4cpo9GzEJteAq1MGQ1O28/n62c1fgAYwqHVsaBGD7ViEO8
+llfMisyhuwRdD/GdAcn3qqS6GUyfXjIaE9FzgPYGQLajynyTwzqCw1KK8l60xEAa
+dNtLspISoEWKWLj2Wb+gdOH8pOHNNx3NqRE6fTz0rZ5r5hPXvj/aua6VAxZDAzkj
+V2k/seje4KCrcueYUivdrKOYbxNZpbvPBRM6wUfqqEh8PH3GVcD1gPBFPaN6DBxX
+2PACeR1IcRhRoQS48+ubEV194Du4Gw==
+=kVoV
+-----END PGP SIGNATURE-----
+
+--Sig_/uoWWWX_68Yogj0fmPVZZoQh--
