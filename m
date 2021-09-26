@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825AF418B0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450EF418B0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 22:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhIZUvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 16:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
+        id S230202AbhIZUvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 16:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhIZUvI (ORCPT
+        with ESMTP id S230169AbhIZUvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 16:51:08 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9676DC061570;
-        Sun, 26 Sep 2021 13:49:31 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHdDM2grvz4xbL;
-        Mon, 27 Sep 2021 06:49:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632689363;
-        bh=GezQ6tCNCXjCzk5x/bkYmJRey+iN3jeDsaVZPzlnOtY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eg1OnH92zakS9Or0SKiZ2TcPnGtv67UpxVi5GFoyAqXrisqgJp0+jXtc6VKFjkvGn
-         HxC47KgYYhwCNOwqAPG9BWphDaC+nI1l71Wm5Vz4rRoxBq78yNiMskLATKojdvNBiY
-         at8ZuXmRd29QUTBTOKZtNjHgMH0XYhvwtlYCdxsUdYjxaJM9gBdoqH9vg2dgtKxyw4
-         kqwIWMs+Y+UWnVr6RgOYWkEyeqKZ2Pdq9HSsFjeRc9naSJ4x3Jl8qRSAokxf32JFZY
-         YAub6eiGdmx0DcbkpscPMRqb54ZcuajtNS8MNj6URyxX7uCrg+YNsGE0pOh1bVNUGs
-         Rqb/uHtxEn8ow==
-Date:   Mon, 27 Sep 2021 06:49:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the ipsec tree
-Message-ID: <20210927064921.06973f44@canb.auug.org.au>
+        Sun, 26 Sep 2021 16:51:14 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2627CC061604
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 13:49:38 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c1so13866673pfp.10
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 13:49:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=1Xi2zI3xz++jAU4KL461gSjO8O02r5P5HLSbGNQJnPI=;
+        b=YNUKZmOzFiHeJ2mJa7gvVYN7uN2TvfskQSN1D5sRVykhEQSaJ9ruR/0/YcZL/v6m+1
+         ej1FfHbYG0ay7WCE+E3fA04decWx+gxNMJh/2AfKb1EJT5DQhro8je6KQpQGeHKkDbsI
+         2Vo6bqf1guqWezlCcy2Pu6ROHYsiuxXT4kAlFIb+PM88X+oLVX6srxEMUnpVmYtptPL8
+         WAOiHaRdS1eZovd/jq4qVEL92/LIrjngBpm8KGcaYFTn8I1F9IQaKEEHQjkczzN5zKka
+         GwufIKM8VX78GbMlNVMgRK/KoB016OeVF3XuaLuGYvlJ152+ArnP4IkuG15uKtU0UehI
+         POCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=1Xi2zI3xz++jAU4KL461gSjO8O02r5P5HLSbGNQJnPI=;
+        b=dyjFNBFlFdxYwSNyBg1KaWZoaQlZlLVOHBsJIf1caPaALlT67/a8NDUyKiUIRbATZO
+         xPWh8nL5Frkl1ApgE9y/hR9yTk6b0sSyg+ZOeOVPofG4+vuLrI6sxpiBXNuqYTi0Z+GI
+         p2SIVTD5s9LRq9QHlzb/hYCZZg9NJ6hzwxkLqMPdhqsZly9LzwjiMJlDO0BJE6uf1SMy
+         ReNs5BXliRFCjC1yw3QVwS1eeamLCAaZDbI0GttvSZaDq6u38sS5AtAw5MlVbarw5H3A
+         7jQM8aZFeligqsrd5yraZXP/KFHOMGymQugYK7YCZYVcUxsDgMFVl/0zOJ8pi++81BH3
+         OI1g==
+X-Gm-Message-State: AOAM5325rw/xVYKv4tEy5Jf5BdnJIRR73mB3IAaEBeY0diDOdqdgBXto
+        WzJ/B5P+bIwo5tqqa86RsvmzRQ==
+X-Google-Smtp-Source: ABdhPJzndYH2uLj5kPrP3Kat7T50/IOEb8DNH7IWYo8ePwhsiil1vOxBGyaBm89cXY3NegHO0nVNfg==
+X-Received: by 2002:a63:4457:: with SMTP id t23mr583580pgk.354.1632689377421;
+        Sun, 26 Sep 2021 13:49:37 -0700 (PDT)
+Received: from [2620:15c:17:3:4d45:c2:971a:f134] ([2620:15c:17:3:4d45:c2:971a:f134])
+        by smtp.gmail.com with ESMTPSA id q13sm6606060pfk.128.2021.09.26.13.49.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 13:49:36 -0700 (PDT)
+Date:   Sun, 26 Sep 2021 13:49:35 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     Stephen Kitt <steve@sk2.org>
+cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] mm: Remove HARDENED_USERCOPY_FALLBACK
+In-Reply-To: <20210921061149.1091163-1-steve@sk2.org>
+Message-ID: <d2dc495-98c8-9a5c-823f-bb1cd55a8d4@google.com>
+References: <20210921061149.1091163-1-steve@sk2.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L/G6gqShS+ZdQDnBXvUN7h/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L/G6gqShS+ZdQDnBXvUN7h/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 21 Sep 2021, Stephen Kitt wrote:
 
-Hi all,
+> This has served its purpose and is no longer used. All usercopy
+> violations appear to have been handled by now, any remaining
+> instances (or new bugs) will cause copies to be rejected.
+> 
+> This isn't a direct revert of commit 2d891fbc3bb6 ("usercopy: Allow
+> strict enforcement of whitelists"); since usercopy_fallback is
+> effectively 0, the fallback handling is removed too.
+> 
+> This also removes the usercopy_fallback module parameter on
+> slab_common.
+> 
+> Link: https://github.com/KSPP/linux/issues/153
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> Suggested-by: Kees Cook <keescook@chromium.org>
 
-In commit
-
-  93ec1320b017 ("xfrm: fix rcu lock in xfrm_notify_userpolicy()")
-
-Fixes tag
-
-  Fixes: 703b94b93c19 ("xfrm: notify default policy on update")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 88d0adb5f13b ("xfrm: notify default policy on update")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/L/G6gqShS+ZdQDnBXvUN7h/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFQ3NEACgkQAVBC80lX
-0Gy/4gf+P1z40KYkNYZq14SAISNR3B7D4cetGw7nItHyXCsl//6r4ayq39zgYbF1
-MIBlYxwb/7fdeYlYwaXt4p4H9UNhPOOOORB2UGKvEX354afrNIH5yKGlUtsdZhgJ
-WiiCaISDDnL8CT2vOAx0oAxzymyjBxJ9OHTbp9I7C//wLLJOApeaE4J2u/7nQItU
-bL8nwU0Cm4SfU1SjBr1hv90DXO7GLK/ihtqr5pwikvW6YSa/Ym1AkVGSX/U9j0fr
-oeoCrE2f+1uLoUFzh4Im/nZFtRNh7GDhF4ALEsRlOlvobls7h6pkV3wV6uL3saXl
-XD+9UV2Vw79FBLZ7vU84zHzjry9vxg==
-=8mJ+
------END PGP SIGNATURE-----
-
---Sig_/L/G6gqShS+ZdQDnBXvUN7h/--
+Acked-by: David Rientjes <rientjes@google.com>
