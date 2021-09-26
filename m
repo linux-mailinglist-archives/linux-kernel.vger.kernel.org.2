@@ -2,113 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2623418881
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80624418885
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 14:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhIZMHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 08:07:16 -0400
-Received: from mout.web.de ([212.227.17.12]:52245 "EHLO mout.web.de"
+        id S231382AbhIZMHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 08:07:18 -0400
+Received: from mout.web.de ([212.227.17.11]:44273 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231335AbhIZMHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 08:07:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1632657926;
-        bh=JXUBttkyRgrw26wHzfuaQ48olNH5tGrG2ASYsEqtxh4=;
+        id S231356AbhIZMHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 08:07:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+        s=dbaedf251592; t=1632657927;
+        bh=Fk5SREXcGiQX8LPuAbBCjfapNszlY0pzWhK5XpaAyV4=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=KfQTyv40EHE9Uh6Hda6/QggsExhelbiwu5Pj8kNOaQOMby1sTFu1qYWQ1KdLcPSTx
-         dd5+7kdRXZal7AK0KmxYkYqq/17Oeu/IyITQWJGnRJ2/lsDxNITWf3vRQasKDM7XgW
-         IoHcyvD5iTXfuNdGH/blfrO6tW520y9JSMDsBT6A=
+        b=d+Y7Dp0J7fsXTDyyNvcxHZCy/jrs90VAqiDFAouMHf1OSjiajrdy+MjMokRS9RX5a
+         FqmwNivVF946lnn9NLfYthnc1uguQE2iEKHgIiTi/tYy2oqsFVfVUQTTFOBKzvywH7
+         33n8BwzfGy7xWVq7iJcTgwuovNpKwzskDJTXvbV0=
 X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
 Received: from md1f2u6c.fritz.box ([94.217.148.121]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0M89mf-1mi1kl0zzN-00vcYN; Sun, 26
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0Ljaei-1n60eU3Owq-00bcrq; Sun, 26
  Sep 2021 14:05:26 +0200
 From:   Jan Kiszka <jan.kiszka@web.de>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Suman Anna <s-anna@ti.com>
-Subject: [PATCH v5 2/6] arm64: dts: ti: iot2050: Disable SR2.0-only PRUs
-Date:   Sun, 26 Sep 2021 14:05:13 +0200
-Message-Id: <189a91866fb1af02e4fd2345dc56774aa069d5ba.1632657917.git.jan.kiszka@web.de>
+        Chao Zeng <chao.zeng@siemens.com>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH v5 3/6] arm64: dts: ti: iot2050: Add/enabled mailboxes and carve-outs for R5F cores
+Date:   Sun, 26 Sep 2021 14:05:14 +0200
+Message-Id: <1776f8be19b39a938d9248fcfc5332b753783c3e.1632657917.git.jan.kiszka@web.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632657916.git.jan.kiszka@web.de>
 References: <cover.1632657916.git.jan.kiszka@web.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OuJOHSOPnIVgBIz5KqP4yrx7lCWJMVrDvX93SSJqr6mRhQlAbMN
- fJG5hIw5SrxDNWWuydDZ25NZialc7bEaclQK3Ef2OxIaNQALfu6ihL77N1orjhQiG5lGG+5
- ou5yNEnIa8GyqDAa9+qh4pjvEDFHoRQLT0bd5AKOJ4PbghmD7u+oz6lbYt5nczjzBAeyTiR
- sxTAEBbl2R1cqO3JGA7XQ==
+X-Provags-ID: V03:K1:dp14hlKFy54eJnzueDrBM91JLiiueaexsmj7SEdq785kwzfo87g
+ YrdhsftbQU3M8LapCgIjn7rnuaqoJClXsFdFhxtEYKbdBORU6GngX7s0my/2hflrIkzoDy7
+ mzAuk8j79GoezzJl3AFpW7axXi11eSFncGUpCSYzRV4vrYNdgMrfahRPzqnTUhbvBEMjy55
+ K5S72M+ZBZI1lA6xUF7Pg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yhrtHlFDnKc=:qkPD0r5Fau6g+W8OWP3V7D
- u5vDS5abj/FlcqGgEBdqgsmiVdDX5kTHWCmzeBIN/iCv63cS8ZLMT8uaORi8AlO7NN7COPLvc
- Ylo8cgwviXcupIpiqWyXTZB312nPRCu7oASp2ZEMXblAyD16EHuu7QBvRVfy2pSnqUlLDdlN/
- 5J+yjUmyO3T7BkAYhRfWGXmlfW02T3P5XUysUu5Jo216VPWo4/fqJDemprItOMDpSsWE3PQIN
- jdCZ9WcFjbGg3dte04MIYcD5HAdOf/c2O/3BYseDEWTZ6NsFWfrgNf5EYDaZ5jukDlOagdMVG
- myFLqYZbMLql5fbU0Z+H4WYO1YQrXHhxPdBy6E1jSV4q093LIl+VmVHY1/9BfXBoVEhPngW1S
- mIAlu7KKXxfcKYa+4oBVq08KGOP9joH2vIv0C+2HkaL9hXNI+4/CXseYHYaSs4um1Mya3bgsk
- 1REBe/YkyL88kdKP3ki0KxSJtiee4BiZjm+ncwlUzIYphlnrvtk6VA0ZlCF/yctfSikhCsUBr
- ivYkmyRb6qB7aXfA6AYKhUQxlkGkPgEe1Z1GD5qb8REoK0TdGpo76cL5i+AX7wxwkbFem8HoV
- d5FEGwoGO3ZlpjeBrr1StpDaQ0XX/XEuBIWdNMKz3dfPfjngwXz1PJsGj8HyGKdnSJmrpFZYp
- QPF3GMLM0Cm3baLlK8kol3cx8Xt97yGIArrKE5OUoG2io7I+MjEd2Fu8kMgeOxo6kQrx1YDXW
- GPcqIX/Mv/0UA5EOECXIP0wd5NGhBdyxDZMMKEb+pLXbH287ZSOsRM/jmk269o9+xohq2tSbc
- 6DDZcurDEXX/5MMIqAtBLRAkYO+1Cjpd0A5alHbyaCGxRC2LK9T08G3hQBjkI8vlSX6fQDKEe
- EfcxG0KUEc6CsIBlPBoqJq34YuFuVpShMQxyneNvtt3MOvHFJl4kuvB8pkk5Ekv3dFLA8dWrZ
- HOuGkb9ij+l11s/Ps9ZOuT7JibVmJxAtpM4mPIISSiWL+lXoCnoUv6nIOT3NLqzLOu6Fw2srQ
- U9mBRWPn36IMzWnEg7c7m/kmtOOG6AK/VLdEtNq44aMfTvQcJnLNUwQg1tSbnbTxqazEkx1BY
- OMOXVHSWbxKmH4=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:r1sMIBbw0Y8=:9Xk1/WrB/p7m2ExHScKzgc
+ Xmh3Fz+qDcx60IKALHFycQwCDd06kn0+jhkp9SE3s1otw5/25PaB4RwGToL57AZk1GPiS/oFT
+ JGVAmiUBw4iHKEbwssm/mo3QUIjQhacpaD/INA0IZcajeGu7ISrSnG8t+D+WEZbJpv/YGUAps
+ //EEA8f7HLM7EMBv9abQF8bgc0TaPrTkTzYfVvG5SzdszVih1UccndonTFwq3INt7j/1my0eN
+ H7kxHtfeu3XaS+sulwKpZPKo7DL5PH8r80G4GapJDbeK/Bjpeg8dWNKAl6wlJRTAtpwuXcrT5
+ oVOnjQUf84yA2xw5p+Djlt2jd4tAc73tr9b+uxxB/s+1bmZUPlBZ2XacBV6L+l2zCl6DcHB4m
+ 1FS5dD3T5sauWcY/NQfGqltYv62bcMrzTjRYH8jbYYmPyJGJJn9g+DUzQIOVCadnxMOFUN17L
+ Rj/i6raNPt+ngaWj9VVZGl8uMB2J/3JN4Q4PKKa+nIvkDqi1eO0kbVMuaCGQEQgHXzt6+P+Dg
+ y0d30KQcWAXUVi+i43i3gL+QwfeM487IpxPxlDsiVsOYLwXuTuzu3DwlE8fumkemdpZaOHoPU
+ eqn++67EemPsAF3n7BN6A9/bpRjU6fEg1a9GnmBE8FnQKi1g36/q334GKsrNFweYlgQvR1zSS
+ Xor5KamgQEYVZ0LUqKph19mO/UxRzYVU80MqyQacAnTASNOiwpElJNO7dIYkJhY9CWYZhjGoR
+ vXTuKt3wYTuIakojMyZGr7QbV9lRKTpEv1Trv3GLgW2Du4icJ3TqOJutl9NQbC+QhrAdjjawe
+ MoOQofQAZofc+nvW/UVXPsRhAm75ynwnoo75eMLaKAUIj/5vFwIlScoesmgkWoEtcXekW0ipV
+ eyM2M+IFF3Kfgp4eAaS/wxVIWWzrLCUdkTKkupBNspdjxi0iecXKEqnnnZM43a10CrV5TS2Ns
+ +zBhQhR5zWam2kyHaCgdvcg8YKR0zQlWc+QfJ5RaClWIW+Z3WoMe4F+7+9yIEywwB1st9oBzI
+ bPiaATn3CO+zEBNdeBG6MdaPTe+ulcut4ARFwZl9Q9KCzuKPf//itknG2S78MBbvH+h+t6Q0J
+ Vlj6AZnvnl1Xf4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jan Kiszka <jan.kiszka@siemens.com>
 
-The IOT2050 devices described so far are using SR1.0 silicon, thus do
-not have the additional PRUs of the ICSSG of the SR2.0. Disable them.
+Analogously to the am654-base-board, configure the mailboxes for the two
+R5F cores, add them and the already existing memory carve-outs to the
+related MCU nodes. Allows to load applications under Linux onto the
+cores, e.g. the RTI watchdog firmware.
 
 Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Acked-by: Aswath Govindraju <a-govindraju@ti.com>
-Acked-by: Suman Anna <s-anna@ti.com>
+Reviewed-by: Suman Anna <s-anna@ti.com>
 =2D--
- .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 26 +++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm=
 64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-index 6261ca8ee2d8..58c8e64d5885 100644
+index 58c8e64d5885..b29537088289 100644
 =2D-- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-@@ -716,3 +716,27 @@ &icssg1_mdio {
- &icssg2_mdio {
+@@ -658,11 +658,21 @@ &pcie1_ep {
+ };
+
+ &mailbox0_cluster0 {
+-	status =3D "disabled";
++	interrupts =3D <436>;
++
++	mbox_mcu_r5fss0_core0: mbox-mcu-r5fss0-core0 {
++		ti,mbox-tx =3D <1 0 0>;
++		ti,mbox-rx =3D <0 0 0>;
++	};
+ };
+
+ &mailbox0_cluster1 {
+-	status =3D "disabled";
++	interrupts =3D <432>;
++
++	mbox_mcu_r5fss0_core1: mbox-mcu-r5fss0-core1 {
++		ti,mbox-tx =3D <1 0 0>;
++		ti,mbox-rx =3D <0 0 0>;
++	};
+ };
+
+ &mailbox0_cluster2 {
+@@ -705,6 +715,18 @@ &mailbox0_cluster11 {
  	status =3D "disabled";
  };
-+
-+&tx_pru0_0 {
-+	status =3D "disabled";
+
++&mcu_r5fss0_core0 {
++	memory-region =3D <&mcu_r5fss0_core0_dma_memory_region>,
++			<&mcu_r5fss0_core0_memory_region>;
++	mboxes =3D <&mailbox0_cluster0 &mbox_mcu_r5fss0_core0>;
 +};
 +
-+&tx_pru0_1 {
-+	status =3D "disabled";
++&mcu_r5fss0_core1 {
++	memory-region =3D <&mcu_r5fss0_core1_dma_memory_region>,
++			<&mcu_r5fss0_core1_memory_region>;
++	mboxes =3D <&mailbox0_cluster1 &mbox_mcu_r5fss0_core1>;
 +};
 +
-+&tx_pru1_0 {
-+	status =3D "disabled";
-+};
-+
-+&tx_pru1_1 {
-+	status =3D "disabled";
-+};
-+
-+&tx_pru2_0 {
-+	status =3D "disabled";
-+};
-+
-+&tx_pru2_1 {
-+	status =3D "disabled";
-+};
+ &icssg0_mdio {
+ 	status =3D "disabled";
+ };
 =2D-
 2.31.1
 
