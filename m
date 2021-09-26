@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BA441871F
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF86418721
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 09:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhIZHYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 03:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhIZHX7 (ORCPT
+        id S231225AbhIZHZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 03:25:18 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:50266 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhIZHZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 03:23:59 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5367EC061604
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 00:22:23 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id k24so14578075pgh.8
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 00:22:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Rgzg8J8HaCNFTJCTGijijfBBizgKVxNjDBbx5SerjSo=;
-        b=h78cLKrUR6Fb/xtNUx6PCdVVKnn5W7uMJStZi70Y9JENKFlY26/2ixdCW5EK3FgMm1
-         KbvNnwhitCaOwyQiieKP12ooNHwi8nV3SeNwX1Hib4Al3UXf1o7mB509hC3mHB5QlGm/
-         fhXMq53cu+7DPXm0BYYwL0okd6DiV6AYiny4WbSOy3am++uT26rZKvzdQVLcxz5zGbkE
-         Ulg+sTJyOyCLcK5d9DMAStm8LJP4/PJanmqSHrFsEU3L5oknkI+MMaah1u7qGdnRT3wY
-         ibCnC9pEUUJIleFWTs8lOVQVfehm6K5vT5GX2iRnxRx2ZQUn99Bp49ZHs5rIjr3YYDmJ
-         0Oeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Rgzg8J8HaCNFTJCTGijijfBBizgKVxNjDBbx5SerjSo=;
-        b=wB6Fe3V1SaAXq6HqFry6+3H42aky+iWnrW13zY7jwiuY5TiPKALGNkmdaDEKK+MyNH
-         mc/zwk2+97qjoiwptzh+jkBaTrVrcQ/MlzessbAoLqbCgOoiEvdlA/sZNZ9d7l86bVCl
-         zkvz8F0UJP3YYCHTf8OXm6JqVc3QV/uOmMGf9adfsezSOMwLYIa2TFCEJlGZfadHHJrE
-         /R7upPT+orE99pkR/bJkh702qSZLg5BbFNjmjCt8XplH8oyz8m/8OCxSmGya9FaS7R2r
-         oZj2gf9hm3itrxCB9yjs4LaUvKmKU4r1H4G4cb+BVxCzgn25lY5G/N1zRlTf1MDYgmrS
-         Qo6A==
-X-Gm-Message-State: AOAM531oWnuwcjWXprWLIpYaavTe+govvbB59UPwtzxSRM497J8geQg/
-        HZ+xsKGfPZm51hsBkS17E17CjA==
-X-Google-Smtp-Source: ABdhPJxJPbYclGRZxLMxE8I0Lz/Tqb8XX7PcHF2w9ObUbbmB7upkWAO18lmwCdPWkqYAYOL2Zc/y8w==
-X-Received: by 2002:a63:ea58:: with SMTP id l24mr11397356pgk.334.1632640942653;
-        Sun, 26 Sep 2021 00:22:22 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id p13sm13359704pff.73.2021.09.26.00.22.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 00:22:22 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: sdm630-nile: Correct regulator label name
-Date:   Sun, 26 Sep 2021 15:22:15 +0800
-Message-Id: <20210926072215.27517-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Sun, 26 Sep 2021 03:25:17 -0400
+Date:   Sun, 26 Sep 2021 07:23:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1632641018;
+        bh=A7IcFfvvEgZya5vztjRz7mrm+5JR+9oCS8iFEgJnedg=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=ch48N3+QmTMiKyizs2fVCt0oWGiPjAmsDqHPZoKcXyW/Zd9o1rOtPDmf7fCVfAtSX
+         4xPCAr9v1GqVSwPJEYQhkKDYuu1fwOQrtIwMZ5PqiJ5CqYRy10ToC+dlReXAENw1OA
+         nZqbr/bqqjq8n2E8MizHs8JI6NcoBl+4NfajTcrg=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: glibc VETO for kernel version SUBLEVEL >= 255
+Message-ID: <qscod31lyVG7t-CW63o_pnsara-v9Wf6qXz9eSfUZnxtHk2AkeJ73yvER1XYO_311Wxo2wC8L2JuTdLJm8vgvhVVaGa5fdumXx5iHWarqwA=@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.5V (29p5) is obviously wrong for regulator l4 and l5.  Correct them
-to be 2.95V (2p95).  No functional change.
+Earlier this year there was some discussion about kernel version numbers
+after 4.9.255 and 4.4.255. Problem was 8-bit limitation for SUBLEVEL
+number in stable kernel versions. The fix was to freeze LINUX_VERSION_CODE
+number at x.x.255 and to continue incrementing SUBLEVEL number. Seems
+there are more more fallout from that decision. At least some versions of
+glibc do not play well with larger SUBLEVEL numbers.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-index 849900e8b80e..11d0a8c1cf35 100644
---- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-@@ -308,7 +308,7 @@
- 			regulator-allow-set-load;
- 		};
- 
--		vreg_l4b_29p5: l4 {
-+		vreg_l4b_2p95: l4 {
- 			regulator-min-microvolt = <2944000>;
- 			regulator-max-microvolt = <2952000>;
- 			regulator-enable-ramp-delay = <250>;
-@@ -327,7 +327,7 @@
- 		 * Tighten the range to 1.8-3.328 (closest to 3.3) to
- 		 * make the mmc driver happy.
- 		 */
--		vreg_l5b_29p5: l5 {
-+		vreg_l5b_2p95: l5 {
- 			regulator-min-microvolt = <1800000>;
- 			regulator-max-microvolt = <3328000>;
- 			regulator-enable-ramp-delay = <250>;
-@@ -559,14 +559,14 @@
- 	mmc-hs400-1_8v;
- 	mmc-hs400-enhanced-strobe;
- 
--	vmmc-supply = <&vreg_l4b_29p5>;
-+	vmmc-supply = <&vreg_l4b_2p95>;
- 	vqmmc-supply = <&vreg_l8a_1p8>;
- };
- 
- &sdhc_2 {
- 	status = "okay";
- 
--	vmmc-supply = <&vreg_l5b_29p5>;
-+	vmmc-supply = <&vreg_l5b_2p95>;
- 	vqmmc-supply = <&vreg_l2b_2p95>;
- };
- 
--- 
-2.17.1
+# uname -s -r -m
+Linux 4.9.283-QEMU armv6l
+# apt upgrade
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Calculating upgrade... Done
+The following packages will be upgraded:
+ [SNIP]
+Fetched 145 MB in 1min 57s (1244 kB/s)
+Reading changelogs... Done
+Preconfiguring packages ...
+(Reading database ... 39028 files and directories currently installed.)
+Preparing to unpack .../libc6-dbg_2.28-10+rpt2+rpi1_armhf.deb ...
+Unpacking libc6-dbg:armhf (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+Preparing to unpack .../libc6-dev_2.28-10+rpt2+rpi1_armhf.deb ...
+Unpacking libc6-dev:armhf (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+Preparing to unpack .../libc-dev-bin_2.28-10+rpt2+rpi1_armhf.deb ...
+Unpacking libc-dev-bin (2.28-10+rpt2+rpi1) over (2.28-10+rpi1) ...
+Preparing to unpack .../linux-libc-dev_1%3a1.20210831-3~buster_armhf.deb ..=
+.
+Unpacking linux-libc-dev:armhf (1:1.20210831-3~buster) over (1:1.20210527-1=
+) ...
+Preparing to unpack .../libc6_2.28-10+rpt2+rpi1_armhf.deb ...
+ERROR: Your kernel version indicates a revision number
+of 255 or greater.  Glibc has a number of built in
+assumptions that this revision number is less than 255.
+If you\'ve built your own kernel, please make sure that any
+custom version numbers are appended to the upstream
+kernel number with a dash or some other delimiter.
+
+dpkg: error processing archive /var/cache/apt/archives/libc6_2.28-10+rpt2+r=
+pi1_armhf.deb (--unpack):
+ new libc6:armhf package pre-installation script subprocess returned error =
+exit status 1
+Errors were encountered while processing:
+ /var/cache/apt/archives/libc6_2.28-10+rpt2+rpi1_armhf.deb
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+
+Above upgrade works normally if I edit top level Linux source Makefile to
+say "SUBLEVEL =3D 0" and re-compile new kernel.
+
+I am not pointing any fingers here, but it seems that either glibc code or
+stable kernel versioning is messed up.
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
 
