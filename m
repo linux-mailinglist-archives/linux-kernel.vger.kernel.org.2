@@ -2,145 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D8418843
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0226418848
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 13:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhIZLPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 07:15:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
+        id S230339AbhIZLVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 07:21:41 -0400
+Received: from mout.gmx.net ([212.227.15.18]:54309 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230128AbhIZLO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 07:14:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14D0260F9C;
-        Sun, 26 Sep 2021 11:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632654802;
-        bh=UNzD+vYlv7wcsplcUiMVUTy0bdIN+262+sQINEJvh2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ke48rWrEhs5GdEgH+SxwytgQPuw+0D9J0v25fBeCSXIJUI0ETfHCWg5QXa6JxJnsj
-         ci0sjkxE6tqwXyJ7Je/mqGgn6F6SGi6QzTBw/uQCkTrPNcwcmrYFndc9N/u8yPWDDO
-         /7/ImQLHNCg6/KjMlK7hhgiI0l2QtWUQMEdWtlID+t/6Dtq1Lp4aOucmRRumljlwjx
-         ikE4uqhxWZ9V9VZCJ+giBjW6E26MkS/kkRIfpI6VaSfZXSPrxlfTZQ86KSgnnVlixu
-         aU47P3FSvz0WQho2K3TSWjg/F+xGfWN/Dd/qNcaMVENZA93RErT6A3bCjW0tLeWK9R
-         wfGPQWZVjjGrQ==
-Received: by pali.im (Postfix)
-        id 7FFBA60D; Sun, 26 Sep 2021 13:13:19 +0200 (CEST)
-Date:   Sun, 26 Sep 2021 13:13:19 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
- CRS response
-Message-ID: <20210926111319.sgtfsjovkhfkh4qs@pali>
-References: <20210922101736.v6qur3qnarccdoqe@pali>
- <20210922164803.GA203171@bhelgaas>
+        id S230128AbhIZLVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 07:21:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+        s=badeba3b8450; t=1632655179;
+        bh=LVRo0Nnk3bjO4nr2gf7aMG8qFvqjKKqzRNNSdnXJkfo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=afdm/8MG5hhgYnMv2bjj/FfhjjZL+XPwyEIL2IwkU5akDegQkbH1hG8xZYFTFurBc
+         TYuRYQiGN4R0vxkwAAujrCsAOLR9rqzPdTSNTtSiBA8mkKBJypCWk5935zTGAyuhqF
+         HA6ZtPsUxE+O++UFGBdUy33rIdy4DNSgX6xkRdn4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MtwUw-1mpQSF0PIC-00uKUp; Sun, 26 Sep 2021 13:19:39 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2] platform/x86: thinkpad_acpi: Switch to common use of attributes
+Date:   Sun, 26 Sep 2021 13:19:08 +0200
+Message-Id: <20210926111908.6950-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210922164803.GA203171@bhelgaas>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qMcOHYkDWaJGnDS2aun2yYXZhumi80fV9nVrFKaIbGOtnT0KvTz
+ WSQLhnzsRBqWen19FgYHgcwRzmzmw28uAk4lfqh+pKikM7TKCejCH3gIR4KYyHyzYkJ2bhP
+ cdUIxYK35vGwWkAtyRFxGsp/DXyaX5GBWKNBiUQPDEWBieQJekGnSO08KnxQVbGZzniFD06
+ xyuJSp/7XEzKRIS/j8ozw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Zain6EwAHX8=:+iWBDos79qtSXaAHEcP/er
+ 1lFNKMExOxR4kfXV73/pB+lvn5trlBsuWYh++ccwFSP6/ayRtOPpHyVUt1pBwuFIllWwUamrV
+ Evwix0gmd6QBNhoKvcvsetZ8M3h/f/kG3BHeJc+F/Zn4/IqOqEgJTWD4MdGyu+qVydYHrAa0N
+ z3O3paB4N9m5VCziB3Pg3VDfW2CbHIniS4uYcAnYL2S2961BsOc1/8vDiGuVf/Cpy8HqdJUp4
+ 3EFTjoHv59NYUKvj4Wfkmof4Vca/iqR9dso+vEBdpNseMe5USe6Io1Tpl2Am11/wJZvAmk0FB
+ 8hkdUkgJNYWMlci5JwniobvnqgeXtvACGzFxv+agfsUqkVIv3WcbBrUYFSBPRObK7aaqwRwWy
+ Mb9Xke13/GLcK+fJRPQwEquKDbt63QQmL3AKEOzJCHHy7LuMxZmInhzjmN82F5VJsXGYjgZVK
+ TyYmgJ7ZTap3n2JqU5gTRnVhubLJ48+t5kD1TOsrSGjXzvttNxX8ejeeTp3ECJ8aZM2Vt9gsW
+ lP2X09u2qDYK1ZXXi66CbI7jWxMpkjBDHyvV8vukcz/Pe6GQTbuUNFZgZ/9xVo1rzhAnNH4PW
+ w/QUoN691kNv4T59kvEe//vmthyAZIT5Go55yJR1bkE2tQhjgZdNdCicIjEhICI6gaOAP87wG
+ AHgpmUuwZLn0Su9oXuh8GUXlcUdD2VRC2itT33MmN/9keMaJE1Qc0kSCahgXPcD3s+5OsnSuI
+ WC60TiD3m6AXTsxJH91WZip/umuLL0VMYvgCIXBVok6oswQDoqLTw7IWdur3S4i5yqoUNVPQZ
+ nXmNUXBDvFwh5kODjUw4AG+HTZwmZX0+a5/StbfT++UEBFGkGNURh6uUWdL+Trgnmm+wkHenR
+ nW8d3Nt/t5+f3RDFlmMG5eI487++DmG/YRlY5VICAzW4R/kSMTtTuZ5lRRpQZG5bykwbOFSU2
+ 3Snq2Kl/sMv8nCHi+hxtPFxxqzMjbhAnvmTaLJYxS7w/316R15La5V2/1mukyL9myTZKc7Nn4
+ /7YVn2F+Rx/IvJTsQVubG7IdDyedfSws4sLtQgba4PCatCcmb9ed3gCsyHrxg96HqGhb5FH0u
+ JTBhUO3En8g0f0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 22 September 2021 11:48:03 Bjorn Helgaas wrote:
-> On Wed, Sep 22, 2021 at 12:17:36PM +0200, Pali Rohár wrote:
-> > On Thursday 16 September 2021 09:32:57 Bjorn Helgaas wrote:
-> > > On Wed, Sep 15, 2021 at 12:55:53PM +0200, Pali Rohár wrote:
-> > > ...
-> 
-> > > > I'm not sure how "legal" it is if userspace / setpci changes some of
-> > > > these bits. At least on a hardware with a real Root Port device it
-> > > > should be fully transparent. As hardware handles this re-issue and
-> > > > kernel then would see (reissued) response.
-> > > 
-> > > If setpci changes bits like these, all bets are off.  We can't tell
-> > > what happened, so we can't rely on any configuration Linux did.  I
-> > > think we really should taint the kernel when this happens.
-> > 
-> > For testing purposes, setpci is still a very good tool.
-> 
-> Yes, absolutely!
-> 
-> > > > Test case: Initialize device, then unbind it from sysfs, reset it (hot
-> > > > reset or warm reset) and then rescan / reinit it again. Here device is
-> > > > permitted to send CRS response.
-> > > > 
-> > > > We know that more PCIe cards are buggy and sometimes firmware on cards
-> > > > crashes or resets card logic. Which may put card into initialization
-> > > > state when it is again permitted to send CRS response.
-> > > 
-> > > Yep.  That's a buggy device and normally we would work around it with
-> > > a quirk.  This particular kind of bug would be hard to work around,
-> > > but a host bridge driver doesn't seem like the right place to do it
-> > > because we'd have to do it in *every* such driver.
-> > 
-> > This described firmware crashing & card reset logic I saw in more wifi
-> > cards. Sometimes even wifi drivers itself detects that card does not
-> > respond and do some its own internal card reset (e.g. iwldvm on laptop).
-> > So it very common situation.
-> > 
-> > But I have not seen that these cards on laptop issue CRS response. Maybe
-> > because their firmware or PCIe logic bootup too fast (so there is a very
-> > little window for CRS response) or because CRS response sent to OS did
-> > not cause any issue.
-> 
-> After a reset, we normally delay 100ms *before* issuing the first
-> config request to the device, e.g., [1].  I expect that in most cases
-> the device has completed its initialization in that 100ms and it never
-> responds with CRS status.
-> 
-> > So no particular workaround is needed for above described scenario.
-> > 
-> > 
-> > But anyway, in case that in future there would be need for disabling CRS
-> > feature in kernel (e.g. for doing some workaround for endpoint or
-> > extended pcie switch) then this re-issuing of config request on CRS
-> > response in pci-aardvark.c would be needed to have similar behavior like
-> > real HW hen CRS is disabled.
-> 
-> To be pedantic, there's no such thing as "disabling CRS".  CRS is a
-> required feature with no enable/disable bit.  There is only "enabling
-> or disabling CRS *Software Visibility*".
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Of course, I mean that CRSSVE bit.
+So, to avoid open-coded arithmetic in the kzalloc() call inside the
+create_attr_set() function the code must be refactored. Using the
+struct_size() helper is the fast solution but it is better to switch
+this code to common use of attributes.
 
-> The config read of Vendor ID after a reset should be done by the PCI
-> core, not a device driver.
+Then, remove all the custom code to manage hotkey attributes and use the
+attribute_group structure instead, refactoring the code accordingly.
+Also, to manage the optional hotkey attributes (hotkey_tablet_mode and
+hotkey_radio_sw) use the is_visible callback from the same structure.
 
-Of course. But in case of unexpected reset (which PCI code does not
-detect), card driver at the same time could issue some config read/write
-request.
+Moreover, now the hotkey_init_tablet_mode() function never returns a
+negative number. So, the check after the call can be safely removed.
 
-> If we disable CRS SV, the only outcomes of
-> that read are:
-> 
->   1) Valid Vendor ID data, or
-> 
->   2) Failed transaction, typically reported as 0xffff data (and, I
->      expect, an Unsupported Request or similar error logged)
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-Yes. And I think it should apply also for any other config register, not
-just vendor id.
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Hi,
 
-In case error reporting or AER functionality is not supported then there
-would be no error logged. And PCI core / kernel does not have to know
-that such thing happened.
+Following the suggestions made by Greg I have switch the code to common
+use of attributes. However this code is untested. If someone could test
+it would be great.
 
-Anyway, there is probably a candidate wifi card with "not ready" issue:
-https://lore.kernel.org/linux-wireless/CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com/
+Thanks,
+Len
 
-> In either case there may have been zero or more retries on PCIe.  The
-> PCI core needs to handle the failure case sensibly even though it has
-> no idea whether the read has been retried.
-> 
-> > And I like the idea if driver is "feature complete" and prepared also
-> > for other _valid_ code paths. This is just my opinion.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pci.c?id=v5.14#n4651
+Changelog v1 -> v2
+- Don't use the struct_size helper and switch the code to common use of
+  attributes (Greg Kroah-Hartman).
+
+ drivers/platform/x86/thinkpad_acpi.c | 139 +++++----------------------
+ 1 file changed, 26 insertions(+), 113 deletions(-)
+
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/t=
+hinkpad_acpi.c
+index 50ff04c84650..07b9710d500e 100644
+=2D-- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -1001,79 +1001,6 @@ static struct platform_driver tpacpi_hwmon_pdriver =
+=3D {
+  * sysfs support helpers
+  */
+
+-struct attribute_set {
+-	unsigned int members, max_members;
+-	struct attribute_group group;
+-};
+-
+-struct attribute_set_obj {
+-	struct attribute_set s;
+-	struct attribute *a;
+-} __attribute__((packed));
+-
+-static struct attribute_set *create_attr_set(unsigned int max_members,
+-						const char *name)
+-{
+-	struct attribute_set_obj *sobj;
+-
+-	if (max_members =3D=3D 0)
+-		return NULL;
+-
+-	/* Allocates space for implicit NULL at the end too */
+-	sobj =3D kzalloc(sizeof(struct attribute_set_obj) +
+-		    max_members * sizeof(struct attribute *),
+-		    GFP_KERNEL);
+-	if (!sobj)
+-		return NULL;
+-	sobj->s.max_members =3D max_members;
+-	sobj->s.group.attrs =3D &sobj->a;
+-	sobj->s.group.name =3D name;
+-
+-	return &sobj->s;
+-}
+-
+-#define destroy_attr_set(_set) \
+-	kfree(_set)
+-
+-/* not multi-threaded safe, use it in a single thread per set */
+-static int add_to_attr_set(struct attribute_set *s, struct attribute *att=
+r)
+-{
+-	if (!s || !attr)
+-		return -EINVAL;
+-
+-	if (s->members >=3D s->max_members)
+-		return -ENOMEM;
+-
+-	s->group.attrs[s->members] =3D attr;
+-	s->members++;
+-
+-	return 0;
+-}
+-
+-static int add_many_to_attr_set(struct attribute_set *s,
+-			struct attribute **attr,
+-			unsigned int count)
+-{
+-	int i, res;
+-
+-	for (i =3D 0; i < count; i++) {
+-		res =3D add_to_attr_set(s, attr[i]);
+-		if (res)
+-			return res;
+-	}
+-
+-	return 0;
+-}
+-
+-static void delete_attr_set(struct attribute_set *s, struct kobject *kobj=
+)
+-{
+-	sysfs_remove_group(kobj, &s->group);
+-	destroy_attr_set(s);
+-}
+-
+-#define register_attr_set_with_sysfs(_attr_set, _kobj) \
+-	sysfs_create_group(_kobj, &_attr_set->group)
+-
+ static int parse_strtoul(const char *buf,
+ 		unsigned long max, unsigned long *value)
+ {
+@@ -2042,8 +1969,6 @@ static u32 hotkey_acpi_mask;		/* events enabled in f=
+irmware */
+
+ static u16 *hotkey_keycode_map;
+
+-static struct attribute_set *hotkey_dev_attributes;
+-
+ static void tpacpi_driver_event(const unsigned int hkey_event);
+ static void hotkey_driver_event(const unsigned int scancode);
+ static void hotkey_poll_setup(const bool may_warn);
+@@ -3089,7 +3014,7 @@ static const struct attribute_group adaptive_kbd_att=
+r_group =3D {
+
+ /* --------------------------------------------------------------------- =
+*/
+
+-static struct attribute *hotkey_attributes[] __initdata =3D {
++static struct attribute *hotkey_attributes[] =3D {
+ 	&dev_attr_hotkey_enable.attr,
+ 	&dev_attr_hotkey_bios_enabled.attr,
+ 	&dev_attr_hotkey_bios_mask.attr,
+@@ -3103,6 +3028,26 @@ static struct attribute *hotkey_attributes[] __init=
+data =3D {
+ 	&dev_attr_hotkey_source_mask.attr,
+ 	&dev_attr_hotkey_poll_freq.attr,
+ #endif
++	NULL
++};
++
++static umode_t hotkey_attr_is_visible(struct kobject *kobj,
++				      struct attribute *attr, int n)
++{
++	if (attr =3D=3D &dev_attr_hotkey_tablet_mode.attr) {
++		if (!tp_features.hotkey_tablet)
++			return 0;
++	} else if (attr =3D=3D &dev_attr_hotkey_radio_sw.attr) {
++		if (!tp_features.hotkey_wlsw)
++			return 0;
++	}
++
++	return attr->mode;
++}
++
++static const struct attribute_group hotkey_attr_group =3D {
++	.is_visible =3D hotkey_attr_is_visible,
++	.attrs =3D hotkey_attributes,
+ };
+
+ /*
+@@ -3161,9 +3106,7 @@ static void hotkey_exit(void)
+ 	hotkey_poll_stop_sync();
+ 	mutex_unlock(&hotkey_mutex);
+ #endif
+-
+-	if (hotkey_dev_attributes)
+-		delete_attr_set(hotkey_dev_attributes, &tpacpi_pdev->dev.kobj);
++	sysfs_remove_group(&tpacpi_pdev->dev.kobj, &hotkey_attr_group);
+
+ 	dbg_printk(TPACPI_DBG_EXIT | TPACPI_DBG_HKEY,
+ 		   "restoring original HKEY status and mask\n");
+@@ -3249,11 +3192,6 @@ static int hotkey_init_tablet_mode(void)
+ 	pr_info("Tablet mode switch found (type: %s), currently in %s mode\n",
+ 		type, in_tablet_mode ? "tablet" : "laptop");
+
+-	res =3D add_to_attr_set(hotkey_dev_attributes,
+-			      &dev_attr_hotkey_tablet_mode.attr);
+-	if (res)
+-		return -1;
+-
+ 	return in_tablet_mode;
+ }
+
+@@ -3515,19 +3453,6 @@ static int __init hotkey_init(struct ibm_init_struc=
+t *iibm)
+
+ 	tpacpi_disable_brightness_delay();
+
+-	/* MUST have enough space for all attributes to be added to
+-	 * hotkey_dev_attributes */
+-	hotkey_dev_attributes =3D create_attr_set(
+-					ARRAY_SIZE(hotkey_attributes) + 2,
+-					NULL);
+-	if (!hotkey_dev_attributes)
+-		return -ENOMEM;
+-	res =3D add_many_to_attr_set(hotkey_dev_attributes,
+-			hotkey_attributes,
+-			ARRAY_SIZE(hotkey_attributes));
+-	if (res)
+-		goto err_exit;
+-
+ 	/* mask not supported on 600e/x, 770e, 770x, A21e, A2xm/p,
+ 	   A30, R30, R31, T20-22, X20-21, X22-24.  Detected by checking
+ 	   for HKEY interface version 0x100 */
+@@ -3636,18 +3561,9 @@ static int __init hotkey_init(struct ibm_init_struc=
+t *iibm)
+ 		pr_info("radio switch found; radios are %s\n",
+ 			enabled(status, 0));
+ 	}
+-	if (tp_features.hotkey_wlsw)
+-		res =3D add_to_attr_set(hotkey_dev_attributes,
+-				&dev_attr_hotkey_radio_sw.attr);
+-
+-	res =3D hotkey_init_tablet_mode();
+-	if (res < 0)
+-		goto err_exit;
+
+-	tabletsw_state =3D res;
+-
+-	res =3D register_attr_set_with_sysfs(hotkey_dev_attributes,
+-					   &tpacpi_pdev->dev.kobj);
++	tabletsw_state =3D hotkey_init_tablet_mode();
++	res =3D sysfs_create_group(&tpacpi_pdev->dev.kobj, &hotkey_attr_group);
+ 	if (res)
+ 		goto err_exit;
+
+@@ -3746,11 +3662,8 @@ static int __init hotkey_init(struct ibm_init_struc=
+t *iibm)
+ 	return 0;
+
+ err_exit:
+-	delete_attr_set(hotkey_dev_attributes, &tpacpi_pdev->dev.kobj);
+-	sysfs_remove_group(&tpacpi_pdev->dev.kobj,
+-			&adaptive_kbd_attr_group);
+-
+-	hotkey_dev_attributes =3D NULL;
++	sysfs_remove_group(&tpacpi_pdev->dev.kobj, &hotkey_attr_group);
++	sysfs_remove_group(&tpacpi_pdev->dev.kobj, &adaptive_kbd_attr_group);
+
+ 	return (res < 0) ? res : 1;
+ }
+=2D-
+2.25.1
+
