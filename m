@@ -2,117 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB385418ABF
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CFE418AC4
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 21:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhIZTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 15:24:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50074 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229892AbhIZTYB (ORCPT
+        id S229916AbhIZT2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 15:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhIZT21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 15:24:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632684143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WoSf6PAqNKKVmkj88GYlQ6NXSkJYepwgfoHiCcAkFaI=;
-        b=UGx5Hjw798eUWOegHdTdA1pUl6YLEcPihXx+PyQz08IUBVEiRQ8fKJKg0q0Y2e9hh5+tm/
-        ZyjCnfvRVMSaYZkHbuGOPG/Pktcbf2XLjARTAeFlP9R2fUfL9OFt5u7PkPG2NbZPDXwURO
-        yDHfkPQrtaM53bSN7B+1gfbPODDzwOs=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-HXlg6LrJPRy2ZwiRzQek1Q-1; Sun, 26 Sep 2021 15:22:22 -0400
-X-MC-Unique: HXlg6LrJPRy2ZwiRzQek1Q-1
-Received: by mail-qk1-f197.google.com with SMTP id h10-20020a05620a284a00b003d30e8c8cb5so58428417qkp.11
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:22:22 -0700 (PDT)
+        Sun, 26 Sep 2021 15:28:27 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3264DC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:26:51 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id b26so11427761edt.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 12:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MjFc4qpdSBS8qeywuUDP1DYg3DGmfu9tyeJ/HZHA26w=;
+        b=URLhrsBbVcZzrEKxtP+L1BeVdakxp6+4O7NCymsdQvAbchVWa/q1imWa0N740vjQKj
+         ZMahEITTJPS3s3c8TiLmHK9E69KHzY3e6vWd6OB75fi4NkUcpo7tEiklYKTegyAJcyjI
+         LQRAeOeGoK7vMluCr5XuZoCdTfPpJ320ijXF9Tgw6Gb+vSFYw3JPojaS+5VVEuNyV4rv
+         ZJ4yxtrm+4t3TERQ7ycDf2jy2OI01JtWorlgevP8hOejejgZ72HCslpsOtaDRLxAvsey
+         psDEzso1M8D2a7u6lwLNJmEaBAJFS5cSUFe3Cf+UsITe0Mx0oYAHKQEwtz1XmNLI3Xqy
+         TN5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=WoSf6PAqNKKVmkj88GYlQ6NXSkJYepwgfoHiCcAkFaI=;
-        b=Rg3W9rPmidLsS5C4KfDNbmbM1ulp1Ia9pXe+oxunnyVJEnk0lU2X0+R8kcpW4JL+lG
-         AiC3CbPMN7/1qGzvIfY1zWF0WbEzNncZR7JK7LorrbkBqK1PmaKPvZI+sYQKrf9HDAZM
-         2fO0fVpujGx5XSFzc01LRJuME9rXoZUOdndD/9GhFWpvOxN+qlaY//kSdhPWr5NM4ti2
-         9LSkF6sW/p8uFuQev0rlLMraRlgEirPZiU7YSIUPQMRb0hXMRALATwshYuNsaKRknJX/
-         TAmDoa9yJ3w4M+aOVYkaKsYSZVZib55ViSeEt95N+h1B3C+l7fV2w0gQY3lDGjoO/tZE
-         hCZg==
-X-Gm-Message-State: AOAM531onE3c1bCJOCazy05mgf+aRJNzCmPfM2zpb6fqtom5Up2DNr+Y
-        chxtyfEL5SqDuuLDhOKtUwRd2aR020uzdQvdNRasC7dS21VQTpTPVkShXBV2Xnx8kWTXHafhLZf
-        I6Ugj8Jyp7/AQ6Gl6iuSUsn2Oo1ZKBlNZK20D1faBjCieDjx/unTHoK+ZFGOZjiT/p8nit8pF
-X-Received: by 2002:ac8:560b:: with SMTP id 11mr15712996qtr.319.1632684141540;
-        Sun, 26 Sep 2021 12:22:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynGYKcWp1w5/0xfsYdxi0HQg7qRVNrkZVBiGh2IGGk6aXA9gw0jZO3byL7M1lq8YFgkB80Iw==
-X-Received: by 2002:ac8:560b:: with SMTP id 11mr15712982qtr.319.1632684141324;
-        Sun, 26 Sep 2021 12:22:21 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id l13sm11018861qkj.130.2021.09.26.12.22.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Sep 2021 12:22:20 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 2/2] locking/rwsem: Use rcu_read_lock_sched to simplify
- codes
-To:     Yanfei Xu <yanfei.xu@windriver.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20210926101624.2460704-1-yanfei.xu@windriver.com>
- <20210926101624.2460704-2-yanfei.xu@windriver.com>
-Message-ID: <4e4c9adf-5444-e331-fefa-0d72aea8ba57@redhat.com>
-Date:   Sun, 26 Sep 2021 15:22:19 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MjFc4qpdSBS8qeywuUDP1DYg3DGmfu9tyeJ/HZHA26w=;
+        b=u0iy1KWAKZItFTMDPNTcTAgQYuU8Rqvo3R7tMAGTfRBfhe0lTJw9mRA+66fTH/ZyYr
+         FTV/79i5Nnoza1HBwNfp6VtJp0uVQ0SqZASclJPbuKipBm7d3tmMaFwg/J22MfkYFu2p
+         46PM46aIRqS/xuBKKEH/ShSHUR5GG6ByCe0EnYqIOQC/5M6qP6qs1kisNUyjWmLuK1z5
+         6OLqaBNEUygyv6jiYWtkarCimEurGFrE32W59rJS0bmufnwLWFObIfQdjBKOlgOkGkMa
+         hMYzYFkGLQTNvCBs7PY5tRqx4QHEy+cqehOeCERCV6PFKtprERqWLzOrtEAEebvXaKJQ
+         sehA==
+X-Gm-Message-State: AOAM532oJlymB34E2ccljST/dkhILXcLvJfLHjRfx4rnwyh24hhGFror
+        Dvui6qvbVeey3+vWDTTi4TFQhLMwD/zqsA==
+X-Google-Smtp-Source: ABdhPJz+wRgSGku9dd+vBllmqVI0rc2Rbxy2N4TLILRmNl6CW9Rdash0m8SMy9tRPXCs+nSzRE3ArA==
+X-Received: by 2002:a05:6402:1e88:: with SMTP id f8mr18443735edf.126.1632684409035;
+        Sun, 26 Sep 2021 12:26:49 -0700 (PDT)
+Received: from neptune.. ([188.27.128.17])
+        by smtp.gmail.com with ESMTPSA id z18sm9183078edq.29.2021.09.26.12.26.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 12:26:48 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 1/2] iio: adc: berlin2-adc: convert probe to device-managed only
+Date:   Sun, 26 Sep 2021 22:26:41 +0300
+Message-Id: <20210926192642.4051329-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210926101624.2460704-2-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/21 6:16 AM, Yanfei Xu wrote:
-> Use rcu_read_lock_sched to simplify the codes, and it also saves
-> some cycles of handling rcu nesting counter.
->
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->   kernel/locking/rwsem.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> index 000e8d5a2884..7afadfe02286 100644
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -616,8 +616,7 @@ static inline bool rwsem_can_spin_on_owner(struct rw_semaphore *sem)
->   		return false;
->   	}
->   
-> -	preempt_disable();
-> -	rcu_read_lock();
-> +	rcu_read_lock_sched();
->   	owner = rwsem_owner_flags(sem, &flags);
->   	/*
->   	 * Don't check the read-owner as the entry may be stale.
-> @@ -625,8 +624,7 @@ static inline bool rwsem_can_spin_on_owner(struct rw_semaphore *sem)
->   	if ((flags & RWSEM_NONSPINNABLE) ||
->   	    (owner && !(flags & RWSEM_READER_OWNED) && !owner_on_cpu(owner)))
->   		ret = false;
-> -	rcu_read_unlock();
-> -	preempt_enable();
-> +	rcu_read_unlock_sched();
->   
->   	lockevent_cond_inc(rwsem_opt_fail, !ret);
->   	return ret;
+This driver requires only a devm_add_action_or_reset() hook for the
+power-down of the device, and then devm_iio_device_register() can be used
+directly.
 
-I don't think there is any performance gain with this change. I would 
-prefer the original code that is more readable as some people may not 
-know rcu_read_lock_sched() will disable preemption if they don't look 
-into it.
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/adc/berlin2-adc.c | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
-Cheers,
-Longman
+diff --git a/drivers/iio/adc/berlin2-adc.c b/drivers/iio/adc/berlin2-adc.c
+index 8b04b95b7b7a..03987d7e6b3d 100644
+--- a/drivers/iio/adc/berlin2-adc.c
++++ b/drivers/iio/adc/berlin2-adc.c
+@@ -280,6 +280,13 @@ static const struct iio_info berlin2_adc_info = {
+ 	.read_raw	= berlin2_adc_read_raw,
+ };
+ 
++static void berlin2_adc_powerdown(void *regmap)
++{
++	regmap_update_bits(regmap, BERLIN2_SM_CTRL,
++			   BERLIN2_SM_CTRL_ADC_POWER, 0);
++
++}
++
+ static int berlin2_adc_probe(struct platform_device *pdev)
+ {
+ 	struct iio_dev *indio_dev;
+@@ -293,7 +300,6 @@ static int berlin2_adc_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	priv = iio_priv(indio_dev);
+-	platform_set_drvdata(pdev, indio_dev);
+ 
+ 	priv->regmap = syscon_node_to_regmap(parent_np);
+ 	of_node_put(parent_np);
+@@ -333,29 +339,12 @@ static int berlin2_adc_probe(struct platform_device *pdev)
+ 			   BERLIN2_SM_CTRL_ADC_POWER,
+ 			   BERLIN2_SM_CTRL_ADC_POWER);
+ 
+-	ret = iio_device_register(indio_dev);
+-	if (ret) {
+-		/* Power down the ADC */
+-		regmap_update_bits(priv->regmap, BERLIN2_SM_CTRL,
+-				   BERLIN2_SM_CTRL_ADC_POWER, 0);
++	ret = devm_add_action_or_reset(&pdev->dev, berlin2_adc_powerdown,
++				       priv->regmap);
++	if (ret)
+ 		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int berlin2_adc_remove(struct platform_device *pdev)
+-{
+-	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
+-	struct berlin2_adc_priv *priv = iio_priv(indio_dev);
+-
+-	iio_device_unregister(indio_dev);
+-
+-	/* Power down the ADC */
+-	regmap_update_bits(priv->regmap, BERLIN2_SM_CTRL,
+-			   BERLIN2_SM_CTRL_ADC_POWER, 0);
+ 
+-	return 0;
++	return devm_iio_device_register(&pdev->dev, indio_dev);
+ }
+ 
+ static const struct of_device_id berlin2_adc_match[] = {
+@@ -370,7 +359,6 @@ static struct platform_driver berlin2_adc_driver = {
+ 		.of_match_table	= berlin2_adc_match,
+ 	},
+ 	.probe	= berlin2_adc_probe,
+-	.remove	= berlin2_adc_remove,
+ };
+ module_platform_driver(berlin2_adc_driver);
+ 
+-- 
+2.31.1
 
