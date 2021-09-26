@@ -2,121 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189A841875A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E115C41877D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Sep 2021 10:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhIZId2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 04:33:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229532AbhIZId1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 04:33:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 778AC60EB6;
-        Sun, 26 Sep 2021 08:31:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632645111;
-        bh=Fs/wUc/Bv/3ccgsJnkJzIN5PvwkgGZqURMAtj+g4res=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dxmbkyWNCWeAC84vZLSRI6seyo0WivEqA5M3gJUzOojF8af2ihTiu27oFcAJELeK3
-         nJbSQwCMInroko5Kg3MzuH2PuUVAQfEe/lLl/LewGOmD1hmvTejImQ2ukvYA9pT+Ko
-         pkMziuQRSYWb7kwbudmQa+9zrh5DJ5Q0UI8iKA+GRkc3yJ4M1HATpjqnuwna3Mh2ng
-         x8SfN8b+VrEVAJEmyTzB4iahwNYcDue5ULU11CJy07v6wBBACmAAjXO9reX3BF7CFi
-         /YdaR9WH50tMo9YNr75QOSSHkoZHjsltVU32F8zApHV239tMylosqeiN86x6u6478M
-         anafDrHbNwVqg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/mlx5: Avoid taking MRs from larger MR cache pools when a pool is empty
-Date:   Sun, 26 Sep 2021 11:31:43 +0300
-Message-Id: <71af2770c737b936f7b10f457f0ef303ffcf7ad7.1632644527.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S229702AbhIZIiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 04:38:05 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40018 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhIZIiD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 04:38:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632645388; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=02NvsHV6MI2l4CF9wO2M1FZEsdQr289LOHiQs0BW8+A=; b=lXOFozOvtFVqojHfoaA6TYKzv5NQOx96u/z1AWPtY4ek6khJAvEdtDNt5udn29G6GhYrqT37
+ REYmcibLkpUqwzo/w6PSqpDTCNPGVFBInGvu2VIuylvVihJPJip8sQZmcVpLiSPj6NRijuJe
+ jHShR5S7z1RLPxd/EkYvHIW/Lvg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 615030f763b1f186582c340f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 26 Sep 2021 08:36:07
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 20997C4360C; Sun, 26 Sep 2021 08:36:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4013FC4338F;
+        Sun, 26 Sep 2021 08:36:06 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 26 Sep 2021 16:36:06 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v11] Bluetooth: btusb: Add support using different nvm for 
+ variant WCN6855 controller
+Message-ID: <25d13858fced474d0d71faed2d829032@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+the RF performance of wcn6855 soc chip from different foundries will be
+difference, so we should use different nvm to configure them.
 
-Currently, if a cache entry is empty, the driver will try to take MRs
-from larger cache entries. This behavior consumes a lot of memory.
-In addition, when searching for an mkey in an entry, the entry is locked.
-When using a multithreaded application with the old behavior, the threads
-will block each other more often, which can hurt performance as can be
-seen in the table below.
-
-Therefore, avoid it by creating a new mkey when the requested cache entry
-is empty.
-
-The test was performed on a machine with
-Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz 44 cores.
-
-Here are the time measures for allocating MRs of 2^6 pages. The search in
-the cache started from entry 6.
-
-+------------+---------------------+---------------------+
-|            |     Old behavior    |     New behavior    |
-|            +----------+----------+----------+----------+
-|            | 1 thread | 5 thread | 1 thread | 5 thread |
-+============+==========+==========+==========+==========+
-|  1,000 MRs |   14 ms  |   30 ms  |   14 ms  |   80 ms  |
-+------------+----------+----------+----------+----------+
-| 10,000 MRs |  135 ms  |   6 sec  |  173 ms  |  880 ms  |
-+------------+----------+----------+----------+----------+
-|100,000 MRs | 11.2 sec |  57 sec  | 1.74 sec |  8.8 sec |
-+------------+----------+----------+----------+----------+
-
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
 ---
- drivers/infiniband/hw/mlx5/mr.c | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
+  drivers/bluetooth/btusb.c | 49 
+++++++++++++++++++++++++++++++++++-------------
+  1 file changed, 36 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 3be36ebbf67a..b4d2322e9ca5 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -600,29 +600,21 @@ struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
- /* Return a MR already available in the cache */
- static struct mlx5_ib_mr *get_cache_mr(struct mlx5_cache_ent *req_ent)
- {
--	struct mlx5_ib_dev *dev = req_ent->dev;
- 	struct mlx5_ib_mr *mr = NULL;
- 	struct mlx5_cache_ent *ent = req_ent;
- 
--	/* Try larger MR pools from the cache to satisfy the allocation */
--	for (; ent != &dev->cache.ent[MR_CACHE_LAST_STD_ENTRY + 1]; ent++) {
--		mlx5_ib_dbg(dev, "order %u, cache index %zu\n", ent->order,
--			    ent - dev->cache.ent);
--
--		spin_lock_irq(&ent->lock);
--		if (!list_empty(&ent->head)) {
--			mr = list_first_entry(&ent->head, struct mlx5_ib_mr,
--					      list);
--			list_del(&mr->list);
--			ent->available_mrs--;
--			queue_adjust_cache_locked(ent);
--			spin_unlock_irq(&ent->lock);
--			mlx5_clear_mr(mr);
--			return mr;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index da85cc14f931..c32e941818dd 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3186,6 +3186,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev 
+*hdev,
+  #define QCA_DFU_TIMEOUT		3000
+  #define QCA_FLAG_MULTI_NVM      0x80
+
++#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
++#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
++
+  struct qca_version {
+  	__le32	rom_version;
+  	__le32	patch_version;
+@@ -3217,6 +3220,7 @@ static const struct qca_device_info 
+qca_devices_table[] = {
+  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
++	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+  };
+
+  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
+request,
+@@ -3371,6 +3375,30 @@ static int btusb_setup_qca_load_rampatch(struct 
+hci_dev *hdev,
+  	return err;
+  }
+
++static void btusb_generate_qca_nvm_name(char *fwname,
++					size_t max_size,
++					struct qca_version *ver,
++					const char *variant)
++{
++	u16 board_id = le16_to_cpu(ver->board_id);
++	u32 rom_version = le32_to_cpu(ver->rom_version);
++
++	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
++		/* if boardid equal 0, use default nvm without suffix */
++		if (board_id == 0x0) {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
++				rom_version, variant);
++		} else {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
++				rom_version, variant, board_id);
++		}
++	} else {
++		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
++			rom_version);
++	}
++
++}
++
+  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+  				    struct qca_version *ver,
+  				    const struct qca_device_info *info)
+@@ -3379,19 +3407,14 @@ static int btusb_setup_qca_load_nvm(struct 
+hci_dev *hdev,
+  	char fwname[64];
+  	int err;
+
+-	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		/* if boardid equal 0, use default nvm without surfix */
+-		if (le16_to_cpu(ver->board_id) == 0x0) {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-				 le32_to_cpu(ver->rom_version));
+-		} else {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-				le32_to_cpu(ver->rom_version),
+-				le16_to_cpu(ver->board_id));
 -		}
-+	spin_lock_irq(&ent->lock);
-+	if (!list_empty(&ent->head)) {
-+		mr = list_first_entry(&ent->head, struct mlx5_ib_mr, list);
-+		list_del(&mr->list);
-+		ent->available_mrs--;
- 		queue_adjust_cache_locked(ent);
- 		spin_unlock_irq(&ent->lock);
-+		mlx5_clear_mr(mr);
-+		return mr;
- 	}
-+	queue_adjust_cache_locked(ent);
-+	spin_unlock_irq(&ent->lock);
- 	req_ent->miss++;
- 	return NULL;
- }
--- 
-2.31.1
+-	} else {
+-		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-			 le32_to_cpu(ver->rom_version));
++	switch (ver->ram_version) {
++	case WCN6855_2_0_RAM_VERSION_GF:
++	case WCN6855_2_1_RAM_VERSION_GF:
++		btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "_gf");
++		break;
++	default:
++		btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
++		break;
+  	}
 
+  	err = request_firmware(&fw, fwname, &hdev->dev);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
