@@ -2,121 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A50418B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D31A418B5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 00:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhIZWDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 18:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        id S230356AbhIZWEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 18:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhIZWDo (ORCPT
+        with ESMTP id S230075AbhIZWEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:03:44 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B845AC061570;
-        Sun, 26 Sep 2021 15:02:07 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHfrF3HKlz4xbX;
-        Mon, 27 Sep 2021 08:02:05 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632693725;
-        bh=D30PMf2VcqR/+OE3jaF02/nP007fkLreMzNwXU2NN7s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UwgNkC9DBPEClOQquuuvlZNXIRikkdQaLte0+7++9cIZGcEljiNZ+YmlgtKzRGlSL
-         oysfDnl4IofbEzOZW60FbjglgwkW+qS3fIWpb6oxcYS7c5pKPpl7nhachLjc+f3ixX
-         KPfb0afBhWNhOmw2QTPpMZUR7S6K6iPzaNlIiMeONNzlSaABJJEca0FFNuCfh/lrfY
-         Qm3SmQ+JeBGlKvA/fG7O/OAdcGZy28yVkZqb1Ri2kleTAyCpkp7aYrNWlzkA6O15Ok
-         JJgNhW5WfY1qDxAZZjUdu2JZfFeFUDohyvgQLdEXH09yWliBBWG2J5pquUk46gjOj4
-         +UWy2rw+kzU4Q==
-Date:   Mon, 27 Sep 2021 08:02:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the ntfs3 tree
-Message-ID: <20210927080204.3f2e8c26@canb.auug.org.au>
-In-Reply-To: <20210926214700.6mukvekkzqavyczw@kari-VirtualBox>
-References: <20210921083158.261517da@canb.auug.org.au>
-        <3320944d-8fac-0a22-ee38-f08974fcaed7@paragon-software.com>
-        <20210926214700.6mukvekkzqavyczw@kari-VirtualBox>
+        Sun, 26 Sep 2021 18:04:45 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFA3C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 15:03:08 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id v10so19439076ybq.7
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 15:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=oYXKR/Mag7aXu7AMWAffasa6r7aJ+9lbXrZkTwhLlsI=;
+        b=GIROYOKSkEFNbSJYYijXYkX8YpNLNVnQ9PsdRMQp78Yitlf+8toiLKLYytFeQYPfZF
+         IIelmkB0X0LKJNR0q3Om8/t/5cbc8LmV3Zr3O8+QdBI+XvhlfwQy4fTPqmBRZYE2lgor
+         WlHzvlpWVVnsb5GR49zmaxHK4miIQZihvKwDRSLZGCDfixA1zMwd0hN0R4Yj/IoTDadh
+         KRMabCCqwk0oCJ5Fga7hseRqaNcLPh9uTHrHxAka8o8W77btVPE4B4A6XZ8aE8PNfqOz
+         jW4+t9xvJJUy2q6XSizjc6M9uK96GWkW4QwWCTxr/UENGcpRT7oIrQC5eRG3u+ocT8iY
+         Dxxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=oYXKR/Mag7aXu7AMWAffasa6r7aJ+9lbXrZkTwhLlsI=;
+        b=agncfqGnyqZdOpY6wroNQgvnApKhx4PjkQB2ljWUfeS4X0HIwwfrhjvUQZ/sfJqA0M
+         xEsZUE7kLpNwRrdZ6EK02fwU9zDGwnj2JS+iIvZSxx/2bl+H6lg3Q7c/51R5sTpS10Uy
+         tN41YeLyMaAEc8Wt2oBxrEwQfJJNoIqckjNv1iD8fTckPgMUA10wBI7xnZWJf/yhh/Zp
+         /Wr18FM2O/QMyl4UVBd4Ln886IIilGJ50TleTvkWrMli43LHt2KbIsFfI1DkwOUjzNEc
+         x2zvcWQpJhMriyDu5q806j/cQCazAZWwE9XUo2tPnubBcMa3sTqK5Yi8Wn2S3+hMymnC
+         fyUg==
+X-Gm-Message-State: AOAM5337AIoIHzdYtRXWnHELikTSESndI5KmmwSejo8WXpxPNtapVAnZ
+        vzxRmC97MmainlzQnB7TobMi+sGWbb2nFz/5HCVBWJfsydZYVQ==
+X-Google-Smtp-Source: ABdhPJxOyFHkENJkkL9psOjtUwF+Z+6kLBM7NKiVjmYmRveEOeJiX9U1wOTWIc1kbFBnynL9j8kBI6yXPJFy9j/soCo=
+X-Received: by 2002:a05:6902:1547:: with SMTP id r7mr25358177ybu.72.1632693787653;
+ Sun, 26 Sep 2021 15:03:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ck1xCFS2FV7UeRWT4cPHGqg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Chris Rankin <rankincj@gmail.com>
+Date:   Sun, 26 Sep 2021 23:02:55 +0100
+Message-ID: <CAK2bqVJ4SS2Aieh4XWHOxmm12ku174yOursjua=LBwtXy3H=xw@mail.gmail.com>
+Subject: [WARNING][AMDGPU] Warning in dmesg log from a vanilla 5.14.8 kernel.
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ck1xCFS2FV7UeRWT4cPHGqg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi Kari,
+Warnings like this have appeared in every dmesg log from my vanilla
+5.14.x kernels. My graphics card is a Radeon R7 360.
 
-On Mon, 27 Sep 2021 00:47:00 +0300 Kari Argillander <kari.argillander@gmail=
-.com> wrote:
->
-> On Tue, Sep 21, 2021 at 04:50:02PM +0300, Konstantin Komarov wrote:
-> >=20
-> > On 21.09.2021 01:31, Stephen Rothwell wrote: =20
-> > >=20
-> > > In commit
-> > >=20
-> > >   0412016e4807 ("fs/ntfs3: Fix wrong error message $Logfile -> $UpCas=
-e")
-> > >=20
-> > > Fixes tag
-> > >=20
-> > >   Fixes: 203c2b3a406a ("fs/ntfs3: Add initialization of super block")
-> > >=20
-> > > has these problem(s):
-> > >=20
-> > >   - Target SHA1 does not exist
-> > >=20
-> > > Maybe you meant
-> > >=20
-> > > Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
-> > >  =20
-> >=20
-> > Hello.
-> >=20
-> > You are right, correct SHA is 82cae269cfa9.
-> > Sorry, I've missed this while applying patch.
-> >=20
-> > As far as I know there is no way to fix this now -
-> > commit is already in linux-next. =20
->=20
-> This still is not fixed. Can you Stephen verify that rebase is ok in
-> situatian like this? Also now we have situation that this thing is 6 day
-> old already. I actually also do not know if it is ok to rebase anymore,
-> but, probably is. I have checked every follow up patches which has been
-> applied after this and they are not affected if we rebase.
-
-A rebase is probably not necessary, as the commit is easy to find using
-its subject line (as I did). However, it would be better to avoid such
-situations in the future.
-
---=20
 Cheers,
-Stephen Rothwell
+Chris
 
---Sig_/ck1xCFS2FV7UeRWT4cPHGqg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFQ7dwACgkQAVBC80lX
-0GwgzwgAlaC5VSiOvyeeKxnsIivotj26KfIJSuwi/DedBkQI0Ad1ObrCbTJmCoGa
-/x0ytKKfDU3TcPLTKYf0/UnS9MyvKuTBGPiWbQxPQsZK7/H1JO2EmXPSLBTstlAW
-dtmLpJQrzVo6vHi0vCt9M6T671NLmgHYLQk9BpMLIHQXmKHgvB8jCxtMsRSeqCUV
-PJm/zkqoXV34c/nx1IVXb/w325pHeZpZeWTkIMhTI6pHILMXzwfgszOJKOu9N0/F
-gHi5cwErG+MtUiqCyv1igu2P1KtsnmomjTRZM+f/UMNEtX9sGL9TEyX5kBvxHsne
-d7JNwbQTlJhTn3F/Y8p8rvlStExyZA==
-=U6Wh
------END PGP SIGNATURE-----
-
---Sig_/ck1xCFS2FV7UeRWT4cPHGqg--
+[  125.337204] ------------[ cut here ]------------
+[  125.340617] WARNING: CPU: 0 PID: 1 at
+drivers/gpu/drm/ttm/ttm_bo.c:409 ttm_bo_release+0x1c/0x266 [ttm]
+[  125.348691] Modules linked in: nf_nat_ftp nf_conntrack_ftp cfg80211
+af_packet nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
+nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
+nft_chain_nat nf_tables ebtable_nat ebtable_broute ip6table_nat
+ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_mangle
+iptable_raw iptable_security nfnetlink ebtable_filter ebtables
+ip6table_filter ip6_tables iptable_filter bnep it87 hwmon_vid dm_mod
+dax snd_hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi
+ledtrig_audio snd_hda_intel btusb uvcvideo btbcm btintel
+videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 bluetooth
+videobuf2_common snd_usb_audio videodev ecdh_generic snd_usbmidi_lib
+input_leds joydev led_class rfkill mc ecc coretemp kvm_intel kvm
+gpio_ich iTCO_wdt mxm_wmi i2c_i801 snd_intel_dspcfg snd_hda_codec
+snd_hwdep snd_virtuoso r8169 snd_oxygen_lib psmouse snd_mpu401_uart
+realtek irqbypass
+[  125.348768]  tiny_power_button snd_rawmidi mdio_devres i2c_smbus
+libphy snd_hda_core snd_hrtimer button snd_seq i7core_edac lpc_ich wmi
+pcspkr snd_seq_device snd_pcm snd_timer snd soundcore acpi_cpufreq
+binfmt_misc nfsd auth_rpcgss nfs_acl lockd grace configfs sunrpc fuse
+zram zsmalloc ip_tables x_tables ext4 crc32c_generic crc16 mbcache
+jbd2 hid_microsoft usbhid sr_mod cdrom sd_mod amdgpu uhci_hcd
+drm_ttm_helper ttm mfd_core ehci_pci ehci_hcd gpu_sched i2c_algo_bit
+drm_kms_helper xhci_pci xhci_hcd cfbfillrect syscopyarea cfbimgblt
+sysfillrect sysimgblt ahci fb_sys_fops cfbcopyarea libahci
+pata_jmicron firewire_ohci firewire_core cec rc_core crc32c_intel
+libata serio_raw crc_itu_t scsi_mod drm usbcore usb_common
+drm_panel_orientation_quirks msr sha256_ssse3 sha256_generic ipv6
+crc_ccitt
+[  125.502077] CPU: 0 PID: 1 Comm: systemd Tainted: G          I       5.14.8 #1
+[  125.508018] Hardware name: Gigabyte Technology Co., Ltd.
+EX58-UD3R/EX58-UD3R, BIOS FB  05/04/2009
+[  125.515723] RIP: 0010:ttm_bo_release+0x1c/0x266 [ttm]
+[  125.519619] Code: 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 41 56
+41 55 41 54 4c 8d a7 90 fe ff ff 55 53 83 7f 4c 00 48 89 fb 48 8b 6f
+e8 74 02 <0f> 0b 80 7b 18 00 48 8b 43 88 0f 85 ac 00 00 00 4c 8d 6b 90
+49 39
+[  125.537240] RSP: 0018:ffffc90000023e00 EFLAGS: 00010202
+[  125.541226] RAX: 0000000000000001 RBX: ffff888125f9b1c8 RCX: 00000000000000b6
+[  125.547152] RDX: 00000000000001b1 RSI: ffffffffa03140db RDI: ffff888125f9b1c8
+[  125.553154] RBP: ffff888109785308 R08: 0000000000000001 R09: 0000000000000001
+[  125.559012] R10: 0000000000000000 R11: ffff888103db3600 R12: ffff888125f9b058
+[  125.565089] R13: ffff888144da66c8 R14: ffff888124c94000 R15: 0000000000000000
+[  125.570988] FS:  00007f9e13a2e340(0000) GS:ffff888343d00000(0000)
+knlGS:0000000000000000
+[  125.578007] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  125.582664] CR2: 00007f0b81962388 CR3: 00000001024c8000 CR4: 00000000000006e0
+[  125.588559] Call Trace:
+[  125.589745]  amdgpu_bo_unref+0x15/0x1e [amdgpu]
+[  125.593187]  amdgpu_gem_object_free+0x2b/0x45 [amdgpu]
+[  125.597167]  drm_gem_dmabuf_release+0x11/0x1a [drm]
+[  125.600849]  dma_buf_release+0x36/0x6e
+[  125.603348]  __dentry_kill+0xf5/0x12f
+[  125.605770]  dput+0xfc/0x136
+[  125.607362]  __fput+0x16a/0x1bc
+[  125.609297]  task_work_run+0x64/0x75
+[  125.611635]  exit_to_user_mode_prepare+0x88/0x112
+[  125.615205]  syscall_exit_to_user_mode+0x14/0x1f
+[  125.618652]  do_syscall_64+0x7a/0x80
+[  125.621003]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  125.624909] RIP: 0033:0x7f9e146ae9db
+[  125.627335] Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48
+83 ec 18 89 7c 24 0c e8 33 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 91 fc ff ff
+8b 44
+[  125.645654] RSP: 002b:00007ffe43bd0760 EFLAGS: 00000293 ORIG_RAX:
+0000000000000003
+[  125.652171] RAX: 0000000000000000 RBX: 00007f9e13a2e0f8 RCX: 00007f9e146ae9db
+[  125.658361] RDX: 0000000000000002 RSI: 000000055fbb59c6 RDI: 0000000000000068
+[  125.664514] RBP: 0000000000000068 R08: 0000000000000000 R09: 0000000000000000
+[  125.670710] R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+[  125.676854] R13: 000055fbb418e300 R14: 000055fbb41490f9 R15: 000055fbb5ac6930
+[  125.682937] ---[ end trace a045cf707562d1cb ]---
