@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FD1419779
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0DA419775
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhI0POm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:14:42 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:38757 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235089AbhI0POe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235096AbhI0POe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 27 Sep 2021 11:14:34 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HJ5jg2nltz9sXx;
-        Mon, 27 Sep 2021 17:12:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xJnomytv_UBi; Mon, 27 Sep 2021 17:12:55 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HJ5jg1sp6z9sXp;
-        Mon, 27 Sep 2021 17:12:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2CB358B76E;
-        Mon, 27 Sep 2021 17:12:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id KIprEdTxWZXS; Mon, 27 Sep 2021 17:12:55 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 149EB8B763;
-        Mon, 27 Sep 2021 17:12:55 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18RFCfR01436371
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 17:12:42 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18RFCfeD1436370;
-        Mon, 27 Sep 2021 17:12:41 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        cp <carlojpisani@gmail.com>
-Subject: [PATCH v2] powerpc/40x: Map 32Mbytes of memory at startup
-Date:   Mon, 27 Sep 2021 17:12:39 +0200
-Message-Id: <89b5f974a7fa5011206682cd092e2c905530ff46.1632755552.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235002AbhI0POc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED8B7611C0;
+        Mon, 27 Sep 2021 15:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632755575;
+        bh=CKBeZqx1JroYNLrGq5H114mf1zFlMql7osjtvpITDCw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EVBbs3MVb2rKhlVS8zKpcM376o/TKjtkXDHHd/wsTbaLfx6lDmygiZpT3x7nXiuQ3
+         qI6Y85rpLepdxU+wE0Grxf7YsEaSbNhENVT+K25JSCaaY+814CwQ0wyxUsc9KUuvQy
+         hQdmzWSytaJMhwWEBAVICPEipETSfP3Xu6nDTfAdg5aRgouxOHTt3NfeACf7kbOWCR
+         OsCr7y6iELtBigI8CNkHzbquvZiEOaAvAmL84E8ja0KTlJjM1I99On/bQ1Ypc9tMZk
+         SaL7iKw5FGEGEAfGtwf33A3FoOYzfQslocN3+NGigGTpzuzQ60fFGB/7x3vYj7X3Wo
+         Dc/q7pfQ+7M1Q==
+Received: by mail-oi1-f171.google.com with SMTP id x124so25951234oix.9;
+        Mon, 27 Sep 2021 08:12:54 -0700 (PDT)
+X-Gm-Message-State: AOAM530Ilm/x5W+uOuMSC71Qm/zfE2USl6OULczEtCmN1IelD0KI7y4p
+        JFtfsdUvSfsD+gfpaK90THwE0z+7e9CdWn+9RKs=
+X-Google-Smtp-Source: ABdhPJyeC8BgibE5zzxbqU0l8Tut8FIpgncaCT3Q0Qb4RyOfhbEhCIFLxw2ikpv+mDHPe9VMwWn8YxftPxI0HPTWIJ0=
+X-Received: by 2002:aca:32c2:: with SMTP id y185mr501704oiy.47.1632755574136;
+ Mon, 27 Sep 2021 08:12:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-5-ardb@kernel.org>
+In-Reply-To: <20210914121036.3975026-5-ardb@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 27 Sep 2021 17:12:43 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
+Message-ID: <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported by Carlo, 16Mbytes is not enough with modern kernels
-that tend to be a bit big, so map another 16M page at boot.
+On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> The CPU field will be moved back into thread_info even when
+> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
+> of struct thread_info.
+>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-Cc: cp <carlojpisani@gmail.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Add missing header and missing @h
----
- arch/powerpc/kernel/head_40x.S | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Michael,
 
-diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
-index 7d72ee5ab387..e783860bea83 100644
---- a/arch/powerpc/kernel/head_40x.S
-+++ b/arch/powerpc/kernel/head_40x.S
-@@ -27,6 +27,7 @@
- 
- #include <linux/init.h>
- #include <linux/pgtable.h>
-+#include <linux/sizes.h>
- #include <asm/processor.h>
- #include <asm/page.h>
- #include <asm/mmu.h>
-@@ -650,7 +651,7 @@ start_here:
- 	b	.		/* prevent prefetch past rfi */
- 
- /* Set up the initial MMU state so we can do the first level of
-- * kernel initialization.  This maps the first 16 MBytes of memory 1:1
-+ * kernel initialization.  This maps the first 32 MBytes of memory 1:1
-  * virtual to physical and more importantly sets the cache mode.
-  */
- initial_mmu:
-@@ -687,6 +688,12 @@ initial_mmu:
- 	tlbwe	r4,r0,TLB_DATA		/* Load the data portion of the entry */
- 	tlbwe	r3,r0,TLB_TAG		/* Load the tag portion of the entry */
- 
-+	li	r0,62			/* TLB slot 62 */
-+	addis	r4,r4,SZ_16M@h
-+	addis	r3,r3,SZ_16M@h
-+	tlbwe	r4,r0,TLB_DATA		/* Load the data portion of the entry */
-+	tlbwe	r3,r0,TLB_TAG		/* Load the tag portion of the entry */
-+
- 	isync
- 
- 	/* Establish the exception vector base
--- 
-2.31.1
+Do you have any objections or issues with this patch or the subsequent
+ones cleaning up the task CPU kludge for ppc32? Christophe indicated
+that he was happy with it.
 
+Thanks,
+Ard.
+
+
+> ---
+>  arch/powerpc/include/asm/thread_info.h | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/powerpc/include/asm/thread_info.h b/arch/powerpc/include/asm/thread_info.h
+> index b4ec6c7dd72e..5725029aaa29 100644
+> --- a/arch/powerpc/include/asm/thread_info.h
+> +++ b/arch/powerpc/include/asm/thread_info.h
+> @@ -47,6 +47,9 @@
+>  struct thread_info {
+>         int             preempt_count;          /* 0 => preemptable,
+>                                                    <0 => BUG */
+> +#ifdef CONFIG_SMP
+> +       unsigned int    cpu;
+> +#endif
+>         unsigned long   local_flags;            /* private flags for thread */
+>  #ifdef CONFIG_LIVEPATCH
+>         unsigned long *livepatch_sp;
+> --
+> 2.30.2
+>
