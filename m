@@ -2,529 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D106D418FF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB50418FFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhI0H1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233137AbhI0H0v (ORCPT
+        id S233223AbhI0H2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:28:35 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:46694 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233185AbhI0H2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:26:51 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1271C061570;
-        Mon, 27 Sep 2021 00:25:12 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so3133603pjb.1;
-        Mon, 27 Sep 2021 00:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=FruM07nc3pMEiGUwfNQ3BotgfBJgDCunIKGnw/A74PA=;
-        b=II1m1LcPcgRJhendDycD3I9xg42vM2EVmYJth1FY1m3oKpDHnrJ+c/+0p8iN+4heQU
-         wYuVAWf1OPM169BYO7RU2jkIkJtMmxPjWrDmM1qDg2qXWnIxIHWPdCDr//O5fynthB5A
-         jf4qx5GHfk7gdEA0e1CwomdzlwvpHuNmmWtpz6AcHlVfZh9rCz2JxURUwLV/xL/KVyna
-         DbpRpCvI7VbCLuzcOFdAuXVIt1hS/AJSEmpQKtkTX46zeM6eGvM2Fwh/PPVNaXonDMtM
-         jpmcU6YsC8+FtIcYzzEF7NFc0uHCL2snd12iAh2KpjqXa6xfVm7elBEQ4+rBgTqVSnr0
-         Tevg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=FruM07nc3pMEiGUwfNQ3BotgfBJgDCunIKGnw/A74PA=;
-        b=cXjeJW3HXs1t08EEtUKW4+GMOFFinPRbMkWWwaOgP3hxz7suAA3VcIOstMXP7pN0WY
-         WfYBkYTWCkjwEV+CljJqa/R1dYn3MqkfUVRUEK07a4xuoVHMoF4TQvv1oauLTjJ9uMkU
-         FY5BuOGei/Wqe9HvqcFzPg3cv6+6ne/bj2etXt7RIOpWRTCkA+aaFZXsM9xj9OJkd4sm
-         Lf726a4O4fHTsT68GoQGhz/hLU3V22yqBB8e+K2PKdZnAzlhwO/5VIXkSa0pNf8cC2iW
-         4ynH38UpSPsCNL0HV+s7Eu71lSERStzQ2kZRyu2dpgoDLbdQIGouZWTCiONeuuT09Khj
-         ZFhQ==
-X-Gm-Message-State: AOAM532ujiBhjgUiY+8+oVjERlQG5oHd4Nugt1XI0CGcPY3N3PPVGYWQ
-        Ipd6yQjy64ReWHncO++Teo8=
-X-Google-Smtp-Source: ABdhPJyP3NjKLnmrhPFdewPwnVK37Hh3lF29nS1fTGFUdxjVXWnZxoms/ywgf/o2e1qaY2EV74oHsg==
-X-Received: by 2002:a17:90a:1548:: with SMTP id y8mr1414007pja.151.1632727512542;
-        Mon, 27 Sep 2021 00:25:12 -0700 (PDT)
-Received: from [10.239.207.187] ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id h10sm17922027pjs.51.2021.09.27.00.25.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 00:25:12 -0700 (PDT)
-Message-ID: <eab6a9b0-d934-77e4-519c-cefc510b183a@gmail.com>
-Date:   Mon, 27 Sep 2021 15:25:08 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v3 2/6] badblocks: add helper routines for badblock ranges
- handling
+        Mon, 27 Sep 2021 03:28:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632727614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6xjuVATs6D3wjKZlrb9lrWmJ+kcuNY9mgUVnAPrK/gA=;
+        b=AWpv1BESMjaLcnvn81vXLye/gG234lrhHUFnGttiBPoyboVA3XZ1guDUxhBVd3lC/M25pR
+        UFg8aVPP1G+IdceLegBsjRMNGG2BWow2Zs2fSIKn7JRY/aGz+F5IWEegnxjYXe09PdhrFh
+        qcX352bLeDnJKrLOlhzwfD5ZX49tWto=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2168.outbound.protection.outlook.com [104.47.17.168])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-8-ugGp8uFDPgK88etsL4MnpA-1; Mon, 27 Sep 2021 09:26:53 +0200
+X-MC-Unique: ugGp8uFDPgK88etsL4MnpA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YdjgnNbZQtCYaQTtccvOF8N0+j1Aq3ojlJ/xes+QISBe8I8t2piGgjtDVC+46JzIjrspbeQg6Uxkv6aAW1+3H5+fhGXsc1GssuJKu++PnTJbkyV5Fug9joOZYcZtaXAnapI9n7CekSqcu4kvCC7EKcYvP5vRmk3ahoBglfoKnoMZuua+ahKScujHVZ2EJ5Ib0yIHJkbdtLqOhJDhpRwWRVBFI6Km9Su6+M9GZj/ZGuqO/V9J8GI9Ix1YwPNAdWUpXqZVnB9IWk5bEJKfw4930AB7KSZUFhyuSt0KjCrb6oKgzFKh3xabZu3C0luvc/1ic5tOCL/Q+ERm7T+qOBb/Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=6xjuVATs6D3wjKZlrb9lrWmJ+kcuNY9mgUVnAPrK/gA=;
+ b=nD5tmP/yiIAROEkm+oqa6X4rMSKvpdNXzCtI+tvyjtBpfllavj630D3D/stXQR57bsTwEuLE3Qnoy7FMbpZAQKudosDr1/Bli0mk3NnWf2+mGOQ1+xzPisktbQ4E1E9AjLrWTlLBOnYmlUW8qrL2SwFa/rQ23caoTYJLtnY4Woplx+AHb0nvZiDF2PsIh+YsfJcbrFVZXoVVaMLD3CfNMo8Ky1G1qWFRMK2JMqvCOwGcgs2DPkBi+Pzr/WMnmuKIOGzM2Muxbz8uRtI1cGdTzkmeDAA6HDN9u1hlBh0fp4ocfNLpmnbrkHB+unfi+3/uzICghB6hrE4eVqgbeMfbsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB5328.eurprd04.prod.outlook.com (2603:10a6:803:59::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Mon, 27 Sep
+ 2021 07:26:52 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 07:26:51 +0000
+Subject: Re: [PATCH v4 1/2] xen-pciback: prepare for the split for stub and PV
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>
+Cc:     boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
+        sstabellini@kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20210927065822.350973-1-andr2000@gmail.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <e472468a-625e-6c4d-a9c2-85594e2ff908@suse.com>
+Date:   Mon, 27 Sep 2021 09:26:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20210927065822.350973-1-andr2000@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
-        nvdimm@lists.linux.dev
-Cc:     antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        NeilBrown <neilb@suse.de>, Richard Fan <richard.fan@suse.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>
-References: <20210913163643.10233-1-colyli@suse.de>
- <20210913163643.10233-3-colyli@suse.de>
-From:   Geliang Tang <geliangtang@gmail.com>
-In-Reply-To: <20210913163643.10233-3-colyli@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR0P264CA0106.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:19::22) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0106.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:19::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Mon, 27 Sep 2021 07:26:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9038d1b7-e2e0-4cad-e8c4-08d981882cbb
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5328:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5328D591A10AD0F8C815F2B6B3A79@VI1PR04MB5328.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +vMYmP6i3vrL3r+WCsbUkwTo23NUZz0tMMKJOMG1lcOzFEZvOKRMa2/VI25NGN4TB6hyujfutFl4Z+oJqFbLSEr4gu5BaijlJRnowJ4IXQmMOqSMLFUAEYnJJsUOclGG6K90bwu4xqkJVSxvhDm2/K8T726FvkkvThtnoRjmA00Qdw86H3kMZEKMP9XuMCAiANqfOQ5l7a+0Dav5PmQ6y4+Ou9C2E6rSiVMVdpvBP+SMDCfFHgTlYfFOrT2eXVPBHcxW9BOajTEtbKxy8Gpddvj8lCKqD8WrC0lx8oqqOopvGd/RA149jDxHLitMHXD+lshrU7KyYjn5NujgMsj7M65z6le4ExnXzhrdJAi+1nT15egT0/7s/ZqOooQz77hrlVQ8tOf4OvXsm4LuSB75z7bIGtJf6783I6Dr2IUe0cKTioWGcRIU4r8zxj0ZZX3oqI3FBgvzoHx9h5Xydz+Hvfyu7bSdVZlf4fvH+sunHvp1/p/I6u51IY3jt0kdyiWWPKZwxkjhOgS5aNmo3s/6N8bJWUfjbQijUraEouhgAyfUTetyHEcjsmztuKAfgBhjmtGULUW9unK2fL9XG6XlKxQI/op6s/8dcrBdd1ixEDrZh2cGlF6N3GG6ArAeSX+uwBIUnbULv0JzhZZaNQyQnc4TdLABm4RZbYGYaP1RV2z6LnHKlNHHdeCfNV8SY3eBKiLyn/jHSUdK7OUO+wFbRi8A6dn225lf8JpZWsAZ+so=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(66946007)(53546011)(316002)(16576012)(8936002)(2906002)(4326008)(36756003)(66476007)(26005)(186003)(31696002)(2616005)(956004)(66556008)(86362001)(38100700002)(5660300002)(508600001)(6916009)(6486002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eWJUTzBDb2VMNTBBMk1QcG04THR4T2d1TmRHTHVRbVhZSk9CSDUxOUpRVVNT?=
+ =?utf-8?B?c2t2MnlnV20yVXdleW9QV3A1TFNKNmhYejRmbEUvaThGaWJxTzk0RUErblJT?=
+ =?utf-8?B?ZHl6VjdycGFIWjFuVThGZm1SR1V2L1VqZmZCcVIvTFV1Tkw5UUZrcnFibUlp?=
+ =?utf-8?B?elZDTlQycytaeGhpT29GTTVyM3NYcXhSU2Rka0hTUGYvb2lLZ2d5aFdHemNQ?=
+ =?utf-8?B?N1lDUEtqbTIrVEFITzdpS0hMbUg3SWx2ZGI3bHlRb2l5LzIrenF4RE45UG0r?=
+ =?utf-8?B?NDdFdlovMU00Mi9TUWJXRXMxakNnWHNNdWxQVmphMlB1RkZTbkJHVkltMCtF?=
+ =?utf-8?B?QWtFRmhPcWsrRWdWSERocHlTSGVZTzlFNCsrZkR2MjloRHVjWG5wRmtPWWlk?=
+ =?utf-8?B?YnFYSzdMZ3A1NGZXbFdHK3RvR0E4bmhxN0VOdnlqS1h5ckxLbk0xSUhDcldq?=
+ =?utf-8?B?RUZYUElLaUhCc2lSUEpqdWxWcm1TQUIyUXk5cjF3OHVjdk1nVm5kNGtWQjVO?=
+ =?utf-8?B?Qk54aXlsNXkrbWdVbzZXeE9Ec3NLaTJvbERWc2JBdk5rZStlSEZwTGlWT1Bm?=
+ =?utf-8?B?WnVtbFVuYTRRYUdZOEt4SVNkUElpa0tlZXZqQ2hqMG92SXg0dE1ZOWNNN1Yy?=
+ =?utf-8?B?QzhDVWZNMzhyWHNMR1QwVzF0eFlnVVJQTElEUk9KQmpyL250QURIbTdXZGd0?=
+ =?utf-8?B?MmN1SGdzRHF1VWlRRWQ3R2dzeVVUYTI0NGhmdmpzUWIvVlBieHR4T0VtRC9o?=
+ =?utf-8?B?U2tkNk8yMTUwZGJnQkNRcXN2NUgxM1JDdVoyWmF3eFhjWmpKdEdxWlF2Ly9l?=
+ =?utf-8?B?Sk82MEdiZ2lFS3lneTV6OUlpV1hoUmk5ZHgvTXQrb2lLVDgybHNxTFZjbzha?=
+ =?utf-8?B?STFOaHlacERINWI3NHBNY0V5eVliQzRWQjNtZjR4TnhtV2h0MkNJOHorV2o2?=
+ =?utf-8?B?UVc3eWg2RWFwaEZGM3BVNktHUHpUNHRHOGJnN3VRM0t0L0wvemllY1crZ05T?=
+ =?utf-8?B?dC9RQ3NmN213OE5MVmtMdnp3eFpTSVZ5VzZFVGd4d0VTellDTDMxQnpPNnhI?=
+ =?utf-8?B?UjhsZXJUNzJ5enI0NWZMOWFHQjA5ZDBCNE5tKzRBcTFGQ0Rrc2lUTFFIVjly?=
+ =?utf-8?B?V3NPL2hpYlVMNXNRK2pKdkJsN0lJQTV1MGRaOWw4VVZ1bjM0TUxMMkNCY28v?=
+ =?utf-8?B?d1Vwd3pmbnhIOU9XSGtTTkdCTnBYMG45QkJJdk4zRFl0ckxIVU5jVHQwTkky?=
+ =?utf-8?B?SXp4Q3dKKzFDSndGYUVzWG1udjhLcTZlUUVUdU5KaFYrVi9Xb3UvcXVwbE9Z?=
+ =?utf-8?B?ODhlYmo0aWs0dDlBNkpQdWRha2NmWm52amxyMHNQYTFHTm9GYjRDTjNnSndQ?=
+ =?utf-8?B?ZVJTS1RxYm1RZVFKRCtBc2VhREI1enpHRUMrNHlRRjNwVU1tZEFSWUhkNk05?=
+ =?utf-8?B?Mk42amwyQnJTdUJBYjh5TWpveitTeWVPa0ZIZFo1VW5zWkw2RnVEbll0ZkFz?=
+ =?utf-8?B?ZlpkSGNqbVlEU0FzYUthMjFiUjlwVE5EUWxvT1RRMDlGRHVKd0hTcFA5VGpt?=
+ =?utf-8?B?RWtOUk0rVkRqaVdOZ1pvMlFncXRCQXdPMHRsK0hHQXh4Q3lYVm1DQ1FNa1B1?=
+ =?utf-8?B?MGgzUFpQeWJ3MnN0dkZlRWk4UkkxdUlOOGJaV1hoZkRXNkh5WHJQUDNSVlli?=
+ =?utf-8?B?b09YcFptNUg4SjQ1eS9TaHJWcGpGQkZVUVBvdDdZUEJKU3hCNXdNVmRRQkpi?=
+ =?utf-8?Q?R7BU/Sq9mqBjaEw1hFML0dnuw1emZ70JsDw/Iil?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9038d1b7-e2e0-4cad-e8c4-08d981882cbb
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 07:26:51.6912
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lBZTzvjc4Q+LnMGsRbvKb8/ezmuBwke1OZQQkNhFgcL2bI02Swlu5f5F87EdalcHHT8vd11LfDVwp3KGiTT+mQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5328
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 00:36, Coly Li wrote:
-> This patch adds several helper routines to improve badblock ranges
-> handling. These helper routines will be used later in the improved
-> version of badblocks_set()/badblocks_clear()/badblocks_check().
+On 27.09.2021 08:58, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 > 
-> - Helpers prev_by_hint() and prev_badblocks() are used to find the bad
->    range from bad table which the searching range starts at or after.
+> Currently PCI backend implements multiple functionalities at a time.
+> To name a few:
+> 1. It is used as a database for assignable PCI devices, e.g. xl
+>    pci-assignable-{add|remove|list} manipulates that list. So, whenever
+>    the toolstack needs to know which PCI devices can be passed through
+>    it reads that from the relevant sysfs entries of the pciback.
+> 2. It is used to hold the unbound PCI devices list, e.g. when passing
+>    through a PCI device it needs to be unbound from the relevant device
+>    driver and bound to pciback (strictly speaking it is not required
+>    that the device is bound to pciback, but pciback is again used as a
+>    database of the passed through PCI devices, so we can re-bind the
+>    devices back to their original drivers when guest domain shuts down)
+> 3. Device reset for the devices being passed through
+> 4. Para-virtualised use-cases support
 > 
-> - The following helpers are to decide the relative layout between the
->    manipulating range and existing bad block range from bad table.
->    - can_merge_behind()
->      Return 'true' if the manipulating range can backward merge with the
->      bad block range.
->    - can_merge_front()
->      Return 'true' if the manipulating range can forward merge with the
->      bad block range.
->    - can_combine_front()
->      Return 'true' if two adjacent bad block ranges before the
->      manipulating range can be merged.
->    - overlap_front()
->      Return 'true' if the manipulating range exactly overlaps with the
->      bad block range in front of its range.
->    - overlap_behind()
->      Return 'true' if the manipulating range exactly overlaps with the
->      bad block range behind its range.
->    - can_front_overwrite()
->      Return 'true' if the manipulating range can forward overwrite the
->      bad block range in front of its range.
+> The para-virtualised part of the driver is not always needed as some
+> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
+> model for PCI device passthrough. For such use-cases make the very
+> first step in splitting the xen-pciback driver into two parts: Xen
+> PCI stub and PCI PV backend drivers.
 > 
-> - The following helpers are to add the manipulating range into the bad
->    block table. Different routine is called with the specific relative
->    layout between the maniplating range and other bad block range in the
->    bad block table.
->    - behind_merge()
->      Merge the maniplating range with the bad block range behind its
->      range, and return the number of merged length in unit of sector.
->    - front_merge()
->      Merge the maniplating range with the bad block range in front of
->      its range, and return the number of merged length in unit of sector.
->    - front_combine()
->      Combine the two adjacent bad block ranges before the manipulating
->      range into a larger one.
->    - front_overwrite()
->      Overwrite partial of whole bad block range which is in front of the
->      manipulating range. The overwrite may split existing bad block range
->      and generate more bad block ranges into the bad block table.
->    - insert_at()
->      Insert the manipulating range at a specific location in the bad
->      block table.
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 > 
-> All the above helpers are used in later patches to improve the bad block
-> ranges handling for badblocks_set()/badblocks_clear()/badblocks_check().
-> 
-> Signed-off-by: Coly Li <colyli@suse.de>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Hannes Reinecke <hare@suse.de>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: NeilBrown <neilb@suse.de>
-> Cc: Richard Fan <richard.fan@suse.com>
-> Cc: Vishal L Verma <vishal.l.verma@intel.com>
 > ---
->   block/badblocks.c | 374 ++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 374 insertions(+)
-> 
-> diff --git a/block/badblocks.c b/block/badblocks.c
-> index d39056630d9c..efe316181e05 100644
-> --- a/block/badblocks.c
-> +++ b/block/badblocks.c
-> @@ -16,6 +16,380 @@
->   #include <linux/types.h>
->   #include <linux/slab.h>
->   
-> +/*
-> + * Find the range starts at-or-before 's' from bad table. The search
-> + * starts from index 'hint' and stops at index 'hint_end' from the bad
-> + * table.
-> + */
-> +static int prev_by_hint(struct badblocks *bb, sector_t s, int hint)
-> +{
-> +	u64 *p = bb->page;
-> +	int ret = -1;
-> +	int hint_end = hint + 2;
+> Changes since v3:
+> - Move CONFIG_XEN_PCIDEV_STUB to the second patch
 
-How about declaring these variables following the "reverse Xmas tree" order.
+I'm afraid this wasn't fully done:
 
-> +
-> +	while ((hint < hint_end) && ((hint + 1) <= bb->count) &&
-> +	       (BB_OFFSET(p[hint]) <= s)) {
-> +		if ((hint + 1) == bb->count || BB_OFFSET(p[hint + 1]) > s) {
-> +			ret = hint;
-> +			break;
-> +		}
-> +		hint++;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Find the range starts at-or-before bad->start. If 'hint' is provided
-> + * (hint >= 0) then search in the bad table from hint firstly. It is
-> + * very probably the wanted bad range can be found from the hint index,
-> + * then the unnecessary while-loop iteration can be avoided.
-> + */
-> +static int prev_badblocks(struct badblocks *bb, struct badblocks_context *bad,
-> +			  int hint)
-> +{
-> +	u64 *p;
-> +	int lo, hi;
-> +	sector_t s = bad->start;
-> +	int ret = -1;
-> +
-> +	if (!bb->count)
-> +		goto out;
-> +
-> +	if (hint >= 0) {
-> +		ret = prev_by_hint(bb, s, hint);
-> +		if (ret >= 0)
-> +			goto out;
-> +	}
-> +
-> +	lo = 0;
-> +	hi = bb->count;
-> +	p = bb->page;
-> +
-> +	while (hi - lo > 1) {
-> +		int mid = (lo + hi)/2;
-> +		sector_t a = BB_OFFSET(p[mid]);
-> +
-> +		if (a <= s)
-> +			lo = mid;
-> +		else
-> +			hi = mid;
-> +	}
-> +
-> +	if (BB_OFFSET(p[lo]) <= s)
-> +		ret = lo;
-> +out:
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Return 'true' if the range indicated by 'bad' can be backward merged
-> + * with the bad range (from the bad table) index by 'behind'.
-> + */
-> +static bool can_merge_behind(struct badblocks *bb, struct badblocks_context *bad,
-> +			     int behind)
-> +{
-> +	u64 *p = bb->page;
-> +	sector_t s = bad->start;
-> +	sector_t sectors = bad->len;
-> +	int ack = bad->ack;
-> +
-> +	if ((s <= BB_OFFSET(p[behind])) &&
-> +	    ((s + sectors) >= BB_OFFSET(p[behind])) &&
-> +	    ((BB_END(p[behind]) - s) <= BB_MAX_LEN) &&
-> +	    BB_ACK(p[behind]) == ack)
-> +		return true;
-> +	return false;
-> +}
-> +
-> +/*
-> + * Do backward merge for range indicated by 'bad' and the bad range
-> + * (from the bad table) indexed by 'behind'. The return value is merged
-> + * sectors from bad->len.
-> + */
-> +static int behind_merge(struct badblocks *bb, struct badblocks_context *bad,
-> +			int behind)
-> +{
-> +	u64 *p = bb->page;
-> +	sector_t s = bad->start;
-> +	sector_t sectors = bad->len;
-> +	int ack = bad->ack;
-> +	int merged = 0;
-> +
-> +	WARN_ON(s > BB_OFFSET(p[behind]));
-> +	WARN_ON((s + sectors) < BB_OFFSET(p[behind]));
-> +
-> +	if (s < BB_OFFSET(p[behind])) {
-> +		WARN_ON((BB_LEN(p[behind]) + merged) >= BB_MAX_LEN);
-> +
-> +		merged = min_t(sector_t, sectors, BB_OFFSET(p[behind]) - s);
-> +		p[behind] =  BB_MAKE(s, BB_LEN(p[behind]) + merged, ack);
-> +	} else {
-> +		merged = min_t(sector_t, sectors, BB_LEN(p[behind]));
-> +	}
-> +
-> +	WARN_ON(merged == 0);
-> +
-> +	return merged;
-> +}
-> +
-> +/*
-> + * Return 'true' if the range indicated by 'bad' can be forward
-> + * merged with the bad range (from the bad table) indexed by 'prev'.
-> + */
-> +static bool can_merge_front(struct badblocks *bb, int prev,
-> +			    struct badblocks_context *bad)
-> +{
-> +	u64 *p = bb->page;
-> +	sector_t s = bad->start;
-> +	int ack = bad->ack;
-> +
-> +	if (BB_ACK(p[prev]) == ack &&
-> +	    (s < BB_END(p[prev]) ||
-> +	     (s == BB_END(p[prev]) && (BB_LEN(p[prev]) < BB_MAX_LEN))))
-> +		return true;
-> +	return false;
-> +}
-> +
-> +/*
-> + * Do forward merge for range indicated by 'bad' and the bad range
-> + * (from bad table) indexed by 'prev'. The return value is sectors
-> + * merged from bad->len.
-> + */
-> +static int front_merge(struct badblocks *bb, int prev, struct badblocks_context *bad)
-> +{
-> +	sector_t sectors = bad->len;
-> +	sector_t s = bad->start;
-> +	int ack = bad->ack;
-> +	u64 *p = bb->page;
-> +	int merged = 0;
-> +
-> +	WARN_ON(s > BB_END(p[prev]));
-> +
-> +	if (s < BB_END(p[prev])) {
-> +		merged = min_t(sector_t, sectors, BB_END(p[prev]) - s);
-> +	} else {
-> +		merged = min_t(sector_t, sectors, BB_MAX_LEN - BB_LEN(p[prev]));
-> +		if ((prev + 1) < bb->count &&
-> +		    merged > (BB_OFFSET(p[prev + 1]) - BB_END(p[prev]))) {
-> +			merged = BB_OFFSET(p[prev + 1]) - BB_END(p[prev]);
-> +		}
-> +
-> +		p[prev] = BB_MAKE(BB_OFFSET(p[prev]),
-> +				  BB_LEN(p[prev]) + merged, ack);
-> +	}
-> +
-> +	return merged;
-> +}
-> +
-> +/*
-> + * 'Combine' is a special case which can_merge_front() is not able to
-> + * handle: If a bad range (indexed by 'prev' from bad table) exactly
-> + * starts as bad->start, and the bad range ahead of 'prev' (indexed by
-> + * 'prev - 1' from bad table) exactly ends at where 'prev' starts, and
-> + * the sum of their lengths does not exceed BB_MAX_LEN limitation, then
-> + * these two bad range (from bad table) can be combined.
-> + *
-> + * Return 'true' if bad ranges indexed by 'prev' and 'prev - 1' from bad
-> + * table can be combined.
-> + */
-> +static bool can_combine_front(struct badblocks *bb, int prev,
-> +			      struct badblocks_context *bad)
-> +{
-> +	u64 *p = bb->page;
-> +
-> +	if ((prev > 0) &&
-> +	    (BB_OFFSET(p[prev]) == bad->start) &&
-> +	    (BB_END(p[prev - 1]) == BB_OFFSET(p[prev])) &&
-> +	    (BB_LEN(p[prev - 1]) + BB_LEN(p[prev]) <= BB_MAX_LEN) &&
-> +	    (BB_ACK(p[prev - 1]) == BB_ACK(p[prev])))
-> +		return true;
-> +	return false;
-> +}
-> +
-> +/*
-> + * Combine the bad ranges indexed by 'prev' and 'prev - 1' (from bad
-> + * table) into one larger bad range, and the new range is indexed by
-> + * 'prev - 1'.
-> + */
-> +static void front_combine(struct badblocks *bb, int prev)
-> +{
-> +	u64 *p = bb->page;
-> +
-> +	p[prev - 1] = BB_MAKE(BB_OFFSET(p[prev - 1]),
-> +			      BB_LEN(p[prev - 1]) + BB_LEN(p[prev]),
-> +			      BB_ACK(p[prev]));
-> +	if ((prev + 1) < bb->count)
-> +		memmove(p + prev, p + prev + 1, (bb->count - prev - 1) * 8);
-> +}
-> +
-> +/*
-> + * Return 'true' if the range indicated by 'bad' is exactly forward
-> + * overlapped with the bad range (from bad table) indexed by 'front'.
-> + * Exactly forward overlap means the bad range (from bad table) indexed
-> + * by 'prev' does not cover the whole range indicated by 'bad'.
-> + */
-> +static bool overlap_front(struct badblocks *bb, int front,
-> +			  struct badblocks_context *bad)
-> +{
-> +	u64 *p = bb->page;
-> +
-> +	if (bad->start >= BB_OFFSET(p[front]) &&
-> +	    bad->start < BB_END(p[front]))
-> +		return true;
-> +	return false;
-> +}
-> +
-> +/*
-> + * Return 'true' if the range indicated by 'bad' is exactly backward
-> + * overlapped with the bad range (from bad table) indexed by 'behind'.
-> + */
-> +static bool overlap_behind(struct badblocks *bb, struct badblocks_context *bad,
-> +			   int behind)
-> +{
-> +	u64 *p = bb->page;
-> +
-> +	if (bad->start < BB_OFFSET(p[behind]) &&
-> +	    (bad->start + bad->len) > BB_OFFSET(p[behind]))
-> +		return true;
-> +	return false;
-> +}
-> +
-> +/*
-> + * Return 'true' if the range indicated by 'bad' can overwrite the bad
-> + * range (from bad table) indexed by 'prev'.
-> + *
-> + * The range indicated by 'bad' can overwrite the bad range indexed by
-> + * 'prev' when,
-> + * 1) The whole range indicated by 'bad' can cover partial or whole bad
-> + *    range (from bad table) indexed by 'prev'.
-> + * 2) The ack value of 'bad' is larger or equal to the ack value of bad
-> + *    range 'prev'.
-> + *
-> + * If the overwriting doesn't cover the whole bad range (from bad table)
-> + * indexed by 'prev', new range might be split from existing bad range,
-> + * 1) The overwrite covers head or tail part of existing bad range, 1
-> + *    extra bad range will be split and added into the bad table.
-> + * 2) The overwrite covers middle of existing bad range, 2 extra bad
-> + *    ranges will be split (ahead and after the overwritten range) and
-> + *    added into the bad table.
-> + * The number of extra split ranges of the overwriting is stored in
-> + * 'extra' and returned for the caller.
-> + */
-> +static bool can_front_overwrite(struct badblocks *bb, int prev,
-> +				struct badblocks_context *bad, int *extra)
-> +{
-> +	u64 *p = bb->page;
-> +	int len;
-> +
-> +	WARN_ON(!overlap_front(bb, prev, bad));
-> +
-> +	if (BB_ACK(p[prev]) >= bad->ack)
-> +		return false;
-> +
-> +	if (BB_END(p[prev]) <= (bad->start + bad->len)) {
-> +		len = BB_END(p[prev]) - bad->start;
-> +		if (BB_OFFSET(p[prev]) == bad->start)
-> +			*extra = 0;
-> +		else
-> +			*extra = 1;
-> +
-> +		bad->len = len;
-> +	} else {
-> +		if (BB_OFFSET(p[prev]) == bad->start)
-> +			*extra = 1;
-> +		else
-> +		/*
-> +		 * prev range will be split into two, beside the overwritten
-> +		 * one, an extra slot needed from bad table.
-> +		 */
-> +			*extra = 2;
-> +	}
-> +
-> +	if ((bb->count + (*extra)) >= MAX_BADBLOCKS)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +/*
-> + * Do the overwrite from the range indicated by 'bad' to the bad range
-> + * (from bad table) indexed by 'prev'.
-> + * The previously called can_front_overwrite() will provide how many
-> + * extra bad range(s) might be split and added into the bad table. All
-> + * the splitting cases in the bad table will be handled here.
-> + */
-> +static int front_overwrite(struct badblocks *bb, int prev,
-> +			   struct badblocks_context *bad, int extra)
-> +{
-> +	u64 *p = bb->page;
-> +	int n = extra;
-> +	sector_t orig_end = BB_END(p[prev]);
-> +	int orig_ack = BB_ACK(p[prev]);
-> +
-> +	switch (extra) {
-> +	case 0:
-> +		p[prev] = BB_MAKE(BB_OFFSET(p[prev]), BB_LEN(p[prev]),
-> +				  bad->ack);
-> +		break;
-> +	case 1:
-> +		if (BB_OFFSET(p[prev]) == bad->start) {
-> +			p[prev] = BB_MAKE(BB_OFFSET(p[prev]),
-> +					  bad->len, bad->ack);
-> +			memmove(p + prev + 2, p + prev + 1,
-> +				(bb->count - prev - 1) * 8);
-> +			p[prev + 1] = BB_MAKE(bad->start + bad->len,
-> +					      orig_end - BB_END(p[prev]),
-> +					      orig_ack);
-> +		} else {
-> +			p[prev] = BB_MAKE(BB_OFFSET(p[prev]),
-> +					  bad->start - BB_OFFSET(p[prev]),
-> +					  BB_ACK(p[prev]));
-> +			memmove(p + prev + 1 + n, p + prev + 1,
-> +				(bb->count - prev - 1) * 8);
-> +			p[prev + 1] = BB_MAKE(bad->start, bad->len, bad->ack);
-> +		}
-> +		break;
-> +	case 2:
-> +		p[prev] = BB_MAKE(BB_OFFSET(p[prev]),
-> +				  bad->start - BB_OFFSET(p[prev]),
-> +				  BB_ACK(p[prev]));
-> +		memmove(p + prev + 1 + n, p + prev + 1,
-> +			(bb->count - prev - 1) * 8);
-> +		p[prev + 1] = BB_MAKE(bad->start, bad->len, bad->ack);
-> +		p[prev + 2] = BB_MAKE(BB_END(p[prev + 1]),
-> +				      orig_end - BB_END(p[prev + 1]),
-> +				      BB_ACK(p[prev]));
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return bad->len;
-> +}
-> +
-> +/*
-> + * Explicitly insert a range indicated by 'bad' to the bad table, where
-> + * the location is indexed by 'at'.
-> + */
-> +static int insert_at(struct badblocks *bb, int at, struct badblocks_context *bad)
-> +{
-> +	u64 *p = bb->page;
-> +	sector_t sectors = bad->len;
-> +	sector_t s = bad->start;
-> +	int ack = bad->ack;
-> +	int len;
-> +
-> +	WARN_ON(badblocks_full(bb));
-> +
-> +	len = min_t(sector_t, sectors, BB_MAX_LEN);
-> +	if (at < bb->count)
-> +		memmove(p + at + 1, p + at, (bb->count - at) * 8);
-> +	p[at] = BB_MAKE(s, len, ack);
-> +
-> +	return len;
-> +}
-> +
->   /**
->    * badblocks_check() - check a given range for bad sectors
->    * @bb:		the badblocks structure that holds all badblock information
-> 
+> --- a/drivers/xen/xen-pciback/Makefile
+> +++ b/drivers/xen/xen-pciback/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
+> +obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
+
+While benign when added here, this addition still doesn't seem to
+belong here.
+
+Jan
 
