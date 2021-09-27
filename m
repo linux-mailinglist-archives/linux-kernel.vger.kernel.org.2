@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8DD419A69
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB829419B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236435AbhI0RIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S236786AbhI0RRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236247AbhI0RHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEECC6101A;
-        Mon, 27 Sep 2021 17:06:04 +0000 (UTC)
+        id S237281AbhI0RO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:14:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D786135A;
+        Mon, 27 Sep 2021 17:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762365;
-        bh=M5fkxkh7FW5Q9jQlRvy3DoD+wYtuLPhsV44j22NltWk=;
+        s=korg; t=1632762607;
+        bh=cWf6s3w5KufPS3NvTgxGdIoyfoTRIo+gHNVhlZgTZa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yGoVqou0m2Mwz/Gi1Ke7hvp5a+bn6/dT7Q90mz8xUrNkmz/5DOHXC027xhvQNG1P/
-         P2iWleKa/Q5rMjisMyGcpR7QpToO3bhUHFAz/EXL3Af9sPh3sP5jO+5g1q+4hb5JnP
-         3arNHQEgXt6Ue5mHxfa6S97n3W+cxSE9e3o9Sc9c=
+        b=FptXh/JLZBP40TxzEfHUvhWOrlLAy46kHLp6C+vzoVco/dKY77N/YS30BYnE7u34U
+         gPPrME3jUzlYR3/ALCkx3JvtZ+pvuaVCiY5QrLiofnOhFK5g9bKfs2ZBZGvfqyz88x
+         PfBcGxdoXY5dWQ/NA7s6J5g5wGzh+fyUiRl/oLo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Lihong Kou <koulihong@huawei.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 62/68] net: 6pack: Fix tx timeout and slot time
+Subject: [PATCH 5.10 086/103] block: check if a profile is actually registered in blk_integrity_unregister
 Date:   Mon, 27 Sep 2021 19:02:58 +0200
-Message-Id: <20210927170222.121698770@linuxfoundation.org>
+Message-Id: <20210927170228.744860402@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 3c0d2a46c0141913dc6fd126c57d0615677d946e ]
+[ Upstream commit 783a40a1b3ac7f3714d2776fa8ac8cce3535e4f6 ]
 
-tx timeout and slot time are currently specified in units of HZ.  On
-Alpha, HZ is defined as 1024.  When building alpha:allmodconfig, this
-results in the following error message.
+While clearing the profile itself is harmless, we really should not clear
+the stable writes flag if it wasn't set due to a registered integrity
+profile.
 
-  drivers/net/hamradio/6pack.c: In function 'sixpack_open':
-  drivers/net/hamradio/6pack.c:71:41: error:
-  	unsigned conversion from 'int' to 'unsigned char'
-  	changes value from '256' to '0'
-
-In the 6PACK protocol, tx timeout is specified in units of 10 ms and
-transmitted over the wire:
-
-    https://www.linux-ax25.org/wiki/6PACK
-
-Defining a value dependent on HZ doesn't really make sense, and
-presumably comes from the (very historical) situation where HZ was
-originally 100.
-
-Note that the SIXP_SLOTTIME use explicitly is about 10ms granularity:
-
-        mod_timer(&sp->tx_t, jiffies + ((when + 1) * HZ) / 100);
-
-and the SIXP_TXDELAY walue is sent as a byte over the wire.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Lihong Kou <koulihong@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Link: https://lore.kernel.org/r/20210914070657.87677-2-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hamradio/6pack.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ block/blk-integrity.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index da13683d52d1..bd0beb16d68a 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -68,9 +68,9 @@
- #define SIXP_DAMA_OFF		0
- 
- /* default level 2 parameters */
--#define SIXP_TXDELAY			(HZ/4)	/* in 1 s */
-+#define SIXP_TXDELAY			25	/* 250 ms */
- #define SIXP_PERSIST			50	/* in 256ths */
--#define SIXP_SLOTTIME			(HZ/10)	/* in 1 s */
-+#define SIXP_SLOTTIME			10	/* 100 ms */
- #define SIXP_INIT_RESYNC_TIMEOUT	(3*HZ/2) /* in 1 s */
- #define SIXP_RESYNC_TIMEOUT		5*HZ	/* in 1 s */
+diff --git a/block/blk-integrity.c b/block/blk-integrity.c
+index 410da060d1f5..e9f943de377a 100644
+--- a/block/blk-integrity.c
++++ b/block/blk-integrity.c
+@@ -426,8 +426,12 @@ EXPORT_SYMBOL(blk_integrity_register);
+  */
+ void blk_integrity_unregister(struct gendisk *disk)
+ {
++	struct blk_integrity *bi = &disk->queue->integrity;
++
++	if (!bi->profile)
++		return;
+ 	blk_queue_flag_clear(QUEUE_FLAG_STABLE_WRITES, disk->queue);
+-	memset(&disk->queue->integrity, 0, sizeof(struct blk_integrity));
++	memset(bi, 0, sizeof(*bi));
+ }
+ EXPORT_SYMBOL(blk_integrity_unregister);
  
 -- 
 2.33.0
