@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC35B41A12E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5A841A12C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237168AbhI0VLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        id S237154AbhI0VKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237080AbhI0VLO (ORCPT
+        with ESMTP id S237112AbhI0VKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:11:14 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443EEC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:36 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso80168oot.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:36 -0700 (PDT)
+        Mon, 27 Sep 2021 17:10:53 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0DEC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:14 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so26233537otq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Dq29TxJ5zpM4XHFteYmjRFf+8vB0LPfL9SydtuPUex4=;
-        b=QXoqixS9dSwgotQCR4tPOH2boVVWjkQ9G/7fRvVPwOODbCs72HTY16UDes5QZRApcH
-         KpzoIV+7PFON62nO10VhOP3msaqlF2KOpIyzg8TyhBSU5ysGfhzrSAtrTmwwNlYPKVP7
-         SXcSfXUWpQz0lHdH1A4JuyE2FlzoL4tlEyHcA=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=grE/QCgUPZomgAa82Baf4sqrNJQIrutG83y4os53Po0=;
+        b=oIjdg4rdeHFaTWkSFkv7r27Mw1ApU0OhaRY5ZEooHEBnmKhUItDHaPZjaFO1HWnBE+
+         gGA9jxLVQw9d8thRbErz6hqVo1Ej+RKxrYRsoW0XBg4kcIoJsDdXCJt+ykWDONiRSQOM
+         /l+Kmk/uQrlVN+vOdVaU+6B6RcjGOHHAAH4Cjpe+ooKeij3vU21ZiDLtBk5+s8YwyULj
+         BycRWA9rxAjoqIaTbey8iFYTDQEyLLnFkhK6U5+9zbuQgfDkoLWHR+3RnlwhZ3u4OU99
+         kXbvGZpcNFgQdS6aRpDh+XYhiiYB7PGtFp6iSEyIKnptMu16xxi4YwQFSzXFAXsl8UvR
+         pbZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Dq29TxJ5zpM4XHFteYmjRFf+8vB0LPfL9SydtuPUex4=;
-        b=fKzh3LFulLGc41+yKxK5fFfNaFUQ7MN0FACe2WOt8qyRL3ulssa8n1Gx73wTu+25xD
-         pEylubwrM4lS6+a3pIq38pChHvmULVVzj2YN3QuK4Aen7v8kJAJHwVB5Dw+qNZjANl4P
-         mpZqCZ9EOIFXngXxuqqK64B3+YX7DwrTe3JaaS+uiu0DN+niALVgoLy0GtJmHZeX4Ndd
-         Yj0twbO+veUHx4JT0lPQm3T0iZxcmicU7jyl13orceJ06az6HPeIsueb8u8X9NNHJtLS
-         /TNW57mC5pBIbA8k+JOjnctAywmb2idVf3rYG+FvhsR/fpfq5YcMh4gKdNYt2rcSN9en
-         ciKw==
-X-Gm-Message-State: AOAM532GlGQ8WjdDqEcGg5FYGkUoWvxGY/IhEiBqJi4ZoUMkYh7io3to
-        cx6EhS1PZZaG/OeTHnOMEBYpfJu8+BxyUk4k1mhl+Q==
-X-Google-Smtp-Source: ABdhPJwsE/D0A4gu7LK9Uo5aq776hYHg6zVFtNMjoHs4nXxtn9C+5PEy6DETLnx3RKhAzWNHPiAUZenoQ4MczmEq2U8=
-X-Received: by 2002:a4a:c3c2:: with SMTP id e2mr1747622ooq.8.1632776975637;
- Mon, 27 Sep 2021 14:09:35 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 27 Sep 2021 14:09:35 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=grE/QCgUPZomgAa82Baf4sqrNJQIrutG83y4os53Po0=;
+        b=dGSZ2izN2rsIkt+W6eSv8be02NL+58Ny9lMIuF2WDkHYbPUvQ/0YjS/qGxMO9zkNGv
+         7H9qq9RN3nWuM7iJ2qM9rBLC9TjyXYd/aLZi0ijsQiRBH7MTXMv5uDVxU6W83TPo30k+
+         /0O37xLp4xOea9RJYLDu1zZ0zt+ds7jpapBtq2LPRFtDEvj5OKm/EJEfz95PQgG0qmXn
+         SABCyj7X6fpCvm88wF/tpGOBjq+gJP/zBME93JzJxsT1Un0zx5TicYDuwpc2OQdktVFB
+         jc4IEnRMDSFp91yra4tlLWRpPcj5g19Th84WiKbg62rvNQQnI1JnnfmcIaxllG1tZQ9w
+         Ov8A==
+X-Gm-Message-State: AOAM530LEM9MfLCToe9ry44nS7r96HeivMARHLhCfyAV984y5bLXQqDf
+        eRCfjYnlSJ4GSSHUvsPy5VCnnA==
+X-Google-Smtp-Source: ABdhPJyXeF7vQujghOoksF4uKMTC4XwnidezuOSOqHxkklyPUSzl/VVHyx+mF/W4Xji8LQvZuQOubw==
+X-Received: by 2002:a9d:7f12:: with SMTP id j18mr1790463otq.365.1632776953523;
+        Mon, 27 Sep 2021 14:09:13 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u26sm2180977oic.51.2021.09.27.14.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 14:09:13 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Update remoteproc repo url
+Date:   Mon, 27 Sep 2021 14:09:46 -0700
+Message-Id: <20210927210946.3746116-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210927113632.3849987-1-arnd@kernel.org>
-References: <20210927113632.3849987-1-arnd@kernel.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 27 Sep 2021 14:09:35 -0700
-Message-ID: <CAE-0n52=yYW6SuMUPwGiv374K7D6DDpOZdJUudHdhMa7x2p1CA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/submit: fix overflow check on 64-bit architectures
-To:     Arnd Bergmann <arnd@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Arnd Bergmann (2021-09-27 04:36:23)
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The overflow check does causes a warning from clang-14 when 'sz' is a type
-> that is smaller than size_t:
->
-> drivers/gpu/drm/msm/msm_gem_submit.c:217:10: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->                 if (sz == SIZE_MAX) {
->
-> Change the type accordingly.
->
-> Fixes: 20224d715a88 ("drm/msm/submit: Move copy_from_user ahead of locking bos")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
+The remoteproc and rpmsg repos are moving from my personal namespace to
+allow Mathieu to push to the projects as well.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0f28fb4b4e5c..dfc93b8e4f28 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15987,7 +15987,7 @@ M:	Bjorn Andersson <bjorn.andersson@linaro.org>
+ M:	Mathieu Poirier <mathieu.poirier@linaro.org>
+ L:	linux-remoteproc@vger.kernel.org
+ S:	Maintained
+-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git rproc-next
++T:	git https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rproc-next
+ F:	Documentation/ABI/testing/sysfs-class-remoteproc
+ F:	Documentation/devicetree/bindings/remoteproc/
+ F:	Documentation/staging/remoteproc.rst
+@@ -16001,7 +16001,7 @@ M:	Bjorn Andersson <bjorn.andersson@linaro.org>
+ M:	Mathieu Poirier <mathieu.poirier@linaro.org>
+ L:	linux-remoteproc@vger.kernel.org
+ S:	Maintained
+-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git rpmsg-next
++T:	git https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rpmsg-next
+ F:	Documentation/ABI/testing/sysfs-bus-rpmsg
+ F:	Documentation/staging/rpmsg.rst
+ F:	drivers/rpmsg/
+-- 
+2.29.2
+
