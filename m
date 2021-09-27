@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DED3419A46
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1007C419B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235932AbhI0RH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
+        id S236667AbhI0RP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235751AbhI0RHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BF9C6108E;
-        Mon, 27 Sep 2021 17:05:26 +0000 (UTC)
+        id S237057AbhI0RNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:13:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19FA8611F0;
+        Mon, 27 Sep 2021 17:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762327;
-        bh=EpjAQJTkFg02hqVpb6tB77wl0XF3AmrGDuxwoXv4M2Y=;
+        s=korg; t=1632762569;
+        bh=5F/yyhXnoGNZ4uGOCJhhXpiHMqAtOkL6WxNqQqD1S4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dD5H7FZIizava8+VQ5Y2R4w1JyFQlFVu71gaxGGxhJ3v0I6DZyzTk3qW21PR1dUJA
-         nLmlY/BP8UJ6S06GBEjFIH6dDigDmpNF4tG7kF9B/qgB+lFQPDYf6/943T5FI57Qrb
-         Z46hdU5mYWYwJku/Aigx2uSfpcXR4J6cxwmIzYGI=
+        b=TLONfv5jVCw4NMl1eKIil7DM+fEbLBz542YO1YqGHJB0Pkk2xu2Tl6gch1JRGOODI
+         MppIeBaIaqoltyUdjMjQJogja5izmOvH2aYHRK9pZEdsVa6iqRUUXbkC802id24XG0
+         df69Ha/L9F6XDDcJmnQ5+ZAn0l+7m2YjeuTwXhHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhang kai <zhangkaiheb@126.com>,
-        David Ahern <dsahern@kernel.org>,
+        stable@vger.kernel.org,
+        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 49/68] ipv6: delay fib6_sernum increase in fib6_add
-Date:   Mon, 27 Sep 2021 19:02:45 +0200
-Message-Id: <20210927170221.657140112@linuxfoundation.org>
+Subject: [PATCH 5.10 074/103] net: macb: fix use after free on rmmod
+Date:   Mon, 27 Sep 2021 19:02:46 +0200
+Message-Id: <20210927170228.322502901@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhang kai <zhangkaiheb@126.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit e87b5052271e39d62337ade531992b7e5d8c2cfa ]
+[ Upstream commit d82d5303c4c539db86588ffb5dc5b26c3f1513e8 ]
 
-only increase fib6_sernum in net namespace after add fib6_info
-successfully.
+plat_dev->dev->platform_data is released by platform_device_unregister(),
+use of pclk and hclk is a use-after-free. Since device unregister won't
+need a clk device we adjust the function call sequence to fix this issue.
 
-Signed-off-by: zhang kai <zhangkaiheb@126.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
+[   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
+[   31.275563] Freed by task 306:
+[   30.276782]  platform_device_release+0x25/0x80
+
+Suggested-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ip6_fib.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/cadence/macb_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index bb68290ad68d..9a6f66e0e9a2 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -1310,7 +1310,6 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
- 	int err = -ENOMEM;
- 	int allow_create = 1;
- 	int replace_required = 0;
--	int sernum = fib6_new_sernum(info->nl_net);
+diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
+index 353393dea639..3593b310c325 100644
+--- a/drivers/net/ethernet/cadence/macb_pci.c
++++ b/drivers/net/ethernet/cadence/macb_pci.c
+@@ -111,9 +111,9 @@ static void macb_remove(struct pci_dev *pdev)
+ 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
+ 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
  
- 	if (info->nlh) {
- 		if (!(info->nlh->nlmsg_flags & NLM_F_CREATE))
-@@ -1410,7 +1409,7 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
- 	if (!err) {
- 		if (rt->nh)
- 			list_add(&rt->nh_list, &rt->nh->f6i_list);
--		__fib6_update_sernum_upto_root(rt, sernum);
-+		__fib6_update_sernum_upto_root(rt, fib6_new_sernum(info->nl_net));
- 		fib6_start_gc(info->nl_net, rt);
- 	}
+-	platform_device_unregister(plat_dev);
+ 	clk_unregister(plat_data->pclk);
+ 	clk_unregister(plat_data->hclk);
++	platform_device_unregister(plat_dev);
+ }
  
+ static const struct pci_device_id dev_id_table[] = {
 -- 
 2.33.0
 
