@@ -2,126 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7010419EB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CFC419EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhI0S5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        id S235901AbhI0S6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbhI0S5u (ORCPT
+        with ESMTP id S235853AbhI0S6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:57:50 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4ABC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:56:12 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id b15so80513744lfe.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:56:12 -0700 (PDT)
+        Mon, 27 Sep 2021 14:58:13 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C011C061575;
+        Mon, 27 Sep 2021 11:56:35 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id e15so81907529lfr.10;
+        Mon, 27 Sep 2021 11:56:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YfRTwMwersuCGxd5JCtedM8u457k2mgmO1fTwDc7S1g=;
-        b=XVO+vSJum3hTG5MRZK0A2TuuBeaK6wi5Vuo0syE70SESftsXwSeKhqT4v/KupOGnzK
-         PHJKKC9g/6XDY0JGtaPo55VwW0Ed2Tm/gu4Q3wRY8Fpw+IsXzScSOlG6b7mcO9a2K4x0
-         n10wMyVz2JbglLEVjsap2kmIdhzq15VtU46dg=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=55NNLkzh4OV0HaDhGAfkYTMJbrnWOQ8oEUJeJ/f86gw=;
+        b=qAqVdxNXLK14ymGl3fh1f9w/ojIt5TaWdSHoV3mWcV/j8nZqm2VpqUarXQT8NfWHVU
+         lrui9mpdAGz2aGk9gOEkCwfenG2w6HX8ck+enjShoXKeZ0ZVsXr/q+tpU+i5SxZxc8Hu
+         eu/TRAdmTVv3xL7G3XTVCujP87ArhYTYnXfUsqKQp5IV+K/SbWmRT/Eh9JEKMXID58/R
+         8PAyrDm1U48hR5lFjhEdkJrPB4QENWmZ/kr+g/iXyVGm97+/XTVTQU5d6KGZACaa0v4g
+         XF3fN0kqm5GmgEeW1vBKmDT48yE5oS9Xa+728o6P2FmdQbzK8wzBPNqd5YdM2JsmowGx
+         WcEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YfRTwMwersuCGxd5JCtedM8u457k2mgmO1fTwDc7S1g=;
-        b=M9/lfJgaDueGFJFyzkB0ldAjVFWOyAlBh2iGTMlsLuSO9N7xmp6JUw3mfAS5cwMD07
-         7c88seseP7rebDktB/ruxzVFNY0AKCEgroSWGkgIeOjpRfdk79j0QXkkziqPA8bwGfzu
-         Sj6wNFkYZWAV8qyMkmuJZhCCrXqmwwWmN2q4Guiq7mKh1bkkAzF9BZ4UchG4ho2NHvdb
-         rFq/dnI3FonCofjCwgrSaS7UzbjyqHjsCo+/QPDQwsZFzxM7NRC6d6TVws4GSfACDxtE
-         PvzPjFt3cTtSN7+VzFNuFe0tlSfq5vdHsRU+nIml/UnjPnTiRtR0QcHKuymjmBOzP0jq
-         5G7Q==
-X-Gm-Message-State: AOAM532fkbQrMSpo1/Hnt2KJ7Q/919NRA1NfSFtYg/jZ1kqT0YN4m1k4
-        oJJd8ThEgJkZdmJdvKrOYv/QnWKKzQX3IqtkVhI=
-X-Google-Smtp-Source: ABdhPJxO3AvGaRT7cnOwdHfetdvjp8W/9lHeGo8V4qf7nPx7mjLNH5aJIx7K2upSEXbVfkWF9RxFtw==
-X-Received: by 2002:a2e:9782:: with SMTP id y2mr1289957lji.421.1632768970227;
-        Mon, 27 Sep 2021 11:56:10 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id x130sm1674581lff.76.2021.09.27.11.56.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 11:56:09 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id u18so80312111lfd.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:56:09 -0700 (PDT)
-X-Received: by 2002:a2e:3309:: with SMTP id d9mr1374199ljc.249.1632768968815;
- Mon, 27 Sep 2021 11:56:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=55NNLkzh4OV0HaDhGAfkYTMJbrnWOQ8oEUJeJ/f86gw=;
+        b=sIKiLeX3Wu0IxNwrPKyP0anC39tgEnzbTE2eCkR7tPfq0EaEHBpoushQhS3wACSAME
+         sG9pupTQnUvzZ66Gpu0MBNmq8CpURp4lDMlT/W3D5zXQEpVrTJ9M3S8Tfv6Sn16Wzf1K
+         QfyJbpccc0uQWP6v3+IVx7CfOOcyDlE5Uitze1Hqv9aiL7gIyLM2Qgs0YmjEhSHvY1u5
+         R9TafHHYtjvpOkWKfiJkYXi8ql3DGMNXFUPjfTwUcylEzhmEVjpUhxP38hdP9/TwdHbe
+         3bbyNdtjjW3BOmSXZ2Evg8hQZgOjq+BN4bQBTU2LC+EuZwJ0cwDXDu0ipP+wzCo1b87y
+         AoHA==
+X-Gm-Message-State: AOAM532lHaZjqzraKAnHf1lS/ZinOoIT6yAjgYT8mGQQ31Zx5gGYu5+s
+        99ZaRCRU1ouTXta+u+vAxSZdzPqIZeI=
+X-Google-Smtp-Source: ABdhPJz20UD8kziRnhnOjCTNqYNd/ZDhoWteKL22IT3u5/CC/UtxU/e85F6Cwyzu1Le3mymQ+1mjmQ==
+X-Received: by 2002:a05:651c:178e:: with SMTP id bn14mr1414191ljb.521.1632768983055;
+        Mon, 27 Sep 2021 11:56:23 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id 8sm2075331ljf.39.2021.09.27.11.56.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 11:56:22 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 21:56:21 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/3] fs/ntfs3: Reject mount if boot's cluster size <
+ media sector size
+Message-ID: <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
+References: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
+ <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
 MIME-Version: 1.0
-References: <CAHk-=wgoE8XBPVA6Mu4CygxX9TE0FgWaAsVUJOe8KQH-CzEcAA@mail.gmail.com>
- <20210927110548.GA771805@roeck-us.net>
-In-Reply-To: <20210927110548.GA771805@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 27 Sep 2021 11:55:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiuGKOBvgje56X-EdOp4mnoz4C2nM1ML6DqRFfsptai3w@mail.gmail.com>
-Message-ID: <CAHk-=wiuGKOBvgje56X-EdOp4mnoz4C2nM1ML6DqRFfsptai3w@mail.gmail.com>
-Subject: Re: Linux 5.15-rc3
-To:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@arndb.de>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 4:05 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Sun, Sep 26, 2021 at 02:21:52PM -0700, Linus Torvalds wrote:
-> > So after a somewhat rocky merge window and second rc, things are now
-> > actually looking pretty normal for rc3. Knock wood.
-> >
-> > There are fixes all over, and the statistics look fairly regular, with
-> > drivers dominating as they should (since they are most of the tree).
-> > And outside of drivers, we have a fairly usual mix of changes -
-> > architecture fixes, networking, filesystems, and tooling (the latter
-> > being mostly kvm selftests).
-> >
-> > Shortlog appended, it's not too long and easy to scan through to get a
-> > flavor for the details if you happen to care.
-> >
-> > Please do give it a whirl,
-> >
->
-> Build results:
->         total: 153 pass: 152 fail: 1
-> Failed builds:
->         mips:allmodconfig
+On Mon, Sep 27, 2021 at 06:48:00PM +0300, Konstantin Komarov wrote:
+> If we continue to work in this case, then we can corrupt fs.
+> 
 
-Gaah. I assume this is the
+Should have fixes tag.
 
-   arch/mips/include/asm/sibyte/bcm1480_scd.h:261: error:
-"M_SPC_CFG_CLEAR" redefined
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/super.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 7099d9b1f3aa..193f9a98f6ab 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -763,9 +763,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>  	sbi->mft.lbo = mlcn << sbi->cluster_bits;
+>  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
+>  
+> +	/* Compare boot's cluster and sector. */
 
-thing still.
+Pretty random obvious comment and I do not know what this does in this
+patch.
 
-It's been pending too long in the mips tree, I'll just take the patch
-directly and finally empty your queue of build failures.
+>  	if (sbi->cluster_size < sbi->sector_size)
+>  		goto out;
+>  
+> +	/* Compare boot's cluster and media sector. */
+> +	if (sbi->cluster_size < sector_size)
+> +		goto out; /* No way to use ntfs_get_block in this case. */
 
-> Qemu test results:
->         total: 480 pass: 479 fail: 1
-> Failed tests:
->         sparc64:sun4u:nodebug:smp:virtio-pci:net,i82559er:hd
+Usually comment should not go after line. If you take chunk from patch
+3/3 then this is not issue.
 
-And going back to your -rc1 email, I see
-
- "The qemu runtime failure bisects to commit 694a1116b405 ("virtio: Bind
-  virtio device to device-tree node"), and reverting that commit fixes the
-  problem.  With that patch applied, the virtio block device does not
-  instantiate on sparc64. This results in a crash since that is where the
-  test is trying to boot from"
-
-That commit 694a1116b405 doesn't revert cleanly, but the conflict is
-trivial (we've removed a "return 0" since then).
-
-I've added the guilty parties to the participants list, but if this
-test failure remains in rc4 I'll just do that revert at that point.
-
-> Almost there ...
-
-Almost.
-
-               Linus
+> +
+>  	sbi->cluster_mask = sbi->cluster_size - 1;
+>  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
+>  	sbi->record_size = record_size = boot->record_size < 0
+> -- 
+> 2.33.0
+> 
+> 
+> 
