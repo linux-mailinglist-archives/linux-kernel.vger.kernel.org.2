@@ -2,178 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4976C419078
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD574190EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhI0INI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:13:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11987 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbhI0IM6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:12:58 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HHwKk4Bx2zWMxn;
-        Mon, 27 Sep 2021 16:10:02 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 16:11:18 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 16:11:18 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-csky@vger.kernel.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 3/3] genirq: Cleanup Kconfig
-Date:   Mon, 27 Sep 2021 16:14:02 +0800
-Message-ID: <20210927081402.191717-4-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
-References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
+        id S233499AbhI0IdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:33:07 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:38158 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233417AbhI0IdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 04:33:01 -0400
+Received: from BC-Mail-Ex07.internal.baidu.com (unknown [172.31.51.47])
+        by Forcepoint Email with ESMTPS id C26F8183A0D47E84DEA2;
+        Mon, 27 Sep 2021 16:14:37 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-EX07.internal.baidu.com (172.31.51.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Mon, 27 Sep 2021 16:14:37 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Mon, 27 Sep 2021 16:14:36 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+Subject: [PATCH 1/9] iio: adc: ab8500-gpadc: Make use of the helper function dev_err_probe()
+Date:   Mon, 27 Sep 2021 16:14:17 +0800
+Message-ID: <20210927081426.762-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the last user of MAY_HAVE_SPARSE_IRQ is gone, kill it, and clean
-up the SPARSE_IRQ, covert the help text into comment.
+When possible use dev_err_probe help to properly deal with the
+PROBE_DEFER error, the benefit is that DEFER issue will be logged
+in the devices_deferred debugfs file.
+Using dev_err_probe() can reduce code size, and the error value
+gets printed.
 
-Also move GENERIC_IRQ_MULTI_HANDLER into menu, and change all spaces
-to tabs to fix alignment issue.
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- kernel/irq/Kconfig | 50 +++++++++++++++++++---------------------------
- 1 file changed, 20 insertions(+), 30 deletions(-)
+ drivers/iio/adc/ab8500-gpadc.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index fbc54c2a7f23..aa7d0e3edea6 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -2,13 +2,9 @@
- menu "IRQ subsystem"
- # Options selectable by the architecture code
+diff --git a/drivers/iio/adc/ab8500-gpadc.c b/drivers/iio/adc/ab8500-gpadc.c
+index 7b5212ba5501..c58d0e2ae538 100644
+--- a/drivers/iio/adc/ab8500-gpadc.c
++++ b/drivers/iio/adc/ab8500-gpadc.c
+@@ -1146,11 +1146,10 @@ static int ab8500_gpadc_probe(struct platform_device *pdev)
  
--# Make sparse irq Kconfig switch below available
--config MAY_HAVE_SPARSE_IRQ
--       bool
--
- # Legacy support, required for itanic
- config GENERIC_IRQ_LEGACY
--       bool
-+	bool
+ 	/* The VTVout LDO used to power the AB8500 GPADC */
+ 	gpadc->vddadc = devm_regulator_get(dev, "vddadc");
+-	if (IS_ERR(gpadc->vddadc)) {
+-		ret = PTR_ERR(gpadc->vddadc);
+-		dev_err(dev, "failed to get vddadc\n");
+-		return ret;
+-	}
++	if (IS_ERR(gpadc->vddadc))
++		return dev_err_probe(dev,
++				     PTR_ERR(gpadc->vddadc),
++				     "failed to get vddadc\n");
  
- # Enable the generic irq autoprobe mechanism
- config GENERIC_IRQ_PROBE
-@@ -16,15 +12,15 @@ config GENERIC_IRQ_PROBE
- 
- # Use the generic /proc/interrupts implementation
- config GENERIC_IRQ_SHOW
--       bool
-+	bool
- 
- # Print level/edge extra information
- config GENERIC_IRQ_SHOW_LEVEL
--       bool
-+	bool
- 
- # Supports effective affinity mask
- config GENERIC_IRQ_EFFECTIVE_AFF_MASK
--       bool
-+	bool
- 
- # Support for delayed migration from interrupt context
- config GENERIC_PENDING_IRQ
-@@ -36,7 +32,7 @@ config GENERIC_IRQ_MIGRATION
- 
- # Alpha specific irq affinity mechanism
- config AUTO_IRQ_AFFINITY
--       bool
-+	bool
- 
- # Interrupt injection mechanism
- config GENERIC_IRQ_INJECTION
-@@ -44,16 +40,16 @@ config GENERIC_IRQ_INJECTION
- 
- # Tasklet based software resend for pending interrupts on enable_irq()
- config HARDIRQS_SW_RESEND
--       bool
-+	bool
- 
- # Edge style eoi based handler (cell)
- config IRQ_EDGE_EOI_HANDLER
--       bool
-+	bool
- 
- # Generic configurable interrupt chip implementation
- config GENERIC_IRQ_CHIP
--       bool
--       select IRQ_DOMAIN
-+	bool
-+	select IRQ_DOMAIN
- 
- # Generic irq_domain hw <--> linux irq number translation
- config IRQ_DOMAIN
-@@ -103,6 +99,10 @@ config HANDLE_DOMAIN_IRQ
- config IRQ_TIMINGS
- 	bool
- 
-+# Allow to specify the low level IRQ handler at run time.
-+config GENERIC_IRQ_MULTI_HANDLER
-+	bool
-+
- config GENERIC_IRQ_MATRIX_ALLOCATOR
- 	bool
- 
-@@ -111,20 +111,15 @@ config GENERIC_IRQ_RESERVATION_MODE
- 
- # Support forced irq threading
- config IRQ_FORCED_THREADING
--       bool
-+	bool
- 
-+# Sparse irq numbering is useful for distro kernels that want
-+# to define a high CONFIG_NR_CPUS value but still want to have
-+# low kernel memory footprint on smaller machines.
-+# Sparse irqs can also be beneficial on NUMA boxes, as they spread
-+# out the interrupt descriptors in a more NUMA-friendly way.
- config SPARSE_IRQ
--	bool "Support sparse irq numbering" if MAY_HAVE_SPARSE_IRQ
--	help
--
--	  Sparse irq numbering is useful for distro kernels that want
--	  to define a high CONFIG_NR_CPUS value but still want to have
--	  low kernel memory footprint on smaller machines.
--
--	  ( Sparse irqs can also be beneficial on NUMA boxes, as they spread
--	    out the interrupt descriptors in a more NUMA-friendly way. )
--
--	  If you don't know what to do here, say N.
-+	bool
- 
- config GENERIC_IRQ_DEBUGFS
- 	bool "Expose irq internals in debugfs"
-@@ -139,8 +134,3 @@ config GENERIC_IRQ_DEBUGFS
- 	  If you don't know what to do here, say N.
- 
- endmenu
--
--config GENERIC_IRQ_MULTI_HANDLER
--	bool
--	help
--	  Allow to specify the low level IRQ handler at run time.
+ 	ret = regulator_enable(gpadc->vddadc);
+ 	if (ret) {
 -- 
-2.26.2
+2.25.1
 
