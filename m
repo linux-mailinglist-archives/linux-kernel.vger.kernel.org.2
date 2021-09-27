@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0DA419775
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F17841978B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhI0POe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235002AbhI0POc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:14:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED8B7611C0;
-        Mon, 27 Sep 2021 15:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632755575;
-        bh=CKBeZqx1JroYNLrGq5H114mf1zFlMql7osjtvpITDCw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EVBbs3MVb2rKhlVS8zKpcM376o/TKjtkXDHHd/wsTbaLfx6lDmygiZpT3x7nXiuQ3
-         qI6Y85rpLepdxU+wE0Grxf7YsEaSbNhENVT+K25JSCaaY+814CwQ0wyxUsc9KUuvQy
-         hQdmzWSytaJMhwWEBAVICPEipETSfP3Xu6nDTfAdg5aRgouxOHTt3NfeACf7kbOWCR
-         OsCr7y6iELtBigI8CNkHzbquvZiEOaAvAmL84E8ja0KTlJjM1I99On/bQ1Ypc9tMZk
-         SaL7iKw5FGEGEAfGtwf33A3FoOYzfQslocN3+NGigGTpzuzQ60fFGB/7x3vYj7X3Wo
-         Dc/q7pfQ+7M1Q==
-Received: by mail-oi1-f171.google.com with SMTP id x124so25951234oix.9;
-        Mon, 27 Sep 2021 08:12:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ilm/x5W+uOuMSC71Qm/zfE2USl6OULczEtCmN1IelD0KI7y4p
-        JFtfsdUvSfsD+gfpaK90THwE0z+7e9CdWn+9RKs=
-X-Google-Smtp-Source: ABdhPJyeC8BgibE5zzxbqU0l8Tut8FIpgncaCT3Q0Qb4RyOfhbEhCIFLxw2ikpv+mDHPe9VMwWn8YxftPxI0HPTWIJ0=
-X-Received: by 2002:aca:32c2:: with SMTP id y185mr501704oiy.47.1632755574136;
- Mon, 27 Sep 2021 08:12:54 -0700 (PDT)
+        id S235088AbhI0PRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235002AbhI0PRh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:17:37 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659CDC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:15:59 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id il14-20020a17090b164e00b0019c7a7c362dso181248pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:15:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J1aK1o24WWHw6k8idRjv4JjH9S5sZVXgl07HpLc8Nnw=;
+        b=bQHxGWLkKAFfWjndxT1kv2LbZGzPIP4GMYqRTXgFhjFtycMwHf7oDbkLslbtR4pYd8
+         yoFlCQc2ltGwam4vhlmoS3oimleu3pwe0TB2wEbQSMXNmcuSL2fEXMGKRR6VGAEKa+zx
+         uBEyDrGhON68VlaGnkxqoD7VEINLMPpIUFZaO91NQhTftbZgCwvv8fSwFTGkn60+vb7M
+         tzXRg07NdSFlGR9MnkHpbvjCWdgeDDxSzPrXKbohkx6P3LAtIvvQcCO2/whyo9eVK5YX
+         lBKDG/n38SBu32xRrec0Hya+F6UV+98jAPrLz4eDF/C+dn9e2QJw1OXHZ3z9XcorwHMQ
+         JAPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J1aK1o24WWHw6k8idRjv4JjH9S5sZVXgl07HpLc8Nnw=;
+        b=OyEVoOZ04RPERo5v7XQ71sBTKFRwyEDpgPtzeL37jYoycG19NrIFH/xVM7UL1Xpmcb
+         iGc4TX7mn6aUFCr2+ogxBVWl4fcm71L3/uO1W2HmhZ4wRVqaVErE4By/oTqhWVwvHUZM
+         uZkFKvQSq2oOWHT3K3VBSc7/GSVRcK6g4Cv64C3OMdwtsJ3ejRLCUvzhkyLQYob7fhAi
+         2deltE7iA8S0Lm1ShTXxNWowfQGTO3WoalSMiPuz8AqbxUAITDD5PvxsMbGtWq/fB+Le
+         cSftPCu4jar2bFmJEQfZiYIw+XFd3BOtOkuElw7q3xEqF7eXdol5GzHqYrgSjoFT9B7u
+         Z5tQ==
+X-Gm-Message-State: AOAM531Ctg4ErKNjPGRBATDdXu05f9b2SLqjLO58N4TJ3PiJZI3s1oLO
+        kWV4cKADZkinTMGH9MyMD3K0Iw==
+X-Google-Smtp-Source: ABdhPJyA6ONhd1Ga93hKwsqmjOKuFVk7/BNXzU8fonL5kd5O9SJ41kUDv10GPB3TNvNBUBEzEJ7IZA==
+X-Received: by 2002:a17:90a:4207:: with SMTP id o7mr523060pjg.192.1632755758626;
+        Mon, 27 Sep 2021 08:15:58 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id r23sm20063784pjo.3.2021.09.27.08.15.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 08:15:57 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 15:15:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Matlack <dmatlack@google.com>,
+        Jon Cargille <jcargill@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Zhang <jingzhangos@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
+ Halt-polling fixes, cleanups and a new stat)
+Message-ID: <YVHgKWiU9WWL9ACg@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
+ <YVHcY6y1GmvGJnMg@google.com>
+ <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
 MIME-Version: 1.0
-References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-5-ardb@kernel.org>
-In-Reply-To: <20210914121036.3975026-5-ardb@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 27 Sep 2021 17:12:43 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
-Message-ID: <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> The CPU field will be moved back into thread_info even when
-> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
-> of struct thread_info.
->
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+On Mon, Sep 27, 2021, Paolo Bonzini wrote:
+> On 27/09/21 16:59, Sean Christopherson wrote:
+> > > commit acd05785e48c01edb2c4f4d014d28478b5f19fb5
+> > > Author:     David Matlack<dmatlack@google.com>
+> > > AuthorDate: Fri Apr 17 15:14:46 2020 -0700
+> > > Commit:     Paolo Bonzini<pbonzini@redhat.com>
+> > > CommitDate: Fri Apr 24 12:53:17 2020 -0400
+> > > 
+> > >      kvm: add capability for halt polling
+> > > 
+> > > broke the possibility for an admin to disable halt polling for already running KVM guests.
+> > > In past times doing
+> > > echo 0 > /sys/module/kvm/parameters/halt_poll_ns
+> > > 
+> > > stopped polling system wide.
+> > > Now all KVM guests will use the halt_poll_ns value that was active during
+> > > startup - even those that do not use KVM_CAP_HALT_POLL.
+> > > 
+> > > I guess this was not intended?
+> 
+> No, but...
+> 
+> > I would go so far as to say that halt_poll_ns should be a hard limit on
+> > the capability
+> 
+> ... this would not be a good idea I think.  Anything that wants to do a lot
+> of polling can just do "for (;;)".
 
-Michael,
+Hmm, true, there is no danger to the system in having the capability override the
+module param.
 
-Do you have any objections or issues with this patch or the subsequent
-ones cleaning up the task CPU kludge for ppc32? Christophe indicated
-that he was happy with it.
+> So I think there are two possibilities that makes sense:
+> 
+> * track what is using KVM_CAP_HALT_POLL, and make writes to halt_poll_ns
+> follow that
 
-Thanks,
-Ard.
+I think this option makes more sense, making halt_poll_ns read-only is basically
+forcing users to switch to KVM_CAP_HALT_POLL.
 
-
-> ---
->  arch/powerpc/include/asm/thread_info.h | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/arch/powerpc/include/asm/thread_info.h b/arch/powerpc/include/asm/thread_info.h
-> index b4ec6c7dd72e..5725029aaa29 100644
-> --- a/arch/powerpc/include/asm/thread_info.h
-> +++ b/arch/powerpc/include/asm/thread_info.h
-> @@ -47,6 +47,9 @@
->  struct thread_info {
->         int             preempt_count;          /* 0 => preemptable,
->                                                    <0 => BUG */
-> +#ifdef CONFIG_SMP
-> +       unsigned int    cpu;
-> +#endif
->         unsigned long   local_flags;            /* private flags for thread */
->  #ifdef CONFIG_LIVEPATCH
->         unsigned long *livepatch_sp;
-> --
-> 2.30.2
+> * just make halt_poll_ns read-only.
+> 
+> Paolo
 >
