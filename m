@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A6041A371
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1560841A374
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238153AbhI0W6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35412 "EHLO
+        id S237982AbhI0W74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237979AbhI0W6C (ORCPT
+        with ESMTP id S237772AbhI0W7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:58:02 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67005C06176D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:56:23 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso6562603oom.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:56:23 -0700 (PDT)
+        Mon, 27 Sep 2021 18:59:54 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C20C061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:58:16 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id s20so24896847ioa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lLTtH4hZnMTDUXtG8QKxhCYz72VTXTnMX/KxhuwvS5Q=;
-        b=uSFwX0imDyQ63j6benweN26xLl88rv6aO4w9SDKy+32Il6TonkY97iPFgESmGgvDHu
-         StUokDsNrre8uRActn1E2d6IOWtSPKdESbrgwo7RMNY9ot/RnkmKFwQof3RdRqX9/2a3
-         2amS4vBugNgpjTwyJ1tpq9I5IQKOTsGCzqIb3MZHY7u6yJ7B0bZq9wHdEEFQoWYi9fq6
-         1lETN6nU0fSETrM3DOhRni2I3VpFJpu0EAH7fYNS5XY+Db0WlpJQkfFDMnjzMp+i/phY
-         yoI2CVKMKYeDNNVfPNEkcTtAUSVevWmdJnRvBVyStMQRJRKmQhHIBqcQbp8YziHoTgQn
-         BiGQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JvsvAi/jhPABlYynYFZG6hTxrqcvhKe59dyAuq5vYKc=;
+        b=ZFimGlDzTM9pp2sZW9Z4ytVISi99HaPEYdDbPEbkDmP9fGYn9lYhjI8ReTbK5bq0HR
+         62jd7e/NhEBjhA+B52F2YmIz5ZqFzuwficRrjXFoacFFPTWUh3Ae7lrfMr/7Pc1PVjP1
+         Mq19kLn+051Q1IY56FwWMNSGCXfoJrJ+k5iRQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lLTtH4hZnMTDUXtG8QKxhCYz72VTXTnMX/KxhuwvS5Q=;
-        b=dXZxWuAmbiBTlmo0XN54BFl7Ph0YXcsPNAvpHTnmZO7LrQG6TU532sQqpBiB8S/v4a
-         gMhbmwx1XwSIJ5qhZnwJej8wvmxLwwbN7sp8pQaJtQWNpeh8adnyPrXmC68vAYFDl5a6
-         Yntu5s3pn97rcTv4B43npytGM044zeVr+iVTv6f+AS3OdPZIgxGABhrGwHc4m9b1N2cV
-         llNGU/xz9G/tnVcEHolm11/6QT19jNDzLitnIl9QghR2mXNIGHZ6uAD4bhYHci7FegLM
-         eUEiDGGjUud6J827vrKQWEwAA+gwErsAnGj9yKRQGahFWQs+3EbcjXnsVGlBMJzv5l8H
-         7Lew==
-X-Gm-Message-State: AOAM531EKS7OfAOoJGbGFqpcWhm1013gEYZ2jXIAqQQw7oNjanbwXT/j
-        rTP64nLiJe1iUJUdLN6WRVocZg==
-X-Google-Smtp-Source: ABdhPJxN9pDoeXMNZfAHDNKwyo6/0etpQuQQZlma4UN8UEzcOHf2GLratD2IucJK8My0eqs6iqiiLw==
-X-Received: by 2002:a4a:ded2:: with SMTP id w18mr2103037oou.77.1632783382762;
-        Mon, 27 Sep 2021 15:56:22 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w184sm4231084oie.35.2021.09.27.15.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 15:56:22 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     robh+dt@kernel.org, mka@chromium.org,
-        Sibi Sankar <sibis@codeaurora.org>,
-        saiprakash.ranjan@codeaurora.org, will@kernel.org,
-        swboyd@chromium.org
-Cc:     robin.murphy@arm.com, linux-kernel@vger.kernel.org,
-        joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        evgreen@chromium.org, dianders@chromium.org,
-        p.zabel@pengutronix.de, mathieu.poirier@linaro.org,
-        ohad@wizery.com, devicetree@vger.kernel.org, agross@kernel.org
-Subject: Re: (subset) [PATCH v5 00/10] Add Modem support on SC7280 SoCs
-Date:   Mon, 27 Sep 2021 17:56:16 -0500
-Message-Id: <163278329751.1522839.17169491081318211175.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <1631886935-14691-1-git-send-email-sibis@codeaurora.org>
-References: <1631886935-14691-1-git-send-email-sibis@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JvsvAi/jhPABlYynYFZG6hTxrqcvhKe59dyAuq5vYKc=;
+        b=sVpna3Ld95TbOtrdir+5W8WWWAWKv0WTcPd3Tdw31j3Zv2wBck9t+CcVXbWeUjzDju
+         PmthncaCIRaUGrwh9uxkjALDzFlkXg9wHfMKgk9y+s+mByBEDClLdMMocAFesbo7wtRO
+         nPqh+zANYJ4uJGfJ3GkHZppqr4MkCh1MRFPC30Rd5aR7R2ARCeXUidAOvvYPr8DnpnCI
+         OVZijmJXprkRbkworhhxm3GTRx5mJxFepiFa11UP6/fJ+4G0/lP8MoU1bnxLY/9GFldp
+         BSUBfJrF8UAVmvlk1DhdEnHRB3Uk8pC6hUoH/y2ZsjC+v5fGASohhaMyLBTD99RrG/jt
+         G7Fg==
+X-Gm-Message-State: AOAM532MDTnDb3WDO2xWA5sXPudw8cEB03pgobDKJQ3hwHGej911LWgj
+        PoC5af8YOGivIP3PTwQdVSjtLA==
+X-Google-Smtp-Source: ABdhPJwDAshJAtoPM812J4z4qTQKT6ohczyCXgEyxo+erXGoB7G7dX64hGCHuUVHyXbOYSI+LLo0cQ==
+X-Received: by 2002:a02:a38f:: with SMTP id y15mr1960097jak.26.1632783495699;
+        Mon, 27 Sep 2021 15:58:15 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id d12sm626185ila.79.2021.09.27.15.58.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 15:58:15 -0700 (PDT)
+Subject: Re: [PATCH 5.14 000/162] 5.14.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <0722f2b8-61ef-09c0-280b-572aa9267497@linuxfoundation.org>
+Date:   Mon, 27 Sep 2021 16:58:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 19:25:25 +0530, Sibi Sankar wrote:
-> This patch series adds support for booting the Modem Q6 DSP found on
-> Qualcomm's SC7280 SoCs.
+On 9/27/21 11:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.9 release.
+> There are 162 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Depends on:
-> qmp_send: https://patchwork.kernel.org/project/linux-arm-msm/cover/1630420228-31075-1-git-send-email-deesin@codeaurora.org/
-> rproc qmp: https://patchwork.kernel.org/project/linux-arm-msm/cover/1631800770-371-1-git-send-email-sibis@codeaurora.org/
+> Responses should be made by Wed, 29 Sep 2021 17:02:05 +0000.
+> Anything received after that time might be too late.
 > 
-> [...]
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Applied, thanks!
+Compiled and booted on my test system. No dmesg regressions.
 
-[06/10] arm64: dts: qcom: sc7280: Update reserved memory map
-        commit: eca7d3a366b3ab9f31e142c13a43c5b0f94a920d
-[07/10] arm64: dts: qcom: sc7280: Add/Delete/Update reserved memory nodes
-        commit: f83146890172da67443c7b80e529fd1781046c65
-[08/10] arm64: dts: qcom: sc7280: Add nodes to boot modem
-        commit: dddf4b0621d61b8203d500ef85a853626ff42432
-[09/10] arm64: dts: qcom: sc7280: Add Q6V5 MSS node
-        commit: 4882cafb99c2b004b9773631fb00ca6d96dc0124
-[10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-        commit: 0025fac17b313cca5c640dd57cbf38d01ce10b27
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Best regards,
--- 
-Bjorn Andersson <bjorn.andersson@linaro.org>
+thanks,
+-- Shuah
