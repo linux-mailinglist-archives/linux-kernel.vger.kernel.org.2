@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ED141A35D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE0541A35A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238081AbhI0Wys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S238018AbhI0Wyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238079AbhI0Wyq (ORCPT
+        with ESMTP id S237771AbhI0Wyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:54:46 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA37C061740
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:53:08 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id ba1so17528483edb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:53:08 -0700 (PDT)
+        Mon, 27 Sep 2021 18:54:43 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC786C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:53:04 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id u1-20020a17090ae00100b0019ec31d3ba2so326810pjy.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BQp8JYGJ+f5XdBPD0bizM23yOI7k4/ajn1w0TesKPeY=;
-        b=kbJTghR3dU/D5TrYekFiEAtlWDbtsvyItG4oEXFY940XeNw3L4JlMh2Xnrv1cxwRdv
-         zo1NZsM+54/HCOy2Cx4f0zUTT/2cNSUV3BZ9GqAHWp40cqChCcrC/VZxCfBLo+QdmcSv
-         uxrKB3lpgbPa70heNUkpLcfFRf7KFIGYYm+CkyWbgzb1f635KYnh59pN/eEttndG6boR
-         eu6944rpVRAsLvdQuBUAQHCdf3IVtZnFoYuQQD6s5JeIUDxTzQzRou44yM0r1YGuSitB
-         TQr+Rdzrjdn4LRmR1074zCkVF+GAVpkRlDb2ya3fb5U1yUK1UM+J03F9dKb08DCwPDSw
-         3M6Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JA7b+17NeQa8MxRoYAOMDqy2vhM9dB7W8X4n526ZCa0=;
+        b=Z5O9ySOI18c257QEjUpy/S8DkTMRZbS+Opwm+B06YkbXyoON66i8zm0NmG1G1POeYS
+         EBc7b9mKjFHhjnVmjWrHyrtObPg/oquR2Jn3r5VzpoNSSmbzAFUXVpMR0KdMkvSO3ils
+         f2HFYDCiCdJkcZJt36DLQZwmQu3Xu5F9SFcdk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BQp8JYGJ+f5XdBPD0bizM23yOI7k4/ajn1w0TesKPeY=;
-        b=j/6Ir+MTC4LcvchyG0brTbNl60aT0MsI0jlROaJSJD3yX4W1VALzRDUEEuh1M37HNw
-         ybF9yTMKJOZwJfxy2jgPxEC2fGKQVJDw71aGi9HeIy/BRrgrgtE83oBkMJv2A4txkMNi
-         ND/UFi7Uiu0Ty/OlQ4I2sukAW0NciMdUbP3nqVvu/0Qcvuw45hW8W+fSqQAChMERIwLf
-         TUbEZRiGnmDrXrqz8URL4NPVMWo8NOe5nUSXewCRpUNQ8cQ2iS0bG/wNlAwtDbJBi5UC
-         tCiF6MFr4QDvIlHReJvLDb60Lhi0IfJ7DRyU1pj6jK+jUDNTfYlSlbqR6EvgWsD415M/
-         h0rA==
-X-Gm-Message-State: AOAM533VxXFakkjvUsS2meg2AEcYt/2+KHael/1mDxZenzOK393D8aHX
-        Xn0GXp9Nl7m29On/B790dC6QWYr3eY7FvS6JaBqNIQ==
-X-Google-Smtp-Source: ABdhPJzWVsTL2K+FA4w/s5AUANxN3+EHPicSZHVZhSjG1fRcamTeuXdH1nsX/AlbqTw2gYKuZALxKiAtXPabE5PMYPI=
-X-Received: by 2002:a50:da4e:: with SMTP id a14mr3480074edk.154.1632783187091;
- Mon, 27 Sep 2021 15:53:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JA7b+17NeQa8MxRoYAOMDqy2vhM9dB7W8X4n526ZCa0=;
+        b=RBPtWA25q6IY9whhaBjpfqecIi2gd0aHOwJhCe7mv3EKNth2hz3mZBBvh6vCnC1BCv
+         YcXEEQ2FAQuklHwda8RAy2klXNlomCMDEyK8kZXR3dojaDEG+AWfNmZHOzhLk5esb7aM
+         hCI7VbfNgB6PW6Ma7MEGTwZKuQKnVqeAlbkmDc0/opTqrVa6U9YrAgj5K5oqOCi69giX
+         981X0+Vn+25bCTFSh2EYTz+LkfLb8zE1h8ybGRrL0mlZ3/5mO6X7bRWa0A6ywAoh590z
+         rW/co25w6SdeH8lmS7qNlDXoWGDtZmRhDVXYesgU4UrLEk67oVIhEVKzUMZXabm10Ia5
+         Aydw==
+X-Gm-Message-State: AOAM53117o8RnsxGvxOu1GSEQg7SrjPJTXTRK0wGRSv9432vDcUMyQKs
+        o1Iwn+4YD84TsJXBcvHjVB10tpxMf/iCMA==
+X-Google-Smtp-Source: ABdhPJxkB1+hIdcbUYUE1kpFcUSeQp8QyXRmiFqUkg3nIfTORYYZ8be8QnFQ8D4kae1TnKknxs4a/A==
+X-Received: by 2002:a17:902:db11:b0:13c:7a6e:4b57 with SMTP id m17-20020a170902db1100b0013c7a6e4b57mr2025768plx.43.1632783184202;
+        Mon, 27 Sep 2021 15:53:04 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:82d7:f099:76bc:7017])
+        by smtp.gmail.com with ESMTPSA id gk14sm172195pjb.35.2021.09.27.15.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 15:53:03 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 15:53:00 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Cc:     Thomas Hebb <tommyhebb@gmail.com>, dri-devel@lists.freedesktop.org,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        linux-rockchip@lists.infradead.org,
+        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org,
+        aleksandr.o.makarov@gmail.com, stable@vger.kernel.org,
+        =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado 
+        <nfraprado@collabora.com>
+Subject: Re: [PATCH v2 1/3] drm/rockchip: dsi: Hold pm-runtime across
+ bind/unbind
+Message-ID: <YVJLTLuNHNAzVq5V@google.com>
+References: <20210927175944.3381314-1-briannorris@chromium.org>
+ <20210927105928.v2.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
 MIME-Version: 1.0
-References: <20210927210946.3746116-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20210927210946.3746116-1-bjorn.andersson@linaro.org>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Mon, 27 Sep 2021 16:52:55 -0600
-Message-ID: <CANLsYkzkqYDZCzkVCtFODBui_THjEWrWRAgfxhZuebtUybTPrg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Update remoteproc repo url
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927105928.v2.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 15:09, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> The remoteproc and rpmsg repos are moving from my personal namespace to
-> allow Mathieu to push to the projects as well.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  MAINTAINERS | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0f28fb4b4e5c..dfc93b8e4f28 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15987,7 +15987,7 @@ M:      Bjorn Andersson <bjorn.andersson@linaro.org>
->  M:     Mathieu Poirier <mathieu.poirier@linaro.org>
->  L:     linux-remoteproc@vger.kernel.org
->  S:     Maintained
-> -T:     git git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git rproc-next
-> +T:     git https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rproc-next
->  F:     Documentation/ABI/testing/sysfs-class-remoteproc
->  F:     Documentation/devicetree/bindings/remoteproc/
->  F:     Documentation/staging/remoteproc.rst
-> @@ -16001,7 +16001,7 @@ M:      Bjorn Andersson <bjorn.andersson@linaro.org>
->  M:     Mathieu Poirier <mathieu.poirier@linaro.org>
->  L:     linux-remoteproc@vger.kernel.org
->  S:     Maintained
-> -T:     git git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git rpmsg-next
-> +T:     git https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rpmsg-next
->  F:     Documentation/ABI/testing/sysfs-bus-rpmsg
->  F:     Documentation/staging/rpmsg.rst
->  F:     drivers/rpmsg/
-> --
+On Mon, Sep 27, 2021 at 10:59:42AM -0700, Brian Norris wrote:
+> In commit 43c2de1002d2, we moved most HW configuration to bind(), but we
+> didn't move the runtime PM management. Therefore, depending on initial
+> boot state, runtime-PM workqueue delays, and other timing factors, we
+> may disable our power domain in between the hardware configuration
+> (bind()) and when we enable the display. This can cause us to lose
+> hardware state and fail to configure our display. For example:
+> 
+>   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
+>   panel-innolux-p079zca ff960000.mipi.0: failed to write command 0
+> 
+> or:
+> 
+>   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
+>   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
+> 
+> We should match the runtime PM to the lifetime of the bind()/unbind()
+> cycle.
 
-Applied and pushed.
+Hmm, sorry to reply to my own patch so quickly, but after a bit more
+testing I'm finding we still have yet another problem here -- that
+suspend/resume does not work. For suspend/resume,
+drm_mode_config_helper_{suspend,resume}() are expecting to only do
+teardown/setup via disable()/enable() -- there is no re-bind() (which
+makes sense). But the DSI hardware state may be lost, so the resume-time
+enable() may find the panel initialization timing out yet again.
 
-Thanks,
-Mathieu
+Possible solutions:
 
-> 2.29.2
->
+(1) I can add PM suspend()/resume() operations just to call
+    dw_mipi_dsi_rockchip_config().
+
+(2) Switch back to using mode_set() for HW configuration, like the
+    downstream/BSP driver does (and the initial versions Rockchip and
+    later Heiko were working on did the same), since that's always
+    called at the right time before both panel and encoder enable().
+    That also happens to be where some other DSI drivers [1] do similar
+    init.
+
+Have we been avoiding (2) just because that doesn't really match the
+intended purpose of the callback? I can't find any cleaner callback for
+this at the moment, and I'd rather not try to introduce entirely new drm
+helper callbacks just for this particularly-unfriendly sequence.
+
+I have a patch written for option (1), and may send a v3 soon to include
+that as well (because that's also a regression from the same commit).
+
+Brian
+
+[1] e.g., drivers/gpu/drm/bridge/nwl-dsi.c
