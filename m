@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CC141A351
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ED141A35D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237988AbhI0WvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S238081AbhI0Wys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238009AbhI0WvR (ORCPT
+        with ESMTP id S238079AbhI0Wyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:51:17 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2705C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:49:38 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id 64so3777953uab.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:49:38 -0700 (PDT)
+        Mon, 27 Sep 2021 18:54:46 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA37C061740
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:53:08 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id ba1so17528483edb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=l3Govj1Ggv6fnK3dXfFXh4R4w4mAAKZUo/5Lt6qGfhI=;
-        b=Iq5vAXCv2EMz7F+Lo3dTfVrteNUNq7v81PHVhbhOsX5XpUjjgXfRLR72Oozo+4Rd28
-         avv9yUHE6tuOtdTZvzc9WXaYi+m9yRhkz0esk2t4hBvj2j9/iNMEYnDKiLQv27KlzGnU
-         KNtCEtConX/KW5Z8fpL4XbTssq9e8C35PemeE=
+        bh=BQp8JYGJ+f5XdBPD0bizM23yOI7k4/ajn1w0TesKPeY=;
+        b=kbJTghR3dU/D5TrYekFiEAtlWDbtsvyItG4oEXFY940XeNw3L4JlMh2Xnrv1cxwRdv
+         zo1NZsM+54/HCOy2Cx4f0zUTT/2cNSUV3BZ9GqAHWp40cqChCcrC/VZxCfBLo+QdmcSv
+         uxrKB3lpgbPa70heNUkpLcfFRf7KFIGYYm+CkyWbgzb1f635KYnh59pN/eEttndG6boR
+         eu6944rpVRAsLvdQuBUAQHCdf3IVtZnFoYuQQD6s5JeIUDxTzQzRou44yM0r1YGuSitB
+         TQr+Rdzrjdn4LRmR1074zCkVF+GAVpkRlDb2ya3fb5U1yUK1UM+J03F9dKb08DCwPDSw
+         3M6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=l3Govj1Ggv6fnK3dXfFXh4R4w4mAAKZUo/5Lt6qGfhI=;
-        b=sLTszKKUmXR109+XI58wwgSen46mxl9d1F3g695mybgGRSSW/J3wBgOFsdxe7A4DhW
-         5jZZuoEMf3ZWvqlDXbsgRHhiPJNwyCMQ3vXgWeXM0N7nJN4b3jfts9J+v1hNiCODVMac
-         qL4wpwSaWcHx01cH3wIZTP/lG++1aV0iADoq3SnSPmOWicffMo+RasEZeGQHOpCrprlf
-         nvRQl4VV8lAkhZ7Flw3uXCehpH543UwT+rtXtGMxLEjmZAn3HKNJbnLCYKRjJ2Uchd5L
-         Zbq4/EZAfGTNi6zFBF1Xk5DpppiXHErlu/sgygmRdNjz3i8YO5XJ+T0sAlJAxQKI1bRb
-         fwzw==
-X-Gm-Message-State: AOAM5313ggmEP4ALs4hEWdwuDBKN6YmXbSx0DeCx/+djpa2VVvlUX3qJ
-        rdPfYvVpLx6ib2gFfHBIZBQa5Kaq98XV6Pxuv5RFjA==
-X-Google-Smtp-Source: ABdhPJw93xHWEfPQbedVUspaJQ+Kpz4lDjxMsiLCz9VQF0pLxWLXngzwY9I3WjVpCLk0lSx8d9/HMX6++hBMj4ge2eY=
-X-Received: by 2002:ab0:8c1:: with SMTP id o1mr2454160uaf.113.1632782977502;
- Mon, 27 Sep 2021 15:49:37 -0700 (PDT)
+        bh=BQp8JYGJ+f5XdBPD0bizM23yOI7k4/ajn1w0TesKPeY=;
+        b=j/6Ir+MTC4LcvchyG0brTbNl60aT0MsI0jlROaJSJD3yX4W1VALzRDUEEuh1M37HNw
+         ybF9yTMKJOZwJfxy2jgPxEC2fGKQVJDw71aGi9HeIy/BRrgrgtE83oBkMJv2A4txkMNi
+         ND/UFi7Uiu0Ty/OlQ4I2sukAW0NciMdUbP3nqVvu/0Qcvuw45hW8W+fSqQAChMERIwLf
+         TUbEZRiGnmDrXrqz8URL4NPVMWo8NOe5nUSXewCRpUNQ8cQ2iS0bG/wNlAwtDbJBi5UC
+         tCiF6MFr4QDvIlHReJvLDb60Lhi0IfJ7DRyU1pj6jK+jUDNTfYlSlbqR6EvgWsD415M/
+         h0rA==
+X-Gm-Message-State: AOAM533VxXFakkjvUsS2meg2AEcYt/2+KHael/1mDxZenzOK393D8aHX
+        Xn0GXp9Nl7m29On/B790dC6QWYr3eY7FvS6JaBqNIQ==
+X-Google-Smtp-Source: ABdhPJzWVsTL2K+FA4w/s5AUANxN3+EHPicSZHVZhSjG1fRcamTeuXdH1nsX/AlbqTw2gYKuZALxKiAtXPabE5PMYPI=
+X-Received: by 2002:a50:da4e:: with SMTP id a14mr3480074edk.154.1632783187091;
+ Mon, 27 Sep 2021 15:53:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923065500.2284347-1-daniel@0x0f.com> <20210923065500.2284347-4-daniel@0x0f.com>
- <YVIhEJCJ9lr3ZKzM@robh.at.kernel.org>
-In-Reply-To: <YVIhEJCJ9lr3ZKzM@robh.at.kernel.org>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 28 Sep 2021 07:51:40 +0900
-Message-ID: <CAFr9PXnowBM-jAh4cnnngR00eJtB+dXArpircntEth0TU0UnjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 03/11] dt-bindings: leds: Document "activity" trigger
-To:     Rob Herring <robh@kernel.org>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-leds@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>, pavel@ucw.cz,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+References: <20210927210946.3746116-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210927210946.3746116-1-bjorn.andersson@linaro.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Mon, 27 Sep 2021 16:52:55 -0600
+Message-ID: <CANLsYkzkqYDZCzkVCtFODBui_THjEWrWRAgfxhZuebtUybTPrg@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Update remoteproc repo url
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Tue, 28 Sept 2021 at 04:52, Rob Herring <robh@kernel.org> wrote:
+On Mon, 27 Sept 2021 at 15:09, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 >
-> On Thu, Sep 23, 2021 at 03:54:52PM +0900, Daniel Palmer wrote:
-> > The "activity" trigger can be used as the default but it's currently
-> > undocumented so validating a devicetree that uses it causes a warning.
+> The remoteproc and rpmsg repos are moving from my personal namespace to
+> allow Mathieu to push to the projects as well.
 >
-> It is preferred to use 'function' and LED_FUNCTION_CPU. Is there some
-> reason that can't be used?
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  MAINTAINERS | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0f28fb4b4e5c..dfc93b8e4f28 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15987,7 +15987,7 @@ M:      Bjorn Andersson <bjorn.andersson@linaro.org>
+>  M:     Mathieu Poirier <mathieu.poirier@linaro.org>
+>  L:     linux-remoteproc@vger.kernel.org
+>  S:     Maintained
+> -T:     git git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git rproc-next
+> +T:     git https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rproc-next
+>  F:     Documentation/ABI/testing/sysfs-class-remoteproc
+>  F:     Documentation/devicetree/bindings/remoteproc/
+>  F:     Documentation/staging/remoteproc.rst
+> @@ -16001,7 +16001,7 @@ M:      Bjorn Andersson <bjorn.andersson@linaro.org>
+>  M:     Mathieu Poirier <mathieu.poirier@linaro.org>
+>  L:     linux-remoteproc@vger.kernel.org
+>  S:     Maintained
+> -T:     git git://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git rpmsg-next
+> +T:     git https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git rpmsg-next
+>  F:     Documentation/ABI/testing/sysfs-bus-rpmsg
+>  F:     Documentation/staging/rpmsg.rst
+>  F:     drivers/rpmsg/
+> --
 
-LED_FUNCTION_CPU seems to be tied to
-drivers/leds/trigger/ledtrig-cpu.c which I think serves the same
-purpose but does it a slightly different way.
-Would adding LED_FUNCTION_ACTIVITY work?
+Applied and pushed.
 
 Thanks,
+Mathieu
 
-Daniel
+> 2.29.2
+>
