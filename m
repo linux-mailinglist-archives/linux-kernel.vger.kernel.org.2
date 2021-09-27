@@ -2,73 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388BA419EA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61939419EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236475AbhI0SxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:53:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236395AbhI0SxC (ORCPT
+        id S235711AbhI0SyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234211AbhI0SyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:53:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632768683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e9qKCi3TeSZ7u8iFrrHJUmuKpIjXTK7k9xJIvqBA+sw=;
-        b=KA0OIO2Wb4uTNUHD6xRBAJ9y/jdQ8VFdLUB5pNJ7N1Fuu/Vj2tY73YFqF0DMGLR9RimDQK
-        oUNoflEkkz5DEz0IoXe0QsSMNroKf5QbLGuw5beNkheVXy2vm4iLnFrrpyA/CU7SOrYBsS
-        AQysPPw3sTfMNm/ynkmLY6dsUvUQtjQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-_SCqgygdN2KWbwHATyj3fA-1; Mon, 27 Sep 2021 14:51:20 -0400
-X-MC-Unique: _SCqgygdN2KWbwHATyj3fA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86BBC1084681;
-        Mon, 27 Sep 2021 18:51:17 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3E2D85D9D3;
-        Mon, 27 Sep 2021 18:51:12 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Richard Palethorpe <rpalethorpe@suse.com>
-Cc:     x86@kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, rpalethorpe@richiejp.com,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        ltp@lists.linux.it
-Subject: Re: [PATCH] x86/entry/ia32: Ensure s32 is sign extended to s64
-References: <20210927161955.28494-1-rpalethorpe@suse.com>
-Date:   Mon, 27 Sep 2021 20:51:11 +0200
-In-Reply-To: <20210927161955.28494-1-rpalethorpe@suse.com> (Richard
-        Palethorpe's message of "Mon, 27 Sep 2021 17:19:55 +0100")
-Message-ID: <875yuletsw.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Mon, 27 Sep 2021 14:54:14 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF672C061604;
+        Mon, 27 Sep 2021 11:52:35 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x27so81796930lfu.5;
+        Mon, 27 Sep 2021 11:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s39cDjSBaWlllB2Z8PSXWuKit3Q+ksAwHMo69k6Autc=;
+        b=pveXqgUlG4WQuZIQwhP7FTq2a32cwrhpuOFQ1ybSULcJLZ8Jrc8yH+FKtU3A/OJhsU
+         idO/eWMHggDffotYZB4umKl8UJEySBzgqesd/LVf2oTJPwepH/TM5LtZsGy5EtfEbyb5
+         cr0PYqGyP0xqnvT2Jjqq/CRaNokIQRW+uv5OqkegJ24n1ZBJ9aWLW4sgjpREyv6b8bqf
+         q9MBSbde9oQgRgpsZomJLeUDgljDRxjnroIc3Kbcs0/h3Ql328j0NhKQaVv0ZD/oSb4s
+         f7ymJFSYjbrY29ZQqnTBuVq766gJbuEO3hhJ1VefuAMDln8PyBHULOmTB8tEIHtOPovc
+         MAoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s39cDjSBaWlllB2Z8PSXWuKit3Q+ksAwHMo69k6Autc=;
+        b=CP+X+237T1GvXMkrBMfFDmPZoJ9gUici3VuXawg3lNJWVuvmLSjr0y4fnoV6ciWzrm
+         bjoUYws56GKcd/74nD0UZuTsVUK4t92cEYF0IxR3/kuwNBXEr9LXu0TqDKjozh5s0IIj
+         b0ZF/HeMWBoKizRFOeLnBMXk7NgqaqeN9Ne/Qgc6tRFppFMj8lQ1q5iUQ5lEriQJ4yk0
+         Tp+iJjzqtBkPmgTQlW1kbtNLDL9sGqEDqseYrbaEvS+DHI2g6wHmi6i/WYpWEotpdAet
+         3KNv0Palf3crQvjUpQJ5Sxdb0cPbLFHIcUghn5zRWSCP4s8IH/2hEae/Bu1J39f90xal
+         g2EA==
+X-Gm-Message-State: AOAM533aYDs6+aRHrs4nTbNjyexWMefgO3vFYW8rQbsER0Qq+19goE/N
+        hZ3kBiXbIUR6pLeUaC5GSbY=
+X-Google-Smtp-Source: ABdhPJz1J8r48Z40P6HelVkj/yBHbKWCrbSCxUQ3I0TXN+mttFXGG14tDgzPSO4Ti9GPtpOwgfIDSw==
+X-Received: by 2002:ac2:5c46:: with SMTP id s6mr1232283lfp.634.1632768754195;
+        Mon, 27 Sep 2021 11:52:34 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id v27sm1680177lfd.127.2021.09.27.11.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 11:52:33 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 21:52:31 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 3/3] fs/ntfs3: Refactoring of ntfs_init_from_boot
+Message-ID: <20210927185231.mbtzua6zgknktavu@kari-VirtualBox>
+References: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
+ <aa2b5ad6-dd9e-3feb-d3bd-248cb311d050@paragon-software.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa2b5ad6-dd9e-3feb-d3bd-248cb311d050@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Richard Palethorpe:
+On Mon, Sep 27, 2021 at 06:48:38PM +0300, Konstantin Komarov wrote:
+> Remove ntfs_sb_info members sector_size and sector_bits.
+> Print details why mount failed.
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-> +#define __SC_COMPAT_CAST(t, a)						\
-> +	(__typeof(__builtin_choose_expr(__TYPE_IS_L(t), 0, 0U)))	\
-> +	(unsigned int)a
+Like the changes. Some thing below.
 
-So this casts to int (triggering sign extension) if the type on the
-64-bit kernel side is long?  But not in other cases (unsigned long,
-pointer)?  Just double-checking.
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
 
-Thanks,
-Florian
+> ---
+>  fs/ntfs3/ntfs_fs.h |  2 --
+>  fs/ntfs3/super.c   | 32 +++++++++++++++++++-------------
+>  2 files changed, 19 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+> index 6731b5d9e2d8..38b7c1a9dc52 100644
+> --- a/fs/ntfs3/ntfs_fs.h
+> +++ b/fs/ntfs3/ntfs_fs.h
+> @@ -211,10 +211,8 @@ struct ntfs_sb_info {
+>  	u32 blocks_per_cluster; // cluster_size / sb->s_blocksize
+>  
+>  	u32 record_size;
+> -	u32 sector_size;
+>  	u32 index_size;
+>  
+> -	u8 sector_bits;
+>  	u8 cluster_bits;
+>  	u8 record_bits;
+>  
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 193f9a98f6ab..5fe9484c6781 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -682,7 +682,7 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>  	struct ntfs_sb_info *sbi = sb->s_fs_info;
+>  	int err;
+>  	u32 mb, gb, boot_sector_size, sct_per_clst, record_size;
+> -	u64 sectors, clusters, fs_size, mlcn, mlcn2;
+> +	u64 sectors, clusters, mlcn, mlcn2;
+>  	struct NTFS_BOOT *boot;
+>  	struct buffer_head *bh;
+>  	struct MFT_REC *rec;
+> @@ -740,20 +740,20 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>  		goto out;
+>  	}
+>  
+> -	sbi->sector_size = boot_sector_size;
+> -	sbi->sector_bits = blksize_bits(boot_sector_size);
+> -	fs_size = (sectors + 1) << sbi->sector_bits;
+> +	sbi->volume.size = sectors * boot_sector_size;
+>  
+> -	gb = format_size_gb(fs_size, &mb);
+> +	gb = format_size_gb(sbi->volume.size + boot_sector_size, &mb);
+>  
+>  	/*
+>  	 * - Volume formatted and mounted with the same sector size.
+>  	 * - Volume formatted 4K and mounted as 512.
+>  	 * - Volume formatted 512 and mounted as 4K.
+>  	 */
+> -	if (sbi->sector_size != sector_size) {
+> -		ntfs_warn(sb,
+> -			  "Different NTFS' sector size and media sector size");
+> +	if (boot_sector_size != sector_size) {
+> +		ntfs_warn(
+> +			sb,
+> +			"Different NTFS' sector size (%u) and media sector size (%u)",
+> +			boot_sector_size, sector_size);
 
+>  		dev_size += sector_size - 1;
+>  	}
+>  
+> @@ -764,12 +764,19 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
+>  
+>  	/* Compare boot's cluster and sector. */
+> -	if (sbi->cluster_size < sbi->sector_size)
+> +	if (sbi->cluster_size < boot_sector_size)
+>  		goto out;
+>  
+>  	/* Compare boot's cluster and media sector. */
+> -	if (sbi->cluster_size < sector_size)
+> -		goto out; /* No way to use ntfs_get_block in this case. */
+> +	if (sbi->cluster_size < sector_size) {
+> +		/* No way to use ntfs_get_block in this case. */
+> +		ntfs_err(
+> +			sb,
+> +			"Failed to mount 'cause NTFS's cluster size (%u) is "
+> +			"less than media sector size (%u)",
+
+This is first time I see splitted string like this in ntfs3. No need to
+split like this. Small nit for that this chunk should already could be
+in patch 2/3.
+
+> +			sbi->cluster_size, sector_size);
+> +		goto out;
+> +	}
+>  
+>  	sbi->cluster_mask = sbi->cluster_size - 1;
+>  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
+> @@ -794,10 +801,9 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>  				  : (u32)boot->index_size << sbi->cluster_bits;
+>  
+>  	sbi->volume.ser_num = le64_to_cpu(boot->serial_num);
+> -	sbi->volume.size = sectors << sbi->sector_bits;
+>  
+>  	/* Warning if RAW volume. */
+> -	if (dev_size < fs_size) {
+> +	if (dev_size < sbi->volume.size + boot_sector_size) {
+>  		u32 mb0, gb0;
+>  
+>  		gb0 = format_size_gb(dev_size, &mb0);
+> -- 
+> 2.33.0
+> 
+> 
