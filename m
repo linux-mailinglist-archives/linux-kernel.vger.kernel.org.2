@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E65419471
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5D2419478
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhI0MmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:42:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
+        id S234425AbhI0Mm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:42:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234375AbhI0Ml6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:41:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E84660F46;
-        Mon, 27 Sep 2021 12:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632746420;
-        bh=WgMOABlOvB0w0w8Esx6zVPgVb/yQMODmolBG6FP7UXA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GB4cSVctSgvLtTROqPxQDY63uFkjBM9npphoqaUKQdt1xovrTTEbhS1UvsurHdVU7
-         TmUTcj422Lg688MyCOwQzIRUIjhK9p1Lq7EsxYdXuwRyGmc1COeWH3SFzP9xaTHiwr
-         rohhtsQjSDKdoO/5XL7R+uCXCGgRX+T14a8yImQRZPva36smrBGg14eYTavzBQ16e+
-         0Harb5I/FZ0nFyh+P1r1U2xSMfK2CKhkJQ2Rd2MsoDFFn5GUzR3G71ADgSBU28ozET
-         HxMO7hxKsW62Xwmow9BcnttVsgon34nvAYgYMdy0VCCYoMQNdoy0NCRrn7e7qvb/C3
-         i/PLxnLDparuw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3BF88410A1; Mon, 27 Sep 2021 09:40:18 -0300 (-03)
-Date:   Mon, 27 Sep 2021 09:40:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] perf iostat: Use system-wide mode if the target
- cpu_list is unspecified
-Message-ID: <YVG7spSrPm/oJW8W@kernel.org>
-References: <20210927081115.39568-1-likexu@tencent.com>
+        id S234333AbhI0Mm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:42:57 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C64260F46;
+        Mon, 27 Sep 2021 12:41:19 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mUpwb-00DF4m-GL; Mon, 27 Sep 2021 13:41:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927081115.39568-1-likexu@tencent.com>
-X-Url:  http://acmel.wordpress.com
+Date:   Mon, 27 Sep 2021 13:41:17 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sam Shih <sam.shih@mediatek.com>
+Cc:     matthias.bgg@gmail.com, Ryder.Lee@mediatek.com,
+        devicetree@vger.kernel.org, enric.balletbo@collabora.com,
+        fparent@baylibre.com, gregkh@linuxfoundation.org,
+        herbert@gondor.apana.org.au, hsinyi@chromium.org, john@phrozen.org,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux@roeck-us.net,
+        mpm@selenic.com, mturquette@baylibre.com, robh+dt@kernel.org,
+        sboyd@kernel.org, sean.wang@kernel.org, seiya.wang@mediatek.com,
+        wim@linux-watchdog.org
+Subject: Re: [v3,8/9] arm64: dts: mediatek: add mt7986a support
+In-Reply-To: <20210924112017.14107-1-sam.shih@mediatek.com>
+References: <016b501b-a4bf-c74d-9f7f-8145800ca6e0@gmail.com>
+ <20210924112017.14107-1-sam.shih@mediatek.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <0459da08cddc579f069a28e659e614fd@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sam.shih@mediatek.com, matthias.bgg@gmail.com, Ryder.Lee@mediatek.com, devicetree@vger.kernel.org, enric.balletbo@collabora.com, fparent@baylibre.com, gregkh@linuxfoundation.org, herbert@gondor.apana.org.au, hsinyi@chromium.org, john@phrozen.org, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org, linux@roeck-us.net, mpm@selenic.com, mturquette@baylibre.com, robh+dt@kernel.org, sboyd@kernel.org, sean.wang@kernel.org, seiya.wang@mediatek.com, wim@linux-watchdog.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 27, 2021 at 04:11:14PM +0800, Like Xu escreveu:
-> From: Like Xu <likexu@tencent.com>
+On 2021-09-24 12:20, Sam Shih wrote:
+> Add basic chip support for Mediatek mt7986a, include
+> uart nodes with correct clocks, rng node with correct clock,
+> and watchdog node and mt7986a pinctrl node.
 > 
-> An iostate use case like "perf iostat 0000:16,0000:97 -- ls" should be
-> implemented to work in system-wide mode to ensure that the output from
-> print_header() is consistent with the user documentation perf-iostat.txt,
-> rather than incorrectly assuming that the kernel does not support it:
+> Add cpu node, timer node, gic node, psci and reserved-memory node
+> for ARM Trusted Firmware,
 > 
->  Error:
->  The sys_perf_event_open() syscall returned with 22 (Invalid argument) \
->  for event (uncore_iio_0/event=0x83,umask=0x04,ch_mask=0xF,fc_mask=0x07/).
->  /bin/dmesg | grep -i perf may provide additional information.
+> Add clock controller nodes, include 40M clock source, topckgen, 
+> infracfg,
+> apmixedsys and ethernet subsystem.
 > 
-> This error is easily fixed by assigning system-wide mode by default
-> for IOSTAT_RUN only when the target cpu_list is unspecified.
-
-Looks ok, added:
-
-Fixes: f07952b179697771 ("perf stat: Basic support for iostat in perf")
-
-For stable@vger.kernel.org sake.
-
-- Arnaldo
- 
-> Signed-off-by: Like Xu <likexu@tencent.com>
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
 > ---
->  tools/perf/builtin-stat.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index f6e87b7be5fa..f0ecfda34ece 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -2408,6 +2408,8 @@ int cmd_stat(int argc, const char **argv)
->  			goto out;
->  		} else if (verbose)
->  			iostat_list(evsel_list, &stat_config);
-> +		if (iostat_mode == IOSTAT_RUN && !target__has_cpu(&target))
-> +			target.system_wide = true;
->  	}
->  
->  	if (add_default_attributes())
-> -- 
-> 2.32.0
+> v3: used the stdout-path instead of console=ttyS0
+> v2: modified clock and uart node due to clock driver updated
+> ---
+>  arch/arm64/boot/dts/mediatek/Makefile        |   1 +
+>  arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts |  54 +++++
+>  arch/arm64/boot/dts/mediatek/mt7986a.dtsi    | 227 +++++++++++++++++++
+>  3 files changed, 282 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a.dtsi
 
+[...]
+
+> +	timer {
+> +		compatible = "arm,armv8-timer";
+> +		interrupt-parent = <&gic>;
+> +		clock-frequency = <13000000>;
+
+No. Please fix your firmware to program CNTFRQ_EL0 on all CPUs.
+This may have been OK in 2011, but not anymore.
+
+> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
+> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
+> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
+> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	soc {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		compatible = "simple-bus";
+> +		ranges;
+> +
+> +		gic: interrupt-controller@c000000 {
+> +			compatible = "arm,gic-v3";
+> +			#interrupt-cells = <3>;
+> +			interrupt-parent = <&gic>;
+> +			interrupt-controller;
+> +			reg = <0 0x0c000000 0 0x40000>,
+> +			      <0 0x0c080000 0 0x200000>;
+
+This looks wrong. 128kB per redistributor frames and 4 CPUs do
+no result in 2MB worth of MMIO.
+
+This is also missing the GICV/GICV/GICH regions that are exposed
+by the CPUs directly.
+
+         M.
 -- 
-
-- Arnaldo
+Jazz is not dead. It just smells funny...
