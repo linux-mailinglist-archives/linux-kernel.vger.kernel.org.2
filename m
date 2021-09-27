@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF9141965E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED088419661
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhI0O33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:29:29 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41148 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhI0O31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:29:27 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18REReXv015040;
-        Mon, 27 Sep 2021 09:27:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632752860;
-        bh=FJWLNYViwTUWu9K8VtFGQXKFiwr+leS4+2POVpUO7xs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=BV1RXuvE6Jdbq/U1qVlqrJdvUP02B67QAP4lp4Cm3g9mA4e2W+lawAmJwniVLTarZ
-         JJT4e27k7vFzogVfwfhIttWj/Ws9dDLnjwzBW7yFyGBJUxwMLf+E0UifnX+YMqP+Ym
-         MuqfM0qnTTEUib0RI27br/VGDzIpPTHju+BTyPZg=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18RERevk041578
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Sep 2021 09:27:40 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 27
- Sep 2021 09:27:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 27 Sep 2021 09:27:40 -0500
-Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18REReeH005855;
-        Mon, 27 Sep 2021 09:27:40 -0500
-Subject: Re: [PATCH V2 4/4] arm64: dts: ti: k3-j7200-common-proc-board: Add
- j7200-evm compatible
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
-CC:     Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sinthu Raja <sinthu.raja@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-References: <20210925201430.11678-1-nm@ti.com>
- <20210925201430.11678-5-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <dded6ab1-7d99-77ee-6865-046a4f45c82b@ti.com>
-Date:   Mon, 27 Sep 2021 09:27:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234799AbhI0OaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234758AbhI0O37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:29:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E11F610E8;
+        Mon, 27 Sep 2021 14:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632752901;
+        bh=5KL+JiULkFsiAbh9kDxX+k4YOM3LnpWkWceqNENywSw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lxzA0fXgPKw9xlD13FdD6gFz9FpAdgQRFrWR+k070lCUmY6OqQObR/WU+zN8Nxw1j
+         tuLdF/3BruQ7i8vZpaMF36FkOVkQLMRbPMqH1hAMcGMGbS0saXphLZBxvliAtwngLw
+         ZuUjUQjmbwcCZrKIL0wwd1qpopCSbpecqoN+ZlufludMS8FApmE/bpzt0GphapokiW
+         ouRk4y1TQmsOTVPC7zIiyNZYRgLM2Q1kRYJYadH+AUi/97Sv4gWaNKKUEqrKb0p+DK
+         P15IRtkAeY6wi+c2yMiltL+SSFZX8/PFijBf1Dz2mo4jGnDWAj0CDnq2oV7zupvFK6
+         axD5GNXZZxTrQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+Date:   Mon, 27 Sep 2021 16:28:02 +0200
+Message-Id: <20210927142816.2069269-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210925201430.11678-5-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/21 3:14 PM, Nishanth Menon wrote:
-> Add j7200-evm compatible to the board to allow the board to distinguish
-> itself from other platforms that may be added in the future.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Suman Anna <s-anna@ti.com>
+With CONFIG_FB=m and CONFIG_DRM=y, we get a link error in the fb helper:
 
-> ---
-> 
-> Changes in V2:
-> * no change
-> 
-> V1: https://lore.kernel.org/all/20210915121937.27702-4-nm@ti.com/
-> 
->  arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> index d14f3c18b65f..121975dc8239 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> @@ -12,6 +12,9 @@
->  #include <dt-bindings/phy/phy.h>
->  
->  / {
-> +	compatible = "ti,j7200-evm", "ti,j7200";
-> +	model = "Texas Instruments J7200 EVM";
-> +
->  	chosen {
->  		stdout-path = "serial2:115200n8";
->  		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
-> 
+aarch64-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
+(.text+0x10cc): undefined reference to `framebuffer_alloc'
+
+Tighten the dependency so it is only allowed in the case that DRM can
+link against FB.
+
+Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
+Link: https://lore.kernel.org/all/20210721152211.2706171-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+I posted this in July, the patch is still required and should work
+on its own.
+---
+ drivers/gpu/drm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index cea777ae7fb9..9199f53861ca 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -103,7 +103,7 @@ config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
+ config DRM_FBDEV_EMULATION
+ 	bool "Enable legacy fbdev support for your modesetting driver"
+ 	depends on DRM
+-	depends on FB
++	depends on FB=y || FB=DRM
+ 	select DRM_KMS_HELPER
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+-- 
+2.29.2
 
