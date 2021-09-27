@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354C2419ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8AC419C43
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236618AbhI0RMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
+        id S236798AbhI0R0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:26:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236603AbhI0RKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2E4F61222;
-        Mon, 27 Sep 2021 17:07:46 +0000 (UTC)
+        id S235622AbhI0RWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:22:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E48746135F;
+        Mon, 27 Sep 2021 17:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762467;
-        bh=tB+TSLVCyg2lo4gJi80zk2pIoN619vd5g6K3Qfp2PCA=;
+        s=korg; t=1632762865;
+        bh=kgD1e4RoCpFEZjZSZkXNK08KIkUZIuli5LgochcfZEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x53OFlCgZRmYZHGjKnk12/qMKOWT794IeXikbAz93vDSt4coW0EkA1O7GrBGTqRCj
-         7j4rmSilkeqa7RJrwAZExl1RWc9Fns4wgGJDYx+gzHt5b8Kx0FzPXYpmju0jOGnCdI
-         FUZCTCSjEoncjwyUP1l13DaLPa57fcFyBdXMyb+8=
+        b=s12tMjP61SlER5qDVREA2Uv7C2MBEOHWx8kRuBT26repI2OmVPMZquUivddThJYBf
+         s95xwZz9OGaReejMS//fn+chdWr9IMUCpm6dqjpHODmy8OgDP8AUqNO1HR6ETTeKZT
+         rlZg2jensO3GYDWKwZTV//BM3OXgMQY4J1uNajTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Suvanto <markus.suvanto@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 034/103] afs: Fix updating of i_blocks on file/dir extension
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 080/162] gpiolib: acpi: Make set-debounce-timeout failures non fatal
 Date:   Mon, 27 Sep 2021 19:02:06 +0200
-Message-Id: <20210927170226.924474536@linuxfoundation.org>
+Message-Id: <20210927170236.222207460@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 9d37e1cab2a9d2cee2737973fa455e6f89eee46a ]
+[ Upstream commit cef0d022f55364d69017daeb9443bd31510ad6a2 ]
 
-When an afs file or directory is modified locally such that the total file
-size is extended, i_blocks needs to be recalculated too.
+Commit 8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
+made the gpiolib-acpi code call gpio_set_debounce_timeout() when requesting
+GPIOs.
 
-Fix this by making afs_write_end() and afs_edit_dir_add() call
-afs_set_i_size() rather than setting inode->i_size directly as that also
-recalculates inode->i_blocks.
+This in itself is fine, but it also made gpio_set_debounce_timeout()
+errors fatal, causing the requesting of the GPIO to fail. This is causing
+regressions. E.g. on a HP ElitePad 1000 G2 various _AEI specified GPIO
+ACPI event sources specify a debouncy timeout of 20 ms, but the
+pinctrl-baytrail.c only supports certain fixed values, the closest
+ones being 12 or 24 ms and pinctrl-baytrail.c responds with -EINVAL
+when specified a value which is not one of the fixed values.
 
-This can be tested by creating and writing into directories and files and
-then examining them with du.  Without this change, directories show a 4
-blocks (they start out at 2048 bytes) and files show 0 blocks; with this
-change, they should show a number of blocks proportional to the file size
-rounded up to 1024.
+This is causing the acpi_request_own_gpiod() call to fail for 3
+ACPI event sources on the HP ElitePad 1000 G2, which in turn is causing
+e.g. the battery charging vs discharging status to never get updated,
+even though a charger has been plugged-in or unplugged.
 
-Fixes: 31143d5d515e ("AFS: implement basic file write support")
-Fixes: 63a4681ff39c ("afs: Locally edit directory data for mkdir/create/unlink/...")
-Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-Tested-by: Markus Suvanto <markus.suvanto@gmail.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/163113612442.352844.11162345591911691150.stgit@warthog.procyon.org.uk/
+Make gpio_set_debounce_timeout() errors non fatal, warning about the
+failure instead, to fix this regression.
+
+Note we should probably also fix various pinctrl drivers to just
+pick the first bigger discrete value rather then returning -EINVAL but
+this will need to be done on a per driver basis, where as this fix
+at least gets us back to where things were before and thus restores
+functionality on devices where this was lost due to
+gpio_set_debounce_timeout() errors.
+
+Fixes: 8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
+Depends-on: 2e2b496cebef ("gpiolib: acpi: Extract acpi_request_own_gpiod() helper")
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/dir_edit.c |  4 ++--
- fs/afs/inode.c    | 10 ----------
- fs/afs/internal.h | 10 ++++++++++
- fs/afs/write.c    |  2 +-
- 4 files changed, 13 insertions(+), 13 deletions(-)
+ drivers/gpio/gpiolib-acpi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
-index 2ffe09abae7f..3a9cffc081b9 100644
---- a/fs/afs/dir_edit.c
-+++ b/fs/afs/dir_edit.c
-@@ -264,7 +264,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
- 		if (b == nr_blocks) {
- 			_debug("init %u", b);
- 			afs_edit_init_block(meta, block, b);
--			i_size_write(&vnode->vfs_inode, (b + 1) * AFS_DIR_BLOCK_SIZE);
-+			afs_set_i_size(vnode, (b + 1) * AFS_DIR_BLOCK_SIZE);
- 		}
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 411525ac4cc4..47712b6903b5 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -313,9 +313,11 @@ static struct gpio_desc *acpi_request_own_gpiod(struct gpio_chip *chip,
  
- 		/* Only lower dir pages have a counter in the header. */
-@@ -297,7 +297,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
- new_directory:
- 	afs_edit_init_block(meta, meta, 0);
- 	i_size = AFS_DIR_BLOCK_SIZE;
--	i_size_write(&vnode->vfs_inode, i_size);
-+	afs_set_i_size(vnode, i_size);
- 	slot = AFS_DIR_RESV_BLOCKS0;
- 	page = page0;
- 	block = meta;
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index ae3016a9fb23..f81a972bdd29 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -53,16 +53,6 @@ static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *paren
- 		dump_stack();
+ 	ret = gpio_set_debounce_timeout(desc, agpio->debounce_timeout);
+ 	if (ret)
+-		gpiochip_free_own_desc(desc);
++		dev_warn(chip->parent,
++			 "Failed to set debounce-timeout for pin 0x%04X, err %d\n",
++			 pin, ret);
+ 
+-	return ret ? ERR_PTR(ret) : desc;
++	return desc;
  }
  
--/*
-- * Set the file size and block count.  Estimate the number of 512 bytes blocks
-- * used, rounded up to nearest 1K for consistency with other AFS clients.
-- */
--static void afs_set_i_size(struct afs_vnode *vnode, u64 size)
--{
--	i_size_write(&vnode->vfs_inode, size);
--	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
--}
--
- /*
-  * Initialise an inode from the vnode status.
-  */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index ffe318ad2e02..dc08a3d9b3a8 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1573,6 +1573,16 @@ static inline void afs_update_dentry_version(struct afs_operation *op,
- 			(void *)(unsigned long)dir_vp->scb.status.data_version;
- }
- 
-+/*
-+ * Set the file size and block count.  Estimate the number of 512 bytes blocks
-+ * used, rounded up to nearest 1K for consistency with other AFS clients.
-+ */
-+static inline void afs_set_i_size(struct afs_vnode *vnode, u64 size)
-+{
-+	i_size_write(&vnode->vfs_inode, size);
-+	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
-+}
-+
- /*
-  * Check for a conflicting operation on a directory that we just unlinked from.
-  * If someone managed to sneak a link or an unlink in on the file we just
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index d37b5cfcf28f..be60cf110382 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -184,7 +184,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 		write_seqlock(&vnode->cb_lock);
- 		i_size = i_size_read(&vnode->vfs_inode);
- 		if (maybe_i_size > i_size)
--			i_size_write(&vnode->vfs_inode, maybe_i_size);
-+			afs_set_i_size(vnode, maybe_i_size);
- 		write_sequnlock(&vnode->cb_lock);
- 	}
- 
+ static bool acpi_gpio_in_ignore_list(const char *controller_in, int pin_in)
 -- 
 2.33.0
 
