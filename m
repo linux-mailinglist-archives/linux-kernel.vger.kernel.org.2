@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35947419C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD32419BF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhI0R1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:27:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41188 "EHLO mail.kernel.org"
+        id S236891AbhI0RY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237802AbhI0RXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:23:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99FCD6136F;
-        Mon, 27 Sep 2021 17:15:08 +0000 (UTC)
+        id S235925AbhI0RVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:21:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5B8361355;
+        Mon, 27 Sep 2021 17:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762909;
-        bh=YdKmW74Bx+an5TB/qALyKl2Log0GvXtCp2YzBtllF5M=;
+        s=korg; t=1632762817;
+        bh=HumXbEoNAHL7SJ7zWMzLlvnNalPCWSrRbVhMYK+ggOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1n1tBWRtItEX43GkLzgDRvyrFJ4LeBDE0S718sjDmgfhSUuOkRl6ChP5DqbaTUnPx
-         cdcbcftOKxXuH9nBVrK9XL1JJ7gdw6jTgueKjLhDHqgh6G5N/P9yrO9qnHcrAagDas
-         E5IO8kijSaqHUICL/213dh4Dk0/jK1/qsr/a7+cg=
+        b=qq+9wls67y2+no61t4K0xKsNNQOtCOpnaaGkbS3W+ydKS1BTHy4LNOcRgix0zuWZi
+         7RQMxHfHzMkrVQ9NEtVXcwqctl0oO8B7q8VvOnuuv7EwTUsWPLNBIvc/eYNN4k0caL
+         53pyHs+uH56zYgdwCIz64L60UCG/PeVAurCPmFHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dai Ngo <Dai.Ngo@oracle.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 054/162] NLM: Fix svcxdr_encode_owner()
-Date:   Mon, 27 Sep 2021 19:01:40 +0200
-Message-Id: <20210927170235.363903954@linuxfoundation.org>
+Subject: [PATCH 5.14 055/162] virtio-net: fix pages leaking when building skb in big mode
+Date:   Mon, 27 Sep 2021 19:01:41 +0200
+Message-Id: <20210927170235.395318090@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
 References: <20210927170233.453060397@linuxfoundation.org>
@@ -40,50 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Jason Wang <jasowang@redhat.com>
 
-[ Upstream commit 89c485c7a3ecbc2ebd568f9c9c2edf3a8cf7485b ]
+[ Upstream commit afd92d82c9d715fb97565408755acad81573591a ]
 
-Dai Ngo reports that, since the XDR overhaul, the NLM server crashes
-when the TEST procedure wants to return NLM_DENIED. There is a bug
-in svcxdr_encode_owner() that none of our standard test cases found.
+We try to use build_skb() if we had sufficient tailroom. But we forget
+to release the unused pages chained via private in big mode which will
+leak pages. Fixing this by release the pages after building the skb in
+big mode.
 
-Replace the open-coded function with a call to an appropriate
-pre-fabricated XDR helper.
-
-Reported-by: Dai Ngo <Dai.Ngo@oracle.com>
-Fixes: a6a63ca5652e ("lockd: Common NLM XDR helpers")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there's sufficient tailroom")
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/lockd/svcxdr.h | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/net/virtio_net.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/lockd/svcxdr.h b/fs/lockd/svcxdr.h
-index c69a0bb76c94..4f1a451da5ba 100644
---- a/fs/lockd/svcxdr.h
-+++ b/fs/lockd/svcxdr.h
-@@ -134,18 +134,9 @@ svcxdr_decode_owner(struct xdr_stream *xdr, struct xdr_netobj *obj)
- static inline bool
- svcxdr_encode_owner(struct xdr_stream *xdr, const struct xdr_netobj *obj)
- {
--	unsigned int quadlen = XDR_QUADLEN(obj->len);
--	__be32 *p;
--
--	if (xdr_stream_encode_u32(xdr, obj->len) < 0)
--		return false;
--	p = xdr_reserve_space(xdr, obj->len);
--	if (!p)
-+	if (obj->len > XDR_MAX_NETOBJ)
- 		return false;
--	p[quadlen - 1] = 0;	/* XDR pad */
--	memcpy(p, obj->data, obj->len);
--
--	return true;
-+	return xdr_stream_encode_opaque(xdr, obj->data, obj->len) > 0;
- }
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index eee493685aad..fb96658bb91f 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -435,6 +435,10 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
  
- #endif /* _LOCKD_SVCXDR_H_ */
+ 		skb_reserve(skb, p - buf);
+ 		skb_put(skb, len);
++
++		page = (struct page *)page->private;
++		if (page)
++			give_pages(rq, page);
+ 		goto ok;
+ 	}
+ 
 -- 
 2.33.0
 
