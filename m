@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FEF4191DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E5B4191DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhI0J5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:57:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233685AbhI0J5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1AB60F70;
-        Mon, 27 Sep 2021 09:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632736546;
-        bh=PFhFMtEfwmcVbGVJXlm2BQkfa6NmF5Jtvsa6updisJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vsxAviryqEAuEOvhEJsDg57Zo7i56zccSt5M+n67KUKuccJf1VddyumHgLEDZW70x
-         SPHIkoU78LZfADtHF5z2WHJsQ5BWK8c2omZXXpR4DdloVTfIWQTsdLl5+rXHrOFTeu
-         oZ4Lw84CRDURDLjwfFHzFPRp9BOYJd7uJlt105XQ=
-Date:   Mon, 27 Sep 2021 11:55:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        id S233775AbhI0J5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:57:41 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33552
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233768AbhI0J5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:57:40 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E000C40790
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:55:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632736559;
+        bh=nIU5tLYb8kiPoNkLCvMx2HqJO/MUaTxKgEujQiXGrPI=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=JSy+4eYnCTplSl+dSVzoeHu5juCEE7J6rLBOPRIxYenATLauGNMlxxpuQfEE/+aVP
+         EB4BFKceHi793dN/Z7d/XUjgW6bXcXUCxHZ8ICSt7NF9s8ZcvMY1T8oQUI212Rr12f
+         3LxBHNuBSsp3t6jVWu8+t65nuZOUWHWRmuWFptamtvXEDZ/6d1KiwcOR9DyVf64jsV
+         uw2kSybRBUQPLLbtTDIhgxXeXjggk5fGcao2ZTmXLQ7UJYlA1EzPVeXIk1hso3z72o
+         NnauAfr94+CSqNK4Psk/UZm35uuwwUmNFddEd4YcOXXonRNPSjY0AyGDVKzo5KbZ9E
+         UawS+6gtvgxLA==
+Received: by mail-lf1-f69.google.com with SMTP id v197-20020a1948ce000000b003fc99be7fecso15303103lfa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:55:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nIU5tLYb8kiPoNkLCvMx2HqJO/MUaTxKgEujQiXGrPI=;
+        b=00ho4dy+hnCYozZxeqfjLTfCp2L2gE1VgjG/y1F4qhhXZ415ItxdiMSuZUC5Dwb8qk
+         o3i8w+dtWMe82QOVCp+sWNwQpV5jFB/g0dLWdG9VJCC2hTd63iwH3PM3HaWJkyBxq4SU
+         r0sb9K3/sxhT5KKe+w9z8ZfnVW2PDxdXdlW7N9+TIvVRr2zFfm+OWe/s41xA7VIMUYXK
+         QjLhCo/0ltMi1bxZKVdsH7tnohqVDiWE6kQYMS//hRP2Ljuv71Iyw5ZgzYP4IS0aiq1d
+         VJaan8ne13W8q+h373d+ja4x7b62s7FGp4gsL4kWAR39m2IEweqbBOYpyRHS5el/Nwou
+         otjg==
+X-Gm-Message-State: AOAM531LpEeOYYnqA2TZD6OaFkLfEyrwvBFpv2sLJmuZKYiizF3JvEqW
+        wQPZoop+bToaDQHd29kuY/XFqIKigCt3MLWQHJrq9x4AUEyfHYHL61uuiZwyI77eGiGl+Aw5iBr
+        /JhhmHQyRAi9txaUwmol6ktw5rXyMiySDXjj6s2JNWA==
+X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr22993039lfu.81.1632736558905;
+        Mon, 27 Sep 2021 02:55:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsQ6KVBbhaTPACnyZPmIXhjr9se2x7ZwWQTaBMxZMqHiZxJFGWKh3hO/D3QI+51qPHcHs7eQ==
+X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr22993025lfu.81.1632736558751;
+        Mon, 27 Sep 2021 02:55:58 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id br38sm1537149lfb.305.2021.09.27.02.55.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 02:55:58 -0700 (PDT)
+Subject: Re: [PATCH] cpufreq: s3c244x: add fallthrough comments for switch
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250: Fix reporting real baudrate value in
- c_ospeed field
-Message-ID: <YVGVHzHzhOjUp7b8@kroah.com>
-References: <20210927093704.19768-1-pali@kernel.org>
+References: <20210927095150.944127-1-arnd@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6695844c-e79d-d62e-87da-f96f8d5ca3bf@canonical.com>
+Date:   Mon, 27 Sep 2021 11:55:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210927093704.19768-1-pali@kernel.org>
+In-Reply-To: <20210927095150.944127-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 11:37:04AM +0200, Pali Rohár wrote:
-> In most cases it is not possible to set exact baudrate value to hardware.
-
-Why not?
-
-> So fix reporting real baudrate value which was set to hardware via c_ospeed
-> termios field. It can be retrieved by ioctl(TCGETS2) from userspace.
+On 27/09/2021 11:51, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Real baudrate value is calculated from chosen hardware divisor and base
-> clock. It is implemented in a new function serial8250_compute_baud_rate()
-> which is inverse of serial8250_get_divisor() function.
+> Apparently nobody has so far caught this warning, I hit it in randconfig
+> build testing:
 > 
-> With this change is fixed also UART timeout value (it is updated via
-> uart_update_timeout() function), which is calculated from the now fixed
-> baudrate value too.
-
-I can not parse this sentence, sorry.  Can you try to rephrase it
-differently?
-
+> drivers/cpufreq/s3c2440-cpufreq.c: In function 's3c2440_cpufreq_setdivs':
+> drivers/cpufreq/s3c2440-cpufreq.c:175:10: error: this statement may fall through [-Werror=implicit-fallthrough=]
+>    camdiv |= S3C2440_CAMDIVN_HCLK3_HALF;
+>           ^
+> drivers/cpufreq/s3c2440-cpufreq.c:176:2: note: here
+>   case 3:
+>   ^~~~
+> drivers/cpufreq/s3c2440-cpufreq.c:181:10: error: this statement may fall through [-Werror=implicit-fallthrough=]
+>    camdiv |= S3C2440_CAMDIVN_HCLK4_HALF;
+>           ^
+> drivers/cpufreq/s3c2440-cpufreq.c:182:2: note: here
+>   case 4:
+>   ^~~~
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Cc: stable@vger.kernel.org
+> Both look like the fallthrough is intentional, so add the new
+> "fallthrough;" keyword.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> 
-> I have tested this change on device with 8250 compatible UART. I have not
-> tested it on PORT_NPCM nor on UPF_MAGIC_MULTIPLIER hardware, as I do not
-> have such.
-> 
-> Tested device has 250 MHz base clock for 8250 UART. When I set baudrate to
-> 115200, then ioctl(TCGETS2) reported B115200 CBAUD flag and value 114890 in
-> c_ospeed field.
-> 
-> This result is correct as HW for baudrate 115200 is using UART divisor 136,
-> which results in correct reported baudrate: 250000000/(16*136) = 114890
+>  drivers/cpufreq/s3c2440-cpufreq.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-So is this going to break all the userspace tools that set a baud rate
-and then read it back and get a different number than what they thought
-they set?
+I think I saw it but back then implicit-fallthrough was not an error :)
 
-That feels very dangerous.  Why does this matter?
+LGTM:
 
-> ---
->  drivers/tty/serial/8250/8250_port.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> index 66374704747e..dc6900b2daa8 100644
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -2584,6 +2584,19 @@ static unsigned int serial8250_get_divisor(struct uart_port *port,
->  	return serial8250_do_get_divisor(port, baud, frac);
->  }
->  
-> +static unsigned int serial8250_compute_baud_rate(struct uart_port *port,
-> +						 unsigned int quot)
-> +{
-> +	if ((port->flags & UPF_MAGIC_MULTIPLIER) && quot == 0x8001)
-> +		return port->uartclk / 4;
-> +	else if ((port->flags & UPF_MAGIC_MULTIPLIER) && quot == 0x8002)
-> +		return port->uartclk / 8;
-> +	else if (port->type == PORT_NPCM)
-> +		return DIV_ROUND_CLOSEST(port->uartclk - 2 * (quot + 2), 16 * (quot + 2));
-> +	else
-> +		return DIV_ROUND_CLOSEST(port->uartclk, 16 * quot);
-> +}
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Where did these formulas come from?
 
-thanks,
-
-greg k-h
+Best regards,
+Krzysztof
