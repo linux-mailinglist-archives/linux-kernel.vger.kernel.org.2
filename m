@@ -2,482 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C18419E96
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C57C419E98
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbhI0SvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:51:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234211AbhI0SvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:51:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 378B560FD7;
-        Mon, 27 Sep 2021 18:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632768573;
-        bh=a4dtojFnOOdbrzNTgmuuVY2z7R1/up05Q0TfRHmdyw0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=JkJMX5D64V0k3jw0gNc1LjnjRspzfyZliYNs+mBJkEBWi0VCIx40PWjy0Rb3UR+Hc
-         C+usSyaJGApTIrituP6s6/0470hdalR1lKhksvfPYk/rp47JhTpCe8+CDWXmFwntW1
-         5+8K2jz4KBNU4/K8vQUqVy+6nbFIs8CHCLgHKI+UaZypcfNoEsIuEeXVZIrHftRYum
-         Ht+VkBRmRpLJxmUOrKjjRMsw+ZVDkDQxy9bFSjEybKDq9smdXD4ESks2Rnca+qd8cj
-         5BbAAJ6Jcv8VNOd3jO4hkMVIS9eDkvX+tvyGEbpDQKZg9rd1iQFzdP25jnoBksZ1Gx
-         aCYhJT5V03qkw==
-Date:   Mon, 27 Sep 2021 13:49:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20210927184932.GA667911@bhelgaas>
+        id S236005AbhI0Sv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:51:59 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:46599 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234211AbhI0Sv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 14:51:57 -0400
+Received: by mail-io1-f70.google.com with SMTP id b13-20020a05660214cd00b005d6279b61fdso22592017iow.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:50:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=l7rqchQ61TBhA/++fM9zkm7ce+MF19ar4j52EbQSFGE=;
+        b=4W35I8aD90CQD5GsGfBQSqZTnI5sVcy+CZtWe/G0+pIaB6TiCU4r+AI4WnP21AGNBY
+         U+QhRQFDVzOaDolrvNxYLRKYwHn9/eI4AOChgV6KP+ROqPQjh4HAuvgsFxBf9sPnTAQ1
+         DjFN1R2Wgj/DfCfd/ylsOn+dFm+fUsUQmD3Yp9BUN+gRwz8eQG1uH20n2LibqZPy6FGP
+         o682BUWU4UE9ii7KY0OVYZB/r/tNudkySLzSFMvHskixq/f8++J7eq4OjFLxmTSteuPS
+         IPVCfsnbtYxb06A0s3C4xKD49qbL2mkSEPINwQmtpFO0IPglYxwU1sa0m0A+i6SLanzk
+         RmtQ==
+X-Gm-Message-State: AOAM530GDI+6wFohxlTTD/Dd4xBY992L8zBxztwM/L9yXTreavKdzH1p
+        zVWJtaRIec8EH6oYxiKckaY/3/Lu5UpFUJ16iw1nNkX8TAPZ
+X-Google-Smtp-Source: ABdhPJzKpzylPUFYoaDrrYKpsjzFuWVe+Lw3nvdvkv7tg1VYg8AzpO6LIxzGKtOw+oQCUHN9FEye+rVVpRx7qZzkKgN6IL2f2EBj
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916234100.122368-20-logang@deltatee.com>
+X-Received: by 2002:a05:6e02:4a3:: with SMTP id e3mr1143183ils.229.1632768619368;
+ Mon, 27 Sep 2021 11:50:19 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 11:50:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008ed76c05ccfe91ee@google.com>
+Subject: [syzbot] INFO: rcu detected stall in sys_mount (6)
+From:   syzbot <syzbot+ee7d095f44a683a195f8@syzkaller.appspotmail.com>
+To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:40:59PM -0600, Logan Gunthorpe wrote:
-> Introduce pci_mmap_p2pmem() which is a helper to allocate and mmap
-> a hunk of p2pmem into userspace.
-> 
-> Pages are allocated from the genalloc in bulk and their reference count
-> incremented. They are returned to the genalloc when the page is put.
-> 
-> The VMA does not take a reference to the pages when they are inserted
-> with vmf_insert_mixed() (which is necessary for zone device pages) so
-> the backing P2P memory is stored in a structures in vm_private_data.
-> 
-> A pseudo mount is used to allocate an inode for each PCI device. The
-> inode's address_space is used in the file doing the mmap so that all
-> VMAs are collected and can be unmapped if the PCI device is unbound.
-> After unmapping, the VMAs are iterated through and their pages are
-> put so the device can continue to be unbound. An active flag is used
-> to signal to VMAs not to allocate any further P2P memory once the
-> removal process starts. The flag is synchronized with concurrent
-> access with an RCU lock.
-> 
-> The VMAs and inode will survive after the unbind of the device, but no
-> pages will be present in the VMA and a subsequent access will result
-> in a SIGBUS error.
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Hello,
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+syzbot found the following issue on:
 
-I would capitalize "Introduce" in the subject line.
+HEAD commit:    5a5d008887b4 Add linux-next specific files for 20210924
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1187dccb300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ae26deb010ccc26f
+dashboard link: https://syzkaller.appspot.com/bug?extid=ee7d095f44a683a195f8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172aaf6f300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12667317300000
 
-> ---
->  drivers/pci/p2pdma.c       | 263 ++++++++++++++++++++++++++++++++++++-
->  include/linux/pci-p2pdma.h |  11 ++
->  include/uapi/linux/magic.h |   1 +
->  3 files changed, 273 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index 2422af5a529c..a5adf57af53a 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -16,14 +16,19 @@
->  #include <linux/genalloc.h>
->  #include <linux/memremap.h>
->  #include <linux/percpu-refcount.h>
-> +#include <linux/pfn_t.h>
-> +#include <linux/pseudo_fs.h>
->  #include <linux/random.h>
->  #include <linux/seq_buf.h>
->  #include <linux/xarray.h>
-> +#include <uapi/linux/magic.h>
->  
->  struct pci_p2pdma {
->  	struct gen_pool *pool;
->  	bool p2pmem_published;
->  	struct xarray map_types;
-> +	struct inode *inode;
-> +	bool active;
->  };
->  
->  struct pci_p2pdma_pagemap {
-> @@ -32,6 +37,14 @@ struct pci_p2pdma_pagemap {
->  	u64 bus_offset;
->  };
->  
-> +struct pci_p2pdma_map {
-> +	struct kref ref;
-> +	struct pci_dev *pdev;
-> +	struct inode *inode;
-> +	void *kaddr;
-> +	size_t len;
-> +};
-> +
->  static struct pci_p2pdma_pagemap *to_p2p_pgmap(struct dev_pagemap *pgmap)
->  {
->  	return container_of(pgmap, struct pci_p2pdma_pagemap, pgmap);
-> @@ -100,6 +113,26 @@ static const struct attribute_group p2pmem_group = {
->  	.name = "p2pmem",
->  };
->  
-> +/*
-> + * P2PDMA internal mount
-> + * Fake an internal VFS mount-point in order to allocate struct address_space
-> + * mappings to remove VMAs on unbind events.
-> + */
-> +static int pci_p2pdma_fs_cnt;
-> +static struct vfsmount *pci_p2pdma_fs_mnt;
-> +
-> +static int pci_p2pdma_fs_init_fs_context(struct fs_context *fc)
-> +{
-> +	return init_pseudo(fc, P2PDMA_MAGIC) ? 0 : -ENOMEM;
-> +}
-> +
-> +static struct file_system_type pci_p2pdma_fs_type = {
-> +	.name = "p2dma",
-> +	.owner = THIS_MODULE,
-> +	.init_fs_context = pci_p2pdma_fs_init_fs_context,
-> +	.kill_sb = kill_anon_super,
-> +};
-> +
->  static void p2pdma_page_free(struct page *page)
->  {
->  	struct pci_p2pdma_pagemap *pgmap = to_p2p_pgmap(page->pgmap);
-> @@ -128,6 +161,9 @@ static void pci_p2pdma_release(void *data)
->  	gen_pool_destroy(p2pdma->pool);
->  	sysfs_remove_group(&pdev->dev.kobj, &p2pmem_group);
->  	xa_destroy(&p2pdma->map_types);
-> +
-> +	iput(p2pdma->inode);
-> +	simple_release_fs(&pci_p2pdma_fs_mnt, &pci_p2pdma_fs_cnt);
->  }
->  
->  static int pci_p2pdma_setup(struct pci_dev *pdev)
-> @@ -145,17 +181,32 @@ static int pci_p2pdma_setup(struct pci_dev *pdev)
->  	if (!p2p->pool)
->  		goto out;
->  
-> -	error = devm_add_action_or_reset(&pdev->dev, pci_p2pdma_release, pdev);
-> +	error = simple_pin_fs(&pci_p2pdma_fs_type, &pci_p2pdma_fs_mnt,
-> +			      &pci_p2pdma_fs_cnt);
->  	if (error)
->  		goto out_pool_destroy;
->  
-> +	p2p->inode = alloc_anon_inode(pci_p2pdma_fs_mnt->mnt_sb);
-> +	if (IS_ERR(p2p->inode)) {
-> +		error = -ENOMEM;
-> +		goto out_unpin_fs;
-> +	}
-> +
-> +	error = devm_add_action_or_reset(&pdev->dev, pci_p2pdma_release, pdev);
-> +	if (error)
-> +		goto out_put_inode;
-> +
->  	error = sysfs_create_group(&pdev->dev.kobj, &p2pmem_group);
->  	if (error)
-> -		goto out_pool_destroy;
-> +		goto out_put_inode;
->  
->  	rcu_assign_pointer(pdev->p2pdma, p2p);
->  	return 0;
->  
-> +out_put_inode:
-> +	iput(p2p->inode);
-> +out_unpin_fs:
-> +	simple_release_fs(&pci_p2pdma_fs_mnt, &pci_p2pdma_fs_cnt);
->  out_pool_destroy:
->  	gen_pool_destroy(p2p->pool);
->  out:
-> @@ -163,6 +214,45 @@ static int pci_p2pdma_setup(struct pci_dev *pdev)
->  	return error;
->  }
->  
-> +static void pci_p2pdma_map_free_pages(struct pci_p2pdma_map *pmap)
-> +{
-> +	int i;
-> +
-> +	if (!pmap->kaddr)
-> +		return;
-> +
-> +	for (i = 0; i < pmap->len; i += PAGE_SIZE)
-> +		put_page(virt_to_page(pmap->kaddr + i));
-> +
-> +	pmap->kaddr = NULL;
-> +}
-> +
-> +static void pci_p2pdma_free_mappings(struct address_space *mapping)
-> +{
-> +	struct vm_area_struct *vma;
-> +
-> +	i_mmap_lock_write(mapping);
-> +	if (RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
-> +		goto out;
-> +
-> +	vma_interval_tree_foreach(vma, &mapping->i_mmap, 0, -1)
-> +		pci_p2pdma_map_free_pages(vma->vm_private_data);
-> +
-> +out:
-> +	i_mmap_unlock_write(mapping);
-> +}
-> +
-> +static void pci_p2pdma_unmap_mappings(void *data)
-> +{
-> +	struct pci_dev *pdev = data;
-> +	struct pci_p2pdma *p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
-> +
-> +	p2pdma->active = false;
-> +	synchronize_rcu();
-> +	unmap_mapping_range(p2pdma->inode->i_mapping, 0, 0, 1);
-> +	pci_p2pdma_free_mappings(p2pdma->inode->i_mapping);
-> +}
-> +
->  /**
->   * pci_p2pdma_add_resource - add memory for use as p2p memory
->   * @pdev: the device to add the memory to
-> @@ -221,6 +311,11 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
->  		goto pgmap_free;
->  	}
->  
-> +	error = devm_add_action_or_reset(&pdev->dev, pci_p2pdma_unmap_mappings,
-> +					 pdev);
-> +	if (error)
-> +		goto pages_free;
-> +
->  	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
->  	error = gen_pool_add_owner(p2pdma->pool, (unsigned long)addr,
->  			pci_bus_address(pdev, bar) + offset,
-> @@ -229,6 +324,7 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
->  	if (error)
->  		goto pages_free;
->  
-> +	p2pdma->active = true;
->  	pci_info(pdev, "added peer-to-peer DMA memory %#llx-%#llx\n",
->  		 pgmap->range.start, pgmap->range.end);
->  
-> @@ -1029,3 +1125,166 @@ ssize_t pci_p2pdma_enable_show(char *page, struct pci_dev *p2p_dev,
->  	return sprintf(page, "%s\n", pci_name(p2p_dev));
->  }
->  EXPORT_SYMBOL_GPL(pci_p2pdma_enable_show);
-> +
-> +static struct pci_p2pdma_map *pci_p2pdma_map_alloc(struct pci_dev *pdev,
-> +						   size_t len)
-> +{
-> +	struct pci_p2pdma_map *pmap;
-> +
-> +	pmap = kzalloc(sizeof(*pmap), GFP_KERNEL);
-> +	if (!pmap)
-> +		return NULL;
-> +
-> +	kref_init(&pmap->ref);
-> +	pmap->pdev = pci_dev_get(pdev);
-> +	pmap->len = len;
-> +
-> +	return pmap;
-> +}
-> +
-> +static void pci_p2pdma_map_free(struct kref *ref)
-> +{
-> +	struct pci_p2pdma_map *pmap =
-> +		container_of(ref, struct pci_p2pdma_map, ref);
-> +
-> +	pci_p2pdma_map_free_pages(pmap);
-> +	pci_dev_put(pmap->pdev);
-> +	iput(pmap->inode);
-> +	simple_release_fs(&pci_p2pdma_fs_mnt, &pci_p2pdma_fs_cnt);
-> +	kfree(pmap);
-> +}
-> +
-> +static void pci_p2pdma_vma_open(struct vm_area_struct *vma)
-> +{
-> +	struct pci_p2pdma_map *pmap = vma->vm_private_data;
-> +
-> +	kref_get(&pmap->ref);
-> +}
-> +
-> +static void pci_p2pdma_vma_close(struct vm_area_struct *vma)
-> +{
-> +	struct pci_p2pdma_map *pmap = vma->vm_private_data;
-> +
-> +	kref_put(&pmap->ref, pci_p2pdma_map_free);
-> +}
-> +
-> +static vm_fault_t pci_p2pdma_vma_fault(struct vm_fault *vmf)
-> +{
-> +	struct pci_p2pdma_map *pmap = vmf->vma->vm_private_data;
-> +	struct pci_p2pdma *p2pdma;
-> +	void *vaddr;
-> +	pfn_t pfn;
-> +	int i;
-> +
-> +	if (!pmap->kaddr) {
-> +		rcu_read_lock();
-> +		p2pdma = rcu_dereference(pmap->pdev->p2pdma);
-> +		if (!p2pdma)
-> +			goto err_out;
-> +
-> +		if (!p2pdma->active)
-> +			goto err_out;
-> +
-> +		pmap->kaddr = (void *)gen_pool_alloc(p2pdma->pool, pmap->len);
-> +		if (!pmap->kaddr)
-> +			goto err_out;
-> +
-> +		for (i = 0; i < pmap->len; i += PAGE_SIZE)
-> +			get_page(virt_to_page(pmap->kaddr + i));
-> +
-> +		rcu_read_unlock();
-> +	}
-> +
-> +	vaddr = pmap->kaddr + (vmf->pgoff << PAGE_SHIFT);
-> +	pfn = phys_to_pfn_t(virt_to_phys(vaddr), PFN_DEV | PFN_MAP);
-> +
-> +	return vmf_insert_mixed(vmf->vma, vmf->address, pfn);
-> +
-> +err_out:
-> +	rcu_read_unlock();
-> +	return VM_FAULT_SIGBUS;
-> +}
-> +static const struct vm_operations_struct pci_p2pdma_vmops = {
-> +	.open = pci_p2pdma_vma_open,
-> +	.close = pci_p2pdma_vma_close,
-> +	.fault = pci_p2pdma_vma_fault,
-> +};
-> +
-> +/**
-> + * pci_p2pdma_mmap_file_open - setup file mapping to store P2PMEM VMAs
-> + * @pdev: the device to allocate memory from
-> + * @vma: the userspace vma to map the memory to
-> + *
-> + * Set f_mapping of the file to the p2pdma inode so that mappings
-> + * are can be torn down on device unbind.
-> + *
-> + * Returns 0 on success, or a negative error code on failure
-> + */
-> +void pci_p2pdma_mmap_file_open(struct pci_dev *pdev, struct file *file)
-> +{
-> +	struct pci_p2pdma *p2pdma;
-> +
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (p2pdma)
-> +		file->f_mapping = p2pdma->inode->i_mapping;
-> +	rcu_read_unlock();
-> +}
-> +EXPORT_SYMBOL_GPL(pci_p2pdma_mmap_file_open);
-> +
-> +/**
-> + * pci_mmap_p2pmem - setup an mmap region to be backed with P2PDMA memory
-> + *	that was registered with pci_p2pdma_add_resource()
-> + * @pdev: the device to allocate memory from
-> + * @vma: the userspace vma to map the memory to
-> + *
-> + * The file must call pci_p2pdma_mmap_file_open() in its open() operation.
-> + *
-> + * Returns 0 on success, or a negative error code on failure
-> + */
-> +int pci_mmap_p2pmem(struct pci_dev *pdev, struct vm_area_struct *vma)
-> +{
-> +	struct pci_p2pdma_map *pmap;
-> +	struct pci_p2pdma *p2pdma;
-> +	int ret;
-> +
-> +	/* prevent private mappings from being established */
-> +	if ((vma->vm_flags & VM_MAYSHARE) != VM_MAYSHARE) {
-> +		pci_info_ratelimited(pdev,
-> +				     "%s: fail, attempted private mapping\n",
-> +				     current->comm);
-> +		return -EINVAL;
-> +	}
-> +
-> +	pmap = pci_p2pdma_map_alloc(pdev, vma->vm_end - vma->vm_start);
-> +	if (!pmap)
-> +		return -ENOMEM;
-> +
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (!p2pdma) {
-> +		ret = -ENODEV;
-> +		goto out;
-> +	}
-> +
-> +	ret = simple_pin_fs(&pci_p2pdma_fs_type, &pci_p2pdma_fs_mnt,
-> +			    &pci_p2pdma_fs_cnt);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ihold(p2pdma->inode);
-> +	pmap->inode = p2pdma->inode;
-> +	rcu_read_unlock();
-> +
-> +	vma->vm_flags |= VM_MIXEDMAP;
-> +	vma->vm_private_data = pmap;
-> +	vma->vm_ops = &pci_p2pdma_vmops;
-> +
-> +	return 0;
-> +
-> +out:
-> +	rcu_read_unlock();
-> +	kfree(pmap);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_mmap_p2pmem);
-> diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
-> index 0c33a40a86e7..f9f19f3db676 100644
-> --- a/include/linux/pci-p2pdma.h
-> +++ b/include/linux/pci-p2pdma.h
-> @@ -81,6 +81,8 @@ int pci_p2pdma_enable_store(const char *page, struct pci_dev **p2p_dev,
->  			    bool *use_p2pdma);
->  ssize_t pci_p2pdma_enable_show(char *page, struct pci_dev *p2p_dev,
->  			       bool use_p2pdma);
-> +void pci_p2pdma_mmap_file_open(struct pci_dev *pdev, struct file *file);
-> +int pci_mmap_p2pmem(struct pci_dev *pdev, struct vm_area_struct *vma);
->  #else /* CONFIG_PCI_P2PDMA */
->  static inline int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar,
->  		size_t size, u64 offset)
-> @@ -152,6 +154,15 @@ static inline ssize_t pci_p2pdma_enable_show(char *page,
->  {
->  	return sprintf(page, "none\n");
->  }
-> +static inline void pci_p2pdma_mmap_file_open(struct pci_dev *pdev,
-> +					     struct file *file)
-> +{
-> +}
-> +static inline int pci_mmap_p2pmem(struct pci_dev *pdev,
-> +				  struct vm_area_struct *vma)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  #endif /* CONFIG_PCI_P2PDMA */
->  
->  
-> diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-> index 35687dcb1a42..af737842c56f 100644
-> --- a/include/uapi/linux/magic.h
-> +++ b/include/uapi/linux/magic.h
-> @@ -88,6 +88,7 @@
->  #define BPF_FS_MAGIC		0xcafe4a11
->  #define AAFS_MAGIC		0x5a3c69f0
->  #define ZONEFS_MAGIC		0x5a4f4653
-> +#define P2PDMA_MAGIC		0x70327064
->  
->  /* Since UDF 2.01 is ISO 13346 based... */
->  #define UDF_SUPER_MAGIC		0x15013346
-> -- 
-> 2.30.2
-> 
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10149213300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14149213300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ee7d095f44a683a195f8@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	0-....: (10500 ticks this GP) idle=2bb/1/0x4000000000000000 softirq=9116/9116 fqs=5250 
+	(t=10502 jiffies g=12025 q=441)
+NMI backtrace for cpu 0
+CPU: 0 PID: 6525 Comm: syz-executor604 Not tainted 5.15.0-rc2-next-20210924-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:343
+ print_cpu_stall kernel/rcu/tree_stall.h:627 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:711 [inline]
+ rcu_pending kernel/rcu/tree.c:3878 [inline]
+ rcu_sched_clock_irq.cold+0x9d/0x746 kernel/rcu/tree.c:2597
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1785
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1428
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__sanitizer_cov_trace_pc+0x37/0x60 kernel/kcov.c:197
+Code: 81 e1 00 01 00 00 65 48 8b 14 25 40 70 02 00 a9 00 01 ff 00 74 0e 85 c9 74 35 8b 82 ac 15 00 00 85 c0 74 2b 8b 82 88 15 00 00 <83> f8 02 75 20 48 8b 8a 90 15 00 00 8b 92 8c 15 00 00 48 8b 01 48
+RSP: 0018:ffffc9000110f9a0 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888079718000 RSI: ffffffff828c91c6 RDI: 0000000000000003
+RBP: ffffc90002081000 R08: 0000000000000000 R09: 0000000000000068
+R10: ffffffff828c8e16 R11: 000000000000003f R12: ffff88806c93e600
+R13: ffff888013f8b000 R14: dffffc0000000000 R15: ffff88806c93e650
+ ntfs_lookup_inode_by_name+0x1d26/0x34b0 fs/ntfs/dir.c:379
+ check_windows_hibernation_status+0xd9/0x740 fs/ntfs/super.c:1274
+ load_system_files fs/ntfs/super.c:1989 [inline]
+ ntfs_fill_super+0x62f4/0x84e0 fs/ntfs/super.c:2893
+ mount_bdev+0x34d/0x410 fs/super.c:1368
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:610
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1498
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f967e8db4fa
+Code: 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 a8 00 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd213ac388 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffd213ac3e0 RCX: 00007f967e8db4fa
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffd213ac3a0
+RBP: 00007ffd213ac3a0 R08: 00007ffd213ac3e0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000286 R12: 0000000020001c28
+R13: 0000000000000003 R14: 0000000000000004 R15: 0000000000000117
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	81 e1 00 01 00 00    	and    $0x100,%ecx
+   6:	65 48 8b 14 25 40 70 	mov    %gs:0x27040,%rdx
+   d:	02 00
+   f:	a9 00 01 ff 00       	test   $0xff0100,%eax
+  14:	74 0e                	je     0x24
+  16:	85 c9                	test   %ecx,%ecx
+  18:	74 35                	je     0x4f
+  1a:	8b 82 ac 15 00 00    	mov    0x15ac(%rdx),%eax
+  20:	85 c0                	test   %eax,%eax
+  22:	74 2b                	je     0x4f
+  24:	8b 82 88 15 00 00    	mov    0x1588(%rdx),%eax
+* 2a:	83 f8 02             	cmp    $0x2,%eax <-- trapping instruction
+  2d:	75 20                	jne    0x4f
+  2f:	48 8b 8a 90 15 00 00 	mov    0x1590(%rdx),%rcx
+  36:	8b 92 8c 15 00 00    	mov    0x158c(%rdx),%edx
+  3c:	48 8b 01             	mov    (%rcx),%rax
+  3f:	48                   	rex.W
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
