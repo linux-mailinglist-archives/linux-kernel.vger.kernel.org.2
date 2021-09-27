@@ -2,87 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BBC41901A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7D4419024
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhI0Hl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:41:28 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:59063 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbhI0Hl0 (ORCPT
+        id S233306AbhI0HoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:44:24 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9240 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233223AbhI0HoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:41:26 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M2fHt-1mYLD237XD-004G11; Mon, 27 Sep 2021 09:39:47 +0200
-Received: by mail-wr1-f41.google.com with SMTP id x20so4935312wrg.10;
-        Mon, 27 Sep 2021 00:39:47 -0700 (PDT)
-X-Gm-Message-State: AOAM530ZPw2Gm3uTeKMOr6lYU4sUvf/qK641Wgntlgw2jd4iumBuqL2v
-        axFgJFhlPRK8b25DJslT5/w1RaP5oKLUaL1/y+g=
-X-Google-Smtp-Source: ABdhPJytwg2Jscle8D6U7FjXeASR49u7ckmZRsHWvpWZ7dVMwzcRYybH1hTRxtWvWXS2xPhWFtHNHK/cOuV06y8U5RI=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr26255175wro.411.1632728387404;
- Mon, 27 Sep 2021 00:39:47 -0700 (PDT)
+        Mon, 27 Sep 2021 03:44:22 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18R6N7M9005443;
+        Mon, 27 Sep 2021 03:42:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YFLMT0ds8B51YoPeiTDVIVA6vGyULsGli9Aks3m+P7c=;
+ b=B/MtyVfQ4WIDN/zzCURgLgVrDgYib3Zxuyo3GM51rYg4xea0OrbdqC20W/C3T5yhHdik
+ ceZWphfcImGMdWodNAemYg+uqjW8VgPX6QxGAbi/iTQ7Il8dsgqFkU4B/sB2GHtu9+mC
+ gmVd/NTskUxt4s+CmKOUTJCsHu10xqbY/vWFhiowMFaQhPHgbA6GPEtk1bXdHi8vI1A5
+ 5pNqHgCcI9D/ZiJbVJ542nwsbSC6segvfrJ7cTu9I/fzcRLlU4LzkBBMQeQE2RWoOeId
+ S11eDvHJw66OsiUrDvQ2nFzerS3aKjYxhdHPxcdWl8bSJYmyMurXnWfD2ihm9LznFnVL AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagx4n4mp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 03:42:08 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18R7LfeI006890;
+        Mon, 27 Sep 2021 03:42:07 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagx4n4kw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 03:42:07 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18R7bGK0031905;
+        Mon, 27 Sep 2021 07:42:05 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3b9ud9h2gs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 07:42:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18R7g13h45547826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Sep 2021 07:42:01 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 065D85204E;
+        Mon, 27 Sep 2021 07:42:01 +0000 (GMT)
+Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.4.236])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AAB4D5204F;
+        Mon, 27 Sep 2021 07:41:59 +0000 (GMT)
+Subject: Re: [PATCH 10/14] KVM: Split out a kvm_vcpu_block() helper from
+ kvm_vcpu_halt()
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-11-seanjc@google.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <16f057a7-5603-d4b1-266c-f9564b564f32@de.ibm.com>
+Date:   Mon, 27 Sep 2021 09:41:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210926095847.38261-1-sven@svenpeter.dev> <20210926095847.38261-3-sven@svenpeter.dev>
-In-Reply-To: <20210926095847.38261-3-sven@svenpeter.dev>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Sep 2021 09:39:31 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2_6rcQa8TCgw=6uH26UfjShrVVu-zfLf2=pi6Z8cGOPg@mail.gmail.com>
-Message-ID: <CAK8P3a2_6rcQa8TCgw=6uH26UfjShrVVu-zfLf2=pi6Z8cGOPg@mail.gmail.com>
-Subject: Re: [PATCH 02/10] i2c: pasemi: Use io{read,write}32
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:T7p1J/1gB9Ic7E3sfD9ruZZkCnSPI8KkU/E35WvgjvauMw5SpLu
- 2IdmKc4b860GWnsILXMwg0WFK4Q1lAPsz11y8StDLKe0yh7rJvEgzgVnJV3G37Zpjmam9Xf
- Jn7B71Sww5mFMaT9dxwQQvaiRipK56FNDqZ8n5StSZo7oWTJVd8upIRRmVn/93C5rCsoYVI
- 3IkmNmGyChs2jZHT9sbrQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Pjdh4uzTX5g=:bevCXAHoUI70a0BpBWqf5/
- MUEqJ1Cmg43/F5977LofeJffSnkOBpTgFwP14pgfzEV+JObgpBf4Zksu7Nz4vE2jUSMArfRqT
- WocMtLH8Dy5A3gMnZ1O+6KWK9q9CASajHitjmCEqzBobWBlpRtUb3WGSYnQXdAWgU2ZhEamWv
- KwBctQd4KZ7IjSCCN6mr3lnboPwUyOfa12lnPmiGqHOt5M/FyLfY0QQF7ObnMV6qpKexZIio8
- rwiGKFFoMBYeAMWUNCM2zd6gYIvb7KYNstDGE56wpx6Bxy0CIwzR+I9vfUtFtNll8D210Gyf3
- u+4mvuzo+f9GhTptAljR4SG6GcGEgsS6WrU5EPdSp6Q4bjPhVpQyvDsyxfDAwdWCi7iYnt/9f
- MPyZ8u4csslxQhqwQdF/QLW7l6hVHID+66OkVx+90wmLVJE2zZkP391mcC9ZISHIdEQqnjwVO
- J3EK3EhrbHqX8X8eVyTiyyn+ozQ7JnvBswg/6127Jv9JJAJjchGq16BFZkMZg2U1HzP+5JL8k
- f7aWOax8jN8LaHxOcypIihHpwPJYobam50XnHEwACMiKd+JX9w4Eu2SaxUxWI9tZly9JdNfYA
- xvjIhrxve0dpMtnaTzyPENL7Sxdhpix4f2mYRknWas2A+w87HevxeJrEsWaw6CJDU/dKnINvk
- pOqc+5ue2BThRIcY5zrUTBupKeBPJ45ay7HQqZUkVOKcNFAd1UAwqxpyulM73Dwfu1uFGyFUq
- xys8THosaHvFYlUSVd6j9c/nkKlJVwecWY9aC/wI6V94P2nifp3swq83/pca3q3TtVpWg3kXr
- /lpbONZAhWBZBzzR5Uiqj/5DxYePYYNAfzsj8qxCxeRR0LV9z+rxx/3lml8Q9+yy42yoQmYx0
- ZVoV1E3igiknSkq9XhDw==
+In-Reply-To: <20210925005528.1145584-11-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fnFVhWWVIL3Czmll3D06Tgte64FqxA88
+X-Proofpoint-ORIG-GUID: VjiGuiDIF0Z96qvd11e4c35K5QcdL-IE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-27_02,2021-09-24_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 clxscore=1015 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109270051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 12:00 PM Sven Peter <sven@svenpeter.dev> wrote:
->
-> In preparation for splitting this driver up into a platform_driver
-> and a pci_driver, replace outl/inl usage with ioport_map and
-> ioread32/iowrite32.
->
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
->
-> +       smbus->ioaddr = ioport_map(smbus->base, smbus->size);
-> +       if (!smbus->ioaddr) {
-> +               error = -EBUSY;
-> +               goto out_release_region;
-> +       }
 
-While this works, I would suggest using the more regular pci_iomap()
-or pcim_iomap() helper to turn the port number into an __iomem token.
 
-        Arnd
+Am 25.09.21 um 02:55 schrieb Sean Christopherson:
+> Factor out the "block" part of kvm_vcpu_halt() so that x86 can emulate
+> non-halt wait/sleep/block conditions that should not be subjected to
+> halt-polling.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+
+> ---
+>   include/linux/kvm_host.h |  1 +
+>   virt/kvm/kvm_main.c      | 50 ++++++++++++++++++++++++++++------------
+>   2 files changed, 36 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index d2a8be3fb9ba..655c2b24db2d 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -966,6 +966,7 @@ void kvm_sigset_activate(struct kvm_vcpu *vcpu);
+>   void kvm_sigset_deactivate(struct kvm_vcpu *vcpu);
+>   
+>   void kvm_vcpu_halt(struct kvm_vcpu *vcpu);
+> +bool kvm_vcpu_block(struct kvm_vcpu *vcpu);
+>   void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu);
+>   void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu);
+>   bool kvm_vcpu_wake_up(struct kvm_vcpu *vcpu);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 280cf1dca7db..fe34457530c2 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3199,6 +3199,34 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
+>   	return ret;
+>   }
+>   
+> +/*
+> + * Block the vCPU until the vCPU is runnable, an event arrives, or a signal is
+> + * pending.  This is mostly used when halting a vCPU, but may also be used
+> + * directly for other vCPU non-runnable states, e.g. x86's Wait-For-SIPI.
+> + */
+> +bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> +{
+> +	bool waited = false;
+> +
+> +	kvm_arch_vcpu_blocking(vcpu);
+> +
+> +	prepare_to_rcuwait(&vcpu->wait);
+> +	for (;;) {
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +
+> +		if (kvm_vcpu_check_block(vcpu) < 0)
+> +			break;
+> +
+> +		waited = true;
+> +		schedule();
+> +	}
+> +	finish_rcuwait(&vcpu->wait);
+> +
+> +	kvm_arch_vcpu_unblocking(vcpu);
+> +
+> +	return waited;
+> +}
+> +
+>   static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+>   					  ktime_t end, bool success)
+>   {
+> @@ -3221,6 +3249,12 @@ static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+>   	}
+>   }
+>   
+> +/*
+> + * Emulate a vCPU halt condition, e.g. HLT on x86, WFI on arm, etc...  If halt
+> + * polling is enabled, busy wait for a short time before blocking to avoid the
+> + * expensive block+unblock sequence if a wake event arrives soon after the vCPU
+> + * is halted.
+> + */
+>   void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+>   {
+>   	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
+> @@ -3245,21 +3279,7 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+>   		} while (kvm_vcpu_can_poll(cur, stop));
+>   	}
+>   
+> -	kvm_arch_vcpu_blocking(vcpu);
+> -
+> -	prepare_to_rcuwait(&vcpu->wait);
+> -	for (;;) {
+> -		set_current_state(TASK_INTERRUPTIBLE);
+> -
+> -		if (kvm_vcpu_check_block(vcpu) < 0)
+> -			break;
+> -
+> -		waited = true;
+> -		schedule();
+> -	}
+> -	finish_rcuwait(&vcpu->wait);
+> -
+> -	kvm_arch_vcpu_unblocking(vcpu);
+> +	waited = kvm_vcpu_block(vcpu);
+>   
+>   	cur = ktime_get();
+>   	if (waited) {
+> 
