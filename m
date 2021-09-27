@@ -2,153 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF7041A11F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC35B41A12E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237333AbhI0VGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:06:18 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:42970 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237235AbhI0VGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:06:15 -0400
-Received: from user91-192-32-221.grape.cz ([91.192.32.221] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mUxnb-00057F-JB; Mon, 27 Sep 2021 23:04:31 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     bgolaszewski@baylibre.com, robh+dt@kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: Re: [PATCH v8 9/9] pinctrl/rockchip: drop the gpio related codes
-Date:   Mon, 27 Sep 2021 23:04:26 +0200
-Message-ID: <46772783.fMDQidcC6G@phil>
-In-Reply-To: <f13ff971-8af2-be9b-fa5d-7913c0ff1351@collabora.com>
-References: <20210816011948.1118959-1-jay.xu@rock-chips.com> <20210816012146.1119289-1-jay.xu@rock-chips.com> <f13ff971-8af2-be9b-fa5d-7913c0ff1351@collabora.com>
+        id S237168AbhI0VLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237080AbhI0VLO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 17:11:14 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443EEC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:36 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso80168oot.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=Dq29TxJ5zpM4XHFteYmjRFf+8vB0LPfL9SydtuPUex4=;
+        b=QXoqixS9dSwgotQCR4tPOH2boVVWjkQ9G/7fRvVPwOODbCs72HTY16UDes5QZRApcH
+         KpzoIV+7PFON62nO10VhOP3msaqlF2KOpIyzg8TyhBSU5ysGfhzrSAtrTmwwNlYPKVP7
+         SXcSfXUWpQz0lHdH1A4JuyE2FlzoL4tlEyHcA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=Dq29TxJ5zpM4XHFteYmjRFf+8vB0LPfL9SydtuPUex4=;
+        b=fKzh3LFulLGc41+yKxK5fFfNaFUQ7MN0FACe2WOt8qyRL3ulssa8n1Gx73wTu+25xD
+         pEylubwrM4lS6+a3pIq38pChHvmULVVzj2YN3QuK4Aen7v8kJAJHwVB5Dw+qNZjANl4P
+         mpZqCZ9EOIFXngXxuqqK64B3+YX7DwrTe3JaaS+uiu0DN+niALVgoLy0GtJmHZeX4Ndd
+         Yj0twbO+veUHx4JT0lPQm3T0iZxcmicU7jyl13orceJ06az6HPeIsueb8u8X9NNHJtLS
+         /TNW57mC5pBIbA8k+JOjnctAywmb2idVf3rYG+FvhsR/fpfq5YcMh4gKdNYt2rcSN9en
+         ciKw==
+X-Gm-Message-State: AOAM532GlGQ8WjdDqEcGg5FYGkUoWvxGY/IhEiBqJi4ZoUMkYh7io3to
+        cx6EhS1PZZaG/OeTHnOMEBYpfJu8+BxyUk4k1mhl+Q==
+X-Google-Smtp-Source: ABdhPJwsE/D0A4gu7LK9Uo5aq776hYHg6zVFtNMjoHs4nXxtn9C+5PEy6DETLnx3RKhAzWNHPiAUZenoQ4MczmEq2U8=
+X-Received: by 2002:a4a:c3c2:: with SMTP id e2mr1747622ooq.8.1632776975637;
+ Mon, 27 Sep 2021 14:09:35 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 27 Sep 2021 14:09:35 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210927113632.3849987-1-arnd@kernel.org>
+References: <20210927113632.3849987-1-arnd@kernel.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 27 Sep 2021 14:09:35 -0700
+Message-ID: <CAE-0n52=yYW6SuMUPwGiv374K7D6DDpOZdJUudHdhMa7x2p1CA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/submit: fix overflow check on 64-bit architectures
+To:     Arnd Bergmann <arnd@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guillaume,
+Quoting Arnd Bergmann (2021-09-27 04:36:23)
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The overflow check does causes a warning from clang-14 when 'sz' is a type
+> that is smaller than size_t:
+>
+> drivers/gpu/drm/msm/msm_gem_submit.c:217:10: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>                 if (sz == SIZE_MAX) {
+>
+> Change the type accordingly.
+>
+> Fixes: 20224d715a88 ("drm/msm/submit: Move copy_from_user ahead of locking bos")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-Am Montag, 27. September 2021, 12:18:04 CEST schrieb Guillaume Tucker:
-> On 16/08/2021 02:21, Jianqun Xu wrote:
-> > With the patch to separate the gpio driver from the pinctrl driver, now
-> > the pinctrl-rockchip can drop the gpio related codes now.
-> > 
-> > Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> > ---
-> > v8:
-> >  - none
-> > v7:
-> >  - none, from v1
-> > 
-> >  drivers/pinctrl/pinctrl-rockchip.c | 645 +----------------------------
-> >  1 file changed, 17 insertions(+), 628 deletions(-)
-> 
-> [...]
-> 
-> Please see the bisection report below about a boot failure on
-> rk3288-veyron-jaq which is pointing to this patch.  The issue
-> appears to be present on mainline but not on linux-next as of
-> next-20210924.
-> 
-> Reports aren't automatically sent to the public while we're
-> trialing new bisection features on kernelci.org but this one
-> looks valid.
-> 
-> Some more details can be found here:
-> 
->   https://linux.kernelci.org/test/case/id/614f19a33f5497c2bc99a2df/
-> 
-> Please let us know if you need help debugging the issue or if you
-> have a fix to try.
-
-This is probably the issue I had on veyron-pinky as well, pinctrl-hogs
-grabbing things with output-enable configs before the gpio driver are
-probed. I've already submitted a fix series for this and all patches
-have at least reached maintainer trees.
-
-See https://lore.kernel.org/all/20210913224926.1260726-1-heiko@sntech.de/
-for reference.
-
-So in theory that issue should go away with hopefully the next -rc kernek.
-
-
-Heiko
-
-
-> 
-> Best wishes,
-> Guillaume
-> 
-> 
-> GitHub: https://github.com/kernelci/kernelci-project/issues/58
-> 
-> -------------------------------------------------------------------------------
-> 
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> * This automated bisection report was sent to you on the basis  *
-> * that you may be involved with the breaking commit it has      *
-> * found.  No manual investigation has been done to verify it,   *
-> * and the root cause of the problem may be somewhere else.      *
-> *                                                               *
-> * If you do send a fix, please include this trailer:            *
-> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-> *                                                               *
-> * Hope this helps!                                              *
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> 
-> mainline/master bisection: baseline.login on rk3288-veyron-jaq
-> 
-> Summary:
->   Start:      7d42e9818258 Merge tag 'gpio-fixes-for-v5.15-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux
->   Plain log:  https://storage.kernelci.org/mainline/master/v5.15-rc2-159-g7d42e9818258/arm/multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y/gcc-8/lab-collabora/baseline-rk3288-veyron-jaq.txt
->   HTML log:   https://storage.kernelci.org/mainline/master/v5.15-rc2-159-g7d42e9818258/arm/multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y/gcc-8/lab-collabora/baseline-rk3288-veyron-jaq.html
->   Result:     9ce9a02039de pinctrl/rockchip: drop the gpio related codes
-> 
-> Checks:
->   revert:     PASS
->   verify:     PASS
-> 
-> Parameters:
->   Tree:       mainline
->   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->   Branch:     master
->   Target:     rk3288-veyron-jaq
->   CPU arch:   arm
->   Lab:        lab-collabora
->   Compiler:   gcc-8
->   Config:     multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y
->   Test case:  baseline.login
-> 
-> Breaking commit found:
-> 
-> -------------------------------------------------------------------------------
-> commit 9ce9a02039de72ec8af1bd4bff14f1780337ffcc
-> Author: Jianqun Xu <jay.xu@rock-chips.com>
-> Date:   Mon Aug 16 09:21:46 2021 +0800
-> 
->     pinctrl/rockchip: drop the gpio related codes
->     
->     With the patch to separate the gpio driver from the pinctrl driver, now
->     the pinctrl-rockchip can drop the gpio related codes now.
->     
->     Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
->     Link: https://lore.kernel.org/r/20210816012146.1119289-1-jay.xu@rock-chips.com
->     Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-
-
-
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
