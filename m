@@ -2,116 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11876419300
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9804192FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhI0LV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:21:57 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3880 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234033AbhI0LVz (ORCPT
+        id S234047AbhI0LVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:21:53 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51904 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234033AbhI0LVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:21:55 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HJ0VH71Dnz67nPm;
-        Mon, 27 Sep 2021 19:17:43 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 13:20:15 +0200
-Received: from localhost (10.52.124.219) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Mon, 27 Sep
- 2021 12:20:14 +0100
-Date:   Mon, 27 Sep 2021 12:20:00 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <kernel@pengutronix.de>, <a.fatoum@pengutronix.de>,
-        <kamel.bouhara@bootlin.com>, <gwendal@chromium.org>,
-        <alexandre.belloni@bootlin.com>, <david@lechnology.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <syednwaris@gmail.com>,
-        <patrick.havelange@essensium.com>, <fabrice.gasnier@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <o.rempel@pengutronix.de>, <jarkko.nikula@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v16 07/14] counter: Add character device interface
-Message-ID: <20210927122000.00007d65@Huawei.com>
-In-Reply-To: <YVGbHQnpBTQYm/7/@shinobu>
-References: <cover.1630031207.git.vilhelm.gray@gmail.com>
-        <422c765c91d060cdebc4f17f7aeb255d9c1a4e16.1630031207.git.vilhelm.gray@gmail.com>
-        <20210912171821.54af145b@jic23-huawei>
-        <YUhdyRdzuBtUxOzT@shinobu>
-        <20210926161542.5cf99b58@jic23-huawei>
-        <YVGbHQnpBTQYm/7/@shinobu>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Mon, 27 Sep 2021 07:21:51 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id C678E1F42393
+Subject: Re: [PATCH v5 05/10] media: uapi: Add VP9 stateless decoder controls
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Daniel Almeida <daniel.almeida@collabora.com>
+References: <20210922101146.13762-1-andrzej.p@collabora.com>
+ <20210922101146.13762-6-andrzej.p@collabora.com> <YU37e90gldL7zHke@fedora>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <e7f228bc-d8d5-5857-a892-df1deee4be3e@collabora.com>
+Date:   Mon, 27 Sep 2021 13:20:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.219]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YU37e90gldL7zHke@fedora>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 19:21:17 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Hi Ezequiel,
 
-> On Sun, Sep 26, 2021 at 04:15:42PM +0100, Jonathan Cameron wrote:
-> > On Mon, 20 Sep 2021 19:09:13 +0900
-> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> >   
-> > > On Sun, Sep 12, 2021 at 05:18:42PM +0100, Jonathan Cameron wrote:  
-> > > > On Fri, 27 Aug 2021 12:47:51 +0900
-> > > > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> > > >     
-> > > > > This patch introduces a character device interface for the Counter
-> > > > > subsystem. Device data is exposed through standard character device read
-> > > > > operations. Device data is gathered when a Counter event is pushed by
-> > > > > the respective Counter device driver. Configuration is handled via ioctl
-> > > > > operations on the respective Counter character device node.
-> > > > > 
-> > > > > Cc: David Lechner <david@lechnology.com>
-> > > > > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > > > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > > > > Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>    
-> > > > 
-> > > > Hi William,
-> > > > 
-> > > > Why the bit based lock?  It feels like a mutex_trylock() type approach or
-> > > > spinlock_trylock() would be a more common solution to this problem.
-> > > > There is precedence for doing what you have here though so I'm not that
-> > > > worried about it.    
-> > > 
-> > > Hi Jonathan,
-> > > 
-> > > We originally used a mutex for this, but Jarkko discovered that this
-> > > produced a warning because chrdev_lock would be held when returning to
-> > > user space:
-> > > https://lore.kernel.org/linux-arm-kernel/YOq19zTsOzKA8v7c@shinobu/T/#m6072133d418d598a5f368bb942c945e46cfab9a5
-> > > 
-> > > Following David Lechner's suggestion, I decided to reimplement
-> > > chrdev_lock as a bitmap using an atomic flag.  
-> > 
-> > Ok.  I'm not sure bit lock was quite what was intended (as there is only one of them)
-> > but I suppose it doesn't greatly matter.  
+Thank you for looking into the patch.
+
+W dniu 24.09.2021 o 18:23, Ezequiel Garcia pisze:
+> Hi Andrzej,
 > 
-> It didn't cross my mind before, but would declaring chrdev_lock as an
-> atomic_t be a more appropriate solution here because we have only one
-> flag?
+> On Wed, Sep 22, 2021 at 12:11:41PM +0200, Andrzej Pietrasiewicz wrote:
+>> Add the VP9 stateless decoder controls plus the documentation that goes
+>> with it.
+>>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+>> Co-developed-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+>> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+>> Co-developed-by: Daniel Almeida <daniel.almeida@collabora.com>
+>> Signed-off-by: Daniel Almeida <daniel.almeida@collabora.com>
+>> ---
+> [snip]
+>> +
+>> +#define V4L2_VP9_FRAME_FLAG_KEY_FRAME			0x001
+>> +#define V4L2_VP9_FRAME_FLAG_SHOW_FRAME			0x002
+>> +#define V4L2_VP9_FRAME_FLAG_ERROR_RESILIENT		0x004
+>> +#define V4L2_VP9_FRAME_FLAG_INTRA_ONLY			0x008
+>> +#define V4L2_VP9_FRAME_FLAG_ALLOW_HIGH_PREC_MV		0x010
+>> +#define V4L2_VP9_FRAME_FLAG_REFRESH_FRAME_CTX		0x020
+>> +#define V4L2_VP9_FRAME_FLAG_PARALLEL_DEC_MODE		0x040
+>> +#define V4L2_VP9_FRAME_FLAG_X_SUBSAMPLING		0x080
+>> +#define V4L2_VP9_FRAME_FLAG_Y_SUBSAMPLING		0x100
+>> +#define V4L2_VP9_FRAME_FLAG_COLOR_RANGE_FULL_SWING	0x200
+>> +
+>> +#define V4L2_VP9_SIGN_BIAS_LAST				0x1
+>> +#define V4L2_VP9_SIGN_BIAS_GOLDEN			0x2
+>> +#define V4L2_VP9_SIGN_BIAS_ALT				0x4
+>> +
+>> +#define V4L2_VP9_RESET_FRAME_CTX_NONE			0
+>> +#define V4L2_VP9_RESET_FRAME_CTX_SPEC			1
+>> +#define V4L2_VP9_RESET_FRAME_CTX_ALL			2
+>> +
+>> +#define V4L2_VP9_INTERP_FILTER_EIGHTTAP			0
+>> +#define V4L2_VP9_INTERP_FILTER_EIGHTTAP_SMOOTH		1
+>> +#define V4L2_VP9_INTERP_FILTER_EIGHTTAP_SHARP		2
+>> +#define V4L2_VP9_INTERP_FILTER_BILINEAR			3
+>> +#define V4L2_VP9_INTERP_FILTER_SWITCHABLE		4
+>> +
+>> +#define V4L2_VP9_REFERENCE_MODE_SINGLE_REFERENCE	0
+>> +#define V4L2_VP9_REFERENCE_MODE_COMPOUND_REFERENCE	1
+>> +#define V4L2_VP9_REFERENCE_MODE_SELECT			2
+>> +
+>> +#define V4L2_VP9_PROFILE_MAX				3
+>> +
+>> +#define V4L2_CID_STATELESS_VP9_FRAME	(V4L2_CID_CODEC_STATELESS_BASE + 300)
+>> +/**
+>> + * struct v4l2_ctrl_vp9_frame - VP9 frame decoding control
+>> + *
+>> + * @lf: loop filter parameters. See &v4l2_vp9_loop_filter for more details
 > 
-> William Breathitt Gray
+> Seems these documentation is missing an ending period for many fields.
+
+Thanks for catching punctuation mistakes :)
+
+> 
+>> + * @quant: quantization parameters. See &v4l2_vp9_quantization for more details
+>> + * @seg: segmentation parameters. See &v4l2_vp9_segmentation for more details
+>> + * @flags: combination of V4L2_VP9_FRAME_FLAG_* flags
+>> + * @compressed_header_size: compressed header size in bytes
+>> + * @uncompressed_header_size: uncompressed header size in bytes
+>> + * @frame_width_minus_1: add 1 to it and you'll get the frame width expressed in pixels
+>> + * @frame_height_minus_1: add 1 to it and you'll get the frame height expressed in pixels
+>> + * @render_width_minus_1: add 1 to it and you'll get the expected render width expressed in
+>> + *	pixels. This is not used during the decoding process but might be used by HW scalers
+>> + *	to prepare a frame that's ready for scanout
+>> + * @render_height_minus_1: add 1 to it and you'll get the expected render height expressed in
+>> + *	pixels. This is not used during the decoding process but might be used by HW scalers
+>> + *	to prepare a frame that's ready for scanout
+>> + * @last_frame_ts: "last" reference buffer timestamp.
+>> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
+>> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
+>> + * @golden_frame_ts: "golden" reference buffer timestamp.
+>> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
+>> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
+>> + * @alt_frame_ts: "alt" reference buffer timestamp.
+>> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
+>> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
+>> + * @ref_frame_sign_bias: a bitfield specifying whether the sign bias is set for a given
+>> + *	reference frame. Either of V4L2_VP9_SIGN_BIAS_*.
+>> + * @reset_frame_context: specifies whether the frame context should be reset to default values.
+>> + *	Either of V4L2_VP9_RESET_FRAME_CTX_*.
+>> + * @frame_context_idx: frame context that should be used/updated
+>> + * @profile: VP9 profile. Can be 0, 1, 2 or 3
+>> + * @bit_depth: bits per components. Can be 8, 10 or 12. Note that not all profiles support
+>> + *	10 and/or 12 bits depths
+>> + * @interpolation_filter: specifies the filter selection used for performing inter prediction.
+>> + *	Either of V4L2_VP9_INTERP_FILTER_*
+>> + * @tile_cols_log2: specifies the base 2 logarithm of the width of each tile (where the width
+>> + *	is measured in units of 8x8 blocks). Shall be less than or equal to 6
+>> + * @tile_rows_log2: specifies the base 2 logarithm of the height of each tile (where the height
+>> + *	is measured in units of 8x8 blocks)
+>> + * @reference_mode: specifies the type of inter prediction to be used. See
+> 
+> See what? :-)
+> 
+>> + *	Either of V4L2_VP9_REFERENCE_MODE_*
+> 
+> Other controls use V4L2_VP9_REFERENCE_MODE_{}, {} instead of *.
+> The same applies to all the documentation.
+
+Will update in v6.
+
+> 
+>> + * @reserved: padding field. Should be zeroed by applications.
+>> + */
+>> +struct v4l2_ctrl_vp9_frame {
+>> +	struct v4l2_vp9_loop_filter lf;
+>> +	struct v4l2_vp9_quantization quant;
+>> +	struct v4l2_vp9_segmentation seg;
+>> +	__u32 flags;
+>> +	__u16 compressed_header_size;
+>> +	__u16 uncompressed_header_size;
+>> +	__u16 frame_width_minus_1;
+>> +	__u16 frame_height_minus_1;
+>> +	__u16 render_width_minus_1;
+>> +	__u16 render_height_minus_1;
+>> +	__u64 last_frame_ts;
+>> +	__u64 golden_frame_ts;
+>> +	__u64 alt_frame_ts;
+>> +	__u8 ref_frame_sign_bias;
+>> +	__u8 reset_frame_context;
+>> +	__u8 frame_context_idx;
+>> +	__u8 profile;
+>> +	__u8 bit_depth;
+>> +	__u8 interpolation_filter;
+>> +	__u8 tile_cols_log2;
+>> +	__u8 tile_rows_log2;
+>> +	__u8 reference_mode;
+>> +	__u8 reserved[7];
+>> +};
+>> +
+> 
+> Also, have you checked html and pdf docs and make sure
+> it looks as you expect?
 > 
 
-It would be less esoteric.  This was the first time I've ever come across the bitlock stuff
-whereas atomics are an every day thing.
+Yes I did and it looks as I expected.
 
-Thanks,
+> Thanks,
+> Ezequiel
+> 
 
-Jonathan
