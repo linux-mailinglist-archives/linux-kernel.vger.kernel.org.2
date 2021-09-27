@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1DB419B7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93027419CCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhI0RTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
+        id S236263AbhI0RcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236670AbhI0RPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:15:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 140FC6136F;
-        Mon, 27 Sep 2021 17:10:45 +0000 (UTC)
+        id S238220AbhI0R2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:28:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A448861501;
+        Mon, 27 Sep 2021 17:17:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762646;
-        bh=04kIWPn05Hq1DT9FgELgq24nOOVbuN6zG7jDb7g0c10=;
+        s=korg; t=1632763055;
+        bh=oEZUQg/xVn0SgdN7rNqBHSguMu2bwqsXX/umi3xsmsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sEj6UZKfqnXmSratjaTl+PK0/brdGV1omQqJbLflWb1UAmZLmmhtDXtTwJuYfituv
-         Gi8Pw8yi5+iBXjS9fQwVi7bTSAvdshOeTyGW1SdXjwtMF7dllcosHaip97ZjbKdHCT
-         BpZAoVwMEh2jGebtSpj6G8R7hnDKFPxEFjiJGgD8=
+        b=tEwokB2EWJo4BoL6Bh1BrzgOJ2T5wNdPIz+bO8RfLLrwrzeOfFWflySIP1prfF/xB
+         jYeCmstm8LNerf616BB5bbRsPzP0fF4haYB1AOxQsHJvtdxzLPwIk6doWL/LxdpSuT
+         9FkyoHXcphIYlvpSYGQ/KRwn496vd1bU1M89LCpA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 5.10 103/103] qnx4: work around gcc false positive warning bug
-Date:   Mon, 27 Sep 2021 19:03:15 +0200
-Message-Id: <20210927170229.335388953@linuxfoundation.org>
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.14 150/162] EDAC/synopsys: Fix wrong value type assignment for edac_mode
+Date:   Mon, 27 Sep 2021 19:03:16 +0200
+Message-Id: <20210927170238.622224817@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,120 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
 
-commit d5f6545934c47e97c0b48a645418e877b452a992 upstream.
+commit 5297cfa6bdf93e3889f78f9b482e2a595a376083 upstream.
 
-In commit b7213ffa0e58 ("qnx4: avoid stringop-overread errors") I tried
-to teach gcc about how the directory entry structure can be two
-different things depending on a status flag.  It made the code clearer,
-and it seemed to make gcc happy.
+dimm->edac_mode contains values of type enum edac_type - not the
+corresponding capability flags. Fix that.
 
-However, Arnd points to a gcc bug, where despite using two different
-members of a union, gcc then gets confused, and uses the size of one of
-the members to decide if a string overrun happens.  And not necessarily
-the rigth one.
+Issue caught by Coverity check "enumerated type mixed with another
+type."
 
-End result: with some configurations, gcc-11 will still complain about
-the source buffer size being overread:
+ [ bp: Rewrite commit message, add tags. ]
 
-  fs/qnx4/dir.c: In function 'qnx4_readdir':
-  fs/qnx4/dir.c:76:32: error: 'strnlen' specified bound [16, 48] exceeds source size 1 [-Werror=stringop-overread]
-     76 |                         size = strnlen(name, size);
-        |                                ^~~~~~~~~~~~~~~~~~~
-  fs/qnx4/dir.c:26:22: note: source object declared here
-     26 |                 char de_name;
-        |                      ^~~~~~~
-
-because gcc will get confused about which union member entry is actually
-getting accessed, even when the source code is very clear about it.  Gcc
-internally will have combined two "redundant" pointers (pointing to
-different union elements that are at the same offset), and takes the
-size checking from one or the other - not necessarily the right one.
-
-This is clearly a gcc bug, but we can work around it fairly easily.  The
-biggest thing here is the big honking comment about why we do what we
-do.
-
-Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
-Reported-and-tested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: ae9b56e3996d ("EDAC, synps: Add EDAC support for zynq ddr ecc controller")
+Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20210818072315.15149-1-shubhrajyoti.datta@xilinx.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/qnx4/dir.c |   36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ drivers/edac/synopsys_edac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/qnx4/dir.c
-+++ b/fs/qnx4/dir.c
-@@ -20,12 +20,33 @@
-  * depending on the status field in the last byte. The
-  * first byte is where the name start either way, and a
-  * zero means it's empty.
-+ *
-+ * Also, due to a bug in gcc, we don't want to use the
-+ * real (differently sized) name arrays in the inode and
-+ * link entries, but always the 'de_name[]' one in the
-+ * fake struct entry.
-+ *
-+ * See
-+ *
-+ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
-+ *
-+ * for details, but basically gcc will take the size of the
-+ * 'name' array from one of the used union entries randomly.
-+ *
-+ * This use of 'de_name[]' (48 bytes) avoids the false positive
-+ * warnings that would happen if gcc decides to use 'inode.di_name'
-+ * (16 bytes) even when the pointer and size were to come from
-+ * 'link.dl_name' (48 bytes).
-+ *
-+ * In all cases the actual name pointer itself is the same, it's
-+ * only the gcc internal 'what is the size of this field' logic
-+ * that can get confused.
-  */
- union qnx4_directory_entry {
- 	struct {
--		char de_name;
--		char de_pad[62];
--		char de_status;
-+		const char de_name[48];
-+		u8 de_pad[15];
-+		u8 de_status;
- 	};
- 	struct qnx4_inode_entry inode;
- 	struct qnx4_link_info link;
-@@ -53,29 +74,26 @@ static int qnx4_readdir(struct file *fil
- 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
- 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
- 			union qnx4_directory_entry *de;
--			const char *name;
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -782,7 +782,7 @@ static void init_csrows(struct mem_ctl_i
  
- 			offset = ix * QNX4_DIR_ENTRY_SIZE;
- 			de = (union qnx4_directory_entry *) (bh->b_data + offset);
- 
--			if (!de->de_name)
-+			if (!de->de_name[0])
- 				continue;
- 			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
- 				continue;
- 			if (!(de->de_status & QNX4_FILE_LINK)) {
- 				size = sizeof(de->inode.di_fname);
--				name = de->inode.di_fname;
- 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
- 			} else {
- 				size = sizeof(de->link.dl_fname);
--				name = de->link.dl_fname;
- 				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
- 					QNX4_INODES_PER_BLOCK +
- 					de->link.dl_inode_ndx;
- 			}
--			size = strnlen(name, size);
-+			size = strnlen(de->de_name, size);
- 			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
--			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
-+			if (!dir_emit(ctx, de->de_name, size, ino, DT_UNKNOWN)) {
- 				brelse(bh);
- 				return 0;
- 			}
+ 		for (j = 0; j < csi->nr_channels; j++) {
+ 			dimm		= csi->channels[j]->dimm;
+-			dimm->edac_mode	= EDAC_FLAG_SECDED;
++			dimm->edac_mode	= EDAC_SECDED;
+ 			dimm->mtype	= p_data->get_mtype(priv->baseaddr);
+ 			dimm->nr_pages	= (size >> PAGE_SHIFT) / csi->nr_channels;
+ 			dimm->grain	= SYNPS_EDAC_ERR_GRAIN;
 
 
