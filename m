@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C2D419638
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A29419645
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhI0OYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:24:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234730AbhI0OYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:24:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24C0E60FD7;
-        Mon, 27 Sep 2021 14:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632752583;
-        bh=ZQ/mzkuYyFwT1Vg8d4ghbZ2fcO4h2gXnjki81+LWF5Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Yv0VMjutnYt7YpQlCSbAgV0KeX2YXrxL/4sUyQ5s199wKNJMtWhhnpyE1whB3y7PE
-         lt3x/Tyo1i1MMEq944grqooDLXMYLtZs5zXKdA/YnngXi1h3ZOr7lOIYEEqUqPBhf+
-         IOTKuqb7pZfVQ6GPDe9KdepjYE4EYLCue0ajI/D8LlErWm+9KKxf32Kc3Q1vm6DHW1
-         PjEm4wwPsbn5/O7YMyx7oqZfv6U4I0H4VCYZFxmwOJ5aboPUr4QuUAVxNGNGN7dPcW
-         0IVdx10f/+mIqcLkvpKfYm+ZCnpkr66Ycvy7noYzKUPUnVf3HqiHHbBw0Q3gFP6Qui
-         Rc1P8QYKjdqrQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [RESEND] usb: xhci: tegra: mark PM functions as __maybe_unused
-Date:   Mon, 27 Sep 2021 16:22:52 +0200
-Message-Id: <20210927142258.1863321-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234758AbhI0O1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:27:14 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40656 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234706AbhI0O1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:27:12 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18REPOrO013841;
+        Mon, 27 Sep 2021 09:25:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632752724;
+        bh=ZZ/fd4T24vkQFU+WnWgoQFOLD+vKERuEgD7ECsQbYyU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=sxHy/0+HtMKAcJAR+RtNNXR0um6qs6UqVWCV3q5oD53RfUKtC9kCeKyQLAj+6lERy
+         Eoy0gjjUHE6oXc6x9sP0j0BphsiDAy1cvxBx6OwjFn3TYQnXFJT1f+8XO5iSf3Q+FQ
+         BlAmexMuV7EgsXeNeD8xGlupxdkiKUhuDwY8WQBQ=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18REPOq2040301
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Sep 2021 09:25:24 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 27
+ Sep 2021 09:24:41 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 27 Sep 2021 09:24:41 -0500
+Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18REOfb2094692;
+        Mon, 27 Sep 2021 09:24:41 -0500
+Subject: Re: [PATCH V2 1/4] dt-bindings: arm: ti: Add missing compatibles for
+ j721e/j7200 evms
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
+CC:     Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+References: <20210925201430.11678-1-nm@ti.com>
+ <20210925201430.11678-2-nm@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <864e547b-88d3-212e-2ade-5b0ba7937933@ti.com>
+Date:   Mon, 27 Sep 2021 09:24:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210925201430.11678-2-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 9/25/21 3:14 PM, Nishanth Menon wrote:
+> Add compatibles for j721e and j7200 evms to allow for newer platforms
+> to distinguish themselves.
+> 
+> While doing this, maintain support for older style of description where
+> the board compatibility was not required.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 
-The added #ifdefs in the PM rework were almost correct, but still
-cause warnings in some randconfig builds:
+Acked-by: Suman Anna <s-anna@ti.com>
 
-drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined but not used [-Werror=unused-function]
- 2147 | static int tegra_xusb_resume(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~
-drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' defined but not used [-Werror=unused-function]
- 2105 | static int tegra_xusb_suspend(struct device *dev)
-
-Replace the #ifdef checks with simpler __maybe_unused annotations to
-reliably shut up these warnings.
-
-Fixes: d64d362f1d8b ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
-Reviewed-by: JC Kuo <jckuo@nvidia.com>
-Link: https://lore.kernel.org/all/20210421135613.3560777-2-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/usb/host/xhci-tegra.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index 575fa89a783f..1bf494b649bd 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -1787,7 +1787,6 @@ static int tegra_xusb_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#if IS_ENABLED(CONFIG_PM) || IS_ENABLED(CONFIG_PM_SLEEP)
- static bool xhci_hub_ports_suspended(struct xhci_hub *hub)
- {
- 	struct device *dev = hub->hcd->self.controller;
-@@ -2102,7 +2101,7 @@ static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool runtime)
- 	return err;
- }
- 
--static int tegra_xusb_suspend(struct device *dev)
-+static __maybe_unused int tegra_xusb_suspend(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int err;
-@@ -2144,7 +2143,7 @@ static int tegra_xusb_suspend(struct device *dev)
- 	return err;
- }
- 
--static int tegra_xusb_resume(struct device *dev)
-+static __maybe_unused int tegra_xusb_resume(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int err;
-@@ -2174,10 +2173,8 @@ static int tegra_xusb_resume(struct device *dev)
- 
- 	return 0;
- }
--#endif
- 
--#ifdef CONFIG_PM
--static int tegra_xusb_runtime_suspend(struct device *dev)
-+static __maybe_unused int tegra_xusb_runtime_suspend(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int ret;
-@@ -2190,7 +2187,7 @@ static int tegra_xusb_runtime_suspend(struct device *dev)
- 	return ret;
- }
- 
--static int tegra_xusb_runtime_resume(struct device *dev)
-+static __maybe_unused int tegra_xusb_runtime_resume(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int err;
-@@ -2201,7 +2198,6 @@ static int tegra_xusb_runtime_resume(struct device *dev)
- 
- 	return err;
- }
--#endif
- 
- static const struct dev_pm_ops tegra_xusb_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra_xusb_runtime_suspend,
--- 
-2.29.2
+> ---
+> 
+> Changes in V2:
+> * Modified such that legacy style of compatibles (of just SoC alone) is
+>   still valid
+> * Made the capability of providing a board specific compatible as an
+>   alternate scheme
+> * No longer dependent on rproc cleanup and platforms hosted in
+>   downstream trees remain compatible
+> 
+> V1: https://lore.kernel.org/all/20210915121937.27702-2-nm@ti.com/
+> 
+>  Documentation/devicetree/bindings/arm/ti/k3.yaml | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> index c5aa362e4026..cefb06424a4a 100644
+> --- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> +++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> @@ -28,12 +28,20 @@ properties:
+>            - const: ti,am654
+>  
+>        - description: K3 J721E SoC
+> -        items:
+> +        oneOf:
+>            - const: ti,j721e
+> +          - items:
+> +              - enum:
+> +                  - ti,j721e-evm
+> +              - const: ti,j721e
+>  
+>        - description: K3 J7200 SoC
+> -        items:
+> +        oneOf:
+>            - const: ti,j7200
+> +          - items:
+> +              - enum:
+> +                  - ti,j7200-evm
+> +              - const: ti,j7200
+>  
+>        - description: K3 AM642 SoC
+>          items:
+> 
 
