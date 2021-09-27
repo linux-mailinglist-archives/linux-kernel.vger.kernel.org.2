@@ -2,176 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6641941A035
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AE641A039
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236768AbhI0UgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:36:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235825AbhI0UgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:36:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFEFD61058;
-        Mon, 27 Sep 2021 20:34:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632774866;
-        bh=c2nFPj85/x3iFgHhji/OkgYydYNHJudouzIDw9eH2Tk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sdwp4HgrzQD1xEc9iZqEzphZN+0PfksY4Ve+BdWy5sxt9RAA9Xe1N50TPXn92RyFW
-         jgQGCJTBRDU4ijJcsCs+eXUm4bmF9W7GwmIlWdVv4bhKIeectCrVKE+SU6Yx+c+AlI
-         D/300N6DuCkGVAQbqj9LC1s25+GMBKK0k5KWJUQ8LyJvIn+7/UYv/1ja4DgS7NpaHh
-         H1j0iarj1ZgXxe/C9uZCgfXSDdmRuUG7jP9pI49l+9WPG1jYl1+38+ASuhjSQTzdyN
-         gr0DxECBVUlAcO1rfB09V4q0zMRwd7SXDPOuF0xVfoIOT/goEQ9yc2whIsruqUz9XF
-         GslN8oLPGWIKw==
-Received: by pali.im (Postfix)
-        id 545DBC83; Mon, 27 Sep 2021 22:34:23 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 22:34:23 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RESEND PATCH v5 3/6] dt-bindings: mvebu-uart: document DT
- bindings for marvell,armada-3700-uart-clock
-Message-ID: <20210927203423.o7aulgj7osaaksxr@pali>
-References: <20210922105433.11744-1-pali@kernel.org>
- <20210922105433.11744-4-pali@kernel.org>
- <CAL_JsqKS1rjEeM558d2n6Uk1+tCazASoGJ-kDS144PsH8-Akwg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqKS1rjEeM558d2n6Uk1+tCazASoGJ-kDS144PsH8-Akwg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+        id S236632AbhI0UiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235865AbhI0UiB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:38:01 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12340C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:36:23 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id kn18so362827pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KwntqUtVsNq0eUFSV1/o/nRAcymM++4zNUK+VLfzUDE=;
+        b=qwIUO+3oC6laZ/gJKGvYxv3lflTfsHoCZozQwFOCCG93M44AOCtYwoSK4+BlxN6uMM
+         xXIRst5Jp1b1D8GLGaK3cgg7QCm8wwMGodWCT3Yzt0Hb2ZWkJJT7jIWqZ/eBpR6P6oPs
+         Ho3XAgMKKCBgJzgylh3jmiM5/KdLQdltQcC/ntQwQe8mPYrQ+iD9NWtQO94KwnTHmbcT
+         7ZMTHwRVTvo2Quxwo/TTRWC0MatJPUwxXLv4szstzuXPvM3ApWzeEiUHlgJXIR1tmX1u
+         B/+dg7r7cJ44YMKuJ8Ct0BdcdzI1qAy/4DHMqaETzhldsUmSe91/m+Y+IbkStrwJZ2/z
+         RHdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KwntqUtVsNq0eUFSV1/o/nRAcymM++4zNUK+VLfzUDE=;
+        b=QQ2ThxeeEcDTRknakQU6ztYWjldiHem2wc3Q52aNXCgP84qzkSJ7niUP53LP+ewJab
+         sE5c0dC5ayzc+ldmBnccaazJOpd7XWAtOSDBHpZ0CoQZSiJi+YQkLHbJpwbe1VxzKJ1g
+         mG9lV7zzVJ5h7LtoofsWMD3BAsXZd1sPW01mpSVgy4ZQ505Fl0KblCQqzFaTElRlE4rN
+         klAHaNI8Lre+aBjmQkzK0DdL6k6ugtH3g4WOARcWb3auEiyk1AAN8a9dBYdZGhu2Ckub
+         wgEWCUQaXE4lo06Ulv09rVf3hvasdJR8GShq7ckI3QzKYO/lDYSm0FNOA2ysXn9bh/2V
+         XPTQ==
+X-Gm-Message-State: AOAM532+qZt984dRfMM6/bGxyZujhoTi/5deHGvHptSNwyYkMWiGE7Bz
+        +ygyCPQihwx+O9oMPUXt5qQ=
+X-Google-Smtp-Source: ABdhPJx6HFSHqBc+6nLSQK9verGhJtcB06qeQUgeN64cmC/mCUE1BD8FuJyvGrZIKjQ3gJHVjxsQ7Q==
+X-Received: by 2002:a17:90a:17e1:: with SMTP id q88mr1113946pja.99.1632774982476;
+        Mon, 27 Sep 2021 13:36:22 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id y24sm10396984pfo.69.2021.09.27.13.36.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Sep 2021 13:36:22 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 4/8] mm/madvise: define madvise behavior in a struct
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <20210927121449.kac5g25aejbwvylf@box>
+Date:   Mon, 27 Sep 2021 13:36:20 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CB2E02DB-0675-4053-B223-06D4BF26641C@gmail.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <20210926161259.238054-5-namit@vmware.com>
+ <20210927093103.g3cszw75gfctwtzk@box.shutemov.name>
+ <48D4E700-0005-46D4-8EAA-B839D8449C66@gmail.com>
+ <20210927121449.kac5g25aejbwvylf@box>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 27 September 2021 15:17:59 Rob Herring wrote:
-> On Wed, Sep 22, 2021 at 5:56 AM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > This change adds DT bindings documentation for device nodes with compatible
-> > string "marvell,armada-3700-uart-clock".
-> 
-> Please resend to the DT list so that checks run and this gets reviewed
-> in a timely manner.
 
-OK
+> On Sep 27, 2021, at 5:14 AM, Kirill A. Shutemov <kirill@shutemov.name> =
+wrote:
+>=20
+> On Mon, Sep 27, 2021 at 03:31:21AM -0700, Nadav Amit wrote:
+>>=20
+>>=20
+>>> On Sep 27, 2021, at 2:31 AM, Kirill A. Shutemov =
+<kirill@shutemov.name> wrote:
+>>>=20
+>>> On Sun, Sep 26, 2021 at 09:12:55AM -0700, Nadav Amit wrote:
+>>>> From: Nadav Amit <namit@vmware.com>
+>>>>=20
+>>>> The different behaviors of madvise are different in several ways, =
+which
+>>>> are distributed across several functions. Use the design pattern =
+from
+>>>> iouring in order to define the actions that are required for each
+>>>> behavior.
+>>>>=20
+>>>> The next patches will get rid of old helper functions that are =
+modified
+>>>> in this patch and the redundant use of array_index_nospec(). The =
+next
+>>>> patches will add more actions for each leaf into the new struct.
+>>>=20
 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > ---
-> >  .../bindings/clock/armada3700-uart-clock.yaml | 57 +++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-> > new file mode 100644
-> > index 000000000000..5bdb23e0ba3e
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> 
-> Dual license. checkpatch will tell you which ones.
+[ snip ]
 
-OK
+>>> MADV_SOFT_OFFLINE+1 smells bad.
+>>=20
+>> I can set another constant instead and let the compiler shout if =
+anything
+>> outside the array is initialized.
+>=20
+> I would rather introduce a function that would return struct =
+madvise_info
+> for a given behavior. The function would have a switch inside. The =
+default:
+> may have BUILD_BUG() or something.
 
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/clock/marvell,armada-3700-uart-clock#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +title: Marvell Armada 3720 UART clocks
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: marvell,armada-3700-uart-clock
-> > +
-> > +  reg:
-> > +    items:
-> > +      - description: UART Clock Control Register
-> > +      - description: UART 2 Baud Rate Divisor Register
-> > +
-> > +  clocks:
-> > +    description: |
-> > +      List of parent clocks suitable for UART from following set:
-> > +        "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal"
-> > +      UART clock can use one from this set and when more are provided
-> > +      then kernel would choose and configure the most suitable one.
-> > +      It is suggest to specify at least one TBG clock to achieve
-> > +      baudrates above 230400 and also to specify clock which bootloader
-> > +      used for UART (most probably xtal) for smooth boot log on UART.
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: TBG-A-P
-> > +      - const: TBG-B-P
-> > +      - const: TBG-A-S
-> > +      - const: TBG-B-S
-> > +      - const: xtal
-> > +    minItems: 1
-> > +    maxItems: 5
-> 
-> Don't need maxItems equal to length of 'items'.
-
-OK
-
-> > +
-> > +  '#clock-cells':
-> > +    const: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - '#clock-cells'
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    uartclk: uartclk@12000 {
-> 
-> clock-controller@12010
-> 
-> > +      compatible = "marvell,armada-3700-uart-clock";
-> > +      reg = <0x12010 0x4>, <0x12210 0x4>;
-> 
-> However, looks like this is part of some other block.
-
-Yes, it is part of UART block.
-
-Explanation is in commit message of patch 2/6.
-
-And also discussed here:
-https://lore.kernel.org/linux-serial/20210812200804.i4kbcs6ut27mapd3@pali/
-
-> The whole block
-> needs a binding (or at least the parent and whatever sub-functions you
-> know about).
-
-Whole UART block has already binding. Clock driver just needs access to
-these clock bits of these two registers which are in UART block. HW
-designers decided that clock which drives UART2 has configuration in
-UART1 address space. As explained in commit message of patch 2/6 there
-is no easy way how to deal with it in DTS backward compatible way. So
-clock and UART driver shares mutex for accessing these two shared
-registers, and these two registers are defined in all 3 DT nodes: UART1,
-UART2 and UART-clock.
-
-> > +      clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
-> > +      clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal";
-> > +      #clock-cells = <1>;
-> > +    };
-> > --
-> > 2.20.1
-> >
+Sounds better than my solution. I will do so.=
