@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5735C4194D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE874194DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbhI0NLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231506AbhI0NLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:11:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 134276103B;
-        Mon, 27 Sep 2021 13:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632748207;
-        bh=oPJELZZlIkktUvT3mKf6uyN+sQK9W7flk5QCU8eLGk8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=diHMh6d9hVs2lSbgeHAWUtqQ4UJIhRgPw5Aug/I+uSlauhQ8gDrCJRszwm3l00hYg
-         tgpiZheT0ZeL+b5VZDlJvEegou/X0p5WE5dPH3OQ1u+VVWEgxWMavt9YKroBL7l5O4
-         KxEAKKB9d8uDTvmQQahnqqIfernX1vjIHfsazlRpj9ie/sBziOcUDkZNIq+LC0qHkC
-         ItENoEIET4Ho5zQaDrv65pZ0rnMokGHEtNyqfM0S4BZEYWbk2EbHWynhCpEcdHBA2y
-         wGlYOzLKtfkeSywCvLuoWfvLsniiWgm67WLgUlD8yuhoD3qRQA6hHtIQvX2DGA8pMG
-         GBUjKsFlCbmHQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 02E3B60A59;
-        Mon, 27 Sep 2021 13:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234525AbhI0NNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234421AbhI0NNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:13:45 -0400
+X-Greylist: delayed 18809 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Sep 2021 06:12:08 PDT
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02989C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:12:07 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJ3286WM8z4xZJ;
+        Mon, 27 Sep 2021 23:12:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1632748321;
+        bh=/6NGyTxf3yZzS/6VpTsWCSMws0EAQCWdVr1eBk3RItQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=bCCOJ57PVuxKBr/+8rzursr0M58poo2U8UYU8FmOa4Ve+xeh2oVXaK/weC5cayqC8
+         0wfzCG3XkzUK6Cq3uln4S1u7XiI8Y5zls2oXnDdU8s8sTYlXG0ip+mYiZXMrDsr0Ms
+         rgvGcz2IfqStO+q38lKNaAq/EqUyLMic0uWxcIB0J9CzMKYaZF+8ecEHf3d0bQmkvS
+         aHG/dFXj/TlPCuEGMseSTg3CjjKQ3HmJ7K6YllqzxrwuI16j2tZXrTHkJAF1Jps4OY
+         umzjNyJWrNKJ+gqjI+Y3AiPuqS0/WkO+2lgBODADFgP+K/n+6PQi6QF0+aN0U1U7KW
+         vJ+X8XhJSUtPA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Subject: Re: [PATCH 1/3] mm: Make generic arch_is_kernel_initmem_freed() do
+ what it says
+In-Reply-To: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
+References: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
+Date:   Mon, 27 Sep 2021 23:11:56 +1000
+Message-ID: <87h7e6kvs3.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] cxgb: avoid open-coded offsetof()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163274820700.19532.2923722207844060183.git-patchwork-notify@kernel.org>
-Date:   Mon, 27 Sep 2021 13:10:07 +0000
-References: <20210927121611.940046-1-arnd@kernel.org>
-In-Reply-To: <20210927121611.940046-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, arnd@arndb.de,
-        nathan@kernel.org, ndesaulniers@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Commit 7a5da02de8d6 ("locking/lockdep: check for freed initmem in
+> static_obj()") added arch_is_kernel_initmem_freed() which is supposed
+> to report whether an object is part of already freed init memory.
+>
+> For the time being, the generic version of arch_is_kernel_initmem_freed()
+> always reports 'false', allthough free_initmem() is generically called
+> on all architectures.
+>
+> Therefore, change the generic version of arch_is_kernel_initmem_freed()
+> to check whether free_initmem() has been called. If so, then check
+> if a given address falls into init memory.
+>
+> In order to use function init_section_contains(), the fonction is
+> moved at the end of asm-generic/section.h
+>
+> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/asm-generic/sections.h | 31 +++++++++++++++++--------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+> index d16302d3eb59..d1e5bb2c6b72 100644
+> --- a/include/asm-generic/sections.h
+> +++ b/include/asm-generic/sections.h
+> @@ -172,4 +158,21 @@ static inline bool is_kernel_rodata(unsigned long addr)
+>  	       addr < (unsigned long)__end_rodata;
+>  }
+>  
+> +/*
+> + * Check if an address is part of freed initmem. This is needed on architectures
+> + * with virt == phys kernel mapping, for code that wants to check if an address
+> + * is part of a static object within [_stext, _end]. After initmem is freed,
+> + * memory can be allocated from it, and such allocations would then have
+> + * addresses within the range [_stext, _end].
+> + */
+> +#ifndef arch_is_kernel_initmem_freed
+> +static inline int arch_is_kernel_initmem_freed(unsigned long addr)
+> +{
+> +	if (system_state < SYSTEM_RUNNING)
+> +		return 0;
+> +
+> +	return init_section_contains((void *)addr, 1);
+> +}
+> +#endif
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This will return an incorrect result for a short period during boot
+won't it?
 
-On Mon, 27 Sep 2021 14:16:04 +0200 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang-14 does not like the custom offsetof() macro in vsc7326:
-> 
-> drivers/net/ethernet/chelsio/cxgb/vsc7326.c:597:3: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
->                 HW_STAT(RxUnicast, RxUnicastFramesOK),
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/chelsio/cxgb/vsc7326.c:594:56: note: expanded from macro 'HW_STAT'
->         { reg, (&((struct cmac_statistics *)NULL)->stat_name) - (u64 *)NULL }
-> 
-> [...]
+See init/main.c:
 
-Here is the summary with links:
-  - cxgb: avoid open-coded offsetof()
-    https://git.kernel.org/netdev/net-next/c/ef5d6356e2ac
+static int __ref kernel_init(void *unused)
+{
+	...
+	free_initmem();			<- memory is freed here
+	mark_readonly();
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+	/*
+	 * Kernel mappings are now finalized - update the userspace page-table
+	 * to finalize PTI.
+	 */
+	pti_finalize();
+
+	system_state = SYSTEM_RUNNING;
 
 
+After free_initmem() we have address ranges that are now freed initmem,
+but arch_is_kernel_initmem_freed() continues to return 0 (false) for all
+addresses, until we update system_state.
+
+Possibly that doesn't matter for any of the current callers, but it
+seems pretty dicey to me.
+
+cheers
