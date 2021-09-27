@@ -2,162 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14156419457
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C19941945C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234401AbhI0MgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:36:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234380AbhI0Mf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:35:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ECEC60F41;
-        Mon, 27 Sep 2021 12:34:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632746061;
-        bh=D+5/8tHCQxdmWTOlYcOv1iIAUp7sdgYnP5xXPObXi1I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jGl+I3enIxJKufmTuRxiGyGny5Uqc+2WEAxMwMZODl9SZo8AtZRCOPfW/e35tnmj5
-         hTHi1XNUiltYTMu68VYxXYn8qMclPOOdp1iG4xJJZwYbO6xkiIx7qlD4F/PAvC0CO8
-         APu+G76FVFw47Ib0IjAtuNX3esgJYZwbz8zgcITWfKtCmJKZjk3MmHXt26R+T1ENgv
-         gAzGS7piBrm7zonQkndmC4xbrVQHtcLdhasoPaIxp4rEi1RgkohRN4fNFSJtL/Pq0H
-         qE7zdmNFkibGYyIm8EGHShVTh1gyY7hD8qPncW2phGulMeBakllVOqj/e1J6QLbWrb
-         UrlyawfD8W/pw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1027F410A1; Mon, 27 Sep 2021 09:34:19 -0300 (-03)
-Date:   Mon, 27 Sep 2021 09:34:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     William Cohen <wcohen@redhat.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] perf annotate: Add riscv64 support
-Message-ID: <YVG6S2CE4fQRgngo@kernel.org>
-References: <20210927005115.610264-1-wcohen@redhat.com>
+        id S234344AbhI0Mhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:37:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:21368 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234317AbhI0Mh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:37:29 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HJ27V0yKlzRG8L;
+        Mon, 27 Sep 2021 20:31:34 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 20:35:49 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 20:35:49 +0800
+Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
+To:     Guo Ren <guoren@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-csky@vger.kernel.org>
+References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
+ <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <083297b0-58e2-aa1e-2f8a-47845a9b373e@huawei.com>
+Date:   Mon, 27 Sep 2021 20:35:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210927005115.610264-1-wcohen@redhat.com>
-X-Url:  http://acmel.wordpress.com
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Sep 26, 2021 at 08:51:15PM -0400, William Cohen escreveu:
-> This patch adds basic arch initialization and instruction associate
-> support for the riscv64 CPU architecture.
-> 
-> Example output:
-> 
->   $ perf annotate --stdio2
->   Samples: 122K of event 'task-clock:u', 4000 Hz, Event count (approx.): 30637250000, [percent: local period]
->   strcmp() /usr/lib64/libc-2.32.so
->   Percent
-> 
-> 	      Disassembly of section .text:
-> 
-> 	      0000000000069a30 <strcmp>:
-> 	      __GI_strcmp():
-> 	      const unsigned char *s2 = (const unsigned char *) p2;
-> 	      unsigned char c1, c2;
-> 
-> 	      do
-> 	      {
-> 	      c1 = (unsigned char) *s1++;
->    37.30        lbu  a5,0(a0)
-> 	      c2 = (unsigned char) *s2++;
->     1.23        addi a1,a1,1
-> 	      c1 = (unsigned char) *s1++;
->    18.68        addi a0,a0,1
-> 	      c2 = (unsigned char) *s2++;
->     1.37        lbu  a4,-1(a1)
-> 	      if (c1 == '\0')
->    18.71      ↓ beqz a5,18
-> 	       return c1 - c2;
-> 	       }
 
-Thanks, applied.
+On 2021/9/27 20:09, Guo Ren wrote:
+> I didn't see the patch delete:
+> #else /* !CONFIG_SPARSE_IRQ */
+> struct irq_desc irq_desc[NR_IRQS] __cacheline_aligned_in_smp = {
+>          [0 ... NR_IRQS-1] = {
+>                  .handle_irq     = handle_bad_irq,
+>                  .depth          = 1,
+>                  .lock           = __RAW_SPIN_LOCK_UNLOCKED(irq_desc->lock),
+>          }
+> };
+> ...
+>
+> Flat irq_desc[] is simple and easy for debugging. We do want to del it?
 
-- Arnaldo
+This patches want to kill MAY_HAVE_SPARSE_IRQ,  not !SPARSE_IRQ.
 
- 
-> Signed-off-by: William Cohen <wcohen@redhat.com>
-> ---
->  .../perf/arch/riscv64/annotate/instructions.c | 34 +++++++++++++++++++
->  tools/perf/util/annotate.c                    |  5 +++
->  2 files changed, 39 insertions(+)
->  create mode 100644 tools/perf/arch/riscv64/annotate/instructions.c
-> 
-> diff --git a/tools/perf/arch/riscv64/annotate/instructions.c b/tools/perf/arch/riscv64/annotate/instructions.c
-> new file mode 100644
-> index 000000000000..869a0eb28953
-> --- /dev/null
-> +++ b/tools/perf/arch/riscv64/annotate/instructions.c
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +static
-> +struct ins_ops *riscv64__associate_ins_ops(struct arch *arch, const char *name)
-> +{
-> +	struct ins_ops *ops = NULL;
-> +
-> +	if (!strncmp(name, "jal", 3) ||
-> +	    !strncmp(name, "jr", 2) ||
-> +	    !strncmp(name, "call", 4))
-> +		ops = &call_ops;
-> +	else if (!strncmp(name, "ret", 3))
-> +		ops = &ret_ops;
-> +	else if (name[0] == 'j' || name[0] == 'b')
-> +		ops = &jump_ops;
-> +	else
-> +		return NULL;
-> +
-> +	arch__associate_ins_ops(arch, name, ops);
-> +
-> +	return ops;
-> +}
-> +
-> +static
-> +int riscv64__annotate_init(struct arch *arch, char *cpuid __maybe_unused)
-> +{
-> +	if (!arch->initialized) {
-> +		arch->associate_instruction_ops = riscv64__associate_ins_ops;
-> +		arch->initialized = true;
-> +		arch->objdump.comment_char = '#';
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 0bae061b2d6d..d919fa993872 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -151,6 +151,7 @@ static int arch__associate_ins_ops(struct arch* arch, const char *name, struct i
->  #include "arch/mips/annotate/instructions.c"
->  #include "arch/x86/annotate/instructions.c"
->  #include "arch/powerpc/annotate/instructions.c"
-> +#include "arch/riscv64/annotate/instructions.c"
->  #include "arch/s390/annotate/instructions.c"
->  #include "arch/sparc/annotate/instructions.c"
->  
-> @@ -192,6 +193,10 @@ static struct arch architectures[] = {
->  		.name = "powerpc",
->  		.init = powerpc__annotate_init,
->  	},
-> +	{
-> +		.name = "riscv64",
-> +		.init = riscv64__annotate_init,
-> +	},
->  	{
->  		.name = "s390",
->  		.init = s390__annotate_init,
-> -- 
-> 2.27.0
+so I won't delete above parts(eg, ARM could use both SPARSE_IRQ and
 
--- 
+!SPARSE_IRQ via different config,)
 
-- Arnaldo
+>
+> On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
+>> only sh and csky select it, but the could use SPARSE_IRQ too, let's
+>> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
+>>
+>> Kefeng Wang (3):
+>>    sh: Cleanup about SPARSE_IRQ
+>>    csky: Use SPARSE_IRQ
+>>    genirq: Cleanup Kconfig
+>>
+>>   arch/csky/Kconfig         |  2 +-
+>>   arch/sh/Kconfig           |  1 -
+>>   arch/sh/include/asm/irq.h |  9 -------
+>>   kernel/irq/Kconfig        | 50 ++++++++++++++++-----------------------
+>>   4 files changed, 21 insertions(+), 41 deletions(-)
+>>
+>> --
+>> 2.26.2
+>>
+>
