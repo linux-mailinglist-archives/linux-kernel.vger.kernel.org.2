@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681A3419AC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD2F419A2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbhI0RMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:12:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44560 "EHLO mail.kernel.org"
+        id S236107AbhI0RHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:07:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236130AbhI0RKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:10:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53F4C61356;
-        Mon, 27 Sep 2021 17:07:41 +0000 (UTC)
+        id S236051AbhI0RGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:06:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 707A0611CE;
+        Mon, 27 Sep 2021 17:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762461;
-        bh=Bmn8bSktzQgWEoEGlaZkLZhVLVDbLwW0y7quV/rv3ZM=;
+        s=korg; t=1632762295;
+        bh=FuBLvPZOaNDqtLiQ6Jkd1Gd1oxqwHc0IZGNzQGqzgOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LkYMAGLfBIYS8bsgR1zA3BjRiyWASsWodrm4M7VPzIxSQK/RO/BSCqo0Pe/SLz7Ds
-         jpEt0R4RFWIkHL1Rf4VUwVzc76ByrMsDxv0ijsNzhZuFD7e3ooDbdTgxzfw+5jAdoQ
-         883ixK0ekqmyXWfEGfcgZcLrKygZcwKbbBrnMMWE=
+        b=xGhwoXyDJIsdl/iDPO/vBAMl/m9aJAlMYYvW60kDUNkD86ySO+wW4szMgJWR6s7ab
+         UpvIdoQLSXzKIS1DilyZqsqI5lqUuwquVmD+d1RAJExroozOxjAz74m6POv5fk/pWS
+         huFrzcKYTOjnMElWcrPemkh4pabS0iXpNpDcakSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-staging@lists.linux.dev, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.10 032/103] comedi: Fix memory leak in compat_insnlist()
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Ondrej Zary <linux@zary.sk>
+Subject: [PATCH 5.4 08/68] usb-storage: Add quirk for ScanLogic SL11R-IDE older than 2.6c
 Date:   Mon, 27 Sep 2021 19:02:04 +0200
-Message-Id: <20210927170226.851357259@linuxfoundation.org>
+Message-Id: <20210927170220.201199071@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Ondrej Zary <linux@zary.sk>
 
-commit bb509a6ffed2c8b0950f637ab5779aa818ed1596 upstream.
+commit b55d37ef6b7db3eda9b4495a8d9b0a944ee8c67d upstream.
 
-`compat_insnlist()` handles the 32-bit version of the `COMEDI_INSNLIST`
-ioctl (whenwhen `CONFIG_COMPAT` is enabled).  It allocates memory to
-temporarily hold an array of `struct comedi_insn` converted from the
-32-bit version in user space.  This memory is only being freed if there
-is a fault while filling the array, otherwise it is leaked.
+ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
+broken tag handling, preventing the device from working at all:
+usb 1-1: new full-speed USB device number 2 using uhci_hcd
+usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
+usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
+usb 1-1: Product: USB Device
+usb 1-1: Manufacturer: USB Device
+usb-storage 1-1:1.0: USB Mass Storage device detected
+scsi host2: usb-storage 1-1:1.0
+usbcore: registered new interface driver usb-storage
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
 
-Add a call to `kfree()` to fix the leak.
+Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
 
-Fixes: b8d47d881305 ("comedi: get rid of compat_alloc_user_space() mess in COMEDI_INSNLIST compat")
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-staging@lists.linux.dev
-Cc: <stable@vger.kernel.org> # 5.13+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20210916145023.157479-1-abbotti@mev.co.uk
+2.6c is the only firmware that claims Linux compatibility.
+The firmware can be upgraded using ezotgdbg utility:
+https://github.com/asciilifeform/ezotgdbg
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Ondrej Zary <linux@zary.sk>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210913210106.12717-1-linux@zary.sk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/comedi/comedi_fops.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/storage/unusual_devs.h |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/comedi_fops.c
-+++ b/drivers/staging/comedi/comedi_fops.c
-@@ -3090,6 +3090,7 @@ static int compat_insnlist(struct file *
- 	mutex_lock(&dev->mutex);
- 	rc = do_insnlist_ioctl(dev, insns, insnlist32.n_insns, file);
- 	mutex_unlock(&dev->mutex);
-+	kfree(insns);
- 	return rc;
- }
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x
+ 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
  
+ /*
+- * Reported by Ondrej Zary <linux@rainbow-software.org>
++ * Reported by Ondrej Zary <linux@zary.sk>
+  * The device reports one sector more and breaks when that sector is accessed
++ * Firmwares older than 2.6c (the latest one and the only that claims Linux
++ * support) have also broken tag handling
+  */
++UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
++		"ScanLogic",
++		"SL11R-IDE",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
+ UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
+ 		"ScanLogic",
+ 		"SL11R-IDE",
 
 
