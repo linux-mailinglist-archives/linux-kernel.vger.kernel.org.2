@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BE541920F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1436419213
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhI0KP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60310 "EHLO mail.kernel.org"
+        id S233806AbhI0KRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:17:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233703AbhI0KP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:15:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94FF660F6C;
-        Mon, 27 Sep 2021 10:14:18 +0000 (UTC)
+        id S233703AbhI0KRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:17:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64CF360F6C;
+        Mon, 27 Sep 2021 10:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632737660;
-        bh=mQhnijdLqalY6BhsW7eBN2/4Zqalyq0/oAzdB9fhxpw=;
+        s=k20201202; t=1632737774;
+        bh=Bq2dWaShr/xZPho3pKYv2iZApCmL3XL12AcCSUUBVkY=;
         h=From:To:Cc:Subject:Date:From;
-        b=pwP/fHycrsr3Pw+INmwN7VNZ7svNlULMbq5Q1/55NzymbXrI+Tt1xAeDk4Hp3alJI
-         DM7Un9tKXDNMiXNaPbnQKDjG3s5M3P5I4ZkLNFQX4nDSnbPGKAt5KevuW4SIhIY/dY
-         g/fhCJTNl86QA45tttBl1XaYWHAOHj2lHDSz1Y/MvPer9/OBksaoRFfcdRpuUQaIUA
-         Dd0jy0XTq+HL/jd6CrZKLFbNP6mdAIlxov1jrZ3TB3U3gD0mHWlb3jVi+D88Io844N
-         LZbNSu1kgrxy9YW2+86B/2vohOe2qv+nCIIYxTmtSvgYU1Ksh5RP1Vtsj/kSZybEA8
-         Iurt42xiTmYPw==
+        b=cl0DVcvh4emKAb8+mahJbuYxhI4Rb7V+XxsONvq/AvxjqtcBilVRrR/xosMqJExhY
+         LIlMRciNqoSCWEU+w+MDU4FV9b4HCZhpdPhGHWnQlppUg2OSFa7t3Wl4O3HAkBKeDu
+         cI5jkP/8kfkQosTKXHuM6yfOmEtTKDLZyq7gt53SIEoovLzPyce0obcNrDGFPtxp8X
+         GRHp4d06isHvj6Sm3NwQjuB/H0kZyzAH7oFOPyzcoPD0HO/rXuzfX2ZHg7hT4XZHSP
+         w8o3XDkODo0v8/K7JuVghu25BqYBa/tEVzk+P/nvDS4YIMfH2BtF3rUC6S8tpZVmLh
+         SpXo9ROnuJ2HA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RESEND] [v2] Input: analog - fix invalid snprintf() call
-Date:   Mon, 27 Sep 2021 12:14:06 +0200
-Message-Id: <20210927101416.1569609-1-arnd@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Isaac Hazan <isaac.hazan@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH] led-class-flash: fix -Wrestrict warning
+Date:   Mon, 27 Sep 2021 12:15:59 +0200
+Message-Id: <20210927101610.1669830-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,78 +48,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Overlapping input and output arguments to snprintf() are
-undefined behavior in C99:
+drivers/leds/led-class-flash.c: In function 'flash_fault_show':
+drivers/leds/led-class-flash.c:210:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
+  210 |         return sprintf(buf, "%s\n", buf);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/leds/led-class-flash.c:187:54: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+  187 |                 struct device_attribute *attr, char *buf)
+      |                                                ~~~~~~^~~
+cc1: all warnings being treated as errors
+make[5]: *** [scripts/Makefile.build:277: drivers/leds/led-class-flash.o] Error 1
+make[5]: Target '__build' not remade because of errors.
+make[4]: *** [scripts/Makefile.build:540: drivers/leds] Error 2
+drivers/thunderbolt/xdomain.c: In function 'modalias_show':
+drivers/thunderbolt/xdomain.c:733:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
+  733 |         return sprintf(buf, "%s\n", buf);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/xdomain.c:727:36: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+  727 |                              char *buf)
+      |                              ~~~~~~^~~
 
-drivers/input/joystick/analog.c: In function 'analog_name':
-drivers/input/joystick/analog.c:428:3: error: 'snprintf' argument 4 overlaps destination object 'analog' [-Werror=restrict]
-  428 |   snprintf(analog->name, sizeof(analog->name), "%s %d-hat",
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  429 |     analog->name, hweight16(analog->mask & ANALOG_HATS_ALL));
-      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/input/joystick/analog.c:420:40: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
-  420 | static void analog_name(struct analog *analog)
-      |                         ~~~~~~~~~~~~~~~^~~~~~
-
-Change this function to use the simpler seq_buf interface instead.
-
-Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Link: https://lore.kernel.org/all/20210323131456.2600132-1-arnd@kernel.org/
-Link: https://lore.kernel.org/all/20210324131959.2089129-1-arnd@kernel.org/
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: use seq_buf instead of rolling my own
+ drivers/leds/led-class-flash.c | 2 +-
+ drivers/thunderbolt/xdomain.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Resending as the second submission somehow got dropped
----
- drivers/input/joystick/analog.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/input/joystick/analog.c b/drivers/input/joystick/analog.c
-index 882c3c8ba399..3c17bf202af5 100644
---- a/drivers/input/joystick/analog.c
-+++ b/drivers/input/joystick/analog.c
-@@ -19,6 +19,7 @@
- #include <linux/input.h>
- #include <linux/gameport.h>
- #include <linux/jiffies.h>
-+#include <linux/seq_buf.h>
- #include <linux/timex.h>
- #include <linux/timekeeping.h>
+diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
+index 185e17055317..6fe9d700dfef 100644
+--- a/drivers/leds/led-class-flash.c
++++ b/drivers/leds/led-class-flash.c
+@@ -207,7 +207,7 @@ static ssize_t flash_fault_show(struct device *dev,
+ 		mask <<= 1;
+ 	}
  
-@@ -338,23 +339,24 @@ static void analog_calibrate_timer(struct analog_port *port)
- 
- static void analog_name(struct analog *analog)
- {
--	snprintf(analog->name, sizeof(analog->name), "Analog %d-axis %d-button",
-+	struct seq_buf s;
-+
-+	seq_buf_init(&s, analog->name, sizeof(analog->name));
-+	seq_buf_printf(&s, "Analog %d-axis %d-button",
- 		 hweight8(analog->mask & ANALOG_AXES_STD),
- 		 hweight8(analog->mask & ANALOG_BTNS_STD) + !!(analog->mask & ANALOG_BTNS_CHF) * 2 +
- 		 hweight16(analog->mask & ANALOG_BTNS_GAMEPAD) + !!(analog->mask & ANALOG_HBTN_CHF) * 4);
- 
- 	if (analog->mask & ANALOG_HATS_ALL)
--		snprintf(analog->name, sizeof(analog->name), "%s %d-hat",
--			 analog->name, hweight16(analog->mask & ANALOG_HATS_ALL));
-+		seq_buf_printf(&s, " %d-hat",
-+			       hweight16(analog->mask & ANALOG_HATS_ALL));
- 
- 	if (analog->mask & ANALOG_HAT_FCS)
--		strlcat(analog->name, " FCS", sizeof(analog->name));
-+		seq_buf_printf(&s, " FCS");
- 	if (analog->mask & ANALOG_ANY_CHF)
--		strlcat(analog->name, (analog->mask & ANALOG_SAITEK) ? " Saitek" : " CHF",
--			sizeof(analog->name));
-+		seq_buf_printf(&s, (analog->mask & ANALOG_SAITEK) ? " Saitek" : " CHF");
- 
--	strlcat(analog->name, (analog->mask & ANALOG_GAMEPAD) ? " gamepad": " joystick",
--		sizeof(analog->name));
-+	seq_buf_printf(&s, (analog->mask & ANALOG_GAMEPAD) ? " gamepad": " joystick");
+-	return sprintf(buf, "%s\n", buf);
++	return strlen(strcat(buf, "\n"));
  }
+ static DEVICE_ATTR_RO(flash_fault);
  
- /*
+diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
+index d66ea4d616fd..eff32499610f 100644
+--- a/drivers/thunderbolt/xdomain.c
++++ b/drivers/thunderbolt/xdomain.c
+@@ -730,7 +730,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+ 
+ 	/* Full buffer size except new line and null termination */
+ 	get_modalias(svc, buf, PAGE_SIZE - 2);
+-	return sprintf(buf, "%s\n", buf);
++	return strlen(strcat(buf, "\n"));
+ }
+ static DEVICE_ATTR_RO(modalias);
+ 
 -- 
 2.29.2
 
