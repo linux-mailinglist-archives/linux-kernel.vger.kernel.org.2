@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8893041999A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480C941996C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbhI0QuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:50:03 -0400
-Received: from mta-201a.oxsus-vadesecure.net ([51.81.229.180]:45787 "EHLO
-        mta-201a.oxsus-vadesecure.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235285AbhI0QuC (ORCPT
+        id S235570AbhI0QpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235481AbhI0QpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:50:02 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Sep 2021 12:50:01 EDT
-DKIM-Signature: v=1; a=rsa-sha256; bh=D095d71dBQW78/giudMG5ZpKsgPW3hOVnZbqSX
- nWmZk=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
- date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
- references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
- list-owner:list-archive; q=dns/txt; s=dk12062016; t=1632760999;
- x=1633365799; b=OdCaG/b5iLIYPcAmFYFClUEZjcBBVHHydAC7Aae0EVscDQMQ6MXOljS
- ay6DzX3i0UUmIeCUHld6c46tSe/JIIEozQ48xd2hPkF0LR14/UxrlWJh6WLPKT577QnUBx5
- rCHCpatUSZgYMAWPrXl7YguAWM8mohzKozk9LK2thr6PAD+1CMkEMUQEPma3KfrMEtQaTVB
- KGs8ix1Q1yeHP1E4yQaL2i3zZ1LGs9iEJnnElyL9gEE7d3bZATbHbd43A/iRpryEpEX2jbh
- XQPA1jnssmeU9jkNdbQGZJ8PDckXvjGq8OYPm0h1qefB47nXNYbwhUPc2clpBUlRrWw+WoB
- +CA==
-Received: from FRANKSTHINKPAD ([76.105.143.216])
- by smtp.oxsus-vadesecure.net ESMTP oxsus2nmtao01p with ngmta
- id 617a60f5-16a8bb7a5559963b; Mon, 27 Sep 2021 16:43:19 +0000
-From:   "Frank Filz" <ffilzlnx@mindspring.com>
-To:     "'Bernd Schubert'" <bernd.schubert@fastmail.fm>,
-        "'Kent Overstreet'" <kent.overstreet@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-bcachefs@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>
-References: <YVEjEwCiqje7yDyV@moria.home.lan> <dbe56ac2-22bd-74d5-ab5d-9f6673884212@fastmail.fm>
-In-Reply-To: <dbe56ac2-22bd-74d5-ab5d-9f6673884212@fastmail.fm>
-Subject: RE: bcachefs - snapshots
-Date:   Mon, 27 Sep 2021 09:43:19 -0700
-Message-ID: <000901d7b3be$c7783120$56689360$@mindspring.com>
+        Mon, 27 Sep 2021 12:45:17 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2DBC061575;
+        Mon, 27 Sep 2021 09:43:39 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 145so16367562pfz.11;
+        Mon, 27 Sep 2021 09:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mpp3yt5UlhJzcT0WXNiNQ5zDVt3UnhzU5xESPpUlLrY=;
+        b=N6U4tHO7NsJPCAI0pl2qLjHILOWVWb0tMyq2HluBHcliYns5+8xvPinnRPTqZLH0Vp
+         mjDwUGERqM+OLJEABbwAol4NPWVJezO6I0MZVTKNORmd/B+h34NEDOcb68rAv0YmupuZ
+         8bkK3aG6reOpZDr0tyJ84dzBfEbp0AIADBf+YFz/B8Xh37dd+8jayjQ++afsnikievA0
+         hyvk7st00zP25LRpCvBlwq0w0Of4Sop9JeO9VLHlA21sz70pV4PKeb1VbDW6QVCFsBW/
+         aU+qGeKRdcYyDOavIovSgSbh4pdi9nQFhqQMkv5AQdDHphByKFQ2pvBbQxKAG4mdMzWO
+         aPpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Mpp3yt5UlhJzcT0WXNiNQ5zDVt3UnhzU5xESPpUlLrY=;
+        b=UUbcANZf7DBFeJhnD9u1A4GaBTOFLeXsTZMxzq6RGSWQKWN+k2IFQQkQL/9WqmO4/K
+         WcUtYFXYS0oXArPU5EQPZIqsq7Sxm1HNAnp64Ku4SgS7Lm0dkne9vVUl0C7NPU7B1Y0h
+         ecXmkOxXlmzx3LVxq2T6lGlrTSvbTFzrgD0ARw6YO6XGAivo6EMQ/daGFuCm2qQAXC1x
+         qDgKvgOwIhIqx+egcLN3N7IRezhE0ZVjKWuRpY1DbHMVSpEnvJWxex/4zT+ETzHAah2n
+         M7onxWwGuTCI1qIle7k8I355h+vPFhCBs8by96hDZRuGau/1o0aTguo+WiO5xbSgSh6/
+         T5bQ==
+X-Gm-Message-State: AOAM53113vx5DhiJduI5lhtq1zF/O7LTAvGNALxbxyj49/pFRzmYSmhs
+        gJaQxLmNAeHwwEkvkUlXnYnV24+P2A0=
+X-Google-Smtp-Source: ABdhPJwmazHB15zxzDX59vC+eDNU/75kvTpRv3bXs6Y+Knr3x5h8A8K7naXV8ZUXyy79WUEHnmSA6g==
+X-Received: by 2002:a63:334c:: with SMTP id z73mr570514pgz.160.1632761018498;
+        Mon, 27 Sep 2021 09:43:38 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id b3sm17339636pfo.23.2021.09.27.09.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 09:43:38 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 27 Sep 2021 06:43:36 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup/debug: Fix lockdep splat with "%pK" format
+ specifier
+Message-ID: <YVH0uKGGmRjrIlFy@slm.duckdns.org>
+References: <20210927025807.26918-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 15.0
-Content-Language: en-us
-Thread-Index: AQHCRnh4jFWeawLJluj8xr2TSBBLCwJ/DqcMq873OMA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927025807.26918-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 9/27/21 3:49 AM, Kent Overstreet wrote:
-> > Snapshots have been merged! 9 months of work and 3k lines of new =
-code,
-> > finally released. Some highlights:
-> >
-> >  - btrfs style subvolumes & snapshots interface
-> >  - snapshots are writeable
-> >  - highly scalable: number of snapshots is limited only by your disk
-> > space
-> >  - highly space efficient: no internal fragmentation issues
-> >
-> > Design doc here: https://bcachefs.org/Snapshots/
-> >
-> > The core functionality is complete - snapshot creation and deletion
-> > works, fsck changes are done (most of the complexity was in making
-> > fsck work without O(number of snapshots) performance - tricky). =
-Everything
-> else is a todo item:
-> >
-> >  - still need to export different st_dev for files in different =
-subvolumes
-> >    (we'll never allocate a new inode with an inode number that =
-collides with an
-> >    inode inother subvolume - but snapshots will naturally result in =
-colliding
-> >    inode numbers)
->=20
-> With my limited high level view on it - shouldn't you discuss with =
-Neil about a
-> solution and to avoid going the btrfs route for colliding inode =
-numbers?
+Hello,
 
-I was going to ask that also having been watching the btrfs subvolume =
-saga. As maintainer of the Ganesha user space NFS server I have an =
-interest in this also though we haven't had anyone talk about bcachefs =
-yet.
+On Sun, Sep 26, 2021 at 10:58:07PM -0400, Waiman Long wrote:
+> The lockdep splat is caused by the fact that the debug controller use the
+> "%pK" format specifier to print out address of cset's with css_set_lock
+> held. Under some circumstances, the use of "%pK" format specifier may
+> acquire the selinux_ss.policy_rwlock.
+> 
+> To avoid this possible deadlock scenario, we have to abandon the use of
+> the "%pK" format specifier and just use "%p" to always hash the cset
+> addresses. The actual cset addresses aren't that important as long as
+> they are unique for matching purpose.
 
-Frank
+Isn't the right thing to do here making the selinux rwlock an irqsafe one?
+It's a bit crazy to have printf specifier to have restrictive locking
+requirements.
 
+Thanks.
+
+-- 
+tejun
