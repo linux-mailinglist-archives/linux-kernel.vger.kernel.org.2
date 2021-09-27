@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB50E4194A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6524194A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234445AbhI0Mxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbhI0Mxx (ORCPT
+        id S234425AbhI0Mzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:55:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234396AbhI0Mzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:53:53 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B7CC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:52:15 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so10063309pjw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=uwRoL4vai1J0WCVDQj2ZNZYEe4M117wFeqCni6D+v3E=;
-        b=lIuP9Ea+24LNri1ZcHUdW/tVNQU6hgWf3lQMcY95jfTE1wQGynD3ga2bdh/5fiQFZc
-         UUVP09bfDPEFimluS++Fl83/d7CDJgAlCM6s2z9A75bueSCVTgNWHl4oDxPmwheDxSrJ
-         Wz4rskU73WgwwIMLriyk9Mo2xpBQ7lBLVWb27Y1T4fgQ3oWzDh8Axg8kb5DKTIX+UKLd
-         oi1lw4uIBnBQkrcXQeGnF1Ux5oyeuTG4aLdnNllda7WUUgOAXxq2nbJix5fZik9fKOYh
-         rB0QzqnBDqd26WDp4QwvOlBSNkkhWGWNml55lp4lVYIio878F2uYtU2DVae0i8gkOoAB
-         qyBg==
+        Mon, 27 Sep 2021 08:55:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632747253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vqmCLZUE/RvdZRryhurm8ZYGJCB6f4ZHjcfNNE4aW4s=;
+        b=PODrkc9JYKOdWTwOBmSdo36BCDjrhdMqFxZ5pNXzZUOLF77M0BMSVk+mWHEV/sJu5eUVuK
+        2R5+BbQ0e6jq15fdYM31pyztzC7yy91B+2PWwr+BgMLerjWEYhnKZIJCYgg7gRrkN8crmz
+        5fKJ4kR73rEMxbG9Bfa02P8XX4DdUgk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-3EJklWZwM7uPvmc8DPY3HA-1; Mon, 27 Sep 2021 08:54:12 -0400
+X-MC-Unique: 3EJklWZwM7uPvmc8DPY3HA-1
+Received: by mail-ed1-f70.google.com with SMTP id h15-20020aa7de0f000000b003d02f9592d6so17609429edv.17
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:54:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=uwRoL4vai1J0WCVDQj2ZNZYEe4M117wFeqCni6D+v3E=;
-        b=f3uPWYyWI1iy0HZ7DhDY+PTSVS3npPmDsjR9bF2RijPbxG78zVpn812eLT1oYueIxd
-         SJze3pyfOtCvT750mfA8n2P+IkNkQGATRhYrg7IqPm59uUC6X91x6cicNXoaunTfRZuc
-         Q+2HZJz14PjZIvGtWpaDyBFSLDJOdcosWkO2p06vviSzpHOXMj6kWlxCVufk26PM4Nif
-         uP22UkVGmt0Gg/PzsfsW+zYiz47OHy2Ktu2azuZzjvhesgm/Fy80vOQ0s9YNf05Q9fpT
-         srzTc6HoHSHHUNkEaAFea1Uo5rHDcOQW2M0r+OGMfGMjlLfi6RoJId9PViXg//facVSj
-         xAcQ==
-X-Gm-Message-State: AOAM531OlFXeTBno2W0kWkwbwERVdfbqJxUeR+gzlIpTN1nPRdFlMkKK
-        JY804vqYhG0Uzm1KAnj/fgU=
-X-Google-Smtp-Source: ABdhPJx7Pg/Umy0XcsNCFDGYkPG5X0aJOG/Q6pDcZTE/qrvym6KCK3DQx7zD0+9QBdbYAzi4puEBhw==
-X-Received: by 2002:a17:90a:8810:: with SMTP id s16mr8581927pjn.7.1632747134920;
-        Mon, 27 Sep 2021 05:52:14 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id q18sm17715537pfj.46.2021.09.27.05.52.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Sep 2021 05:52:14 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 2/8] mm/madvise: remove unnecessary check on
- madvise_dontneed_free()
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20210927121902.r5gslag4nvvseoxo@box>
-Date:   Mon, 27 Sep 2021 05:52:12 -0700
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8ACD5AC6-2235-4A62-8044-F686EB26840E@gmail.com>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-3-namit@vmware.com>
- <20210927091143.tn6ediykqycu6rtu@box.shutemov.name>
- <DD025444-B1A2-4470-9069-0072A59427A5@gmail.com>
- <20210927121902.r5gslag4nvvseoxo@box>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=vqmCLZUE/RvdZRryhurm8ZYGJCB6f4ZHjcfNNE4aW4s=;
+        b=wlUPdU9nXfVZ2uP+paAzDbQ/N+bTlkDhceSCQl7IwaWgbN4Ow2iO6wpkbtCQ/m/IpV
+         wmBUc3AvSHtHNQT5SY56SbfHmf19gvAVPC3xxdA/lW8/aiy776d1NmoGB2LBZAW6DaHp
+         bCqbJcS+SMpYExbJ+Hqbnp1Fn6IrVKwrCpmf9HW5YzG6oVqPjugVzFD0RyCXSCCsep1v
+         Io52hTMN5KPWoB/1eeoF45Ta7qBnF046Fp+hjrhOWzwtUhrdQWIBNK/Bxssa3yofJcRk
+         oeN4503HMJaWnSJWEvhwtzE4X9z+2LECXrmYpndyTFMV8fgKTSiPvhWRNabx2IaIJiNj
+         XyqA==
+X-Gm-Message-State: AOAM532kuTakbWx3gVNuxFqEvIgeH8+TgAGB/iuBA0RSCUiipxTlIz0G
+        eaEsmLiYCIQAaixhYyrlv9mjJkMqgYX0PBHxqBwtZrIeRhbk6BwyZ4MAzcxKsyA/cufklXAtpWR
+        3ICdZ8G1euRmeIGy+eDnmTrXO
+X-Received: by 2002:a05:6402:336:: with SMTP id q22mr23230111edw.53.1632747251022;
+        Mon, 27 Sep 2021 05:54:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwh2KYg0dnn8JVSWbgyFbmkyYWSZ1VqCAk6GrPkabmD/MjIijY41QSlBI2wv4H6jHN8FyRGNw==
+X-Received: by 2002:a05:6402:336:: with SMTP id q22mr23230070edw.53.1632747250829;
+        Mon, 27 Sep 2021 05:54:10 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j6sm8611436ejk.114.2021.09.27.05.54.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 05:54:10 -0700 (PDT)
+Message-ID: <afc34b38-5596-3571-63e5-55fe82e87f6c@redhat.com>
+Date:   Mon, 27 Sep 2021 14:54:08 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Babu Moger <babu.moger@amd.com>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
+        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
+ <YVGkDPbQmdwSw6Ff@zn.tnic> <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
+ <YVGz0HXe+WNAXfdF@zn.tnic> <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
+ <YVG46L++WPBAHxQv@zn.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YVG46L++WPBAHxQv@zn.tnic>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/09/21 14:28, Borislav Petkov wrote:
+> On Mon, Sep 27, 2021 at 02:14:52PM +0200, Paolo Bonzini wrote:
+>> Right, not which MSR to write but which value to write.  It doesn't know
+>> that the PSF disable bit is valid unless the corresponding CPUID bit is set.
+> 
+> There's no need for the separate PSF CPUID bit yet. We have decided for
+> now to not control PSF separately but disable it through SSB. Please
+> follow this thread:
 
+There are other guests than Linux.  This patch is just telling userspace 
+that KVM knows what the PSFD bit is.  It is also possible to expose the 
+bit in KVM without having any #define in cpufeatures.h or without the 
+kernel using it.  For example KVM had been exposing FSGSBASE long before 
+Linux supported it.
 
-> On Sep 27, 2021, at 5:19 AM, Kirill A. Shutemov <kirill@shutemov.name> =
-wrote:
->=20
-> On Mon, Sep 27, 2021 at 04:05:47AM -0700, Nadav Amit wrote:
->> Having said that, if you want, I can turn this condition into
->> WARN_ON_ONCE() or VM_BUG_ON(), although I really see no reason to
->> do so.
->=20
-> BUILD_BUG() should be fine here.
+That said, the patch is incomplete because it should also add the new 
+CPUID bit to guest_has_spec_ctrl_msr (what KVM *really* cares about is 
+not the individual bits, only whether SPEC_CTRL exists at all).
 
-It does not work. At least my gcc is not smart enough to figure it
-out in build time.
-
-I can put instead:
-
-	BUILD_BUG_ON(__builtin_constant_p(behavior));
-
-for potentially smarter compilers (clang?), but I doubt it would work.
-
+Paolo
 
