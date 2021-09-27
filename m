@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1723F4191CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C18E4191D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhI0Jvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:51:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233680AbhI0Jvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:51:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0EB60F70;
-        Mon, 27 Sep 2021 09:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632736211;
-        bh=KtQwfWlN6z5FTUvVzqtdfbSOfg7sCBGIIuVYv4bnZ3w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=j2wTL+cZYs1v6vTzwrd/UiAQ2VH9c5ySHLrMAo0w+GhBLH87jiejo5Nm+BgPed/pp
-         vOVce62at6PxEw8g+8Oyazob2aL3C/X4x/ULopOIVWnL26G+Pju1Yf/snTnYeWf0l7
-         4Wx5cnJVmtD3CGhoYVZYnm0y+VFFdS8dVajdTl8SwY4hdHcwCoEnF8M/+LC4pGIQkf
-         tZpduSADVwAooNALtbZDd1FwgZUH+lQn6L954EcWfeb8js4RVdzWwjbhaWwthfosAl
-         uu3N7KYkpizPTGlMTQrRk067fxR3WezmFHKu0heNH5VshsxowYZT1m8O+ehSJb1a50
-         ZJnpz0QXtNbMg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: hns3: fix hclge_dbg_dump_tm_pg() stack usage
-Date:   Mon, 27 Sep 2021 11:49:53 +0200
-Message-Id: <20210927095006.868305-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233761AbhI0JxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233760AbhI0JxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:53:09 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEA2C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:51:28 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id bb10so11407926plb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SRePW3/TNCc7XAOvX2Kj8B2CrMxOQEcmgec1IIbW5Bc=;
+        b=Kv0CFzwqmrmNCeq5ie36LnoFoefO3upoJO65nED9HFSLpOR8RWZrEybbVYO7On51L+
+         yDr5vWV5JZQBK6y3B+w9GeG8IYVc4uzKBgVSguCCkzT3hUli/9zvA9HXvMzYD9YSwuB+
+         Ed9zJmWD4L6tMMshbGjdANvnABU4nNzy3YaG9twfYmOKTHpbOq5XVOQFouj30mAUlZTi
+         H3oFHfOM+UR1UEd4iPmH7cyAmNzYhkNgma7rk9envMghYIk6IYIK/UFa+wcf+L51zh/9
+         gKntTZE8Te8MSY2DqGPODRBkP7dg8699MLXvo+eU1rfvJ38sNCJ5Bs9rSHwMJHQjaO73
+         BLpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SRePW3/TNCc7XAOvX2Kj8B2CrMxOQEcmgec1IIbW5Bc=;
+        b=bK3gKLNfNegGXHOV7eHMdWHX/V35xScMYxCS08nHNTcjeCoL9ML7omP7HpbR4oqISV
+         YfcY7QFUREI9lejmupToRD3ybU1tj4oZgMa6R+sSyuY7PIivHR4FmUP+vBk0m6BCtqzv
+         p4WeoCnvrrJgzNUFCXJl4+UTAaHCJlZlR9YDlUvrGttItovWHEBaFTXlEHmSB9cDxkyt
+         wZNxz6rBNOzQrnIYPt/8ltcy8k1WQN4yBcoK7N0huXGpAWXL+n2K23S989XcSzYNl1x4
+         Zl9frNloPAZeXh1A0EjlgC7RnH6+wklkp3uwA+NqL3HNXhN4wBY+OR492GdQyD+KMtiB
+         Pjcw==
+X-Gm-Message-State: AOAM530zcbewB1gZMhXY/tu5k8xFd1kM+MDtM3VN8CicOc+mlNEW8BNc
+        HMlG75SkyDmBtcqlAhaucisKXqJ7frk3wzUzm8Iktg==
+X-Google-Smtp-Source: ABdhPJy8qcfslrU6xWthqnTohHRpxrn9aUuU1mGA/gd6Rw6vxMIxAEKfecnkKiSEsHRjsb3BAljBhVwwKX2poMkSz6U=
+X-Received: by 2002:a17:90a:f293:: with SMTP id fs19mr6467832pjb.137.1632736287919;
+ Mon, 27 Sep 2021 02:51:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210927094327.644665-1-arnd@kernel.org>
+In-Reply-To: <20210927094327.644665-1-arnd@kernel.org>
+From:   Martijn Coenen <maco@android.com>
+Date:   Mon, 27 Sep 2021 11:51:17 +0200
+Message-ID: <CAB0TPYGWXAs5t_bG8BMs_9xvOmfsJiy1ejM0WoJC3Ts3yC6E1Q@mail.gmail.com>
+Subject: Re: [PATCH] loop: avoid out-of-range warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Thanks!
 
-This function copies strings around between multiple buffers
-including a large on-stack array that causes a build warning
-on 32-bit systems:
+On Mon, Sep 27, 2021 at 11:43 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang warns that the sanity check for page size always succeeds
+> when building with 64KB pages:
+>
+> drivers/block/loop.c:282:27: error: result of comparison of constant 65536 with expression of type 'unsigned short' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
+>                            ~~~~~ ^ ~~~~~~~~~
+>
+> There is nothing wrong here, so just shut up the check by changing
+> the type of the bsize argument.
+>
+> Fixes: 3448914e8cc5 ("loop: Add LOOP_CONFIGURE ioctl")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Martijkn Coenen <maco@android.com>
 
-drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pg':
-drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:782:1: error: the frame size of 1424 bytes is larger than 1400 bytes [-Werror=frame-larger-than=]
-
-The function can probably be cleaned up a lot, to go back to
-printing directly into the output buffer, but dynamically allocating
-the structure is a simpler workaround for now.
-
-Fixes: 04d96139ddb3 ("net: hns3: refine function hclge_dbg_dump_tm_pri()")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 26 ++++++++++++++++---
- 1 file changed, 22 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-index 87d96f82c318..3ed87814100a 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-@@ -719,9 +719,9 @@ static void hclge_dbg_fill_shaper_content(struct hclge_tm_shaper_para *para,
- 	sprintf(result[(*index)++], "%6u", para->rate);
- }
- 
--static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
-+static int __hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *data_str,
-+				  char *buf, int len)
- {
--	char data_str[ARRAY_SIZE(tm_pg_items)][HCLGE_DBG_DATA_STR_LEN];
- 	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
- 	char *result[ARRAY_SIZE(tm_pg_items)], *sch_mode_str;
- 	u8 pg_id, sch_mode, weight, pri_bit_map, i, j;
-@@ -729,8 +729,10 @@ static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
- 	int pos = 0;
- 	int ret;
- 
--	for (i = 0; i < ARRAY_SIZE(tm_pg_items); i++)
--		result[i] = &data_str[i][0];
-+	for (i = 0; i < ARRAY_SIZE(tm_pg_items); i++) {
-+		result[i] = data_str;
-+		data_str += HCLGE_DBG_DATA_STR_LEN;
-+	}
- 
- 	hclge_dbg_fill_content(content, sizeof(content), tm_pg_items,
- 			       NULL, ARRAY_SIZE(tm_pg_items));
-@@ -781,6 +783,22 @@ static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
- 	return 0;
- }
- 
-+static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
-+{
-+	int ret;
-+	char *data_str = kcalloc(ARRAY_SIZE(tm_pg_items),
-+				 HCLGE_DBG_DATA_STR_LEN, GFP_KERNEL);
-+
-+	if (!data_str)
-+		return -ENOMEM;
-+
-+	ret = __hclge_dbg_dump_tm_pg(hdev, data_str, buf, len);
-+
-+	kfree(data_str);
-+
-+	return ret;
-+}
-+
- static int hclge_dbg_dump_tm_port(struct hclge_dev *hdev,  char *buf, int len)
- {
- 	struct hclge_tm_shaper_para shaper_para;
--- 
-2.29.2
-
+> ---
+>  drivers/block/loop.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index 7bf4686af774..51315a93b399 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -277,7 +277,7 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
+>   * @bsize: size to validate
+>   */
+>  static int
+> -loop_validate_block_size(unsigned short bsize)
+> +loop_validate_block_size(unsigned int bsize)
+>  {
+>         if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
+>                 return -EINVAL;
+> --
+> 2.29.2
+>
