@@ -2,41 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0816D419D5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6C4419D5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237836AbhI0RtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:49:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57794 "EHLO mail.kernel.org"
+        id S237658AbhI0RtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237645AbhI0Rst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:48:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE73560F44;
-        Mon, 27 Sep 2021 17:47:10 +0000 (UTC)
+        id S237703AbhI0Rsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:48:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E3D560F4F;
+        Mon, 27 Sep 2021 17:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632764831;
-        bh=i7blgZyfS+mFt4Ld57udc69/YXBlJ3xJDR6msSxUss0=;
+        s=k20201202; t=1632764833;
+        bh=vaAGDWdMM7DnyyWXxtxSddAQ5DUocd9iZv+90xzItsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DvEZzOqgxcVKBWCu+ZsDamv8nRi+d3PdzasFCR5Fo3wyJWYJheVfUXyL2KQT/9mCY
-         lRVdJPkfOdW0GgNVnG68B3kxp8DULCEqhdCH9SBwwsEf3+0/JilAK+mF4aBV7mElzY
-         Gsp0EffL0o0xGoU0sUfaKdvHN5hURWuHe/RVqi2LlBT+652j331D28NY2EPfuppSam
-         Tf37q2rJZ3OVldRK0j8GTsBs01Ds6v2SgSX5bvZBSvNyhpGAV7NCz+ECJoffrVKsmb
-         NO4v9uUyvYnfaaSoMWEK8HjjNdjc11o0BtIBTmDSuNOUiZqfaF51BCJ+0bULL5cNcY
-         gKN6qgL+IBi+g==
+        b=PiFQVEkTlYZsjWIqN83tvpAeQS66u7BaiLdsgKY23NVT37ltIo5A/J757P2ckRcXX
+         LAby4ZotutVpi4NN8g8T7JJupJPfdmbQRlQJMwukYoW3LsYvF7lWlwmMljrK914qym
+         lE3moP1tt0iBiich7SPzrlbeKgclai6zoN456Gq7/Ow1QJJe/CB9ihDPOArQJZAeWa
+         DE7aIz+zwTRqQatXZ7erRpkshQbFmDbj56SCyRFc5wUA1/boF0adClXp86FQOmbRtH
+         mnDhlauYAFfkrHwA91ENcqwbk2yZq+dL4RUnNcG0yLYwpq/eggvl3sL+Nl2gUwaz/0
+         9iwf+2T1zRDRA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Arnd Bergmann <arnd@kernel.org>,
+To:     linux-arm-kernel@lists.infradead.org,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: samsung: add missing "fallthrough;"
-Date:   Mon, 27 Sep 2021 18:45:26 +0100
-Message-Id: <163276442024.18200.3747071344382107374.b4-ty@kernel.org>
+        alsa-devel@alsa-project.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Colin King <colin.king@canonical.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ASoC: meson: aiu: Fix spelling mistake "Unsupport" -> "Unsupported"
+Date:   Mon, 27 Sep 2021 18:45:27 +0100
+Message-Id: <163276442024.18200.9710161748366724709.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210927095449.1070639-1-arnd@kernel.org>
-References: <20210927095449.1070639-1-arnd@kernel.org>
+In-Reply-To: <20210924231242.144692-1-colin.king@canonical.com>
+References: <20210924231242.144692-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,31 +49,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 11:54:34 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Sat, 25 Sep 2021 00:12:42 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> With gcc, we get a warning in this file:
+> There is a spelling mistake in a dev_err error message. Fix it.
 > 
-> In file included from include/linux/io.h:13,
->                  from sound/soc/samsung/s3c-i2s-v2.c:16:
-> sound/soc/samsung/s3c-i2s-v2.c: In function 's3c2412_i2s_trigger':
-> arch/arm/include/asm/io.h:92:22: error: this statement may fall through [-Werror=implicit-fallthrough=]
->  #define __raw_writel __raw_writel
->                       ^
-> arch/arm/include/asm/io.h:299:29: note: in expansion of macro '__raw_writel'
->  #define writel_relaxed(v,c) __raw_writel((__force u32) cpu_to_le32(v),c)
->                              ^~~~~~~~~~~~
-> arch/arm/include/asm/io.h:307:36: note: in expansion of macro 'writel_relaxed'
->  #define writel(v,c)  ({ __iowmb(); writel_relaxed(v,c); })
->                                     ^~~~~~~~~~~~~~
-> sound/soc/samsung/s3c-i2s-v2.c:398:3: note: in expansion of macro 'writel'
->    writel(0x0, i2s->regs + S3C2412_IISFIC);
->    ^~~~~~
-> sound/soc/samsung/s3c-i2s-v2.c:400:2: note: here
->   case SNDRV_PCM_TRIGGER_RESUME:
->   ^~~~
 > 
-> [...]
 
 Applied to
 
@@ -76,8 +62,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: samsung: add missing "fallthrough;"
-      commit: 501849d97e532ca77371498e5a1b1881aab2e6d2
+[1/1] ASoC: meson: aiu: Fix spelling mistake "Unsupport" -> "Unsupported"
+      commit: 9929265f2a7b5fa15d460dbbaa7f388c303411da
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
