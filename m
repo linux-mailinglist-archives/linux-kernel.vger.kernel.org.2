@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3601041A3CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A2941A3CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbhI0X0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 19:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S238181AbhI0X0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 19:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238153AbhI0X0F (ORCPT
+        with ESMTP id S238189AbhI0X0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 19:26:05 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC92C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:24:26 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u1-20020a17090ae00100b0019ec31d3ba2so376141pjy.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:24:26 -0700 (PDT)
+        Mon, 27 Sep 2021 19:26:16 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3F4C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:24:37 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s75so2750433pgs.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:24:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GCzm4poULKgx57QgluC94f0t7RIOPooxQya71dloyms=;
-        b=nCp0UtgIb73IG+2ORtKcI5uHOuMCAd3ZU1t1ZH3uVz98qBzlmRdBVAjizLKhkFLVrF
-         Q/4TxiHYloWScmgXlT9fcRor3LzS+USZZl/gXQWkFuUZ3HNSedxFAESL3VHCqkPhqR7n
-         IkTJUYFCnUg+HKJuB+jIz0LgO22a44o81p8C6b4rPkkmmu6jlaUBgA95E20j15Rk6lWv
-         Lbc0BOYlR2hkWIhLjalbtOy28HcqL0968qLg77HPtUUZCiQBkpCext6QZXcAjRCGJYou
-         rAM0/ZYLjJcDWzMQICW9QsGTBJSLeohpdWGAigpNvwTBjv3k8aqTP1UN2+Un0AbbdBu3
-         bpeQ==
+        bh=Ly15VAemQnFv0oKVr/z7Q4soqSYUoye194ZW1HbvAvA=;
+        b=IJ2s3pVRMmEGE3ltGp+WGmpMZngRiTKSlJJr/tNBtgDtT1Ko2KcQpIFDSlj/C7aVAQ
+         JYEoZoRvdKH0zpC29MFiHm67rVnIvcKSIJiva2/w41ZJ1fLxQ3bzIFQQzU72p2G5NT7p
+         12GSgz8Vo1fJBw8g/xtwFH9jBGSBq7Mj4Z/ImHKQ1/+Wz814ry0UXEtfejS+JIa66kU+
+         8ZWSYhhHWwmqMAR9Lzy/k6aPfVHdO76GHyr3vZ2aXLuyQzgB97+dhS9CtFGmDBWGKhbn
+         hvKTG1xm1JgoxprPaq04wjgc7RTO1hCHF+Xft36Y8Jdq1lrdZKoiQ7te1pDWJFv+zZMF
+         uzkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GCzm4poULKgx57QgluC94f0t7RIOPooxQya71dloyms=;
-        b=Ab0Ha8JoddG7XRc7Cth4FNPCZUJ1dJsrAW0k0Ed/f9rLLDlZtb/oLrF0dZFgZU1ocV
-         2colmyqGg2oBkXTaYpMLJzOO5wJa8OkDOELos6ARt/ZQzI0uSSQe82Rj8upRnIvvgGM+
-         UxvTPLZMRDlzBvgkd54/Ro4sjKawIEV0DXnFLozyTyUM/E7bXcKi8/gkXX0lzPk2/EMv
-         67EcQar3DOVzZmRx63uHA/76tB2hnY4GbpKrpQTY6PHrcWsHeQBzYXUd6Iy8RwqtYmyq
-         wb98DVIiVD7mxveis8CHbD2AUiPO4cuPXWXGDsVlCyY7Rch4OXF7ZYsigNYgHTkvgPNA
-         wpow==
-X-Gm-Message-State: AOAM531sRhhaxDnqtpgl7ukAbfCiJuw4a5ZJONHs4+UVWJTtOEUl+30g
-        0XfmlwIftAzaV5aTr7thYAE=
-X-Google-Smtp-Source: ABdhPJzfR1FtfapSlDY6H27NcruxHOaxPIHmWTQ5bSsaHoxTUvKD/lLOaBHjtgTFJhv4UTcOTFiVag==
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr1854719pjb.238.1632785066359;
-        Mon, 27 Sep 2021 16:24:26 -0700 (PDT)
+        bh=Ly15VAemQnFv0oKVr/z7Q4soqSYUoye194ZW1HbvAvA=;
+        b=MLYsmxjvAEisgKIqaurw0k5ho6TyaMh0vABp6+MklFavoSgjfw0stD4Xs8SQ6Uhyu8
+         HyaQsnNcHojUg8j8aSafZUHBAFCiC6M0Nb5tRQ0Fxfs0dgrQjcBl111Hdnk6CLlWGen+
+         9Ka0lvK1yQelMKdyaDoBZfApwZAdPpd9bjGOZjdaoC6vRCREY9CEw8fy7wbhcAi/kpC7
+         NeOBl3AxqZRJKrfRKYCAM6GFMy9Iqqk0f4zmlL7z9dhNeYVAQMfLL4fjl9OX3vcUPKDD
+         V0vF9CzLRKBnH7bXkbwQC2krLOyWUY8QEP2+M34gVb/aBqCNF7mIK6XmbTFzHoAzDY4i
+         g4Zw==
+X-Gm-Message-State: AOAM532U/0D6HOpqOGLs1uAcAGbu1zPsvHgWtg2srAmkvJk5R42BPk94
+        G2cQODblD8btfpYzUNhcosI=
+X-Google-Smtp-Source: ABdhPJyiSUOxQu0y3+oGMO4aOI3uwpQXfkfagXvCDGF+s29Fm2JVk+EuRHuAeab1ckQcPa58mQ1c1g==
+X-Received: by 2002:aa7:9e49:0:b0:44b:2a06:715e with SMTP id z9-20020aa79e49000000b0044b2a06715emr2564611pfq.78.1632785077495;
+        Mon, 27 Sep 2021 16:24:37 -0700 (PDT)
 Received: from vultr.guest ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id f27sm19145933pfq.78.2021.09.27.16.24.24
+        by smtp.gmail.com with ESMTPSA id q18sm18088353pfh.170.2021.09.27.16.24.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 16:24:25 -0700 (PDT)
+        Mon, 27 Sep 2021 16:24:37 -0700 (PDT)
 From:   Changbin Du <changbin.du@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         SeongJae Park <sjpark@amazon.de>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] mm/damon: remove unnecessary do_exit() from kdamond
-Date:   Tue, 28 Sep 2021 07:24:21 +0800
-Message-Id: <20210927232421.17694-1-changbin.du@gmail.com>
+Subject: [PATCH] mm/damon: needn't hold kdamond_lock to print pid of kdamond
+Date:   Tue, 28 Sep 2021 07:24:32 +0800
+Message-Id: <20210927232432.17750-1-changbin.du@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,26 +63,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just return from the kthread function.
+Just get the pid by 'current->pid'. Meanwhile, to be symmetrical make
+the 'starts' and 'finishes' logs both info level.
 
 Signed-off-by: Changbin Du <changbin.du@gmail.com>
 ---
- mm/damon/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/damon/core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 30e9211f494a..bc5f74348649 100644
+index bc5f74348649..3ef3e2bb091e 100644
 --- a/mm/damon/core.c
 +++ b/mm/damon/core.c
-@@ -714,7 +714,7 @@ static int kdamond_fn(void *data)
- 	nr_running_ctxs--;
- 	mutex_unlock(&damon_lock);
+@@ -652,9 +652,7 @@ static int kdamond_fn(void *data)
+ 	unsigned int max_nr_accesses = 0;
+ 	unsigned long sz_limit = 0;
  
--	do_exit(0);
-+	return 0;
- }
+-	mutex_lock(&ctx->kdamond_lock);
+-	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
+-	mutex_unlock(&ctx->kdamond_lock);
++	pr_info("kdamond (%d) starts\n", current->pid);
  
- #include "core-test.h"
+ 	if (ctx->primitive.init)
+ 		ctx->primitive.init(ctx);
+@@ -705,7 +703,7 @@ static int kdamond_fn(void *data)
+ 	if (ctx->primitive.cleanup)
+ 		ctx->primitive.cleanup(ctx);
+ 
+-	pr_debug("kdamond (%d) finishes\n", ctx->kdamond->pid);
++	pr_info("kdamond (%d) finishes\n", current->pid);
+ 	mutex_lock(&ctx->kdamond_lock);
+ 	ctx->kdamond = NULL;
+ 	mutex_unlock(&ctx->kdamond_lock);
 -- 
 2.25.1
 
