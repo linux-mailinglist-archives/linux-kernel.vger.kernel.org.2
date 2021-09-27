@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A3A419AB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35947419C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhI0RLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47286 "EHLO mail.kernel.org"
+        id S236611AbhI0R1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:27:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236358AbhI0RJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C19316121E;
-        Mon, 27 Sep 2021 17:07:25 +0000 (UTC)
+        id S237802AbhI0RXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:23:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99FCD6136F;
+        Mon, 27 Sep 2021 17:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762446;
-        bh=cqnwLHnXlWbv+GGTD1ROHx9PVULxwb/wRGtL2iOJ8VA=;
+        s=korg; t=1632762909;
+        bh=YdKmW74Bx+an5TB/qALyKl2Log0GvXtCp2YzBtllF5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kkH5zJmz6Ij2D4xakk3xK9JdH9VH23vrRVa+iPd4+cPVa3q0ifIOkLQjRsHHcT/gj
-         en0swVN5dMtSAum59bt2G9NJmF3DTsI6NmFbg/UzVE62VK9+tLooCrT0ydGlwxaMWR
-         MmhYWvWROq1By7qy0z5ZD4QJsxN/dZk6no+WPS3k=
+        b=1n1tBWRtItEX43GkLzgDRvyrFJ4LeBDE0S718sjDmgfhSUuOkRl6ChP5DqbaTUnPx
+         cdcbcftOKxXuH9nBVrK9XL1JJ7gdw6jTgueKjLhDHqgh6G5N/P9yrO9qnHcrAagDas
+         E5IO8kijSaqHUICL/213dh4Dk0/jK1/qsr/a7+cg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 008/103] cifs: fix incorrect check for null pointer in header_assemble
+        stable@vger.kernel.org, Dai Ngo <Dai.Ngo@oracle.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 054/162] NLM: Fix svcxdr_encode_owner()
 Date:   Mon, 27 Sep 2021 19:01:40 +0200
-Message-Id: <20210927170225.994608878@linuxfoundation.org>
+Message-Id: <20210927170235.363903954@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-commit 9ed38fd4a15417cac83967360cf20b853bfab9b6 upstream.
+[ Upstream commit 89c485c7a3ecbc2ebd568f9c9c2edf3a8cf7485b ]
 
-Although very unlikely that the tlink pointer would be null in this case,
-get_next_mid function can in theory return null (but not an error)
-so need to check for null (not for IS_ERR, which can not be returned
-here).
+Dai Ngo reports that, since the XDR overhaul, the NLM server crashes
+when the TEST procedure wants to return NLM_DENIED. There is a bug
+in svcxdr_encode_owner() that none of our standard test cases found.
 
-Address warning:
+Replace the open-coded function with a call to an appropriate
+pre-fabricated XDR helper.
 
-        fs/smbfs_client/connect.c:2392 cifs_match_super()
-        warn: 'tlink' isn't an ERR_PTR
-
-Pointed out by Dan Carpenter via smatch code analysis tool
-
-CC: stable@vger.kernel.org
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Dai Ngo <Dai.Ngo@oracle.com>
+Fixes: a6a63ca5652e ("lockd: Common NLM XDR helpers")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/lockd/svcxdr.h | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -3504,9 +3504,10 @@ cifs_match_super(struct super_block *sb,
- 	spin_lock(&cifs_tcp_ses_lock);
- 	cifs_sb = CIFS_SB(sb);
- 	tlink = cifs_get_tlink(cifs_sb_master_tlink(cifs_sb));
--	if (IS_ERR(tlink)) {
-+	if (tlink == NULL) {
-+		/* can not match superblock if tlink were ever null */
- 		spin_unlock(&cifs_tcp_ses_lock);
--		return rc;
-+		return 0;
- 	}
- 	tcon = tlink_tcon(tlink);
- 	ses = tcon->ses;
+diff --git a/fs/lockd/svcxdr.h b/fs/lockd/svcxdr.h
+index c69a0bb76c94..4f1a451da5ba 100644
+--- a/fs/lockd/svcxdr.h
++++ b/fs/lockd/svcxdr.h
+@@ -134,18 +134,9 @@ svcxdr_decode_owner(struct xdr_stream *xdr, struct xdr_netobj *obj)
+ static inline bool
+ svcxdr_encode_owner(struct xdr_stream *xdr, const struct xdr_netobj *obj)
+ {
+-	unsigned int quadlen = XDR_QUADLEN(obj->len);
+-	__be32 *p;
+-
+-	if (xdr_stream_encode_u32(xdr, obj->len) < 0)
+-		return false;
+-	p = xdr_reserve_space(xdr, obj->len);
+-	if (!p)
++	if (obj->len > XDR_MAX_NETOBJ)
+ 		return false;
+-	p[quadlen - 1] = 0;	/* XDR pad */
+-	memcpy(p, obj->data, obj->len);
+-
+-	return true;
++	return xdr_stream_encode_opaque(xdr, obj->data, obj->len) > 0;
+ }
+ 
+ #endif /* _LOCKD_SVCXDR_H_ */
+-- 
+2.33.0
+
 
 
