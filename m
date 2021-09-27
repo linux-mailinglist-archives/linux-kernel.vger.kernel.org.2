@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86B941A329
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D2841A335
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237835AbhI0WiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237501AbhI0WiW (ORCPT
+        id S237875AbhI0Wlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:41:55 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:59623 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237501AbhI0Wlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:38:22 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8ACC061575;
-        Mon, 27 Sep 2021 15:36:44 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id k17so17217891pff.8;
-        Mon, 27 Sep 2021 15:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Iid0Hd0O+RUNCJJw3MrAwfoiGTT9f1lgfwXnLDmkw5k=;
-        b=e9+iArJtko0R/F9mrfNIsVZzk9I/CHaIzFFXUU6qwXZse5WaY1DI0jXdAyFoHLbfk9
-         TTSHbENk7Pa3a7NqPj1Q87Vrgad89j80OnCmZ1eDGE5k6CmVgwypOg8IFuOkhP7GdZWA
-         n6f412acuuwmavLwGiITV993jsymZd2nic09CpTv4wxlEjMl7GAqDSjLflOi5eYGI7NN
-         NQ5F9oFOtAGk64eHiObBtStb7ndjHfwaNZN6vofVIVQJhnj0PFnq26SR3eP6pE5gmzxx
-         Xz6JDoF0JavPIysXu/tIx8bI7QmrtTkz7FT7zsJzUBpsfMOa1jHmSdigR2ZYNwOyAnxu
-         CUyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Iid0Hd0O+RUNCJJw3MrAwfoiGTT9f1lgfwXnLDmkw5k=;
-        b=jNVogLNL4FahJcq5zzEJErRBvdVdSHneqRhd+WJOy7ML/Ln3uQksSFRtDxdM61/dfv
-         4cK3OCfIR1s72gW7x7oTSpwWELT1DKIo+pcYvpaFUHcSNqrpafQ82ptr+Ql542r9s49e
-         cOs0NiBx0q+BsMx4CT5OsygR/MaudK1X4huDbx6er+N57vCvJ6P1ze8P9uKmHRgLSAAe
-         3/DHRI6boIHyIxfnQfbTNZd3XHHjXCh5KYt0Uop9mO+fE/Zg7SqwOEX9a9+JlQPgnhJq
-         QHhSIdUOWhZBeUwou0Zl6e+8tJpy1MP/sNzfLajHWkFjWqx0MASlvRWP0YSiFXao1yw/
-         6tRg==
-X-Gm-Message-State: AOAM532P4DtobcqpglMoTo5JC66qf5nROJprVT/CoclQZMU73GYZNuBZ
-        CFBPNvfnyGSjRit4asJ3skDW5ms23QlxOFIxR0JoOw==
-X-Google-Smtp-Source: ABdhPJzeMNyqs2F2HfVItaBqfh1sQAHbuZ67pdKDbR2AwGp4B799TUXeFWB8XzBz81quE95WloeUJQ==
-X-Received: by 2002:a65:6919:: with SMTP id s25mr1012190pgq.14.1632782203294;
-        Mon, 27 Sep 2021 15:36:43 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id n66sm18231723pfn.142.2021.09.27.15.36.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 15:36:42 -0700 (PDT)
-Message-ID: <6152477a.1c69fb81.5c2ee.c931@mx.google.com>
-Date:   Mon, 27 Sep 2021 15:36:42 -0700 (PDT)
-X-Google-Original-Date: Mon, 27 Sep 2021 22:36:37 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/103] 5.10.70-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 27 Sep 2021 18:41:53 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJHdm2p6Bz4xZJ;
+        Tue, 28 Sep 2021 08:40:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632782412;
+        bh=vNpEcXVVksqC51120o+vuN44SyPkZ6h7MAFLUntSm4w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ujJdXu7Y3+sNjKOaufQ+QtviH2EFFtkyWvPpKIJPUqE3xAtYY4JEHTwHPxzZeBIha
+         rT4C5OXZaZOq0vZzzvHWASVxCoC6Y5fNXWsUTcSuePbkRhjHNVhKqbvTD+nBa7c/Zn
+         EvInl57yMIx3B3MXpbBx22ncOcsqBMyuyKymRNjA5Ifp3y7hNJphcbONLkmLrIQ3Jh
+         v8WK7jPwgk0eIkGpyXgLoX8eO9Xt5jcoi9wohXj5EXP6VmIJvxkCPzyzVXV1tUKwXU
+         NSx4DZhuV1P+l+EEVOHjYRFKK32HP7os/WDNxvTaheriPMRfl3CUFkVOnAA3exlGUp
+         kMlq8BhmoCYyQ==
+Date:   Tue, 28 Sep 2021 08:40:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the rpmsg tree
+Message-ID: <20210928084011.3f2318fc@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/D=Ec0jQgV8qa76EBDocRZuQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 19:01:32 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.70 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 29 Sep 2021 17:02:05 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.70-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+--Sig_/D=Ec0jQgV8qa76EBDocRZuQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-5.10.70-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Hi all,
 
+Commits
+
+  5346c95245ad ("dt-bindings: remoteproc: k3-dsp: Cleanup SoC compatible fr=
+om DT example")
+  e24acced0dd9 ("dt-bindings: remoteproc: k3-r5f: Cleanup SoC compatible fr=
+om DT example")
+  6944d19dfd0d ("remoteproc: mediatek: Support mt8195 scp")
+  3c14c79a4c32 ("dt-bindings: remoteproc: mediatek: Convert mtk,scp to json=
+-schema")
+  fc265554dbc8 ("dt-bindings: remoteproc: mediatek: Add binding for mt8192 =
+scp")
+  d75e3e9fa929 ("dt-bindings: remoteproc: mediatek: Add binding for mt8195 =
+scp")
+  4d2236dbeb09 ("remoteproc: meson-mx-ao-arc: Add a driver for the AO ARC r=
+emote procesor")
+  059efbbfa03a ("dt-bindings: remoteproc: Add the documentation for Meson A=
+O ARC rproc")
+  ee3eec23f843 ("remoteproc: imx_rproc: Change to ioremap_wc for dram")
+  9da2a820edc7 ("remoteproc: imx_rproc: Fix rsc-table name")
+  f64051b28d2d ("remoteproc: imx_rproc: Fix ignoring mapping vdev regions")
+  cfaa53387e8b ("remoteproc: imx_rproc: Fix TCM io memory type")
+  a46fb6875d39 ("remoteproc: Fix the wrong default value of is_iomem")
+  c7e587505b2b ("remoteproc: elf_loader: Fix loading segment when is_iomem =
+true")
+  a57645ea04bf ("rpmsg: Change naming of mediatek rpmsg property")
+
+are missing a Signed-off-by from their committer.
+
+All presumablyrebased :-(
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/D=Ec0jQgV8qa76EBDocRZuQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFSSEsACgkQAVBC80lX
+0GxW2Qf/SlHUvrrMKCeCW9VOFvQPkyotX9nw8jAEDvKn5dz6+YcMsBtMgpTZ+Les
++j+2Zz1ubY8TXf5cO+UFIF3aeNNRnUy8SKyPGvYUATWmrpuJvF+8YAFRE6EyHG+0
+vqpp5ZKGhRlC6WD23U+darZip9+jGrw3zoa+gEgMhe9ukj19dN3DZ1aCYYiyYF+1
+V38h4dV6fajjpGwq2UwDwM6Ti/QGBQzIXVS1JSehD82GvfTPLaC/R+OadmHS9U84
+Uulupi16NLsnmAoTgIxL2kgxzkvqlwevbU/4NW9sqkun2T9ttzeRJmQiR36p+N0x
+U4pae10biOmNAyEqk5IwXLlKaKsHKg==
+=zY7Q
+-----END PGP SIGNATURE-----
+
+--Sig_/D=Ec0jQgV8qa76EBDocRZuQ--
