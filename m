@@ -2,176 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC81419F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE11419F07
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236442AbhI0TVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:21:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236260AbhI0TVd (ORCPT
+        id S236447AbhI0TWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236225AbhI0TWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:21:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632770394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ytbf7mkDtKm4hXqfmsIh+zBdQwECAHFtYv2udg+9N/s=;
-        b=gycSX+ht0iq0vyVLZMvUrd6m9OFSS6/vtex6QTrxw80cq1UjkzzFqGeqHLKgfg80A9vI8c
-        z6f4R4QBi4GBCREDP25acLiudTXUceNX6FFjBtTc7xG8VgX6d1g79S2AG/wSdIzALHZxSF
-        nPgVnOnF76fJ+2iZat6whiVvSuk5nVA=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-dO9ZhWkfPfuseyZeC6h0ig-1; Mon, 27 Sep 2021 15:19:52 -0400
-X-MC-Unique: dO9ZhWkfPfuseyZeC6h0ig-1
-Received: by mail-oi1-f200.google.com with SMTP id y185-20020acaafc2000000b0027359453ad4so14338523oie.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:19:52 -0700 (PDT)
+        Mon, 27 Sep 2021 15:22:02 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5094C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:20:23 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id z11-20020a4ad1ab000000b0029f085f5f64so6352159oor.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:20:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DxxDnArAuqMzLOKrnNqBxORaTd+7/JcrK9bDcFPx9BQ=;
+        b=E9fwq5bTre/IrnXwZ/2oEJhk10H+KaHc08PWNXgjOdhLuUJdU3V/PDBPGGcH4aB6EG
+         vbqUjNv9ClfzM9n9n8OdWHiQaBYKlO6riTNMumO2z35RshxodLeNmh7FEphBSza23fvF
+         /RW6yO5Y0JV916oTome5iBE3PMnJ8aCKZ1Y4XPDKv5YQH18GO90n97xXLlEQrSgNK6Pi
+         /P2EQmG63tM/8mFlDUzWK5I3KY9XTT6C9zdrUQTveO3EcOCxrHQIHB2omyozhfaGhKo9
+         XQFrYfgyss99y3+08WWPCMBbbsvy8SoaCiwiXiBYZNmvO7Wkm/vzlC6JgSRNAiofslBs
+         IsUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Ytbf7mkDtKm4hXqfmsIh+zBdQwECAHFtYv2udg+9N/s=;
-        b=eE39WIDD8HVNkb1yceH3fB4k6Dw3VRJfGI50Aji1DJyRSKj7xg82EcwJldIrt5/ypS
-         D5WYeJoHcXJgVKrGOXexlMcyPhBYFQW0Lw7FoTHXEWPntSg4p5NPBG3NHRaQ37O7znxl
-         njwj0YFhh7i+HyHQepaVTCOMuZi6+k5Xk1zCDQko9AsOlhURJNI3p4CI1bM3+i3fImQ/
-         pZT4MwMldlnH1XUnRHAS2U8r2jLI177N4PjClqZi1vGCwtu9mzgqNPienLdqOpyVVpbe
-         tgu6Rmx00UEoCzsjK7WyNQml/mrF7PDramLh87VdPt0zE/dVfwrXVM037rLrOeMetZHK
-         jWMA==
-X-Gm-Message-State: AOAM532N3z9gfw4cBX6UidWIPz5yK9tnBn/FiMfKq8iTPKLqofojq0QA
-        LroomH8rrGHKUWNNQsJh9R/2mpDnQbbPVVYo4e5LQJvScv8F/TdoJ2PU78zhT+cJ1klLhSsOSUK
-        QOFvlG8x9LC/ii2zO2n3q7Ol6
-X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr565220oik.135.1632770392054;
-        Mon, 27 Sep 2021 12:19:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIofVCTMGgEM5geBngT4Oh5jA/6Ys1igS7KsVTI4OQQbB1L1o1oifOGkhmTzaJZ7j5t45PYQ==
-X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr565205oik.135.1632770391818;
-        Mon, 27 Sep 2021 12:19:51 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id bg36sm1238777oib.2.2021.09.27.12.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 12:19:51 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 13:19:49 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
- interfaces
-Message-ID: <20210927131949.052d8481.alex.williamson@redhat.com>
-In-Reply-To: <BN9PR11MB543327D25DCE242919F7909A8CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
-        <20210919063848.1476776-7-yi.l.liu@intel.com>
-        <20210921170943.GS327412@nvidia.com>
-        <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-        <20210922123931.GI327412@nvidia.com>
-        <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-        <20210927115342.GW964074@nvidia.com>
-        <BN9PR11MB5433502FEF11940984774F278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-        <20210927130935.GZ964074@nvidia.com>
-        <BN9PR11MB543327D25DCE242919F7909A8CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DxxDnArAuqMzLOKrnNqBxORaTd+7/JcrK9bDcFPx9BQ=;
+        b=2VVJWLAWzpGwuLoOaNqwsj7JstkBbtuuAhY25YEw7Px6LHXcxTqviB1gHm9fux6YEC
+         QfcN24QrRXzGHuhLK6vAEvhmOx3cRnqzYW8TnWUGHM25Vom7j+xuGAVZa9/PCmXLBUkH
+         p1/aFwXS2pNZFhV0qUL9LIq7VfuF3LhwUJa/ogY1Amip49Rvvh2gZqkyThsgKEUtpcxg
+         rqPeyou8Hg/IX4zLiQ+1MEhikhpQQ4SvqIu1S2s/yMFtMgDFoKabcsmKNj0w3mJPI56i
+         1Aufr//QKhSmCZB9NJQPhTE0pA0OS9W/bvK2cNdYRUQ0V+LxOicGsjscvV2Ns4uph32T
+         FLvA==
+X-Gm-Message-State: AOAM531/7IEBZQbIm3bHuwLIh0tpqPSfNJQ1/xmVKtSBRwOMQSHDTo8G
+        FMX84UrgInI56vtMzjvrzNtJRFSRYBDDCL6Cpg4=
+X-Google-Smtp-Source: ABdhPJxK9Pl7nDDrEjCckoKhzIkfsziDqe9p0oskMIry7aZ1ewD2rkdZK6eZm+ZpzCPRqBiNvG4eBEMomJ0BLTdG8Ws=
+X-Received: by 2002:a4a:e899:: with SMTP id g25mr1334984ooe.68.1632770423330;
+ Mon, 27 Sep 2021 12:20:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210927125824.1583474-1-arnd@kernel.org> <a27a9db3-1186-8fea-8952-fca4171bcee5@amd.com>
+In-Reply-To: <a27a9db3-1186-8fea-8952-fca4171bcee5@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 27 Sep 2021 15:20:12 -0400
+Message-ID: <CADnq5_NcRQO=VAGONoBBebZAXXaNDshUZk9=RpLVu3LdGnztXA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: fix warning for overflow check
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chunming Zhou <david1.zhou@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 13:32:34 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+Applied.  Thanks!
 
-> > From: Jason Gunthorpe
-> > Sent: Monday, September 27, 2021 9:10 PM
-> > 
-> > On Mon, Sep 27, 2021 at 01:00:08PM +0000, Tian, Kevin wrote:
-> >   
-> > > > I think for such a narrow usage you should not change the struct
-> > > > device_driver. Just have pci_stub call a function to flip back to user
-> > > > mode.  
-> > >
-> > > Here we want to ensure that kernel dma should be blocked
-> > > if the group is already marked for user-dma. If we just blindly
-> > > do it for any driver at this point (as you commented earlier):
-> > >
-> > > +       ret = iommu_set_kernel_ownership(dev);
-> > > +       if (ret)
-> > > +               return ret;
-> > >
-> > > how would pci-stub reach its function to indicate that it doesn't
-> > > do dma and flip back?  
-> >   
-> > > Do you envision a simpler policy that no driver can be bound
-> > > to the group if it's already set for user-dma? what about vfio-pci
-> > > itself?  
-> > 
-> > Yes.. I'm not sure there is a good use case to allow the stub drivers
-> > to load/unload while a VFIO is running. At least, not a strong enough
-> > one to justify a global change to the driver core..  
-> 
-> I'm fine with not loading pci-stub. From the very 1st commit msg
-> looks pci-stub was introduced before vfio to prevent host driver 
-> loading when doing device assignment with KVM. I'm not sure 
-> whether other usages are built on pci-stub later, but in general it's 
-> not good to position devices in a same group into different usages.
-
-IIRC, pci-stub was invented for legacy KVM device assignment because
-KVM was never an actual device driver, it just latched onto and started
-using the device.  If there was an existing driver for the device then
-KVM would fail to get device resources.  Therefore the device needed to
-be unbound from its standard host driver, but that left it susceptible
-to driver loads usurping the device.  Therefore pci-stub came along to
-essentially claim the device on behalf of KVM.
-
-With vfio, there are a couple use cases of pci-stub that can be
-interesting.  The first is that pci-stub is generally built into the
-kernel, not as a module, which provides users the ability to specify a
-list of ids for pci-stub to claim on the kernel command line with
-higher priority than loadable modules.  This can prevent default driver
-bindings to devices until tools like driverctl or boot time scripting
-gets a shot to load the user designated driver for a device.
-
-The other use case, is that if a group is composed of multiple devices
-and all those devices are bound to vfio drivers, then the user can gain
-direct access to each of those devices.  If we wanted to insert a
-barrier to restrict user access to certain devices within a group, we'd
-suggest binding those devices to pci-stub.  Obviously within a group, it
-may still be possible to manipulate the device via p2p DMA, but the
-barrier is much higher and device, if not platform, specific to
-manipulate such devices.  An example use case might be a chipset
-Ethernet controller grouped among system management function in a
-multi-function root complex integrated endpoint.
-
-> but I'm little worried that even vfio-pci itself cannot be bound now,
-> which implies that all devices in a group which are intended to be
-> used by the user must be bound to vfio-pci in a breath before the 
-> user attempts to open any of them, i.e. late-binding and device-
-> hotplug is disallowed after the initial open. I'm not sure how 
-> important such an usage would be, but it does cause user-tangible
-> semantics change.
-
-Yep, a high potential to break userspace, especially as pci-stub has
-been recommended for the cases noted above.  I don't expect that tools
-like libvirt manage unassigned devices within a group, but that
-probably means that there are all sorts of ad-hoc user mechanisms
-beyond simply assigning all the devices.  Thanks,
-
-Alex
-
+On Mon, Sep 27, 2021 at 9:07 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 27.09.21 um 14:58 schrieb Arnd Bergmann:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The overflow check in amdgpu_bo_list_create() causes a warning with
+> > clang-14 on 64-bit architectures, since the limit can never be
+> > exceeded.
+> >
+> > drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of com=
+parison of constant 256204778801521549 with expression of type 'unsigned in=
+t' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+> >          if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
+> >              ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > The check remains useful for 32-bit architectures, so just avoid the
+> > warning by using size_t as the type for the count.
+> >
+> > Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the =
+list")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
+> >   2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/=
+drm/amd/amdgpu/amdgpu_bo_list.c
+> > index 15c45b2a3983..714178f1b6c6 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+> > @@ -61,7 +61,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
+> >
+> >   int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file=
+ *filp,
+> >                         struct drm_amdgpu_bo_list_entry *info,
+> > -                       unsigned num_entries, struct amdgpu_bo_list **r=
+esult)
+> > +                       size_t num_entries, struct amdgpu_bo_list **res=
+ult)
+> >   {
+> >       unsigned last_entry =3D 0, first_userptr =3D num_entries;
+> >       struct amdgpu_bo_list_entry *array;
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/=
+drm/amd/amdgpu/amdgpu_bo_list.h
+> > index c905a4cfc173..044b41f0bfd9 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+> > @@ -61,7 +61,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdg=
+pu_bo_list_in *in,
+> >   int amdgpu_bo_list_create(struct amdgpu_device *adev,
+> >                                struct drm_file *filp,
+> >                                struct drm_amdgpu_bo_list_entry *info,
+> > -                              unsigned num_entries,
+> > +                              size_t num_entries,
+> >                                struct amdgpu_bo_list **list);
+> >
+> >   static inline struct amdgpu_bo_list_entry *
+>
