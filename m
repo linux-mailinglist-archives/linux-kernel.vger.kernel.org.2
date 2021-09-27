@@ -2,207 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9964041909F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C964190A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhI0ITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbhI0IS7 (ORCPT
+        id S233445AbhI0ITd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:19:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52594 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233404AbhI0ITc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:18:59 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC330C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 01:17:21 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id x124so24500130oix.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 01:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4FoCYB0R53oYzBihqJ0jC7V9Vzxsrx6Am9iqfRfp7sI=;
-        b=Xd+AnOxfDiFYeiOcZueBZXexoumw2PhRlFDAY4hLoG/UsDCNYvOv0Eo69YkjloOP9Z
-         I7ouOJf+nhKWGDppjph7ngafcimWznTToLKCHlwXYcZTupOLZY+nGHFijPxeVl3Hgv15
-         Y6ryiE5CQhyGL+ccvnjVqkICgt1/GjRPv69F0feQVsQGXpL7kFte20u0CoGQhuHDXmLw
-         HRGxo9nzaMTI8BLBHMx+U5ooOxWOnY2kfjfYiRR/qcBN44j6ENhjDOV5KNJtFP8utSVQ
-         f3FCm5uZOCWRtzZ50FJKJftekarJ3LljNmw3A0mWH47TLRsHWFt4Gebui0WPrsyIAz3y
-         RA/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4FoCYB0R53oYzBihqJ0jC7V9Vzxsrx6Am9iqfRfp7sI=;
-        b=cPijSrxda9pnacdzsEkNKU2aytCDCiEuOLfa1/72C5r/kb4STqYpsuYKQfh0ycUHwm
-         B9My8sEFRNiJY03IXmIIbdzgRuShZ8wU6MQGRXShQDSpJx3P5pX0rok2gknsaLQ6ssgZ
-         OV+OPYN+SwYmluFPNZR7vOKNuGXDNaXvcrDt776cJmUm92KxbtsA0NLuYsnX/MMtJnN7
-         IJQitluOZAtOVLuXT6UTyWL2t6WlyJivC94bamjLQxx2j5DNvR5wb92t2UGNltJ6tmcA
-         5um1wX9LRM1C3QurfF8kxROb4dV0JFtNvcSVUMxrzgnh1zoJI5UCXOqdoXSBX4rxMo+d
-         1BQw==
-X-Gm-Message-State: AOAM530ussw/mWMkNzxnxYQ80SHSqmsOQ12HQ6QuBfsYqqqoIUL7ZuOp
-        zmbBl1TBu9T0DZfVjY+eBGc8+D7JFNITeoPeAgk2tw==
-X-Google-Smtp-Source: ABdhPJzcAoxej7VfJZs6Tn5ZhaWxOvPVbzTJM/rOc3miUaWr4129ddSP/2dCrWczbItE6fEqv2M3WYjETIE9OnvxI3E=
-X-Received: by 2002:aca:db06:: with SMTP id s6mr11005425oig.70.1632730640739;
- Mon, 27 Sep 2021 01:17:20 -0700 (PDT)
+        Mon, 27 Sep 2021 04:19:32 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9CC9A220B7;
+        Mon, 27 Sep 2021 08:17:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632730673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zGL/AMe26hmAIklf9HbbaB1fkOCI1nKEMJa0VhuyrZg=;
+        b=VP+ovcQ35C+CrLSKQ3QLLeawqkoxFoBvpKmZYgQ1zKhEmObNj8c6BO+aaWkiFkW0DTu0eq
+        QgPhEU/v3WpVe2jdupbqwcleCICMaXAhNLYTC0lRMu+Bvt1lpyT8spT9PqT1rZKVnhS/41
+        4RkzhpPseqqDtrkEtFZkhOUshikFLto=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632730673;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zGL/AMe26hmAIklf9HbbaB1fkOCI1nKEMJa0VhuyrZg=;
+        b=Zck/hcOT5GU0qM+t7QHk+KwnLsbOtRs64yLXCIeBds7UZ/fTeZmiJHmH0DlswYLo4cDcI9
+        NTU9Cxpca+qHaIAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEEEC13A42;
+        Mon, 27 Sep 2021 08:17:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zO+cHi5+UWHlRwAAMHmgww
+        (envelope-from <colyli@suse.de>); Mon, 27 Sep 2021 08:17:50 +0000
+Subject: Re: [PATCH v3 2/6] badblocks: add helper routines for badblock ranges
+ handling
+To:     Geliang Tang <geliangtang@gmail.com>
+Cc:     antlists@youngman.org.uk, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-raid@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        NeilBrown <neilb@suse.de>, Richard Fan <richard.fan@suse.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>
+References: <20210913163643.10233-1-colyli@suse.de>
+ <20210913163643.10233-3-colyli@suse.de>
+ <eab6a9b0-d934-77e4-519c-cefc510b183a@gmail.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <e1becb07-00a2-db5a-e8a5-89db2fcd25ad@suse.de>
+Date:   Mon, 27 Sep 2021 16:17:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210926223322.848641-1-isabellabdoamaral@usp.br> <20210926223322.848641-4-isabellabdoamaral@usp.br>
-In-Reply-To: <20210926223322.848641-4-isabellabdoamaral@usp.br>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 27 Sep 2021 10:17:09 +0200
-Message-ID: <CANpmjNN4z9YsD=KjGjgdXsQbKD68RGh5bu-AEX6FeryZ2GdXCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] test_hash.c: split test_hash_init
-To:     Isabella Basso <isabellabdoamaral@usp.br>
-Cc:     geert@linux-m68k.org, ferreiraenzoa@gmail.com,
-        augusto.duraes33@gmail.com, brendanhiggins@google.com,
-        dlatypov@google.com, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, ~lkcamp/patches@lists.sr.ht,
-        rodrigosiqueiramelo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <eab6a9b0-d934-77e4-519c-cefc510b183a@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 00:33, 'Isabella Basso' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
+On 9/27/21 3:25 PM, Geliang Tang wrote:
+> On 9/14/21 00:36, Coly Li wrote:
+>> This patch adds several helper routines to improve badblock ranges
+>> handling. These helper routines will be used later in the improved
+>> version of badblocks_set()/badblocks_clear()/badblocks_check().
+>>
+>> - Helpers prev_by_hint() and prev_badblocks() are used to find the bad
+>>    range from bad table which the searching range starts at or after.
+>>
+>> - The following helpers are to decide the relative layout between the
+>>    manipulating range and existing bad block range from bad table.
+>>    - can_merge_behind()
+>>      Return 'true' if the manipulating range can backward merge with the
+>>      bad block range.
+>>    - can_merge_front()
+>>      Return 'true' if the manipulating range can forward merge with the
+>>      bad block range.
+>>    - can_combine_front()
+>>      Return 'true' if two adjacent bad block ranges before the
+>>      manipulating range can be merged.
+>>    - overlap_front()
+>>      Return 'true' if the manipulating range exactly overlaps with the
+>>      bad block range in front of its range.
+>>    - overlap_behind()
+>>      Return 'true' if the manipulating range exactly overlaps with the
+>>      bad block range behind its range.
+>>    - can_front_overwrite()
+>>      Return 'true' if the manipulating range can forward overwrite the
+>>      bad block range in front of its range.
+>>
+>> - The following helpers are to add the manipulating range into the bad
+>>    block table. Different routine is called with the specific relative
+>>    layout between the maniplating range and other bad block range in the
+>>    bad block table.
+>>    - behind_merge()
+>>      Merge the maniplating range with the bad block range behind its
+>>      range, and return the number of merged length in unit of sector.
+>>    - front_merge()
+>>      Merge the maniplating range with the bad block range in front of
+>>      its range, and return the number of merged length in unit of 
+>> sector.
+>>    - front_combine()
+>>      Combine the two adjacent bad block ranges before the manipulating
+>>      range into a larger one.
+>>    - front_overwrite()
+>>      Overwrite partial of whole bad block range which is in front of the
+>>      manipulating range. The overwrite may split existing bad block 
+>> range
+>>      and generate more bad block ranges into the bad block table.
+>>    - insert_at()
+>>      Insert the manipulating range at a specific location in the bad
+>>      block table.
+>>
+>> All the above helpers are used in later patches to improve the bad block
+>> ranges handling for badblocks_set()/badblocks_clear()/badblocks_check().
+>>
+>> Signed-off-by: Coly Li <colyli@suse.de>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Hannes Reinecke <hare@suse.de>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Cc: NeilBrown <neilb@suse.de>
+>> Cc: Richard Fan <richard.fan@suse.com>
+>> Cc: Vishal L Verma <vishal.l.verma@intel.com>
+>> ---
+>>   block/badblocks.c | 374 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 374 insertions(+)
+>>
+>> diff --git a/block/badblocks.c b/block/badblocks.c
+>> index d39056630d9c..efe316181e05 100644
+>> --- a/block/badblocks.c
+>> +++ b/block/badblocks.c
+>> @@ -16,6 +16,380 @@
+>>   #include <linux/types.h>
+>>   #include <linux/slab.h>
+>>   +/*
+>> + * Find the range starts at-or-before 's' from bad table. The search
+>> + * starts from index 'hint' and stops at index 'hint_end' from the bad
+>> + * table.
+>> + */
+>> +static int prev_by_hint(struct badblocks *bb, sector_t s, int hint)
+>> +{
+>> +    u64 *p = bb->page;
+>> +    int ret = -1;
+>> +    int hint_end = hint + 2;
 >
-> Split up test_hash_init so that it calls each test more explicitly
-> insofar it is possible without rewriting the entire file. This aims at
-> improving readability.
+> How about declaring these variables following the "reverse Xmas tree" 
+> order.
 >
-> Split tests performed on string_or as they don't interfere with those
-> performed in hash_or. Also separate pr_info calls about skipped tests as
-> they're not part of the tests themselves, but only warn about
-> (un)defined arch-specific hash functions.
->
-> Changes since v1:
-> - As suggested by David Gow:
->   1. Rename arch-specific test functions.
->   2. Remove spare whitespace changes.
-> - As suggested by Marco Elver:
->   1. Add struct for carrying test variables.
 
-Did the patches get mixed up? The struct doesn't appear to be introduced here.
+It makes sense. I will do this in whole set for next version.
 
-> Tested-by: David Gow <davidgow@google.com>
-> Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
-> ---
->  lib/test_hash.c | 66 ++++++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 54 insertions(+), 12 deletions(-)
->
-> diff --git a/lib/test_hash.c b/lib/test_hash.c
-> index 08fe63776c4f..db9dd18b4e8b 100644
-> --- a/lib/test_hash.c
-> +++ b/lib/test_hash.c
-> @@ -153,11 +153,39 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
->
->  #define SIZE 256       /* Run time is cubic in SIZE */
->
-> -static int __init
-> -test_hash_init(void)
-> +static int __init test_string_or(void)
->  {
->         char buf[SIZE+1];
-> -       u32 string_or = 0, hash_or[2][33] = { { 0, } };
-> +       u32 string_or = 0;
-> +       int i, j;
-> +
-> +       fill_buf(buf, SIZE, 1);
-> +
-> +       /* Test every possible non-empty substring in the buffer. */
-> +       for (j = SIZE; j > 0; --j) {
-> +               buf[j] = '\0';
-> +
-> +               for (i = 0; i <= j; i++) {
-> +                       u32 h0 = full_name_hash(buf+i, buf+i, j-i);
-> +
-> +                       string_or |= h0;
-> +               } /* i */
-> +       } /* j */
-> +
-> +       /* The OR of all the hash values should cover all the bits */
-> +       if (~string_or) {
-> +               pr_err("OR of all string hash results = %#x != %#x",
-> +                      string_or, -1u);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int __init test_hash_or(void)
-> +{
-> +       char buf[SIZE+1];
-> +       u32 hash_or[2][33] = { { 0, } };
->         unsigned tests = 0;
->         unsigned long long h64 = 0;
->         int i, j;
-> @@ -187,7 +215,6 @@ test_hash_init(void)
->                                 return -EINVAL;
->                         }
->
-> -                       string_or |= h0;
->                         h64 = h64 << 32 | h0;   /* For use with hash_64 */
->                         if (!test_int_hash(h64, hash_or))
->                                 return -EINVAL;
-> @@ -195,12 +222,6 @@ test_hash_init(void)
->                 } /* i */
->         } /* j */
->
-> -       /* The OR of all the hash values should cover all the bits */
-> -       if (~string_or) {
-> -               pr_err("OR of all string hash results = %#x != %#x",
-> -                       string_or, -1u);
-> -               return -EINVAL;
-> -       }
->         if (~hash_or[0][0]) {
->                 pr_err("OR of all __hash_32 results = %#x != %#x",
->                         hash_or[0][0], -1u);
-> @@ -232,6 +253,13 @@ test_hash_init(void)
->                 }
->         }
->
-> +       pr_notice("%u tests passed.", tests);
-> +
-> +       return 0;
-> +}
-> +
-> +static void __init notice_skipped_tests(void)
-> +{
->         /* Issue notices about skipped tests. */
->  #ifdef HAVE_ARCH__HASH_32
->  #if HAVE_ARCH__HASH_32 != 1
-> @@ -247,10 +275,24 @@ test_hash_init(void)
->  #else
->         pr_info("hash_64() has no arch implementation to test.");
->  #endif
-> +}
->
-> -       pr_notice("%u tests passed.", tests);
-> +static int __init
-> +test_hash_init(void)
-> +{
-> +       int ret;
->
-> -       return 0;
-> +       ret = test_string_or();
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       ret = test_hash_or();
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       notice_skipped_tests();
-> +
-> +       return ret;
->  }
->
->  static void __exit test_hash_exit(void)
-> --
-> 2.33.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20210926223322.848641-4-isabellabdoamaral%40usp.br.
+Thanks for your review.
+
+Coly Li
+
