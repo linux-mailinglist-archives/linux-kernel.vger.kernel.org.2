@@ -2,174 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A278C419225
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375C1419228
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhI0KXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35278 "EHLO mail.kernel.org"
+        id S233840AbhI0KXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:23:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233811AbhI0KXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:23:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 319BD60F6D;
-        Mon, 27 Sep 2021 10:21:28 +0000 (UTC)
+        id S233811AbhI0KXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:23:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 106C960E73;
+        Mon, 27 Sep 2021 10:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632738088;
-        bh=/50m1GCkynOqJBB4hWijNqnaIU/AOeegPWeJoJ3e5os=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZHVQ2JKLd1UzpLS+hbpGzPsg/qtIlLklp9bYz+FagRUI7g2ges8aXmY6E5d6gqCAs
-         C79XGMaXwVLCjpRiRqwoloRqJA84hPoyZCC7F1ySmb6BUboZfZFuqZkmDKmhkGvILT
-         N0daKUmzLcKLHYk3Oa7aZiH1Tuz/oyEQZRjQG5bECJyp3mZc8vnGgXEVandl1oqX/D
-         /8Fm3Gu3KSVwJWML/5o380LnaXYkTtgZGGwheR41/ZiXmDWJHzBriLMIJPdI/9+xLD
-         Hyf5Y9xrbOphyM+j3A3mna8Gxk7FxxPWMK9PjSu/8DT0d/eFkR0i4EujzIJCuQRfG8
-         GY1z2Ke//s7pw==
-Received: by pali.im (Postfix)
-        id D38DDC83; Mon, 27 Sep 2021 12:21:25 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 12:21:25 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        s=k20201202; t=1632738113;
+        bh=zXIH+dCYrAWYUl8eZl54EKpoXDnxR7JoVrG+wQBxf4Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fv/LAzsH8rIvVKT/pF208BdwrVp4DhlYa/RoJ4S3FOA7v+zzD8TdPuN01VkaMJC0m
+         B1yqdiw9rD2ociBnfWysr+g7uLPpIRpQN7+ZpdGvosEE784XUnMSVpk3TF+crx8Gtb
+         48D24OkNFxLEELFAHQ6YHl7wESqtZCCHziIeFufYq1qqRCVhq1Iga1CZ/ZI8vc0914
+         +gznFifrOAuA7JJvFQdU3Y/OHF9Jdp/wJXmelXpd4cMOpokYRR33txUQnXQLSAlJ8p
+         NmgdUmofRHyl2zttrT5tazXM8YsECO+/OntXlwWFleuiiyCQ6zcu7HxUTymkJe8sow
+         LbSUVRl5iIkQA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250: Fix reporting real baudrate value in
- c_ospeed field
-Message-ID: <20210927102125.rbvnz7q3phvpog3g@pali>
-References: <20210927093704.19768-1-pali@kernel.org>
- <YVGVHzHzhOjUp7b8@kroah.com>
+Subject: [PATCH] [RESEND] hfs/hfsplus: use WARN_ON for sanity check
+Date:   Mon, 27 Sep 2021 12:21:27 +0200
+Message-Id: <20210927102149.1809384-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YVGVHzHzhOjUp7b8@kroah.com>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 27 September 2021 11:55:43 Greg Kroah-Hartman wrote:
-> On Mon, Sep 27, 2021 at 11:37:04AM +0200, Pali Rohár wrote:
-> > In most cases it is not possible to set exact baudrate value to hardware.
-> 
-> Why not?
+From: Arnd Bergmann <arnd@arndb.de>
 
-8250 allows to set only divisor and the final baudrate which hw use is:
+gcc warns about a couple of instances in which a sanity check
+exists but the author wasn't sure how to react to it failing,
+which makes it look like a possible bug:
 
-  baudrate = clock / (16*divisor)
+fs/hfsplus/inode.c: In function 'hfsplus_cat_read_inode':
+fs/hfsplus/inode.c:503:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  503 |                         /* panic? */;
+      |                                     ^
+fs/hfsplus/inode.c:524:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  524 |                         /* panic? */;
+      |                                     ^
+fs/hfsplus/inode.c: In function 'hfsplus_cat_write_inode':
+fs/hfsplus/inode.c:582:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  582 |                         /* panic? */;
+      |                                     ^
+fs/hfsplus/inode.c:608:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  608 |                         /* panic? */;
+      |                                     ^
+fs/hfs/inode.c: In function 'hfs_write_inode':
+fs/hfs/inode.c:464:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  464 |                         /* panic? */;
+      |                                     ^
+fs/hfs/inode.c:485:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  485 |                         /* panic? */;
+      |                                     ^
 
-In most cases base UART clock is fixed, so you can set only baudrates
-for divisors 1, 2, 3, ..., N.
+panic() is probably not the correct choice here, but a WARN_ON
+seems appropriate and avoids the compile-time warning.
 
-> > So fix reporting real baudrate value which was set to hardware via c_ospeed
-> > termios field. It can be retrieved by ioctl(TCGETS2) from userspace.
-> > 
-> > Real baudrate value is calculated from chosen hardware divisor and base
-> > clock. It is implemented in a new function serial8250_compute_baud_rate()
-> > which is inverse of serial8250_get_divisor() function.
-> > 
-> > With this change is fixed also UART timeout value (it is updated via
-> > uart_update_timeout() function), which is calculated from the now fixed
-> > baudrate value too.
-> 
-> I can not parse this sentence, sorry.  Can you try to rephrase it
-> differently?
+Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
+Link: https://lore.kernel.org/all/20210322223249.2632268-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+HFS is orphaned, I hope that either Al or Andrew can pick this up.
+---
+ fs/hfs/inode.c     |  6 ++----
+ fs/hfsplus/inode.c | 12 ++++--------
+ 2 files changed, 6 insertions(+), 12 deletions(-)
 
-Kernel uses UART timeout value (stored in port->timeout variable) for
-e.g. testing if TX fifo is empty. And uart_update_timeout() function
-calculates this timeout from baudrate. Hence this change fixes UART
-timeout.
+diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+index 4a95a92546a0..2a5143246282 100644
+--- a/fs/hfs/inode.c
++++ b/fs/hfs/inode.c
+@@ -462,8 +462,7 @@ int hfs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 		goto out;
+ 
+ 	if (S_ISDIR(main_inode->i_mode)) {
+-		if (fd.entrylength < sizeof(struct hfs_cat_dir))
+-			/* panic? */;
++		WARN_ON(fd.entrylength < sizeof(struct hfs_cat_dir));
+ 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset,
+ 			   sizeof(struct hfs_cat_dir));
+ 		if (rec.type != HFS_CDR_DIR ||
+@@ -483,8 +482,7 @@ int hfs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 		hfs_bnode_write(fd.bnode, &rec, fd.entryoffset,
+ 				sizeof(struct hfs_cat_file));
+ 	} else {
+-		if (fd.entrylength < sizeof(struct hfs_cat_file))
+-			/* panic? */;
++		WARN_ON(fd.entrylength < sizeof(struct hfs_cat_file));
+ 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset,
+ 			   sizeof(struct hfs_cat_file));
+ 		if (rec.type != HFS_CDR_FIL ||
+diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
+index 6fef67c2a9f0..d08a8d1d40a4 100644
+--- a/fs/hfsplus/inode.c
++++ b/fs/hfsplus/inode.c
+@@ -509,8 +509,7 @@ int hfsplus_cat_read_inode(struct inode *inode, struct hfs_find_data *fd)
+ 	if (type == HFSPLUS_FOLDER) {
+ 		struct hfsplus_cat_folder *folder = &entry.folder;
+ 
+-		if (fd->entrylength < sizeof(struct hfsplus_cat_folder))
+-			/* panic? */;
++		WARN_ON(fd->entrylength < sizeof(struct hfsplus_cat_folder));
+ 		hfs_bnode_read(fd->bnode, &entry, fd->entryoffset,
+ 					sizeof(struct hfsplus_cat_folder));
+ 		hfsplus_get_perms(inode, &folder->permissions, 1);
+@@ -530,8 +529,7 @@ int hfsplus_cat_read_inode(struct inode *inode, struct hfs_find_data *fd)
+ 	} else if (type == HFSPLUS_FILE) {
+ 		struct hfsplus_cat_file *file = &entry.file;
+ 
+-		if (fd->entrylength < sizeof(struct hfsplus_cat_file))
+-			/* panic? */;
++		WARN_ON(fd->entrylength < sizeof(struct hfsplus_cat_file));
+ 		hfs_bnode_read(fd->bnode, &entry, fd->entryoffset,
+ 					sizeof(struct hfsplus_cat_file));
+ 
+@@ -588,8 +586,7 @@ int hfsplus_cat_write_inode(struct inode *inode)
+ 	if (S_ISDIR(main_inode->i_mode)) {
+ 		struct hfsplus_cat_folder *folder = &entry.folder;
+ 
+-		if (fd.entrylength < sizeof(struct hfsplus_cat_folder))
+-			/* panic? */;
++		WARN_ON(fd.entrylength < sizeof(struct hfsplus_cat_folder));
+ 		hfs_bnode_read(fd.bnode, &entry, fd.entryoffset,
+ 					sizeof(struct hfsplus_cat_folder));
+ 		/* simple node checks? */
+@@ -614,8 +611,7 @@ int hfsplus_cat_write_inode(struct inode *inode)
+ 	} else {
+ 		struct hfsplus_cat_file *file = &entry.file;
+ 
+-		if (fd.entrylength < sizeof(struct hfsplus_cat_file))
+-			/* panic? */;
++		WARN_ON(fd.entrylength < sizeof(struct hfsplus_cat_file));
+ 		hfs_bnode_read(fd.bnode, &entry, fd.entryoffset,
+ 					sizeof(struct hfsplus_cat_file));
+ 		hfsplus_inode_write_fork(inode, &file->data_fork);
+-- 
+2.29.2
 
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Cc: stable@vger.kernel.org
-> > ---
-> > 
-> > I have tested this change on device with 8250 compatible UART. I have not
-> > tested it on PORT_NPCM nor on UPF_MAGIC_MULTIPLIER hardware, as I do not
-> > have such.
-> > 
-> > Tested device has 250 MHz base clock for 8250 UART. When I set baudrate to
-> > 115200, then ioctl(TCGETS2) reported B115200 CBAUD flag and value 114890 in
-> > c_ospeed field.
-> > 
-> > This result is correct as HW for baudrate 115200 is using UART divisor 136,
-> > which results in correct reported baudrate: 250000000/(16*136) = 114890
-> 
-> So is this going to break all the userspace tools that set a baud rate
-> and then read it back and get a different number than what they thought
-> they set?
-
-As I wrote in above test, CBAUD Bnnn flag (in my test case B115200) was
-still set. So userspace is not going to be broken. Kernel functions in
-drivers/tty/tty_baudrate.c reports back to userspace original baudrate
-value if is in 2% tolerance.
-
-So, in case userspace ask for baudrate value which is not possible to
-set (with 2% tolerance) then kernel would report in CBAUD flag different
-value. But in this case UART transfer does not work as 2-3% is the
-threshold when transmitter and receiver are de-synced and are not able
-correctly receive any byte.
-
-So with this change, userspace is notified in case kernel was not able
-to set baudrate value which userspace asked and can report to user
-reason why UART transfer does not work.
-
-All above was about CBAUD flag, as this is the only supported kernel
-flag by glibc.
-
-Extended ioctl(TCGETS2) provides additional field c_ospeed, for which
-glibc does not have API yet. This field is supposed to report current
-real baudrate value, not rounded to nearest Bnnn value.
-
-And more serial drivers already reports it. So if you set baudrate
-115200 then more serial drivers in c_ospeed report real value (e.g.
-114890). This is very useful for userspace as it can decide if the
-current baudrate value is suitable for its limits. E.g. you may
-construct UART receiver which would be able to detect data even if they
-are only in 5% tolerance. So you set baudrate on transmitter and then
-check if value set by kernel to hw is in tolerance or not.
-
-> That feels very dangerous.  Why does this matter?
-
-Current problem with this driver is that if userspace ask for baudrate B
-and for value B there is no divisor D, then this drivers sets some
-nearest divisor D' to hw. But divisor D' drivers different baudrate and
-userspace did not receive any information that asked B is not possible
-to set.
-
-So, I do not think that this is dangerous. It just starts reporting
-correct value via TCGETS2 API, like some other serial drivers are
-already doing.
-
-> > ---
-> >  drivers/tty/serial/8250/8250_port.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> > index 66374704747e..dc6900b2daa8 100644
-> > --- a/drivers/tty/serial/8250/8250_port.c
-> > +++ b/drivers/tty/serial/8250/8250_port.c
-> > @@ -2584,6 +2584,19 @@ static unsigned int serial8250_get_divisor(struct uart_port *port,
-> >  	return serial8250_do_get_divisor(port, baud, frac);
-> >  }
-> >  
-> > +static unsigned int serial8250_compute_baud_rate(struct uart_port *port,
-> > +						 unsigned int quot)
-> > +{
-> > +	if ((port->flags & UPF_MAGIC_MULTIPLIER) && quot == 0x8001)
-> > +		return port->uartclk / 4;
-> > +	else if ((port->flags & UPF_MAGIC_MULTIPLIER) && quot == 0x8002)
-> > +		return port->uartclk / 8;
-> > +	else if (port->type == PORT_NPCM)
-> > +		return DIV_ROUND_CLOSEST(port->uartclk - 2 * (quot + 2), 16 * (quot + 2));
-> > +	else
-> > +		return DIV_ROUND_CLOSEST(port->uartclk, 16 * quot);
-> > +}
-> 
-> Where did these formulas come from?
-
-I wrote it in commit message. I constructed inverse of function
-serial8250_get_divisor() which calculated divisor for UART HW, which is
-what configures baudrate.
-
-> thanks,
-> 
-> greg k-h
