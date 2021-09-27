@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1F5419B0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943A4419ABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236493AbhI0RPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48546 "EHLO mail.kernel.org"
+        id S235817AbhI0RLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:11:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235829AbhI0RMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:12:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1286B61288;
-        Mon, 27 Sep 2021 17:08:57 +0000 (UTC)
+        id S236198AbhI0RJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:09:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02E4660F46;
+        Mon, 27 Sep 2021 17:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762538;
-        bh=DYR4IUXWEASx8KRhNugoNGUL8PaGAxkxKKNjp8BfVns=;
+        s=korg; t=1632762456;
+        bh=xfECexUdKNbdFGlTds2HVqNsA8qj7QcE2q8SsBxctLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jbVtQVXtlaWQo3fWr2/3YElcXBqf+vJOeXAsmlbVEnJjTf4sxIsQCCIhgbfPHzsKM
-         jh9qnMsoxCsEMA2GXNdh4B8HbjVsYBufSs7biwNd+TjPhES8Am+H03USpErNjMLlAD
-         bCOd7pWwyEkR8mOpRMjU/SFBMPGHvo2nuiKBXxmM=
+        b=jP9ERfoOm8g76kA0QSKGFnkywdURkwXFneY2SS7iFh43GNSnO9/+3/a/BxE/UH3D8
+         l3bOPx0lXOjALFesSEN50xhthCt/Y7ClrxU0y42fdqeJVG8w/UdDSMb0YODJLBtGlu
+         irjsjd3iyfrQr8F8MGJxEu+iB/KPbnF3FSXhFdSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 029/103] scsi: sd_zbc: Ensure buffer size is aligned to SECTOR_SIZE
-Date:   Mon, 27 Sep 2021 19:02:01 +0200
-Message-Id: <20210927170226.752433187@linuxfoundation.org>
+        stable@vger.kernel.org, Lijo Lazar <lijo.lazar@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 030/103] drm/amd/pm: Update intermediate power state for SI
+Date:   Mon, 27 Sep 2021 19:02:02 +0200
+Message-Id: <20210927170226.785342122@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
 References: <20210927170225.702078779@linuxfoundation.org>
@@ -43,60 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naohiro Aota <naohiro.aota@wdc.com>
+From: Lijo Lazar <lijo.lazar@amd.com>
 
-commit 7215e909814fed7cda33c954943a4050d8348204 upstream.
+commit ab39d3cef526ba09c4c6923b4cd7e6ec1c5d4faa upstream.
 
-Reporting zones on a SCSI device sometimes fail with the following error:
+Update the current state as boot state during dpm initialization.
+During the subsequent initialization, set_power_state gets called to
+transition to the final power state. set_power_state refers to values
+from the current state and without current state populated, it could
+result in NULL pointer dereference.
 
-[76248.516390] ata16.00: invalid transfer count 131328
-[76248.523618] sd 15:0:0:0: [sda] REPORT ZONES start lba 536870912 failed
+For ex: on platforms where PCI speed change is supported through ACPI
+ATCS method, the link speed of current state needs to be queried before
+deciding on changing to final power state's link speed. The logic to query
+ATCS-support was broken on certain platforms. The issue became visible
+when broken ATCS-support logic got fixed with commit
+f9b7f3703ff9 ("drm/amdgpu/acpi: make ATPX/ATCS structures global (v2)").
 
-The error (from drivers/ata/libata-scsi.c:ata_scsi_zbc_in_xlat()) indicates
-that buffer size is not aligned to SECTOR_SIZE.
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1698
 
-This happens when the __vmalloc() failed. Consider we are reporting 4096
-zones, then we will have "bufsize = roundup((4096 + 1) * 64,
-SECTOR_SIZE)" = (513 * 512) = 262656. Then, __vmalloc() failure halves
-the bufsize to 131328, which is no longer aligned to SECTOR_SIZE.
-
-Use rounddown() to ensure the size is always aligned to SECTOR_SIZE and fix
-the comment as well.
-
-Link: https://lore.kernel.org/r/20210906140642.2267569-1-naohiro.aota@wdc.com
-Fixes: 23a50861adda ("scsi: sd_zbc: Cleanup sd_zbc_alloc_report_buffer()")
-Cc: stable@vger.kernel.org # 5.5+
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Lijo Lazar <lijo.lazar@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/sd_zbc.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/si_dpm.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/scsi/sd_zbc.c
-+++ b/drivers/scsi/sd_zbc.c
-@@ -155,8 +155,8 @@ static void *sd_zbc_alloc_report_buffer(
+--- a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
+@@ -6870,6 +6870,8 @@ static int si_dpm_enable(struct amdgpu_d
+ 	si_enable_auto_throttle_source(adev, AMDGPU_DPM_AUTO_THROTTLE_SRC_THERMAL, true);
+ 	si_thermal_start_thermal_controller(adev);
  
- 	/*
- 	 * Report zone buffer size should be at most 64B times the number of
--	 * zones requested plus the 64B reply header, but should be at least
--	 * SECTOR_SIZE for ATA devices.
-+	 * zones requested plus the 64B reply header, but should be aligned
-+	 * to SECTOR_SIZE for ATA devices.
- 	 * Make sure that this size does not exceed the hardware capabilities.
- 	 * Furthermore, since the report zone command cannot be split, make
- 	 * sure that the allocated buffer can always be mapped by limiting the
-@@ -175,7 +175,7 @@ static void *sd_zbc_alloc_report_buffer(
- 			*buflen = bufsize;
- 			return buf;
- 		}
--		bufsize >>= 1;
-+		bufsize = rounddown(bufsize >> 1, SECTOR_SIZE);
- 	}
++	ni_update_current_ps(adev, boot_ps);
++
+ 	return 0;
+ }
  
- 	return NULL;
 
 
