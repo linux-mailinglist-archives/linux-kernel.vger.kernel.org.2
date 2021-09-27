@@ -2,200 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096FE4190FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77684419103
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhI0IlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233337AbhI0IlB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:41:01 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B124C061575;
-        Mon, 27 Sep 2021 01:39:23 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v10so61525142edj.10;
-        Mon, 27 Sep 2021 01:39:23 -0700 (PDT)
+        id S233548AbhI0IlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:41:20 -0400
+Received: from mail-sn1anam02on2099.outbound.protection.outlook.com ([40.107.96.99]:21153
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233337AbhI0IlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 04:41:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h6w61T+XDjAtn6LWt1Yqe4zQL7o/b/NPx4psigNFsdIPb6YYL6BvjaV8Ts1fAtpqSpkjQCXJ8xPc4Adm+vdZ0BZzFyjbIlfoQiNFPA706gW0CnCV3QYXU7Ve2J406DRMtj42fWDN+dXiEBk7hjWA3wgY4EhcYaO1hiY5mtLoQ1T8Epe9dw0ZmXaOXogs0Pu5bqpD368KPmZPPoBi56oKKRyDwXfMeLzch3Y6hecS0mGGl8D1Wr78D0ws/wDCUobPsTbXXvgm0o3kwfgAHv8BGeW/eYCBzPbSmeEyt9AVghyF+dKclw2bmycPyLp9QuSdV8pffOChK/X4tR4WOiMRYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gIdmZOQCjDpO+zPvkEM5TmdlkH14ENLfJqaVvBh+bMY=;
+ b=btuvwUPuW4mQRGrF2o8OmPczDsds3L6SaanbWn6HIZbAEfMvWM4S7LE9lKTRME9J3wJ2EpYB41cawuyarAh+md0/tBXPDPV52L+GrpJQhs3ExV6429PFBR4P4d6e4ssM1rowIqylvYx95j6W9IR1mEnG+zJXmUE743+zT+5UgScrGJlnD1V1NPnyjMIHfxjs4j9htFjCnDzuZyE5v6QobmPjgxCIZh0Cwkfe2c216CvaNThqyJBExpXt9v/nI0KgqnCXI3Xn85DN6Pi/eanPwyguwqavnTHy7DRJQu/REYWYwSRbj1Jhqwm7EX7i3QoE8//3/imdCa9U9kLXAU4CHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n1CHzUBWfd1oowAfBnotzDhtPKlYdHbp+csmEaNyepw=;
-        b=bGUx3YrVdydSCuFxwh0azwQa/bf6Uj/HelZuQaWianGiq6oskyEd1zgv5qwGIGJy0x
-         fsSN/tv2QHWTEktZFekg8Q/d4DDmqmUUANFiC0qyqainXhWELmZQ6oDGaH2UV190I0Mx
-         XSCADlS+v67Mk8DYjXrEkPrNkZ4j6DBQb53flABr1suKE8yZLPRi60ZuomXe0kyKrN3h
-         VlM6VaKHW75SyaV5Kbfp1zbYP0vDqC3vINK4u7iiliGkRfuRuUeCobu10vmwbW87NY+j
-         hLF0gqIyY3q+F7JF63d6ILrK802LpFha5JWE4WjyZbFVbbeebmZ/KtasfNiu+AhXEnm+
-         1rsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n1CHzUBWfd1oowAfBnotzDhtPKlYdHbp+csmEaNyepw=;
-        b=R/4RHVS+EhT0IsYdzQzHFiQDBjEVE5VM+VIJwC6aNWmS9e2uYoHLjqc8WIwptDcsdB
-         sW1xLjh+bPdKIOlkUmRk/C/7kLwBtM/hXMCShUPpN7KZHHFR6R3KsYMlwnOoup0D2sMh
-         swrioX2izKtzdYxd3fImnFhRlQZxUhtj8SMraq2ZsvASnqChWtB14lY9m9onw9WcYr6N
-         QroFoqChFSWXuEKOQlQv1zXJmn+ztxGeHF4yUhNIMCHkrHT3tz82ZMGFDppfEzfMXA9R
-         1OrZkdo0vP5TRIzKqrqwLICz1QA+rPEoxyDBj2xNAsSAVk04JsKOc6C/2P2xMGfXGKAw
-         QMUA==
-X-Gm-Message-State: AOAM532vNOOIaZHbzK5AiAa9fB7UsEsQpERqksD/pYtvk/jhsbCG0gNx
-        X9OlvIQNn1JMJH3s5bwaeRyNuZjK2LI=
-X-Google-Smtp-Source: ABdhPJyfRPUa1kpgxGk7vL5411uh4xOOL+ZXkRP9xOhkk9ZG9et3ZE6/xSRgTXDnkPifeqyuXBDxIg==
-X-Received: by 2002:a17:906:165a:: with SMTP id n26mr25039652ejd.236.1632731962150;
-        Mon, 27 Sep 2021 01:39:22 -0700 (PDT)
-Received: from [192.168.0.108] ([176.228.98.2])
-        by smtp.gmail.com with ESMTPSA id s15sm10186810edr.6.2021.09.27.01.39.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 01:39:21 -0700 (PDT)
-Subject: Re: [PATCH 5.10 10/63] [PATCH] Revert "net/mlx5: Register to devlink
- ingress VLAN filter trap"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Patrick.Mclean@sony.com,
-        Aya Levin <ayal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gIdmZOQCjDpO+zPvkEM5TmdlkH14ENLfJqaVvBh+bMY=;
+ b=ThIwLqOTvKqhVZ0vg+C9ysQkVHWUl3MUK0mTUvLNfVnwqBw6ErdDdcEe/keVYqfScigStqzDrMCC2AkULtTthN06gOfUGoUsOLZLiI+TQaGwUhuzRbsPfmOiR6HTom6ECKMa6V39AzDg2zRi8fKkiL8bLyS4aIeN/dUrUJNtllk=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH7PR13MB5552.namprd13.prod.outlook.com (2603:10b6:510:131::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7; Mon, 27 Sep
+ 2021 08:39:37 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::e1d9:64d0:cb4f:3e90]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::e1d9:64d0:cb4f:3e90%9]) with mapi id 15.20.4566.012; Mon, 27 Sep 2021
+ 08:39:36 +0000
+Date:   Mon, 27 Sep 2021 10:39:24 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-References: <20210924124334.228235870@linuxfoundation.org>
- <20210924124334.598145185@linuxfoundation.org>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <3279469d-f980-386f-9110-c44144711608@gmail.com>
-Date:   Mon, 27 Sep 2021 11:39:19 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manish Chopra <manishc@marvell.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next v1 13/21] nfp: Move delink_register to be last
+ command
+Message-ID: <20210927083923.GC17484@corigine.com>
+References: <cover.1632565508.git.leonro@nvidia.com>
+ <f393212ad3906808ee7eb5cff06ef2e053eb9d2b.1632565508.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f393212ad3906808ee7eb5cff06ef2e053eb9d2b.1632565508.git.leonro@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: AM0PR01CA0120.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:168::25) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-In-Reply-To: <20210924124334.598145185@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from corigine.com (2001:982:756:703:d63d:7eff:fe99:ac9d) by AM0PR01CA0120.eurprd01.prod.exchangelabs.com (2603:10a6:208:168::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Mon, 27 Sep 2021 08:39:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 73a8042b-dc1b-4068-935c-08d98192565c
+X-MS-TrafficTypeDiagnostic: PH7PR13MB5552:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH7PR13MB55523D49A228A31C33B1A01DE8A79@PH7PR13MB5552.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 50r4QUSBOxNDjWfUa1gtTG5JU0Vq4LuJU56Mp2/XLvqP7oXv3b6JfDq6W0jhn8bZdcvnqcQ3Vp4Sj7e10r0TSnL9jwZmind7QdI898XN6Sx24uJ0d0Bnq/x5hZQvGZDj0xP4gCbzH98zPwiY3RLx/B6xLtzTcYEla8JCBa2Rulkq4Lu1jeLAa6mt9e72SBKe+Khg4IR43oXcJUj9UoduCXpwd/Yq9+wWPnGZ+urpfvDPY5k2mzB2GO6ETIRqWfuDEHucQ7FmIn4IfVCOKMvWakTcI3OuwQexw1IEDfHon8On5+Ort2ydvs3UxmFAjzOKPxAxzOfxJzerNVsyf89fZDyUI91OJTPJXEKdURZgcfrThsNJPz/yvtQLUgR6naELfR+7XUdZZtvcXmboUHU1z0SweoGTSTEy8FGjlmBnE08P2nDbOyRYTUoL0z4+XTLU7Zz75JmitlxhNxxWgDW9Du1BHHgQWRw8g5dZ2pRBw64nGGT3oafjJFpx6dxa0e1rizVxpozmH2HNwA1LTliujmlHOuQCUw4xuYTPGOvfvicAdoi6eEP6YZhapFjeeRXWFenU7tK2n9AvRcoNgJl3MK0LUtnRTYrCHY/wNvxkqRv5rQ9wKL0PQ2rdolXw3EGS1WmrjroBx1sstj13NrPXoA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(39830400003)(366004)(6916009)(66946007)(55016002)(66556008)(2616005)(508600001)(8886007)(4326008)(186003)(8676002)(33656002)(8936002)(7696005)(66476007)(52116002)(6666004)(2906002)(83380400001)(558084003)(1076003)(7366002)(5660300002)(36756003)(7416002)(86362001)(7406005)(44832011)(54906003)(38100700002)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MR1z9KoG+kajsxH185xcnkq9AgYihKkrXTsPol9YCizp9UyVcAoGsUMnT+51?=
+ =?us-ascii?Q?5ufrrgMkLqhUAc6Y36WeCaXq78PSH9vhu/5O3/6JJN8bAHgyaHCvuC9R0sis?=
+ =?us-ascii?Q?1/Ep3gx8Hg0iybk9j1sA+6uC9XhW6Iy9PEhEed/tMM8biPQv3BSfklCpECUn?=
+ =?us-ascii?Q?8LENrreAk3LyDoWuieSMVMB2Hc7wcB0ErrVWmKwPbuVEUXEy72gHNR7G+6OA?=
+ =?us-ascii?Q?CIeYM4+loxThVxdumQb/Se2+u1JRRmand11QEe1Ot4VIzXlcqrVNz2M+XxoS?=
+ =?us-ascii?Q?9AA+5+lObbghalIdXZAtCvx5SNN0Yq+gLZMTKZe0CiS3PWltj8VGowt4aJ6t?=
+ =?us-ascii?Q?+420IrmglFA+72bTDEayGE0BwTJBjGVvRMwaPZSkR41DjEHKmiLOr0HBsiJA?=
+ =?us-ascii?Q?MEpheuWSNkp7WzTOSwWvc3fr7fotJHZxFWcmQWoNgy4/xT8F3GlxveH2z+we?=
+ =?us-ascii?Q?sNLu/xWc0VxWRtgRVw5OrwcSZOz/6JlJ97yLL8tiJKzULweCOfah0aSgM4O2?=
+ =?us-ascii?Q?RxKdAaEB8olel9D7qNoehnGItTGkLgMB8laDht9zpyuEzSJT4tG/k2Ms4HJO?=
+ =?us-ascii?Q?hwFCXmdjVNu4EW+vB1pNfQUqc1bMWZ+z60vByPRHS/YZAj0jucWxNFw5ogxy?=
+ =?us-ascii?Q?pNZuyTLS+4Ps/emdQTNjIXeW1Ib4oK527TRT8kRPjA7EKIrecGFpiHqAEfNZ?=
+ =?us-ascii?Q?WxI/9HZtsj3rnsHbqIprwR/iZwg66l7fTIGMNSumo5PdatXYbNlHlpdhw0ok?=
+ =?us-ascii?Q?UOBQBojBL5aN39tif3BN/GiCxe6S30HCIVdUVDL453GLQ7FhZ6ffRqFmgLzo?=
+ =?us-ascii?Q?eryuRbvDlHGB8Nh5Qv6seeF4ksfxaiDxYKynaJvuNMAvxlUSRp3mryvUGlIJ?=
+ =?us-ascii?Q?zHBD9yu0v2+1ulbauswzaucC+/RTKm66DaNdzXe4KagSKBNxu4a9ok9E1ad/?=
+ =?us-ascii?Q?TvVyhYVXoUvcGVMnMfnbN4oLHusMYeE2VMGDosrG2SwKpByCoMEMBqJChpnh?=
+ =?us-ascii?Q?EIp/76lP0NyTX6fxl1qEpUG5BXR7QZ+kjuE5k4D7dcX891nP8ic2ADEctCHS?=
+ =?us-ascii?Q?/3Zjk+jUh/G4Z7dCP3JqfUQjQ9mRMcH2kJaV7YsiMITGt2T85QjdKk+KTih4?=
+ =?us-ascii?Q?GVb8VjZ+CEB2moJI+lwTZZgDPJUpOsCCzkrPh9GmfS+8oCG2oh3ZBVBG1VEf?=
+ =?us-ascii?Q?XVjxX9g9cN21Xr327zkhqgdknyjpWzQ/KNBAXetiDMxgnUF90t27Fy8+2rPk?=
+ =?us-ascii?Q?jA9OxFBHSL39MPNFn2EMAbGZLBJbxf1JIVgf8nmd+AUGsBj5OdmwFaA2PNhj?=
+ =?us-ascii?Q?uJNZt1PKZqbTR6t4lqyojfFwZ4SoTQyBxDlZyN+/FgUUY9IzETG1cte2WnS6?=
+ =?us-ascii?Q?S5kOaZpTUGmm/VGA8GSuDOWDHwAv?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73a8042b-dc1b-4068-935c-08d98192565c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 08:39:36.6260
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HbD8PMEUDDXemMgJZpsAhRriXOPllWXSJK/YfPEi+lU9comg/zhgPgMLgdhfh7Cuc9Lf2kjj2o7vEWB1SltNrAE8d0/S/DgKGN7+Rvm8fm8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB5552
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/24/2021 3:44 PM, Greg Kroah-Hartman wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Sat, Sep 25, 2021 at 02:22:53PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> This reverts commit fe6322774ca28669868a7e231e173e09f7422118 which was
-> commit 82e6c96f04e13c72d91777455836ffd012853caa upstream.
-> 
-> It has been reported to cause regressions so should be dropped.
-> 
-> Reported-by: <Patrick.Mclean@sony.com>
-> Link: https://lore.kernel.org/r/BY5PR13MB3604D3031E984CA34A57B7C9EEA09@BY5PR13MB3604.namprd13.prod.outlook.com
-> Cc: Aya Levin <ayal@nvidia.com>
-> Cc: Tariq Toukan <tariqt@nvidia.com>
-> Cc: Tariq Toukan <tariqt@nvidia.com>
-> Cc: Saeed Mahameed <saeedm@nvidia.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Sasha Levin <sashal@kernel.org>
-> Cc: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
+> Open user space access to the devlink after driver is probed.
 
-Hi Greg,
+Hi Leon,
 
-This issue is solved within the same upstream series, by upstream patch:
-[1] 241dc159391f net/mlx5: Notify on trap action by blocking event
+I think a description of why is warranted here.
 
-We didn't spot the issue back then, the two patches should've been 
-submitted in a reversed order in the original series to avoid this 
-temporary degradation.
-
-This patch "net/mlx5: Register to devlink ingress VLAN filter trap" is 
-not a bug fix, not really needed in 5.10 stable.
-I believe you cherry-picked it into 5.10 to handle some code context 
-problem?
-
-In summary, if the revert works for you w/o further degradation then we 
-are fine with it. The alternative is to import the whole original 
-series, especially the patch mentioned above [1].
-
-Thanks,
-Tariq
-
->   drivers/net/ethernet/mellanox/mlx5/core/devlink.c |   51 ----------------------
->   1 file changed, 51 deletions(-)
-> 
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> @@ -376,48 +376,6 @@ static void mlx5_devlink_set_params_init
->   #endif
->   }
->   
-> -#define MLX5_TRAP_DROP(_id, _group_id)					\
-> -	DEVLINK_TRAP_GENERIC(DROP, DROP, _id,				\
-> -			     DEVLINK_TRAP_GROUP_GENERIC_ID_##_group_id, \
-> -			     DEVLINK_TRAP_METADATA_TYPE_F_IN_PORT)
-> -
-> -static const struct devlink_trap mlx5_traps_arr[] = {
-> -	MLX5_TRAP_DROP(INGRESS_VLAN_FILTER, L2_DROPS),
-> -};
-> -
-> -static const struct devlink_trap_group mlx5_trap_groups_arr[] = {
-> -	DEVLINK_TRAP_GROUP_GENERIC(L2_DROPS, 0),
-> -};
-> -
-> -static int mlx5_devlink_traps_register(struct devlink *devlink)
-> -{
-> -	struct mlx5_core_dev *core_dev = devlink_priv(devlink);
-> -	int err;
-> -
-> -	err = devlink_trap_groups_register(devlink, mlx5_trap_groups_arr,
-> -					   ARRAY_SIZE(mlx5_trap_groups_arr));
-> -	if (err)
-> -		return err;
-> -
-> -	err = devlink_traps_register(devlink, mlx5_traps_arr, ARRAY_SIZE(mlx5_traps_arr),
-> -				     &core_dev->priv);
-> -	if (err)
-> -		goto err_trap_group;
-> -	return 0;
-> -
-> -err_trap_group:
-> -	devlink_trap_groups_unregister(devlink, mlx5_trap_groups_arr,
-> -				       ARRAY_SIZE(mlx5_trap_groups_arr));
-> -	return err;
-> -}
-> -
-> -static void mlx5_devlink_traps_unregister(struct devlink *devlink)
-> -{
-> -	devlink_traps_unregister(devlink, mlx5_traps_arr, ARRAY_SIZE(mlx5_traps_arr));
-> -	devlink_trap_groups_unregister(devlink, mlx5_trap_groups_arr,
-> -				       ARRAY_SIZE(mlx5_trap_groups_arr));
-> -}
-> -
->   int mlx5_devlink_register(struct devlink *devlink, struct device *dev)
->   {
->   	int err;
-> @@ -432,16 +390,8 @@ int mlx5_devlink_register(struct devlink
->   		goto params_reg_err;
->   	mlx5_devlink_set_params_init_values(devlink);
->   	devlink_params_publish(devlink);
-> -
-> -	err = mlx5_devlink_traps_register(devlink);
-> -	if (err)
-> -		goto traps_reg_err;
-> -
->   	return 0;
->   
-> -traps_reg_err:
-> -	devlink_params_unregister(devlink, mlx5_devlink_params,
-> -				  ARRAY_SIZE(mlx5_devlink_params));
->   params_reg_err:
->   	devlink_unregister(devlink);
->   	return err;
-> @@ -449,7 +399,6 @@ params_reg_err:
->   
->   void mlx5_devlink_unregister(struct devlink *devlink)
->   {
-> -	mlx5_devlink_traps_unregister(devlink);
->   	devlink_params_unpublish(devlink);
->   	devlink_params_unregister(devlink, mlx5_devlink_params,
->   				  ARRAY_SIZE(mlx5_devlink_params));
-> 
-> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
