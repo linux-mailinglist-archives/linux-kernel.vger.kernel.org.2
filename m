@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AA04194EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA764194EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhI0NTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:19:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53938 "EHLO mail.kernel.org"
+        id S234580AbhI0NTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234421AbhI0NTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:19:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 350CE60FED;
-        Mon, 27 Sep 2021 13:17:33 +0000 (UTC)
+        id S234421AbhI0NTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:19:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26F1760F12;
+        Mon, 27 Sep 2021 13:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632748655;
-        bh=42QBDntERyc+aM/df+V25KL01A6wcdArOVewCg/bvEI=;
+        s=k20201202; t=1632748679;
+        bh=uFqO+1jnmCX9nfTiURK9XQ8PfCqV6zEhlQO3ToJ040g=;
         h=From:To:Cc:Subject:Date:From;
-        b=ZMT4sHluyoDMXrByXz8jEqUKG17f655yYSujAhmrAfe/ohZ+EHa4vZst23ImLwYo8
-         GGqvR8GVDb2G28tEx1/b+h10WqaEsONV4nj4p9ZcNwD492uFE6vP6tgDajlr1XngWc
-         O1eICLm0hWAtaDDqiW9VXwLVeLOItBaWUZ5/+9BHI/o91i+MA3gv+RuD8gLPVh7tqi
-         JJ7lMbJduHH3blDAvs00GtXpFIIps8skGinxVpSbNj/eGJIjI0WL1IAOiqRpief4jG
-         QQHuQd4sM3WhRQyk+prGv2e2belJYTJ60rNHoGgY+rcWk+YHQjtbsKzdDmqwENNRVb
-         AoXKwGlZ54DVg==
+        b=koMygb7TX3kiBcxXaZVly2RcdzwQYT6PpFyIvedGAI9Bk+Pj272u2UFF06He+xKpv
+         Xxuc2m0dRsoVyvowZV+cfYN4DEbb72CDuyb5CpNCBrZfOZQaFr4HLRIrlilXFo1/p0
+         LkVsBCWflIfEqg+pMvBVNcO4XHu+OHXZZurQa5LCS5FkqVXW+K/gE74Thj1zlakdRw
+         kK815j/PpscM99CI4CqJ6Q8/NwbRhAV1m62zuqMocLlByGyXNr6SnPQhbYjK8Cizhw
+         6bCOKFQilbA1WJLDSF94vXueP8N8o1/8JjWN6WGojopLmMI42vgRIFxkW55E8TD7iy
+         /HhqQX74X9Egg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] igc: fix PTP dependency
-Date:   Mon, 27 Sep 2021 15:17:19 +0200
-Message-Id: <20210927131730.1587671-1-arnd@kernel.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Barry Song <baohua@kernel.org>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH] clocksource: ti-dmtimer: select TIMER_OF when needed
+Date:   Mon, 27 Sep 2021 15:17:49 +0200
+Message-Id: <20210927131754.1587924-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -50,33 +47,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The igc driver was accidentally left out of the Kconfig rework for PTP,
-it needs the same dependency as the others:
+When CONFIG_OF is enabled but CONFIG_TIMER_OF is not, building the
+dm systimer driver produces a warning:
 
-arm-linux-gnueabi-ld: drivers/net/ethernet/intel/igc/igc_main.o: in function `igc_tsync_interrupt':
-igc_main.c:(.text+0x1b288): undefined reference to `ptp_clock_event'
-arm-linux-gnueabi-ld: igc_main.c:(.text+0x1b308): undefined reference to `ptp_clock_event'
-arm-linux-gnueabi-ld: igc_main.c:(.text+0x1b8cc): undefined reference to `ptp_clock_event'
-arm-linux-gnueabi-ld: drivers/net/ethernet/intel/igc/igc_ethtool.o: in function `igc_ethtool_get_ts_info':
+arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
 
-Fixes: e5f31552674e ("ethernet: fix PTP_1588_CLOCK dependencies")
+Address this by selecting the TIMER_OF symbol in this configuration.
+If CONFIG_OF is disabled, the table entry is not created, so there
+is no warning, and no reason to have the infrastructure.
+
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/intel/Kconfig | 1 +
+ drivers/clocksource/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
-index b0b6f90deb7d..ed8ea63bb172 100644
---- a/drivers/net/ethernet/intel/Kconfig
-+++ b/drivers/net/ethernet/intel/Kconfig
-@@ -335,6 +335,7 @@ config IGC
- 	tristate "Intel(R) Ethernet Controller I225-LM/I225-V support"
- 	default n
- 	depends on PCI
-+	depends on PTP_1588_CLOCK_OPTIONAL
- 	help
- 	  This driver supports Intel(R) Ethernet Controller I225-LM/I225-V
- 	  family of adapters.
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 0f5e3983951a..f006d29e50f5 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -24,6 +24,7 @@ config I8253_LOCK
+ 
+ config OMAP_DM_TIMER
+ 	bool
++	select TIMER_OF if OF
+ 
+ config CLKBLD_I8253
+ 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
 -- 
 2.29.2
 
