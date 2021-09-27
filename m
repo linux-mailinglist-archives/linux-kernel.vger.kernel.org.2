@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A3B41A2E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EF641A2ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237545AbhI0Wa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        id S237739AbhI0Wal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237444AbhI0WaZ (ORCPT
+        with ESMTP id S237679AbhI0Waj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:30:25 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CCBC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:28:46 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id s20so24821374ioa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:28:46 -0700 (PDT)
+        Mon, 27 Sep 2021 18:30:39 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D196EC061740
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:29:00 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id d11so21021922ilc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:29:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
         bh=w9ezsQ1UkQZeC53NkFhy7B+1aNQW9TNDf1kl1c4M4R4=;
-        b=Ah7jkIIctR0HcnVgB5sWbeUdZwsGT2EehBK4lb+q32xOVavNWfD82zKlDGRJA1B4PM
-         /2U90/0SvcC9l1r+IDSlahEN/NC+QMNdf8OLk/ooOlydqwz6QGg8wDViFrkfEGikp/c3
-         /Q8A/XGE1SZVGZ1hcLnLB6Er8MX1tmX3kUoUHTd8fZUIlpDxvC5pwUQYipgCc7oJVSI+
-         rkiNvqR6Uh37Z5l+Gj9S3tYzBLrJ2DlUD27NmkKUe2vWKFh1TgA7VLVoziOPGtTGPqo8
-         dcSrTDLSWV/lT8K2aextSKUoXJ59tNYXOpE1Usf4pH7xnmSPdZY6piFtoxoW38lIHPW7
-         +BBQ==
+        b=Ffjc9XDV39XVuLIm8DJDvOIHuyWwHa/JDveqkJIq4EPQcwwF6i2IwXvqTayH1Zs+J0
+         zBBIHTdeujFBpyTsi7j+hLC6dG1lmzreXcsCJibD0ZHuJdAABtpVv3xmIelWiJg4Kiwx
+         y74YiDFOoIziOuEp0bFDeka+WbUijbofv2enBSkOGJFIlEwWIxbA3L0TdOIDNHbvW4s3
+         UX5WZ/WNqYbm3RB9OdDLcEyEdxxaBYh8+Ce09lqPv5Y/yeoNEYf2H8gl9ZQ2Gx73QUuz
+         bK1mNwQj3yvOA8l/cfkBNHF9G4YJ0ALLNw+vW7N07eAC0HlFOVJ1jxEY1tUin9ivF4Jg
+         GOjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=w9ezsQ1UkQZeC53NkFhy7B+1aNQW9TNDf1kl1c4M4R4=;
-        b=UsnxA0D735Bbpn8VFL4pnjsCYUeu9iDn+ovltY4t7UFGXFGsfemIcxwNVIg16pzVsc
-         hrk11qhsz9IKKwyNM+/qlbTrfuiDPNJscqfjhPkoic1gWNmMqxnozWfwspSJvU1WmUY+
-         BVciFqrs8pkb6q6Wi3gd3FYSP8hgD02mHzHXT7p9P/WiBKAcSxSgybeWh/1ZuXUGtxVm
-         d8l6XNuEgC7WdnjlGo5E7vsr7xcWebemSVmQVqf1jg24um0KSMshyBUaIhmTvw2f7jZs
-         0TPRTO8Ft9y67xVUkPwO1Hp+AvpgeAhE8FUB6n5ehJAWU2gEs6DCfpxhTi6Hygrui8hO
-         XExA==
-X-Gm-Message-State: AOAM5316zdVjESZgJWWYBgwpdxFZ7yHfr7InBSg0+0Rm6nor4g87jscy
-        KOd9+nM5pmZk7DDOAt27goe4jtswtPBRMA==
-X-Google-Smtp-Source: ABdhPJztY3mK3ksoDQMf3OrQ8dUSONHNyLP4EfHo/dO6kIiAhPp9t/W2Pe9f9RD+PJfpbL6A6UQe4w==
-X-Received: by 2002:a02:22cf:: with SMTP id o198mr1814887jao.37.1632781726231;
-        Mon, 27 Sep 2021 15:28:46 -0700 (PDT)
+        b=rFrK/QPeXhQKO95NZnKqlmZjn/xIP0Fl0uwcpdq06M8wFaixU5AoTHihQsWymCBoyU
+         yqiswe59Im2mBwCbrlUDBDiFbOag5pmM54Mz8sBhErnHGwdtWYiazVTzfQYlLA9zKrz/
+         yvqkvU4r3WgXGL/OIg22f9mfa8rG1o89EhLJD7uqGDBQff12UDgBz5LO23gWcNwzabyh
+         BWe4OBpPXlhH2alZfCoRhnRepFRTiyyU+iq3xc786Lid9xKFHpYoGJ8Z0F9jEzCS0g87
+         7kgxmBvkjBvBuYUw1MlbjyrgybRnLHG0aUK6iouVgr/X6MYB+2nofecHpCwszojJLLPQ
+         HMVA==
+X-Gm-Message-State: AOAM533cFHrclJYjK4sNOIuriVumX1mfREMb00fs4aJmqoFnXLwh4DrY
+        6fRj9lzBdiu6mlCW/fgdAZcthQ==
+X-Google-Smtp-Source: ABdhPJz2QpC01URNtiA6TI68tVS50xc5AHbinQF2wOnvWrWvzOWk+mcoidVwrUAWxR5vBmrTJemKng==
+X-Received: by 2002:a05:6e02:661:: with SMTP id l1mr1855976ilt.122.1632781740297;
+        Mon, 27 Sep 2021 15:29:00 -0700 (PDT)
 Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id e13sm9446741iod.36.2021.09.27.15.28.44
+        by smtp.gmail.com with ESMTPSA id z25sm7614559iow.20.2021.09.27.15.28.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 15:28:45 -0700 (PDT)
-Subject: Re: [PATCH v4 5/6] loop: add error handling support for add_disk()
+        Mon, 27 Sep 2021 15:28:59 -0700 (PDT)
+Subject: Re: [PATCH v4 6/6] nbd: add error handling support for add_disk()
 To:     Luis Chamberlain <mcgrof@kernel.org>, martin.petersen@oracle.com,
         jejb@linux.ibm.com, kbusch@kernel.org, sagi@grimberg.me,
         adrian.hunter@intel.com, beanhuo@micron.com,
@@ -62,14 +62,14 @@ Cc:     hch@infradead.org, hare@suse.de, bvanassche@acm.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         Christoph Hellwig <hch@lst.de>
 References: <20210927215958.1062466-1-mcgrof@kernel.org>
- <20210927215958.1062466-6-mcgrof@kernel.org>
+ <20210927215958.1062466-7-mcgrof@kernel.org>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1cd6103b-1251-cc22-93ad-da7f207147b4@kernel.dk>
-Date:   Mon, 27 Sep 2021 16:28:43 -0600
+Message-ID: <dc945e14-498b-2cc1-8ef3-8dcaacfb948c@kernel.dk>
+Date:   Mon, 27 Sep 2021 16:28:58 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210927215958.1062466-6-mcgrof@kernel.org>
+In-Reply-To: <20210927215958.1062466-7-mcgrof@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
