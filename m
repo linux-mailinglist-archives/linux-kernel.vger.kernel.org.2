@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F6C4192CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2C54192E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbhI0LKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:10:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53012 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233959AbhI0LKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:10:13 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7EB52220A1;
-        Mon, 27 Sep 2021 11:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632740914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T0gN5P8Lx7ZyiqATEPAc473z/z83jxXVuqiEZE6U3VQ=;
-        b=kre7iUxOWUIgYgzzKUhzw0x2WCHgHzMCUOqVIBpZ+x/aVr1dRjiWLufEXpDi/CmGC1TYI1
-        px71aSp6Y8Zv4RfWxdoH2HFaiQnu6Shv0Ar9v2hzsX4tQvCY2YXDp53YHRpvaMi3o5GqQV
-        TZ9vAVbHiIdSUzPF8ML3FYKqjacgdVY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id EC5EB25D3C;
-        Mon, 27 Sep 2021 11:08:33 +0000 (UTC)
-Date:   Mon, 27 Sep 2021 13:08:33 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-Message-ID: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
- <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
- <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
- <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
- <YU2EXP5wrSKv+b/8@dhcp22.suse.cz>
- <508abe37-a044-7180-ac67-b4ce5e4cc149@virtuozzo.com>
+        id S234037AbhI0LNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:13:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233959AbhI0LMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 07:12:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDB36108E;
+        Mon, 27 Sep 2021 11:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632741062;
+        bh=P47FrSTuUz2xeiOIAAHA2YwBt3bEeWW94qpmD8mk2ps=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YCWxIS3tp3DlVBAGjIlE0002bkC4XgWXRg/uBUKFF/eNnaYUGRbMthkceJimLsOrj
+         78PjGHJduzSpE9QiBuV89lOq6U4wyAbIpFclH1FhlCwQhfLddhxJUXRy3Yn7OQGV9Z
+         RAYKemKi8NUEUYqur5MhLOvnRCbFGhc/uN3CaXP5znAlHTzLe/dfWCxVhL//JwyA7H
+         u1Aigz8F9C5QHvm3/sfFZUCpBl6Z0ncbA9MO14wkhRjo4kzPApTwcXCcqux2EYJZIq
+         vkg7ccF9UY6aVBFPYSdZ1bbEaLifTXxEPyFwg8n9uv+Ey82vk09fh/z0o5zZQNH9wc
+         fDBr4D0SQmL6A==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mUoXE-0005y6-73; Mon, 27 Sep 2021 13:11:00 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David E Box <david.e.box@intel.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Pavel Hofman <pavel.hofman@ivitera.com>,
+        Perry Yuan <perry_yuan@dell.com>,
+        Rajat Jain <rajatja@google.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tamar Mashiah <tamar.mashiah@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH 0/7] Fix some issues with ABI files
+Date:   Mon, 27 Sep 2021 13:10:49 +0200
+Message-Id: <cover.1632740376.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <508abe37-a044-7180-ac67-b4ce5e4cc149@virtuozzo.com>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 27-09-21 12:36:15, Vasily Averin wrote:
-> On 9/24/21 10:55 AM, Michal Hocko wrote:
-> > On Thu 23-09-21 09:49:57, Vasily Averin wrote:
-[...]
-> >> Hypothetically, cancelled vmalloc called inside some filesystem's transaction
-> >> forces its rollback, that in own turn it can call own vmalloc.
-> > 
-> > Do you have any specific example?
-> 
-> No, it was pure hypothetical assumption.
-> I was thinking about it over the weekend, and decided that:
-> a) such kind of issue (i.e. vmalloc call in rollback after failed vmalloc)
->    is very unlikely
-> b) if it still exists -- it must have own failback with kmalloc(NOFAIL) 
->    or just accept/ignore such failure and should not lead to critical failures.
->    If this still happen -- ihis is a bug, we should detect and fix it ASAP.
+Hi Greg,
 
-I would even argue that nobody should rely on vmalloc suceeding. The
-purpose of the allocator is to allow larger allocations and we do not
-guarantee anything even for small reqests.
+All patches in this series are independent each other. This series is
+based on today's next (next-20210927). 
 
-> >> Should we perhaps interrupt the first vmalloc only?
-> > 
-> > This doesn't make much sense to me TBH. It doesn't address the very
-> > problem you are describing in the changelog.
-> 
-> Last question:
-> how do you think, should we perhaps, instead, detect such vmallocs 
-> (called in rollback after failed vmalloc) and generate a warnings,
-> to prevent such kind of problems in future?
+As you know, I've been busy those days adding a new feature for
+get_abi.pl to identify missing documentation. While doing that, 
+I noticed several issues at the ABI files on "make htmldocs".
+This series address them, and it is independent from the other
+patches for get_abi.pl.
 
-We do provide an allocation failure splat unless the request is
-explicitly __GFP_NOWARN IIRC.
+Patch 1 is actually a small improvement to get_abi.pl, addressing an
+issue when there are multiple definitions for the same ABI symbol.
+While this is not allowed, and produce warnings, there are still
+3 occurrences:
+
+	./scripts/get_abi.pl validate
+	Warning: /sys/bus/iio/devices/iio:deviceX/fault_ovuv is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-temperature-max31856:14  Documentation/ABI/testing/sysfs-bus-iio-temperature-max31865:0
+	Warning: /sys/bus/iio/devices/iio:deviceX/in_filter_notch_center_frequency is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-temperature-max31865:12  Documentation/ABI/testing/sysfs-bus-iio:1911
+	Warning: /sys/bus/iio/devices/triggerX/sampling_frequency is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:92  Documentation/ABI/testing/sysfs-bus-iio:91
+
+Once those got fixed, perhaps a future patch could make get_abi.pl to
+generate an error causing the compilation to break, if WERROR is defined.
+
+Anyway, it is better to to make the script more reliable anyway, specially 
+since it is just one extra line of code.
+
+Patches 2-7 fix random warnings introduced by new patches.
+
+Regards,
+Mauro
+
+Mauro Carvalho Chehab (7):
+  scripts: get_abi.pl: create a valid ReST with duplicated tags
+  ABI: sysfs-platform-dell-privacy-wmi: correct ABI entries
+  ABI: sysfs-platform-dptf: Add tables markup to a table
+  ABI: configfs-usb-gadget-uac1: fix a broken table
+  ABI: configfs-usb-gadget-uac2: fix a broken table
+  ABI: sysfs-devices-removable: make a table valid as ReST markup
+  ABI: sysfs-platform-intel-pmc: add blank lines to make it valid for
+    ReST
+
+ .../ABI/testing/configfs-usb-gadget-uac1      | 42 +++++++------
+ .../ABI/testing/configfs-usb-gadget-uac2      | 43 +++++++------
+ .../ABI/testing/sysfs-devices-removable       |  8 ++-
+ .../testing/sysfs-platform-dell-privacy-wmi   | 60 ++++++++++++-------
+ Documentation/ABI/testing/sysfs-platform-dptf |  4 ++
+ .../ABI/testing/sysfs-platform-intel-pmc      |  2 +
+ scripts/get_abi.pl                            |  1 +
+ 7 files changed, 99 insertions(+), 61 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.31.1
+
+
