@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1A441A006
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1719441A011
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236993AbhI0UTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:19:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236897AbhI0UTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:19:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A23C61074;
-        Mon, 27 Sep 2021 20:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632773892;
-        bh=Gs+/jugXgFBEVUEQP969f6W9qTFGmf4wj4z8f1JV4VU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hbyRnn2SGnhj3MN1EsX3ZsL+prigNd/uxi9U3EB4jylO1DhVuMrAdLzPAgZRfOUWc
-         igIAfHcRbYeHogdcQ846vlDNO13A7v+5NYwutT3EJm6UogYAMHSLluJz6BjHzBS4Ut
-         vFoS7Apd5IJ58V46t34Sl8nDbXBe33yQNVNldpPscx1+qExG0YB0zQhXSU8Owg9GVJ
-         T1npBt8aRYrm/X3wbtUSt5KrztSjkqLRIheaGc09aHJ4M0YxANgK1KXQPVEVWh93SA
-         qzH/K3Cz6nCAO2XtW0OZ5zv0p5huRx6Z7Y1RFazLwpMh8z/Ae23rzCBcBty0KGjHOY
-         I8mvXx/SZb9gg==
-Received: by mail-ed1-f51.google.com with SMTP id dj4so74292684edb.5;
-        Mon, 27 Sep 2021 13:18:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530b7mPDaMSp+zKFUN33jlYrsRrOsJiKsDj1JwMj3P0LEtsy/cl8
-        WgtjAC8ExAzvLUvgAbFMfMB14gB/s6Byang/kQ==
-X-Google-Smtp-Source: ABdhPJx0Mpijz4OFjl1AoyHZXg/DFW1ppxpHuYunciGgByTgzv3v9mmruih5DIWeWlR97gwvuIOauI6bZqVzKzBJ2Vw=
-X-Received: by 2002:a17:906:fa8a:: with SMTP id lt10mr2286444ejb.320.1632773890868;
- Mon, 27 Sep 2021 13:18:10 -0700 (PDT)
+        id S236992AbhI0UYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236910AbhI0UYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:24:46 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A36CC061575;
+        Mon, 27 Sep 2021 13:23:08 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id n18so18826088pgm.12;
+        Mon, 27 Sep 2021 13:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=V0i5nY3QH9iXcrKglZXlGRD0wtyYtp6y70pksa3skO4=;
+        b=qwewqIBSaLhc/bs3fxJK++SG+QNUWBZtG/3GwuqDOKqPpyTUlbxVGJDNXSTW/ejr8C
+         bapb2W9gCU8b/iQVZdRVUyw00zF8Y6HME1jl0H2Dzuj7PjsyfV46kIKpC4R8HMLvmiTW
+         0BOmj1CEF5EKopUo46JNhSAcobXpnM96fkT1hlT4YjGwSwwtFOw5p7C3jV51KORAevwM
+         a43/xmb5ytVpGG7KMJfq2pT3fkc2d+iiPZtbhC6Ebop1mE9vOc5wZ8/dQ2uMIIrn0BMk
+         76XaWtahqlv/I7N3fHZkzEny62TX+fNyDbEZCJ36K+4rt/kyAv/PBp+lZzoRJgeBE/Rw
+         Y4eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=V0i5nY3QH9iXcrKglZXlGRD0wtyYtp6y70pksa3skO4=;
+        b=gOU8AgpT/NZOLJv8934BuQgnTmN7E4W78e20sHAg+KSlOgRwvksmFb6cQ+SYAHtBoJ
+         0OdxFikawiatOYsCGk/EJ0PclAVoTAP6YMb4KB72IZ4MH00rs7ydtWXJ9w1Kq+jPF7fH
+         YqV6qxH8szvYnhiW7/9Lf/jb6d/syhg9R78pr1b857iHB/2Cmo3Fz5zMMGq+5xY4BpjK
+         rqaA8oxhsBR0M3ZhJcdXZQ3tyIHqSSeHzKh1KvO+ZrSDJUxQt1fk7YZZ8Suor0/hkqEK
+         oYiPe3SkG95avrEhPXc8kzZZPnJVfew0QCbKRbtCgb/7gwx/Q3ZVPbroHK3O/8dgmFQG
+         E5Hg==
+X-Gm-Message-State: AOAM53282u5eNctdvPB3/vjcIi+k/nKl25nRdN5DB4RIpwzVGNdaFbbO
+        TZDts8LnX10VkMDDxfuwNz4=
+X-Google-Smtp-Source: ABdhPJxps7L5mrAo9cBFURpLQEOJJ3M/lpdPTfVDXKPcn6ITv/07nHWAGpB/imssYjn1RVIBDw5YRA==
+X-Received: by 2002:a65:4209:: with SMTP id c9mr1210484pgq.399.1632774187555;
+        Mon, 27 Sep 2021 13:23:07 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id n12sm10046806pff.166.2021.09.27.13.23.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 13:23:07 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 13:23:04 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Sebastien Laveze <sebastien.laveze@oss.nxp.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yangbo.lu@nxp.com, yannick.vignon@oss.nxp.com,
+        rui.sousa@oss.nxp.com
+Subject: Re: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
+Message-ID: <20210927202304.GC11172@hoboy.vegasvil.org>
+References: <20210927093250.202131-1-sebastien.laveze@oss.nxp.com>
+ <20210927145916.GA9549@hoboy.vegasvil.org>
+ <b9397ec109ca1055af74bd8f20be8f64a7a1c961.camel@oss.nxp.com>
 MIME-Version: 1.0
-References: <20210922105433.11744-1-pali@kernel.org> <20210922105433.11744-4-pali@kernel.org>
-In-Reply-To: <20210922105433.11744-4-pali@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 27 Sep 2021 15:17:59 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKS1rjEeM558d2n6Uk1+tCazASoGJ-kDS144PsH8-Akwg@mail.gmail.com>
-Message-ID: <CAL_JsqKS1rjEeM558d2n6Uk1+tCazASoGJ-kDS144PsH8-Akwg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 3/6] dt-bindings: mvebu-uart: document DT
- bindings for marvell,armada-3700-uart-clock
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b9397ec109ca1055af74bd8f20be8f64a7a1c961.camel@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 5:56 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> This change adds DT bindings documentation for device nodes with compatib=
-le
-> string "marvell,armada-3700-uart-clock".
+On Mon, Sep 27, 2021 at 06:00:08PM +0200, Sebastien Laveze wrote:
+> The "typically" was more a reference to this possible implementation of
+> AS-2020 using a common CMLDS layer and several domains using a single
+> socket.
+> 
+> So, without this IOCTL the design would be 1 socket for CMLDS layer
+> and 1 socket for each domain plus some specific filtering for each
+> socket to avoid processing the unwanted traffic.
+> 
+> With this IOCTL, the design would be 1 socket and 1 conversion for the
+> sync messages in the appropriate domain.
 
-Please resend to the DT list so that checks run and this gets reviewed
-in a timely manner.
+The ioctl solution is gross.  A program with eight vclocks should call
+recvmsg and parse the CMSG, then go and call ioctl seven times?  Yuck.
 
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> ---
->  .../bindings/clock/armada3700-uart-clock.yaml | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/armada3700-ua=
-rt-clock.yaml
->
-> diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-cloc=
-k.yaml b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-> new file mode 100644
-> index 000000000000..5bdb23e0ba3e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: GPL-2.0
+What you really want is the socket to return more than one time stamp.
+So why not do that instead?
 
-Dual license. checkpatch will tell you which ones.
+Right now, the SO_TIMESTAMPING has an array of
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/marvell,armada-3700-uart-clock#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +title: Marvell Armada 3720 UART clocks
-> +
-> +properties:
-> +  compatible:
-> +    const: marvell,armada-3700-uart-clock
-> +
-> +  reg:
-> +    items:
-> +      - description: UART Clock Control Register
-> +      - description: UART 2 Baud Rate Divisor Register
-> +
-> +  clocks:
-> +    description: |
-> +      List of parent clocks suitable for UART from following set:
-> +        "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal"
-> +      UART clock can use one from this set and when more are provided
-> +      then kernel would choose and configure the most suitable one.
-> +      It is suggest to specify at least one TBG clock to achieve
-> +      baudrates above 230400 and also to specify clock which bootloader
-> +      used for UART (most probably xtal) for smooth boot log on UART.
-> +
-> +  clock-names:
-> +    items:
-> +      - const: TBG-A-P
-> +      - const: TBG-B-P
-> +      - const: TBG-A-S
-> +      - const: TBG-B-S
-> +      - const: xtal
-> +    minItems: 1
-> +    maxItems: 5
+   struct timespec ts[3] = 
+   [0] SOFTWARE
+   [1] LEGACY (unused)
+   [2] HARDWARE
 
-Don't need maxItems equal to length of 'items'.
+You can extend that to have
 
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    uartclk: uartclk@12000 {
+   [0] SOFTWARE
+   [1] LEGACY (unused)
+   [2] HARDWARE (vclock 0)
+   [3] HARDWARE (vclock 1)
+   [4] HARDWARE (vclock 2)
+   ...
+   [N] HARDWARE (vclock N-2)
 
-clock-controller@12010
+You could store the selected vclocks in a bit mask associated with the socket.
 
-> +      compatible =3D "marvell,armada-3700-uart-clock";
-> +      reg =3D <0x12010 0x4>, <0x12210 0x4>;
+Hm?
 
-However, looks like this is part of some other block. The whole block
-needs a binding (or at least the parent and whatever sub-functions you
-know about).
-> +      clocks =3D <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
-> +      clock-names =3D "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal"=
-;
-> +      #clock-cells =3D <1>;
-> +    };
-> --
-> 2.20.1
->
+Thanks,
+Richard
