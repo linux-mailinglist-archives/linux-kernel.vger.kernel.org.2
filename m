@@ -2,143 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC89419508
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4771241950A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhI0N0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234359AbhI0N0I (ORCPT
+        id S234560AbhI0N0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:26:40 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:44588 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234058AbhI0N0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:26:08 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40799C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:24:30 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id q66so18128172vsa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=DAo7I/BZC1qYd6MF3qSicniWvTR8rtUDikb4S5qnXhg=;
-        b=KwTuroM8SG4lRxbD4EIdWgTuAQeS+ADX1D2WvbgzV0GjrOZJF7nadBpzci5PZ0o5gP
-         qacO1s82qS5PcAKflWitGfnB8HkFf8xTi6gnV5gLKqoDO/DZ9gfQ2AJpeEFqEifyBWR7
-         QUYlTDIYdmdTpIf/Abq0WZSaH0HQmbfYOZENTtUGx9378wM7K3lsAxRbm0xdQdZgZPZB
-         UK1R/5m9qARU1rwBaI13APQymFD10p9u6GdkL65GOwTOMchN3AAD5hHg7/cvXYeXifBL
-         p43l98Em5bwPMCPbf2EOb8B7QBGUt0ob6McbDfkBjiCQaT3yde8cejoxo1sf7wxab7hx
-         dQmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=DAo7I/BZC1qYd6MF3qSicniWvTR8rtUDikb4S5qnXhg=;
-        b=JSCf4R7k/iV/DugVTkMN/qYdDnUOSw0Qh+6a8AdIf9YzxVexnfsqkgy6oeiuPlahls
-         7hsYHYXyG8RlMUi2KG16B2aryIPhRoU5waiHZajgTR+UJ9l9PIt0JUDiMZXV6XHBataS
-         0B/hBbUl7dPZ2CiJxbqlPMzEz03y4QasxbZ1LQ3D9iJo86fTvHYO22QwbMcXqU3XOQ7E
-         VWU2GTb/qOHAQ4pvalQQxfF9uPPgbwmAXAVygltzVamFjvrLa9NjyGJVAIAnbJn9ZJuC
-         bi5C95EfxsHlnsmGmu87JibvOt8AKZhE5TaZNBa2cQOwmBWmCApNrnRDHgqLQ5AGBdaU
-         eFVg==
-X-Gm-Message-State: AOAM530pKq/bQ6ofFSoew3E3OnaTyRJpKhFFn7ZgXhs5uu7RheZxs1+Y
-        yF2Lj7P3Rzq014po9dj08UDb/dx/hBvawzwTWv6bHr/gkoKgew==
-X-Google-Smtp-Source: ABdhPJy87lQ9kGwsi669ZXp5VRXHe55QPzrnJ+B227yNYkw8/SaEKJAjjvNs4HEyzuIISpGuTPTpq0tMLf6gcM0SmhQ=
-X-Received: by 2002:a05:6102:222b:: with SMTP id d11mr3073514vsb.20.1632749069329;
- Mon, 27 Sep 2021 06:24:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913032003.2836583-1-fengli@smartx.com> <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
-In-Reply-To: <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
-From:   Li Feng <fengli@smartx.com>
-Date:   Mon, 27 Sep 2021 21:24:18 +0800
-Message-ID: <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com>
-Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
-To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 27 Sep 2021 09:26:39 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id DBD8ECECC4;
+        Mon, 27 Sep 2021 15:24:58 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v1] Bluetooth: Fix wrong opcode when LL privacy enabled
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210927195737.v1.1.Id56e280fc8cac32561e3ea49df34308d26d559c9@changeid>
+Date:   Mon, 27 Sep 2021 15:24:57 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Yun-Hao Chung <howardchung@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <A45AAACC-B13E-42C2-A1B5-FD48545D797F@holtmann.org>
+References: <20210927195737.v1.1.Id56e280fc8cac32561e3ea49df34308d26d559c9@changeid>
+To:     Howard Chung <howardchung@google.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
+Hi Howard,
 
-What about this feature?
+> The returned opcode of command status of remove_adv is
+> wrong when LL privacy is enabled.
+> 
+> Signed-off-by: Yun-Hao Chung <howardchung@chromium.org>
+> ---
+> Test with following steps:
+> 1. btmgmt --index 0
+> 2. [btmgmt] power off; [btmgmt] exp-privacy on; [btmgmt] power on
+> 3. [btmgmt] rm-adv 1
+> 4. Check if the 'Not supported' message is present in terminal
+> 
+> net/bluetooth/mgmt.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Feng Li
+patch has been applied to bluetooth-next tree.
 
-Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=A5=E5=
-=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
->
-> ping ...
->
-> Thanks,
-> Feng Li
->
-> Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > When the running RAID1/RAID10 need to be set with the fail_fast flag,
-> > we have to remove each device from RAID and re-add it again with the
-> > --fail_fast flag.
-> >
-> > Export the fail_fast flag to the userspace to support the read and
-> > write.
-> >
-> > Signed-off-by: Li Feng <fengli@smartx.com>
-> > ---
-> >  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
-> >  1 file changed, 30 insertions(+)
-> >
-> > diff --git a/drivers/md/md.c b/drivers/md/md.c
-> > index ae8fe54ea358..ce63972a4555 100644
-> > --- a/drivers/md/md.c
-> > +++ b/drivers/md/md.c
-> > @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const char =
-*buf, size_t len)
-> >  static struct rdev_sysfs_entry rdev_ppl_size =3D
-> >  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
-> >
-> > +static ssize_t
-> > +fail_fast_show(struct md_rdev *rdev, char *page)
-> > +{
-> > +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags));
-> > +}
-> > +
-> > +static ssize_t
-> > +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
-> > +{
-> > +       int ret;
-> > +       bool bit;
-> > +
-> > +       ret =3D kstrtobool(buf, &bit);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       if (test_bit(FailFast, &rdev->flags) && !bit) {
-> > +               clear_bit(FailFast, &rdev->flags);
-> > +               md_update_sb(rdev->mddev, 1);
-> > +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
-> > +               set_bit(FailFast, &rdev->flags);
-> > +               md_update_sb(rdev->mddev, 1);
-> > +       }
-> > +       return len;
-> > +}
-> > +
-> > +static struct rdev_sysfs_entry rdev_fail_fast =3D
-> > +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
-> > +
-> >  static struct attribute *rdev_default_attrs[] =3D {
-> >         &rdev_state.attr,
-> >         &rdev_errors.attr,
-> > @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] =3D=
- {
-> >         &rdev_unack_bad_blocks.attr,
-> >         &rdev_ppl_sector.attr,
-> >         &rdev_ppl_size.attr,
-> > +       &rdev_fail_fast.attr,
-> >         NULL,
-> >  };
-> >  static ssize_t
-> > --
-> > 2.31.1
-> >
+Regards
+
+Marcel
+
