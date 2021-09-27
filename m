@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3A3419B78
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88284419CBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbhI0RTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55022 "EHLO mail.kernel.org"
+        id S237869AbhI0Rbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236527AbhI0ROx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:14:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13B5561222;
-        Mon, 27 Sep 2021 17:10:37 +0000 (UTC)
+        id S237799AbhI0R2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:28:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8E9061244;
+        Mon, 27 Sep 2021 17:17:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762638;
-        bh=TTg8jxlnK+vJcR/2KDfAOFz1xwi+6UGQ0I+f65se//g=;
+        s=korg; t=1632763047;
+        bh=hEtB7/NWNhg/U6fpfGCSf5n7LdhTcBNm1sN4XdlKG1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v/yMtd5dETfj5KbcWk4jofRsm5dMTRsd0yHodsM5M1UpShxlwD15MkXv9m+sJhB9G
-         YhSjI2e18pNodL7ez0k9iYN0Gh0SaHbgNIy8WyYwb68BwVEfobRcbVC8bfuMZdgkbI
-         rC96V9Z7ibYURNq4ax5W0c5ylPZeajVN37+qA2ek=
+        b=1T9PJRGFFNS0UUPZoihZKLDEqwCccmAfGmLr7S+S+qhGqiKaC24gyT8gb34/qYM3w
+         p/odMn07sb4hUD8da+rws4gL3miACYwY39m97oqCh/LEt1XUF7EGWifgmjM++DJfA8
+         NcD7TvYVtPYsKhDiXHC06kQgvPycDwOxw5GTYHMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pIandruvada@linux.intel.com>
-Subject: [PATCH 5.10 100/103] thermal/drivers/int340x: Do not set a wrong tcc offset on resume
-Date:   Mon, 27 Sep 2021 19:03:12 +0200
-Message-Id: <20210927170229.231708962@linuxfoundation.org>
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 147/162] spi: Fix tegra20 build with CONFIG_PM=n
+Date:   Mon, 27 Sep 2021 19:03:13 +0200
+Message-Id: <20210927170238.524745234@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 8b4bd256674720709a9d858a219fcac6f2f253b5 upstream.
+[ Upstream commit efafec27c5658ed987e720130772f8933c685e87 ]
 
-After upgrading to Linux 5.13.3 I noticed my laptop would shutdown due
-to overheat (when it should not). It turned out this was due to commit
-fe6a6de6692e ("thermal/drivers/int340x/processor_thermal: Fix tcc setting").
+Without CONFIG_PM enabled, the SET_RUNTIME_PM_OPS() macro ends up being
+empty, and the only use of tegra_slink_runtime_{resume,suspend} goes
+away, resulting in
 
-What happens is this drivers uses a global variable to keep track of the
-tcc offset (tcc_offset_save) and uses it on resume. The issue is this
-variable is initialized to 0, but is only set in
-tcc_offset_degree_celsius_store, i.e. when the tcc offset is explicitly
-set by userspace. If that does not happen, the resume path will set the
-offset to 0 (in my case the h/w default being 3, the offset would become
-too low after a suspend/resume cycle).
+  drivers/spi/spi-tegra20-slink.c:1200:12: error: ‘tegra_slink_runtime_resume’ defined but not used [-Werror=unused-function]
+   1200 | static int tegra_slink_runtime_resume(struct device *dev)
+        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  drivers/spi/spi-tegra20-slink.c:1188:12: error: ‘tegra_slink_runtime_suspend’ defined but not used [-Werror=unused-function]
+   1188 | static int tegra_slink_runtime_suspend(struct device *dev)
+        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The issue did not arise before commit fe6a6de6692e, as the function
-setting the offset would return if the offset was 0. This is no longer
-the case (rightfully).
+mark the functions __maybe_unused to make the build happy.
 
-Fix this by not applying the offset if it wasn't saved before, reverting
-back to the old logic. A better approach will come later, but this will
-be easier to apply to stable kernels.
+This hits the alpha allmodconfig build (and others).
 
-The logic to restore the offset after a resume was there long before
-commit fe6a6de6692e, but as a value of 0 was considered invalid I'm
-referencing the commit that made the issue possible in the Fixes tag
-instead.
-
-Fixes: fe6a6de6692e ("thermal/drivers/int340x/processor_thermal: Fix tcc setting")
-Cc: stable@vger.kernel.org
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Tested-by: Srinivas Pandruvada <srinivas.pI andruvada@linux.intel.com>
-Link: https://lore.kernel.org/r/20210909085613.5577-2-atenart@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/intel/int340x_thermal/processor_thermal_device.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/spi/spi-tegra20-slink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-@@ -185,7 +185,7 @@ static int tcc_offset_update(unsigned in
+diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
+index 6a726c95ac7a..dc1a6899ba3b 100644
+--- a/drivers/spi/spi-tegra20-slink.c
++++ b/drivers/spi/spi-tegra20-slink.c
+@@ -1206,7 +1206,7 @@ static int tegra_slink_resume(struct device *dev)
+ }
+ #endif
+ 
+-static int tegra_slink_runtime_suspend(struct device *dev)
++static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
+ {
+ 	struct spi_master *master = dev_get_drvdata(dev);
+ 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
+@@ -1218,7 +1218,7 @@ static int tegra_slink_runtime_suspend(struct device *dev)
  	return 0;
  }
  
--static unsigned int tcc_offset_save;
-+static int tcc_offset_save = -1;
- 
- static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
- 				struct device_attribute *attr, const char *buf,
-@@ -709,7 +709,8 @@ static int proc_thermal_resume(struct de
- 	proc_dev = dev_get_drvdata(dev);
- 	proc_thermal_read_ppcc(proc_dev);
- 
--	tcc_offset_update(tcc_offset_save);
-+	if (tcc_offset_save >= 0)
-+		tcc_offset_update(tcc_offset_save);
- 
- 	return 0;
- }
+-static int tegra_slink_runtime_resume(struct device *dev)
++static int __maybe_unused tegra_slink_runtime_resume(struct device *dev)
+ {
+ 	struct spi_master *master = dev_get_drvdata(dev);
+ 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
+-- 
+2.33.0
+
 
 
