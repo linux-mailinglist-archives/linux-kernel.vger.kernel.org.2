@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A56418FC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2733F418FCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhI0HTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbhI0HTK (ORCPT
+        id S233223AbhI0HVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:21:03 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33552 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233140AbhI0HVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:19:10 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595B5C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:17:33 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id t10so73036826lfd.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tuPT9UMjnSF9/x2VxZzbMJbiT3SxCc7RjnbYKdMUOXk=;
-        b=NpIOiC9JGVYQ+YGJXTh0LGscT4eTT3N3WB0MpB+nmp0e3RAkiFa2U+CmaWuVoqhtFB
-         F4roQ/o1rqwAxesyKp5TXE9xgLRngmIpg3EjrhOt/gtJUwL3ikK+DfcjscR5NvdsGYnR
-         5pO8pRUAAMSth27MjzOIJQ1hl4F0G9pW3gxD4=
+        Mon, 27 Sep 2021 03:21:02 -0400
+Received: by mail-il1-f199.google.com with SMTP id b16-20020a920b10000000b0025882d5e438so2995980ilf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:19:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tuPT9UMjnSF9/x2VxZzbMJbiT3SxCc7RjnbYKdMUOXk=;
-        b=Uvn5F5tsFp05uJU0d+uDx/s374lEvt7gFLtDYGEtIdzj/pLSmqZ+laEUUCbbwZJCID
-         m0BLDXpVH2E8yTrz9XgCXH6oR1rMTtp6UlWOa06R0H7N+EiL3TMVRTC88ZdyP82Sq02S
-         3tfJlJpsaIfUmPLAZLdDtwSAZPgjb8c7E7gciie4bxz6tRqi1gFG0/wncJq9G1tNALe7
-         7IxTiGSbsRAC4Q1DsCutFhxmLSyo8ny/Ce8KPbUKwTbNEIDXhBsqFZhb/mtLTL1WY+hf
-         fuD0xzBPOIZ/b34ouJ8IZARarpvhBM2Equn6kh5m3r399fBddQwpToOMOR/Kwk2DF6Vg
-         23PQ==
-X-Gm-Message-State: AOAM532UP3Z+DNCPaB2DWEArQO8WrYHcrMIjgA7ZEWDlJAVdQ5dieDbz
-        BdmUrYVrCp4FXQ+K4p2vjHoVwF9dKUN3+oeUMdrFR3CI5Qc=
-X-Google-Smtp-Source: ABdhPJw4lCvDI5qxWeg9+Zx4oGNCCIFt2BJqNldnjQXhKLPJfzJPOcHS8LHpQntsfImx7DzCXz9/tkEB43a7uAvl+iE=
-X-Received: by 2002:a19:c3d3:: with SMTP id t202mr23208923lff.678.1632727050548;
- Mon, 27 Sep 2021 00:17:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HJTwPJ+4jVvs82M6884XSo7mRxi3vygWxCFS8xlsnps=;
+        b=g+dYKNP6xENJ2ECZz3xBeTWFG3tVftx0qPFvDVQ8eUh+UshUvXWswG/d9M2oUPSbJ3
+         sDxH2Sk+JW3CrM4TmodQNABaaE65vKDDO0ocnPjI05uM98ahq+fELDZBYJSLmpL7CU28
+         29LtcOgJA+uejD0/5n2MRgAZDQpSP4ga7KHMd42tMOEJX3Ifb8PvG40jxvjCTj6OK8Pn
+         yQMi/4oD9YG4LSube9N0WYaRgRZY65l7vUqrhfHmgwbT7tL/enR31yRcEPiNk1Fu+Tv6
+         zqpBTHvyOmiL6kBgIYSb2uR+/Jy8UcrhMuxwLK3iGV82bpJQhWq+jTLYj5XrIFfPzdqk
+         mr+w==
+X-Gm-Message-State: AOAM530UjWul23D9OOStVHIxMV1lY4cUzwtX9BLUvehu6UDwxIS2Tk2A
+        3hox1gO+kuwO2ao7NZU1DPQtCOLMDIkd0MKjSFSsLrB72q3w
+X-Google-Smtp-Source: ABdhPJx1KpI5cC2MlZsTn36lab01Zs89i7Ym8v75LignfGo/a8nhKA0r+Yk3XpU68iUo6TF9EWHgj/nFGuLMI17hwUahXxv0Fp0m
 MIME-Version: 1.0
-References: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
- <20210924162321.2.Ie8ceefb51ab6065a1151869b6fcda41a467d4d2c@changeid>
-In-Reply-To: <20210924162321.2.Ie8ceefb51ab6065a1151869b6fcda41a467d4d2c@changeid>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 27 Sep 2021 15:17:19 +0800
-Message-ID: <CAGXv+5GVpm2PeKkHxnn4gd_WE_Pyoij1RjYiJbAMnyze6RT5oQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/rockchip: dsi: Fix unbalanced clock on probe error
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Thomas Hebb <tommyhebb@gmail.com>
+X-Received: by 2002:a05:6602:345:: with SMTP id w5mr13802057iou.49.1632727164973;
+ Mon, 27 Sep 2021 00:19:24 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 00:19:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000aef88205ccf4ea41@google.com>
+Subject: [syzbot] WARNING in cfg80211_bss_update (2)
+From:   syzbot <syzbot+0b4e1901856f4895db24@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 7:24 AM Brian Norris <briannorris@chromium.org> wrote:
->
-> Our probe() function never enabled this clock, so we shouldn't disable
-> it if we fail to probe the bridge.
->
-> Noted by inspection.
->
-> Fixes: 2d4f7bdafd70 ("drm/rockchip: dsi: migrate to use dw-mipi-dsi bridge driver")
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+Hello,
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+syzbot found the following issue on:
+
+HEAD commit:    428168f99517 Merge branch 'mlxsw-trap-adjacency'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=104c39d7300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
+dashboard link: https://syzkaller.appspot.com/bug?extid=0b4e1901856f4895db24
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0b4e1901856f4895db24@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 26433 at net/wireless/scan.c:1574 cfg80211_combine_bsses net/wireless/scan.c:1574 [inline]
+WARNING: CPU: 1 PID: 26433 at net/wireless/scan.c:1574 cfg80211_bss_update+0x19fe/0x2070 net/wireless/scan.c:1755
+Modules linked in:
+CPU: 1 PID: 26433 Comm: kworker/u4:10 Not tainted 5.15.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy15 ieee80211_iface_work
+RIP: 0010:cfg80211_combine_bsses net/wireless/scan.c:1574 [inline]
+RIP: 0010:cfg80211_bss_update+0x19fe/0x2070 net/wireless/scan.c:1755
+Code: ff e9 e3 fd ff ff e8 71 37 0b f9 48 8d 7b 98 e8 c8 59 ff ff e9 46 fe ff ff e8 5e 37 0b f9 0f 0b e9 08 f2 ff ff e8 52 37 0b f9 <0f> 0b 4c 89 ff e8 88 99 72 fb 31 ff 89 c6 88 44 24 70 e8 7b 3d 0b
+RSP: 0018:ffffc90004a7edc0 EFLAGS: 00010216
+RAX: 0000000000001394 RBX: 0000000000000001 RCX: ffffc9000e290000
+RDX: 0000000000040000 RSI: ffffffff886ad45e RDI: 0000000000000003
+RBP: ffff888019e74400 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff886ac8f4 R11: 0000000000000000 R12: ffff888075a01468
+R13: 0000000000000005 R14: ffff888075a01400 R15: ffff888019e74410
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 000000001f5bb000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ cfg80211_inform_single_bss_frame_data+0x6e8/0xee0 net/wireless/scan.c:2411
+ cfg80211_inform_bss_frame_data+0xa7/0xb10 net/wireless/scan.c:2444
+ ieee80211_bss_info_update+0x376/0xb60 net/mac80211/scan.c:190
+ ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
+ ieee80211_rx_mgmt_probe_beacon+0xcce/0x17c0 net/mac80211/ibss.c:1608
+ ieee80211_ibss_rx_queued_mgmt+0xd37/0x1610 net/mac80211/ibss.c:1635
+ ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
+ ieee80211_iface_work+0xa65/0xd00 net/mac80211/iface.c:1493
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
