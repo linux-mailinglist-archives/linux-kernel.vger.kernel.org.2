@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D2A4190B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8EB4190B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbhI0IZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:25:29 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53284 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233337AbhI0IZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:25:28 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0979D22098;
-        Mon, 27 Sep 2021 08:23:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632731030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=37o9ue6D55euseY87j2eVtMIU2ZEOiSWr0h3uppibpo=;
-        b=mEmCCoa0naAO9rk9L+BWrTdgk5YyRGEv2i7pHHtnBn/1JVcWsTME3v//EfgkuFmg2tK6WX
-        eKJyywKRLghT3BAj+3YGyt5iCDsMWiO3tNq2tAXkOOjsVvxhevMfx0A7DSckyzruz4f5O5
-        6N2WE65afKo51F8kjRzsO5i/SZG0LnA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632731030;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=37o9ue6D55euseY87j2eVtMIU2ZEOiSWr0h3uppibpo=;
-        b=NsvW0sX2DUOMXz8fou8QufETZ23R0NJX0guAOpKhK3DsWM5cfAUmxlsrXsNpfOa9mUDfS2
-        KvhBVZsWiRKF2uDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2218913A42;
-        Mon, 27 Sep 2021 08:23:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9/86OJJ/UWEzSwAAMHmgww
-        (envelope-from <colyli@suse.de>); Mon, 27 Sep 2021 08:23:46 +0000
-Subject: Re: [PATCH v3 1/6] badblocks: add more helper structure and routines
- in badblocks.h
-To:     Geliang Tang <geliangtang@gmail.com>
-Cc:     antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        NeilBrown <neilb@suse.de>, nvdimm@lists.linux.dev,
-        linux-raid@vger.kernel.org, Richard Fan <richard.fan@suse.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>
-References: <20210913163643.10233-1-colyli@suse.de>
- <20210913163643.10233-2-colyli@suse.de>
- <e0fc4902-e8db-b507-651b-d930a74702ef@gmail.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <b0960871-1fc6-ed76-965c-7b0adff6641c@suse.de>
-Date:   Mon, 27 Sep 2021 16:23:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S233435AbhI0I17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:27:59 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:60562 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233337AbhI0I16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 04:27:58 -0400
+Received: from BC-Mail-Ex16.internal.baidu.com (unknown [172.31.51.56])
+        by Forcepoint Email with ESMTPS id 513225E8B226CE5ED1B8;
+        Mon, 27 Sep 2021 16:26:19 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex16.internal.baidu.com (172.31.51.56) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Mon, 27 Sep 2021 16:26:18 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Mon, 27 Sep 2021 16:26:18 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "Vladimir Zapolskiy" <vz@mleia.com>,
+        Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH 1/8] iio: dac: ad8801: Make use of the helper function dev_err_probe()
+Date:   Mon, 27 Sep 2021 16:26:00 +0800
+Message-ID: <20210927082608.859-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <e0fc4902-e8db-b507-651b-d930a74702ef@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex15.internal.baidu.com (172.31.51.55) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 3:23 PM, Geliang Tang wrote:
-> Hi Coly,
->
-> On 9/14/21 00:36, Coly Li wrote:
->> This patch adds the following helper structure and routines into
->> badblocks.h,
->> - struct badblocks_context
->>    This structure is used in improved badblocks code for bad table
->>    iteration.
->> - BB_END()
->>    The macro to culculate end LBA of a bad range record from bad
->>    table.
->> - badblocks_full() and badblocks_empty()
->>    The inline routines to check whether bad table is full or empty.
->> - set_changed() and clear_changed()
->>    The inline routines to set and clear 'changed' tag from struct
->>    badblocks.
->>
->> These new helper structure and routines can help to make the code more
->> clear, they will be used in the improved badblocks code in following
->> patches.
->>
->> Signed-off-by: Coly Li <colyli@suse.de>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Cc: Hannes Reinecke <hare@suse.de>
->> Cc: Jens Axboe <axboe@kernel.dk>
->> Cc: NeilBrown <neilb@suse.de>
->> Cc: Richard Fan <richard.fan@suse.com>
->> Cc: Vishal L Verma <vishal.l.verma@intel.com>
->> ---
->>   include/linux/badblocks.h | 32 ++++++++++++++++++++++++++++++++
->>   1 file changed, 32 insertions(+)
->>
->> diff --git a/include/linux/badblocks.h b/include/linux/badblocks.h
->> index 2426276b9bd3..166161842d1f 100644
->> --- a/include/linux/badblocks.h
->> +++ b/include/linux/badblocks.h
->> @@ -15,6 +15,7 @@
->>   #define BB_OFFSET(x)    (((x) & BB_OFFSET_MASK) >> 9)
->>   #define BB_LEN(x)    (((x) & BB_LEN_MASK) + 1)
->>   #define BB_ACK(x)    (!!((x) & BB_ACK_MASK))
->> +#define BB_END(x)    (BB_OFFSET(x) + BB_LEN(x))
->>   #define BB_MAKE(a, l, ack) (((a)<<9) | ((l)-1) | ((u64)(!!(ack)) << 
->> 63))
->>     /* Bad block numbers are stored sorted in a single page.
->> @@ -41,6 +42,14 @@ struct badblocks {
->>       sector_t size;        /* in sectors */
->>   };
->>   +struct badblocks_context {
->> +    sector_t    start;
->> +    sector_t    len;
->
-> I think the type of 'len' should be 'int' instead of 'sector_t', since 
-> we used 'int sectors' as one of the arguments of _badblocks_set().
+When possible use dev_err_probe help to properly deal with the
+PROBE_DEFER error, the benefit is that DEFER issue will be logged
+in the devices_deferred debugfs file.
+Using dev_err_probe() can reduce code size, and the error value
+gets printed.
 
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/iio/dac/ad8801.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-OK, I will change it.
+diff --git a/drivers/iio/dac/ad8801.c b/drivers/iio/dac/ad8801.c
+index 6354b7c8f052..8acb9fee273c 100644
+--- a/drivers/iio/dac/ad8801.c
++++ b/drivers/iio/dac/ad8801.c
+@@ -123,10 +123,9 @@ static int ad8801_probe(struct spi_device *spi)
+ 	id = spi_get_device_id(spi);
+ 
+ 	state->vrefh_reg = devm_regulator_get(&spi->dev, "vrefh");
+-	if (IS_ERR(state->vrefh_reg)) {
+-		dev_err(&spi->dev, "Vrefh regulator not specified\n");
+-		return PTR_ERR(state->vrefh_reg);
+-	}
++	if (IS_ERR(state->vrefh_reg))
++		return dev_err_probe(&spi->dev, PTR_ERR(state->vrefh_reg),
++				     "Vrefh regulator not specified\n");
+ 
+ 	ret = regulator_enable(state->vrefh_reg);
+ 	if (ret) {
+@@ -146,15 +145,15 @@ static int ad8801_probe(struct spi_device *spi)
+ 	if (id->driver_data == ID_AD8803) {
+ 		state->vrefl_reg = devm_regulator_get(&spi->dev, "vrefl");
+ 		if (IS_ERR(state->vrefl_reg)) {
+-			dev_err(&spi->dev, "Vrefl regulator not specified\n");
+-			ret = PTR_ERR(state->vrefl_reg);
++			ret = dev_err_probe(&spi->dev, PTR_ERR(state->vrefl_reg),
++					    "Vrefl regulator not specified\n");
+ 			goto error_disable_vrefh_reg;
+ 		}
+ 
+ 		ret = regulator_enable(state->vrefl_reg);
+ 		if (ret) {
+-			dev_err(&spi->dev, "Failed to enable vrefl regulator: %d\n",
+-					ret);
++			dev_err(&spi->dev,
++				"Failed to enable vrefl regulator: %d\n", ret);
+ 			goto error_disable_vrefh_reg;
+ 		}
+ 
+-- 
+2.25.1
 
->
->> +    int        ack;
->> +    sector_t    orig_start;
->> +    sector_t    orig_len;
->
-> I think 'orig_start' and 'orig_len' can be dropped, see comments in 
-> patch 3.
-
-Yes, I will change it in next version. Please review the new version latter.
-
-Thanks for your review.
-
-Coly Li
