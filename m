@@ -2,65 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59994197DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571B54197E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234500AbhI0P2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:28:21 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:38042 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235112AbhI0P2H (ORCPT
+        id S235240AbhI0P3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:29:15 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39748 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235163AbhI0P2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:28:07 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 53D4F82215;
-        Mon, 27 Sep 2021 18:26:27 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632756387;
-        bh=i6bYZLXmor/RfRF2EogMQiOHKnFbIX15Y4f9ovWqXAs=;
-        h=Date:To:CC:From:Subject;
-        b=t3R0Pr22o2nLBd6mqHe5Y7V33SVKrLXht0jffz9WkWw07Jmr7mgUMfRHgI+g/Im1Y
-         mGVXcdKzkVc0WBJEfARUmq9AAkUQSvZDobDTlTHJMR2UMtznOyZ3V3oCJKlvu+LL2N
-         m4I2eimlt3Hqgf5tXNKrFc5m0KRZLK/c2SbQYgl0=
-Received: from [192.168.211.27] (192.168.211.27) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 27 Sep 2021 18:26:27 +0300
-Message-ID: <a1204ce8-80e6-bf44-e7d1-f1674ff28dcd@paragon-software.com>
-Date:   Mon, 27 Sep 2021 18:26:26 +0300
+        Mon, 27 Sep 2021 11:28:16 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mUsWR-000FdL-9B; Mon, 27 Sep 2021 17:26:27 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mUsWQ-000R5W-Se; Mon, 27 Sep 2021 17:26:26 +0200
+Subject: Re: [PATCH RESEND bpf] bpf, s390: Fix potential memory leak about
+ jit_data
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1632726374-7154-1-git-send-email-yangtiezhu@loongson.cn>
+ <e9665315bc2f244d50d026863476e72e3d9b8067.camel@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c02febfc-03e6-848a-8fb0-5bd6802c1869@iogearbox.net>
+Date:   Mon, 27 Sep 2021 17:26:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
+In-Reply-To: <e9665315bc2f244d50d026863476e72e3d9b8067.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v2 0/3] fs/ntfs3: Refactoring of xattr.c
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.27]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26305/Mon Sep 27 11:04:42 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed function, that already have been in kernel.
-Changed locking policy to fix some potential bugs.
-Changed code for readability.
+On 9/27/21 1:33 PM, Ilya Leoshkevich wrote:
+> On Mon, 2021-09-27 at 15:06 +0800, Tiezhu Yang wrote:
+>> Make sure to free jit_data through kfree() in the error path.
+>>
+>> Fixes: 1c8f9b91c456 ("bpf: s390: add JIT support for multi-function
+>> programs")
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
+>> RESEND due to the following reason:
+>> [Can not connect to recipient's server because of unstable
+>> network or firewall filter. rcpt handle timeout, last handle
+>> info: Can not connect to vger.kernel.org]
+>>
+>>   arch/s390/net/bpf_jit_comp.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Nice catch, thanks!
+> 
+> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-V2:
-  fixed typo.
+Given s390, I presume this would be routed to Linus via Heiko/Vasily?
 
-Konstantin Komarov (3):
-  fs/ntfs3: Use available posix_acl_release instead of
-    ntfs_posix_acl_release
-  fs/ntfs3: Remove locked argument in ntfs_set_ea
-  fs/ntfs3: Refactoring of ntfs_set_ea
-
- fs/ntfs3/xattr.c | 69 ++++++++++++++++++++++--------------------------
- 1 file changed, 32 insertions(+), 37 deletions(-)
-
--- 
-2.33.0
-
+Thanks,
+Daniel
