@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B9F4192B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57554192B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbhI0LDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
+        id S233945AbhI0LGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233908AbhI0LDK (ORCPT
+        with ESMTP id S233897AbhI0LGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:03:10 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61622C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 04:01:32 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f088a001ce91a9f1eb42005.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:1ce9:1a9f:1eb4:2005])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E922E1EC05A1;
-        Mon, 27 Sep 2021 13:01:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632740487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qsNwbHHsJ5JBPUltaA7rHw16cotuHQQqEfsJSb1s3lE=;
-        b=B0CD5SlF62HvWSdBakSHIygIWwWLAwoYzp2c2QrwRapnhttEd3Mt1HOtudPmQdufMElpj4
-        aUWCMvpIoz7CKpzbZHdsxNH0SPmVyjVUO90krwc78zzGEFD/NiM+jicns/6MuWuWio9wiw
-        eJnFWZYVtvYxr58jbk4C72IiwhBlrlM=
-Date:   Mon, 27 Sep 2021 13:01:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Juergen Gross <jgross@suse.com>, Chester Lin <clin@suse.com>
-Subject: Re: [PATCH V2 02/41] x86/traps: Remove stack-protector from traps.c
-Message-ID: <YVGkhlaDBwASW7dZ@zn.tnic>
-References: <20210926150838.197719-1-jiangshanlai@gmail.com>
- <20210926150838.197719-3-jiangshanlai@gmail.com>
- <YVGalJLOyK235XvG@zn.tnic>
- <d4e653e7-1f23-eec9-4db7-964298fc1dc5@linux.alibaba.com>
+        Mon, 27 Sep 2021 07:06:40 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AFAC061575;
+        Mon, 27 Sep 2021 04:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=nJQ1BkmcJgtaIwRlKcokXRfC6gNMO5CdBJPnyuOf53w=; b=ETGI5ST7Fk0Ca0VBgc+bUlOMve
+        ngBRm0m+VxplDf0ax2M+3bhEZkfEw7kciX1JZUA8CUrGrSojBSHqFmK4GjVcKrDYWfcW0tME/dczI
+        Ik6+QEIf2aFB5yJauyZyp8HwZs7ozW450pqDDgH1kJArySYY1/+okkFQ8l0beK/HxOhzRkAjcmW/M
+        7vpNjvGFpvoXmI1w/SH2kjyhki3RwHZWbp+rSN25hMtQCqcT7BecwU77TBqvtAzWF6qMCDbPM0WhL
+        eI9jNib9gvE8PuVmv/nFCrUmJ0zMHl6s5qLWUV9nYeTlPzF9vSy5Dd9CK1VeYNrOlU2oS9RrBcjz5
+        BCdra1ag==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1mUoRO-0004rX-Ow; Mon, 27 Sep 2021 14:04:58 +0300
+Subject: Re: [PATCH] gpu: host1x: select CONFIG_DMA_SHARED_BUFFER
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210927093705.458573-1-arnd@kernel.org>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <84acd54f-ba9b-576c-8a49-da6245f063b2@kapsi.fi>
+Date:   Mon, 27 Sep 2021 14:04:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d4e653e7-1f23-eec9-4db7-964298fc1dc5@linux.alibaba.com>
+In-Reply-To: <20210927093705.458573-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 06:49:16PM +0800, Lai Jiangshan wrote:
-> Using only "-fno-stack-protector" is enough to disable stack protector with
-> my .config, I'm not so sure about other configuration.
+On 9/27/21 12:36 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Linking fails when dma-buf is disabled:
+> 
+> ld.lld: error: undefined symbol: dma_fence_release
+>>>> referenced by fence.c
+>>>>                gpu/host1x/fence.o:(host1x_syncpt_fence_enable_signaling) in archive drivers/built-in.a
+>>>> referenced by fence.c
+>>>>                gpu/host1x/fence.o:(host1x_fence_signal) in archive drivers/built-in.a
+>>>> referenced by fence.c
+>>>>                gpu/host1x/fence.o:(do_fence_timeout) in archive drivers/built-in.a
+> 
+> Fixes: 687db2207b1b ("gpu: host1x: Add DMA fence implementation")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/gpu/host1x/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/host1x/Kconfig b/drivers/gpu/host1x/Kconfig
+> index 6dab94adf25e..6815b4db17c1 100644
+> --- a/drivers/gpu/host1x/Kconfig
+> +++ b/drivers/gpu/host1x/Kconfig
+> @@ -2,6 +2,7 @@
+>   config TEGRA_HOST1X
+>   	tristate "NVIDIA Tegra host1x driver"
+>   	depends on ARCH_TEGRA || (ARM && COMPILE_TEST)
+> +	select DMA_SHARED_BUFFER
+>   	select IOMMU_IOVA
+>   	help
+>   	  Driver for the NVIDIA Tegra host1x hardware.
+> 
 
-What does the gcc manpage say about it?
+Thanks!
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Mikko Perttunen <mperttunen@nvidia.com>
