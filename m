@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1489C418DDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 05:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9238A418DE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 05:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhI0DIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 23:08:24 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:19660 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232526AbhI0DIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 23:08:20 -0400
-X-UUID: 210ab987e7ee4120a6f881761a7c795a-20210927
-X-CPASD-INFO: 17c0c1b8280543bc86431ceff58f605f@eoedUJBjkGheWHKBg3atnVhnZGNhj4W
-        1qG9YlmRgYYaVhH5xTWJsXVKBfG5QZWNdYVN_eGpQYl9gZFB5i3-XblBgXoZgUZB3gHmdUJNfkg==
-X-CPASD-FEATURE: 0.0
-X-CLOUD-ID: 17c0c1b8280543bc86431ceff58f605f
-X-CPASD-SUMMARY: SIP:-1,APTIP:-2.0,KEY:0.0,FROMBLOCK:1,EXT:0.0,OB:0.0,URL:-5,T
-        VAL:168.0,ESV:0.0,ECOM:-5.0,ML:0.0,FD:0.0,CUTS:186.0,IP:-2.0,MAL:0.0,ATTNUM:0
-        .0,PHF:-5.0,PHC:-5.0,SPF:4.0,EDMS:-3,IPLABEL:4480.0,FROMTO:0,AD:0,FFOB:0.0,CF
-        OB:0.0,SPC:0.0,SIG:-5,AUF:4,DUF:14797,ACD:54,DCD:156,SL:0,AG:0,CFC:0.624,CFSR
-        :0.051,UAT:0,RAF:2,VERSION:2.3.4
-X-CPASD-ID: 210ab987e7ee4120a6f881761a7c795a-20210927
-X-CPASD-BLOCK: 1000
-X-CPASD-STAGE: 1, 1
-X-UUID: 210ab987e7ee4120a6f881761a7c795a-20210927
-X-User: lizhenneng@kylinos.cn
-Received: from [172.20.108.41] [(116.128.244.169)] by nksmu.kylinos.cn
-        (envelope-from <lizhenneng@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-        with ESMTP id 679021459; Mon, 27 Sep 2021 11:03:53 +0800
-Subject: Re: [PATCH] PCI/sysfs: add write attribute for boot_vga
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210926071539.636644-1-lizhenneng@kylinos.cn>
- <YVDRbRF5wbcJmTtb@rocinante>
-From:   =?UTF-8?B?5p2O55yf6IO9?= <lizhenneng@kylinos.cn>
-Message-ID: <ca55d0ac-3127-9993-5d43-3bc97738cfbb@kylinos.cn>
-Date:   Mon, 27 Sep 2021 11:06:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232559AbhI0DMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 23:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhI0DMJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 23:12:09 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6897AC061570;
+        Sun, 26 Sep 2021 20:10:31 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHnh51fFDz4xZx;
+        Mon, 27 Sep 2021 13:10:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632712229;
+        bh=h8rtu75to4NfxJjfxqNtLXqSKhwwbkwlH4NRoSzJTqU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rBc3QOv4+eJrQBcATWEoRblZgMcuJQAxxqtlN8Y0cW3bQSLKAmMTNC+pWllnbr4mE
+         2O5nX2Ox05vvR+iQVSbDfLCNByUgQdZ3L/iK1Nx/tCv7PlIL/gKBANJfJANG+EZr0G
+         4O3X4obb68rP4B/Ufr7YhkvNwJ/rlJ+H51bZZiiIUTUwj+cszfsLypnURdcizubBq0
+         bNq7Jli33GxQVmfpV4d+afY2BY+fNzdhw3c1Bl7tjgVIV89L03ndbn3cPe5lGOJcmz
+         JOrepUK2XSbsArU0J+3UA0WKq4uDs2mV//PakBwFuS0VfmC4m5ue8ew2BaK+xEUhXc
+         WJsLfi8RrFlmg==
+Date:   Mon, 27 Sep 2021 13:10:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Daniel Palmer <daniel@0x0f.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the rtc tree
+Message-ID: <20210927131027.13113c97@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YVDRbRF5wbcJmTtb@rocinante>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/=H2XQVCft/=alhz.li_S68K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/=H2XQVCft/=alhz.li_S68K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-在 2021/9/27 上午4:00, Krzysztof Wilczyński 写道:
-> [+cc Huacai and Kai-Heng as they are working in this area]
->
-> Hi,
->
-> Thank you for sending the patch over.
->
-> I assume this is simply a resend (rather than a v2), as I see no code
-> changes from the previous version you sent some time ago.
-Sorry, I haven't receive any reply about this email, so I resend this.
->
->> Add writing attribute for boot_vga sys node,
->> so we can config default video display
->> output dynamically when there are two video
->> cards on a machine.
-> That's OK, but why are you adding this?  What problem does it solve and
-> what is the intended user here?  Might be worth adding a little bit more
-> details about why this new sysfs attribute is needed.
-Xorg will detemine which graphics is prime output device according 
-boot_vga, if there are two graphics card, and we want xorg output 
-display to diffent graphics card, we can echo 1 to boot_vga.
->
-> I also need to ask, as I am not sure myself, whether this is OK to do after
-> booting during runtime?  What do you think Bjorn, Huacai and Kai-Heng?
+Hi all,
 
-I have test this function, during runtime, if xorg's graphics output 
-device is card A, then we echo 1 to boot_vga of card B, and then restart 
-xorg, xorg will output to card B, if we want xorg always output to card 
-B, we can echo 1 to boot_vga of card B before xorg started in daemon 
-process.
+After merging the rtc tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-> Also, please correctly capitalise the subject - have a look at previous
-> commit messages to see how it should look like.
->
->> +static ssize_t boot_vga_store(struct device *dev, struct device_attribute *attr,
->> +			      const char *buf, size_t count)
->> +{
->> +	unsigned long val;
->> +	struct pci_dev *pdev = to_pci_dev(dev);
->> +	struct pci_dev *vga_dev = vga_default_device();
->> +
->> +	if (kstrtoul(buf, 0, &val) < 0)
->> +		return -EINVAL;
->> +
->> +	if (val != 1)
->> +		return -EINVAL;
-> Since this is a completely new API have a look at kstrtobool() over
-> kstrtoul() as the former was created to handle user input more
-> consistently.
-As I want restrict available value  to 1, if we use  kstrtobool(), it 
-will be available when user input other value.
->
->> +	if (!capable(CAP_SYS_ADMIN))
->> +		return -EPERM;
->> +
-> Check for CAP_SYS_ADMIN is a good idea, but it has to take place before you
-> attempt to accept and parse a input from the user.
->
-> 	Krzysztof
+drivers/rtc/rtc-msc313.c: In function 'msc313_rtc_read_alarm':
+drivers/rtc/rtc-msc313.c:54:12: error: implicit declaration of function 're=
+adw' [-Werror=3Dimplicit-function-declaration]
+   54 |  seconds =3D readw(priv->rtc_base + REG_RTC_MATCH_VAL_L)
+      |            ^~~~~
+drivers/rtc/rtc-msc313.c: In function 'msc313_rtc_alarm_irq_enable':
+drivers/rtc/rtc-msc313.c:75:2: error: implicit declaration of function 'wri=
+tew' [-Werror=3Dimplicit-function-declaration]
+   75 |  writew(reg, priv->rtc_base + REG_RTC_CTRL);
+      |  ^~~~~~
+
+Caused by commit
+
+  be7d9c9161b9 ("rtc: Add support for the MSTAR MSC313 RTC")
+
+I have used the rtc tree from next-20210924 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=H2XQVCft/=alhz.li_S68K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFRNiMACgkQAVBC80lX
+0GzrfQf/chhBxjquC0qlcOWmdCMaq7SSflPcHltJ4xcZfdrLH+/y/ZQxX2wJIkri
+zE0RSqh40Y721QCF7kVlKXPtZYywVUYEQYnaybyBSGKbsq0OQ6otBSWFiA+0bJab
+XmOZi4IaRxLl5wseQ0AiCEDy7oHghpDqI+cTglYWCgKwT6G6HJvr5AMXQ7nL7ocf
+eBDNkHkZLmD4g9+K2S48C8ZnknEo8JRj6YIRgF6vWcTcykCQ+EMfXkXTa+XwhQjw
+uD84YjwV9k3atu8D9pD7Fg6PCr0hrDPLSvoY4coQHnNu5borMfzidpzDykRB+pOp
+VUsxoorEdVLqG3K70N9VeWWcLHs/lQ==
+=Dwgd
+-----END PGP SIGNATURE-----
+
+--Sig_/=H2XQVCft/=alhz.li_S68K--
