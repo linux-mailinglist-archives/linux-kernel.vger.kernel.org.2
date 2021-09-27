@@ -2,341 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C4141A2B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF0E41A2C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237829AbhI0WKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
+        id S237545AbhI0WOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237860AbhI0WK1 (ORCPT
+        with ESMTP id S237237AbhI0WOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:10:27 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB2DC061250
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:07:06 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so20725294otb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:07:06 -0700 (PDT)
+        Mon, 27 Sep 2021 18:14:48 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366E1C061575;
+        Mon, 27 Sep 2021 15:13:10 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id e7so19150321pgk.2;
+        Mon, 27 Sep 2021 15:13:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pE4LoJNe6aiZGbDfJevs62XkngxPShYLVoLkOqnY23Y=;
-        b=o2W/DcgMy4QSk6OPy1n/9sjhmE64IXvDpGB3MPd88YfzrNyEdSRNnNKThJIQLf4yMM
-         ig7pl/mm3fM26U1N0vpoyBnDw1XPHAvB1lJuqH4VTsceDgxCxZvt71E5RnMrVV4ASLFd
-         UrGlDY/N63RPKmZOt59huAcPs0zPi+uAEzTVBUJCzdWJ65k/2I6aUdCA0dhM0gkkG5a8
-         4lvt8TnMbsW8Egz/RHjy1BcRZ23PxSZt5n/w1nWqiq4SJXv5JbbpTjTxeRTRcbG3COKV
-         F2eXnvns0jB3zHGK5aQSw+vbRugvJly8IJlHiAuJX11g6WZdpP8nSz76X5QJMGnBb+Ow
-         mKJw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LQoaNx5tAGjunmfJNoYC07QY3HqXDClsG7X/kjDcaHM=;
+        b=qIydS8jNGOHH2PajdpXajC5LXHdZnQ8xaKAsu5QaLok9cHzAxluLivYrnOFLPxqKqE
+         0hozzn2PyUhobcE89p9IDM4ALB+FbA8PDIzdVaFl/MLcgShy1gd0BQsHdMLoWCftcDuc
+         bv47yDQQN/vgxit8CP6OoqtdTJTI8C+SMjAa++U3PE8pnFQw4eQeccl6osT1TcYoOZCN
+         3fiBGdp3grow81cAp1Zzt/hq+QFsZdUB8SwJ/82a1kvIFJx4W0minOMc5N49NILTVn21
+         Lzz5aBD0OlupQurKdCrltAVxUBFlcFkCEwSUlhHV/ax6vEB7IgJ5opYdtusS+GwRG4Ot
+         trSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pE4LoJNe6aiZGbDfJevs62XkngxPShYLVoLkOqnY23Y=;
-        b=diER1qFJ5EuJdcTc6GWz7hG8gQqpbfzpi1ARf01hrVHHxhSyRUs/B/xD8QlVdCkNLP
-         z4gtDdnzM9u9dkSOe21FrrKcLpKRtUjQxbZreyf4Etggfrj2x/xqlPqsKzvCWLIluIcE
-         /+2UmQPZeKa13be7Qt0R+/PKQrDu9+Pz57PnbbROHEVgkpC8nlL1375Zvr8NDhzVmXtJ
-         mSGNs2scKkzr/wgBiFIixGrBI2pAO2deZq9P8NM4Pi5aiVmWdbTA04/Q4Pd8JPDukvB/
-         lMj54ZHynUkVBo61X06LAYFa+GLyfA7ln1wVil2JZ5o0WWx2h8fm7oiO6l9icXywIfuZ
-         S+1A==
-X-Gm-Message-State: AOAM5302gojvChW8EvseNSEOC0NQ1v8MXTSjgUhE8+czsqOHRf6LuiMt
-        Ua718iReQwMNWmkqZHNwZv7OBQ==
-X-Google-Smtp-Source: ABdhPJxb/FzfkZZPwmaSKjlSXGlQHw6gffGSSr7sxmhcd0GOVCLaCcHwvO/pAVkdyYrfSngudlcHGg==
-X-Received: by 2002:a9d:4618:: with SMTP id y24mr2035942ote.326.1632780426192;
-        Mon, 27 Sep 2021 15:07:06 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j10sm701905oog.39.2021.09.27.15.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 15:07:05 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 17:07:03 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, dianders@chromium.org,
-        swboyd@chromium.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
-Message-ID: <YVJAh755zCGUmobm@builder.lan>
-References: <20210924165322.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LQoaNx5tAGjunmfJNoYC07QY3HqXDClsG7X/kjDcaHM=;
+        b=ipuQm1kJzaauJUxvhdeoyBe6iG+hgnEQQAAbO/PYYwYFVFkq6oVb76g5r0urkx79to
+         KxVeuf6Ow0hmVRHBreKSaZQOgD7sI15+fuTQiq/I477wglqGOBME3/v01X9JIXi45Da/
+         o1f/lWiifX88lew6QU7wDpBG54Lwsh1KZ5bngf/8dSQlBF2CwFH7LwvyyhjIacfpyJeb
+         wI0ygp56dh+PfQsluM9lAp+ivJIt5sJqwOuKBvup+bMs9fXA37izDt62jYLhzd0Swu6e
+         iwr9pxnXHMIC7Yd2XNsvvxqdWMsCNxa9o2Mn4SL5b7gMiG+faeSSnMK4qY77LIyYNtG+
+         PpRQ==
+X-Gm-Message-State: AOAM533GqeF6Ni8Ie1DtA3QbMKawgjJcB1OGIHeEffd2ChGfemzOPHOt
+        OPHW4fvQ+y9bZUfFbnlnrcx7jhhLb7e7YS2MvDM=
+X-Google-Smtp-Source: ABdhPJzOQORKcAXFM5QQCW6Uy4cQVYG5x75c/jCV3lw1160enyL+fOFkGkgsNEJxMOqZauyc+ZWsGdN2WB6M2cJg+iY=
+X-Received: by 2002:a62:407:0:b0:447:c104:2529 with SMTP id
+ 7-20020a620407000000b00447c1042529mr2323985pfe.8.1632780789705; Mon, 27 Sep
+ 2021 15:13:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924165322.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+References: <20210926023028.2338342-1-jinshan.xiong@gmail.com> <YVBkObnrPfX6KIZM@kernel.org>
+In-Reply-To: <YVBkObnrPfX6KIZM@kernel.org>
+From:   Jinshan Xiong <jinshan.xiong@gmail.com>
+Date:   Mon, 27 Sep 2021 15:12:33 -0700
+Message-ID: <CABoqRjsUPhJk6A7QOh_9z6zHLyqX=ZZG7gkcEZeui1uO4m7Bbg@mail.gmail.com>
+Subject: Re: [PATCH] tools/lib/perf: make the static libperf complete
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     jolsa@redhat.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 24 Sep 18:54 CDT 2021, Philip Chen wrote:
+Thanks for pointing it out. I will make the static library a separate
+target for installation. Patch is coming soon.
 
-> Factor out ti-sn65dsi86 edp bridge as a separate dts fragment.
-> This helps us introduce the second source edp bridge later.
-> 
+Jinshan
 
-I'd prefer to see the second patch in this series to conclude that this
-is the right approach.
 
-Regards,
-Bjorn
-
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
-> 
->  .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  1 +
->  .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  1 +
->  .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  1 +
->  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  1 +
->  .../dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi | 87 +++++++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 81 -----------------
->  6 files changed, 91 insertions(+), 81 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> index a758e4d22612..1d13fba3bd2f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> @@ -11,6 +11,7 @@
->  ap_h1_spi: &spi0 {};
->  
->  #include "sc7180-trogdor.dtsi"
-> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
->  
->  /* Deleted nodes from trogdor.dtsi */
->  
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> index 00535aaa43c9..27b26a782af9 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-> @@ -11,6 +11,7 @@
->  ap_h1_spi: &spi0 {};
->  
->  #include "sc7180-trogdor.dtsi"
-> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
->  
->  &ap_sar_sensor {
->  	semtech,cs0-ground;
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> index a246dbd74cc1..e7c7cad14989 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> @@ -11,6 +11,7 @@
->  ap_h1_spi: &spi0 {};
->  
->  #include "sc7180-trogdor.dtsi"
-> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
->  
->  / {
->  	thermal-zones {
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-> index 2b522f9e0d8f..457c25499863 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-> @@ -13,6 +13,7 @@
->  ap_h1_spi: &spi0 {};
->  
->  #include "sc7180-trogdor.dtsi"
-> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
->  
->  / {
->  	model = "Google Trogdor (rev1+)";
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
-> new file mode 100644
-> index 000000000000..7b1034a5a8e9
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
-> @@ -0,0 +1,87 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Google Trogdor dts fragment for the boards with TI sn65dsi86 edp bridge
-> + *
-> + * Copyright 2021 Google LLC.
-> + */
-> +
-> +&dsi0_out {
-> +	remote-endpoint = <&sn65dsi86_in>;
-> +	data-lanes = <0 1 2 3>;
-> +};
-> +
-> +&edp_brij_i2c {
-> +	sn65dsi86_bridge: bridge@2d {
-> +		compatible = "ti,sn65dsi86";
-> +		reg = <0x2d>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		interrupt-parent = <&tlmm>;
-> +		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +		enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
-> +
-> +		vpll-supply = <&pp1800_edp_vpll>;
-> +		vccio-supply = <&pp1800_brij_vccio>;
-> +		vcca-supply = <&pp1200_brij>;
-> +		vcc-supply = <&pp1200_brij>;
-> +
-> +		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
-> +		clock-names = "refclk";
-> +
-> +		no-hpd;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +				sn65dsi86_in: endpoint {
-> +					remote-endpoint = <&dsi0_out>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +				sn65dsi86_out: endpoint {
-> +					data-lanes = <0 1>;
-> +					remote-endpoint = <&panel_in_edp>;
-> +				};
-> +			};
-> +		};
-> +
-> +		aux-bus {
-> +			panel: panel {
-> +				/* Compatible will be filled in per-board */
-> +				power-supply = <&pp3300_dx_edp>;
-> +				backlight = <&backlight>;
-> +				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
-> +
-> +				port {
-> +					panel_in_edp: endpoint {
-> +						remote-endpoint = <&sn65dsi86_out>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&tlmm {
-> +	edp_brij_irq: edp-brij-irq {
-> +		pinmux {
-> +			pins = "gpio11";
-> +			function = "gpio";
-> +		};
-> +
-> +		pinconf {
-> +			pins = "gpio11";
-> +			drive-strength = <2>;
-> +			bias-pull-down;
-> +		};
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index 0f2b3c00e434..5ad3f15652d5 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -602,15 +602,6 @@ &camcc {
->  &dsi0 {
->  	status = "okay";
->  	vdda-supply = <&vdda_mipi_dsi0_1p2>;
-> -
-> -	ports {
-> -		port@1 {
-> -			endpoint {
-> -				remote-endpoint = <&sn65dsi86_in>;
-> -				data-lanes = <0 1 2 3>;
-> -			};
-> -		};
-> -	};
->  };
->  
->  &dsi_phy {
-> @@ -621,65 +612,6 @@ &dsi_phy {
->  edp_brij_i2c: &i2c2 {
->  	status = "okay";
->  	clock-frequency = <400000>;
-> -
-> -	sn65dsi86_bridge: bridge@2d {
-> -		compatible = "ti,sn65dsi86";
-> -		reg = <0x2d>;
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
-> -		gpio-controller;
-> -		#gpio-cells = <2>;
-> -
-> -		interrupt-parent = <&tlmm>;
-> -		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
-> -
-> -		enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
-> -
-> -		vpll-supply = <&pp1800_edp_vpll>;
-> -		vccio-supply = <&pp1800_brij_vccio>;
-> -		vcca-supply = <&pp1200_brij>;
-> -		vcc-supply = <&pp1200_brij>;
-> -
-> -		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
-> -		clock-names = "refclk";
-> -
-> -		no-hpd;
-> -
-> -		ports {
-> -			#address-cells = <1>;
-> -			#size-cells = <0>;
-> -
-> -			port@0 {
-> -				reg = <0>;
-> -				sn65dsi86_in: endpoint {
-> -					remote-endpoint = <&dsi0_out>;
-> -				};
-> -			};
-> -
-> -			port@1 {
-> -				reg = <1>;
-> -				sn65dsi86_out: endpoint {
-> -					data-lanes = <0 1>;
-> -					remote-endpoint = <&panel_in_edp>;
-> -				};
-> -			};
-> -		};
-> -
-> -		aux-bus {
-> -			panel: panel {
-> -				/* Compatible will be filled in per-board */
-> -				power-supply = <&pp3300_dx_edp>;
-> -				backlight = <&backlight>;
-> -				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
-> -
-> -				port {
-> -					panel_in_edp: endpoint {
-> -						remote-endpoint = <&sn65dsi86_out>;
-> -					};
-> -				};
-> -			};
-> -		};
-> -	};
->  };
->  
->  ap_sar_sensor_i2c: &i2c5 {
-> @@ -1245,19 +1177,6 @@ pinconf {
->  		};
->  	};
->  
-> -	edp_brij_irq: edp-brij-irq {
-> -		pinmux {
-> -			pins = "gpio11";
-> -			function = "gpio";
-> -		};
-> -
-> -		pinconf {
-> -			pins = "gpio11";
-> -			drive-strength = <2>;
-> -			bias-pull-down;
-> -		};
-> -	};
-> -
->  	en_pp3300_codec: en-pp3300-codec {
->  		pinmux {
->  			pins = "gpio83";
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+On Sun, Sep 26, 2021 at 5:14 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Sat, Sep 25, 2021 at 07:30:24PM -0700, Jinshan Xiong escreveu:
+> > This patch makes libperf.a complete. Initially it misses the symbols
+> > fdarray_* that makes it unusable:
+> >    $ nm tools/lib/perf/libperf.a | grep fdarray_
+> >                     U fdarray__add
+> >    0000000000002b3e t fdarray__available_entries
+> >                     U fdarray__exit
+> >                     U fdarray__filter
+> >                     U fdarray__grow
+> >                     U fdarray__init
+> >                     U fdarray__poll
+> >
+> > After this patch is applied:
+> >     $ nm tools/lib/perf/libperf.a | grep fdarray_
+> >     00000000000063f7 T fdarray__add
+> >     ......
+> >     00000000000065d4 T fdarray__poll
+>
+> Have you tried to build tools/perf/ with this?
+>
+>   LINK    /tmp/build/perf/plugins/plugin_futex.so
+>   LINK    /tmp/build/perf/plugins/plugin_jbd2.so
+>   INSTALL trace_plugins
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o):/var/home/acme/git/perf/tools/lib/api/debug.c:20: multiple definition of `__pr_debug'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/debug.c:20: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `sysfs__read_bool':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:505: multiple definition of `sysfs__read_bool'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:505: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `fdarray__poll':
+> /var/home/acme/git/perf/tools/lib/api/fd/array.c:120: multiple definition of `fdarray__poll'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fd/array.c:120: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `tracefs__configured':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:316: multiple definition of `tracefs__configured'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:316: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `sysfs__read_int':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:479: multiple definition of `sysfs__read_int'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:479: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `fdarray__fprintf':
+> /var/home/acme/git/perf/tools/lib/api/fd/array.c:125: multiple definition of `fdarray__fprintf'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fd/array.c:125: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `sysfs__write_int':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:547: multiple definition of `sysfs__write_int'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:547: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `filename__read_str':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:378: multiple definition of `filename__read_str'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:378: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `hugetlbfs__mountpoint':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:317: multiple definition of `hugetlbfs__mountpoint'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:317: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `debugfs__mountpoint':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:315: multiple definition of `debugfs__mountpoint'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:315: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `fdarray__delete':
+> /var/home/acme/git/perf/tools/lib/api/fd/array.c:71: multiple definition of `fdarray__delete'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fd/array.c:71: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `procfs__mountpoint':
+> /var/home/acme/git/perf/tools/lib/api/fs/fs.c:314: multiple definition of `procfs__mountpoint'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/fs.c:314: first defined here
+> /usr/bin/ld: /tmp/build/perf/libperf.a(libperf-ar.o): in function `get_tracing_file':
+> /var/home/acme/git/perf/tools/lib/api/fs/tracing_path.c:74: multiple definition of `get_tracing_file'; /tmp/build/perf/libapi.a(libapi-in.o):/var/home/acme/git/perf/tools/lib/api/fs/tracing_path.c:74: first defined here
+>
+> You probably need to include libapi.a as well.
+>
+> - Arnaldo
