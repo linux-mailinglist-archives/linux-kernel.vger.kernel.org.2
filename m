@@ -2,422 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0159B418F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35073418F9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbhI0HAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbhI0HAE (ORCPT
+        id S233205AbhI0HBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:01:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3492 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233118AbhI0HBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:00:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECDDC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 23:58:27 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i25so73326264lfg.6
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 23:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w4/DyioZ/3SsuR8yEN6bZ8EtrReqU8tTeSBuDAdb3VQ=;
-        b=qgj5GJKpWfoP9ym013F4TV5ZqlbqGRkpbbOTMSa/RzePc5Cl0WuBwhXH576wBYsX7p
-         WOLlznN6Kr77bgZZekIgSLpm6VvnaNmKfz9aqqdsi3JomAkBfozM6MRI69BomD4KuTSS
-         B8sxRrTft5JxxGNwIGZQClT2t9NnFNHBESWr3Zh3VzXmfS5izueYMFBz3wlipBjSvAR7
-         zDMz6sTg4hdftLJ1VWiMkthhUbL4/KrC1UIl8u33ksgActLJOx2hECcGib87HzFV+x8z
-         30FQZKGSIC3T7lvv/OdspYzrGaiFv2+jxOVYibxospTYD9TPTDxkeeSex7yu6Kdppk3r
-         4aGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w4/DyioZ/3SsuR8yEN6bZ8EtrReqU8tTeSBuDAdb3VQ=;
-        b=aQxZ3rZVl7JkjZS4l9312CINYurj4mkLNpHlKHQwmRgNx7fMzVhmZDxqFe6W1CdO6w
-         FdRFyUWZMaV3cpU/0FFrSKL8b7aYe960wHoN1FDR58DkYyrJZ/EBrgJZPHxl25+JQCWh
-         SBtPRlPcmbDBmhx4cAf2/z0Qy/ecgDrsU+syHVlM3Yn7jmJyy5KZiDhY74ic49TEGobz
-         Bcl1KbBud1TPQ6TdB99huti7QTnI3Km5Xqm27xgrP2U4cPZjvDP0DKklQ/1Ph5eawIM4
-         ExBfIZZGIGdmOEQVuYBPjN7Ky0doNzJrFO0KXirhxd5c3B267QK1qDccNKZXPeHSSC6K
-         aLjQ==
-X-Gm-Message-State: AOAM531Xap74bnlcevmEXDCB+fQZCCoJKYnKRPVuHsfkV1xedUcqj6md
-        FIX5/5/X9LMeRyHeLVN7NR0=
-X-Google-Smtp-Source: ABdhPJxibM+BSNB4l/nZ5IbtJMeL7ldlPn+n0Q/3bzv1XqLCi8tXpVNxScA7/exJ1Svv6KIpcb+xUQ==
-X-Received: by 2002:a2e:97ce:: with SMTP id m14mr27362812ljj.73.1632725905476;
-        Sun, 26 Sep 2021 23:58:25 -0700 (PDT)
-Received: from a2klaptop.epam.com (host-176-36-245-220.b024.la.net.ua. [176.36.245.220])
-        by smtp.gmail.com with ESMTPSA id t18sm1498351lfl.219.2021.09.26.23.58.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 23:58:25 -0700 (PDT)
-From:   Oleksandr Andrushchenko <andr2000@gmail.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
-        sstabellini@kernel.org, jbeulich@suse.com,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-Subject: [PATCH v4 2/2] xen-pciback: allow compiling on other archs than x86
-Date:   Mon, 27 Sep 2021 09:58:22 +0300
-Message-Id: <20210927065822.350973-2-andr2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210927065822.350973-1-andr2000@gmail.com>
-References: <20210927065822.350973-1-andr2000@gmail.com>
+        Mon, 27 Sep 2021 03:01:06 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18R3PTcB020186;
+        Mon, 27 Sep 2021 02:58:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=2JYJIDFlPwlrS54K2p3vPgGj+dRVbn4qYQyxYmTPv4g=;
+ b=pEQAchES6fgvbAigrUBgoLW01Gn6fFbkCPWsrzI0VQrK+B1Jrf2z5XoqyuB/t4gFXlev
+ Q/q1F5sQGby3W8Z3E0WO+9tgHp1ImtZD4aLqit3T79sbffcpGxMZeMWDFrFZcwhf+LkF
+ K/eGPISZaprkvGqG1TYOO7pmC5FD0d/XCg2yzfMVjyZ9eomfgTz8F4IUTBbVCh75n6V2
+ tp5x8WYTf69sw+0/LlD7B5vnSFHRSY4k1HvYbxlZ4bKUflP+qhKo1LRZwWquCtJcPWkn
+ SnDknpH6wTCKGYkxiLbWl8IHzT6GB40VmYgVQfsZ+je/LF3aBhzyDFX/tHfSAEuwyz3k zQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bahc5uvrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 02:58:54 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18R6jfCE003005;
+        Mon, 27 Sep 2021 02:58:53 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bahc5uvqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 02:58:53 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18R6vMWI024280;
+        Mon, 27 Sep 2021 06:58:51 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3b9ud99feb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 06:58:50 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18R6wlBe64422230
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Sep 2021 06:58:47 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 685F652052;
+        Mon, 27 Sep 2021 06:58:47 +0000 (GMT)
+Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.4.236])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id ACCCA5205A;
+        Mon, 27 Sep 2021 06:58:45 +0000 (GMT)
+Subject: Re: [PATCH 06/14] KVM: Drop obsolete kvm_arch_vcpu_block_finish()
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-7-seanjc@google.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <67f2fede-8f36-6052-44c9-ef5c6d28d143@de.ibm.com>
+Date:   Mon, 27 Sep 2021 08:58:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210925005528.1145584-7-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LSLDyPLJ69vM1eY9Fjr2eADaS5UHtBw3
+X-Proofpoint-GUID: BYb0saIe7Tr6n1VpNl__d4G6AFmLjwTz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-27_02,2021-09-24_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109270042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Xen-pciback driver was designed to be built for x86 only. But it
-can also be used by other architectures, e.g. Arm.
-Re-structure the driver in a way that it can be built for other
-platforms as well.
 
-Add new configuration option CONFIG_XEN_PCIDEV_STUB, so the driver
-can be limited in its functionality, e.g. no support for
-para-virtualised scenario when it acts as PCI backend.
-x86 platform will continue using CONFIG_XEN_PCIDEV_BACKEND
-for the fully featured backend driver.
+Am 25.09.21 um 02:55 schrieb Sean Christopherson:
+> Drop kvm_arch_vcpu_block_finish() now that all arch implementations are
+> nops.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-
----
-Since v3:
- - Fix >>32 shift for 32-bit architectures
- - Move CONFIG_XEN_PCIDEV_STUB into this patch
-Since v2:
- - swap the patch order
-Since v1:
- - Do not move pci_xen_initial_domain as it is x86 specific
----
- arch/x86/include/asm/xen/pci.h              | 16 -----
- arch/x86/pci/xen.c                          | 74 +-------------------
- drivers/xen/Kconfig                         | 20 ++++++
- drivers/xen/pci.c                           | 75 +++++++++++++++++++++
- drivers/xen/xen-pciback/conf_space_header.c |  8 ++-
- drivers/xen/xen-pciback/pci_stub.c          |  3 +-
- drivers/xen/xen-pciback/xenbus.c            |  2 +-
- include/xen/pci.h                           | 28 ++++++++
- 8 files changed, 133 insertions(+), 93 deletions(-)
- create mode 100644 include/xen/pci.h
-
-diff --git a/arch/x86/include/asm/xen/pci.h b/arch/x86/include/asm/xen/pci.h
-index 3506d8c598c1..4b08c2b809ea 100644
---- a/arch/x86/include/asm/xen/pci.h
-+++ b/arch/x86/include/asm/xen/pci.h
-@@ -16,27 +16,11 @@ static inline int pci_xen_hvm_init(void)
- #endif
- #if defined(CONFIG_XEN_DOM0)
- int __init pci_xen_initial_domain(void);
--int xen_find_device_domain_owner(struct pci_dev *dev);
--int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
--int xen_unregister_device_domain_owner(struct pci_dev *dev);
- #else
- static inline int __init pci_xen_initial_domain(void)
- {
- 	return -1;
- }
--static inline int xen_find_device_domain_owner(struct pci_dev *dev)
--{
--	return -1;
--}
--static inline int xen_register_device_domain_owner(struct pci_dev *dev,
--						   uint16_t domain)
--{
--	return -1;
--}
--static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
--{
--	return -1;
--}
- #endif
- 
- #if defined(CONFIG_PCI_MSI)
-diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
-index 3d41a09c2c14..4a45b0bf9ae4 100644
---- a/arch/x86/pci/xen.c
-+++ b/arch/x86/pci/xen.c
-@@ -23,6 +23,7 @@
- 
- #include <xen/features.h>
- #include <xen/events.h>
-+#include <xen/pci.h>
- #include <asm/xen/pci.h>
- #include <asm/xen/cpuid.h>
- #include <asm/apic.h>
-@@ -583,77 +584,4 @@ int __init pci_xen_initial_domain(void)
- 	}
- 	return 0;
- }
--
--struct xen_device_domain_owner {
--	domid_t domain;
--	struct pci_dev *dev;
--	struct list_head list;
--};
--
--static DEFINE_SPINLOCK(dev_domain_list_spinlock);
--static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
--
--static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--
--	list_for_each_entry(owner, &dev_domain_list, list) {
--		if (owner->dev == dev)
--			return owner;
--	}
--	return NULL;
--}
--
--int xen_find_device_domain_owner(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--	int domain = -ENODEV;
--
--	spin_lock(&dev_domain_list_spinlock);
--	owner = find_device(dev);
--	if (owner)
--		domain = owner->domain;
--	spin_unlock(&dev_domain_list_spinlock);
--	return domain;
--}
--EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
--
--int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
--{
--	struct xen_device_domain_owner *owner;
--
--	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
--	if (!owner)
--		return -ENODEV;
--
--	spin_lock(&dev_domain_list_spinlock);
--	if (find_device(dev)) {
--		spin_unlock(&dev_domain_list_spinlock);
--		kfree(owner);
--		return -EEXIST;
--	}
--	owner->domain = domain;
--	owner->dev = dev;
--	list_add_tail(&owner->list, &dev_domain_list);
--	spin_unlock(&dev_domain_list_spinlock);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
--
--int xen_unregister_device_domain_owner(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--
--	spin_lock(&dev_domain_list_spinlock);
--	owner = find_device(dev);
--	if (!owner) {
--		spin_unlock(&dev_domain_list_spinlock);
--		return -ENODEV;
--	}
--	list_del(&owner->list);
--	spin_unlock(&dev_domain_list_spinlock);
--	kfree(owner);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
- #endif
-diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-index 4efc95ddda41..75b9330dc6fd 100644
---- a/drivers/xen/Kconfig
-+++ b/drivers/xen/Kconfig
-@@ -184,6 +184,26 @@ config SWIOTLB_XEN
- config XEN_PCI_STUB
- 	bool
- 
-+config XEN_PCIDEV_STUB
-+	tristate "Xen PCI-device stub driver"
-+	depends on PCI && !X86 && XEN
-+	depends on XEN_BACKEND
-+	select XEN_PCI_STUB
-+	default m
-+	help
-+	  The PCI device stub driver provides limited version of the PCI
-+	  device backend driver without para-virtualized support for guests.
-+	  If you select this to be a module, you will need to make sure no
-+	  other driver has bound to the device(s) you want to make visible to
-+	  other guests.
-+
-+	  The "hide" parameter (only applicable if backend driver is compiled
-+	  into the kernel) allows you to bind the PCI devices to this module
-+	  from the default device drivers. The argument is the list of PCI BDFs:
-+	  xen-pciback.hide=(03:00.0)(04:00.0)
-+
-+	  If in doubt, say m.
-+
- config XEN_PCIDEV_BACKEND
- 	tristate "Xen PCI-device backend driver"
- 	depends on PCI && X86 && XEN
-diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
-index 224df03ce42e..fc8c1249d49f 100644
---- a/drivers/xen/pci.c
-+++ b/drivers/xen/pci.c
-@@ -254,3 +254,78 @@ static int xen_mcfg_late(void)
- 	return 0;
- }
- #endif
-+
-+#ifdef CONFIG_XEN_DOM0
-+struct xen_device_domain_owner {
-+	domid_t domain;
-+	struct pci_dev *dev;
-+	struct list_head list;
-+};
-+
-+static DEFINE_SPINLOCK(dev_domain_list_spinlock);
-+static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
-+
-+static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	list_for_each_entry(owner, &dev_domain_list, list) {
-+		if (owner->dev == dev)
-+			return owner;
-+	}
-+	return NULL;
-+}
-+
-+int xen_find_device_domain_owner(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+	int domain = -ENODEV;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	owner = find_device(dev);
-+	if (owner)
-+		domain = owner->domain;
-+	spin_unlock(&dev_domain_list_spinlock);
-+	return domain;
-+}
-+EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
-+
-+int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
-+	if (!owner)
-+		return -ENODEV;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	if (find_device(dev)) {
-+		spin_unlock(&dev_domain_list_spinlock);
-+		kfree(owner);
-+		return -EEXIST;
-+	}
-+	owner->domain = domain;
-+	owner->dev = dev;
-+	list_add_tail(&owner->list, &dev_domain_list);
-+	spin_unlock(&dev_domain_list_spinlock);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
-+
-+int xen_unregister_device_domain_owner(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	owner = find_device(dev);
-+	if (!owner) {
-+		spin_unlock(&dev_domain_list_spinlock);
-+		return -ENODEV;
-+	}
-+	list_del(&owner->list);
-+	spin_unlock(&dev_domain_list_spinlock);
-+	kfree(owner);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
-+#endif
-diff --git a/drivers/xen/xen-pciback/conf_space_header.c b/drivers/xen/xen-pciback/conf_space_header.c
-index ac45cdc38e85..981435103af1 100644
---- a/drivers/xen/xen-pciback/conf_space_header.c
-+++ b/drivers/xen/xen-pciback/conf_space_header.c
-@@ -236,8 +236,12 @@ static void *bar_init(struct pci_dev *dev, int offset)
- 	else {
- 		pos = (offset - PCI_BASE_ADDRESS_0) / 4;
- 		if (pos && (res[pos - 1].flags & IORESOURCE_MEM_64)) {
--			bar->val = res[pos - 1].start >> 32;
--			bar->len_val = -resource_size(&res[pos - 1]) >> 32;
-+			/*
-+			 * Use ">> 16 >> 16" instead of direct ">> 32" shift
-+			 * to avoid warnings on 32-bit architectures.
-+			 */
-+			bar->val = res[pos - 1].start >> 16 >> 16;
-+			bar->len_val = -resource_size(&res[pos - 1]) >> 16 >> 16;
- 			return bar;
- 		}
- 	}
-diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
-index f8e4faa96ad6..bba527620507 100644
---- a/drivers/xen/xen-pciback/pci_stub.c
-+++ b/drivers/xen/xen-pciback/pci_stub.c
-@@ -19,7 +19,8 @@
- #include <linux/sched.h>
- #include <linux/atomic.h>
- #include <xen/events.h>
--#include <asm/xen/pci.h>
-+#include <xen/pci.h>
-+#include <xen/xen.h>
- #include <asm/xen/hypervisor.h>
- #include <xen/interface/physdev.h>
- #include "pciback.h"
-diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
-index f8ba2903a3ff..bde63ef677b8 100644
---- a/drivers/xen/xen-pciback/xenbus.c
-+++ b/drivers/xen/xen-pciback/xenbus.c
-@@ -14,7 +14,7 @@
- #include <linux/workqueue.h>
- #include <xen/xenbus.h>
- #include <xen/events.h>
--#include <asm/xen/pci.h>
-+#include <xen/pci.h>
- #include "pciback.h"
- 
- #define INVALID_EVTCHN_IRQ  (-1)
-diff --git a/include/xen/pci.h b/include/xen/pci.h
-new file mode 100644
-index 000000000000..b8337cf85fd1
---- /dev/null
-+++ b/include/xen/pci.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __XEN_PCI_H__
-+#define __XEN_PCI_H__
-+
-+#if defined(CONFIG_XEN_DOM0)
-+int xen_find_device_domain_owner(struct pci_dev *dev);
-+int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
-+int xen_unregister_device_domain_owner(struct pci_dev *dev);
-+#else
-+static inline int xen_find_device_domain_owner(struct pci_dev *dev)
-+{
-+	return -1;
-+}
-+
-+static inline int xen_register_device_domain_owner(struct pci_dev *dev,
-+						   uint16_t domain)
-+{
-+	return -1;
-+}
-+
-+static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
-+{
-+	return -1;
-+}
-+#endif
-+
-+#endif
--- 
-2.25.1
-
+> ---
+>   arch/arm64/include/asm/kvm_host.h   | 1 -
+>   arch/mips/include/asm/kvm_host.h    | 1 -
+>   arch/powerpc/include/asm/kvm_host.h | 1 -
+>   arch/s390/include/asm/kvm_host.h    | 2 --
+>   arch/s390/kvm/kvm-s390.c            | 5 -----
+>   arch/x86/include/asm/kvm_host.h     | 2 --
+>   virt/kvm/kvm_main.c                 | 1 -
+>   7 files changed, 13 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index f8be56d5342b..4e0ad0fff540 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -716,7 +716,6 @@ void kvm_arm_vcpu_ptrauth_trap(struct kvm_vcpu *vcpu);
+>   static inline void kvm_arch_hardware_unsetup(void) {}
+>   static inline void kvm_arch_sync_events(struct kvm *kvm) {}
+>   static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
+> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+>   
+>   void kvm_arm_init_debug(void);
+>   void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu);
+> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
+> index 696f6b009377..72b90d45a46e 100644
+> --- a/arch/mips/include/asm/kvm_host.h
+> +++ b/arch/mips/include/asm/kvm_host.h
+> @@ -897,7 +897,6 @@ static inline void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen) {}
+>   static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
+>   static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
+>   static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
+> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+>   
+>   #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB
+>   int kvm_arch_flush_remote_tlb(struct kvm *kvm);
+> diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
+> index 59cb38b04ede..8a84448d77a6 100644
+> --- a/arch/powerpc/include/asm/kvm_host.h
+> +++ b/arch/powerpc/include/asm/kvm_host.h
+> @@ -864,6 +864,5 @@ static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
+>   static inline void kvm_arch_exit(void) {}
+>   static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
+>   static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
+> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+>   
+>   #endif /* __POWERPC_KVM_HOST_H__ */
+> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+> index a604d51acfc8..a22c9266ea05 100644
+> --- a/arch/s390/include/asm/kvm_host.h
+> +++ b/arch/s390/include/asm/kvm_host.h
+> @@ -1010,6 +1010,4 @@ static inline void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
+>   static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
+>   static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
+>   
+> -void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu);
+> -
+>   #endif
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 08ed68639a21..17fabb260c35 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -5080,11 +5080,6 @@ static inline unsigned long nonhyp_mask(int i)
+>   	return 0x0000ffffffffffffUL >> (nonhyp_fai << 4);
+>   }
+>   
+> -void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu)
+> -{
+> -
+> -}
+> -
+>   static int __init kvm_s390_init(void)
+>   {
+>   	int i;
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 1e0e909b98b2..4e8c21083bdb 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1916,8 +1916,6 @@ static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
+>   	static_call_cond(kvm_x86_vcpu_unblocking)(vcpu);
+>   }
+>   
+> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+> -
+>   static inline int kvm_cpu_get_apicid(int mps_cpu)
+>   {
+>   #ifdef CONFIG_X86_LOCAL_APIC
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 2ba22b68af3b..2015a1f532ce 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3301,7 +3301,6 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>   	}
+>   
+>   	trace_kvm_vcpu_wakeup(block_ns, waited, vcpu_valid_wakeup(vcpu));
+> -	kvm_arch_vcpu_block_finish(vcpu);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_vcpu_block);
+>   
+> 
