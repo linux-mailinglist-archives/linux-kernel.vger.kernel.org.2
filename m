@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B72D419A42
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C1419C76
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbhI0RH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:07:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46862 "EHLO mail.kernel.org"
+        id S236306AbhI0R3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:29:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236142AbhI0RHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ECB76113A;
-        Mon, 27 Sep 2021 17:05:24 +0000 (UTC)
+        id S237847AbhI0RZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:25:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22B866137F;
+        Mon, 27 Sep 2021 17:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762324;
-        bh=REvzRjJZWhz3Xxzra1Ur5t28/d5/o/FIKLKkIQVFzNc=;
+        s=korg; t=1632762968;
+        bh=atkeb7J4zvUIsuuYsrjCKZO88BK8YXljdIke2vnlUQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dG9UbJzF7Dx6shI4QaStZ1usOqflqdoOUn+yc0+WWf2EgfXgAcgX54Fp3U+v6vJbK
-         rdkVoz5TI6cL8y1xgyS3Sa5/kmU0Bpph4ZLgX5tzVlxbRlh/MAg96VLxehyjAuxks0
-         F78DoxS9q0vle5GbrRLTze/DZhrBhzvgSFYMpDVs=
+        b=nFv8gGRNiKh15nFVHXxDpM2MmtrGZnWStoq4bYyKMqm48EIocKTLlj73yd4b0cp4c
+         NM55GuHS+hyGXaO80eY+400mG7pxf+rfzgAgNKvKJ1Y+HiygNHPSHBIi4nqKBIwQr5
+         NQLj8+AuME6x6HvWgTcGSLJOwam/XyuWPkacQ2vg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stable@vger.kernel.org,
+        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 48/68] m68k: Double cast io functions to unsigned long
+Subject: [PATCH 5.14 118/162] net: macb: fix use after free on rmmod
 Date:   Mon, 27 Sep 2021 19:02:44 +0200
-Message-Id: <20210927170221.626097303@linuxfoundation.org>
+Message-Id: <20210927170237.530763174@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit b1a89856fbf63fffde6a4771d8f1ac21df549e50 ]
+[ Upstream commit d82d5303c4c539db86588ffb5dc5b26c3f1513e8 ]
 
-m68k builds fail widely with errors such as
+plat_dev->dev->platform_data is released by platform_device_unregister(),
+use of pclk and hclk is a use-after-free. Since device unregister won't
+need a clk device we adjust the function call sequence to fix this issue.
 
-arch/m68k/include/asm/raw_io.h:20:19: error:
-	cast to pointer from integer of different size
-arch/m68k/include/asm/raw_io.h:30:32: error:
-	cast to pointer from integer of different size [-Werror=int-to-p
+[   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
+[   31.275563] Freed by task 306:
+[   30.276782]  platform_device_release+0x25/0x80
 
-On m68k, io functions are defined as macros. The problem is seen if the
-macro parameter variable size differs from the size of a pointer. Cast
-the parameter of all io macros to unsigned long before casting it to
-a pointer to fix the problem.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210907060729.2391992-1-linux@roeck-us.net
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Suggested-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/include/asm/raw_io.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/cadence/macb_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index 8a6dc6e5a279..8ab3c350bd53 100644
---- a/arch/m68k/include/asm/raw_io.h
-+++ b/arch/m68k/include/asm/raw_io.h
-@@ -17,21 +17,21 @@
-  * two accesses to memory, which may be undesirable for some devices.
-  */
- #define in_8(addr) \
--    ({ u8 __v = (*(__force volatile u8 *) (addr)); __v; })
-+    ({ u8 __v = (*(__force volatile u8 *) (unsigned long)(addr)); __v; })
- #define in_be16(addr) \
--    ({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
-+    ({ u16 __v = (*(__force volatile u16 *) (unsigned long)(addr)); __v; })
- #define in_be32(addr) \
--    ({ u32 __v = (*(__force volatile u32 *) (addr)); __v; })
-+    ({ u32 __v = (*(__force volatile u32 *) (unsigned long)(addr)); __v; })
- #define in_le16(addr) \
--    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (addr)); __v; })
-+    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (unsigned long)(addr)); __v; })
- #define in_le32(addr) \
--    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (addr)); __v; })
-+    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (unsigned long)(addr)); __v; })
+diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
+index 8b7b59908a1a..f66d22de5168 100644
+--- a/drivers/net/ethernet/cadence/macb_pci.c
++++ b/drivers/net/ethernet/cadence/macb_pci.c
+@@ -111,9 +111,9 @@ static void macb_remove(struct pci_dev *pdev)
+ 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
+ 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
  
--#define out_8(addr,b) (void)((*(__force volatile u8 *) (addr)) = (b))
--#define out_be16(addr,w) (void)((*(__force volatile u16 *) (addr)) = (w))
--#define out_be32(addr,l) (void)((*(__force volatile u32 *) (addr)) = (l))
--#define out_le16(addr,w) (void)((*(__force volatile __le16 *) (addr)) = cpu_to_le16(w))
--#define out_le32(addr,l) (void)((*(__force volatile __le32 *) (addr)) = cpu_to_le32(l))
-+#define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned long)(addr)) = (b))
-+#define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned long)(addr)) = (w))
-+#define out_be32(addr,l) (void)((*(__force volatile u32 *) (unsigned long)(addr)) = (l))
-+#define out_le16(addr,w) (void)((*(__force volatile __le16 *) (unsigned long)(addr)) = cpu_to_le16(w))
-+#define out_le32(addr,l) (void)((*(__force volatile __le32 *) (unsigned long)(addr)) = cpu_to_le32(l))
+-	platform_device_unregister(plat_dev);
+ 	clk_unregister(plat_data->pclk);
+ 	clk_unregister(plat_data->hclk);
++	platform_device_unregister(plat_dev);
+ }
  
- #define raw_inb in_8
- #define raw_inw in_be16
+ static const struct pci_device_id dev_id_table[] = {
 -- 
 2.33.0
 
