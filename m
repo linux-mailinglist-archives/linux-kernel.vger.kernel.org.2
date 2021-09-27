@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2B7419B28
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD453419B2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbhI0RPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
+        id S236289AbhI0RPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236998AbhI0RNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3B0061355;
-        Mon, 27 Sep 2021 17:09:23 +0000 (UTC)
+        id S237051AbhI0RNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85E4761352;
+        Mon, 27 Sep 2021 17:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762564;
-        bh=t2tqLgoZvdT9jejSsLrnROND2E82MIow2rxULr6fum8=;
+        s=korg; t=1632762567;
+        bh=nFrudeAt+LMiUk+f0kMB0bLd3J1yHNHQTkGU0Gw2CU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2NRmga386fok7fTbKgLpTRNXKk0EqdNY89iNe2f2sD+NE/+VqA2v15O2bnU3Ln+Vg
-         UB+KD5UzhrUY6cEQfDpQJy/YQc/IfXwJ2/JDnmSnaqgV/wGCPcixPY0KrLt5Ub/+ss
-         CKs9lf36tcAKSBAOGFQuJZxkGODmdS6lmOvRzN/4=
+        b=io8X/lr767kheWHnl76ntv2ZlUz4w8/3AtW8euk1w9n58Q1vSRkSIJDab8N9wlBds
+         mEUUm34ikROriFratQwt0ep3bS4xFaCzmxQSB7000RS7YWYfXrNZuDVlWNRZxJC+jS
+         MTvcsCWMFBSzT7+A//fqZSFTmTyNDRhGn3qnLWps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 072/103] blktrace: Fix uaf in blk_trace access after removing by sysfs
-Date:   Mon, 27 Sep 2021 19:02:44 +0200
-Message-Id: <20210927170228.257233498@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Rossi <nathan.rossi@digi.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 073/103] net: phylink: Update SFP selected interface on advertising changes
+Date:   Mon, 27 Sep 2021 19:02:45 +0200
+Message-Id: <20210927170228.289181570@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
 References: <20210927170225.702078779@linuxfoundation.org>
@@ -39,91 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Nathan Rossi <nathan.rossi@digi.com>
 
-[ Upstream commit 5afedf670caf30a2b5a52da96eb7eac7dee6a9c9 ]
+[ Upstream commit ea269a6f720782ed94171fb962b14ce07c372138 ]
 
-There is an use-after-free problem triggered by following process:
+Currently changes to the advertising state via ethtool do not cause any
+reselection of the configured interface mode after the SFP is already
+inserted and initially configured.
 
-      P1(sda)				P2(sdb)
-			echo 0 > /sys/block/sdb/trace/enable
-			  blk_trace_remove_queue
-			    synchronize_rcu
-			    blk_trace_free
-			      relay_close
-rcu_read_lock
-__blk_add_trace
-  trace_note_tsk
-  (Iterate running_trace_list)
-			        relay_close_buf
-				  relay_destroy_buf
-				    kfree(buf)
-    trace_note(sdb's bt)
-      relay_reserve
-        buf->offset <- nullptr deference (use-after-free) !!!
-rcu_read_unlock
+While it is not typical to change the advertised link modes for an
+interface using an SFP in certain use cases it is desirable. In the case
+of a SFP port that is capable of handling both SFP and SFP+ modules it
+will automatically select between 1G and 10G modes depending on the
+supported mode of the SFP. However if the SFP module is capable of
+working in multiple modes (e.g. a SFP+ DAC that can operate at 1G or
+10G), one end of the cable may be attached to a SFP 1000base-x port thus
+the SFP+ end must be manually configured to the 1000base-x mode in order
+for the link to be established.
 
-[  502.714379] BUG: kernel NULL pointer dereference, address:
-0000000000000010
-[  502.715260] #PF: supervisor read access in kernel mode
-[  502.715903] #PF: error_code(0x0000) - not-present page
-[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
-[  502.717252] Oops: 0000 [#1] SMP
-[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
-[  502.732872] Call Trace:
-[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
-[  502.733734]  blk_add_trace_rq+0x7b/0xd0
-[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
-[  502.734755]  blk_mq_start_request+0xde/0x1b0
-[  502.735287]  scsi_queue_rq+0x528/0x1140
-...
-[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
-[  502.747501]  sg_ioctl+0x466/0x1100
+This change causes the ethtool setting of advertised mode changes to
+reselect the interface mode so that the link can be established.
+Additionally when a module is inserted the advertising mode is reset to
+match the supported modes of the module.
 
-Reproduce method:
-  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sda, BLKTRACESTART)
-  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sdb, BLKTRACESTART)
-
-  echo 0 > /sys/block/sdb/trace/enable &
-  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
-
-  ioctl$SG_IO(/dev/sda, SG_IO, ...)
-  // Enters trace_note_tsk() after blk_trace_free() returned
-  // Use mdelay in rcu region rather than msleep(which may schedule out)
-
-Remove blk_trace from running_list before calling blk_trace_free() by
-sysfs if blk_trace is at Blktrace_running state.
-
-Fixes: c71a896154119f ("blktrace: add ftrace plugin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Link: https://lore.kernel.org/r/20210923134921.109194-1-chengzhihao1@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/phy/phylink.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index f1022945e346..b89ff188a618 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1670,6 +1670,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
- 	if (bt == NULL)
+diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+index 6072e87ed6c3..025c3246f339 100644
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -1493,6 +1493,32 @@ int phylink_ethtool_ksettings_set(struct phylink *pl,
+ 	if (config.an_enabled && phylink_is_empty_linkmode(config.advertising))
  		return -EINVAL;
  
-+	if (bt->trace_state == Blktrace_running) {
-+		bt->trace_state = Blktrace_stopped;
-+		spin_lock_irq(&running_trace_lock);
-+		list_del_init(&bt->running_list);
-+		spin_unlock_irq(&running_trace_lock);
-+		relay_flush(bt->rchan);
++	/* If this link is with an SFP, ensure that changes to advertised modes
++	 * also cause the associated interface to be selected such that the
++	 * link can be configured correctly.
++	 */
++	if (pl->sfp_port && pl->sfp_bus) {
++		config.interface = sfp_select_interface(pl->sfp_bus,
++							config.advertising);
++		if (config.interface == PHY_INTERFACE_MODE_NA) {
++			phylink_err(pl,
++				    "selection of interface failed, advertisement %*pb\n",
++				    __ETHTOOL_LINK_MODE_MASK_NBITS,
++				    config.advertising);
++			return -EINVAL;
++		}
++
++		/* Revalidate with the selected interface */
++		linkmode_copy(support, pl->supported);
++		if (phylink_validate(pl, support, &config)) {
++			phylink_err(pl, "validation of %s/%s with support %*pb failed\n",
++				    phylink_an_mode_str(pl->cur_link_an_mode),
++				    phy_modes(config.interface),
++				    __ETHTOOL_LINK_MODE_MASK_NBITS, support);
++			return -EINVAL;
++		}
 +	}
 +
- 	put_probe_ref();
- 	synchronize_rcu();
- 	blk_trace_free(bt);
+ 	mutex_lock(&pl->state_mutex);
+ 	pl->link_config.speed = config.speed;
+ 	pl->link_config.duplex = config.duplex;
+@@ -2072,7 +2098,9 @@ static int phylink_sfp_config(struct phylink *pl, u8 mode,
+ 	if (phy_interface_mode_is_8023z(iface) && pl->phydev)
+ 		return -EINVAL;
+ 
+-	changed = !linkmode_equal(pl->supported, support);
++	changed = !linkmode_equal(pl->supported, support) ||
++		  !linkmode_equal(pl->link_config.advertising,
++				  config.advertising);
+ 	if (changed) {
+ 		linkmode_copy(pl->supported, support);
+ 		linkmode_copy(pl->link_config.advertising, config.advertising);
 -- 
 2.33.0
 
