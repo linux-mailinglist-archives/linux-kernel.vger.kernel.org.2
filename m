@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC183419CA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BADF419B40
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237214AbhI0Rar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43764 "EHLO mail.kernel.org"
+        id S237027AbhI0RQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:16:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238131AbhI0R0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:26:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0519761409;
-        Mon, 27 Sep 2021 17:16:29 +0000 (UTC)
+        id S236141AbhI0RLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:11:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01C2761262;
+        Mon, 27 Sep 2021 17:08:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762990;
-        bh=d562OUswW0z2026vweVc+AW1B7RLlr4Q+DoF1PV8M78=;
+        s=korg; t=1632762507;
+        bh=Vz+vKDRxCrFDPy7H8iM4rshq2PBP9JiG/4MPfVshD8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w9n1s9iWUd1yHx532IbOj+oMObkmahcSGOpA3y8mYeKtvN2Ui/H0Rb8FAKhJAeCU1
-         FqDaOzwKdJgU5gPhICn3pn5zfCRrnTDSBUANY6A8JwOaLE4wNVFJDoNGylLzt+Kw4n
-         2KsZ141dGA0n/AOU770HywWqs3Qi4i7I4BkB/bws=
+        b=F9oCjEbzXQ7jPfuMhbHju1ai0FhtZD+2mQ1y6ZwmcbFA7wFRQRUhNl7WZhdKYzonh
+         v+uP6M4Cres1mIPeiOGQZu6Bo2U0LwIblEn2UBck2YXkwsdsyGDGdcfCmsGCLydDAw
+         +n3pp64/KgD2s8hhAv6mvuohYTx+lkP6MrOA5hMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        stable@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 095/162] fpga: machxo2-spi: Return an error on failure
+Subject: [PATCH 5.10 049/103] gpio: uniphier: Fix void functions to remove return value
 Date:   Mon, 27 Sep 2021 19:02:21 +0200
-Message-Id: <20210927170236.724539210@linuxfoundation.org>
+Message-Id: <20210927170227.447733321@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-[ Upstream commit 34331739e19fd6a293d488add28832ad49c9fc54 ]
+[ Upstream commit 2dd824cca3407bc9a2bd11b00f6e117b66fcfcf1 ]
 
-Earlier successes leave 'ret' in a non error state, so these errors are
-not reported. Set ret to -EINVAL before going to the error handler.
+The return type of irq_chip.irq_mask() and irq_chip.irq_unmask() should
+be void.
 
-This addresses two issues reported by smatch:
-drivers/fpga/machxo2-spi.c:229 machxo2_write_init()
-  warn: missing error code 'ret'
-
-drivers/fpga/machxo2-spi.c:316 machxo2_write_complete()
-  warn: missing error code 'ret'
-
-[mdf@kernel.org: Reworded commit message]
-Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2 support")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: dbe776c2ca54 ("gpio: uniphier: add UniPhier GPIO controller driver")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fpga/machxo2-spi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpio/gpio-uniphier.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-index 1afb41aa20d7..b4a530a31302 100644
---- a/drivers/fpga/machxo2-spi.c
-+++ b/drivers/fpga/machxo2-spi.c
-@@ -225,8 +225,10 @@ static int machxo2_write_init(struct fpga_manager *mgr,
- 		goto fail;
+diff --git a/drivers/gpio/gpio-uniphier.c b/drivers/gpio/gpio-uniphier.c
+index f99f3c10bed0..39dca147d587 100644
+--- a/drivers/gpio/gpio-uniphier.c
++++ b/drivers/gpio/gpio-uniphier.c
+@@ -184,7 +184,7 @@ static void uniphier_gpio_irq_mask(struct irq_data *data)
  
- 	get_status(spi, &status);
--	if (test_bit(FAIL, &status))
-+	if (test_bit(FAIL, &status)) {
-+		ret = -EINVAL;
- 		goto fail;
-+	}
- 	dump_status_reg(&status);
+ 	uniphier_gpio_reg_update(priv, UNIPHIER_GPIO_IRQ_EN, mask, 0);
  
- 	spi_message_init(&msg);
-@@ -313,6 +315,7 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
- 	dump_status_reg(&status);
- 	if (!test_bit(DONE, &status)) {
- 		machxo2_cleanup(mgr);
-+		ret = -EINVAL;
- 		goto fail;
- 	}
+-	return irq_chip_mask_parent(data);
++	irq_chip_mask_parent(data);
+ }
  
+ static void uniphier_gpio_irq_unmask(struct irq_data *data)
+@@ -194,7 +194,7 @@ static void uniphier_gpio_irq_unmask(struct irq_data *data)
+ 
+ 	uniphier_gpio_reg_update(priv, UNIPHIER_GPIO_IRQ_EN, mask, mask);
+ 
+-	return irq_chip_unmask_parent(data);
++	irq_chip_unmask_parent(data);
+ }
+ 
+ static int uniphier_gpio_irq_set_type(struct irq_data *data, unsigned int type)
 -- 
 2.33.0
 
