@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF91F41A1FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADD841A289
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237843AbhI0WDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:03:21 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:37836 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237937AbhI0WC7 (ORCPT
+        id S237861AbhI0WHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:07:16 -0400
+Received: from fanzine.igalia.com ([178.60.130.6]:43271 "EHLO
+        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238069AbhI0WGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:02:59 -0400
-Received: by mail-pg1-f177.google.com with SMTP id 17so19082646pgp.4;
-        Mon, 27 Sep 2021 15:01:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=g1utYXq+wY57RZcAhHq5AQl/UkdCz6MKvlIxZEz54ak=;
-        b=vL7YwdfyPtWYT8Su5mHNpBkcRCQK80kGzIn2OqTWowxMb0FWsig9bSFnLmfXtDMJsK
-         zj4TScJrvo06WrKiSQCVeEXc7lFpLhaPTqMiPCunHCljHGqQ1UxG8QclhJ1876NzQsId
-         SZw/Hgv1aeB/6lbR4XwX11F4GUkQfBa9qdb7mHJ5NhVE/WMl4DTfvWnU1Fab7/zpkiI+
-         X1ZciS2lJE66J+tXKerBWVLL1gkSwd16QoKi5hunUC7RklfkutfTKGV8Qt9aDo+7t1O5
-         ZTyF8LZCccLvlbgmg9/eFKmjO/3cSe9jO62TUB0d2kcNLVIBhTWbPObBJpyfmylODUT5
-         /Adg==
-X-Gm-Message-State: AOAM532G87R5FVMcagzNs710dnY6xT2puNyuv1foQtb3XK1Oj7QAlnVy
-        GvR6GDZZ50S/7Bo6bw0MrC8=
-X-Google-Smtp-Source: ABdhPJz1xurkGC+wCDH4v9Y7JT2IpZnvZhGN8PoGQxC4xdO7GrNl6OJ8UKZUL0iotz+UiqG6zJ6RkQ==
-X-Received: by 2002:a62:641:0:b0:44b:74bb:294c with SMTP id 62-20020a620641000000b0044b74bb294cmr1956387pfg.12.1632780081012;
-        Mon, 27 Sep 2021 15:01:21 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c9sm19427778pgq.58.2021.09.27.15.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 15:01:20 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 00:01:09 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Toan Le <toan@os.amperecomputing.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: xgene: Use PCI_VENDOR_ID_AMCC macro
-Message-ID: <YVI/JUBsn5wDFaPo@rocinante>
-References: <20210927134356.11799-1-pali@kernel.org>
+        Mon, 27 Sep 2021 18:06:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:In-Reply-To; bh=76O8WApWZLvvT9G+XCfOcuQCiQOca2oZUFcluWt6zrM=;
+        b=qYU02jarWH/Q81NUeqRbHk0JowJIp3xSc9ELm8wFxzLQzOEf4poDyieVahX4bbbyqBAZoucMFOKPu9oMwmJwa2TXoL/+oaZH0ZCGcaWvlDThhTJle1ACAVifr2BBKqPRcotX2FoeyTzMbXgOcw8lK4tujOiSCp9Fpzkk2lAiVJwCWxjm160HRHHhle1+HAb0T1FzPPjtQZHVkwBir2gojO824L+oZNjdU12snLjbIN3KSZqbeVvyJPYSKYLm5k48lNc9/Zm2ptjP9t7ig8BEcHnVWtSct9iS5YatiiL5djVoeWr1Fm51p6McVrvhQqSWJIZGT70su8jeZ6BkINpYVw==;
+Received: from [177.95.15.66] (helo=[192.168.1.64])
+        by fanzine.igalia.com with esmtpsa 
+        (Cipher TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim)
+        id 1mUyRW-0008Rw-8w; Mon, 27 Sep 2021 23:45:46 +0200
+In-Reply-To: 
+To:     y.oudjana@protonmail.com
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        gpiccoli@igalia.com, kernel@gpiccoli.net, loic.poulain@linaro.org,
+        konrad.dybcio@somainline.org
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: Re: [PATCH] arm64: dts: qcom: msm8996: Add CPU cooling suppor,t
+Message-ID: <5ccc4ea8-e000-b6b9-0781-dcde814eda96@igalia.com>
+Date:   Mon, 27 Sep 2021 18:45:29 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210927134356.11799-1-pali@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+Hi Yassine, thanks for the patch! I was doing some experiments with a
+dragonboard 820-based board, and without your patch, a CPU benchmark can
+quickly cause overheating - throttling mechanism doesn't start and we
+get a FW reset to a bad state (likely a HW protection mechanism).
 
-> Header file linux/pci_ids.h defines AMCC vendor id (0x10e8) macro named
-> PCI_VENDOR_ID_AMCC. So use this macro instead of driver custom macro.
+I noticed that a similar patch including cooling maps is present in
+Linaro's qcom tree [0], and it was submitted upstream [1], but there was
+a re-submission [2] by Konrad that was merged and dropped the thermals
+part. Based on some threads I read, it seems a FW lockup was detected
+with the complete patch?
 
-[...]
-> -#define XGENE_PCIE_VENDORID		0x10E8
+I'm not sure, so I'm looping Konrad / Loic / Bjorn here, to understand
+better what made this portion of the patch to be dropped.
+Anyway, I think worth to mention this in your commit message Yassine,
+including perhaps a fixes tag like:
 
-Another possible way of doing this might have been to alias the macro:
+Fixes: 90173a954a22 ("arm64: dts: qcom: msm8996: Add CPU opps").
 
-	#define XGENE_PCIE_VENDORID		PCI_VENDOR_ID_AMCC
+Also, I'm not sure why there was no response here or why it wasn't
+merged, but if it helps, please have my:
 
-Not sure if this would be more or less confusing - I certainly had to go
-and look up what "AMCC" was.  Only to found out they got sold few years
-ago, and such...
+Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 
-Nothing to change here, though.
+Thanks,
 
->  #define XGENE_PCIE_DEVICEID		0xE004
->  #define SZ_1T				(SZ_1G*1024ULL)
->  #define PIPE_PHY_RATE_RD(src)		((0xc000 & (u32)(src)) >> 0xe)
-> @@ -560,7 +559,7 @@ static int xgene_pcie_setup(struct xgene_pcie_port *port)
->  	xgene_pcie_clear_config(port);
->  
->  	/* setup the vendor and device IDs correctly */
-> -	val = (XGENE_PCIE_DEVICEID << 16) | XGENE_PCIE_VENDORID;
-> +	val = (XGENE_PCIE_DEVICEID << 16) | PCI_VENDOR_ID_AMCC;
->  	xgene_pcie_writel(port, BRIDGE_CFG_0, val);
 
-Thank you!
+Guilherme
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-	Krzysztof
+[0]
+https://git.linaro.org/landing-teams/working/qualcomm/kernel.git/commit/?h=release/qcomlt-4.14&id=2274c48c671
+
+[1]
+https://patchwork.kernel.org/project/linux-arm-msm/patch/1595253740-29466-6-git-send-email-loic.poulain@linaro.org/
+
+[2]
+https://lore.kernel.org/linux-arm-msm/20210527194455.782108-2-konrad.dybcio@somainline.org/
+
