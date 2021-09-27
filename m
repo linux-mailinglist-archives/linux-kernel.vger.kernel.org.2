@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E39419A79
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE01419A30
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236349AbhI0RJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46130 "EHLO mail.kernel.org"
+        id S236072AbhI0RHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:07:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236037AbhI0RIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51BF4611C3;
-        Mon, 27 Sep 2021 17:06:30 +0000 (UTC)
+        id S235973AbhI0RGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:06:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83704611BD;
+        Mon, 27 Sep 2021 17:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762390;
-        bh=S57IW9XmSMDd9bCtpUv5DsztSvjqjiQqbyJLha77QWk=;
+        s=korg; t=1632762304;
+        bh=oykuXk5+eKoTA9NBaL8setZKnfPh8yGZDd5nJFID9GA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vuvbKcfhMY+KiPJuhZHsWs3cBdiFetKWpYh7ppRYadJRZY52ZhlhDWIsqcRvi0TdB
-         oZkhsItwfj+lhycj6bRg2zpJRjgb3h7g4p8V7SRoG8zKI6DxkdrfgVDgdEMyMVpEMG
-         lZP4UG0cYIFg6dcfoVP2ASdPNQQ1MoZL1UrnaG+I=
+        b=Pp6s8xtaehQYoXduta9Zlpbm4OK7I9nQJUcDmIflFWc+A2yGeJXFKeEZXqumM9Dm9
+         xM+mZkXmQOzIJQ3X/tb93QJqQrCWrL215fHSwRp+sKIuz8IfHHy+sScU55pdbGhqyi
+         rq4RgVdfmvv25jftwoTymvY8K6DtsmAy28t54a2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Shai Malin <smalin@marvell.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/68] qed: rdma - dont wait for resources under hw error recovery flow
-Date:   Mon, 27 Sep 2021 19:02:27 +0200
-Message-Id: <20210927170221.050930152@linuxfoundation.org>
+Subject: [PATCH 5.4 32/68] net/mlx4_en: Dont allow aRFS for encapsulated packets
+Date:   Mon, 27 Sep 2021 19:02:28 +0200
+Message-Id: <20210927170221.081178868@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
 References: <20210927170219.901812470@linuxfoundation.org>
@@ -42,63 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shai Malin <smalin@marvell.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit 1ea7812326004afd2803cc968a4776ae5120a597 ]
+[ Upstream commit fdbccea419dc782079ce5881d2705cc9e3881480 ]
 
-If the HW device is during recovery, the HW resources will never return,
-hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
-This fix speeds up the error recovery flow.
+Driver doesn't support aRFS for encapsulated packets, return early error
+in such a case.
 
-Fixes: 64515dc899df ("qed: Add infrastructure for error detection and recovery")
-Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
+Fixes: 1eb8c695bda9 ("net/mlx4_en: Add accelerated RFS support")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_iwarp.c | 8 ++++++++
- drivers/net/ethernet/qlogic/qed/qed_roce.c  | 8 ++++++++
- 2 files changed, 16 insertions(+)
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-index 9adbaccd0c5e..934740d60470 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-@@ -1307,6 +1307,14 @@ qed_iwarp_wait_cid_map_cleared(struct qed_hwfn *p_hwfn, struct qed_bmap *bmap)
- 	prev_weight = weight;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+index d7d20b7fae39..250177b5bcac 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -371,6 +371,9 @@ mlx4_en_filter_rfs(struct net_device *net_dev, const struct sk_buff *skb,
+ 	int nhoff = skb_network_offset(skb);
+ 	int ret = 0;
  
- 	while (weight) {
-+		/* If the HW device is during recovery, all resources are
-+		 * immediately reset without receiving a per-cid indication
-+		 * from HW. In this case we don't expect the cid_map to be
-+		 * cleared.
-+		 */
-+		if (p_hwfn->cdev->recov_in_prog)
-+			return 0;
++	if (skb->encapsulation)
++		return -EPROTONOSUPPORT;
 +
- 		msleep(QED_IWARP_MAX_CID_CLEAN_TIME);
+ 	if (skb->protocol != htons(ETH_P_IP))
+ 		return -EPROTONOSUPPORT;
  
- 		weight = bitmap_weight(bmap->bitmap, bmap->max_count);
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-index 83817bb50e9f..6e6563b51d68 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-@@ -107,6 +107,14 @@ void qed_roce_stop(struct qed_hwfn *p_hwfn)
- 	 * Beyond the added delay we clear the bitmap anyway.
- 	 */
- 	while (bitmap_weight(rcid_map->bitmap, rcid_map->max_count)) {
-+		/* If the HW device is during recovery, all resources are
-+		 * immediately reset without receiving a per-cid indication
-+		 * from HW. In this case we don't expect the cid bitmap to be
-+		 * cleared.
-+		 */
-+		if (p_hwfn->cdev->recov_in_prog)
-+			return;
-+
- 		msleep(100);
- 		if (wait_count++ > 20) {
- 			DP_NOTICE(p_hwfn, "cid bitmap wait timed out\n");
 -- 
 2.33.0
 
