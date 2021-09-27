@@ -2,232 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8BB419D38
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC65E419D00
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbhI0Rqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbhI0Rq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:46:26 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD91AC01C1C4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:28:19 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so606625pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ecZR8501JUA5HjJ4//gNp1dcXa6TfEaO5GlBtu6Su+A=;
-        b=GOtOu1nR9l539q+qbEcVbGsMPn51n8QQ32PMYKIi6hIg46kqbYOo+hyGorxaHeXyiT
-         V2tIDEC+I97Rg1zmhvPqeSzBeiBlCMUjmjZANJZzM9jX9QQBGLcV5QiWLXLdjVMX2MuS
-         sScGZznLE19gExlLe/Ai7FS2B5zHwdMU7MKsUpu1yak92XJeVKQbMEKqZ/hzEY/0boo6
-         sDlwFotvdcbYnahoS2c2Z8+mFOK1SJ2AB2kkvp6KT1bpJ8KctGOFh9LaiyRBGQUAyp5S
-         j7e9humkRF8Tiv6iuLdNX3komtUTfGZHyDUAJJ18POrEa009r1yW8e9FcOZick20MEx6
-         O+tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ecZR8501JUA5HjJ4//gNp1dcXa6TfEaO5GlBtu6Su+A=;
-        b=elcLQaYGLWnFptqeXYEs3N2k3mC+NOS0p4mtYxSgz2IqGBy5tN49q219klyziCWvGq
-         mg9blRjkXaP03xqL6gktxArlSGX9QSglcLvr2GKnEPWM/NfdsfwNtcYp2lt4O6VFLE3s
-         gsmXMDFIKEdNvxifPoJ/avQDCGTDZ5o6y5c6ihLK8IPqGvpHbRm0x0EiErTuFd82rnhI
-         69/wSmlmUuddBB37VXFRxCdsFhSj9T6E9ivDyZnmvqewP298y03+TVOvzypi40hLxZNF
-         1wWDyZ89bYHqXSIWA2XbPx1+YPF0zgRCusavehCmeiW6QEurNp8DFmDY2P/TbU30D4cf
-         2BaQ==
-X-Gm-Message-State: AOAM533exKLR8RnNBhe4cOobBK3YcmGTXt448MTy1f7QeWelozUwFe09
-        jKXwEJbLb5W9yIxaY8EEY1riIA==
-X-Google-Smtp-Source: ABdhPJxsqRCUhYx/WDAlHwlUhNALt8ImrF7i3ClqjdGVCi9orteLX/2Ra1fBVLm7dJRGmXOdFcEtpg==
-X-Received: by 2002:a17:902:9895:b0:13c:94f8:d74b with SMTP id s21-20020a170902989500b0013c94f8d74bmr678633plp.20.1632763698990;
-        Mon, 27 Sep 2021 10:28:18 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c8sm17798035pfj.204.2021.09.27.10.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 10:28:18 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 17:28:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 07/14] KVM: Don't block+unblock when halt-polling is
- successful
-Message-ID: <YVH/LjCqk/9PfDHn@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <20210925005528.1145584-8-seanjc@google.com>
- <878rzlass2.wl-maz@kernel.org>
- <80d90ee6-0d43-3735-5c26-be8c3d72d493@redhat.com>
- <877df3btgb.wl-maz@kernel.org>
+        id S238292AbhI0Rg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238301AbhI0RcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1077460FC2;
+        Mon, 27 Sep 2021 17:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632763828;
+        bh=sWthEd8thvF+XGkVYUkeFMxlWcXd1BhPEpZoeT80pWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yj9QDrwhkQBZSYAsOsJBGq9Bs62/LBNlL9bIz12/+OpRqNgkiDGQddJVl34MckGmw
+         hetcjddDSGIMNkUTFPku0iGvxUApsEkE0V3M9lJ6WsGiRc5qo3b0GPHJKl64xZjc77
+         Q6QbQzt8/j7qLWs7gF7CLXfGsObT0BCH2dJpjcy2BQbNQ4f3F7s2bDYAoVC1FP8t6K
+         sWsI32VaGlnB23kxsY/ODXVkEyGTbOob1WGekA+v4+KpsA0IMnb/SBp1Mtx5L6OCrm
+         MRONKGJ9ANY8FQ9hbtnyXxMY+wO+w+P63c2JDPkIWG095BvGfWMDpoX/Fu2kcM3l4t
+         9/wHzy6aCAysw==
+Date:   Mon, 27 Sep 2021 18:29:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
+        Ryan Lee <RyanS.Lee@maximintegrated.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>
+Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+Message-ID: <20210927172940.GH4199@sirena.org.uk>
+References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
+ <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
+ <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <20210927160622.GE4199@sirena.org.uk>
+ <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+ <20210927171033.GF4199@sirena.org.uk>
+ <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xHbokkKX1kTiQeDC"
 Content-Disposition: inline
-In-Reply-To: <877df3btgb.wl-maz@kernel.org>
+In-Reply-To: <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021, Marc Zyngier wrote:
-> On Sun, 26 Sep 2021 07:27:28 +0100,
-> Paolo Bonzini <pbonzini@redhat.com> wrote:
-> > 
-> > On 25/09/21 11:50, Marc Zyngier wrote:
-> > >> there is no need for arm64 to put/load
-> > >> the vGIC as KVM hasn't relinquished control of the vCPU in any way.
-> > > 
-> > > This doesn't mean that there is no requirement for any state
-> > > change. The put/load on GICv4 is crucial for performance, and the VMCR
-> > > resync is a correctness requirement.
 
-Ah crud, I didn't blame that code beforehand, I simply assumed
-kvm_arch_vcpu_blocking() was purely for the blocking/schedule() sequence.  The
-comment in arm64's kvm_arch_vcpu_blocking() about kvm_arch_vcpu_runnable() makes
-more sense now too.
+--xHbokkKX1kTiQeDC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > I wouldn't even say it's crucial for performance: halt polling cannot
-> > work and is a waste of time without (the current implementation of)
-> > put/load.
-> 
-> Not quite. A non-V{LPI,SGI} could still be used as the a wake-up from
-> WFI (which is the only reason we end-up on this path). Only LPIs (and
-> SGIs on GICv4.1) can be directly injected, meaning that SPIs and PPIs
-> still follow the standard SW injection model.
-> 
-> However, there is still the ICH_VMCR_EL2 requirement (to get the
-> up-to-date priority mask and group enable bits) for SW-injected
-> interrupt wake-up to work correctly, and I really don't want to save
-> that one eagerly on each shallow exit.
+On Mon, Sep 27, 2021 at 12:23:06PM -0500, Pierre-Louis Bossart wrote:
+> On 9/27/21 12:10 PM, Mark Brown wrote:
 
-IIUC, VMCR is resident in hardware while the guest is running, and KVM needs to
-retrieve the VMCR when processing interrupts to determine if a interrupt is above
-the priority threshold.  If that's the case, then IMO handling the VMCR via an
-arch hook is unnecessarily fragile, e.g. any generic call that leads to
-kvm_arch_vcpu_runnable() needs to know that arm64 lazily retrieves a guest
-register.  A better approach for VMCR would be to retrieve the value from
-hardware on-demand, e.g. via a hook in vgic_get_vmcr(), so that it's all but
-impossible to have bugs where KVM is working with a stale VMCR, e.g.
+> > A quick survey of other drivers suggests that this pattern should be
+> > factored out into some helpers as it looks like there's several ways of
+> > implementing it that look very similar but not quite the same...
 
-diff --git a/arch/arm64/kvm/vgic/vgic-mmio.c b/arch/arm64/kvm/vgic/vgic-mmio.c
-index 48c6067fc5ec..0784de0c4080 100644
---- a/arch/arm64/kvm/vgic/vgic-mmio.c
-+++ b/arch/arm64/kvm/vgic/vgic-mmio.c
-@@ -828,6 +828,13 @@ void vgic_set_vmcr(struct kvm_vcpu *vcpu, struct vgic_vmcr *vmcr)
- 
- void vgic_get_vmcr(struct kvm_vcpu *vcpu, struct vgic_vmcr *vmcr)
- {
-+       if (!vcpu->...->vmcr_available) {
-+               preempt_disable();
-+               kvm_vgic_vmcr_sync(vcpu);
-+               preempt_enable();
-+               vcpu->...->vmcr_available = true;
-+       }
-+
-        if (kvm_vgic_global_state.type == VGIC_V2)
-                vgic_v2_get_vmcr(vcpu, vmcr);
-        else
+> No disagreement here, we tried really hard to enforce a common pattern
+> for suspend-resume, but i just noticed that the maxim amp driver is
+> different on suspend (resume is consistent with the rest).
 
+There seem to be several slightly different ways of writing what I think
+is supposed to be the same thing in _io_init() too.
 
-Regarding vGIC v4, does KVM require it to be resident in hardware while the vCPU
-is loaded?  If not, then we could do something like this, which would eliminate
-the arch hooks entirely if the VMCR is handled as above.
+--xHbokkKX1kTiQeDC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index fe102cd2e518..efc862c4d802 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -365,31 +365,6 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
-        return kvm_timer_is_pending(vcpu);
- }
+-----BEGIN PGP SIGNATURE-----
 
--void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
--{
--       /*
--        * If we're about to block (most likely because we've just hit a
--        * WFI), we need to sync back the state of the GIC CPU interface
--        * so that we have the latest PMR and group enables. This ensures
--        * that kvm_arch_vcpu_runnable has up-to-date data to decide
--        * whether we have pending interrupts.
--        *
--        * For the same reason, we want to tell GICv4 that we need
--        * doorbells to be signalled, should an interrupt become pending.
--        */
--       preempt_disable();
--       kvm_vgic_vmcr_sync(vcpu);
--       vgic_v4_put(vcpu, true);
--       preempt_enable();
--}
--
--void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
--{
--       preempt_disable();
--       vgic_v4_load(vcpu);
--       preempt_enable();
--}
--
- void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
-        struct kvm_s2_mmu *mmu;
-@@ -697,7 +672,6 @@ static void check_vcpu_requests(struct kvm_vcpu *vcpu)
-                        /* The distributor enable bits were changed */
-                        preempt_disable();
-                        vgic_v4_put(vcpu, false);
--                       vgic_v4_load(vcpu);
-                        preempt_enable();
-                }
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFR/4MACgkQJNaLcl1U
+h9CnLQf+I7rNZH7/UAxm+ygPqR5wyC07ln6SF8HTbd4RVPRcbgoUpr/zRLV0AdET
+WF6koeLuHvqZ4HyJhvBcPNacTCBldtRTa/cWQzhV85mVLHWIeHfTBk6ySO860z4o
+S9cjLuFi9upjkRBL7L1P40vl1Ti9gq7vUltipE4AVNfea697+lSy9C/H3Dyvlgig
+8hKLejhr3ZcM5l8eQSZ1E878xyCNGRP3M4K5OoHydJeKBBAO3OiOyaNjlhgetsb/
+8dELrjAtM9NsedKLfNBm6jAqcJ3zFJsjoMKfVB54FOBOdfMFoYPC1PoNWnj8vZQQ
+Dw/6qpGr4yVYpZNqUqVNCtzlsHm5VQ==
+=Q6Xg
+-----END PGP SIGNATURE-----
 
-@@ -813,6 +787,13 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
-                 */
-                preempt_disable();
-
-+               /*
-+                * Reload vGIC v4 if necessary, as it may be put on-demand so
-+                * that KVM can detect directly injected interrupts, e.g. when
-+                * determining if the vCPU is runnable due to a pending event.
-+                */
-+               vgic_v4_load(vcpu);
-+
-                kvm_pmu_flush_hwstate(vcpu);
-
-                local_irq_disable();
-diff --git a/arch/arm64/kvm/vgic/vgic.c b/arch/arm64/kvm/vgic/vgic.c
-index 5dad4996cfb2..3ef360a20a22 100644
---- a/arch/arm64/kvm/vgic/vgic.c
-+++ b/arch/arm64/kvm/vgic/vgic.c
-@@ -969,6 +969,16 @@ int kvm_vgic_vcpu_pending_irq(struct kvm_vcpu *vcpu)
-
-        vgic_get_vmcr(vcpu, &vmcr);
-
-+       /*
-+        * Tell GICv4 that we need doorbells to be signalled, should an
-+        * interrupt become pending.
-+        */
-+       if (vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vpe_resident) {
-+               preempt_disable();
-+               vgic_v4_put(vcpu, true);
-+               preempt_enable();
-+       }
-+
-        raw_spin_lock_irqsave(&vgic_cpu->ap_list_lock, flags);
-
-        list_for_each_entry(irq, &vgic_cpu->ap_list_head, ap_list) {
+--xHbokkKX1kTiQeDC--
