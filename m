@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FAF4190CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C96D4190D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhI0I20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:28:26 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:32806 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233551AbhI0I2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:28:18 -0400
-Received: from BC-Mail-Ex09.internal.baidu.com (unknown [172.31.51.49])
-        by Forcepoint Email with ESMTPS id 185BBAB2B91CA3C23089;
-        Mon, 27 Sep 2021 16:26:40 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex09.internal.baidu.com (172.31.51.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Mon, 27 Sep 2021 16:26:39 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Mon, 27 Sep 2021 16:26:38 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "Vladimir Zapolskiy" <vz@mleia.com>,
-        Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH 8/8] iio: dac: ti-dac7311: Make use of the helper function dev_err_probe()
-Date:   Mon, 27 Sep 2021 16:26:07 +0800
-Message-ID: <20210927082608.859-8-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210927082608.859-1-caihuoqing@baidu.com>
-References: <20210927082608.859-1-caihuoqing@baidu.com>
+        id S233553AbhI0I3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233530AbhI0I3E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 04:29:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EE1C061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 01:27:26 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mUlyj-0004CN-SC; Mon, 27 Sep 2021 10:27:13 +0200
+Message-ID: <c653181970092c27fc98fbb5dcebe21ebf29d887.camel@pengutronix.de>
+Subject: Re: [PATCH v2 1/4] dt-bindings: phy: phy-imx8-pcie: Add binding for
+ the pad modes of imx8 pcie phy
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org, galak@kernel.crashing.org,
+        shawnguo@kernel.org
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com
+Date:   Mon, 27 Sep 2021 10:27:10 +0200
+In-Reply-To: <1632641983-1455-2-git-send-email-hongxing.zhu@nxp.com>
+References: <1632641983-1455-1-git-send-email-hongxing.zhu@nxp.com>
+         <1632641983-1455-2-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex15.internal.baidu.com (172.31.51.55) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When possible use dev_err_probe help to properly deal with the
-PROBE_DEFER error, the benefit is that DEFER issue will be logged
-in the devices_deferred debugfs file.
-Using dev_err_probe() can reduce code size, and the error value
-gets printed.
+Am Sonntag, dem 26.09.2021 um 15:39 +0800 schrieb Richard Zhu:
+> Add binding for reference clock PAD modes of the i.MX8 PCIe PHY.
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  include/dt-bindings/phy/phy-imx8-pcie.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>  create mode 100644 include/dt-bindings/phy/phy-imx8-pcie.h
+> 
+> diff --git a/include/dt-bindings/phy/phy-imx8-pcie.h b/include/dt-bindings/phy/phy-imx8-pcie.h
+> new file mode 100644
+> index 000000000000..59ed322f8d6c
+> --- /dev/null
+> +++ b/include/dt-bindings/phy/phy-imx8-pcie.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/iio/dac/ti-dac7311.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+This should be (GPL-2.0+ OR MIT) to be compatible with the license of
+the DTSI file it is included in.
 
-diff --git a/drivers/iio/dac/ti-dac7311.c b/drivers/iio/dac/ti-dac7311.c
-index 9d0b253be841..09218c3029f0 100644
---- a/drivers/iio/dac/ti-dac7311.c
-+++ b/drivers/iio/dac/ti-dac7311.c
-@@ -266,10 +266,9 @@ static int ti_dac_probe(struct spi_device *spi)
- 	ti_dac->resolution = spec->resolution;
- 
- 	ti_dac->vref = devm_regulator_get(dev, "vref");
--	if (IS_ERR(ti_dac->vref)) {
--		dev_err(dev, "error to get regulator\n");
--		return PTR_ERR(ti_dac->vref);
--	}
-+	if (IS_ERR(ti_dac->vref))
-+		return dev_err_probe(dev, PTR_ERR(ti_dac->vref),
-+				     "error to get regulator\n");
- 
- 	ret = regulator_enable(ti_dac->vref);
- 	if (ret < 0) {
--- 
-2.25.1
+> +/*
+> + * This header provides constants for i.MX8 PCIe.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_IMX8_PCIE_H
+> +#define _DT_BINDINGS_IMX8_PCIE_H
+> +
+> +/* Reference clock PAD mode */
+> +#define IMX8_PCIE_REFCLK_PAD_NO_USED	0
+
+I think _UNUSED would be the more idiomatic way to call this.
+
+> +#define IMX8_PCIE_REFCLK_PAD_INPUT	1
+> +#define IMX8_PCIE_REFCLK_PAD_OUTPUT	2
+> +
+> +#endif /* _DT_BINDINGS_IMX8_PCIE_H */
+
 
