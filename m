@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA0F419EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75234419EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235964AbhI0TOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        id S236414AbhI0TO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236141AbhI0TOP (ORCPT
+        with ESMTP id S236399AbhI0TO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:14:15 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21A8C061714;
-        Mon, 27 Sep 2021 12:12:37 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id z24so82854619lfu.13;
-        Mon, 27 Sep 2021 12:12:37 -0700 (PDT)
+        Mon, 27 Sep 2021 15:14:27 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF664C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:12:49 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id w11so12423556plz.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g1L2s4NZq83aRZiynEOAEFk+LytSiN0akgfpfUfBL+s=;
-        b=aZbN+bqYMWcpSUTG6slz9WQOTn9ntVoaArXsPdhI4DDBOcijDFw1vba/15ROuwcE9b
-         VA9i+pZma/3wbZI1LUfiGwV1qKbFh2lrJD5ibGBu7KPWV1IqdQ8ZqGz8l9lYPFTpPclQ
-         tuS8M91ATnDoYX5P6233ilv4lqtRbqtLspGOeqDFhjNXoc8lHEwyaQnCDm6fkyQ3hDK1
-         EAR5ZHlRntxNEpUcya7bSOsMXGhfp+KZsggUlnEerhYIDzJajyBmKB+PvCjNB7w6XRQD
-         tA2XgUvMrePF5wVvYAYESqrfH/fus3eH/TEc5Dhz7wUZ2KNNDIqzqB5hmd7zfTtbNWm4
-         NayQ==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=JwJyK7N3stT1d99uOVX86AHHjz0tWmo934uZkOorD2Q=;
+        b=WOR+lCS1jhG5TSAziWDxoy+7Ec2xaN4xm2hc+ADK5nOPksAvgZgC+3F4Yt/FwKp78k
+         O9jDxSIihtr6Swr6+/ShY302p/NlqzrlutmlR9NqxauNElF4x/tibRebfEhGdEs8ELzs
+         Tg8ARGS6W2ATDMXhk5HDPRDOSLF4jCM+rxXdL9ZM9HDDApMaZqrF8aHy2Iu3T2WQny/u
+         YHnHARsZAh8kH4r7vszFtc9pn/nDZiN6fS3HbcsiI3A/ITufTBKfTApHwTImf9KBV57B
+         J8NGoAT+AZCJnPqBYfA/ww/PX1ysvDn/L0bAfadjX80lUa2x+ki/Fzu+gvn4RcdK14jA
+         JjsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g1L2s4NZq83aRZiynEOAEFk+LytSiN0akgfpfUfBL+s=;
-        b=Ue4FEApefUQw/R+bPQgYT3HLTTtML1IHFZ2oPOtt9rKXslg3oDGwCWMqBD98uQn2bR
-         8mDFKZHYSLv6qBQ2c0aOGi+b7o3M8kdBzi33D8YI1idnOxfbyagx9H+xeaCMZ3PNwXok
-         5wpwQRVKFIcT+OTMoXky/685VpXbyjdxr/+F8dT5+Jibwivh2JOo4lKQTBUQSnSSCDzs
-         Ne81S3eDHsA5NIesBrDXc6FK/YTpM+kuVs5oUtG3uIROsncM0k31+aHsILWswoo1DIyC
-         VM6f9RzF91GdOzvpmqxQ8ETQfPEhg7Y5wBTi+Tl7q9+GF82KmiUUczEOF9Mu121wwFDY
-         xjCw==
-X-Gm-Message-State: AOAM533C6L39eoqdBwj3UizRHYA2BbmqCIO4q+qAnSVjpYogbMOsm7p3
-        yV8ZLInZn1jMOhfKbf3k5FbI5l7hCCZrFYSnXK9/3xsu
-X-Google-Smtp-Source: ABdhPJzPvlBdTxS1jiSsnfXupwFBY9N88/hUIoOj1bqMVKjlkJbcZ0CAdaKrZ2Qas7kBmeHUan0wWrOskD631WS1rPQ=
-X-Received: by 2002:ac2:5f71:: with SMTP id c17mr1334481lfc.555.1632769956054;
- Mon, 27 Sep 2021 12:12:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920182038.1510501-1-cpp.code.lv@gmail.com> <0d70b112-dc7a-7083-db8d-183782b8ef8f@6wind.com>
-In-Reply-To: <0d70b112-dc7a-7083-db8d-183782b8ef8f@6wind.com>
-From:   Cpp Code <cpp.code.lv@gmail.com>
-Date:   Mon, 27 Sep 2021 12:12:23 -0700
-Message-ID: <CAASuNyUWoZ1wToEUYbdehux=yVnWQ=suKDyRkQfRD-72DOLziw@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] net: openvswitch: IPv6: Add IPv6 extension
- header support
-To:     nicolas.dichtel@6wind.com
-Cc:     netdev@vger.kernel.org, pshelar@ovn.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=JwJyK7N3stT1d99uOVX86AHHjz0tWmo934uZkOorD2Q=;
+        b=wIkwWepHCIV6SjNkh5689PXPVDxkwJwxNQerWc2L/L/uUZcmsajBUGgU7+uxTpV3Tv
+         UIeyOTSgkpUw4NMzm5OjgEWTv4uSzqCblxLiJWnhWVHzxd/eHAdNxUqI8Rmnktn8ce9l
+         e42X7mjd4Irg3Co00SJqc58Tk6AMS/E2HJrwNVU1ra0MpSFxuDUXOYAMg/xygwE2GGkb
+         +1oT8J85Z4iSntbp5T0EZgwg7y/7juRBSEjtHShIglg2rOq6m2r3aNcBHtzjF6y7Lxm4
+         n+9REY0oeblAdKiaNA0ZT8owtdbipjPSQDzP7lP6Cy5whfUsqdRSyl5pYA4HiG2axy4P
+         QhXQ==
+X-Gm-Message-State: AOAM530KClMWNK6j1YOS8LijJXiWFyNNnzLsqwW5BmXiIgvik3J0pt7f
+        YqW/ETMXd6lmW/z7tz+XLD0=
+X-Google-Smtp-Source: ABdhPJx7oKgHeOh+O/ULmVGeDr1qEHj92573qMh3mONI/f14Nn9OUBuD/qsrczXO14SKYYE2IbP0OQ==
+X-Received: by 2002:a17:90b:4b8f:: with SMTP id lr15mr749432pjb.163.1632769969128;
+        Mon, 27 Sep 2021 12:12:49 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id v26sm18473558pfm.175.2021.09.27.12.12.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Sep 2021 12:12:48 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
+Date:   Mon, 27 Sep 2021 12:12:46 -0700
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <0FC3F99A-9F77-484A-899B-EDCBEFBFAC5D@gmail.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+ <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
+ <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
+ <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
+ <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
+To:     Michal Hocko <mhocko@suse.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To use this code there is a part of code in the userspace. We want to
-keep compatibility when we only update userspace part code or only
-kernel part code. This means we should have same values for constants
-and we can only add new ones at the end of list.
 
-Best,
-Tom
+> On Sep 27, 2021, at 5:16 AM, Michal Hocko <mhocko@suse.com> wrote:
+>=20
+> On Mon 27-09-21 05:00:11, Nadav Amit wrote:
+> [...]
+>> The manager is notified on memory regions that it should monitor
+>> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these =
+regions
+>> using the remote-userfaultfd that you saw on the second thread. When =
+it wants
+>> to reclaim (anonymous) memory, it:
+>>=20
+>> 1. Uses UFFD-WP to protect that memory (and for this matter I got a =
+vectored
+>>   UFFD-WP to do so efficiently, a patch which I did not send yet).
+>> 2. Calls process_vm_readv() to read that memory of that process.
+>> 3. Write it back to =E2=80=9Cswap=E2=80=9D.
+>> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
+>=20
+> Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
 
-On Wed, Sep 22, 2021 at 11:02 PM Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
->
-> Le 20/09/2021 =C3=A0 20:20, Toms Atteka a =C3=A9crit :
-> > This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
-> > packets can be filtered using ipv6_ext flag.
-> >
-> > Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
-> > ---
-> >  include/uapi/linux/openvswitch.h |  12 +++
-> >  net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++++
-> >  net/openvswitch/flow.h           |  14 ++++
-> >  net/openvswitch/flow_netlink.c   |  24 +++++-
-> >  4 files changed, 189 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/open=
-vswitch.h
-> > index a87b44cd5590..dc6eb5f6399f 100644
-> > --- a/include/uapi/linux/openvswitch.h
-> > +++ b/include/uapi/linux/openvswitch.h
-> > @@ -346,6 +346,13 @@ enum ovs_key_attr {
-> >  #ifdef __KERNEL__
-> >       OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
-> >  #endif
-> > +
-> > +#ifndef __KERNEL__
-> > +     PADDING,  /* Padding so kernel and non kernel field count would m=
-atch */
-> > +#endif
-> > +
-> > +     OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
-> Naive question, why not moving OVS_KEY_ATTR_IPV6_EXTHDRS above
-> OVS_KEY_ATTR_TUNNEL_INFO?
->
->
->
-> Regards,
-> Nicolas
+Providing hints to the kernel takes you so far to a certain extent.
+The kernel does not want to (for a good reason) to be completely
+configurable when it comes to reclaim and prefetch policies. Doing
+so from userspace allows you to be fully configurable.
+
+> MADV_DONTNEED on a remote process has been proposed in the past =
+several
+> times and it has always been rejected because it is a free ticket to =
+all
+> sorts of hard to debug problems as it is just a free ticket for a =
+remote
+> memory corruption. An additional capability requirement might reduce =
+the
+> risk to some degree but I still do not think this is a good idea.
+
+I would argue that there is nothing bad that remote MADV_DONTNEED can do
+that process_vm_writev() cannot do as well (putting aside ptrace).
+
+process_vm_writev() is checking:
+
+	mm =3D mm_access(task, PTRACE_MODE_ATTACH_REALCREDS)
+
+Wouldn't adding such a condition suffice?=
