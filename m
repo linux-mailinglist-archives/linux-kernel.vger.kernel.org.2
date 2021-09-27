@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00F44194AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D93D4194BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhI0NAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234360AbhI0NAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4CFD6103B;
-        Mon, 27 Sep 2021 12:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632747509;
-        bh=oswmBYCS56c1A9KQBHfr/N2KsORPP0gcw6VGA+01gjQ=;
+        id S234537AbhI0NBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:01:51 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:28823 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234525AbhI0NBu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:01:50 -0400
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 18RCxmY1008626;
+        Mon, 27 Sep 2021 21:59:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 18RCxmY1008626
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1632747588;
+        bh=FVRbPiKa9Q9U12bZidya5lMmin6Kd3S7T6He0P3mOBE=;
         h=From:To:Cc:Subject:Date:From;
-        b=byJp6TBwZwi6G+sFiUjraRb/MEzZ6qeImq1Pw8i+kMuetEZdbdVRf4zT+WPKGTAev
-         xQSfv/18IKtOPf21332cPN1y5QIAFPH2uGg/bdS52dKb5nNZZJ24TEP8GwWrrsDv8T
-         fRIQAs50KBcbZFzN2xwHXL9r0kWfrqfEtUKnIul2IxCp4Or4+85bnHuQnRi1e7JpT1
-         5moXs5IRGHSTBhrKeCM2+HaiX7ErVu+vpcDzZoQwYYmZsKy0O/GswCHyhEli0G06xc
-         3/EFhScMt7T6lbk70i0jB8Kqz1k7JPZV3nS3aeAgRrocM1/SYwJZArMT7U/8HHQ6B7
-         gikAgjt9VqNcA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chunming Zhou <david1.zhou@amd.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] drm/amdgpu: fix warning for overflow check
-Date:   Mon, 27 Sep 2021 14:58:10 +0200
-Message-Id: <20210927125824.1583474-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        b=IzOHqc+NE4a3ybS6O2tukVGGzNpiguMWddgxxQjxbI6u480DhTY5tgfIwmg0t+5gn
+         g94rJqImAeN2xU9f5VMW24FIrOh+Wnju5oZc6W+glBXqPf8KXdLnmsYPlBP02fBkye
+         wf9mfynJcHjhH/gBkqlXP5WCfRNHyQrlQLTmBYLRxOtmw4bRIXfkjJiCdmHd1rjKAF
+         k/U6sYau7tylbQO3Qk/tzt3W7Q8Dlspl4pIoGSBFypw5TGYGD6vQ41wjpD+zE6Bn0L
+         H4NvUx3XTT1c8SvQiKurjmc7Fu9BWC66nYD/5WXDOZOyq5Ia5AKYBESa/LGSP2jvYQ
+         XEVFk3c3Qn/kA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kconfig: remove 'const' from the return type of sym_escape_string()
+Date:   Mon, 27 Sep 2021 21:59:44 +0900
+Message-Id: <20210927125944.819010-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+sym_escape_string() returns a malloc'ed memory, so it must be freed
+when it is done.
 
-The overflow check in amdgpu_bo_list_create() causes a warning with
-clang-14 on 64-bit architectures, since the limit can never be
-exceeded.
+Currently, sym_escape_string() returns the malloc'ed memory as
+(const char *), then it is casted to (void *) when it is passed to
+free(). This is odd.
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of comparison of constant 256204778801521549 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
-            ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The return type of sym_escape_string() should be (char *).
 
-The check remains useful for 32-bit architectures, so just avoid the
-warning by using size_t as the type for the count.
-
-Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the list")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
-index 15c45b2a3983..714178f1b6c6 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
-@@ -61,7 +61,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
- 
- int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file *filp,
- 			  struct drm_amdgpu_bo_list_entry *info,
--			  unsigned num_entries, struct amdgpu_bo_list **result)
-+			  size_t num_entries, struct amdgpu_bo_list **result)
+ scripts/kconfig/conf.c      | 10 +++++-----
+ scripts/kconfig/confdata.c  |  8 ++++----
+ scripts/kconfig/lkc_proto.h |  2 +-
+ scripts/kconfig/symbol.c    |  3 ++-
+ 4 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
+index a6dad4a2e7a2..d8e1994bfed0 100644
+--- a/scripts/kconfig/conf.c
++++ b/scripts/kconfig/conf.c
+@@ -647,15 +647,15 @@ static void check_conf(struct menu *menu)
+ 		switch (input_mode) {
+ 		case listnewconfig:
+ 			if (sym->name) {
+-				const char *str;
+-
+ 				if (sym->type == S_STRING) {
++					char *str;
++
+ 					str = sym_escape_string(sym);
+ 					printf("%s%s=%s\n", CONFIG_, sym->name, str);
+-					free((void *)str);
++					free(str);
+ 				} else {
+-					str = sym_get_string_value(sym);
+-					printf("%s%s=%s\n", CONFIG_, sym->name, str);
++					printf("%s%s=%s\n", CONFIG_, sym->name,
++					       sym_get_string_value(sym));
+ 				}
+ 			}
+ 			break;
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index 4e053f2477f9..f7eac4beb128 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -728,7 +728,7 @@ static struct conf_printer header_printer_cb =
+ static void conf_write_symbol(FILE *fp, struct symbol *sym,
+ 			      struct conf_printer *printer, void *printer_arg)
  {
- 	unsigned last_entry = 0, first_userptr = num_entries;
- 	struct amdgpu_bo_list_entry *array;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
-index c905a4cfc173..044b41f0bfd9 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
-@@ -61,7 +61,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdgpu_bo_list_in *in,
- int amdgpu_bo_list_create(struct amdgpu_device *adev,
- 				 struct drm_file *filp,
- 				 struct drm_amdgpu_bo_list_entry *info,
--				 unsigned num_entries,
-+				 size_t num_entries,
- 				 struct amdgpu_bo_list **list);
+-	const char *str;
++	char *str;
  
- static inline struct amdgpu_bo_list_entry *
+ 	switch (sym->type) {
+ 	case S_UNKNOWN:
+@@ -736,11 +736,11 @@ static void conf_write_symbol(FILE *fp, struct symbol *sym,
+ 	case S_STRING:
+ 		str = sym_escape_string(sym);
+ 		printer->print_symbol(fp, sym, str, printer_arg);
+-		free((void *)str);
++		free(str);
+ 		break;
+ 	default:
+-		str = sym_get_string_value(sym);
+-		printer->print_symbol(fp, sym, str, printer_arg);
++		printer->print_symbol(fp, sym, sym_get_string_value(sym),
++				      printer_arg);
+ 	}
+ }
+ 
+diff --git a/scripts/kconfig/lkc_proto.h b/scripts/kconfig/lkc_proto.h
+index 035cc522808b..7ce4b666bba8 100644
+--- a/scripts/kconfig/lkc_proto.h
++++ b/scripts/kconfig/lkc_proto.h
+@@ -18,7 +18,7 @@ extern struct symbol * symbol_hash[SYMBOL_HASHSIZE];
+ 
+ struct symbol * sym_lookup(const char *name, int flags);
+ struct symbol * sym_find(const char *name);
+-const char * sym_escape_string(struct symbol *sym);
++char *sym_escape_string(struct symbol *sym);
+ struct symbol ** sym_re_search(const char *pattern);
+ const char * sym_type_name(enum symbol_type type);
+ void sym_calc_value(struct symbol *sym);
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 4a31bb943f79..57189a1ad797 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -871,7 +871,8 @@ struct symbol *sym_find(const char *name)
+ 	return symbol;
+ }
+ 
+-const char *sym_escape_string(struct symbol *sym)
++/* the returned pointer must be freed on the caller side */
++char *sym_escape_string(struct symbol *sym)
+ {
+ 	const char *in, *p;
+ 	size_t reslen;
 -- 
-2.29.2
+2.30.2
 
