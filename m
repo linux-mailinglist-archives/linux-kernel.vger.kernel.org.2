@@ -2,73 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6616D419E57
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB20B419E5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236245AbhI0SeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:34:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236012AbhI0SeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:34:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C229860E73
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 18:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632767549;
-        bh=Z3UO9nj32fEK6vQVolbZguKJlD1p5STFHKPBJv3KJQg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dZh2RYayA7LxaAeJOuCNwWxrMprjpDk4E9Kxod1a5ehMCtGSzGFFn/zWwN+GNCy35
-         8ylpMLg9jzIenrcNrPRVfv4X0E3dBiwkc7VM/WGT0NN6YRBGsRBwW3f2JoMl3VAupX
-         EaRSvl0aMT2PiD6pfkIA98057Cvdnz7ILruLZ/uG/+yDooq+N738+k3ljmf0ZoT9uI
-         46DTQdhYe91oiuBBO2sbTbqbsQErzpFyMQBSF4a7I2X80yDixbJnKuiahkzls/ggqh
-         44JsUn1Dxbia7XMStiw2IyOUsT1F3E8jn+5yW9RnPtHP4aYYC7KQzWddpn51GuOd74
-         sSMgU/z70KD9A==
-Received: by mail-wm1-f45.google.com with SMTP id j27so1290805wms.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:32:29 -0700 (PDT)
-X-Gm-Message-State: AOAM530jzT/43oIwuQZR4R97LbqHORNPCYtFc9+bSp3bkojJnxcgyUtC
-        E1gzUjOMJM3aQgrqBpjYo5xY49kz3+4FZnCJXow=
-X-Google-Smtp-Source: ABdhPJy81F3lD3pHEB3YQPHgcm0Zno3w7mltEvGPEoJki55dOCAfbC+vGxFRTJKJjSZmwgl481WWFreaqH8Z3nBcUo8=
-X-Received: by 2002:a1c:2357:: with SMTP id j84mr551126wmj.1.1632767548383;
- Mon, 27 Sep 2021 11:32:28 -0700 (PDT)
+        id S236270AbhI0SfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236205AbhI0SfB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 14:35:01 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE34C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:33:21 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id t10so81327859lfd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zBKO83J1C1DNn2R4raJlP58CTJ+u3r/ACscvA3njVnA=;
+        b=YbDQ5OpSuV6v9NSHnBKcDUKW4oeDmXF0NHBGuo3vHIF2Mp24W0VXIFsXRLwyniRIzR
+         aDTXrs5dla+qbA47Mgcez8/uDJZ7dJZZiKprKSFRNEPDPSMmKJT6hPFTaxWvgqSBizR+
+         VAPbppHwvThw+fFO74IZ68YspiGMMjy+yalYc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zBKO83J1C1DNn2R4raJlP58CTJ+u3r/ACscvA3njVnA=;
+        b=yqQlZFgCt3XcEgCZajOzw1EDTPzygHSatvktv42/lHjyRYKQtg6rE/Vt2qWaZpvEIt
+         MEwgVD9mrdXpK0LBatqVcqcTAssCw2vlmaSD1F2rxnPGym+necX4BLd9q5t3AI+FpBuM
+         TUDSfb++lUBu48BghGniNPzMcynJBlkMiWqHxkotfRZfRhsHRnrOchE8U8FI5ghSzWmT
+         nLkxeEoWO8Ib3ldM3vkKwZjNTgwRqvEcOtvXZ0Baz+Lw/THOJUPYluYWfbWbCjV3fJ9S
+         Q+Qqm3OMYZYc1PxstL5mJ+6puhLNmoFQ/I37f1/7mEby6oPkXTYKoYOks9bcvoDmK64V
+         i50A==
+X-Gm-Message-State: AOAM531ujikR/df4lRYpBc2g0UVqckDuabNLFwGCPCI4ssx39VZpeHzW
+        R9sPuPV4SRWUgCTUUNaTS8S1uWBiI9z1nWVTpgU=
+X-Google-Smtp-Source: ABdhPJzZsoeU/O9pcybrto/vxi7meoQjmLRPHGPAxeCixggRoTdD4PN1kmDtTGQEhagxDLzZOUOW0Q==
+X-Received: by 2002:a05:651c:1596:: with SMTP id h22mr1377403ljq.146.1632767599170;
+        Mon, 27 Sep 2021 11:33:19 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id 9sm1674040lfp.129.2021.09.27.11.33.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 11:33:17 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id i4so81230098lfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:33:16 -0700 (PDT)
+X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr1309663ljp.494.1632767596702;
+ Mon, 27 Sep 2021 11:33:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927125007.1581919-1-arnd@kernel.org> <YVHE1qclD6ZyjvvD@chrisdown.name>
- <20210927122138.56cb1d8e@oasis.local.home>
-In-Reply-To: <20210927122138.56cb1d8e@oasis.local.home>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 27 Sep 2021 20:32:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a264UGrqV648i3v_z_MciRO+eYN8f9RhJL9ksDuKVdAkg@mail.gmail.com>
-Message-ID: <CAK8P3a264UGrqV648i3v_z_MciRO+eYN8f9RhJL9ksDuKVdAkg@mail.gmail.com>
-Subject: Re: [PATCH] printk: avoid -Wsometimes-uninitialized warning
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Chris Down <chris@chrisdown.name>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jessica Yu <jeyu@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        John Ogness <john.ogness@linutronix.de>,
+References: <20210927094123.576521-1-arnd@kernel.org> <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
+ <20210927130253.GH2083@kadam> <CAK8P3a3YFh4QTC6dk6onsaKcqCM3Nmb2JhMXK5QdZpHtffjyLg@mail.gmail.com>
+In-Reply-To: <CAK8P3a3YFh4QTC6dk6onsaKcqCM3Nmb2JhMXK5QdZpHtffjyLg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 27 Sep 2021 11:33:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wheEHQxdSJgTkt7y4yFjzhWxMxE-p7dKLtQSBs4ceHLmw@mail.gmail.com>
+Message-ID: <CAHk-=wheEHQxdSJgTkt7y4yFjzhWxMxE-p7dKLtQSBs4ceHLmw@mail.gmail.com>
+Subject: Re: [PATCH] vboxsf: fix old signature detection
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        YueHaibing <yuehaibing@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="0000000000009a84d405ccfe541b"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 6:21 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon, 27 Sep 2021 14:19:18 +0100
-> Chris Down <chris@chrisdown.name> wrote:
->
-> > Having IS_ENABLED and then an #ifdef seems to hurt code readability to me.
->
-> I agree.
->
-> Would this be a better solution?
+--0000000000009a84d405ccfe541b
+Content-Type: text/plain; charset="UTF-8"
 
-Sounds good, I'll follow up with that version after the next round of randconfig
-builds.
+On Mon, Sep 27, 2021 at 6:22 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> More specifically, ' think '\377' may be either -1 or 255 depending on
+> the architecture.
+> On most architectures, 'char' is implicitly signed, but on some others
+> it is not.
 
-Thanks,
+Yeah. That code is just broken.
 
-      Arnd
+And Arnd, your patch may be "conceptually minimal", in that it keeps
+thed broken code and makes it work. But it just dials up the oddity to
+11.
+
+The proper patch is just this appended thing that stops playing silly
+games, and just uses "memcmp()".
+
+I've verified that with sane build configurations, it just generates
+
+        testq   %rsi, %rsi
+        je      .L25
+        cmpl    $-33620224, (%rsi)
+        je      .L31
+
+for that
+
+        if (data && !memcmp(data, VBSF_MOUNT_SIGNATURE, 4)) {
+
+test. With a lot of crazy debug options you'll actually see the
+"memcmp()", but the bad code generation is the least of your options
+in that case.
+
+               Linus
+
+--0000000000009a84d405ccfe541b
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ku2z8brl0>
+X-Attachment-Id: f_ku2z8brl0
+
+IGZzL3Zib3hzZi9zdXBlci5jIHwgMTIgKystLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy92Ym94c2Yvc3Vw
+ZXIuYyBiL2ZzL3Zib3hzZi9zdXBlci5jCmluZGV4IDRmNWU1OWYwNjI4NC4uMzdkZDNmZTViMWU5
+IDEwMDY0NAotLS0gYS9mcy92Ym94c2Yvc3VwZXIuYworKysgYi9mcy92Ym94c2Yvc3VwZXIuYwpA
+QCAtMjEsMTAgKzIxLDcgQEAKIAogI2RlZmluZSBWQk9YU0ZfU1VQRVJfTUFHSUMgMHg3ODZmNDI1
+NiAvKiAnVkJveCcgbGl0dGxlIGVuZGlhbiAqLwogCi0jZGVmaW5lIFZCU0ZfTU9VTlRfU0lHTkFU
+VVJFX0JZVEVfMCAoJ1wwMDAnKQotI2RlZmluZSBWQlNGX01PVU5UX1NJR05BVFVSRV9CWVRFXzEg
+KCdcMzc3JykKLSNkZWZpbmUgVkJTRl9NT1VOVF9TSUdOQVRVUkVfQllURV8yICgnXDM3NicpCi0j
+ZGVmaW5lIFZCU0ZfTU9VTlRfU0lHTkFUVVJFX0JZVEVfMyAoJ1wzNzUnKQorc3RhdGljIGNvbnN0
+IHVuc2lnbmVkIGNoYXIgVkJTRl9NT1VOVF9TSUdOQVRVUkVbNF0gPSAiXDAwMFwzNzdcMzc2XDM3
+NSI7CiAKIHN0YXRpYyBpbnQgZm9sbG93X3N5bWxpbmtzOwogbW9kdWxlX3BhcmFtKGZvbGxvd19z
+eW1saW5rcywgaW50LCAwNDQ0KTsKQEAgLTM4NiwxMiArMzgzLDcgQEAgc3RhdGljIGludCB2Ym94
+c2Zfc2V0dXAodm9pZCkKIAogc3RhdGljIGludCB2Ym94c2ZfcGFyc2VfbW9ub2xpdGhpYyhzdHJ1
+Y3QgZnNfY29udGV4dCAqZmMsIHZvaWQgKmRhdGEpCiB7Ci0JdW5zaWduZWQgY2hhciAqb3B0aW9u
+cyA9IGRhdGE7Ci0KLQlpZiAob3B0aW9ucyAmJiBvcHRpb25zWzBdID09IFZCU0ZfTU9VTlRfU0lH
+TkFUVVJFX0JZVEVfMCAmJgotCQkgICAgICAgb3B0aW9uc1sxXSA9PSBWQlNGX01PVU5UX1NJR05B
+VFVSRV9CWVRFXzEgJiYKLQkJICAgICAgIG9wdGlvbnNbMl0gPT0gVkJTRl9NT1VOVF9TSUdOQVRV
+UkVfQllURV8yICYmCi0JCSAgICAgICBvcHRpb25zWzNdID09IFZCU0ZfTU9VTlRfU0lHTkFUVVJF
+X0JZVEVfMykgeworCWlmIChkYXRhICYmICFtZW1jbXAoZGF0YSwgVkJTRl9NT1VOVF9TSUdOQVRV
+UkUsIDQpKSB7CiAJCXZiZ19lcnIoInZib3hzZjogT2xkIGJpbmFyeSBtb3VudCBkYXRhIG5vdCBz
+dXBwb3J0ZWQsIHJlbW92ZSBvYnNvbGV0ZSBtb3VudC52Ym94c2YgYW5kL29yIHVwZGF0ZSB5b3Vy
+IFZCb3hTZXJ2aWNlLlxuIik7CiAJCXJldHVybiAtRUlOVkFMOwogCX0K
+--0000000000009a84d405ccfe541b--
