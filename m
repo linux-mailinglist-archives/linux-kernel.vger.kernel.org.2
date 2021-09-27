@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E63141905C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1770841905A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233390AbhI0IFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:05:33 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:34735 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhI0IF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:05:27 -0400
-X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Sep 2021 04:05:26 EDT
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHw4L48sPz4xbQ;
-        Mon, 27 Sep 2021 17:58:26 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1632729514;
-        bh=E4BdjuVETK7euJtsU6o5OD1pMsd5uiT5C7A+uie8WFk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=W7rpJofgDBEYaP+1zJGCdVI3wAm69ZkvJEk2KKHvxhD9+4oUEKLMFttM7ARh+kukC
-         59GMnNOKcnBYNDMwNPPNu6svOTrd5BZYIQHNwO/WF5vsjt8YhcJDi5XTw6BlQuOuoK
-         Xt+faEsSD/PcD6855I1e64lfION8fCvEIC/64XGRgWE++SIMSl2ccsnjEZf/17lUkq
-         XbPUkkAgEWthTz/dW+9HlcXvAPV90tmLhxYvDPDcBOXEpgVOVkyT4fAwKpJlR+tAZ3
-         IdIWUpuLeiX9U0dsGB6EPhJBtuFcEjLU11jQhpafaQVGZCP+8iOJhvMZsZiXjJIQdK
-         T/OuEOSFokLWw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Wolfram Sang <wsa@kernel.org>, Sven Peter <sven@svenpeter.dev>
-Cc:     Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        id S233363AbhI0IFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:05:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:42913 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233273AbhI0IFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 04:05:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="204582783"
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="204582783"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 01:03:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="615681714"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 27 Sep 2021 01:03:36 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 27 Sep 2021 11:03:35 +0300
+Date:   Mon, 27 Sep 2021 11:03:35 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Hector Martin <marcan@marcan.st>,
-        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        Matthew Leaman <matthew@a-eon.biz>,
-        "R.T.Dickinson" <rtd@a-eon.com>
-Subject: Re: Add Apple M1 support to PASemi i2c driver
-In-Reply-To: <YVFtrpxfUbzv4XxT@shikoro>
-References: <6487d099-e0d6-4ea3-d312-6adbd94589f4@xenosoft.de>
- <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
- <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
- <YVFtrpxfUbzv4XxT@shikoro>
-Date:   Mon, 27 Sep 2021 17:58:25 +1000
-Message-ID: <87mtnylaam.fsf@mpe.ellerman.id.au>
+        Alexander Graf <graf@amazon.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: Re: [PATCH v2 4/6] usb: typec: tipd: Add support for Apple CD321X
+Message-ID: <YVF616Ga8jf2tWYJ@kuha.fi.intel.com>
+References: <20210923181321.3044-1-sven@svenpeter.dev>
+ <20210923181321.3044-5-sven@svenpeter.dev>
+ <YU3jtIvYOk/IHUWn@kuha.fi.intel.com>
+ <41c29255-ba7b-4385-9637-0cef8ecb4be1@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41c29255-ba7b-4385-9637-0cef8ecb4be1@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wolfram Sang <wsa@kernel.org> writes:
->> Sure, will do that later as well!
->
-> But please do it privately. For upstreaming, the patch series you sent
-> is way better than a single patch.
+Hi Sven,
 
-Christian, the whole series is downloadable as a single mbox here:
+On Fri, Sep 24, 2021 at 04:58:52PM +0200, Sven Peter wrote:
+> > Couldn't you just use the compatible property and local variable here?
+> >
+> >         irq_handler_t irq_handler = tps6598x_interrupt;
+> >         struct device_node *np = client->dev.of_node;
+> >
+> >         if (np && of_device_is_compatible(np, "apple,cd321x")) {
+> >                 /* CD321X chips have all interrupts masked initially */
+> >                 ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+> >                                         APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+> >                                         APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+> >                                         APPLE_CD_REG_INT_PLUG_EVENT);
+> >                 if (ret)
+> >                         return ret;
+> >
+> >                 irq_handler = cd321x_interrupt;
+> >         }
+> >
+> > 	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+> > 					irq_handler,
+> > 					IRQF_SHARED | IRQF_ONESHOT,
+> > 					dev_name(&client->dev), tps);
+> >
+> > I did not go over the whole series yet, so I may have missed
+> > something.
+> 
+> Sure, that will work and get rid of the slightly awkward and redundant interrupt/enum
+> combination. I'll wait for your comments for the rest of the series and do that for v3 then :)
 
-https://patchwork.ozlabs.org/series/264134/mbox/
+The rest of the series look OK to me.
 
-Save that to a file and apply with `git am`.
+thanks,
 
-eg:
-
- $ wget -O mbox https://patchwork.ozlabs.org/series/264134/mbox/
- $ git am mbox
-
-It applies cleanly on v5.15-rc3.
-
-cheers
+-- 
+heikki
