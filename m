@@ -2,126 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A24B41912E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7290B419134
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhI0I5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
+        id S233582AbhI0JAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:00:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230439AbhI0I5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:57:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEB7F610A2;
-        Mon, 27 Sep 2021 08:55:56 +0000 (UTC)
+        id S233519AbhI0JAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 150E960F24;
+        Mon, 27 Sep 2021 08:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632732957;
-        bh=nrxjUxZtkcxViJRTZLEt1C/yAc4qv3EH0uskY/IdXCg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UaCXWGROPjZ8fP0jsYOI0hmUwEFFtlPubWjS4ZTnTuvcMv/3K1rEKM8+6eG0T6ZUJ
-         IZpVUAC4Q1ScrMKHG6xixMWtnPy/FPtDmnTlZC+GkD5qI6cg/W++1pBhjBfCtIIR76
-         L6tFdHP996CnwJTSPjDxShKDyQqiTqOx62nLEPS1oAu34UnU31IDSBUHty+gCckWVv
-         F+lNLOf81eWZFvBE8zV7HmS0zk8WLt3xUisYKQ7pWQwEQdbI+8AxFjA5xGjkqQwam5
-         kRqLIWMdsq2pkcs+rtB8TgDdjJPU3y8xQNoAsbpewUzAFhPtU6Uba76tdLKezeoGC4
-         +hNViiMqfLhLg==
-Date:   Mon, 27 Sep 2021 10:55:53 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/8] (REBASED) get_abi.pl undefined: improve precision
- and performance
-Message-ID: <20210927105553.105f22c5@coco.lan>
-In-Reply-To: <YUy1oPjdLTh9rEfq@kroah.com>
-References: <YUyICHTRdfL8Ul7X@kroah.com>
- <cover.1632411447.git.mchehab+huawei@kernel.org>
- <YUy1oPjdLTh9rEfq@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        s=k20201202; t=1632733139;
+        bh=2cr9DQzqdSZbGaYqRWHzcqDvTP+iY0z0NEltArLDvX8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WzhHmhc9Ny6DZ39mO5xvBFFl2s1OgfZNbCw85ofuKZZxVPwfKSYZh95lwivr42PnK
+         aeUwf/wmb6Gt6ky+uqsPwOcLyG5l63alV3cXezfFu5MT7UNxGKQZ/vWHZhvak3MzWq
+         wdl40SSEf4NyeREtTjs387OCaGA0k2YKlxZUKL973uT+Iiv88VGCHjsCby++r43VNs
+         MMVOVCNzHh4kFfFu8ClNw6BgD/0UFUECNpKpwl2hL/L7IYZ1pwdTyI9PoZHm4mDSNy
+         4QfnStXHUs60yreM/EXx1BtOJfOgSJoKgxUvsNNTWIgAuOME6iUR/qxYvdEVOVF+WB
+         rLYQOAhFZRt+g==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mUmTR-0003kI-Hj; Mon, 27 Sep 2021 10:58:57 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Malte Di Donato <malte@neo-soft.org>
+Subject: [PATCH stable-5.14] USB: serial: cp210x: fix dropped characters with CP2102
+Date:   Mon, 27 Sep 2021 10:58:19 +0200
+Message-Id: <20210927085819.14346-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 23 Sep 2021 19:13:04 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+commit c32dfec6c1c36bbbcd5d33e949d99aeb215877ec upstream.
 
-> On Thu, Sep 23, 2021 at 05:41:11PM +0200, Mauro Carvalho Chehab wrote:
-> > Hi Greg,
-> > 
-> > As requested, this is exactly the same changes, rebased on the top of
-> > driver-core/driver-core-next.
-> > 
-> > -
-> > 
-> > It follows a series of improvements for get_abi.pl. it is on the top of driver-core/driver-core-next.
-> > 
-> > With such changes, on my development tree, the script is taking 6 seconds to run 
-> > on my desktop:
-> > 
-> > 	$ !1076
-> > 	$ time ./scripts/get_abi.pl undefined |sort >undefined_after && cat undefined_after| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined_after undefined_symbols
-> > 
-> > 	real	0m6,292s
-> > 	user	0m5,640s
-> > 	sys	0m0,634s
-> > 	  6838 undefined_after
-> > 	   808 undefined_symbols
-> > 	  7646 total
-> > 
-> > And 7 seconds on a Dell Precision 5820:
-> > 
-> > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
-> > 
-> > 	real	0m7.162s
-> > 	user	0m5.836s
-> > 	sys	0m1.329s
-> > 	6548 undefined
-> > 	772 undefined_symbols
-> > 
-> > Both tests were done against this tree (based on today's linux-next):
-> > 
-> > 	$ https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_abi_undefined-latest
-> > 
-> > It should be noticed that, as my tree has several ABI fixes,  the time to run the
-> > script is likely less than if you run on your tree, as there will be less symbols to
-> > be reported, and the algorithm is optimized to reduce the number of regexes
-> > when a symbol is found.
-> > 
-> > Besides optimizing and improving the seek logic, this series also change the
-> > debug logic. It how receives a bitmap, where "8" means to print the regexes
-> > that will be used by "undefined" command:
-> > 
-> > 	$ time ./scripts/get_abi.pl undefined --debug 8 >foo
-> > 	real	0m17,189s
-> > 	user	0m13,940s
-> > 	sys	0m2,404s
-> > 
-> > 	$wc -l foo
-> > 	18421939 foo
-> > 
-> > 	$ cat foo
-> > 	...
-> > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_voltage.*_scale_available$)$/
-> > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_voltage.*_scale_available$)$/
-> > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_altvoltage.*_scale_available$)$/
-> > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_pressure.*_scale_available$)$/
-> > 	...
-> > 
-> > On other words, on my desktop, the /sys match is performing >18M regular 
-> > expression searches, which takes 6,2 seconds (or 17,2 seconds, if debug is 
-> > enabled and sent to an area on my nvme storage).  
-> 
-> Better, it's down to 10 minutes on my machine now:
-> 
-> 	real	10m39.218s
-> 	user	10m37.742s
-> 	sys	0m0.775s
+Some CP2102 do not support event-insertion mode but return no error when
+attempting to enable it.
 
-A lot better, but not clear why it is still taking ~40x more than here...
-It could well be due to the other ABI changes yet to be applied
-(I'll submit it probably later today), but it could also be related to
-something else. Could this be due to disk writes?
+This means that any event escape characters in the input stream will not
+be escaped by the device and consequently regular data may be
+interpreted as escape sequences and be removed from the stream by the
+driver.
 
-Thanks,
-Mauro
+The reporter's device has batch number DCL00X etched into it and as
+discovered by the SHA2017 Badge team, counterfeit devices with that
+marking can be detected by sending malformed vendor requests. [1][2]
+
+Tests confirm that the possibly counterfeit CP2102 returns a single byte
+in response to a malformed two-byte part-number request, while an
+original CP2102 returns two bytes. Assume that every CP2102 that behaves
+this way also does not support event-insertion mode (e.g. cannot report
+parity errors).
+
+[1] https://mobile.twitter.com/sha2017badge/status/1167902087289532418
+[2] https://hackaday.com/2017/08/14/hands-on-with-the-shacamp-2017-badge/#comment-3903376
+
+Reported-by: Malte Di Donato <malte@neo-soft.org>
+Tested-by: Malte Di Donato <malte@neo-soft.org>
+Fixes: a7207e9835a4 ("USB: serial: cp210x: add support for line-status events")
+Link: https://lore.kernel.org/r/20210922113100.20888-1-johan@kernel.org
+Cc: stable@vger.kernel.org	# 5.9
+Signed-off-by: Johan Hovold <johan@kernel.org>
+[ johan: backport to 5.14; adjust context ]
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/serial/cp210x.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index d48bed5782a5..8ae3dca0384a 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -258,6 +258,7 @@ struct cp210x_serial_private {
+ 	speed_t			max_speed;
+ 	bool			use_actual_rate;
+ 	bool			no_flow_control;
++	bool			no_event_mode;
+ };
+ 
+ enum cp210x_event_state {
+@@ -1112,12 +1113,16 @@ static void cp210x_change_speed(struct tty_struct *tty,
+ 
+ static void cp210x_enable_event_mode(struct usb_serial_port *port)
+ {
++	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
+ 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
+ 	int ret;
+ 
+ 	if (port_priv->event_mode)
+ 		return;
+ 
++	if (priv->no_event_mode)
++		return;
++
+ 	port_priv->event_state = ES_DATA;
+ 	port_priv->event_mode = true;
+ 
+@@ -2097,6 +2102,33 @@ static void cp210x_init_max_speed(struct usb_serial *serial)
+ 	priv->use_actual_rate = use_actual_rate;
+ }
+ 
++static void cp2102_determine_quirks(struct usb_serial *serial)
++{
++	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
++	u8 *buf;
++	int ret;
++
++	buf = kmalloc(2, GFP_KERNEL);
++	if (!buf)
++		return;
++	/*
++	 * Some (possibly counterfeit) CP2102 do not support event-insertion
++	 * mode and respond differently to malformed vendor requests.
++	 * Specifically, they return one instead of two bytes when sent a
++	 * two-byte part-number request.
++	 */
++	ret = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
++			CP210X_VENDOR_SPECIFIC, REQTYPE_DEVICE_TO_HOST,
++			CP210X_GET_PARTNUM, 0, buf, 2, USB_CTRL_GET_TIMEOUT);
++	if (ret == 1) {
++		dev_dbg(&serial->interface->dev,
++				"device does not support event-insertion mode\n");
++		priv->no_event_mode = true;
++	}
++
++	kfree(buf);
++}
++
+ static int cp210x_get_fw_version(struct usb_serial *serial, u16 value)
+ {
+ 	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
+@@ -2122,6 +2154,9 @@ static void cp210x_determine_quirks(struct usb_serial *serial)
+ 	int ret;
+ 
+ 	switch (priv->partnum) {
++	case CP210X_PARTNUM_CP2102:
++		cp2102_determine_quirks(serial);
++		break;
+ 	case CP210X_PARTNUM_CP2102N_QFN28:
+ 	case CP210X_PARTNUM_CP2102N_QFN24:
+ 	case CP210X_PARTNUM_CP2102N_QFN20:
+-- 
+2.32.0
+
