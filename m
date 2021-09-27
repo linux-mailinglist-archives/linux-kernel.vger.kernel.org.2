@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5888B4198C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795714198C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235396AbhI0QUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235261AbhI0QUJ (ORCPT
+        id S235422AbhI0QWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:22:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39550 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235341AbhI0QWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:20:09 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FBFC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=tVUt3TAV0cnSNDb1U3rYMT5oXqvjnjjFc0XzMOKFYYI=; b=gII3j0/LnQ57thWtaj4Qowv/MD
-        XCcmnYumJ0AwHGR/BrEE5AQEzRmynfA6/MtavGCa8P5dEixsCzGvHo4DCpj1QNe8v2DRUrIxgZfwk
-        0EqLs5V+N6bQfydb8Y0r05ZoNKn05irWXteoolS1TJxSZhMSFheYHgbyUo4d/rX6ToJrxT5H/hycV
-        yDtR7SqjuHhjTafOwUilTlZAQZMRF4Owf0fLctcqPxR/IjMyiP4CqRFh24y2EX0Y2mvEm8Gjsu4kX
-        wBeWMzhiPkSNpMXdtTmBF+Tya7Q0LUGe1JGltQULMohC/iaXbTgX/IQ+LaLSo3SE06YBm7NqsHHAP
-        NihbyjSQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUtKm-003LWM-BC; Mon, 27 Sep 2021 16:18:28 +0000
-Subject: Re: [PATCH] drm/edid: Fix drm_edid_encode_panel_id() kerneldoc
- warning
-To:     Douglas Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-References: <20210927074104.1.Ibf22f2a0b75287a5d636c0570c11498648bf61c6@changeid>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dce21497-0c59-db81-8720-2549661105e1@infradead.org>
-Date:   Mon, 27 Sep 2021 09:18:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 27 Sep 2021 12:22:40 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B1E5520174;
+        Mon, 27 Sep 2021 16:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632759661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=OhdVD9gOAiEfK7wpJLmapbTk6U8empUyrJJ+9sKjxDc=;
+        b=UE0ndxT/7SMUQi2S12WiU1L8o3vezLNsivOroJUx3J6QMJZLqypB8enMbr/LXtEAwGfFAK
+        NzJ4YnTh1xfRrxWsdPLZurdMg5t7WZFYMs4KALj0b0mNHEFMJXFyVTgeZZs4VR5x0dP06T
+        Q0cDAVQEP9WHufbko8M+3o9EQbDZ9BY=
+Received: from g78.suse.de (unknown [10.163.24.38])
+        by relay1.suse.de (Postfix) with ESMTP id A3FD825D3E;
+        Mon, 27 Sep 2021 16:20:58 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     x86@kernel.org
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, rpalethorpe@richiejp.com,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        ltp@lists.linux.it
+Subject: [PATCH] x86/entry/ia32: Ensure s32 is sign extended to s64
+Date:   Mon, 27 Sep 2021 17:19:55 +0100
+Message-Id: <20210927161955.28494-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210927074104.1.Ibf22f2a0b75287a5d636c0570c11498648bf61c6@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 7:41 AM, Douglas Anderson wrote:
-> Due to a simple typo (apparently I can't count. It goes 0, 1, 2 and
-> not 0, 2, 3) we were getting a kernel doc warning that looked like
-> this:
-> 
-> include/drm/drm_edid.h:530: warning:
->    Function parameter or member 'vend_chr_1' not described in 'drm_edid_encode_panel_id'
-> include/drm/drm_edid.h:530: warning:
->    Excess function parameter 'vend_chr_3' description in 'drm_edid_encode_panel_id'
-> 
-> Fix it.
-> 
-> Fixes: 7d1be0a09fa6 ("drm/edid: Fix EDID quirk compile error on older compilers")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Presently ia32 registers stored in ptregs are unconditionally cast to
+unsigned int by the ia32 stub. They are then cast to long when passed
+to __se_sys*, but will not be sign extended.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+This takes the sign of the syscall argument into account in the ia32
+stub. It still casts to unsigned int to avoid implementation specific
+behavior. However then casts to int or unsigned int as necessary. So
+that the following cast to long sign extends the value.
 
-Thanks.
+This fixes the io_pgetevents02 LTP test when compiled with
+-m32. Presently the systemcall io_pgetevents_time64 unexpectedly
+accepts -1 for the maximum number of events. It doesn't appear other
+systemcalls with signed arguments are effected because they all have
+compat variants defined and wired up. A less general solution is to
+wire up the systemcall:
+https://lore.kernel.org/ltp/20210921130127.24131-1-rpalethorpe@suse.com/
 
-> ---
-> 
->   include/drm/drm_edid.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index 4d17cd04fff7..18f6c700f6d0 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -511,8 +511,8 @@ static inline u8 drm_eld_get_conn_type(const uint8_t *eld)
->   /**
->    * drm_edid_encode_panel_id - Encode an ID for matching against drm_edid_get_panel_id()
->    * @vend_chr_0: First character of the vendor string.
-> - * @vend_chr_2: Second character of the vendor string.
-> - * @vend_chr_3: Third character of the vendor string.
-> + * @vend_chr_1: Second character of the vendor string.
-> + * @vend_chr_2: Third character of the vendor string.
->    * @product_id: The 16-bit product ID.
->    *
->    * This is a macro so that it can be calculated at compile time and used
-> 
+Fixes: ebeb8c82ffaf ("syscalls/x86: Use 'struct pt_regs' based syscall calling for IA32_EMULATION and x32")
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/s390/include/asm/syscall_wrapper.h |  2 --
+ arch/x86/include/asm/syscall_wrapper.h  | 25 +++++++++++++++++++++----
+ include/linux/syscalls.h                |  1 +
+ 3 files changed, 22 insertions(+), 6 deletions(-)
 
-
+diff --git a/arch/s390/include/asm/syscall_wrapper.h b/arch/s390/include/asm/syscall_wrapper.h
+index ad2c996e7e93..25ab58b0ded1 100644
+--- a/arch/s390/include/asm/syscall_wrapper.h
++++ b/arch/s390/include/asm/syscall_wrapper.h
+@@ -7,8 +7,6 @@
+ #ifndef _ASM_S390_SYSCALL_WRAPPER_H
+ #define _ASM_S390_SYSCALL_WRAPPER_H
+ 
+-#define __SC_TYPE(t, a) t
+-
+ #define SYSCALL_PT_ARG6(regs, m, t1, t2, t3, t4, t5, t6)\
+ 	SYSCALL_PT_ARG5(regs, m, t1, t2, t3, t4, t5),	\
+ 		m(t6, (regs->gprs[7]))
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index 6a2827d0681f..811139a82b13 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -58,12 +58,29 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 		,,regs->di,,regs->si,,regs->dx				\
+ 		,,regs->r10,,regs->r8,,regs->r9)			\
+ 
++
++/* SYSCALL_PT_ARGS is Adapted from s390x */
++#define SYSCALL_PT_ARG6(m, t1, t2, t3, t4, t5, t6)			\
++	SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5), m(t6, (regs->bp))
++#define SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5)				\
++	SYSCALL_PT_ARG4(m, t1, t2, t3, t4),  m(t5, (regs->di))
++#define SYSCALL_PT_ARG4(m, t1, t2, t3, t4)				\
++	SYSCALL_PT_ARG3(m, t1, t2, t3),  m(t4, (regs->si))
++#define SYSCALL_PT_ARG3(m, t1, t2, t3)					\
++	SYSCALL_PT_ARG2(m, t1, t2), m(t3, (regs->dx))
++#define SYSCALL_PT_ARG2(m, t1, t2)					\
++	SYSCALL_PT_ARG1(m, t1), m(t2, (regs->cx))
++#define SYSCALL_PT_ARG1(m, t1) m(t1, (regs->bx))
++#define SYSCALL_PT_ARGS(x, ...) SYSCALL_PT_ARG##x(__VA_ARGS__)
++
++#define __SC_COMPAT_CAST(t, a)						\
++	(__typeof(__builtin_choose_expr(__TYPE_IS_L(t), 0, 0U)))	\
++	(unsigned int)a
++
+ /* Mapping of registers to parameters for syscalls on i386 */
+ #define SC_IA32_REGS_TO_ARGS(x, ...)					\
+-	__MAP(x,__SC_ARGS						\
+-	      ,,(unsigned int)regs->bx,,(unsigned int)regs->cx		\
+-	      ,,(unsigned int)regs->dx,,(unsigned int)regs->si		\
+-	      ,,(unsigned int)regs->di,,(unsigned int)regs->bp)
++	SYSCALL_PT_ARGS(x, __SC_COMPAT_CAST,				\
++			__MAP(x, __SC_TYPE, __VA_ARGS__))		\
+ 
+ #define __SYS_STUB0(abi, name)						\
+ 	long __##abi##_##name(const struct pt_regs *regs);		\
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 69c9a7010081..a492276a11f1 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -122,6 +122,7 @@ enum landlock_rule_type;
+ #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
+ #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
+ #define __SC_CAST(t, a)	(__force t) a
++#define __SC_TYPE(t, a)	t
+ #define __SC_ARGS(t, a)	a
+ #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
+ 
 -- 
-~Randy
+2.31.1
+
