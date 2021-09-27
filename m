@@ -2,108 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83860419434
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6CA419439
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhI0M3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbhI0M33 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:29:29 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0810C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:27:51 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so24151876otb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=elnv/dvTCghhthSbzUFQClfuNaZTFLaDjWJp6GbnFH4=;
-        b=XwYTs8G9luBiF4vsPYyk3cifUaOLLBwCUmzHsdH+fgZBRzy0bwqFSonEbSwuNs7R4S
-         KLAi4gvWpA2aSixcCYQVH2wQPM/KEh8i7Uk9v1jfk+sjRPftQnJN8/wNxE1iN3QL0+oz
-         rlTs5ka14QkhiIFFH/pdp04AmzLx+8oKn0TU7t3jLTnaOnT9AnwTD6xAVH0YfyWU2mUr
-         McdEmwsypSuxPMb9qmMO2KhxLbqRF45Ve2Rm6wdZPtBao6Bwapd0OQiMuxVdR1e6BD2S
-         8tQnVPyqOK1g9EW1Kmnri1XipN9eLeXL93GpI/HrPX6Oz7hMtf1zYCTBwZBqYwMpUfTz
-         fdag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=elnv/dvTCghhthSbzUFQClfuNaZTFLaDjWJp6GbnFH4=;
-        b=f0bqi/D1V0clEmLIfSKOQ8094wGDeZku+cOHbaNODMHN9XlqmYrmFx4YH2lmDVfZ5A
-         CQCEU4kUwlxWuQO35R1wevnvAo+Sc+DJv9SnzwSlnMIIpSH02v75Ps8wRnzfAJ4jU64J
-         GvWjzgltLGL/R6prwW12bGAc1GKbtOQ+4Imv4lwk5V5olAbUuPsXPNdyadt8r4sYVDLC
-         zXxgGL6DmoUMeOW173d/jDQ1tAWj5XbP99eFILGEPGOnd8WUQHARFknQGQL69Ft/7rrV
-         l+ywmvZt8DftC4wI+TSuvutQ9sH86X7na1oSHbG5dwmq3H2w39Sa02HApWyxwxxwJpzb
-         txnw==
-X-Gm-Message-State: AOAM532QjS8x7+hgc1o9vtS6y1X1yJc4tjUBdHdsE09AVgliYnBzm0x1
-        H9VuhIq2moKxp1RHiYrEf0VccygG0t/T1n/5UwPZ3A==
-X-Google-Smtp-Source: ABdhPJzUSC0PeN/rD5ocMlf3qwuqtGW85Qw5ho+qhTvuZwkYwEj7f5Ye5RSeUkEgsyVpltrRqtjYcV8B9gh5mMZQGus=
-X-Received: by 2002:a9d:135:: with SMTP id 50mr16747038otu.295.1632745670769;
- Mon, 27 Sep 2021 05:27:50 -0700 (PDT)
+        id S234346AbhI0MaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:30:14 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45424 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234336AbhI0MaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:30:13 -0400
+Received: from zn.tnic (p200300ec2f088a003e7a3db711c29d58.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:3e7a:3db7:11c2:9d58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56BAE1EC034B;
+        Mon, 27 Sep 2021 14:28:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632745710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SgaMeX7xObXmRf9caHAL7p62gvmW25yv2YUmegEBHNg=;
+        b=kKFoLugjA8HL+d62mLUdykCnB7hVZ5dch+yOqKvYIIwcHOjsD3qZc/XZ6lKmDwc2Tf6x+e
+        Xdi9Sl0kUJU3F+HRn4CU/aGMsblGw9S1+aLc6wEeszbliWmM50gJXGVVdG+jWD6uint2T7
+        b3Om/PysATOfZ82wHiYxkvMijyE80gM=
+Date:   Mon, 27 Sep 2021 14:28:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Babu Moger <babu.moger@amd.com>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
+        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
+Message-ID: <YVG46L++WPBAHxQv@zn.tnic>
+References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
+ <YVGkDPbQmdwSw6Ff@zn.tnic>
+ <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
+ <YVGz0HXe+WNAXfdF@zn.tnic>
+ <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
 MIME-Version: 1.0
-References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
- <20210926223322.848641-4-isabellabdoamaral@usp.br> <CANpmjNN4z9YsD=KjGjgdXsQbKD68RGh5bu-AEX6FeryZ2GdXCQ@mail.gmail.com>
- <CAAniXFQv6r+dmVYc9e-MuJxLqDoyayFLfBZw0FqW3hP7+RQXjg@mail.gmail.com>
-In-Reply-To: <CAAniXFQv6r+dmVYc9e-MuJxLqDoyayFLfBZw0FqW3hP7+RQXjg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 27 Sep 2021 14:27:39 +0200
-Message-ID: <CANpmjNP6eZqQ8c+E5EsWdBSW-Q85FeJEu6gc7Puqro3igOXmWg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] test_hash.c: split test_hash_init
-To:     Isabella B do Amaral <isabellabdoamaral@usp.br>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Enzo Ferreira <ferreiraenzoa@gmail.com>,
-        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
-        <augusto.duraes33@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        ~lkcamp/patches@lists.sr.ht,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 14:03, Isabella B do Amaral
-<isabellabdoamaral@usp.br> wrote:
->
-> Hi, Marco,
->
-> On Mon, Sep 27, 2021 at 5:17 AM Marco Elver <elver@google.com> wrote:
-> >
-> > On Mon, 27 Sept 2021 at 00:33, 'Isabella Basso' via KUnit Development
-> > <kunit-dev@googlegroups.com> wrote:
-> > >
-> > > Split up test_hash_init so that it calls each test more explicitly
-> > > insofar it is possible without rewriting the entire file. This aims at
-> > > improving readability.
-> > >
-> > > Split tests performed on string_or as they don't interfere with those
-> > > performed in hash_or. Also separate pr_info calls about skipped tests as
-> > > they're not part of the tests themselves, but only warn about
-> > > (un)defined arch-specific hash functions.
-> > >
-> > > Changes since v1:
-> > > - As suggested by David Gow:
-> > >   1. Rename arch-specific test functions.
-> > >   2. Remove spare whitespace changes.
-> > > - As suggested by Marco Elver:
-> > >   1. Add struct for carrying test variables.
-> >
-> > Did the patches get mixed up? The struct doesn't appear to be introduced here.
->
-> Yeah, thanks for the heads up! I must have mixed the messages when rebasing.
-> Sorry about that. The struct was actually introduced in patch 2/5. Do
-> you want to
-> have a look at it or should I send the v3 with the correct message before that?
+On Mon, Sep 27, 2021 at 02:14:52PM +0200, Paolo Bonzini wrote:
+> Right, not which MSR to write but which value to write.  It doesn't know
+> that the PSF disable bit is valid unless the corresponding CPUID bit is set.
 
-For review it's fine as-is, given it's a trivial change, but the final
-series should have it in the right place.
+There's no need for the separate PSF CPUID bit yet. We have decided for
+now to not control PSF separately but disable it through SSB. Please
+follow this thread:
+
+https://lore.kernel.org/all/20210904172334.lfjyqi4qfzvbxef7@treble/T/#u
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
