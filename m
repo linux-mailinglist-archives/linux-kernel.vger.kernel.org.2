@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F816418D3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870DA418D42
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbhI0AKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 20:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
+        id S232216AbhI0ASa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 20:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhI0AKN (ORCPT
+        with ESMTP id S231232AbhI0AS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 20:10:13 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1A6C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:08:36 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id q23so14145644pfs.9
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZITki0Tlgr2SOixro8XnxB3qWg1irmvVm6UWMwcCgLY=;
-        b=r9nqq+3OdoQV3e1vn4PowWpeKZ7ylD4rWLhHVnCkJP417FnWIxEDgJhoCgkID6ihv1
-         usIsh1VFvVIRavVoe00+WMmx2tYWi/QD723QrCt9LZpR4/Mod7LMVfMWTClFddoljQEc
-         TEhnjOHX7bXrQeCh69iNqjK8E9j+13McwJdENTftglreWqiJ2YFUsWOa3bAggPw6johS
-         8oJK/UXUriiDjI7S10sQPHBxJpaM2ElHt7JCEH7/rLq5CFSlYuEmLcM7VQ56ZiuVf+sn
-         GFi/rzGBA1wjn9ESFjsdGsQu4Vz1v5DYt3Etzr8joN6jFAozZG16N4846jZNapfsntGv
-         jU1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZITki0Tlgr2SOixro8XnxB3qWg1irmvVm6UWMwcCgLY=;
-        b=YRxcXGzc1XMZAXsyf0egyEZ5JW4A95X0kZFH0xERCcDMZKRpBrJPlZFZFz9KlCK8cS
-         uvQ1nu/+/OKlGBqhYw6y5EBniy/C2w+x3kYhOaXXcwiscFookLqZNr1H4bAKJAdGgqCP
-         IcYThljrYNk24+H12auO3FWEa7X6vexW/K60jlY/kS4Ny7B6IKkg5Th8v7Gv4djvhxOy
-         GAYywyjWf8A6J3WMX0hooqbULFXyqbUvxujhDYb8NsCA51pgs5d0FWdSoxfyF8Cws/Mf
-         ZHVI+K9JmSgt+nBQqxmY8TFhCsPwFFAQSFv7hgJ4nhjkdLlyf2nyZbv/oYnHfveulN1T
-         iq8A==
-X-Gm-Message-State: AOAM531IGq7ir1NUOIba6BEsVoEL2App87NCKVHmm2EfoDbq5idYjY7V
-        CQM7d7zr5f07AdRZ6sGFEehOBA==
-X-Google-Smtp-Source: ABdhPJz0KqJsswBZcZk1GMY1L+3Mp/JKNhbpIZ8FC0/9c8ADjX/fqNNkL2mOqao3KlX8y8cpTT39nw==
-X-Received: by 2002:a05:6a00:4:b0:440:6476:bcb4 with SMTP id h4-20020a056a00000400b004406476bcb4mr20529491pfk.0.1632701315853;
-        Sun, 26 Sep 2021 17:08:35 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id o14sm15485637pfh.84.2021.09.26.17.08.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 26 Sep 2021 17:08:35 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 08:08:29 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Soeren Moch <smoch@web.de>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, stable@vger.kernel.org,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "brcmfmac: use ISO3166 country code and 0 rev as
- fallback"
-Message-ID: <20210927000828.GE9901@dragon>
-References: <20210926201905.211605-1-smoch@web.de>
+        Sun, 26 Sep 2021 20:18:29 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3363EC061570;
+        Sun, 26 Sep 2021 17:16:52 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHjqk3g9Bz4xZx;
+        Mon, 27 Sep 2021 10:16:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632701810;
+        bh=FehXuxB6oT8eAwQjsNBUfmCb7XkbAPtKUXwG4DUuwVw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=P/b09+Y+t4Irxe9D2ceeY/7hmn3peEEREivRk9rqey21NWyImqXOazkOIUo7ApVZ7
+         74x+w0lyliRp0FoZoSjWCmFfQAKCgWKs6Wh55G+XimOcRf89AB8Ovo6opCmBKtFc0l
+         ihZ6JlyXHh2Dh/puNLcntGukrg2m8Q5d4VUrugmV55J1H18CE/XXpmiUVRD34qRG+s
+         fZKp2GFkqErYPUk/TneBCii9qZYeFKxnQnq0eqgkc5ugZ8KL6EOxGm6Eva2ZtI06DB
+         5lf8L2WQz5dN23MCW8engv4tXz+7QAcMJHNCEL+w93JhGoTDgoX/OjqHwH036PZlXV
+         drVt7/ZMtUxaw==
+Date:   Mon, 27 Sep 2021 10:16:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Manish Mandlik <mmandlik@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the bluetooth tree
+Message-ID: <20210927101649.2cabe5b8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926201905.211605-1-smoch@web.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/o_8tp.Hi.bdRwptj9h2jotG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 10:19:05PM +0200, Soeren Moch wrote:
-> This reverts commit b0b524f079a23e440dd22b04e369368dde847533.
-> 
-> Commit b0b524f079a2 ("brcmfmac: use ISO3166 country code and 0 rev
-> as fallback") changes country setup to directly use ISO3166 country
-> codes if no more specific code is configured. This was done under
-> the assumption that brcmfmac firmwares can handle such simple
-> direct mapping from country codes to firmware ccode values.
-> 
-> Unfortunately this is not true for all chipset/firmware combinations.
-> E.g. BCM4359/9 devices stop working as access point with this change,
-> so revert the offending commit to avoid the regression.
-> 
-> Signed-off-by: Soeren Moch <smoch@web.de>
-> Cc: stable@vger.kernel.org  # 5.14.x
+--Sig_/o_8tp.Hi.bdRwptj9h2jotG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Hi all,
+
+After merging the bluetooth tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
+
+arm-linux-gnueabi-ld: net/bluetooth/hci_event.o: in function `msft_suspend':
+hci_event.c:(.text+0x6e60): multiple definition of `msft_suspend'; net/blue=
+tooth/hci_core.o:hci_core.c:(.text+0x36fc): first defined here
+arm-linux-gnueabi-ld: net/bluetooth/hci_event.o: in function `msft_resume':
+hci_event.c:(.text+0x6e64): multiple definition of `msft_resume'; net/bluet=
+ooth/hci_core.o:hci_core.c:(.text+0x3700): first defined here
+arm-linux-gnueabi-ld: net/bluetooth/mgmt.o: in function `msft_suspend':
+mgmt.c:(.text+0xd188): multiple definition of `msft_suspend'; net/bluetooth=
+/hci_core.o:hci_core.c:(.text+0x36fc): first defined here
+arm-linux-gnueabi-ld: net/bluetooth/mgmt.o: in function `msft_resume':
+mgmt.c:(.text+0xd18c): multiple definition of `msft_resume'; net/bluetooth/=
+hci_core.o:hci_core.c:(.text+0x3700): first defined here
+arm-linux-gnueabi-ld: net/bluetooth/hci_request.o: in function `msft_suspen=
+d':
+hci_request.c:(.text+0x2d0): multiple definition of `msft_suspend'; net/blu=
+etooth/hci_core.o:hci_core.c:(.text+0x36fc): first defined here
+arm-linux-gnueabi-ld: net/bluetooth/hci_request.o: in function `msft_resume=
+':
+hci_request.c:(.text+0x2d4): multiple definition of `msft_resume'; net/blue=
+tooth/hci_core.o:hci_core.c:(.text+0x3700): first defined here
+
+Caused by commit
+
+  47cb49448039 ("Bluetooth: Fix Advertisement Monitor Suspend/Resume")
+
+# CONFIG_BT_MSFTEXT is not set
+
+Forgot the "static inline"?
+
+I have used the bluetooth tree from next-20210924 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/o_8tp.Hi.bdRwptj9h2jotG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFRDXEACgkQAVBC80lX
+0GyQwQf/XngLPfadG/MBTnGRtvf2/emOPDl2plr0bI6uhFExFm8kbOOyYHkF9QKt
++GEATKr9QZKn2w/p9BVd11NSG60zCrPbLXNzQD552h7aDTEPSWzwjrWVgSkMerBp
+1lzU4aayNxelYNOhe69p3lMLGFgcEMdL3TuAiVS7bFYeIMQMZH+slWf5meCUV+N5
+Q27q10XiNvfOKjGqGEbFgpoep8NaNoAMrpgCVYm8GBBDtlIfhXIeWf4MPEOF1G9c
+a5qwSFRLuhsfhkGomUt9xOfu2bKCSggSB5f0lo16WMirWT4sAQaDDn4SS8guJkWC
+1muhUcaVfrJtgkOvpFKrsrZWPItaDQ==
+=dMWx
+-----END PGP SIGNATURE-----
+
+--Sig_/o_8tp.Hi.bdRwptj9h2jotG--
