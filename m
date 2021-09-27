@@ -2,112 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC7741941F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D9E419426
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhI0MZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:25:01 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:38909 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234181AbhI0MY7 (ORCPT
+        id S234361AbhI0MZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:25:07 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:35452 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234221AbhI0MZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:24:59 -0400
-Received: by mail-ot1-f47.google.com with SMTP id c6-20020a9d2786000000b005471981d559so24141917otb.5;
-        Mon, 27 Sep 2021 05:23:21 -0700 (PDT)
+        Mon, 27 Sep 2021 08:25:01 -0400
+Received: by mail-ot1-f41.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so24195591otj.2;
+        Mon, 27 Sep 2021 05:23:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=M1JxjeIOmKat6HvCouZk2WyJoVDL3ELYlgAx1y+djF4=;
-        b=7Dr0bB4vGoaJvaSBAUBkx9KtKsSxZfB/vn4GVTjzd3CfOSl5Iwqp/Hh5IuMRBL06d+
-         uTcMftoEpr91DfDdp7SVYLnnLLM484w+tDj9V8zrObYSZwSIAsKw0IdSgq5/f0N3BX7l
-         S0/O0Y5/luYHWHqCj8v/e5FNzpbY65175L0QUhY/C5JCjyUU5yFFadzqjtfHuryQahIm
-         7/AcyukH2XgWHg6HqoUFRMjWGKv2st+fUmTng2WHuP2G2WogBgV/QzYqMcKs+orklLg7
-         BuLlDGHtxxhlhnm0wzUxNExE9ymhzOboEXHr35l4Gy1tYNa4/iJzHoPV6ZcQROWKergD
-         VHDQ==
-X-Gm-Message-State: AOAM532DbWgQuNY4xsZ7Yz305Qgr2HmuLmISGFgBArR3tWazJEkdyZR8
-        /88d6n4zDBKM8r/I0B/VXw==
-X-Google-Smtp-Source: ABdhPJxPboMBJ7atlf4V2758iIymolXl+RlULWf5ZVJnB5v+aaNUyKh+KewyhDhEFZ50jt9f77a3wA==
-X-Received: by 2002:a9d:27a4:: with SMTP id c33mr17216398otb.283.1632745401264;
-        Mon, 27 Sep 2021 05:23:21 -0700 (PDT)
+        bh=5uYCJrtQqPP5HTpxyuUkmMDjOGPSSsTakbwQ7ha5y4o=;
+        b=TRwXNKX99yeqpAwNOAgHTVF6KBhZ1fC1rQe3JMrgy+SlXOJ0tnYABHRRgD+AXroHrn
+         AF4+x6kFdIpsoLztX9LzPbcJE/JEd94XqEOXXEXzqzhTjk7xTQhONKmNXLD3QX4AsYdD
+         RwnGGLjUKcf15URffgtQqLS+M9+AJAcc3HOvamaIspKnr4h0v4xjqm5tV4oA7ZUuCJPm
+         d4jbnn7M7z68tz0XuF2ft65ex4eBEF9qlsgNETS8wkgawsdYnsds/nwYvMs3OBhpmkRq
+         +ULtGUQoBHZMhgyDe8fAAPjY3jHlf9ek9L59TVXpgKvnWhQdq6osfgplVbke6Bws3HY3
+         b5pg==
+X-Gm-Message-State: AOAM530zUYkNDbIvBvusLRzkhxZtwQe+15A1Z3XmjjadCEG0ekaVJ/sC
+        6RNvozNWZikHqheoT/NFoQ==
+X-Google-Smtp-Source: ABdhPJwUmklYY9bvdFOjTCnNHYq4Hgtu6tp89QGCA/AOA2aGGRMuUr30JaeLlAg3mfKZ11odubvW5g==
+X-Received: by 2002:a05:6830:1653:: with SMTP id h19mr4660563otr.162.1632745402799;
+        Mon, 27 Sep 2021 05:23:22 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o126sm3844592oig.21.2021.09.27.05.23.19
+        by smtp.gmail.com with ESMTPSA id p9sm3694449ots.66.2021.09.27.05.23.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 05:23:20 -0700 (PDT)
-Received: (nullmailer pid 3097152 invoked by uid 1000);
+        Mon, 27 Sep 2021 05:23:22 -0700 (PDT)
+Received: (nullmailer pid 3097157 invoked by uid 1000);
         Mon, 27 Sep 2021 12:23:19 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sam Shih <sam.shih@mediatek.com>
-Cc:     herbert@gondor.apana.org.au, linux-serial@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux@roeck-us.net,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hsinyi@chromium.org,
-        mpm@selenic.com, seiya.wang@mediatek.com,
-        enric.balletbo@collabora.com, fparent@baylibre.com,
-        john@phrozen.org, sboyd@kernel.org, devicetree@vger.kernel.org,
-        linux-crypto@vger.kernel.org, gregkh@linuxfoundation.org,
-        mturquette@baylibre.com, linux-watchdog@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        wim@linux-watchdog.org, robh+dt@kernel.org,
-        linus.walleij@linaro.org, sean.wang@kernel.org,
-        Ryder.Lee@mediatek.com
-In-Reply-To: <20210927023419.17994-1-sam.shih@mediatek.com>
-References: <1632491961.645727.1195978.nullmailer@robh.at.kernel.org> <20210927023419.17994-1-sam.shih@mediatek.com>
-Subject: Re: [v5,5/9] dt-bindings: pinctrl: update bindings for MT7986 SoC
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-phy@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210927064829.5752-2-shawn.guo@linaro.org>
+References: <20210927064829.5752-1-shawn.guo@linaro.org> <20210927064829.5752-2-shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add QCM2290 USB3 PHY
 Date:   Mon, 27 Sep 2021 07:23:19 -0500
-Message-Id: <1632745399.256353.3097151.nullmailer@robh.at.kernel.org>
+Message-Id: <1632745399.282824.3097156.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 10:34:19 +0800, Sam Shih wrote:
-> This updates bindings for MT7986 pinctrl driver. The
-> difference of pinctrl between mt7986a and mt7986b is that pin-41 to pin-65
-> do not exist on mt7986b
+On Mon, 27 Sep 2021 14:48:28 +0800, Shawn Guo wrote:
+> Add support for USB3 PHY found on Qualcomm QCM2290 SoC.
 > 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 > ---
-> v5 : fixed yamllint warnings/errors
-> v4 : used yaml format instead of txt format document
-> v3 : make mt7986 pinctrl bindings as a separate file
-> v2 : deleted the redundant description of mt7986a/mt7986b
-> ---
->  .../pinctrl/mediatek,mt7986-pinctrl.yaml      | 353 ++++++++++++++++++
->  1 file changed, 353 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.yaml
+>  .../devicetree/bindings/phy/qcom,qmp-phy.yaml | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-yamllint warnings/errors:
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dts:25.13-32.43: Warning (reg_format): /example-0/soc/pinctrl@1001f000:reg: property has invalid length (128 bytes) (#address-cells == 2, #size-cells == 1)
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dts:23.33-58.13: Warning (avoid_default_addr_size): /example-0/soc/pinctrl@1001f000: Relying on default #address-cells value
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dts:23.33-58.13: Warning (avoid_default_addr_size): /example-0/soc/pinctrl@1001f000: Relying on default #size-cells value
-Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (unique_unit_address): Failed prerequisite 'avoid_default_addr_size'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: pinctrl@1001f000: 'gpio-ranges' does not match any of the regexes: '-[0-9]+$', 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.yaml
+Full log is available here: https://patchwork.ozlabs.org/patch/1533226
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1533169
+phy@1c06000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+phy@1c06000: 'lane@1c06800' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+phy@1c06000: 'lanes@1c06200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
 
-pip3 install dtschema --upgrade
+phy@1c0a000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
 
-Please check and re-submit.
+phy@1c0a000: 'lanes@1c06200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+
+phy@1c0e000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+
+phy@1c0e000: 'lanes@1c0e200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+
+phy@1c16000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+
+phy@1c16000: 'lanes@1c16200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+
+phy@1d87000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sa8155p-adp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+
+phy@1d87000: 'lanes@1d87400' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-bahamut.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-griffin.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+
+phy@1d87000: 'lanes@1d87400', 'vdda-max-microamp', 'vdda-pll-max-microamp' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sa8155p-adp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8350-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8350-mtp.dt.yaml
+
+phy@1da7000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
+
+phy@1da7000: 'lanes@1da7400' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+
+phy@1da7000: 'lanes@1da7400', 'vdda-phy-max-microamp', 'vdda-pll-max-microamp', 'vddp-ref-clk-always-on', 'vddp-ref-clk-max-microamp' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
+
+phy@1da7000: 'vdda-phy-supply' is a required property
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+
+phy@1da7000: 'vdda-pll-supply' is a required property
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+
+phy@34000: 'lane@35000', 'lane@36000', 'lane@37000' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
+	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+
+phy@58000: 'lane@58200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@58000: 'vdda-phy-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+
+phy@58000: 'vdda-pll-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+
+phy@627000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
+	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+
+phy@627000: 'lanes@627400' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+
+phy@627000: 'lanes@627400', 'vdda-phy-max-microamp', 'vdda-pll-max-microamp' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+
+phy@7410000: 'lane@7410200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
+	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+
+phy@78000: 'lane@78200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@78000: 'vdda-phy-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+
+phy@78000: 'vdda-pll-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+
+phy@84000: 'lane@84200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+
+phy@86000: '#address-cells' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@86000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@86000: '#phy-cells', 'clock-output-names' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@86000: 'ranges' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@86000: '#size-cells' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@86000: 'vdda-phy-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@86000: 'vdda-pll-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@88e9000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-bahamut.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-griffin.dt.yaml
+
+phy@88e9000: 'lanes@88e9200', 'reg-names' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/sa8155p-adp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-bahamut.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-griffin.dt.yaml
+
+phy@88eb000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sa8155p-adp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+
+phy@88eb000: 'lane@88eb200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/sa8155p-adp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+	arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-bahamut.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-griffin.dt.yaml
+
+phy@88eb000: 'lanes@88eb200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+
+phy@8e000: '#address-cells' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@8e000: '#clock-cells' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@8e000: '#phy-cells', 'clock-output-names' do not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@8e000: 'ranges' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@8e000: '#size-cells' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@8e000: 'vdda-phy-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@8e000: 'vdda-pll-supply' is a required property
+	arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+	arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+phy@c010000: 'lane@c010200' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
+	arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
+
+phy-wrapper@88e9000: 'reg-names' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/qcom/sm8350-hdk.dt.yaml
+	arch/arm64/boot/dts/qcom/sm8350-mtp.dt.yaml
 
