@@ -2,237 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19598419F01
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC81419F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236433AbhI0TTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236381AbhI0TTr (ORCPT
+        id S236442AbhI0TVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:21:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36452 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236260AbhI0TVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:19:47 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B2CC061575;
-        Mon, 27 Sep 2021 12:18:09 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id u8so19400719vsp.1;
-        Mon, 27 Sep 2021 12:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5Jsv32VfU5hBBVE/3KBDNXL1joUgiLLTxTYv11HZBOw=;
-        b=hKLSuiRjl5puCUN7GmUGuprTq2dlTRXFw9ors+IsTcufm2RiSe+htT5nuUtE57JMYi
-         YvydtcHyipu6ObND9WDIo/pgGcB4pWbgXKYH/3U4RwDLmGvI1iL8wLuSZksxe8U0x7kF
-         sER3zy1z2RkzTd8LMHvPhJEOpJICuO6badaqm3Do5ZX5l+R4qIwC4iyt3BdRIC/AHF/e
-         lmCNBPwB/Mg/oS1aUULs+w2yByruCwmuFRx2+xkJvO7ENUw6OIlU9Zs82AuNFydjhTs9
-         3PeY++el/5NhZW181tnTCMdgkV+VFGzKGmmx8QWWlq0hCSxqurdRTUv+1f/OyLpiQw0z
-         46Fw==
+        Mon, 27 Sep 2021 15:21:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632770394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ytbf7mkDtKm4hXqfmsIh+zBdQwECAHFtYv2udg+9N/s=;
+        b=gycSX+ht0iq0vyVLZMvUrd6m9OFSS6/vtex6QTrxw80cq1UjkzzFqGeqHLKgfg80A9vI8c
+        z6f4R4QBi4GBCREDP25acLiudTXUceNX6FFjBtTc7xG8VgX6d1g79S2AG/wSdIzALHZxSF
+        nPgVnOnF76fJ+2iZat6whiVvSuk5nVA=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-dO9ZhWkfPfuseyZeC6h0ig-1; Mon, 27 Sep 2021 15:19:52 -0400
+X-MC-Unique: dO9ZhWkfPfuseyZeC6h0ig-1
+Received: by mail-oi1-f200.google.com with SMTP id y185-20020acaafc2000000b0027359453ad4so14338523oie.6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:19:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5Jsv32VfU5hBBVE/3KBDNXL1joUgiLLTxTYv11HZBOw=;
-        b=InczocvYZEXK86UHDD5fHKt09lUtD/TjY26yxHR8lKwcDNN3GQoqkmdkp3dSexfS2m
-         VjXoTLm+cihW76LAVXJdJkESji7jLj2Erlc4GS4uk4IgF6Uv9Y2LakBWaGUgaCJN8vrZ
-         OWO8VLxalDdEGhJPl13pfXEGfF266nUrm7PRE1Ypt9atoYkV7ttDfbptyJso7OFD5ZBX
-         OmBYeqXCNDRFX/pEWf7+9vAhXO1el5DwwlNVwr7mQfzXvNjgvzHgsnzBO1UOMb78VCrX
-         7ZtkvmXTGWxgBrsSopuhZ8n5KVSxsrorje6N0hiQxSoffLGeFSTFBLf+TcBLpllslkI4
-         8A9A==
-X-Gm-Message-State: AOAM532RMlKLfXi7aD0tALQh5iX8NLYMpqMUUxc28+kfpQVP02KUxJaC
-        HV2EdfFD0KnNVO6fr9BllXGzV5a+ri7E/RfH9Zs=
-X-Google-Smtp-Source: ABdhPJyIdI5dIgMfDZhLLkDgOk/YLsWKuK6ti6v6hc2gXUdp2QXsIkfUi1gy49q80Ng2nFf1JZ0wd1/tOp+ynYphDN4=
-X-Received: by 2002:a67:ab04:: with SMTP id u4mr1667828vse.12.1632770288152;
- Mon, 27 Sep 2021 12:18:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Ytbf7mkDtKm4hXqfmsIh+zBdQwECAHFtYv2udg+9N/s=;
+        b=eE39WIDD8HVNkb1yceH3fB4k6Dw3VRJfGI50Aji1DJyRSKj7xg82EcwJldIrt5/ypS
+         D5WYeJoHcXJgVKrGOXexlMcyPhBYFQW0Lw7FoTHXEWPntSg4p5NPBG3NHRaQ37O7znxl
+         njwj0YFhh7i+HyHQepaVTCOMuZi6+k5Xk1zCDQko9AsOlhURJNI3p4CI1bM3+i3fImQ/
+         pZT4MwMldlnH1XUnRHAS2U8r2jLI177N4PjClqZi1vGCwtu9mzgqNPienLdqOpyVVpbe
+         tgu6Rmx00UEoCzsjK7WyNQml/mrF7PDramLh87VdPt0zE/dVfwrXVM037rLrOeMetZHK
+         jWMA==
+X-Gm-Message-State: AOAM532N3z9gfw4cBX6UidWIPz5yK9tnBn/FiMfKq8iTPKLqofojq0QA
+        LroomH8rrGHKUWNNQsJh9R/2mpDnQbbPVVYo4e5LQJvScv8F/TdoJ2PU78zhT+cJ1klLhSsOSUK
+        QOFvlG8x9LC/ii2zO2n3q7Ol6
+X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr565220oik.135.1632770392054;
+        Mon, 27 Sep 2021 12:19:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIofVCTMGgEM5geBngT4Oh5jA/6Ys1igS7KsVTI4OQQbB1L1o1oifOGkhmTzaJZ7j5t45PYQ==
+X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr565205oik.135.1632770391818;
+        Mon, 27 Sep 2021 12:19:51 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id bg36sm1238777oib.2.2021.09.27.12.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 12:19:51 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 13:19:49 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
+ interfaces
+Message-ID: <20210927131949.052d8481.alex.williamson@redhat.com>
+In-Reply-To: <BN9PR11MB543327D25DCE242919F7909A8CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+        <20210919063848.1476776-7-yi.l.liu@intel.com>
+        <20210921170943.GS327412@nvidia.com>
+        <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+        <20210922123931.GI327412@nvidia.com>
+        <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+        <20210927115342.GW964074@nvidia.com>
+        <BN9PR11MB5433502FEF11940984774F278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+        <20210927130935.GZ964074@nvidia.com>
+        <BN9PR11MB543327D25DCE242919F7909A8CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210927175944.3381314-1-briannorris@chromium.org> <20210927105928.v2.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
-In-Reply-To: <20210927105928.v2.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
-From:   Tom Hebb <tommyhebb@gmail.com>
-Date:   Mon, 27 Sep 2021 12:17:57 -0700
-Message-ID: <CAMcCCgS_r17Lj_qPX9TdH3=7D_tiXu9OzL=dDNS+9MZyOUv-+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] drm/rockchip: dsi: Hold pm-runtime across bind/unbind
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        dri-devel@lists.freedesktop.org, Chen-Yu Tsai <wenst@chromium.org>,
-        linux-rockchip@lists.infradead.org,
-        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org,
-        aleksandr.o.makarov@gmail.com, stable@vger.kernel.org,
-        =?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= 
-        <nfraprado@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Thomas Hebb <tommyhebb@gmail.com>
+On Mon, 27 Sep 2021 13:32:34 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-Thank you for catching this, and sorry that my original fix broke things.
-There had actually been a report of this breakage from my patch, but I
-missed that email until it had already been merged and then didn't have
-time to follow up on it. Totally my bad.
+> > From: Jason Gunthorpe
+> > Sent: Monday, September 27, 2021 9:10 PM
+> > 
+> > On Mon, Sep 27, 2021 at 01:00:08PM +0000, Tian, Kevin wrote:
+> >   
+> > > > I think for such a narrow usage you should not change the struct
+> > > > device_driver. Just have pci_stub call a function to flip back to user
+> > > > mode.  
+> > >
+> > > Here we want to ensure that kernel dma should be blocked
+> > > if the group is already marked for user-dma. If we just blindly
+> > > do it for any driver at this point (as you commented earlier):
+> > >
+> > > +       ret = iommu_set_kernel_ownership(dev);
+> > > +       if (ret)
+> > > +               return ret;
+> > >
+> > > how would pci-stub reach its function to indicate that it doesn't
+> > > do dma and flip back?  
+> >   
+> > > Do you envision a simpler policy that no driver can be bound
+> > > to the group if it's already set for user-dma? what about vfio-pci
+> > > itself?  
+> > 
+> > Yes.. I'm not sure there is a good use case to allow the stub drivers
+> > to load/unload while a VFIO is running. At least, not a strong enough
+> > one to justify a global change to the driver core..  
+> 
+> I'm fine with not loading pci-stub. From the very 1st commit msg
+> looks pci-stub was introduced before vfio to prevent host driver 
+> loading when doing device assignment with KVM. I'm not sure 
+> whether other usages are built on pci-stub later, but in general it's 
+> not good to position devices in a same group into different usages.
 
-[Resending because my last reply was HTML.]
+IIRC, pci-stub was invented for legacy KVM device assignment because
+KVM was never an actual device driver, it just latched onto and started
+using the device.  If there was an existing driver for the device then
+KVM would fail to get device resources.  Therefore the device needed to
+be unbound from its standard host driver, but that left it susceptible
+to driver loads usurping the device.  Therefore pci-stub came along to
+essentially claim the device on behalf of KVM.
 
-On Mon, Sep 27, 2021 at 11:00 AM Brian Norris <briannorris@chromium.org> wr=
-ote:
->
-> In commit 43c2de1002d2, we moved most HW configuration to bind(), but we
-> didn't move the runtime PM management. Therefore, depending on initial
-> boot state, runtime-PM workqueue delays, and other timing factors, we
-> may disable our power domain in between the hardware configuration
-> (bind()) and when we enable the display. This can cause us to lose
-> hardware state and fail to configure our display. For example:
->
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-innolux-p079zca ff960000.mipi.0: failed to write command 0
->
-> or:
->
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -11=
-0
->
-> We should match the runtime PM to the lifetime of the bind()/unbind()
-> cycle.
->
-> Tested on Acer Chrometab 10 (RK3399 Gru-Scarlet), with panel drivers
-> built either as modules or built-in.
->
-> Side notes: it seems one is more likely to see this problem when the
-> panel driver is built into the kernel. I've also seen this problem
-> bisect down to commits that simply changed Kconfig dependencies, because
-> it changed the order in which driver init functions were compiled into
-> the kernel, and therefore the ordering and timing of built-in device
-> probe.
->
-> Fixes: 43c2de1002d2 ("drm/rockchip: dsi: move all lane config except LCDC=
- mux to bind()")
-> Link: https://lore.kernel.org/linux-rockchip/9aedfb528600ecf871885f7293ca=
-4207c84d16c1.camel@gmail.com/
-> Reported-by: <aleksandr.o.makarov@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> Tested-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
-> ---
->
-> Changes in v2:
-> - Clean up pm-runtime state in error cases.
-> - Correct git hash for Fixes.
->
->  .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 37 ++++++++++---------
->  1 file changed, 19 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gp=
-u/drm/rockchip/dw-mipi-dsi-rockchip.c
-> index a2262bee5aa4..45676b23c019 100644
-> --- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> +++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> @@ -773,10 +773,6 @@ static void dw_mipi_dsi_encoder_enable(struct drm_en=
-coder *encoder)
->         if (mux < 0)
->                 return;
->
-> -       pm_runtime_get_sync(dsi->dev);
-> -       if (dsi->slave)
-> -               pm_runtime_get_sync(dsi->slave->dev);
-> -
->         /*
->          * For the RK3399, the clk of grf must be enabled before writing =
-grf
->          * register. And for RK3288 or other soc, this grf_clk must be NU=
-LL,
-> @@ -795,20 +791,10 @@ static void dw_mipi_dsi_encoder_enable(struct drm_e=
-ncoder *encoder)
->         clk_disable_unprepare(dsi->grf_clk);
->  }
->
-> -static void dw_mipi_dsi_encoder_disable(struct drm_encoder *encoder)
-> -{
-> -       struct dw_mipi_dsi_rockchip *dsi =3D to_dsi(encoder);
-> -
-> -       if (dsi->slave)
-> -               pm_runtime_put(dsi->slave->dev);
-> -       pm_runtime_put(dsi->dev);
-> -}
-> -
->  static const struct drm_encoder_helper_funcs
->  dw_mipi_dsi_encoder_helper_funcs =3D {
->         .atomic_check =3D dw_mipi_dsi_encoder_atomic_check,
->         .enable =3D dw_mipi_dsi_encoder_enable,
-> -       .disable =3D dw_mipi_dsi_encoder_disable,
->  };
->
->  static int rockchip_dsi_drm_create_encoder(struct dw_mipi_dsi_rockchip *=
-dsi,
-> @@ -938,10 +924,14 @@ static int dw_mipi_dsi_rockchip_bind(struct device =
-*dev,
->                 put_device(second);
->         }
->
-> +       pm_runtime_get_sync(dsi->dev);
-> +       if (dsi->slave)
-> +               pm_runtime_get_sync(dsi->slave->dev);
-> +
->         ret =3D clk_prepare_enable(dsi->pllref_clk);
->         if (ret) {
->                 DRM_DEV_ERROR(dev, "Failed to enable pllref_clk: %d\n", r=
-et);
-> -               return ret;
-> +               goto out_pm_runtime;
->         }
->
->         /*
-> @@ -953,7 +943,7 @@ static int dw_mipi_dsi_rockchip_bind(struct device *d=
-ev,
->         ret =3D clk_prepare_enable(dsi->grf_clk);
->         if (ret) {
->                 DRM_DEV_ERROR(dsi->dev, "Failed to enable grf_clk: %d\n",=
- ret);
-> -               return ret;
-> +               goto out_pm_runtime;
->         }
->
->         dw_mipi_dsi_rockchip_config(dsi);
-> @@ -965,16 +955,23 @@ static int dw_mipi_dsi_rockchip_bind(struct device =
-*dev,
->         ret =3D rockchip_dsi_drm_create_encoder(dsi, drm_dev);
->         if (ret) {
->                 DRM_DEV_ERROR(dev, "Failed to create drm encoder\n");
-> -               return ret;
-> +               goto out_pm_runtime;
->         }
->
->         ret =3D dw_mipi_dsi_bind(dsi->dmd, &dsi->encoder);
->         if (ret) {
->                 DRM_DEV_ERROR(dev, "Failed to bind: %d\n", ret);
-> -               return ret;
-> +               goto out_pm_runtime;
->         }
->
->         return 0;
-> +
-> +out_pm_runtime:
-> +       pm_runtime_put(dsi->dev);
-> +       if (dsi->slave)
-> +               pm_runtime_put(dsi->slave->dev);
-> +
-> +       return ret;
->  }
->
->  static void dw_mipi_dsi_rockchip_unbind(struct device *dev,
-> @@ -989,6 +986,10 @@ static void dw_mipi_dsi_rockchip_unbind(struct devic=
-e *dev,
->         dw_mipi_dsi_unbind(dsi->dmd);
->
->         clk_disable_unprepare(dsi->pllref_clk);
-> +
-> +       pm_runtime_put(dsi->dev);
-> +       if (dsi->slave)
-> +               pm_runtime_put(dsi->slave->dev);
->  }
->
->  static const struct component_ops dw_mipi_dsi_rockchip_ops =3D {
-> --
-> 2.33.0.685.g46640cef36-goog
->
+With vfio, there are a couple use cases of pci-stub that can be
+interesting.  The first is that pci-stub is generally built into the
+kernel, not as a module, which provides users the ability to specify a
+list of ids for pci-stub to claim on the kernel command line with
+higher priority than loadable modules.  This can prevent default driver
+bindings to devices until tools like driverctl or boot time scripting
+gets a shot to load the user designated driver for a device.
+
+The other use case, is that if a group is composed of multiple devices
+and all those devices are bound to vfio drivers, then the user can gain
+direct access to each of those devices.  If we wanted to insert a
+barrier to restrict user access to certain devices within a group, we'd
+suggest binding those devices to pci-stub.  Obviously within a group, it
+may still be possible to manipulate the device via p2p DMA, but the
+barrier is much higher and device, if not platform, specific to
+manipulate such devices.  An example use case might be a chipset
+Ethernet controller grouped among system management function in a
+multi-function root complex integrated endpoint.
+
+> but I'm little worried that even vfio-pci itself cannot be bound now,
+> which implies that all devices in a group which are intended to be
+> used by the user must be bound to vfio-pci in a breath before the 
+> user attempts to open any of them, i.e. late-binding and device-
+> hotplug is disallowed after the initial open. I'm not sure how 
+> important such an usage would be, but it does cause user-tangible
+> semantics change.
+
+Yep, a high potential to break userspace, especially as pci-stub has
+been recommended for the cases noted above.  I don't expect that tools
+like libvirt manage unassigned devices within a group, but that
+probably means that there are all sorts of ad-hoc user mechanisms
+beyond simply assigning all the devices.  Thanks,
+
+Alex
+
