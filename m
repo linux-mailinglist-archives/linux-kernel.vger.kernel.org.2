@@ -2,132 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B5541918B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BB4419190
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbhI0Jcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233699AbhI0Jcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:32:43 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45726C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:31:06 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id g41so74426061lfv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tGZj9UfzMOvrlmJlZWhVCYko1Gj7jAZ5QKpn2O8GHnQ=;
-        b=fH7ElhPz/j0dkKN0IQlRwL6IKNF50qPdlSMdP3FrEeL1cT4duKYSrOaeKFQE5tK8MH
-         NKI948ew/JhYYQ+jjF5z0G1HI1dHwAWv2H4R4LPPB9e0kyWGUgdsuD0ZPeeKEnzbihqn
-         kd+XgcA0my6muCpI2/S1tm/wco+vpwCQvlNfb26uFYxFICWUZQaWLHxD//8pnErb+XHa
-         wX4XqByN7PkBbMUXlZidhCn5rssyvGK3qzWxHqaHJ5Hh10vwDQzFtD01sJCxUdUotmsR
-         ptOLfSNmuocRCfcbmwyvq3+nlmZ3ASxRX8qAkaNw2ZxHQUQIRevcyWlZYqXHR9ZTKBJH
-         xnJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tGZj9UfzMOvrlmJlZWhVCYko1Gj7jAZ5QKpn2O8GHnQ=;
-        b=0IWrHQQBRU7zXxsHjPxzrNn86HBjkasmXMAFOnam6pDQPqf/CcGppqiJKwv/j7OWH8
-         oglTa0Pm0jVUp+C8gdxR9VHgN2P7Vbj2RxvbyZbNxdszPWFbyp/dpINAiYgUrmSuT4Qr
-         hriTckGIAd7QySWkAZoZbHG4cc7n/d0849vvez8Iu9dyHDusPzKMDHbeQeiE8rkw3/wj
-         QNOJrQZZIP7LcQk5o84Kih6Hb1NS72kSRYHYG/TaVSRGsHeUUdk+be4Y8rfwJfw6kNkV
-         /foIPaLZWtkGgPVwpDruaoP0B2vJAxFTX6nLutYzQmgr+R5tjK4WPeqdDcOq6jE6YRid
-         0pLQ==
-X-Gm-Message-State: AOAM532yNy73s/JyNd4dIbbP0LvAmJRXriAO9ZMwyxc7Wej8P487p8d9
-        PE+ymAUyErCUeqa5mymAUzuz7A==
-X-Google-Smtp-Source: ABdhPJyZTPI/P8FivbJz92AxtI5RRIDNYzf9SMmh9JOwXEWai1lvhn8xX3PqLTWDDMSVbdhS3dZcNA==
-X-Received: by 2002:a05:651c:21b:: with SMTP id y27mr27606230ljn.489.1632735064625;
-        Mon, 27 Sep 2021 02:31:04 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u27sm1540438lfm.38.2021.09.27.02.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 02:31:04 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 625B510306C; Mon, 27 Sep 2021 12:31:03 +0300 (+03)
-Date:   Mon, 27 Sep 2021 12:31:03 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 4/8] mm/madvise: define madvise behavior in a struct
-Message-ID: <20210927093103.g3cszw75gfctwtzk@box.shutemov.name>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-5-namit@vmware.com>
+        id S233695AbhI0JfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:35:03 -0400
+Received: from mail-eopbgr20061.outbound.protection.outlook.com ([40.107.2.61]:44702
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233587AbhI0JfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:35:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gB/jtikJDOpUY67nznnsWIPtsImlOJgYHLL38u2tGrr26RjeGxYS/dJQ47doHz+clFlBwOyZ+S4uPROzxNOd/EJvT9irva7KzARcndxGHagImx0KlwvVk3/KXippaxlDP3gAyGOymPvvlXwbjYlJjN2zoI72Zl33ytY6pgyWYvPRWoAHjl41TbJW/YHDCJj3EC0KUCeCVdGLGJOAA/1OGxyBOSCnEU5UHs/4WO2+HXpkJ5j+SG5bCBYMYDc7SDx9jxTU4wwwFKEo84bS67ly8V+pkBUuhyOVAkNtpyjKQvuhRPuKPOtHvYyNCzLVgbyRp87Y6oZo0h2cWnLEVHPrnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=g3x1h2RgIPyjwTEp8lyf37ZCTfk0Pu1+VsBcjmLN4aw=;
+ b=oAzIDBpTlb5TLCYbLVj29ndeKj0n1l9Wq7dl7xJ21m9irEjlZRNLInCsGJ+mGYYLLd/WIDGC5xOOq6yPn5Eyu1KP/D+Jr+VwI9nzH7gQ8sTOG4MDUX7x6QT7jRYtZ+qR6iH/8E/LdDUjJyi+XhXnafU5ONOxOM6gIsSpMzJMmCV7yaLmyJJHAWWhdFkmsDIfYfE/dHEGQFKrqLdG4VwRcLgraosDvkj48ww8c0tATFvnRrN/nNoxYdb1kgJcv3U3ah6HdJVBFPmDCdBYtBXiSXAhXYx/U9FTj2coos6yG3jHKD5gOJSvbOAy46ZqBLnlbqVtTdcDyxPKRx+57HyUag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g3x1h2RgIPyjwTEp8lyf37ZCTfk0Pu1+VsBcjmLN4aw=;
+ b=EjHPzZgZaPnKJAeI0Gd8NmsM+16lVT/fnKZh0O+sra5G03m/MtzBK3q/Z/c+0bNSW5UwhESU4YCpf72gNDif26uDsuO1Xcg+ie0+s4855tDS+Q7b5aQipLbrixv6y5hlJ2tNSzYWmlvCWgC90iO+ql7oJ9+u7O+hwe54eKKn2ms=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2671.eurprd04.prod.outlook.com
+ (2603:10a6:800:55::10) by VI1PR0401MB2493.eurprd04.prod.outlook.com
+ (2603:10a6:800:58::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.21; Mon, 27 Sep
+ 2021 09:33:18 +0000
+Received: from VI1PR0401MB2671.eurprd04.prod.outlook.com
+ ([fe80::2408:2b97:79ac:586b]) by VI1PR0401MB2671.eurprd04.prod.outlook.com
+ ([fe80::2408:2b97:79ac:586b%4]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 09:33:18 +0000
+From:   Sebastien Laveze <sebastien.laveze@oss.nxp.com>
+To:     Richard Cochran <richardcochran@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangbo.lu@nxp.com
+Cc:     yannick.vignon@oss.nxp.com, rui.sousa@oss.nxp.com
+Subject: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
+Date:   Mon, 27 Sep 2021 11:32:50 +0200
+Message-Id: <20210927093250.202131-1-sebastien.laveze@oss.nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0129.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:e6::46) To VI1PR0401MB2671.eurprd04.prod.outlook.com
+ (2603:10a6:800:55::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926161259.238054-5-namit@vmware.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (84.102.252.120) by AM0PR10CA0129.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e6::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Mon, 27 Sep 2021 09:33:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a96c0c1e-67da-4694-0935-08d98199d6a6
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2493:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB24930150E8D18E54C3F67249CDA79@VI1PR0401MB2493.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LCDx78bxFJeqPTG/MAze7IkyQP2dNrbTYKZLOgriM7cWDoNEfWx4kLNrUm7QnQsf4ZGaML9TJvs76nh49v3NCjy1vZJXnYfKsO7LYhlSM2bLcY5RTovmqnqmNkkFlC9E/WIUrTCkZBo+CK9GHGOoMQR5yCuJfZ5+SIgkiFwz1ilmCgHf9Y7O70Z7L0VK62cM4WhsE/tqiUUTzNTW4KwjLiHvODWf2CL15kf3hc4k3wHa/WRQtFEOO1gbGc2mVg11+ECdft+nI74uuqNQ1bYLr2Rbl10/QagbMboaI8uHxVouRyav7vxaslS0i0Df3mEfnOipQHHgbhUIxqZlZJkuCm/ZyaDvkE6iw/KFX93M0V0arxqqi67GayAvx+ja+AwBu1b43NUsf1yPMl9u5/ruHrRkBtJPUWNbHrlxxrBTgi+6U082blCD8uxbwdlrXdPBz37S3KAaa1IH+EkfGZuKZJ4TrpLmY9jt4IZiofzAi6jm9Rls4kQdd8+7+FitF5hK52ZAzGEJSjD2iEcp/FYLxztZ/HMDdMuwKt3TV7FGoOJ0y+owu3jqdltNETJjnyux/Q+BGZTDZhEtV+t4/bEHggpIxaDiQhs8TT8HWOu3ka5z4G2gw70vOxegMbtNtvSng6qyuev8YoNJFncfWL9t7zicHeYpDHl9Q5EtOZ2vVW2gjFM+OXWPDivklCnvko+egdJdQS2dONVfhPc3cFgtqQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2671.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(26005)(6486002)(44832011)(86362001)(66946007)(38100700002)(66556008)(8676002)(38350700002)(66476007)(1076003)(6506007)(8936002)(186003)(2616005)(4326008)(6512007)(956004)(83380400001)(5660300002)(52116002)(508600001)(316002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rYctlM/ChoznVRqpcuZCy90zY9QrAavFpnoIVHEGUxj9GNGEFo2f6tc8VTII?=
+ =?us-ascii?Q?/9axHr7M5NjVfsq4UbdzmaTiHeyVGn7aevesZqeShRgSIV526aQ6fwBfSKcu?=
+ =?us-ascii?Q?9sp14u7aI0bCOWFayePzEypOqb7yz1yxO27jMwZmdiwAH+Fcj2qZgWQxQCCN?=
+ =?us-ascii?Q?wZkyuM8lQwn/5fANWqxHagZl3ObTsmt7ryomNtpdJw1xWt9db746owY06BwV?=
+ =?us-ascii?Q?RSTOiYO8jSrp9Tgml5Aj56J5dVOAPhpEnk+O1l5lRT2EFVTfQxOlXjkOz3ID?=
+ =?us-ascii?Q?Nfy4WHUJZSEtP/sowI6YskpmAiX8d5XyRbFvdw4xoGwa3qHQI7EmUidlqeLk?=
+ =?us-ascii?Q?rogBPAKld33tDhKYdW0hGzD+hXDmmRbnAXgIQJOzmGUKH29b5aT3SnpEgjVL?=
+ =?us-ascii?Q?P9k7MPDhhAkmyA7eZWLX+ID4aNWW5Jf2AivboHYISXNOCII6jIwkutTWR1tK?=
+ =?us-ascii?Q?EZeQ8AzgXlrsLDYyAo4LYxRILjmgld4iaY+hxqILBXqtBjicaKmsWQFRkrOy?=
+ =?us-ascii?Q?0Iw7u2qepgboH04gzJaKBc+KP8t+quShkxEzghGxZdGZFATwIZU3XSAzs+rA?=
+ =?us-ascii?Q?XgprlfvlcauVWElEQcyrszy2SzN3M6qRN6QWXD+GBAPMi6Td2pSQGzb33XdP?=
+ =?us-ascii?Q?cj3uAtjoJStLCLh2tuptKBrU6HtUNjDj4Qv69GuP2CS8o4to2IVLK+C3UkL4?=
+ =?us-ascii?Q?qf46dss8fwUaNXj5vMWkcb6/P2eaL3z7XwW1M7+3/dRkkIvsEePxX3P3Rl/P?=
+ =?us-ascii?Q?qdXEJ1+594T5r6YB78O/NiG8OANOmEvCR8898XWFy9aAN1/c5ZN+lk+abrg4?=
+ =?us-ascii?Q?wWFWxQLrvCISalz4vJa7rPVi91F/hxLXiDPSEwDZWEcel5pc6BqkaNq5eq54?=
+ =?us-ascii?Q?wI4ZNe2cptiIAOAP2CdcvkCIfzy108531Lfni5e/232a/UAcx7eAKKSY5cn2?=
+ =?us-ascii?Q?E1bLa9pYBEQnB4EtYqZQeWT6xxt61WGbl4lpbdbaOB9KTN+caz/OC4pgtR+R?=
+ =?us-ascii?Q?x90DrObFycyYfDbn2xMr9AXnc1kG5NsiFW2FyjIukOqyYO3pcw33AcX2do/s?=
+ =?us-ascii?Q?VijZO3uDhlUcyoiu5NvAgkV2WWYCnhi7Wd750xF+ajVeVo94mOYD4l4h8x9x?=
+ =?us-ascii?Q?Q9aGJ/pr/Xefo66yu18cQ4nM8La71tmHuIdqJSjQq4sSAmAZ40mln1oo8Lsd?=
+ =?us-ascii?Q?wIgXXFSX0bg1zrHq5xCvnro2juhdPdwHnpaF713IZjzIq0kHZpFWy178BlMn?=
+ =?us-ascii?Q?Ht3f5mHTX5Z8iWy9We9MbT2hanBOOPA4ibL13dQyVGMv/eujAiwUxW8QlwXV?=
+ =?us-ascii?Q?beJpzuBT+36mTAUeyr/nSOV9?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a96c0c1e-67da-4694-0935-08d98199d6a6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2671.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 09:33:18.5928
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wZyrZ8y/DznMDHXNUsRFDDJaMT8J8k2bAXNnAAqZD+5OCslJGl5tjaNbi1L4OpvQLp6grPp441YoBs6QhpOqgxW7rsL095wmlIWWm4n2vPc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2493
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 09:12:55AM -0700, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> The different behaviors of madvise are different in several ways, which
-> are distributed across several functions. Use the design pattern from
-> iouring in order to define the actions that are required for each
-> behavior.
-> 
-> The next patches will get rid of old helper functions that are modified
-> in this patch and the redundant use of array_index_nospec(). The next
-> patches will add more actions for each leaf into the new struct.
-> 
-> No functional change is intended.
-> 
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Colin Cross <ccross@google.com>
-> Cc: Suren Baghdasarya <surenb@google.com>
-> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> ---
->  mm/madvise.c | 168 +++++++++++++++++++++++++++++++++------------------
->  1 file changed, 109 insertions(+), 59 deletions(-)
-> 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 17e39c70704b..127507c71ba9 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -29,6 +29,7 @@
->  #include <linux/swapops.h>
->  #include <linux/shmem_fs.h>
->  #include <linux/mmu_notifier.h>
-> +#include <linux/nospec.h>
->  
->  #include <asm/tlb.h>
->  
-> @@ -39,6 +40,101 @@ struct madvise_walk_private {
->  	bool pageout;
->  };
->  
-> +struct madvise_info {
-> +	u8 behavior_valid: 1;
-> +	u8 process_behavior_valid: 1;
-> +	u8 need_mmap_read_only: 1;
-> +};
-> +
-> +static const struct madvise_info madvise_info[MADV_SOFT_OFFLINE+1] = {
+From: Seb Laveze <sebastien.laveze@nxp.com>
 
-MADV_SOFT_OFFLINE+1 smells bad.
+Add an IOCTL to perform per-timestamp conversion, as an extension of the
+ptp virtual framework introduced in commit 5d43f951b1ac ("ptp: add ptp
+virtual clock driver framework").
 
-And I don't like the change in general. Given that MADV_SOFT_OFFLINE is
-101, the array will be mostly empty.
+The original implementation allows binding a socket to a given virtual
+clock to perform the timestamps conversions. Commit 5d43f951b1ac ("ptp:
+add ptp virtual clock driver framework").
 
-I donno. I don't see any improvement with the patch. But maybe it's only me.
+This binding works well if the application requires all timestamps in the
+same domain but is not convenient when multiple domains need to be
+supported using a single socket.
 
+Typically, IEEE 802.1AS-2020 can be implemented using a single socket,
+the CMLDS layer using raw PHC timestamps and the domain specific
+timestamps converted in the appropriate gPTP domain using this IOCTL.
+
+Signed-off-by: Seb Laveze <sebastien.laveze@nxp.com>
+---
+ drivers/ptp/ptp_chardev.c      | 24 ++++++++++++++++++++++++
+ include/uapi/linux/ptp_clock.h |  1 +
+ 2 files changed, 25 insertions(+)
+
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index af3bc65c4595..28c13098fcba 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -118,10 +118,13 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+ 	struct ptp_clock_request req;
+ 	struct ptp_clock_caps caps;
+ 	struct ptp_clock_time *pct;
++	struct ptp_vclock *vclock;
+ 	unsigned int i, pin_index;
+ 	struct ptp_pin_desc pd;
+ 	struct timespec64 ts;
++	unsigned long flags;
+ 	int enable, err = 0;
++	s64 ns;
+ 
+ 	switch (cmd) {
+ 
+@@ -418,6 +421,27 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+ 		mutex_unlock(&ptp->pincfg_mux);
+ 		break;
+ 
++	case PTP_VCLOCK_CONV_TS:
++		if (!ptp->is_virtual_clock)
++			return -EINVAL;
++
++		vclock = info_to_vclock(ptp->info);
++
++		if (get_timespec64(&ts, (void __user *)arg))
++			return -EFAULT;
++
++		ns = timespec64_to_ns(&ts);
++
++		spin_lock_irqsave(&vclock->lock, flags);
++		ns = timecounter_cyc2time(&vclock->tc, ns);
++		spin_unlock_irqrestore(&vclock->lock, flags);
++
++		ts = ns_to_timespec64(ns);
++
++		if (put_timespec64(&ts, (void __user *)arg))
++			return -EFAULT;
++		break;
++
+ 	default:
+ 		err = -ENOTTY;
+ 		break;
+diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
+index 1d108d597f66..13147d454aa8 100644
+--- a/include/uapi/linux/ptp_clock.h
++++ b/include/uapi/linux/ptp_clock.h
+@@ -223,6 +223,7 @@ struct ptp_pin_desc {
+ 	_IOWR(PTP_CLK_MAGIC, 17, struct ptp_sys_offset_precise)
+ #define PTP_SYS_OFFSET_EXTENDED2 \
+ 	_IOWR(PTP_CLK_MAGIC, 18, struct ptp_sys_offset_extended)
++#define PTP_VCLOCK_CONV_TS  _IOWR(PTP_CLK_MAGIC, 19, struct __kernel_timespec)
+ 
+ struct ptp_extts_event {
+ 	struct ptp_clock_time t; /* Time event occured. */
 -- 
- Kirill A. Shutemov
+2.25.1
+
