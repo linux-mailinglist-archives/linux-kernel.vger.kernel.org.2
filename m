@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D447419B1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95652419ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236739AbhI0RP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55534 "EHLO mail.kernel.org"
+        id S236345AbhI0RLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:11:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236616AbhI0RMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:12:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8650F6128C;
-        Mon, 27 Sep 2021 17:09:00 +0000 (UTC)
+        id S236307AbhI0RJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:09:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54FD96113A;
+        Mon, 27 Sep 2021 17:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762541;
-        bh=rULxsDEW11GuTvf5HgE3jNRIhroxB1TVyIjSsfkzDJM=;
+        s=korg; t=1632762453;
+        bh=f91TnhFd8ef1ubRJrXJUlfDGZkPjpb5piUcuIZ7W6ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XTullnkU2T4a/t7roJQ4ii9KpyOllNG355zi1NbahEgDN3gLkSLGsXEDSQWfBSwqC
-         WJge/ZILIl6Ia0rr4ZMWjGZ9bFTu/VVHqopHLc7GAczp9tigcVMQp3kGX2WGzw0XtV
-         TBTqISKkhw90pK3EHml1Ymh7JUQJAEKrBFLD6znA=
+        b=pne2qU42pQTb0o097/PWx1c1f/fKiVhXeBveyeGPicX+gHxxXGOBBmkX7b5JHHrjn
+         yV9XRLNn8U/QglcjuTI68WwcbwdeM11M5XpQhiZ7wxhU7ZS8ExyO7yuxmoGrB0Ek80
+         B6usFTK+XvqQN8R2bw4rVGAapLaMlObOUQtpOJms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carlo Lobrano <c.lobrano@gmail.com>,
-        Daniele Palmas <dnlplm@gmail.com>,
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 020/103] USB: serial: option: add Telit LN920 compositions
-Date:   Mon, 27 Sep 2021 19:01:52 +0200
-Message-Id: <20210927170226.416036337@linuxfoundation.org>
+Subject: [PATCH 5.10 021/103] USB: serial: option: remove duplicate USB device ID
+Date:   Mon, 27 Sep 2021 19:01:53 +0200
+Message-Id: <20210927170226.448470394@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
 References: <20210927170225.702078779@linuxfoundation.org>
@@ -40,43 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Carlo Lobrano <c.lobrano@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 7bb057134d609b9c038a00b6876cf0d37d0118ce upstream.
+commit 1ca200a8c6f079950a04ea3c3380fe8cf78e95a2 upstream.
 
-This patch adds the following Telit LN920 compositions:
+The device ZTE 0x0094 is already on the list.
 
-0x1060: tty, adb, rmnet, tty, tty, tty, tty
-0x1061: tty, adb, mbim, tty, tty, tty, tty
-0x1062: rndis, tty, adb, tty, tty, tty, tty
-0x1063: tty, adb, ecm, tty, tty, tty, tty
-
-Signed-off-by: Carlo Lobrano <c.lobrano@gmail.com>
-Link: https://lore.kernel.org/r/20210903123913.1086513-1-c.lobrano@gmail.com
-Reviewed-by: Daniele Palmas <dnlplm@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: b9e44fe5ecda ("USB: option: cleanup zte 3g-dongle's pid in option.c")
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/serial/option.c |    1 -
+ 1 file changed, 1 deletion(-)
 
 --- a/drivers/usb/serial/option.c
 +++ b/drivers/usb/serial/option.c
-@@ -1205,6 +1205,14 @@ static const struct usb_device_id option
- 	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1056, 0xff),	/* Telit FD980 */
- 	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1060, 0xff),	/* Telit LN920 (rmnet) */
-+	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1061, 0xff),	/* Telit LN920 (MBIM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1062, 0xff),	/* Telit LN920 (RNDIS) */
-+	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1063, 0xff),	/* Telit LN920 (ECM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
+@@ -1658,7 +1658,6 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
+-	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
+ 	  .driver_info = RSVD(1) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
 
 
