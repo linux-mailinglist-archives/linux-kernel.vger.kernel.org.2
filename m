@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCA441A2FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1F041A302
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbhI0WdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57752 "EHLO
+        id S237772AbhI0Wd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237759AbhI0WdK (ORCPT
+        with ESMTP id S237663AbhI0Wdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:33:10 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AB4C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:31:32 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id h129so24913922iof.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:31:32 -0700 (PDT)
+        Mon, 27 Sep 2021 18:33:54 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD89C061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:32:15 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x27so84139029lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:32:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sX6r+VtFysjF4oYWhq8xiiNNA4lX1D1DfLKUJZfhu90=;
-        b=OGr73FRvt46870zXruqJzO3SP1Ff106DAwHYXUFkbZMroSt9xlbgYfx7Ha7zEr+0eQ
-         fFB+gzMSVZ08KIy7nyZNnCarwiShb9palyfj0dXtHLBmtY9QZen0dwLXBl4Rvl7CxcNn
-         SP7cAuUENfc4oxY/hNo+0A66ksQ9JUCs/MnzyXpskmihN/bESuVMBxAXmMC+yskn4ewF
-         cvNKll/Bip9zfqynoppKB6jf4oU5D9Xmqy9wGOf+8D4/xEcZSZdSXUHc0DgUlJw88XJd
-         dW6kqum5J6035JIytkWK80yNFYf+nDLSA6v4LNgfQDtCvMy5K9RF5zPvdixHvFODqSpb
-         uFOw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zKu0IEoODoUZIet78XIQ7gITGkb6gFdWyb3HNpoDiRY=;
+        b=kpXgGEYkOKaDhkkfgBp7BBAINU+UWy4oa9d0ezLNX1RdkCrN5HQFAcEpIxYdSqaY8E
+         4l+zTnannSueZmhgY3UnxmyNBaFabr0j0X2ntWtPMkfvb+VutnzecmJmXqGu0zexnRjx
+         uXmSVxOUQjEHQO/mqp5FlkjS8NjpvBTAl593Q0gzCq2cbHArqKK4E9y1M1argn71WiC6
+         JO2B/CXOEM7xbpGpU2P6VwrNk9BJEt5K2j4oOUF4X6Fs+MOeYgZqgEt/5NsJ1CkTTM1F
+         cahMn+4wLj+ys0ZhlokvVekdhkb6slO+PCWGpOm9BNz6ndkrwQIpfKjbP7x8xOfI6lVD
+         bkUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sX6r+VtFysjF4oYWhq8xiiNNA4lX1D1DfLKUJZfhu90=;
-        b=emBv747tyLEzki9T5YI3pAGAmSTdK8Z2ot/h7D0fyhh8ZUv565qenVnC4zhVP5MsQR
-         3J0miRctXvu00EOx0UbKy64Ux9r0hpvV3rIq3GfhW10Zodcr69Nc1w7XzqZYuT/2auqY
-         i5EeQvGQ2NyBsyOYUWroZsPGgEi9FHwFo+TywzPfF5y6FnanYeF1wNmp9bHyYC+Yj+LH
-         kBifoAeh5mlG13rZsEl8S32yytbSvA+yy88jX1NjGcWoCgOYC02OxRcA2+BmXx37Wnyp
-         wpBSv0WvOrYhWzMqVKPNsxrWB8m3fVxg+QMt+v9gbs1jw9+gTF07W9o6S2NjB+vJA2Ht
-         yo1A==
-X-Gm-Message-State: AOAM530e8F/6h6QMlJkHPXr+78/laDpNw3ktEiEAzuNOgEIxXGUQceWs
-        W3scNAr/WX4BBDcYlrqWBoHYuQwS/9NI3g==
-X-Google-Smtp-Source: ABdhPJzP/D0Hpjy1B2sLyeFE8yokRGllLNT0YFxbbt65jzTeEocCKfwSycbAz2t49gx5XfwHzWMFZw==
-X-Received: by 2002:a05:6638:dcc:: with SMTP id m12mr1876527jaj.68.1632781891278;
-        Mon, 27 Sep 2021 15:31:31 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id t16sm9791519ilm.68.2021.09.27.15.31.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 15:31:30 -0700 (PDT)
-Subject: Re: [PATCH v2 00/10] block: fourth batch of add_disk() error handling
- conversions
-To:     Luis Chamberlain <mcgrof@kernel.org>, bhelgaas@google.com,
-        liushixin2@huawei.com, thunder.leizhen@huawei.com,
-        lee.jones@linaro.org, geoff@infradead.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
-        haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        josh.h.morris@us.ibm.com, pjk1939@linux.ibm.com, tim@cyberelk.net,
-        richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210927220157.1069658-1-mcgrof@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <529d5e4a-82a4-2498-f63d-34c177ca4ab4@kernel.dk>
-Date:   Mon, 27 Sep 2021 16:31:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zKu0IEoODoUZIet78XIQ7gITGkb6gFdWyb3HNpoDiRY=;
+        b=NT4MbB62RHtCZGvQ6t3Ny2D2R5qrCjOXUY5sNrv1q2A8AoNTv47qNXNCX5ihuXPJMl
+         3iUAboMPABXWD1gVtjbVV8PRTtFKoXnhbHW8VIKI+yNxpnpqtPfCav3L84JGbMP+2Ce5
+         18k99IXd+uYnWNyLKUwIPbzOV4SMZuUHqG6W+L7oskxctvWGt3KbQW7S1PrywDMQz9p6
+         7Q9m7pLs8NYStpnAZMPemNtU5wPmmHvBKcZ46AeUc9PiOAD1IuZsvyaZtp/duFsE4B6Z
+         0P2RjKu3Tdupb7vKCYM6wCqWbbXNQIgoMejQ9K8YfJcPLu2pGZ+tHg0NHlDXjy8ql6ns
+         IwQg==
+X-Gm-Message-State: AOAM531PSr2ReiIxbU9edGSrBDzuydKROoI/m1N2kuwFEbCZ6+9rVmPp
+        QxAP7KZ/eSqUEWIm64XKtHhfJRlP9i8fJ5+RR5NNUw==
+X-Google-Smtp-Source: ABdhPJzhJkeB4zE1uCuw+O9on0VZVgtLXjw2moy+UGvPzQgeEJy+bQMNoHXRMUWjpXTYDrUF0YGvWaKZ2x6KDD8fqxo=
+X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr2162094lfv.358.1632781934165;
+ Mon, 27 Sep 2021 15:32:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210917172727.26834-1-huobean@gmail.com> <20210917172727.26834-2-huobean@gmail.com>
+In-Reply-To: <20210917172727.26834-2-huobean@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 28 Sep 2021 00:31:38 +0200
+Message-ID: <CAPDyKFo+vVE_nH7b6HoZA==psx1+BiL8GqKCFXScRQKcnu+-OA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mmc: sdhci: Return true only when timeout exceeds
+ capacity of the HW timer
+To:     Bean Huo <huobean@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 4:01 PM, Luis Chamberlain wrote:
-> This is the fourth batch of add_disk() error handling driver
-> conversions. This set along with the entire 7 set of driver conversions
-> can be found on my 20210927-for-axboe-add-disk-error-handling branch
-> [0].
+On Fri, 17 Sept 2021 at 19:27, Bean Huo <huobean@gmail.com> wrote:
+>
+> From: Bean Huo <beanhuo@micron.com>
+>
+> Clean up sdhci_calc_timeout() a bit,  and let it set too_big to be true only
+> when the timeout value required by the eMMC device exceeds the capability of
+> the host hardware timer.
+>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-Applied 1-2, 6, 8-9, thanks.
+Applied for next (deferring patch2), thanks!
 
--- 
-Jens Axboe
+Kind regards
+Uffe
 
+
+> ---
+>  drivers/mmc/host/sdhci.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 7ae398f8d4d3..357b365bf0ec 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -930,7 +930,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>         struct mmc_data *data;
+>         unsigned target_timeout, current_timeout;
+>
+> -       *too_big = true;
+> +       *too_big = false;
+>
+>         /*
+>          * If the host controller provides us with an incorrect timeout
+> @@ -941,7 +941,7 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>         if (host->quirks & SDHCI_QUIRK_BROKEN_TIMEOUT_VAL)
+>                 return host->max_timeout_count;
+>
+> -       /* Unspecified command, asume max */
+> +       /* Unspecified command, assume max */
+>         if (cmd == NULL)
+>                 return host->max_timeout_count;
+>
+> @@ -968,17 +968,14 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>         while (current_timeout < target_timeout) {
+>                 count++;
+>                 current_timeout <<= 1;
+> -               if (count > host->max_timeout_count)
+> +               if (count > host->max_timeout_count) {
+> +                       if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
+> +                               DBG("Too large timeout 0x%x requested for CMD%d!\n",
+> +                                   count, cmd->opcode);
+> +                       count = host->max_timeout_count;
+> +                       *too_big = true;
+>                         break;
+> -       }
+> -
+> -       if (count > host->max_timeout_count) {
+> -               if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
+> -                       DBG("Too large timeout 0x%x requested for CMD%d!\n",
+> -                           count, cmd->opcode);
+> -               count = host->max_timeout_count;
+> -       } else {
+> -               *too_big = false;
+> +               }
+>         }
+>
+>         return count;
+> --
+> 2.25.1
+>
