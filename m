@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CC9419A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F0F419C48
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236216AbhI0RJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:09:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
+        id S235908AbhI0R1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:27:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236374AbhI0RI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D9E4611C5;
-        Mon, 27 Sep 2021 17:06:43 +0000 (UTC)
+        id S237366AbhI0RXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8009613A6;
+        Mon, 27 Sep 2021 17:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762404;
-        bh=FuBLvPZOaNDqtLiQ6Jkd1Gd1oxqwHc0IZGNzQGqzgOw=;
+        s=korg; t=1632762876;
+        bh=75ArG7m6E2Rh9NiQgdj3xRp3nhgs2JPiKzG8onYYs+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kjYRqm2GJhcQRczlqiuXrN0Oyps7hs7evpsi6tFuHMLtFiHAFRX98J67CUAmqajcn
-         kOUAhnDIrltFJVoeMab+ixxyYm7hNA3QxjSqDN7L6SbtpfAeJ/EKZ0DpnD6bj6CKeF
-         WMWVPOZfJYWvAgVRJxtmo4fSlS4aKvQOzdTvvod4=
+        b=nnV4rh/9sz/x5eXq1+ccdCC6m/rW2ebzQ0up1TupqMYFr1v0N18upSSo80XQie1UF
+         0OWB19/VBz1RZhNuQVxZDNw2jTQ6IhARpxwbr5IiNn7jVpRN3wka6TJsNJRBBcKCjF
+         H4QSypHujrDmPDWY8kzElbvnGXvgzwBwYtJwBEO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Ondrej Zary <linux@zary.sk>
-Subject: [PATCH 5.10 010/103] usb-storage: Add quirk for ScanLogic SL11R-IDE older than 2.6c
-Date:   Mon, 27 Sep 2021 19:01:42 +0200
-Message-Id: <20210927170226.072673764@linuxfoundation.org>
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 057/162] enetc: Fix uninitialized struct dim_sample field usage
+Date:   Mon, 27 Sep 2021 19:01:43 +0200
+Message-Id: <20210927170235.460660782@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Zary <linux@zary.sk>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-commit b55d37ef6b7db3eda9b4495a8d9b0a944ee8c67d upstream.
+[ Upstream commit 9f7afa05c9522b086327929ae622facab0f0f72b ]
 
-ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
-broken tag handling, preventing the device from working at all:
-usb 1-1: new full-speed USB device number 2 using uhci_hcd
-usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
-usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
-usb 1-1: Product: USB Device
-usb 1-1: Manufacturer: USB Device
-usb-storage 1-1:1.0: USB Mass Storage device detected
-scsi host2: usb-storage 1-1:1.0
-usbcore: registered new interface driver usb-storage
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+The only struct dim_sample member that does not get
+initialized by dim_update_sample() is comp_ctr. (There
+is special API to initialize comp_ctr:
+dim_update_sample_with_comps(), and it is currently used
+only for RDMA.) comp_ctr is used to compute curr_stats->cmps
+and curr_stats->cpe_ratio (see dim_calc_stats()) which in
+turn are consumed by the rdma_dim_*() API.  Therefore,
+functionally, the net_dim*() API consumers are not affected.
+Nevertheless, fix the computation of statistics based
+on an uninitialized variable, even if the mentioned statistics
+are not used at the moment.
 
-Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
-
-2.6c is the only firmware that claims Linux compatibility.
-The firmware can be upgraded using ezotgdbg utility:
-https://github.com/asciilifeform/ezotgdbg
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Ondrej Zary <linux@zary.sk>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210913210106.12717-1-linux@zary.sk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ae0e6a5d1627 ("enetc: Add adaptive interrupt coalescing")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/storage/unusual_devs.h |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x
- 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 7f90c27c0e79..042327b9981f 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -419,7 +419,7 @@ static void enetc_rx_dim_work(struct work_struct *w)
  
- /*
-- * Reported by Ondrej Zary <linux@rainbow-software.org>
-+ * Reported by Ondrej Zary <linux@zary.sk>
-  * The device reports one sector more and breaks when that sector is accessed
-+ * Firmwares older than 2.6c (the latest one and the only that claims Linux
-+ * support) have also broken tag handling
-  */
-+UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
-+		"ScanLogic",
-+		"SL11R-IDE",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
- UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
- 		"ScanLogic",
- 		"SL11R-IDE",
+ static void enetc_rx_net_dim(struct enetc_int_vector *v)
+ {
+-	struct dim_sample dim_sample;
++	struct dim_sample dim_sample = {};
+ 
+ 	v->comp_cnt++;
+ 
+-- 
+2.33.0
+
 
 
