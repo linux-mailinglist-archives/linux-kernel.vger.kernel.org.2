@@ -2,161 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C403419D02
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664BF419D46
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhI0RhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:37:07 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:45034 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239220AbhI0RfE (ORCPT
+        id S237051AbhI0Rr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236679AbhI0Rrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:35:04 -0400
-Received: by mail-oi1-f177.google.com with SMTP id e24so16651028oig.11;
-        Mon, 27 Sep 2021 10:33:26 -0700 (PDT)
+        Mon, 27 Sep 2021 13:47:45 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178ECC06176D
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:33:46 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id w11so12235595plz.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:33:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QVPOqaNlq7I3lDhzzEE0LSlmqb5BJv1DMZ8alEx/1nI=;
+        b=d285SG2vMoj7fWGLcc6kCiR/YbFmwFZ0r8FCUF/olwvOpdIeZoqHfRZvaCPNzDsw+I
+         DXfTdpdYvY1o3+xwclpJFqsOx9rx8gXxXILEPFDMXqDFGp4BJoLLTpbwH1u1XP+r1Qam
+         5szAUX8Uoct9SyiacXSLIaEMZeN1EKkEAgcpyL12gNGSfsGKRyH2m+hvt+6VnU5P+65Q
+         0VTTYCcD9hk6ReQ9O9Swq7+ugPD0ecGhrBD3WfyuwTtr/uZVPNTBMwKAB7m8BgvxcC2+
+         1ahXM7yNRUThnsg8QBfYfkaFmzHfumEXxhUu0VeZLeiCqPy+iDDU2pSUPBkNE2SVw6+C
+         hGgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DTl4v4xRY/QeaUhXMVUUEMkzsjdM8aQdj906WW5kU7s=;
-        b=RDw4x1Hkfgbhac/lpGI3CErQ7yqRljL+iA7I4aZEggmv0nKNjvttl/W1fhfZceZhnX
-         2OVIuA0SpmNQnv9n3OKDvoKYohK7bfOIXwlQ0tY4r8Lbhgd04ILN060sIlT2Tqg+4+mj
-         4BWlKbdVM0wdN5T5yX5aHsywXbUYfAoWC0D0iLJTtbYvQJvJX22r4eks2dVWthS4sYKL
-         I8MrwTA0n/C2mWwmKOR9rF+aEaemvjkY2Up1y96El9yd8C9RLfHHNWHYb9hiVmUpQxFR
-         xKrcGhpcTQN3sb5folcttdsJIplQodmADmkILXnrvpnTiIJX1SwZ4GBtE8kUU3/43Ty1
-         /6cw==
-X-Gm-Message-State: AOAM533QG/GEKdjgeCnLpOQqxHTA9jCI/XDUZc6NVWh4QeAMQJBdCv0u
-        7dVLkGNcE3JgLkt55zCoDxtGUEuO7buZZSZgDo7l+5Zr3qs=
-X-Google-Smtp-Source: ABdhPJwXW05EAs293dZM1rzhd2iY7NyFCj+CsMn6l0H9oZ+sKB8TqfUMumz+aoNWEmCmKaqPusGNI5dcmARRoYH8YXc=
-X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr190669oib.69.1632764006375;
- Mon, 27 Sep 2021 10:33:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QVPOqaNlq7I3lDhzzEE0LSlmqb5BJv1DMZ8alEx/1nI=;
+        b=TRyYTZCvkUExJ1wkwbdXjkoyNCikuLtyOHb6UzJUUiTOJbRYI0L4PNAbl9bgrCtsV2
+         aGsAlLiBdjjtBuwbjtSwK6F9I4BPURN2qi1/CIHABYeZveYz5bV6H5ueRmY4IarT/cv4
+         btgjwBmLX8iiZxMceXZ4dJe8ANEvVx9PM5lyMtzuQWG2LYf92CIoaptdm7cVDcyBtiga
+         o9PyFnI5FuQ5RGOxFhiyZ19wq5IQeyAJyEjOreIr6i5rKm2FgHhV+YUhv3t4YK1ClM7f
+         s6hzXGJpSIG7Au0jQ8Z/AkM079sg1YeISeZkScKaxCOt8SNqRURzLUSbhiM8h/bgo7ya
+         DMJA==
+X-Gm-Message-State: AOAM532ht2NwknLmpoYgXeIwhZO5MsDZnFs21zg3qoNu76Wfin2lgHqo
+        ILgH0I3faiFFVlHrAICqSqkzHw==
+X-Google-Smtp-Source: ABdhPJyGE9PssoIO8hd/mc9M/bvKl7HfH1PbwL6q6ROscf2AvxLZZUXzLqFUTTNdwUlFUFuHe69vkw==
+X-Received: by 2002:a17:90b:224b:: with SMTP id hk11mr253513pjb.231.1632764025351;
+        Mon, 27 Sep 2021 10:33:45 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id o17sm18385346pfp.126.2021.09.27.10.33.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 10:33:44 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 17:33:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Matlack <dmatlack@google.com>,
+        Jon Cargille <jcargill@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        KVM ARM <kvmarm@lists.cs.columbia.edu>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        kvm <kvm@vger.kernel.org>, kvm-ppc <kvm-ppc@vger.kernel.org>,
+        "Kernel Mailing List, Linux" <linux-kernel@vger.kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
+ Halt-polling fixes, cleanups and a new stat)
+Message-ID: <YVIAdVxc+q2UWB+J@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
+ <YVHcY6y1GmvGJnMg@google.com>
+ <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
+ <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
+ <CABgObfYtS6wiQe=BhF3t5usr7J6q4PWE4=rwZMMukfC9wT_6fA@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1631802162.git.yu.c.chen@intel.com> <afe88d0bbab0fbed289cceceec009be99120effa.1631802163.git.yu.c.chen@intel.com>
-In-Reply-To: <afe88d0bbab0fbed289cceceec009be99120effa.1631802163.git.yu.c.chen@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 27 Sep 2021 19:33:15 +0200
-Message-ID: <CAJZ5v0ikSrHuJ25j74ARJxM1wedt63Q8F2kQ4YSgJFSbx+5nOw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
- and corresponding structures
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABgObfYtS6wiQe=BhF3t5usr7J6q4PWE4=rwZMMukfC9wT_6fA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 5:54 PM Chen Yu <yu.c.chen@intel.com> wrote:
->
-> Platform Firmware Runtime Update image starts with UEFI headers, and the
-> headers are defined in UEFI specification, but some of them have not been
-> defined in the kernel yet.
->
-> For example, the header layout of a capsule file looks like this:
->
-> EFI_CAPSULE_HEADER
-> EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> EFI_FIRMWARE_IMAGE_AUTHENTICATION
->
-> These structures would be used by the Platform Firmware Runtime Update
-> driver to parse the format of capsule file to verify if the corresponding
-> version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-> kernel, however the rest are not, thus introduce corresponding UEFI
-> structures accordingly.
->
-> The reason why efi_manage_capsule_header_t and
-> efi_manage_capsule_image_header_t are packedi might be that:
-> According to the uefi spec,
-> [Figure 23-6 Firmware Management and Firmware Image Management headers]
-> EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER is located at the lowest offset
-> within the body of the capsule. And this structure is designed to be
-> unaligned to save space, because in this way the adjacent drivers and
-> binary payload elements could start on byte boundary with no padding.
-> And the EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER is at the head of
-> each payload, so packing this structure also makes room for more data.
+On Mon, Sep 27, 2021, Paolo Bonzini wrote:
+> On Mon, Sep 27, 2021 at 5:17 PM Christian Borntraeger
+> <borntraeger@de.ibm.com> wrote:
+> > > So I think there are two possibilities that makes sense:
+> > >
+> > > * track what is using KVM_CAP_HALT_POLL, and make writes to halt_poll_ns follow that
+> >
+> > what about using halt_poll_ns for those VMs that did not uses KVM_CAP_HALT_POLL and the private number for those that did.
+> 
+> Yes, that's what I meant.  David pointed out that doesn't allow you to
+> disable halt polling altogether, but for that you can always ask each
+> VM's userspace one by one, or just not use KVM_CAP_HALT_POLL. (Also, I
+> don't know about Google's usecase, but mine was actually more about
+> using KVM_CAP_HALT_POLL to *disable* halt polling on some VMs!).
 
-IMO it would be sufficient to say that both
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER need not be aligned and
-so the corresponding data types should be packed.
+I kinda like the idea if special-casing halt_poll_ns=0, e.g. for testing or
+in-the-field mitigation if halt-polling is broken.  It'd be trivial to support, e.g.
 
->
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
->  include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 6b5d36babfcc..19ff834e1388 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -148,6 +148,56 @@ typedef struct {
->         u32 imagesize;
->  } efi_capsule_header_t;
->
-> +#pragma pack(1)
-> +
-> +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
-> +typedef struct {
-> +       u32     ver;
-> +       u16     emb_drv_cnt;
-> +       u16     payload_cnt;
-> +       /*
-> +        * Variable array indicated by number of
-> +        * (emb_drv_cnt + payload_cnt)
-> +        */
-> +       u64     offset_list[];
-> +} efi_manage_capsule_header_t;
-> +
-> +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
-> +typedef struct {
-> +       u32     ver;
-> +       guid_t  image_type_id;
-> +       u8      image_index;
-> +       u8      reserved_bytes[3];
-> +       u32     image_size;
-> +       u32     vendor_code_size;
-> +       /* ver = 2. */
-> +       u64     hw_ins;
-> +       /* ver = v3. */
-> +       u64     capsule_support;
-> +} efi_manage_capsule_image_header_t;
-> +
-> +#pragma pack()
-> +
-> +/* WIN_CERTIFICATE */
-> +typedef struct {
-> +       u32     len;
-> +       u16     rev;
-> +       u16     cert_type;
-> +} win_cert_t;
-> +
-> +/* WIN_CERTIFICATE_UEFI_GUID */
-> +typedef struct {
-> +       win_cert_t      hdr;
-> +       guid_t          cert_type;
-> +       u8              cert_data[];
-> +} win_cert_uefi_guid_t;
-> +
-> +/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
-> +typedef struct {
-> +       u64                             mon_count;
-> +       win_cert_uefi_guid_t            auth_info;
-> +} efi_image_auth_t;
-> +
->  /*
->   * EFI capsule flags
->   */
-> --
-> 2.25.1
->
+@@ -3304,19 +3304,23 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+                update_halt_poll_stats(vcpu, start, poll_end, !waited);
+
+        if (halt_poll_allowed) {
++               max_halt_poll_ns = vcpu->kvm->max_halt_poll_ns;
++               if (!max_halt_poll_ns || !halt_poll_ns)  <------ squish the max if halt_poll_ns==0
++                       max_halt_poll_ns = halt_poll_ns;
++
+                if (!vcpu_valid_wakeup(vcpu)) {
+                        shrink_halt_poll_ns(vcpu);
+-               } else if (vcpu->kvm->max_halt_poll_ns) {
++               } else if (max_halt_poll_ns) {
+                        if (halt_ns <= vcpu->halt_poll_ns)
+                                ;
+                        /* we had a long block, shrink polling */
+                        else if (vcpu->halt_poll_ns &&
+-                                halt_ns > vcpu->kvm->max_halt_poll_ns)
++                                halt_ns > max_halt_poll_ns)
+                                shrink_halt_poll_ns(vcpu);
+                        /* we had a short halt and our poll time is too small */
+-                       else if (vcpu->halt_poll_ns < vcpu->kvm->max_halt_poll_ns &&
+-                                halt_ns < vcpu->kvm->max_halt_poll_ns)
+-                               grow_halt_poll_ns(vcpu);
++                       else if (vcpu->halt_poll_ns < max_halt_poll_ns &&
++                                halt_ns < max_halt_poll_ns)
++                               grow_halt_poll_ns(vcpu, max_halt_poll_ns);
+                } else {
+                        vcpu->halt_poll_ns = 0;
+                }
