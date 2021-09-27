@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BC241981C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5C741981E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235277AbhI0Pn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
+        id S235260AbhI0PoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235219AbhI0Pnu (ORCPT
+        with ESMTP id S235210AbhI0PoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:43:50 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9D7C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:42:12 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id l8so23440335edw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:42:12 -0700 (PDT)
+        Mon, 27 Sep 2021 11:44:09 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74335C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:42:31 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id e15so79537020lfr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CBjJ13FCpP/hd5pZS3FX6dverz31Y4VFTcEH/pao96g=;
-        b=SY3wZKR6nOSIasw400g6YgMHSTKCcwuM1yJYuIOu3iQgOwy3IVNZkpZY9rrMHeiGMj
-         Sv132G4Gf92KTR68tzfhJhImoWPQ0KqVJrl9+emmmrQuP1p8J7Oathc4m3N336ZE5DRf
-         5gdGS34cFE1yZ2dNu2XSZyKtLJ8ANQsJSsAXZgC7R3YdRiZUA0CjJyyXOqeUXWfOK0TA
-         9wh1g8ptrCwhbq7RFqM77bCS3kPZIMNx7uhBMQXO+eTHCHF5BT7jeP5UuCrKCghEqecp
-         CZFgDsToDyNHVUjWRQ7/jgVRkzDeGRmvB1hYB4jV1UU54oKsgIBHv4NyeFzoV5ausFug
-         1LWw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=u3UVtloaaMqDkztEGASyWNnbDwu0ymuLbk5cZTT/COQ=;
+        b=o+SXL4dKrT7ZKoIFOD+VGvZuo54ybYXpEjx9wcWvICRlTkLyYRcxs/APLH9C80bjhH
+         A2awA81Qb6AuA2D3RnEDRk2gBULaUfoRIFRmIPLekADP6qJh8WH8rZxYRMAzVtVYV5oP
+         eymhxvX1XsUzQe8jOqMfq+uPFN7x+XFDpaGVMjJ/y6xvU5KZaSfBmhLYxs7k7Q6b90WZ
+         6rTfNFgH0svSfd1iy6Bt6vsbMrX+wnwzObzLI5nskurecbiMyLMItvNvbZZGJIAlyX15
+         JaDq39LDXSDcq2G9yiRkc5iqWNI+hcYYMtZZi3aehEc29Vz7MAaC7TuFVayaY3rChC8o
+         c3Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CBjJ13FCpP/hd5pZS3FX6dverz31Y4VFTcEH/pao96g=;
-        b=P12IOx3YUKjnywp/LMPAIeOJV+QSH6BGJ/2mXOQ2564PX8Et2Cr66TzCDatPIZvtm9
-         IpjeyM8KQmLfbu/KOqdGpvX94RkMnuUEz3EZV6PQSBntHTIZoWKkN+VhpujDSkkfS3Nk
-         C5QQ9GKfy8m45Ga17bDE/lScpD3W/WH7xvKFjP/yzosRYhSj3P8H/N5Q1HuiT6DzutuE
-         1zDhDeTDL2iMJGIinMMvATvHfwl/6gPSxeSvl4Zgv/WagSugYkakDHE7ImxuoFhx92/G
-         G5DZ0sQAPrRuhftRWDnWzrvFA+d/r4XxPZoJDzcOGlBwzC48S/B6FTNb7Sk8H3ZsruoE
-         Mf9g==
-X-Gm-Message-State: AOAM5318wm9EtMlYtMAo/noyTQ+Kmzfqv2ZA7OXkPSk9rZnu/TkSeiMp
-        LpDqnltkWU5/J9FPomrTYsyLTkLJWZcMhw==
-X-Google-Smtp-Source: ABdhPJwvHjPrL+qmjed/Prp0vaMpNeTWufcaTSjUjOBOwnBt2Oqz37Fp7yXMd6pTd1pmdKHGr6PngQ==
-X-Received: by 2002:a17:906:a24d:: with SMTP id bi13mr707693ejb.481.1632757330882;
-        Mon, 27 Sep 2021 08:42:10 -0700 (PDT)
-Received: from fedora.. (dh207-96-123.xnet.hr. [88.207.96.123])
-        by smtp.googlemail.com with ESMTPSA id n16sm10768025edd.10.2021.09.27.08.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 08:42:10 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 4/4] arm64: dts: marvell: espressobin-ultra: enable front USB3 port
-Date:   Mon, 27 Sep 2021 17:41:59 +0200
-Message-Id: <20210927154159.2168500-4-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927154159.2168500-1-robert.marko@sartura.hr>
-References: <20210927154159.2168500-1-robert.marko@sartura.hr>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=u3UVtloaaMqDkztEGASyWNnbDwu0ymuLbk5cZTT/COQ=;
+        b=yPECKjerU6T3evY2hlxuiiXiIRNf3WukOisO08CasulAZLyDPJYKxwUMDZHenAPg4H
+         7zNPrW915b2HcxyP1SpEfnH9Qh0i9DBHfVu/rIGN3hDBcJgmSKLmjI08f0FHIV0HoUbp
+         KmgBCkwCl7BkZXo4PisFQLQ9Tp4wnhz7OfZi/gXC79z4mjKUmiac/l89KTMc2vaGXD3A
+         6y+XPugV8WtTRDujHjbV1BG4ZyG9BTsZmmHbGzcj28g5Q4PYmME2bxkMRL/hYk+Qq36T
+         nDZ3duyF0aKui1tFySenEDQqCcsf9EM5lNEgcuZ1Mzu8nTAZ6iDb9Kr8rUVAw11Tpmw/
+         HIoQ==
+X-Gm-Message-State: AOAM533ZCtppcMRmjK2d6TiXsRD+7lA4iVcHOb2Ne03S9OSKWVuRV/oL
+        ikxJkbxmNv6Ft40fxV2fEgipPUfo12rJERVhfCE=
+X-Google-Smtp-Source: ABdhPJwPdX0UHnjLYUju4G92wvhO/QgojSNYLpV0qIYJ+/BQFUKjRngY5/9M2q+bEBbppL8HXxsAUhLb7KX4fuo4nQs=
+X-Received: by 2002:a05:6512:2213:: with SMTP id h19mr388012lfu.307.1632757349365;
+ Mon, 27 Sep 2021 08:42:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a9a:7f01:0:b0:13e:4639:9c76 with HTTP; Mon, 27 Sep 2021
+ 08:42:28 -0700 (PDT)
+Reply-To: jesspayne72@gmail.com
+From:   Jess Payne <haansbro46@gmail.com>
+Date:   Mon, 27 Sep 2021 08:42:28 -0700
+Message-ID: <CAA8X_PbxoZW=UntauJK2JuWJhRy+F4NJvgZRQBX3vsGs+hBEiA@mail.gmail.com>
+Subject: =?UTF-8?B?5oiR6ZyA6KaB5L2g55qE5biu5YqpIC8gSSBuZWVkIHlvdXIgYXNzaXN0YW5jZQ==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Espressobin Ultra has a front panel USB3.0 Type-A port which works
-just fine so enable it.
-I dont see a reason why it was disabled in the first place anyway.
-
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-index 96855a10b4a0..aada43fa236c 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-@@ -112,7 +112,6 @@ rtc@51 {
- 
- &usb3 {
- 	usb-phy = <&usb3_phy>;
--	status = "disabled";
- };
- 
- &mdio {
--- 
-2.31.1
-
+5oiR5piv5p2w6KW/5L2p5oGp5Lit5aOr5aSr5Lq644CCDQoNCuWcqOe+juWbvemZhuWGm+eahOWG
+m+S6i+mDqOmXqOOAgue+juWbve+8jOS4gOWQjeS4reWjq++8jDMyIOWyge+8jOaIkeWNlei6q++8
+jOadpeiHque+juWbveeUsOe6s+ilv+W3nuWFi+WIqeWkq+WFsO+8jOebruWJjempu+aJjuWcqOWI
+qeavlOS6muePreWKoOilv++8jOS4juaBkOaAluS4u+S5ieS9nOaImOOAguaIkeeahOWNleS9jeaY
+r+esrDTmiqTnkIbpmJ/nrKw3ODLml4XmlK/mj7TokKXjgIINCg0K5oiR5piv5LiA5Liq5YWF5ruh
+54ix5b+D44CB6K+a5a6e5ZKM5rex5oOF55qE5Lq677yM5YW35pyJ6Imv5aW955qE5bm96buY5oSf
+77yM5oiR5Zac5qyi57uT6K+G5paw5pyL5Y+L5bm25LqG6Kej5LuW5Lus55qE55Sf5rS75pa55byP
+77yM5oiR5Zac5qyi55yL5Yiw5aSn5rW355qE5rOi5rWq5ZKM5bGx6ISJ55qE576O5Li95Lul5Y+K
+5aSn6Ieq54S25omA5oul5pyJ55qE5LiA5YiH5o+Q5L6b44CC5b6I6auY5YW06IO95pu05aSa5Zyw
+5LqG6Kej5oKo77yM5oiR6K6k5Li65oiR5Lus5Y+v5Lul5bu656uL6Imv5aW955qE5ZWG5Lia5Y+L
+6LCK44CCDQoNCuaIkeS4gOebtOW+iOS4jeW8gOW/g++8jOWboOS4uui/meS6m+W5tOadpeeUn+a0
+u+WvueaIkeS4jeWFrOW5s++8m+aIkeWkseWOu+S6hueItuavje+8jOmCo+W5tOaIkSAyMQ0K5bKB
+44CC5oiR54i25Lqy55qE5ZCN5a2X5piv5biV54m56YeM5pav5L2p5oGp77yM5oiR55qE5q+N5Lqy
+5piv546b5Li95L2p5oGp44CC5rKh5pyJ5Lq65biu5Yqp5oiR77yM5L2G5b6I6auY5YW05oiR57uI
+5LqO5Zyo576O5Yab5Lit5om+5Yiw5LqG6Ieq5bex44CCDQoNCuaIkee7k+WpmueUn+S6huWtqeWt
+kO+8jOS9huS7luatu+S6hu+8jOS4jeS5heaIkeS4iOWkq+W8gOWni+asuumql+aIke+8jOaJgOS7
+peaIkeS4jeW+l+S4jeaUvuW8g+WpmuWnu+OAgg0KDQrmiJHkuZ/lvojlubjov5DvvIzlnKjmiJHn
+moTlm73lrrbnvo7lm73lkozliKnmr5Tkuprnj63liqDopb/ov5nph4zmi6XmnInmiJHnlJ/mtLvk
+uK3miYDpnIDnmoTkuIDliIfvvIzkvYbmsqHmnInkurrkuLrmiJHmj5Dkvpvlu7rorq7jgILmiJHp
+nIDopoHkuIDkuKror5rlrp7nmoTkurrmnaXkv6Hku7vvvIzku5bkuZ/kvJrlsLHlpoLkvZXmipXo
+tYTmiJHnmoTpkrHmj5Dkvpvlu7rorq7jgILlm6DkuLrmiJHmmK/miJHniLbmr43lnKjku5bku6zl
+jrvkuJbliY3nlJ/kuIvnmoTllK/kuIDkuIDkuKrlpbPlranjgIINCg0K5oiR5LiN6K6k6K+G5L2g
+5pys5Lq677yM5L2G5oiR6K6k5Li65pyJ5LiA5Liq5YC85b6X5L+h6LWW55qE5aW95Lq677yM5LuW
+5Y+v5Lul5bu656uL55yf5q2j55qE5L+h5Lu75ZKM6Imv5aW955qE5ZWG5Lia5Y+L6LCK77yM5aaC
+5p6c5L2g55yf55qE5pyJ5LiA5Liq6K+a5a6e55qE5ZCN5a2X77yM5oiR5Lmf5pyJ5LiA5Lqb5Lic
+6KW/6KaB5ZKM5L2g5YiG5Lqr55u45L+h44CC5Zyo5L2g6Lqr5LiK77yM5Zug5Li65oiR6ZyA6KaB
+5L2g55qE5biu5Yqp44CC5oiR5oul5pyJ5oiR5Zyo5Yip5q+U5Lqa54+t5Yqg6KW/6L+Z6YeM6LWa
+5Yiw55qE5oC76aKd77yIMjUwDQrkuIfnvo7lhYPvvInjgILmiJHkvJrlnKjkuIvkuIDlsIHnlLXl
+rZDpgq7ku7bkuK3lkYror4nkvaDmiJHmmK/lpoLkvZXlgZrliLDnmoTvvIzkuI3opoHmg4rmhYzv
+vIzku5bku6zmsqHmnInpo47pmanvvIzogIzkuJTmiJHov5jlnKjkuI4gUmVkDQrmnInogZTns7vn
+moTkurrpgZPkuLvkuYnljLvnlJ/nmoTluK7liqnkuIvlsIbov5nnrJTpkrHlrZjlhaXkuobpk7bo
+oYzjgILmiJHluIzmnJvmgqjlsIboh6rlt7HkvZzkuLrmiJHnmoTlj5fnm4rkurrmnaXmjqXmlLbl
+n7rph5HlubblnKjmiJHlnKjov5nph4zlrozmiJDlkI7noa7kv53lroPnmoTlronlhajlubbojrfl
+vpfmiJHnmoTlhpvkuovpgJrooYzor4Hku6XlnKjmgqjnmoTlm73lrrbkuI7mgqjkvJrpnaLvvJvk
+uI3opoHlrrPmgJXpk7booYzkvJrlsIbotYTph5HlrZjlgqjlnKgNCkFUTSBWSVNBIOWNoeS4re+8
+jOi/meWvueaIkeS7rOadpeivtOaYr+WuieWFqOS4lOW/q+aNt+eahOOAgg0KDQrnrJTorrA75oiR
+5LiN55+l6YGT5oiR5Lus6KaB5Zyo6L+Z6YeM5ZGG5aSa5LmF77yM5oiR55qE5ZG96L+Q77yM5Zug
+5Li65oiR5Zyo6L+Z6YeM5Lik5qyh54K45by56KKt5Ye75Lit5bm45a2Y5LiL5p2l77yM6L+Z5L+D
+5L2/5oiR5a+75om+5LiA5Liq5YC85b6X5L+h6LWW55qE5Lq65p2l5biu5Yqp5oiR5o6l5pS25ZKM
+5oqV6LWE5Z+66YeR77yM5Zug5Li65oiR5bCG5p2l5Yiw5L2g5Lus55qE5Zu95a625Ye66Lqr5oqV
+6LWE77yM5byA5aeL5paw55Sf5rS777yM5LiN5YaN5b2T5YW144CCDQoNCuWmguaenOaCqOaEv+aE
+j+iwqOaFjuWkhOeQhu+8jOivt+WbnuWkjeaIkeOAguaIkeS8muWRiuivieS9oOS4i+S4gOatpeea
+hOa1geeoi++8jOW5tue7meS9oOWPkemAgeabtOWkmuWFs+S6juWfuumHkeWtmOWFpemTtuihjOea
+hOS/oeaBr+OAguS7peWPiumTtuihjOWwhuWmguS9leW4ruWKqeaIkeS7rOmAmui/hyBBVE0gVklT
+QQ0KQ0FSRCDlsIbotYTph5Hovaznp7vliLDmgqjnmoTlm73lrrYv5Zyw5Yy644CC5aaC5p6c5L2g
+5pyJ5YW06Laj77yM6K+35LiO5oiR6IGU57O744CCDQo=
