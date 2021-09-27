@@ -2,69 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD15419502
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC89419508
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhI0NZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:25:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234058AbhI0NZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:25:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 222FD61052;
-        Mon, 27 Sep 2021 13:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632749052;
-        bh=uFqO+1jnmCX9nfTiURK9XQ8PfCqV6zEhlQO3ToJ040g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DfELuey8r0YSmv9YrPVdS25huolGBwVeUXzml7G0UH7Y+vWe88IPmDcNGvvYsNGzJ
-         bfW+jcoZNf/FYFjo6uOeikTlQHU1VZssG8wWHVFqTyFKVUpNTD67174TNsPH2WOHoM
-         /POf/3vJ8D+DL8z2Rsgpr1Lmx9c4QQWBQHTf4g5AdI1W+d9B/NyxBnzTJzZcLvyFZs
-         ygiXVkYhFF8CS/NC3dJWxmK0eIqEOPk8/IgaRYtSJgYSd++RkESu/mTbxkyiTm5PR+
-         mQKaLt7xpOkxoyaQgRhIeZxJ0290kK1Ze5vzZMnxrnhb+Bhfm7Mvt2vzkH4CkgwsPC
-         tGi0jNjLX5uOg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH] clocksource: ti-dmtimer: select TIMER_OF when needed
-Date:   Mon, 27 Sep 2021 15:23:54 +0200
-Message-Id: <20210927132408.1588697-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234510AbhI0N0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234359AbhI0N0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:26:08 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40799C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:24:30 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id q66so18128172vsa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=DAo7I/BZC1qYd6MF3qSicniWvTR8rtUDikb4S5qnXhg=;
+        b=KwTuroM8SG4lRxbD4EIdWgTuAQeS+ADX1D2WvbgzV0GjrOZJF7nadBpzci5PZ0o5gP
+         qacO1s82qS5PcAKflWitGfnB8HkFf8xTi6gnV5gLKqoDO/DZ9gfQ2AJpeEFqEifyBWR7
+         QUYlTDIYdmdTpIf/Abq0WZSaH0HQmbfYOZENTtUGx9378wM7K3lsAxRbm0xdQdZgZPZB
+         UK1R/5m9qARU1rwBaI13APQymFD10p9u6GdkL65GOwTOMchN3AAD5hHg7/cvXYeXifBL
+         p43l98Em5bwPMCPbf2EOb8B7QBGUt0ob6McbDfkBjiCQaT3yde8cejoxo1sf7wxab7hx
+         dQmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=DAo7I/BZC1qYd6MF3qSicniWvTR8rtUDikb4S5qnXhg=;
+        b=JSCf4R7k/iV/DugVTkMN/qYdDnUOSw0Qh+6a8AdIf9YzxVexnfsqkgy6oeiuPlahls
+         7hsYHYXyG8RlMUi2KG16B2aryIPhRoU5waiHZajgTR+UJ9l9PIt0JUDiMZXV6XHBataS
+         0B/hBbUl7dPZ2CiJxbqlPMzEz03y4QasxbZ1LQ3D9iJo86fTvHYO22QwbMcXqU3XOQ7E
+         VWU2GTb/qOHAQ4pvalQQxfF9uPPgbwmAXAVygltzVamFjvrLa9NjyGJVAIAnbJn9ZJuC
+         bi5C95EfxsHlnsmGmu87JibvOt8AKZhE5TaZNBa2cQOwmBWmCApNrnRDHgqLQ5AGBdaU
+         eFVg==
+X-Gm-Message-State: AOAM530pKq/bQ6ofFSoew3E3OnaTyRJpKhFFn7ZgXhs5uu7RheZxs1+Y
+        yF2Lj7P3Rzq014po9dj08UDb/dx/hBvawzwTWv6bHr/gkoKgew==
+X-Google-Smtp-Source: ABdhPJy87lQ9kGwsi669ZXp5VRXHe55QPzrnJ+B227yNYkw8/SaEKJAjjvNs4HEyzuIISpGuTPTpq0tMLf6gcM0SmhQ=
+X-Received: by 2002:a05:6102:222b:: with SMTP id d11mr3073514vsb.20.1632749069329;
+ Mon, 27 Sep 2021 06:24:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913032003.2836583-1-fengli@smartx.com> <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
+In-Reply-To: <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
+From:   Li Feng <fengli@smartx.com>
+Date:   Mon, 27 Sep 2021 21:24:18 +0800
+Message-ID: <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com>
+Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
+To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Song,
 
-When CONFIG_OF is enabled but CONFIG_TIMER_OF is not, building the
-dm systimer driver produces a warning:
+What about this feature?
 
-arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
+Thanks,
+Feng Li
 
-Address this by selecting the TIMER_OF symbol in this configuration.
-If CONFIG_OF is disabled, the table entry is not created, so there
-is no warning, and no reason to have the infrastructure.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/clocksource/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 0f5e3983951a..f006d29e50f5 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -24,6 +24,7 @@ config I8253_LOCK
- 
- config OMAP_DM_TIMER
- 	bool
-+	select TIMER_OF if OF
- 
- config CLKBLD_I8253
- 	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
--- 
-2.29.2
-
+Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=A5=E5=
+=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
+>
+> ping ...
+>
+> Thanks,
+> Feng Li
+>
+> Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > When the running RAID1/RAID10 need to be set with the fail_fast flag,
+> > we have to remove each device from RAID and re-add it again with the
+> > --fail_fast flag.
+> >
+> > Export the fail_fast flag to the userspace to support the read and
+> > write.
+> >
+> > Signed-off-by: Li Feng <fengli@smartx.com>
+> > ---
+> >  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
+> >  1 file changed, 30 insertions(+)
+> >
+> > diff --git a/drivers/md/md.c b/drivers/md/md.c
+> > index ae8fe54ea358..ce63972a4555 100644
+> > --- a/drivers/md/md.c
+> > +++ b/drivers/md/md.c
+> > @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const char =
+*buf, size_t len)
+> >  static struct rdev_sysfs_entry rdev_ppl_size =3D
+> >  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
+> >
+> > +static ssize_t
+> > +fail_fast_show(struct md_rdev *rdev, char *page)
+> > +{
+> > +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags));
+> > +}
+> > +
+> > +static ssize_t
+> > +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
+> > +{
+> > +       int ret;
+> > +       bool bit;
+> > +
+> > +       ret =3D kstrtobool(buf, &bit);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       if (test_bit(FailFast, &rdev->flags) && !bit) {
+> > +               clear_bit(FailFast, &rdev->flags);
+> > +               md_update_sb(rdev->mddev, 1);
+> > +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
+> > +               set_bit(FailFast, &rdev->flags);
+> > +               md_update_sb(rdev->mddev, 1);
+> > +       }
+> > +       return len;
+> > +}
+> > +
+> > +static struct rdev_sysfs_entry rdev_fail_fast =3D
+> > +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
+> > +
+> >  static struct attribute *rdev_default_attrs[] =3D {
+> >         &rdev_state.attr,
+> >         &rdev_errors.attr,
+> > @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] =3D=
+ {
+> >         &rdev_unack_bad_blocks.attr,
+> >         &rdev_ppl_sector.attr,
+> >         &rdev_ppl_size.attr,
+> > +       &rdev_fail_fast.attr,
+> >         NULL,
+> >  };
+> >  static ssize_t
+> > --
+> > 2.31.1
+> >
