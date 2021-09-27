@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056E6419A67
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19631419CE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhI0RIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
+        id S236513AbhI0Rfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:35:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235834AbhI0RHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28937611ED;
-        Mon, 27 Sep 2021 17:06:02 +0000 (UTC)
+        id S237110AbhI0RaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:30:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31948611C0;
+        Mon, 27 Sep 2021 17:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762362;
-        bh=Cp4UBU9kOyXrpeKFY3oxOdbnOFW5kD6qZOsU4UVDfIc=;
+        s=korg; t=1632763091;
+        bh=cWf6s3w5KufPS3NvTgxGdIoyfoTRIo+gHNVhlZgTZa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vetkYTyK0rMZ2goJaAjS07j3n6VpbHK1XsZZ0kvqzr0jvDtDAlKMHoA4mpAuk7aJa
-         9RcQlpuURZiFftWfuxHx2jWfNJ0xPgNJ6/Vga8JgyRLF27PZqbgbNYOghPfJWnjIwS
-         2uLVaGgE0lI+IhYrduGIDxClp74KLn3KDdc5q8rE=
+        b=OasreuGj+Hg43jDtjqem3u0qJKPFhOe+xl+M/ZvXb0nry+Q+aX41YVIQosW8ViEQj
+         LKwcSwq4KBSorWJZZAig8gMSZA77lHZTPpAbFrrqbm0aspDlmXOt8HkAZV6ZtxGzst
+         //kiOB+x8inKeki1wlBt95TgO5dLenrLKE/u3A+s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Lihong Kou <koulihong@huawei.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 61/68] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
-Date:   Mon, 27 Sep 2021 19:02:57 +0200
-Message-Id: <20210927170222.083185003@linuxfoundation.org>
+Subject: [PATCH 5.14 132/162] block: check if a profile is actually registered in blk_integrity_unregister
+Date:   Mon, 27 Sep 2021 19:02:58 +0200
+Message-Id: <20210927170238.000521907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
+[ Upstream commit 783a40a1b3ac7f3714d2776fa8ac8cce3535e4f6 ]
 
-Some drivers pass a pointer to volatile data to virt_to_bus() and
-virt_to_phys(), and that works fine.  One exception is alpha.  This
-results in a number of compile errors such as
+While clearing the profile itself is harmless, we really should not clear
+the stable writes flag if it wasn't set due to a registered integrity
+profile.
 
-  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
-  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
-	passing argument 1 of 'virt_to_bus' discards 'volatile'
-	qualifier from pointer target type
-
-  drivers/atm/ambassador.c: In function 'do_loader_command':
-  drivers/atm/ambassador.c:1747:58: error:
-	passing argument 1 of 'virt_to_bus' discards 'volatile'
-	qualifier from pointer target type
-
-Declare the parameter of virt_to_phys and virt_to_bus as pointer to
-volatile to fix the problem.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Lihong Kou <koulihong@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Link: https://lore.kernel.org/r/20210914070657.87677-2-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/alpha/include/asm/io.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ block/blk-integrity.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index 103270d5a9fc..66a384a4ddba 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -61,7 +61,7 @@ extern inline void set_hae(unsigned long new_hae)
-  * Change virtual addresses to physical addresses and vv.
+diff --git a/block/blk-integrity.c b/block/blk-integrity.c
+index 410da060d1f5..e9f943de377a 100644
+--- a/block/blk-integrity.c
++++ b/block/blk-integrity.c
+@@ -426,8 +426,12 @@ EXPORT_SYMBOL(blk_integrity_register);
   */
- #ifdef USE_48_BIT_KSEG
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
+ void blk_integrity_unregister(struct gendisk *disk)
  {
- 	return (unsigned long)address - IDENT_ADDR;
++	struct blk_integrity *bi = &disk->queue->integrity;
++
++	if (!bi->profile)
++		return;
+ 	blk_queue_flag_clear(QUEUE_FLAG_STABLE_WRITES, disk->queue);
+-	memset(&disk->queue->integrity, 0, sizeof(struct blk_integrity));
++	memset(bi, 0, sizeof(*bi));
  }
-@@ -71,7 +71,7 @@ static inline void * phys_to_virt(unsigned long address)
- 	return (void *) (address + IDENT_ADDR);
- }
- #else
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
- {
-         unsigned long phys = (unsigned long)address;
+ EXPORT_SYMBOL(blk_integrity_unregister);
  
-@@ -107,7 +107,7 @@ static inline void * phys_to_virt(unsigned long address)
- extern unsigned long __direct_map_base;
- extern unsigned long __direct_map_size;
- 
--static inline unsigned long __deprecated virt_to_bus(void *address)
-+static inline unsigned long __deprecated virt_to_bus(volatile void *address)
- {
- 	unsigned long phys = virt_to_phys(address);
- 	unsigned long bus = phys + __direct_map_base;
 -- 
 2.33.0
 
