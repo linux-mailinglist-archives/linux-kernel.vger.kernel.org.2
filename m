@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2974194E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AA04194EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbhI0NSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:18:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53374 "EHLO mail.kernel.org"
+        id S234576AbhI0NTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:19:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234421AbhI0NSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:18:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C0B96103B;
-        Mon, 27 Sep 2021 13:16:24 +0000 (UTC)
+        id S234421AbhI0NTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:19:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 350CE60FED;
+        Mon, 27 Sep 2021 13:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632748586;
-        bh=9bpIpSEjgHZGeH5+f9MLQYWRNrb/wOzN0Uc8dGTvIXc=;
+        s=k20201202; t=1632748655;
+        bh=42QBDntERyc+aM/df+V25KL01A6wcdArOVewCg/bvEI=;
         h=From:To:Cc:Subject:Date:From;
-        b=nbGW5gnR6p34uEetecTHU1DNuwfp3IRIv4cQs6RMIkTMVfXzK59SVI+0zgt+1TvnL
-         2CmcgtNz3oDs1tQAQOCWSdWo2vTboPdFe3O/H1MubHRrAYsxqMOAyFyYnaXMP/zK/q
-         67DAzCV2mDv8GfRaENH1SA5GQNeUFTccY4mmtJrsjn0d9hjLijEMTGInAVfASPOMIa
-         dyURFE7DHmeIYwarXWumHb0mnROr7nQ6FljlcvbuNjww7B/na2HB5Wf/wwkLJHVC6L
-         ecn0BJ5B4wzxRHpfEVEVvpImD5+021Q2pvXrMAxSmf/8x0RdepcM/NL7GIoaHP+FaN
-         oK3bO25sU7lTg==
+        b=ZMT4sHluyoDMXrByXz8jEqUKG17f655yYSujAhmrAfe/ohZ+EHa4vZst23ImLwYo8
+         GGqvR8GVDb2G28tEx1/b+h10WqaEsONV4nj4p9ZcNwD492uFE6vP6tgDajlr1XngWc
+         O1eICLm0hWAtaDDqiW9VXwLVeLOItBaWUZ5/+9BHI/o91i+MA3gv+RuD8gLPVh7tqi
+         JJ7lMbJduHH3blDAvs00GtXpFIIps8skGinxVpSbNj/eGJIjI0WL1IAOiqRpief4jG
+         QQHuQd4sM3WhRQyk+prGv2e2belJYTJ60rNHoGgY+rcWk+YHQjtbsKzdDmqwENNRVb
+         AoXKwGlZ54DVg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Isaac Hazan <isaac.hazan@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thunderbolt: fix -Wrestrict warning
-Date:   Mon, 27 Sep 2021 15:16:11 +0200
-Message-Id: <20210927131620.1587294-1-arnd@kernel.org>
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] igc: fix PTP dependency
+Date:   Mon, 27 Sep 2021 15:17:19 +0200
+Message-Id: <20210927131730.1587671-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,37 +50,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc-11 warns when building with W=1:
+The igc driver was accidentally left out of the Kconfig rework for PTP,
+it needs the same dependency as the others:
 
-drivers/thunderbolt/xdomain.c: In function 'modalias_show':
-drivers/thunderbolt/xdomain.c:733:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
-  733 |         return sprintf(buf, "%s\n", buf);
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/thunderbolt/xdomain.c:727:36: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
-  727 |                              char *buf)
-      |                              ~~~~~~^~~
+arm-linux-gnueabi-ld: drivers/net/ethernet/intel/igc/igc_main.o: in function `igc_tsync_interrupt':
+igc_main.c:(.text+0x1b288): undefined reference to `ptp_clock_event'
+arm-linux-gnueabi-ld: igc_main.c:(.text+0x1b308): undefined reference to `ptp_clock_event'
+arm-linux-gnueabi-ld: igc_main.c:(.text+0x1b8cc): undefined reference to `ptp_clock_event'
+arm-linux-gnueabi-ld: drivers/net/ethernet/intel/igc/igc_ethtool.o: in function `igc_ethtool_get_ts_info':
 
-There is no need for the sprintf() here when a strcat() does
-the same thing.
-
+Fixes: e5f31552674e ("ethernet: fix PTP_1588_CLOCK dependencies")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/thunderbolt/xdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
-index d66ea4d616fd..eff32499610f 100644
---- a/drivers/thunderbolt/xdomain.c
-+++ b/drivers/thunderbolt/xdomain.c
-@@ -730,7 +730,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
- 
- 	/* Full buffer size except new line and null termination */
- 	get_modalias(svc, buf, PAGE_SIZE - 2);
--	return sprintf(buf, "%s\n", buf);
-+	return strlen(strcat(buf, "\n"));
- }
- static DEVICE_ATTR_RO(modalias);
- 
+diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+index b0b6f90deb7d..ed8ea63bb172 100644
+--- a/drivers/net/ethernet/intel/Kconfig
++++ b/drivers/net/ethernet/intel/Kconfig
+@@ -335,6 +335,7 @@ config IGC
+ 	tristate "Intel(R) Ethernet Controller I225-LM/I225-V support"
+ 	default n
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This driver supports Intel(R) Ethernet Controller I225-LM/I225-V
+ 	  family of adapters.
 -- 
 2.29.2
 
