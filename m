@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6915B41A0FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4509D41A109
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236723AbhI0VEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:04:31 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13996 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237016AbhI0VE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:04:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="224599680"
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; 
-   d="scan'208";a="224599680"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 14:02:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; 
-   d="scan'208";a="518731694"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 14:02:50 -0700
-Date:   Mon, 27 Sep 2021 14:02:48 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
+        id S237238AbhI0VEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237235AbhI0VEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 17:04:48 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6634FC061575;
+        Mon, 27 Sep 2021 14:03:10 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 75so2577453pga.3;
+        Mon, 27 Sep 2021 14:03:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j5SSjAo98K45E+20/l2vJfSBS8YAkbvusCfPbeN4tts=;
+        b=U3/6i5CfJ6Ae/A18rmADou2ZEaQrQq+hWlermqbIUhTxbWqex+ymSXYVipMtZ82DzX
+         azbIo/rccEQE8LtYKzsxGh6lARUEsL6i0xNTxzFzw9iB6IH2CrWbVnV+//KQ3MTZRWgE
+         9azoXzhh6oNUm6SkrnIK8eHqqUUiPQTHk1ykA4pbL5ZZ8OMX4NAD16IxiCqEoGcFREDf
+         FQujt5QhAXoRHgGz5qQqRstXvNZZWj3vdUoSiXiLwvJWvtE9p79Gb/l3HS4Hv7R3scey
+         WNPqJD8+0pkTQkUTw1eidaqKOPyr/jrXPW9v8afbHqtvDvxMsza+LuVivDOXlzt6R9Bu
+         vJjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j5SSjAo98K45E+20/l2vJfSBS8YAkbvusCfPbeN4tts=;
+        b=nNUFo38UVY/CNpEHiHtUoPYmBnvyOmxu+pWh9EsyhMeuINIWZ1j+gF8J9upCefOGu0
+         pz6oY3TRSeQKy4T9cVEuo+DKjOmqv7EysYKrtLixmDsE30OqzcNucCZ+wyZ/ptxA/0o9
+         u0LK+qbOYB1GibAHAfOEquxPIvvmX38XwTGjs7jVKVjL6Bz9RZASFc8Gbv34bOdZARHp
+         EMFCDPFu/fIwh4tbhidOnVh2mGHdKNForcyxxlDwcXaOKJUooYcJF7s2YOQwk0NaWq8i
+         6dcSc6nmlLusfq/uxJ+5+KpORe97SEpgDLU7hYa2hlqt1er6X62o0Jc+6lSyv+cIrYEG
+         YkFA==
+X-Gm-Message-State: AOAM5327b1qhe8cN8le7dyaBpcenhPbHZy8rlou7UJZjuQ6z7eBYxWyo
+        GtEBr5VQ2SXNAJXvnymV01bFbB6jIRE=
+X-Google-Smtp-Source: ABdhPJzq9Z4Y4jt4xPDxWSMNUH3ahGQUbTWn35uDE+XK/IfCQ/TRJW8uKGEwhSRNrAoQN0PkcEdlVw==
+X-Received: by 2002:a63:514e:: with SMTP id r14mr1406671pgl.282.1632776589693;
+        Mon, 27 Sep 2021 14:03:09 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o16sm19227652pgv.29.2021.09.27.14.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 14:03:09 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alex Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
+Subject: [PATCH stable 4.14 v3 0/4] ARM: ftrace MODULE_PLTS warning
+Date:   Mon, 27 Sep 2021 14:02:55 -0700
+Message-Id: <20210927210259.3216965-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 04:17:05PM -0700, Andy Lutomirski wrote:
-> > +	fpregs_lock();
-> > +
-> > +	/*
-> > +	 * If the task's FPU doesn't need to be loaded or is valid, directly
-> > +	 * write the IA32_PASID MSR. Otherwise, write the PASID state and
-> > +	 * the MSR will be loaded from the PASID state before returning to
-> > +	 * the user.
-> > +	 */
-> > +	if (!test_thread_flag(TIF_NEED_FPU_LOAD) ||
-> > +	    fpregs_state_valid(fpu, smp_processor_id())) {
-> > +		wrmsrl(MSR_IA32_PASID, msr_val);
-> 
-> Let me try to decode this.
-> 
-> If the current task's FPU state is live or if the state is in memory but the CPU regs just happen to match the copy in memory, then write the MSR.  Else write the value to memory.
-> 
-> This is wrong.  If !TIF_NEED_FPU_LOAD && fpregs_state_valid, you MUST NOT MODIFY FPU STATE.  This is not negotiable -- you will break coherence between CPU regs and the memory image.  The way you modify the current task's state is either you modify it in CPU regs (if the kernel knows that the CPU regs are the one and only source of truth) OR you modify it in memory and invalidate any preserved copies (by zapping last_cpu). 
-> 
-> In any event, that particular bit of logic really doesn't belong in here -- it belongs in some helper that gets it right, once.
+This patch series is present in v5.14 and fixes warnings seen at insmod
+with FTRACE and MODULE_PLTS enabled on ARM/Linux.
 
-Andy,
+Changes in v3:
 
-A helper sounds like a good idea. Can you flesh out what
-you would like that to look like?
+- resolved build error with allmodconfig enabling CONFIG_OLD_MCOUNT
 
-Is it just the "where is the live register state?" so the
-above could be written:
+Changes in v2:
 
-	if (xsave_state_in_memory(args ...))
-		update pasid bit of xsave state in memory
-	else
-		wrmsrl(MSR_IA32_PASID, msr_val);
+- included build fix without DYNAMIC_FTRACE
+- preserved Author's original name in 4.9 submission
 
-Or are you thinking of a helper that does both the check
-and the update ... so the code here could be:
+Alex Sverdlin (4):
+  ARM: 9077/1: PLT: Move struct plt_entries definition to header
+  ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+  ARM: 9079/1: ftrace: Add MODULE_PLTS support
+  ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without
+    DYNAMIC_FTRACE
 
-	update_one_xsave_feature(XFEATURE_PASID, &msr_val, sizeof(msr_val));
+ arch/arm/include/asm/ftrace.h |  3 +++
+ arch/arm/include/asm/insn.h   |  8 +++---
+ arch/arm/include/asm/module.h | 10 +++++++
+ arch/arm/kernel/ftrace.c      | 50 ++++++++++++++++++++++++++++-------
+ arch/arm/kernel/insn.c        | 19 ++++++-------
+ arch/arm/kernel/module-plts.c | 49 ++++++++++++++++++++++++++--------
+ 6 files changed, 105 insertions(+), 34 deletions(-)
 
-With the helper being something like:
+-- 
+2.25.1
 
-void update_one_xsave_feature(enum xfeature xfeature, void *data, size_t size)
-{
-	if (xsave_state_in_memory(args ...)) {
-		addr = get_xsave_addr(xsave, xfeature);
-		memcpy(addr, data, size);
-		xsave->header.xfeatures |= (1 << xfeature);
-		return;
-	}
-
-	switch (xfeature) {
-	case XFEATURE_PASID:
-		wrmsrl(MSR_IA32_PASID, *(u64 *)data);
-		break;
-
-	case each_of_the_other_XFEATURE_enums:
-		code to update registers for that XFEATURE
-	}
-}
-
-either way needs the definitive correct coding for xsave_state_in_memory()
-
--Tony
