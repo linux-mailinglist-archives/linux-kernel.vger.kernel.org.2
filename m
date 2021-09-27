@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A620C419B32
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6FE419B34
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbhI0RQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:16:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56622 "EHLO mail.kernel.org"
+        id S236432AbhI0RQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:16:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237097AbhI0RNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:13:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 251E461359;
-        Mon, 27 Sep 2021 17:09:36 +0000 (UTC)
+        id S237120AbhI0RN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:13:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAB7461357;
+        Mon, 27 Sep 2021 17:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762577;
-        bh=90F7pgzjpGfA4Ynkzh6hB7JZRZI6X9FSvMKkP8xolWg=;
+        s=korg; t=1632762580;
+        bh=xlPz1IA3S/nhGlMQlYiIETy34Q3qfe1/0sG8U+HFN5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r9u6wGdllJ66FxdBv8xuJyEIKYhXa9clXT4T4fctrRZE5TvYAjUxYDuVwj1jkiqRw
-         xTHL09Mv5QGL3YG2asv1rhR2d37ulUDksf/cZFftm0RK7n2snX3DRqTOZBRABelPct
-         CAiir+jyJ7lTKMykCYn2CbFIal7LR3Cpk3qn4zoM=
+        b=K+VD8hhqQ4+RyVGqYLYt/xCNQGAB/rhLP1ELv3XM/Jzy4qFLz1xGR09iWHAxew7rX
+         rHnxHiICQXtJaQnKTuOBHb/K+WMCMUTjdolOTLD1mbC+cZ3KxhA04VS7bbaulpsYz/
+         sy0n+MeTGPCDE91x6JGXboJgEUAYoPTGpD+VJBgw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        luojiaxing <luojiaxing@huawei.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 076/103] blk-mq: avoid to iterate over stale request
-Date:   Mon, 27 Sep 2021 19:02:48 +0200
-Message-Id: <20210927170228.399680974@linuxfoundation.org>
+Subject: [PATCH 5.10 077/103] m68k: Double cast io functions to unsigned long
+Date:   Mon, 27 Sep 2021 19:02:49 +0200
+Message-Id: <20210927170228.432768658@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
 References: <20210927170225.702078779@linuxfoundation.org>
@@ -42,52 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 67f3b2f822b7e71cfc9b42dbd9f3144fa2933e0b ]
+[ Upstream commit b1a89856fbf63fffde6a4771d8f1ac21df549e50 ]
 
-blk-mq can't run allocating driver tag and updating ->rqs[tag]
-atomically, meantime blk-mq doesn't clear ->rqs[tag] after the driver
-tag is released.
+m68k builds fail widely with errors such as
 
-So there is chance to iterating over one stale request just after the
-tag is allocated and before updating ->rqs[tag].
+arch/m68k/include/asm/raw_io.h:20:19: error:
+	cast to pointer from integer of different size
+arch/m68k/include/asm/raw_io.h:30:32: error:
+	cast to pointer from integer of different size [-Werror=int-to-p
 
-scsi_host_busy_iter() calls scsi_host_check_in_flight() to count scsi
-in-flight requests after scsi host is blocked, so no new scsi command can
-be marked as SCMD_STATE_INFLIGHT. However, driver tag allocation still can
-be run by blk-mq core. One request is marked as SCMD_STATE_INFLIGHT,
-but this request may have been kept in another slot of ->rqs[], meantime
-the slot can be allocated out but ->rqs[] isn't updated yet. Then this
-in-flight request is counted twice as SCMD_STATE_INFLIGHT. This way causes
-trouble in handling scsi error.
+On m68k, io functions are defined as macros. The problem is seen if the
+macro parameter variable size differs from the size of a pointer. Cast
+the parameter of all io macros to unsigned long before casting it to
+a pointer to fix the problem.
 
-Fixes the issue by not iterating over stale request.
-
-Cc: linux-scsi@vger.kernel.org
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Reported-by: luojiaxing <luojiaxing@huawei.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210906065003.439019-1-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210907060729.2391992-1-linux@roeck-us.net
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq-tag.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/include/asm/raw_io.h | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index c4f2f6c123ae..16ad9e656610 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -207,7 +207,7 @@ static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
+diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
+index 911826ea83ce..80eb2396d01e 100644
+--- a/arch/m68k/include/asm/raw_io.h
++++ b/arch/m68k/include/asm/raw_io.h
+@@ -17,21 +17,21 @@
+  * two accesses to memory, which may be undesirable for some devices.
+  */
+ #define in_8(addr) \
+-    ({ u8 __v = (*(__force volatile u8 *) (addr)); __v; })
++    ({ u8 __v = (*(__force volatile u8 *) (unsigned long)(addr)); __v; })
+ #define in_be16(addr) \
+-    ({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
++    ({ u16 __v = (*(__force volatile u16 *) (unsigned long)(addr)); __v; })
+ #define in_be32(addr) \
+-    ({ u32 __v = (*(__force volatile u32 *) (addr)); __v; })
++    ({ u32 __v = (*(__force volatile u32 *) (unsigned long)(addr)); __v; })
+ #define in_le16(addr) \
+-    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (addr)); __v; })
++    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (unsigned long)(addr)); __v; })
+ #define in_le32(addr) \
+-    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (addr)); __v; })
++    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (unsigned long)(addr)); __v; })
  
- 	spin_lock_irqsave(&tags->lock, flags);
- 	rq = tags->rqs[bitnr];
--	if (!rq || !refcount_inc_not_zero(&rq->ref))
-+	if (!rq || rq->tag != bitnr || !refcount_inc_not_zero(&rq->ref))
- 		rq = NULL;
- 	spin_unlock_irqrestore(&tags->lock, flags);
- 	return rq;
+-#define out_8(addr,b) (void)((*(__force volatile u8 *) (addr)) = (b))
+-#define out_be16(addr,w) (void)((*(__force volatile u16 *) (addr)) = (w))
+-#define out_be32(addr,l) (void)((*(__force volatile u32 *) (addr)) = (l))
+-#define out_le16(addr,w) (void)((*(__force volatile __le16 *) (addr)) = cpu_to_le16(w))
+-#define out_le32(addr,l) (void)((*(__force volatile __le32 *) (addr)) = cpu_to_le32(l))
++#define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned long)(addr)) = (b))
++#define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned long)(addr)) = (w))
++#define out_be32(addr,l) (void)((*(__force volatile u32 *) (unsigned long)(addr)) = (l))
++#define out_le16(addr,w) (void)((*(__force volatile __le16 *) (unsigned long)(addr)) = cpu_to_le16(w))
++#define out_le32(addr,l) (void)((*(__force volatile __le32 *) (unsigned long)(addr)) = cpu_to_le32(l))
+ 
+ #define raw_inb in_8
+ #define raw_inw in_be16
 -- 
 2.33.0
 
