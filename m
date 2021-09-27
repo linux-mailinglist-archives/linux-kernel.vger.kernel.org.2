@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C51A418EBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 07:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96430418EC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 07:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhI0FqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 01:46:08 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54875 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232594AbhI0FqF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 01:46:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHs5j4NL1z4xbR;
-        Mon, 27 Sep 2021 15:44:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632721466;
-        bh=DCtEvsg3hsgFmNRnoDHLNa8pY9MmGR9OS0ESIOqr/ZE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mPerCW3BRc0bILK/tVFzZ32X/Oqt2Qa9RQDgPY8JjQc2Gh/OBy3Vr2AEpomfgv8Ch
-         lrIwnsWB+Zq64oHzfft8fBDEDoOHq8OPk0PLkn5hCdPAXXz9/ZqnxFhvLRG3U/NL69
-         01I9mjlzGXskhU7SWeMYur2vr5LFBkxvcBRYy8IZLSCA7oZ/xCQTQLvw62bMDdQSid
-         h5DTmn1gOyVr4P6vTQQ7eQvvc5aeRXNPaJ4NXoupZ1q9/NdwsuUJeMMHyaNIkCq8ro
-         ZVuhD61FobAFwZrATBRZTUyAvvo6B4WPNNCDzlMK7oJoJcCiLGpm1ruY5F7+5lYy6A
-         Yi3VJYUjyqnnA==
-Date:   Mon, 27 Sep 2021 15:44:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20210927154422.605920fd@canb.auug.org.au>
+        id S232943AbhI0Ftf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 01:49:35 -0400
+Received: from mga03.intel.com ([134.134.136.65]:52528 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232594AbhI0Fte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 01:49:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="224467283"
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="224467283"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 22:47:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="437594752"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
+  by orsmga003.jf.intel.com with ESMTP; 26 Sep 2021 22:47:53 -0700
+Subject: Re: [PATCH v2] mmc: sdhci-sprd: Wait until DLL locked after being
+ configured
+To:     Chunyan Zhang <zhang.lyra@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210926092835.146449-1-zhang.lyra@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <847b5295-ba23-107c-6fee-4e766a86ce7a@intel.com>
+Date:   Mon, 27 Sep 2021 08:48:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wMHWzMzTFiiQiKRnfentyY/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210926092835.146449-1-zhang.lyra@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wMHWzMzTFiiQiKRnfentyY/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 26/09/21 12:28 pm, Chunyan Zhang wrote:
+> From: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
+> 
+> According to the specification, DLL status has to be locked before using it.
+> 
+> Signed-off-by: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Hi all,
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced these warnings:
+> ---
+> Changes since v1:
+> * Use read_poll_timeout() instead of while loop.
+> ---
+>  drivers/mmc/host/sdhci-sprd.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> index 11e375579cfb..f33e9349e4e6 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/highmem.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> @@ -39,6 +40,9 @@
+>  #define  SDHCI_SPRD_BIT_POSRD_DLY_INV		BIT(21)
+>  #define  SDHCI_SPRD_BIT_NEGRD_DLY_INV		BIT(29)
+>  
+> +#define SDHCI_SPRD_REG_32_DLL_STS0	0x210
+> +#define SDHCI_SPRD_DLL_LOCKED		BIT(18)
+> +
+>  #define SDHCI_SPRD_REG_32_BUSY_POSI		0x250
+>  #define  SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN	BIT(25)
+>  #define  SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN	BIT(24)
+> @@ -256,6 +260,15 @@ static void sdhci_sprd_enable_phy_dll(struct sdhci_host *host)
+>  	sdhci_writel(host, tmp, SDHCI_SPRD_REG_32_DLL_CFG);
+>  	/* wait 1ms */
+>  	usleep_range(1000, 1250);
+> +
+> +	if (read_poll_timeout(sdhci_readl, tmp, (tmp & SDHCI_SPRD_DLL_LOCKED),
+> +		2000, USEC_PER_SEC, false, host, SDHCI_SPRD_REG_32_DLL_STS0)) {
+> +		pr_err("%s: DLL locked fail!\n", mmc_hostname(host->mmc));
+> +		pr_info("%s: DLL_STS0 : 0x%x, DLL_CFG : 0x%x\n",
+> +			 mmc_hostname(host->mmc),
+> +			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_STS0),
+> +			 sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG));
+> +	}
+>  }
+>  
+>  static void sdhci_sprd_set_clock(struct sdhci_host *host, unsigned int clock)
+> 
 
-include/drm/drm_edid.h:530: warning: Function parameter or member 'vend_chr=
-_1' not described in 'drm_edid_encode_panel_id'
-include/drm/drm_edid.h:530: warning: Excess function parameter 'vend_chr_3'=
- description in 'drm_edid_encode_panel_id'
-
-
-Introduced by commit
-
-  7d1be0a09fa6 ("drm/edid: Fix EDID quirk compile error on older compilers")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wMHWzMzTFiiQiKRnfentyY/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFRWjYACgkQAVBC80lX
-0Gy39gf/e568oOLEQAhDFPJCzNYA5T06zR9qmRx/veY0EC8OSxtvdtKukj/AzmV6
-vR1xWOtCLuS0nObNdtfODdkLWAxFMUDtESqJdrC7x5C7fRnViZkz07kEwHahZTxG
-MfX9a+Eph2t+YscLNPQlvDXlwCxOqFiT64nyp/AVz//BefJ9s3cDrBVNfiKRGoCu
-q9q5majl1FGlmn9BlmWUC9hdxdf0xKZyHldZ0+k3G5cTjvxgoN7VHYV1REKgwz9H
-O3H61Pcb6sA2k0gfogt+aFNRAmWPV63LtW7YwYY70uC+Dpwmys1Pl87hg17EYsMU
-q686aDT4PBbZWh2oLEytRxXlFLyhDg==
-=CoS0
------END PGP SIGNATURE-----
-
---Sig_/wMHWzMzTFiiQiKRnfentyY/--
