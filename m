@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480C941996C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2019F419977
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhI0QpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235481AbhI0QpR (ORCPT
+        id S235622AbhI0Qq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:46:27 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:25731 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235285AbhI0Qq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:45:17 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2DBC061575;
-        Mon, 27 Sep 2021 09:43:39 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 145so16367562pfz.11;
-        Mon, 27 Sep 2021 09:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mpp3yt5UlhJzcT0WXNiNQ5zDVt3UnhzU5xESPpUlLrY=;
-        b=N6U4tHO7NsJPCAI0pl2qLjHILOWVWb0tMyq2HluBHcliYns5+8xvPinnRPTqZLH0Vp
-         mjDwUGERqM+OLJEABbwAol4NPWVJezO6I0MZVTKNORmd/B+h34NEDOcb68rAv0YmupuZ
-         8bkK3aG6reOpZDr0tyJ84dzBfEbp0AIADBf+YFz/B8Xh37dd+8jayjQ++afsnikievA0
-         hyvk7st00zP25LRpCvBlwq0w0Of4Sop9JeO9VLHlA21sz70pV4PKeb1VbDW6QVCFsBW/
-         aU+qGeKRdcYyDOavIovSgSbh4pdi9nQFhqQMkv5AQdDHphByKFQ2pvBbQxKAG4mdMzWO
-         aPpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Mpp3yt5UlhJzcT0WXNiNQ5zDVt3UnhzU5xESPpUlLrY=;
-        b=UUbcANZf7DBFeJhnD9u1A4GaBTOFLeXsTZMxzq6RGSWQKWN+k2IFQQkQL/9WqmO4/K
-         WcUtYFXYS0oXArPU5EQPZIqsq7Sxm1HNAnp64Ku4SgS7Lm0dkne9vVUl0C7NPU7B1Y0h
-         ecXmkOxXlmzx3LVxq2T6lGlrTSvbTFzrgD0ARw6YO6XGAivo6EMQ/daGFuCm2qQAXC1x
-         qDgKvgOwIhIqx+egcLN3N7IRezhE0ZVjKWuRpY1DbHMVSpEnvJWxex/4zT+ETzHAah2n
-         M7onxWwGuTCI1qIle7k8I355h+vPFhCBs8by96hDZRuGau/1o0aTguo+WiO5xbSgSh6/
-         T5bQ==
-X-Gm-Message-State: AOAM53113vx5DhiJduI5lhtq1zF/O7LTAvGNALxbxyj49/pFRzmYSmhs
-        gJaQxLmNAeHwwEkvkUlXnYnV24+P2A0=
-X-Google-Smtp-Source: ABdhPJwmazHB15zxzDX59vC+eDNU/75kvTpRv3bXs6Y+Knr3x5h8A8K7naXV8ZUXyy79WUEHnmSA6g==
-X-Received: by 2002:a63:334c:: with SMTP id z73mr570514pgz.160.1632761018498;
-        Mon, 27 Sep 2021 09:43:38 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id b3sm17339636pfo.23.2021.09.27.09.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:43:38 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 27 Sep 2021 06:43:36 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/debug: Fix lockdep splat with "%pK" format
- specifier
-Message-ID: <YVH0uKGGmRjrIlFy@slm.duckdns.org>
-References: <20210927025807.26918-1-longman@redhat.com>
+        Mon, 27 Sep 2021 12:46:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632761070;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=jRPgRBm1X+FuZv7hOzaWpG6lEhu0WS+NKYO9s9BLpfc=;
+    b=AG1GEOc6tKVfQEL1PmD3dkQnT6JWvNaRPm+CFRQvE1hmb86TRDfFstrkkRbgxkKfoE
+    2a3Y1vRvqkm4DmVOeSxVK69IrrQ0siyq+PAhrks0oNqq79F7wBT9rMEPrHEKGJHGjMvt
+    asgTJZ+P6pDyXwhIg4CvqsfIzu2Gjumdj+QcH+gVhw5yJtNaoPBvZ950F9Tua7oSUIh9
+    2cKO/+JB84mIslyRBv/WFMd9UHzcUUy9GuZIw4Yirh/iPkabFwwtRIGMNn1fY1zvudAz
+    op3OwSyRJaMijbIRvzqqPDOhpDUy6kknO5WCAKeLMsyaoGkAl+MMgyiAqlvfMtSvEk3V
+    lA/Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDFrDb4="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
+    with ESMTPSA id I01f74x8RGiTav8
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 27 Sep 2021 18:44:29 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4 00/10] MIPS: JZ4780 and CI20 HDMI
+Date:   Mon, 27 Sep 2021 18:44:18 +0200
+Message-Id: <cover.1632761067.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927025807.26918-1-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+- fix setting output_port = 1 (issue found by paul@crapouillou.net)
+- ci20.dts: convert to use hdmi-connector (by hns@goldelico.com)
+- add a hdmi-regulator to control +5V power (by hns@goldelico.com)
+- added a fix to dw-hdmi to call drm_kms_helper_hotplug_event on plugin event detection (by hns@goldelico.com)
+- always allocate extended descriptor but initialize only for jz4780 (by hns@goldelico.com)
+- updated to work on top of "[PATCH v3 0/6] drm/ingenic: Various improvements v3" (by paul@crapouillou.net)
+- rebased to v5.13-rc3
 
-On Sun, Sep 26, 2021 at 10:58:07PM -0400, Waiman Long wrote:
-> The lockdep splat is caused by the fact that the debug controller use the
-> "%pK" format specifier to print out address of cset's with css_set_lock
-> held. Under some circumstances, the use of "%pK" format specifier may
-> acquire the selinux_ss.policy_rwlock.
-> 
-> To avoid this possible deadlock scenario, we have to abandon the use of
-> the "%pK" format specifier and just use "%p" to always hash the cset
-> addresses. The actual cset addresses aren't that important as long as
-> they are unique for matching purpose.
+PATCH V3 2021-08-08 07:10:50:
+This series adds HDMI support for JZ4780 and CI20 board (and fixes one IPU related issue in registration error path)
+- [patch 1/8] switched from mode_fixup to atomic_check (suggested by robert.foss@linaro.org)
+  - the call to the dw-hdmi specialization is still called mode_fixup
+- [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by paul@crapouillou.net)
+  - factor out some non-HDMI features of the jz4780 into a separate patch
+  - multiple fixes around max height
+  - do not change regmap config but a copy on stack
+  - define some constants
+  - factor out fixing of drm_init error path for IPU into separate patch
+  - use FIELD_PREP()
+- [patch 8/8] conversion to component framework dropped (suggested by Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
 
-Isn't the right thing to do here making the selinux rwlock an irqsafe one?
-It's a bit crazy to have printf specifier to have restrictive locking
-requirements.
+PATCH V2 2021-08-05 16:08:05:
+This series adds HDMI support for JZ4780 and CI20 board
 
-Thanks.
+V2:
+- code and commit messages revisited for checkpatch warnings
+- rebased on v5.14-rc4
+- include (failed, hence RFC 8/8) attempt to convert to component framework
+  (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
+
+
+H. Nikolaus Schaller (2):
+  drm/bridge: synopsis: Fix to properly handle HPD
+  MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
+
+Paul Boddie (7):
+  drm/ingenic: Fix drm_init error path if IPU was registered
+  drm/ingenic: Add support for JZ4780 and HDMI output
+  drm/bridge: synopsis: Add mode_fixup and bridge timings support
+  drm/ingenic: Add dw-hdmi driver for jz4780
+  MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
+    controllers
+  MIPS: DTS: CI20: Add DT nodes for HDMI setup
+  drm/ingenic: add some jz4780 specific features
+
+Sam Ravnborg (1):
+  dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
+
+ .../bindings/display/ingenic-jz4780-hdmi.yaml |  85 +++++++++++
+ arch/mips/boot/dts/ingenic/ci20.dts           |  67 +++++++++
+ arch/mips/boot/dts/ingenic/jz4780.dtsi        |  45 ++++++
+ arch/mips/configs/ci20_defconfig              |   6 +
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |   9 ++
+ drivers/gpu/drm/ingenic/Kconfig               |   9 ++
+ drivers/gpu/drm/ingenic/Makefile              |   1 +
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c     | 135 ++++++++++++++++-
+ drivers/gpu/drm/ingenic/ingenic-drm.h         |  42 ++++++
+ drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 142 ++++++++++++++++++
+ include/drm/bridge/dw_hdmi.h                  |   5 +
+ 11 files changed, 540 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+ create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
 
 -- 
-tejun
+2.31.1
+
