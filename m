@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8318C419B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C53E419CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236554AbhI0RUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:20:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
+        id S238008AbhI0RcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:32:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236775AbhI0RP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:15:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4275F6137F;
-        Mon, 27 Sep 2021 17:10:59 +0000 (UTC)
+        id S237635AbhI0R2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:28:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D79C6141B;
+        Mon, 27 Sep 2021 17:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762659;
-        bh=M5fkxkh7FW5Q9jQlRvy3DoD+wYtuLPhsV44j22NltWk=;
+        s=korg; t=1632763030;
+        bh=YMhWQq6D4WKHyk8ymfH2x+FucXjzzqzFYBFwV6QThUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jd0Z7EAfiSs3QX3IczEMQCNv6z/HTVqbLl3nCPu+hxHRDPoR9tpi3ul+Sd8BigEf9
-         d8ByqnVDabm0+1t+zYrc76If8ID6C1JKLKx+yM3Q0qtJE7DhWZCWjnxmEZEEQvtAYs
-         iVfAQr7AZfPFizsivoo5tSWtJbnDpL9ANXP0vMSA=
+        b=vL/TSM4n0UAys2HMwHhpi0Lx0RWhvDk/DxFxla6od0PW0I5NhFtSYT/Fr8VUiXKyY
+         lxdBXkiPvoF8Y3YQEVISmbWAUjfA7R/zA6TR+WjGPg4E/zIA28GWtDckrRZCIm8s7V
+         iDdlfRS5QR47PTQTuT4kYGT/HGjWYErs01pshiHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Jimmy Kizito <Jimmy.Kizito@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/103] net: 6pack: Fix tx timeout and slot time
+Subject: [PATCH 5.14 142/162] drm/amd/display: Link training retry fix for abort case
 Date:   Mon, 27 Sep 2021 19:03:08 +0200
-Message-Id: <20210927170229.083763412@linuxfoundation.org>
+Message-Id: <20210927170238.344869351@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
 
-[ Upstream commit 3c0d2a46c0141913dc6fd126c57d0615677d946e ]
+[ Upstream commit 71ae30997a8f1791835167d3ceb8d1fab32407db ]
 
-tx timeout and slot time are currently specified in units of HZ.  On
-Alpha, HZ is defined as 1024.  When building alpha:allmodconfig, this
-results in the following error message.
+[Why]
+If link training is aborted, it shall be retried if sink is present.
 
-  drivers/net/hamradio/6pack.c: In function 'sixpack_open':
-  drivers/net/hamradio/6pack.c:71:41: error:
-  	unsigned conversion from 'int' to 'unsigned char'
-  	changes value from '256' to '0'
+[How]
+Check hpd status to find out whether sink is present or not. If sink is
+present, then link training shall be tried again with same settings.
+Otherwise, link training shall be aborted.
 
-In the 6PACK protocol, tx timeout is specified in units of 10 ms and
-transmitted over the wire:
-
-    https://www.linux-ax25.org/wiki/6PACK
-
-Defining a value dependent on HZ doesn't really make sense, and
-presumably comes from the (very historical) situation where HZ was
-originally 100.
-
-Note that the SIXP_SLOTTIME use explicitly is about 10ms granularity:
-
-        mod_timer(&sp->tx_t, jiffies + ((when + 1) * HZ) / 100);
-
-and the SIXP_TXDELAY walue is sent as a byte over the wire.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Jimmy Kizito <Jimmy.Kizito@amd.com>
+Acked-by: Mikita Lipski <mikita.lipski@amd.com>
+Signed-off-by: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hamradio/6pack.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index da13683d52d1..bd0beb16d68a 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -68,9 +68,9 @@
- #define SIXP_DAMA_OFF		0
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index a6d0fd24fd02..83ef72a3ebf4 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -1849,9 +1849,13 @@ bool perform_link_training_with_retries(
+ 		dp_disable_link_phy(link, signal);
  
- /* default level 2 parameters */
--#define SIXP_TXDELAY			(HZ/4)	/* in 1 s */
-+#define SIXP_TXDELAY			25	/* 250 ms */
- #define SIXP_PERSIST			50	/* in 256ths */
--#define SIXP_SLOTTIME			(HZ/10)	/* in 1 s */
-+#define SIXP_SLOTTIME			10	/* 100 ms */
- #define SIXP_INIT_RESYNC_TIMEOUT	(3*HZ/2) /* in 1 s */
- #define SIXP_RESYNC_TIMEOUT		5*HZ	/* in 1 s */
- 
+ 		/* Abort link training if failure due to sink being unplugged. */
+-		if (status == LINK_TRAINING_ABORT)
+-			break;
+-		else if (do_fallback) {
++		if (status == LINK_TRAINING_ABORT) {
++			enum dc_connection_type type = dc_connection_none;
++
++			dc_link_detect_sink(link, &type);
++			if (type == dc_connection_none)
++				break;
++		} else if (do_fallback) {
+ 			decide_fallback_link_setting(*link_setting, &current_setting, status);
+ 			/* Fail link training if reduced link bandwidth no longer meets
+ 			 * stream requirements.
 -- 
 2.33.0
 
