@@ -2,60 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5289419259
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB09419245
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhI0Km5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233800AbhI0Km4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:42:56 -0400
-X-Greylist: delayed 474 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Sep 2021 03:41:18 PDT
-Received: from lony.xyz (lony.xyz [IPv6:2a01:7e01::f03c:92ff:fe99:4b59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C11C061575;
-        Mon, 27 Sep 2021 03:41:18 -0700 (PDT)
-Received: from localhost (unknown [170.253.2.75])
-        by lony.xyz (Postfix) with ESMTPSA id 689131F9BC;
-        Mon, 27 Sep 2021 10:33:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lony.xyz; s=mail;
-        t=1632738802; bh=nKMFTgo5CanCRiqXgTJW+InJx6nUU/was8hOu/PSPBE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ph98J9AfNC0LGnydbzRfBvTdGv5TCfHP6lu8XrNdiGoY8A8wDlFbV/iLYWWvSTuiD
-         YhN1vtvJ08/xMaVmzoWTpV0oNKglL/qVPTWD+hMta7DmAW6I0PGgfsgOzgVKexI9tk
-         krvnbDiStI0mYRvBvU/MpC1kKkeTVb4coCTAV+AKZ9v+5OO4zTyzwV8U2XD8soBu7y
-         9nKCWegbm56Ed3jBjOxW1IOTdqjrJYMIHReKtNKKyYQreLw0G3E8NLk5HuRw3/2R/6
-         Ks24jSRYpA9qbi9JT6qhw8ZSTeq28jh5weYyq5XwIyI+ar0nL/AT79TNQVrpYQt6+R
-         irCSB9MgM7SMQ==
-Date:   Mon, 27 Sep 2021 12:33:21 +0200
-From:   "Sergio M. Iglesias" <sergio@lony.xyz>
-To:     bhelgaas@google.com
-Cc:     lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: About the "__refdata" tag in pci-keystone.c
-Message-ID: <20210927103321.v4kod7xfiv5sreet@lony.xyz>
+        id S233856AbhI0KhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:37:07 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:50143 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233784AbhI0KhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:37:05 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HHzYV1XSWz9sXr;
+        Mon, 27 Sep 2021 12:35:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3EqNz8x0GQ36; Mon, 27 Sep 2021 12:35:26 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HHzYV0kzhz9sSm;
+        Mon, 27 Sep 2021 12:35:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 05F3F8B76C;
+        Mon, 27 Sep 2021 12:35:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id e0qsAuGYeeiY; Mon, 27 Sep 2021 12:35:25 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E30848B763;
+        Mon, 27 Sep 2021 12:35:25 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18RAZ8vP1402689
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 12:35:08 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18RAZ75q1402687;
+        Mon, 27 Sep 2021 12:35:07 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        cp <carlojpisani@gmail.com>
+Subject: [PATCH] powerpc/40x: Map 32Mbytes of memory at startup
+Date:   Mon, 27 Sep 2021 12:34:52 +0200
+Message-Id: <e2b142ad4a44535d5aa81b0c00c5f05f312f9097.1632738876.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+As reported by Carlo, 16Mbytes is not enough with modern kernels
+that tend to be a bit big, so map another 16M page at boot.
 
-I have checked the "__refdata" tag that appears in the file
-"drivers/pci/controller/dwc/pci-keystone.c" and it is needed. The tag has
-been there since the creation of the file on commit 6e0832fa432e and
-nothing has changed since that would make it redundant.
+Cc: cp <carlojpisani@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/head_40x.S | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-The reason it is needed is because the struct references "ks_pcie_probe",
-which is a function tagged as "__init", so the compiler will most likely
-complain about the "__refdata" being removed.
+diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
+index 7d72ee5ab387..5fce4680d2d3 100644
+--- a/arch/powerpc/kernel/head_40x.S
++++ b/arch/powerpc/kernel/head_40x.S
+@@ -650,7 +650,7 @@ start_here:
+ 	b	.		/* prevent prefetch past rfi */
+ 
+ /* Set up the initial MMU state so we can do the first level of
+- * kernel initialization.  This maps the first 16 MBytes of memory 1:1
++ * kernel initialization.  This maps the first 32 MBytes of memory 1:1
+  * virtual to physical and more importantly sets the cache mode.
+  */
+ initial_mmu:
+@@ -687,6 +687,12 @@ initial_mmu:
+ 	tlbwe	r4,r0,TLB_DATA		/* Load the data portion of the entry */
+ 	tlbwe	r3,r0,TLB_TAG		/* Load the tag portion of the entry */
+ 
++	li	r0,62			/* TLB slot 62 */
++	addis	r4,r4,SZ_16M
++	addis	r3,r3,SZ_16M
++	tlbwe	r4,r0,TLB_DATA		/* Load the data portion of the entry */
++	tlbwe	r3,r0,TLB_TAG		/* Load the tag portion of the entry */
++
+ 	isync
+ 
+ 	/* Establish the exception vector base
+-- 
+2.31.1
 
-Should I send a patch to add a comment explaining why it is a necessary
-tag as recommended in "include/linux/init.h"?
-> [...] so optimally document why the __ref is needed and why it's OK).
-
-Thanks for your time,
-Sergio M. Iglesias.
