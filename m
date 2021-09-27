@@ -2,153 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7290B419134
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD8A419135
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhI0JAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:00:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47322 "EHLO mail.kernel.org"
+        id S233587AbhI0JAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:00:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:34354 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233519AbhI0JAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 150E960F24;
-        Mon, 27 Sep 2021 08:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632733139;
-        bh=2cr9DQzqdSZbGaYqRWHzcqDvTP+iY0z0NEltArLDvX8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WzhHmhc9Ny6DZ39mO5xvBFFl2s1OgfZNbCw85ofuKZZxVPwfKSYZh95lwivr42PnK
-         aeUwf/wmb6Gt6ky+uqsPwOcLyG5l63alV3cXezfFu5MT7UNxGKQZ/vWHZhvak3MzWq
-         wdl40SSEf4NyeREtTjs387OCaGA0k2YKlxZUKL973uT+Iiv88VGCHjsCby++r43VNs
-         MMVOVCNzHh4kFfFu8ClNw6BgD/0UFUECNpKpwl2hL/L7IYZ1pwdTyI9PoZHm4mDSNy
-         4QfnStXHUs60yreM/EXx1BtOJfOgSJoKgxUvsNNTWIgAuOME6iUR/qxYvdEVOVF+WB
-         rLYQOAhFZRt+g==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mUmTR-0003kI-Hj; Mon, 27 Sep 2021 10:58:57 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Malte Di Donato <malte@neo-soft.org>
-Subject: [PATCH stable-5.14] USB: serial: cp210x: fix dropped characters with CP2102
-Date:   Mon, 27 Sep 2021 10:58:19 +0200
-Message-Id: <20210927085819.14346-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S233594AbhI0JAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:00:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D531D6E;
+        Mon, 27 Sep 2021 01:59:12 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8B903F70D;
+        Mon, 27 Sep 2021 01:59:10 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 09:58:57 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <20210927085837.GA1131@C02TD0UTHF1T.local>
+References: <20210920233237.90463-1-frederic@kernel.org>
+ <20210920233237.90463-3-frederic@kernel.org>
+ <YUmFFvZCb2yXn3os@hirez.programming.kicks-ass.net>
+ <CAMj1kXEVjKGkRU_4JWH5d9YzT+pYVuEZYPNLw0VkUAb6d+W9kQ@mail.gmail.com>
+ <20210921153352.GC35846@C02TD0UTHF1T.local>
+ <CAMj1kXHQM9WOQutZg6P63=zQDE67jjfGv1tub1+W44LoZrON+g@mail.gmail.com>
+ <20210921162804.GD35846@C02TD0UTHF1T.local>
+ <944ef479f1104c4a97d0e3f629a9b765@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <944ef479f1104c4a97d0e3f629a9b765@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit c32dfec6c1c36bbbcd5d33e949d99aeb215877ec upstream.
+On Sat, Sep 25, 2021 at 05:46:23PM +0000, David Laight wrote:
+> From: Mark Rutland
+> > Sent: 21 September 2021 17:28
+> > 
+> > On Tue, Sep 21, 2021 at 05:55:11PM +0200, Ard Biesheuvel wrote:
+> > > On Tue, 21 Sept 2021 at 17:33, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Tue, Sep 21, 2021 at 04:44:56PM +0200, Ard Biesheuvel wrote:
+> > > > > On Tue, 21 Sept 2021 at 09:10, Peter Zijlstra <peterz@infradead.org> wrote:
+> > > ...
+> ...
+> > > >
+> > > > I think so, yes. We can do sligntly better with an inline literal pool
+> > > > and a PC-relative LDR to fold the ADRP+LDR, e.g.
+> > > >
+> > > >         .align 3
+> > > > tramp:
+> > > >         BTI     C
+> > > >         {B <func> | RET | NOP}
+> > > >         LDR     X16, 1f
+> > > >         BR      X16
+> > > > 1:      .quad   <literal>
+> > > >
+> > > > Since that's in the .text, it's RO for regular accesses anyway.
+> > > >
+> > >
+> > > I tried to keep the literal in .rodata to avoid inadvertent gadgets
+> > > and/or anticipate exec-only mappings of .text, but that may be a bit
+> > > overzealous.
+> > 
+> > I think that in practice the risk of gadgetisation is minimal, and
+> > having it inline means we only need to record a single address per
+> > trampoline, so there's less risk that we get the patching wrong.
+> 
+> But doesn't that mean that it is almost certainly a data cache miss?
+> You really want an instruction that reads the constant from the I-cache.
+> Or at least be able to 'bunch together' the constants so they
+> stand a chance of sharing a D-cache line.
 
-Some CP2102 do not support event-insertion mode but return no error when
-attempting to enable it.
+The idea is that in the common case we don't even use the literal, and
+the `B <func>` goes to the target.
 
-This means that any event escape characters in the input stream will not
-be escaped by the device and consequently regular data may be
-interpreted as escape sequences and be removed from the stream by the
-driver.
+The literal is there as a fallback for when the target is a sufficiently
+long distance away (more than +/-128MiB from the `BR X16`). By default
+we try to keep modules within 128MiB of the kernel image, and this
+should only happen in uncommon configs (e.g. my debug kernel configs
+when the kernel can be 100s of MiBs).
 
-The reporter's device has batch number DCL00X etched into it and as
-discovered by the SHA2017 Badge team, counterfeit devices with that
-marking can be detected by sending malformed vendor requests. [1][2]
+With that in mind, I'd strongly prefer to optimize for simplicity rather
+than making the uncommon case faster.
 
-Tests confirm that the possibly counterfeit CP2102 returns a single byte
-in response to a malformed two-byte part-number request, while an
-original CP2102 returns two bytes. Assume that every CP2102 that behaves
-this way also does not support event-insertion mode (e.g. cannot report
-parity errors).
-
-[1] https://mobile.twitter.com/sha2017badge/status/1167902087289532418
-[2] https://hackaday.com/2017/08/14/hands-on-with-the-shacamp-2017-badge/#comment-3903376
-
-Reported-by: Malte Di Donato <malte@neo-soft.org>
-Tested-by: Malte Di Donato <malte@neo-soft.org>
-Fixes: a7207e9835a4 ("USB: serial: cp210x: add support for line-status events")
-Link: https://lore.kernel.org/r/20210922113100.20888-1-johan@kernel.org
-Cc: stable@vger.kernel.org	# 5.9
-Signed-off-by: Johan Hovold <johan@kernel.org>
-[ johan: backport to 5.14; adjust context ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/cp210x.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index d48bed5782a5..8ae3dca0384a 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -258,6 +258,7 @@ struct cp210x_serial_private {
- 	speed_t			max_speed;
- 	bool			use_actual_rate;
- 	bool			no_flow_control;
-+	bool			no_event_mode;
- };
- 
- enum cp210x_event_state {
-@@ -1112,12 +1113,16 @@ static void cp210x_change_speed(struct tty_struct *tty,
- 
- static void cp210x_enable_event_mode(struct usb_serial_port *port)
- {
-+	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
- 	int ret;
- 
- 	if (port_priv->event_mode)
- 		return;
- 
-+	if (priv->no_event_mode)
-+		return;
-+
- 	port_priv->event_state = ES_DATA;
- 	port_priv->event_mode = true;
- 
-@@ -2097,6 +2102,33 @@ static void cp210x_init_max_speed(struct usb_serial *serial)
- 	priv->use_actual_rate = use_actual_rate;
- }
- 
-+static void cp2102_determine_quirks(struct usb_serial *serial)
-+{
-+	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-+	u8 *buf;
-+	int ret;
-+
-+	buf = kmalloc(2, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+	/*
-+	 * Some (possibly counterfeit) CP2102 do not support event-insertion
-+	 * mode and respond differently to malformed vendor requests.
-+	 * Specifically, they return one instead of two bytes when sent a
-+	 * two-byte part-number request.
-+	 */
-+	ret = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-+			CP210X_VENDOR_SPECIFIC, REQTYPE_DEVICE_TO_HOST,
-+			CP210X_GET_PARTNUM, 0, buf, 2, USB_CTRL_GET_TIMEOUT);
-+	if (ret == 1) {
-+		dev_dbg(&serial->interface->dev,
-+				"device does not support event-insertion mode\n");
-+		priv->no_event_mode = true;
-+	}
-+
-+	kfree(buf);
-+}
-+
- static int cp210x_get_fw_version(struct usb_serial *serial, u16 value)
- {
- 	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-@@ -2122,6 +2154,9 @@ static void cp210x_determine_quirks(struct usb_serial *serial)
- 	int ret;
- 
- 	switch (priv->partnum) {
-+	case CP210X_PARTNUM_CP2102:
-+		cp2102_determine_quirks(serial);
-+		break;
- 	case CP210X_PARTNUM_CP2102N_QFN28:
- 	case CP210X_PARTNUM_CP2102N_QFN24:
- 	case CP210X_PARTNUM_CP2102N_QFN20:
--- 
-2.32.0
-
+Thanks,
+Mark.
