@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6215C418DD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B035B418DCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhI0CsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 22:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhI0CsJ (ORCPT
+        id S232489AbhI0CoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 22:44:21 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:15931 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhI0CoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 22:48:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A9EC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 19:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k2A/LhTENoKqHIRa0xasZJjq7PMzUxcVqZzt/hWLzM8=; b=dJxBsmBHzkymd2Ilgqzsco8vCt
-        B/riiHML9ZO2O6Cbe5omNO+vNqrXyBd4GZUEu1/2IHfSTt1zjiD2c9iPMClQNN+A0gDb9ZrptnOuq
-        ykjzwt1PJMQLmaHNWiLkl89I6lGCrhkeuDvIRVfzWzBWmcEHlvXKGe3P8cXEKbrUQMtK4p7eZSac6
-        onHyXgWXL0ptj4mzK9Ndlr+LHygMxesSXO83acSN5QFz8i+wG/0VKGGLAFYc0TsOhmQOtwxwEf9Hf
-        H2ee+o6jSc+zvy40kikUBP0BTTc/3HlC/tbAgkYCr9sWgbFKMajIYWc22wRowf0R8UVrwxXyb21jC
-        Y98XKi1Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUgan-009Mwc-Pd; Mon, 27 Sep 2021 02:44:47 +0000
-Date:   Mon, 27 Sep 2021 03:42:09 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     shakeelb@google.com, vbabka@suse.cz,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH resend] slub: Add back check for free nonslab objects
-Message-ID: <YVEvgfJQJ1aRerg6@casper.infradead.org>
-References: <20210927021538.155991-1-wangkefeng.wang@huawei.com>
+        Sun, 26 Sep 2021 22:44:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1632710559; x=1664246559;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=E1AFGF4nfgrKj7RD1dTjHsUvB6bZLlY48hV6MFJLlLM=;
+  b=LJkJ74NiWWYCtvofgosCTYS29EL8U6BpLKXp9O9Jdk10WFgJT8igxJCB
+   MwTDqMOnF8m4OEvIhF8w6zjQ66O7iIK+c0nSFCeD/y+eQ3LnAx5z9De9G
+   eUeKxaFKOUrHp5+AG8Yep89XSQGa5MobNEhWaWjrB6lozBoCh19TdEtGW
+   U=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 26 Sep 2021 19:42:39 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 19:42:38 -0700
+Received: from taozha-gv.ap.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Sun, 26 Sep 2021 19:42:35 -0700
+Date:   Mon, 27 Sep 2021 10:42:31 +0800
+From:   Tao Zhang <quic_taozha@quicinc.com>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        "Leo Yan" <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sm8250: Add Coresight support
+Message-ID: <20210927024231.GA11883@taozha-gv.ap.qualcomm.com>
+References: <1632477981-13632-1-git-send-email-quic_taozha@quicinc.com>
+ <1632477981-13632-3-git-send-email-quic_taozha@quicinc.com>
+ <e76b54b2-3d78-8d11-dbcc-a990bf52252b@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210927021538.155991-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <e76b54b2-3d78-8d11-dbcc-a990bf52252b@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:15:38AM +0800, Kefeng Wang wrote:
-> Commit ("0937502af7c9 slub: Add check for kfree() of non slab objects.")
-> add the ability, which should be needed in any configs to catch the
-> invalid free, they even could be potential issue, eg, memory corruption,
-> use after free and double-free, so replace VM_BUG_ON_PAGE to WARN_ON, and
-> add dump_page() to help use to debug the issue.
+On Fri, Sep 24, 2021 at 02:11:00PM +0100, Suzuki K Poulose wrote:
+> Hi Tao
+> 
+> On 24/09/2021 11:06, Tao Zhang wrote:
+> >Add the basic coresight components found on Qualcomm SM8250 Soc. The
+> >basic coresight components include ETF, ETMs,STM and the related
+> >funnels.
+> >
+> >Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> 
+> Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> PS: This patch must go via the Qcom DT maintainers. I would
+> recommend sending this to the following people, so that it
+> can be queued.
+> 
+> $ scripts/get_maintainer.pl arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> 
+> Andy Gross <agross@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
+> Bjorn Andersson <bjorn.andersson@linaro.org> (maintainer:ARM/QUALCOMM
+> SUPPORT)
+> Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED
+> DEVICE TREE BINDINGS)
+> linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT)
+> devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE
+> TREE BINDINGS)
+> linux-kernel@vger.kernel.org (open list)
+> 
+> Kind regards
+> Suzuki
+Hi Suzuki,
 
-Is dump_page() really the best way to catch such a thing?  I would have
-thought that printing the address of 'object' would be more helpful.
+Sure, I will add these maintainers and resubmit the patch for review
+separately. Thanks for your review.
 
-> @@ -3522,7 +3522,8 @@ static inline void free_nonslab_page(struct page *page, void *object)
->  {
->  	unsigned int order = compound_order(page);
->  
-> -	VM_BUG_ON_PAGE(!PageCompound(page), page);
-> +	if (WARN_ON(!PageCompound(page)))
-> +		dump_page(page, "invalid free nonslab page");
-
+Best,
+Tao
