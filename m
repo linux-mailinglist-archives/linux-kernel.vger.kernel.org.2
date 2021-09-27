@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECED419FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D45C419FA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236707AbhI0UAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:00:24 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:33156
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230456AbhI0UAX (ORCPT
+        id S236734AbhI0UBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:01:23 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:49918 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236656AbhI0UBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:00:23 -0400
-Received: from [192.168.192.153] (unknown [50.126.114.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id B5E364061B;
-        Mon, 27 Sep 2021 19:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632772723;
-        bh=xmwBKNXZo0n8LBAjrwFTMI68qaFuQZXLVCt0chGL24Y=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Kllg9jO4SrE0OzURH43XIEW+T/MmA4HGb8twZ+6IB1vNSw1kPlP1+UXJ9IoEA7MK6
-         ec2SsO4l3Fe3vGr0kZge3BLL2Zz+pUqzYxwwoQl1U7lHBHi7dPqTjmfqLJRLbgndDb
-         WLlpKb+/86QITS/8qP8LhBtfnWjwOiYrZvk9W8qDylHvh+8gbkII1ON08lenSDuE+D
-         S4jnBCR7w08YXsTV+6T9wY3SafRpG/tic6JD4EzkykxgT7/AsGwpJqRve49id7P0is
-         v6P8TXDpmISRZoRvP1PQ8PxsTMYNNDA+G52LxYXvCr4IoWk/w4YVAAfmRcfwrYBpBe
-         cQAS/eka3vD1w==
-Subject: Re: [PATCH] [RESEND] apparmor: avoid -Wempty-body warning
-To:     Arnd Bergmann <arnd@kernel.org>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210927100919.1500526-1-arnd@kernel.org>
-From:   John Johansen <john.johansen@canonical.com>
-Organization: Canonical
-Message-ID: <9ef5889e-243a-5906-31cd-820a96859034@canonical.com>
-Date:   Mon, 27 Sep 2021 12:58:38 -0700
+        Mon, 27 Sep 2021 16:01:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=nFEeN0ujMiWdqCQg1tqJRECutZ61Fc29BGC8Ude8l7g=; b=HYTSUNK2m6vrGXoe7SbsnxxGxe
+        UQhGMqvZ/3e0mwmIFqbh3/n3ys2rpANTZZ08LPv9vUH+eRel9L/vzT/IV52IDaRD8cbIVcNhkde4Y
+        BjPnJkoG3FgF8gieIcEetEXupBiv03MzpOEGqmyAIxf/kUOigsbkdwvNJIlqLB2iU3DSGdnb4zcSb
+        bFvSDuFQkjonU4Kfg53nhrYhkbKPbtnaiMtkFHIF3SWjAy7qk4+miKMdzHmkmmFDGNkPtqyrV2uK2
+        zrS2ECxQknjsTZ93JZDzAAansVKP85mqOC5PGL6qdXlqF6jxkLQOPblVFCO//uAc3RMqAr4PZHfhC
+        YakW+B5A==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mUwmL-0003kf-0f; Mon, 27 Sep 2021 13:59:09 -0600
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210927185348.GA668256@bhelgaas>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <863fcca6-e1e7-38f4-2f67-b52d33eb3aab@deltatee.com>
+Date:   Mon, 27 Sep 2021 13:59:03 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20210927100919.1500526-1-arnd@kernel.org>
+In-Reply-To: <20210927185348.GA668256@bhelgaas>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, helgaas@kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-12.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v3 04/20] PCI/P2PDMA: introduce helpers for dma_map_sg
+ implementations
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 3:09 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-
-Arnd, yep my bad for various reasons I haven't done a merge request since then.
-I can pickout a set of minor fixes including this and send them up this week.
-
--
-john
 
 
-> Building with 'make W=1' shows a warning for an empty macro:
+On 2021-09-27 12:53 p.m., Bjorn Helgaas wrote:
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> security/apparmor/label.c: In function '__label_update':
-> security/apparmor/label.c:2096:59: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
->  2096 |                 AA_BUG(labels_ns(label) != labels_ns(new));
-> 
-> Change the macro defintion to use no_printk(), which improves
-> format string checking and avoids the warning.
-> 
-> Acked-by: John Johansen <john.johansen@canonical.com>
-> Link: https://lore.kernel.org/all/4e3e409e-c72e-edd5-379a-60883f166405@canonical.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I sentn this back in April, and John replied that it's in the apparmor
-> tree, but the fix is still missing as of v5.15-rc2.
-> 
-> Please double-check and re-apply if necessary.
-> ---
->  security/apparmor/include/lib.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/security/apparmor/include/lib.h b/security/apparmor/include/lib.h
-> index 7d27db740bc2..394130a0f3a4 100644
-> --- a/security/apparmor/include/lib.h
-> +++ b/security/apparmor/include/lib.h
-> @@ -36,7 +36,7 @@
->  #define AA_BUG_FMT(X, fmt, args...)					\
->  	WARN((X), "AppArmor WARN %s: (" #X "): " fmt, __func__, ##args)
->  #else
-> -#define AA_BUG_FMT(X, fmt, args...)
-> +#define AA_BUG_FMT(X, fmt, args...) no_printk("Apparmor WARN" fmt, ##args)
->  #endif
->  
->  #define AA_ERROR(fmt, args...)						\
-> 
+> Ditto.
 
+Thanks Bjorn, I'll make these changes and add your Acks for subsequent
+postings.
+
+Logan
