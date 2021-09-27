@@ -2,167 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6F64191C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1723F4191CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhI0Jrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:47:39 -0400
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:44583 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhI0Jri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:47:38 -0400
-Received: by mail-vk1-f173.google.com with SMTP id s137so6657571vke.11;
-        Mon, 27 Sep 2021 02:46:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggt5WZQCPgFBd4A7QeezV5a0uq4KzyYp7aKxw16aWKA=;
-        b=QNuWezibvr64M33i+wqCuVamMwNc11o5cEPDS5qcQot/DwDIs775ZBf3KOpxXUg6yM
-         lGcxEn69ic8zQEl9pNSrJQ4k2FK/PWlUER/JUwTFjUI8zVpoelGKmy96VC34vZRO5RX5
-         0coCoyUEJAD4cczfqnEWqR2bgzIB7vUqTZg/Tv1yk9Boav6WB+oHnntHVJO8NuTr2wAo
-         uZ4e6TcJogcpMcg4JhtYJMb5Wn3BEl4xXPgZLrWkST2Ujdquga0DINWt3CKAZxeLaCgj
-         K96Bxbt8Uuu98R3UvMQYVLu35cGYcjMsW2dI7ixAKGd8V4psxAKWASM2AdN9R9LEJTgJ
-         IH3g==
-X-Gm-Message-State: AOAM533F21s+ObXgfREQrVzz58T+5c7mtH/ZpdV5wGaTW/WiT8PUxVGi
-        19aerRndT+E2F5zNrURoYx3DDzQbiP7MdFF7LteQjXgI
-X-Google-Smtp-Source: ABdhPJxrA0XIbI9uexPAm2eqM/I/lDTKdymjoDlT6fWVy2jwOol+hPMzC5uuUYddEvGJhB2+FIeHGRflh0mDvQ4wskM=
-X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr14369713vka.19.1632735959965;
- Mon, 27 Sep 2021 02:45:59 -0700 (PDT)
+        id S233731AbhI0Jvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:51:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233680AbhI0Jvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:51:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0EB60F70;
+        Mon, 27 Sep 2021 09:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632736211;
+        bh=KtQwfWlN6z5FTUvVzqtdfbSOfg7sCBGIIuVYv4bnZ3w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j2wTL+cZYs1v6vTzwrd/UiAQ2VH9c5ySHLrMAo0w+GhBLH87jiejo5Nm+BgPed/pp
+         vOVce62at6PxEw8g+8Oyazob2aL3C/X4x/ULopOIVWnL26G+Pju1Yf/snTnYeWf0l7
+         4Wx5cnJVmtD3CGhoYVZYnm0y+VFFdS8dVajdTl8SwY4hdHcwCoEnF8M/+LC4pGIQkf
+         tZpduSADVwAooNALtbZDd1FwgZUH+lQn6L954EcWfeb8js4RVdzWwjbhaWwthfosAl
+         uu3N7KYkpizPTGlMTQrRk067fxR3WezmFHKu0heNH5VshsxowYZT1m8O+ehSJb1a50
+         ZJnpz0QXtNbMg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>,
+        Jian Shen <shenjian15@huawei.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: hns3: fix hclge_dbg_dump_tm_pg() stack usage
+Date:   Mon, 27 Sep 2021 11:49:53 +0200
+Message-Id: <20210927095006.868305-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210922091007.5516-1-wsa+renesas@sang-engineering.com> <CA+V-a8su7780XxmdL5qsM+YFoK_4+OJauQkyC9AaJMxFtxM=Cw@mail.gmail.com>
-In-Reply-To: <CA+V-a8su7780XxmdL5qsM+YFoK_4+OJauQkyC9AaJMxFtxM=Cw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Sep 2021 11:45:48 +0200
-Message-ID: <CAMuHMdVeKEqtsDZ2Tby7ZTDR6GEhs+Z1n5yCfhRJEjzmBbx0cg@mail.gmail.com>
-Subject: Re: [RFC PATCH] memory: renesas-rpc-if: Correct QSPI data transfer in
- Manual mode
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Duc Nguyen <duc.nguyen.ub@renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Mon, Sep 27, 2021 at 10:52 AM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Wed, Sep 22, 2021 at 10:10 AM Wolfram Sang
-> <wsa+renesas@sang-engineering.com> wrote:
-> > This patch fixes 2 problems:
-> > [1] The output warning logs and data loss when performing
-> > mount/umount then remount the device with jffs2 format.
-> > [2] The access width of SMWDR[0:1]/SMRDR[0:1] register is wrong.
-> >
-> > This is the sample warning logs when performing mount/umount then
-> > remount the device with jffs2 format:
-> > jffs2: jffs2_scan_inode_node(): CRC failed on node at 0x031c51d4:
-> > Read 0x00034e00, calculated 0xadb272a7
-> >
-> > The reason for issue [1] is that the writing data seems to
-> > get messed up.
-> > Data is only completed when the number of bytes is divisible by 4.
-> > If you only have 3 bytes of data left to write, 1 garbage byte
-> > is inserted after the end of the write stream.
-> > If you only have 2 bytes of data left to write, 2 bytes of '00'
-> > are added into the write stream.
-> > If you only have 1 byte of data left to write, 2 bytes of '00'
-> > are added into the write stream. 1 garbage byte is inserted after
-> > the end of the write stream.
-> >
-> > To solve problem [1], data must be written continuously in serial
-> > and the write stream ends when data is out.
-> >
-> > Following HW manual 62.2.15, access to SMWDR0 register should be
-> > in the same size as the transfer size specified in the SPIDE[3:0]
-> > bits in the manual mode enable setting register (SMENR).
-> > Be sure to access from address 0.
-> >
-> > So, in 16-bit transfer (SPIDE[3:0]=b'1100), SMWDR0 should be
-> > accessed by 16-bit width.
-> > Similar to SMWDR1, SMDDR0/1 registers.
-> > In current code, SMWDR0 register is accessed by regmap_write()
-> > that only set up to do 32-bit width.
-> >
-> > To solve problem [2], data must be written 16-bit or 8-bit when
-> > transferring 1-byte or 2-byte.
-> >
-> > Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
-> > [wsa: refactored to use regmap only via reg_read/reg_write]
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > ---
-> >
-> > Hi,
-> >
-> > I could reproduce the issue by a simple:
-> >
-> >   $ echo "Hello" > /dev/mtd10
-> >
-> > The original BSP patch fixed the issue but mixed regmap-acces with
-> > ioread/iowrite accesses. So, I refactored it to use custom regmap
-> > accessors. This keeps the code more readable IMO. With this patch, my
-> > custom test cases work as well as the JFFS2 remount mentioned in the
-> > commit message. Tested on a Renesas Condor board (R-Car V3M) and a
-> > Falcon board (R-Car V3U). I send this as RFC because this is my first
-> > patch for the RPC code and hope for feedback. The BSP team has been
-> > contacted as well for comments and testing. Nonetheless, this addresses
-> > a serious issue which has caused broken boards because of writing to
-> > unintended locations. So, I'd like to see this discussed and applied
-> > soon if possible.
-> >
-> I hit the exact same issue on RZ/G2L where erase/write operation
-> screwed some random sectors and made the board un-bootable. With the
-> patch applied, read/write/erase worked as expected. Below are the logs
-> on RZ/G2L SMARC EVK.
->
-> root@smarc-rzg2l:~# sh -x ./flash.sh
-> + cat /proc/mtd
-> dev:    size   erasesize  name
-> mtd0: 02000000 00001000 "boot"
-> mtd1: 02000000 00001000 "user"
-> + flashcp -v sample.bin /dev/mtd1
-> Erasing blocks: 1024/1024 (100%)
-> Writing data: 4096k/4096k (100%)
-> Verifying data: 4096k/4096k (100%)
-> + dd if=/dev/urandom of=/tmp/sample.bin bs=1024 count=4096
-> 4096+0 records in
-> 4096+0 records out
-> 4194304 bytes (4.2 MB) copied, 0.0786743 s, 53.3 MB/s
-> + flash_erase -j -q /dev/mtd1 0 0
-> + mount -t jffs2 /dev/mtdblock1 /mnt
-> + cp /tmp/sample.bin /mnt
-> + ls -ltr /mnt
-> total 4096
-> -rw-r--r-- 1 root root 4194304 Sep 20 10:54 sample.bin
-> + echo 'test write'
-> + umount /mnt
-> + mount -t jffs2 /dev/mtdblock1 /mnt
-> + ls -ltr /mnt
-> total 4097
-> -rw-r--r-- 1 root root      11 Sep 20 10:54 write.txt
-> -rw-r--r-- 1 root root 4194304 Sep 20 10:54 sample.bin
-> + cat /mnt/write.txt
-> test write
-> + umount /mnt
->
-> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+This function copies strings around between multiple buffers
+including a large on-stack array that causes a build warning
+on 32-bit systems:
 
-Might be a good idea to update the erase test to make a copy first,
-and verify that only the wanted blocks have been affected by the erase.
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pg':
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:782:1: error: the frame size of 1424 bytes is larger than 1400 bytes [-Werror=frame-larger-than=]
 
-Gr{oetje,eeting}s,
+The function can probably be cleaned up a lot, to go back to
+printing directly into the output buffer, but dynamically allocating
+the structure is a simpler workaround for now.
 
-                        Geert
+Fixes: 04d96139ddb3 ("net: hns3: refine function hclge_dbg_dump_tm_pri()")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 26 ++++++++++++++++---
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index 87d96f82c318..3ed87814100a 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -719,9 +719,9 @@ static void hclge_dbg_fill_shaper_content(struct hclge_tm_shaper_para *para,
+ 	sprintf(result[(*index)++], "%6u", para->rate);
+ }
+ 
+-static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
++static int __hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *data_str,
++				  char *buf, int len)
+ {
+-	char data_str[ARRAY_SIZE(tm_pg_items)][HCLGE_DBG_DATA_STR_LEN];
+ 	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
+ 	char *result[ARRAY_SIZE(tm_pg_items)], *sch_mode_str;
+ 	u8 pg_id, sch_mode, weight, pri_bit_map, i, j;
+@@ -729,8 +729,10 @@ static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
+ 	int pos = 0;
+ 	int ret;
+ 
+-	for (i = 0; i < ARRAY_SIZE(tm_pg_items); i++)
+-		result[i] = &data_str[i][0];
++	for (i = 0; i < ARRAY_SIZE(tm_pg_items); i++) {
++		result[i] = data_str;
++		data_str += HCLGE_DBG_DATA_STR_LEN;
++	}
+ 
+ 	hclge_dbg_fill_content(content, sizeof(content), tm_pg_items,
+ 			       NULL, ARRAY_SIZE(tm_pg_items));
+@@ -781,6 +783,22 @@ static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
+ 	return 0;
+ }
+ 
++static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
++{
++	int ret;
++	char *data_str = kcalloc(ARRAY_SIZE(tm_pg_items),
++				 HCLGE_DBG_DATA_STR_LEN, GFP_KERNEL);
++
++	if (!data_str)
++		return -ENOMEM;
++
++	ret = __hclge_dbg_dump_tm_pg(hdev, data_str, buf, len);
++
++	kfree(data_str);
++
++	return ret;
++}
++
+ static int hclge_dbg_dump_tm_port(struct hclge_dev *hdev,  char *buf, int len)
+ {
+ 	struct hclge_tm_shaper_para shaper_para;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.29.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
