@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57554192B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0DD4192B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhI0LGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        id S233952AbhI0LH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233897AbhI0LGk (ORCPT
+        with ESMTP id S233897AbhI0LH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:06:40 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AFAC061575;
-        Mon, 27 Sep 2021 04:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nJQ1BkmcJgtaIwRlKcokXRfC6gNMO5CdBJPnyuOf53w=; b=ETGI5ST7Fk0Ca0VBgc+bUlOMve
-        ngBRm0m+VxplDf0ax2M+3bhEZkfEw7kciX1JZUA8CUrGrSojBSHqFmK4GjVcKrDYWfcW0tME/dczI
-        Ik6+QEIf2aFB5yJauyZyp8HwZs7ozW450pqDDgH1kJArySYY1/+okkFQ8l0beK/HxOhzRkAjcmW/M
-        7vpNjvGFpvoXmI1w/SH2kjyhki3RwHZWbp+rSN25hMtQCqcT7BecwU77TBqvtAzWF6qMCDbPM0WhL
-        eI9jNib9gvE8PuVmv/nFCrUmJ0zMHl6s5qLWUV9nYeTlPzF9vSy5Dd9CK1VeYNrOlU2oS9RrBcjz5
-        BCdra1ag==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1mUoRO-0004rX-Ow; Mon, 27 Sep 2021 14:04:58 +0300
-Subject: Re: [PATCH] gpu: host1x: select CONFIG_DMA_SHARED_BUFFER
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210927093705.458573-1-arnd@kernel.org>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <84acd54f-ba9b-576c-8a49-da6245f063b2@kapsi.fi>
-Date:   Mon, 27 Sep 2021 14:04:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210927093705.458573-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+        Mon, 27 Sep 2021 07:07:28 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986FCC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 04:05:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id s11so17424077pgr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 04:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=L/js/+QIAeCH/e3oDGYGUuW3olbH7OQ+NYutC4UOl0Y=;
+        b=PMc1sKOeGmB+O66/la6pC7P/0/IoeFQ1HY5bLSqnJbEP5r3KwxVoWqM9/Dz+iKJ77M
+         tegUs/+E16t4p++UWJQ3I1PpOHiQ40+XF0JkQb0dvpaX7rv3MCHuzBseeRIEQ4f7kUXa
+         GGRlwenK8R24PGD80cuJc05Hfga9KeIScZrWDotmdttB54jele21oBUS6svPtu9+MaOp
+         a186aGU8NUePIlefKL+O44ozpQMRdmJjfuhBOAmXYrMUjYo4DSjNtbSb2qde5QX6MKLS
+         S21RxHx5i43r7z2pXfnT8q/fjKwwwr8wZjWzo94vzRTVBdzqS4RWwFkIHXhBi9K26zbn
+         L1Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=L/js/+QIAeCH/e3oDGYGUuW3olbH7OQ+NYutC4UOl0Y=;
+        b=d5k6sSBIoeRpMSIoo0FQBggZe8pNwjPB4SCnev7BcyVmbj+JkxiYZBk3YxjA5kK9ID
+         yDmlxfXOq7Q9XWqtjDE5SECC+vweATqvNFf5QiWiuDisf1nQn4BBvv/7I9zLJRKYKB53
+         AhNWarRHFA9l4i3fPX5MfjYpCW/VpW56bji58+Vwx0HEgVRY/HcTpDjHdUGlVfvxJBQq
+         OCjgy0InfGzL8h3aQ2+1AwmNM8cwRsA61COfjdgUSrA3Janx8bjyWjfwNezaCiiMrrRS
+         7P4gIZb0pS79Hl3xB+AnLlQQjlij1znmd6tKTTAno6S2Dg08jeJysytzYb/ItHpyCVhO
+         33ug==
+X-Gm-Message-State: AOAM531FJLp4C/R9aGtchWf+BY3tzEdoj7cSk6ycCy64eY1LhPROnhmd
+        YfifqN80WdKvZWdz4TR37p4=
+X-Google-Smtp-Source: ABdhPJy/1CsOZhw9V9Hi0MqFMmcVeQjk9bYbkOoZVDtlFRb6X6fmqYBTtL5dUhBSY/14YW80ALlmsQ==
+X-Received: by 2002:a63:33cb:: with SMTP id z194mr16254012pgz.380.1632740749950;
+        Mon, 27 Sep 2021 04:05:49 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id z202sm17093973pfc.40.2021.09.27.04.05.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Sep 2021 04:05:49 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 2/8] mm/madvise: remove unnecessary check on
+ madvise_dontneed_free()
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <20210927091143.tn6ediykqycu6rtu@box.shutemov.name>
+Date:   Mon, 27 Sep 2021 04:05:47 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DD025444-B1A2-4470-9069-0072A59427A5@gmail.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <20210926161259.238054-3-namit@vmware.com>
+ <20210927091143.tn6ediykqycu6rtu@box.shutemov.name>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 12:36 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Linking fails when dma-buf is disabled:
-> 
-> ld.lld: error: undefined symbol: dma_fence_release
->>>> referenced by fence.c
->>>>                gpu/host1x/fence.o:(host1x_syncpt_fence_enable_signaling) in archive drivers/built-in.a
->>>> referenced by fence.c
->>>>                gpu/host1x/fence.o:(host1x_fence_signal) in archive drivers/built-in.a
->>>> referenced by fence.c
->>>>                gpu/host1x/fence.o:(do_fence_timeout) in archive drivers/built-in.a
-> 
-> Fixes: 687db2207b1b ("gpu: host1x: Add DMA fence implementation")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/gpu/host1x/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/host1x/Kconfig b/drivers/gpu/host1x/Kconfig
-> index 6dab94adf25e..6815b4db17c1 100644
-> --- a/drivers/gpu/host1x/Kconfig
-> +++ b/drivers/gpu/host1x/Kconfig
-> @@ -2,6 +2,7 @@
->   config TEGRA_HOST1X
->   	tristate "NVIDIA Tegra host1x driver"
->   	depends on ARCH_TEGRA || (ARM && COMPILE_TEST)
-> +	select DMA_SHARED_BUFFER
->   	select IOMMU_IOVA
->   	help
->   	  Driver for the NVIDIA Tegra host1x hardware.
-> 
 
-Thanks!
 
-Reviewed-by: Mikko Perttunen <mperttunen@nvidia.com>
+> On Sep 27, 2021, at 2:11 AM, Kirill A. Shutemov <kirill@shutemov.name> =
+wrote:
+>=20
+> On Sun, Sep 26, 2021 at 09:12:53AM -0700, Nadav Amit wrote:
+>> From: Nadav Amit <namit@vmware.com>
+>>=20
+>> madvise_dontneed_free() is called only from madvise_vma() and the
+>> behavior is always either MADV_FREE or MADV_DONTNEED. There is no =
+need
+>> to check again in madvise_dontneed_free() if the behavior is any
+>> different.
+>=20
+> So what. The check is free. Compiler should be clever enough to =
+eliminate
+> the additional check. If there's a new MADV_DONTNEED flavour, the =
+change
+> would have to be effectively reverted.
+>=20
+> NAK.
+
+I hate bikeshedding, but I will take the bait, since I see no
+reason for this NAK.
+
+I do not know what future change you have in mind in which quietly
+failing in madvise_dontneed_free() would be the right behavior.
+
+If the current code is presumed to be more =E2=80=9Crobust=E2=80=9D =
+against future
+changes since there is an additional check, I would argue that this
+is not the case: failing silently on a code-path that should never
+run is not the right thing to do.
+
+Having redundant checks that are not documented as such do not make
+the code more readable or maintainable.
+
+Having said that, if you want, I can turn this condition into
+WARN_ON_ONCE() or VM_BUG_ON(), although I really see no reason to
+do so.
+
+[ You might just as well add a default statement to the switch in
+madvise_behavior(), which BTW would have been much more reasonable,
+but only if it does not fail silently as the one we discuss. ]
+
+Note that I made this change not out of boredom, but because I
+needed to change this piece of code later for TLB batching. I
+did not want to sneak this change in another patch or to leave
+this confusing code. Anyhow, I wasted enough time on this
+trivial patch.
+
