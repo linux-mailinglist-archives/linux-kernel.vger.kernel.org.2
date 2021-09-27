@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022F141999C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF70841999E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbhI0QuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:50:05 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32500 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbhI0QuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:50:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632761304; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=fblYSmlJg3v1/K9Wc+iQX7C7OT939c5R18PSUSeDZU0=; b=t6mudhm+Z0bb+5CvQnvTh/Erilt278YoMldcf79YS/EJ1T4BV4sXhaQgBgDoOSjlCpCZ0W89
- sdHJMQRqPnQKCH6qQZaDPiHBwVO6EgxcNtYiYTG7YAz/BYL4prTURXp98PDgUiffrQJQVTq+
- MgcrgiJSAJJxlwbMzIz3tTtZsaI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6151f5c7605ecf100b1893e4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Sep 2021 16:48:07
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 089D0C4360D; Mon, 27 Sep 2021 16:48:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.239.90] (unknown [157.47.14.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68156C4338F;
-        Mon, 27 Sep 2021 16:47:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 68156C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 3/5] ASoC: codecs: tx-macro: Enable tx top soundwire
- mic clock
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <agross@kernel.org; bjorn.andersson@linaro.org;
- lgirdwood@gmail.com; broonie@kernel.org;robh+dt@kernel.org;
- plai@codeaurora.org; bgoswami@codeaurora.org; perex@perex.cz;
- tiwai@suse.com;srinivas.kandagatla@linaro.org; rohitkr@codeaurora.org;
- linux-arm-msm@vger.kernel.org; alsa-devel@alsa-project.org;
- devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
- swboyd@chromium.org; judyhsiao@chromium.org;>
- <1632313878-12089-1-git-send-email-srivasam@codeaurora.org>
- <1632313878-12089-4-git-send-email-srivasam@codeaurora.org>
- <1e176dd1-fc8b-09dc-eb73-35b7d268e89a@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <39b035a5-0f5c-7ddb-d7a3-d6c42684e3e8@codeaurora.org>
-Date:   Mon, 27 Sep 2021 22:17:56 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S235575AbhI0Qup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:50:45 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47020 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235645AbhI0Qun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 12:50:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="222622266"
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; 
+   d="scan'208";a="222622266"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 09:49:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; 
+   d="scan'208";a="486204709"
+Received: from asen4-mobl2.amr.corp.intel.com (HELO [10.212.27.2]) ([10.212.27.2])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 09:49:00 -0700
+Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+To:     Mark Brown <broonie@kernel.org>,
+        Ryan Lee <RyanS.Lee@maximintegrated.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+        "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
+ <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
+ <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <20210927160622.GE4199@sirena.org.uk>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+Date:   Mon, 27 Sep 2021 11:48:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <1e176dd1-fc8b-09dc-eb73-35b7d268e89a@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210927160622.GE4199@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/27/2021 5:51 PM, Srinivas Kandagatla wrote:
->
->
-Thanks for your time Srini!!!
-> On 22/09/2021 13:31, Srinivasa Rao Mandadapu wrote:
->> Enable tx path soundwire mic0 and mic1 clock.
->>
->> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->>   sound/soc/codecs/lpass-tx-macro.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
->> b/sound/soc/codecs/lpass-tx-macro.c
->> index 5dcae73..e980b2e 100644
->> --- a/sound/soc/codecs/lpass-tx-macro.c
->> +++ b/sound/soc/codecs/lpass-tx-macro.c
->> @@ -1674,6 +1674,8 @@ static int tx_macro_component_probe(struct 
->> snd_soc_component *comp)
->>         snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 0x3F,
->>                         0x0A);
->> +    snd_soc_component_update_bits(comp, 
->> CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
->> +    snd_soc_component_update_bits(comp, 
->> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
->
-> This needs a comment for more clarity to readers.
-Okay! Will add comment and resend it.
->
-> --srini
->>         return 0;
->>   }
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
+On 9/27/21 11:06 AM, Mark Brown wrote:
+> On Mon, Sep 27, 2021 at 04:01:25PM +0000, Ryan Lee wrote:
+> 
+>>>>       regcache_cache_only(max98373->regmap, true);
+>>>> +     regcache_mark_dirty(max98373->regmap);
+> 
+>>> We already do the following sequence in max98373_io_init() when the
+>>> amplifier re-attaches:
+> 
+>>>         if (max98373->first_hw_init) {
+>>>                 regcache_cache_bypass(max98373->regmap, false);
+>>>                 regcache_mark_dirty(max98373->regmap);
+>>>         }
+> 
+>>> I don't see what marking the cache as dirty on suspend might do, we will do a
+>>> sync only in the resume step.
+> 
+>>> IIRC this is a patch that we've seen before and removed since it wasn't
+>>> aligned with any other codec driver.
+> 
+>> Yes, it does. There was an mute problem report due to amp register reset
+>> during suspend/resume. and we confirmed that the modification 
+>> is effective. (https://partnerissuetracker.corp.google.com/issues/194472331)
+>> The added code helps to re-write valid values in cache to the amp hardware
+>> when audio resume. Same code was there on i2c driver, but not on Soundwire
+>> driver.
+
+Ryan, we removed this in f184892613dd ('ASoC: codecs: max98373-sdw:
+align regmap use with other codecs'), so even if this was needed you'd
+need a mention that this is a revert and why this sequence is better.
+You are suggesting a change based on an analogy with I2C which is
+questionable: when a SoundWire device regains sync on the bus, it will
+be re-initialized using a callback, and the resume waits for the
+initialization to complete.
+
+> More specifically what it does is make the invalidation of the register
+> cache unconditional.  It doesn't really matter if the invalidation is
+> done on suspend or resume, so long as it happens before we attempt to
+> resync - this could also be done by deleting the first_hw_init check.
+
+Mark, that's exactly my point: if the amp rejoins the bus, we will
+*always* mark the cache as dirty, before the resync is done in the
+resume sequence.
+
+I am really trying to figure out if we have a major flaw in the resume
+sequence and why things are different in the case of the Maxim amp.
+
+Instead of changing the suspend sequence, can we please try to modify
+the max98373_io_init() routine to unconditionally flag the cache as
+dirty, maybe this points to a problem with the management of the
+max98373->first_hw_init flag.
