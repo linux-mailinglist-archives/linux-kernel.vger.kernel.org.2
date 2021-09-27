@@ -2,133 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A89B419FD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508BF41A038
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236843AbhI0ULD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59614 "EHLO mail.kernel.org"
+        id S236563AbhI0Uh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:37:26 -0400
+Received: from elvis.franken.de ([193.175.24.41]:46317 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236750AbhI0ULC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:11:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2F8F6103B;
-        Mon, 27 Sep 2021 20:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632773363;
-        bh=J4WKzNfsIiazj7H7fCzN53GkjN+q2BUUdv7RdPQ+jvs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iz+rXT9iurX/Sbwxr0JiSOuhKGhkSJ/ZvA9uw914KWJpvAANWwMdb/MtedCiS54lS
-         O4dVlseh6GqrUxg1YD+XyKKd+SwGAuj8FFf5ji70+pHdB4/pRrUxxo8jf8IudGCDtu
-         LtBnr3LkhDr5Hfzmbruf/81BbM7+KWYfUt9oMhE2sH/EqooPTEMF5VjZ5LXEAAh9hO
-         z2CiZ7lgLXGHXi7oXi2Td1tROFYJz/ERayeCuMoOF7473nW6Y0xZlsqx5Zblamfymm
-         5XKvXVyLbE8UF++l1RJyUg7RBYeHIXiU6vEP5mRK5UT5zlQq7jHKbA1wRxDbH0Wixx
-         nRXT2zqo1kryQ==
-Received: by mail-ed1-f41.google.com with SMTP id v18so38724181edc.11;
-        Mon, 27 Sep 2021 13:09:23 -0700 (PDT)
-X-Gm-Message-State: AOAM531QT4+7eR985DjBPxx7rdtJt9rzt0fInld5E3uodnIFioP8EpAR
-        i6/mC//ZFMbiFAx31iJcZp3aTs8w/7n66+C/PQ==
-X-Google-Smtp-Source: ABdhPJxbTiYP0k9mhq1FBUZhdcuB5HPJYzGx22XyKvmETyk5vs8udAVSQV3XRcc2g52kNbQN3yNH7Cekm4PkAhhcRnQ=
-X-Received: by 2002:a17:906:7217:: with SMTP id m23mr2177174ejk.466.1632773362346;
- Mon, 27 Sep 2021 13:09:22 -0700 (PDT)
+        id S235925AbhI0UhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:37:25 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mUxLl-0004AL-00; Mon, 27 Sep 2021 22:35:45 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D9E66C1CE8; Mon, 27 Sep 2021 22:09:32 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 22:09:32 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@arndb.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.15-rc3
+Message-ID: <20210927200932.GA8510@alpha.franken.de>
+References: <CAHk-=wgoE8XBPVA6Mu4CygxX9TE0FgWaAsVUJOe8KQH-CzEcAA@mail.gmail.com>
+ <20210927110548.GA771805@roeck-us.net>
+ <CAHk-=wiuGKOBvgje56X-EdOp4mnoz4C2nM1ML6DqRFfsptai3w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210924170546.805663-1-f.fainelli@gmail.com> <20210924170546.805663-8-f.fainelli@gmail.com>
- <CAL_JsqLSiCb7-tHW3VTOTdMt=qahAij77zF2us-CZqXYAi0jmg@mail.gmail.com>
- <b9bf844c-b6c0-9277-07e0-7592527ce4e4@gmail.com> <CAL_JsqLv+RrmtDPTuMxtjbqAbGvEeAY_oOE5GqrPdP9ZpNGzqw@mail.gmail.com>
- <ec13207a-08b4-cbc4-7f29-1ce25ce1ebd0@gmail.com>
-In-Reply-To: <ec13207a-08b4-cbc4-7f29-1ce25ce1ebd0@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 27 Sep 2021 15:09:10 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKyFeSn=6PiFHNZR7oTy9A5VdmD7U3=Za0qyofPB6aoMA@mail.gmail.com>
-Message-ID: <CAL_JsqKyFeSn=6PiFHNZR7oTy9A5VdmD7U3=Za0qyofPB6aoMA@mail.gmail.com>
-Subject: Re: [PATCH 07/11] of/irq: Export of_irq_count to drivers
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiuGKOBvgje56X-EdOp4mnoz4C2nM1ML6DqRFfsptai3w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 2:49 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> On 9/27/21 12:43 PM, Rob Herring wrote:
-> > On Mon, Sep 27, 2021 at 2:28 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >> On 9/27/21 12:08 PM, Rob Herring wrote:
-> >>> On Fri, Sep 24, 2021 at 12:07 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>>>
-> >>>> In order to build drivers/irqchip/irq-bcm7120-l2.c as a module, we will
-> >>>> need to have of_irq_count() exported to modules.
-> >>>>
-> >>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> >>>> ---
-> >>>>  drivers/of/irq.c | 1 +
-> >>>>  1 file changed, 1 insertion(+)
-> >>>>
-> >>>> diff --git a/drivers/of/irq.c b/drivers/of/irq.c
-> >>>> index 352e14b007e7..949b9d1f8729 100644
-> >>>> --- a/drivers/of/irq.c
-> >>>> +++ b/drivers/of/irq.c
-> >>>> @@ -440,6 +440,7 @@ int of_irq_count(struct device_node *dev)
-> >>>>
-> >>>>         return nr;
-> >>>>  }
-> >>>> +EXPORT_SYMBOL_GPL(of_irq_count);
-> >>>
-> >>> Please convert to use platform_irq_count() instead.
-> >>
-> >> That requires a platform_device to be passed to platform_irq_count(),
-> >> will that work even when the drivers remain built into the kernel and
-> >> get initialized early on?
+On Mon, Sep 27, 2021 at 11:55:52AM -0700, Linus Torvalds wrote:
+> On Mon, Sep 27, 2021 at 4:05 AM Guenter Roeck <linux@roeck-us.net> wrote:
 > >
-> > No, does your irqchip using this do both? Looks to me like it is
-> > always a platform_device.
->
-> On ARM/ARM64 not using GKI as well as MIPS, we would want the module to
-> be built into the kernel image, however when using GKI that driver would
-> become a module. How do you suggest reconciling both usages?
+> > On Sun, Sep 26, 2021 at 02:21:52PM -0700, Linus Torvalds wrote:
+> > > So after a somewhat rocky merge window and second rc, things are now
+> > > actually looking pretty normal for rc3. Knock wood.
+> > >
+> > > There are fixes all over, and the statistics look fairly regular, with
+> > > drivers dominating as they should (since they are most of the tree).
+> > > And outside of drivers, we have a fairly usual mix of changes -
+> > > architecture fixes, networking, filesystems, and tooling (the latter
+> > > being mostly kvm selftests).
+> > >
+> > > Shortlog appended, it's not too long and easy to scan through to get a
+> > > flavor for the details if you happen to care.
+> > >
+> > > Please do give it a whirl,
+> > >
+> >
+> > Build results:
+> >         total: 153 pass: 152 fail: 1
+> > Failed builds:
+> >         mips:allmodconfig
+> 
+> Gaah. I assume this is the
+> 
+>    arch/mips/include/asm/sibyte/bcm1480_scd.h:261: error:
+> "M_SPC_CFG_CLEAR" redefined
+> 
+> thing still.
+> 
+> It's been pending too long in the mips tree, I'll just take the patch
+> directly and finally empty your queue of build failures.
 
-What's there to resolve? Every driver that works as a module can be
-built-in. Is there something special about irqchip drivers?
+if it was a fix in the mips tree I would have sent it already, but it's
+watchdog driver fix, which was meant to be picked up by Wim. Anyway,
+thank you for taking it.
 
-The only issue I see here is platform_irqchip_probe() doesn't pass the
-platform_device pointer to the irq_init_cb function. There's 3 ways to
-fix that. Add a platform_device pointer to the init hook. That's a
-global change though. That's the right thing to do IMO. Or you can use
-of_find_device_by_node(). That's fairly expensive, but easy and
-isolated. You could also set device_node.data pointer to the
-platform_device, but ideally I'd like to get rid of that pointer as
-it's hardly used.
+Thomas.
 
-Rob
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
