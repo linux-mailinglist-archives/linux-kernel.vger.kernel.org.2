@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B97419565
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795E0419566
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhI0Nvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
+        id S234660AbhI0Nvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234583AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234587AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 09:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E52360F39;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C2361041;
         Mon, 27 Sep 2021 13:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632750595;
-        bh=/bOTaTmzGWeOrx1NvxdBUUcp7sjpew/tVp0sOd6hnug=;
+        bh=zD4KYLKbpYsa+QdN3zoc7BXcSqR3F/IXfm8tiArJ/CQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C2sAeA6eryJvSq866rse+8FBL6cA6CkUy9+hm51NPBXQUtNU6PM2Yz8P+zjwG88iV
-         OjipCFk3ZisQEFdyW3/x/VT5xyu4/9m670olcer6izeYdSKnpD1R1JIRS+lkmQCXUC
-         wZapp0mWJJ60RDHDPV6BEH2eRpvRY4QyNMTOiZNh0Ikg8FtGimLO3c0T8aB3ttfCJm
-         OhXp1+vPQh571NkbJq9R7TmZLvy5tIagTvJNXVNpzr0Gz7s21f0j1C3aNDQmwOYwLY
-         ntUoF1AeCeB8/tPvEppPl7OCv2G305A2btJRKeC50Lpphvsh4yL1LlToYDha+3j/Kf
-         Im891uej+k0Yg==
+        b=TB8Ghz8NNJyqXO/SbVTTdGbuqc655VYelCJDzALh3QgVRMO0Wdn5aJEt9Rj8MYjKH
+         66MKjPIuSQcKq4/WliDtaDMyeMp0ZvSADI5Si1iUi08DuEWCnv5EHXAJiaJtYLkV0I
+         JYL1D94ugRt0EKZByivf7kkk5y7p/U/fPxNZ2dKBJW9Q/dWM9KFF5LBqbCawZYd0A7
+         mCsKp0hPZxnqhCF/EgckRGXtFWwMYSzWFdpDaTq+LJ+hX0kN+kw4dtxQZ33rY66nNo
+         L1a1GAj4etuTbB1cGVinvfqtv1J34HVIIJWUSJQ4la/WsVfKl7vC0Z+BqOwq0k10a9
+         DUvq0xNk3TQpQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mUr0z-000AjU-JN; Mon, 27 Sep 2021 15:49:53 +0200
+        id 1mUr0z-000AjY-Ki; Mon, 27 Sep 2021 15:49:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] scripts: get_abi.pl: produce an error if the ref tree is broken
-Date:   Mon, 27 Sep 2021 15:49:49 +0200
-Message-Id: <e7dd4d70e206723455d50c851802c8bb6c34941d.1632750315.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 2/3] scripts: get_abi.pl: fix parse logic for DT firmware
+Date:   Mon, 27 Sep 2021 15:49:50 +0200
+Message-Id: <1c806eaec96f6706db4b041bbe6a0e2519e9637e.1632750315.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632750315.git.mchehab+huawei@kernel.org>
 References: <cover.1632750315.git.mchehab+huawei@kernel.org>
@@ -44,58 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic under graph_add_file should create, for every entry, a
-__name name array for all entries of the tree. If this fails, the
-symlink parsing will break.
+It doesn't make any sense to parse ABI entries under
+/sys/firmware, as those are either specified by ACPI specs
+or by Documentation/devicetree.
 
-Add an error if this ever happens.
+The current logic to ignore firmware entries is incomplete,
+as it ignores just the relative name of the file, and not
+its absolute name. This cause errors while parsing the
+symlinks.
 
-While here, improve the output of data dumper to be more
-compact and to avoid displaying things like $VAR1=.
+So, rewrite the logic for it to do a better job.
+
+Tested with both x86 and arm64 (HiKey970) systems.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 See [PATCH 0/3] at: https://lore.kernel.org/all/cover.1632750315.git.mchehab+huawei@kernel.org/
 
- scripts/get_abi.pl | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ scripts/get_abi.pl | 32 +++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index c191c024f052..26a3f8ff566a 100755
+index 26a3f8ff566a..d14f5cfc3138 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -27,6 +27,9 @@ my $dbg_what_open = 2;
- my $dbg_dump_abi_structs = 4;
- my $dbg_undefined = 8;
+@@ -635,20 +635,30 @@ my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\x
+ sub parse_existing_sysfs {
+ 	my $file = $File::Find::name;
  
-+$Data::Dumper::Indent = 1;
-+$Data::Dumper::Terse = 1;
+-	# Ignore cgroup and firmware
+-	return if ($file =~ m#^/sys/(fs/cgroup|firmware)/#);
+-
+-	# Ignore some sysfs nodes
+-	return if ($file =~ m#/(sections|notes)/#);
+-
+-	# Would need to check at
+-	# Documentation/admin-guide/kernel-parameters.txt, but this
+-	# is not easily parseable.
+-	return if ($file =~ m#/parameters/#);
+-
+ 	my $mode = (lstat($file))[2];
+ 	my $abs_file = abs_path($file);
+ 
++	my @tmp;
++	push @tmp, $file;
++	push @tmp, $abs_file if ($abs_file ne $file);
 +
- #
- # If true, assumes that the description is formatted with ReST
- #
-@@ -597,7 +600,6 @@ sub graph_add_link {
- 
- 	my @queue;
- 	my %seen;
--	my $base_name;
- 	my $st;
- 
- 	push @queue, $file_ref;
-@@ -611,6 +613,12 @@ sub graph_add_link {
- 			next if $seen{$$v{$c}};
- 			next if ($c eq "__name");
- 
-+			if (!defined($$v{$c}{"__name"})) {
-+				printf STDERR "Error: Couldn't find a non-empty name on a children of $file/.*: ";
-+				print STDERR Dumper(%{$v});
-+				exit;
-+			}
++	foreach my $f(@tmp) {
++		# Ignore cgroup, as this is big and has zero docs under ABI
++		return if ($f =~ m#^/sys/fs/cgroup/#);
 +
- 			# Add new name
- 			my $name = @{$$v{$c}{"__name"}}[0];
- 			if ($name =~ s#^$file/#$link/#) {
++		# Ignore firmware as it is documented elsewhere
++		# Either ACPI or under Documentation/devicetree/bindings/
++		return if ($f =~ m#^/sys/firmware/#);
++
++		# Ignore some sysfs nodes that aren't actually part of ABI
++		return if ($f =~ m#/sections|notes/#);
++
++		# Would need to check at
++		# Documentation/admin-guide/kernel-parameters.txt, but this
++		# is not easily parseable.
++		return if ($f =~ m#/parameters/#);
++	}
++
+ 	if (S_ISLNK($mode)) {
+ 		$aliases{$file} = $abs_file;
+ 		return;
 -- 
 2.31.1
 
