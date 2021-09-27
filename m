@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AD5419C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD1B419C13
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238076AbhI0RZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:25:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37458 "EHLO mail.kernel.org"
+        id S236807AbhI0RZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237163AbhI0RWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:22:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C196113D;
-        Mon, 27 Sep 2021 17:14:01 +0000 (UTC)
+        id S237175AbhI0RWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:22:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0353660F46;
+        Mon, 27 Sep 2021 17:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762841;
-        bh=VBMXl2HKuhmt9NC/nuRofxYnHDkRShkifbNE1Tp4fAo=;
+        s=korg; t=1632762844;
+        bh=HiR7uajrARarixycHTx6stbc43l2Q8NQ8R/iJV3Ij2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fmc2s1CJ9e2OBylCo8I2S0PPxy69rbaH1bwHKduDK4AzLJFDnSfklVLb25YS9VVW+
-         v3i55ZRhGMangC4Vejapu1lCV5tWbCnDXMbPOkkBQjds8wkeWIJUhR46B2CXI5savQ
-         NjNIPz0IaEUkAJgwWRXV0u3o7ffDOk4fB5Wktmug=
+        b=bh/MdoJSZz2qU0rs/2Ke7ev4gUyJ9SlS/wjLDf0yZ7Kqq8BUHLH3Wk+4x0zqX9tYA
+         fNSn+QpE/hRHK7yIumZMQam4VIulW+9fbHKVwlse049mdZAVJWlS31T3ZjVj2bAWBZ
+         y04g6mq/qCzecwLTNkfyoXCNZj5X6paN1clQXwfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
         Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 072/162] net: dsa: dont allocate the slave_mii_bus using devres
-Date:   Mon, 27 Sep 2021 19:01:58 +0200
-Message-Id: <20210927170235.946627159@linuxfoundation.org>
+Subject: [PATCH 5.14 073/162] net: dsa: realtek: register the MDIO bus under devres
+Date:   Mon, 27 Sep 2021 19:01:59 +0200
+Message-Id: <20210927170235.980557546@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
 References: <20210927170233.453060397@linuxfoundation.org>
@@ -45,7 +45,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 5135e96a3dd2f4555ae6981c3155a62bcf3227f6 ]
+[ Upstream commit 74b6d7d13307b016f4b5bba8198297824c0ee6df ]
 
 The Linux device model permits both the ->shutdown and ->remove driver
 methods to get called during a shutdown procedure. Example: a DSA switch
@@ -117,91 +117,34 @@ kernel, and now, the following code sequences are potentially buggy:
     buggy than the previous case which needs a specific bus
     configuration to be seen, this one is an unconditional bug.
 
-In this case, DSA falls into category (a), it tries to be helpful and
-registers an MDIO bus on behalf of the switch, which might be on such a
-bus. I've no idea why it does it under devres.
-
-It does this on probe:
-
-	if (!ds->slave_mii_bus && ds->ops->phy_read)
-		alloc and register mdio bus
-
-and this on remove:
-
-	if (ds->slave_mii_bus && ds->ops->phy_read)
-		unregister mdio bus
-
-I _could_ imagine using devres because the condition used on remove is
-different than the condition used on probe. So strictly speaking, DSA
-cannot determine whether the ds->slave_mii_bus it sees on remove is the
-ds->slave_mii_bus that _it_ has allocated on probe. Using devres would
-have solved that problem. But nonetheless, the existing code already
-proceeds to unregister the MDIO bus, even though it might be
-unregistering an MDIO bus it has never registered. So I can only guess
-that no driver that implements ds->ops->phy_read also allocates and
-registers ds->slave_mii_bus itself.
-
-So in that case, if unregistering is fine, freeing must be fine too.
-
-Stop using devres and free the MDIO bus manually. This will make devres
-stop attempting to free a still registered MDIO bus on ->shutdown.
+In this case, the Realtek drivers fall under category (b). To solve it,
+we can register the MDIO bus under devres too, which restores the
+previous behavior.
 
 Fixes: ac3a68d56651 ("net: phy: don't abuse devres in devm_mdiobus_register()")
 Reported-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Reported-by: Alvin Šipraga <alsi@bang-olufsen.dk>
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/dsa2.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/net/dsa/realtek-smi-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
-index 383fdc0565c7..76ed5ef0e36a 100644
---- a/net/dsa/dsa2.c
-+++ b/net/dsa/dsa2.c
-@@ -792,7 +792,7 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 	devlink_params_publish(ds->devlink);
+diff --git a/drivers/net/dsa/realtek-smi-core.c b/drivers/net/dsa/realtek-smi-core.c
+index 8e49d4f85d48..6bf46d76c028 100644
+--- a/drivers/net/dsa/realtek-smi-core.c
++++ b/drivers/net/dsa/realtek-smi-core.c
+@@ -368,7 +368,7 @@ int realtek_smi_setup_mdio(struct realtek_smi *smi)
+ 	smi->slave_mii_bus->parent = smi->dev;
+ 	smi->ds->slave_mii_bus = smi->slave_mii_bus;
  
- 	if (!ds->slave_mii_bus && ds->ops->phy_read) {
--		ds->slave_mii_bus = devm_mdiobus_alloc(ds->dev);
-+		ds->slave_mii_bus = mdiobus_alloc();
- 		if (!ds->slave_mii_bus) {
- 			err = -ENOMEM;
- 			goto teardown;
-@@ -802,13 +802,16 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 
- 		err = mdiobus_register(ds->slave_mii_bus);
- 		if (err < 0)
--			goto teardown;
-+			goto free_slave_mii_bus;
- 	}
- 
- 	ds->setup = true;
- 
- 	return 0;
- 
-+free_slave_mii_bus:
-+	if (ds->slave_mii_bus && ds->ops->phy_read)
-+		mdiobus_free(ds->slave_mii_bus);
- teardown:
- 	if (ds->ops->teardown)
- 		ds->ops->teardown(ds);
-@@ -833,8 +836,11 @@ static void dsa_switch_teardown(struct dsa_switch *ds)
- 	if (!ds->setup)
- 		return;
- 
--	if (ds->slave_mii_bus && ds->ops->phy_read)
-+	if (ds->slave_mii_bus && ds->ops->phy_read) {
- 		mdiobus_unregister(ds->slave_mii_bus);
-+		mdiobus_free(ds->slave_mii_bus);
-+		ds->slave_mii_bus = NULL;
-+	}
- 
- 	dsa_switch_unregister_notifier(ds);
- 
+-	ret = of_mdiobus_register(smi->slave_mii_bus, mdio_np);
++	ret = devm_of_mdiobus_register(smi->dev, smi->slave_mii_bus, mdio_np);
+ 	if (ret) {
+ 		dev_err(smi->dev, "unable to register MDIO bus %s\n",
+ 			smi->slave_mii_bus->id);
 -- 
 2.33.0
 
