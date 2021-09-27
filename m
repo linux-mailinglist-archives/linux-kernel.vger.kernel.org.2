@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5CD419A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A620C419B32
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbhI0RIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:08:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47186 "EHLO mail.kernel.org"
+        id S236518AbhI0RQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:16:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236056AbhI0RHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 711B5611C5;
-        Mon, 27 Sep 2021 17:05:36 +0000 (UTC)
+        id S237097AbhI0RNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:13:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 251E461359;
+        Mon, 27 Sep 2021 17:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762337;
-        bh=i4iaWoQ1Sgn/qBlgsSBs9HIavAn/HhwJWpFMBgsledo=;
+        s=korg; t=1632762577;
+        bh=90F7pgzjpGfA4Ynkzh6hB7JZRZI6X9FSvMKkP8xolWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YVKCmu26NWNbrKVl+VumLFu4EEJR7ZUDExNnnBRE/27w3LXGh+stTkeVCD6JCb9Pd
-         szAXj5SVKLjOr7Y+LrhlmRpKpXylwstj4gjbSXcjQTT+qCNwDXwFBThDSErAfnc1pi
-         XWL/HDYlSTHyv82LHG5ai5yENqdfdrkBw5qHOZ7Q=
+        b=r9u6wGdllJ66FxdBv8xuJyEIKYhXa9clXT4T4fctrRZE5TvYAjUxYDuVwj1jkiqRw
+         xTHL09Mv5QGL3YG2asv1rhR2d37ulUDksf/cZFftm0RK7n2snX3DRqTOZBRABelPct
+         CAiir+jyJ7lTKMykCYn2CbFIal7LR3Cpk3qn4zoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org, linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        luojiaxing <luojiaxing@huawei.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 52/68] nvme-multipath: fix ANA state updates when a namespace is not present
+Subject: [PATCH 5.10 076/103] blk-mq: avoid to iterate over stale request
 Date:   Mon, 27 Sep 2021 19:02:48 +0200
-Message-Id: <20210927170221.754953512@linuxfoundation.org>
+Message-Id: <20210927170228.399680974@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Eidelman <anton.eidelman@gmail.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 79f528afa93918519574773ea49a444c104bc1bd ]
+[ Upstream commit 67f3b2f822b7e71cfc9b42dbd9f3144fa2933e0b ]
 
-nvme_update_ana_state() has a deficiency that results in a failure to
-properly update the ana state for a namespace in the following case:
+blk-mq can't run allocating driver tag and updating ->rqs[tag]
+atomically, meantime blk-mq doesn't clear ->rqs[tag] after the driver
+tag is released.
 
-  NSIDs in ctrl->namespaces:	1, 3,    4
-  NSIDs in desc->nsids:		1, 2, 3, 4
+So there is chance to iterating over one stale request just after the
+tag is allocated and before updating ->rqs[tag].
 
-Loop iteration 0:
-    ns index = 0, n = 0, ns->head->ns_id = 1, nsid = 1, MATCH.
-Loop iteration 1:
-    ns index = 1, n = 1, ns->head->ns_id = 3, nsid = 2, NO MATCH.
-Loop iteration 2:
-    ns index = 2, n = 2, ns->head->ns_id = 4, nsid = 4, MATCH.
+scsi_host_busy_iter() calls scsi_host_check_in_flight() to count scsi
+in-flight requests after scsi host is blocked, so no new scsi command can
+be marked as SCMD_STATE_INFLIGHT. However, driver tag allocation still can
+be run by blk-mq core. One request is marked as SCMD_STATE_INFLIGHT,
+but this request may have been kept in another slot of ->rqs[], meantime
+the slot can be allocated out but ->rqs[] isn't updated yet. Then this
+in-flight request is counted twice as SCMD_STATE_INFLIGHT. This way causes
+trouble in handling scsi error.
 
-Where the update to the ANA state of NSID 3 is missed.  To fix this
-increment n and retry the update with the same ns when ns->head->ns_id is
-higher than nsid,
+Fixes the issue by not iterating over stale request.
 
-Signed-off-by: Anton Eidelman <anton@lightbitslabs.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Cc: linux-scsi@vger.kernel.org
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Reported-by: luojiaxing <luojiaxing@huawei.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210906065003.439019-1-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ block/blk-mq-tag.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 590b040e90a3..016a67fd4198 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -522,14 +522,17 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index c4f2f6c123ae..16ad9e656610 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -207,7 +207,7 @@ static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
  
- 	down_read(&ctrl->namespaces_rwsem);
- 	list_for_each_entry(ns, &ctrl->namespaces, list) {
--		unsigned nsid = le32_to_cpu(desc->nsids[n]);
--
-+		unsigned nsid;
-+again:
-+		nsid = le32_to_cpu(desc->nsids[n]);
- 		if (ns->head->ns_id < nsid)
- 			continue;
- 		if (ns->head->ns_id == nsid)
- 			nvme_update_ns_ana_state(desc, ns);
- 		if (++n == nr_nsids)
- 			break;
-+		if (ns->head->ns_id > nsid)
-+			goto again;
- 	}
- 	up_read(&ctrl->namespaces_rwsem);
- 	return 0;
+ 	spin_lock_irqsave(&tags->lock, flags);
+ 	rq = tags->rqs[bitnr];
+-	if (!rq || !refcount_inc_not_zero(&rq->ref))
++	if (!rq || rq->tag != bitnr || !refcount_inc_not_zero(&rq->ref))
+ 		rq = NULL;
+ 	spin_unlock_irqrestore(&tags->lock, flags);
+ 	return rq;
 -- 
 2.33.0
 
