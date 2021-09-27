@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9646A419C49
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826E4419A02
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237156AbhI0R1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:27:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
+        id S235930AbhI0RGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237515AbhI0RXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:23:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96CD56139E;
-        Mon, 27 Sep 2021 17:14:46 +0000 (UTC)
+        id S235852AbhI0RFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:05:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F9D5610E8;
+        Mon, 27 Sep 2021 17:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762887;
-        bh=zmlKPEvCPy4VDKcUyOH5io7XNhDQByhPPa7mxy69/sk=;
+        s=korg; t=1632762244;
+        bh=f91TnhFd8ef1ubRJrXJUlfDGZkPjpb5piUcuIZ7W6ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZM7AoKswApZ11SHhLsNmuHaB6BkJQcOYhTGSDKjyHW1qUIqkg3qqejx5qBlE5EHmy
-         56p5ISnKrlVx9KDHlMzlAe1VRFjg66wzqj/XzU/7tR89omg08l4QRtyzvoMGrVK38O
-         L2LCQ/vtUO+Zss9bjotQsGlYOp/G+WMauZeMRjYA=
+        b=Mga4Xu/3LEy4pS7kZvi741lEVyHxqdmj5Ri5j+kzEVpRZuHLJnp03LjbWUVGom5oZ
+         YnxFw0/0iNTFDZTXNiGytPJJMVmwLO2SBTYuOveU30s2vdqEG/pMyLmlzyqW3DFklE
+         ZvhWUwvKLkBVAVnd1siViX1GO7eII1G+0OUV2jeA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Colin Foster <colin.foster@in-advantage.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 087/162] net: mscc: ocelot: fix forwarding from BLOCKING ports remaining enabled
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 17/68] USB: serial: option: remove duplicate USB device ID
 Date:   Mon, 27 Sep 2021 19:02:13 +0200
-Message-Id: <20210927170236.445780907@linuxfoundation.org>
+Message-Id: <20210927170220.545339858@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit acc64f52afac15e9e44d9b5253271346841786e0 ]
+commit 1ca200a8c6f079950a04ea3c3380fe8cf78e95a2 upstream.
 
-The blamed commit made the fatally incorrect assumption that ports which
-aren't in the FORWARDING STP state should not have packets forwarded
-towards them, and that is all that needs to be done.
+The device ZTE 0x0094 is already on the list.
 
-However, that logic alone permits BLOCKING ports to forward to
-FORWARDING ports, which of course allows packet storms to occur when
-there is an L2 loop.
-
-The ocelot_get_bridge_fwd_mask should not only ask "what can the bridge
-do for you", but "what can you do for the bridge". This way, only
-FORWARDING ports forward to the other FORWARDING ports from the same
-bridging domain, and we are still compatible with the idea of multiple
-bridges.
-
-Fixes: df291e54ccca ("net: ocelot: support multiple bridges")
-Suggested-by: Colin Foster <colin.foster@in-advantage.com>
-Reported-by: Colin Foster <colin.foster@in-advantage.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: b9e44fe5ecda ("USB: option: cleanup zte 3g-dongle's pid in option.c")
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mscc/ocelot.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/usb/serial/option.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-index 2948d731a1c1..512dff955166 100644
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -1260,14 +1260,19 @@ static u32 ocelot_get_bond_mask(struct ocelot *ocelot, struct net_device *bond,
- 	return mask;
- }
- 
--static u32 ocelot_get_bridge_fwd_mask(struct ocelot *ocelot,
-+static u32 ocelot_get_bridge_fwd_mask(struct ocelot *ocelot, int src_port,
- 				      struct net_device *bridge)
- {
-+	struct ocelot_port *ocelot_port = ocelot->ports[src_port];
- 	u32 mask = 0;
- 	int port;
- 
-+	if (!ocelot_port || ocelot_port->bridge != bridge ||
-+	    ocelot_port->stp_state != BR_STATE_FORWARDING)
-+		return 0;
-+
- 	for (port = 0; port < ocelot->num_phys_ports; port++) {
--		struct ocelot_port *ocelot_port = ocelot->ports[port];
-+		ocelot_port = ocelot->ports[port];
- 
- 		if (!ocelot_port)
- 			continue;
-@@ -1333,7 +1338,7 @@ void ocelot_apply_bridge_fwd_mask(struct ocelot *ocelot)
- 			struct net_device *bridge = ocelot_port->bridge;
- 			struct net_device *bond = ocelot_port->bond;
- 
--			mask = ocelot_get_bridge_fwd_mask(ocelot, bridge);
-+			mask = ocelot_get_bridge_fwd_mask(ocelot, port, bridge);
- 			mask |= cpu_fwd_mask;
- 			mask &= ~BIT(port);
- 			if (bond) {
--- 
-2.33.0
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1658,7 +1658,6 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
+-	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
+ 	  .driver_info = RSVD(1) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
 
 
