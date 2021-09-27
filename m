@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD69419ACF
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9D7419AD0
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235894AbhI0RMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:12:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S235514AbhI0RMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:12:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235746AbhI0RKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:10:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6942961244;
-        Mon, 27 Sep 2021 17:07:49 +0000 (UTC)
+        id S236610AbhI0RKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:10:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEAC861178;
+        Mon, 27 Sep 2021 17:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762469;
-        bh=NZAdhYbzktd9+Nks2wFC4dKjzc6MPwQ4GMyA7d7CVyA=;
+        s=korg; t=1632762472;
+        bh=Qph3P2vCb/2ExWigLookIyt32+Kp6aSqwYW2z8dJTbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGCynd24tFh1O+Cm8rTaia6n4NneQsraYpFuasZFK6aDSVJ2NaF5GPQkoP6XNogMW
-         SeQK7LIVnIR92zeFjB6npbLn1oOrxaI4lRN0H302V7p1jFVdkRnvKTRc0jAtz9j2mv
-         xzLP7U/jIJ/fdIH8ETZhLjlbadyA5UHXPQZXXvic=
+        b=sPLUkI+6fr9OKKIAo2HWg4FrFIniEEct+locW2JzIlcOXdK6PDzvnxljytjgyQ6vv
+         /G+z5wkBHjJR14bulrUX6W+9CQilJZkolsVKIfm6lK2nJAEDhH5oZkLxs74oYI4I7r
+         SD/26nuocrz2Z6Jq4zUtaIuNp1zTeZrAkNlJ/pQg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/103] platform/x86/intel: punit_ipc: Drop wrong use of ACPI_PTR()
-Date:   Mon, 27 Sep 2021 19:02:07 +0200
-Message-Id: <20210927170226.956847185@linuxfoundation.org>
+Subject: [PATCH 5.10 036/103] enetc: Fix illegal access when reading affinity_hint
+Date:   Mon, 27 Sep 2021 19:02:08 +0200
+Message-Id: <20210927170226.996416573@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
 References: <20210927170225.702078779@linuxfoundation.org>
@@ -41,48 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-[ Upstream commit 349bff48ae0f5f8aa2075d0bdc2091a30bd634f6 ]
+[ Upstream commit 7237a494decfa17d0b9d0076e6cee3235719de90 ]
 
-ACPI_PTR() is more harmful than helpful. For example, in this case
-if CONFIG_ACPI=n, the ID table left unused which is not what we want.
+irq_set_affinity_hit() stores a reference to the cpumask_t
+parameter in the irq descriptor, and that reference can be
+accessed later from irq_affinity_hint_proc_show(). Since
+the cpu_mask parameter passed to irq_set_affinity_hit() has
+only temporary storage (it's on the stack memory), later
+accesses to it are illegal. Thus reads from the corresponding
+procfs affinity_hint file can result in paging request oops.
 
-Instead of adding ifdeffery here and there, drop ACPI_PTR()
-and unused acpi.h.
+The issue is fixed by the get_cpu_mask() helper, which provides
+a permanent storage for the cpumask_t parameter.
 
-Fixes: fdca4f16f57d ("platform:x86: add Intel P-Unit mailbox IPC driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210827145310.76239-1-andriy.shevchenko@linux.intel.com
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel_punit_ipc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/platform/x86/intel_punit_ipc.c b/drivers/platform/x86/intel_punit_ipc.c
-index f58b8543f6ac..66bb39fd0ef9 100644
---- a/drivers/platform/x86/intel_punit_ipc.c
-+++ b/drivers/platform/x86/intel_punit_ipc.c
-@@ -8,7 +8,6 @@
-  * which provide mailbox interface for power management usage.
-  */
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index df4a858c8001..6877f8e2047b 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1320,7 +1320,6 @@ static void enetc_clear_bdrs(struct enetc_ndev_priv *priv)
+ static int enetc_setup_irqs(struct enetc_ndev_priv *priv)
+ {
+ 	struct pci_dev *pdev = priv->si->pdev;
+-	cpumask_t cpu_mask;
+ 	int i, j, err;
  
--#include <linux/acpi.h>
- #include <linux/bitops.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -319,7 +318,7 @@ static struct platform_driver intel_punit_ipc_driver = {
- 	.remove = intel_punit_ipc_remove,
- 	.driver = {
- 		.name = "intel_punit_ipc",
--		.acpi_match_table = ACPI_PTR(punit_ipc_acpi_ids),
-+		.acpi_match_table = punit_ipc_acpi_ids,
- 	},
- };
+ 	for (i = 0; i < priv->bdr_int_num; i++) {
+@@ -1349,9 +1348,7 @@ static int enetc_setup_irqs(struct enetc_ndev_priv *priv)
  
+ 			enetc_wr(hw, ENETC_SIMSITRV(idx), entry);
+ 		}
+-		cpumask_clear(&cpu_mask);
+-		cpumask_set_cpu(i % num_online_cpus(), &cpu_mask);
+-		irq_set_affinity_hint(irq, &cpu_mask);
++		irq_set_affinity_hint(irq, get_cpu_mask(i % num_online_cpus()));
+ 	}
+ 
+ 	return 0;
 -- 
 2.33.0
 
