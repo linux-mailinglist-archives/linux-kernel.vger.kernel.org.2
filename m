@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AE641A039
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A8041A03A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236632AbhI0UiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235865AbhI0UiB (ORCPT
+        id S236691AbhI0Ui7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:38:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235865AbhI0Ui5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:38:01 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12340C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:36:23 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id kn18so362827pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KwntqUtVsNq0eUFSV1/o/nRAcymM++4zNUK+VLfzUDE=;
-        b=qwIUO+3oC6laZ/gJKGvYxv3lflTfsHoCZozQwFOCCG93M44AOCtYwoSK4+BlxN6uMM
-         xXIRst5Jp1b1D8GLGaK3cgg7QCm8wwMGodWCT3Yzt0Hb2ZWkJJT7jIWqZ/eBpR6P6oPs
-         Ho3XAgMKKCBgJzgylh3jmiM5/KdLQdltQcC/ntQwQe8mPYrQ+iD9NWtQO94KwnTHmbcT
-         7ZMTHwRVTvo2Quxwo/TTRWC0MatJPUwxXLv4szstzuXPvM3ApWzeEiUHlgJXIR1tmX1u
-         B/+dg7r7cJ44YMKuJ8Ct0BdcdzI1qAy/4DHMqaETzhldsUmSe91/m+Y+IbkStrwJZ2/z
-         RHdg==
+        Mon, 27 Sep 2021 16:38:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632775038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kVhbRAJmKSprlQgg0jXpRAyAty2Z7WA2uiN0tVCX8Ys=;
+        b=gL/puVNQO3KYaGtpamy4HtjmX06nmvWR+xvDwj4rzZBTZ7jY7Hpu5vc+v7Q4R+HIbkSQ95
+        ZJOujZCwjTvpWuf0c2sR5ed3kQTo6pblVzmRAOuIyifKabBF7zOKi2pRgyqTj7+7R0L0Ex
+        uCex6lDr5u2aC3tTdTzobUnPWqSyeCo=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-M5_YEQCLNzi4jgOt8B5mnA-1; Mon, 27 Sep 2021 16:37:15 -0400
+X-MC-Unique: M5_YEQCLNzi4jgOt8B5mnA-1
+Received: by mail-qk1-f200.google.com with SMTP id r5-20020a05620a298500b0045dac5fb940so60899934qkp.17
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:37:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KwntqUtVsNq0eUFSV1/o/nRAcymM++4zNUK+VLfzUDE=;
-        b=QQ2ThxeeEcDTRknakQU6ztYWjldiHem2wc3Q52aNXCgP84qzkSJ7niUP53LP+ewJab
-         sE5c0dC5ayzc+ldmBnccaazJOpd7XWAtOSDBHpZ0CoQZSiJi+YQkLHbJpwbe1VxzKJ1g
-         mG9lV7zzVJ5h7LtoofsWMD3BAsXZd1sPW01mpSVgy4ZQ505Fl0KblCQqzFaTElRlE4rN
-         klAHaNI8Lre+aBjmQkzK0DdL6k6ugtH3g4WOARcWb3auEiyk1AAN8a9dBYdZGhu2Ckub
-         wgEWCUQaXE4lo06Ulv09rVf3hvasdJR8GShq7ckI3QzKYO/lDYSm0FNOA2ysXn9bh/2V
-         XPTQ==
-X-Gm-Message-State: AOAM532+qZt984dRfMM6/bGxyZujhoTi/5deHGvHptSNwyYkMWiGE7Bz
-        +ygyCPQihwx+O9oMPUXt5qQ=
-X-Google-Smtp-Source: ABdhPJx6HFSHqBc+6nLSQK9verGhJtcB06qeQUgeN64cmC/mCUE1BD8FuJyvGrZIKjQ3gJHVjxsQ7Q==
-X-Received: by 2002:a17:90a:17e1:: with SMTP id q88mr1113946pja.99.1632774982476;
-        Mon, 27 Sep 2021 13:36:22 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id y24sm10396984pfo.69.2021.09.27.13.36.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Sep 2021 13:36:22 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 4/8] mm/madvise: define madvise behavior in a struct
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20210927121449.kac5g25aejbwvylf@box>
-Date:   Mon, 27 Sep 2021 13:36:20 -0700
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kVhbRAJmKSprlQgg0jXpRAyAty2Z7WA2uiN0tVCX8Ys=;
+        b=e3jkG1XQ4YoNbVmjFc/aQ8svYd62yslj0TC2S4QSEQYViIrxc4zHdirsEhbdCRKEGE
+         nAlIrd05/bBE5vtLTKtrEY8KGWJLua27bXOl83VCtB9WnGJHfVZLCV1rwCl9H97wGoYh
+         xM7YVQD3wN0YMmRtwGbbRewUyv14JwMfyeBhJ2wE5MJEfY0vEjG0zBQBbljvGiKqkSn5
+         W77SBoaNuaPkPyI089pngFIsbl6zgwhoNEhwB3NnO3+qyCyfPdVe+tE+VhU5Tj6xi2ta
+         vfYT0UcztvNEfj59FLPgWlGO5cTGtcPSiqt2gz8I2iR8vuq3mwUuxb7CqdX7UJNvMjib
+         BjbA==
+X-Gm-Message-State: AOAM5339fAYFAB+h3ODa8xuflT5Uf2agWBESPtxKSqy52Tmx7NZPmKko
+        iZtVdB6zkvE2VdXEF8YWMwtht2FAb6RZ9Wx0CEVRTyWC+nX5TZ4sgaTv9MbPRZPTUIig6Atl3jt
+        ry6ghbmn5FH2btK4bNEMLqdrK
+X-Received: by 2002:a37:9c12:: with SMTP id f18mr2000950qke.18.1632775035140;
+        Mon, 27 Sep 2021 13:37:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgG4CZqC/O53dsfz8veZQDVuVytxC0nWOpDZX1csnQsSimgxnlUx4eZ2tkw/L+ekLBM11Mgg==
+X-Received: by 2002:a37:9c12:: with SMTP id f18mr2000928qke.18.1632775034799;
+        Mon, 27 Sep 2021 13:37:14 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id j14sm11851289qtv.36.2021.09.27.13.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 13:37:14 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 16:37:12 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CB2E02DB-0675-4053-B223-06D4BF26641C@gmail.com>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-5-namit@vmware.com>
- <20210927093103.g3cszw75gfctwtzk@box.shutemov.name>
- <48D4E700-0005-46D4-8EAA-B839D8449C66@gmail.com>
- <20210927121449.kac5g25aejbwvylf@box>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
+Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
+ thp enabled
+Message-ID: <YVIreLvxtoW3awYr@t490s>
+References: <20210923232512.210092-1-peterx@redhat.com>
+ <CAJHvVci8ig4WCY2aK-GvmHP=Uw3s8DrGahk-Yh37GX2kR35kww@mail.gmail.com>
+ <YU4uJLJHsHLVsS2w@t490s>
+ <YVIBCh+jrZABo3xS@t490s>
+ <CAJHvVcj976vz5xC=CzDQvVY7Yf8ZoDnt9jv_SwPtUKs_1LjATA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJHvVcj976vz5xC=CzDQvVY7Yf8ZoDnt9jv_SwPtUKs_1LjATA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 27, 2021 at 10:49:39AM -0700, Axel Rasmussen wrote:
+> One small comment:
+> 
+> I'd prefer to keep the "uffd_test_ops->release_pages(area_src);"
+> above, to ensure the src region is empty. It's not immediately obvious
+> to me that we overwrite *all* of the bytes in src when we initialize
+> it. (I'd have to go look at the definition of area_count and read the
+> loop carefully.) It may not be technically needed, but it makes the
+> guarantee that we're starting with a clean slate, free from any
+> changes from previous test cases, very clear + explicit.
 
-> On Sep 27, 2021, at 5:14 AM, Kirill A. Shutemov <kirill@shutemov.name> =
-wrote:
->=20
-> On Mon, Sep 27, 2021 at 03:31:21AM -0700, Nadav Amit wrote:
->>=20
->>=20
->>> On Sep 27, 2021, at 2:31 AM, Kirill A. Shutemov =
-<kirill@shutemov.name> wrote:
->>>=20
->>> On Sun, Sep 26, 2021 at 09:12:55AM -0700, Nadav Amit wrote:
->>>> From: Nadav Amit <namit@vmware.com>
->>>>=20
->>>> The different behaviors of madvise are different in several ways, =
-which
->>>> are distributed across several functions. Use the design pattern =
-from
->>>> iouring in order to define the actions that are required for each
->>>> behavior.
->>>>=20
->>>> The next patches will get rid of old helper functions that are =
-modified
->>>> in this patch and the redundant use of array_index_nospec(). The =
-next
->>>> patches will add more actions for each leaf into the new struct.
->>>=20
+I think there're only two fields used, area_mutex and area_count.  I'm not sure
+what's the initial idea from Andrea when the test case is merged, but IMHO it
+can be written as a struct too instead of using the long macros; struct could
+make it easier to undertand.
 
-[ snip ]
+And note again that we have your uffd_test_ctx_clear() called which contains
+munmap() of all the buffers before the release_pages() calls.  It means at
+least for anon and shmem the pages won't be there 100% sure to me.  hugetlbfs
+is the only one that may still keep the pages as the fs should hold another
+refcount on the inode, however as all the two fields got re-written anyway, so
+I think it'll be still very safe to drop the two release_pages().
 
->>> MADV_SOFT_OFFLINE+1 smells bad.
->>=20
->> I can set another constant instead and let the compiler shout if =
-anything
->> outside the array is initialized.
->=20
-> I would rather introduce a function that would return struct =
-madvise_info
-> for a given behavior. The function would have a switch inside. The =
-default:
-> may have BUILD_BUG() or something.
+> 
+> Moving the release_pages(area_dst) down as you've done seems correct to me.
+> 
+> Either way you can take:
+> 
+> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+> 
+> >
+> > It's just that after the weekend when I look back I still don't see a 100%
+> > clean way to fix it yet.  Mapping 4K PROT_NONE before/after each allocation is
+> > the most ideal but still looks tricky to me.
+> >
+> > Would you have time on looking for a better solution, so as to (see it a way
+> > to) complete what commit 8ba6e8640844 whats to do afterwards?
+> 
+> Sure, it seems related to the other THP investigations we talked about
+> in the other thread, so I'm happy to look into it.
+> 
+> Just to set expectations, progress may be slightly slow as I'm
+> balancing other work my employer wants done, and some upcoming time
+> off. But, I think with your patch the test is at least stable (not
+> flaky) enough that there is no *urgent* need for this, so it should be
+> fine.
 
-Sounds better than my solution. I will do so.=
+Thanks a lot on both reviewing the patch and willing to look into it.  As long
+as we don't get any report for khugepaged (if it happens, I'll provide the
+PROT_NONE hack instead - that'll work 100% I believe but less clean; but for
+now IMHO we don't need to bother) then we don't need to rush on that.
+
+-- 
+Peter Xu
+
