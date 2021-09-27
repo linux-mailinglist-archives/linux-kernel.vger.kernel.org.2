@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647C5419B3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D252419A0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236628AbhI0RQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:16:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46130 "EHLO mail.kernel.org"
+        id S235987AbhI0RGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:06:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235766AbhI0RLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:11:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F25A4611C2;
-        Mon, 27 Sep 2021 17:08:13 +0000 (UTC)
+        id S235880AbhI0RFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:05:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3BCB61074;
+        Mon, 27 Sep 2021 17:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762494;
-        bh=HiR7uajrARarixycHTx6stbc43l2Q8NQ8R/iJV3Ij2g=;
+        s=korg; t=1632762255;
+        bh=qpgKfRSy0WRL//yUVgg/fqWsO5jm6cAXesAzEz4hoBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sFzJCKjc6SOkVT2F9UdXMY0Rx3nzjuSF7L/3EmgMhQbVponguVXVN/Wt4g9zswW66
-         5uwOdws4qlW3zfWl4w4P3wKnXGox5K0c1usM7fhVAno5gmEkKYozPT+QovHGOF3dwX
-         +lJ6IoWsV+FUlwpOxI7Yhou7xdnM8wI6UkO2C+Tg=
+        b=oOUyCfhNLmwn0LAY5s980Nn8ChI8Vr6g4LdjVtIVAqSliRPgiqgsMVd9mhBs5jsoh
+         kVJwUPP5LC0iDk4VxjFwpm5m7rIzNeBmByNXzRAIvzEZc8mkxZjqfcyhKJsM1fqzfl
+         VGbJjZhwsAOJIPsjfs3rQlHhosnSNpXQjvvD23Xw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/103] net: dsa: realtek: register the MDIO bus under devres
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 5.4 20/68] erofs: fix up erofs_lookup tracepoint
 Date:   Mon, 27 Sep 2021 19:02:16 +0200
-Message-Id: <20210927170227.272823378@linuxfoundation.org>
+Message-Id: <20210927170220.647524522@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,110 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 74b6d7d13307b016f4b5bba8198297824c0ee6df ]
+commit 93368aab0efc87288cac65e99c9ed2e0ffc9e7d0 upstream.
 
-The Linux device model permits both the ->shutdown and ->remove driver
-methods to get called during a shutdown procedure. Example: a DSA switch
-which sits on an SPI bus, and the SPI bus driver calls this on its
-->shutdown method:
+Fix up a misuse that the filename pointer isn't always valid in
+the ring buffer, and we should copy the content instead.
 
-spi_unregister_controller
--> device_for_each_child(&ctlr->dev, NULL, __unregister);
-   -> spi_unregister_device(to_spi_device(dev));
-      -> device_del(&spi->dev);
-
-So this is a simple pattern which can theoretically appear on any bus,
-although the only other buses on which I've been able to find it are
-I2C:
-
-i2c_del_adapter
--> device_for_each_child(&adap->dev, NULL, __unregister_client);
-   -> i2c_unregister_device(client);
-      -> device_unregister(&client->dev);
-
-The implication of this pattern is that devices on these buses can be
-unregistered after having been shut down. The drivers for these devices
-might choose to return early either from ->remove or ->shutdown if the
-other callback has already run once, and they might choose that the
-->shutdown method should only perform a subset of the teardown done by
-->remove (to avoid unnecessary delays when rebooting).
-
-So in other words, the device driver may choose on ->remove to not
-do anything (therefore to not unregister an MDIO bus it has registered
-on ->probe), because this ->remove is actually triggered by the
-device_shutdown path, and its ->shutdown method has already run and done
-the minimally required cleanup.
-
-This used to be fine until the blamed commit, but now, the following
-BUG_ON triggers:
-
-void mdiobus_free(struct mii_bus *bus)
-{
-	/* For compatibility with error handling in drivers. */
-	if (bus->state == MDIOBUS_ALLOCATED) {
-		kfree(bus);
-		return;
-	}
-
-	BUG_ON(bus->state != MDIOBUS_UNREGISTERED);
-	bus->state = MDIOBUS_RELEASED;
-
-	put_device(&bus->dev);
-}
-
-In other words, there is an attempt to free an MDIO bus which was not
-unregistered. The attempt to free it comes from the devres release
-callbacks of the SPI device, which are executed after the device is
-unregistered.
-
-I'm not saying that the fact that MDIO buses allocated using devres
-would automatically get unregistered wasn't strange. I'm just saying
-that the commit didn't care about auditing existing call paths in the
-kernel, and now, the following code sequences are potentially buggy:
-
-(a) devm_mdiobus_alloc followed by plain mdiobus_register, for a device
-    located on a bus that unregisters its children on shutdown. After
-    the blamed patch, either both the alloc and the register should use
-    devres, or none should.
-
-(b) devm_mdiobus_alloc followed by plain mdiobus_register, and then no
-    mdiobus_unregister at all in the remove path. After the blamed
-    patch, nobody unregisters the MDIO bus anymore, so this is even more
-    buggy than the previous case which needs a specific bus
-    configuration to be seen, this one is an unconditional bug.
-
-In this case, the Realtek drivers fall under category (b). To solve it,
-we can register the MDIO bus under devres too, which restores the
-previous behavior.
-
-Fixes: ac3a68d56651 ("net: phy: don't abuse devres in devm_mdiobus_register()")
-Reported-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Reported-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20210921143531.81356-1-hsiangkao@linux.alibaba.com
+Fixes: 13f06f48f7bf ("staging: erofs: support tracepoint")
+Cc: stable@vger.kernel.org # 4.19+
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/realtek-smi-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/trace/events/erofs.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/realtek-smi-core.c b/drivers/net/dsa/realtek-smi-core.c
-index 8e49d4f85d48..6bf46d76c028 100644
---- a/drivers/net/dsa/realtek-smi-core.c
-+++ b/drivers/net/dsa/realtek-smi-core.c
-@@ -368,7 +368,7 @@ int realtek_smi_setup_mdio(struct realtek_smi *smi)
- 	smi->slave_mii_bus->parent = smi->dev;
- 	smi->ds->slave_mii_bus = smi->slave_mii_bus;
+--- a/include/trace/events/erofs.h
++++ b/include/trace/events/erofs.h
+@@ -35,20 +35,20 @@ TRACE_EVENT(erofs_lookup,
+ 	TP_STRUCT__entry(
+ 		__field(dev_t,		dev	)
+ 		__field(erofs_nid_t,	nid	)
+-		__field(const char *,	name	)
++		__string(name,		dentry->d_name.name	)
+ 		__field(unsigned int,	flags	)
+ 	),
  
--	ret = of_mdiobus_register(smi->slave_mii_bus, mdio_np);
-+	ret = devm_of_mdiobus_register(smi->dev, smi->slave_mii_bus, mdio_np);
- 	if (ret) {
- 		dev_err(smi->dev, "unable to register MDIO bus %s\n",
- 			smi->slave_mii_bus->id);
--- 
-2.33.0
-
+ 	TP_fast_assign(
+ 		__entry->dev	= dir->i_sb->s_dev;
+ 		__entry->nid	= EROFS_I(dir)->nid;
+-		__entry->name	= dentry->d_name.name;
++		__assign_str(name, dentry->d_name.name);
+ 		__entry->flags	= flags;
+ 	),
+ 
+ 	TP_printk("dev = (%d,%d), pnid = %llu, name:%s, flags:%x",
+ 		show_dev_nid(__entry),
+-		__entry->name,
++		__get_str(name),
+ 		__entry->flags)
+ );
+ 
 
 
