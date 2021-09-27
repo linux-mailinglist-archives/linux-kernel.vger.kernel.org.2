@@ -2,132 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19104196AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B624196B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234940AbhI0Oti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:49:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234782AbhI0Otg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:49:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBD460FC2;
-        Mon, 27 Sep 2021 14:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632754078;
-        bh=zqckSjMs/haPVLnH/e6bvk6XUWFiniRiJgluMdxeWvM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jolkaP4PVHGIwcta4Q+Jfqy+PV2WJ6vfPkLXHN03Q7s6mil8+zYCcayHdOxNMoliJ
-         iEOr1/wM3wUxnYAOjW4sXhFZPOsPPGB4aVh4UFCJjYLmKqsZERIt2c2nlxz3ZYESaF
-         4+yywiWuKo9au59rileA3AWx0iHoybNjbHAObXFnP118MO+GwjUCmHyNqD42MP3ac6
-         jDnZRYo30bjudSmKZmycnwEs7yaD5+fUJRax1E8v939zGaqDH1hw6kYKoRw0uNT2Hu
-         h2fJzGiqgvR38omIAI2bBwl6RkndEmoGhIq3PJDu94RWvEQL/iQqICHN7bK96dU5E3
-         E5lB8hMnYfNVw==
-Date:   Mon, 27 Sep 2021 09:47:56 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
-Message-ID: <20210927144756.GA643630@bhelgaas>
+        id S234939AbhI0OuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234841AbhI0OuJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:50:09 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9534FC061575;
+        Mon, 27 Sep 2021 07:48:31 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 6B9E11F4217C
+Received: by earth.universe (Postfix, from userid 1000)
+        id 7486F3C0CA8; Mon, 27 Sep 2021 16:48:21 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 16:48:21 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: core: Add psy_has_property()
+Message-ID: <20210927144821.c6rzox4xyqkanzgz@earth.universe>
+References: <20210901165911.1.I61edd8453dd683a125623b4173988b438033c0af@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zyyrfqid4cwaocss"
 Content-Disposition: inline
-In-Reply-To: <YVGxLH+hi1NN0oq5@unreal>
+In-Reply-To: <20210901165911.1.I61edd8453dd683a125623b4173988b438033c0af@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:55:24PM +0300, Leon Romanovsky wrote:
-> On Sun, Sep 26, 2021 at 03:23:41PM -0500, Bjorn Helgaas wrote:
-> > On Sun, Sep 26, 2021 at 09:36:49AM +0300, Leon Romanovsky wrote:
-> > > On Sat, Sep 25, 2021 at 12:41:15PM -0500, Bjorn Helgaas wrote:
-> > > > On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
-> > > > > On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
-> > > > > > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
-> > > > > > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
-> > > > > > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
-> > > > > > > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > > > > > 
-> > > > > > > > > The PCI core uses the VF index internally, often called the vf_id,
-> > > > > > > > > during the setup of the VF, eg pci_iov_add_virtfn().
-> > > > > > > > > 
-> > > > > > > > > This index is needed for device drivers that implement live migration
-> > > > > > > > > for their internal operations that configure/control their VFs.
-> > > > > > > > >
-> > > > > > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
-> > > > > > > > > from this series needs it and not the bus/device/function which is
-> > > > > > > > > exposed today.
-> > > > > > > > > 
-> > > > > > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
-> > > > > > > > > was used to create the bus/device/function.
-> > > > > > > > > 
-> > > > > > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > > > > > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > > > 
-> > > > > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > > > > 
-> > > > > > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
-> > > > > > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
-> > > > > > > > one with a matching devfn (although it *doesn't* check for a matching
-> > > > > > > > bus number, which seems like a bug).
-> > > > > ...
-> > > > 
-> > > > > > And it still looks like the existing code is buggy.  This is called
-> > > > > > via sysfs, so if the PF is on bus X and the user writes to
-> > > > > > sriov_vf_msix_count for a VF on bus X+1, it looks like
-> > > > > > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
-> > > > > > VF.
-> > > > > 
-> > > > > In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
-> > > > > to PF which has "struct mlx5_core_dev". My expectation is that they share
-> > > > > same bus as that PF was the one who created VFs. The mlx5 devices supports
-> > > > > upto 256 VFs and it is far below the bus split mentioned in PCI spec.
-> > > > > 
-> > > > > How can VF and their respective PF have different bus numbers?
-> > > > 
-> > > > See PCIe r5.0, sec 9.2.1.2.  For example,
-> > > > 
-> > > >   PF 0 on bus 20
-> > > >     First VF Offset   1
-> > > >     VF Stride         1
-> > > >     NumVFs          511
-> > > >   VF 0,1   through VF 0,255 on bus 20
-> > > >   VF 0,256 through VF 0,511 on bus 21
-> > > > 
-> > > > This is implemented in pci_iov_add_virtfn(), which computes the bus
-> > > > number and devfn from the VF ID.
-> > > > 
-> > > > pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
-> > > > the user writes to sriov_vf_msix_count for VF 0,256, it looks like
-> > > > we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
-> > > 
-> > > This is PCI spec split that I mentioned.
-> > > 
-> > > > 
-> > > > The spec encourages devices that require no more than 256 devices to
-> > > > locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
-> > > > only have 255 VFs, you may avoid the problem.
-> > > > 
-> > > > But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
-> > > > is safe to assume the bus number is the same.
-> > > 
-> > > No problem, we will make it more clear.
-> > 
-> > IMHO you should resolve it by using the new interface.  Better
-> > performing, unambiguous regardless of how many VFs the device
-> > supports.  What's the down side?
-> 
-> I don't see any. My previous answer worth to be written.
-> "No problem, we will make it more clear with this new function".
 
-Great, sorry I missed that nuance :)
+--zyyrfqid4cwaocss
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Wed, Sep 01, 2021 at 04:59:36PM -0700, Matthias Kaehlcke wrote:
+> Add the helper psy_has_property() to check whether a power supply
+> has a given property and use it instead of ad hoc iterations over
+> the property list in multiple locations.
+>=20
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+
+Thanks, queued.
+
+-- Sebastian
+
+>=20
+>  drivers/power/supply/power_supply_core.c | 65 ++++++++++++++----------
+>  1 file changed, 37 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/sup=
+ply/power_supply_core.c
+> index d99e2f11c183..9309b33ed3ec 100644
+> --- a/drivers/power/supply/power_supply_core.c
+> +++ b/drivers/power/supply/power_supply_core.c
+> @@ -956,26 +956,41 @@ static struct thermal_zone_device_ops psy_tzd_ops =
+=3D {
+>  	.get_temp =3D power_supply_read_temp,
+>  };
+> =20
+> +static bool psy_has_property(const struct power_supply_desc *psy_desc,
+> +			     enum power_supply_property psp)
+> +{
+> +	bool found =3D false;
+> +	int i;
+> +
+> +	for (i =3D 0; i < psy_desc->num_properties; i++) {
+> +		if (psy_desc->properties[i] =3D=3D psp) {
+> +			found =3D true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return found;
+> +}
+> +
+>  static int psy_register_thermal(struct power_supply *psy)
+>  {
+> -	int i, ret;
+> +	int ret;
+> =20
+>  	if (psy->desc->no_thermal)
+>  		return 0;
+> =20
+>  	/* Register battery zone device psy reports temperature */
+> -	for (i =3D 0; i < psy->desc->num_properties; i++) {
+> -		if (psy->desc->properties[i] =3D=3D POWER_SUPPLY_PROP_TEMP) {
+> -			psy->tzd =3D thermal_zone_device_register(psy->desc->name,
+> -					0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
+> -			if (IS_ERR(psy->tzd))
+> -				return PTR_ERR(psy->tzd);
+> -			ret =3D thermal_zone_device_enable(psy->tzd);
+> -			if (ret)
+> -				thermal_zone_device_unregister(psy->tzd);
+> -			return ret;
+> -		}
+> +	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
+> +		psy->tzd =3D thermal_zone_device_register(psy->desc->name,
+> +				0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
+> +		if (IS_ERR(psy->tzd))
+> +			return PTR_ERR(psy->tzd);
+> +		ret =3D thermal_zone_device_enable(psy->tzd);
+> +		if (ret)
+> +			thermal_zone_device_unregister(psy->tzd);
+> +		return ret;
+>  	}
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -1046,18 +1061,14 @@ static const struct thermal_cooling_device_ops ps=
+y_tcd_ops =3D {
+> =20
+>  static int psy_register_cooler(struct power_supply *psy)
+>  {
+> -	int i;
+> -
+>  	/* Register for cooling device if psy can control charging */
+> -	for (i =3D 0; i < psy->desc->num_properties; i++) {
+> -		if (psy->desc->properties[i] =3D=3D
+> -				POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT) {
+> -			psy->tcd =3D thermal_cooling_device_register(
+> -							(char *)psy->desc->name,
+> -							psy, &psy_tcd_ops);
+> -			return PTR_ERR_OR_ZERO(psy->tcd);
+> -		}
+> +	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT)=
+) {
+> +		psy->tcd =3D thermal_cooling_device_register(
+> +			(char *)psy->desc->name,
+> +			psy, &psy_tcd_ops);
+> +		return PTR_ERR_OR_ZERO(psy->tcd);
+>  	}
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -1095,7 +1106,7 @@ __power_supply_register(struct device *parent,
+>  {
+>  	struct device *dev;
+>  	struct power_supply *psy;
+> -	int i, rc;
+> +	int rc;
+> =20
+>  	if (!parent)
+>  		pr_warn("%s: Expected proper parent device for '%s'\n",
+> @@ -1104,11 +1115,9 @@ __power_supply_register(struct device *parent,
+>  	if (!desc || !desc->name || !desc->properties || !desc->num_properties)
+>  		return ERR_PTR(-EINVAL);
+> =20
+> -	for (i =3D 0; i < desc->num_properties; ++i) {
+> -		if ((desc->properties[i] =3D=3D POWER_SUPPLY_PROP_USB_TYPE) &&
+> -		    (!desc->usb_types || !desc->num_usb_types))
+> -			return ERR_PTR(-EINVAL);
+> -	}
+> +	if (psy_has_property(desc, POWER_SUPPLY_PROP_USB_TYPE) &&
+> +	    (!desc->usb_types || !desc->num_usb_types))
+> +		return ERR_PTR(-EINVAL);
+> =20
+>  	psy =3D kzalloc(sizeof(*psy), GFP_KERNEL);
+>  	if (!psy)
+> --=20
+> 2.33.0.153.gba50c8fa24-goog
+>=20
+
+--zyyrfqid4cwaocss
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFR2aoACgkQ2O7X88g7
++ponLA/+JXJ4PqLNhqnhntei5N/CLciDWDkzpPZqzpEaGGSgXQYSs1NGHV37LhN+
+I0NJzGyQXaSFyLYpVCvhNaf1PYcivM25Qr9rhzp2LlvppdlAij33vaJjna/NmI3c
+9QBoLIqXCx7MgIFjsGLB/mozQoJ0z3UbREiioMvtqRiPB8sdCHEFF4yOTjalF4G1
+anFEtwfxaO2iAzFxvquLFCjvMSvVRZ6dqqoN+6xdPkd7nSPcSu8EmYEH5kn9AbvT
+6gKZaOI7LSEuKp+5eNkc8Ogq+xFA7dzVr+TG8GhGb1hvQxyto3YUKYfJG9REhM2M
+4JL150rhpI6TWTZX/EqvypX94nlz6raVx/lifwc7daKLUC6hb9fg324D85cfsWj6
+fCH6IsUyA6lcuIg4VklfHEPEBrcE1DiBlSWA3kisV2cwsEiPjVOnS9W46z56TvAg
+IkZsPedg4uGRN66oY9WUXsIt5sQFfk2IARd+/siwnuCXVW2wF+SJXDppB9fSEKc7
++CLCvN0lUd29B19fVuuTahQkM8SivoZQqBXPqremXiPFlbGoZk8t2QUDyVPWnDGd
+jB+6JkvIVxzgKWnqrrTHwEVxO7GTFjvtUnDX7rw5DbIL+sPHOk+4bzBB2jp9q6xW
+iaVXD1PxjHlV94VHfH56hMiJBe8Bx9XPOB9MIG/u3wAdMMub9fk=
+=Qt/f
+-----END PGP SIGNATURE-----
+
+--zyyrfqid4cwaocss--
