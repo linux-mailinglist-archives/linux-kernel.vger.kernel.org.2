@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1436419213
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E3F41921A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhI0KRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233703AbhI0KRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:17:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64CF360F6C;
-        Mon, 27 Sep 2021 10:16:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632737774;
-        bh=Bq2dWaShr/xZPho3pKYv2iZApCmL3XL12AcCSUUBVkY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cl0DVcvh4emKAb8+mahJbuYxhI4Rb7V+XxsONvq/AvxjqtcBilVRrR/xosMqJExhY
-         LIlMRciNqoSCWEU+w+MDU4FV9b4HCZhpdPhGHWnQlppUg2OSFa7t3Wl4O3HAkBKeDu
-         cI5jkP/8kfkQosTKXHuM6yfOmEtTKDLZyq7gt53SIEoovLzPyce0obcNrDGFPtxp8X
-         GRHp4d06isHvj6Sm3NwQjuB/H0kZyzAH7oFOPyzcoPD0HO/rXuzfX2ZHg7hT4XZHSP
-         w8o3XDkODo0v8/K7JuVghu25BqYBa/tEVzk+P/nvDS4YIMfH2BtF3rUC6S8tpZVmLh
-         SpXo9ROnuJ2HA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Isaac Hazan <isaac.hazan@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH] led-class-flash: fix -Wrestrict warning
-Date:   Mon, 27 Sep 2021 12:15:59 +0200
-Message-Id: <20210927101610.1669830-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233805AbhI0KTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233757AbhI0KTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:19:48 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9440C061575;
+        Mon, 27 Sep 2021 03:18:10 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id B21C91F427CE
+Subject: Re: [PATCH v8 9/9] pinctrl/rockchip: drop the gpio related codes
+To:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     bgolaszewski@baylibre.com, robh+dt@kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>
+References: <20210816011948.1118959-1-jay.xu@rock-chips.com>
+ <20210816012146.1119289-1-jay.xu@rock-chips.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <f13ff971-8af2-be9b-fa5d-7913c0ff1351@collabora.com>
+Date:   Mon, 27 Sep 2021 12:18:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210816012146.1119289-1-jay.xu@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Jianqun,
 
-drivers/leds/led-class-flash.c: In function 'flash_fault_show':
-drivers/leds/led-class-flash.c:210:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
-  210 |         return sprintf(buf, "%s\n", buf);
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/leds/led-class-flash.c:187:54: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
-  187 |                 struct device_attribute *attr, char *buf)
-      |                                                ~~~~~~^~~
-cc1: all warnings being treated as errors
-make[5]: *** [scripts/Makefile.build:277: drivers/leds/led-class-flash.o] Error 1
-make[5]: Target '__build' not remade because of errors.
-make[4]: *** [scripts/Makefile.build:540: drivers/leds] Error 2
-drivers/thunderbolt/xdomain.c: In function 'modalias_show':
-drivers/thunderbolt/xdomain.c:733:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
-  733 |         return sprintf(buf, "%s\n", buf);
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/thunderbolt/xdomain.c:727:36: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
-  727 |                              char *buf)
-      |                              ~~~~~~^~~
+On 16/08/2021 02:21, Jianqun Xu wrote:
+> With the patch to separate the gpio driver from the pinctrl driver, now
+> the pinctrl-rockchip can drop the gpio related codes now.
+> 
+> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> ---
+> v8:
+>  - none
+> v7:
+>  - none, from v1
+> 
+>  drivers/pinctrl/pinctrl-rockchip.c | 645 +----------------------------
+>  1 file changed, 17 insertions(+), 628 deletions(-)
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/leds/led-class-flash.c | 2 +-
- drivers/thunderbolt/xdomain.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+[...]
 
-diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
-index 185e17055317..6fe9d700dfef 100644
---- a/drivers/leds/led-class-flash.c
-+++ b/drivers/leds/led-class-flash.c
-@@ -207,7 +207,7 @@ static ssize_t flash_fault_show(struct device *dev,
- 		mask <<= 1;
- 	}
- 
--	return sprintf(buf, "%s\n", buf);
-+	return strlen(strcat(buf, "\n"));
- }
- static DEVICE_ATTR_RO(flash_fault);
- 
-diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
-index d66ea4d616fd..eff32499610f 100644
---- a/drivers/thunderbolt/xdomain.c
-+++ b/drivers/thunderbolt/xdomain.c
-@@ -730,7 +730,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
- 
- 	/* Full buffer size except new line and null termination */
- 	get_modalias(svc, buf, PAGE_SIZE - 2);
--	return sprintf(buf, "%s\n", buf);
-+	return strlen(strcat(buf, "\n"));
- }
- static DEVICE_ATTR_RO(modalias);
- 
--- 
-2.29.2
+Please see the bisection report below about a boot failure on
+rk3288-veyron-jaq which is pointing to this patch.  The issue
+appears to be present on mainline but not on linux-next as of
+next-20210924.
 
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
+
+Some more details can be found here:
+
+  https://linux.kernelci.org/test/case/id/614f19a33f5497c2bc99a2df/
+
+Please let us know if you need help debugging the issue or if you
+have a fix to try.
+
+Best wishes,
+Guillaume
+
+
+GitHub: https://github.com/kernelci/kernelci-project/issues/58
+
+-------------------------------------------------------------------------------
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* This automated bisection report was sent to you on the basis  *
+* that you may be involved with the breaking commit it has      *
+* found.  No manual investigation has been done to verify it,   *
+* and the root cause of the problem may be somewhere else.      *
+*                                                               *
+* If you do send a fix, please include this trailer:            *
+*   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+*                                                               *
+* Hope this helps!                                              *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+mainline/master bisection: baseline.login on rk3288-veyron-jaq
+
+Summary:
+  Start:      7d42e9818258 Merge tag 'gpio-fixes-for-v5.15-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux
+  Plain log:  https://storage.kernelci.org/mainline/master/v5.15-rc2-159-g7d42e9818258/arm/multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y/gcc-8/lab-collabora/baseline-rk3288-veyron-jaq.txt
+  HTML log:   https://storage.kernelci.org/mainline/master/v5.15-rc2-159-g7d42e9818258/arm/multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y/gcc-8/lab-collabora/baseline-rk3288-veyron-jaq.html
+  Result:     9ce9a02039de pinctrl/rockchip: drop the gpio related codes
+
+Checks:
+  revert:     PASS
+  verify:     PASS
+
+Parameters:
+  Tree:       mainline
+  URL:        https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+  Branch:     master
+  Target:     rk3288-veyron-jaq
+  CPU arch:   arm
+  Lab:        lab-collabora
+  Compiler:   gcc-8
+  Config:     multi_v7_defconfig+CONFIG_EFI=y+CONFIG_ARM_LPAE=y
+  Test case:  baseline.login
+
+Breaking commit found:
+
+-------------------------------------------------------------------------------
+commit 9ce9a02039de72ec8af1bd4bff14f1780337ffcc
+Author: Jianqun Xu <jay.xu@rock-chips.com>
+Date:   Mon Aug 16 09:21:46 2021 +0800
+
+    pinctrl/rockchip: drop the gpio related codes
+    
+    With the patch to separate the gpio driver from the pinctrl driver, now
+    the pinctrl-rockchip can drop the gpio related codes now.
+    
+    Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+    Link: https://lore.kernel.org/r/20210816012146.1119289-1-jay.xu@rock-chips.com
+    Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
