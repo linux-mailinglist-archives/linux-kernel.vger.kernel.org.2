@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88525419D9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A786D419D98
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhI0Rzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:55:51 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:28387 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235703AbhI0Rzt (ORCPT
+        id S235694AbhI0Rzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235500AbhI0Rzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:55:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632765228;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=w//vFYEZnxTum3oiC96KTe2k9/YaQVGD+Not1CPpUgQ=;
-    b=L0SdEDxbo5agL6Fy09vB6MOldp4Mjs98+LPBizamqg8+6JNKqLxygF+0RB7Q5LO2Ei
-    3wapHPd0mvxB50ntV+iRGEXkX1o1Z3dDqORxyc/mQBKRivl79uPR9OJl+Q3rivL9Q361
-    YY+QgnINPL2a6yd/wfDgAbriDcNUgi/PXEmYhAWyLVpSDvoJ1WjMYZxy/wVHRUNcaRbw
-    gZtOTDzIYnRlZue/Z5USLxxUArSuAjZ0snqmAf22qvNDuDWVeDKqcAjDzoWswUAQwjtk
-    VJMwr4PO7BZTx4dk54cslg9L8Fd7QSvjdnDTw+ds5JWBmrWNqEw37K1Zt7jVYbBSToAr
-    1I1Q==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8QW3w=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8RHrjb3c
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Mon, 27 Sep 2021 19:53:45 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v4 05/10] drm/bridge: synopsis: Fix to properly handle HPD
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20210927170034.mhv5r2r5gcojc7yn@gilmour>
-Date:   Mon, 27 Sep 2021 19:53:45 +0200
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <FBF48545-3509-42AA-AED5-A89BB5B1D9CD@goldelico.com>
-References: <cover.1632761067.git.hns@goldelico.com>
- <dd2356790b774c7885afecc9d29783cb51a26e6d.1632761068.git.hns@goldelico.com>
- <20210927170034.mhv5r2r5gcojc7yn@gilmour>
-To:     Maxime Ripard <maxime@cerno.tech>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Mon, 27 Sep 2021 13:55:39 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690AEC061575;
+        Mon, 27 Sep 2021 10:54:01 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id 138so37385623qko.10;
+        Mon, 27 Sep 2021 10:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nqerXrbMIY7Fc4sCLQnr/8c/NFYmTrN8ExKx8Kwlvs8=;
+        b=TE8FrUk5bml6qC0WPBvGqevs6HjtGjjFSibyoRLQoJhgGw4ygE4LKDcQ2ADs2EIe/i
+         iERiMqB9ITpJP0Jh6I6jpLQhQ9eca1vWWpskeqAMjiHWOjuin3OGRMGK6vV9mEWLxsFI
+         EVkgTV7aji0uSeyyqYguJ+NjNs52hbchpsx0ASu7w5mz/NrU/YKe+v2gx0j/io9ltame
+         p0FJ9Sn+i7vZOowRdEB0lRDGxnZwvxGtrVpY3Mz0iPDcSuJKSzfqUYRhOwRlaR9Q/BdQ
+         Ajki3L7JCzd2WmYpaOlM+YVBPNo4tkoUZkFsH9h6DBJyuZh39a53AOpVu38A+TA/eDQ1
+         +RXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nqerXrbMIY7Fc4sCLQnr/8c/NFYmTrN8ExKx8Kwlvs8=;
+        b=wZTF1wjI+mHuAEASAbkzl5HUjhZbHU2d0V+QajLMpKs/YQn5S0HfI1+vo43Fq3GzzW
+         v1aOa7hDBkszdAHvHO+aStXxaRtPSzao2Vaag84fA9zxJk2MPd8ea2Er5bE0bKGhL6e9
+         H+OXRSf9b1dAoZiitpn404RjVXeqlQ9t+0/U5kps89a6yn1vjtF4euJLsV84aSRIu4Ru
+         rCqBX4eO71jqfmKvgJ3gOVPy8QTFtUxMkEYngs3UhMz1J1AfX+wHW4gyNbEQ5CG8bNeP
+         QjypCWBtKXH+SDU7FdWGVsGZiPt5C5+sUibhXl++PQRs4QswfPVNkpn4Ixm3mNRoiJIL
+         jfHw==
+X-Gm-Message-State: AOAM531wDfh0zAZem6biaTyJ5QRJ74yP8VwToHy2aQsQ7Qd/ixqBZAg3
+        fjjWBhZXGzhQ5lXeqc8BdWjEdzs9L8VJ
+X-Google-Smtp-Source: ABdhPJzZhyAO48ZaPX93fi6kWxPici07wMQhSc6zubPsWsqInS9hfyUbEyszSjTeFooceBJBxn+d7Q==
+X-Received: by 2002:a37:44cc:: with SMTP id r195mr1257805qka.77.1632765240635;
+        Mon, 27 Sep 2021 10:54:00 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id f10sm13094136qkp.50.2021.09.27.10.53.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 10:53:59 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 13:53:57 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Struct page proposal
+Message-ID: <YVIFNf/xZwlrWstK@moria.home.lan>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
+ <bc22b4d0-ba63-4559-88d9-a510da233cad@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc22b4d0-ba63-4559-88d9-a510da233cad@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 27, 2021 at 07:48:15PM +0200, Vlastimil Babka wrote:
+> On 9/23/21 03:21, Kent Overstreet wrote:
+> > So if we have this:
+> > 
+> > struct page {
+> > 	unsigned long	allocator;
+> > 	unsigned long	allocatee;
+> > };
+> > 
+> > The allocator field would be used for either a pointer to slab/slub's state, if
+> > it's a slab page, or if it's a buddy allocator page it'd encode the order of the
+> > allocation - like compound order today, and probably whether or not the
+> > (compound group of) pages is free.
+> 
+> The "free page in buddy allocator" case will be interesting to implement.
+> What the buddy allocator uses today is:
+> 
+> - PageBuddy - determine if page is free; a page_type (part of mapcount
+> field) today, could be a bit in "allocator" field that would have to be 0 in
+> all other "page is allocated" contexts.
+> - nid/zid - to prevent merging accross node/zone boundaries, now part of
+> page flags
+> - buddy order
+> - a list_head (reusing the "lru") to hold the struct page on the appropriate
+> free list, which has to be double-linked so page can be taken from the
+> middle of the list instantly
 
-
-> Am 27.09.2021 um 19:00 schrieb Maxime Ripard <maxime@cerno.tech>:
->=20
-> Hi,
->=20
-> On Mon, Sep 27, 2021 at 06:44:23PM +0200, H. Nikolaus Schaller wrote:
->> It appears that dw-hdmi plugin detection is not properly
->> propagated unless we call drm_kms_helper_hotplug_event().
->>=20
->> Maybe drm_bridge_hpd_notify should have been setup to
->> call this.
->>=20
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->> drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 2 ++
->> 1 file changed, 2 insertions(+)
->>=20
->> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c =
-b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
->> index f082e14320e1..edea04f80576 100644
->> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
->> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
->> @@ -3018,6 +3018,8 @@ static irqreturn_t dw_hdmi_irq(int irq, void =
-*dev_id)
->> 		if (hdmi->bridge.dev) {
->> 			drm_helper_hpd_irq_event(hdmi->bridge.dev);
->> 			drm_bridge_hpd_notify(&hdmi->bridge, status);
->> +
->> +			drm_kms_helper_hotplug_event(hdmi->bridge.dev);
->=20
-> drm_kms_helper_hotplug_event is already called from =
-drm_helper_hpd_irq_event
-
-Ah, now I see. It should be called but is not for some unkown
-condition (poll disabled? changed =3D false?).
-
-It may also be a leftover from the attempt to make it work with
-the builtin dw-hdmi connector.
-
-Will check for v5.
-
-BR and thanks,
-Nikolaus
-
+That list_head is the problematic one. Why do we need to be able to take a page
+from the middle of a freelist?
