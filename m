@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFE3419D51
+	by mail.lfdr.de (Postfix) with ESMTP id DB962419D52
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237588AbhI0Rso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:48:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57298 "EHLO mail.kernel.org"
+        id S236518AbhI0Rsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238191AbhI0RsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:48:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C3360F6B;
-        Mon, 27 Sep 2021 17:46:44 +0000 (UTC)
+        id S238199AbhI0Rs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5371A60FC2;
+        Mon, 27 Sep 2021 17:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632764805;
-        bh=ifPF+UcUXnzwfj8bP71GwRKwkLT1YQAGO8JasLucqUE=;
+        s=k20201202; t=1632764809;
+        bh=Xv8E3XMv7rJdlIMJuXuej3bRuGoogKs0Slzg6FGG0JI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cNxvzD74ZLCXlxOjndqKfol0T1xS7wIERqWUY4dsllEENGIa2DJtXP4/Se8RsrmLt
-         MTxrOMfOW47oKbrtoSpbvMylX2s2/kIA7NDvltz6qdKTPEtLWmnf4CtxouJgSalUy5
-         Ze1owwWdJnCfXE7ySk2kWN38VY6jlZ04QRQHa9uCk/mbMDs6IrKmAhxGkz8IC95i4v
-         JQNGcXm0VYv11SxnFCEGfQ0SA4njcC4+wG3+EY0E1qBW8CTYPUCFfqB7vhj+zTqffq
-         EnDUEH0Qyg6LeV7XinCXifIeNUQYSiXxUbVdbpDUazDk65m8FXn1i0rBFhUJyjYDpz
-         SLoXyDZsSAxTQ==
+        b=YsK5/9uavSQ5SsWVC7nSi90dnB44wefRa4BVpitO9Z+A182jp52gxj0eiI/ox7bFg
+         sM5uLSfQfjZ14vX5OyuK76XZ548cXn8fUU/HKcDSDjQPMHnyTTi3+MvESBOV60TmvN
+         dBpMCnoLr8LAe6kp1S9tL/T5kB20xYGrZOou20ttNTGIVdgcuJnJRSq5R52RfQOvfV
+         /T7f0LAqJ1l0m38X2gRYxs4SM/cWZ03AuXfpOPfa6edJ7hqIu7LvSUgifV7Xu6RupP
+         sdlQpvUuU7MrvW9lys9m93VSPOIGLIw7xaL1LKrrHdTDFFNjq+mqk8SO17wUI/mMEw
+         qgQHJr6X/coTA==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: s3c64xx: describe driver in KConfig
-Date:   Mon, 27 Sep 2021 18:45:19 +0100
-Message-Id: <163276467077.29936.11453903446746575185.b4-ty@kernel.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, rnayak@codeaurora.org,
+        linux-kernel@vger.kernel.org, skakit@codeaurora.org,
+        devicetree@vger.kernel.org, sboyd@kernel.org,
+        dianders@chromium.org, msavaliy@qti.qualcomm.com,
+        saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        mka@chromium.org
+Subject: Re: [RESEND PATCH V10] dt-bindings: spi: Add sc7280 support
+Date:   Mon, 27 Sep 2021 18:45:20 +0100
+Message-Id: <163276467078.29936.10417562338523817107.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210924133114.111777-1-krzysztof.kozlowski@canonical.com>
-References: <20210924133114.111777-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <1632725335-4570-1-git-send-email-rajpat@codeaurora.org>
+References: <1632725335-4570-1-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,9 +47,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021 15:31:14 +0200, Krzysztof Kozlowski wrote:
-> Describe better which driver applies to which SoC, to make configuring
-> kernel for Samsung SoC easier.
+On Mon, 27 Sep 2021 12:18:55 +0530, Rajesh Patil wrote:
+> Add compatible for sc7280 SoC.
 > 
 > 
 
@@ -53,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: s3c64xx: describe driver in KConfig
-      commit: 5b71cbf08a1e0508d1f0f63ac417ad836d801e1a
+[1/1] dt-bindings: spi: Add sc7280 support
+      commit: eca17cbabd0cd52d32949b5ae27a4b3344e87781
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
