@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15BF419ECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAE3419ED5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235988AbhI0TDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:03:13 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:33688 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235825AbhI0TDL (ORCPT
+        id S236171AbhI0TD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:03:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:34797 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236063AbhI0TDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:03:11 -0400
-Received: by mail-ot1-f53.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so3746648otu.0;
-        Mon, 27 Sep 2021 12:01:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KDfN3VPs9v1P9wRbetasKjyeNxBPhJmR/WhM7HctVEY=;
-        b=vpj+FmV/eT7TetncPNUWzNfht1YRDC1qOYAD/dfg4QfLI6Z/C4mZ91GE2yqHCaB6Di
-         0sZ9FgqLr+UpcZD8vKcHkN/PIuayzP1sdGPp9Stj/vkYYRPE6h0uxoxIxUZH/pvpUaCt
-         ypzZT3eyvfz+1IPSDY3/3AwnWLRVrLJrv7HGbJevpOoLmPUshT1NrYstRQMZvHC0jCFk
-         D7BSdhD5/vRPkSFxPyOnBVopFrWpGCdSYYAEpziwdXGaQSeEIRytrodCeea4Mju91ZPK
-         OKpl039sq+3EIOcn6008/Qz7EpAHApXABRuLZ+Ltw9ZR9EdgCICXiU3z5qGLUQ7Fvdyi
-         /vcg==
-X-Gm-Message-State: AOAM533eaafWnDOgNjqGhTJzkZ52X1mtzfpf7g55YsjSQnFx8D6xQP/3
-        ZnBEXaHPO4cyNMOp2fgkaA==
-X-Google-Smtp-Source: ABdhPJz6z3MNPTLUXwOZo87wAe7zH1Ti2ldX1clqtvsG0UygqrhDcYkZP4+QP/c4OW/PUNc7UvO1ew==
-X-Received: by 2002:a05:6830:2b27:: with SMTP id l39mr1444334otv.25.1632769293304;
-        Mon, 27 Sep 2021 12:01:33 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z10sm4127882otq.64.2021.09.27.12.01.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 12:01:32 -0700 (PDT)
-Received: (nullmailer pid 3670394 invoked by uid 1000);
-        Mon, 27 Sep 2021 19:01:31 -0000
-Date:   Mon, 27 Sep 2021 14:01:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     tiwai@suse.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        srinivas.kandagatla@linaro.org, swboyd@chromium.org,
-        robh+dt@kernel.org, perex@perex.cz, rohitkr@codeaurora.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, broonie@kernel.org,
-        judyhsiao@chromium.org, bgoswami@codeaurora.org,
-        linux-arm-msm@vger.kernel.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>,
-        plai@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] ASoC: qcom: dt-bindings: Add compatible names for
- lpass sc7280 digital codecs
-Message-ID: <YVIVC5GFTMu2PjPm@robh.at.kernel.org>
-References: <agross@kernel.org;bjorn.andersson@linaro.org;lgirdwood@gmail.com;broonie@kernel.org;robh+dt@kernel.org;plai@codeaurora.org;bgoswami@codeaurora.org;perex@perex.cz;tiwai@suse.com;srinivas.kandagatla@linaro.org;rohitkr@codeaurora.org;linux-arm-msm@vger.kernel.org;alsa-devel@alsa-project.org;devicetree@vger.kernel.org;linux-kernel@vger.kernel.org;swboyd@chromium.org;judyhsiao@chromium.org;>
- <1632313878-12089-1-git-send-email-srivasam@codeaurora.org>
- <1632313878-12089-3-git-send-email-srivasam@codeaurora.org>
+        Mon, 27 Sep 2021 15:03:55 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MdwRi-1n4ofh3zuQ-00b4yY; Mon, 27 Sep 2021 21:02:16 +0200
+Received: by mail-wm1-f43.google.com with SMTP id t16-20020a1c7710000000b003049690d882so1493491wmi.5;
+        Mon, 27 Sep 2021 12:02:15 -0700 (PDT)
+X-Gm-Message-State: AOAM530aHFNmQ/YXY6nBF0NEzMt8OW1uyymH1U5foQL9343OVaifRiLF
+        VzUx5h+nUy0G7ip4IvKtxogYo5i6oupkE3RzqvE=
+X-Google-Smtp-Source: ABdhPJy79GvrLbGbTQ8AFXTHbME27yck4aLAU/Tyk7Yz+HgqfmX9UVGglkndMij2PPstBo5KAXPiu0yRr6boGHxrkfU=
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr701388wmc.98.1632769335470;
+ Mon, 27 Sep 2021 12:02:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1632313878-12089-3-git-send-email-srivasam@codeaurora.org>
+References: <20210927161955.28494-1-rpalethorpe@suse.com> <875yuletsw.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <875yuletsw.fsf@oldenburg.str.redhat.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Sep 2021 21:01:59 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3o96yR4LBSv8Q-_oy0g3hULS_kcm2fpahjEvqB6i_EuQ@mail.gmail.com>
+Message-ID: <CAK8P3a3o96yR4LBSv8Q-_oy0g3hULS_kcm2fpahjEvqB6i_EuQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/entry/ia32: Ensure s32 is sign extended to s64
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, rpalethorpe@richiejp.com,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:eq1p4rR48K6UZamzIXjZYFVnkdM6YeIhS041Ef2FdEAXAVwckgv
+ o7+D1qnVmiu4QhUi6ozkdRUHYMAoSyHJ/VKiHID287vjTHApgLlNN1ybSFK+EBudWuVYpfS
+ DumHaRHlIltIoiLQTT19d14ntJsV7fQ0wPnW+LgwLIRDAMqK+Q+uhTND1Xyi7VSo53oUFbH
+ iyI1DD8L/Sk+oyeAd68oA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RlI8kg2kRSI=:CFIxa1gC9QGwHz6uvxjkmp
+ v7JjCHNB+2rbqEEqRxnxg/qzRLlBSltH7i4dtvtaNyx+BX18bcsSIA4I9LXeC0TZkmLqtu/Zz
+ hZHuWcQuhWC6HyNTlXTsyd3iyE4MhsM6VLqU3gRasdlW0kXAvfq5hjs462QSmPdDfTof0kCPl
+ ePEI9Wvzqf7fb5YOh+KF8k6JRZc+1v3hT9IU14xQE/gdBkCpZ2p4dmYRI0lB/LMxtst9lrgmP
+ XwkbQi7ZKsb8t+ILkkb9XPfYGMGIIliqhRJ6EJEceeYjBQHAyUpmGKgy6NfMu1gIaPyT6gxD4
+ qlxvK6aVe3LoE0RR6j/RYhv1e2pm+UCjle2yP79VGyViWrgLBRz6jamACr9pllhE6yukQhsKk
+ wuD3es3n58xig5P2AvDn96mDM/bJ4F4S28IY4mh7fngrI+RD6wHXMhgSitJKZRm29iFKtqRB8
+ 9n8F/KJmEGN7o7C/2Gcc9MD+qEwXwAJDZmmC9mRbXiR3A5fZnFefgJnwdbUNh2tV5psh4MS5X
+ 7CfbC13xjwKkbL8G1hdQ3x441lnTPtLstpkJyKES1mMIheIX9UgF2QzScEYc58bHaLrUAaoE6
+ pGyTlfu9Axusx3Gio7Wf2ueUTfuWFNg2+oHvKkB689jBA8+JKoMO73S1w1TzwFpfdhTgnrs2s
+ dZt7eIzrroLl2ufMXsaJrYRAS1Vn9IJoJL0r3+hGgyGIBjrnX7aCc41XoCKhexoWhxL17ZBzH
+ QrCSQBAAQwDrUBi9FHzhGR0EmoXNFpiTN5oOpHx8xgMJi+SfjcvmSDr6lZl4pqJD3OOL9ZO9r
+ KwxBsXYpGsko0EvoHxpkVw4QmYmLgclqF2b/Jh7ohM/+Pvo+jFruhqLTcbIBHfcko27IcBjOF
+ n9oHEYJAmLprqjQOAMWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 18:01:15 +0530, Srinivasa Rao Mandadapu wrote:
-> Update compatible names in va, wsa, rx and tx macro codes for lpass sc7280
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 4 +++-
->  Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 4 +++-
->  Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 4 +++-
->  Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml | 4 +++-
->  4 files changed, 12 insertions(+), 4 deletions(-)
-> 
+On Mon, Sep 27, 2021 at 8:51 PM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Richard Palethorpe:
+>
+> > +#define __SC_COMPAT_CAST(t, a)                                               \
+> > +     (__typeof(__builtin_choose_expr(__TYPE_IS_L(t), 0, 0U)))        \
+> > +     (unsigned int)a
+>
+> So this casts to int (triggering sign extension) if the type on the
+> 64-bit kernel side is long?  But not in other cases (unsigned long,
+> pointer)?  Just double-checking.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Correct, this is the only case that is not already handled: anything smaller
+than a 'long' is the same size on all architectures we support and we
+ensure those are correctly sign- or zero-extended. 'unsigned long'
+and any pointer are zero-extended by the entry code from 32-bit user
+space to a 64-bit register in the kernel. Only signed 'long' requires
+explicit sign-extending from the userspace 'long' to the kernel function
+argument.
+
+         Arnd
