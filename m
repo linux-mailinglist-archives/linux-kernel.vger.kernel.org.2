@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB6D419B26
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0C8419C67
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbhI0RPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
+        id S238265AbhI0R2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:28:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236859AbhI0RNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:13:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B579611EF;
-        Mon, 27 Sep 2021 17:09:10 +0000 (UTC)
+        id S237660AbhI0RZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:25:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF166138B;
+        Mon, 27 Sep 2021 17:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762551;
-        bh=vCQBPIh7koiFQ78SN6YCIIM9b2GHDSIeSVZdr1JiASk=;
+        s=korg; t=1632762955;
+        bh=ndZ3P0EuF5SeTY+eoTaPRChv3ubGhicc3zYUPt3zmek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VdkcbY0gVN3E2Z3d0Hf14cKqv9Jkt+wjNavDQ2T9QLExZb1NsQijGfbRv4QOG1P9Z
-         pqenNQpx8WtT37T/TJIad4sUdQyZSsjPc2w3ATetULPyXkYmqrrXGtG2gNvJvPSrlI
-         0ZUJacy4dx6mD/oEDPV8ah+SwcWbIiLjWCqekU7U=
+        b=T41S+NqD+V0BESerCKJsXN7jBycLbgVrUmzOu43A9K7VdyffxzrhGAWfoUO+ck8CW
+         Dje1D3ygfo0XjOB1Mw8+lHjbRgJ89CnBXeyK6VrH01H5Icss9/TdpfsAGF8pjmJmXD
+         mKW7ElI4bifzG5CFt6XjfLrRJl3qcXRl1pAlnjuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kaige Fu <kaige.fu@linux.alibaba.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 067/103] irqchip/gic-v3-its: Fix potential VPE leak on error
+        stable@vger.kernel.org, Hao Xu <haoxu@linux.alibaba.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 113/162] io_uring: fix missing set of EPOLLONESHOT for CQ ring overflow
 Date:   Mon, 27 Sep 2021 19:02:39 +0200
-Message-Id: <20210927170228.097563716@linuxfoundation.org>
+Message-Id: <20210927170237.362444454@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaige Fu <kaige.fu@linux.alibaba.com>
+From: Hao Xu <haoxu@linux.alibaba.com>
 
-[ Upstream commit 280bef512933b2dda01d681d8cbe499b98fc5bdd ]
+[ Upstream commit a62682f92eedb41c1cd8290fa875a4b85624fb9a ]
 
-In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error,
-there is an off-by-one in the number of VPEs to be freed.
+We should set EPOLLONESHOT if cqring_fill_event() returns false since
+io_poll_add() decides to put req or not by it.
 
-Fix it by simply passing the number of VPEs allocated, which is the
-index of the loop iterating over the VPEs.
-
-Fixes: 7d75bbb4bc1a ("irqchip/gic-v3-its: Add VPE irq domain allocation/teardown")
-Signed-off-by: Kaige Fu <kaige.fu@linux.alibaba.com>
-[maz: fixed commit message]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/d9e36dee512e63670287ed9eff884a5d8d6d27f2.1631672311.git.kaige.fu@linux.alibaba.com
+Fixes: 5082620fb2ca ("io_uring: terminate multishot poll for CQ ring overflow")
+Signed-off-by: Hao Xu <haoxu@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20210922101238.7177-3-haoxu@linux.alibaba.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-gic-v3-its.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 4069c215328b..95e0b82b6c66 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -4489,7 +4489,7 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 27a1c813f1e1..739e58ccc982 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4968,8 +4968,10 @@ static bool io_poll_complete(struct io_kiocb *req, __poll_t mask)
+ 	}
+ 	if (req->poll.events & EPOLLONESHOT)
+ 		flags = 0;
+-	if (!io_cqring_fill_event(ctx, req->user_data, error, flags))
++	if (!io_cqring_fill_event(ctx, req->user_data, error, flags)) {
++		req->poll.events |= EPOLLONESHOT;
+ 		flags = 0;
++	}
+ 	if (flags & IORING_CQE_F_MORE)
+ 		ctx->cq_extra++;
  
- 	if (err) {
- 		if (i > 0)
--			its_vpe_irq_domain_free(domain, virq, i - 1);
-+			its_vpe_irq_domain_free(domain, virq, i);
- 
- 		its_lpi_free(bitmap, base, nr_ids);
- 		its_free_prop_table(vprop_page);
 -- 
 2.33.0
 
