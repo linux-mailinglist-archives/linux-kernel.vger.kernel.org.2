@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F22841A39C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F9241A3A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhI0XOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 19:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238057AbhI0XOU (ORCPT
+        id S238118AbhI0XPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 19:15:09 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:59197 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhI0XPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 19:14:20 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC79C061769
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:12:41 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id r18so12254739qvy.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HhHbYcRrYUniJihY2TuxYK4nsJLomp8TORJtQl8OuLk=;
-        b=c1NXwty+0m4ophjnwc6UmaIG6zX5tLPqbvrYftzueWDcsZFTgNXaTlObvyc9/bXbcz
-         U69Q82CMaN5ALwi0XcRVMDVeo68h8Aku/l5WTtRi390n8Cu2eLWp9qzNbU1xPM+IK4+5
-         36Le/IM7Vq37qE4hUNdUlT9ZY7raR6zkBcuJGTMw0VJUaY/BeMeioVYj41G0sCG0cfJ8
-         CeIaZ72sONQDvQBjUVsiQfGBCZenWAXKzB/0NL9lxEJTmAr8NoQX5q97ICzCwTdG9HoG
-         aczy4X5owRGaVLuqm9F7UQ1NXqQNONKF2eonr7pNK+sDBvZBi4rjvkkeT6sNP5Yk7dXa
-         +PZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HhHbYcRrYUniJihY2TuxYK4nsJLomp8TORJtQl8OuLk=;
-        b=T+ex8NWxb6RnVEHfX4moL+gKvIdVv60aPngBSBY1RdIiEe+CnjNQ6jwHpyLWXGdVvn
-         YWM6lVauHXhvD2af7JYFRbBeyr3/O5szARnp3oOYBbYp9EfzpFU1rOx6wPT+Y3nY8vpU
-         msWGy/ULNbxuYrfw7s2asMQyMB4ZQPpnd7tsLJENn+deVzQegwz+BznIqxyM8puDmQ0n
-         2kp5745i6C3dkTOEcKy9wHjlrI/W4RsojnaLOvsXHeVW833tAUN3eXlKCJxK1Vjpb3JR
-         kmjvOTDoZhOWCesRDOXXXARGu2LmLccRRO0eVYmU7PL9+MJRF+WK+zUzd7XTjFFlEP5R
-         6wDA==
-X-Gm-Message-State: AOAM533gsQXzy4h6EO8DEtT2ma7aafLSaylxXIdy7hVKDuqCnvl34IPW
-        taFhEivoHUiEjhJk8+Ho32nAS/sYB9KscA==
-X-Google-Smtp-Source: ABdhPJybY4umULY/QeKIrQcOKOKOIhuwMlFfilsotb/TFl5kj4bu88ZB+d8YhrepFonJ8bWWMqnqqQ==
-X-Received: by 2002:ad4:54ee:: with SMTP id k14mr2405164qvx.46.1632784361010;
-        Mon, 27 Sep 2021 16:12:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id c19sm13895533qkl.63.2021.09.27.16.12.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 16:12:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mUznb-006g1w-Nf; Mon, 27 Sep 2021 20:12:39 -0300
-Date:   Mon, 27 Sep 2021 20:12:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <20210927231239.GE3544071@ziepe.ca>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+        Mon, 27 Sep 2021 19:15:07 -0400
+X-Greylist: delayed 36081 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Sep 2021 19:15:07 EDT
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJJN212Dmz4xVP;
+        Tue, 28 Sep 2021 09:13:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1632784407;
+        bh=CSBhgRacMH4wdNz2+6sz+UADE1Z/+Rt10XRo6G7F4qc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=SpP9Ag4cak7uAXRzz2oEmCUoFYobVM1YDaU7H2umvim4BfissG2tOopwTVM+QWkPz
+         ghgj6oLQBTg5oDf2NWjGYSmE9cyVG2OnhS4PGKCG0kZdLg1y7LnWfeAAXywPMS731F
+         QZkED7zLRXNCfN+p5XJsCb/mEfuBMhjK0vBM2M/FronydUaFEXBcGAzRon4NUZDdUi
+         c5+mvpDKJwLSK8UzkrhrUYXZtS7fX7Bjmd8BdVkDlYlrHSSNC7PnfeGdU05fUui1SA
+         nmOZ+MwplIXOJUwftG2odSSkbquxMriRVgTLz1E8nWEaxVgFqlAtsezQzR2t7KNQX7
+         ksfYi+D9EIhBA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
+In-Reply-To: <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
+References: <20210914121036.3975026-1-ardb@kernel.org>
+ <20210914121036.3975026-5-ardb@kernel.org>
+ <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
+Date:   Tue, 28 Sep 2021 09:13:20 +1000
+Message-ID: <87ee99lii7.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:46:48PM -0600, Alex Williamson wrote:
-> > +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
-> > +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
-> > +		[VFIO_DEVICE_STATE_STOP] = {
-> > +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> > +			[VFIO_DEVICE_STATE_RESUMING] = 1,
-> > +		},
-> 
-> Our state transition diagram is pretty weak on reachable transitions
-> out of the _STOP state, why do we select only these two as valid?
+Ard Biesheuvel <ardb@kernel.org> writes:
+> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+>>
+>> The CPU field will be moved back into thread_info even when
+>> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
+>> of struct thread_info.
+>>
+>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> Michael,
+>
+> Do you have any objections or issues with this patch or the subsequent
+> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
+> that he was happy with it.
 
-I have no particular opinion on specific states here, however adding
-more states means more stuff for drivers to implement and more risk
-driver writers will mess up this uAPI.
+No objections, it looks good to me, thanks for cleaning up that horror :)
 
-So only on those grounds I'd suggest to keep this to the minimum
-needed instead of the maximum logically possible..
+It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
+git tree with the dependencies I'd be happy to run some tests over it.
 
-Also, probably the FSM comment from the uapi header file should be
-moved into a function comment above this function?
-
-Jason
+cheers
