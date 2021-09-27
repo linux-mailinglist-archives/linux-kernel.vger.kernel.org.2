@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB250419B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA064419CF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237091AbhI0RRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55534 "EHLO mail.kernel.org"
+        id S237737AbhI0RgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237170AbhI0ROB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:14:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BCBD61360;
-        Mon, 27 Sep 2021 17:09:53 +0000 (UTC)
+        id S238699AbhI0RaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:30:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23A0160F3A;
+        Mon, 27 Sep 2021 17:18:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762594;
-        bh=sPF98nquJCc77VcECwo/S0m2FQKeRkwxFkDq6nENSXM=;
+        s=korg; t=1632763081;
+        bh=Ixvjd/g6Oa1T/tgj7QZQCeD2Fi27lJOPX8R02O1CA+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KsfQaLNE8E5i/o4Xl9XFQ/iXcYmmiAFhMWJSllSwgKZjOsvRQDzRvULZu/6uA428V
-         3/HTwPc6pX5hmWko63bSZDaFehhEIHVHvK89yBoCqI0O0plEQ17GCwT3uPiOowj9iG
-         PHykG7eadF/hM1py5nbdKzYwhXZ+v8LavbjoGXXU=
+        b=iFR4xMFlzsqWfc3WWMWXfCbqVLs7hHXvp4zObLMP8iTNihTUKRj3o1HFMr8YoY9h+
+         TOFyL062osMGEKntiOYMcg/D5GJAS2g6qi51mkZGK2824P5Z0NfvXEELVnFl1fMNfZ
+         c0BK13ZDMyh2XxDif7XCNFwhbXtWJNP2z9XT3wu0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 082/103] nvme-multipath: fix ANA state updates when a namespace is not present
+        stable@vger.kernel.org, Ruozhu Li <liruozhu@huawei.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 128/162] nvme-rdma: destroy cm id before destroy qp to avoid use after free
 Date:   Mon, 27 Sep 2021 19:02:54 +0200
-Message-Id: <20210927170228.604496928@linuxfoundation.org>
+Message-Id: <20210927170237.862703782@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Eidelman <anton.eidelman@gmail.com>
+From: Ruozhu Li <liruozhu@huawei.com>
 
-[ Upstream commit 79f528afa93918519574773ea49a444c104bc1bd ]
+[ Upstream commit 9817d763dbe15327b9b3ff4404fa6f27f927e744 ]
 
-nvme_update_ana_state() has a deficiency that results in a failure to
-properly update the ana state for a namespace in the following case:
+We should always destroy cm_id before destroy qp to avoid to get cma
+event after qp was destroyed, which may lead to use after free.
+In RDMA connection establishment error flow, don't destroy qp in cm
+event handler.Just report cm_error to upper level, qp will be destroy
+in nvme_rdma_alloc_queue() after destroy cm id.
 
-  NSIDs in ctrl->namespaces:	1, 3,    4
-  NSIDs in desc->nsids:		1, 2, 3, 4
-
-Loop iteration 0:
-    ns index = 0, n = 0, ns->head->ns_id = 1, nsid = 1, MATCH.
-Loop iteration 1:
-    ns index = 1, n = 1, ns->head->ns_id = 3, nsid = 2, NO MATCH.
-Loop iteration 2:
-    ns index = 2, n = 2, ns->head->ns_id = 4, nsid = 4, MATCH.
-
-Where the update to the ANA state of NSID 3 is missed.  To fix this
-increment n and retry the update with the same ns when ns->head->ns_id is
-higher than nsid,
-
-Signed-off-by: Anton Eidelman <anton@lightbitslabs.com>
+Signed-off-by: Ruozhu Li <liruozhu@huawei.com>
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/nvme/host/rdma.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 2747efc03825..46a1e24ba6f4 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -509,14 +509,17 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index a68704e39084..042c594bc57e 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -656,8 +656,8 @@ static void nvme_rdma_free_queue(struct nvme_rdma_queue *queue)
+ 	if (!test_and_clear_bit(NVME_RDMA_Q_ALLOCATED, &queue->flags))
+ 		return;
  
- 	down_read(&ctrl->namespaces_rwsem);
- 	list_for_each_entry(ns, &ctrl->namespaces, list) {
--		unsigned nsid = le32_to_cpu(desc->nsids[n]);
--
-+		unsigned nsid;
-+again:
-+		nsid = le32_to_cpu(desc->nsids[n]);
- 		if (ns->head->ns_id < nsid)
- 			continue;
- 		if (ns->head->ns_id == nsid)
- 			nvme_update_ns_ana_state(desc, ns);
- 		if (++n == nr_nsids)
- 			break;
-+		if (ns->head->ns_id > nsid)
-+			goto again;
+-	nvme_rdma_destroy_queue_ib(queue);
+ 	rdma_destroy_id(queue->cm_id);
++	nvme_rdma_destroy_queue_ib(queue);
+ 	mutex_destroy(&queue->queue_lock);
+ }
+ 
+@@ -1815,14 +1815,10 @@ static int nvme_rdma_conn_established(struct nvme_rdma_queue *queue)
+ 	for (i = 0; i < queue->queue_size; i++) {
+ 		ret = nvme_rdma_post_recv(queue, &queue->rsp_ring[i]);
+ 		if (ret)
+-			goto out_destroy_queue_ib;
++			return ret;
  	}
- 	up_read(&ctrl->namespaces_rwsem);
+ 
  	return 0;
+-
+-out_destroy_queue_ib:
+-	nvme_rdma_destroy_queue_ib(queue);
+-	return ret;
+ }
+ 
+ static int nvme_rdma_conn_rejected(struct nvme_rdma_queue *queue,
+@@ -1916,14 +1912,10 @@ static int nvme_rdma_route_resolved(struct nvme_rdma_queue *queue)
+ 	if (ret) {
+ 		dev_err(ctrl->ctrl.device,
+ 			"rdma_connect_locked failed (%d).\n", ret);
+-		goto out_destroy_queue_ib;
++		return ret;
+ 	}
+ 
+ 	return 0;
+-
+-out_destroy_queue_ib:
+-	nvme_rdma_destroy_queue_ib(queue);
+-	return ret;
+ }
+ 
+ static int nvme_rdma_cm_handler(struct rdma_cm_id *cm_id,
+@@ -1954,8 +1946,6 @@ static int nvme_rdma_cm_handler(struct rdma_cm_id *cm_id,
+ 	case RDMA_CM_EVENT_ROUTE_ERROR:
+ 	case RDMA_CM_EVENT_CONNECT_ERROR:
+ 	case RDMA_CM_EVENT_UNREACHABLE:
+-		nvme_rdma_destroy_queue_ib(queue);
+-		fallthrough;
+ 	case RDMA_CM_EVENT_ADDR_ERROR:
+ 		dev_dbg(queue->ctrl->ctrl.device,
+ 			"CM error event %d\n", ev->event);
 -- 
 2.33.0
 
