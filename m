@@ -2,152 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F094197D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1EE4197F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhI0P0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235213AbhI0P00 (ORCPT
+        id S235147AbhI0Pbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:31:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32839 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234158AbhI0Pbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:26:26 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3FCC061575;
-        Mon, 27 Sep 2021 08:24:48 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id k17so16177893pff.8;
-        Mon, 27 Sep 2021 08:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=91WTltl5VxlPGr4W7IMTkikDp5yzAAOLWX4XlxfvA04=;
-        b=MnWb/E/nNEUD/13bbKjg2jh+pdSUe6ymLUCmsk9n7bjrJzz4yPdZS5ZBqVDiIR4NHf
-         4bCX4yCInmF/nkKSis6LdhS7EUN8Ld+mfU2BS9fcm6h5XsAREVO/rgXxgLO9/iw0iPSl
-         HBaOy3evwjYMZFh9SGHB66A2O7sfv8DsHgS3yUrcRGQPvhPUl8hfsvB8rjoFfpD6PG1u
-         VpWgx539pAFlqr+rWCwas4p2meFPC861+z/d4aXnHoirm4Kf9cpcJ3nYjVZoxwhy5oCX
-         kTaApzyd4CQ9TVMf9z6XXqkaFFDLg58V+2uIiPlJEEhd1xu/DM9JwtMbHcFZaTZTiI+P
-         gtgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=91WTltl5VxlPGr4W7IMTkikDp5yzAAOLWX4XlxfvA04=;
-        b=JLIu0LGZ/GoO1nAyqI3gdy3HOyfiV6KQBvxS1Tq5JTgRHJAyROxXdyKIsEHuazZP8e
-         UykUfHPhRLS1nN/L6Gw4R1MrjjPZGLSbxGOgvNGdFSwYOGKMWu82CozuyAwhawcQdxxb
-         KVTOMWiCqCn8lGFPO46SnCB7BYVXPVmcuq+dsTWY2lSZlvX/ElBRTENvOxAL/23JPhzT
-         AIk4Yotc82gXS+rSr2pXumBNR6KAJ1gSO1+0kAlyFqmIOExUJ22tpsWUb1cCdlnWmjLh
-         gHTJ8lhqzYN150WAG22BZuE2DDsi68ICQsS20y1RnWsySbIfsxu7dTgG/jViCtFhydp3
-         Y/2w==
-X-Gm-Message-State: AOAM532AWaskEpovgK4rcT+xr7C1XuNNgye8TtwPgPOrTICNhlQ1OV//
-        sF8EY8WShmY1n3q/AXtIKok=
-X-Google-Smtp-Source: ABdhPJwHP/CZaznyNAeJ0MtR9h7UOdNIz9t9+0/dozEHS2DAPGKfXC0LUiuj/yslWdqz10nvh3Zfrg==
-X-Received: by 2002:a05:6a00:4:b0:43d:32f3:e861 with SMTP id h4-20020a056a00000400b0043d32f3e861mr493964pfk.60.1632756288413;
-        Mon, 27 Sep 2021 08:24:48 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id s3sm233915pjr.1.2021.09.27.08.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 08:24:47 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: Switch ordering of runpm put vs devfreq_idle
-Date:   Mon, 27 Sep 2021 08:29:28 -0700
-Message-Id: <20210927152928.831245-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 27 Sep 2021 11:31:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632756593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mENHZjQ+BALjyt1DdN0jTcrXlMqP2xXYUM+xHN7USJE=;
+        b=KNUdJ2AmB0/KLyfUxowGvK/x8W0n7YUNQbdqoj3SsHDccIc0Sr92ZDMFr8A8ldA2jBd945
+        9dcqT7vB270RWaPXwlWt4f5K8BaBuZKvWYd0hiFkArjXNNiMOOBYKwoPu4qRljUD9mX2Ly
+        xizUdn0Wkctx/pPivx4u9MVgAti5iV8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-cmZ11cD5MK61XX14reloTA-1; Mon, 27 Sep 2021 11:29:49 -0400
+X-MC-Unique: cmZ11cD5MK61XX14reloTA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 790EC180830E;
+        Mon, 27 Sep 2021 15:29:48 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 293B05C261;
+        Mon, 27 Sep 2021 15:29:48 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] (Many) KVM fixes for 5.15-rc4
+Date:   Mon, 27 Sep 2021 11:29:47 -0400
+Message-Id: <20210927152947.532485-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Linus,
 
-I've seen a few crashes like:
+The following changes since commit 2da4a23599c263bd4a7658c2fe561cb3a73ea6ae:
 
-    Internal error: synchronous external abort: 96000010 [#1] PREEMPT SMP
-    Modules linked in: snd_seq_dummy snd_seq snd_seq_device bridge stp llc tun nf_nat_tftp nf_conntrack_tftp nf_nat_ftp nf_conntrack_ftp esp6 ah6 ip6t_REJECT ip6t_ipv6header vhost_vsock vhost vmw_vsock_virtio_transport_common vsock rfcomm algif_hash algif_skcipher af_alg uinput veth xt_cgroup xt_MASQUERADE venus_enc venus_dec videobuf2_dma_contig qcom_spmi_adc5 qcom_spmi_adc_tm5 hci_uart qcom_vadc_common cros_ec_typec qcom_spmi_temp_alarm typec btqca snd_soc_rt5682_i2c snd_soc_rt5682 snd_soc_sc7180 bluetooth snd_soc_qcom_common snd_soc_rl6231 ecdh_generic ecc venus_core v4l2_mem2mem snd_soc_lpass_sc7180 snd_soc_lpass_hdmi snd_soc_lpass_cpu snd_soc_lpass_platform snd_soc_max98357a ip6table_nat fuse iio_trig_sysfs cros_ec_lid_angle cros_ec_sensors cros_ec_sensors_core industrialio_triggered_buffer kfifo_buf cros_ec_sensorhub lzo_rle ath10k_snoc lzo_compress ath10k_core ath zram mac80211 cfg80211 ax88179_178a usbnet mii uvcvideo videobuf2_vmalloc joydev
-    CPU: 3 PID: 212 Comm: A618-worker Tainted: G W 5.4.139-16300-g88d8e1285982 #1
-    Hardware name: Google Pompom (rev1) with LTE (DT)
-    pstate: 60c00009 (nZCv daif +PAN +UAO)
-    pc : a6xx_gmu_set_oob+0x114/0x200
-    lr : a6xx_gmu_set_oob+0x10c/0x200
-    sp : ffffffc011b7bc20
-    x29: ffffffc011b7bc20 x28: ffffffdad27c5000
-    x27: 0000000000000001 x26: ffffffdad1521044
-    x25: ffffffbef7498338 x24: 0000000000000018
-    x23: 0000000000000002 x22: 0000000000014648
-    x21: 0000033732fe638b x20: 0000000080000000
-    x19: ffffffbef7433bc8 x18: 0000000040000000
-    x17: 000000243508d982 x16: 000000000000b67e
-    x15: 00000000000090d4 x14: 0000000000000024
-    x13: 0000000000000024 x12: 0000000000017521
-    x11: 0000000000000b48 x10: 0000000000326a48
-    x9 : 1a130d33f6371600 x8 : ffffffc011e54648
-    x7 : 614948e00005003c x6 : ffffffbe3cd17e60
-    x5 : 0000000000000040 x4 : 0000000000000004
-    x3 : 0000000000000000 x2 : ffffffbef7488000
-    x1 : ffffffbef7488000 x0 : 0000000000000000
-    Call trace:
-    a6xx_gmu_set_oob+0x114/0x200
-    a6xx_gmu_set_freq+0xe0/0x1fc
-    msm_devfreq_target+0x80/0x13c
-    msm_devfreq_idle+0x54/0x94
-    retire_submit+0x170/0x254
-    retire_submits+0xa4/0xdc
-    retire_worker+0x1c/0x28
-    kthread_worker_fn+0xf4/0x1bc
-    kthread+0x140/0x158
-    ret_from_fork+0x10/0x18
-    Code: 52800c81 9415bbe5 f9400a68 8b160108 (b9400108)
-    ---[ end trace 16b871df2482cd61 ]---
-    Kernel panic - not syncing: Fatal exception
-    SMP: stopping secondary CPUs
-    Kernel Offset: 0x1ac1400000 from 0xffffffc010000000
-    PHYS_OFFSET: 0xffffffc280000000
-    CPU features: 0x88102e,2a80aa38
-    Memory Limit: none
+  KVM: selftests: Remove __NR_userfaultfd syscall fallback (2021-09-22 10:24:02 -0400)
 
-Which smells a lot like touching hw after power collapse.  I'm not
-*entirely* sure how it could have taken 66ms (the autosuspend delay)
-before we get to a6xx_gmu_set_oob(), but to be safe we should move
-the pm_runtime_put_autosuspend() after msm_devfreq_idle().
+are available in the Git repository at:
 
-Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index d1a16642ecd5..2b2bbe7499e6 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -667,9 +667,6 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
- 
- 	msm_submit_retire(submit);
- 
--	pm_runtime_mark_last_busy(&gpu->pdev->dev);
--	pm_runtime_put_autosuspend(&gpu->pdev->dev);
--
- 	spin_lock_irqsave(&ring->submit_lock, flags);
- 	list_del(&submit->node);
- 	spin_unlock_irqrestore(&ring->submit_lock, flags);
-@@ -683,6 +680,9 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
- 	mutex_unlock(&gpu->active_lock);
- 
- 	msm_gem_submit_put(submit);
-+
-+	pm_runtime_mark_last_busy(&gpu->pdev->dev);
-+	pm_runtime_put_autosuspend(&gpu->pdev->dev);
- }
- 
- static void retire_submits(struct msm_gpu *gpu)
--- 
-2.31.1
+for you to fetch changes up to 50b078184604fea95adbb144ff653912fb0e48c6:
+
+  Merge tag 'kvmarm-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master (2021-09-24 06:04:42 -0400)
+
+----------------------------------------------------------------
+x86:
+
+- missing TLB flush
+
+- nested virtualization fixes for SMM (secure boot on nested hypervisor)
+  and other nested SVM fixes
+
+- syscall fuzzing fixes
+
+- live migration fix for AMD SEV
+
+- mirror VMs now work for SEV-ES too
+
+- fixes for reset
+
+- possible out-of-bounds access in IOAPIC emulation
+
+- fix enlightened VMCS on Windows 2022
+
+ARM:
+
+- Add missing FORCE target when building the EL2 object
+
+- Fix a PMU probe regression on some platforms
+
+Generic:
+
+- KCSAN fixes
+
+selftests:
+
+- random fixes, mostly for clang compilation
+
+----------------------------------------------------------------
+
+A bit late...  I got sidetracked by back-from-vacation routines first and
+conferences second.  But most of these patches are already a few weeks
+old and things look more calm on the mailing list than what this pull
+request would suggest.
+
+Paolo
+
+Chenyi Qiang (1):
+      KVM: nVMX: Fix nested bus lock VM exit
+
+David Matlack (3):
+      KVM: selftests: Change backing_src flag to -s in demand_paging_test
+      KVM: selftests: Refactor help message for -s backing_src
+      KVM: selftests: Create a separate dirty bitmap per slot
+
+Fares Mehanna (1):
+      kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
+
+Haimin Zhang (1):
+      KVM: x86: Handle SRCU initialization failure during page track init
+
+Hou Wenlong (1):
+      kvm: fix wrong exception emulation in check_rdtsc
+
+Lai Jiangshan (3):
+      KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
+      KVM: X86: Synchronize the shadow pagetable before link it
+      KVM: Remove tlbs_dirty
+
+Marc Zyngier (1):
+      KVM: arm64: Fix PMU probe ordering
+
+Maxim Levitsky (11):
+      KVM: x86: nSVM: restore the L1 host state prior to resuming nested guest on SMM exit
+      KVM: x86: reset pdptrs_from_userspace when exiting smm
+      KVM: x86: SVM: call KVM_REQ_GET_NESTED_STATE_PAGES on exit from SMM mode
+      KVM: x86: nSVM: refactor svm_leave_smm and smm_enter_smm
+      KVM: x86: VMX: synthesize invalid VM exit when emulating invalid guest state
+      KVM: x86: nVMX: don't fail nested VM entry on invalid guest state if !from_vmentry
+      KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
+      KVM: x86: nSVM: restore int_vector in svm_clear_vintr
+      KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 and L0
+      KVM: x86: nSVM: test eax for 4K alignment for GP errata workaround
+      KVM: x86: nSVM: don't copy virt_ext from vmcb12
+
+Mingwei Zhang (1):
+      KVM: SVM: fix missing sev_decommission in sev_receive_start
+
+Oliver Upton (4):
+      selftests: KVM: Fix check for !POLLIN in demand_paging_test
+      selftests: KVM: Align SMCCC call with the spec in steal_time
+      selftests: KVM: Call ucall_init when setting up in rseq_test
+      selftests: KVM: Explicitly use movq to read xmm registers
+
+Paolo Bonzini (1):
+      Merge tag 'kvmarm-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master
+
+Peter Gonda (3):
+      KVM: SEV: Acquire vcpu mutex when updating VMSA
+      KVM: SEV: Update svm_vm_copy_asid_from for SEV-ES
+      KVM: SEV: Allow some commands for mirror VM
+
+Sean Christopherson (8):
+      KVM: x86: Mark all registers as avail/dirty at vCPU creation
+      KVM: x86: Clear KVM's cached guest CR3 at RESET/INIT
+      KVM: VMX: Remove defunct "nr_active_uret_msrs" field
+      KVM: SEV: Pin guest memory for write for RECEIVE_UPDATE_DATA
+      KVM: x86: Query vcpu->vcpu_idx directly and drop its accessor
+      KVM: x86: Identify vCPU0 by its vcpu_idx instead of its vCPUs array entry
+      KVM: Clean up benign vcpu->cpu data races when kicking vCPUs
+      KVM: KVM: Use cpumask_available() to check for NULL cpumask when kicking vCPUs
+
+Sergey Senozhatsky (1):
+      KVM: do not shrink halt_poll_ns below grow_start
+
+Vitaly Kuznetsov (2):
+      KVM: x86: Fix stack-out-of-bounds memory access from ioapic_write_indirect()
+      KVM: nVMX: Filter out all unsupported controls when eVMCS was activated
+
+Yu Zhang (1):
+      KVM: nVMX: fix comments of handle_vmon()
+
+Zenghui Yu (1):
+      KVM: arm64: nvhe: Fix missing FORCE for hyp-reloc.S build rule
+
+ arch/arm64/kvm/hyp/nvhe/Makefile                   |   2 +-
+ arch/arm64/kvm/perf.c                              |   3 -
+ arch/arm64/kvm/pmu-emul.c                          |   9 +-
+ arch/s390/kvm/interrupt.c                          |   4 +-
+ arch/s390/kvm/kvm-s390.c                           |   2 +-
+ arch/s390/kvm/kvm-s390.h                           |   2 +-
+ arch/x86/include/asm/kvm_page_track.h              |   2 +-
+ arch/x86/kvm/emulate.c                             |   2 +-
+ arch/x86/kvm/hyperv.c                              |   7 +-
+ arch/x86/kvm/hyperv.h                              |   2 +-
+ arch/x86/kvm/ioapic.c                              |  10 +-
+ arch/x86/kvm/mmu/mmu.c                             |  17 +--
+ arch/x86/kvm/mmu/page_track.c                      |   4 +-
+ arch/x86/kvm/mmu/paging_tmpl.h                     |  46 +++----
+ arch/x86/kvm/svm/nested.c                          |  10 +-
+ arch/x86/kvm/svm/sev.c                             |  92 +++++++++-----
+ arch/x86/kvm/svm/svm.c                             | 137 +++++++++++----------
+ arch/x86/kvm/svm/svm.h                             |   3 +-
+ arch/x86/kvm/vmx/evmcs.c                           |  12 +-
+ arch/x86/kvm/vmx/nested.c                          |  24 ++--
+ arch/x86/kvm/vmx/vmx.c                             |  37 ++++--
+ arch/x86/kvm/vmx/vmx.h                             |   5 +-
+ arch/x86/kvm/x86.c                                 |  28 ++++-
+ drivers/perf/arm_pmu.c                             |   2 +
+ include/kvm/arm_pmu.h                              |   3 -
+ include/linux/kvm_host.h                           |   6 -
+ include/linux/perf/arm_pmu.h                       |   6 +
+ tools/testing/selftests/kvm/.gitignore             |   1 +
+ tools/testing/selftests/kvm/Makefile               |   1 +
+ .../selftests/kvm/access_tracking_perf_test.c      |   6 +-
+ tools/testing/selftests/kvm/demand_paging_test.c   |  15 ++-
+ tools/testing/selftests/kvm/dirty_log_perf_test.c  |  62 +++++++---
+ tools/testing/selftests/kvm/include/test_util.h    |   4 +-
+ .../selftests/kvm/include/x86_64/processor.h       |  34 ++---
+ tools/testing/selftests/kvm/kvm_page_table_test.c  |   7 +-
+ tools/testing/selftests/kvm/lib/test_util.c        |  17 ++-
+ tools/testing/selftests/kvm/rseq_test.c            |   1 +
+ tools/testing/selftests/kvm/steal_time.c           |   4 +-
+ .../selftests/kvm/x86_64/svm_int_ctl_test.c        | 128 +++++++++++++++++++
+ virt/kvm/kvm_main.c                                |  68 +++++++---
+ 40 files changed, 556 insertions(+), 269 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
 
