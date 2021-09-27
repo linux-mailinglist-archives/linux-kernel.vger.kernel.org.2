@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65244193DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8424193E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhI0MKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
+        id S234212AbhI0MMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:12:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234073AbhI0MKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6F561052;
-        Mon, 27 Sep 2021 12:09:15 +0000 (UTC)
+        id S234073AbhI0MMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:12:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B71F60F94;
+        Mon, 27 Sep 2021 12:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632744555;
-        bh=AI4tpGzcq2lGaC64BREqAyh495k90SIEp0H15kiF3Ig=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M75I0T5h7qGQRA7oKVHzhSchib2qNPBAVpYc2Ceez7NUOZwwArcsujxIxbHdQ/ATP
-         mZyro+adIQsI0CzYxVYVCUwNyW7RmytDcEQyNzmsPWBO8XPyA8pNOFyf98kCtQipmu
-         wK0eW/UR5tlcdU2KE+31I74YNjzesYeuU028eGrTNkWnI5E4aZCacqoAFwtKS17s7y
-         peuE+DPTWnM6avX5Zz4Mtoq31UjScXfMjtcWJySKMV5Mdne9EDY+Kuc9CKqbhpdmiW
-         NcnOg4XLG2BL2SaK4hvINsbMdWcnGDGqXJ4Rveg1c2ymjJrSZqbRfaNWHH7TulQELy
-         33km1m23UFHxw==
-Received: by mail-lf1-f52.google.com with SMTP id b15so75506283lfe.7;
-        Mon, 27 Sep 2021 05:09:15 -0700 (PDT)
-X-Gm-Message-State: AOAM5327zUbnZlFvr6ovJOzv6NOhYuccHVN+XqViSq7oTeC1W7Ta3Pev
-        DrgOnnymFXrj/kb2iFn8zl/9UnzMYV7FR6DSN/w=
-X-Google-Smtp-Source: ABdhPJyNtWcWUZ3v8mDL+/Yc7vrpAv9Q9vg2NiH5xMn0Ry1758YyoowOzWE7K/GfnYa5gYmuS7KzC2hpfEhruxVLhpg=
-X-Received: by 2002:a05:6512:3ba0:: with SMTP id g32mr24350829lfv.216.1632744553586;
- Mon, 27 Sep 2021 05:09:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 27 Sep 2021 20:09:02 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com>
-Message-ID: <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        s=k20201202; t=1632744665;
+        bh=LUmUeH5VcgxkiD9H6mkTNR+3W/FcVnc5tGucpwOcXIs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OLr8llLY+UB7oI7yRf1Put+8rniUWQFiI4sAnoOUajNDjVZJULCsjd7ZY13HgrCHF
+         uuOFj+Liz5P0UMSpI9QDsQec43lG3ljPkxjSBk/2lPSh3Op2i7P5DE+akl25c1TK6z
+         RPyOFpBv/GOEKOX17ouAkiLnozw/T1fkpcyiv2vbsPIQTNJLkN9M5Rap4HOnL1xc6i
+         kPG8JzTo7GrxhFfiXSlcKbqVYrRDpgqv9HoYWz/OrT1qqnFuwON4hnGzkKsXHiBVvC
+         stUiEf98glMTN2hYWUDsE/VK50BuI0Ht1G5BDZ9mHYN7FSV7U5SQiBabQnz8XU3f4l
+         zXRDmbEUVe6Tw==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Rajaravi Krishna Katta <rkatta@habana.ai>
+Subject: [PATCH 1/2] habanalabs: fix resetting args in wait for interrupt
+Date:   Mon, 27 Sep 2021 15:10:54 +0300
+Message-Id: <20210927121055.97751-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I didn't see the patch delete:
-#else /* !CONFIG_SPARSE_IRQ */
-struct irq_desc irq_desc[NR_IRQS] __cacheline_aligned_in_smp = {
-        [0 ... NR_IRQS-1] = {
-                .handle_irq     = handle_bad_irq,
-                .depth          = 1,
-                .lock           = __RAW_SPIN_LOCK_UNLOCKED(irq_desc->lock),
-        }
-};
-...
+From: Rajaravi Krishna Katta <rkatta@habana.ai>
 
-Flat irq_desc[] is simple and easy for debugging. We do want to del it?
+If _hl_interrupt_wait_ioctl returns EINTR, resetting args would clear
+user flags and will result in error in case the userspace will repeat
+the ioctl call.
 
-On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
-> only sh and csky select it, but the could use SPARSE_IRQ too, let's
-> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
->
-> Kefeng Wang (3):
->   sh: Cleanup about SPARSE_IRQ
->   csky: Use SPARSE_IRQ
->   genirq: Cleanup Kconfig
->
->  arch/csky/Kconfig         |  2 +-
->  arch/sh/Kconfig           |  1 -
->  arch/sh/include/asm/irq.h |  9 -------
->  kernel/irq/Kconfig        | 50 ++++++++++++++++-----------------------
->  4 files changed, 21 insertions(+), 41 deletions(-)
->
-> --
-> 2.26.2
->
+Signed-off-by: Rajaravi Krishna Katta <rkatta@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/command_submission.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 91b57544f7c6..39fc6d4fb971 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -2878,8 +2878,6 @@ static int hl_interrupt_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ 				args->in.interrupt_timeout_us, args->in.addr,
+ 				args->in.target, interrupt_offset, &status);
+ 
+-	memset(args, 0, sizeof(*args));
+-
+ 	if (rc) {
+ 		if (rc != -EINTR)
+ 			dev_err_ratelimited(hdev->dev,
+@@ -2888,6 +2886,8 @@ static int hl_interrupt_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ 		return rc;
+ 	}
+ 
++	memset(args, 0, sizeof(*args));
++
+ 	switch (status) {
+ 	case CS_WAIT_STATUS_COMPLETED:
+ 		args->out.status = HL_WAIT_CS_STATUS_COMPLETED;
 -- 
-Best Regards
- Guo Ren
+2.17.1
 
-ML: https://lore.kernel.org/linux-csky/
