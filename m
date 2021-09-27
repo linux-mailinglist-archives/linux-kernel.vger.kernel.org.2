@@ -2,212 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35073418F9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B986418F9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbhI0HBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:01:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3492 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233118AbhI0HBG (ORCPT
+        id S233179AbhI0HCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:02:37 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:30123 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233118AbhI0HCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:01:06 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18R3PTcB020186;
-        Mon, 27 Sep 2021 02:58:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=2JYJIDFlPwlrS54K2p3vPgGj+dRVbn4qYQyxYmTPv4g=;
- b=pEQAchES6fgvbAigrUBgoLW01Gn6fFbkCPWsrzI0VQrK+B1Jrf2z5XoqyuB/t4gFXlev
- Q/q1F5sQGby3W8Z3E0WO+9tgHp1ImtZD4aLqit3T79sbffcpGxMZeMWDFrFZcwhf+LkF
- K/eGPISZaprkvGqG1TYOO7pmC5FD0d/XCg2yzfMVjyZ9eomfgTz8F4IUTBbVCh75n6V2
- tp5x8WYTf69sw+0/LlD7B5vnSFHRSY4k1HvYbxlZ4bKUflP+qhKo1LRZwWquCtJcPWkn
- SnDknpH6wTCKGYkxiLbWl8IHzT6GB40VmYgVQfsZ+je/LF3aBhzyDFX/tHfSAEuwyz3k zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bahc5uvrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 02:58:54 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18R6jfCE003005;
-        Mon, 27 Sep 2021 02:58:53 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bahc5uvqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 02:58:53 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18R6vMWI024280;
-        Mon, 27 Sep 2021 06:58:51 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3b9ud99feb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 06:58:50 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18R6wlBe64422230
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Sep 2021 06:58:47 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 685F652052;
-        Mon, 27 Sep 2021 06:58:47 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.4.236])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id ACCCA5205A;
-        Mon, 27 Sep 2021 06:58:45 +0000 (GMT)
-Subject: Re: [PATCH 06/14] KVM: Drop obsolete kvm_arch_vcpu_block_finish()
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <20210925005528.1145584-7-seanjc@google.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <67f2fede-8f36-6052-44c9-ef5c6d28d143@de.ibm.com>
-Date:   Mon, 27 Sep 2021 08:58:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 27 Sep 2021 03:02:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1632726060; x=1664262060;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=exwg+DQW3mPYF7RYvTJWaREa8B5FVVCHy+LsCwyp0BQ=;
+  b=VI6JV7OEjskKmc8GnnvgGwi1+eV3wYQgaAc3CMqZbWgX/2kg6bVGhnLv
+   qXg1Mr8UeWJIm6LlEbFlT2CiCwl0y574gyV6xuCl8empJYX7HN5uDbHcp
+   39uBbOeIZx0gul2y6G2IvfDIDHQCgRzEh2dtQDSRZVfLX6CR84E8EBT+H
+   k=;
+X-IronPort-AV: E=Sophos;i="5.85,325,1624320000"; 
+   d="scan'208";a="150144983"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1box-d-0230bc7b.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 27 Sep 2021 07:00:51 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1box-d-0230bc7b.us-east-1.amazon.com (Postfix) with ESMTPS id 24AE1C4CC6;
+        Mon, 27 Sep 2021 07:00:47 +0000 (UTC)
+Received: from [192.168.2.196] (10.43.161.199) by EX13D16EUB003.ant.amazon.com
+ (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 27 Sep
+ 2021 07:00:41 +0000
+Message-ID: <0ddefa29-d3c6-c328-1db4-98fab386423a@amazon.com>
+Date:   Mon, 27 Sep 2021 10:00:33 +0300
 MIME-Version: 1.0
-In-Reply-To: <20210925005528.1145584-7-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.0
+Subject: Re: [PATCH v2 0/4] merge contiguous physical memory regions
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LSLDyPLJ69vM1eY9Fjr2eADaS5UHtBw3
-X-Proofpoint-GUID: BYb0saIe7Tr6n1VpNl__d4G6AFmLjwTz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-27_02,2021-09-24_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109270042
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <arei.gonglei@huawei.com>,
+        <gregkh@linuxfoundation.org>, <kamal@canonical.com>,
+        <pbonzini@redhat.com>, <sgarzare@redhat.com>,
+        <stefanha@redhat.com>, <vkuznets@redhat.com>,
+        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
+        <alcioa@amazon.com>
+References: <20210921151039.1502-1-longpeng2@huawei.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+In-Reply-To: <20210921151039.1502-1-longpeng2@huawei.com>
+X-Originating-IP: [10.43.161.199]
+X-ClientProxiedBy: EX13D41UWB004.ant.amazon.com (10.43.161.135) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+CgpPbiAyMS8wOS8yMDIxIDE4OjEwLCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiAKPiBIaSBndXlz
+LAo+IAo+IFRoaXMgcGF0Y2hzZXQgdHJ5IHRvIG1lcmdlIHRoZSBjb250aWd1b3VzIHBoeXNpY2Fs
+IG1lbW9yeSByZWdpb25zIHdoZW4KPiBzZXQgdXNlciBtZW1vcnkgcmVnaW9ucywgeW91IGNhbiBz
+ZWUgbWVzc2FnZSBpbiBQQVRDSCAxIGZvciBkZXRhaWxzLgo+IFBsZWFzZSByZXZpZXcgd2hlbiB5
+b3UgZnJlZSwgdGhhbmshCj4gCj4gQ2hhbmdlcyB2MSAtPiB2MjoKPiAgICAtIHVwZGF0ZSB0aGUg
+Y29tbWl0IG1lc3NhZ2UgYXMgQW5kcmEncyBzdWdnZXN0aW9uICBbQW5kcmFdCj4gICAgLSByZW1v
+dmUgVE9ETyBjb21wbGV0ZWx5IGluIG5lX3NldF91c2VyX21lbW9yeV9yZWdpb25faW9jdGwgIFtB
+bmRyYV0KPiAgICAtIGV4dHJhY3QgdGhlIHBoeXNpY2FsIG1lbW9yeSByZWdpb25zIHNldHVwIGlu
+dG8gaW5kaXZpZHVhbAo+ICAgICAgZnVuY3Rpb24KPiAgICAtIGFkZCBrdW5pdCB0ZXN0cyAgW0Fu
+ZHJhXQoKVGhhbmsgeW91IGZvciB0aGUgcGF0Y2ggc2VyaWVzLiBJJ2xsIHJldmlldyB0aGUgcGF0
+Y2hlcyBkdXJpbmcgdGhpcyAKd2Vlay4gSSBoYWQgYSBjb3VwbGUgb2YgZGF5cyBvZmYuCgpUaGFu
+a3MsCkFuZHJhCgo+IAo+IExvbmdwZW5nKE1pa2UpICg0KToKPiAgICBuaXRyb19lbmNsYXZlczog
+bWVyZ2UgY29udGlndW91cyBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucwo+ICAgIG5pdHJvX2VuY2xh
+dmVzOiBzYW5pdHkgY2hlY2sgdGhlIHBoeXNpY2FsIHJlZ2lvbiBkdXJpbmcgc2V0dGluZwo+ICAg
+IG5pdHJvX2VuY2xhdmVzOiBhZGQgdGVzdCBmcmFtZXdvcmsgZm9yIHRoZSBtaXNjIGZ1bmN0aW9u
+YWxpdHkKPiAgICBuaXRyb19lbmNsYXZlczogYWRkIGt1bml0IHRlc3RzIGZvciBwaHlzaWNhbCBj
+b250aWd1b3VzIHJlZ2lvbiBtZXJnaW5nCj4gCj4gICBkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2
+ZXMvS2NvbmZpZyAgICAgICAgfCAgIDggKysKPiAgIGRyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZl
+cy9uZV9taXNjX2Rldi5jICB8IDE2MCArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQo+ICAg
+ZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfdGVzdC5jIHwgIDYzICsrKysrKysr
+KysrKwo+ICAgMyBmaWxlcyBjaGFuZ2VkLCAxODIgaW5zZXJ0aW9ucygrKSwgNDkgZGVsZXRpb25z
+KC0pCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25l
+X21pc2NfdGVzdC5jCj4gCj4gLS0KPiAxLjguMy4xCj4gCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBD
+ZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBT
+dHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEu
+IFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1
+Lgo=
 
-
-Am 25.09.21 um 02:55 schrieb Sean Christopherson:
-> Drop kvm_arch_vcpu_block_finish() now that all arch implementations are
-> nops.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-
-> ---
->   arch/arm64/include/asm/kvm_host.h   | 1 -
->   arch/mips/include/asm/kvm_host.h    | 1 -
->   arch/powerpc/include/asm/kvm_host.h | 1 -
->   arch/s390/include/asm/kvm_host.h    | 2 --
->   arch/s390/kvm/kvm-s390.c            | 5 -----
->   arch/x86/include/asm/kvm_host.h     | 2 --
->   virt/kvm/kvm_main.c                 | 1 -
->   7 files changed, 13 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index f8be56d5342b..4e0ad0fff540 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -716,7 +716,6 @@ void kvm_arm_vcpu_ptrauth_trap(struct kvm_vcpu *vcpu);
->   static inline void kvm_arch_hardware_unsetup(void) {}
->   static inline void kvm_arch_sync_events(struct kvm *kvm) {}
->   static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
-> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
->   
->   void kvm_arm_init_debug(void);
->   void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu);
-> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-> index 696f6b009377..72b90d45a46e 100644
-> --- a/arch/mips/include/asm/kvm_host.h
-> +++ b/arch/mips/include/asm/kvm_host.h
-> @@ -897,7 +897,6 @@ static inline void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen) {}
->   static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
->   static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
->   static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
-> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
->   
->   #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB
->   int kvm_arch_flush_remote_tlb(struct kvm *kvm);
-> diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-> index 59cb38b04ede..8a84448d77a6 100644
-> --- a/arch/powerpc/include/asm/kvm_host.h
-> +++ b/arch/powerpc/include/asm/kvm_host.h
-> @@ -864,6 +864,5 @@ static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
->   static inline void kvm_arch_exit(void) {}
->   static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
->   static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
-> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
->   
->   #endif /* __POWERPC_KVM_HOST_H__ */
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index a604d51acfc8..a22c9266ea05 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -1010,6 +1010,4 @@ static inline void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
->   static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
->   static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
->   
-> -void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu);
-> -
->   #endif
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 08ed68639a21..17fabb260c35 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -5080,11 +5080,6 @@ static inline unsigned long nonhyp_mask(int i)
->   	return 0x0000ffffffffffffUL >> (nonhyp_fai << 4);
->   }
->   
-> -void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu)
-> -{
-> -
-> -}
-> -
->   static int __init kvm_s390_init(void)
->   {
->   	int i;
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 1e0e909b98b2..4e8c21083bdb 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1916,8 +1916,6 @@ static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
->   	static_call_cond(kvm_x86_vcpu_unblocking)(vcpu);
->   }
->   
-> -static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
-> -
->   static inline int kvm_cpu_get_apicid(int mps_cpu)
->   {
->   #ifdef CONFIG_X86_LOCAL_APIC
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 2ba22b68af3b..2015a1f532ce 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3301,7 +3301,6 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->   	}
->   
->   	trace_kvm_vcpu_wakeup(block_ns, waited, vcpu_valid_wakeup(vcpu));
-> -	kvm_arch_vcpu_block_finish(vcpu);
->   }
->   EXPORT_SYMBOL_GPL(kvm_vcpu_block);
->   
-> 
