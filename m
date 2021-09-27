@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A76D419232
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEA9419233
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhI0KZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:25:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233759AbhI0KZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:25:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1214D60F6D;
-        Mon, 27 Sep 2021 10:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632738254;
-        bh=0aOydrFoj9rdoYW/inrYYjH1DD0dFF+hrVGxPuisMZI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NNsKuk+f6pb0KyeXpv3p3KNdXyRUGsI0281odPObdSjzr18HUywXxk7QA84bEKFdC
-         1tEDbCfJ6CyRKBcnKzdnlpraoLIPvjfOUNFcLb4kHFcmHyLWqQAt6/cqt41hWu0Z5F
-         076B12c9FolL+wED9Al40dBI8+36QrnNmBg8Io2+oD9q7UqGziHxmrAWdKVESH/sgk
-         e0nllaWVyQ+Ak3JIzGzUrElbIbTSYeinjkZZmdXapT9UIk/euuIYoiHfGij40suCtm
-         dnI5URJI/y0ku7BtBFVziOec8QOsyscUf3ZuFez5J7iCN2d/Oj1HxwO8M00YuV51vL
-         pcA5zObmQZbTw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RESEND] [v2] posix-acl: avoid -Wempty-body warning
-Date:   Mon, 27 Sep 2021 12:23:56 +0200
-Message-Id: <20210927102410.1863853-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233833AbhI0K0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233759AbhI0K0L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:26:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0EDC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 03:24:34 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id t8so51094129wri.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 03:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=sFqGxkPsvLgyKYtO8LM3BgAgzu/ZndcL6Uhn79oUxgQ=;
+        b=Yi//Gw/B0rS+PmBIaf4k41iBqwDHHnQDSYmMUfIL+lXROt3vTp1OofsTptIMbopnJt
+         amnza2CaBXQ4p8kSFfq2McMiuAxm41hvEQsHwyijLganLry1rpbCCh/E5douUjKeY71q
+         C0z9McXTVYkEmhjTjjTFaL1b0m1fHJVDnGpG1KIxjrgkle2hAQ4U6wQLisgdKaWbUFOz
+         o5s03dTkZxCUTUMF0oScUcJtcoQ45knlZDxd95IDDZn0hiOS0LLOzsr2DmyB+J6U9P20
+         3anFqYyJrv7xEhthqbltuiuB2tLDL8S2rPqgiaAojq0RNNdFGH3dokfi6d/nCO6owO8H
+         bxNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=sFqGxkPsvLgyKYtO8LM3BgAgzu/ZndcL6Uhn79oUxgQ=;
+        b=qT4RxMr1SvKB273i/GCXWwq1x/bGItxjo73nbtWzWlIOWderq/tMJhR3CaLFpnUpmc
+         zrPF2siOKGxBe+5zZkW0mdUyqJR/yodmoOL6LTHx2spJr9rGKmAdo5LZDf8Fj9YeT1a9
+         Cw/M7pNcfixFoKrpMVXBirRSCtX7yBMySJaIFGfE9nAVqBHjpV5ZsSmj2cniphGgLT3A
+         DVPJAuh4Adu/nR4+Pm6r0TxXJkiKNk9EIqU5XPEKgxzBW3keGrB7ROhhiPd56VteLEQB
+         lKXSeStA5WPo62+zdFC/1Os86Hdve6G4JwRJcrR3sDrbhvdua0L0PhF48RJQrxtdLu0r
+         hZrA==
+X-Gm-Message-State: AOAM5322ZjrX8iF9bD1r7aBRri/0CsBVzKuguuCwDyrNOD44jwQ3YU5W
+        XAwb/hs1L3aRmp39G8mfLJvodu0rEmygQnlV980=
+X-Google-Smtp-Source: ABdhPJxQeIvmGD2XBodYa1b3uM9+qAxJkY0lh9cyMie+KN6fA1eBEqtTUg3YIiTBrUWqxi1wyryCVIOjrVWKw2t8eZc=
+X-Received: by 2002:a5d:4a46:: with SMTP id v6mr27293376wrs.262.1632738272917;
+ Mon, 27 Sep 2021 03:24:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: dahshegee@gmail.com
+Received: by 2002:a05:600c:35c1:0:0:0:0 with HTTP; Mon, 27 Sep 2021 03:24:32
+ -0700 (PDT)
+From:   MRS VICKY WYNSLOW <wynslowvicky@gmail.com>
+Date:   Mon, 27 Sep 2021 03:24:32 -0700
+X-Google-Sender-Auth: PieXcU_xy6xK8525cefZGfYfCK0
+Message-ID: <CALvCMaTmbYGEs5zsSW3+gK7gP2W7Ugp4sjpjY5vzfnJj0RfeJQ@mail.gmail.com>
+Subject: I NEED YOUR URGENT REPLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-The fallthrough comment for an ignored cmpxchg() return value
-produces a harmless warning with 'make W=1':
-
-fs/posix_acl.c: In function 'get_acl':
-fs/posix_acl.c:127:36: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  127 |                 /* fall through */ ;
-      |                                    ^
-
-Simplify it as a step towards a clean W=1 build.  As all architectures
-define cmpxchg() as a statement expression these days, it is no longer
-necessary to evaluate its return code, and the if() can just be droped.
-
-Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
-Link: https://lore.kernel.org/all/20210322132103.qiun2rjilnlgztxe@wittgenstein/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/posix_acl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-index f5c25f580dd9..9323a854a60a 100644
---- a/fs/posix_acl.c
-+++ b/fs/posix_acl.c
-@@ -134,8 +134,7 @@ struct posix_acl *get_acl(struct inode *inode, int type)
- 	 * to just call ->get_acl to fetch the ACL ourself.  (This is going to
- 	 * be an unlikely race.)
- 	 */
--	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED)
--		/* fall through */ ;
-+	cmpxchg(p, ACL_NOT_CACHED, sentinel);
- 
- 	/*
- 	 * Normally, the ACL returned by ->get_acl will be cached.
--- 
-2.29.2
-
+Hello, dear one
+Am sgt Vicky wynslow, I have something important for you, pls reply
+urgently for more details
+REDARDS
