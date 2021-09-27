@@ -2,140 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A9F419456
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA7E419450
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhI0Mfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:35:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234380AbhI0Mfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:35:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1663260F41;
-        Mon, 27 Sep 2021 12:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632746054;
-        bh=v1e7o9ssesrrv0FjjmOHXWBrSNI63Fo4T0tWhLdrK6Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bitLkdGaKnBkt4/SajOgg3BSWzb6UAUrUK4POeLVRHlJQiWjx6ew9konY9iXvdHGh
-         YuAMZXN3GKS6Gjw2b5quKFvzQ02a6JwewxI9UGPzyhgushELU7JJEx4UJwSxTyhjLa
-         qzgG4wYRYNo6LO6QgpnCpybWvc5XxCGpNibieeLLCYbcS5dNK8+dAI7viiXZbNRv5S
-         lfxCHrsyK52oiL1RdJbAz0ibQrRMYOwWidHkp61lxxjCS4+nulp4bNiZREoiFWdGKn
-         yuEmGrq7PoGDXusXNRBHT5PishtPZXTHkxW1drXh0+4MgNytzb4PwIpfCHc/OPQgBn
-         iliRqqkIbqwkQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v3] printf: fix errname.c list
-Date:   Mon, 27 Sep 2021 14:33:07 +0200
-Message-Id: <20210927123409.1109737-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234331AbhI0Mev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:34:51 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52500 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234239AbhI0Meu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:34:50 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 65BEA1F4269F
+Received: by earth.universe (Postfix, from userid 1000)
+        id 00C0F3C0CA8; Mon, 27 Sep 2021 14:33:08 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 14:33:08 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matheus Castello <matheus@castello.eng.br>,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] power: supply: max17040: extend help/description
+Message-ID: <20210927123308.34bsk7u7sdxy7hzb@earth.universe>
+References: <20210924122408.101323-1-krzysztof.kozlowski@canonical.com>
+ <b71b75c7-966c-7452-907e-44ba0a56964b@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="itupn4mizyc3g5aw"
+Content-Disposition: inline
+In-Reply-To: <b71b75c7-966c-7452-907e-44ba0a56964b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-On most architectures, gcc -Wextra warns about the list of error
-numbers containing both EDEADLK and EDEADLOCK:
+--itupn4mizyc3g5aw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-lib/errname.c:15:67: warning: initialized field overwritten [-Woverride-init]
-   15 | #define E(err) [err + BUILD_BUG_ON_ZERO(err <= 0 || err > 300)] = "-" #err
-      |                                                                   ^~~
-lib/errname.c:172:2: note: in expansion of macro 'E'
-  172 |  E(EDEADLK), /* EDEADLOCK */
-      |  ^
+Hi,
 
-On parisc, a similar error happens with -ECANCELLED, which is an
-alias for ECANCELED.
+On Fri, Sep 24, 2021 at 03:06:46PM +0200, Hans de Goede wrote:
+> On 9/24/21 2:24 PM, Krzysztof Kozlowski wrote:
+> > Reorganize the Kconfig driver description and mention all supported
+> > models.  This helps when choosing drivers for given system.
+> >=20
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>=20
+> Thanks, series looks good to me:
+>=20
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>=20
+> For the series.
 
-Make the EDEADLK printing conditional on the number being distinct
-from EDEADLOCK, and remove the -ECANCELLED bit completely as it
-can never be hit.
+Thanks, series has been queued.
 
-To ensure these are correct, add static_assert lines that verify
-all the remaining aliases are in fact identical to the canonical
-name.
+-- Sebastian
 
-Fixes: 57f5677e535b ("printf: add support for printing symbolic error names")
-Cc: Petr Mladek <pmladek@suse.com>
-Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Acked-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/all/20210514213456.745039-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-It looks I promised to resend this one in May but never did.
-The patch is still useful, please apply.
----
- lib/errname.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+--itupn4mizyc3g5aw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/lib/errname.c b/lib/errname.c
-index 05cbf731545f..67739b174a8c 100644
---- a/lib/errname.c
-+++ b/lib/errname.c
-@@ -21,6 +21,7 @@ static const char *names_0[] = {
- 	E(EADDRNOTAVAIL),
- 	E(EADV),
- 	E(EAFNOSUPPORT),
-+	E(EAGAIN), /* EWOULDBLOCK */
- 	E(EALREADY),
- 	E(EBADE),
- 	E(EBADF),
-@@ -31,15 +32,17 @@ static const char *names_0[] = {
- 	E(EBADSLT),
- 	E(EBFONT),
- 	E(EBUSY),
--#ifdef ECANCELLED
--	E(ECANCELLED),
--#endif
-+	E(ECANCELED), /* ECANCELLED */
- 	E(ECHILD),
- 	E(ECHRNG),
- 	E(ECOMM),
- 	E(ECONNABORTED),
-+	E(ECONNREFUSED), /* EREFUSED */
- 	E(ECONNRESET),
-+	E(EDEADLK), /* EDEADLOCK */
-+#if EDEADLK != EDEADLOCK /* mips, sparc, powerpc */
- 	E(EDEADLOCK),
-+#endif
- 	E(EDESTADDRREQ),
- 	E(EDOM),
- 	E(EDOTDOT),
-@@ -166,14 +169,17 @@ static const char *names_0[] = {
- 	E(EUSERS),
- 	E(EXDEV),
- 	E(EXFULL),
--
--	E(ECANCELED), /* ECANCELLED */
--	E(EAGAIN), /* EWOULDBLOCK */
--	E(ECONNREFUSED), /* EREFUSED */
--	E(EDEADLK), /* EDEADLOCK */
- };
- #undef E
- 
-+#ifdef EREFUSED /* parisc */
-+static_assert(EREFUSED == ECONNREFUSED);
-+#endif
-+#ifdef ECANCELLED /* parisc */
-+static_assert(ECANCELLED == ECANCELED);
-+#endif
-+static_assert(EAGAIN == EWOULDBLOCK); /* everywhere */
-+
- #define E(err) [err - 512 + BUILD_BUG_ON_ZERO(err < 512 || err > 550)] = "-" #err
- static const char *names_512[] = {
- 	E(ERESTARTSYS),
--- 
-2.29.2
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFRufwACgkQ2O7X88g7
++po6jhAAkbJ8Gk5eJY4pidW/5XeibJDxFJsGgoMc0ez3V78zDZwzLlGZ32ze+mVp
+iSsdJDWf76flg41q6DjzZpYQRJ1eR2c+9LrHY6Hepk3pYwML0brlfxWys1rU/aKn
+qqt8s84OXpLiKitaGsb21iUxFHLBR13apX/P0zTZg5cbY5oVxaB5pkMEheP0MmMW
+4rAG8xUQnRmUAgU1FGAsxsZUnjPRYUIOD5CGdXzLQ3IySLkgdC5OqAR0KIW6h7/1
+crAFTP8cD9lta6gHxV5/FJzMNEhGyaX5ZGuIB5pznGVgLQSErO/RUBZJZQxAr4Vt
+rueUXKTkdIoms29V7B4n9Rg2eGdWC1PwRN/Uag7QbXQG5o99K+abHgIURw4KWwKt
+WVQuIhkUpaqCHRwvB9zbCmvXoNSvIFwmTo7EwA61l4dXe1PUWmhk8/Ff2txPu5b2
+AXdKCZIRvijG08o1Ucf6yhSjrkX8iUkc73o4hzSO8ugDXKi9my0HjR4s8b6MBdlT
+Re6AZIx4FStH07/+la9brUP5XCo5WQxlhm0nwF43i8ep01EaFkVfn9q+5DFY0Z3H
+lsNYUlthXEqMnR3sIvqYkjU4qW3zSdft1rtep1RI1utoQuYGHGmsmxO+eRUyOrML
+Bxww4/6MNUgsFF+rfuZSVZI83nuU6IBwMDTowEQfyCch8HeWFQo=
+=hDI8
+-----END PGP SIGNATURE-----
+
+--itupn4mizyc3g5aw--
