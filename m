@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02184199EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DC0419C0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbhI0RFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:05:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43924 "EHLO mail.kernel.org"
+        id S237679AbhI0RZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235736AbhI0RFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:05:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B3D60F70;
-        Mon, 27 Sep 2021 17:03:42 +0000 (UTC)
+        id S236387AbhI0RVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:21:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9764D6113A;
+        Mon, 27 Sep 2021 17:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762223;
-        bh=gnVceWG5Ho92c4gKzaRn0O46ws7FP8BK2OI+dr3qgJ0=;
+        s=korg; t=1632762839;
+        bh=PkICQW9vXMwjB5EsIqS6GBNtcgGHOQUMVJp+T4MPuL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EnSvPZPwltJ6UV2whN3aSQyWqeaUqXJAuCYpScNMEU/TVamiOIcNuVpTNJzHXX6cJ
-         VLYmNmuDd3dUdKUOQ3L2qbJR1Gt77j1ekoLc5JhglofuHznOIRGJnBB16zCSF//9m4
-         p0YxBg/pFQkngwKUv/WSUeiMoNcpIcrMhhc7kR7w=
+        b=gHsvHPVlvN6LD1+npQ6yqXsyKDKsn6Ur/A+6un45ri5nq6EkfjSfNyBtV3vUT+8bQ
+         QBgNQoiJ4WxwPAuPqRa3VoTi5UmIqQJyLnWCVIfzm5ulVbUV9IaJSib0jBaNCVm840
+         3nBY7cRnHv14FRLu3My7LsR96jFPu7xomtfT9Bkc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 01/68] ocfs2: drop acl cache for directories too
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 071/162] net: dsa: fix dsa_tree_setup error path
 Date:   Mon, 27 Sep 2021 19:01:57 +0200
-Message-Id: <20210927170219.949988916@linuxfoundation.org>
+Message-Id: <20210927170235.915536910@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,64 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wengang Wang <wen.gang.wang@oracle.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 9c0f0a03e386f4e1df33db676401547e1b7800c6 upstream.
+[ Upstream commit e5845aa0eadda3d8a950eb8845c1396827131f30 ]
 
-ocfs2_data_convert_worker() is currently dropping any cached acl info
-for FILE before down-converting meta lock.  It should also drop for
-DIRECTORY.  Otherwise the second acl lookup returns the cached one (from
-VFS layer) which could be already stale.
+Since the blamed commit, dsa_tree_teardown_switches() was split into two
+smaller functions, dsa_tree_teardown_switches and dsa_tree_teardown_ports.
 
-The problem we are seeing is that the acl changes on one node doesn't
-get refreshed on other nodes in the following case:
+However, the error path of dsa_tree_setup stopped calling dsa_tree_teardown_ports.
 
-  Node 1                    Node 2
-  --------------            ----------------
-  getfacl dir1
-
-                            getfacl dir1    <-- this is OK
-
-  setfacl -m u:user1:rwX dir1
-  getfacl dir1   <-- see the change for user1
-
-                            getfacl dir1    <-- can't see change for user1
-
-Link: https://lkml.kernel.org/r/20210903012631.6099-1-wen.gang.wang@oracle.com
-Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a57d8c217aad ("net: dsa: flush switchdev workqueue before tearing down CPU/DSA ports")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/dlmglue.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/dsa/dsa2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ocfs2/dlmglue.c
-+++ b/fs/ocfs2/dlmglue.c
-@@ -3933,7 +3933,7 @@ static int ocfs2_data_convert_worker(str
- 		oi = OCFS2_I(inode);
- 		oi->ip_dir_lock_gen++;
- 		mlog(0, "generation: %u\n", oi->ip_dir_lock_gen);
--		goto out;
-+		goto out_forget;
- 	}
- 
- 	if (!S_ISREG(inode->i_mode))
-@@ -3964,6 +3964,7 @@ static int ocfs2_data_convert_worker(str
- 		filemap_fdatawait(mapping);
- 	}
- 
-+out_forget:
- 	forget_all_cached_acls(inode);
- 
- out:
+diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
+index 3a8136d5915d..383fdc0565c7 100644
+--- a/net/dsa/dsa2.c
++++ b/net/dsa/dsa2.c
+@@ -1001,6 +1001,7 @@ static int dsa_tree_setup(struct dsa_switch_tree *dst)
+ teardown_master:
+ 	dsa_tree_teardown_master(dst);
+ teardown_switches:
++	dsa_tree_teardown_ports(dst);
+ 	dsa_tree_teardown_switches(dst);
+ teardown_default_cpu:
+ 	dsa_tree_teardown_default_cpu(dst);
+-- 
+2.33.0
+
 
 
