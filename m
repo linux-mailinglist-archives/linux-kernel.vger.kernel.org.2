@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED088419661
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A54419666
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhI0OaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234758AbhI0O37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:29:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E11F610E8;
-        Mon, 27 Sep 2021 14:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632752901;
-        bh=5KL+JiULkFsiAbh9kDxX+k4YOM3LnpWkWceqNENywSw=;
+        id S234898AbhI0Ob1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:31:27 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:46932 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234706AbhI0ObX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:31:23 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 18RESscP018014;
+        Mon, 27 Sep 2021 23:28:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 18RESscP018014
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1632752935;
+        bh=Gjv9cJ+2iXb72Ddz9MRlVxEqBR7PSJ3W+fmsaSs4+Dg=;
         h=From:To:Cc:Subject:Date:From;
-        b=lxzA0fXgPKw9xlD13FdD6gFz9FpAdgQRFrWR+k070lCUmY6OqQObR/WU+zN8Nxw1j
-         tuLdF/3BruQ7i8vZpaMF36FkOVkQLMRbPMqH1hAMcGMGbS0saXphLZBxvliAtwngLw
-         ZuUjUQjmbwcCZrKIL0wwd1qpopCSbpecqoN+ZlufludMS8FApmE/bpzt0GphapokiW
-         ouRk4y1TQmsOTVPC7zIiyNZYRgLM2Q1kRYJYadH+AUi/97Sv4gWaNKKUEqrKb0p+DK
-         P15IRtkAeY6wi+c2yMiltL+SSFZX8/PFijBf1Dz2mo4jGnDWAj0CDnq2oV7zupvFK6
-         axD5GNXZZxTrQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
-Date:   Mon, 27 Sep 2021 16:28:02 +0200
-Message-Id: <20210927142816.2069269-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        b=riIcYJsCN2bgEfe43mHgtXRJjap8ccP9VR1t82ogzQu+wRMkHZ8/agrQY/YjsP26Z
+         NXS9R5dKmB9GiglV5TaEPmT5txaghcWT03n0zc9lCu3mhrvA5/sDb0jgYRe//r3233
+         gyvQobyZGYJgq1MoD1k/OVVRn7Wlx7Q/ijC84ESLhE/IUSsOkMaR6dZxzx0sV+vzJS
+         20VgVUbfJhgb/b0Wk2eUexGayaWvh2i9dPnMFGSXRsFN4F9knGUY6xHy5qpsLcUeMi
+         EzwTVUe9Z7JKHhMyJ0CZFZKQuAH7ebr1kOd4wmMNsNoSPR8JUibQCSDmDw2jb2Uai9
+         RU6ETgJpabSvQ==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] net: ipv6: squash $(ipv6-offload) in Makefile
+Date:   Mon, 27 Sep 2021 23:28:39 +0900
+Message-Id: <20210927142840.13286-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Assign the objects directly to obj-$(CONFIG_INET).
 
-With CONFIG_FB=m and CONFIG_DRM=y, we get a link error in the fb helper:
-
-aarch64-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
-(.text+0x10cc): undefined reference to `framebuffer_alloc'
-
-Tighten the dependency so it is only allowed in the case that DRM can
-link against FB.
-
-Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
-Link: https://lore.kernel.org/all/20210721152211.2706171-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-I posted this in July, the patch is still required and should work
-on its own.
----
- drivers/gpu/drm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index cea777ae7fb9..9199f53861ca 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -103,7 +103,7 @@ config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
- config DRM_FBDEV_EMULATION
- 	bool "Enable legacy fbdev support for your modesetting driver"
- 	depends on DRM
--	depends on FB
-+	depends on FB=y || FB=DRM
- 	select DRM_KMS_HELPER
- 	select FB_CFB_FILLRECT
- 	select FB_CFB_COPYAREA
+ net/ipv6/Makefile | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/net/ipv6/Makefile b/net/ipv6/Makefile
+index 1bc7e143217b..061b74d5563d 100644
+--- a/net/ipv6/Makefile
++++ b/net/ipv6/Makefile
+@@ -12,8 +12,6 @@ ipv6-objs :=	af_inet6.o anycast.o ip6_output.o ip6_input.o addrconf.o \
+ 		exthdrs.o datagram.o ip6_flowlabel.o inet6_connection_sock.o \
+ 		udp_offload.o seg6.o fib6_notifier.o rpl.o ioam6.o
+ 
+-ipv6-offload :=	ip6_offload.o tcpv6_offload.o exthdrs_offload.o
+-
+ ipv6-$(CONFIG_SYSCTL) = sysctl_net_ipv6.o
+ ipv6-$(CONFIG_IPV6_MROUTE) += ip6mr.o
+ 
+@@ -48,7 +46,8 @@ obj-$(CONFIG_IPV6_GRE) += ip6_gre.o
+ obj-$(CONFIG_IPV6_FOU) += fou6.o
+ 
+ obj-y += addrconf_core.o exthdrs_core.o ip6_checksum.o ip6_icmp.o
+-obj-$(CONFIG_INET) += output_core.o protocol.o $(ipv6-offload)
++obj-$(CONFIG_INET) += output_core.o protocol.o \
++			ip6_offload.o tcpv6_offload.o exthdrs_offload.o
+ 
+ obj-$(subst m,y,$(CONFIG_IPV6)) += inet6_hashtables.o
+ 
 -- 
-2.29.2
+2.30.2
 
