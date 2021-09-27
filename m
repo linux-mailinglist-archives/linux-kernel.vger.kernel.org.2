@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC22419D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37558419CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbhI0Rpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237721AbhI0RpY (ORCPT
+        id S237165AbhI0RbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:31:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29318 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236955AbhI0R0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:45:24 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E8FC128EFF
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:23:59 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id q23so16457929pfs.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5P3OrPu6+56qmlhZPoJJstlv8IRrXnOuHuYMrmMX4NI=;
-        b=n6L1AnuX/V+OuWLh5rssxLOAbc5rjEkkrwklXwK0ceoJvbKg/ttagXWHWY7DH0QY3C
-         rKB0DivqGj4OSONgSx5QkCyfcYab9Cf2ENkcYSoyAVCqUqxiJNGkFhLxeqE3C3cJxzwB
-         oDAYOGn8zq2HzyTfn5H82EWDCuxqVbGXO9yM5b3lcG41HAwl1Bcd0XffvVyZLzuEOVJg
-         Lq1ummIEoJWm3AO8x5LDWpRQyw/EMQ/LenKdTtHU4CfU26ykYvxAJl/Gpr81IgOqGPVb
-         JyCrWZ5UbrP12894aHYua7c/mFkSs1nQS7y9ZSpmLL2BLDnsD9PWfpW4ja+DNnyIe+VL
-         GYSQ==
+        Mon, 27 Sep 2021 13:26:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632763506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kNKGhtUzyDvvasjBG+sOupwAerMdbRFrkMWzt1aAAJI=;
+        b=e30r/zfyqmdOFfRfT+bXTaoIhXkVaUPyslhJMEibcu146PJVEnkbooJPu97+oX4gBl6UQC
+        FVXJz+gOVe1htZbbZv4tPbD8lURdmGUQ4oNTh16OS41j2FFPyG1u6VIRD5kEKr98dxKNOk
+        Ymui8hgNd4irGZxSXK7qUDqSmpzKt+w=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-S25X2pSZPwCN3bMuP9nPeA-1; Mon, 27 Sep 2021 13:25:04 -0400
+X-MC-Unique: S25X2pSZPwCN3bMuP9nPeA-1
+Received: by mail-pg1-f198.google.com with SMTP id o10-20020a65614a000000b002850cb8c434so13329098pgv.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:25:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5P3OrPu6+56qmlhZPoJJstlv8IRrXnOuHuYMrmMX4NI=;
-        b=4g2WAjFh4ixUwD9zdpo2/vyEqiin5pvvtFoizkza3jiKGy++Y6EVBmVR7I9uOTlvSS
-         oq5zIRhbW/zad98mYR039VxtCBfBUAWPEv1eCcX2hCyD8YUpe6fG2GvQT0Y9zNxWQ+tP
-         FKoHqSXiY8618auc5kMcqg8MFCMALKUbkboIrnH4gm05B5FL2VEk91FY97/uN9dNIuhz
-         4G0i8nyWB+Fw1Z4Ts0zTuFRwoUHp58h80SSz2XeOrV9RprToyoy8U/5NWXflkQXHo8g3
-         yP6NYVAUp1onRqyUb2OoOswcmh4KRr+q5JF52lBvd1phx35gR9EEUSlMEDQTF5p2cGNu
-         n77g==
-X-Gm-Message-State: AOAM531e85eJBCRKS3BxQzen20OJKm7xwI/CcT6w1uXPp58aHd0SwanN
-        K32Sh5MKhjvsfMdSJNHaXEp0Vg==
-X-Google-Smtp-Source: ABdhPJxFTFDsHgeCr6HVxvBjtijyCpBs6vjOVIWRqOO6IwwMSot6hv9oSpOisZRYBLUuHFzxloLRqg==
-X-Received: by 2002:a63:5902:: with SMTP id n2mr672051pgb.305.1632763439002;
-        Mon, 27 Sep 2021 10:23:59 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id l9sm57170pjz.55.2021.09.27.10.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 10:23:58 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 11:23:56 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
-Cc:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: Re: [PATCH V4 0/2] dt-bindings: remoteproc: k3-r5f|dsp: Remove
-Message-ID: <20210927172356.GC2837840@p14s>
-References: <20210927103811.11222-1-sinthu.raja@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kNKGhtUzyDvvasjBG+sOupwAerMdbRFrkMWzt1aAAJI=;
+        b=oXVBSUibaSLGHi9g666k7JHQ9uv7yhabY+53jfy5S5hsP5MXEMBqInvafvphiE0dYQ
+         wTny6f5bW8nTR94uFONHODeQ/VgZSanLmxtA5lcunOcTz6TJi0NutmoGqp7vzOClCBTA
+         XuWjN1K5xPGms3tieIJy8M4IrmzRiUK+fqX6DbbFQ4Hsfg9SV03np/YsKZjSH2meUPAY
+         oSOWHy+Tl8ngdS29+Z7D0gZkkxkFfJ31sd1bxRRkG7FceV84APoHNqoSJphwTuxfwC/C
+         NCcPeF5J0UN+5HrjUHBdvxm+yGUYXq+X3/k+zQbuXEypkQQzmM4BR+dWk9SEsw5c4GOW
+         1MBg==
+X-Gm-Message-State: AOAM532kib0+AB8YOMQSKyOIzM1x/p5zGuNAbMDTIpGatlmkjuVE4kUG
+        dT4rLjOr4WDBS1tCK1uQZO5sCbhkP2MWrgVeAPimZXkqgOVmckmqYMIwc5dxch0MTUvPJEx2TAm
+        DH8zB2gj8ekgTuGhjDQRoFqoNF3sV5DXQ3p05xZ4f
+X-Received: by 2002:a17:902:e752:b0:13b:7e90:af8b with SMTP id p18-20020a170902e75200b0013b7e90af8bmr1093600plf.12.1632763503570;
+        Mon, 27 Sep 2021 10:25:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnpQIKn1XEdvXS3sloEadlAQlrcu/KIkFx7e5cSy37I6kVkSfvfoO+V88kOShJrVeyAcUnkFvhI3opAAyj/w8=
+X-Received: by 2002:a17:902:e752:b0:13b:7e90:af8b with SMTP id
+ p18-20020a170902e75200b0013b7e90af8bmr1093572plf.12.1632763503267; Mon, 27
+ Sep 2021 10:25:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927103811.11222-1-sinthu.raja@ti.com>
+References: <20210925005528.1145584-1-seanjc@google.com> <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
+ <YVHcY6y1GmvGJnMg@google.com> <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
+ <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
+In-Reply-To: <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Mon, 27 Sep 2021 19:24:52 +0200
+Message-ID: <CABgObfYtS6wiQe=BhF3t5usr7J6q4PWE4=rwZMMukfC9wT_6fA@mail.gmail.com>
+Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
+ Halt-polling fixes, cleanups and a new stat)
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jon Cargille <jcargill@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        KVM ARM <kvmarm@lists.cs.columbia.edu>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        kvm <kvm@vger.kernel.org>, kvm-ppc <kvm-ppc@vger.kernel.org>,
+        "Kernel Mailing List, Linux" <linux-kernel@vger.kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:08:09PM +0530, Sinthu Raja wrote:
-> From: Sinthu Raja <sinthu.raja@ti.com>
-> 
-> Hi All,
-> The series of patches are meant to help make the rproc bindings for K3
-> r5f and dsp support independent of board/platform involved.
-> 
-> Changes in V4:
-> Addressed review comments:
-> - Removed Fixes tags from the commit descriptions.
-> - Updated subject and commit description to emphasis on cleaning up of the 
->   example to address the dt_binding_check warnings.
-> 
-> 
-> V3: https://lore.kernel.org/all/20210917095426.19277-1-sinthu.raja@ti.com/
-> V2: https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
-> V1: https://lore.kernel.org/all/20210817152005.21575-1-sinthu.raja@ti.com/
-> 
-> Sinthu Raja (2):
->   dt-bindings: remoteproc: k3-r5f: Cleanup SoC compatible from DT
->     example
->   dt-bindings: remoteproc: k3-dsp: Cleanup SoC compatible from DT
->     example
-> 
->  .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml       | 4 +---
->  .../devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml       | 4 +---
->  2 files changed, 2 insertions(+), 6 deletions(-)
+On Mon, Sep 27, 2021 at 5:17 PM Christian Borntraeger
+<borntraeger@de.ibm.com> wrote:
+> > So I think there are two possibilities that makes sense:
+> >
+> > * track what is using KVM_CAP_HALT_POLL, and make writes to halt_poll_ns follow that
+>
+> what about using halt_poll_ns for those VMs that did not uses KVM_CAP_HALT_POLL and the private number for those that did.
 
-I have applied this set.
+Yes, that's what I meant.  David pointed out that doesn't allow you to
+disable halt polling altogether, but for that you can always ask each
+VM's userspace one by one, or just not use KVM_CAP_HALT_POLL. (Also, I
+don't know about Google's usecase, but mine was actually more about
+using KVM_CAP_HALT_POLL to *disable* halt polling on some VMs!).
 
-Thanks,
-Mathieu
+Paolo
 
-> 
-> -- 
-> 2.31.1
-> 
