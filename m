@@ -2,216 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B4441A056
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E18941A06C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236828AbhI0Uoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:44:54 -0400
-Received: from mga02.intel.com ([134.134.136.20]:56885 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236470AbhI0Uot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:44:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="211809917"
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; 
-   d="scan'208";a="211809917"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 13:43:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; 
-   d="scan'208";a="553470858"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Sep 2021 13:43:10 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 27 Sep 2021 13:43:09 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 27 Sep 2021 13:43:09 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Mon, 27 Sep 2021 13:43:09 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.108)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Mon, 27 Sep 2021 13:43:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JclATX2Jv0yeSalMai/wR/mnRKNQ08xX07B9AbcQn6Z9BGI4UvVtPEKLCCsVI7w4JiToGLSma4DM7Ka5WIT5QRTrXGEhxWa3j17+OB9Y8PTOwZvRAax6fkp/MJvqBKeq2mkQRr9IA/u9NheGT27O98ByyzaVq8xLfWgRrtXoUf3JVK2npZiwkOgvO73bQAac5X7aKoUlyNXn84hLSbPWZ+0atMQ5Xb29xZv1E8q/qz/83wsr6sjKYDReshRN6FtQRK8p+EJEiLcMBYSqpN6KFZjK1QXZBgaB6/yUnFlDrBkBsIN1C8qz4YlULoTpsaTej0O+n9XeopMvM6ejwSJRSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=VB+YX0KchxRbsVVY2oIFJzRfo71ArlTSZ5lWZ2LGp/E=;
- b=i+g0aXLZye2uaIc6oeHK0PqfsqXV6jxnoXjVIkLcOZGuvd0OwY1hI/per5WitBe0rb0ezAt/7WNrFc0sXBfQbvfzW2CEN2fahnU5Dpa9O9aXRfDrmoPF6zz0asU7//brmpTUcfu29qrhRwiIBddK5VZ77Xfp1GHbJ9oKkj4a3AGAyCmHKY3ZJ0QLjAjveL7URPQLF1BoSrzSivS+VGBg28/xi5feNiSQHx6taLumsWXdcArH7NZFWujprJMA+9v6pqmDII23/KBoUVnwBOhIW9z8/skPk24qjmDEAA7Q2KZrYNlsezwKnsJFhdpkli455xKa2458R3fELEpfSewe+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VB+YX0KchxRbsVVY2oIFJzRfo71ArlTSZ5lWZ2LGp/E=;
- b=TChKLO7MMmH2i3nJ7Xc/JU+/Pgwj1DKtUN/7QTdL1YNW+T6V26QFP0iGDOmryOAGlx/1X/nqEblV7A+swCgMbSLtRsh32oSzavUQkDCLKsVlegYZqGq0FzgGDc6N4+FM/6maFz+Pd4wa5daGKrWHKrTZTrpuUdQYNAVww4BKhjg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by BY5PR11MB3927.namprd11.prod.outlook.com (2603:10b6:a03:186::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Mon, 27 Sep
- 2021 20:42:36 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::4167:f9ef:19b2:eaff]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::4167:f9ef:19b2:eaff%3]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
- 20:42:36 +0000
-Subject: Re: [RFC PATCH 03/13] x86/cpu: Enumerate User Interrupts support
-To:     Thomas Gleixner <tglx@linutronix.de>, <x86@kernel.org>
-CC:     Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
+        id S236929AbhI0Uqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236868AbhI0Uqk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:46:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2BDC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:45:02 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mUxTe-0001jl-FQ; Mon, 27 Sep 2021 22:43:54 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mUxTX-0001YL-VH; Mon, 27 Sep 2021 22:43:47 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mUxTX-0001Li-Pk; Mon, 27 Sep 2021 22:43:47 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pci@vger.kernel.org,
+        kernel@pengutronix.de, Alexander Duyck <alexanderduyck@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Michael Buesch <m@bues.ch>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Gayatri Kammela" <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        <linux-api@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-4-sohil.mehta@intel.com> <87lf3nexrz.ffs@tglx>
-From:   Sohil Mehta <sohil.mehta@intel.com>
-Message-ID: <42a14757-5b38-19cf-d830-1641b07f89ba@intel.com>
-Date:   Mon, 27 Sep 2021 13:42:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
-In-Reply-To: <87lf3nexrz.ffs@tglx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: BY3PR03CA0020.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::25) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        qat-linux@intel.com, x86@kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH v4 0/8] PCI: Drop duplicated tracking of a pci_dev's bound driver
+Date:   Mon, 27 Sep 2021 22:43:18 +0200
+Message-Id: <20210927204326.612555-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: from [192.168.86.37] (73.222.31.188) by BY3PR03CA0020.namprd03.prod.outlook.com (2603:10b6:a03:39a::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Mon, 27 Sep 2021 20:42:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2b7c9686-96b1-43e5-8da2-08d981f75655
-X-MS-TrafficTypeDiagnostic: BY5PR11MB3927:
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR11MB39276310040765B576719F87E5A79@BY5PR11MB3927.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dysgKdKMVbsOBueh/hjVEpqbmcbiCgTLGpsRa+MTNfwi/g+jL8Can4x4zBmwstQgd2/x00JVTBqzjKIitTejLh4BHizyHAeEpKqS6YNIGe6m9Ho24IZprRQiWFXKnK2Ot9FyP3RejyKdVyUJaSVVXqfRsq7gnJWLP+S+hpLPlvjKhXKvfhAMDdak9getgjkxlqBAxdIkdyvACPtaPQdn5z65RZAs6bJ2o48zXMgyHeX9itg24RT6MUmiCdztHfb+L16pzm3DfE1X39u+HFgGJqsHtJ2jgyz6i0QbEhlbRbA6xALHUFo4Py/b2pvmvj6AyxQaAJD4nojPnUoKIg8e2wM/jbxgsBFouunt6F6TUj/a6zpVnpc40EbeWU73X4vyzknTv/XV5HniyMHnloUPtFBarzWVo2chSLRqXLeQ/hO3V8K1MlNFBUdZVFiUHSx+gGs86gUH+Wa3xdMFl4clEtMxTcE0Al68X0sOOfZMIv/8YONTkbeq4jbp54Hu9YOGMohZWGdTgQ8Tjv6mkOkCGSCm/kNY0DVmqxENVMasAswK/XHiCyP2m1xcJ6lQGT5nO36BNLD9BBEUMkx46g9GcSSIumQ9Ys1E/qhLf2+tdrkuvOBOSA4z4dPtbHf5grbeoPDJS7JfibqE8pmS0wS9v1MozO7hpNUICrm/QEAHhj7ERVZz9fUagHnFBKIuAftJO1JYc/0M6ymSdbqOl1NSViE/STBIM1j81I3OFsXJdIBlW5sjuQF4AGJUVZBrWo8s
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(66946007)(36756003)(31686004)(508600001)(5660300002)(8936002)(26005)(186003)(316002)(16576012)(44832011)(4326008)(54906003)(7416002)(83380400001)(2616005)(6486002)(38100700002)(53546011)(31696002)(956004)(86362001)(2906002)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUVidS9nRTdyVFpmc3hqWHdKMXpZeXN2aEJjdXlCWmRGVFB4bTh2ZlozUTF4?=
- =?utf-8?B?cXZKNjg1TnBCSHRFYkxIVVJyZXVpMXpaZmI3WjhhTXdLekkwODJ2OHUrRDBX?=
- =?utf-8?B?SjNMallleHdLQTZENEoyYTZQYnRKbDdZWG43cUMraXlJdk1Vc3ZYb0hDMVFX?=
- =?utf-8?B?Ky9FSDB0NCtZaU9YZ2dmbWwxUWtMcHFvdFVPQWhJbWxsRkxsS0VKT2Q1S3pq?=
- =?utf-8?B?YVpVZUo0YVhwcmRkZGNVUU5TTGFSY1k5djlVNkFCV2ZnQjlCQUZMWlRyQ2U0?=
- =?utf-8?B?bnlCbDBKT1lFVGp5ZzM3Rk1KMjdSV1g5Nms0TVd3Ym9ZRUZlOFN4NEhDMmhS?=
- =?utf-8?B?MzYyOGJiUEJrczFZSHFXa0IwbklsWEc1RmQ0dXhGMlJvRXZ3UHdLZ1crZ0pj?=
- =?utf-8?B?dGF3Vi9XZU1iVUVRdzhyeHZHMVNjVTVpcWZtazNoT1FkelFyaXoxZmFadlNv?=
- =?utf-8?B?dWRzUU9sN0ZXWVVHaWJzSzNPdWkwUGcvOVhUdW9VUUJuUE5Ha2l3aEtsN2F3?=
- =?utf-8?B?MlVzSERRdldYWEFYZzZBWVFwc2ErQThFLzVWNDNmbWZvZHlMTGpFb2p3Q044?=
- =?utf-8?B?SEcwaEpSaXZnRFlKNHdoWGxFaUVvbXhEcmcvdXRoZy9tMzhJVWxOZFllY0JW?=
- =?utf-8?B?cEpjcWIvS0NhOE5zdnd2bE5xY01EcWhOalFmUEtGKzhQYldvUW1WS0psSXd4?=
- =?utf-8?B?d3c4MHFKQWhKOW1LcFJJdmhLZk0vSXRoc01adHlUZm53U0dTNk9FZWVzTC85?=
- =?utf-8?B?ZEJobXBBVU9RaVJQbWFHeksrb3ZOS2Z5WXJaVm52UGV6d09SN053U3RvK25J?=
- =?utf-8?B?YVRLVWRsYXJZb1pqazdyS0ZURzdDNlB4UjliViszLzlQYVNiakgyM3o4S0hu?=
- =?utf-8?B?aGZFcWViV3FtN1h1aDUrQVNZUFY1WTl4cU5qUHI3dUZLNU1EZUFwcVMzeHM3?=
- =?utf-8?B?WVpPaU9yUHJDUHd2OVJFYkY0dE5vcG01M3JBdXdHcUZYNmt0cEVMeDg0by92?=
- =?utf-8?B?OEFubnRDSllqT3JIYXllTFlmdmxFY1ZXemE4RVh1cUR4OVJCKzIyMDJ5eHRU?=
- =?utf-8?B?Qkl0dG1ucjFnNnFhRGhFMTBRczRTMjRvRFhWUG5tcldVc0dzc0RIYWxWZzdv?=
- =?utf-8?B?TGg5TWZ4OUx0WGlxYkgwVWxsMUtYSS82OFBYdFZOY2psYXdjUVFheTVySXhM?=
- =?utf-8?B?TG83MjVOQzFPRnk2U2dML05zUmVEMHRVcURmaGt0dlRVTmszR2libUtwT21R?=
- =?utf-8?B?L2ppOVN6SFlTMmFremxvRTJ5OEdMSms2TXBkNVBnKzJ3ejVVYkZPT1dtcWxm?=
- =?utf-8?B?bklhdnBua1h2NVBxdlhncGVaN2FlS3JuUEkwUE9zOEpSM1RVWVlXU1hxTXJr?=
- =?utf-8?B?dWhCTnNzQ0JZSm1DSWlqMnVSZmpPaTNOTlNRVTFudDVLejJTUjZaejRWZm4r?=
- =?utf-8?B?M042RzhFUCtKVzdpYWhDcS9ZbUt1K1N2WEFQaWI2QUlQbWsxa0hEMmZ5WEla?=
- =?utf-8?B?Skx4NFpVaHpZeXpzRkQzK1paVUxhZVJCOE1kVmMrVittZUd0bEd2S3MraGJT?=
- =?utf-8?B?eUEyd2VzNzZjZG1GVUt2d21FSVM2VHNCRlRodG94Q25ScXF3am9ldTIzWm9S?=
- =?utf-8?B?aVpLSFROQjZ1VElabmhzTmVPNlRCR01PSFhVVEJiYk1CU1lXTEpwUDFoWW5o?=
- =?utf-8?B?UGo2SWZaWEFwT1pYRFRrRWxjRFBHaEdIcUZOQUt6aHZ0bjduSkVrWGZQeFBQ?=
- =?utf-8?Q?oeIGKz/YLXbIuKHMGQv1GV0PxLl6hvvXOuwpt8x?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b7c9686-96b1-43e5-8da2-08d981f75655
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 20:42:35.8166
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6oaVzGaLncIi1udGLYff3TcM6LhFjeZGLoT0YfA0XRwyjXew1OhRgR07BtLJyl+GL9Bdgq4m4BIm2WbB93lnWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3927
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/2021 3:24 PM, Thomas Gleixner wrote:
-> On Mon, Sep 13 2021 at 13:01, Sohil Mehta wrote:
->> SENDUIPI is a special ring-3 instruction that makes a supervisor mode
->> memory access to the UPID and UITT memory. Currently, KPTI needs to be
->> off for User IPIs to work.  Processors that support user interrupts are
->> not affected by Meltdown so the auto mode of KPTI will default to off.
->>
->> Users who want to force enable KPTI will need to wait for a later
->> version of this patch series that is compatible with KPTI. We need to
->> allocate the UPID and UITT structures from a special memory region that
->> has supervisor access but it is mapped into userspace. The plan is to
->> implement a mechanism similar to LDT.
-> Seriously?
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Are questioning why we should add KPTI support if the hardware is not 
-affected by Meltdown?
+Hello,
 
-or
+this is v4 of the quest to drop the "driver" member from struct pci_dev
+which tracks the same data (apart from a constant offset) as dev.driver.
 
-Why use an LDT like mechanism to do this?
+Changes since v3:
+ - Add some Reviewed-by and Acked-by tags
+ - Rebase to v5.15-rc3 (no conflicts)
+ - Changes in patch #4 addressing review comments by Christoph Hellwig
 
-I have listed this as one of the opens in the cover letter as well. I am 
-not sure if users who force enable PTI would really care about User 
-Interrupts.
+I didn't do extensive build tests, so I might have missed a build
+problem. I have some builds running, but want to get some feedback on
+the changes suggested by Christoph.
 
-Any input here would be helpful.
+Best regards
+Uwe
 
->
->> +	if (!cpu_feature_enabled(X86_FEATURE_UINTR))
->> +		goto disable_uintr;
->> +
->> +	/* checks the current processor's cpuid bits: */
->> +	if (!cpu_has(c, X86_FEATURE_UINTR))
->> +		goto disable_uintr;
->> +
->> +	/*
->> +	 * User Interrupts currently doesn't support PTI. For processors that
->> +	 * support User interrupts PTI in auto mode will default to off.  Need
->> +	 * this check only for users who have force enabled PTI.
->> +	 */
->> +	if (boot_cpu_has(X86_FEATURE_PTI)) {
->> +		pr_info_once("x86: User Interrupts (UINTR) not enabled. Please disable PTI using 'nopti' kernel parameter\n");
-> That message does not make sense. The admin has explicitly added 'pti'
-> to the kernel command line on a CPU which is not affected. So why would
-> he now have to add 'nopti' ?
+Uwe Kleine-König (8):
+  PCI: Simplify pci_device_remove()
+  PCI: Drop useless check from pci_device_probe()
+  xen/pci: Drop some checks that are always true
+  PCI: replace pci_dev::driver usage that gets the driver name
+  scsi: message: fusion: Remove unused parameter of mpt_pci driver's
+    probe()
+  crypto: qat - simplify adf_enable_aer()
+  PCI: Replace pci_dev::driver usage by pci_dev::dev.driver
+  PCI: Drop duplicated tracking of a pci_dev's bound driver
 
-Yup. I'll fix this and other issues in this patch.
+ arch/powerpc/include/asm/ppc-pci.h            |  9 ++-
+ arch/powerpc/kernel/eeh_driver.c              | 10 +--
+ arch/x86/events/intel/uncore.c                |  2 +-
+ arch/x86/kernel/probe_roms.c                  |  2 +-
+ drivers/bcma/host_pci.c                       |  7 ++-
+ drivers/crypto/hisilicon/qm.c                 |  2 +-
+ drivers/crypto/qat/qat_4xxx/adf_drv.c         |  7 +--
+ drivers/crypto/qat/qat_c3xxx/adf_drv.c        |  7 +--
+ drivers/crypto/qat/qat_c62x/adf_drv.c         |  7 +--
+ drivers/crypto/qat/qat_common/adf_aer.c       | 10 +--
+ .../crypto/qat/qat_common/adf_common_drv.h    |  2 +-
+ drivers/crypto/qat/qat_dh895xcc/adf_drv.c     |  7 +--
+ drivers/message/fusion/mptbase.c              |  7 +--
+ drivers/message/fusion/mptbase.h              |  2 +-
+ drivers/message/fusion/mptctl.c               |  4 +-
+ drivers/message/fusion/mptlan.c               |  2 +-
+ drivers/misc/cxl/guest.c                      | 24 ++++---
+ drivers/misc/cxl/pci.c                        | 30 +++++----
+ .../ethernet/hisilicon/hns3/hns3_ethtool.c    |  2 +-
+ .../ethernet/marvell/prestera/prestera_pci.c  |  2 +-
+ drivers/net/ethernet/mellanox/mlxsw/pci.c     |  2 +-
+ .../ethernet/netronome/nfp/nfp_net_ethtool.c  |  2 +-
+ drivers/pci/iov.c                             | 25 +++++---
+ drivers/pci/pci-driver.c                      | 45 ++++++-------
+ drivers/pci/pci.c                             |  4 +-
+ drivers/pci/pcie/err.c                        | 36 ++++++-----
+ drivers/pci/xen-pcifront.c                    | 63 +++++++++----------
+ drivers/ssb/pcihost_wrapper.c                 |  8 ++-
+ drivers/usb/host/xhci-pci.c                   |  2 +-
+ include/linux/pci.h                           |  1 -
+ 30 files changed, 166 insertions(+), 167 deletions(-)
 
-I thought the user should know why UINTR has been disabled. In 
-hindsight, this would have been better covered in the sample Readme or 
-something similar.
 
-
-Thanks,
-
-Sohil
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+-- 
+2.30.2
 
