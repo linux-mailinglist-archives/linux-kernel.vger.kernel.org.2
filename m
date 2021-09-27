@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B89419B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A293419C72
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236117AbhI0RQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:16:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53906 "EHLO mail.kernel.org"
+        id S237862AbhI0R3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:29:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236892AbhI0RNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:13:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14CFD610E8;
-        Mon, 27 Sep 2021 17:09:12 +0000 (UTC)
+        id S236643AbhI0RZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:25:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E19CA6137C;
+        Mon, 27 Sep 2021 17:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762553;
-        bh=hcXWIwXEqJZRgb+BK1m5fNT2PHWpzTTQkULV40mzPEc=;
+        s=korg; t=1632762960;
+        bh=uewsuqHOAzhF6e7hHwqFiIl5eV4KRYXoxhTq1vu+WxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Em56yDTTICve5bC5SaRbs/EGUw+rh8R4WkRmtnM0hwHf0XnUT7kN3d9ZViDM6Prf/
-         3UfmABfkFdMYLOiqy3gTQWCFB1ALVq+EvnuGIPVHphYJt0qhaRwdp5Hac2VAKdIWzQ
-         +xHn6sBm3LT+db2BUlFjLhxQGplrp7wqk3XOg+/E=
+        b=qGFjfNV084CB3TYSztc6lYEzBMyg7LWkDvNqf9HFtL4yTqbO23peRKJlDx3xODDKJ
+         icb5PKI6V19axU7YcoSgAy7eVpslOSO/+Qch6Ghgnz9CV5kTA3ywYmsLIahMdA405O
+         ZFkB++FAHr1Zjkh+YOsmCY5xLmR+bq6M+SA9wyIg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com,
-        Christoph Hellwig <hch@lst.de>, NeilBrown <neilb@suse.de>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 068/103] md: fix a lock order reversal in md_alloc
-Date:   Mon, 27 Sep 2021 19:02:40 +0200
-Message-Id: <20210927170228.128635855@linuxfoundation.org>
+Subject: [PATCH 5.14 115/162] io_uring: dont punt files update to io-wq unconditionally
+Date:   Mon, 27 Sep 2021 19:02:41 +0200
+Message-Id: <20210927170237.424782292@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 7df835a32a8bedf7ce88efcfa7c9b245b52ff139 ]
+[ Upstream commit cdb31c29d397a8076d81fd1458d091c647ef94ba ]
 
-Commit b0140891a8cea3 ("md: Fix race when creating a new md device.")
-not only moved assigning mddev->gendisk before calling add_disk, which
-fixes the races described in the commit log, but also added a
-mddev->open_mutex critical section over add_disk and creation of the
-md kobj.  Adding a kobject after add_disk is racy vs deleting the gendisk
-right after adding it, but md already prevents against that by holding
-a mddev->active reference.
+There's no reason to punt it unconditionally, we just need to ensure that
+the submit lock grabbing is conditional.
 
-On the other hand taking this lock added a lock order reversal with what
-is not disk->open_mutex (used to be bdev->bd_mutex when the commit was
-added) for partition devices, which need that lock for the internal open
-for the partition scan, and a recent commit also takes it for
-non-partitioned devices, leading to further lockdep splatter.
-
-Fixes: b0140891a8ce ("md: Fix race when creating a new md device.")
-Fixes: d62633873590 ("block: support delayed holder registration")
-Reported-by: syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com
-Reviewed-by: NeilBrown <neilb@suse.de>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Fixes: 05f3fb3c5397 ("io_uring: avoid ring quiesce for fixed file set unregister and update")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 5 -----
- 1 file changed, 5 deletions(-)
+ fs/io_uring.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 288d26013de2..f16f190546ef 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -5759,10 +5759,6 @@ static int md_alloc(dev_t dev, char *name)
- 	disk->flags |= GENHD_FL_EXT_DEVT;
- 	disk->events |= DISK_EVENT_MEDIA_CHANGE;
- 	mddev->gendisk = disk;
--	/* As soon as we call add_disk(), another thread could get
--	 * through to md_open, so make sure it doesn't get too far
--	 */
--	mutex_lock(&mddev->open_mutex);
- 	add_disk(disk);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 187eb1907bde..699a08d724c2 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5919,19 +5919,16 @@ static int io_files_update(struct io_kiocb *req, unsigned int issue_flags)
+ 	struct io_uring_rsrc_update2 up;
+ 	int ret;
  
- 	error = kobject_add(&mddev->kobj, &disk_to_dev(disk)->kobj, "%s", "md");
-@@ -5777,7 +5773,6 @@ static int md_alloc(dev_t dev, char *name)
- 	if (mddev->kobj.sd &&
- 	    sysfs_create_group(&mddev->kobj, &md_bitmap_group))
- 		pr_debug("pointless warning\n");
--	mutex_unlock(&mddev->open_mutex);
-  abort:
- 	mutex_unlock(&disks_mutex);
- 	if (!error && mddev->kobj.sd) {
+-	if (issue_flags & IO_URING_F_NONBLOCK)
+-		return -EAGAIN;
+-
+ 	up.offset = req->rsrc_update.offset;
+ 	up.data = req->rsrc_update.arg;
+ 	up.nr = 0;
+ 	up.tags = 0;
+ 	up.resv = 0;
+ 
+-	mutex_lock(&ctx->uring_lock);
++	io_ring_submit_lock(ctx, !(issue_flags & IO_URING_F_NONBLOCK));
+ 	ret = __io_register_rsrc_update(ctx, IORING_RSRC_FILE,
+ 					&up, req->rsrc_update.nr_args);
+-	mutex_unlock(&ctx->uring_lock);
++	io_ring_submit_unlock(ctx, !(issue_flags & IO_URING_F_NONBLOCK));
+ 
+ 	if (ret < 0)
+ 		req_set_fail(req);
 -- 
 2.33.0
 
