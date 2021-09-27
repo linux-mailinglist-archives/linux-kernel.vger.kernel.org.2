@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA91E419141
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAD7419143
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhI0JFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233519AbhI0JF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:05:29 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14000C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:03:52 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso12980625pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=fsM8DSW8COr9yjZjuQ8R7r+/Zwj6TnS2NlS6vkV0T3s=;
-        b=fBt2WUdedT/b+XMGkk9EfRphHxJxR9zHYhs89nFhZkz55W92U7p0NpBfyW0zqGJpwP
-         j2uq8q1Lep4fricDOV346ROxvq86TQPcEZEePRftxaqCJRpVgvw6EioiPUj9lgHpl3nl
-         nvdxuD8DT/KRXLZiHac9Ej/mAlclfEQpY8qJR3Zg+EYWuXgIezfOpW0gsRo84N79aK6n
-         D+hiFRBHY9WWHQYBTSC6InTMCjCKHJ2TiTZP4tGVqZdgg6TurTZjQOU/lwvW9rbieP7m
-         rP3aE1d7fSFLu+Tt86nRae96GxyfLif6A1WhY1LAUombcCbd4F/SZUMX8khkc/BABCdC
-         x2QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=fsM8DSW8COr9yjZjuQ8R7r+/Zwj6TnS2NlS6vkV0T3s=;
-        b=jR6MaMTQNLG11nPgWD0TmEDrmwei7gOxg+7PMSRdI5HZhgYeQjOXdeOQp8v5Z2PTNX
-         /mIW8JIwO9IK0uUYW1Umy4eFD79h746kmOrBqZKIwYF7IyDCMH8bKs4M9Xfn7T46CZf2
-         +/sJ4FYr9KUelpTl2a5l5PVNQSFjnrwL+1VgmmJ8GTXElsTveG0e8zKCSoIV3inRLBeF
-         H3xz6rHH+4pc3IolJBD7fTgbwJZmobd8Ec6mRCSXuzMJ3I70gfw1n57arn3ZhllUcw8x
-         NiV0EkJz0p6wRBYLFIf4qBCOvV27g2l6kPgX68dyLyd2G5yaiDXsQukSWZNP14ZZhShT
-         0Psw==
-X-Gm-Message-State: AOAM531YaruxTDp9YCkOg9aO8Z7ujilXeew/mFX9gUNBw6f40dJWNWUy
-        GyKO7gRr5JwX29HHfxM5UyQ=
-X-Google-Smtp-Source: ABdhPJzfog+s1xblddJ/ixdQcD4E5XG8K9081mfU4t0av0LFMgspl8yS5uegoma4VNrU8CcaoLZktw==
-X-Received: by 2002:a17:90a:9310:: with SMTP id p16mr18418730pjo.204.1632733431683;
-        Mon, 27 Sep 2021 02:03:51 -0700 (PDT)
-Received: from linux.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
-        by smtp.gmail.com with ESMTPSA id p189sm16352293pfp.167.2021.09.27.02.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 02:03:51 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 09:03:47 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     42.hyeyoo@gmail.com, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        id S233622AbhI0JFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:05:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:34674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233519AbhI0JFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:05:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF478D6E;
+        Mon, 27 Sep 2021 02:04:09 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA6D03F70D;
+        Mon, 27 Sep 2021 02:04:04 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 10:03:51 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vito Caputo <vcaputo@pengaru.com>, Jann Horn <jannh@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
-Subject: [QUESTION] is SLAB considered legacy and deprecated?
-Message-ID: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
+        Anand K Mistry <amistry@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
+Message-ID: <20210927090337.GB1131@C02TD0UTHF1T.local>
+References: <20210923233105.4045080-1-keescook@chromium.org>
+ <20210923234917.pqrxwoq7yqnvfpwu@shells.gnugeneration.com>
+ <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
+ <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
+ <202109231814.FD09DBAD3@keescook>
+ <20210924135424.GA33573@C02TD0UTHF1T.local>
+ <202109240716.A0792BE46@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <202109240716.A0792BE46@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello there,
+On Fri, Sep 24, 2021 at 07:26:22AM -0700, Kees Cook wrote:
+> On Fri, Sep 24, 2021 at 02:54:24PM +0100, Mark Rutland wrote:
+> > On Thu, Sep 23, 2021 at 06:16:16PM -0700, Kees Cook wrote:
+> > > On Thu, Sep 23, 2021 at 05:22:30PM -0700, Vito Caputo wrote:
+> > > > Instead of unwinding stacks maybe the kernel should be sticking an
+> > > > entrypoint address in the current task struct for get_wchan() to
+> > > > access, whenever userspace enters the kernel?
+> > > 
+> > > wchan is supposed to show where the kernel is at the instant the
+> > > get_wchan() happens. (i.e. recording it at syscall entry would just
+> > > always show syscall entry.)
+> > 
+> > It's supposed to show where a blocked task is blocked; the "wait
+> > channel".
+> > 
+> > I'd wanted to remove get_wchan since it requires cross-task stack
+> > walking, which is generally painful.
+> 
+> Right -- this is the "fragile" part I'm worried about.
+> 
+> > We could instead have the scheduler entrypoints snapshot their caller
+> > into a field in task_struct. If there are sufficiently few callers, that
+> > could be an inline wrapper that passes a __func__ string. Otherwise, we
+> > still need to symbolize.
+> 
+> Hmm. Does PREEMPT break this?
 
-I've been working on adding 'lockless cache' on sl[au]b for a while.
-But what it actually does is actually adding 'queuing' on slub.
+Within the core scheduler functions interrupts should be disabled, and
+as long as we only update task_struct there we shouldn't have a race.
 
-So there is a fundamental question coming into my mind:
-	'is SLAB considered legacy and deprecated?'
+> Can we actually use __builtin_return_address(0) in __schedule?
 
-It seems there are little development on SLAB and people think that
-SLAB is legacy and deprecated, so CONFIG_SLUB is used by default.
-
-But I think both has pros and cons for their own:
-	SLAB: more temporal locality (cache friendly)
-	but high usage of memory, and less spatial locality (TLB misses) than SLUB.
-
-	SLUB: less temporal locality (less cache friendly) than SLAB
-	but more spatial locality (TLB hit), and low usage of memory
-	and good debugging feature.
-
-Why do people say SLAB is deprecated/legacy?
+We'd need to do this in a few entry points above __schedule, since the
+currently get_wchan walks until !in_sched_functions(). It should be
+possible, though we might need to make sure those the nexus points
+aren't inlined.
 
 Thanks,
-Hyeonggon
+Mark.
