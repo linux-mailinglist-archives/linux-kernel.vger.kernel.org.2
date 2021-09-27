@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FC0419CC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8318C419B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhI0RcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:32:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41376 "EHLO mail.kernel.org"
+        id S236554AbhI0RUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:20:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237605AbhI0R2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:28:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9544961414;
-        Mon, 27 Sep 2021 17:17:07 +0000 (UTC)
+        id S236775AbhI0RP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:15:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4275F6137F;
+        Mon, 27 Sep 2021 17:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632763028;
-        bh=eZx7t8aU74FnyagsJucAccLo92T2UEj9jZMdRzx9LFQ=;
+        s=korg; t=1632762659;
+        bh=M5fkxkh7FW5Q9jQlRvy3DoD+wYtuLPhsV44j22NltWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPjLkvkv20W6tjuByNyL7H80Nsc7A+UFXEkmUwd490ZDuZ/ybBTAg5IURHh7lOAYS
-         ag0CFzJKgWOnSnSlS9uoU1mjE72azk0v0NIPZkzuKXtWuI4DuDd2Q8utUeC4eEsQ6U
-         e19TFfwykPHGQmLqburTGcUKqMQHlwBRSKrz7eFo=
+        b=Jd0Z7EAfiSs3QX3IczEMQCNv6z/HTVqbLl3nCPu+hxHRDPoR9tpi3ul+Sd8BigEf9
+         d8ByqnVDabm0+1t+zYrc76If8ID6C1JKLKx+yM3Q0qtJE7DhWZCWjnxmEZEEQvtAYs
+         iVfAQr7AZfPFizsivoo5tSWtJbnDpL9ANXP0vMSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bhawanpreet Lakha <bhawanpreet.lakha@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 141/162] drm/amd/display: Fix unstable HPCP compliance on Chrome Barcelo
-Date:   Mon, 27 Sep 2021 19:03:07 +0200
-Message-Id: <20210927170238.304249501@linuxfoundation.org>
+Subject: [PATCH 5.10 096/103] net: 6pack: Fix tx timeout and slot time
+Date:   Mon, 27 Sep 2021 19:03:08 +0200
+Message-Id: <20210927170229.083763412@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qingqing Zhuo <qingqing.zhuo@amd.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 4e00a434a08e0654a4dd9347485d9ec85deee1ef ]
+[ Upstream commit 3c0d2a46c0141913dc6fd126c57d0615677d946e ]
 
-[Why]
-Intermittently, there presents two occurrences of 0 stream
-commits in a single HPD event. Current HDCP sequence does
-not consider such scenerio, and will thus disable HDCP.
+tx timeout and slot time are currently specified in units of HZ.  On
+Alpha, HZ is defined as 1024.  When building alpha:allmodconfig, this
+results in the following error message.
 
-[How]
-Add condition check to include stream remove and re-enable
-case for HDCP enable.
+  drivers/net/hamradio/6pack.c: In function 'sixpack_open':
+  drivers/net/hamradio/6pack.c:71:41: error:
+  	unsigned conversion from 'int' to 'unsigned char'
+  	changes value from '256' to '0'
 
-Reviewed-by: Bhawanpreet Lakha <bhawanpreet.lakha@amd.com>
-Acked-by: Mikita Lipski <mikita.lipski@amd.com>
-Signed-off-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+In the 6PACK protocol, tx timeout is specified in units of 10 ms and
+transmitted over the wire:
+
+    https://www.linux-ax25.org/wiki/6PACK
+
+Defining a value dependent on HZ doesn't really make sense, and
+presumably comes from the (very historical) situation where HZ was
+originally 100.
+
+Note that the SIXP_SLOTTIME use explicitly is about 10ms granularity:
+
+        mod_timer(&sp->tx_t, jiffies + ((when + 1) * HZ) / 100);
+
+and the SIXP_TXDELAY walue is sent as a byte over the wire.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 22 +++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ drivers/net/hamradio/6pack.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index a4a4bb43c108..e7cf79b386da 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8051,8 +8051,26 @@ static bool is_content_protection_different(struct drm_connector_state *state,
- 	    state->content_protection == DRM_MODE_CONTENT_PROTECTION_ENABLED)
- 		state->content_protection = DRM_MODE_CONTENT_PROTECTION_DESIRED;
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index da13683d52d1..bd0beb16d68a 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -68,9 +68,9 @@
+ #define SIXP_DAMA_OFF		0
  
--	/* Check if something is connected/enabled, otherwise we start hdcp but nothing is connected/enabled
--	 * hot-plug, headless s3, dpms
-+	/* Stream removed and re-enabled
-+	 *
-+	 * Can sometimes overlap with the HPD case,
-+	 * thus set update_hdcp to false to avoid
-+	 * setting HDCP multiple times.
-+	 *
-+	 * Handles:	DESIRED -> DESIRED (Special case)
-+	 */
-+	if (!(old_state->crtc && old_state->crtc->enabled) &&
-+		state->crtc && state->crtc->enabled &&
-+		connector->state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED) {
-+		dm_con_state->update_hdcp = false;
-+		return true;
-+	}
-+
-+	/* Hot-plug, headless s3, dpms
-+	 *
-+	 * Only start HDCP if the display is connected/enabled.
-+	 * update_hdcp flag will be set to false until the next
-+	 * HPD comes in.
- 	 *
- 	 * Handles:	DESIRED -> DESIRED (Special case)
- 	 */
+ /* default level 2 parameters */
+-#define SIXP_TXDELAY			(HZ/4)	/* in 1 s */
++#define SIXP_TXDELAY			25	/* 250 ms */
+ #define SIXP_PERSIST			50	/* in 256ths */
+-#define SIXP_SLOTTIME			(HZ/10)	/* in 1 s */
++#define SIXP_SLOTTIME			10	/* 100 ms */
+ #define SIXP_INIT_RESYNC_TIMEOUT	(3*HZ/2) /* in 1 s */
+ #define SIXP_RESYNC_TIMEOUT		5*HZ	/* in 1 s */
+ 
 -- 
 2.33.0
 
