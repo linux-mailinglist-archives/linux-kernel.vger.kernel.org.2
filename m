@@ -2,243 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDF8419F12
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA85419F15
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236471AbhI0TYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        id S236430AbhI0T1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236225AbhI0TYW (ORCPT
+        with ESMTP id S236225AbhI0T1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:24:22 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF81C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:22:44 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so850451pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:22:44 -0700 (PDT)
+        Mon, 27 Sep 2021 15:27:37 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E52EC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:25:59 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so20163314otb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:25:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4+tmZld3PQs40l6nrQYuR57TMZRxGphGPbdJLQg3qrc=;
-        b=bx/Z4z6KGtK3vROpAGinbsY3FGhb/8GkxjRibXTtl/vMGLJg+0OT7iQqDjW3ODFH2E
-         h5doyoSe0MShl90c/IMt7HVqgU3yhM4RgDio2Uv0zDNRBo9G6V+cQydaxW/dZE3XEfp6
-         ytKjIkXHqNsiMr5uTxkxRfAill5Fq0g+yisJdLs/jXLSv5vn3TIehp53QZly8TbfE+gs
-         nqAnNTWsJWS3xGN8C73lr9O7OfAeXTCAzjzGX+rH46mdqxuWgvF1w6OpyJBqQWqmvJW/
-         oI9/v6kqPceGUYAo4tGecuaJll7kJ+NyUdv6avdPDfOPo5wkwEZzhBtOBxuovTQyu8Ij
-         bQqw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MCXAWoe2hPDnl6UuxlpuLdgfQU364PBppRCGEYPmVb0=;
+        b=mbGQxRgTqATeGY9NASfmguVg9jvSV3496BTmre+jw8LnT1PyWF8ESk/hhQZxTVuXRx
+         RA7MY1ggMsy5TuPRrLIEOz2dvGlIe64Bbnb4wSr5ACfkekarDHL0ivpJsBmEvrtkfI0V
+         zphtnmLnFCsr3w2K+6yIkZzaPhCki9gXOQ2fwxoWTu47/duXoQFDKIyVF3RrB2Yki8Pn
+         XivF82i72WACsannApXQrVsjOSysc1txsJspoawaGIjVY/+sdyQLwtFX052+DrgaHNrK
+         7rEsSsKTQeDygsLqRtt8QIgDYWhWRBSZtaEg7elSQnKC3XWr1Uu8m63RL3JW3BXhnv1X
+         nDAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4+tmZld3PQs40l6nrQYuR57TMZRxGphGPbdJLQg3qrc=;
-        b=E9oH40vaLchqxBqSOREQGauU69xvEkfRUqas7iyven3WZE5Gs52oEejcIzXLiQbgJw
-         8dl9rnRkHKQUi6/3kdSFUrQH/G06rKKPAkNXr+axJFzt+l+eoTIZJTGnhPT4UssLTs5Z
-         XedU9LRVMbN/oaU6AQBFSQ3JV9jdZ9MQwEwscLufDQegF9pyaB1iwLN/KrVyfZbQonkn
-         ocVcYaw2Rk7yFpfz0POVQcM50NMkLGpFiRtHP5S/uV9Fi1iJChuIdN5sTtPLe/AwcVHs
-         9sSyOZvP+Kyg3vUai1FIs1eiZPFTILwHsG9cgffJZGr8ZiY86nuq2xhpiQO5uDcHc1r3
-         jyeg==
-X-Gm-Message-State: AOAM531XTLnuJ7y9+4PiOGf43jQHnSjTx0Cvb0TtSWm5GQ5wmJ0R+1Po
-        AjdIuHdRZajm2Fj9ytitpod55A==
-X-Google-Smtp-Source: ABdhPJyM0ZHido6rS/7/tbv41YSnDNdKVHtooNZWgTX+ojjimmz3NdZn/YO9NKRbkdFakeKt+KUsNQ==
-X-Received: by 2002:a17:90a:1984:: with SMTP id 4mr814601pji.87.1632770563566;
-        Mon, 27 Sep 2021 12:22:43 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id k7sm16556436pfk.59.2021.09.27.12.22.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 12:22:43 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 19:22:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        pbonzini@redhat.com, shuah@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] selftests: KVM: set affinity of VM to right CPUs
-Message-ID: <YVIZ/67cfjk18mbe@google.com>
-References: <20210924233037.4329-1-dongli.zhang@oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MCXAWoe2hPDnl6UuxlpuLdgfQU364PBppRCGEYPmVb0=;
+        b=FQczppgU76L5SnRrdcbgG8ZgolHr8AaM3/fTdC+BdFmhKFE32BhHZN+kjrz0jnhfRh
+         2M/Bqwu2Q6eLqmmRumfkHtcXpWh677UnILvK5mLazSPc1aYGsSGbeLZdFjjcI8bPI3/f
+         wsltgN3nkMxgQ2KBtIFbHm7qnnYVAErOg6LCoG6eLep10NJpmTz8xT8/WvwvliIMWrZr
+         x+aWjRkS6NmOpZaG7Qgvd+RoGjMYtGU8mYIIha+1RTRvQtVXXgk6peINviRD53bbthCt
+         yY0Tbf3YhkU4N9GmrEd5ZWeZ2pemuCGUUJL5S2zlsiXXmv27UhGgyPqMJXqxJx1Pa84a
+         tv5w==
+X-Gm-Message-State: AOAM5339F+dVCddLvhWVwXmvIXjRac3WbVXp4LUf/3F8E5QNTQ/Xa4e1
+        jGSGw9BDzQlkQspsrrV4sVthTqsPJbiJEbilKuE=
+X-Google-Smtp-Source: ABdhPJzvL6jbsH32X8drgu7cUpkFkANqhgHe2V/FPLLTmzQetUIWUmnyOAuAliaEv2uj54t9YSXftSws04/L1i21t5s=
+X-Received: by 2002:a9d:6d14:: with SMTP id o20mr1475135otp.357.1632770758956;
+ Mon, 27 Sep 2021 12:25:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924233037.4329-1-dongli.zhang@oracle.com>
+References: <1632640580-61609-1-git-send-email-yang.lee@linux.alibaba.com> <CAFeW=pYwkZ8=pVi9f-kHGwr-7Gb2OuWYd=LPzHt+yPWRP_gn8w@mail.gmail.com>
+In-Reply-To: <CAFeW=pYwkZ8=pVi9f-kHGwr-7Gb2OuWYd=LPzHt+yPWRP_gn8w@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 27 Sep 2021 15:25:48 -0400
+Message-ID: <CADnq5_Oi15o3Ok8rDF19bTi_Nzw2mXaF-+v1oH0Ni4bS8pvfpw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdkfd: fix resource_size.cocci warnings
+To:     Amos Jianjun Kong <kongjianjun@gmail.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021, Dongli Zhang wrote:
-> The nr_cpus = CPU_COUNT(&possible_mask) is the number of available CPUs in
-> possible_mask. As a result, the "cpu = i % nr_cpus" may always return CPU
-> that is not available in possible_mask.
-> 
-> Suppose the server has 8 CPUs. The below Failure is encountered immediately
-> if the task is bound to CPU 5 and 6.
+Applied.  Thanks!
 
-/facepalm
+Alex
 
-> ==== Test Assertion Failure ====
->   rseq_test.c:228: i > (NR_TASK_MIGRATIONS / 2)
->   pid=10127 tid=10127 errno=4 - Interrupted system call
->      1	0x00000000004018e5: main at rseq_test.c:227
->      2	0x00007fcc8fc66bf6: ?? ??:0
->      3	0x0000000000401959: _start at ??:?
->   Only performed 4 KVM_RUNs, task stalled too much?
-> 
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
->  tools/testing/selftests/kvm/rseq_test.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/rseq_test.c b/tools/testing/selftests/kvm/rseq_test.c
-> index c5e0dd664a7b..41df5173970c 100644
-> --- a/tools/testing/selftests/kvm/rseq_test.c
-> +++ b/tools/testing/selftests/kvm/rseq_test.c
-> @@ -10,6 +10,7 @@
->  #include <signal.h>
->  #include <syscall.h>
->  #include <sys/ioctl.h>
-> +#include <sys/sysinfo.h>
->  #include <asm/barrier.h>
->  #include <linux/atomic.h>
->  #include <linux/rseq.h>
-> @@ -43,6 +44,18 @@ static bool done;
->  
->  static atomic_t seq_cnt;
->  
-> +static int get_max_cpu_idx(void)
-> +{
-> +	int nproc = get_nprocs_conf();
-> +	int i, max = -ENOENT;
-> +
-> +	for (i = 0; i < nproc; i++)
-> +		if (CPU_ISSET(i, &possible_mask))
-> +			max = i;
-> +
-> +	return max;
-> +}
-> +
->  static void guest_code(void)
->  {
->  	for (;;)
-> @@ -61,10 +74,13 @@ static void *migration_worker(void *ign)
->  {
->  	cpu_set_t allowed_mask;
->  	int r, i, nr_cpus, cpu;
-> +	int max_cpu_idx;
->  
->  	CPU_ZERO(&allowed_mask);
->  
-> -	nr_cpus = CPU_COUNT(&possible_mask);
-> +	max_cpu_idx = get_max_cpu_idx();
-> +	TEST_ASSERT(max_cpu_idx >= 0, "Invalid possible_mask");
-
-I feel like this should be a KSFT_SKIP condition, not an assert.
-
-> +	nr_cpus = max_cpu_idx + 1;
->  
->  	for (i = 0; i < NR_TASK_MIGRATIONS; i++) {
->  		cpu = i % nr_cpus;
-
-This is still flawed, e.g. if the max CPU is 1023, but the task is pinned to _just_
-CPU 1023, then the assert at the end will likely still fail because the migration
-helper is effectively only running 1/1024 loops.
-
-It probably also makes sense to grab the min CPU to reduce the pain if the task
-is affined to a small subset.
-
-As an aside, _which_ CPUs the task is affined to seems to matter, e.g. some
-combinations of CPUs on my system don't fail, even with 100x iterations.  Don't
-think there's anything the test can do about that, just an interesting data point
-that suggests pinning while running tests may be a bad idea.
-
-Anyways, something like this?
-
----
- tools/testing/selftests/kvm/rseq_test.c | 44 ++++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/rseq_test.c b/tools/testing/selftests/kvm/rseq_test.c
-index 060538bd405a..befd64c27152 100644
---- a/tools/testing/selftests/kvm/rseq_test.c
-+++ b/tools/testing/selftests/kvm/rseq_test.c
-@@ -10,6 +10,7 @@
- #include <signal.h>
- #include <syscall.h>
- #include <sys/ioctl.h>
-+#include <sys/sysinfo.h>
- #include <asm/barrier.h>
- #include <linux/atomic.h>
- #include <linux/rseq.h>
-@@ -39,6 +40,7 @@ static __thread volatile struct rseq __rseq = {
-
- static pthread_t migration_thread;
- static cpu_set_t possible_mask;
-+static int min_cpu, max_cpu;
- static bool done;
-
- static atomic_t seq_cnt;
-@@ -60,16 +62,17 @@ static void sys_rseq(int flags)
- static void *migration_worker(void *ign)
- {
- 	cpu_set_t allowed_mask;
--	int r, i, nr_cpus, cpu;
-+	int r, i, cpu;
-
- 	CPU_ZERO(&allowed_mask);
-
--	nr_cpus = CPU_COUNT(&possible_mask);
--
--	for (i = 0; i < NR_TASK_MIGRATIONS; i++) {
--		cpu = i % nr_cpus;
--		if (!CPU_ISSET(cpu, &possible_mask))
--			continue;
-+	for (i = 0, cpu = -1; i < NR_TASK_MIGRATIONS; i++) {
-+		do {
-+			if (cpu < min_cpu || cpu > max_cpu)
-+				cpu = min_cpu;
-+			else
-+				cpu++;
-+		} while (!CPU_ISSET(cpu, &possible_mask));
-
- 		CPU_SET(cpu, &allowed_mask);
-
-@@ -154,6 +157,27 @@ static void *migration_worker(void *ign)
- 	return NULL;
- }
-
-+static int calc_min_max_cpu(void)
-+{
-+	int i, cnt, nproc;
-+
-+	nproc = get_nprocs_conf();
-+	cnt = 0;
-+	min_cpu = -1;
-+	max_cpu = -1;
-+
-+	for (i = 0; i < nproc; i++) {
-+		if (!CPU_ISSET(i, &possible_mask))
-+			continue;
-+		if (min_cpu == -1)
-+			min_cpu = i;
-+		max_cpu = i;
-+		cnt++;
-+	}
-+
-+	return (cnt < 2) ? -EINVAL : 0;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int r, i, snapshot;
-@@ -168,7 +192,11 @@ int main(int argc, char *argv[])
- 		    strerror(errno));
-
- 	if (CPU_COUNT(&possible_mask) < 2) {
--		print_skip("Only one CPU, task migration not possible\n");
-+		print_skip("Only one CPU, task migration not possible");
-+		exit(KSFT_SKIP);
-+	}
-+	if (calc_min_max_cpu()) {
-+		print_skip("Only one usable CPU, task migration not possible");
- 		exit(KSFT_SKIP);
- 	}
-
---
+On Sun, Sep 26, 2021 at 3:10 PM Amos Jianjun Kong <kongjianjun@gmail.com> wrote:
+>
+> On Sun, Sep 26, 2021 at 3:17 PM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>>
+>> Use resource_size function on resource object
+>> instead of explicit computation.
+>>
+>> Clean up coccicheck warning:
+>> ./drivers/gpu/drm/amd/amdkfd/kfd_migrate.c:905:10-13: ERROR: Missing
+>> resource_size with res
+>>
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>> ---
+>>  drivers/gpu/drm/amd/amdkfd/kfd_migrate.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+>> index 4a16e3c..f53e17a 100644
+>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+>> @@ -901,8 +901,7 @@ int svm_migrate_init(struct amdgpu_device *adev)
+>>
+>>                 /* Disable SVM support capability */
+>>                 pgmap->type = 0;
+>> -               devm_release_mem_region(adev->dev, res->start,
+>> -                                       res->end - res->start + 1);
+>> +               devm_release_mem_region(adev->dev, res->start, resource_size(res));
+>
+>
+> Looks good.
+> Reviewed-by: Amos Kong <kongjianjun@gmail.com>
+>
+>
+>>
+>>                 return PTR_ERR(r);
+>>         }
+>>
+>> --
+>> 1.8.3.1
+>>
