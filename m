@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2883041965B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF9141965E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234893AbhI0O3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbhI0O3V (ORCPT
+        id S234911AbhI0O33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:29:29 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41148 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234881AbhI0O31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:29:21 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882B9C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:27:43 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id y201so25840842oie.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BJaeBZR1ukPhFab40rWKUHXJrPsphnS82O6jrdz2Xw0=;
-        b=iHznPaFlNIO7bGrsW9wrrPUIy5ABWvAV5PFkNjSxvpEDGoGZ7AIBUnkK1NcgW+z4nz
-         KfQnqQ9CYAy2GI8+KN1/NfMC31F2APA/pQSjitkmReIxTDwp+B5jaQQV0iEVWi+5ay8E
-         THKpXEEeApH8ddipCKtIp0gUaDmsgVtkO2IEzfsjAA5uTWSFTzZHzEmE4pocFWW5+Byu
-         BZ/FqsT9bPAKX02s6slaiWfGZ+7LJeWY3+5vOHgfimx5ci5pkISbaLY9v+1m7hFn+fyr
-         3qJaJR6QrgnXsvxsnl/w+0tzYpcAV6f/rDY0gEwq9XxEBX+Jw7tpOpzKZfFmLQiHaYfM
-         X9cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BJaeBZR1ukPhFab40rWKUHXJrPsphnS82O6jrdz2Xw0=;
-        b=J7WhtJ2LmLSFOsReR1stIBIWHcYV1zeCY7o/8uuD6op9F3gf7J24XbONVA8ONvpZgA
-         aLdS0xDN2WBqov26B3E0/cl3nJxdgc99dN2qrsUyOpQr4wJ4n/o1OX5vdmespSGR2Bor
-         GKdGhKIrufa/w7yWZSZ2eILlN2RV2hr5t4wLzSG3x2AC3Ly451GCPJ90cbIxJ8g6cuLu
-         KMG/pZ4N6+EeFMMZku74EDaW9KVGIFio2+c1dXujydGtanCDxDTLjYFRSM78gZYDnVTB
-         DvgGuqWHTFclO6mlgsGhhrrWnTP1owinNCQ+Ks0iW3yqVekBw7HhmWZfHinx7VrDqU1I
-         10CQ==
-X-Gm-Message-State: AOAM531/A/Pu5B/qf0nFbXGW9/jXlNsHCObqco5s9UmTee+tv8Wq9CdX
-        vP9kfYI8N7mmnojoPViQKRVnngTXXgoTDBupFqaScw==
-X-Google-Smtp-Source: ABdhPJz9/NRsaWFDA/horHjweSEQQrL4X2rQGDnxj9r6kHkjyuWKJ67Bwsly4sQS+7L//cItDmxrLNdvKOzuEAXUVWQ=
-X-Received: by 2002:aca:f189:: with SMTP id p131mr12164711oih.128.1632752862007;
- Mon, 27 Sep 2021 07:27:42 -0700 (PDT)
+        Mon, 27 Sep 2021 10:29:27 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18REReXv015040;
+        Mon, 27 Sep 2021 09:27:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632752860;
+        bh=FJWLNYViwTUWu9K8VtFGQXKFiwr+leS4+2POVpUO7xs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=BV1RXuvE6Jdbq/U1qVlqrJdvUP02B67QAP4lp4Cm3g9mA4e2W+lawAmJwniVLTarZ
+         JJT4e27k7vFzogVfwfhIttWj/Ws9dDLnjwzBW7yFyGBJUxwMLf+E0UifnX+YMqP+Ym
+         MuqfM0qnTTEUib0RI27br/VGDzIpPTHju+BTyPZg=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18RERevk041578
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Sep 2021 09:27:40 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 27
+ Sep 2021 09:27:40 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 27 Sep 2021 09:27:40 -0500
+Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18REReeH005855;
+        Mon, 27 Sep 2021 09:27:40 -0500
+Subject: Re: [PATCH V2 4/4] arm64: dts: ti: k3-j7200-common-proc-board: Add
+ j7200-evm compatible
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
+CC:     Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+References: <20210925201430.11678-1-nm@ti.com>
+ <20210925201430.11678-5-nm@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <dded6ab1-7d99-77ee-6865-046a4f45c82b@ti.com>
+Date:   Mon, 27 Sep 2021 09:27:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <000000000000a3cf8605cb2a1ec0@google.com> <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
- <20210921165134.GE35846@C02TD0UTHF1T.local>
-In-Reply-To: <20210921165134.GE35846@C02TD0UTHF1T.local>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 27 Sep 2021 16:27:30 +0200
-Message-ID: <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in __entry_tramp_text_end
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210925201430.11678-5-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 18:51, Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Hi Dmitry,
->
-> The good news is that the bad unwind is a known issue, the bad news is
-> that we don't currently have a way to fix it (and I'm planning to talk
-> about this at the LPC "objtool on arm64" talk this Friday).
->
-> More info below: the gist is we can produce spurious entries at an
-> exception boundary, but shouldn't miss a legitimate value, and there's a
-> plan to make it easier to spot when entries are not legitimate.
->
-> On Fri, Sep 17, 2021 at 05:03:48PM +0200, Dmitry Vyukov wrote:
-> > > Call trace:
-> > >  dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
-> > >  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
-> > >  __dump_stack lib/dump_stack.c:88 [inline]
-> > >  dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
-> > >  print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
-> > >  __kasan_report mm/kasan/report.c:442 [inline]
-> > >  kasan_report+0x134/0x380 mm/kasan/report.c:459
-> > >  __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
-> > >  do_bad_area arch/arm64/mm/fault.c:466 [inline]
-> > >  do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
-> > >  do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
-> > >  el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
-> > >  el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
-> > >  el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
-> > >  __entry_tramp_text_end+0xdfc/0x3000
-> >
-> > /\/\/\/\/\/\/\
-> >
-> > This is broken unwind on arm64. d_lookup statically calls __d_lookup,
-> > not __entry_tramp_text_end (which is not even a function).
-> > See the following thread for some debugging details:
-> > https://lore.kernel.org/lkml/CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com/
->
-> The problem here is that our calling convention (AAPCS64) only allows us
-> to reliably unwind at function call boundaries, where the state of both
-> the Link Register (LR/x30) and Frame Pointer (FP/x29) are well-defined.
-> Within a function, we don't know whether to start unwinding from the LR
-> or FP, and we currently start from the LR, which can produce spurious
-> entries (but ensures we don't miss anything legitimte).
->
-> In the short term, I have a plan to make the unwinder indicate when an
-> entry might not be legitimate, with the usual stackdump code printing an
-> indicator like '?' on x86.
->
-> In the longer term, we might be doing things with objtool or asking for
-> some toolchain help such that we can do better in these cases.
+On 9/25/21 3:14 PM, Nishanth Menon wrote:
+> Add j7200-evm compatible to the board to allow the board to distinguish
+> itself from other platforms that may be added in the future.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 
-Hi Mark,
+Acked-by: Suman Anna <s-anna@ti.com>
 
-Any updates after the LPC session?
+> ---
+> 
+> Changes in V2:
+> * no change
+> 
+> V1: https://lore.kernel.org/all/20210915121937.27702-4-nm@ti.com/
+> 
+>  arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index d14f3c18b65f..121975dc8239 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -12,6 +12,9 @@
+>  #include <dt-bindings/phy/phy.h>
+>  
+>  / {
+> +	compatible = "ti,j7200-evm", "ti,j7200";
+> +	model = "Texas Instruments J7200 EVM";
+> +
+>  	chosen {
+>  		stdout-path = "serial2:115200n8";
+>  		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
+> 
 
-If the dumper adds " ? ", then syzkaller will strip these frames
-(required for x86).
-However, I am worried that we can remove the true top frame then and
-attribute crashes to wrong frames again?
-
-Some naive questions:
-1. Shouldn't the top frame for synchronous faults be in the PC/IP
-register (I would assume LR/FP contains the caller of the current
-frame)?
-2. How __entry_tramp_text_end, which is not a function, even ended up
-in LR? shouldn't it always contain some code pointer (even if stale)?
-3. Isn't there already something in the debug info to solve this
-problem? Userspace programs don't use objtool, but I assume that can
-print crash stacks somehow (?).
