@@ -2,109 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEABC4190AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D2A4190B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhI0IYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233337AbhI0IYI (ORCPT
+        id S233465AbhI0IZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:25:29 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53284 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233337AbhI0IZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:24:08 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C82C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 01:22:30 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x20so5280557wrg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 01:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=OeaTXKlaVHtWb9K06sQqz/ncjeyoN/0BjCyZJCd8lsQ=;
-        b=m9O/XZHRDcNGup0AdL09i9hE1Zpbr44lldIM7AgYkND78DWuoadyREFzNIXtnyxW/r
-         oMit5qKIe9mfxEiHxgSNCV029YmKOIK5LNowd0wVVFqNZ/rJdauroUOC173+HJfjzrSQ
-         RxVPaXz3IOo50cYcykP/6sbHgOZwnX7oneKTPguoANmgndZx8RfELGUaSz4aglGTWs0E
-         /MhKE80o4sXR8VoNxZwWtrdP8fzOo8fKfnTrSA7r/U0gIwNCA3ilgRDxBdrXAf5YIZC2
-         z73NliwuVDbpc66WQMrF5gBxJ0SZe7vZtJr8O3UFKnFfbyTVJq2Z+3SckXEsQXqdy2YH
-         UY/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=OeaTXKlaVHtWb9K06sQqz/ncjeyoN/0BjCyZJCd8lsQ=;
-        b=q8FQLtox6HT5UqevMAwQ9f7QzvrZ/Nb87kG+dPw7eblt9zBX3UW7IZuMNbOST49mqk
-         m1COvsEnapmucplYWYAGO17fLFyJgLqvmuUOPMCL/dlqe+5xBmXbzTg3DR/PPwyXpEqx
-         h6NuBg+fwXujWNAnmnpbzJso0qR7Ufqkh0h7mmpm06/e18obIaxp5LmEaFkolPB+FmJB
-         PEDu2SfLEEGOxSwiu2Qdf3DLSC6yn9jEGLoVxx0/1TJ1HwpPIgV2Wdev+RsZu3MaGX/r
-         johOPDFIxqQdC1U+ZOfdGU+Sz3Klk2K7UEl1S4PzZR6jgr6vWRbEIkSsUQULqB0HrTLW
-         h/xw==
-X-Gm-Message-State: AOAM5307dW4dKcyIR6VuYuexAkBUx7gIylY8QU4FxwWLGLCKk9jKh2Uq
-        qwUVmw8XdMivYyIFMsKfbwQ=
-X-Google-Smtp-Source: ABdhPJw//yTj/1lOKLh8YSIUIdYYGCEc8rNTkNBf4I83AgStEifOJIWynEBMrT7RlAyy68V4uM5mGQ==
-X-Received: by 2002:a5d:6b46:: with SMTP id x6mr26030172wrw.192.1632730949140;
-        Mon, 27 Sep 2021 01:22:29 -0700 (PDT)
-Received: from kev-VirtualBox (host86-149-72-135.range86-149.btcentralplus.com. [86.149.72.135])
-        by smtp.gmail.com with ESMTPSA id n7sm16024666wra.37.2021.09.27.01.22.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 01:22:28 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 09:22:27 +0100
-From:   Kev Jackson <foamdino@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Trivial: docs: correct some English grammar and spelling
-Message-ID: <YVF/Q5pA9h9S+wS9@kev-VirtualBox>
+        Mon, 27 Sep 2021 04:25:28 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0979D22098;
+        Mon, 27 Sep 2021 08:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632731030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=37o9ue6D55euseY87j2eVtMIU2ZEOiSWr0h3uppibpo=;
+        b=mEmCCoa0naAO9rk9L+BWrTdgk5YyRGEv2i7pHHtnBn/1JVcWsTME3v//EfgkuFmg2tK6WX
+        eKJyywKRLghT3BAj+3YGyt5iCDsMWiO3tNq2tAXkOOjsVvxhevMfx0A7DSckyzruz4f5O5
+        6N2WE65afKo51F8kjRzsO5i/SZG0LnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632731030;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=37o9ue6D55euseY87j2eVtMIU2ZEOiSWr0h3uppibpo=;
+        b=NsvW0sX2DUOMXz8fou8QufETZ23R0NJX0guAOpKhK3DsWM5cfAUmxlsrXsNpfOa9mUDfS2
+        KvhBVZsWiRKF2uDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2218913A42;
+        Mon, 27 Sep 2021 08:23:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9/86OJJ/UWEzSwAAMHmgww
+        (envelope-from <colyli@suse.de>); Mon, 27 Sep 2021 08:23:46 +0000
+Subject: Re: [PATCH v3 1/6] badblocks: add more helper structure and routines
+ in badblocks.h
+To:     Geliang Tang <geliangtang@gmail.com>
+Cc:     antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        NeilBrown <neilb@suse.de>, nvdimm@lists.linux.dev,
+        linux-raid@vger.kernel.org, Richard Fan <richard.fan@suse.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>
+References: <20210913163643.10233-1-colyli@suse.de>
+ <20210913163643.10233-2-colyli@suse.de>
+ <e0fc4902-e8db-b507-651b-d930a74702ef@gmail.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <b0960871-1fc6-ed76-965c-7b0adff6641c@suse.de>
+Date:   Mon, 27 Sep 2021 16:23:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <e0fc4902-e8db-b507-651b-d930a74702ef@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Header DOC on include/net/xdp.h contained a few English
- grammer and spelling errors.
+On 9/27/21 3:23 PM, Geliang Tang wrote:
+> Hi Coly,
+>
+> On 9/14/21 00:36, Coly Li wrote:
+>> This patch adds the following helper structure and routines into
+>> badblocks.h,
+>> - struct badblocks_context
+>>    This structure is used in improved badblocks code for bad table
+>>    iteration.
+>> - BB_END()
+>>    The macro to culculate end LBA of a bad range record from bad
+>>    table.
+>> - badblocks_full() and badblocks_empty()
+>>    The inline routines to check whether bad table is full or empty.
+>> - set_changed() and clear_changed()
+>>    The inline routines to set and clear 'changed' tag from struct
+>>    badblocks.
+>>
+>> These new helper structure and routines can help to make the code more
+>> clear, they will be used in the improved badblocks code in following
+>> patches.
+>>
+>> Signed-off-by: Coly Li <colyli@suse.de>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Hannes Reinecke <hare@suse.de>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Cc: NeilBrown <neilb@suse.de>
+>> Cc: Richard Fan <richard.fan@suse.com>
+>> Cc: Vishal L Verma <vishal.l.verma@intel.com>
+>> ---
+>>   include/linux/badblocks.h | 32 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 32 insertions(+)
+>>
+>> diff --git a/include/linux/badblocks.h b/include/linux/badblocks.h
+>> index 2426276b9bd3..166161842d1f 100644
+>> --- a/include/linux/badblocks.h
+>> +++ b/include/linux/badblocks.h
+>> @@ -15,6 +15,7 @@
+>>   #define BB_OFFSET(x)    (((x) & BB_OFFSET_MASK) >> 9)
+>>   #define BB_LEN(x)    (((x) & BB_LEN_MASK) + 1)
+>>   #define BB_ACK(x)    (!!((x) & BB_ACK_MASK))
+>> +#define BB_END(x)    (BB_OFFSET(x) + BB_LEN(x))
+>>   #define BB_MAKE(a, l, ack) (((a)<<9) | ((l)-1) | ((u64)(!!(ack)) << 
+>> 63))
+>>     /* Bad block numbers are stored sorted in a single page.
+>> @@ -41,6 +42,14 @@ struct badblocks {
+>>       sector_t size;        /* in sectors */
+>>   };
+>>   +struct badblocks_context {
+>> +    sector_t    start;
+>> +    sector_t    len;
+>
+> I think the type of 'len' should be 'int' instead of 'sector_t', since 
+> we used 'int sectors' as one of the arguments of _badblocks_set().
 
-Signed-off-by: Kev Jackson <foamdino@gmail.com>
----
- include/net/xdp.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index ad5b02dcb6f4..447f9b1578f3 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -15,13 +15,13 @@
-  * level RX-ring queues.  It is information that is specific to how
-  * the driver have configured a given RX-ring queue.
-  *
-- * Each xdp_buff frame received in the driver carry a (pointer)
-+ * Each xdp_buff frame received in the driver carries a (pointer)
-  * reference to this xdp_rxq_info structure.  This provides the XDP
-  * data-path read-access to RX-info for both kernel and bpf-side
-  * (limited subset).
-  *
-  * For now, direct access is only safe while running in NAPI/softirq
-- * context.  Contents is read-mostly and must not be updated during
-+ * context.  Contents are read-mostly and must not be updated during
-  * driver NAPI/softirq poll.
-  *
-  * The driver usage API is a register and unregister API.
-@@ -30,8 +30,8 @@
-  * can be attached as long as it doesn't change the underlying
-  * RX-ring.  If the RX-ring does change significantly, the NIC driver
-  * naturally need to stop the RX-ring before purging and reallocating
-- * memory.  In that process the driver MUST call unregistor (which
-- * also apply for driver shutdown and unload).  The register API is
-+ * memory.  In that process the driver MUST call unregister (which
-+ * also applies for driver shutdown and unload).  The register API is
-  * also mandatory during RX-ring setup.
-  */
- 
--- 
-2.30.2
+OK, I will change it.
 
+>
+>> +    int        ack;
+>> +    sector_t    orig_start;
+>> +    sector_t    orig_len;
+>
+> I think 'orig_start' and 'orig_len' can be dropped, see comments in 
+> patch 3.
+
+Yes, I will change it in next version. Please review the new version latter.
+
+Thanks for your review.
+
+Coly Li
