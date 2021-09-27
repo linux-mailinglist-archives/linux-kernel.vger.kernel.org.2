@@ -2,267 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C31419EEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E3F419EF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbhI0TLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235964AbhI0TLs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:11:48 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E33C061575;
-        Mon, 27 Sep 2021 12:10:09 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id i4so81667060lfv.4;
-        Mon, 27 Sep 2021 12:10:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hT4Wk+APrdQvzvih/T+84yhEzMub35oOLaefJe1GilU=;
-        b=WfZQUwu2zUtJcBPPsC7kEBAmyDyRzR+aQoHAwz+Bo2qvtq3M5ggJJNOMk6WtXe0Lqk
-         mj7rHrARouHMewhwrZELx4WmUywA7kk10LF4Wcr3fVgl8WglsuZ/xZ8ixmdo0C3YTf7s
-         oXQPFL+EFpyAmiZhEe1Cb4ynGKlCZKtxnaaEeF3Lsh+CK3q3rK2LQj/BYbQ8Ph7hl5YE
-         aXzLcQXtAjGhbrLkw4IjYyY+xJRM1HevV78N64jjLIpn7wVLGvXdzVRi2933FD0SAPvN
-         Hg4rpzzukvqpLSX43vLmLGHUFYBgkA2EtxHPQjSYlsmtNi3arXFcJsKQk5NQEAItBAlw
-         RVBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hT4Wk+APrdQvzvih/T+84yhEzMub35oOLaefJe1GilU=;
-        b=KGw7j0jikAfmZ8R8WO9rV3dXAMDozCPs3aWCnPHwPRTzYom1chnUAcjo/T9Hxb+o5b
-         PYyXMYYHvCIp6ztCpJwOYDF+gh+rIh5lwarPREkBmg/76+wLrzXFP++OFKnlY949f9MI
-         P8W+4xnLbP+QeNTVCn6xlogkMgQIsHjMoVUDRZamE9eMlff+uzi+vZKVxCzAhiFsX1fT
-         Xbp1PoHt8R4qAqCJS5TymwpTRv/nwxZtvcPAvcsu1pncEUf2USoxJ5DdYRoUdOmP3ie1
-         WJasYfLS3i8eOdroYA6RaaO7hFqBZtGWXDplXqiN8M0y283C7ZosWgduBmRHeXkM6qUS
-         VeWw==
-X-Gm-Message-State: AOAM533XUcYEZFpQT2I5ovMhAkRSmznUWLk5pWWD2dKBXPyX81CSYUxj
-        WAXJXUNngrqjXVCs31YDH9/+1/0i16g=
-X-Google-Smtp-Source: ABdhPJzTwLdzabyZAvIJw5vnS+khr8+f5Bwfo7lK5za0O9ED5IK3j5rviCtH7RnuMEceBxGpPIo0vQ==
-X-Received: by 2002:a05:6512:2241:: with SMTP id i1mr1353170lfu.412.1632769808175;
-        Mon, 27 Sep 2021 12:10:08 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id a26sm1680226lfg.193.2021.09.27.12.10.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 12:10:07 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 22:10:05 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/3] fs/ntfs3: Remove locked argument in ntfs_set_ea
-Message-ID: <20210927191005.zcebctlxfsqutgkh@kari-VirtualBox>
-References: <eb131ee0-3e89-da58-650c-5b84dd792a49@paragon-software.com>
- <b988b38f-ccca-df01-d90d-10f83dd3ad2e@paragon-software.com>
- <20210925084901.mvlxt442jvy2et7u@kari-VirtualBox>
- <816442f2-a79f-68cf-f107-9770a66f3acc@paragon-software.com>
+        id S236392AbhI0TM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:12:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:34400 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235964AbhI0TM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 15:12:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Mh3yzrEcylJtn9qpK9BS26cL4bktBLXdV9NfJgr9pkE=; b=VtaXEGSDXcFg5ttxnKr9X1K0lX
+        +eazji396RJZYvzxxeYFIqkRQV7nfY80eMaefttMmK5HixKgp6G8nTliASfcpcdjRSuMQWkVRnW0x
+        xr+LFC2bei3f0wvhuy7wIDp5U/oLWTrj7voxHXe2ACf3/u++k2kW5+s0cGSF9OY5IB7k=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mUw1U-008Ubl-9q; Mon, 27 Sep 2021 21:10:44 +0200
+Date:   Mon, 27 Sep 2021 21:10:44 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        David Thompson <davthompson@nvidia.com>
+Subject: Re: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YVIXNEmhoMW7c1S/@lunn.ch>
+References: <20210923202216.16091-1-asmaa@nvidia.com>
+ <20210923202216.16091-2-asmaa@nvidia.com>
+ <YU26lIUayYXU/x9l@lunn.ch>
+ <CACRpkdbUJF6VUPk9kCMPBvjeL3frJAbHq+h0-z7P-a1pSU+fiw@mail.gmail.com>
+ <CH2PR12MB38951F2326196AB5B573A73DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <YVHQQcv2M6soJR6u@lunn.ch>
+ <CH2PR12MB389585F7D5EFE5E2453593DBD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <YVHbo/cJcHzxUk+d@lunn.ch>
+ <CH2PR12MB3895E69636DDB3811C0EAE3DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <816442f2-a79f-68cf-f107-9770a66f3acc@paragon-software.com>
+In-Reply-To: <CH2PR12MB3895E69636DDB3811C0EAE3DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 06:10:00PM +0300, Konstantin Komarov wrote:
-> 
-> 
-> On 25.09.2021 11:49, Kari Argillander wrote:
-> > On Fri, Sep 24, 2021 at 07:15:50PM +0300, Konstantin Komarov wrote:
-> >> We always need to lock now, because locks became smaller
-> >> (see "Move ni_lock_dir and ni_unlock into ntfs_create_inode").
-> > 
-> > So basically this actually fixes that commit?
-> > 
-> > Fixes: d562e901f25d ("fs/ntfs3: Move ni_lock_dir and ni_unlock into ntfs_create_inode")
-> > 
-> > Or if you do not use fixes atleast use
-> > 
-> > d562e901f25d ("fs/ntfs3: Move ni_lock_dir and ni_unlock into ntfs_create_inode")
-> > 
-> > You can add these to your gitconfig
-> > 
-> > 	[core]
-> > 		abbrev = 12
-> > 	[pretty]
-> > 	        fixes = Fixes: %h (\"%s\")
-> > 		fixed = Fixes: %h (\"%s\")
-> > 
-> > And get this annotation with
-> > 	git show --pretty=fixes <sha>
-> > 
-> > Have some comments below also.
-> > 
-> >>
-> >> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> >> ---
-> >>  fs/ntfs3/xattr.c | 28 +++++++++++++---------------
-> >>  1 file changed, 13 insertions(+), 15 deletions(-)
-> >>
-> >> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> >> index 253a07d9aa7b..1ab109723b10 100644
-> >> --- a/fs/ntfs3/xattr.c
-> >> +++ b/fs/ntfs3/xattr.c
-> >> @@ -257,7 +257,7 @@ static int ntfs_get_ea(struct inode *inode, const char *name, size_t name_len,
-> >>  
-> >>  static noinline int ntfs_set_ea(struct inode *inode, const char *name,
-> >>  				size_t name_len, const void *value,
-> >> -				size_t val_size, int flags, int locked)
+> Asmaa>> Thank you very much for the detailed and clear explanation!
+> we only enable/support link up/down interrupts. QA has tested
+> bringing up/down the network interface +200 times in a loop.
 
-Maybe we should leave int locked and ...
+The micrel driver currently only uses two interrupts of the available
+8. So it will be hard to trigger the problem with the current
+driver. Your best way to trigger it is going to bring the link down as
+soon as it goes up. So you get first a link up, and then a link down
+very shortly afterwards.
 
-> >> +				size_t val_size, int flags)
-> >>  {
-> >>  	struct ntfs_inode *ni = ntfs_i(inode);
-> >>  	struct ntfs_sb_info *sbi = ni->mi.sbi;
-> >> @@ -276,8 +276,7 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
-> >>  	u64 new_sz;
-> >>  	void *p;
-> >>  
-> >> -	if (!locked)
-> >> -		ni_lock(ni);
-> >> +	ni_lock(ni);
-> >>  
-> >>  	run_init(&ea_run);
-> >>  
-> >> @@ -465,8 +464,7 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
-> >>  	mark_inode_dirty(&ni->vfs_inode);
-> >>  
-> >>  out:
-> >> -	if (!locked)
-> >> -		ni_unlock(ni);
-> >> +	ni_unlock(ni);
-> >>  
-> >>  	run_close(&ea_run);
-> >>  	kfree(ea_all);
-> >> @@ -537,7 +535,7 @@ struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
-> >>  
-> >>  static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
-> >>  				    struct inode *inode, struct posix_acl *acl,
-> >> -				    int type, int locked)
-> >> +				    int type)
-> >>  {
-> >>  	const char *name;
-> >>  	size_t size, name_len;
-> >> @@ -594,7 +592,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
-> >>  		flags = 0;
-> >>  	}
-> >>  
-> >> -	err = ntfs_set_ea(inode, name, name_len, value, size, flags, locked);
-> >> +	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
-> >>  	if (err == -ENODATA && !size)
-> >>  		err = 0; /* Removing non existed xattr. */
-> >>  	if (!err)
-> >> @@ -612,7 +610,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
-> >>  int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
-> >>  		 struct posix_acl *acl, int type)
-> >>  {
-> >> -	return ntfs_set_acl_ex(mnt_userns, inode, acl, type, 0);
-> >> +	return ntfs_set_acl_ex(mnt_userns, inode, acl, type);
-> >>  }
-> >>  
-> >>  static int ntfs_xattr_get_acl(struct user_namespace *mnt_userns,
-> >> @@ -693,7 +691,7 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
-> >>  
-> >>  	if (default_acl) {
-> >>  		err = ntfs_set_acl_ex(mnt_userns, inode, default_acl,
-> >> -				      ACL_TYPE_DEFAULT, 1);
-> >> +				      ACL_TYPE_DEFAULT);
-> >>  		posix_acl_release(default_acl);
-> >>  	} else {
-> >>  		inode->i_default_acl = NULL;
-> >> @@ -704,7 +702,7 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
-> >>  	else {
-> >>  		if (!err)
-> >>  			err = ntfs_set_acl_ex(mnt_userns, inode, acl,
-> >> -					      ACL_TYPE_ACCESS, 1);
-> >> +					      ACL_TYPE_ACCESS);
-> >>  		posix_acl_release(acl);
-> >>  	}
-> >>  
-> >> @@ -988,7 +986,7 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
-> >>  	}
-> >>  #endif
-> >>  	/* Deal with NTFS extended attribute. */
-> >> -	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
-> >> +	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
-> >>  
-> >>  out:
-> >>  	return err;
-> >> @@ -1006,26 +1004,26 @@ int ntfs_save_wsl_perm(struct inode *inode)
-> >>  
+There is however nothing stopping developers making use of the other
+interrupts. That will then increase the likelihood of problems.
 
-do lock here and ...
+What does help you is that the interrupt register is clear on read. So
+the race condition window is small.
 
-> >>  	value = cpu_to_le32(i_uid_read(inode));
-> >>  	err = ntfs_set_ea(inode, "$LXUID", sizeof("$LXUID") - 1, &value,
-> >> -			  sizeof(value), 0, 0);
-> >> +			  sizeof(value), 0);
-> >>  	if (err)
-> >>  		goto out;
-> >>  
-> >>  	value = cpu_to_le32(i_gid_read(inode));
-> >>  	err = ntfs_set_ea(inode, "$LXGID", sizeof("$LXGID") - 1, &value,
-> >> -			  sizeof(value), 0, 0);
-> >> +			  sizeof(value), 0);
-> >>  	if (err)
-> >>  		goto out;
-> >>  
-> >>  	value = cpu_to_le32(inode->i_mode);
-> >>  	err = ntfs_set_ea(inode, "$LXMOD", sizeof("$LXMOD") - 1, &value,
-> >> -			  sizeof(value), 0, 0);
-> >> +			  sizeof(value), 0);
-> >>  	if (err)
-> >>  		goto out;
-> >>  
-> >>  	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
-> >>  		value = cpu_to_le32(inode->i_rdev);
-> >>  		err = ntfs_set_ea(inode, "$LXDEV", sizeof("$LXDEV") - 1, &value,
-> >> -				  sizeof(value), 0, 0);
-> >> +				  sizeof(value), 0);
+> The software interrupt and handler is not registered
+> based on the GPIO interrupt but rather a HW interrupt which is
+> common to all GPIO pins (irrelevant here, but this is edge triggered):
+> ret = devm_request_irq(dev, irq, mlxbf2_gpio_irq_handler,
+>                                         IRQF_SHARED, name, gs);
 
-unlock here. Of course unlock also in error path.
+IRQF_SHARED implied level. You cannot have a shared interrupt which is
+using edges.
 
-> > 
-> > Is this really that we can lock/unlock same lock 4 times in a row in a
-> > ntfs_set_ea? This does not feel correct. 
-> > 
-> >   Argillander
-> > 
-> 
-> How it was working before d562e901f25d 
-> "fs/ntfs3: Move ni_lock_dir and ni_unlock into ntfs_create_inode":
-> 
-> ntfs_create (lock mutex) =>
-> ntfs_create_inode =>
-> ntfs_save_wsl_perm (we are under lock here) =>
-> return to ntfs_create and unlock
-> 
-> How it works with d562e901f25d:
-> 
-> ntfs_create => 
-> ntfs_create_inode (lock in line 1201 file fs/ntfs3/inode.c 
-> and unlock in line 1557) => 
-> ntfs_save_wsl_perm (we aren't under lock here in line 1605)
-> 
-> So we need to lock 4 times because there are 4 ntfs_set_ea calls.
-> But now there can be done more work between those calls
-> in other threads, locks became more granular.
-
-Yeah but locking and locking 4 times when we can do it just ones is
-quite waste. Please consider my suggestion above or tell what is wrong
-with it. 
-
-  Argillander
-
-> 
-> >>  		if (err)
-> >>  			goto out;
-> >>  	}
-> >> -- 
-> >> 2.33.0
-> >>
-> >>
+      Andrew
