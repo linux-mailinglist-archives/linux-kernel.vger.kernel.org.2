@@ -2,142 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861C841956A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17701419575
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234621AbhI0Nwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:52:50 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:52289 "EHLO pegase2.c-s.fr"
+        id S234652AbhI0N4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:56:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234589AbhI0Nwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:52:49 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HJ3vL1zTlz9sXy;
-        Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UxKXWkRZpdci; Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HJ3vL0qqRz9sXw;
-        Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 074478B76E;
-        Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id nsEoLaYG6VnV; Mon, 27 Sep 2021 15:51:09 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA6948B763;
-        Mon, 27 Sep 2021 15:51:09 +0200 (CEST)
-Subject: Re: [PATCH 1/3] mm: Make generic arch_is_kernel_initmem_freed() do
- what it says
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-References: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
- <87h7e6kvs3.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <f206b856-f5a8-3e47-03cb-49aaa5c521f0@csgroup.eu>
-Date:   Mon, 27 Sep 2021 15:51:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234589AbhI0N4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:56:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD58E60F4F;
+        Mon, 27 Sep 2021 13:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632750877;
+        bh=xcFxy6MyzTR6iVTbX6fBwgGA1J9bnebZi7SNVjHXrfY=;
+        h=Date:From:To:cc:Subject:From;
+        b=sjPxw1S8k2ySZCHM8TSr1gBK5Cqu3b+CQJ1+5HlRgiV8wwX/yOThHS8sL3h3yJ/+W
+         AnGwpOoS+jIwP1LOJ56Ltz+JWJ/LArKMuJw/YYvPKGP8Eqy8WawwXHF0F80Ailtz11
+         5TSwVIXEpfSeMA8oSBEGtQ1fHuNgOhXpW6Tj3UsMGIesSJ9TcOxdQ6fsRxz+5+vx16
+         oUbBKsflU+ZzLKoX0U7Y6AnX+Q3G2W8mcEji2ASznyqlXwKxX20DCx7iDU5MTKiaZA
+         YQLMfllJIzd3pCR1E0KaXpEcfuec7S0ulzi0fXoH1KhkG8IZrK4B0ZspvdY5h5xaMA
+         ltH0D0MCokAKw==
+Date:   Mon, 27 Sep 2021 15:54:34 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] HID fixes
+Message-ID: <nycvar.YFH.7.76.2109271551130.15944@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <87h7e6kvs3.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Linus,
 
+please pull from
 
-Le 27/09/2021 à 15:11, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Commit 7a5da02de8d6 ("locking/lockdep: check for freed initmem in
->> static_obj()") added arch_is_kernel_initmem_freed() which is supposed
->> to report whether an object is part of already freed init memory.
->>
->> For the time being, the generic version of arch_is_kernel_initmem_freed()
->> always reports 'false', allthough free_initmem() is generically called
->> on all architectures.
->>
->> Therefore, change the generic version of arch_is_kernel_initmem_freed()
->> to check whether free_initmem() has been called. If so, then check
->> if a given address falls into init memory.
->>
->> In order to use function init_section_contains(), the fonction is
->> moved at the end of asm-generic/section.h
->>
->> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   include/asm-generic/sections.h | 31 +++++++++++++++++--------------
->>   1 file changed, 17 insertions(+), 14 deletions(-)
->>
->> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
->> index d16302d3eb59..d1e5bb2c6b72 100644
->> --- a/include/asm-generic/sections.h
->> +++ b/include/asm-generic/sections.h
->> @@ -172,4 +158,21 @@ static inline bool is_kernel_rodata(unsigned long addr)
->>   	       addr < (unsigned long)__end_rodata;
->>   }
->>   
->> +/*
->> + * Check if an address is part of freed initmem. This is needed on architectures
->> + * with virt == phys kernel mapping, for code that wants to check if an address
->> + * is part of a static object within [_stext, _end]. After initmem is freed,
->> + * memory can be allocated from it, and such allocations would then have
->> + * addresses within the range [_stext, _end].
->> + */
->> +#ifndef arch_is_kernel_initmem_freed
->> +static inline int arch_is_kernel_initmem_freed(unsigned long addr)
->> +{
->> +	if (system_state < SYSTEM_RUNNING)
->> +		return 0;
->> +
->> +	return init_section_contains((void *)addr, 1);
->> +}
->> +#endif
-> 
-> This will return an incorrect result for a short period during boot
-> won't it?
-> 
-> See init/main.c:
-> 
-> static int __ref kernel_init(void *unused)
-> {
-> 	...
-> 	free_initmem();			<- memory is freed here
-> 	mark_readonly();
-> 
-> 	/*
-> 	 * Kernel mappings are now finalized - update the userspace page-table
-> 	 * to finalize PTI.
-> 	 */
-> 	pti_finalize();
-> 
-> 	system_state = SYSTEM_RUNNING;
-> 
-> 
-> After free_initmem() we have address ranges that are now freed initmem,
-> but arch_is_kernel_initmem_freed() continues to return 0 (false) for all
-> addresses, until we update system_state.
-> 
-> Possibly that doesn't matter for any of the current callers, but it
-> seems pretty dicey to me.
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
 
-Yes I saw it but as function core_kernel_text() uses that criteria for 
-deciding whether a given init text address is valid or not, I thought it 
-was just ok.
+to receive HID subsystem fixes.
 
-Should we add an intermediate state called for exemple 
-SYSTEM_FREEING_INIT just before SYSTEM_RUNNING ?
+=====
+- NULL pointer dereference fixes in amd_sfh driver (Basavaraj Natikar, 
+  Evgeny Novikov)
+- data processing fix for hid-u2fzero (Andrej Shadura)
+- fix for out-of-bounds write in hid-betop (F.A.Sulaiman)
+- new device IDs / device-specific quirks
+=====
 
-Christophe
+Thanks.
+
+----------------------------------------------------------------
+Andrej Shadura (1):
+      HID: u2fzero: ignore incomplete packets without data
+
+Basavaraj Natikar (1):
+      HID: amd_sfh: Fix potential NULL pointer dereference
+
+Evgeny Novikov (1):
+      HID: amd_sfh: Fix potential NULL pointer dereference
+
+F.A.Sulaiman (1):
+      HID: betop: fix slab-out-of-bounds Write in betop_probe
+
+Joshua-Dickens (1):
+      HID: wacom: Add new Intuos BT (CTL-4100WL/CTL-6100WL) device IDs
+
+Mizuho Mori (1):
+      HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
+
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.c |  8 ++++----
+ drivers/hid/hid-apple.c                |  7 +++++++
+ drivers/hid/hid-betopff.c              | 13 ++++++++++---
+ drivers/hid/hid-u2fzero.c              |  4 +++-
+ drivers/hid/wacom_wac.c                |  8 ++++++++
+ 5 files changed, 32 insertions(+), 8 deletions(-)
+
+-- 
+Jiri Kosina
+SUSE Labs
+
