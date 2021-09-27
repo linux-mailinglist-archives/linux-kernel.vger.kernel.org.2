@@ -2,150 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F11D418D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 03:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B89418D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 03:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhI0Bo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 21:44:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39279 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232289AbhI0Bo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 21:44:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="211633428"
-X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
-   d="scan'208";a="211633428"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 18:43:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
-   d="scan'208";a="475750354"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 26 Sep 2021 18:43:18 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] iommu/vt-d: Check FL and SL capability sanity in
- scalable mode
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210926114535.923263-1-baolu.lu@linux.intel.com>
- <20210926114535.923263-3-baolu.lu@linux.intel.com>
- <BN9PR11MB5433AF7EE90A4A406E8B1D6E8CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <3237dbe8-089b-a159-2c40-4e6a04f0ae8d@linux.intel.com>
-Date:   Mon, 27 Sep 2021 09:39:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232405AbhI0Bmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 21:42:50 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:20627 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232392AbhI0Bmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 21:42:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1632706872; x=1664242872;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xJ0TLHwb9tSGKFai8gOTtlCcwirLmQjZkSZn+OmDpkI=;
+  b=j0BYjf5Ulk8E3mvqPz2nJjLb44kDMpdtH9VujN1fjll4P4q9x70Wq4QV
+   f9BO34L024UP7lDPGaWE4f9Ah934jarjAGe+ifimAOIRNXfVvfsRzUhuw
+   zWOZDM3q0mdivrU63+PY2N16j12jimppqEhpNJXVwUkfLEBJ1cyNdsXa+
+   KFEeKCslN0PV8jrxcyRTDjykfNf+lSZW17vBwLiXtdf9BRr0ZT2zOty+v
+   2bAM4oQpLrSUthxt21OnenU5xWRhYvffVDKkiQXO9Rr/z4J/WD37B49Nt
+   xPdNE00ALDlvVpW9jI5oGGnx0k3d+z5MWmr2wL3ac92dvwqGeg5bMT0bk
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,325,1624291200"; 
+   d="scan'208";a="180083659"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 27 Sep 2021 09:41:10 +0800
+IronPort-SDR: t5ktFlZ6U/DolmiOqx6ui6P4wMmPmJbGccebCsbnMLSj5WAS8s9DiiAHjCzQyKW27aSE8MK175
+ 66fgpPLEIS1lhVcGD9yIcsVqPHKjxLTKgUvIro/KdEuuN4vVDq3qN5afjVdPDEX8oezGCaVSAS
+ zqXJ7i/KcONBFr3Sg+1pECr6jarZpMzO00GyKuRFLrwZ2k9xbmLMjmGCm7gS7PSASGgUYyM4YJ
+ WGBGgcGZ1Yx33hENWDCO6BK7csmp1Y++EdFLGSgFBkB8dPBti51/F5x2Vbb/ZrRPuDunK902/r
+ sV4EB36IMKJGoFkXNI3d+XRb
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 18:15:44 -0700
+IronPort-SDR: OKOd8496ViBt9YRWkSniVK5jqQo9VTH6491fgoDRnZWDFfx2smcR/3iZ4WuW8AWb2RLi4kcex7
+ McjrvI2M0vhzMzWIz98Aihk1hJsydrB6ZJFlPT+q8pcXweB+06DE7NeL8qAHbk3Xuz/zIHYvQ5
+ ul60BxRlgDhqdGXHokCLjid2T2qvrwgPyIeuR5/AQ5lKrveVSbnYYtLmwf+NxDFgfawtknoJoh
+ 9Cna5B17Kd7bSqXVuouqz+d0KinEKVwuy/QQBSq3aLp5YVhj9b0xXYDAdQzHPym6z+2OmRUeAu
+ wIw=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 18:41:11 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HHlj20qq7z1SHw4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 18:41:10 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1632706868; x=1635298869; bh=xJ0TLHwb9tSGKFai8gOTtlCcwirLmQjZkSZ
+        n+OmDpkI=; b=npb96tVOh2amL4wcWfcn8zEsxjLX1X7F3RZ7pcp3TvJdX5eKIWy
+        ENOdmUNDhyk8NhAPkrtcKIlgvbI7+ti2G3ZKmiE7mTgK7ExDNoEyKPWmx4pnelEy
+        EGdB1++rDYiSdenFumsBFr081L2FoQ2NG9yyhHtjHr2GPx89Hx+VrmVslRSK4MWg
+        XgTtuRJ6jAFtNY45IJE0xPzy6CRA6vX9N18kY2PKYxIqg+9Y4k2F+sIw1VgODh45
+        eQ7/dOSe98QZh96mYcoWjWixxq1BCNv9RBj/WixHeth67mi1cB+HcikkY/TA6CJJ
+        hEsrG2D910B8cSZrdsVOdajhSMhGN1i7hiQ==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Lp4KNzZRWolq for <linux-kernel@vger.kernel.org>;
+        Sun, 26 Sep 2021 18:41:08 -0700 (PDT)
+Received: from [10.89.85.1] (c02drav6md6t.dhcp.fujisawa.hgst.com [10.89.85.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HHlhy0bYrz1RvTg;
+        Sun, 26 Sep 2021 18:41:05 -0700 (PDT)
+Message-ID: <2f933d26-541c-06eb-e5d3-336c05f31f1d@opensource.wdc.com>
+Date:   Mon, 27 Sep 2021 10:41:04 +0900
 MIME-Version: 1.0
-In-Reply-To: <BN9PR11MB5433AF7EE90A4A406E8B1D6E8CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.1
+Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
 Content-Language: en-US
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Howells <dhowells@redhat.com>, hch@lst.de,
+        trond.myklebust@primarydata.com, Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, darrick.wong@oracle.com,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <YU84rYOyyXDP3wjp@casper.infradead.org>
+ <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
+ <2396106.1632584202@warthog.procyon.org.uk>
+ <YU9X2o74+aZP4iWV@casper.infradead.org>
+ <5fde9167-6f8b-c698-f34d-d7fafd4219f7@opensource.wdc.com>
+ <20210927012527.GF1756565@dread.disaster.area>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <20210927012527.GF1756565@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 9:33 AM, Tian, Kevin wrote:
->> From: Tian, Kevin
->> Sent: Monday, September 27, 2021 9:30 AM
->>
->>> From: Tian, Kevin
->>> Sent: Monday, September 27, 2021 9:12 AM
+On 2021/09/27 10:25, Dave Chinner wrote:
+> On Mon, Sep 27, 2021 at 08:08:53AM +0900, Damien Le Moal wrote:
+>> On 2021/09/26 2:09, Matthew Wilcox wrote:
+>>> On Sat, Sep 25, 2021 at 04:36:42PM +0100, David Howells wrote:
+>>>> Matthew Wilcox <willy@infradead.org> wrote:
+>>>>
+>>>>> On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
+>>>>>> Delete the BIO-generating swap read/write paths and always use ->swap_rw().
+>>>>>> This puts the mapping layer in the filesystem.
+>>>>>
+>>>>> Is SWP_FS_OPS now unused after this patch?
+>>>>
+>>>> Ummm.  Interesting question - it's only used in swap_set_page_dirty():
+>>>>
+>>>> int swap_set_page_dirty(struct page *page)
+>>>> {
+>>>> 	struct swap_info_struct *sis = page_swap_info(page);
+>>>>
+>>>> 	if (data_race(sis->flags & SWP_FS_OPS)) {
+>>>> 		struct address_space *mapping = sis->swap_file->f_mapping;
+>>>>
+>>>> 		VM_BUG_ON_PAGE(!PageSwapCache(page), page);
+>>>> 		return mapping->a_ops->set_page_dirty(page);
+>>>> 	} else {
+>>>> 		return __set_page_dirty_no_writeback(page);
+>>>> 	}
+>>>> }
 >>>
->>>> From: Lu Baolu <baolu.lu@linux.intel.com>
->>>> Sent: Sunday, September 26, 2021 7:46 PM
->>>>
->>>> An iommu domain could be allocated and mapped before it's attached to
->>>> any
->>>> device. This requires that in scalable mode, when the domain is allocated,
->>>> the format (FL or SL) of the page table must be determined. In order to
->>>> achieve this, the platform should support consistent SL or FL capabilities
->>>> on all IOMMU's. This adds a check for this and aborts IOMMU probing if it
->>>> doesn't meet this requirement.
+>>> I suspect that's no longer necessary.  NFS was the only filesystem
+>>> using SWP_FS_OPS and ...
 >>>
->>> Is this a must? Looks the requirement comes from how the current code
->>> is implemented. It sets DOMAIN_FLAG_USE_FIRST_LEVEL flag in
->>> alloc_domain. But actually the pgtable is not allocated until the 1st device
->>> is attached. If this understanding is correct, you can also postpone the flag
->>> setting until pgtable is actually allocated.
->>
->> Baolu explained to me that RMRR regions are mapped before device
->> attach. So this check is necessary
->>
+>>> fs/nfs/file.c:  .set_page_dirty = __set_page_dirty_nobuffers,
 >>>
->>> of course how to handle inconsistent IOMMU capabilities is another
->>> orthogonal problem. Addressing it should not be only applied to SL/FL
->>> difference. especially this patch doesn't check consistency. it just
->>> checks that an IOMMU must support either SL or FL which doesn't
->>> match the commit msg here.
->>
->> and the overall inconsistency check mechanism is already in place.
->> and the logic here just extends it to cover SL/FL. Given that,
->>
->> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
->>
->>
+>>> so it's not like NFS does anything special to reserve memory to write
+>>> back swap pages.
 >>>
+>>>>> Also, do we still need ->swap_activate and ->swap_deactivate?
 >>>>
->>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>>> ---
->>>>   drivers/iommu/intel/cap_audit.h |  1 +
->>>>   drivers/iommu/intel/cap_audit.c | 13 +++++++++++++
->>>>   2 files changed, 14 insertions(+)
+>>>> f2fs does quite a lot of work in its ->swap_activate(), as does btrfs.  I'm
+>>>> not sure how necessary it is.  cifs looks like it intends to use it, but it's
+>>>> not fully implemented yet.  zonefs and nfs do some checking, including hole
+>>>> checking in nfs's case.  nfs also does some setting up for the sunrpc
+>>>> transport.
 >>>>
->>>> diff --git a/drivers/iommu/intel/cap_audit.h
->>>> b/drivers/iommu/intel/cap_audit.h
->>>> index 74cfccae0e81..d07b75938961 100644
->>>> --- a/drivers/iommu/intel/cap_audit.h
->>>> +++ b/drivers/iommu/intel/cap_audit.h
->>>> @@ -111,6 +111,7 @@ bool intel_cap_smts_sanity(void);
->>>>   bool intel_cap_pasid_sanity(void);
->>>>   bool intel_cap_nest_sanity(void);
->>>>   bool intel_cap_flts_sanity(void);
->>>> +bool intel_cap_slts_sanity(void);
->>>>
->>>>   static inline bool scalable_mode_support(void)
->>>>   {
->>>> diff --git a/drivers/iommu/intel/cap_audit.c
->>>> b/drivers/iommu/intel/cap_audit.c
->>>> index b12e421a2f1a..040e4ae0e42b 100644
->>>> --- a/drivers/iommu/intel/cap_audit.c
->>>> +++ b/drivers/iommu/intel/cap_audit.c
->>>> @@ -163,6 +163,14 @@ static int cap_audit_static(struct intel_iommu
->>>> *iommu, enum cap_audit_type type)
->>>>   			check_irq_capabilities(iommu, i);
->>>>   	}
->>>>
->>>> +	/*
->>>> +	 * If the system is sane to support scalable mode, either SL or FL
->>>> +	 * should be sane.
->>>> +	 */
->>>> +	if (intel_cap_smts_sanity() &&
->>>> +	    !intel_cap_flts_sanity() && !intel_cap_slts_sanity())
->>>> +		return -EFAULT;
+>>>> btrfs, cifs, f2fs and nfs all supply ->swap_deactivate() to undo the effects
+>>>> of the activation.
+>>>
+>>> Right ... so my question really is, now that we're doing I/O through
+>>> aops->direct_IO (or ->swap_rw), do those magic things need to be done?
+>>> After all, open(O_DIRECT) doesn't do these same magic things.  They're
+>>> really there to allow the direct-to-BIO path to work, and you're removing
+>>> that here.
+>>
+>> For zonefs, ->swap_activate() checks that the user is not trying to use a
+>> sequential write only file for swap. Swap cannot work on these files as there
+>> are no guarantees that the writes will be sequential.
 > 
-> btw this should not be -EFAULT.
+> iomap_swapfile_activate() is used by ext4, XFS and zonefs. It checks
+> there are no holes in the file, no shared extents, no inline
+> extents, the swap info block device matches the block device the
+> extent is mapped to (i.e. filesystems can have more than one bdev,
+> swapfile only supports files on sb->s_bdev), etc.
 
-Agreed. I will change it to -ENOTSUPP.
-
-Best regards,
-baolu
+OK. But I was referring to the additional check in zonefs_swap_activate() before
+iomap_swapfile_activate() is called. We must prevent that function from being
+called for a full sequential write only zone file since such file will pass all
+checks (no hole, all extents written etc) but cannot be used for swap since it
+is not writtable when full (no overwrites allowed in sequential zones).
 
 > 
->>>> +
->>>>   out:
->>>>   	rcu_read_unlock();
->>>>   	return 0;
->>>> @@ -203,3 +211,8 @@ bool intel_cap_flts_sanity(void)
->>>>   {
->>>>   	return ecap_flts(intel_iommu_ecap_sanity);
->>>>   }
->>>> +
->>>> +bool intel_cap_slts_sanity(void)
->>>> +{
->>>> +	return ecap_slts(intel_iommu_ecap_sanity);
->>>> +}
->>>> --
->>>> 2.25.1
+> Also, I noticed, iomap_swapfile_add_extent() filters out extents
+> that are smaller than PAGE_SIZE, and aligns larger extents to
+> PAGE_SIZE. This allows ensures that when fs block size != PAGE_SIZE
+> that only a single IO per page being swapped is required. i.e. the
+> DIO path may change the "one page, one bio, one IO" behaviour that
+> the current swapfile mapping guarantees.
 > 
+> Cheers,
+> 
+> Dave.
+> 
+
+
+-- 
+Damien Le Moal
+Western Digital Research
