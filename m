@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC8C419FF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D130419FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236916AbhI0URJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236763AbhI0URI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:17:08 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45395C061575;
-        Mon, 27 Sep 2021 13:15:30 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f088a0023fd899c9252ef55.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:23fd:899c:9252:ef55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 997FF1EC069C;
-        Mon, 27 Sep 2021 22:15:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632773724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9fgz9ufaSd11gMVgWCc5Z6EQNVl50vlDQQ3NXzL1vqU=;
-        b=JRbmcAKna1rdBafGBmbNM70lWbZ2NcFnIoaivEnDoEvjoZRkuMXLQuc7c3zrT2p28o8eux
-        RJWIlpqw25iZJWt8Iwzrbj9azNQfON5k2zI/X+LbsAoaYWdsnu5ilTdvOH06W8PUqrrQ40
-        xhq6k1P2opqwaPcJxDwHhMhGrENKyeg=
-Date:   Mon, 27 Sep 2021 22:15:18 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated
- before error simulation
-Message-ID: <YVImVgsxyfQO7TGI@zn.tnic>
-References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
- <YU2Lm+11Pqg/RBK3@zn.tnic>
- <60d4f6be-76f7-e4b6-6fb5-2af78b01d32d@amd.com>
+        id S236967AbhI0URn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:17:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236763AbhI0URl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:17:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46BD5611C3;
+        Mon, 27 Sep 2021 20:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632773763;
+        bh=Lb3LIgfAEjVXdf1vE2V7OoMMbogeWMravjEabJ1Nxyg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aoqynUkGyB6ZPUI0PZbhRVWrRQEh4dUFl+HnGRbJEjz36swl07OI+waO5juXrxZEL
+         jHlAKLJtp7vLEn53dGPq9ybdvqoV7skp3bnJ2v0dt7b3LCLaWszZoJwfgXGV5CewIZ
+         EeT9Puax/p5vO3xFfjNQpP/s5z+vV6IucH/tDVc9OrhV9apJ4xfqmWfbZVQ6mT6zds
+         T7V/1iyHvtmaHFbCozBGLs87R9buQKkqhGe1GFJbwuhVxRAw/14pw6aQABaZ9IXQ/3
+         OdqLZFHV5ZJBQxWkAwNJ0thZGMxGk74lNv+sDueBnQKqvqp7vbKRWok7c77AtHcBAs
+         PL2/kpsfVk1jA==
+Received: by mail-wr1-f53.google.com with SMTP id g16so54027899wrb.3;
+        Mon, 27 Sep 2021 13:16:03 -0700 (PDT)
+X-Gm-Message-State: AOAM533A9Dlo5xlQ9wTe8lwQ5Rw/y18zWiNA8hEYg0fKcAx9F0YYwwjL
+        WQIZl1vHv7uaSF3bXhgVCcdRMt2ZOCzYk9VWg9E=
+X-Google-Smtp-Source: ABdhPJxhSUG+xfsMcnYBJG/aU9zQ/jW83Rbf6e2ezlqzSM1qdDuC1ur8sa8pPTTU3lbMghJJfkyUaLecI/p3sCcMSis=
+X-Received: by 2002:a5d:6cb4:: with SMTP id a20mr1431020wra.428.1632773761805;
+ Mon, 27 Sep 2021 13:16:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <60d4f6be-76f7-e4b6-6fb5-2af78b01d32d@amd.com>
+References: <20210927152412.2900928-1-arnd@kernel.org> <YVIg9CxJGaJr1vpp@ripper>
+In-Reply-To: <YVIg9CxJGaJr1vpp@ripper>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 27 Sep 2021 22:15:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1fEuFsQVY9b1oGdTOHzr8pu9wvrSBCMn2iOvgWqtHNnA@mail.gmail.com>
+Message-ID: <CAK8P3a1fEuFsQVY9b1oGdTOHzr8pu9wvrSBCMn2iOvgWqtHNnA@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:51:56PM -0500, Smita Koralahalli Channabasappa wrote:
-> Can you please elaborate on this? I'm not sure if I understood this
-> right. Should I read the ipid file to verify that the user has input
-> proper ipid? If ipid file reads zero then do rdmsrl_on_cpu?
+On Mon, Sep 27, 2021 at 9:52 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> On Mon 27 Sep 08:22 PDT 2021, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> >  - To avoid a circular dependency chain involving RESET_CONTROLLER
+> >    and PINCTRL_SUNXI, change the 'depends on RESET_CONTROLLER' in
+> >    the latter one to 'select'.
+>
+> Can you please help me understand why this is part of the same patch?
 
-No, on a write to the ipid file you should do that checking and write if
-the bank is populated or fail the write otherwise. And you should put
-all that code in inj_bank_set() - that's why I say "on a write to the
-ipid file".
+This can be done as a preparatory patch if we decide to do it this way,
+for the review it seemed better to spell out that this is required.
 
-And instead of boot_cpu_has() you should use cpu_feature_enabled().
+I still hope that we can avoid adding another 'select RESET_CONTROLLER'
+if someone can figure out what to do instead.
 
-Makes sense?
+The problem here is that QCOM_SCM selects RESET_CONTROLLER,
+and turning that into 'depends on' would in turn mean that any driver that
+wants to select QCOM_SCM would have to have the same RESET_CONTROLLER
+dependency.
 
--- 
-Regards/Gruss,
-    Boris.
+An easier option might be to find a way to build QCOM_SCM without
+RESET_CONTROLLER for compile testing purposes. I don't know
+what would break from that.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+     Arnd
