@@ -2,88 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6D24198B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8064198BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhI0QRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:17:11 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54790 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbhI0QRK (ORCPT
+        id S235363AbhI0QSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235373AbhI0QSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:17:10 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id C8AD61F42FE9
-Subject: Re: next/master bisection: baseline.login on qemu_arm-vexpress-a9
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <614ad319.1c69fb81.2a0c1.4782@mx.google.com>
- <8d6223d2-8ca7-0373-bb49-b62894e5fad7@collabora.com>
- <CAL_JsqJ9fDXkVgcXTiO+NM9T7OKO+p43NGmJPRvvLi3-_Bd4dQ@mail.gmail.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <1e8409b3-0649-5d7c-da3f-911880b15c2e@collabora.com>
-Date:   Mon, 27 Sep 2021 18:15:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 27 Sep 2021 12:18:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F7AC061575;
+        Mon, 27 Sep 2021 09:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UgsPp2q6Gx3KrsOata6iPHfIDOHhSAz68nEiT/7q9us=; b=qGudGH/afrOzkzqnuDCTW95KL6
+        ncew57BzBi7/M6JN3tpoDfC5lMljDwByukZkFsLNz6ASnlKdwWCz5MOAUNQlE22aFQPKwG4tx+Isr
+        hYCL4l9XVK3ovHiP/B+bkiG0153FJR9ShmbucpflFSZY8S4tqaouP0FgwkXVv1xgxZUYnejeKxebp
+        XI5RXKa34qQpKGbkQEYULpUMFFijttxkFBszn04DBUta46Z98TpeVtv7cdjXV2Y9xvUe01+1HaOeB
+        f5a/4tWzfwzMAQod1Sfcfxr2EIyhwXW+OMAn77wQUka6vt2QCnWrUzkvVVDSwk/vZvMqb5iTerLsS
+        ls9wSOuQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUtIA-009vH2-Mi; Mon, 27 Sep 2021 16:16:05 +0000
+Date:   Mon, 27 Sep 2021 17:15:46 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Hamza Mahfooz <someguy@effective-light.com>
+Cc:     linux-kernel@vger.kernel.org, Benjamin LaHaise <bcrl@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] aio: convert active_reqs into an array
+Message-ID: <YVHuMnfxEgQxB2/i@infradead.org>
+References: <20210927161047.200526-1-someguy@effective-light.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJ9fDXkVgcXTiO+NM9T7OKO+p43NGmJPRvvLi3-_Bd4dQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927161047.200526-1-someguy@effective-light.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2021 21:05, Rob Herring wrote:
-> On Thu, Sep 23, 2021 at 12:28 PM Guillaume Tucker
-> <guillaume.tucker@collabora.com> wrote:
->>
->> Hi Rob,
->>
->> Please see the bisection report below about a boot failure on ARM
->> Versatile Express.
->>
->> Reports aren't automatically sent to the public while we're
->> trialing new bisection features on kernelci.org but this one
->> looks valid.
-> 
-> Have you considered given you have the commit, if there's a Link tag,
-> sending this as a reply to the original patch? That would be a bit
-> easier to find IMO.
+On Mon, Sep 27, 2021 at 12:10:47PM -0400, Hamza Mahfooz wrote:
+> Commit 833f4154ed56 ("aio: fold lookup_kiocb() into its sole caller")
+> suggests that, the fact that active_reqs is a linked-list means aio_kiocb
+> lookups in io_cancel() are inefficient. So, to get faster lookups while
+> maintaining similar characteristics elsewhere, turn active_reqs into an
+> array and keep track of the free indices of the array (so we know which
+> indices are safe to use).
 
-Absolutely, in fact it's also possible to search in Lore for the
-original thread if there's no Link: trailer in the commit.  Then
-if subsequent bisections get run, the bot could reply to
-say "still failing" with new kernel revisions until it's fixed
-and then reply to confirm it is.  That's the plan, there's still
-a bit of work to do to have it all automated though.
-
->> Some more details can be found here, for Cortex A9:
->>
->>   https://linux.kernelci.org/test/case/id/614c36cf0c427f123799a2db/
-> 
-> I should have remembered there's a qemu model... Anyways, sending out
-> a fix in a moment.
-> 
-> The log here was empty. Any reason 'earlycon' is not set here? I also
-> noticed stdout-path is not set on many of the Arm Ltd boards. I'll
-> send a patch for that, too. You really shouldn't have to set the
-> console on the cmdline nowadays unless you want the non-default.
-
-I believe earlycon is not set because it requires specific
-options on different platforms, so there's some configuration
-overhead involved here.  But it's a very good point that has been
-raised in the past, I guess someone needs to take the time to
-look into enabling it properly.  It shouldn't be that hard.
-
-Thanks for the feedback and the quick fix!
-
-Guillaume
+As requested last time: please explain what workload you have where
+cancellation performance actually matters.
