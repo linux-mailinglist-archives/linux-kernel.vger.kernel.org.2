@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D045419A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE02419C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236590AbhI0RKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:10:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
+        id S237933AbhI0R0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:26:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236075AbhI0RId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 561F861205;
-        Mon, 27 Sep 2021 17:06:46 +0000 (UTC)
+        id S237546AbhI0RXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:23:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB5CB613B5;
+        Mon, 27 Sep 2021 17:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762406;
-        bh=mzdbePaieiHmIvDiCquG0lPil8zrri334tBIs2xTySk=;
+        s=korg; t=1632762892;
+        bh=hynGQikisgJ7MtRjGpKUx4LEZ/MlwhPK1EYInONPbf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ikY18oT0BzSUtFgo1IPhhpjIS6vsQyGXUHreaMFHvKK2Bw4ni7JUhM4VEab/V1CMb
-         Inr9WHW0JwPFHV/N7+dbHUCLFfhTFl1u50i7MhhtmjedAT/Wjsr6utp4/xUlDiEg2u
-         N/SFscRs2v9b4dhroswNr+jWiyvjrXH7s9hnpi68=
+        b=CydkNwMJ/pL8V+KvOjosOkHihilHUeRDlaSuR7zGgyA1N5wPJdnNmrxyqc/W5KnDR
+         KN0i++EUS3szvVGclYoMqaJJxJt4h9AFwCQ69bHneWWTlVvqoVKoZidDl2Trs8+s91
+         FldCWwQoU65VJ7tCKmbtDO75JnIrX6YxlNaEn+4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Uwe Brandt <uwe.brandt@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 011/103] USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
-Date:   Mon, 27 Sep 2021 19:01:43 +0200
-Message-Id: <20210927170226.103518576@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Ederson de Souza <ederson.desouza@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        intel-wired-lan@lists.osuosl.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 058/162] igc: fix build errors for PTP
+Date:   Mon, 27 Sep 2021 19:01:44 +0200
+Message-Id: <20210927170235.491648102@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Brandt <uwe.brandt@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 3bd18ba7d859eb1fbef3beb1e80c24f6f7d7596c upstream.
+[ Upstream commit 87758511075ec961486fe78d7548dd709b524433 ]
 
-Add the USB serial device ID for the GW Instek GDM-834x Digital Multimeter.
+When IGC=y and PTP_1588_CLOCK=m, the ptp_*() interface family is
+not available to the igc driver. Make this driver depend on
+PTP_1588_CLOCK_OPTIONAL so that it will build without errors.
 
-Signed-off-by: Uwe Brandt <uwe.brandt@gmail.com>
-Link: https://lore.kernel.org/r/YUxFl3YUCPGJZd8Y@hovoldconsulting.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Various igc commits have used ptp_*() functions without checking
+that PTP_1588_CLOCK is enabled. Fix all of these here.
+
+Fixes these build errors:
+
+ld: drivers/net/ethernet/intel/igc/igc_main.o: in function `igc_msix_other':
+igc_main.c:(.text+0x6494): undefined reference to `ptp_clock_event'
+ld: igc_main.c:(.text+0x64ef): undefined reference to `ptp_clock_event'
+ld: igc_main.c:(.text+0x6559): undefined reference to `ptp_clock_event'
+ld: drivers/net/ethernet/intel/igc/igc_ethtool.o: in function `igc_ethtool_get_ts_info':
+igc_ethtool.c:(.text+0xc7a): undefined reference to `ptp_clock_index'
+ld: drivers/net/ethernet/intel/igc/igc_ptp.o: in function `igc_ptp_feature_enable_i225':
+igc_ptp.c:(.text+0x330): undefined reference to `ptp_find_pin'
+ld: igc_ptp.c:(.text+0x36f): undefined reference to `ptp_find_pin'
+ld: drivers/net/ethernet/intel/igc/igc_ptp.o: in function `igc_ptp_init':
+igc_ptp.c:(.text+0x11cd): undefined reference to `ptp_clock_register'
+ld: drivers/net/ethernet/intel/igc/igc_ptp.o: in function `igc_ptp_stop':
+igc_ptp.c:(.text+0x12dd): undefined reference to `ptp_clock_unregister'
+ld: drivers/platform/x86/dell/dell-wmi-privacy.o: in function `dell_privacy_wmi_probe':
+
+Fixes: 64433e5bf40ab ("igc: Enable internal i225 PPS")
+Fixes: 60dbede0c4f3d ("igc: Add support for ethtool GET_TS_INFO command")
+Fixes: 87938851b6efb ("igc: enable auxiliary PHC functions for the i225")
+Fixes: 5f2958052c582 ("igc: Add basic skeleton for PTP")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ederson de Souza <ederson.desouza@intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc: intel-wired-lan@lists.osuosl.org
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/cp210x.c |    1 +
+ drivers/net/ethernet/intel/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -237,6 +237,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x1FB9, 0x0602) }, /* Lake Shore Model 648 Magnet Power Supply */
- 	{ USB_DEVICE(0x1FB9, 0x0700) }, /* Lake Shore Model 737 VSM Controller */
- 	{ USB_DEVICE(0x1FB9, 0x0701) }, /* Lake Shore Model 776 Hall Matrix */
-+	{ USB_DEVICE(0x2184, 0x0030) }, /* GW Instek GDM-834x Digital Multimeter */
- 	{ USB_DEVICE(0x2626, 0xEA60) }, /* Aruba Networks 7xxx USB Serial Console */
- 	{ USB_DEVICE(0x3195, 0xF190) }, /* Link Instruments MSO-19 */
- 	{ USB_DEVICE(0x3195, 0xF280) }, /* Link Instruments MSO-28 */
+diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+index 82744a7501c7..c11d974a62d8 100644
+--- a/drivers/net/ethernet/intel/Kconfig
++++ b/drivers/net/ethernet/intel/Kconfig
+@@ -335,6 +335,7 @@ config IGC
+ 	tristate "Intel(R) Ethernet Controller I225-LM/I225-V support"
+ 	default n
+ 	depends on PCI
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  This driver supports Intel(R) Ethernet Controller I225-LM/I225-V
+ 	  family of adapters.
+-- 
+2.33.0
+
 
 
