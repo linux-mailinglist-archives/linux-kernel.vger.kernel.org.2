@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A34B4199FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D188F419A86
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhI0RFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:05:55 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:46686 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235770AbhI0RFi (ORCPT
+        id S236553AbhI0RKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236378AbhI0RIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:05:38 -0400
-Received: by mail-ot1-f52.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so23250560ota.13;
-        Mon, 27 Sep 2021 10:03:59 -0700 (PDT)
+        Mon, 27 Sep 2021 13:08:31 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEFAC061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:05:08 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id h3so18378522pgb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cQyqtr+L+VXU+jp3z8c/s+IojY3vui6TA42W1Hb48DM=;
+        b=vv/iQ9yBgKL6nJ3mRDybqrPBvIRybfNL0ZgBsP7UudN27zhewYTQ5I4FSL/1TRG1xN
+         dXVMeYLLM+ryTcaGix5Kw9VIxi60ENhhLCswv9HaMuuDedmgKu9GfQI+nCJGA6g5IFpa
+         O6E55IBK0A+b6o/3hx78DENhOuGE7NKbE2zCVo/BlXgx0yqktSkIgGyf7LlW7TsDgWvv
+         jQMenFDIsRsXr79/iFq3pH2iQEunv+hK4lpVvcHQhHtRstMFsZg0NB3zshWI4qcZQBk+
+         JMxd8pmsbKfqLYQf8XY3m5N5zPymMrDrMesiw0TalivnK2HpBw6Umtk0fMpanUzHjPxn
+         aHLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=C/jjeb5V5zArlx4eFPn95hjOtyLhzqqErbP7ergc4K8=;
-        b=6euDN4uIryCPprIqM2GN3L9NGiz1QbhZg9dKh8oXuZc44dO1L2w2lnnnmFKtGnwH75
-         hauBud+tlYDKjEmafsX4oFIUYccNZQiS+AmT09qCs0HimAkRFL67+LDd/kbQWUBZ00Qn
-         gGvy8ErQzNE24BCw3aGs/xvrGMmNSkZewHjS2ayyIZ77f7NpQvFTbuchJgZvf61wcMX7
-         mGP2luFe8asvitkPERZPtFB9mGW61I1BVg3ZlRpGm6duZsHb+25tUGJKhq5919WEoxEP
-         g5HH389Q8FxsvIVGLBI8CWod/b7/ZvRs12B59M0gGIDUBiRI4PsKPJ4zIz2KsGLTf7z0
-         Y3XQ==
-X-Gm-Message-State: AOAM532AIVh0uv7gnZlm352reNjlVj7vVrqRcqKHzVSPz2/7J4C6Naxd
-        r2e+JVmgyS1XUZ4jk33FmA==
-X-Google-Smtp-Source: ABdhPJwDYK9CtDPFvmcT9FbrW/OuLYcWgNoxrp02aOQ2qkD80fHL9UlbaDaUsTRVgLJ+/kJljMlS6A==
-X-Received: by 2002:a05:6830:2b0e:: with SMTP id l14mr904793otv.201.1632762239188;
-        Mon, 27 Sep 2021 10:03:59 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g4sm311981ooa.44.2021.09.27.10.03.57
+        bh=cQyqtr+L+VXU+jp3z8c/s+IojY3vui6TA42W1Hb48DM=;
+        b=xqF5dyahRy9uQhKzLgOKKlAO+JmYenehAX9mpdRJx6zyH+XPmPJagYVJRPO6gy91sp
+         2pvTpUyaw+WtP16ao6GTqIGpPKOuanBB9uMh2nNtItn7F01gxVyZIj7314wr9a5JR2m9
+         bBMRYxIOGN+Km7U0w/iRIPZMMhlg1/T27qlzcfxN3W4rXyX3oFMQhGMHC6AV1GDsSnpl
+         QDqcTqArYQ16AjmXKyWHGbu8PUGszPtcvEeQQMUIhVVdLTBqDicfGqXxGmYCXdax0uqz
+         bp90YICNjNf7falAFWK/0T9GQxeCE6RYcuyHOoUK7u15RdIVjjxSbdcjJe7tlbvkSJpr
+         Jovw==
+X-Gm-Message-State: AOAM531uF1nipwu8nce/YsRVqJ/vvE9SpaADnPA1hf8pGRnfvVRnA0en
+        TkdP1J5YsatB0OuDUVwU4cPviQ==
+X-Google-Smtp-Source: ABdhPJxNJaRILZu6Oyl6tl/p/ynig5QHQ07oMUSxC74y48fSfYjhGixdkQPdstFvf2a+xg+1/WpiUg==
+X-Received: by 2002:a05:6a00:2d0:b0:446:d18c:9aac with SMTP id b16-20020a056a0002d000b00446d18c9aacmr1098291pft.16.1632762308084;
+        Mon, 27 Sep 2021 10:05:08 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id g24sm17803770pfk.52.2021.09.27.10.05.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 10:03:58 -0700 (PDT)
-Received: (nullmailer pid 3472455 invoked by uid 1000);
-        Mon, 27 Sep 2021 17:03:57 -0000
-Date:   Mon, 27 Sep 2021 12:03:57 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mark Kettenis <kettenis@openbsd.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>,
-        Saenz Julienne <nsaenzjulienne@suse.de>, maz@kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        alyssa@rosenzweig.io, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        linux-pci@vger.kernel.org, sven@svenpeter.dev
-Subject: Re: [PATCH v5 3/4] dt-bindings: pci: Add DT bindings for apple,pcie
-Message-ID: <YVH5fZeIJBRQbU4O@robh.at.kernel.org>
-References: <20210921183420.436-1-kettenis@openbsd.org>
- <20210921183420.436-4-kettenis@openbsd.org>
+        Mon, 27 Sep 2021 10:05:07 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 11:05:05 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tinghan Shen <tinghan.shen@mediatek.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/6] rpmsg: change naming of mediatek rpmsg property
+Message-ID: <20210927170505.GB2837840@p14s>
+References: <20210924033935.2127-1-tinghan.shen@mediatek.com>
+ <20210924033935.2127-6-tinghan.shen@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921183420.436-4-kettenis@openbsd.org>
+In-Reply-To: <20210924033935.2127-6-tinghan.shen@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021 20:34:14 +0200, Mark Kettenis wrote:
-> The Apple PCIe host controller is a PCIe host controller with
-> multiple root ports present in Apple ARM SoC platforms, including
-> various iPhone and iPad devices and the "Apple Silicon" Macs.
-> 
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> ---
->  .../devicetree/bindings/pci/apple,pcie.yaml   | 161 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 162 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> 
+Hi Tinghan,
 
-Applied, thanks!
+On Fri, Sep 24, 2021 at 11:39:34AM +0800, Tinghan Shen wrote:
+> Change from "mtk,rpmsg-name" to "mediatek,rpmsg-name" to sync with the
+> vendor name defined in vendor-prefixes.yaml.
+> 
+> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+> ---
+>  drivers/rpmsg/mtk_rpmsg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rpmsg/mtk_rpmsg.c b/drivers/rpmsg/mtk_rpmsg.c
+> index 96a17ec29140..5b4404b8be4c 100644
+> --- a/drivers/rpmsg/mtk_rpmsg.c
+> +++ b/drivers/rpmsg/mtk_rpmsg.c
+> @@ -183,7 +183,7 @@ mtk_rpmsg_match_device_subnode(struct device_node *node, const char *channel)
+>  	int ret;
+>  
+>  	for_each_available_child_of_node(node, child) {
+> -		ret = of_property_read_string(child, "mtk,rpmsg-name", &name);
+> +		ret = of_property_read_string(child, "mediatek,rpmsg-name", &name);
+
+I have applied patches 1 to 5.  I assume Matthias will pick up patch 6.
+
+Thanks,
+Mathieu
+
+>  		if (ret)
+>  			continue;
+>  
+> -- 
+> 2.18.0
+> 
