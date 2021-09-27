@@ -2,99 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB4941974E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A2D419752
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbhI0PIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:08:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235064AbhI0PIr (ORCPT
+        id S235057AbhI0PJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:09:44 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46938
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234976AbhI0PJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632755229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H2YLjPWLjDxhksfVJJ0b+TgzS3sQ4uenpZKkXE6cLl8=;
-        b=CI15DFoi3XIG0fxC6HpZG6pyA5oOq6qQXCz1annlYGBip6XeSk3NzkehCeJlkzIkUi9HGp
-        JDcV5pFdkBEuUcerEwDz3JZ5DoIiqTJVuoHHYcaxm44gG0wNw9H+alFQ/KH92Dy02qiHGf
-        hH+5RU37+2Zm/nE7Bm8V1SMkSENNy4U=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-B0YnaLSvPCqEOL3NewCjoQ-1; Mon, 27 Sep 2021 11:07:06 -0400
-X-MC-Unique: B0YnaLSvPCqEOL3NewCjoQ-1
-Received: by mail-wm1-f69.google.com with SMTP id a137-20020a1c7f8f000000b0030cda9c0feeso361051wmd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:07:05 -0700 (PDT)
+        Mon, 27 Sep 2021 11:09:42 -0400
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A596A401A9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:08:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632755283;
+        bh=1q/DcpUc3XiR6bWmSAxCheMZIC3a2GduwPENrVEfX+Q=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=eXE/txZpIV2+fxANN9Ox66B3tFfzEY3V0PsootPnsxm1flfq6ePaVAqgPhEWsVJ9t
+         OOqRFF3h1rx+ohaUDw4NjJyrehqoy1FPAQxiyp6LF3Nu5cXRROUPXzKe3kJx5BuBYn
+         Q+78ynW1/R7V5+Tf2qLrDQhfsO2kQigoBX/chXsGRHaeCTQp75EcJ7vnr0uLe2tXTa
+         +DiqlOVR5HMAU8BGtTG6p6C6wYu/Usw+jnwDaXnWxW3pLb9gwlvCpdiL17l/AvDS3Z
+         mtyHKEIfCVehM+JxgjSksge+61RvpoCaQQIN8TzBpRonGTIPW65xHCNKXPT8EfXrGz
+         iM7Iu0k/v/yuQ==
+Received: by mail-pg1-f198.google.com with SMTP id w5-20020a654105000000b002692534afceso13104311pgp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:08:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=H2YLjPWLjDxhksfVJJ0b+TgzS3sQ4uenpZKkXE6cLl8=;
-        b=0myWEMcPdv00ZTkmA9FfUFc24VHLprW+VefZ20m9dWgETFuBUupG31LH7eFgUZo74R
-         E3yvchPypZypi4Jz/ZN/4Y8on225JS3z8rupnZhOCClTo1k4hHlctEA/S13povX10yPP
-         DK7PWbLshtYMHPJtPKmwSI50fAlATe48YLnfXkTp2XigJA3PTiIpZesUJ/w0hZxgCi3L
-         V1oGvCIY4L5bXAzO9pqbYJ82HcZ5Gy0q2XqCWJD7ZVRDV93O56UJGyeCXxDP1Q8qUw9G
-         fFEyaGRjyQJIf+kWIQKYUvwpm0mZUXIJGTN0Sz+RUc7XKwuy5PMe8ZJXB8nme+eaIFQl
-         0uzg==
-X-Gm-Message-State: AOAM5325wOQ9t+xrOOlzBLayUQroed0EuIHQlZ7l3Uwv+nHbEx197ie3
-        oUGuF40xs3zFfWrk9EMbC7cpe4ZacpNlvWFZlrEUu5M4+O+hQw7Xnh6bd+gS9B49fbzyviGff2I
-        MA4H++Db4kc4ObvrwZB9Xfvn/
-X-Received: by 2002:a5d:590a:: with SMTP id v10mr361564wrd.87.1632755224887;
-        Mon, 27 Sep 2021 08:07:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyy5wlKXLyU5BWf9WD/reu/rSzNLdsCLGLJ2WCZuEX7Xkvd9O/Z0HH1Erkz7+dZr/KU55FrDA==
-X-Received: by 2002:a5d:590a:: with SMTP id v10mr361519wrd.87.1632755224672;
-        Mon, 27 Sep 2021 08:07:04 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c654d.dip0.t-ipconnect.de. [91.12.101.77])
-        by smtp.gmail.com with ESMTPSA id f9sm284908wmf.3.2021.09.27.08.07.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 08:07:04 -0700 (PDT)
-Subject: Re: [PATCH v1 0/4] mm/memory_hotplug: full support for
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-References: <20210927150518.8607-1-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d7d4ec92-7b9c-f466-6d3c-cfdd162d1dbf@redhat.com>
-Date:   Mon, 27 Sep 2021 17:07:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1q/DcpUc3XiR6bWmSAxCheMZIC3a2GduwPENrVEfX+Q=;
+        b=ltXMwLs5Gy2eZk8bpHikKg8e0s9Vq/x6u6JVXgv33alq4F1MJ0hDL8TT6u+CIuBXKw
+         KM+GSdi8ftrIZHlqE62FtL4QyDG/REi9PzFQfZmVpNaaDAfQgx1ZbDCLdId8jS19HPqf
+         AeLBSulup3SnRMwngBw3vIO9Du/CqrDHg1gNPeIChLeXMAiEfWg1HF/22anqw4uifcEG
+         y9BcbU0evF9F7to3IZrEJnhGvgfMO9tOArOhlbwhttwUQ4aE81dM3qgGV5lRw5zgUzMC
+         UKq0/O77dey32mWbKbBrPDX7iu1RHv/E/gASHE6bDk5UphQTkdO88BZCzQ/JDPHqxElo
+         rOTg==
+X-Gm-Message-State: AOAM531wC/GjCJsMM9VLz8x/XrK26R8TLoge5P4NRgoXglkioKpDE7zQ
+        XhkoA9fRl2CbLCCIdjx85/4gwjG79Im6c3H4nTacGWABLI+NHUqlJkP1KOObbZrPXUwo49tCE/A
+        kAKcICC+vNLX6Gwv6qCMTDOfi3DnHu7jlCoHJRSigTw==
+X-Received: by 2002:a17:90a:311:: with SMTP id 17mr20487555pje.121.1632755281933;
+        Mon, 27 Sep 2021 08:08:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFzOCZGKP1K5PJtBQasVhwsqVTuP6aOioiRpVP9zX9xcJNqrJjCrwwR7QVLL8geh28dmBKLQ==
+X-Received: by 2002:a17:90a:311:: with SMTP id 17mr20487527pje.121.1632755281710;
+        Mon, 27 Sep 2021 08:08:01 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id i27sm17510152pfq.184.2021.09.27.08.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 08:08:01 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     ath11k@lists.infradead.org
+Cc:     tim.gardner@canonical.com, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ath11k: Remove unused variable in ath11k_dp_rx_mon_merg_msdus()
+Date:   Mon, 27 Sep 2021 09:07:43 -0600
+Message-Id: <20210927150743.19816-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210927150518.8607-1-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intended subject was "[PATCH v1 0/4] mm/memory_hotplug: full support for 
-add_memory_driver_managed() with CONFIG_ARCH_KEEP_MEMBLOCK"
+Coverity complains that a constant variable guards dead code. In fact,
+mpdu_buf is set NULL and never updated.
 
+4834err_merge_fail:
+    	null: At condition mpdu_buf, the value of mpdu_buf must be NULL.
+    	dead_error_condition: The condition mpdu_buf cannot be true.
+CID 92162 (#1 of 1): 'Constant' variable guards dead code (DEADCODE)
+dead_error_line: Execution cannot reach the expression decap_format !=
+  DP_RX_DECAP_TYPE_RAW inside this statement: if (mpdu_buf && decap_forma....
+Local variable mpdu_buf is assigned only once, to a constant value, making it
+  effectively constant throughout its scope. If this is not the intent, examine
+  the logic to see if there is a missing assignment that would make mpdu_buf not
+  remain constant.
+4835        if (mpdu_buf && decap_format != DP_RX_DECAP_TYPE_RAW) {
+
+Fix this by removing mpdu_buf and unreachable code.
+
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: ath11k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ drivers/net/wireless/ath/ath11k/dp_rx.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
+index 9a224817630a..7d57952fd73c 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
+@@ -4740,7 +4740,7 @@ ath11k_dp_rx_mon_merg_msdus(struct ath11k *ar,
+ 			    struct ieee80211_rx_status *rxs)
+ {
+ 	struct ath11k_base *ab = ar->ab;
+-	struct sk_buff *msdu, *mpdu_buf, *prev_buf;
++	struct sk_buff *msdu, *prev_buf;
+ 	u32 wifi_hdr_len;
+ 	struct hal_rx_desc *rx_desc;
+ 	char *hdr_desc;
+@@ -4748,8 +4748,6 @@ ath11k_dp_rx_mon_merg_msdus(struct ath11k *ar,
+ 	struct ieee80211_hdr_3addr *wh;
+ 	struct rx_attention *rx_attention;
+ 
+-	mpdu_buf = NULL;
+-
+ 	if (!head_msdu)
+ 		goto err_merge_fail;
+ 
+@@ -4832,12 +4830,6 @@ ath11k_dp_rx_mon_merg_msdus(struct ath11k *ar,
+ 	return head_msdu;
+ 
+ err_merge_fail:
+-	if (mpdu_buf && decap_format != DP_RX_DECAP_TYPE_RAW) {
+-		ath11k_dbg(ab, ATH11K_DBG_DATA,
+-			   "err_merge_fail mpdu_buf %pK", mpdu_buf);
+-		/* Free the head buffer */
+-		dev_kfree_skb_any(mpdu_buf);
+-	}
+ 	return NULL;
+ }
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.33.0
 
