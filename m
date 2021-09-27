@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21392419FB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3934A419FBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236743AbhI0UFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:05:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39780 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbhI0UE7 (ORCPT
+        id S236757AbhI0UGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236726AbhI0UGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:04:59 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 373C31FF79;
-        Mon, 27 Sep 2021 20:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632772999;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OWyy087kUcLdlyc/fMUCTYpqi5qxNMTXwsGsPPvHgDU=;
-        b=kWibP7IwsPtmLu1Z91YlWpRQCdwjku9jIL9nWyNAlXt52WM/cmjZMpdX6RVSEyAvmYspZe
-        Hvz4gXkWKTESUOeX6ZYKqVRAuFqtd14BOB+lrP/PNqft0q9rAPKq/qYqQxSHouQU67RRQN
-        LQe8zYMxT45IOXgaCreUieFpTycrqB4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632772999;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OWyy087kUcLdlyc/fMUCTYpqi5qxNMTXwsGsPPvHgDU=;
-        b=WWxu+gdW8UEBCsHxKgDJsEOiF45Qv/5XDpNAT1PmVspypr8yqEgnie2RREgD+1bm8EYsAl
-        7MO73hUAa6KcqnBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay1.suse.de (Postfix) with ESMTP id 04D5F25D3E;
-        Mon, 27 Sep 2021 20:03:19 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 31B56DA799; Mon, 27 Sep 2021 22:03:02 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 22:03:02 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, hch@lst.de,
-        trond.myklebust@primarydata.com, Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 9/9] mm: Remove swap BIO paths and only use DIO paths
-Message-ID: <20210927200302.GH9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, hch@lst.de,
-        trond.myklebust@primarydata.com, Jens Axboe <axboe@kernel.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, darrick.wong@oracle.com,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <YU84rYOyyXDP3wjp@casper.infradead.org>
- <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <163250396319.2330363.10564506508011638258.stgit@warthog.procyon.org.uk>
- <2396106.1632584202@warthog.procyon.org.uk>
+        Mon, 27 Sep 2021 16:06:30 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B54CC061575;
+        Mon, 27 Sep 2021 13:04:52 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id ee50so74044843edb.13;
+        Mon, 27 Sep 2021 13:04:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7OX8yMzkk8iAoqm3EQC246sTeS8KMkAo8I3fGOIEk0o=;
+        b=jeaxrflHDslabpblAoWGyJ9CMxArRIOiQ6AgggHNG/E4JAzrSKTRDtxDKupBhU8Gnb
+         0EynIxCVGMXGy3RDx+gtNIuyGHfxNFZJMiistP250SzoxdgpfgtSJPxeEceuz+CDWJEc
+         CFx3lBQ0/esx6ft3FLZ2cIA9KpuAOAC/a0u178ZpC6XK0AD1HtB7mnoi+vxaNi0KpYnj
+         LLQ/AyIaUvj1u4j4Sl0/dtNoBiCRQ55wkJS/FZltVCVZ5dQmFU7n89ePggRQ2jnPvQQM
+         4xaMRaYLxapDhBG89Fudyd7F+FnbZMD7+5S/aNrTazb+TKbdUuZKILc39k9fD6f4CVqZ
+         i0qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7OX8yMzkk8iAoqm3EQC246sTeS8KMkAo8I3fGOIEk0o=;
+        b=IxFuuaAd83fNOMVIGytf+a1zP4TVkx8TQyF8FK6khlGe3wNsAcvf/SDMSfcJBaUnny
+         yoImbu7qvvtzQ2KQGsbDuiUTBx5Euo77Ls2jnyZzhnJxm279cefato8VdAoh9olb2i9R
+         wemqmUalV64nP4o85mThC/479q2CI1UW9xB30ciSYHIh0nG6H3uhb39NeGEm5pURqHhf
+         AJhHEdxSY3g0m0CuthHw89+RmlQm/skS+8Yjbf9VQ4+4ASKJ/4PJ9R0cZoLknL1SGgFU
+         OPyhDlCWXOPX4GCUNUkyh/JAq0MDGsv9kwhEwS/ndKTjuMWwypb27sJmODu11MwTl5iL
+         YTcA==
+X-Gm-Message-State: AOAM532iWGkeFIBvq06QNp6Q1QE/+KAZGYhXhNMKEQWvyoWCb2vAhUiN
+        qHxdD9e+r1rtXEz+ebdTMzveCaAjtO0Lg2vXRpU=
+X-Google-Smtp-Source: ABdhPJzuMhBwzbGpSC0BWzXQTXJ6xTuHcG+6DyWu4ypgvTPZ/5SFkk+EkuN8imBZmoAGRbFBIvfwepGqbgLbw0upOrQ=
+X-Received: by 2002:a17:906:318f:: with SMTP id 15mr2225309ejy.206.1632773090226;
+ Mon, 27 Sep 2021 13:04:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2396106.1632584202@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210921192557.1610709-1-martin.blumenstingl@googlemail.com>
+ <20210921192557.1610709-3-martin.blumenstingl@googlemail.com> <20210927161955.GA2837840@p14s>
+In-Reply-To: <20210927161955.GA2837840@p14s>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 27 Sep 2021 22:04:39 +0200
+Message-ID: <CAFBinCBBoCONAkT97nspipbbkwgLU2RjeQa5rz-MKiwyKoKAqA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
+ AO ARC remote procesor
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, ohad@wizery.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 04:36:42PM +0100, David Howells wrote:
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > On Fri, Sep 24, 2021 at 06:19:23PM +0100, David Howells wrote:
-> > > Delete the BIO-generating swap read/write paths and always use ->swap_rw().
-> > > This puts the mapping layer in the filesystem.
-> > 
-> > Is SWP_FS_OPS now unused after this patch?
-> 
-> Ummm.  Interesting question - it's only used in swap_set_page_dirty():
-> 
-> int swap_set_page_dirty(struct page *page)
-> {
-> 	struct swap_info_struct *sis = page_swap_info(page);
-> 
-> 	if (data_race(sis->flags & SWP_FS_OPS)) {
-> 		struct address_space *mapping = sis->swap_file->f_mapping;
-> 
-> 		VM_BUG_ON_PAGE(!PageSwapCache(page), page);
-> 		return mapping->a_ops->set_page_dirty(page);
-> 	} else {
-> 		return __set_page_dirty_no_writeback(page);
-> 	}
-> }
-> 
-> 
-> > Also, do we still need ->swap_activate and ->swap_deactivate?
-> 
-> f2fs does quite a lot of work in its ->swap_activate(), as does btrfs.  I'm
-> not sure how necessary it is.
+Hi Mathieu,
 
-Yes we still need it for btrfs. Besides checking the conditions similar
-to what iomap_swapfile_activate does on the file itself, we need to
-exclude other operations potentially changing the mapping on the level
-of block groups. This is namely relocation, used to implement several
-other things like resize or balance. There's an exclusion at the
-beginning of btrfs_swap_activate. Right now I don't see how we could
-make sure that the swapfile requirements would be satisfied without it.
+On Mon, Sep 27, 2021 at 6:20 PM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+[...]
+> > +#include <linux/bitfield.h>
+> > +#include <linux/bitops.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/property.h>
+>
+> I moved this just above platform_device.h and applied this set.
+I missed that part - thanks for fixing this up and applying the other
+patch as well!
+
+
+Best regards,
+Martin
