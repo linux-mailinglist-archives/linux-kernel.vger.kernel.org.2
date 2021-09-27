@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04FB419406
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC5C419408
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhI0MUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234241AbhI0MUm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:20:42 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5796C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:19:04 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y26so37181640lfa.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hzKn1PihSVTLBn07NxNCyepUdSFNC9+ZCpNDni2IA0Q=;
-        b=KWWCYxQH7dXXcsSw6KvI24GDz1Mz+bv/Qopn6VTk6MiAZweawv3GE9zHYH9ARkhe22
-         ri8eZzYAQeIv9cwXD+9kv7aVIn70pQV8qt9GAzY0P+jhd039IMUJSlUB8m/Aaq47i2Ij
-         akrLz7+j+8CV5ndOeiGlys/XB2nceb7PPDxWi9FVhTewTyhJnkXeBsONOrZEXBPDw+Qm
-         tGNJ46JZZNpL9kgtaQ13hlHNfuCJQ8e5M/U3SwJKZgI0OdMD4im4VEZmZtQ9nQICv1H7
-         UOb0NQSn1mKE+5yqhLWtJVAml+1r3h9aI9bRLez8J1aZpGNk7a9LTbdnMcoeZHGVYwQG
-         4WZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hzKn1PihSVTLBn07NxNCyepUdSFNC9+ZCpNDni2IA0Q=;
-        b=aYQvAZBaN9jmhMaPClX3cy/5+CE3uO4cSKfF58EMR+iVKeYyiVv6sRvCCygmqC8Bt8
-         uuo9+tg/z3wvc2N9m1ESc6tqyUxPDbfC/Q8ZJNW+7IApi+1f77/i6LSY3L66XegTSL4h
-         x/RU2929xUCSEbCKa8yq4LwzGJO6wfFBd0CXXO8knu1B8OdbDslYVUtLvgDLnzUP7n58
-         pb/WDAgbUY3MZDSiV/Dd955tyCNXOWz/KSKfVbCdJb+F9yvPRMmBkIHIVUOfSe410Qyo
-         W352KR+9g0dETN1L40FSGjCmhszYEKYiZadbdA6sQzd285YcmCiec7XQUt6reIjC1FAU
-         QvcQ==
-X-Gm-Message-State: AOAM530l3G1aKdQ8i/3iQQoG7K+IfpIafWQbYAklB2D4zfJXUZ7OlGFz
-        eU38+ZRD7oYSDz5red/MiCsZ+Q==
-X-Google-Smtp-Source: ABdhPJxb7Hx7XDrSV8+tSwjeT7uO8LkszuIvMqEi+lFexR7KTie06Phg7EB/AEUXzYIGhxWZxNB5OQ==
-X-Received: by 2002:ac2:54a6:: with SMTP id w6mr23291702lfk.61.1632745143223;
-        Mon, 27 Sep 2021 05:19:03 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id d12sm1476888lfs.283.2021.09.27.05.19.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 05:19:02 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 55AD3102FD9; Mon, 27 Sep 2021 15:19:02 +0300 (+03)
-Date:   Mon, 27 Sep 2021 15:19:02 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 2/8] mm/madvise: remove unnecessary check on
- madvise_dontneed_free()
-Message-ID: <20210927121902.r5gslag4nvvseoxo@box>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-3-namit@vmware.com>
- <20210927091143.tn6ediykqycu6rtu@box.shutemov.name>
- <DD025444-B1A2-4470-9069-0072A59427A5@gmail.com>
+        id S234250AbhI0MVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:21:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234073AbhI0MVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:21:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87C0161058;
+        Mon, 27 Sep 2021 12:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632745203;
+        bh=rmYi1PvPT1PYGiIrRbsoqUqXMv2Mf8xdCMrtisP77f8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a4PnTyc+sw14XVzQYouRB33jI9JBDcpSCFSVPIqcMZAwh1kPwxjMkMl1VbpWmWFCQ
+         ZIPPJyRMw//6bUf9KtqQ92XXzx9ECuMO/kM/Ty70tUAr1mf5FB3zhyQtpJ6ky57GfP
+         pF6pF80dgXOHevWXfr1K8HKNRJxA6Xf1w7rQWKzCoeqk1luwGAMkqhQJQD2Loxf4ER
+         Y9wrOFVDEKUlOs7r7e8/ENkwttHv7HOenm5LVFfmZFQbPVHz7ArAupgisbxwu5eyl1
+         voL6Xbs/QWhoYLuXQAJOjyQcAjCq4RwhJ+ZoVthtUgUMpDMwZJbGeYgqhYN26Zklpi
+         3LnFhuX4T1xPg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Huang Rui <ray.huang@amd.com>, shaoyunl <shaoyun.liu@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] drm/amdgpu: fix clang out-of-range warning
+Date:   Mon, 27 Sep 2021 14:19:45 +0200
+Message-Id: <20210927121958.941637-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DD025444-B1A2-4470-9069-0072A59427A5@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:05:47AM -0700, Nadav Amit wrote:
-> Having said that, if you want, I can turn this condition into
-> WARN_ON_ONCE() or VM_BUG_ON(), although I really see no reason to
-> do so.
+From: Arnd Bergmann <arnd@arndb.de>
 
-BUILD_BUG() should be fine here.
+clang-14 points out that comparing an 'unsigned int' against a large
+64-bit constantn is pointless:
 
+drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:1206:18: error: result of comparison of constant 4294967296 with expression of type 'resource_size_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+                    res->start > 0x100000000ull)
+
+Rephrase the comparison using the upper_32_bits() macro, which should
+keep it legible while avoiding the warning.
+
+Fixes: 31b8adab3247 ("drm/amdgpu: require a root bus window above 4GB for BAR resize")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index ab3794c42d36..741a55031ca1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -1203,7 +1203,7 @@ int amdgpu_device_resize_fb_bar(struct amdgpu_device *adev)
+ 
+ 	pci_bus_for_each_resource(root, res, i) {
+ 		if (res && res->flags & (IORESOURCE_MEM | IORESOURCE_MEM_64) &&
+-		    res->start > 0x100000000ull)
++		    upper_32_bits(res->start) != 0)
+ 			break;
+ 	}
+ 
 -- 
- Kirill A. Shutemov
+2.29.2
+
