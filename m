@@ -2,128 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0A541946E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC2E41946C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhI0MlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:41:18 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:49543 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234333AbhI0MlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:41:16 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7E2665C0101;
-        Mon, 27 Sep 2021 08:39:38 -0400 (EDT)
-Received: from imap46 ([10.202.2.96])
-  by compute4.internal (MEProxy); Mon, 27 Sep 2021 08:39:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=cSK1Y29NFVS0Ah7Kq0hNWcYUvsD0
-        TEDqK24Satd6ZL4=; b=IRRQBZbcablRzNL9foAjy3v4B6vzhX66iFYWOpq6oQa6
-        7v2348YsiqY9D+WT5/XblTbXMce5FFXKEn36kvpPn4W6a72v/nmhkEvbDM++vmEM
-        yNoQ6lP7KHL8AaZ94RDtI+DMWo83gjCpUmMRjwNXzZRo+aQaniQR+qxyqMVcHJHl
-        1s0q7wUZ3fGhSY/840shyjzUBjP/SweJP/GWEjJ8f+VCxuRLPCAU3umAxcYQhRKS
-        8MWhZWnxGrhO0CSQCWbi+y/0MuUKgsoUx/swjgtcb2UmmhAQRb6gbNE74T9Rfslq
-        YAqX6i17tl9CMOtOu4HIQ56LASEnL4CH3dLtb+8/ig==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=cSK1Y2
-        9NFVS0Ah7Kq0hNWcYUvsD0TEDqK24Satd6ZL4=; b=uwPSZzzMOOVIRqKPIDMvyq
-        N8J9Lg35N2C6f/+xQgctqn0aHxdeiqSfAPKLwsc9BaW28e35gXppHgCBohL7xJu9
-        MisptuCdyrS0y/blsEQrNtV11t18RYwqy32GRBkEBVxK5yotDHF/Mcbv9tuVcGDr
-        pPh5Sn8GPHODE+nv7ctHfZvsvU+0uVgyPtvBMblqjkuvdg2Hp897h3wg5a1doE4B
-        liTcjiJyOVGDCmBxXEPF2/807P+PDSbOMBVhAWX7LG48qAft6spXNd4Hc0BCNqJE
-        aYw8N3zWNS/4ApTfU38kCtsxJ7dhoIAR2eLUOLxGXg01bMnv+K3vxrXrpKzLnlVA
-        ==
-X-ME-Sender: <xms:irtRYZzB9mJBP_FrjN_YiFEOTa6vMbrEpUzZUlg5DC0hzp2JOYtyLQ>
-    <xme:irtRYZSzyOD0KdhAePiV25T5l7tFj_PRxo7qnxivkIr5_n7_eF28hQULCDIuGi0hb
-    oURjE0VRgZDNcehQw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejkedgheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepofgfggfkjghffffhvffu
-    tgesthdtredtreertdenucfhrhhomhepfdflohhhnhcuvfhhohhmshhonhdfuceojhhohh
-    hnsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdrtghomhdrrghuqeenucggtffr
-    rghtthgvrhhnpeetieeileetudfhkeefleetveefuddutddugfegveeufeeiveeugfefud
-    duueduveenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrihhonecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhohhhnse
-    hjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdrtghomhdrrghu
-X-ME-Proxy: <xmx:irtRYTXGm-KTE0gQV2OZ9oY53Max3ccVECn3i7SRuokpCoPFxO92LA>
-    <xmx:irtRYbhuJmRCy7ymgkqMivfz1qeYWIS_CsEuFdu_LuCmK6aSwDUEjA>
-    <xmx:irtRYbA4ugmC7YIC9DkzQ47P9eK64kkyDIHH7LS-BmlAl45ffe9nFw>
-    <xmx:irtRYSMrF7d4mWRuhqx_Tq_BmX0SmdZ_AtMOXaKuknTNcFjWCZ8XLQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3C6441EE0074; Mon, 27 Sep 2021 08:39:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1303-gb2406efd75-fm-20210922.002-gb2406efd
-Mime-Version: 1.0
-Message-Id: <d83c2613-70d2-48e8-84ac-978967b49dfb@www.fastmail.com>
-In-Reply-To: <65df8099-28a0-fe95-57fc-11c9e90af835@linaro.org>
-References: <20210608190327.22071-1-vadym.kochan@plvision.eu>
- <20210608190327.22071-2-vadym.kochan@plvision.eu>
- <43023500-dd6a-5180-057e-cecc1f1b6500@linaro.org>
- <20210616123356.GA9951@plvision.eu>
- <fea907ed-06ce-5c82-667d-d11f3e902616@linaro.org>
- <vrcxh2zgsnl841.fsf@plvision.eu>
- <7e6d75ed-cebc-597f-7062-34261d184968@linaro.org>
- <vrcxh2pmt3bl4h.fsf@plvision.eu>
- <0e471789-fe29-b747-5153-75c9b4616c7f@linaro.org>
- <vrcxh2o88nbias.fsf@plvision.eu>
- <1da03714-8f23-1004-e89a-891e4599e04a@linaro.org>
- <vrcxh2mto7bfcb.fsf@plvision.eu>
- <1e146349-9fef-972b-9084-577f02d5168b@linaro.org>
- <vrcxh2lf3rbcjc.fsf@plvision.eu>
- <169d3f36-4297-32a3-3d23-824989625b26@linaro.org>
- <77b11bf7-3003-483f-b91e-bd93576eaae1@www.fastmail.com>
- <65df8099-28a0-fe95-57fc-11c9e90af835@linaro.org>
-Date:   Mon, 27 Sep 2021 12:38:51 +0000
-From:   "John Thomson" <john@johnthomson.fastmail.com.au>
-To:     "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
-        "Vadym Kochan" <vadym.kochan@plvision.eu>
-Cc:     "Rob Herring" <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "Robert Marko" <robert.marko@sartura.hr>
-Subject: Re: [PATCH v2 1/3] nvmem: core: introduce cells parser
-Content-Type: text/plain
+        id S234390AbhI0MlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234333AbhI0MlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:41:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F58961074;
+        Mon, 27 Sep 2021 12:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632746375;
+        bh=uJhWmKaHiis+TBaOFG76p9CPbBa9lm2X6WOB4YIzILY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XrC28lUMxVDOThldZFKs9LRX13kfwnefeVhYI8apxp9/uye7MwJZAYwH4skDRUAGM
+         oCoutpzuolIf0gRZM36bGGsy2FUMMEXwtaaMGZu/crDkCuzvl3BzV+xVHPas460Emh
+         5tYi/P9taKbue6H6BuXPLfisnF6eM9hTxGCpbdRemLq9uF9qjnYgWjCnd7Jz2AUZmh
+         B0aH+FeKpHzbDPbIso7neXsQ+8iXjixscjRCkJWa0QuMl29KNumXVEZFg/kSXazmdq
+         if/+wPNuVL0dsfTsAmoTzCF153Cp+Kn9V2WBFZeDWyVrrR8G9NZCvA9ASWkC7GbOCu
+         l5CWGhbCQjv+Q==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Rajaravi Krishna Katta <rkatta@habana.ai>
+Subject: [PATCH v2] habanalabs: fix resetting args in wait for CS IOCTL
+Date:   Mon, 27 Sep 2021 15:39:30 +0300
+Message-Id: <20210927123930.124005-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+From: Rajaravi Krishna Katta <rkatta@habana.ai>
 
-On Mon, 27 Sep 2021, at 10:12, Srinivas Kandagatla wrote:
-> On 21/09/2021 06:50, John Thomson wrote:
->> Hi Srinivas,
->> 
->> Can I note here that I would like to parse
->> TLV data from an SPI-NOR device to NVMEM cells.
->> The same general use case (getting mac-address from OEM data).
->> 
->> Was planning to base my work on this series, as well as
->> https://lore.kernel.org/all/20210908100257.17833-1-qiangqing.zhang@nxp.com/
->
-> This series is for post-processing nvmem cell data before it gets to 
-> consumers.
-> Are you referring to parsing nvmem cell information (offset, name) in 
-> your usecase like: 
-> https://opencomputeproject.github.io/onie/design-spec/hw_requirements.html
->
-> Or
-> Are you referring to post-processing nvmem cell data ?
+In wait for CS IOCTL code, the driver resets the incoming args structure
+before returning to the user, regardless of the return value of the
+IOCTL.
 
-Both.
-I have TLV data where I want to parse the tag lengths and tag IDs to map them into offsets and names like a NVMEM cells lookups table.
+In case the IOCTL returns EINTR, resetting the args will result in error
+in case the userspace will repeat the ioctl call immediately (which is
+the behavior in the hl-thunk userspace library).
 
-Then, some of these cell data would need to be post processed to use directly.
-I have only a base MAC address available, and would like to specify increments for different network ports.
-As an additional example, another TLV tag:value has compressed wifi calibration data. If I could post process this cell data I could then feed it into ath9k with: https://lore.kernel.org/all/f9b732b50a3453fadf3923cc75d365bae3505fe7.1630157099.git.chunkeey@gmail.com/
+The solution is to reset the args only if the driver returns success (0)
+as a return value for the IOCTL.
 
-In my case, this is all currently done in userspace.
-I saw this (ONIE TLV NVMEM parser) series and thought it offered something very similar to
-(the first part of) what I would like to do.
+Signed-off-by: Rajaravi Krishna Katta <rkatta@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../habanalabs/common/command_submission.c    | 33 +++++++++++--------
+ include/uapi/misc/habanalabs.h                |  6 ++--
+ 2 files changed, 21 insertions(+), 18 deletions(-)
 
-Cheers,
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 91b57544f7c6..6dafff375f1c 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -2649,11 +2649,18 @@ static int hl_multi_cs_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ free_seq_arr:
+ 	kfree(cs_seq_arr);
+ 
+-	/* update output args */
+-	memset(args, 0, sizeof(*args));
+ 	if (rc)
+ 		return rc;
+ 
++	if (mcs_data.wait_status == -ERESTARTSYS) {
++		dev_err_ratelimited(hdev->dev,
++				"user process got signal while waiting for Multi-CS\n");
++		return -EINTR;
++	}
++
++	/* update output args */
++	memset(args, 0, sizeof(*args));
++
+ 	if (mcs_data.completion_bitmap) {
+ 		args->out.status = HL_WAIT_CS_STATUS_COMPLETED;
+ 		args->out.cs_completion_map = mcs_data.completion_bitmap;
+@@ -2667,8 +2674,6 @@ static int hl_multi_cs_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ 		/* update if some CS was gone */
+ 		if (mcs_data.timestamp)
+ 			args->out.flags |= HL_WAIT_CS_STATUS_FLAG_GONE;
+-	} else if (mcs_data.wait_status == -ERESTARTSYS) {
+-		args->out.status = HL_WAIT_CS_STATUS_INTERRUPTED;
+ 	} else {
+ 		args->out.status = HL_WAIT_CS_STATUS_BUSY;
+ 	}
+@@ -2688,16 +2693,17 @@ static int hl_cs_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ 	rc = _hl_cs_wait_ioctl(hdev, hpriv->ctx, args->in.timeout_us, seq,
+ 				&status, &timestamp);
+ 
++	if (rc == -ERESTARTSYS) {
++		dev_err_ratelimited(hdev->dev,
++			"user process got signal while waiting for CS handle %llu\n",
++			seq);
++		return -EINTR;
++	}
++
+ 	memset(args, 0, sizeof(*args));
+ 
+ 	if (rc) {
+-		if (rc == -ERESTARTSYS) {
+-			dev_err_ratelimited(hdev->dev,
+-				"user process got signal while waiting for CS handle %llu\n",
+-				seq);
+-			args->out.status = HL_WAIT_CS_STATUS_INTERRUPTED;
+-			rc = -EINTR;
+-		} else if (rc == -ETIMEDOUT) {
++		if (rc == -ETIMEDOUT) {
+ 			dev_err_ratelimited(hdev->dev,
+ 				"CS %llu has timed-out while user process is waiting for it\n",
+ 				seq);
+@@ -2823,7 +2829,6 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		dev_err_ratelimited(hdev->dev,
+ 			"user process got signal while waiting for interrupt ID %d\n",
+ 			interrupt->interrupt_id);
+-		*status = HL_WAIT_CS_STATUS_INTERRUPTED;
+ 		rc = -EINTR;
+ 	} else {
+ 		*status = CS_WAIT_STATUS_BUSY;
+@@ -2878,8 +2883,6 @@ static int hl_interrupt_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ 				args->in.interrupt_timeout_us, args->in.addr,
+ 				args->in.target, interrupt_offset, &status);
+ 
+-	memset(args, 0, sizeof(*args));
+-
+ 	if (rc) {
+ 		if (rc != -EINTR)
+ 			dev_err_ratelimited(hdev->dev,
+@@ -2888,6 +2891,8 @@ static int hl_interrupt_wait_ioctl(struct hl_fpriv *hpriv, void *data)
+ 		return rc;
+ 	}
+ 
++	memset(args, 0, sizeof(*args));
++
+ 	switch (status) {
+ 	case CS_WAIT_STATUS_COMPLETED:
+ 		args->out.status = HL_WAIT_CS_STATUS_COMPLETED;
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index 7cc2a0f3f2f5..d13bb8c1b450 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -917,7 +917,6 @@ struct hl_wait_cs_in {
+ #define HL_WAIT_CS_STATUS_BUSY		1
+ #define HL_WAIT_CS_STATUS_TIMEDOUT	2
+ #define HL_WAIT_CS_STATUS_ABORTED	3
+-#define HL_WAIT_CS_STATUS_INTERRUPTED	4
+ 
+ #define HL_WAIT_CS_STATUS_FLAG_GONE		0x1
+ #define HL_WAIT_CS_STATUS_FLAG_TIMESTAMP_VLD	0x2
+@@ -1286,7 +1285,8 @@ struct hl_debug_args {
+  * EIO       - The CS was aborted (usually because the device was reset)
+  * ENODEV    - The device wants to do hard-reset (so user need to close FD)
+  *
+- * The driver also returns a custom define inside the IOCTL which can be:
++ * The driver also returns a custom define in case the IOCTL call returned 0.
++ * The define can be one of the following:
+  *
+  * HL_WAIT_CS_STATUS_COMPLETED   - The CS has been completed successfully (0)
+  * HL_WAIT_CS_STATUS_BUSY        - The CS is still executing (0)
+@@ -1294,8 +1294,6 @@ struct hl_debug_args {
+  *                                 (ETIMEDOUT)
+  * HL_WAIT_CS_STATUS_ABORTED     - The CS was aborted, usually because the
+  *                                 device was reset (EIO)
+- * HL_WAIT_CS_STATUS_INTERRUPTED - Waiting for the CS was interrupted (EINTR)
+- *
+  */
+ 
+ #define HL_IOCTL_WAIT_CS			\
 -- 
-  John Thomson
+2.17.1
+
