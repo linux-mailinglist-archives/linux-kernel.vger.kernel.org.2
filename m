@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE82C41940C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DCF419413
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhI0MWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45018 "EHLO mail.kernel.org"
+        id S234235AbhI0MXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:23:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234073AbhI0MWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:22:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 719DE61074;
-        Mon, 27 Sep 2021 12:20:26 +0000 (UTC)
+        id S234290AbhI0MWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:22:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31D5B61058;
+        Mon, 27 Sep 2021 12:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632745228;
-        bh=jhCTgeMjDAgbXS4PhsYSF1UKTXtXCFTpi/I5crQIPYQ=;
+        s=k20201202; t=1632745270;
+        bh=kEUnvq6r3df7WOYaeqB5E+DLccPdbdebgIInj07zILU=;
         h=From:To:Cc:Subject:Date:From;
-        b=Kvk395jTUE93EswOaTpjw8khOLF9oZ4j5V5Hg11Q0KLOkDZZ3Bb0OTDWfO99SXd2C
-         vAPojKCdaumtc3MwO0et5/x8HwLFuGVwR3BSNeknv7nw7NPaeI556r1ShAcZ6+ZZrS
-         ZV3tlSOpK3xNAKsrMTFTJIYvictjp3ZDY65+Kl0yiENDOxYUoU2t2iWAaxeKql3pI4
-         vihCyWv+nEyBcIagH/lvuXJl4SNiuu/yh3rjM9ZxomVj+Modduj3gCtR+kiYmgi0mG
-         lDASZGYXmtwu2t6EJpmXrvPncsrjWhaFtKRJj/qdGpsYViBQ+sPNTKZnHDGHcHtATk
-         KXo151FMbP4Ag==
+        b=kp4bOf49VtZ+onb9V1XGhpj7eYyxSuMwtgYl6GhW1kSVI+8n4iqeVqZ9Ssv9HtKin
+         i3CMVAEDfzmBCfXrggwhkCds+7kZOR7Aw+KE9B09S/upNAP8LH3YRyM5PNtGDvOdgJ
+         9ar5ZG4FezOMuDadyIpwx4Ggn1PR23vLqJFwdvIlrziCxGmECksJrRSxthqv80yL+g
+         lCDsPzQbqkiJBnhpouXmvDFuemz48qH+Lkr/SENEQl53WWJAMeWED+kxGHw4rClgzf
+         mDJZqCcm5G0I6daxgx2QgX2/qRFZ6fPDov26neVaN+kp9wmhLnMWGt0L0U9vQgkOAW
+         m7A69UC+HlWHw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Olivier Lorin <o.lorin@laposte.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
         Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] media: gspca/gl860-mi1320: avoid -Wstring-concatenation warning
-Date:   Mon, 27 Sep 2021 14:20:18 +0200
-Message-Id: <20210927122024.941874-1-arnd@kernel.org>
+Subject: [PATCH] gpu: amd: replace open-coded offsetof() with builtin
+Date:   Mon, 27 Sep 2021 14:20:41 +0200
+Message-Id: <20210927122105.942129-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,85 +50,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Newer clang versions are suspicious of definitions that mix concatenated
-strings with comma-separated arrays of strings, this has found real bugs
-elsewhere, but this seems to be a false positive:
+The two AMD drivers have their own custom offsetof() implementation
+that now triggers a warning with recent versions of clang:
 
-drivers/media/usb/gspca/gl860/gl860-mi1320.c:62:37: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
-        "\xd3\x02\xd4\x28\xd5\x01\xd0\x02" "\xd1\x18\xd2\xc1"
-                                           ^
-                                          ,
-drivers/media/usb/gspca/gl860/gl860-mi1320.c:62:2: note: place parentheses around the string literal to silence warning
-        "\xd3\x02\xd4\x28\xd5\x01\xd0\x02" "\xd1\x18\xd2\xc1"
+drivers/gpu/drm/radeon/radeon_atombios.c:133:14: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
 
-Use the extra parentheses as suggested in the warning message.
+Change all the instances to use the normal offsetof() provided
+by the kernel that does not have this problem.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/usb/gspca/gl860/gl860-mi1320.c | 24 ++++++++++----------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/amd/display/dc/bios/command_table2.c  | 4 +---
+ drivers/gpu/drm/amd/include/atombios.h                | 2 +-
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h | 4 ++--
+ drivers/gpu/drm/radeon/atombios.h                     | 2 +-
+ 4 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/gl860/gl860-mi1320.c b/drivers/media/usb/gspca/gl860/gl860-mi1320.c
-index 0749fe13160f..1253eb145c99 100644
---- a/drivers/media/usb/gspca/gl860/gl860-mi1320.c
-+++ b/drivers/media/usb/gspca/gl860/gl860-mi1320.c
-@@ -49,44 +49,44 @@ static struct validx tbl_post_unset_alt[] = {
- 	{0x0061, 0x0000}, {0x0068, 0x000d},
- };
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table2.c b/drivers/gpu/drm/amd/display/dc/bios/command_table2.c
+index f1f672a997d7..4f37be727332 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/command_table2.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/command_table2.c
+@@ -44,9 +44,7 @@
+ 	bp->base.ctx->logger
  
--static u8 *tbl_1280[] = {
-+static u8 *tbl_1280[] = {(
- 	"\x0d\x80\xf1\x08\x03\x04\xf1\x00" "\x04\x05\xf1\x02\x05\x00\xf1\xf1"
- 	"\x06\x00\xf1\x0d\x20\x01\xf1\x00" "\x21\x84\xf1\x00\x0d\x00\xf1\x08"
- 	"\xf0\x00\xf1\x01\x34\x00\xf1\x00" "\x9b\x43\xf1\x00\xa6\x05\xf1\x00"
- 	"\xa9\x04\xf1\x00\xa1\x05\xf1\x00" "\xa4\x04\xf1\x00\xae\x0a\xf1\x08"
--	,
-+	), (
- 	"\xf0\x00\xf1\x02\x3a\x05\xf1\xf1" "\x3c\x05\xf1\xf1\x59\x01\xf1\x47"
- 	"\x5a\x01\xf1\x88\x5c\x0a\xf1\x06" "\x5d\x0e\xf1\x0a\x64\x5e\xf1\x1c"
- 	"\xd2\x00\xf1\xcf\xcb\x00\xf1\x01"
--	,
-+	), (
- 	"\xd3\x02\xd4\x28\xd5\x01\xd0\x02" "\xd1\x18\xd2\xc1"
--};
-+)};
+ #define GET_INDEX_INTO_MASTER_TABLE(MasterOrData, FieldName)\
+-	(((char *)(&((\
+-		struct atom_master_list_of_##MasterOrData##_functions_v2_1 *)0)\
+-		->FieldName)-(char *)0)/sizeof(uint16_t))
++	(offsetof(struct atom_master_list_of_##MasterOrData##_functions_v2_1, FieldName) / sizeof(uint16_t))
  
--static u8 *tbl_800[] = {
-+static u8 *tbl_800[] = { (
- 	"\x0d\x80\xf1\x08\x03\x03\xf1\xc0" "\x04\x05\xf1\x02\x05\x00\xf1\xf1"
- 	"\x06\x00\xf1\x0d\x20\x01\xf1\x00" "\x21\x84\xf1\x00\x0d\x00\xf1\x08"
- 	"\xf0\x00\xf1\x01\x34\x00\xf1\x00" "\x9b\x43\xf1\x00\xa6\x05\xf1\x00"
- 	"\xa9\x03\xf1\xc0\xa1\x03\xf1\x20" "\xa4\x02\xf1\x5a\xae\x0a\xf1\x08"
--	,
-+	), (
- 	"\xf0\x00\xf1\x02\x3a\x05\xf1\xf1" "\x3c\x05\xf1\xf1\x59\x01\xf1\x47"
- 	"\x5a\x01\xf1\x88\x5c\x0a\xf1\x06" "\x5d\x0e\xf1\x0a\x64\x5e\xf1\x1c"
- 	"\xd2\x00\xf1\xcf\xcb\x00\xf1\x01"
--	,
-+	), (
- 	"\xd3\x02\xd4\x18\xd5\x21\xd0\x02" "\xd1\x10\xd2\x59"
--};
-+)};
+ #define EXEC_BIOS_CMD_TABLE(fname, params)\
+ 	(amdgpu_atom_execute_table(((struct amdgpu_device *)bp->base.ctx->driver_context)->mode_info.atom_context, \
+diff --git a/drivers/gpu/drm/amd/include/atombios.h b/drivers/gpu/drm/amd/include/atombios.h
+index 6a505d1b82a5..da895d1f3b4f 100644
+--- a/drivers/gpu/drm/amd/include/atombios.h
++++ b/drivers/gpu/drm/amd/include/atombios.h
+@@ -7148,7 +7148,7 @@ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V3
+ #define GET_COMMAND_TABLE_COMMANDSET_REVISION(TABLE_HEADER_OFFSET) (((static_cast<ATOM_COMMON_TABLE_HEADER*>(TABLE_HEADER_OFFSET))->ucTableFormatRevision )&0x3F)
+ #define GET_COMMAND_TABLE_PARAMETER_REVISION(TABLE_HEADER_OFFSET)  (((static_cast<ATOM_COMMON_TABLE_HEADER*>(TABLE_HEADER_OFFSET))->ucTableContentRevision)&0x3F)
+ #else // not __cplusplus
+-#define   GetIndexIntoMasterTable(MasterOrData, FieldName) (((char*)(&((ATOM_MASTER_LIST_OF_##MasterOrData##_TABLES*)0)->FieldName)-(char*)0)/sizeof(USHORT))
++#define   GetIndexIntoMasterTable(MasterOrData, FieldName) (offsetof(ATOM_MASTER_LIST_OF_##MasterOrData##_TABLES, FieldName) / sizeof(USHORT))
  
--static u8 *tbl_640[] = {
-+static u8 *tbl_640[] = {(
- 	"\x0d\x80\xf1\x08\x03\x04\xf1\x04" "\x04\x05\xf1\x02\x07\x01\xf1\x7c"
- 	"\x08\x00\xf1\x0e\x21\x80\xf1\x00" "\x0d\x00\xf1\x08\xf0\x00\xf1\x01"
- 	"\x34\x10\xf1\x10\x3a\x43\xf1\x00" "\xa6\x05\xf1\x02\xa9\x04\xf1\x04"
- 	"\xa7\x02\xf1\x81\xaa\x01\xf1\xe2" "\xae\x0c\xf1\x09"
--	,
-+	), (
- 	"\xf0\x00\xf1\x02\x39\x03\xf1\xfc" "\x3b\x04\xf1\x04\x57\x01\xf1\xb6"
- 	"\x58\x02\xf1\x0d\x5c\x1f\xf1\x19" "\x5d\x24\xf1\x1e\x64\x5e\xf1\x1c"
- 	"\xd2\x00\xf1\x00\xcb\x00\xf1\x01"
--	,
-+	), (
- 	"\xd3\x02\xd4\x10\xd5\x81\xd0\x02" "\xd1\x08\xd2\xe1"
--};
-+)};
+ #define GET_COMMAND_TABLE_COMMANDSET_REVISION(TABLE_HEADER_OFFSET) ((((ATOM_COMMON_TABLE_HEADER*)TABLE_HEADER_OFFSET)->ucTableFormatRevision)&0x3F)
+ #define GET_COMMAND_TABLE_PARAMETER_REVISION(TABLE_HEADER_OFFSET)  ((((ATOM_COMMON_TABLE_HEADER*)TABLE_HEADER_OFFSET)->ucTableContentRevision)&0x3F)
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h
+index b7e2651b570b..2fc1733bcdcf 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.h
+@@ -29,9 +29,9 @@
+ typedef enum atom_smu9_syspll0_clock_id BIOS_CLKID;
  
- static s32 tbl_sat[] = {0x25, 0x1d, 0x15, 0x0d, 0x05, 0x4d, 0x55, 0x5d, 0x2d};
- static s32 tbl_bright[] = {0, 8, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70};
+ #define GetIndexIntoMasterCmdTable(FieldName) \
+-	(((char*)(&((struct atom_master_list_of_command_functions_v2_1*)0)->FieldName)-(char*)0)/sizeof(uint16_t))
++	(offsetof(struct atom_master_list_of_command_functions_v2_1, FieldName) / sizeof(uint16_t))
+ #define GetIndexIntoMasterDataTable(FieldName) \
+-	(((char*)(&((struct atom_master_list_of_data_tables_v2_1*)0)->FieldName)-(char*)0)/sizeof(uint16_t))
++	(offsetof(struct atom_master_list_of_data_tables_v2_1, FieldName) / sizeof(uint16_t))
+ 
+ #define PP_ATOMFWCTRL_MAX_VOLTAGE_ENTRIES 32
+ 
+diff --git a/drivers/gpu/drm/radeon/atombios.h b/drivers/gpu/drm/radeon/atombios.h
+index 83e8b8547f9b..bd5dc09e860f 100644
+--- a/drivers/gpu/drm/radeon/atombios.h
++++ b/drivers/gpu/drm/radeon/atombios.h
+@@ -5983,7 +5983,7 @@ typedef struct _ATOM_ASIC_INTERNAL_SS_INFO_V3
+ #define GET_COMMAND_TABLE_COMMANDSET_REVISION(TABLE_HEADER_OFFSET) (((static_cast<ATOM_COMMON_TABLE_HEADER*>(TABLE_HEADER_OFFSET))->ucTableFormatRevision )&0x3F)
+ #define GET_COMMAND_TABLE_PARAMETER_REVISION(TABLE_HEADER_OFFSET)  (((static_cast<ATOM_COMMON_TABLE_HEADER*>(TABLE_HEADER_OFFSET))->ucTableContentRevision)&0x3F)
+ #else // not __cplusplus
+-#define	GetIndexIntoMasterTable(MasterOrData, FieldName) (((char*)(&((ATOM_MASTER_LIST_OF_##MasterOrData##_TABLES*)0)->FieldName)-(char*)0)/sizeof(USHORT))
++#define	GetIndexIntoMasterTable(MasterOrData, FieldName) (offsetof(ATOM_MASTER_LIST_OF_##MasterOrData##_TABLES, FieldName)/sizeof(USHORT))
+ 
+ #define GET_COMMAND_TABLE_COMMANDSET_REVISION(TABLE_HEADER_OFFSET) ((((ATOM_COMMON_TABLE_HEADER*)TABLE_HEADER_OFFSET)->ucTableFormatRevision)&0x3F)
+ #define GET_COMMAND_TABLE_PARAMETER_REVISION(TABLE_HEADER_OFFSET)  ((((ATOM_COMMON_TABLE_HEADER*)TABLE_HEADER_OFFSET)->ucTableContentRevision)&0x3F)
 -- 
 2.29.2
 
