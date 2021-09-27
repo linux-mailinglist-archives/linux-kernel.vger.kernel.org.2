@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB7E419B44
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD953419C50
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236252AbhI0RQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:16:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
+        id S236077AbhI0R11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:27:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236082AbhI0RMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D79E2611C0;
-        Mon, 27 Sep 2021 17:08:36 +0000 (UTC)
+        id S237812AbhI0RXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:23:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2562D613BD;
+        Mon, 27 Sep 2021 17:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762517;
-        bh=BYDeXjV6I4HBqvAXeJgqRcmSfKvidx5YI/DXAoxBqt0=;
+        s=korg; t=1632762914;
+        bh=Mki/4vEkW7gdDuoJCnORrTBgAy84cclSLUpQDFCo/tU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f5AM6zsWq9PYkdPTUGT7Vpv4o6w2t0HexgixupoeaHKq8a3ik1PAa5qtuEWrWl5XT
-         3Kd85zincdk4nHFKHeYcqE4Lx3GJqlOmdxuDF4cinN3/N+3YHtq8u4gL+fWSyFSMJI
-         IszFOh7rUwrlRHwWvwZekakVto1XXTEBdRyvYCHo=
+        b=lTuGOtr6Mry/rKQjHWjOWvPyW72r4oK08SY28prSCylYNekcyfO65KGzD/QhUIyle
+         Hx94Sg2+wIGZqmAeHws4W+qNuNC8hVP8V1yNYyWtEUb7WLvp17ioIsb56A/d8y1aP3
+         o0rUOtF4I1yWFf+574Ho+bb/AqaR2Z4+S5Ev0kHQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudarsana Reddy Kalluru <skalluru@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Anton Eidelman <anton.eidelman@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 052/103] atlantic: Fix issue in the pm resume flow.
-Date:   Mon, 27 Sep 2021 19:02:24 +0200
-Message-Id: <20210927170227.559630214@linuxfoundation.org>
+Subject: [PATCH 5.14 099/162] nvme: keep ctrl->namespaces ordered
+Date:   Mon, 27 Sep 2021 19:02:25 +0200
+Message-Id: <20210927170236.870374988@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +44,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudarsana Reddy Kalluru <skalluru@marvell.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 4d88c339c423eefe2fd48215016cb0c75fcb4c4d ]
+[ Upstream commit 298ba0e3d4af539cc37f982d4c011a0f07fca48c ]
 
-After fixing hibernation resume flow, another usecase was found which
-should be explicitly handled - resume when device is in "down" state.
-Invoke aq_nic_init jointly with aq_nic_start only if ndev was already
-up during suspend/hibernate. We still need to perform nic_deinit() if
-caller requests for it, to handle the freeze/resume scenarios.
+Various places in the nvme code that rely on ctrl->namespace to be
+ordered.  Ensure that the namespae is inserted into the list at the
+right position from the start instead of sorting it after the fact.
 
-Fixes: 57f780f1c433 ("atlantic: Fix driver resume flow.")
-Signed-off-by: Sudarsana Reddy Kalluru <skalluru@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 540c801c65eb ("NVMe: Implement namespace list scanning")
+Reported-by: Anton Eidelman <anton.eidelman@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvme/host/core.c | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-index f26d03735619..5b996330f228 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-@@ -419,13 +419,13 @@ static int atl_resume_common(struct device *dev, bool deep)
- 	if (deep) {
- 		/* Reinitialize Nic/Vecs objects */
- 		aq_nic_deinit(nic, !nic->aq_hw->aq_nic_cfg->wol);
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 84e7cb9f1968..e2374319df61 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -13,7 +13,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/backing-dev.h>
+-#include <linux/list_sort.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/pr.h>
+@@ -3688,15 +3687,6 @@ out_unlock:
+ 	return ret;
+ }
+ 
+-static int ns_cmp(void *priv, const struct list_head *a,
+-		const struct list_head *b)
+-{
+-	struct nvme_ns *nsa = container_of(a, struct nvme_ns, list);
+-	struct nvme_ns *nsb = container_of(b, struct nvme_ns, list);
+-
+-	return nsa->head->ns_id - nsb->head->ns_id;
+-}
+-
+ struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+ {
+ 	struct nvme_ns *ns, *ret = NULL;
+@@ -3717,6 +3707,22 @@ struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+ }
+ EXPORT_SYMBOL_NS_GPL(nvme_find_get_ns, NVME_TARGET_PASSTHRU);
+ 
++/*
++ * Add the namespace to the controller list while keeping the list ordered.
++ */
++static void nvme_ns_add_to_ctrl_list(struct nvme_ns *ns)
++{
++	struct nvme_ns *tmp;
++
++	list_for_each_entry_reverse(tmp, &ns->ctrl->namespaces, list) {
++		if (tmp->head->ns_id < ns->head->ns_id) {
++			list_add(&ns->list, &tmp->list);
++			return;
++		}
 +	}
++	list_add(&ns->list, &ns->ctrl->namespaces);
++}
++
+ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 		struct nvme_ns_ids *ids)
+ {
+@@ -3778,9 +3784,8 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	}
  
-+	if (netif_running(nic->ndev)) {
- 		ret = aq_nic_init(nic);
- 		if (ret)
- 			goto err_exit;
--	}
+ 	down_write(&ctrl->namespaces_rwsem);
+-	list_add_tail(&ns->list, &ctrl->namespaces);
++	nvme_ns_add_to_ctrl_list(ns);
+ 	up_write(&ctrl->namespaces_rwsem);
+-
+ 	nvme_get_ctrl(ctrl);
  
--	if (netif_running(nic->ndev)) {
- 		ret = aq_nic_start(nic);
- 		if (ret)
- 			goto err_exit;
+ 	device_add_disk(ctrl->device, ns->disk, nvme_ns_id_attr_groups);
+@@ -4059,10 +4064,6 @@ static void nvme_scan_work(struct work_struct *work)
+ 	if (nvme_scan_ns_list(ctrl) != 0)
+ 		nvme_scan_ns_sequential(ctrl);
+ 	mutex_unlock(&ctrl->scan_lock);
+-
+-	down_write(&ctrl->namespaces_rwsem);
+-	list_sort(NULL, &ctrl->namespaces, ns_cmp);
+-	up_write(&ctrl->namespaces_rwsem);
+ }
+ 
+ /*
 -- 
 2.33.0
 
