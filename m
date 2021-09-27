@@ -2,207 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70944197B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4951E4197BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235100AbhI0PWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:22:25 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54214 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbhI0PVx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:21:53 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 6B0C31F42E99
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v6 10/10] media: hantro: Support NV12 on the G2 core
-Date:   Mon, 27 Sep 2021 17:19:58 +0200
-Message-Id: <20210927151958.24426-11-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210927151958.24426-1-andrzej.p@collabora.com>
-References: <20210927151958.24426-1-andrzej.p@collabora.com>
+        id S235241AbhI0PXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:23:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235071AbhI0PWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:22:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C496101A;
+        Mon, 27 Sep 2021 15:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632756076;
+        bh=lziEkEubRhQ8bUn3J/w10f68TYGQ6OOJ1Pje7Mukmfg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oa63i8VPgbR/i0K+fCW78NepaYaTvW4XN1lfw0k/hOQDM6fEdvoVdmQEpymaq0Bzk
+         EcEFepe/KcmJfwqPN/QeyAstkPQepskOY9QLTn+8XReXv0r7/Q35xeCNufUS2ro/9B
+         L0ZVoOwVxeJFzH8+Lhav95WJqxpHQUxgYedDpYYJzVtxkCFu6dOlG5vc4uI2KLoHoL
+         rzfJY8VIYkHK/ZppPiqgH7jq6OQWLsOC+RuTQDC3SfrBjn6qUylc7fijeZaaThHTXV
+         T9at8VWMk4SMtkbuw/IlR81XmRZ9CKfK/ph1JKdiRwTlpn25yW977TWhnkKaefUYE8
+         tCK6J5JkiQHIQ==
+Received: by mail-ed1-f52.google.com with SMTP id v10so66318914edj.10;
+        Mon, 27 Sep 2021 08:21:16 -0700 (PDT)
+X-Gm-Message-State: AOAM533669dpdPb3Ok9qb+VpTbzeVfENe6gnmWyjarl2YT5S7b5DDlnJ
+        N8zet01K3dIS/7ixUZJaoPLcgXLfhjbMQo6YXQ==
+X-Google-Smtp-Source: ABdhPJz4BwEe1PEy9tCxSr5MzZ4tPnhFsOF47oRWoerA4LsvnEnjdK3MsOsWhDOXvjskiH1Oatv4Pe5QuoYcS07OFSo=
+X-Received: by 2002:a17:906:ae83:: with SMTP id md3mr721524ejb.84.1632756074643;
+ Mon, 27 Sep 2021 08:21:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210921004627.2786132-1-osk@google.com> <YUzzjYMwNKwMFGSr@robh.at.kernel.org>
+ <CABoTLcRpSuUUu-x-S8yTLUJCiN4RERi2kd8XATP_n3ZTRpAWDg@mail.gmail.com>
+In-Reply-To: <CABoTLcRpSuUUu-x-S8yTLUJCiN4RERi2kd8XATP_n3ZTRpAWDg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 27 Sep 2021 10:21:03 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ+hqKfLDzbMpzPks+wJaNuwU6kodqnqWjkOb8aDf92ZQ@mail.gmail.com>
+Message-ID: <CAL_JsqJ+hqKfLDzbMpzPks+wJaNuwU6kodqnqWjkOb8aDf92ZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add nct7802 bindings
+To:     Oskar Senft <osk@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux HWMON List <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ezequiel Garcia <ezequiel@collabora.com>
+On Fri, Sep 24, 2021 at 10:18 AM Oskar Senft <osk@google.com> wrote:
+>
+> Hi Rob
+>
+> > > +maintainers:
+> > > +  - Guenter Roeck <linux@roeck-us.net>
+> >
+> > Should be someone that cares about this h/w, not who applies patches.
+>
+> Hmm, ok. After talking with Guenter, I thought that would be him. But
+> I can add myself, too, since we're obviously using that HW. Is that
+> what you mean?
 
-The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
-Enable the G2 post-processor block, in order to produce regular NV12.
+Okay, seems it is Guenter in this case.
 
-The logic in hantro_postproc.c is leveraged to take care of allocating
-the extra buffers and configure the post-processor, which is
-significantly simpler than the one on the G1.
+>
+> > > +    properties:
+> > > +      ltd:
+> > > +        type: object
+> > > +        description: Internal Temperature Sensor ("LTD")
+> >
+> > No child properties?
+>
+> Yes. We really just want the ability to enable / disable that sensor.
+> What's the correct way in the YAML to describe that? Same for RTD3.
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
- drivers/staging/media/hantro/hantro_hw.h      |  1 +
- .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
- drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
- 4 files changed, 46 insertions(+), 3 deletions(-)
+Okay, you need a 'additionalProperties: false' in the schema. (status
+will automagically be allowed)
 
-diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-index f1b207666fa7..c44e668d075a 100644
---- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-@@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
- 	hantro_reg_write(ctx->dev, &g2_output_format, 0);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, G2_ADDR_DST, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) / dst->vp9.width);
- 	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) / dst->vp9.height);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
- 	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params->golden_frame_ts);
- 	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
- 
--	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf, 0) +
-+	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
- 		  mv_offset(ctx, dec_params);
- 	hantro_write_addr(ctx->dev, G2_REG_DMV_REF(0), mv_addr);
- 
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 2961d399fd60..3d4a5dc1e6d5 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -274,6 +274,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
- extern const struct hantro_variant sama5d4_vdec_variant;
- 
- extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
-+extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
- 
- extern const u32 hantro_vp8_dec_mc_filter[8][6];
- 
-diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
-index 4549aec08feb..bc94bf46d218 100644
---- a/drivers/staging/media/hantro/hantro_postproc.c
-+++ b/drivers/staging/media/hantro/hantro_postproc.c
-@@ -11,6 +11,7 @@
- #include "hantro.h"
- #include "hantro_hw.h"
- #include "hantro_g1_regs.h"
-+#include "hantro_g2_regs.h"
- 
- #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
- { \
-@@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
- }
- 
-+static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	struct vb2_v4l2_buffer *dst_buf;
-+	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
-+	dma_addr_t dst_dma;
-+
-+	dst_buf = hantro_get_dst_buf(ctx);
-+	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-+
-+	hantro_write_addr(vpu, G2_RASTER_SCAN, dst_dma);
-+	hantro_write_addr(vpu, G2_RASTER_SCAN_CHR, dst_dma + chroma_offset);
-+	hantro_reg_write(vpu, &g2_out_rs_e, 1);
-+}
-+
- void hantro_postproc_free(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
- 	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
- 		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
- 						ctx->dst_fmt.height);
-+	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
-+		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
-+					       ctx->dst_fmt.height);
- 
- 	for (i = 0; i < num_buffers; ++i) {
- 		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
-@@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
- }
- 
-+static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+
-+	hantro_reg_write(vpu, &g2_out_rs_e, 0);
-+}
-+
- void hantro_postproc_disable(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops = {
- 	.enable = hantro_postproc_g1_enable,
- 	.disable = hantro_postproc_g1_disable,
- };
-+
-+const struct hantro_postproc_ops hantro_g2_postproc_ops = {
-+	.enable = hantro_postproc_g2_enable,
-+	.disable = hantro_postproc_g2_disable,
-+};
-diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-index 455a107ffb02..1a43f6fceef9 100644
---- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-+++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-@@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
- 	},
- };
- 
-+static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
-+	{
-+		.fourcc = V4L2_PIX_FMT_NV12,
-+		.codec_mode = HANTRO_MODE_NONE,
-+		.postprocessed = true,
-+	},
-+};
-+
- static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
- 	{
- 		.fourcc = V4L2_PIX_FMT_NV12_4L4,
-@@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
- 	.dec_offset = 0x0,
- 	.dec_fmts = imx8m_vpu_g2_dec_fmts,
- 	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-+	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
-+	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
-+	.postproc_ops = &hantro_g2_postproc_ops,
- 	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
- 	.codec_ops = imx8mq_vpu_g2_codec_ops,
- 	.init = imx8mq_vpu_hw_init,
--- 
-2.17.1
+>
+> > > +          "type":
+> > > +            description: Sensor type (3=thermal diode, 4=thermistor).
+> >
+> > 2nd time I've seen this property this week[1]. Needs to be more specific
+> > than just 'type'.
+>
+> Ha yes, the example in [1] came from this patch. I went with this name
+> to stay in-line with the sysfs name, being "tempX_type". In the
+> hardware this would be called "mode".
+>
+> My original proposal [2] was to have this property a string list named
+> "nuvoton,rtd-modes" with a set of accepted values, i.e. basically an
+> enum. Splitting this string list into individual sensors makes sense.
+>
+> The other question that remains open (at least in my view), is whether
+> naming the sensors "ltd, rtd1, rtd2, rtd3" is the right approach or if
+> we should really go to naming them "sensor@X" with a reg property set
+> to X. Note that ltd and rtd3 do not accept any additional
+> configuration beyond "is enabled" (i.e. "status").
 
+If X is not made up numbering (i.e. corresponds to something in the
+datasheet), then using addresses and generic node names are preferred.
+Alignment with other similar h/w is also preferred.
+
+> > > +            temperature-sensors {
+> > > +                ltd {
+> > > +                  status = "disabled";
+> >
+> > Don't show status in examples.
+> Hmm, ok. I found it useful to make clear that a sensor can be
+> disabled, but maybe that's just always the case?
+
+Yeah, this case is a bit special. The node not being present also disables it.
+
+The problem is generally we don't want disabled examples as that turns
+off some validation. I have a check for this that I plan to add, but I
+don't have a way to have exceptions.
+
+What you could do is just comment out the node. Then you show it, but
+don't compile it.
+
+Rob
