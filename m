@@ -2,184 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887BB419324
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE2941932A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbhI0Ley (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbhI0Les (ORCPT
+        id S234079AbhI0LfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:35:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45416 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233948AbhI0LfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:34:48 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB36C061575;
-        Mon, 27 Sep 2021 04:33:10 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so13370086pjb.5;
-        Mon, 27 Sep 2021 04:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MT15ILJvdwdfJ0S3xCwu9KIiLxiliiJmv2UXlemUS9k=;
-        b=CP9rsMVtkPtI1TX4WVrmWdZ5EB8v1jE7T7hIQ+aKIj7w0UIslwSMPgxsSWPNxDp3fM
-         9SmAF+8jK2bRThTIxrfPL+ce24bHfYAfXleEeH5FL329lgjUTzWa+5NAaLt4LgDcnIDt
-         5U2P50ejKTJp0mjYlTmr+Ky8b6hf09aUcWRI8yUWeEjeDPikWZpq0dlgptfV7F+UOCpB
-         ZxgcsAkvOQGuCs2DIL5DRvGaqFIM+SUYzjCtIrR+JR6RhakDVqzGzDp20PWriUsEs3xF
-         GNXVmPU4cWydQ1hVf2x8sGWupISaA1gYMsgZknK7b/tm461NRTNoXrg+VpzjmjRbUqcn
-         ewCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MT15ILJvdwdfJ0S3xCwu9KIiLxiliiJmv2UXlemUS9k=;
-        b=Nqz037nnbaCUzmCvGbYT9iV4PDma5zq+9v48NNV/8wXXk4oco2dKSwz55nsWpMCCqR
-         mXbPWMTfJXa8CD2dcvR6uaQG41Ih1aY3+gS7+wvTFuBccTLQvaRjvK/hlCtuKO3TuM43
-         JIXid2vLKLn6h/wbAxhkn4cfGzBf+M1UNAz/0oN0A+giKaZguVgiRaD6U4McNJd68+Ul
-         7rhEKXwkcxjtBgfLbOa3roP2YhxglyNMJAjdFOQWjejpE+dvzL2ZU/1OzBchETTafoY9
-         UOgAfNLsHrEz1bf8iw/z65HMb98CGMVOZLqeU0iuKQ+LygOyza4QhtqIPMB6Y5Vi2qih
-         o75g==
-X-Gm-Message-State: AOAM532ZQKInLFxhTc/ps3C+7WAGfSPL7QiETD5IcdqmvK39bw8G2gII
-        ttHaObgdQdYNd6aTmuLOnn4=
-X-Google-Smtp-Source: ABdhPJy+c7oavzzGB1I9sxfTfZAjkTwkMzpRzOHevsnj/eF21dgXZmGd2I5XE8ZTm33UIoLmJUZkQg==
-X-Received: by 2002:a17:90a:19e:: with SMTP id 30mr19124557pjc.131.1632742390212;
-        Mon, 27 Sep 2021 04:33:10 -0700 (PDT)
-Received: from shinobu (113x37x72x25.ap113.ftth.ucom.ne.jp. [113.37.72.25])
-        by smtp.gmail.com with ESMTPSA id w142sm16865891pfc.47.2021.09.27.04.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 04:33:09 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 20:33:00 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v16 07/14] counter: Add character device interface
-Message-ID: <YVGr7PQQThADPNSW@shinobu>
-References: <cover.1630031207.git.vilhelm.gray@gmail.com>
- <422c765c91d060cdebc4f17f7aeb255d9c1a4e16.1630031207.git.vilhelm.gray@gmail.com>
- <20210912171821.54af145b@jic23-huawei>
- <YUhdyRdzuBtUxOzT@shinobu>
- <20210926161542.5cf99b58@jic23-huawei>
- <YVGbHQnpBTQYm/7/@shinobu>
- <20210927122000.00007d65@Huawei.com>
+        Mon, 27 Sep 2021 07:35:14 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18RBQov0027164;
+        Mon, 27 Sep 2021 07:33:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Zh4ocPd5zq01wbH2VJDNCfT88s0EYVFeCQkN48p09Rc=;
+ b=HFxbLZtALlzLcIV513Gw+sxVwvyBy56n2YzyuwSn5PhVx+r78j+XpSTou4uCQxcVZnoE
+ ORBmrmCvRSJjDV+Ccv2/aAl0E0LKSqjtC7pEVYkcfhGs2gARhJrtNmpcMZLACj1l3H9e
+ wiOzzrnbeakRimBQKGiZG/vgljuMDfDH40vFu6QUIrDqxXQm0raGWFyPpAM+xNskL32L
+ cit9eG4DTS9wNpPPnwq/OiGUy3QfNwVJL1bvIFM7kz7dvrsv4WGOaJ2SSB2cnUlgVe2w
+ xizeUAt1Oo/0G6wIHGgXQzOY2Vejlh581H5hmUOcXLZvcVfbDeJx89csV2wfHViBPvSe YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagv81unu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 07:33:18 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18RBQVOH012751;
+        Mon, 27 Sep 2021 07:33:18 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagv81umx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 07:33:17 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18RBVJoX026969;
+        Mon, 27 Sep 2021 11:33:15 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 3b9ud9b7y5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Sep 2021 11:33:15 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18RBXBwa2294488
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Sep 2021 11:33:11 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EF8442094;
+        Mon, 27 Sep 2021 11:33:11 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7804D4205C;
+        Mon, 27 Sep 2021 11:33:10 +0000 (GMT)
+Received: from sig-9-145-45-184.uk.ibm.com (unknown [9.145.45.184])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Sep 2021 11:33:10 +0000 (GMT)
+Message-ID: <e9665315bc2f244d50d026863476e72e3d9b8067.camel@linux.ibm.com>
+Subject: Re: [PATCH RESEND bpf] bpf, s390: Fix potential memory leak about
+ jit_data
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Date:   Mon, 27 Sep 2021 13:33:10 +0200
+In-Reply-To: <1632726374-7154-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1632726374-7154-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qFJe+gs0QSTquwqB"
-Content-Disposition: inline
-In-Reply-To: <20210927122000.00007d65@Huawei.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: giYAHGJqTgpQ3DQJ2HWE-ISyvY6pZDkS
+X-Proofpoint-ORIG-GUID: hgcrE1P2X7C_h_hUHBTq5OFZJdaEnIUq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-27_04,2021-09-24_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=944 malwarescore=0 phishscore=0 adultscore=0
+ spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109270079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2021-09-27 at 15:06 +0800, Tiezhu Yang wrote:
+> Make sure to free jit_data through kfree() in the error path.
+> 
+> Fixes: 1c8f9b91c456 ("bpf: s390: add JIT support for multi-function
+> programs")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> RESEND due to the following reason:
+> [Can not connect to recipient's server because of unstable
+> network or firewall filter. rcpt handle timeout, last handle
+> info: Can not connect to vger.kernel.org]
+> 
+>  arch/s390/net/bpf_jit_comp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
---qFJe+gs0QSTquwqB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Nice catch, thanks!
 
-On Mon, Sep 27, 2021 at 12:20:00PM +0100, Jonathan Cameron wrote:
-> On Mon, 27 Sep 2021 19:21:17 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > On Sun, Sep 26, 2021 at 04:15:42PM +0100, Jonathan Cameron wrote:
-> > > On Mon, 20 Sep 2021 19:09:13 +0900
-> > > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> > >  =20
-> > > > On Sun, Sep 12, 2021 at 05:18:42PM +0100, Jonathan Cameron wrote: =
-=20
-> > > > > On Fri, 27 Aug 2021 12:47:51 +0900
-> > > > > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> > > > >    =20
-> > > > > > This patch introduces a character device interface for the Coun=
-ter
-> > > > > > subsystem. Device data is exposed through standard character de=
-vice read
-> > > > > > operations. Device data is gathered when a Counter event is pus=
-hed by
-> > > > > > the respective Counter device driver. Configuration is handled =
-via ioctl
-> > > > > > operations on the respective Counter character device node.
-> > > > > >=20
-> > > > > > Cc: David Lechner <david@lechnology.com>
-> > > > > > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > > > > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > > > > > Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > > > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com> =
-  =20
-> > > > >=20
-> > > > > Hi William,
-> > > > >=20
-> > > > > Why the bit based lock?  It feels like a mutex_trylock() type app=
-roach or
-> > > > > spinlock_trylock() would be a more common solution to this proble=
-m.
-> > > > > There is precedence for doing what you have here though so I'm no=
-t that
-> > > > > worried about it.   =20
-> > > >=20
-> > > > Hi Jonathan,
-> > > >=20
-> > > > We originally used a mutex for this, but Jarkko discovered that this
-> > > > produced a warning because chrdev_lock would be held when returning=
- to
-> > > > user space:
-> > > > https://lore.kernel.org/linux-arm-kernel/YOq19zTsOzKA8v7c@shinobu/T=
-/#m6072133d418d598a5f368bb942c945e46cfab9a5
-> > > >=20
-> > > > Following David Lechner's suggestion, I decided to reimplement
-> > > > chrdev_lock as a bitmap using an atomic flag. =20
-> > >=20
-> > > Ok.  I'm not sure bit lock was quite what was intended (as there is o=
-nly one of them)
-> > > but I suppose it doesn't greatly matter. =20
-> >=20
-> > It didn't cross my mind before, but would declaring chrdev_lock as an
-> > atomic_t be a more appropriate solution here because we have only one
-> > flag?
-> >=20
-> > William Breathitt Gray
-> >=20
->=20
-> It would be less esoteric.  This was the first time I've ever come across=
- the bitlock stuff
-> whereas atomics are an every day thing.
->=20
-> Thanks,
->=20
-> Jonathan
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-I agree. I'll try that out then and reimplement this using
-atomic_inc_and_test() instead of test_and_set_bit_lock().
-
-William Breathitt Gray
-
---qFJe+gs0QSTquwqB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFRq84ACgkQhvpINdm7
-VJKSxw/+K++TD+bpwz9akNC7gg8dm4YlOS7y97Z1JAkS+KcKMbTpdrFJJJbrtIIq
-3JJi5iMjTtTsAPPl6Wa1qRCst3ryHR7UTEMJdAy2IR08If2piGn2frklSFH68ejU
-0zrSBXnmGPmnVdLudetma4gd6MRY6VVNm8ncTbevE7kgo9QJsYvEFxRsrrf/zeHK
-WRBTPNexTxSuclwr7WO612XFr7cUg3iIjdyDw2NMZplkLyFR/HSuw5pX62RFKAe3
-z7NhkBsYF+FK4IraGP+2HlUHZ0v02iK86uGgUf4gmFM0tUHcEpN78Gd8lMm1XmE2
-bIhnhm3vGrgcdINfcaKIHWTw6l8Xs7WjIlI8cHP8Mmw04euXtcAK2RFxxBdjn8kq
-47yxGD2tReXUGSBuv7lXeja+kJ5CU1GHOVcetCQ7qjGXl8bxR/3W0vhetb1uxtLn
-LEfXV18JF2eFuXA0vV0fX9BctKWPREOUFGoB+dE/LhlKUTFg/8E2aVFcD3pg7z9I
-TBtpGA/mNREX9v4eTDvT5G+cYM44hqfYMMwktyk1pomFfU1L7GFBtNs1l5pU1HvR
-UoTUkDJw12nIBwcOSslERLdsoikGTyrtoq3NXebrwI2CTL9sTuQ4SkLNp5m7GASn
-4GCmOs7Gnc3vUL4E6jwgKclaJqCxtDSfN/PmYQ43qJT6p0bHrIU=
-=xydv
------END PGP SIGNATURE-----
-
---qFJe+gs0QSTquwqB--
