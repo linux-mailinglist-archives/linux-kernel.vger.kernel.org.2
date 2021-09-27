@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427C2419E72
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DE8419E76
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236324AbhI0SmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:42:18 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45371 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236238AbhI0SmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:42:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="204029831"
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; 
-   d="scan'208";a="204029831"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 11:40:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; 
-   d="scan'208";a="586882043"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 27 Sep 2021 11:40:37 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
-        by linux.intel.com (Postfix) with ESMTP id 9239A580677;
-        Mon, 27 Sep 2021 11:40:37 -0700 (PDT)
-Message-ID: <d540894d3d8c05722bd924c21bd9dd9c2b9def53.camel@linux.intel.com>
-Subject: Re: [PATCH v3 2/5] MFD: intel_pmt: Support non-PMT capabilities
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     lee.jones@linaro.org, bhelgaas@google.com,
-        andy.shevchenko@gmail.com, mgross@linux.intel.com,
-        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Date:   Mon, 27 Sep 2021 11:40:37 -0700
-In-Reply-To: <YVIBI6TQrD/rehli@kroah.com>
-References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
-         <20210922213007.2738388-3-david.e.box@linux.intel.com>
-         <YVIBI6TQrD/rehli@kroah.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S236345AbhI0Smf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:42:35 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:45603 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236238AbhI0Sme (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 14:42:34 -0400
+Received: by mail-ot1-f52.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso25622787otv.12;
+        Mon, 27 Sep 2021 11:40:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aT74sA8N2lUocgMluPhJs3Gm7SxBOR0E9ip/6duvBVU=;
+        b=i+MIo9YmnFVKvwH3u1OS/hEw6x9vNy/kIuPsKgeky/H+l8oi2HaD8MpIJ0J36KgCcQ
+         ZN3mAMbsRxbpzwd+PI5wvBna/0jLMeECzDFDc6z4uHG64VBtXEs3fTyOlnrS9tns0SCQ
+         nQUHpPi7MlMBJHP4y4EkQ1AFV22Uw/Rn2qciT3nT0m8q0rqOCO+lNCDaNywWjROReQKF
+         r/vTg7Y5p2vjVcw2aeSZxSZLpKK+LEdohZL7NKrMFwYN/hKXUTNtR1jF3mscwgU78wdL
+         L2YCbmrB3GUhmtW650/H6WZceWBXZnTIn6IZNim8XPBBdKjgFe862VAghsb8cL35dENz
+         Xbig==
+X-Gm-Message-State: AOAM530F3SO7+UNak+BScS9JRkmzoES5bmBacfL75cfQwcK7qJAHz46t
+        gLF3PjfXl2xhJsLWTnw42Q==
+X-Google-Smtp-Source: ABdhPJxYyVnhkkXpCnNCYmWcKTble598kdOQWM1WnmFBNHS1MKlFJTW46Jl/GPLx0rfmdruXu7as7Q==
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr1308181otb.283.1632768054214;
+        Mon, 27 Sep 2021 11:40:54 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r18sm4245072ooc.27.2021.09.27.11.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 11:40:53 -0700 (PDT)
+Received: (nullmailer pid 3622187 invoked by uid 1000);
+        Mon, 27 Sep 2021 18:40:52 -0000
+Date:   Mon, 27 Sep 2021 13:40:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Cc:     joel@jms.id.au, mturquette@baylibre.com, sboyd@kernel.org,
+        adrian.hunter@intel.com, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        andrew@aj.id.au, BMC-SW@aspeedtech.com, steven_lee@aspeedtech.com
+Subject: Re: [PATCH 09/10] dt-bindings: mmc: aspeed: Add max-tap-delay
+ property
+Message-ID: <YVIQNPbbnhIqTSuu@robh.at.kernel.org>
+References: <20210922103116.30652-1-chin-ting_kuo@aspeedtech.com>
+ <20210922103116.30652-10-chin-ting_kuo@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922103116.30652-10-chin-ting_kuo@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-27 at 19:36 +0200, Greg KH wrote:
-> On Wed, Sep 22, 2021 at 02:30:04PM -0700, David E. Box wrote:
-> > Intel Platform Monitoring Technology (PMT) support is indicated by presence
-> > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
-> > structures may also be used by Intel to indicate support for other
-> > capabilities unrelated to PMT.  OOBMSM is a device that can have both PMT
-> > and non-PMT capabilities. In order to support these capabilities it is
-> > necessary to modify the intel_pmt driver to handle the creation of platform
-> > devices more generically.
+On Wed, Sep 22, 2021 at 06:31:15PM +0800, Chin-Ting Kuo wrote:
+> Add max-tap-delay proptery in order to record the maximum
+> tap delay on different platforms.
 > 
-> I said this on your other driver submission, but why are you turning a
-> PCIe device into a set of platform devices and craming it into the MFD
-> subsystem?
+> Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> PCIe devices are NOT platform devices.
+> diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> index 987b287f3bff..5bb66849df65 100644
+> --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> @@ -37,6 +37,9 @@ properties:
+>    clocks:
+>      maxItems: 1
+>      description: The SD/SDIO controller clock gate
+> +  max-tap-delay:
+> +    maxItems: 1
 
-But they *are* used to create platform devices when the PCIe device is multi-functional, which is
-what intel_pmt is.
+An array?
 
+> +    description: The maximum delay in picosecond for SD/SDIO controller
+
+Properties with a unit should have a standard unit suffix.
+
+Should be common property? If not, needs a vendor prefix.
+
+>  
+>  patternProperties:
+>    "^sdhci@[0-9a-f]+$":
+> -- 
+> 2.17.1
 > 
-> Why not use the auxiliary bus for this thing if you have individual
-> drivers that need to "bind" to the different attributes that this single
-> PCIe device is exporting.
-
-It wasn't clear in the beginning how this would evolve. MFD made sense for the PMT (platform
-monitoring technology) driver. PMT has 3 related but individually enumerable devices on the same IP,
-like lpss. But the same IP is now being used for other features too like SDSi. We could work on
-converting this to the auxiliary bus and then covert the cell drivers.
-
 > 
-> Or why not just fix the hardware to report individual PCIe devices, like
-> a sane system would do?
-
-We have some systems with 1000+ PCIe devices. Each PCIe device adds cost to HW. So increasingly
-VSEC/DVSEC is used to expose features which are handled by the same micro-controller in the HW.
-
->   Has this shipped in any devices yet?  If not,
-> can that be fixed first?  It's just a firmware change, right?
-
-PMT has been shipped for over a year. It's not just a firmware change.
-
-David 
-> 
-> thanks,
-> 
-> greg k-h
-
-
