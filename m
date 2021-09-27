@@ -2,141 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795714198C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62454198C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhI0QWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:22:42 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39550 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235341AbhI0QWk (ORCPT
+        id S235431AbhI0QVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235350AbhI0QVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:22:40 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B1E5520174;
-        Mon, 27 Sep 2021 16:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632759661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=OhdVD9gOAiEfK7wpJLmapbTk6U8empUyrJJ+9sKjxDc=;
-        b=UE0ndxT/7SMUQi2S12WiU1L8o3vezLNsivOroJUx3J6QMJZLqypB8enMbr/LXtEAwGfFAK
-        NzJ4YnTh1xfRrxWsdPLZurdMg5t7WZFYMs4KALj0b0mNHEFMJXFyVTgeZZs4VR5x0dP06T
-        Q0cDAVQEP9WHufbko8M+3o9EQbDZ9BY=
-Received: from g78.suse.de (unknown [10.163.24.38])
-        by relay1.suse.de (Postfix) with ESMTP id A3FD825D3E;
-        Mon, 27 Sep 2021 16:20:58 +0000 (UTC)
-From:   Richard Palethorpe <rpalethorpe@suse.com>
-To:     x86@kernel.org
-Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, rpalethorpe@richiejp.com,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        ltp@lists.linux.it
-Subject: [PATCH] x86/entry/ia32: Ensure s32 is sign extended to s64
-Date:   Mon, 27 Sep 2021 17:19:55 +0100
-Message-Id: <20210927161955.28494-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 27 Sep 2021 12:21:37 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80318C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:19:59 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q23so16292753pfs.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dsVXEKoKqdZHcsPQpJ/UcCagSL6o4q5qy9DXvDzYNIc=;
+        b=SUFuB40Tz1t+KNWL3e+e3eQDDC93OdZBEX3HxYREzJI56W2Rm4DH2GrJWcD6rbUyTI
+         cmQscB9vBjX7svmiTlEqVIAYPAlzE0NJ3QJmkbonv1lInWom9s+CQ3xtw/hF3xNqUx06
+         9159C0ZbWzVwNbhabyQ/uXzS7gaQHHVpV1ZW2uWrANoobpV9BLqfNayt6XFrrtPwMN2m
+         4EH+te+Iz8HCjvQpHLgRJIhGykwqEklGLmCVvY6JZWO+UsElIOLdjsdGuGZJkU9BPaGN
+         OO+99gzsL+mGjNbMmWWPTKKHzLwv6zEmaP+ZtLbBQx2hTRwKOcKkDjb2X2vH2ghUm7y4
+         XyrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dsVXEKoKqdZHcsPQpJ/UcCagSL6o4q5qy9DXvDzYNIc=;
+        b=GuuQuaCg0CMYwzV5gyuQmgmjoW3JiG+BP3SlItUOgbKdzQohXNcT7CHEyhcWxY/XZb
+         +st4kK43k0LY3D6poTeERc0ooNJvAZNTVbSfuIZSkqK8jMq5lgjoo23gb9pSop88n4dt
+         jw5eunRKGPRkaax5WC9NNXbedGGE4pwigOY4Pflgyc+wl1PpCuk213MRdynAE2kgSUzK
+         T5fXbvUX9O5CdTyzewzdbh7pLhF/uap6ScE5GZF7idAMrxoCyo1nhZxTRAg0zP/BAxRv
+         UMLbN+9Kw74qQwJfMACAvJjveWqkXz/JhF7WjixmyJuacE30UL69L+X/40ZuatQ9iL1P
+         xXQA==
+X-Gm-Message-State: AOAM532Cju0ph7EsFbm9ufjEiJTJXKPrgLRI6gkWmAz7Ub5hPDw4bqRt
+        tZ8V5B4py87tPTZaGc4QT6A42Q==
+X-Google-Smtp-Source: ABdhPJxuAG1Nciagp+2iXR74ww8tubzmzfGk4ysVR1aLlfypjEKR6Me8n+gECs1iULNGKNrvuIPJyw==
+X-Received: by 2002:a62:29c7:0:b0:424:e840:47ef with SMTP id p190-20020a6229c7000000b00424e84047efmr519992pfp.72.1632759598893;
+        Mon, 27 Sep 2021 09:19:58 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id f205sm18547611pfa.92.2021.09.27.09.19.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 09:19:57 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 10:19:55 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, ohad@wizery.com
+Subject: Re: [PATCH v4 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
+ AO ARC remote procesor
+Message-ID: <20210927161955.GA2837840@p14s>
+References: <20210921192557.1610709-1-martin.blumenstingl@googlemail.com>
+ <20210921192557.1610709-3-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921192557.1610709-3-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presently ia32 registers stored in ptregs are unconditionally cast to
-unsigned int by the ia32 stub. They are then cast to long when passed
-to __se_sys*, but will not be sign extended.
+Hi Martin,
 
-This takes the sign of the syscall argument into account in the ia32
-stub. It still casts to unsigned int to avoid implementation specific
-behavior. However then casts to int or unsigned int as necessary. So
-that the following cast to long sign extends the value.
+On Tue, Sep 21, 2021 at 09:25:57PM +0200, Martin Blumenstingl wrote:
+> Amlogic Meson6, Meson8, Meson8b and Meson8m2 embed an ARC core in the
+> Always-On (AO) power-domain. This is typically used for waking up the
+> ARM cores after system suspend.
+> 
+> The configuration is spread across three different registers:
+> - AO_REMAP_REG0 which must be programmed to zero, it's actual purpose
+>   is unknown. There is a second remap register which is not used in the
+>   vendor kernel (which served as reference for this driver).
+> - AO_CPU_CNTL is used to start and stop the ARC core.
+> - AO_SECURE_REG0 in the SECBUS2 register area with unknown purpose.
+> 
+> To boot the ARC core we also need to enable it's gate clock and trigger
+> a reset.
+> 
+> The actual code for this ARC core can come from an ELF binary, for
+> example by building the Zephyr RTOS for an ARC EM4 core and then taking
+> "zephyr.elf" as firmware. This executable does not have any "rsc table"
+> so we are skipping rproc_elf_load_rsc_table (rproc_ops.parse_fw) and
+> rproc_elf_find_loaded_rsc_table (rproc_ops.find_loaded_rsc_table).
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  drivers/remoteproc/Kconfig           |  11 ++
+>  drivers/remoteproc/Makefile          |   1 +
+>  drivers/remoteproc/meson_mx_ao_arc.c | 261 +++++++++++++++++++++++++++
+>  3 files changed, 273 insertions(+)
+>  create mode 100644 drivers/remoteproc/meson_mx_ao_arc.c
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 9a6eedc3994a..3f8d5d80a0c4 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -127,6 +127,17 @@ config KEYSTONE_REMOTEPROC
+>  	  It's safe to say N here if you're not interested in the Keystone
+>  	  DSPs or just want to use a bare minimum kernel.
+>  
+> +config MESON_MX_AO_ARC_REMOTEPROC
+> +	tristate "Amlogic Meson6/8/8b/8m2 AO ARC remote processor support"
+> +	depends on HAS_IOMEM
+> +	depends on (ARM && ARCH_MESON) || COMPILE_TEST
+> +	select GENERIC_ALLOCATOR
+> +	help
+> +	  Say m or y here to have support for the AO ARC remote processor
+> +	  on Amlogic Meson6/Meson8/Meson8b/Meson8m2 SoCs. This is
+> +	  typically used for system suspend.
+> +	  If unsure say N.
+> +
+>  config PRU_REMOTEPROC
+>  	tristate "TI PRU remoteproc support"
+>  	depends on TI_PRUSS
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index bb26c9e4ef9c..ce1abeb30907 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -18,6 +18,7 @@ obj-$(CONFIG_OMAP_REMOTEPROC)		+= omap_remoteproc.o
+>  obj-$(CONFIG_WKUP_M3_RPROC)		+= wkup_m3_rproc.o
+>  obj-$(CONFIG_DA8XX_REMOTEPROC)		+= da8xx_remoteproc.o
+>  obj-$(CONFIG_KEYSTONE_REMOTEPROC)	+= keystone_remoteproc.o
+> +obj-$(CONFIG_MESON_MX_AO_ARC_REMOTEPROC)+= meson_mx_ao_arc.o
+>  obj-$(CONFIG_PRU_REMOTEPROC)		+= pru_rproc.o
+>  obj-$(CONFIG_QCOM_PIL_INFO)		+= qcom_pil_info.o
+>  obj-$(CONFIG_QCOM_RPROC_COMMON)		+= qcom_common.o
+> diff --git a/drivers/remoteproc/meson_mx_ao_arc.c b/drivers/remoteproc/meson_mx_ao_arc.c
+> new file mode 100644
+> index 000000000000..ea9db46a7e03
+> --- /dev/null
+> +++ b/drivers/remoteproc/meson_mx_ao_arc.c
+> @@ -0,0 +1,261 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2020 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/property.h>
 
-This fixes the io_pgetevents02 LTP test when compiled with
--m32. Presently the systemcall io_pgetevents_time64 unexpectedly
-accepts -1 for the maximum number of events. It doesn't appear other
-systemcalls with signed arguments are effected because they all have
-compat variants defined and wired up. A less general solution is to
-wire up the systemcall:
-https://lore.kernel.org/ltp/20210921130127.24131-1-rpalethorpe@suse.com/
+I moved this just above platform_device.h and applied this set.
 
-Fixes: ebeb8c82ffaf ("syscalls/x86: Use 'struct pt_regs' based syscall calling for IA32_EMULATION and x32")
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/s390/include/asm/syscall_wrapper.h |  2 --
- arch/x86/include/asm/syscall_wrapper.h  | 25 +++++++++++++++++++++----
- include/linux/syscalls.h                |  1 +
- 3 files changed, 22 insertions(+), 6 deletions(-)
+Thanks,
+Mathieu
 
-diff --git a/arch/s390/include/asm/syscall_wrapper.h b/arch/s390/include/asm/syscall_wrapper.h
-index ad2c996e7e93..25ab58b0ded1 100644
---- a/arch/s390/include/asm/syscall_wrapper.h
-+++ b/arch/s390/include/asm/syscall_wrapper.h
-@@ -7,8 +7,6 @@
- #ifndef _ASM_S390_SYSCALL_WRAPPER_H
- #define _ASM_S390_SYSCALL_WRAPPER_H
- 
--#define __SC_TYPE(t, a) t
--
- #define SYSCALL_PT_ARG6(regs, m, t1, t2, t3, t4, t5, t6)\
- 	SYSCALL_PT_ARG5(regs, m, t1, t2, t3, t4, t5),	\
- 		m(t6, (regs->gprs[7]))
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index 6a2827d0681f..811139a82b13 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -58,12 +58,29 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
- 		,,regs->di,,regs->si,,regs->dx				\
- 		,,regs->r10,,regs->r8,,regs->r9)			\
- 
-+
-+/* SYSCALL_PT_ARGS is Adapted from s390x */
-+#define SYSCALL_PT_ARG6(m, t1, t2, t3, t4, t5, t6)			\
-+	SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5), m(t6, (regs->bp))
-+#define SYSCALL_PT_ARG5(m, t1, t2, t3, t4, t5)				\
-+	SYSCALL_PT_ARG4(m, t1, t2, t3, t4),  m(t5, (regs->di))
-+#define SYSCALL_PT_ARG4(m, t1, t2, t3, t4)				\
-+	SYSCALL_PT_ARG3(m, t1, t2, t3),  m(t4, (regs->si))
-+#define SYSCALL_PT_ARG3(m, t1, t2, t3)					\
-+	SYSCALL_PT_ARG2(m, t1, t2), m(t3, (regs->dx))
-+#define SYSCALL_PT_ARG2(m, t1, t2)					\
-+	SYSCALL_PT_ARG1(m, t1), m(t2, (regs->cx))
-+#define SYSCALL_PT_ARG1(m, t1) m(t1, (regs->bx))
-+#define SYSCALL_PT_ARGS(x, ...) SYSCALL_PT_ARG##x(__VA_ARGS__)
-+
-+#define __SC_COMPAT_CAST(t, a)						\
-+	(__typeof(__builtin_choose_expr(__TYPE_IS_L(t), 0, 0U)))	\
-+	(unsigned int)a
-+
- /* Mapping of registers to parameters for syscalls on i386 */
- #define SC_IA32_REGS_TO_ARGS(x, ...)					\
--	__MAP(x,__SC_ARGS						\
--	      ,,(unsigned int)regs->bx,,(unsigned int)regs->cx		\
--	      ,,(unsigned int)regs->dx,,(unsigned int)regs->si		\
--	      ,,(unsigned int)regs->di,,(unsigned int)regs->bp)
-+	SYSCALL_PT_ARGS(x, __SC_COMPAT_CAST,				\
-+			__MAP(x, __SC_TYPE, __VA_ARGS__))		\
- 
- #define __SYS_STUB0(abi, name)						\
- 	long __##abi##_##name(const struct pt_regs *regs);		\
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 69c9a7010081..a492276a11f1 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -122,6 +122,7 @@ enum landlock_rule_type;
- #define __TYPE_IS_LL(t) (__TYPE_AS(t, 0LL) || __TYPE_AS(t, 0ULL))
- #define __SC_LONG(t, a) __typeof(__builtin_choose_expr(__TYPE_IS_LL(t), 0LL, 0L)) a
- #define __SC_CAST(t, a)	(__force t) a
-+#define __SC_TYPE(t, a)	t
- #define __SC_ARGS(t, a)	a
- #define __SC_TEST(t, a) (void)BUILD_BUG_ON_ZERO(!__TYPE_IS_LL(t) && sizeof(t) > sizeof(long))
- 
--- 
-2.31.1
-
+> +#include <linux/genalloc.h>
+> +#include <linux/io.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/reset.h>
+> +#include <linux/sizes.h>
+> +
+> +#include "remoteproc_internal.h"
+> +
+> +#define AO_REMAP_REG0						0x0
+> +#define AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU	GENMASK(3, 0)
+> +
+> +#define AO_REMAP_REG1						0x4
+> +#define AO_REMAP_REG1_MOVE_AHB_SRAM_TO_0X0_INSTEAD_OF_DDR	BIT(4)
+> +#define AO_REMAP_REG1_REMAP_AHB_SRAM_BITS_17_14_FOR_MEDIA_CPU	GENMASK(3, 0)
+> +
+> +#define AO_CPU_CNTL						0x0
+> +#define AO_CPU_CNTL_AHB_SRAM_BITS_31_20				GENMASK(28, 16)
+> +#define AO_CPU_CNTL_HALT					BIT(9)
+> +#define AO_CPU_CNTL_UNKNONWN					BIT(8)
+> +#define AO_CPU_CNTL_RUN						BIT(0)
+> +
+> +#define AO_CPU_STAT						0x4
+> +
+> +#define AO_SECURE_REG0						0x0
+> +#define AO_SECURE_REG0_AHB_SRAM_BITS_19_12			GENMASK(15, 8)
+> +
+> +/* Only bits [31:20] and [17:14] are usable, all other bits must be zero */
+> +#define MESON_AO_RPROC_SRAM_USABLE_BITS				0xfff3c000
+> +
+> +#define MESON_AO_RPROC_MEMORY_OFFSET				0x10000000
+> +
+> +struct meson_mx_ao_arc_rproc_priv {
+> +	void __iomem		*remap_base;
+> +	void __iomem		*cpu_base;
+> +	unsigned long		sram_va;
+> +	phys_addr_t		sram_pa;
+> +	size_t			sram_size;
+> +	struct gen_pool		*sram_pool;
+> +	struct reset_control	*arc_reset;
+> +	struct clk		*arc_pclk;
+> +	struct regmap		*secbus2_regmap;
+> +};
+> +
+> +static int meson_mx_ao_arc_rproc_start(struct rproc *rproc)
+> +{
+> +	struct meson_mx_ao_arc_rproc_priv *priv = rproc->priv;
+> +	phys_addr_t translated_sram_addr;
+> +	u32 tmp;
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(priv->arc_pclk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	tmp = FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+> +			 priv->sram_pa >> 14);
+> +	writel(tmp, priv->remap_base + AO_REMAP_REG0);
+> +
+> +	/*
+> +	 * The SRAM content as seen by the ARC core always starts at 0x0
+> +	 * regardless of the value given here (this was discovered by trial and
+> +	 * error). For SoCs older than Meson6 we probably have to set
+> +	 * AO_REMAP_REG1_MOVE_AHB_SRAM_TO_0X0_INSTEAD_OF_DDR to achieve the
+> +	 * same. (At least) For Meson8 and newer that bit must not be set.
+> +	 */
+> +	writel(0x0, priv->remap_base + AO_REMAP_REG1);
+> +
+> +	regmap_update_bits(priv->secbus2_regmap, AO_SECURE_REG0,
+> +			   AO_SECURE_REG0_AHB_SRAM_BITS_19_12,
+> +			   FIELD_PREP(AO_SECURE_REG0_AHB_SRAM_BITS_19_12,
+> +				      priv->sram_pa >> 12));
+> +
+> +	ret = reset_control_reset(priv->arc_reset);
+> +	if (ret) {
+> +		clk_disable_unprepare(priv->arc_pclk);
+> +		return ret;
+> +	}
+> +
+> +	usleep_range(10, 100);
+> +
+> +	/*
+> +	 * Convert from 0xd9000000 to 0xc9000000 as the vendor driver does.
+> +	 * This only seems to be relevant for the AO_CPU_CNTL register. It is
+> +	 * unknown why this is needed.
+> +	 */
+> +	translated_sram_addr = priv->sram_pa - MESON_AO_RPROC_MEMORY_OFFSET;
+> +
+> +	tmp = FIELD_PREP(AO_CPU_CNTL_AHB_SRAM_BITS_31_20,
+> +			 translated_sram_addr >> 20);
+> +	tmp |= AO_CPU_CNTL_UNKNONWN | AO_CPU_CNTL_RUN;
+> +	writel(tmp, priv->cpu_base + AO_CPU_CNTL);
+> +
+> +	usleep_range(20, 200);
+> +
+> +	return 0;
+> +}
+> +
+> +static int meson_mx_ao_arc_rproc_stop(struct rproc *rproc)
+> +{
+> +	struct meson_mx_ao_arc_rproc_priv *priv = rproc->priv;
+> +
+> +	writel(AO_CPU_CNTL_HALT, priv->cpu_base + AO_CPU_CNTL);
+> +
+> +	clk_disable_unprepare(priv->arc_pclk);
+> +
+> +	return 0;
+> +}
+> +
+> +static void *meson_mx_ao_arc_rproc_da_to_va(struct rproc *rproc, u64 da,
+> +					    size_t len, bool *is_iomem)
+> +{
+> +	struct meson_mx_ao_arc_rproc_priv *priv = rproc->priv;
+> +
+> +	/* The memory from the ARC core's perspective always starts at 0x0. */
+> +	if ((da + len) > priv->sram_size)
+> +		return NULL;
+> +
+> +	return (void *)priv->sram_va + da;
+> +}
+> +
+> +static struct rproc_ops meson_mx_ao_arc_rproc_ops = {
+> +	.start		= meson_mx_ao_arc_rproc_start,
+> +	.stop		= meson_mx_ao_arc_rproc_stop,
+> +	.da_to_va	= meson_mx_ao_arc_rproc_da_to_va,
+> +	.get_boot_addr	= rproc_elf_get_boot_addr,
+> +	.load		= rproc_elf_load_segments,
+> +	.sanity_check	= rproc_elf_sanity_check,
+> +};
+> +
+> +static int meson_mx_ao_arc_rproc_probe(struct platform_device *pdev)
+> +{
+> +	struct meson_mx_ao_arc_rproc_priv *priv;
+> +	struct device *dev = &pdev->dev;
+> +	const char *fw_name = NULL;
+> +	struct rproc *rproc;
+> +	int ret;
+> +
+> +	device_property_read_string(dev, "firmware-name", &fw_name);
+> +
+> +	rproc = devm_rproc_alloc(dev, "meson-mx-ao-arc",
+> +				 &meson_mx_ao_arc_rproc_ops, fw_name,
+> +				 sizeof(*priv));
+> +	if (!rproc)
+> +		return -ENOMEM;
+> +
+> +	rproc->has_iommu = false;
+> +	priv = rproc->priv;
+> +
+> +	priv->sram_pool = of_gen_pool_get(dev->of_node, "sram", 0);
+> +	if (!priv->sram_pool) {
+> +		dev_err(dev, "Could not get SRAM pool\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	priv->sram_size = gen_pool_avail(priv->sram_pool);
+> +
+> +	priv->sram_va = gen_pool_alloc(priv->sram_pool, priv->sram_size);
+> +	if (!priv->sram_va) {
+> +		dev_err(dev, "Could not alloc memory in SRAM pool\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	priv->sram_pa = gen_pool_virt_to_phys(priv->sram_pool, priv->sram_va);
+> +	if (priv->sram_pa & ~MESON_AO_RPROC_SRAM_USABLE_BITS) {
+> +		dev_err(dev, "SRAM address contains unusable bits\n");
+> +		ret = -EINVAL;
+> +		goto err_free_genpool;
+> +	}
+> +
+> +	priv->secbus2_regmap = syscon_regmap_lookup_by_phandle(dev->of_node,
+> +							       "amlogic,secbus2");
+> +	if (IS_ERR(priv->secbus2_regmap)) {
+> +		dev_err(dev, "Failed to find SECBUS2 regmap\n");
+> +		ret = PTR_ERR(priv->secbus2_regmap);
+> +		goto err_free_genpool;
+> +	}
+> +
+> +	priv->remap_base = devm_platform_ioremap_resource_byname(pdev, "remap");
+> +	if (IS_ERR(priv->remap_base)) {
+> +		ret = PTR_ERR(priv->remap_base);
+> +		goto err_free_genpool;
+> +	}
+> +
+> +	priv->cpu_base = devm_platform_ioremap_resource_byname(pdev, "cpu");
+> +	if (IS_ERR(priv->cpu_base)) {
+> +		ret = PTR_ERR(priv->cpu_base);
+> +		goto err_free_genpool;
+> +	}
+> +
+> +	priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
+> +	if (IS_ERR(priv->arc_reset)) {
+> +		dev_err(dev, "Failed to get ARC reset\n");
+> +		ret = PTR_ERR(priv->arc_reset);
+> +		goto err_free_genpool;
+> +	}
+> +
+> +	priv->arc_pclk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(priv->arc_pclk)) {
+> +		dev_err(dev, "Failed to get the ARC PCLK\n");
+> +		ret = PTR_ERR(priv->arc_pclk);
+> +		goto err_free_genpool;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, rproc);
+> +
+> +	ret = rproc_add(rproc);
+> +	if (ret)
+> +		goto err_free_genpool;
+> +
+> +	return 0;
+> +
+> +err_free_genpool:
+> +	gen_pool_free(priv->sram_pool, priv->sram_va, priv->sram_size);
+> +	return ret;
+> +}
+> +
+> +static int meson_mx_ao_arc_rproc_remove(struct platform_device *pdev)
+> +{
+> +	struct rproc *rproc = platform_get_drvdata(pdev);
+> +	struct meson_mx_ao_arc_rproc_priv *priv = rproc->priv;
+> +
+> +	rproc_del(rproc);
+> +	gen_pool_free(priv->sram_pool, priv->sram_va, priv->sram_size);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id meson_mx_ao_arc_rproc_match[] = {
+> +	{ .compatible = "amlogic,meson8-ao-arc" },
+> +	{ .compatible = "amlogic,meson8b-ao-arc" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, meson_mx_ao_arc_rproc_match);
+> +
+> +static struct platform_driver meson_mx_ao_arc_rproc_driver = {
+> +	.probe = meson_mx_ao_arc_rproc_probe,
+> +	.remove = meson_mx_ao_arc_rproc_remove,
+> +	.driver = {
+> +		.name = "meson-mx-ao-arc-rproc",
+> +		.of_match_table = meson_mx_ao_arc_rproc_match,
+> +	},
+> +};
+> +module_platform_driver(meson_mx_ao_arc_rproc_driver);
+> +
+> +MODULE_DESCRIPTION("Amlogic Meson6/8/8b/8m2 AO ARC remote processor driver");
+> +MODULE_AUTHOR("Martin Blumenstingl <martin.blumenstingl@googlemail.com>");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.33.0
+> 
