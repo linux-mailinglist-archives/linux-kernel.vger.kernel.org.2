@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02EC41A178
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7711741A17A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237399AbhI0VsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237301AbhI0VsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:48:07 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01410C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:46:29 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id l8so27335315edw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DOP/Ae5E9+UV8DIgGaqmjsByOHA/I7bBHXk1O5MJK8E=;
-        b=QBHbAdymDlS/J9zNuaqHQjn/TgKrA8fLv0aRI/pjpv/THNI3Wrbrrpk8Hg5og3Ly2f
-         dRpiPxuymihaOMPOkI/88ZNe61IQEDCiqW4s73pabQveX4Th0GP6UICfQNReRoVLY3YB
-         QZSeM/rs0XK7+vE2Cf0yF1guQbXxUNcIuTyADUjKW4Od4Jfmg+k2OPM1ag495oZyvRa+
-         E2sBLgkv8+s/mVWTnLacm1vSUsKfHHkZVF/GnXdsWWmDbpKaTjtmkEax9Bn2SVbR5c7t
-         fB78k/eVri9T7OQUXmte4LJR+Kvt14OccdqaC8E3ujCnKBw4LEliHERec+6CIfcDKM20
-         QHxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DOP/Ae5E9+UV8DIgGaqmjsByOHA/I7bBHXk1O5MJK8E=;
-        b=iA/q/49rEybmpF5KlQmwhd7Xhy2FYibqstZL+N5i3B4vGC3nWNEPuauTG5/pfBoU3K
-         uONWOZCCvs6J+kntFpyWka0RMEohyuTSkyxI4a78Fs42XFs19tInAH5SDapRl4nuWsxY
-         XE0vBx/ZBye1WvFgkh8s4w9MPC6+W4nWLXNN1UNyg6FR3No2q4Bql2zoLPgq0i83HJuI
-         oshCcmdAtUbcq3tCqySMjoXITwM93NIna6uel2iYtMl0rZ0tSzfta/f2PTlhh3nbvqrE
-         Ha8P3517mO/Vwr+SbgTiKnY4QG0aJ6j2uD3i/X/cAxUDAnZviLSIQht2mnPIXwaEoULl
-         tBlg==
-X-Gm-Message-State: AOAM532eSfnAhqqq8Tu0sSDA2zVW4Ga5hkzCzBl2KVZz6VIuZG7LZCml
-        eR9LJdU1WJ+WmY70/cYI+J0=
-X-Google-Smtp-Source: ABdhPJygP6DFsyKuuwHTabv/EZBjElcQwMgRmriFU8y/gd2CT+BaPatgKynSn4QtQojsSmX2pk3zSA==
-X-Received: by 2002:a17:906:1b54:: with SMTP id p20mr178229ejg.133.1632779187626;
-        Mon, 27 Sep 2021 14:46:27 -0700 (PDT)
-Received: from tom-desktop (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
-        by smtp.gmail.com with ESMTPSA id h13sm11325045edr.4.2021.09.27.14.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 14:46:26 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 23:46:24 +0200
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] staging: vt6655: fix camelcase in ldBmThreshold
-Message-ID: <20210927214624.GB6953@tom-desktop>
-References: <20210926162527.21462-1-tomm.merciai@gmail.com>
- <20210926162527.21462-3-tomm.merciai@gmail.com>
- <YVHirHixyOIgvqKB@kroah.com>
+        id S237446AbhI0Vsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236299AbhI0Vsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 17:48:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0713360F4A;
+        Mon, 27 Sep 2021 21:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632779220;
+        bh=zeGEbGI/ZXAXs9PdO+lmHDPPAF/0tujqW+e0ABCxmV4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=srkHJptHb/Wlhe5x0x9V8aXoohytmjiImRLdY4TP9teoCK01bWfP3Lk/OQvBiJ9hK
+         ICPrSCNHdFfnKW18EC8TVqE/hGvbfxkdgNJb7sjqK4E4x1RLNoQZCXcHb7Wywudtde
+         o9F2k7MLI9i3QCMt1N4mkfypp9wjn86Vquqst9cthSS/aozdVRSw7BuDIyHOHP+Ve6
+         G+Mgq0vNq58JSKLY2sHg4vWwrP2OaKXIJGXJkbeS0I/yuSifBZmdooC4d3SHBGNFEe
+         Oj3NiefkWODt3+8L/QhE3HkiK7RH81pp+g5JF9giKYVsTPsqUFOI0e1jIcaE7yqFxo
+         haG9GasHxq1xA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C0A6C5C0926; Mon, 27 Sep 2021 14:46:59 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 14:46:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Guillaume Morin <guillaume@morinfr.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: call_rcu data race patch
+Message-ID: <20210927214659.GV880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210918003933.GA25868@bender.morinfr.org>
+ <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918070836.GA19555@bender.morinfr.org>
+ <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210920160540.GA31426@bender.morinfr.org>
+ <20210922191406.GA31531@bender.morinfr.org>
+ <20210922192448.GB880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210927153842.GA12620@bender.morinfr.org>
+ <20210927161046.GU880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210927164944.GA20372@bender.morinfr.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVHirHixyOIgvqKB@kroah.com>
+In-Reply-To: <20210927164944.GA20372@bender.morinfr.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 05:26:36PM +0200, Greg Kroah-Hartman wrote:
-> On Sun, Sep 26, 2021 at 06:25:19PM +0200, Tommaso Merciai wrote:
-> > Replace camel case variable ldBmThreshold with snake case
-> > variable ld_bm_threshold.
+On Mon, Sep 27, 2021 at 06:49:45PM +0200, Guillaume Morin wrote:
+> On 27 Sep  9:10, Paul E. McKenney wrote:
+> > Very good!  Would you be willing to give me your Tested-by?
 > 
-> Same here, what exactly does this name mean and why did you pick it?
->
-  You are right the same here. What do you think about "bm_threshold"?
-
-  Thanks,
-  Tommaso
-
-> thanks,
+> Of course! Added below after the patch.
 > 
-> greg k-h
+> > > The first patch is already in your rcu tree and my gut feeling is that
+> > > it is the one that fixes the issue but you're the expert here... Though
+> > > I think it should be probably fast tracked and marked for stable?
+> > > 
+> > > Are you planning on committing the 2nd patch to your tree?
+> > 
+> > This is the second patch, correct?  (Too many patches!)
+> 
+> Correct. And to be 100% clear, the first one is
+> https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=2431774f04d1050292054c763070021bade7b151
+> 
+> > If so, I add your Tested-by and fill out the commit log.  It would be
+> > slated for the v5.17 merge window by default, that is, not the upcoming
+> > merge window but the one after that.  Please let me know if you need
+> > it sooner.
+> 
+> I personally don't need it sooner. But it's been broken for a while (5.4
+> based on the bugzilla report) and I can't imagine the original reporter
+> and we are the only ones hitting this. So my personal opinion would be
+> to get both patches into Linus's tree and stable branches asap, but
+> obviously this is entirely up to you.
+
+I have it in -next with your Tested-by (thank you!), so let's see how
+testing and review go.
+
+> I do appreciate the help!
+
+And thank you for giving that patch a go!
+
+							Thanx, Paul
+
+> > ------------------------------------------------------------------------
+> > 
+> > commit 1a792b59071b697defd4ccdc8b951cce49de9d2f
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Fri Sep 17 15:04:48 2021 -0700
+> > 
+> >     EXP rcu: Tighten rcu_advance_cbs_nowake() checks
+> >     
+> >     This is an experimental shot-in-the-dark debugging patch.
+> >     
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 6a1e9d3374db..6d692a591f66 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1590,10 +1590,14 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+> >  						  struct rcu_data *rdp)
+> >  {
+> >  	rcu_lockdep_assert_cblist_protected(rdp);
+> > -	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
+> > +	// Don't do anything unless the current grace period is guaranteed
+> > +	// not to end.  This means a grace period in progress and at least
+> > +	// one holdout CPU.
+> > +	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !READ_ONCE(rnp->qsmask) ||
+> >  	    !raw_spin_trylock_rcu_node(rnp))
+> >  		return;
+> > -	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+> > +	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) && READ_ONCE(rnp->qsmask))
+> > +		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+> >  	raw_spin_unlock_rcu_node(rnp);
+> >  }
+> >  
+> 
+> Tested-By: Guillaume Morin <guillaume@morinfr.org>
+> 
+> -- 
+> Guillaume Morin <guillaume@morinfr.org>
