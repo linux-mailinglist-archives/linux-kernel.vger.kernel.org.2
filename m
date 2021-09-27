@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91DE419429
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC7741941F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbhI0MZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:25:12 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:37870 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbhI0MZC (ORCPT
+        id S234274AbhI0MZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:25:01 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:38909 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234181AbhI0MY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:25:02 -0400
-Received: by mail-oi1-f177.google.com with SMTP id w206so25364742oiw.4;
-        Mon, 27 Sep 2021 05:23:24 -0700 (PDT)
+        Mon, 27 Sep 2021 08:24:59 -0400
+Received: by mail-ot1-f47.google.com with SMTP id c6-20020a9d2786000000b005471981d559so24141917otb.5;
+        Mon, 27 Sep 2021 05:23:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=2FOjpTM0F8xEU8mS0E5tOeoZE2kq70fSbscAVWi7m/M=;
-        b=8SNIpqcsTpwfT6yus3lOM28Hlok1nfNPQDnmcDyV4AQgWvQl3wAwAwDh1GApzTYSB7
-         bztcFSso6WHALcSiJeCrXRozLfPDvB7G4zdJ2yItOkRwz7TuR4V3oZEhcBSpxTKiGAB+
-         t42oXYq5L53VIQyYhs6qcTgzWtaq7RcM8/ixV0k5du6Kl/z/8D75p0foOvsOPTtglheE
-         GGmlZaMXa8+OXWwQdsXmWZSdI1o06DZZ/GTK56H/ax4CPrMPhCZSuAX01XK8DHXgCK0T
-         aIpqT8NRaqRhdlebQHekLtnrro09YKiv9WTswyG2PHCODvHqZglCZ94sxT9zXbmOZYOi
-         0+Rw==
-X-Gm-Message-State: AOAM533XbXa/piXezmDO3y1RoiAlv42DXk8v3ei9LargCSkjngjDo8WY
-        CUR4SoGeCErcbHmsWbtZtg==
-X-Google-Smtp-Source: ABdhPJzAyWHfcy6Itaqvn8xBgYCq3A1CQXQnAw/QYF83umPvAPC9IBhN4BKD53X/0roppKfMVqvcFQ==
-X-Received: by 2002:a05:6808:543:: with SMTP id i3mr11912240oig.46.1632745404285;
-        Mon, 27 Sep 2021 05:23:24 -0700 (PDT)
+        bh=M1JxjeIOmKat6HvCouZk2WyJoVDL3ELYlgAx1y+djF4=;
+        b=7Dr0bB4vGoaJvaSBAUBkx9KtKsSxZfB/vn4GVTjzd3CfOSl5Iwqp/Hh5IuMRBL06d+
+         uTcMftoEpr91DfDdp7SVYLnnLLM484w+tDj9V8zrObYSZwSIAsKw0IdSgq5/f0N3BX7l
+         S0/O0Y5/luYHWHqCj8v/e5FNzpbY65175L0QUhY/C5JCjyUU5yFFadzqjtfHuryQahIm
+         7/AcyukH2XgWHg6HqoUFRMjWGKv2st+fUmTng2WHuP2G2WogBgV/QzYqMcKs+orklLg7
+         BuLlDGHtxxhlhnm0wzUxNExE9ymhzOboEXHr35l4Gy1tYNa4/iJzHoPV6ZcQROWKergD
+         VHDQ==
+X-Gm-Message-State: AOAM532DbWgQuNY4xsZ7Yz305Qgr2HmuLmISGFgBArR3tWazJEkdyZR8
+        /88d6n4zDBKM8r/I0B/VXw==
+X-Google-Smtp-Source: ABdhPJxPboMBJ7atlf4V2758iIymolXl+RlULWf5ZVJnB5v+aaNUyKh+KewyhDhEFZ50jt9f77a3wA==
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr17216398otb.283.1632745401264;
+        Mon, 27 Sep 2021 05:23:21 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w14sm3965493oth.5.2021.09.27.05.23.23
+        by smtp.gmail.com with ESMTPSA id o126sm3844592oig.21.2021.09.27.05.23.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 05:23:23 -0700 (PDT)
-Received: (nullmailer pid 3097155 invoked by uid 1000);
+        Mon, 27 Sep 2021 05:23:20 -0700 (PDT)
+Received: (nullmailer pid 3097152 invoked by uid 1000);
         Mon, 27 Sep 2021 12:23:19 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     devicetree@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Jami Kettunen <jamipkettunen@gmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        linux-phy@lists.infradead.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210927044824.30246-2-shawn.guo@linaro.org>
-References: <20210927044824.30246-1-shawn.guo@linaro.org> <20210927044824.30246-2-shawn.guo@linaro.org>
-Subject: Re: [PATCH 1/3] dt-bindings: phy: qcom,qusb2: Add missing vdd-supply
+To:     Sam Shih <sam.shih@mediatek.com>
+Cc:     herbert@gondor.apana.org.au, linux-serial@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux@roeck-us.net,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, hsinyi@chromium.org,
+        mpm@selenic.com, seiya.wang@mediatek.com,
+        enric.balletbo@collabora.com, fparent@baylibre.com,
+        john@phrozen.org, sboyd@kernel.org, devicetree@vger.kernel.org,
+        linux-crypto@vger.kernel.org, gregkh@linuxfoundation.org,
+        mturquette@baylibre.com, linux-watchdog@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        wim@linux-watchdog.org, robh+dt@kernel.org,
+        linus.walleij@linaro.org, sean.wang@kernel.org,
+        Ryder.Lee@mediatek.com
+In-Reply-To: <20210927023419.17994-1-sam.shih@mediatek.com>
+References: <1632491961.645727.1195978.nullmailer@robh.at.kernel.org> <20210927023419.17994-1-sam.shih@mediatek.com>
+Subject: Re: [v5,5/9] dt-bindings: pinctrl: update bindings for MT7986 SoC
 Date:   Mon, 27 Sep 2021 07:23:19 -0500
-Message-Id: <1632745399.271628.3097154.nullmailer@robh.at.kernel.org>
+Message-Id: <1632745399.256353.3097151.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 12:48:22 +0800, Shawn Guo wrote:
-> Besides vdda-pll and vdda-phy-dpdm, vdd-supply is a required supply for
-> PHY digital circuit operation.  Add it for correctness and completeness.
+On Mon, 27 Sep 2021 10:34:19 +0800, Sam Shih wrote:
+> This updates bindings for MT7986 pinctrl driver. The
+> difference of pinctrl between mt7986a and mt7986b is that pin-41 to pin-65
+> do not exist on mt7986b
 > 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> 
 > ---
->  Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+> v5 : fixed yamllint warnings/errors
+> v4 : used yaml format instead of txt format document
+> v3 : make mt7986 pinctrl bindings as a separate file
+> v2 : deleted the redundant description of mt7986a/mt7986b
+> ---
+>  .../pinctrl/mediatek,mt7986-pinctrl.yaml      | 353 ++++++++++++++++++
+>  1 file changed, 353 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -74,12 +84,21 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.example.dt.yaml: phy@7411000: 'vdd-supply' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dts:25.13-32.43: Warning (reg_format): /example-0/soc/pinctrl@1001f000:reg: property has invalid length (128 bytes) (#address-cells == 2, #size-cells == 1)
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dts:23.33-58.13: Warning (avoid_default_addr_size): /example-0/soc/pinctrl@1001f000: Relying on default #address-cells value
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dts:23.33-58.13: Warning (avoid_default_addr_size): /example-0/soc/pinctrl@1001f000: Relying on default #size-cells value
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: Warning (unique_unit_address): Failed prerequisite 'avoid_default_addr_size'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.example.dt.yaml: pinctrl@1001f000: 'gpio-ranges' does not match any of the regexes: '-[0-9]+$', 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.yaml
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1533177
+See https://patchwork.ozlabs.org/patch/1533169
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
