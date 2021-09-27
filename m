@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B437419AB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AC7419C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236433AbhI0RLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:11:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
+        id S237426AbhI0RZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236361AbhI0RJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:09:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C6F66120A;
-        Mon, 27 Sep 2021 17:07:28 +0000 (UTC)
+        id S235898AbhI0RWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:22:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFDA1613A8;
+        Mon, 27 Sep 2021 17:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762448;
-        bh=L9bLUzU+YlvE0N5eA7xZ+OQNEp3gnOCB3LWvMQ51pvc=;
+        s=korg; t=1632762847;
+        bh=A4ahRCMAKn0v+DioCp9jJOd8r99Q792ns3PteJVLp0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/sCZ+WmXdP4wYVIt8CVlx/5Xgh+ACTlwt1c7BpdPpKRn1YSR8fb17+sfJcY6uCUb
-         NmOzrvmITl8tTl1mC1klZgmvwg2GWEn+sdHX8s1+HOp2Me5YURL6io92lbY1spVK6Y
-         P0Wv9ttq+KYkT4s2lsUz8ed27EJRX46pKNvpd1eE=
+        b=ok3lBXxNjY0LYgupTxOdN19yiUYiPeRsvBXnHdiAUcFPs5jX6VLXLU0lP6yJdQcLD
+         0xJmjKWTsp1kVCNpKkFuNNAnaMumwuQk7E/HjKAAiC7sHQaFDTwKrH5gvXqByW+xfs
+         0ZqgRGHLCg8UtpUBLq/ylAcJvnNdg2ZSCEdfurnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.10 009/103] xen/x86: fix PV trap handling on secondary processors
-Date:   Mon, 27 Sep 2021 19:01:41 +0200
-Message-Id: <20210927170226.034528093@linuxfoundation.org>
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 056/162] enetc: Fix illegal access when reading affinity_hint
+Date:   Mon, 27 Sep 2021 19:01:42 +0200
+Message-Id: <20210927170235.427711689@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,98 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-commit 0594c58161b6e0f3da8efa9c6e3d4ba52b652717 upstream.
+[ Upstream commit 7237a494decfa17d0b9d0076e6cee3235719de90 ]
 
-The initial observation was that in PV mode under Xen 32-bit user space
-didn't work anymore. Attempts of system calls ended in #GP(0x402). All
-of the sudden the vector 0x80 handler was not in place anymore. As it
-turns out up to 5.13 redundant initialization did occur: Once from
-cpu_initialize_context() (through its VCPUOP_initialise hypercall) and a
-2nd time while each CPU was brought fully up. This 2nd initialization is
-now gone, uncovering that the 1st one was flawed: Unlike for the
-set_trap_table hypercall, a full virtual IDT needs to be specified here;
-the "vector" fields of the individual entries are of no interest. With
-many (kernel) IDT entries still(?) (i.e. at that point at least) empty,
-the syscall vector 0x80 ended up in slot 0x20 of the virtual IDT, thus
-becoming the domain's handler for vector 0x20.
+irq_set_affinity_hit() stores a reference to the cpumask_t
+parameter in the irq descriptor, and that reference can be
+accessed later from irq_affinity_hint_proc_show(). Since
+the cpu_mask parameter passed to irq_set_affinity_hit() has
+only temporary storage (it's on the stack memory), later
+accesses to it are illegal. Thus reads from the corresponding
+procfs affinity_hint file can result in paging request oops.
 
-Make xen_convert_trap_info() fit for either purpose, leveraging the fact
-that on the xen_copy_trap_info() path the table starts out zero-filled.
-This includes moving out the writing of the sentinel, which would also
-have lead to a buffer overrun in the xen_copy_trap_info() case if all
-(kernel) IDT entries were populated. Convert the writing of the sentinel
-to clearing of the entire table entry rather than just the address
-field.
+The issue is fixed by the get_cpu_mask() helper, which provides
+a permanent storage for the cpumask_t parameter.
 
-(I didn't bother trying to identify the commit which uncovered the issue
-in 5.14; the commit named below is the one which actually introduced the
-bad code.)
-
-Fixes: f87e4cac4f4e ("xen: SMP guest support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/7a266932-092e-b68f-f2bb-1473b61adc6e@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/enlighten_pv.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -736,8 +736,8 @@ static void xen_write_idt_entry(gate_des
- 	preempt_enable();
- }
- 
--static void xen_convert_trap_info(const struct desc_ptr *desc,
--				  struct trap_info *traps)
-+static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
-+				      struct trap_info *traps, bool full)
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 3ca93adb9662..7f90c27c0e79 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1879,7 +1879,6 @@ static void enetc_clear_bdrs(struct enetc_ndev_priv *priv)
+ static int enetc_setup_irqs(struct enetc_ndev_priv *priv)
  {
- 	unsigned in, out, count;
+ 	struct pci_dev *pdev = priv->si->pdev;
+-	cpumask_t cpu_mask;
+ 	int i, j, err;
  
-@@ -747,17 +747,18 @@ static void xen_convert_trap_info(const
- 	for (in = out = 0; in < count; in++) {
- 		gate_desc *entry = (gate_desc *)(desc->address) + in;
+ 	for (i = 0; i < priv->bdr_int_num; i++) {
+@@ -1908,9 +1907,7 @@ static int enetc_setup_irqs(struct enetc_ndev_priv *priv)
  
--		if (cvt_gate_to_trap(in, entry, &traps[out]))
-+		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
- 			out++;
+ 			enetc_wr(hw, ENETC_SIMSITRV(idx), entry);
+ 		}
+-		cpumask_clear(&cpu_mask);
+-		cpumask_set_cpu(i % num_online_cpus(), &cpu_mask);
+-		irq_set_affinity_hint(irq, &cpu_mask);
++		irq_set_affinity_hint(irq, get_cpu_mask(i % num_online_cpus()));
  	}
--	traps[out].address = 0;
-+
-+	return out;
- }
  
- void xen_copy_trap_info(struct trap_info *traps)
- {
- 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
- 
--	xen_convert_trap_info(desc, traps);
-+	xen_convert_trap_info(desc, traps, true);
- }
- 
- /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
-@@ -767,6 +768,7 @@ static void xen_load_idt(const struct de
- {
- 	static DEFINE_SPINLOCK(lock);
- 	static struct trap_info traps[257];
-+	unsigned out;
- 
- 	trace_xen_cpu_load_idt(desc);
- 
-@@ -774,7 +776,8 @@ static void xen_load_idt(const struct de
- 
- 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
- 
--	xen_convert_trap_info(desc, traps);
-+	out = xen_convert_trap_info(desc, traps, false);
-+	memset(&traps[out], 0, sizeof(traps[0]));
- 
- 	xen_mc_flush();
- 	if (HYPERVISOR_set_trap_table(traps))
+ 	return 0;
+-- 
+2.33.0
+
 
 
