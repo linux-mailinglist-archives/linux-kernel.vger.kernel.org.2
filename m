@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153CA4194AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00F44194AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhI0M5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:57:37 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:41362 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbhI0M5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:57:36 -0400
-Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 18RCt8TH023197;
-        Mon, 27 Sep 2021 21:55:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 18RCt8TH023197
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1632747338;
-        bh=ApYGefbovH3YDnI1o13UMUD8Y4BudcfAKenkft0EDMU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1TiQKUO3N2GDlZIGR9dZItuQBAl5kfKk4jzb6RiF/1B4qkVzWiqpglLiBTfsDog33
-         qjOH3n0oGJhyggp3B0aLcefmAp2kVKOIThyiTK1IXBJ0jVWP6+gLkwvkMVjv+KMEsf
-         fGCtLA5Kaz05Sot2e/cl7FCB6pWdFYE1A8VtqXC5hvZcFvngEuNq4KEZ3wt75t7CX0
-         8Ay/JmEzyesr/8CxqnHgQGR3p8/8Ots9t8OWbOX1MweM94/w9Gu+SouIwrhn2h9kcC
-         Ca+OfI+h43oWPGC8N2MiO4TncoPe73qFRma45IRalpHubEQufJOaGybkZV5Cy57TWf
-         mZ0i08rLl23Qg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kconfig: rename a variable in the lexer to a clearer name
-Date:   Mon, 27 Sep 2021 21:54:37 +0900
-Message-Id: <20210927125437.818092-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210927125437.818092-1-masahiroy@kernel.org>
-References: <20210927125437.818092-1-masahiroy@kernel.org>
+        id S234430AbhI0NAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234360AbhI0NAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:00:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4CFD6103B;
+        Mon, 27 Sep 2021 12:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632747509;
+        bh=oswmBYCS56c1A9KQBHfr/N2KsORPP0gcw6VGA+01gjQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=byJp6TBwZwi6G+sFiUjraRb/MEzZ6qeImq1Pw8i+kMuetEZdbdVRf4zT+WPKGTAev
+         xQSfv/18IKtOPf21332cPN1y5QIAFPH2uGg/bdS52dKb5nNZZJ24TEP8GwWrrsDv8T
+         fRIQAs50KBcbZFzN2xwHXL9r0kWfrqfEtUKnIul2IxCp4Or4+85bnHuQnRi1e7JpT1
+         5moXs5IRGHSTBhrKeCM2+HaiX7ErVu+vpcDzZoQwYYmZsKy0O/GswCHyhEli0G06xc
+         3/EFhScMt7T6lbk70i0jB8Kqz1k7JPZV3nS3aeAgRrocM1/SYwJZArMT7U/8HHQ6B7
+         gikAgjt9VqNcA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chunming Zhou <david1.zhou@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] drm/amdgpu: fix warning for overflow check
+Date:   Mon, 27 Sep 2021 14:58:10 +0200
+Message-Id: <20210927125824.1583474-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Kconfig, like Python, you can enclose a string by double-quotes or
-single-quotes. So, both "foo" and 'foo' are allowed.
+From: Arnd Bergmann <arnd@arndb.de>
 
-The variable, "str", is used to remember whether the string started with
-a double-quote or a single-quote.
+The overflow check in amdgpu_bo_list_create() causes a warning with
+clang-14 on 64-bit architectures, since the limit can never be
+exceeded.
 
-Rename it to a clearer name. The type should be 'char'.
+drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of comparison of constant 256204778801521549 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
+            ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+The check remains useful for 32-bit architectures, so just avoid the
+warning by using size_t as the type for the count.
+
+Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the list")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- scripts/kconfig/lexer.l | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
-index efe487859308..cc386e443683 100644
---- a/scripts/kconfig/lexer.l
-+++ b/scripts/kconfig/lexer.l
-@@ -84,7 +84,7 @@ static void warn_ignored_character(char chr)
- n	[A-Za-z0-9_-]
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+index 15c45b2a3983..714178f1b6c6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+@@ -61,7 +61,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
  
- %%
--	int str = 0;
-+	char open_quote = 0;
+ int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file *filp,
+ 			  struct drm_amdgpu_bo_list_entry *info,
+-			  unsigned num_entries, struct amdgpu_bo_list **result)
++			  size_t num_entries, struct amdgpu_bo_list **result)
+ {
+ 	unsigned last_entry = 0, first_userptr = num_entries;
+ 	struct amdgpu_bo_list_entry *array;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+index c905a4cfc173..044b41f0bfd9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+@@ -61,7 +61,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdgpu_bo_list_in *in,
+ int amdgpu_bo_list_create(struct amdgpu_device *adev,
+ 				 struct drm_file *filp,
+ 				 struct drm_amdgpu_bo_list_entry *info,
+-				 unsigned num_entries,
++				 size_t num_entries,
+ 				 struct amdgpu_bo_list **list);
  
- #.*			/* ignore comment */
- [ \t]*			/* whitespaces */
-@@ -133,7 +133,7 @@ n	[A-Za-z0-9_-]
- ":="			return T_COLON_EQUAL;
- "+="			return T_PLUS_EQUAL;
- \"|\'			{
--				str = yytext[0];
-+				open_quote = yytext[0];
- 				new_string();
- 				BEGIN(STRING);
- 			}
-@@ -170,7 +170,7 @@ n	[A-Za-z0-9_-]
- 		append_string(yytext + 1, yyleng - 1);
- 	}
- 	\'|\"	{
--		if (str == yytext[0]) {
-+		if (open_quote == yytext[0]) {
- 			BEGIN(INITIAL);
- 			yylval.string = text;
- 			return T_WORD_QUOTE;
+ static inline struct amdgpu_bo_list_entry *
 -- 
-2.30.2
+2.29.2
 
