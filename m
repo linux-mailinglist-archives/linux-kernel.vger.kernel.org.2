@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D212419CDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782AA419A59
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238362AbhI0Rch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
+        id S236376AbhI0RI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:08:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238494AbhI0R3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDCC56154B;
-        Mon, 27 Sep 2021 17:17:42 +0000 (UTC)
+        id S236192AbhI0RHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:07:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DD4760F3A;
+        Mon, 27 Sep 2021 17:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632763063;
-        bh=8gFzYAOuzTEtdhZMjEglOy9laMAWaACIFzj4RvKFH9o=;
+        s=korg; t=1632762347;
+        bh=Rinp+8UG8WWYUHOf7V9BalhrUi/cbAfp6mnfPjz5qtg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VDBBwyW9c3LAs7YpZ7WRDqxJsn7XV7iqWrl/oJzC6/C2OpabnUK5n4s/YUJuH8l8d
-         i5Kmm0k5CssT41yp0wT0H+kSJDrsHmlPxAukPDgIOSlVENCJgnj7EQBjQ7LJrDh8SE
-         82ju+oCiod5D8fBQ+bWkUBTDpY3J3GENCOSi6sdw=
+        b=1do46uhByjoP6SYJggeHx7lGnC6uG/VeUGpaigdtlIY3u3PLUsGLfk2+RVk1qTKrb
+         6kXqBrEI4P2/CMCxVKKycGyT+vMv/tak5mtlb/MgVTmmLg+UPq9RA13D/OiGiDndZV
+         feWTNwPSk7YGUR47aYgd0DTTynMZZFhNnmEzzY1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 126/162] xen/balloon: use a kernel thread instead a workqueue
+Subject: [PATCH 5.4 56/68] net: i825xx: Use absolute_pointer for memcpy from fixed memory location
 Date:   Mon, 27 Sep 2021 19:02:52 +0200
-Message-Id: <20210927170237.797694886@linuxfoundation.org>
+Message-Id: <20210927170221.901098198@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,193 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 8480ed9c2bbd56fc86524998e5f2e3e22f5038f6 ]
+[ Upstream commit dff2d13114f0beec448da9b3716204eb34b0cf41 ]
 
-Today the Xen ballooning is done via delayed work in a workqueue. This
-might result in workqueue hangups being reported in case of large
-amounts of memory are being ballooned in one go (here 16GB):
+gcc 11.x reports the following compiler warning/error.
 
-BUG: workqueue lockup - pool cpus=6 node=0 flags=0x0 nice=0 stuck for 64s!
-Showing busy workqueues and worker pools:
-workqueue events: flags=0x0
-  pwq 12: cpus=6 node=0 flags=0x0 nice=0 active=2/256 refcnt=3
-    in-flight: 229:balloon_process
-    pending: cache_reap
-workqueue events_freezable_power_: flags=0x84
-  pwq 12: cpus=6 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-    pending: disk_events_workfn
-workqueue mm_percpu_wq: flags=0x8
-  pwq 12: cpus=6 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-    pending: vmstat_update
-pool 12: cpus=6 node=0 flags=0x0 nice=0 hung=64s workers=3 idle: 2222 43
+  drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
+  arch/m68k/include/asm/string.h:72:25: error:
+	'__builtin_memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
 
-This can easily be avoided by using a dedicated kernel thread for doing
-the ballooning work.
+Use absolute_pointer() to work around the problem.
 
-Reported-by: Jan Beulich <jbeulich@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20210827123206.15429-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/balloon.c | 62 +++++++++++++++++++++++++++++++------------
- 1 file changed, 45 insertions(+), 17 deletions(-)
+ drivers/net/ethernet/i825xx/82596.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 671c71245a7b..2d2803883306 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -43,6 +43,8 @@
- #include <linux/sched.h>
- #include <linux/cred.h>
- #include <linux/errno.h>
-+#include <linux/freezer.h>
-+#include <linux/kthread.h>
- #include <linux/mm.h>
- #include <linux/memblock.h>
- #include <linux/pagemap.h>
-@@ -115,7 +117,7 @@ static struct ctl_table xen_root[] = {
- #define EXTENT_ORDER (fls(XEN_PFN_PER_PAGE) - 1)
- 
- /*
-- * balloon_process() state:
-+ * balloon_thread() state:
-  *
-  * BP_DONE: done or nothing to do,
-  * BP_WAIT: wait to be rescheduled,
-@@ -130,6 +132,8 @@ enum bp_state {
- 	BP_ECANCELED
- };
- 
-+/* Main waiting point for xen-balloon thread. */
-+static DECLARE_WAIT_QUEUE_HEAD(balloon_thread_wq);
- 
- static DEFINE_MUTEX(balloon_mutex);
- 
-@@ -144,10 +148,6 @@ static xen_pfn_t frame_list[PAGE_SIZE / sizeof(xen_pfn_t)];
- static LIST_HEAD(ballooned_pages);
- static DECLARE_WAIT_QUEUE_HEAD(balloon_wq);
- 
--/* Main work function, always executed in process context. */
--static void balloon_process(struct work_struct *work);
--static DECLARE_DELAYED_WORK(balloon_worker, balloon_process);
--
- /* When ballooning out (allocating memory to return to Xen) we don't really
-    want the kernel to try too hard since that can trigger the oom killer. */
- #define GFP_BALLOON \
-@@ -366,7 +366,7 @@ static void xen_online_page(struct page *page, unsigned int order)
- static int xen_memory_notifier(struct notifier_block *nb, unsigned long val, void *v)
- {
- 	if (val == MEM_ONLINE)
--		schedule_delayed_work(&balloon_worker, 0);
-+		wake_up(&balloon_thread_wq);
- 
- 	return NOTIFY_OK;
- }
-@@ -491,18 +491,43 @@ static enum bp_state decrease_reservation(unsigned long nr_pages, gfp_t gfp)
- }
- 
- /*
-- * As this is a work item it is guaranteed to run as a single instance only.
-+ * Stop waiting if either state is not BP_EAGAIN and ballooning action is
-+ * needed, or if the credit has changed while state is BP_EAGAIN.
-+ */
-+static bool balloon_thread_cond(enum bp_state state, long credit)
-+{
-+	if (state != BP_EAGAIN)
-+		credit = 0;
-+
-+	return current_credit() != credit || kthread_should_stop();
-+}
-+
-+/*
-+ * As this is a kthread it is guaranteed to run as a single instance only.
-  * We may of course race updates of the target counts (which are protected
-  * by the balloon lock), or with changes to the Xen hard limit, but we will
-  * recover from these in time.
-  */
--static void balloon_process(struct work_struct *work)
-+static int balloon_thread(void *unused)
- {
- 	enum bp_state state = BP_DONE;
- 	long credit;
-+	unsigned long timeout;
-+
-+	set_freezable();
-+	for (;;) {
-+		if (state == BP_EAGAIN)
-+			timeout = balloon_stats.schedule_delay * HZ;
-+		else
-+			timeout = 3600 * HZ;
-+		credit = current_credit();
- 
-+		wait_event_interruptible_timeout(balloon_thread_wq,
-+				 balloon_thread_cond(state, credit), timeout);
-+
-+		if (kthread_should_stop())
-+			return 0;
- 
--	do {
- 		mutex_lock(&balloon_mutex);
- 
- 		credit = current_credit();
-@@ -529,12 +554,7 @@ static void balloon_process(struct work_struct *work)
- 		mutex_unlock(&balloon_mutex);
- 
- 		cond_resched();
--
--	} while (credit && state == BP_DONE);
--
--	/* Schedule more work if there is some still to be done. */
--	if (state == BP_EAGAIN)
--		schedule_delayed_work(&balloon_worker, balloon_stats.schedule_delay * HZ);
-+	}
- }
- 
- /* Resets the Xen limit, sets new target, and kicks off processing. */
-@@ -542,7 +562,7 @@ void balloon_set_new_target(unsigned long target)
- {
- 	/* No need for lock. Not read-modify-write updates. */
- 	balloon_stats.target_pages = target;
--	schedule_delayed_work(&balloon_worker, 0);
-+	wake_up(&balloon_thread_wq);
- }
- EXPORT_SYMBOL_GPL(balloon_set_new_target);
- 
-@@ -647,7 +667,7 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
- 
- 	/* The balloon may be too large now. Shrink it if needed. */
- 	if (current_credit())
--		schedule_delayed_work(&balloon_worker, 0);
-+		wake_up(&balloon_thread_wq);
- 
- 	mutex_unlock(&balloon_mutex);
- }
-@@ -679,6 +699,8 @@ static void __init balloon_add_region(unsigned long start_pfn,
- 
- static int __init balloon_init(void)
- {
-+	struct task_struct *task;
-+
- 	if (!xen_domain())
- 		return -ENODEV;
- 
-@@ -722,6 +744,12 @@ static int __init balloon_init(void)
- 	}
- #endif
- 
-+	task = kthread_run(balloon_thread, NULL, "xen-balloon");
-+	if (IS_ERR(task)) {
-+		pr_err("xen-balloon thread could not be started, ballooning will not work!\n");
-+		return PTR_ERR(task);
-+	}
-+
- 	/* Init the xen-balloon driver. */
- 	xen_balloon_init();
- 
+diff --git a/drivers/net/ethernet/i825xx/82596.c b/drivers/net/ethernet/i825xx/82596.c
+index 92929750f832..54d5b402b0e8 100644
+--- a/drivers/net/ethernet/i825xx/82596.c
++++ b/drivers/net/ethernet/i825xx/82596.c
+@@ -1155,7 +1155,7 @@ struct net_device * __init i82596_probe(int unit)
+ 			err = -ENODEV;
+ 			goto out;
+ 		}
+-		memcpy(eth_addr, (void *) 0xfffc1f2c, ETH_ALEN);	/* YUCK! Get addr from NOVRAM */
++		memcpy(eth_addr, absolute_pointer(0xfffc1f2c), ETH_ALEN); /* YUCK! Get addr from NOVRAM */
+ 		dev->base_addr = MVME_I596_BASE;
+ 		dev->irq = (unsigned) MVME16x_IRQ_I596;
+ 		goto found;
 -- 
 2.33.0
 
