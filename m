@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28024419CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A34B4199FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237572AbhI0RgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237253AbhI0Ra1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57FF261528;
-        Mon, 27 Sep 2021 17:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632763103;
-        bh=vQpOftK58HFrEMtqhS+vExiv6bC/EGA3MzKuenv2YGE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mMOKjG2EgwwLCVVcqnJHSK3wJidoq8n35Biq6OdOp13gefU62DBN6XhSlmTNu8T9y
-         HIkvxMTU3RRBtdgmB/hAEVaDrOJwmiOaST9chV01iLxsWfwsf7C2Vh+IzkeyJwLqOF
-         9mRmVwVQpPCMDMLs5Sd9G3SaXaH6KSoUa2n3k9PU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 5.14 162/162] usb: gadget: f_uac2: Populate SS descriptors wBytesPerInterval
-Date:   Mon, 27 Sep 2021 19:03:28 +0200
-Message-Id: <20210927170239.028165153@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235401AbhI0RFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:05:55 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:46686 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235770AbhI0RFi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:05:38 -0400
+Received: by mail-ot1-f52.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so23250560ota.13;
+        Mon, 27 Sep 2021 10:03:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C/jjeb5V5zArlx4eFPn95hjOtyLhzqqErbP7ergc4K8=;
+        b=6euDN4uIryCPprIqM2GN3L9NGiz1QbhZg9dKh8oXuZc44dO1L2w2lnnnmFKtGnwH75
+         hauBud+tlYDKjEmafsX4oFIUYccNZQiS+AmT09qCs0HimAkRFL67+LDd/kbQWUBZ00Qn
+         gGvy8ErQzNE24BCw3aGs/xvrGMmNSkZewHjS2ayyIZ77f7NpQvFTbuchJgZvf61wcMX7
+         mGP2luFe8asvitkPERZPtFB9mGW61I1BVg3ZlRpGm6duZsHb+25tUGJKhq5919WEoxEP
+         g5HH389Q8FxsvIVGLBI8CWod/b7/ZvRs12B59M0gGIDUBiRI4PsKPJ4zIz2KsGLTf7z0
+         Y3XQ==
+X-Gm-Message-State: AOAM532AIVh0uv7gnZlm352reNjlVj7vVrqRcqKHzVSPz2/7J4C6Naxd
+        r2e+JVmgyS1XUZ4jk33FmA==
+X-Google-Smtp-Source: ABdhPJwDYK9CtDPFvmcT9FbrW/OuLYcWgNoxrp02aOQ2qkD80fHL9UlbaDaUsTRVgLJ+/kJljMlS6A==
+X-Received: by 2002:a05:6830:2b0e:: with SMTP id l14mr904793otv.201.1632762239188;
+        Mon, 27 Sep 2021 10:03:59 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g4sm311981ooa.44.2021.09.27.10.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 10:03:58 -0700 (PDT)
+Received: (nullmailer pid 3472455 invoked by uid 1000);
+        Mon, 27 Sep 2021 17:03:57 -0000
+Date:   Mon, 27 Sep 2021 12:03:57 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mark Kettenis <kettenis@openbsd.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Saenz Julienne <nsaenzjulienne@suse.de>, maz@kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        alyssa@rosenzweig.io, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        linux-pci@vger.kernel.org, sven@svenpeter.dev
+Subject: Re: [PATCH v5 3/4] dt-bindings: pci: Add DT bindings for apple,pcie
+Message-ID: <YVH5fZeIJBRQbU4O@robh.at.kernel.org>
+References: <20210921183420.436-1-kettenis@openbsd.org>
+ <20210921183420.436-4-kettenis@openbsd.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921183420.436-4-kettenis@openbsd.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+On Tue, 21 Sep 2021 20:34:14 +0200, Mark Kettenis wrote:
+> The Apple PCIe host controller is a PCIe host controller with
+> multiple root ports present in Apple ARM SoC platforms, including
+> various iPhone and iPad devices and the "Apple Silicon" Macs.
+> 
+> Acked-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> ---
+>  .../devicetree/bindings/pci/apple,pcie.yaml   | 161 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  2 files changed, 162 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> 
 
-commit f0e8a206a2a53a919e1709c654cb65d519f7befb upstream.
-
-For Isochronous endpoints, the SS companion descriptor's
-wBytesPerInterval field is required to reserve bus time in order
-to transmit the required payload during the service interval.
-If left at 0, the UAC2 function is unable to transact data on its
-playback or capture endpoints in SuperSpeed mode.
-
-Since f_uac2 currently does not support any bursting this value can
-be exactly equal to the calculated wMaxPacketSize.
-
-Tested with Windows 10 as a host.
-
-Fixes: f8cb3d556be3 ("usb: f_uac2: adds support for SS and SSP")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Link: https://lore.kernel.org/r/20210909174811.12534-3-jackp@codeaurora.org
-[jackp: Backport to 5.14 with minor conflict resolution]
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/gadget/function/f_uac2.c |    3 +++
- 1 file changed, 3 insertions(+)
-
---- a/drivers/usb/gadget/function/f_uac2.c
-+++ b/drivers/usb/gadget/function/f_uac2.c
-@@ -951,6 +951,9 @@ afunc_bind(struct usb_configuration *cfg
- 	agdev->out_ep_maxpsize = max_t(u16, agdev->out_ep_maxpsize,
- 				le16_to_cpu(ss_epout_desc.wMaxPacketSize));
- 
-+	ss_epin_desc_comp.wBytesPerInterval = ss_epin_desc.wMaxPacketSize;
-+	ss_epout_desc_comp.wBytesPerInterval = ss_epout_desc.wMaxPacketSize;
-+
- 	hs_epout_desc.bEndpointAddress = fs_epout_desc.bEndpointAddress;
- 	hs_epin_fback_desc.bEndpointAddress = fs_epin_fback_desc.bEndpointAddress;
- 	hs_epin_desc.bEndpointAddress = fs_epin_desc.bEndpointAddress;
-
-
+Applied, thanks!
