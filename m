@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41E3419CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056E6419A67
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236174AbhI0Rfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:35:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43744 "EHLO mail.kernel.org"
+        id S236420AbhI0RIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:08:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236088AbhI0RaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:30:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7475C61527;
-        Mon, 27 Sep 2021 17:18:08 +0000 (UTC)
+        id S235834AbhI0RHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:07:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28937611ED;
+        Mon, 27 Sep 2021 17:06:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632763089;
-        bh=U595uBJGQBwncERun0OReAfOMr+OX6JYE3VtFMuFF1s=;
+        s=korg; t=1632762362;
+        bh=Cp4UBU9kOyXrpeKFY3oxOdbnOFW5kD6qZOsU4UVDfIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H9MZB6TVCkGnutTXg/2XGWDwLGABJusSfzvxWBh6oheRjIs3zPJhiqnL7uOFkpFyF
-         Z3o80xM2EQLbRz/JujdcXz8mdyurwXvz6EdzMLAgMTdTwt9/CaAGBhwNPqyfuAgV44
-         JL+tVkNzIDeKUqb8zTxJcQ+tu8eK2blp1qi374QI=
+        b=vetkYTyK0rMZ2goJaAjS07j3n6VpbHK1XsZZ0kvqzr0jvDtDAlKMHoA4mpAuk7aJa
+         9RcQlpuURZiFftWfuxHx2jWfNJ0xPgNJ6/Vga8JgyRLF27PZqbgbNYOghPfJWnjIwS
+         2uLVaGgE0lI+IhYrduGIDxClp74KLn3KDdc5q8rE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Huang Rui <ray.huang@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 131/162] drm/ttm: fix type mismatch error on sparc64
+Subject: [PATCH 5.4 61/68] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
 Date:   Mon, 27 Sep 2021 19:02:57 +0200
-Message-Id: <20210927170237.959413851@linuxfoundation.org>
+Message-Id: <20210927170222.083185003@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,44 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Rui <ray.huang@amd.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 3ca706c189db861b2ca2019a0901b94050ca49d8 ]
+[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
 
-On sparc64, __fls() returns an "int", but the drm TTM code expected it
-to be "unsigned long" as on x86.  As a result, on sparc (and arc, and
-m68k) you get build errors because 'min()' checks that the types match.
+Some drivers pass a pointer to volatile data to virt_to_bus() and
+virt_to_phys(), and that works fine.  One exception is alpha.  This
+results in a number of compile errors such as
 
-As suggested by Linus, it can use min_t instead of min to force the type
-to be "unsigned int".
+  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
+  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Huang Rui <ray.huang@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Cc: Alex Deucher <alexdeucher@gmail.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Guenter Roeck <linux@roeck-us.net>
+  drivers/atm/ambassador.c: In function 'do_loader_command':
+  drivers/atm/ambassador.c:1747:58: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
+
+Declare the parameter of virt_to_phys and virt_to_bus as pointer to
+volatile to fix the problem.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ttm/ttm_pool.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/alpha/include/asm/io.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-index cb38b1a17b09..82cbb29a05aa 100644
---- a/drivers/gpu/drm/ttm/ttm_pool.c
-+++ b/drivers/gpu/drm/ttm/ttm_pool.c
-@@ -383,7 +383,8 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
- 	else
- 		gfp_flags |= GFP_HIGHUSER;
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 103270d5a9fc..66a384a4ddba 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -61,7 +61,7 @@ extern inline void set_hae(unsigned long new_hae)
+  * Change virtual addresses to physical addresses and vv.
+  */
+ #ifdef USE_48_BIT_KSEG
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+ 	return (unsigned long)address - IDENT_ADDR;
+ }
+@@ -71,7 +71,7 @@ static inline void * phys_to_virt(unsigned long address)
+ 	return (void *) (address + IDENT_ADDR);
+ }
+ #else
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+         unsigned long phys = (unsigned long)address;
  
--	for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
-+	for (order = min_t(unsigned int, MAX_ORDER - 1, __fls(num_pages));
-+	     num_pages;
- 	     order = min_t(unsigned int, order, __fls(num_pages))) {
- 		bool apply_caching = false;
- 		struct ttm_pool_type *pt;
+@@ -107,7 +107,7 @@ static inline void * phys_to_virt(unsigned long address)
+ extern unsigned long __direct_map_base;
+ extern unsigned long __direct_map_size;
+ 
+-static inline unsigned long __deprecated virt_to_bus(void *address)
++static inline unsigned long __deprecated virt_to_bus(volatile void *address)
+ {
+ 	unsigned long phys = virt_to_phys(address);
+ 	unsigned long bus = phys + __direct_map_base;
 -- 
 2.33.0
 
