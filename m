@@ -2,123 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B35A41A0D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F35441A0DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237099AbhI0U5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        id S237044AbhI0U6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236959AbhI0U5E (ORCPT
+        with ESMTP id S236843AbhI0U6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:57:04 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FD7C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:55:26 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id v17so10753436wrv.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:55:26 -0700 (PDT)
+        Mon, 27 Sep 2021 16:58:51 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C39AC061769
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:57:13 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so26247678otj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rammhold-de.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=U6zWwQxcpAE6GCT82qO+mgKANcsaLZPb64cO70Bu80I=;
-        b=Wv1EHt+93GUbuo9bJD1sXzeal5WJ6Pf0k9Tztn+pJAa1UYiPqyWFp0KfKVJqQ47iNR
-         Tkh9WS13/UTnEkYkdtT5UR1RyOb0MSola0IQRe9gcdZfWem/m0/X/cT+7hl3gB9FM3b9
-         yQPiQvONbNOEBiNCsCX6aDD7hJXcuI08t9X9GO+4Hb2fLwMRvyWF8jMIkMaUEWo62ays
-         D7XMxcDvkMTDP5/KnF0VGhkvesa+7Zp2RSzF0xIVHjm1I9lI7fZrIjJW7n9vL1bl3hx2
-         GFCctUws+PUcBLqOuBURliPEGO4IX4MkQWm6W9ikjAmFc5gs8VjzRM5tVVziPI19RyEa
-         YQ2w==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=PlyMlGa7MDqDwyrJ+9Nu78wzBfZgUOD4Mgr0q1/+DtM=;
+        b=moPLRYA1b47/e+Ag8chwN5277xtgkL54F4pJjVzJQ8CJvxpDYXlG4JU36cXnciVIJg
+         w7LAFtvv3vssN/tsad0nhW1QFW7gKGfSSGJBWoz1eg/Q/IAqVM3+TcIxKWn/73XjSnb7
+         mNSOT3Gij3AvCdxttNYIyO7r+uBx7T/hwSQYY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=U6zWwQxcpAE6GCT82qO+mgKANcsaLZPb64cO70Bu80I=;
-        b=dELFMusJ72NDCZmPkwui/zKfKH/VNWlsFwIh4E7tROOxDFffHLVdPi/iAHWtC1jjU+
-         O+Eev3Gla/MgUIAYhhLBtpYA0Oy9VjSkreKfIg/oCnarMx0D7XlnE2DEA7t1Zp8fQ8LA
-         izlD8q0nWztLfGllNpveki2XGuY3B+PnAMWzsrhNS9zABpM04KnpkWATmQF8aKRhJ4CX
-         gLIGW0fBRyHVwqmbBxEIrexXVJl9W100jDsUm13nWA+91AqfqNX9EuTyPwCv0LdCo+tR
-         GZsSkTIOuT3MQqO+o40cphZa1kZvj2FlP6iPbZcRl85tORu2o7yx37UWeYbSElUIUgiv
-         omXg==
-X-Gm-Message-State: AOAM531h7E71jb2z4axxN9w6ZeWAomfr4REpId2bcZMbvmZdgD0wpUZ0
-        DO/Aqg9mkDm4dutBL57lcgm5ag==
-X-Google-Smtp-Source: ABdhPJxlX63/0ctLRQO10ldC1ZakLk0B77JLbmuDyBqXiyolom3ixcRU9RcL2Ktv7BKSKEDZ6w4/Mw==
-X-Received: by 2002:adf:b748:: with SMTP id n8mr2231688wre.133.1632776125063;
-        Mon, 27 Sep 2021 13:55:25 -0700 (PDT)
-Received: from localhost ([2a00:e67:5c9:a:6d7b:fc0:e9e9:7254])
-        by smtp.gmail.com with ESMTPSA id l18sm1268642wrp.56.2021.09.27.13.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:55:24 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 22:55:21 +0200
-From:   Andreas Rammhold <andreas@rammhold.de>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Andreas Rammhold <andreas@rammhold.de>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
- as module
-Message-ID: <20210927205521.7c4psu4vz5eoyfnf@wrt>
-References: <20210730012822.3460913-1-andreas@rammhold.de>
- <0d42a11a-0117-49a9-d2c9-bc6cc405235d@pengutronix.de>
- <20210927085104.vq42feghtaqiv6ni@wrt>
- <856359f263575f01d0ce2fcf8f042321f750b38c.camel@linux.ibm.com>
- <20210927200835.wvazk73cek3t5tkf@wrt>
- <2ad2c536367028ef6d9300745586a123cb13d9f1.camel@linux.ibm.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=PlyMlGa7MDqDwyrJ+9Nu78wzBfZgUOD4Mgr0q1/+DtM=;
+        b=6uLc1s5X+46LP2QD1Vqiyi7VayPBLWMlpUSvylQwcDTlQQ39EBVhAlpaXchQ2+zsoR
+         ujc7HA0HerfKR5iSUeXWnJh5Ckw2r2KF896KgdcBeLmm66Wj4CHSy8cgJMIUOQgmGYzT
+         tOi1ki8TDCtPoNTvCIlzTnwqGxw4LpzFXFjnnsQLeCfWTI6O9RPxB4r2prae2QXzcQr5
+         7qWisPqhhW+IiCl8o5eLeVD3OWAhNoZaT1Iu1S4zS79TMBP5id6sJrfXYTLBJPUW7zb3
+         5Yikb1hKst2XTEd2dgKBUcHrK5jd11sCnBnDrSAGQ294jkOTCwda+2GSGYoMvJKfGVFA
+         H0Yw==
+X-Gm-Message-State: AOAM530T2oIvJ0WGSkjsZ9j3CjAnX/NY82Se4JO7yJ85Foqls/7gXWfx
+        /mWunFSGcsrAI+y4AFTk54s8aZTMDq0FbM4j22F5Cle0kwE=
+X-Google-Smtp-Source: ABdhPJzetWLzdTY1Zy3XhA67zGHzvF4rx1QkEDk19MmphpfXgqeCf77aOCeShKwuSbYtfHyG4OSseqvUAa7Ch8aqhU8=
+X-Received: by 2002:a05:6830:358:: with SMTP id h24mr1721655ote.159.1632776232722;
+ Mon, 27 Sep 2021 13:57:12 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 27 Sep 2021 13:57:12 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2ad2c536367028ef6d9300745586a123cb13d9f1.camel@linux.ibm.com>
+In-Reply-To: <1632743197-32291-1-git-send-email-dikshita@codeaurora.org>
+References: <1632743197-32291-1-git-send-email-dikshita@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 27 Sep 2021 13:57:12 -0700
+Message-ID: <CAE-0n508_+MkVz6t0sWF_q7ofXXWHADQSWZCGxk3rtS=td9=fA@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: media: venus: Add sc7280 dt schema
+To:     Dikshita Agarwal <dikshita@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, mchehab@kernel.org,
+        robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:33 27.09.21, Mimi Zohar wrote:
-> On Mon, 2021-09-27 at 22:08 +0200, Andreas Rammhold wrote:
-> > On 07:27 27.09.21, Mimi Zohar wrote:
-> > > On Mon, 2021-09-27 at 10:51 +0200, Andreas Rammhold wrote:
-> > > > On 09:47 13.09.21, Ahmad Fatoum wrote:
-> > > > > Dear trusted key maintainers,
-> > > > > 
-> > > > > On 30.07.21 03:28, Andreas Rammhold wrote:
-> > > > > > Before this commit the kernel could end up with no trusted key sources
-> > > > > > even though both of the currently supported backends (TPM and TEE) were
-> > > > > > compiled as modules. This manifested in the trusted key type not being
-> > > > > > registered at all.
-> > > > > > 
-> > > > > > When checking if a CONFIG_… preprocessor variable is defined we only
-> > > > > > test for the builtin (=y) case and not the module (=m) case. By using
-> > > > > > the IS_REACHABLE() macro we do test for both cases.
-> > > > > > 
-> > > > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> > > > > > Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
-> > > > > > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > Does anyone intend to pick this up?
-> > > > 
-> > > > Did this end up in any tree by now? I am wondering if I should resend
-> > > > the patch instead. Perhaps it was just overlooked?
-> > > 
-> > > For EVM environments only using trusted and encrypted keys, not file
-> > > signatures, the trusted key is needed to decrypt the "master" key in
-> > > order to verify kernel modules.
-> > 
-> > So what you are saying is that right now (before this patch & after this
-> > patch) you could compile a kernel that wouldn't be able to load any
-> > modules when the trusted keychain part is built as module?
-> 
-> Before this patch, trusted and encrypted keys are builtin, so verifying
-> kernel modules with security.evm containing an EVM hmac would succeed. 
-> Afterwards it would fail, as there's a dependency on the trusted key to
-> verify the integrity of the trusted key module.
+Quoting Dikshita Agarwal (2021-09-27 04:46:37)
+> Add a schema description for the venus video encoder/decoder on the sc7280.
+>
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
 
-But building with =m was a valid configuration which is the original
-reason for me submitting the patch. So perhaps this should not be
-allowed to be a module then?
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
