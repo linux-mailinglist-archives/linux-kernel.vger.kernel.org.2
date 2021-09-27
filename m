@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048CE4199FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389A4419AD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhI0RF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44402 "EHLO mail.kernel.org"
+        id S236254AbhI0RMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:12:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235838AbhI0RFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:05:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 632C36109F;
-        Mon, 27 Sep 2021 17:03:59 +0000 (UTC)
+        id S236035AbhI0RKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:10:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05FFE611CE;
+        Mon, 27 Sep 2021 17:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762239;
-        bh=J2lFQRkZ3VNG8KWYoO99vskLL4IvJPJ40iwrcC1nPF4=;
+        s=korg; t=1632762479;
+        bh=2+fWcr4IqU7Ata9HR/TzJNL5fFoRCcKy54pjy3pnIrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tzDOwPyIeHvmOkIZNz9JY39nGuXA6oHbnnSeEqTbaIFYfXCnBXBiQgG596+hF6D9T
-         kWNcJMwcx6fGGzmjv9x7++8OmUsnFKEYl+EAHs5cuZFAa+lO7eDjM8a6znXfH/eux2
-         Z9W2GSNwmTvwsixQDu+CfpaBxOXUVFRcG+jB0p5w=
+        b=gk67vivxe0nemP8NiJ39yZDei70GnIIcJ11JmCvruiz/+OkMhtUhiXUslXdJONVYZ
+         mjGbjQOyB3GbysvhF3U+6v8UsNBSMoN7b4/1K98NSYERHjO51BbCbHwZiNCo5s4K//
+         MYzPxb3K6h9eQdV50FtujfV+SMZy8bJvWmMEtP3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 15/68] USB: serial: mos7840: remove duplicated 0xac24 device ID
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 039/103] net: hns3: fix change RSS hfunc ineffective issue
 Date:   Mon, 27 Sep 2021 19:02:11 +0200
-Message-Id: <20210927170220.469852390@linuxfoundation.org>
+Message-Id: <20210927170227.093299672@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-commit 211f323768a25b30c106fd38f15a0f62c7c2b5f4 upstream.
+[ Upstream commit e184cec5e29d8eb3c3435b12a9074b75e2d69e4a ]
 
-0xac24 device ID is already defined and used via
-BANDB_DEVICE_ID_USO9ML2_4.  Remove the duplicate from the list.
+When user change rss 'hfunc' without set rss 'hkey' by ethtool
+-X command, the driver will ignore the 'hfunc' for the hkey is
+NULL. It's unreasonable. So fix it.
 
-Fixes: 27f1281d5f72 ("USB: serial: Extra device/vendor ID for mos7840 driver")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 46a3df9f9718 ("net: hns3: Add HNS3 Acceleration Engine & Compatibility Layer Support")
+Fixes: 374ad291762a ("net: hns3: Add RSS general configuration support for VF")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/mos7840.c |    2 --
- 1 file changed, 2 deletions(-)
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 45 ++++++++++------
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      | 52 ++++++++++++-------
+ 2 files changed, 64 insertions(+), 33 deletions(-)
 
---- a/drivers/usb/serial/mos7840.c
-+++ b/drivers/usb/serial/mos7840.c
-@@ -114,7 +114,6 @@
- #define BANDB_DEVICE_ID_USOPTL4_2P       0xBC02
- #define BANDB_DEVICE_ID_USOPTL4_4        0xAC44
- #define BANDB_DEVICE_ID_USOPTL4_4P       0xBC03
--#define BANDB_DEVICE_ID_USOPTL2_4        0xAC24
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index 59ec538eba1f..24357e907155 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -4377,6 +4377,24 @@ static int hclge_get_rss(struct hnae3_handle *handle, u32 *indir,
+ 	return 0;
+ }
  
- /* This driver also supports
-  * ATEN UC2324 device using Moschip MCS7840
-@@ -196,7 +195,6 @@ static const struct usb_device_id id_tab
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_2P)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4P)},
--	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL2_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
- 	{USB_DEVICE(USB_VENDOR_ID_MOXA, MOXA_DEVICE_ID_2210)},
++static int hclge_parse_rss_hfunc(struct hclge_vport *vport, const u8 hfunc,
++				 u8 *hash_algo)
++{
++	switch (hfunc) {
++	case ETH_RSS_HASH_TOP:
++		*hash_algo = HCLGE_RSS_HASH_ALGO_TOEPLITZ;
++		return 0;
++	case ETH_RSS_HASH_XOR:
++		*hash_algo = HCLGE_RSS_HASH_ALGO_SIMPLE;
++		return 0;
++	case ETH_RSS_HASH_NO_CHANGE:
++		*hash_algo = vport->rss_algo;
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
+ static int hclge_set_rss(struct hnae3_handle *handle, const u32 *indir,
+ 			 const  u8 *key, const  u8 hfunc)
+ {
+@@ -4385,30 +4403,27 @@ static int hclge_set_rss(struct hnae3_handle *handle, const u32 *indir,
+ 	u8 hash_algo;
+ 	int ret, i;
+ 
++	ret = hclge_parse_rss_hfunc(vport, hfunc, &hash_algo);
++	if (ret) {
++		dev_err(&hdev->pdev->dev, "invalid hfunc type %u\n", hfunc);
++		return ret;
++	}
++
+ 	/* Set the RSS Hash Key if specififed by the user */
+ 	if (key) {
+-		switch (hfunc) {
+-		case ETH_RSS_HASH_TOP:
+-			hash_algo = HCLGE_RSS_HASH_ALGO_TOEPLITZ;
+-			break;
+-		case ETH_RSS_HASH_XOR:
+-			hash_algo = HCLGE_RSS_HASH_ALGO_SIMPLE;
+-			break;
+-		case ETH_RSS_HASH_NO_CHANGE:
+-			hash_algo = vport->rss_algo;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+-
+ 		ret = hclge_set_rss_algo_key(hdev, hash_algo, key);
+ 		if (ret)
+ 			return ret;
+ 
+ 		/* Update the shadow RSS key with user specified qids */
+ 		memcpy(vport->rss_hash_key, key, HCLGE_RSS_KEY_SIZE);
+-		vport->rss_algo = hash_algo;
++	} else {
++		ret = hclge_set_rss_algo_key(hdev, hash_algo,
++					     vport->rss_hash_key);
++		if (ret)
++			return ret;
+ 	}
++	vport->rss_algo = hash_algo;
+ 
+ 	/* Update the shadow RSS table with user specified qids */
+ 	for (i = 0; i < HCLGE_RSS_IND_TBL_SIZE; i++)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index 447457cacf97..3641d7c31451 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -785,40 +785,56 @@ static int hclgevf_get_rss(struct hnae3_handle *handle, u32 *indir, u8 *key,
+ 	return 0;
+ }
+ 
++static int hclgevf_parse_rss_hfunc(struct hclgevf_dev *hdev, const u8 hfunc,
++				   u8 *hash_algo)
++{
++	switch (hfunc) {
++	case ETH_RSS_HASH_TOP:
++		*hash_algo = HCLGEVF_RSS_HASH_ALGO_TOEPLITZ;
++		return 0;
++	case ETH_RSS_HASH_XOR:
++		*hash_algo = HCLGEVF_RSS_HASH_ALGO_SIMPLE;
++		return 0;
++	case ETH_RSS_HASH_NO_CHANGE:
++		*hash_algo = hdev->rss_cfg.hash_algo;
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
+ static int hclgevf_set_rss(struct hnae3_handle *handle, const u32 *indir,
+ 			   const u8 *key, const u8 hfunc)
+ {
+ 	struct hclgevf_dev *hdev = hclgevf_ae_get_hdev(handle);
+ 	struct hclgevf_rss_cfg *rss_cfg = &hdev->rss_cfg;
++	u8 hash_algo;
+ 	int ret, i;
+ 
+ 	if (hdev->ae_dev->dev_version >= HNAE3_DEVICE_VERSION_V2) {
++		ret = hclgevf_parse_rss_hfunc(hdev, hfunc, &hash_algo);
++		if (ret)
++			return ret;
++
+ 		/* Set the RSS Hash Key if specififed by the user */
+ 		if (key) {
+-			switch (hfunc) {
+-			case ETH_RSS_HASH_TOP:
+-				rss_cfg->hash_algo =
+-					HCLGEVF_RSS_HASH_ALGO_TOEPLITZ;
+-				break;
+-			case ETH_RSS_HASH_XOR:
+-				rss_cfg->hash_algo =
+-					HCLGEVF_RSS_HASH_ALGO_SIMPLE;
+-				break;
+-			case ETH_RSS_HASH_NO_CHANGE:
+-				break;
+-			default:
+-				return -EINVAL;
+-			}
+-
+-			ret = hclgevf_set_rss_algo_key(hdev, rss_cfg->hash_algo,
+-						       key);
+-			if (ret)
++			ret = hclgevf_set_rss_algo_key(hdev, hash_algo, key);
++			if (ret) {
++				dev_err(&hdev->pdev->dev,
++					"invalid hfunc type %u\n", hfunc);
+ 				return ret;
++			}
+ 
+ 			/* Update the shadow RSS key with user specified qids */
+ 			memcpy(rss_cfg->rss_hash_key, key,
+ 			       HCLGEVF_RSS_KEY_SIZE);
++		} else {
++			ret = hclgevf_set_rss_algo_key(hdev, hash_algo,
++						       rss_cfg->rss_hash_key);
++			if (ret)
++				return ret;
+ 		}
++		rss_cfg->hash_algo = hash_algo;
+ 	}
+ 
+ 	/* update the shadow RSS table with user specified qids */
+-- 
+2.33.0
+
 
 
