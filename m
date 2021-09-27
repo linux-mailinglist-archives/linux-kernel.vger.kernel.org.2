@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8724195BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002E74195BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhI0OCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
+        id S234829AbhI0OCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:02:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234707AbhI0OBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234708AbhI0OBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 10:01:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EBD610FC;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60AAA611C5;
         Mon, 27 Sep 2021 13:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632751197;
-        bh=Dy6yJbWGfU8oB93VTtRBfZ0kl+qSmY3j7H3gVwdQRZs=;
+        bh=P91LSEK4AIStyHl5vuqjR4jtKLGpGSe6OXNnc/W3cas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DEzlXLR8gr1Yz4WcvnjIN69EI/N4AQBoFurgrOLvq2ychYRNYyIIHIAZO8IK7/J9G
-         OStPM6aR7dIvRwxsZ7n+9NBow3r956aIZsjXkn5VfB5kwTgdFI5IDAa9ATYHIv/uiv
-         gMhqA1enLs7kzYGXIWUVOu1nF26e0DywN4ImXLr1ztzloJ7LZVz/dneLHn4oGjhXkp
-         MO2etskUxH19DrRhe3Lpl87kEyKs8p6nB8obbZ/7rImGTRzUEpAdvBX7Ks7H93lSzd
-         +4hA41D5lLTWXI3maVwJvX/ob8AdDOY+nZg65nfR907OIM+l8mM0+atcgQ7xii0pU8
-         in1sNcjr1lhRg==
+        b=lBHOtpWnJctAwTlTpX5feGVf1hDNsrUghncyopFdA/vLGaWqyPrA0WInJI5CrzGrD
+         HyWBhuTtT6u/bI8fyoWpG+twIHGgJYXLJj8ScB6sLr3ITTucjNLhFwHBasdDEGnER4
+         /2Qsmrin8hhrvf+nyv3CTYBogahVoaAz83mtsj0iCVLsBWem7G8AObv17P0VFctIsf
+         ULqXbAcIt0vZatbL3oZ7SgNwBirgrsEx67vTQFWWSMmM8ujuXHtZ5jEUWSxbG8uBvi
+         c5I0NT+56rJF1ndHIn7ikbeVauLlf1agULIz8Zo8tYsLUVnbXisrJG9yZZbC2c2VKi
+         MqXhcF/ZnddHw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mUrAh-000AuA-LL; Mon, 27 Sep 2021 15:59:55 +0200
+        id 1mUrAh-000AuE-N6; Mon, 27 Sep 2021 15:59:55 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Carlos Bilbao <bilbao@vt.edu>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
         Oded Gabbay <oded.gabbay@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 10/17] ABI: sysfs-bus-pci: add a alternative What fields
-Date:   Mon, 27 Sep 2021 15:59:43 +0200
-Message-Id: <15ba8c07f1b0fd7359106920c8e34a7b9af7aea6.1632750608.git.mchehab+huawei@kernel.org>
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 11/17] ABI: sysfs-class-bdi: use What: to describe each property
+Date:   Mon, 27 Sep 2021 15:59:44 +0200
+Message-Id: <77e5904dfd275ed2670cd13779e5ef1da96e355c.1632750608.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632750608.git.mchehab+huawei@kernel.org>
 References: <cover.1632750608.git.mchehab+huawei@kernel.org>
@@ -52,68 +48,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some PCI ABI that aren't shown under:
+Instead of listing all bdi entries inside the description, add
+one entry for each, just like the remaining ABI files.
 
-	/sys/bus/pci/drivers/.../
-
-Because they're registered with a different class. That's
-the case of, for instance:
-
-	/sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/unbind
-
-This one is not present under /sys/bus/pci:
-
-	$ find /sys/bus/pci -name 'CHT Whiskey Cove PMIC'
-
-Although clearly this is provided by a PCI driver:
-
-	/sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/CHT Whiskey Cove PMIC/unbind
-
-So, add an altertate What location in order to match bind/unbind
-to such devices.
+That allows get_abi.pl script to properly parse it.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 See [PATCH 00/17] at: https://lore.kernel.org/all/cover.1632750608.git.mchehab+huawei@kernel.org/
 
- Documentation/ABI/testing/sysfs-bus-pci | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/ABI/testing/sysfs-class-bdi | 30 ++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index 1eeac7f59672..16afe3f59cbd 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -1,4 +1,5 @@
- What:		/sys/bus/pci/drivers/.../bind
-+What:		/sys/devices/pciX/.../bind
- Date:		December 2003
- Contact:	linux-pci@vger.kernel.org
- Description:
-@@ -14,6 +15,7 @@ Description:
- 		(Note: kernels before 2.6.28 may require echo -n).
+diff --git a/Documentation/ABI/testing/sysfs-class-bdi b/Documentation/ABI/testing/sysfs-class-bdi
+index 5402bd74ba43..6d2a2fc189dd 100644
+--- a/Documentation/ABI/testing/sysfs-class-bdi
++++ b/Documentation/ABI/testing/sysfs-class-bdi
+@@ -23,14 +23,17 @@ default
+ 	The default backing dev, used for non-block device backed
+ 	filesystems which do not provide their own BDI.
  
- What:		/sys/bus/pci/drivers/.../unbind
-+What:		/sys/devices/pciX/.../unbind
- Date:		December 2003
- Contact:	linux-pci@vger.kernel.org
- Description:
-@@ -29,6 +31,7 @@ Description:
- 		(Note: kernels before 2.6.28 may require echo -n).
+-Files under /sys/class/bdi/<bdi>/
+-
+-read_ahead_kb (read-write)
+-
++What:		/sys/class/bdi/<bdi>/read_ahead_kb
++Date:		January 2008
++Contact:	Peter Zijlstra <a.p.zijlstra@chello.nl>
++Description:
+ 	Size of the read-ahead window in kilobytes
  
- What:		/sys/bus/pci/drivers/.../new_id
-+What:		/sys/devices/pciX/.../new_id
- Date:		December 2003
- Contact:	linux-pci@vger.kernel.org
- Description:
-@@ -47,6 +50,7 @@ Description:
- 		  # echo "8086 10f5" > /sys/bus/pci/drivers/foo/new_id
+-min_ratio (read-write)
+-
++	(read-write)
++What:		/sys/class/bdi/<bdi>/min_ratio
++Date:		January 2008
++Contact:	Peter Zijlstra <a.p.zijlstra@chello.nl>
++Description:
+ 	Under normal circumstances each device is given a part of the
+ 	total write-back cache that relates to its current average
+ 	writeout speed in relation to the other devices.
+@@ -39,8 +42,12 @@ min_ratio (read-write)
+ 	percentage of the write-back cache to a particular device.
+ 	For example, this is useful for providing a minimum QoS.
  
- What:		/sys/bus/pci/drivers/.../remove_id
-+What:		/sys/devices/pciX/.../remove_id
- Date:		February 2009
- Contact:	Chris Wright <chrisw@sous-sol.org>
- Description:
+-max_ratio (read-write)
++	(read-write)
+ 
++What:		/sys/class/bdi/<bdi>/max_ratio
++Date:		January 2008
++Contact:	Peter Zijlstra <a.p.zijlstra@chello.nl>
++Description:
+ 	Allows limiting a particular device to use not more than the
+ 	given percentage of the write-back cache.  This is useful in
+ 	situations where we want to avoid one device taking all or
+@@ -48,7 +55,12 @@ max_ratio (read-write)
+ 	mount that is prone to get stuck, or a FUSE mount which cannot
+ 	be trusted to play fair.
+ 
+-stable_pages_required (read-only)
+-
++	(read-write)
++What:		/sys/class/bdi/<bdi>/stable_pages_required
++Date:		January 2008
++Contact:	Peter Zijlstra <a.p.zijlstra@chello.nl>
++Description:
+ 	If set, the backing device requires that all pages comprising a write
+ 	request must not be changed until writeout is complete.
++
++	(read-only)
 -- 
 2.31.1
 
