@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274F9419D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E086F419D15
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236955AbhI0Rj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:39:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238746AbhI0RiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:38:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F20060F4A;
-        Mon, 27 Sep 2021 17:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632764204;
-        bh=tM73L6tUpKXE+ynihqygxcYqjleELU0EBQA2XuR0hX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OqURat9AGPOteAcKdZ5kfwQL8rKK8zMPlyvuEd7QZRabxyXpUSQJi8iWJYHn0waU5
-         Q8kdCrW9onubWRaaA2ltFTiXOumOc640NZ795VlyHaU/pZVMFfcRTS5zQGhfEyL2Am
-         23n4+dcYQydDcFDqvI23qDaem3nnesy+E3ON4+CU=
-Date:   Mon, 27 Sep 2021 19:36:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 2/2] platform/x86: Add Intel Software Defined Silicon
- driver
-Message-ID: <YVIBKVB4IN35z/L6@kroah.com>
-References: <20210924213157.3584061-1-david.e.box@linux.intel.com>
- <20210924213157.3584061-2-david.e.box@linux.intel.com>
- <YU7BPIH123HUZKhw@kroah.com>
- <3392aea6b112926b063bbe46b1decaad4c9f9e6e.camel@linux.intel.com>
- <YVFC0U+wOqbTgDhy@kroah.com>
- <7295cafaf6da34e31390fe621198205d18eac525.camel@linux.intel.com>
+        id S235956AbhI0Rle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:41:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237484AbhI0Rk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:40:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632764359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NdtzMn+WC7NxHhaIPrEy29/cG597R32mr5hQD2dXXIU=;
+        b=dR0xSXmcS1zTUrJwNGBUkQ0Buk3RaWT8VyPmC+zU5bpeCojA2G1hwKpz1eZcWXpdu91Du2
+        MuLDyxfr9li4UhEl/bZ/4RtdUAAMCWJtwUDQZImORU83vfyyapaIa4+xHi78kpFmtQtG+Y
+        lV5c2U1oDr9iPV13AnCDkYk9kB97fbQ=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-cYS6GCbqMxmX442qO73yAw-1; Mon, 27 Sep 2021 13:39:18 -0400
+X-MC-Unique: cYS6GCbqMxmX442qO73yAw-1
+Received: by mail-io1-f69.google.com with SMTP id m19-20020a6bea13000000b005d751644a6eso10810700ioc.15
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:39:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NdtzMn+WC7NxHhaIPrEy29/cG597R32mr5hQD2dXXIU=;
+        b=q15wFvR/r0u+2UzrqKA8OsIev8sAfWFdLXQOPMMksdDj0TWBJLtmK9u4yqoHer7E55
+         Dk+cRQihuTS74TIonlZXFDrA/kBMsHjPBZbp9NOJwxvN33mT2WnUTCRWYNPG00SsFcct
+         OngrgTWQLpFQd1MbEa4hM9qZ1JsQLxXrtRLYgrgCHR3u2zpe0pQSctnoV8s6P6SxgOUC
+         oumf5Y+GxnNVAW7+to8i/iZxbY/fYpnk5ChyoH7UVRNQCZlAPiayslD4wXJfrcPKLQ5u
+         IOZHTHlfZ0GkfLKOj7uPDcgpIfG9SVGcstVMY0l48c6VreuuswgMqxpD0unebHs2QK9z
+         uh6g==
+X-Gm-Message-State: AOAM530ws7C3HSB81PeMT+whKbjBtzjok2HVgiV+W/bQuLuaEBz0jB0U
+        +bVGmnM7cafNBUL83poyDA6tPQiXkHK8P/8J6pmtFzGnBQRq4/ZW057GpdQ3DNfmIoep8ESS5NF
+        KsDlux+V2efTrzYOkpamRroJ/
+X-Received: by 2002:a05:6e02:1065:: with SMTP id q5mr956314ilj.14.1632764357703;
+        Mon, 27 Sep 2021 10:39:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwtzhiDWx+2ieyECJ0B7kImxGF2XnYiIelB+sXILXn1t4biruYRD/P0iUhweS3xhyS1ZKLjqQ==
+X-Received: by 2002:a05:6e02:1065:: with SMTP id q5mr956305ilj.14.1632764357534;
+        Mon, 27 Sep 2021 10:39:17 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id z4sm205924ilp.64.2021.09.27.10.39.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 10:39:16 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 13:39:15 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
+Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
+ thp enabled
+Message-ID: <YVIBw8ATbCIAbd2d@t490s>
+References: <20210923232512.210092-1-peterx@redhat.com>
+ <CAJHvVci8ig4WCY2aK-GvmHP=Uw3s8DrGahk-Yh37GX2kR35kww@mail.gmail.com>
+ <YU4uJLJHsHLVsS2w@t490s>
+ <CAJHvVcjniq3TS=69O2tkAVD02tRCnRtw1Xf5Hu2Me4deQbq9sQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7295cafaf6da34e31390fe621198205d18eac525.camel@linux.intel.com>
+In-Reply-To: <CAJHvVcjniq3TS=69O2tkAVD02tRCnRtw1Xf5Hu2Me4deQbq9sQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:27:28AM -0700, David E. Box wrote:
-> On Mon, 2021-09-27 at 06:04 +0200, Greg KH wrote:
-> > On Sun, Sep 26, 2021 at 06:15:16PM -0700, David E. Box wrote:
-> > > > > +static struct platform_driver sdsi_driver = {
-> > > > > +       .driver = {
-> > > > > +               .name           = SDSI_DEV_NAME,
-> > > > > +               .dev_groups     = sdsi_groups,
-> > > > > +       },
-> > > > > +       .probe  = sdsi_probe,
-> > > > > +       .remove = sdsi_remove,
-> > > > > +};
-> > > > > +module_platform_driver(sdsi_driver);
-> > > > 
-> > > > What causes the platform to know to register, and enable, this platform
-> > > > driver?  Shouldn't there be some hardware involved that is discoverable
-> > > > to enable it to load dynamically?
-> > > 
-> > > Ah. The patch that adds the SDSi platform device string was added to a series for the intel_pmt
-> > > MFD
-> > > driver and it's still waiting review. I see that complicates things. I can combine the two series
-> > > together.
-> > 
-> > Do you have a pointer to the lore.kernel.org location of that series?
-> 
-> https://lore.kernel.org/all/20210922213007.2738388-1-david.e.box@linux.intel.com/
-> 
-> > 
-> > Your code right here will bind to any system that it is loaded on, a
-> > very dangerous thing...
-> 
-> It won't. It uses module alias to load against the SDSi specific MFD cell.
+On Mon, Sep 27, 2021 at 10:34:06AM -0700, Axel Rasmussen wrote:
+> One possibility would be to MADV_NOHUGEPAGE the regions, which at
+> least would fix the immediate flakiness. Then we could spend some time
+> adding a test case which specifically targets THP interactions? (I do
+> think we want test coverage of that in the end, but with the current
+> tests it's kind of "accidental".)
 
-module aliases do not prevent someone from building the driver into
-their kernel, or doing a simple 'modprobe'.  You need to bind your
-driver to a real hardware resource (and reject it if it is not present),
-otherwise this driver will break systems quite easily.
+If we can't reproduce it with khugepaged yet, I'd think we can also consider
+keep torturing thp with this patch and at the meantime look for a clean
+approach?
 
-And again, why is this a platform driver and not just a "real" device on
-a bus?  Heck, why not just use the auxiliary bus for stuff like this,
-why are you craming pci attributes into the MFD subsystem?
+Now it's only the event test failing, if we apply NOHUGEPAGE we give up thp for
+all.
 
-thanks,
+-- 
+Peter Xu
 
-greg k-h
