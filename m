@@ -2,108 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC02418FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD733418FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhI0HJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:09:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233140AbhI0HJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:09:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D47760F94;
-        Mon, 27 Sep 2021 07:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632726457;
-        bh=eMQ6pJlXVCcD9g2RORTHEO4UfDrkbLRI1N5jWkz02pk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dM0aiacINeizZ/6nAaB75Y4hAq+u2IvBjiW0d5J2/eoqd+undvXHbOZWTKuBv0Rvl
-         wpAsdPnQz4ltiF9RFHkApMFWBAbIl/YTlCXa5lCLoOoZoa8RcpRusmUNyyGvCUDk+O
-         B0KlHcQ0OcBgbDCzd2z72uSf++2vFJsl1Ulit2Tc7mgFmz3M4VYv9KO2AjvvdqAa5D
-         e+jGqSC/6IF7/inwhuRmkfuJcB1qXNtUVjLtybC/yzLdY4mclsBQGA8e1Hvx99fSzh
-         JqzVMaJQpVaqnd1xSXaz333Y+fxr+BsuKoLLMmSBR6s9pF9HefFyymsGryxLbkisG+
-         GfH1GfAfaCQ/A==
-Date:   Mon, 27 Sep 2021 09:07:26 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        Hector Martin <marcan@marcan.st>,
-        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        Matthew Leaman <matthew@a-eon.biz>,
-        "R.T.Dickinson" <rtd@a-eon.com>
-Subject: Re: Add Apple M1 support to PASemi i2c driver
-Message-ID: <YVFtrpxfUbzv4XxT@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>, Hector Martin <marcan@marcan.st>,
-        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        Matthew Leaman <matthew@a-eon.biz>, "R.T.Dickinson" <rtd@a-eon.com>
-References: <6487d099-e0d6-4ea3-d312-6adbd94589f4@xenosoft.de>
- <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
- <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
+        id S233140AbhI0HMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233083AbhI0HME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 03:12:04 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F31C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:10:26 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u8so72161920lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Aq6qXeEc6aCYUKeljOyg151CIpIcZX36L8L/emY/OsE=;
+        b=cdo8ZMZPgS23dQDWWQhIUz40AnsyRN1qLMaZytqB14q9S3g5rNWtoNuUWOrk4IfySl
+         /WqSq2xp+D35x4/2OYOxaqEtEKbQwSXukciLeOIfR2YGJBFlv29MPoefU3H0JMAAT917
+         6THv9CbJ71Fl8F9NaahSeJGT/JbieFnYEF/n0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Aq6qXeEc6aCYUKeljOyg151CIpIcZX36L8L/emY/OsE=;
+        b=VQGgMgli/E2TV7rTy9UU2iRypENurqZ81/Kcv8mJY+VY7LhuiVD+NPDy/pjMgJBlzv
+         qjT6uOEVTPQZPi4gdgehVhKP+o18brIYqF2qi0ECBni1E93to1poKR8h2UUb7awHY1eL
+         QPV90DzatNqD54mPwhLSQEURoOl8f9nNX/xvl19xMsNPKLVnn8U/fbE5w0Gr7r5RRzOv
+         r3PDRTOgCzubMuWyXUv3nKxWOxwGiggLr18FmvJF6SRWs8n3fcHsDBEO5pSQCTCkBdRE
+         uFat99VMX9H9XNUOg3Zgl8xETHcqVtSaOgd5FlZ8Sx9jkHMlS9prrwslG7UfnHHFKH1U
+         ktNQ==
+X-Gm-Message-State: AOAM531Gry/hbr8RIGbjei+XveHU7D44uts5lvP3pa7rOdXscOTcihuS
+        SIC6IhZLtq7qgCSNcn2DfEjFwLjAJOfxONSNGNUvJA==
+X-Google-Smtp-Source: ABdhPJw8o1CtMltYtGlZxX1NQvnWcDA0rZNViVBF1JsDNzpK+VPC78MlnTbnnUbT6xZKIPOB+g1kjbzjQtQSPw/FcV8=
+X-Received: by 2002:a05:651c:1505:: with SMTP id e5mr27957292ljf.9.1632726624665;
+ Mon, 27 Sep 2021 00:10:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gTShxT62TmlXACri"
-Content-Disposition: inline
-In-Reply-To: <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
+References: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
+In-Reply-To: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 27 Sep 2021 15:10:13 +0800
+Message-ID: <CAGXv+5Ej=sDXOy1Hg9fQrdxN-OEmxpfUjE8PfxgfBkWu9dvOXQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm/rockchip: dsi: hold pm-runtime across bind/unbind
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sandy Huang <hjc@rock-chips.com>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        aleksandr.o.makarov@gmail.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---gTShxT62TmlXACri
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sat, Sep 25, 2021 at 7:24 AM Brian Norris <briannorris@chromium.org> wrote:
+>
+> In commit 59eb7193bef2, we moved most HW configuration to bind(), but we
+> didn't move the runtime PM management. Therefore, depending on initial
+> boot state, runtime-PM workqueue delays, and other timing factors, we
+> may disable our power domain in between the hardware configuration
+> (bind()) and when we enable the display. This can cause us to lose
+> hardware state and fail to configure our display. For example:
+>
+>   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
+>   panel-innolux-p079zca ff960000.mipi.0: failed to write command 0
+>
+> or:
+>
+>   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
+>   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
+>
+> We should match the runtime PM to the lifetime of the bind()/unbind()
+> cycle.
+
+I'm not too familiar with MIPI DSI, but it seems that the subsystem expects
+the DSI link to be always available, and in LPM if power saving is required?
+If so then this change matches that expectation, though we might lose some
+power savings compared to the previous non-conforming behavior.
+
+> Tested on Acer Chrometab 10 (RK3399 Gru-Scarlet), with panel drivers
+> built either as modules or built-in.
+>
+> Side notes: it seems one is more likely to see this problem when the
+> panel driver is built into the kernel. I've also seen this problem
+> bisect down to commits that simply changed Kconfig dependencies, because
+> it changed the order in which driver init functions were compiled into
+> the kernel, and therefore the ordering and timing of built-in device
+> probe.
+>
+> Fixes: 59eb7193bef2 ("drm/rockchip: dsi: move all lane config except LCDC mux to bind()")
+
+This hash is from some stable branch. The mainline one is:
+
+43c2de1002d2 drm/rockchip: dsi: move all lane config except LCDC mux to bind()
+
+> Link: https://lore.kernel.org/linux-rockchip/9aedfb528600ecf871885f7293ca4207c84d16c1.camel@gmail.com/
+> Reported-by: <aleksandr.o.makarov@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+>
+>  .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 22 +++++++------------
+>  1 file changed, 8 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+> index a2262bee5aa4..4340a99edb97 100644
+> --- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+> +++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+> @@ -773,10 +773,6 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
+>         if (mux < 0)
+>                 return;
+>
+> -       pm_runtime_get_sync(dsi->dev);
+> -       if (dsi->slave)
+> -               pm_runtime_get_sync(dsi->slave->dev);
+> -
+>         /*
+>          * For the RK3399, the clk of grf must be enabled before writing grf
+>          * register. And for RK3288 or other soc, this grf_clk must be NULL,
+> @@ -795,20 +791,10 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
+>         clk_disable_unprepare(dsi->grf_clk);
+>  }
+>
+> -static void dw_mipi_dsi_encoder_disable(struct drm_encoder *encoder)
+> -{
+> -       struct dw_mipi_dsi_rockchip *dsi = to_dsi(encoder);
+> -
+> -       if (dsi->slave)
+> -               pm_runtime_put(dsi->slave->dev);
+> -       pm_runtime_put(dsi->dev);
+> -}
+> -
+>  static const struct drm_encoder_helper_funcs
+>  dw_mipi_dsi_encoder_helper_funcs = {
+>         .atomic_check = dw_mipi_dsi_encoder_atomic_check,
+>         .enable = dw_mipi_dsi_encoder_enable,
+> -       .disable = dw_mipi_dsi_encoder_disable,
+>  };
+>
+>  static int rockchip_dsi_drm_create_encoder(struct dw_mipi_dsi_rockchip *dsi,
+> @@ -938,6 +924,10 @@ static int dw_mipi_dsi_rockchip_bind(struct device *dev,
+>                 put_device(second);
+>         }
+>
+> +       pm_runtime_get_sync(dsi->dev);
+> +       if (dsi->slave)
+> +               pm_runtime_get_sync(dsi->slave->dev);
+> +
+>         ret = clk_prepare_enable(dsi->pllref_clk);
+>         if (ret) {
+>                 DRM_DEV_ERROR(dev, "Failed to enable pllref_clk: %d\n", ret);
+
+The bind function is missing an error cleanup path. We might end up with
+unbalanced runtime PM references. (And also possibly an enabled pllref clk.)
+This is a pre-existing issue though. The code changes here look correct.
+
+Regards
+ChenYu
 
 
-> Sure, will do that later as well!
-
-But please do it privately. For upstreaming, the patch series you sent
-is way better than a single patch.
-
-
---gTShxT62TmlXACri
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFRbaoACgkQFA3kzBSg
-KbbrrQ/9HIs6yV6l8QWQ+P4IlPfU2kXwk3/9VhzWJrZ3nsok/WzVbDWJmgPo7lJH
-XR6Nm4tcJI+N3zqD4K2yIjmjhOaZPS9FqWwU52+46C3N9KtefLm5nk2BKPcWQeSv
-/ezPuxpFX73wh+sLjHrlGJm02QBycsWU0UWXPeDCjzMHvgLKMK+TBOMkMkDiaR7N
-zHlVEyraezoqXsW+YIe766GewkmOnBp9r97NXrn1nLjWmVV81wXt0jTg7v/mVcCO
-8HAle3UUvQc+njozZZrYwwDPyS5Qr1sfRWaVVOROD3ljqaDEC7kJtYJ+AyOVdmvU
-vOrcmXKSvsluIZb7qfk6OuLL2H3Vg47TvaYjZ7jdqoHeAKiEOP/IOB8InYMiu49A
-ne28Gw7Rrv4qxao4JIFnL0/3teaDMnlGXLe5unP0lQ0QDno9Q2PeiLfWkFPzvMeU
-7XhioE+m3UFSFBG5MhjpDuVm0LeQXw+F2kOK2bSWEKbtRW0qfYgOhJVzBIrqYgn+
-mdAiLA9CecBnAQDr8eS8nqg16MUpdCnm7AXr0WgFv43UN4kkeme3gTww1N3GAzSh
-TkmF/Ii0C+Tl7DEUQP2YsRwS8b1axQ6BD80FjvYdVVur8Arb+KcnSgjdca7jYyfw
-64CBmjl455K9IQv0wYY7r695zhQch3OkKa91VsmwGXMvzlw+tMo=
-=Kgu0
------END PGP SIGNATURE-----
-
---gTShxT62TmlXACri--
+> @@ -989,6 +979,10 @@ static void dw_mipi_dsi_rockchip_unbind(struct device *dev,
+>         dw_mipi_dsi_unbind(dsi->dmd);
+>
+>         clk_disable_unprepare(dsi->pllref_clk);
+> +
+> +       pm_runtime_put(dsi->dev);
+> +       if (dsi->slave)
+> +               pm_runtime_put(dsi->slave->dev);
+>  }
+>
+>  static const struct component_ops dw_mipi_dsi_rockchip_ops = {
+> --
+> 2.33.0.685.g46640cef36-goog
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
