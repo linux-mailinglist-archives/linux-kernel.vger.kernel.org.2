@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5964193F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306CC4193FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhI0MSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:18:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234213AbhI0MSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:18:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4744A6103B;
-        Mon, 27 Sep 2021 12:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632745021;
-        bh=kg6cqnxzry6/+Av1WRHhc3o3FRqLV9iNvalhK8jK0I0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YAoQb5O0Qg44lcoRdQPW2cCt4aC4f4bBHW7tXweJWw/zQXN8VzDdk079kZk+uFOdH
-         XAgnN1r8aDLZvWeALDKcYNOHCM69BmN6/CjNtZMY4k+KG7AgIMxA/SsmL0RZQtrnkh
-         lroyVZssRyyVKZ80TfThBbfSBzKCIyR3FVSxtiM83wh67dL0OeJFJve2olbZjIrh8Q
-         r3MYmj1pFFbRtL54JNwKXov5YaBJVG14uvBr7Ax0y5q/LyGP9x30WBkcAlDJ9umDT6
-         cp69bOHg3eiZwJCMHI+Uum4JKDJ49sky3CpQKCDt8q/NJRl98wavT20M1sGtcVviwO
-         OH69STxaYIrZg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] mwifiex: avoid null-pointer-subtraction warning
-Date:   Mon, 27 Sep 2021 14:16:35 +0200
-Message-Id: <20210927121656.940304-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234340AbhI0MSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:18:50 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:51565 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234259AbhI0MSl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:18:41 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 714B25C00B1;
+        Mon, 27 Sep 2021 08:17:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 27 Sep 2021 08:17:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=INVKYL/hImMLfwyu3HkJ3O9tiNp
+        9okvbdqAbJgPUcIA=; b=HEkhCKoXGZEZORodRpbAWjivivkrQU32/NKBMeUNIr/
+        SE/UA1g0Q4IKTILY5wQ0Ksl5temW9I/PFCe0zjkEgL48Z2GXwc/uwtbn4SMVwW50
+        94vcZZxkAh2OOjWaHciM4Z3wsmf6H/BswbkfYjeRZw7hCV1ic7hrhNeactAkMnEC
+        U2Ewz1e7BcMV6/wUwqL9+nMDcAIYgdj/7vItCyLCSpOmCuFd3phDJjzDuzg+Icpk
+        Hgsjnzg+GT81QIJuIiA2ya7ep9G54GENmwOagn9j8psHOqQJ0LlyQENAxyRJU1SK
+        WDcXeHatqUu6aymvdfk+zqV7AL9FndDl7xjr5TQutMQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=INVKYL
+        /hImMLfwyu3HkJ3O9tiNp9okvbdqAbJgPUcIA=; b=qUlBh2cEUgBPxYAaYwON2c
+        l4Jau0kWOowJxoG5nf1hND7qcQ2P9yAqEHz0qrI3vvWe6Lw8lba4bJPrOpoSXwQk
+        ldqVRtsq+nb8ByufS6d4qyxg4V3sRRZgjDqBdIjAd0hmOc0iVqp3rl4FfTg0gKPc
+        /obrVBYXpm7HPMCnqC5aT/8bqRMnMRfMBNsafu3Wn1Ux1aEC/Ax+d3BR3WMXQLMA
+        GlF3OqEQxJYEmZqby24ODTyiALCU9qGnZ9fK9SSJ8Q6vivbH05VCqEi981krd1uG
+        GZdt4q2nZoX4MTIUNoVBshzYsWEvnrX7TwKdyXQbyPdRU3Wgk01zIyBwgEQynXJA
+        ==
+X-ME-Sender: <xms:PLZRYR_oPsu_zx5OC_RmwDERzdnaRnV12M56_qlz-jmVGKg95YdNCg>
+    <xme:PLZRYVvL3jSe4xTXS8X-2QviMW9rIcvzcyuaGmnAn70HMMVYDhT3jDdud8H7R0UA5
+    TN2VFeDtBbThg>
+X-ME-Received: <xmr:PLZRYfCv1AamG7S4WiFpmgnFyiqEZPUz521dV70As8_7O8Mh2HGeDegaWq0EFCoDGpSrnOZrovjdonWJwCco9qChwgKGUIBK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejkedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:PLZRYVf1w5Tj_LYdfR74IMkJjmRe2nVp2jwlzWKNOxZv9p8VfxHDPQ>
+    <xmx:PLZRYWNkU0AQA9A5KHz3PEWWbWgvvUzUVz0RuT55hvX8KYYiF_-qCg>
+    <xmx:PLZRYXlM3TUyxspmM9IvcwDpKWi9RFdiLSewSUoa8amrV_KxATw6kQ>
+    <xmx:PLZRYXh0z1WoZ01lEUbZfMJVBLFjvjflSkSnQyhhWUGHvOHQ4PxP4w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Sep 2021 08:16:59 -0400 (EDT)
+Date:   Mon, 27 Sep 2021 14:16:57 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     stable@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Malte Di Donato <malte@neo-soft.org>
+Subject: Re: [PATCH stable-5.10] USB: serial: cp210x: fix dropped characters
+ with CP2102
+Message-ID: <YVG2OVNtg9ScNIpW@kroah.com>
+References: <20210927090012.14437-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927090012.14437-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Sep 27, 2021 at 11:00:12AM +0200, Johan Hovold wrote:
+> commit c32dfec6c1c36bbbcd5d33e949d99aeb215877ec upstream.
+> 
 
-clang complains about some NULL pointer arithmetic in this driver:
+Both now queued up, thanks.
 
-drivers/net/wireless/marvell/mwifiex/sta_tx.c:65:59: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
-        pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
-                                                                 ^
-drivers/net/wireless/marvell/mwifiex/uap_txrx.c:478:53: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
-        pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
-
-Rework that expression to do the same thing using a uintptr_t.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/wireless/marvell/mwifiex/sta_tx.c   | 4 ++--
- drivers/net/wireless/marvell/mwifiex/uap_txrx.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_tx.c b/drivers/net/wireless/marvell/mwifiex/sta_tx.c
-index 241305377e20..a9b5eb992220 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_tx.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_tx.c
-@@ -62,8 +62,8 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
- 
- 	pkt_type = mwifiex_is_skb_mgmt_frame(skb) ? PKT_TYPE_MGMT : 0;
- 
--	pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
--			 NULL) & (MWIFIEX_DMA_ALIGN_SZ - 1);
-+	pad = ((uintptr_t)skb->data - (sizeof(*local_tx_pd) + hroom)) &
-+	       (MWIFIEX_DMA_ALIGN_SZ - 1);
- 	skb_push(skb, sizeof(*local_tx_pd) + pad);
- 
- 	local_tx_pd = (struct txpd *) skb->data;
-diff --git a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-index 9bbdb8dfce62..245ff644f81e 100644
---- a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-+++ b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-@@ -475,8 +475,8 @@ void *mwifiex_process_uap_txpd(struct mwifiex_private *priv,
- 
- 	pkt_type = mwifiex_is_skb_mgmt_frame(skb) ? PKT_TYPE_MGMT : 0;
- 
--	pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
--			(MWIFIEX_DMA_ALIGN_SZ - 1);
-+	pad = ((uintptr_t)skb->data - (sizeof(*txpd) + hroom)) &
-+	       (MWIFIEX_DMA_ALIGN_SZ - 1);
- 
- 	skb_push(skb, sizeof(*txpd) + pad);
- 
--- 
-2.29.2
-
+greg k-h
