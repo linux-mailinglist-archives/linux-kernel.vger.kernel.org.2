@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAFE4192BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F6C4192CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbhI0LHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233955AbhI0LHa (ORCPT
+        id S233978AbhI0LKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:10:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53012 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233959AbhI0LKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:07:30 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FF7C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 04:05:52 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id z11-20020a4ad1ab000000b0029f085f5f64so5863873oor.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 04:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=waRvB9fZNkViCCDTQrVe/BvOxgqBfO5q5GdwYMSRpkc=;
-        b=SezwVY7xYJ6cynVnmBm2507bW41aCSZovWhY15w6KzqPaqOhAa9Ms8pTRI0NLxwdhX
-         LV7vDgAmxOhv2xrJU2S3hAUukSvCyZs1wuV7sKW00d/5nv0TdF9ngX5S2/9Is8C3rKET
-         q7vPbtwxgSDFXoSEJY43snjzvvlwgGkReNz1t+cXHUz0im9P4TKK7WVgtVLpktXqa1yB
-         jud6eC84BJdhxnvXjoJxnUh8Whvi+4QCrGh/0L0lwZcBAjrFWXL0LGKmhiCPVIauPj3n
-         uHrTHa7rVKsUdydoExvPiNRoVYKQ8D9p2M3/53HbumrKI1+IEQxGXpx7VfPfflB5f8Xy
-         lahQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=waRvB9fZNkViCCDTQrVe/BvOxgqBfO5q5GdwYMSRpkc=;
-        b=tzV6mRDwYppc3gmRAT7AyyDj0h1AXKk1nnai+IuFtEgVZ/lEvqLIONZy9MgwRO1IJq
-         dn90BzYYWGJF72B2fX/jh48ZT1NZkSBoB6Zn/k0g2UqhCbUPeGzG7H/TbCax8KVulBwh
-         xU0bqtUpv2/rGBsh6zgvq3Stm1ntbA3diKpl5JCl7ROYXekqdvw0S7Z02j9tR21CEa40
-         BuTeoxo9n4UUzzdWh3zZmRFFZycrrUdFAcS2tf4pjlUmRGaeIgocsZbyy0jH15GHQwRw
-         tUsXJ0FWkz+WXQCuoQnf2xVa6tLwRTJr/p+5UTEbfYXiQVpyUb+CiahfxVNhVZsV4O5j
-         1xXA==
-X-Gm-Message-State: AOAM5307AbfvMt4WyIVGDtJmoasXVd8UOolmRKOYnBNMMjMUnlBgAUbx
-        xLMdF1ys4k6DFHkt3kILclqxP7g3L3U=
-X-Google-Smtp-Source: ABdhPJxZs4U4QSZUGMEILNCeGI8FsW3nZT+FgStW96KgL0ZyuEyXdXHWujy67/ip0YXl87pl0HzKww==
-X-Received: by 2002:a05:6820:60c:: with SMTP id e12mr13256917oow.49.1632740751580;
-        Mon, 27 Sep 2021 04:05:51 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w7sm3141820oic.12.2021.09.27.04.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 04:05:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 27 Sep 2021 04:05:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.15-rc3
-Message-ID: <20210927110548.GA771805@roeck-us.net>
-References: <CAHk-=wgoE8XBPVA6Mu4CygxX9TE0FgWaAsVUJOe8KQH-CzEcAA@mail.gmail.com>
+        Mon, 27 Sep 2021 07:10:13 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7EB52220A1;
+        Mon, 27 Sep 2021 11:08:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632740914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T0gN5P8Lx7ZyiqATEPAc473z/z83jxXVuqiEZE6U3VQ=;
+        b=kre7iUxOWUIgYgzzKUhzw0x2WCHgHzMCUOqVIBpZ+x/aVr1dRjiWLufEXpDi/CmGC1TYI1
+        px71aSp6Y8Zv4RfWxdoH2HFaiQnu6Shv0Ar9v2hzsX4tQvCY2YXDp53YHRpvaMi3o5GqQV
+        TZ9vAVbHiIdSUzPF8ML3FYKqjacgdVY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id EC5EB25D3C;
+        Mon, 27 Sep 2021 11:08:33 +0000 (UTC)
+Date:   Mon, 27 Sep 2021 13:08:33 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
+Message-ID: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+ <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+ <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+ <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
+ <YU2EXP5wrSKv+b/8@dhcp22.suse.cz>
+ <508abe37-a044-7180-ac67-b4ce5e4cc149@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgoE8XBPVA6Mu4CygxX9TE0FgWaAsVUJOe8KQH-CzEcAA@mail.gmail.com>
+In-Reply-To: <508abe37-a044-7180-ac67-b4ce5e4cc149@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 02:21:52PM -0700, Linus Torvalds wrote:
-> So after a somewhat rocky merge window and second rc, things are now
-> actually looking pretty normal for rc3. Knock wood.
+On Mon 27-09-21 12:36:15, Vasily Averin wrote:
+> On 9/24/21 10:55 AM, Michal Hocko wrote:
+> > On Thu 23-09-21 09:49:57, Vasily Averin wrote:
+[...]
+> >> Hypothetically, cancelled vmalloc called inside some filesystem's transaction
+> >> forces its rollback, that in own turn it can call own vmalloc.
+> > 
+> > Do you have any specific example?
 > 
-> There are fixes all over, and the statistics look fairly regular, with
-> drivers dominating as they should (since they are most of the tree).
-> And outside of drivers, we have a fairly usual mix of changes -
-> architecture fixes, networking, filesystems, and tooling (the latter
-> being mostly kvm selftests).
-> 
-> Shortlog appended, it's not too long and easy to scan through to get a
-> flavor for the details if you happen to care.
-> 
-> Please do give it a whirl,
-> 
+> No, it was pure hypothetical assumption.
+> I was thinking about it over the weekend, and decided that:
+> a) such kind of issue (i.e. vmalloc call in rollback after failed vmalloc)
+>    is very unlikely
+> b) if it still exists -- it must have own failback with kmalloc(NOFAIL) 
+>    or just accept/ignore such failure and should not lead to critical failures.
+>    If this still happen -- ihis is a bug, we should detect and fix it ASAP.
 
-Build results:
-	total: 153 pass: 152 fail: 1
-Failed builds:
-	mips:allmodconfig
-Qemu test results:
-	total: 480 pass: 479 fail: 1
-Failed tests:
-	sparc64:sun4u:nodebug:smp:virtio-pci:net,i82559er:hd
+I would even argue that nobody should rely on vmalloc suceeding. The
+purpose of the allocator is to allow larger allocations and we do not
+guarantee anything even for small reqests.
 
-Almost there ...
+> >> Should we perhaps interrupt the first vmalloc only?
+> > 
+> > This doesn't make much sense to me TBH. It doesn't address the very
+> > problem you are describing in the changelog.
+> 
+> Last question:
+> how do you think, should we perhaps, instead, detect such vmallocs 
+> (called in rollback after failed vmalloc) and generate a warnings,
+> to prevent such kind of problems in future?
 
-Guenter
+We do provide an allocation failure splat unless the request is
+explicitly __GFP_NOWARN IIRC.
+-- 
+Michal Hocko
+SUSE Labs
