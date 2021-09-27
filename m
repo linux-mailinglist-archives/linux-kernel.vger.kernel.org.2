@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F9241A3A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6838841A3A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238118AbhI0XPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 19:15:09 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:59197 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhI0XPH (ORCPT
+        id S238156AbhI0XPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 19:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238122AbhI0XPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 19:15:07 -0400
-X-Greylist: delayed 36081 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Sep 2021 19:15:07 EDT
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJJN212Dmz4xVP;
-        Tue, 28 Sep 2021 09:13:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1632784407;
-        bh=CSBhgRacMH4wdNz2+6sz+UADE1Z/+Rt10XRo6G7F4qc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SpP9Ag4cak7uAXRzz2oEmCUoFYobVM1YDaU7H2umvim4BfissG2tOopwTVM+QWkPz
-         ghgj6oLQBTg5oDf2NWjGYSmE9cyVG2OnhS4PGKCG0kZdLg1y7LnWfeAAXywPMS731F
-         QZkED7zLRXNCfN+p5XJsCb/mEfuBMhjK0vBM2M/FronydUaFEXBcGAzRon4NUZDdUi
-         c5+mvpDKJwLSK8UzkrhrUYXZtS7fX7Bjmd8BdVkDlYlrHSSNC7PnfeGdU05fUui1SA
-         nmOZ+MwplIXOJUwftG2odSSkbquxMriRVgTLz1E8nWEaxVgFqlAtsezQzR2t7KNQX7
-         ksfYi+D9EIhBA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
-In-Reply-To: <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
-References: <20210914121036.3975026-1-ardb@kernel.org>
- <20210914121036.3975026-5-ardb@kernel.org>
- <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
-Date:   Tue, 28 Sep 2021 09:13:20 +1000
-Message-ID: <87ee99lii7.fsf@mpe.ellerman.id.au>
+        Mon, 27 Sep 2021 19:15:33 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8017CC061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:13:55 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id v17-20020a4ae051000000b002b5a56e3da3so2114736oos.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bunfPpWd3kzWvXqRScHWkoQzp2nTKJKGN8BnN6cETlw=;
+        b=pxSsANALO+B5f4jNUXRjDrMwUHfvi9MOcssWvZ2poDWBGa89NYPXViHiUSlCTuV0kn
+         FIDiCZhvWDEGnaYkAZtXv9CpufxN6tjabtKS4vM3WQic22D0a/2O3isAjVZgV7BCBlJS
+         OvrqtxXElY5S9x8ckKSSI4czl4Z7C2V/WHBM2JFRrKVTd24jjDIN9QJYudxbjcCuLUky
+         fftmw+2JkWlZJ4uCdZsu5ObWnUkGwwTLiyet66rO4RHUidcWEdFjSxZipu9lR8NhDON4
+         FAp1ZlHrx/1IusCcVZ1FXNvaaihZAsYKPpmWGr8tqk19+EwQ+rrLEncnvcGRo723TkNh
+         l/KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bunfPpWd3kzWvXqRScHWkoQzp2nTKJKGN8BnN6cETlw=;
+        b=4zh5Mc95VNwvE8+nu5F4T1EOpTgHEhr+EJ4p8aYZ+OjJstHfZ1mK8kl3dlGVYLce50
+         nuUfS+/3yBMg7prXlBx1cTJXGRBtbo1L6qmkQOx0huGjVFYU/XNN1DvgEufyHvfLn36c
+         iFcQMp0eaDixMLsnkMoDkXWnQ6vw0pNgFbPr2YzF9R2ZSYsbQ8cDhTU+cXg1n34f/DDq
+         ipOHN6lR8/nNeFl6FDQhDzB3g+CytRIbyS30c+exNZR0abOrHJJqduoBUwiEL/zr9doI
+         YRVuSBDTG3I5V4C4GKoP3+JEI7UFdPcaLq7dJeu/6O8r3WU53FvHzAEh11J2Hv04pa0n
+         Brnw==
+X-Gm-Message-State: AOAM530y81Yv6EP5vjv0VpI8UtLG5m+Ld16aAuS9IBMZLSaOuVUn0dBx
+        Z4QU41AgLqX/JXW4GA8tiPFGVw==
+X-Google-Smtp-Source: ABdhPJw/B+aEJ9bidUMgGjg/KIz7YnCivEhHXww4c5fKzblqaaS7U8oyWyaY3lO0XfNU2vcKsCSSAA==
+X-Received: by 2002:a4a:ca12:: with SMTP id w18mr2165740ooq.96.1632784434895;
+        Mon, 27 Sep 2021 16:13:54 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p21sm4162268oip.28.2021.09.27.16.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 16:13:54 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     robh+dt@kernel.org, mka@chromium.org, will@kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>, swboyd@chromium.org,
+        saiprakash.ranjan@codeaurora.org
+Cc:     evgreen@chromium.org, linux-remoteproc@vger.kernel.org,
+        robin.murphy@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        agross@kernel.org, joro@8bytes.org, dianders@chromium.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org
+Subject: Re: (subset) [PATCH v5 01/10] dt-bindings: remoteproc: qcom: pas: Add SC7280 MPSS support
+Date:   Mon, 27 Sep 2021 18:13:49 -0500
+Message-Id: <163278440375.1524647.1015553568924080250.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <1631886935-14691-2-git-send-email-sibis@codeaurora.org>
+References: <1631886935-14691-1-git-send-email-sibis@codeaurora.org> <1631886935-14691-2-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ard Biesheuvel <ardb@kernel.org> writes:
-> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
->>
->> The CPU field will be moved back into thread_info even when
->> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
->> of struct thread_info.
->>
->> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->
-> Michael,
->
-> Do you have any objections or issues with this patch or the subsequent
-> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
-> that he was happy with it.
+On Fri, 17 Sep 2021 19:25:26 +0530, Sibi Sankar wrote:
+> Add MPSS PAS support for SC7280 SoCs.
+> 
+> 
 
-No objections, it looks good to me, thanks for cleaning up that horror :)
+Applied, thanks!
 
-It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
-git tree with the dependencies I'd be happy to run some tests over it.
+[01/10] dt-bindings: remoteproc: qcom: pas: Add SC7280 MPSS support
+        commit: 6c62a1eb101c040056cfe03c6bfc3c24c6b3a023
 
-cheers
+Best regards,
+-- 
+Bjorn Andersson <bjorn.andersson@linaro.org>
