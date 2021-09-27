@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CFC419EB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3423419EBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235901AbhI0S6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S236008AbhI0S61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:58:27 -0400
+Received: from mail-db8eur05on2062.outbound.protection.outlook.com ([40.107.20.62]:24127
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235865AbhI0S6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 14:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235853AbhI0S6N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:58:13 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C011C061575;
-        Mon, 27 Sep 2021 11:56:35 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id e15so81907529lfr.10;
-        Mon, 27 Sep 2021 11:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=55NNLkzh4OV0HaDhGAfkYTMJbrnWOQ8oEUJeJ/f86gw=;
-        b=qAqVdxNXLK14ymGl3fh1f9w/ojIt5TaWdSHoV3mWcV/j8nZqm2VpqUarXQT8NfWHVU
-         lrui9mpdAGz2aGk9gOEkCwfenG2w6HX8ck+enjShoXKeZ0ZVsXr/q+tpU+i5SxZxc8Hu
-         eu/TRAdmTVv3xL7G3XTVCujP87ArhYTYnXfUsqKQp5IV+K/SbWmRT/Eh9JEKMXID58/R
-         8PAyrDm1U48hR5lFjhEdkJrPB4QENWmZ/kr+g/iXyVGm97+/XTVTQU5d6KGZACaa0v4g
-         XF3fN0kqm5GmgEeW1vBKmDT48yE5oS9Xa+728o6P2FmdQbzK8wzBPNqd5YdM2JsmowGx
-         WcEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=55NNLkzh4OV0HaDhGAfkYTMJbrnWOQ8oEUJeJ/f86gw=;
-        b=sIKiLeX3Wu0IxNwrPKyP0anC39tgEnzbTE2eCkR7tPfq0EaEHBpoushQhS3wACSAME
-         sG9pupTQnUvzZ66Gpu0MBNmq8CpURp4lDMlT/W3D5zXQEpVrTJ9M3S8Tfv6Sn16Wzf1K
-         QfyJbpccc0uQWP6v3+IVx7CfOOcyDlE5Uitze1Hqv9aiL7gIyLM2Qgs0YmjEhSHvY1u5
-         R9TafHHYtjvpOkWKfiJkYXi8ql3DGMNXFUPjfTwUcylEzhmEVjpUhxP38hdP9/TwdHbe
-         3bbyNdtjjW3BOmSXZ2Evg8hQZgOjq+BN4bQBTU2LC+EuZwJ0cwDXDu0ipP+wzCo1b87y
-         AoHA==
-X-Gm-Message-State: AOAM532lHaZjqzraKAnHf1lS/ZinOoIT6yAjgYT8mGQQ31Zx5gGYu5+s
-        99ZaRCRU1ouTXta+u+vAxSZdzPqIZeI=
-X-Google-Smtp-Source: ABdhPJz20UD8kziRnhnOjCTNqYNd/ZDhoWteKL22IT3u5/CC/UtxU/e85F6Cwyzu1Le3mymQ+1mjmQ==
-X-Received: by 2002:a05:651c:178e:: with SMTP id bn14mr1414191ljb.521.1632768983055;
-        Mon, 27 Sep 2021 11:56:23 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id 8sm2075331ljf.39.2021.09.27.11.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 11:56:22 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 21:56:21 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/3] fs/ntfs3: Reject mount if boot's cluster size <
- media sector size
-Message-ID: <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
-References: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
- <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L1CuT162ibfR8xy2jA5aHcOmC5q7EvcPSG+PS9P6zMxPCXt6+q9plmAg96rhuv6xtn8a/UcUY0IXb6XOI/crrFtuuQ4FsiGi9X+t28JrrN6v4y5OzPfg4CE40hgkImGyTehRb9W67UO3DL29dJ60ut57zf2TAyD0LVoIq0ObErTTWAbfVgDekNd7ZNKBv+1yb+aRtwZvq2eHb4GjwHPhQ3Q4EXAgb/5ttnUuiEVaRTemsLuTfAAlP5U+Ra0tOHfdNVbhlWjV+NGRQqTHoQJ8fr0T2Id21+ADRblZH3B+CktRi2GJzsuIwvqimwxOaSia/PMCduqeRMXHyVwIFv9VUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=w+5VLlNbH06ITbO/8Fs9VCB59Cehl5rJbozgzR2JE5U=;
+ b=TZTD+k59MYF74hH+X83hX3xFzkKP5ubfQbatPA5b5OQkSORaPXlzNpwx/dxZBdsa6MLhHbgD0X7j7bSgXPcTXzQ22OcL/0d7OJFGjb0UyXn46Y2qaU6wFUZyJ3pV5/a3hXQ/2XF60z+qu96Cr04Rj+8PlTWwzPwMfJkh3XreVHUscOfn7aZt2pe5ArOY8kYbOODHYU/tjRjio1DwQEuwt9fikaupOLVPC+bJY8iRPbeK309caeUvDrv6j2kcDBQgC+JVioDQxYhiUJv9bjb+7clsomAXbClSsEM3G3Hd/UQWvD/9uWX82cTQBJcZpfiXunctNTzlssm0i6CTDC7XFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w+5VLlNbH06ITbO/8Fs9VCB59Cehl5rJbozgzR2JE5U=;
+ b=RrUcn9YfxnB9+5UqfWcwjIWkhib9cVOT45xLocL2Izk+3zKtptt7zQv/3nZRjSG3NkwCbZVZsXm/DipS5TBlvVG9VLr/LQw+xSn/w9eeZmqPpkjgAz7Ag/hNj6+vLss25T0hu+sakgVKEZrtYxvb5K6lxL39J9C3uAM4JLyp/0I=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0401MB2495.eurprd04.prod.outlook.com (10.168.63.15) by
+ VI1PR0401MB2287.eurprd04.prod.outlook.com (10.169.136.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.20; Mon, 27 Sep 2021 18:56:42 +0000
+Received: from VI1PR0401MB2495.eurprd04.prod.outlook.com
+ ([fe80::7858:1e48:5260:2810]) by VI1PR0401MB2495.eurprd04.prod.outlook.com
+ ([fe80::7858:1e48:5260:2810%3]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 18:56:42 +0000
+From:   Mirela Rabulea <mirela.rabulea@nxp.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        robert.chiras@nxp.com, laurentiu.palcu@nxp.com
+Cc:     linux-imx@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: imx-jpeg: Fix possible null pointer dereference
+Date:   Mon, 27 Sep 2021 21:56:32 +0300
+Message-Id: <20210927185632.3094673-1-mirela.rabulea@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR03CA0059.eurprd03.prod.outlook.com
+ (2603:10a6:803:50::30) To VI1PR0401MB2495.eurprd04.prod.outlook.com
+ (2603:10a6:800:52::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
+Received: from localhost.localdomain (86.124.168.147) by VI1PR03CA0059.eurprd03.prod.outlook.com (2603:10a6:803:50::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Mon, 27 Sep 2021 18:56:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2047721a-2ce0-4c38-4065-08d981e88b9b
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2287:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB22878D1D000B0F993D2392418FA79@VI1PR0401MB2287.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:431;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c4PhqnGwMZCUY6Tp7dSSy8WknnPLsrlS8sut9n6V/rUnMWhZLsBG/dNaPZ26wZL4zobfIJ3m68kUKI6sRBPWnXnaRLfNDLuy3EcH24OYQoQGlKYlMWG7mQH5F80l4cvyDA/7K2hZTsZkMmJAqsBiMJGFXnFkz2S91tRTSGy6gzLQ/lWz0v11oLNpmfVAeYg3XqX9/hvSx1cH627tKsE6DWaqRp7SFX9pwXcXsP8nEVZCrUOIHgkZRMwNONUr5Gz5bgKOT9u3XnirKxe8xPskMZIxOe5gp14N7YELNNBFsIXGcC+OrPE1lhOdDVXx8EJjeDCuE6sNBT3XXucPkFRbTwNQtgB8sYEMtGwZaLtLgR1iPinmPuigg05fodRjUUF5FDVA4Zl2ZMw/fZUM0KG5vlWal/euupBCkMmSBLj7dZauOjjTyatvH56sNhyLK98XsW053n2x5ne4g6kUuUx4eWpAUQoB98vxBFJwa4Q5XQW8m2HQAjvDRu34e6U3CoTCU1kYlngl9MXAHQr0w1Z4xUeHIpUKHmYGnnEuLHFeIj7AIK9WWJfYtfUPK78/iI3OUESzCTtM5cVdknWV51poV7QeK/J1a2kI9sJDt0f2g4QSc7t6NGrDTqkluARkKAU5kTYbda2cG7h5655wRiv/+ykjtTnQcgr/15f3Ayfl031FFaIIrugJ6lHqpEbW6hXw1hApQW5k6C/9Fnhmr2JggQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2495.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(2906002)(6666004)(38350700002)(6486002)(83380400001)(6636002)(38100700002)(1076003)(26005)(36756003)(6506007)(66476007)(66556008)(5660300002)(66946007)(186003)(86362001)(4744005)(508600001)(8676002)(8936002)(6512007)(52116002)(4326008)(956004)(316002)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kSHXSTQcJ7idAEK0Lb14Fb9hPit21749pfhQJ0P1WsQpOV2Qb/YsQZawiE7z?=
+ =?us-ascii?Q?6Usy7LtD0QFLZmKRWtxz8CpQP8fhWVQ7HK/jxGhnQ8CScutJ5twVSgJxmIjK?=
+ =?us-ascii?Q?9N+/bGC0zuQ6widJmul32XP+oZKRLEyuWYyqJvi5+tYB42YxX0JvcVddD1L4?=
+ =?us-ascii?Q?k5JhFExktxxA1A7u0QXIFjobFhbFjpk7IfUW9JCdsuJRuyVTP1mkvOiv3N/A?=
+ =?us-ascii?Q?MbamkEUYYic27/r20OxVF5I12Yl9EtLk1squRnSu55y53kV49594FHEHAmml?=
+ =?us-ascii?Q?xMD+Q0AgYw1IPPYTC0RZnJ1bHANIEeCp8U0MTqa4IDfuGEb/6rOG6Ze65GEd?=
+ =?us-ascii?Q?VKoVRBMchWCdndUYr5Yk+QJZCNec+y4C4ZTiIBpK3TeELfD4lc8hfecV9bGq?=
+ =?us-ascii?Q?0/L/wrLzxVmJpQlIZGXRChxMAKNwXV/nXAlwySMcrIWTO41zkqEr3oOHFTHA?=
+ =?us-ascii?Q?GZ0NRAQ/HXbygLqZBNhq9/hkgJdyClhcUotb1GPwoFoDgPQqPLhEzi1wcLR2?=
+ =?us-ascii?Q?fkBxQuwiWBCI2/RtVFdH/BpavYlKZkAX9+jL++JF2T1N4PgH7Bsp2N7ZkaBY?=
+ =?us-ascii?Q?axfzbnJyGxRuXmsBv/ykU6Ity9C2WSVqn5H83iDdFktBMISr2XV9QwVMPiy0?=
+ =?us-ascii?Q?60QCUr6CFVlPPNpMNg4efO54yITpd/LpkompRvCI6W6ueI2zp46aFblH+R7y?=
+ =?us-ascii?Q?TQsIBXP+tRBcOi+RgZZErZnTu4tgDBB36XGiGoctWwVCiiAG5rX1rOLAZoh5?=
+ =?us-ascii?Q?/yUbIJAd0dzJkPLpamqHvwQouCKIB2Nue3lyp2SPnAG7xxPmMZGPP3FdUnWv?=
+ =?us-ascii?Q?RWyTPbI0PkreDODTz4tphaDHMfRCnOjbpOTTXsNiu2rWyWl1i+fLVzzd3zAR?=
+ =?us-ascii?Q?SmB7kT20a+hP2xq8KDbQxgJiDeFbkxFqp7zMwB5S3D7sP+KjiA89aLdqjgEc?=
+ =?us-ascii?Q?I1iNcewthWJyqu7UWyfRdKMOTZoPJ7pdb9W3Pn37LzY3uB0ujos+do6thgd5?=
+ =?us-ascii?Q?5L2Pxf5B+eITqCOTKAzjPCYJKtiudiWGeBKO8utntZTcMylRICBo1hwM3B8g?=
+ =?us-ascii?Q?OHgocvoGBz2Z9/IXso7F3T4lkCYiR51hrJh3J7+syp5IKTQQdNy4cpckQvPq?=
+ =?us-ascii?Q?O4KUXUeyIOUkyAWFGmTkN1/QYtpgnMHdZ3cOYAh1htKfhufZAoKaB9kz7Xm0?=
+ =?us-ascii?Q?BUFshajgJp/B06vWPwtnxaIEPbzPkC9m/7Hrxlk9yACIbLQHfVbZapoT5hJo?=
+ =?us-ascii?Q?oFV6a7LjbjxCr7sCj+AJAS/ao7c0TRR4PYU/Mv+XlcgDCOh9jIDCbZi0diLO?=
+ =?us-ascii?Q?EV83sP7Qgbvkl+ZfjXJ1HyZ7?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2047721a-2ce0-4c38-4065-08d981e88b9b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2495.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 18:56:42.6058
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /FLSRQHdrhUVG5tBpz/kj6yHecrgDzKM8xpAhuz870a3cQwF9DvGK9kiH17di1FdA8mq+BiIzESpsekBwGO5vQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2287
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 06:48:00PM +0300, Konstantin Komarov wrote:
-> If we continue to work in this case, then we can corrupt fs.
-> 
+Found by Coverity scan.
 
-Should have fixes tag.
+Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+Reviewed-by: Laurentiu Palcu <laurentiu.palcu@nxp.com>
+---
+ drivers/media/platform/imx-jpeg/mxc-jpeg.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/super.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index 7099d9b1f3aa..193f9a98f6ab 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -763,9 +763,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
->  	sbi->mft.lbo = mlcn << sbi->cluster_bits;
->  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
->  
-> +	/* Compare boot's cluster and sector. */
+diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
+index 2e1fef88cdf0..b1678f94dccd 100644
+--- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
++++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
+@@ -576,6 +576,10 @@ static irqreturn_t mxc_jpeg_dec_irq(int irq, void *priv)
+ 
+ 	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+ 	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
++	if (!dst_buf || !src_buf) {
++		dev_err(dev, "No source or destination buffer.\n");
++		goto job_unlock;
++	}
+ 	jpeg_src_buf = vb2_to_mxc_buf(&src_buf->vb2_buf);
+ 
+ 	if (dec_ret & SLOT_STATUS_ENC_CONFIG_ERR) {
+-- 
+2.25.1
 
-Pretty random obvious comment and I do not know what this does in this
-patch.
-
->  	if (sbi->cluster_size < sbi->sector_size)
->  		goto out;
->  
-> +	/* Compare boot's cluster and media sector. */
-> +	if (sbi->cluster_size < sector_size)
-> +		goto out; /* No way to use ntfs_get_block in this case. */
-
-Usually comment should not go after line. If you take chunk from patch
-3/3 then this is not issue.
-
-> +
->  	sbi->cluster_mask = sbi->cluster_size - 1;
->  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
->  	sbi->record_size = record_size = boot->record_size < 0
-> -- 
-> 2.33.0
-> 
-> 
-> 
