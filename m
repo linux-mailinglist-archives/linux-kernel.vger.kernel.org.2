@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32F3419D89
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AB1419D93
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236783AbhI0Rxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237231AbhI0RxT (ORCPT
+        id S235825AbhI0Ryx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:54:53 -0400
+Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:37166 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235693AbhI0Ryr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:53:19 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC96C061770;
-        Mon, 27 Sep 2021 10:49:46 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g14so16596123pfm.1;
-        Mon, 27 Sep 2021 10:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GowznGyJHBfEdnrox6XeXHzKCwLxA57FV9V0/ZJadf4=;
-        b=IBK/yAQqXoksGm/mD2MKMI7IxQ+rSI8ipPRl1j8vJzhhTOnczD6l/MWx5PMQTOwkNX
-         qcFedtOCnOMTUzJB5o8M4S2jVj/I2VrNzqMtqWDZ2ZrUs9TuhhpimcehvqiIby/y47dc
-         oTOlXwZlX8o3dh4uwsjwUG149xFxhfDpjwq10FlONTvm0gbEW0HpL594nvQVuG8of+74
-         bV5Nu/X+Mpe/5w7jps4+xkSEVQF6A6TFJnM9eps80/pDMRk9T1oIH8rIUDV4IRHz7Iax
-         B8SPJtxE68uaZpvegPXeY/AL2Fw+VTXtNaytM1PGg8Le85kH7FS19r8EGL5NIYJnVNG+
-         SKRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GowznGyJHBfEdnrox6XeXHzKCwLxA57FV9V0/ZJadf4=;
-        b=HKQuOr1pd5AEoSPkz7xIE8uKFYus7A3HfGkoWqUjTy6lgtVXjUKptU00V9VyInGFsg
-         vrY3kgVcmsb1ik9xZK2hBukVB1H3iRUyU40g2tp8tmyAumaNqaJgERjz85YDbANfe5X3
-         2v3+1njlH6WyRIntMd5nXY1ILLqP1TrFcaayMwhEJf6/12Qa0ljK1J2Gffg2Q1RMPibE
-         kvwbweqbKn7bQuSG1hUEz3ZbOldU1Val4K/+dLomyR7alVclR3c+pKmZYQJZGtzdViwE
-         Vxtq4/NLioLXKrSUHrsGnvqZMePAvjKVR19HE0PSO+/CUECByocgvAEQHBf15t/8cra7
-         kfug==
-X-Gm-Message-State: AOAM532qmbc/VeRw+xX+WB2kLREhQLbpwOYQ7i0dfhO+hdiSt4SkFRPL
-        CPi7jywX1g8sJuUbLa0BMKWVRd9Ua6A=
-X-Google-Smtp-Source: ABdhPJzM1oC3zlz9ypXtLwwso8UW898VgojHbyo3QiNGp8gNQRQLvO5944MkRD+y8IiaVS/k1FK0YQ==
-X-Received: by 2002:aa7:8f2b:0:b0:43e:393:e855 with SMTP id y11-20020aa78f2b000000b0043e0393e855mr943043pfr.18.1632764985766;
-        Mon, 27 Sep 2021 10:49:45 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id c16sm17354597pfo.163.2021.09.27.10.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 10:49:45 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/68] 5.4.150-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mon, 27 Sep 2021 13:54:47 -0400
+Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 06005182CF66A;
+        Mon, 27 Sep 2021 17:53:08 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id EEE282351FD;
+        Mon, 27 Sep 2021 17:53:06 +0000 (UTC)
+Message-ID: <06f4c72fefeedb5145a940e5a78d50e610acdcc4.camel@perches.com>
+Subject: Re: [PATCH] Documentation: checkpatch: Document some more message
+ types
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Utkarsh Verma <utkarshverma294@gmail.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210927170219.901812470@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5af6dd41-d00e-98fb-1a40-d42c1a7d77a8@gmail.com>
-Date:   Mon, 27 Sep 2021 10:49:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Date:   Mon, 27 Sep 2021 10:53:05 -0700
+In-Reply-To: <875yulj4m8.fsf@meer.lwn.net>
+References: <20210925201746.15917-1-utkarshverma294@gmail.com>
+         <875yulj4m8.fsf@meer.lwn.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.24
+X-Stat-Signature: jdo8rn3iu85ra5dgdfz9s646q3uffz3s
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: EEE282351FD
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/rK5szfXkBwjy2oIFBr8NmlE5PEiJTWk8=
+X-HE-Tag: 1632765186-292574
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 10:01 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.150 release.
-> There are 68 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 2021-09-27 at 11:43 -0600, Jonathan Corbet wrote:
+> Utkarsh Verma <utkarshverma294@gmail.com> writes:
 > 
-> Responses should be made by Wed, 29 Sep 2021 17:02:05 +0000.
-> Anything received after that time might be too late.
+> > Added and documented 3 new message types:
+> > - UNNECESSARY_INT
+> > - UNSPECIFIED_INT
+> > - UNNECESSARY_ELSE
+> > 
+> > Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+> > ---
+> >  Documentation/dev-tools/checkpatch.rst | 47 ++++++++++++++++++++++++++
+> >  1 file changed, 47 insertions(+)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.150-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
+> So...when you send multiple patches with the same subject line that's
+> always a bad sign.  We really want a "git --oneline" listing to give a
+> good idea of what the patch does, and that depends on more descriptive
+> subject lines.
 > 
-> thanks,
+> In this case, something like:
+> 
+>   docs: checkpatch: add UNNECESSARY/UNSPECIFIED_INT and UNNECESSARY_ELSE
+> 
+> I can fix up these two patches, but please try to keep this in mind for
+> future work.
+> 
+> (applying the patches now).
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+The unnecessary_else description isn't particularly good as the
+checkpatch output doesn't describe multiple if/else if/else if type
+returns where the message should not apply.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+For this type of use, the checkpatch message is not necessarily correct
+and because it could be a patch context, there's no way for checkpatch
+to know if it's correct or not.
+
+	if (foo) {
+		...
+	} else if (bar) {
+		...
+		return [val];
+	} else {
+		...
+	}
+
+
+
