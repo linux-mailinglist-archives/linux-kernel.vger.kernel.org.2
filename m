@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8877C419E63
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97679419E65
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbhI0ShZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:37:25 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:35460 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236265AbhI0ShY (ORCPT
+        id S236307AbhI0Shw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236213AbhI0Shu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:37:24 -0400
-Received: by mail-oi1-f182.google.com with SMTP id n64so7492660oih.2;
-        Mon, 27 Sep 2021 11:35:46 -0700 (PDT)
+        Mon, 27 Sep 2021 14:37:50 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E60C061575;
+        Mon, 27 Sep 2021 11:36:12 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id n18so18579101pgm.12;
+        Mon, 27 Sep 2021 11:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mB4LROKIVsFUsKgQXRlTlT/Cpfz94CXiUcS6oRbhjeE=;
+        b=p0r6k3usuz3FMsXYowqbYn9tQZAgNh5TA9pMvH4Pop5ce15PwNniEr9PZQm4QMly00
+         +HbL7EnWS/vevGPyI3IA7+2pvoeI6BbvauiVLyQ+IAhmn6VKSsI+ZZV15ZBLjm/XSEcl
+         IMgAn/bUMmrSD2+MRtwRb5mwEI176AVzCPA9Jwy/J/lx25z8PdqtTwupjWSDqGZgffkO
+         N2DR/8dXTnTCz7ZvRwbc828BXn90X/bVH5hJYiNX4y8JFCdgk6UOPGszKy5JJn4AQISP
+         I5WNowtJvqJcGNpyFWG5RoQQFQLsmCWHfkFfyBRUj/cjzhftnmamb41sJ5oNbppmDDSY
+         phSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uyHDuZNWsD1CiOsJyVBNocG00emCbcuWh07//nyOEl8=;
-        b=OulOjNttfru0uJ1cDU37f4O7WCNIRmbrgy7sngqW3wqsTVuoNRcdb7sOFhqAYyXJCm
-         pbQJdRwr84irlXNinghodAGb/Xoy3aggveqc25dtpYQ68YZIycWP8//1VbXxD8AAliaj
-         0gsiOe7cbI228zIndMs4Ai7fXhN9qYNnwrbhl0emHD0uDHOgLQyTSuBiAljtErvetOdO
-         l/iBHqoADhoKkb4qo6H/DHhIWDTYwJ547l2mM/OjiINdl0pVGsuBAI80p9ggwiGjrYy4
-         6pO32o5SSHHamm1FXFOSGewMpZA1F9ydJKBqgAMC4EuKP+bN0YLCjEwNV+Dp98Kb+akZ
-         ldJQ==
-X-Gm-Message-State: AOAM533hk0sa4MpfaqhLAa+RGMe/jRfe1KN+0HmuFCfJSuN4fCRwiZbn
-        95v0Ebq0en2r1sVf6pXLiwUqzhw6+g==
-X-Google-Smtp-Source: ABdhPJyXxFw/Q7Ln2aqNgAls3SlgUyI0tOzRHi/35jPGg3w2WwFgVWlOuAm4XishHIHnuQmpHWeRXw==
-X-Received: by 2002:a05:6808:1906:: with SMTP id bf6mr428876oib.130.1632767746269;
-        Mon, 27 Sep 2021 11:35:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z83sm4229706oiz.41.2021.09.27.11.35.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 11:35:45 -0700 (PDT)
-Received: (nullmailer pid 3608435 invoked by uid 1000);
-        Mon, 27 Sep 2021 18:35:44 -0000
-Date:   Mon, 27 Sep 2021 13:35:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     monstr@monstr.eu, devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Walle <michael@walle.cc>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, git@xilinx.com,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mB4LROKIVsFUsKgQXRlTlT/Cpfz94CXiUcS6oRbhjeE=;
+        b=ipa9NH99hBhNFfye5vxJyQJO0MFMPeDlawoRTyVJU0UcuFeIiMiSireIiK4avJ1ND2
+         33epp57TBvoKdQ2o7xi+KVaRLD0aFWZQjk/OFKcV/vMd3AvFlEtL1GpzaivgBYmqymkl
+         a+6aEmGILHL0gYIpuUWch0RoWVgiCOwt9oHqiHqZk9cKjUMLhMuZnnAaRATN4n29MDpG
+         ZOPBiz9w9nXp2DdMO5okNnHsgikGeIxrqvD31dXHmp5PzevA6mXVX76sPva9/3PLq3GM
+         4W5sqp+4KqM+BNymxtto779n/XtEK/FJU8xus1k2Apr8rA6HxDnu7BEclUn3ire/0Vbm
+         KT3w==
+X-Gm-Message-State: AOAM532s2vq/daf/7gINMklnpdQpCDhg4awh7LggiT/E+nb79gXIs3S/
+        LGcHFjUiXQpJ03jW2PiBjtvNHWxpEuU=
+X-Google-Smtp-Source: ABdhPJzc2xTGjDlB5cYuAw5q28yBONPp5sxSAAAGfpQTQh66onPi+XwxNV70Q0QEF70ui+CPr84/rg==
+X-Received: by 2002:a05:6a00:2410:b0:409:5fbd:cb40 with SMTP id z16-20020a056a00241000b004095fbdcb40mr1405603pfh.8.1632767771204;
+        Mon, 27 Sep 2021 11:36:11 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u16sm17709135pfn.68.2021.09.27.11.36.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 11:36:10 -0700 (PDT)
+Subject: Re: [PATCH 5.14 000/162] 5.14.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] arm64: zynqmp: Add support for Xilinx Kria SOM board
-Message-ID: <YVIPAGckmsYmrVv1@robh.at.kernel.org>
-References: <1ba32590670434b650bacf6410a65579dd30b38b.1632294439.git.michal.simek@xilinx.com>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210927170233.453060397@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <bcdbbc2b-9b59-6a92-79a9-570dd7efc1cd@gmail.com>
+Date:   Mon, 27 Sep 2021 11:36:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ba32590670434b650bacf6410a65579dd30b38b.1632294439.git.michal.simek@xilinx.com>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 09:07:32 +0200, Michal Simek wrote:
-> There are couple of revisions of SOMs (k26) and associated carrier cards
-> (kv260).
-> SOM itself has two major versions:
-> sm-k26 - SOM with EMMC
-> smk-k26 - SOM without EMMC used on starter kit with preprogrammed firmware
-> in QSPI.
+On 9/27/21 10:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.9 release.
+> There are 162 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> SOMs are describing only devices available on the SOM or connections which
-> are described in specification (for example UART, fwuen).
+> Responses should be made by Wed, 29 Sep 2021 17:02:05 +0000.
+> Anything received after that time might be too late.
 > 
-> When SOM boots out of QSPI it uses limited number of peripherals defined by
-> the specification and present in sm(k)-k26 dtses.
-> Then a carrier card (CC) detection is happening and DT overlay is applied
-> to brings new functionality. That's why DT overlays are used. The name is
-> composed together with SOM name and CC name that's why DT overlays with
-> these names are generated to make sure they can be used together.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
+> thanks,
 > 
-> Changes in v5:
-> - Extend commit message.
-> 
-> Changes in v4:
-> - Remove ina260 and usb5744 nodes
-> - Remove compatible string from overlays
-> 
-> Changes in v3:
-> - Fix led node name
-> - Fix compatible string for xlnx,zynqmp-sk-kv260-revA/Y/Z
-> - Fix headers alignment
-> - Move USB3 PHY properties from DWC3 node to USB node - reported by Manish
->   Narani
-> - Change dtb names generated with dtbo
-> - Fix emmc comment style
-> 
-> Changes in v2:
-> - Use sugar syntax - reported by Geert
-> - Update copyright years
-> - Fix SD3.0 comment alignment
-> - Remove one newline from Makefile
-> 
-> https://www.xilinx.com/products/som/kria.html
-> Based on
-> https://lore.kernel.org/r/cover.1628244703.git.michal.simek@xilinx.com
-> 
-> ---
->  .../devicetree/bindings/arm/xilinx.yaml       |  16 +
->  arch/arm64/boot/dts/xilinx/Makefile           |  13 +
->  .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 315 ++++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 298 +++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 ++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
->  6 files changed, 952 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
-> 
+> greg k-h
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
