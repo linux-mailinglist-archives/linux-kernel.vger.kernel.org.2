@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D45C419FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FC1419FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236734AbhI0UBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:01:23 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:49918 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236656AbhI0UBW (ORCPT
+        id S236729AbhI0UAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236656AbhI0UAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=nFEeN0ujMiWdqCQg1tqJRECutZ61Fc29BGC8Ude8l7g=; b=HYTSUNK2m6vrGXoe7SbsnxxGxe
-        UQhGMqvZ/3e0mwmIFqbh3/n3ys2rpANTZZ08LPv9vUH+eRel9L/vzT/IV52IDaRD8cbIVcNhkde4Y
-        BjPnJkoG3FgF8gieIcEetEXupBiv03MzpOEGqmyAIxf/kUOigsbkdwvNJIlqLB2iU3DSGdnb4zcSb
-        bFvSDuFQkjonU4Kfg53nhrYhkbKPbtnaiMtkFHIF3SWjAy7qk4+miKMdzHmkmmFDGNkPtqyrV2uK2
-        zrS2ECxQknjsTZ93JZDzAAansVKP85mqOC5PGL6qdXlqF6jxkLQOPblVFCO//uAc3RMqAr4PZHfhC
-        YakW+B5A==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mUwmL-0003kf-0f; Mon, 27 Sep 2021 13:59:09 -0600
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-References: <20210927185348.GA668256@bhelgaas>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <863fcca6-e1e7-38f4-2f67-b52d33eb3aab@deltatee.com>
-Date:   Mon, 27 Sep 2021 13:59:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 27 Sep 2021 16:00:45 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A87C061740
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:59:07 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so19094230otv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=Zu4vVZfjBvQG3c6lbaKUHBCzEAuiakqkbk50f2WpbsU=;
+        b=AUyYGatR0L+ZAKRYrOlQa80vyKI4RtAEG94vt6NYNKIOWE0vptxcS8+qUX7Sz1357u
+         qpszknbOqc9pLBVdgtyIF48d3cQmUmSaSCzlDuVJzvRytz/cGUZOITkkYWDoum4Ns3xf
+         qAoNh30tgT2G3Y9Anl4BqRWEJGJG3AgH2h0Hg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=Zu4vVZfjBvQG3c6lbaKUHBCzEAuiakqkbk50f2WpbsU=;
+        b=ybDGzuQoF06mh6O+H/PDh9K8pQegJJ0tGELfMtARR/uTorWcLYAJqQv7A5MFEPiopb
+         AKOv6owp7+cd5N6b8z92XYtPDar5Pde80WTLB/w7NOSPZOk3yNKqCtbbclNdr1sevryO
+         32rebPzme1R/+3/VXAJIZlwc3UXNYMAv/XUQ76zuMysph/uABRzmqvr2iGazfEihNcM+
+         VjlL9s2fbB0hoTGnIB9suqGSubI82lhblPdKfeRlr9J/TrgYMX5QtMeP4VDP1540qma/
+         U8zdOfql3K2+rgl+50YdWLnuM1S1vVWTGbkp+JWwqcVazYVPsd3jAcjivUzuS4ytxL1D
+         QmBg==
+X-Gm-Message-State: AOAM532unQtO55ZglPCQcUMPMX29Jan2eeNRcbrQCJTYbOYu4aiFpmzu
+        yHEgpGO+enLkULXU/7BBRuGNuv7VECirH1oTzwpL+b7H6WA=
+X-Google-Smtp-Source: ABdhPJy55etq8fVl9RMOyOF/0w7JpQU+TZK4qTsk4iPj6m0oB6kxb3YiQ0adJRdVSHKh0ncjuHvTRXnwExL89xLGtTA=
+X-Received: by 2002:a05:6830:708:: with SMTP id y8mr1581379ots.77.1632772746544;
+ Mon, 27 Sep 2021 12:59:06 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 27 Sep 2021 12:59:05 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210927185348.GA668256@bhelgaas>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, helgaas@kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v3 04/20] PCI/P2PDMA: introduce helpers for dma_map_sg
- implementations
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+In-Reply-To: <20210924165322.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+References: <20210924165322.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 27 Sep 2021 12:59:05 -0700
+Message-ID: <CAE-0n53uBf-qbPptg-=9TX3=FGG4PvtVARfipxriJRE6cdWt4A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>
+Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Philip Chen (2021-09-24 16:54:13)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> new file mode 100644
+> index 000000000000..7b1034a5a8e9
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Trogdor dts fragment for the boards with TI sn65dsi86 edp bridge
+> + *
+> + * Copyright 2021 Google LLC.
+> + */
+> +
+> +&dsi0_out {
+> +       remote-endpoint = <&sn65dsi86_in>;
+> +       data-lanes = <0 1 2 3>;
+> +};
+> +
+> +&edp_brij_i2c {
+> +       sn65dsi86_bridge: bridge@2d {
+> +               compatible = "ti,sn65dsi86";
+> +               reg = <0x2d>;
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
 
+Why not move edp_brij_en as well? I think you want to reuse the node
+name for the other bridge, but it doesn't make sense unless that other
+patch is part of this series.
 
-On 2021-09-27 12:53 p.m., Bjorn Helgaas wrote:
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> Ditto.
-
-Thanks Bjorn, I'll make these changes and add your Acks for subsequent
-postings.
-
-Logan
+> +               gpio-controller;
+> +               #gpio-cells = <2>;
+> +
+> +               interrupt-parent = <&tlmm>;
+> +               interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +               enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
