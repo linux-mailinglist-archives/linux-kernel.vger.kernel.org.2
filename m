@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0974191AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4014191B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233740AbhI0Jkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhI0Jkl (ORCPT
+        id S233755AbhI0JlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:41:18 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:42905 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233685AbhI0JlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:40:41 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B149C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:39:03 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id v18so31429671edc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ECuwL8PYjygsXbJeg0HIr0JMSqu9hGq4/KV9n5A6dtA=;
-        b=CQILzEC7pzKjk9XO7pFtNfZ/7DXYnBmKVK4NBNhCa1P8Ky74nwcKlLrArJ/RA4o5Ee
-         BPMosUGfUDgE+agrVRTsixyT/PB+0Vaa6wqVMRoRrYxCvhAN1UHuWbpBgYjqE04C28Lt
-         xolW6ymtZCXimpknOdvLPeKaUTjEyYKUfIGdE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ECuwL8PYjygsXbJeg0HIr0JMSqu9hGq4/KV9n5A6dtA=;
-        b=QJ1okZa/UuxyMrsxOjC+/HMnMREU5/xlVSWXrtj50ZHm9R1emp3P7zVek12z+qWl7h
-         Q2wTNI3lpsM5N1ePGGdPx+iR0IaTDZgwXoNujlouQtK0PWSBHlmm1j2IMGoaAgzrj8HN
-         FisgVwEomWOCrdOtMS5GWTbGjC3uKI7d2sGzbIMOJXuGDeCGHp3eslH+sAZsTd+5HBjP
-         Uy0Jb5Ov7eQW9+2LlAfXRFZ71pcFGLP+CAzMxIn/q98zOH1xjqkMi2vIQJ3t/mKAzN2n
-         /H3o2eCI7XHAb09+SCNnroFnknx9hHhRsXmO1JRAMQ4qctbOyOGKaoPl4PZK6eYBeQbb
-         w1ZA==
-X-Gm-Message-State: AOAM531izb380wZ0W3uPVnwr7rZsA8/aOMFHkV1y9h/azL9SyatOm7zQ
-        WN9x8RTQ65B0TFaGcomaZKLq/Q==
-X-Google-Smtp-Source: ABdhPJzW+RfuYCPBrlZd1XY3JCu+cCPxlJ0MUR8DYD5oqwXxw7pJMF2ZzojlsotC6zZLslQ5r2B7Wg==
-X-Received: by 2002:a17:906:e216:: with SMTP id gf22mr25286699ejb.357.1632735541800;
-        Mon, 27 Sep 2021 02:39:01 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
-        by smtp.gmail.com with ESMTPSA id dt4sm3169554ejb.27.2021.09.27.02.39.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 02:39:01 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 11:38:58 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     Chengguang Xu <cgxu519@139.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
-        guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
-        guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Chengguang Xu <cgxu519@mykernel.net>
-Subject: Re: [PATCH v3] ovl: fix null pointer when
- filesystemdoesn'tsupportdirect IO
-Message-ID: <YVGRMoRTH4oJpxWZ@miu.piliscsaba.redhat.com>
-References: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
- <20210922072326.3538-1-huangjianan@oppo.com>
- <e42a183f-274c-425f-2012-3ff0003e1fcb@139.com>
- <919e929d-6af7-b729-9fd2-954cd1e52999@oppo.com>
- <314324e7-02d7-dc43-b270-fb8117953549@139.com>
- <CAJfpegs_T5BQ+e79T=1fqTScjfaOyAftykmzK6=hdS=WhVvWsg@mail.gmail.com>
+        Mon, 27 Sep 2021 05:41:17 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M890H-1mQeN71wLT-005Lhh for <linux-kernel@vger.kernel.org>; Mon, 27 Sep
+ 2021 11:39:38 +0200
+Received: by mail-wr1-f48.google.com with SMTP id v17so7196767wrv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:39:38 -0700 (PDT)
+X-Gm-Message-State: AOAM530jh/oPM/iK2reyItdKlI6qIuQYR7k26KMariDTLzsHtu7xj36F
+        jF7FVisxvCjrnVib+rBM/UE7W1Ev/H4vi1bZPtA=
+X-Google-Smtp-Source: ABdhPJzw8wp0ZsXSNDvP3gv334QGiK0yVNSZyzNIHpmCfkoIjZ41K7Vl7uVq2HYR9WzUuAX6tNcVwXjlGq+HfuyrMz0=
+X-Received: by 2002:a1c:2357:: with SMTP id j84mr5135591wmj.1.1632735578051;
+ Mon, 27 Sep 2021 02:39:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegs_T5BQ+e79T=1fqTScjfaOyAftykmzK6=hdS=WhVvWsg@mail.gmail.com>
+References: <YU8oVDFoeD5YYeDT@kroah.com> <CAK8P3a3pdVhjv4J4HSB1cvHU7U_P7TV7HCOYmrK==V_MAnT2BQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3pdVhjv4J4HSB1cvHU7U_P7TV7HCOYmrK==V_MAnT2BQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Sep 2021 11:39:21 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0gSJrR=rLtyLOH+D-grsoy_9_kOOS-AT3aX8R48p+zww@mail.gmail.com>
+Message-ID: <CAK8P3a0gSJrR=rLtyLOH+D-grsoy_9_kOOS-AT3aX8R48p+zww@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module namespace
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:wEWm+JUmaN2OkLrppac5ENU1FjQ8tEMfG1WCKExGsD4/sy1hgIA
+ JFCJoVDHn5qpfESPR5LaUamnnOjekLbV4thSwXd1InZbcXZhwXriFV2icpDfDStJlyNppsR
+ pFxfP3kn2RQgeru8DCyu287dY3gHhkrwRLOgZyNTI2vswxA/YoC+rNL2NwnKR6dQeMfT2YF
+ Y2NQUc8YuAYNO9fgYrS7A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kH81Fqhe5T8=:EyjyLy77fwA5M3a6B5e1Gw
+ LCskmYpghlKRRjtYuETaDicumx3xrQuIkjyBqLOU3xeWeLWow/RI8aEwtB6B6aZ+Rc/NmIljK
+ j9xpGfInRXnrpNQYJcsyErzJwrkKjASkvAkqCVoBGmwH0D+GqJHWpnG1eUSY3x+iXbcyYIPdK
+ 5OFvn3j8/+9jT6ywYkx6StyE0+Y8RcoGNJtMCKjVWpLsjPnHXQviWP8JzFYwneZLFttRkwV+p
+ 4NoAUV0EygA3i+GANUUdeWdID+MNIg+NeDzRcAf4TPLhRvUmw9Ma2UwA7jt1s2ZNqaJaruife
+ kjKHZvy3LT+xQRpQh0qq20BVdxl7TfbHWRX74jN5fFzlwB06uL5xbmL4H96PhtvCVBfqMhg9c
+ D4jEPXYBDTGXue+4dr4v+5TdDJIPG2QliI7xoqGWKjsp8lrC55L9P1l3qOGfcPelw99x09HFS
+ AuW+tbowpYULMY4KRXpAxzpL9yDbxqlzX5zpGihAlCVOsGJfBT7p8JW2VLgpc56oq4CxEFP1W
+ S5luEvhHMxVaAZi4vyvjqaYEWTYC9DhJaZdf09ihXx31bjpSd4q+svGQOTnR7ZYkgEmmOxvIe
+ nVJk6+fqihK09+1Og+qjxI5ypkW2/pDkjd0/qtV/pyG0QWNlwY4ZfTV6MhPMD/6auCY4TH825
+ 0TvZupaGox0z30i0vxJKXNOv4wsCG8UeEv9M6bDC3wC2UWYUhcTYu4+uzLb/rzg1mjGqYTved
+ mheA+DRM6WA6L5Ww8Fd3y5XP0QUmJOq5OYTZvDVaC1FMYSo29bWm7cZwS0dCycXMmfVuMzKlC
+ QUp+DZxUB7Jbnwv8Mb1NSVz2Hp/umsFYPP4Z8tSQSkDsN1u24YnCXNyUCMuhSNWlfg5cayBKT
+ zO7gKhOIVF+mOcVavWug==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 04:00:47PM +0200, Miklos Szeredi wrote:
+On Sat, Sep 25, 2021 at 7:41 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Sat, Sep 25, 2021 at 3:47 PM Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> First let's fix the oops: ovl_read_iter()/ovl_write_iter() must check
-> real file's ->direct_IO if IOCB_DIRECT is set in iocb->ki_flags and
-> return -EINVAL if not.
+> > Only test-built on x86 allmodconfig, don't know what other arches will
+> > pick up, will let 0-day run on it for a bit...
+>
+> I've added it to my build box doing arm32/arm64/x86 randconfig tests,
+> if it doesn't report anything by Monday, it's probably good in that regard.
 
-And here's that fix.  Please test.
+It found these two, please fold into your patch:
 
-Thanks,
-Miklos
+diff --git a/drivers/gpu/drm/armada/armada_gem.c
+b/drivers/gpu/drm/armada/armada_gem.c
+index 21909642ee4c..711f0cca6f9c 100644
+--- a/drivers/gpu/drm/armada/armada_gem.c
++++ b/drivers/gpu/drm/armada/armada_gem.c
+@@ -15,6 +15,8 @@
+ #include "armada_gem.h"
+ #include "armada_ioctlP.h"
 
----
-From: Miklos Szeredi <mszeredi@redhat.com>
-Subject: ovl: fix IOCB_DIRECT if underlying fs doesn't support direct IO
-
-Normally the check at open time suffices, but e.g loop device does set
-IOCB_DIRECT after doing its own checks (which are not sufficent for
-overlayfs).
-
-Make sure we don't call the underlying filesystem read/write method with
-the IOCB_DIRECT if it's not supported.
-
-Reported-by: Huang Jianan <huangjianan@oppo.com>
-Fixes: 16914e6fc7e1 ("ovl: add ovl_read_iter()")
-Cc: <stable@vger.kernel.org> # v4.19
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/overlayfs/file.c |   15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -296,6 +296,12 @@ static ssize_t ovl_read_iter(struct kioc
- 	if (ret)
- 		return ret;
- 
-+	ret = -EINVAL;
-+	if (iocb->ki_flags & IOCB_DIRECT &&
-+	    (!real.file->f_mapping->a_ops ||
-+	     !real.file->f_mapping->a_ops->direct_IO))
-+		goto out_fdput;
++MODULE_IMPORT_NS(DMA_BUF);
 +
- 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
- 	if (is_sync_kiocb(iocb)) {
- 		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
-@@ -320,7 +326,7 @@ static ssize_t ovl_read_iter(struct kioc
- out:
- 	revert_creds(old_cred);
- 	ovl_file_accessed(file);
--
-+out_fdput:
- 	fdput(real);
- 
- 	return ret;
-@@ -349,6 +355,12 @@ static ssize_t ovl_write_iter(struct kio
- 	if (ret)
- 		goto out_unlock;
- 
-+	ret = -EINVAL;
-+	if (iocb->ki_flags & IOCB_DIRECT &&
-+	    (!real.file->f_mapping->a_ops ||
-+	     !real.file->f_mapping->a_ops->direct_IO))
-+		goto out_fdput;
+ static vm_fault_t armada_gem_vm_fault(struct vm_fault *vmf)
+ {
+        struct drm_gem_object *gobj = vmf->vma->vm_private_data;
+diff --git a/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+b/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+index f4cde3a169d8..809f86cfc540 100644
+--- a/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
++++ b/drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c
+@@ -11,6 +11,8 @@
+
+ #include "omap_drv.h"
+
++MODULE_IMPORT_NS(DMA_BUF);
 +
- 	if (!ovl_should_sync(OVL_FS(inode->i_sb)))
- 		ifl &= ~(IOCB_DSYNC | IOCB_SYNC);
- 
-@@ -384,6 +396,7 @@ static ssize_t ovl_write_iter(struct kio
- 	}
- out:
- 	revert_creds(old_cred);
-+out_fdput:
- 	fdput(real);
- 
- out_unlock:
+ /* -----------------------------------------------------------------------------
+  * DMABUF Export
+  */
