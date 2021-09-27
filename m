@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A0B41A184
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D7041A186
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237336AbhI0Vvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237009AbhI0Vvo (ORCPT
+        id S237444AbhI0VxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:53:14 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:40404 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237446AbhI0VxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:51:44 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96149C061575;
-        Mon, 27 Sep 2021 14:50:05 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id k13so5662174ilo.7;
-        Mon, 27 Sep 2021 14:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=tikSQPAyzklwRveDS3Z5YihXzUXmcK3zSUGwoQRh0mc=;
-        b=WCJ5uXuAys8JIc4FJY6+TyBLOu0iSZALBoDMh0XWbTcFi2aJIETo/yqf/AjfnKtxnn
-         0FmAeBYXE43yDnmGh9+2yI8bTsS2TUpfLqJj3PpAWGwH4bvr76+eM6jXCTkqJwsTU4ah
-         s09X8BGtUm9sz3QLPJT+w6fBCYO5NRCjdqFWRY7Jb3kQ/2d9PzKi1CxLJpg/7IXjXfAf
-         zvkPACfIKQcKMjSZQS2htY6U2oN2RappU9rck9T9eC84EV80vWi7kGFYXT4PdfqI5pbk
-         u2Zt5JCsvKsQiinEpuDKtzunYtNGHFd6GPeBbz8+FdOso5NcIf8yK5JWXcHEfJnx2ii+
-         RR6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=tikSQPAyzklwRveDS3Z5YihXzUXmcK3zSUGwoQRh0mc=;
-        b=cUogIRPQNUy2CVIROWSQiPp85C6+KpGmo3A4WDpBdOjM+fR6HJTko1UeEK3iXBVu80
-         C4I7WH6XoI0qSI5IxJnJSmdQC2Ju1LMEuN/SltxxVbKiSN7WcpNA0/Mrs+hxRMG75Occ
-         N7feb+Iq1k1l1YBIrOYGbbQXnER1I/V/lGPiN2T4TBD3l3M/Chi6fN6Lhr6Pm0Lc/+n7
-         mSoCv73P9Mm94Cz9ygZd3HFENs2J/h4kga9iSeYO6DUse6RexdrgdyRk40dPcYoKV6hw
-         sg9Bw0LoZ6RppvbKlQw/qsoGdbBFEJjHAQENwKc2Xps4JBQBvs6ckYbNSSiTan0pV/yy
-         hUOw==
-X-Gm-Message-State: AOAM530Xahm4r4ILXFoegdnm8aRYuKuS2CWOL8DgSBDGyLwH9dM6bpbv
-        5cPCUdJy9CQYUKyLAQj4xoMrb3cxmXvvpvvJUyI=
-X-Google-Smtp-Source: ABdhPJwI1HhPHfNS/jXu1lg9HT/GpcVmrGU610X6rk5pu8ryCEJDbylB19fni9LnAz0JzfBioEfmzzvsqBecthg6Ss4=
-X-Received: by 2002:a05:6e02:1a46:: with SMTP id u6mr1723814ilv.214.1632779405064;
- Mon, 27 Sep 2021 14:50:05 -0700 (PDT)
+        Mon, 27 Sep 2021 17:53:10 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:49496)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mUyX5-00Ba9o-95; Mon, 27 Sep 2021 15:51:31 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:40602 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mUyX4-00FmAu-B0; Mon, 27 Sep 2021 15:51:30 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        contact@linuxplumbersconf.org
+References: <CAHrFyr4AYi_gad7LQ-cJ9Peg=Gt73Sded8k_ZHeRZz=faGzpQA@mail.gmail.com>
+Date:   Mon, 27 Sep 2021 16:51:05 -0500
+In-Reply-To: <CAHrFyr4AYi_gad7LQ-cJ9Peg=Gt73Sded8k_ZHeRZz=faGzpQA@mail.gmail.com>
+        (Christian Brauner's message of "Mon, 27 Sep 2021 23:21:00 +0200")
+Message-ID: <87pmst4rhy.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <CA+icZUUuacTuaWXopzH_YC3pCa3FPB=GReJ6BwE5zJ1j2WB_ew@mail.gmail.com>
- <20210927214715.GE964074@nvidia.com>
-In-Reply-To: <20210927214715.GE964074@nvidia.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 27 Sep 2021 23:49:29 +0200
-Message-ID: <CA+icZUW3=-FiUebSEsqgBQcHGrk=ket906V9mAqd_COJAmTDhA@mail.gmail.com>
-Subject: Re: Linux 5.15-rc3
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mUyX4-00FmAu-B0;;;mid=<87pmst4rhy.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18e30myv93RW4z3ZyRvYrTwhuvPrbbjkT4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4572]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Christian Brauner <christian.brauner@ubuntu.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 395 ms - load_scoreonly_sql: 0.11 (0.0%),
+        signal_user_changed: 14 (3.6%), b_tie_ro: 12 (3.1%), parse: 1.07
+        (0.3%), extract_message_metadata: 14 (3.5%), get_uri_detail_list: 1.54
+        (0.4%), tests_pri_-1000: 6 (1.5%), tests_pri_-950: 1.49 (0.4%),
+        tests_pri_-900: 1.35 (0.3%), tests_pri_-90: 116 (29.4%), check_bayes:
+        114 (28.9%), b_tokenize: 6 (1.4%), b_tok_get_all: 6 (1.4%),
+        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 98 (24.7%), b_finish: 0.82
+        (0.2%), tests_pri_0: 225 (56.9%), check_dkim_signature: 0.62 (0.2%),
+        check_dkim_adsp: 10 (2.4%), poll_dns_idle: 0.51 (0.1%), tests_pri_10:
+        1.89 (0.5%), tests_pri_500: 11 (2.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [lpc-contact] Linux Plumbers Conference Last Day
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 11:47 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Mon, Sep 27, 2021 at 10:48:42PM +0200, Sedat Dilek wrote:
-> > [ Please CC me I am not subscribed to LKML and linux-rdma ]
-> >
-> > Hi,
-> >
-> > with CONFIG_INFINIBAND_QIB=m I observe a build-error since Linux
-> > v5.13-rc1 release.
-> > This is with LLVM/Clang >= v13.0.0-rc3 on my Debian/unstable AMD64 system.
-> >
-> > For details see ClangBuiltLinux issue #1452 (see [1]).
-> >
-> > The fix is pending in rdma.git#for-rc (see [2]):
-> >
-> > commit  3110b942d36b961858664486d72f815d78c956c3
-> > "IB/qib: Fix clang confusion of NULL pointer comparison"
-> >
-> > Dunno if there was a pull-request from linux-rdma folks.
-> > Cannot say if it is worth taking this directly...?
->
-> It should come as a PR this week, I don't think we need to do anything
-> special urgent here, do we?
->
+Christian Brauner <christian.brauner@ubuntu.com> writes:
 
-Personally, I am fine with this.
+> I'm expanding the Cc on this since this has crossed a clear line now.
 
-- Sedat -
+What asking people to fix their bugs?
+
+Sitting out and not engaging because this situation is very frustrating
+when people refuse to fix their bugs?
+
+> You have claimed on two occasions on the PR itself (cf. [1]) and in a
+> completely unrelated thread on fsdevel (cf. [2]) that there exist bugs in the
+> current implementation.
+> On both occasions (cf. [3], [4]) we have responded and asked you to please
+> disclose those bugs and provide reproducers. You have not responded on both
+> occasions.
+
+You acknowledged the trivial bug in chown_common that affects security
+modules and exists to this day.
+
+It is trivial to see all you have to do is look at the stomp of uid and
+gid.
+
+The other bug I gave details of you and it the tracing was tricky and
+you did not agree.  Last I looked it is also there.
+
+> I ask you to stop spreading demonstrably false information such as that we are
+> refusing to fix bugs. The links clearly disprove your claims.
+> We are more than happy to fix any bugs that exist. But we can't if we don't
+> know what they are.
+
+Hog wash.
+
+A demonstration is a simple as observing that security_path_chown very
+much gets a different uid and gid values than it used to.
+
+I have been able to dig in far enough to see that the idmapped mounts
+code does not have issues when you are not using idmapped mounts, and I
+am not using idmapped mounts.  So dealing with this has not been a
+priority for me.
+
+All I have seen you do on this issue is get frustrated.  I am very
+frustrated also.
+
+All I was intending to say was that if we could sit down in person at
+LPC we could probably sort this all out quickly, and get past this our
+frustrations with each other.  As it is, I don't know a quick way to
+resolve our frustrations easily.
+
+Eric
