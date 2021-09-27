@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F98419A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67733419A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbhI0RJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47186 "EHLO mail.kernel.org"
+        id S235991AbhI0RHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:07:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235872AbhI0RIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 044F161178;
-        Mon, 27 Sep 2021 17:06:27 +0000 (UTC)
+        id S235915AbhI0RGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:06:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A88160F3A;
+        Mon, 27 Sep 2021 17:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762388;
-        bh=lVYqZrryC168AjHVf/FwVMbxe437VprS3TaZ2XqupLI=;
+        s=korg; t=1632762306;
+        bh=9AA1UDfGkgHVTGHZkvG70DXeyssfkk/7ic8wzBPZXQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phhdjndn4HICtR7/Kkll2f2Nn3Xv+5sf+QURyvg3S01cdzGT2gotcuA0q1rA3UsOC
-         BcYyeE/Yf0uNlc8kMgl+zofK5ehleIzXNVxRditcVV0laqU5GC0l+UPMIE3BSGIwJT
-         dyKnGGEZFFsYrJ/E5j5jU4dkrQFw7I0Gf4rL04MI=
+        b=d51rNsVedm3piWrq8okx7nbhAbpu7BEY0znxMra9ofyeGzVLX8Smns+kbbf5KbJBy
+         01LLOIxsRNS7APG4sQxaDbw0Yz9pwQPI/YZEmttGgW6UQDy3Rg49uwbMFmhFMWid4a
+         Jc3SMQF/4Z/AlgBuQaqL5g0jRzWaVTwrRAV3i89A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Dmitry Bogdanov <d.bogdanov@yadro.com>,
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 40/68] scsi: qla2xxx: Restore initiator in dual mode
-Date:   Mon, 27 Sep 2021 19:02:36 +0200
-Message-Id: <20210927170221.355660718@linuxfoundation.org>
+Subject: [PATCH 5.4 41/68] scsi: lpfc: Use correct scnprintf() limit
+Date:   Mon, 27 Sep 2021 19:02:37 +0200
+Message-Id: <20210927170221.387437612@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
 References: <20210927170219.901812470@linuxfoundation.org>
@@ -42,39 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 5f8579038842d77e6ce05e1df6bf9dd493b0e3ef ]
+[ Upstream commit 6dacc371b77f473770ec646e220303a84fe96c11 ]
 
-In dual mode in case of disabling the target, the whole port goes offline
-and initiator is turned off too.
+The limit should be "PAGE_SIZE - len" instead of "PAGE_SIZE".  We're not
+going to hit the limit so this fix will not affect runtime.
 
-Fix restoring initiator mode after disabling target in dual mode.
-
-Link: https://lore.kernel.org/r/20210915153239.8035-1-d.bogdanov@yadro.com
-Fixes: 0645cb8350cd ("scsi: qla2xxx: Add mode control for each physical port")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
+Link: https://lore.kernel.org/r/20210916132331.GE25094@kili
+Fixes: 5b9e70b22cc5 ("scsi: lpfc: raise sg count for nvme to use available sg resources")
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_init.c | 3 ++-
+ drivers/scsi/lpfc/lpfc_attr.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index 643b8ae36cbe..5dae7ac0d3ef 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -6803,7 +6803,8 @@ qla2x00_abort_isp(scsi_qla_host_t *vha)
- 				return 0;
- 			break;
- 		case QLA2XXX_INI_MODE_DUAL:
--			if (!qla_dual_mode_enabled(vha))
-+			if (!qla_dual_mode_enabled(vha) &&
-+			    !qla_ini_mode_enabled(vha))
- 				return 0;
- 			break;
- 		case QLA2XXX_INI_MODE_ENABLED:
+diff --git a/drivers/scsi/lpfc/lpfc_attr.c b/drivers/scsi/lpfc/lpfc_attr.c
+index 45db19e31b34..f0ecfe565660 100644
+--- a/drivers/scsi/lpfc/lpfc_attr.c
++++ b/drivers/scsi/lpfc/lpfc_attr.c
+@@ -5881,7 +5881,8 @@ lpfc_sg_seg_cnt_show(struct device *dev, struct device_attribute *attr,
+ 	len = scnprintf(buf, PAGE_SIZE, "SGL sz: %d  total SGEs: %d\n",
+ 		       phba->cfg_sg_dma_buf_size, phba->cfg_total_seg_cnt);
+ 
+-	len += scnprintf(buf + len, PAGE_SIZE, "Cfg: %d  SCSI: %d  NVME: %d\n",
++	len += scnprintf(buf + len, PAGE_SIZE - len,
++			"Cfg: %d  SCSI: %d  NVME: %d\n",
+ 			phba->cfg_sg_seg_cnt, phba->cfg_scsi_seg_cnt,
+ 			phba->cfg_nvme_seg_cnt);
+ 	return len;
 -- 
 2.33.0
 
