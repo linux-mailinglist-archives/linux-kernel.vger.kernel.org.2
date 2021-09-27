@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F92419D63
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ED2419D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237985AbhI0Rti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:49:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58680 "EHLO mail.kernel.org"
+        id S236382AbhI0RuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:50:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236851AbhI0RtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:49:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 755BD61058;
-        Mon, 27 Sep 2021 17:47:41 +0000 (UTC)
+        id S238039AbhI0Rtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:49:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2B9B60F44;
+        Mon, 27 Sep 2021 17:47:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632764862;
-        bh=QCd1RE9uk5gfOWua6Z50eM66UhtO+cHtjefCVa26tZ8=;
+        s=k20201202; t=1632764877;
+        bh=lo3kLlw5h5aHwdcYgQl4VN4lrcsP1+8zGxGcSHb/GQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D5YU3lNkqn4n+vfFznu6hwo4pfhh9WFYiB+rPTlt1uJq9qedPSELaXeFggysiLxqV
-         ZwLbrDItB86WZgaVXqsMYKUz2kbeWxrbqKbELmaaYEkvtRCfXnwFvxp+abCaHwgdsx
-         ZJLBvO7BMy3VSz7hIWV9YAKzMg9mAtJtCZtNoWalaOghgRMy9t7G6Id/UbYbd1GvNF
-         BLAmbLmXkHFQAV17ZLR0QHKRgYBV7ZW7AGlTR+qRxvHDtSwbXqPYHPg2CUvoUXq7/5
-         pYw50HiWp35tgGPc2i0rIAC5DXQD6XqUk6xrFvD4SsMcUx5SlTqUJmKznbjV+gvANE
-         C97ORyTubxc2g==
+        b=GXRWUQj/b3t2srHXAW4Ed6kMTId/0B+ful0yK8Xd8IwtBOW3BKWxERiqMs76VweLq
+         1T/4JfH4U/6zpLj0/gIeDfIHJrSp6ZrQ+uLEXjohPQIDLDUb8+kcfOKpWeUl7H3xl2
+         BnpWsGnur/yQCfrq4Xm/q17Cw4z2SQUkP0f4z0lF1nQcHgA8mavLJGauD3lIBbig2A
+         UBGyI2yklOr1VqHbLsMvdA+vRHOROQHOm3eMcVMls7PJQxM5IBkw3kEf/LNuQJyT6R
+         Y4fbfaWx7YNkQsJZ6in8JrEBwsiTmZ5D3RZUCXFUAVRGZ3Hsl9QxtTK/kZvkYWjbkt
+         /+v5Vztz4Dukw==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Masanari Iida <standby24x7@gmail.com>, lgirdwood@gmail.com,
-        tiwai@suse.com
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: q6afe: q6asm: Fix typos in qcom,q6afe.txt and qcom,q6asm.txt
-Date:   Mon, 27 Sep 2021 18:45:38 +0100
-Message-Id: <163276442023.18200.13893139404500279909.b4-ty@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Sameer Pujar <spujar@nvidia.com>
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH] ASoC: tegra: Constify static snd_soc_dai_ops structs
+Date:   Mon, 27 Sep 2021 18:45:44 +0100
+Message-Id: <163276442023.18200.4951268393685654520.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210924070044.569541-1-standby24x7@gmail.com>
-References: <20210924070044.569541-1-standby24x7@gmail.com>
+In-Reply-To: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
+References: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,9 +46,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021 16:00:44 +0900, Masanari Iida wrote:
-> This patch fixes two spelling typos in qcom,q6afe.txt
-> and qcom,q6asm.txt
+On Wed, 22 Sep 2021 22:54:38 +0200, Rikard Falkeborn wrote:
+> The only usage of these is to assign their address to the ops field in
+> the snd_soc_dai_driver struct, which is a pointer to const. Make them
+> const to allow the compiler to put them in read-only memory.
 > 
 > 
 
@@ -53,8 +59,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: q6afe: q6asm: Fix typos in qcom,q6afe.txt and qcom,q6asm.txt
-      commit: d24d3f7288fb29d4cd05c6f005d8b123056fe618
+[1/1] ASoC: tegra: Constify static snd_soc_dai_ops structs
+      commit: 313fab4820f3b1040bc1bd27cd4c7f69572951e8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
