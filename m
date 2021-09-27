@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB7841947B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FBC41947E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbhI0Mo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:44:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33458 "EHLO mail.kernel.org"
+        id S234410AbhI0MpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:45:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234333AbhI0MoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:44:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C4BB60F4F;
-        Mon, 27 Sep 2021 12:42:46 +0000 (UTC)
+        id S234331AbhI0MpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D14366108E;
+        Mon, 27 Sep 2021 12:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632746566;
-        bh=gVgGt6/KOLoXbOVP69wDG4+s3eLBYuFC4kTa6m/5UO4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F74IVW6GGDacVVhAlVJdzken7CZDQ9TqaezNZtgGIE0ds1INNBFEOhDK/9qZOoqE1
-         v8Z+wEX+lRfUUIIn8eGVl1KHZ7GO8U9vZf0FlHyykb4Xjk3VgcxYpZ/ml9TX4a31Ah
-         pJNir7Xyi6o9IHXZp3C6qFtIlnPZumuSMdrAWbC9YVetx2L8Rm3k50YYe9Wi7v4OaR
-         sdKiFJuFvXZBsjrU4cTwQFFV2VvXne44Lywx9gvOVGeQ7FZ036ew31McZD8KWuVv6Y
-         vVz8O2YuxjRhxLCwZFVrvxCB0pAxioqXCn634YmmsJKvzBLCC+vV0RLpPDlsnpCTsW
-         1tePHQiV1xKkg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2722D410A1; Mon, 27 Sep 2021 09:42:44 -0300 (-03)
-Date:   Mon, 27 Sep 2021 09:42:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf iostat: Fix Segmentation fault from NULL
- 'struct perf_counts_values *'
-Message-ID: <YVG8RM+ofI25Rk2r@kernel.org>
-References: <20210927081115.39568-1-likexu@tencent.com>
- <20210927081115.39568-2-likexu@tencent.com>
+        s=k20201202; t=1632746614;
+        bh=d1/vlnmumepMGL2f2BuI5PtRTt/Pb/38LmLQkaqWqKU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KjmPihjoVj9Q9OPxRDTcOjizasCNO/phYZSVFyC4w0x5Yz8rr9SDWCKXz1QHgrVn2
+         zdmztzWdy2yhEpbzzjMagEM7M3f2+O/u1wpt/+wFZo+lbXet/gLgg21eJ0hwsd0uFl
+         Fgkb3faXTsXcJH2UeI4eub410Fr+1VcwgNyzJ1eA3O8V36aiRwkhlCFK3edLLBwXkn
+         w6BRPttWzI2ggDSg7Z7JZhK1ECuzLY49IgfXQsER3ZKpkeH5W2VVenB/JLIvlhXLfs
+         bIbm6XWhRzp7PgV317+X7mlNt9xj97IbfTmpWVfAI6UgxHCYK9k5ATjEmxusjZRtPA
+         V0zoa4wlv1vCQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
+        Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFC] bcache: hide variable-sized types from uapi headers
+Date:   Mon, 27 Sep 2021 14:43:24 +0200
+Message-Id: <20210927124331.1487876-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927081115.39568-2-likexu@tencent.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 27, 2021 at 04:11:15PM +0800, Like Xu escreveu:
-> From: Like Xu <likexu@tencent.com>
-> 
-> If the perf-iostat user specifies two or more iio_root_ports and
-> also specifies the cpu(s) by -C which is not *connected to all*
-> the above iio ports, the iostat_print_metric() will run into trouble:
-> 
-> For example:
-> 
->  $ perf iostat list
->  S0-uncore_iio_0<0000:16>
->  S1-uncore_iio_0<0000:97> # <--- CPU 1 is located in the socket S0
-> 
->  $ perf iostat 0000:16,0000:97 -C 1 -- ls
->  port 	Inbound Read(MB)	Inbound Write(MB)	Outbound Read(MB)	Outbound
->  Write(MB) ../perf-iostat: line 12: 104418 Segmentation fault
->  (core dumped) perf stat --iostat$DELIMITER$*
-> 
-> The core-dump stack says, in the above corner case, the returned
-> (struct perf_counts_values *) count will be NULL, and the caller
-> iostat_print_metric() apparently doesn't not handle this case.
-> 
->  433	struct perf_counts_values *count = perf_counts(evsel->counts, die, 0);
->  434
->  435	if (count->run && count->ena) {
->  (gdb) p count
->  $1 = (struct perf_counts_values *) 0x0
-> 
-> The deeper reason is that there are actually no statistics from the user
-> specified pair "iostat 0000:X, -C (disconnected) Y ", but let's fix it with
-> minimum cost by adding a NULL check in the user space.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Added:
+The headers_check helper complains about a GNU extension in
+one of the exported headers:
 
-Fixes: f9ed693e8bc0e7de ("perf stat: Enable iostat mode for x86 platforms")
+linux/bcache.h:354:2: warning: field '' with variable sized type 'union jset::(anonymous at ./usr/include/linux/bcache.h:354:2)' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+        BKEY_PADDED(uuid_bucket);
+        ^
+linux/bcache.h:134:2: note: expanded from macro 'BKEY_PADDED'
+        union { struct bkey key; __u64 key ## _pad[BKEY_PAD]; }
+        ^
 
-Please do that next time,
+We could either try to shut up the warning or remove those parts from
+the user-visible section of this header. This does the second,
+under the assumption that they are not actually used.
 
-- Arnaldo
+Fixes: 81ab4190ac17 ("bcache: Pull on disk data structures out into a separate header")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Coli, Kent: can you check to see if the hidden parts are used anywhere
+from user space, and apply the patch if not?
+
+Any other ideas for addressing this warning?
+---
+ include/uapi/linux/bcache.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/include/uapi/linux/bcache.h b/include/uapi/linux/bcache.h
+index cf7399f03b71..e3e4889aa53e 100644
+--- a/include/uapi/linux/bcache.h
++++ b/include/uapi/linux/bcache.h
+@@ -23,9 +23,13 @@ static inline void SET_##name(type *k, __u64 v)			\
+ struct bkey {
+ 	__u64	high;
+ 	__u64	low;
++#ifdef __KERNEL__
++	/* gcc extension not meant for user space */
+ 	__u64	ptr[];
++#endif
+ };
  
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> ---
->  tools/perf/arch/x86/util/iostat.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/arch/x86/util/iostat.c b/tools/perf/arch/x86/util/iostat.c
-> index eeafe97b8105..792cd75ade33 100644
-> --- a/tools/perf/arch/x86/util/iostat.c
-> +++ b/tools/perf/arch/x86/util/iostat.c
-> @@ -432,7 +432,7 @@ void iostat_print_metric(struct perf_stat_config *config, struct evsel *evsel,
->  	u8 die = ((struct iio_root_port *)evsel->priv)->die;
->  	struct perf_counts_values *count = perf_counts(evsel->counts, die, 0);
->  
-> -	if (count->run && count->ena) {
-> +	if (count && count->run && count->ena) {
->  		if (evsel->prev_raw_counts && !out->force_header) {
->  			struct perf_counts_values *prev_count =
->  				perf_counts(evsel->prev_raw_counts, die, 0);
-> -- 
-> 2.32.0
-
++#ifdef __KERNEL__
+ #define KEY_FIELD(name, field, offset, size)				\
+ 	BITMASK(name, struct bkey, field, offset, size)
+ 
+@@ -127,6 +131,8 @@ static inline struct bkey *bkey_idx(const struct bkey *k, unsigned int nr_keys)
+ 
+ 	return (struct bkey *) (d + nr_keys);
+ }
++#endif
++
+ /* Enough for a key with 6 pointers */
+ #define BKEY_PAD		8
+ 
 -- 
+2.29.2
 
-- Arnaldo
