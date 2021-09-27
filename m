@@ -2,214 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59276419138
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA91E419141
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhI0JBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:01:18 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3876 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbhI0JBR (ORCPT
+        id S233591AbhI0JFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233519AbhI0JF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:01:17 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HHxMn2wh8z67gvx;
-        Mon, 27 Sep 2021 16:56:53 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 10:59:38 +0200
-Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 27 Sep
- 2021 09:59:37 +0100
-Subject: Re: [PATCH v4 11/13] blk-mq: Refactor and rename
- blk_mq_free_map_and_{requests->rqs}()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "hare@suse.de" <hare@suse.de>
-References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
- <1632472110-244938-12-git-send-email-john.garry@huawei.com>
- <YU/Va9T+zcRNExUF@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <45c0c587-59a2-1761-e175-3920669d0bfb@huawei.com>
-Date:   Mon, 27 Sep 2021 10:02:40 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 27 Sep 2021 05:05:29 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14000C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:03:52 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso12980625pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=fsM8DSW8COr9yjZjuQ8R7r+/Zwj6TnS2NlS6vkV0T3s=;
+        b=fBt2WUdedT/b+XMGkk9EfRphHxJxR9zHYhs89nFhZkz55W92U7p0NpBfyW0zqGJpwP
+         j2uq8q1Lep4fricDOV346ROxvq86TQPcEZEePRftxaqCJRpVgvw6EioiPUj9lgHpl3nl
+         nvdxuD8DT/KRXLZiHac9Ej/mAlclfEQpY8qJR3Zg+EYWuXgIezfOpW0gsRo84N79aK6n
+         D+hiFRBHY9WWHQYBTSC6InTMCjCKHJ2TiTZP4tGVqZdgg6TurTZjQOU/lwvW9rbieP7m
+         rP3aE1d7fSFLu+Tt86nRae96GxyfLif6A1WhY1LAUombcCbd4F/SZUMX8khkc/BABCdC
+         x2QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=fsM8DSW8COr9yjZjuQ8R7r+/Zwj6TnS2NlS6vkV0T3s=;
+        b=jR6MaMTQNLG11nPgWD0TmEDrmwei7gOxg+7PMSRdI5HZhgYeQjOXdeOQp8v5Z2PTNX
+         /mIW8JIwO9IK0uUYW1Umy4eFD79h746kmOrBqZKIwYF7IyDCMH8bKs4M9Xfn7T46CZf2
+         +/sJ4FYr9KUelpTl2a5l5PVNQSFjnrwL+1VgmmJ8GTXElsTveG0e8zKCSoIV3inRLBeF
+         H3xz6rHH+4pc3IolJBD7fTgbwJZmobd8Ec6mRCSXuzMJ3I70gfw1n57arn3ZhllUcw8x
+         NiV0EkJz0p6wRBYLFIf4qBCOvV27g2l6kPgX68dyLyd2G5yaiDXsQukSWZNP14ZZhShT
+         0Psw==
+X-Gm-Message-State: AOAM531YaruxTDp9YCkOg9aO8Z7ujilXeew/mFX9gUNBw6f40dJWNWUy
+        GyKO7gRr5JwX29HHfxM5UyQ=
+X-Google-Smtp-Source: ABdhPJzfog+s1xblddJ/ixdQcD4E5XG8K9081mfU4t0av0LFMgspl8yS5uegoma4VNrU8CcaoLZktw==
+X-Received: by 2002:a17:90a:9310:: with SMTP id p16mr18418730pjo.204.1632733431683;
+        Mon, 27 Sep 2021 02:03:51 -0700 (PDT)
+Received: from linux.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id p189sm16352293pfp.167.2021.09.27.02.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 02:03:51 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 09:03:47 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     42.hyeyoo@gmail.com, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
+Subject: [QUESTION] is SLAB considered legacy and deprecated?
+Message-ID: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal>
 MIME-Version: 1.0
-In-Reply-To: <YU/Va9T+zcRNExUF@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.67]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2021 03:05, Ming Lei wrote:
-> On Fri, Sep 24, 2021 at 04:28:28PM +0800, John Garry wrote:
->> Refactor blk_mq_free_map_and_requests() such that it can be used at many
->> sites at which the tag map and rqs are freed.
->>
->> Also rename to blk_mq_free_map_and_rqs(), which is shorter and matches the
->> alloc equivalent.
->>
->> Suggested-by: Ming Lei<ming.lei@redhat.com>
->> Signed-off-by: John Garry<john.garry@huawei.com>
->> Reviewed-by: Hannes Reinecke<hare@suse.de>
->> ---
->>   block/blk-mq-tag.c |  3 +--
->>   block/blk-mq.c     | 40 ++++++++++++++++++++++++----------------
->>   block/blk-mq.h     |  4 +++-
->>   3 files changed, 28 insertions(+), 19 deletions(-)
->>
->> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->> index db99f1246795..a0ecc6d88f84 100644
->> --- a/block/blk-mq-tag.c
->> +++ b/block/blk-mq-tag.c
->> @@ -607,8 +607,7 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
->>   		if (!new)
->>   			return -ENOMEM;
->>   
->> -		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
->> -		blk_mq_free_rq_map(*tagsptr, set->flags);
->> +		blk_mq_free_map_and_rqs(set, *tagsptr, hctx->queue_num);
->>   		*tagsptr = new;
->>   	} else {
->>   		/*
->> diff --git a/block/blk-mq.c b/block/blk-mq.c
->> index 46772773b9c4..464ea20b9bcb 100644
->> --- a/block/blk-mq.c
->> +++ b/block/blk-mq.c
->> @@ -2878,15 +2878,15 @@ static bool __blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
->>   	return set->tags[hctx_idx];
->>   }
->>   
->> -static void blk_mq_free_map_and_requests(struct blk_mq_tag_set *set,
->> -					 unsigned int hctx_idx)
->> +void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
->> +			     struct blk_mq_tags *tags,
->> +			     unsigned int hctx_idx)
->>   {
->>   	unsigned int flags = set->flags;
->>   
->> -	if (set->tags && set->tags[hctx_idx]) {
->> -		blk_mq_free_rqs(set, set->tags[hctx_idx], hctx_idx);
->> -		blk_mq_free_rq_map(set->tags[hctx_idx], flags);
->> -		set->tags[hctx_idx] = NULL;
->> +	if (tags) {
->> +		blk_mq_free_rqs(set, tags, hctx_idx);
->> +		blk_mq_free_rq_map(tags, flags);
->>   	}
->>   }
->>   
->> @@ -2967,8 +2967,10 @@ static void blk_mq_map_swqueue(struct request_queue *q)
->>   			 * fallback in case of a new remap fails
->>   			 * allocation
->>   			 */
->> -			if (i && set->tags[i])
->> -				blk_mq_free_map_and_requests(set, i);
->> +			if (i && set->tags[i]) {
->> +				blk_mq_free_map_and_rqs(set, set->tags[i], i);
->> +				set->tags[i] = NULL;
->> +			}
->>   
->>   			hctx->tags = NULL;
->>   			continue;
->> @@ -3264,8 +3266,8 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
->>   		struct blk_mq_hw_ctx *hctx = hctxs[j];
->>   
->>   		if (hctx) {
->> -			if (hctx->tags)
->> -				blk_mq_free_map_and_requests(set, j);
->> +			blk_mq_free_map_and_rqs(set, set->tags[j], j);
->> +			set->tags[j] = NULL;
->>   			blk_mq_exit_hctx(q, set, hctx, j);
->>   			hctxs[j] = NULL;
->>   		}
->> @@ -3361,8 +3363,10 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
->>   	return 0;
->>   
->>   out_unwind:
->> -	while (--i >= 0)
->> -		blk_mq_free_map_and_requests(set, i);
->> +	while (--i >= 0) {
->> +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
->> +		set->tags[i] = NULL;
->> +	}
->>   
->>   	return -ENOMEM;
->>   }
->> @@ -3557,8 +3561,10 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
->>   	return 0;
->>   
->>   out_free_mq_rq_maps:
->> -	for (i = 0; i < set->nr_hw_queues; i++)
->> -		blk_mq_free_map_and_requests(set, i);
->> +	for (i = 0; i < set->nr_hw_queues; i++) {
->> +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
->> +		set->tags[i] = NULL;
->> +	}
->>   out_free_mq_map:
->>   	for (i = 0; i < set->nr_maps; i++) {
->>   		kfree(set->map[i].mq_map);
->> @@ -3590,8 +3596,10 @@ void blk_mq_free_tag_set(struct blk_mq_tag_set *set)
->>   {
->>   	int i, j;
->>   
->> -	for (i = 0; i < set->nr_hw_queues; i++)
->> -		blk_mq_free_map_and_requests(set, i);
->> +	for (i = 0; i < set->nr_hw_queues; i++) {
->> +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
->> +		set->tags[i] = NULL;
->> +	}
-> There are 5 callers in which 'set->tags[i]' is cleared, so just
-> wondering why you don't clear set->tags[i] at default in
-> blk_mq_free_map_and_rqs(). And just call __blk_mq_free_map_and_rqs()
-> for the only other user?
+Hello there,
 
-blk_mq_free_map_and_rqs() is not always passed set->tags[i]:
+I've been working on adding 'lockless cache' on sl[au]b for a while.
+But what it actually does is actually adding 'queuing' on slub.
 
-- blk_mq_tag_update_depth() calls blk_mq_free_map_and_rqs() for sched tags
+So there is a fundamental question coming into my mind:
+	'is SLAB considered legacy and deprecated?'
 
-- __blk_mq_alloc_rq_maps() calls blk_mq_free_map_and_rqs() for 
-shared_sbitmap_tags
+It seems there are little development on SLAB and people think that
+SLAB is legacy and deprecated, so CONFIG_SLUB is used by default.
 
-Function __blk_mq_free_map_and_rqs() is not public and really only 
-intended for set->tags[i]
+But I think both has pros and cons for their own:
+	SLAB: more temporal locality (cache friendly)
+	but high usage of memory, and less spatial locality (TLB misses) than SLUB.
 
-So I did consider passing the address of the tags pointer to
-blk_mq_free_map_and_rqs(), like:
+	SLUB: less temporal locality (less cache friendly) than SLAB
+	but more spatial locality (TLB hit), and low usage of memory
+	and good debugging feature.
 
-void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
-			struct blk_mq_tag **tags,
-			unsigned int hctx_idx)
-
-{
-	...
-	*tags = NULL;
-}
-
-But then the API becomes a bit asymmetric, as we deal with tags pointer 
-normally:
-
-struct blk_mq_tags *blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
-					     unsigned int hctx_idx,
-					     unsigned int depth);
-
-
-However, apart from this, I can change __blk_mq_free_map_and_rqs() to 
-NULLify set->tags[i], as it is always passed set->tags[i].
-
-Do you have a preference?
+Why do people say SLAB is deprecated/legacy?
 
 Thanks,
-John
-
-
+Hyeonggon
