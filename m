@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375A7419C4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36207419A9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbhI0R1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41158 "EHLO mail.kernel.org"
+        id S235570AbhI0RKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:10:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237757AbhI0RXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:23:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C44613D5;
-        Mon, 27 Sep 2021 17:15:02 +0000 (UTC)
+        id S236432AbhI0RIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:08:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F86961074;
+        Mon, 27 Sep 2021 17:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762902;
-        bh=NQpf1jAFFlPTvQ/GKDG0rzFYPGAJBnSg0eB4flhK2Fo=;
+        s=korg; t=1632762423;
+        bh=td7VkpO+evvs5a2Xf1GU8oEzIHSB+lZ2IlxxWrYq9vM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qS/eresoAqmLMzdMKDqtJTeAEQkFOjcFSZtzWak7JpcZB4elwuc/DJGGvjPXh11Yx
-         T78Mj0DZ/UYVL9LRTVzv9wbbot+6BszOwpDRqZUVx1GF82j3l/HYwVPPBg8z+b4TXQ
-         Qis8u10tDPT4OTxx74L6rtn7GM/Byj6jmKtxcsnk=
+        b=WzozN96DpSuT4+5Zj7xXCMGXTBQYyyplHn33ouAwMXjlqteDdgAtg30Vi9Vza5DjX
+         6q8a31XmSXUgqNUguB8euS4mPAGrQrSxizHbuG3GnmJUmdsdLXTKo5bLpgWNTFK/vx
+         CgoYn10RTMf6h4dspfcZGXFEZJscz7DQPTSCrBZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Michael Chan <michael.chan@broadocm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 062/162] bnxt_en: Fix TX timeout when TX ring size is set to the smallest
-Date:   Mon, 27 Sep 2021 19:01:48 +0200
-Message-Id: <20210927170235.619155065@linuxfoundation.org>
+        stable@vger.kernel.org, "faqiang.zhu" <faqiang.zhu@nxp.com>,
+        Felipe Balbi <balbi@kernel.org>, Li Jun <jun.li@nxp.com>,
+        John Stultz <john.stultz@linaro.org>
+Subject: [PATCH 5.10 017/103] usb: dwc3: core: balance phy init and exit
+Date:   Mon, 27 Sep 2021 19:01:49 +0200
+Message-Id: <20210927170226.314437378@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,105 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Li Jun <jun.li@nxp.com>
 
-[ Upstream commit 5bed8b0704c9ecccc8f4a2c377d7c8e21090a82e ]
+commit 8cfac9a6744fcb143cb3e94ce002f09fd17fadbb upstream.
 
-The smallest TX ring size we support must fit a TX SKB with MAX_SKB_FRAGS
-+ 1.  Because the first TX BD for a packet is always a long TX BD, we
-need an extra TX BD to fit this packet.  Define BNXT_MIN_TX_DESC_CNT with
-this value to make this more clear.  The current code uses a minimum
-that is off by 1.  Fix it using this constant.
+After we start to do core soft reset while usb role switch,
+the phy init is invoked at every switch to device mode, but
+its counter part de-init is missing, this causes the actual
+phy init can not be done when we really want to re-init phy
+like system resume, because the counter maintained by phy
+core is not 0. considering phy init is actually redundant for
+role switch, so move out the phy init from core soft reset to
+dwc3 core init where is the only place required.
 
-The tx_wake_thresh to determine when to wake up the TX queue is half the
-ring size but we must have at least BNXT_MIN_TX_DESC_CNT for the next
-packet which may have maximum fragments.  So the comparison of the
-available TX BDs with tx_wake_thresh should be >= instead of > in the
-current code.  Otherwise, at the smallest ring size, we will never wake
-up the TX queue and will cause TX timeout.
-
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadocm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f88359e1588b ("usb: dwc3: core: Do core softreset when switch mode")
+Cc: <stable@vger.kernel.org>
+Tested-by: faqiang.zhu <faqiang.zhu@nxp.com>
+Tested-by: John Stultz <john.stultz@linaro.org> #HiKey960
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Li Jun <jun.li@nxp.com>
+Link: https://lore.kernel.org/r/1631068099-13559-1-git-send-email-jun.li@nxp.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c         | 8 ++++----
- drivers/net/ethernet/broadcom/bnxt/bnxt.h         | 5 +++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 2 +-
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ drivers/usb/dwc3/core.c |   30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index fdbf47446a99..f20b57b8cd70 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -385,7 +385,7 @@ static bool bnxt_txr_netif_try_stop_queue(struct bnxt *bp,
- 	 * netif_tx_queue_stopped().
- 	 */
- 	smp_mb();
--	if (bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh) {
-+	if (bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh) {
- 		netif_tx_wake_queue(txq);
- 		return false;
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -264,19 +264,6 @@ static int dwc3_core_soft_reset(struct d
+ {
+ 	u32		reg;
+ 	int		retries = 1000;
+-	int		ret;
+-
+-	usb_phy_init(dwc->usb2_phy);
+-	usb_phy_init(dwc->usb3_phy);
+-	ret = phy_init(dwc->usb2_generic_phy);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = phy_init(dwc->usb3_generic_phy);
+-	if (ret < 0) {
+-		phy_exit(dwc->usb2_generic_phy);
+-		return ret;
+-	}
+ 
+ 	/*
+ 	 * We're resetting only the device side because, if we're in host mode,
+@@ -310,9 +297,6 @@ static int dwc3_core_soft_reset(struct d
+ 			udelay(1);
+ 	} while (--retries);
+ 
+-	phy_exit(dwc->usb3_generic_phy);
+-	phy_exit(dwc->usb2_generic_phy);
+-
+ 	return -ETIMEDOUT;
+ 
+ done:
+@@ -979,9 +963,21 @@ static int dwc3_core_init(struct dwc3 *d
+ 		dwc->phys_ready = true;
  	}
-@@ -758,7 +758,7 @@ static void bnxt_tx_int(struct bnxt *bp, struct bnxt_napi *bnapi, int nr_pkts)
- 	smp_mb();
  
- 	if (unlikely(netif_tx_queue_stopped(txq)) &&
--	    bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh &&
-+	    bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh &&
- 	    READ_ONCE(txr->dev_state) != BNXT_DEV_STATE_CLOSING)
- 		netif_tx_wake_queue(txq);
- }
-@@ -2375,7 +2375,7 @@ static int __bnxt_poll_work(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
- 		if (TX_CMP_TYPE(txcmp) == CMP_TYPE_TX_L2_CMP) {
- 			tx_pkts++;
- 			/* return full budget so NAPI will complete. */
--			if (unlikely(tx_pkts > bp->tx_wake_thresh)) {
-+			if (unlikely(tx_pkts >= bp->tx_wake_thresh)) {
- 				rx_pkts = budget;
- 				raw_cons = NEXT_RAW_CMP(raw_cons);
- 				if (budget)
-@@ -3531,7 +3531,7 @@ static int bnxt_init_tx_rings(struct bnxt *bp)
- 	u16 i;
- 
- 	bp->tx_wake_thresh = max_t(int, bp->tx_ring_size / 2,
--				   MAX_SKB_FRAGS + 1);
-+				   BNXT_MIN_TX_DESC_CNT);
- 
- 	for (i = 0; i < bp->tx_nr_rings; i++) {
- 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index ba4e0fc38520..d4dca4508d26 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -615,6 +615,11 @@ struct nqe_cn {
- #define BNXT_MAX_RX_JUM_DESC_CNT	(RX_DESC_CNT * MAX_RX_AGG_PAGES - 1)
- #define BNXT_MAX_TX_DESC_CNT		(TX_DESC_CNT * MAX_TX_PAGES - 1)
- 
-+/* Minimum TX BDs for a TX packet with MAX_SKB_FRAGS + 1.  We need one extra
-+ * BD because the first TX BD is always a long BD.
-+ */
-+#define BNXT_MIN_TX_DESC_CNT		(MAX_SKB_FRAGS + 2)
++	usb_phy_init(dwc->usb2_phy);
++	usb_phy_init(dwc->usb3_phy);
++	ret = phy_init(dwc->usb2_generic_phy);
++	if (ret < 0)
++		goto err0a;
 +
- #define RX_RING(x)	(((x) & ~(RX_DESC_CNT - 1)) >> (BNXT_PAGE_SHIFT - 4))
- #define RX_IDX(x)	((x) & (RX_DESC_CNT - 1))
++	ret = phy_init(dwc->usb3_generic_phy);
++	if (ret < 0) {
++		phy_exit(dwc->usb2_generic_phy);
++		goto err0a;
++	}
++
+ 	ret = dwc3_core_soft_reset(dwc);
+ 	if (ret)
+-		goto err0a;
++		goto err1;
  
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 786ca51e669b..3a8c28463592 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -784,7 +784,7 @@ static int bnxt_set_ringparam(struct net_device *dev,
- 
- 	if ((ering->rx_pending > BNXT_MAX_RX_DESC_CNT) ||
- 	    (ering->tx_pending > BNXT_MAX_TX_DESC_CNT) ||
--	    (ering->tx_pending <= MAX_SKB_FRAGS))
-+	    (ering->tx_pending < BNXT_MIN_TX_DESC_CNT))
- 		return -EINVAL;
- 
- 	if (netif_running(dev))
--- 
-2.33.0
-
+ 	if (hw_mode == DWC3_GHWPARAMS0_MODE_DRD &&
+ 	    !DWC3_VER_IS_WITHIN(DWC3, ANY, 194A)) {
 
 
