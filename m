@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBA6418F01
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ED5418F0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhI0GXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 02:23:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232122AbhI0GXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 02:23:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F296117A
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:21:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632723713;
-        bh=rAzqtdkzmasWhc6P96P3ZVcdsCjYL4o8Q3yuP5FVT1o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ck+zCHop7KYWO72g4tYIDnoyIYNnzOXpFNUESVgh3s8KuOQfu4G0mq2bk4dBJlnVb
-         4KpC03FlwRI2mrxTRcsjSVaw/sFCL70kzwseCMB0Zd1ptbDWMCLawuLMV+UUy6yFvz
-         fsYJ1lFcIOB6PY9QLpQTNV1Q86Llar11Qba2MEUJ4AeCC09dVfo1eg2dl4eCdW2Dby
-         6jfDZb0B2sQewTpl/NBNvyj5vLM53LVo+LgXpaJ5oUFhvQlqmBSGS095NUJBsoTJWL
-         3ieH97UFiEJ19M1syXl6p8OgZ28Qpy3pw594rMfmeZKBA58kiJBT/HwXKiNuzKLUpC
-         atMnqPL4/yGaQ==
-Received: by mail-lf1-f42.google.com with SMTP id m3so72752081lfu.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 23:21:53 -0700 (PDT)
-X-Gm-Message-State: AOAM531mrCNNzP3ddhzNagk1LYVB7aNxU5TbvdZhzt/0bZjsjO67eIUB
-        nuavU9TEZQQlmYTqM13y6dCxV7UViT1ZSraQayA=
-X-Google-Smtp-Source: ABdhPJw+qj+k7e3EfZQynDm+jWx3Ct+iTCG+gtpxuutNZ9U03OIH4gAlQHYX8iHJzILyRMa923fnBaCWifjoiUyaKTc=
-X-Received: by 2002:a2e:898c:: with SMTP id c12mr27784494lji.16.1632723712220;
- Sun, 26 Sep 2021 23:21:52 -0700 (PDT)
+        id S233000AbhI0GjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 02:39:20 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:11814 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232821AbhI0GjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 02:39:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1632724661; x=1664260661;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9zp3CVezY7kqKbQ0dlcpLUAzQumJ6y0zLma5cS1ayNU=;
+  b=bXzUF/a7G9sXpo7clF7HDPowOpnYrxdHg+Ob9d8VK8Be4bVSoWcChmxL
+   wEY+YBKr6hxMlL2WgingzVlgkEj5S8UHw9jUHISrbUJhg6ONAFLabdbh6
+   P/BLYisbZu1VTQkY4ARB00DqbSntc6t1ZXe5ZsYlil8aHxFPji1FRFzub
+   c8Ti7rF/1bh/PeeAaTm4pzx3pTQQCeQbZsnQeRFb7RDkuhlI18Mf0OqMf
+   XYlSTZAKBl9yyBCVX3Lvu9jXFbFymb6Qjy6nc6oB7CLbYRkwsO2oFGjCW
+   Ri6dFlWUZSp6luoNoCOMIz3xP75aUkd4uTGB/6oJVa+/uQNEm9ODdpnb8
+   Q==;
+IronPort-SDR: fMJIPbj9qIRhaaUc1LwcmSIOXCISAciDCQIvYi1oZ7xhVOFFTTCa0wjI3IGJp4J6fXENQts5fp
+ 9KUqrzoI8W805P5LCk5ePhC/SbgwMs5lTfvHmHdHfPsZL6v+y2lPMME5n1yawe0IuxdBQkdACc
+ uOvQVRLEhMnR47S2N0XnwKM3SYFDldGBS+uYdbL1uBjrcr8NtKihII/7nqO901prSePLuFBfXM
+ 5Po1Ix+Raoqn0h2kxVGsyA9Of2F5gF9XtxSpajPgCqjzkvkhT2OsrviozPsfcXF5hCa9Vlh66w
+ rAVCr1JwMWruA4PppcLlRsv0
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="130749939"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Sep 2021 23:37:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Sun, 26 Sep 2021 23:37:39 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Sun, 26 Sep 2021 23:37:37 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <tglx@linutronix.de>, <maz@kernel.org>, <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v5 0/2] irqchip/mchp-eic: add driver for Microchip EIC
+Date:   Mon, 27 Sep 2021 09:36:55 +0300
+Message-ID: <20210927063657.2157676-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210924060821.1138281-1-guoren@kernel.org> <30c10b5f-1b26-e0a8-8185-6fa3296d68dc@arm.com>
-In-Reply-To: <30c10b5f-1b26-e0a8-8185-6fa3296d68dc@arm.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 27 Sep 2021 14:21:41 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRmvYBG5=NN4-53z2Gk-bC42LOHsEzHV6cnruoq1Xh0LA@mail.gmail.com>
-Message-ID: <CAJF2gTRmvYBG5=NN4-53z2Gk-bC42LOHsEzHV6cnruoq1Xh0LA@mail.gmail.com>
-Subject: Re: [PATCH V2] mm: debug_vm_pgtable: Don't use __P000 directly
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Got it, thanks!
+Hi,
 
-On Mon, Sep 27, 2021 at 10:16 AM Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
->
->
-> On 9/24/21 11:38 AM, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The __Pxxx/__Sxxx macros are only for protection_map[] init. All
-> > usage of them in linux should come from protection_map array.
-> >
-> > Because a lot of architectures would re-initilize protection_map[]
-> > array, eg: x86-mem_encrypt, m68k-motorola, mips, arm, sparc.
-> >
-> > Using __P000 is not rigorous.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
->
-> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
->
->
-> >
-> > ---
-> >
-> > Changes since V2:
-> >  - s/init protection_map[]/protection_map[] init/
-> >  - s/Becasue/Because/
-> >  - Remove unclear part
-> >  - Replace __P000 and __S000 with protection_map[0] and
-> >    protection_map[8]
-> > ---
-> >  mm/debug_vm_pgtable.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> > index 1403639302e4..228e3954b90c 100644
-> > --- a/mm/debug_vm_pgtable.c
-> > +++ b/mm/debug_vm_pgtable.c
-> > @@ -1104,13 +1104,14 @@ static int __init init_args(struct pgtable_debug_args *args)
-> >       /*
-> >        * Initialize the debugging data.
-> >        *
-> > -      * __P000 (or even __S000) will help create page table entries with
-> > -      * PROT_NONE permission as required for pxx_protnone_tests().
-> > +      * protection_map[0] (or even protection_map[8]) will help create
-> > +      * page table entries with PROT_NONE permission as required for
-> > +      * pxx_protnone_tests().
-> >        */
-> >       memset(args, 0, sizeof(*args));
-> >       args->vaddr              = get_random_vaddr();
-> >       args->page_prot          = vm_get_page_prot(VMFLAGS);
-> > -     args->page_prot_none     = __P000;
-> > +     args->page_prot_none     = protection_map[0];
-> >       args->is_contiguous_page = false;
-> >       args->pud_pfn            = ULONG_MAX;
-> >       args->pmd_pfn            = ULONG_MAX;
-> >
+This series adds support for Microchip External Interrupt Controller
+present on SAMA7G5. The controller supports for 2 external interrupt
+lines and is connected to GIC as follows:
 
+pinX   +------+ EXT_IRQ0 +------+ int 153 (for pinX) +------+
+------>|      |--------->|      |------------------->|      |
+pinY   | PIO  | EXT_IRQ1 | EIC  | int 154 (for pinY) | GIC  |
+------>|      |--------->|      |------------------->|      |
+       +------+          +------+                    +------+
 
+where PIO is the pin controller.
+
+Thank you,
+Claudiu Beznea
+
+Changes in v5:
+- solved the issue with dt bindings (accidentally picked file from
+  v2 in previous version)
+
+Changes in v4:
+- use irq_domain_translate_twocell() instead of mchp_eic_domain_translate()
+  from v2
+- use IRQCHIP_PLATFORM_DRIVER_BEGIN(), IRQCHIP_MATCH(),
+  IRQCHIP_PLATFORM_DRIVER_END() instead of builtin_platform_driver()
+- register suspend/resume functins via syscore_ops; along with this
+  driver private data structure (of type struct mchp_eic has been declared
+  as static: struct mchp_eic *eic;)
+- collected tags
+
+Changes in v3:
+- fix compilation warning on bindings
+
+Changes in v2:
+- s/mchp/microchip in bindings
+- get rid of glitch filter settings
+- use s/eic@/interrupt-controller@ in bindings
+- removed '' around interrupts in bindings as proposed by Rob
+- removed glitch filter settings
+- switched to hierarchical irqchip driver
+- addressed review comments
+- use builtin_platform_driver instead of module_platform_driver
+
+Claudiu Beznea (2):
+  dt-bindings: microchip,eic: add bindings
+  irqchip/mchp-eic: add support
+
+ .../interrupt-controller/microchip,eic.yaml   |  73 +++++
+ MAINTAINERS                                   |   6 +
+ drivers/irqchip/Kconfig                       |   8 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-mchp-eic.c                | 280 ++++++++++++++++++
+ 5 files changed, 368 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/microchip,eic.yaml
+ create mode 100644 drivers/irqchip/irq-mchp-eic.c
 
 -- 
-Best Regards
- Guo Ren
+2.25.1
 
-ML: https://lore.kernel.org/linux-csky/
