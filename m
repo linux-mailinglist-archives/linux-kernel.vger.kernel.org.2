@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAC64193EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11674193EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbhI0MQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234073AbhI0MQ3 (ORCPT
+        id S234260AbhI0MRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:17:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48976 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234073AbhI0MQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:16:29 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57FAC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:14:51 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id b20so76793459lfv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Uway50zvdV9IkkDWCwSqCVmkv4J6V3Me6I6p/5FbnZY=;
-        b=QPQBQZ3uytQAdVOMKOE3xXA2c+FqNJOiWHzTrpKJulUSyg+Rk3BPBosCNl+ynfngxh
-         JHXhEsJsTAUHyrK/xECllLRbFUXh4Rdq5VSH2Bg4mWi0ziHTyA/BFUmOs4ZHLd41oOuu
-         9WHuNw7knv2w4yE36v3O6IisomdC3Y43JRUmpeUlDy0gDSKHPKIBH+woR6i+1rSq3cA1
-         kdDp6OE3rdCA44wrVWkf8G5+kdVs70ayNdk2ihjGvCkFAZOT2WhprY6NKtvfTLXqy2Mg
-         DHaV2ReCuDwRuiUNfZs3SEgR3W59SmB5vXm9zJlPLO42HGdlSwpr7kbp45qDj1AkoOhk
-         HoyQ==
+        Mon, 27 Sep 2021 08:16:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632744919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xfGw456gQ82ABMdVQA6RV36suyfhz5P7yHLPAXAnVXo=;
+        b=d7nSrpax0TV87RgWD7LzXTXA9fuuVOI1uv2oFJnZ3AQnUMGNDgf+x+KTIa2awZwH2kB8vJ
+        +P2TtpXIvmVyfmIT5yT/Jo3zh8RXhjxGfenzUZxKlp6aJ0tU5nWs37sNb3mMqw4kTWnuRm
+        DNaCJvCE8axavWrYWs8FR3rBWQVRmg8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-peYaDu2lNTSY9NYdpiGHuA-1; Mon, 27 Sep 2021 08:15:17 -0400
+X-MC-Unique: peYaDu2lNTSY9NYdpiGHuA-1
+Received: by mail-ed1-f72.google.com with SMTP id ec14-20020a0564020d4e00b003cf5630c190so17673331edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:15:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Uway50zvdV9IkkDWCwSqCVmkv4J6V3Me6I6p/5FbnZY=;
-        b=CHb7OTeKCuSrxxxmmpeuw5BNq3II6r2LNELjDsEF+W0g38CAiKkx/Vb7mgn+Vzz9KD
-         hkmX8fu0MoiY1qZWUF8XLm3J2YiOcJtRRnqeqrOZgubm7AebflSCixXnow9WTk7A2xbf
-         DBWcv0ZH5RcGOg/wx4Mp/ZwTcoJG1kf/j2d5mG+JDU2O9LT9CSt/OcUHeRJBh7G8HJZD
-         ABi18X0TD8Wds8lG6OkhVU6CkOHom1m3D4jEb8IVOUX0zzobL2CZaO51nBeNM4GnSWmU
-         j2ODoMlpsBZPq0qK3pH+LzTe1USx2f344oD5GGsCA6D0CDIx7Drk0ibyoGIdO7mPgCgT
-         vLAw==
-X-Gm-Message-State: AOAM533Q9zGKjq7RijrTAH1GRV/UIi5YF+yvd6N9AOmy/GaNymfRjPsW
-        9AEuGaibRiDJCQ4n1nMie6vp6g==
-X-Google-Smtp-Source: ABdhPJyCvwqIpXfij1yuQcR7ZfznCVQpcripRFjCjrhYgkCPw/+DnxS5Jb3lg3RDG4+xF3ht/mBh8A==
-X-Received: by 2002:a2e:a4cb:: with SMTP id p11mr27887999ljm.138.1632744890181;
-        Mon, 27 Sep 2021 05:14:50 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u27sm1582411lfm.38.2021.09.27.05.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 05:14:49 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 26A07102FD9; Mon, 27 Sep 2021 15:14:49 +0300 (+03)
-Date:   Mon, 27 Sep 2021 15:14:49 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 4/8] mm/madvise: define madvise behavior in a struct
-Message-ID: <20210927121449.kac5g25aejbwvylf@box>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-5-namit@vmware.com>
- <20210927093103.g3cszw75gfctwtzk@box.shutemov.name>
- <48D4E700-0005-46D4-8EAA-B839D8449C66@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=xfGw456gQ82ABMdVQA6RV36suyfhz5P7yHLPAXAnVXo=;
+        b=hIgPxstuHOrbp5YlfWd3WjpYlDezZb77/jbhmrWHZ3dnkJ/CeamEH69SjszRPzoTqK
+         SRAMVRGd+4dry93mRN9HTr+l1ofrRK5mfz7LlKQPyPIFX/nYW0cHOtIBrmDmdK0XHsoq
+         +0sywNcs+oXgsX6MBVwRWCycDkEU69uNBLdwWZuKF3GpKfykk95tjyUciW2qUKWECOvd
+         t/x+q6RG8RZ0JPlIvteXdkn9h+T4pKwXUqxFUW2TICQsdv/C2VEXcVODcbJGniDvP6P5
+         pJIP4P5LYXkqNSGoDgKm3ncTQ3dMMQuvpj84tJDOWlXOAbqD9EuJZ5Vrwyz5Wb8mmuqy
+         ExkA==
+X-Gm-Message-State: AOAM531lef7mVmhA1l1hfQu+LATAUKqwJ3wrpWFCFsl4aXr0Z/faOPlM
+        sMgGmOGogvT/VfarxlT/3kJMAMZ42ABhyappDh1ONhJR4d3PfsQupVCa3h3viUyzNEkIwFy5wQE
+        ct/0Dmqe7SG2HiF1Gj3qjE3Je
+X-Received: by 2002:a17:906:645:: with SMTP id t5mr26598283ejb.163.1632744916821;
+        Mon, 27 Sep 2021 05:15:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYrlEJwbP/ga5Kfs4eTDSfaiizoMsvrkJq+jpz3Bdf3pQgRF3DIzW7YPNIyOgL0671UqQlYg==
+X-Received: by 2002:a17:906:645:: with SMTP id t5mr26598256ejb.163.1632744916639;
+        Mon, 27 Sep 2021 05:15:16 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p24sm10309001edq.27.2021.09.27.05.14.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 05:15:15 -0700 (PDT)
+Message-ID: <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
+Date:   Mon, 27 Sep 2021 14:14:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48D4E700-0005-46D4-8EAA-B839D8449C66@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Babu Moger <babu.moger@amd.com>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
+        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
+ <YVGkDPbQmdwSw6Ff@zn.tnic> <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
+ <YVGz0HXe+WNAXfdF@zn.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YVGz0HXe+WNAXfdF@zn.tnic>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 03:31:21AM -0700, Nadav Amit wrote:
-> 
-> 
-> > On Sep 27, 2021, at 2:31 AM, Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> > 
-> > On Sun, Sep 26, 2021 at 09:12:55AM -0700, Nadav Amit wrote:
-> >> From: Nadav Amit <namit@vmware.com>
-> >> 
-> >> The different behaviors of madvise are different in several ways, which
-> >> are distributed across several functions. Use the design pattern from
-> >> iouring in order to define the actions that are required for each
-> >> behavior.
-> >> 
-> >> The next patches will get rid of old helper functions that are modified
-> >> in this patch and the redundant use of array_index_nospec(). The next
-> >> patches will add more actions for each leaf into the new struct.
-> >> 
-> >> No functional change is intended.
-> >> 
-> >> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> Cc: Minchan Kim <minchan@kernel.org>
-> >> Cc: Colin Cross <ccross@google.com>
-> >> Cc: Suren Baghdasarya <surenb@google.com>
-> >> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> >> Signed-off-by: Nadav Amit <namit@vmware.com>
-> >> ---
-> >> mm/madvise.c | 168 +++++++++++++++++++++++++++++++++------------------
-> >> 1 file changed, 109 insertions(+), 59 deletions(-)
-> >> 
-> >> diff --git a/mm/madvise.c b/mm/madvise.c
-> >> index 17e39c70704b..127507c71ba9 100644
-> >> --- a/mm/madvise.c
-> >> +++ b/mm/madvise.c
-> >> @@ -29,6 +29,7 @@
-> >> #include <linux/swapops.h>
-> >> #include <linux/shmem_fs.h>
-> >> #include <linux/mmu_notifier.h>
-> >> +#include <linux/nospec.h>
-> >> 
-> >> #include <asm/tlb.h>
-> >> 
-> >> @@ -39,6 +40,101 @@ struct madvise_walk_private {
-> >> 	bool pageout;
-> >> };
-> >> 
-> >> +struct madvise_info {
-> >> +	u8 behavior_valid: 1;
-> >> +	u8 process_behavior_valid: 1;
-> >> +	u8 need_mmap_read_only: 1;
-> >> +};
-> >> +
-> >> +static const struct madvise_info madvise_info[MADV_SOFT_OFFLINE+1] = {
-> > 
-> > MADV_SOFT_OFFLINE+1 smells bad.
-> 
-> I can set another constant instead and let the compiler shout if anything
-> outside the array is initialized.
+On 27/09/21 14:06, Borislav Petkov wrote:
+>> Because the guest kernel needs to know which MSRs to write when you touch
+>> the SSBD prctl, so that PSFD is properly disabled*inside the guest*.
+> It already knows which - the same one which disables SSB. PSF is
+> disabled*together*  with SSB, for now...
 
-I would rather introduce a function that would return struct madvise_info
-for a given behavior. The function would have a switch inside. The default:
-may have BUILD_BUG() or something.
+Right, not which MSR to write but which value to write.  It doesn't know 
+that the PSF disable bit is valid unless the corresponding CPUID bit is set.
 
--- 
- Kirill A. Shutemov
+Paolo
+
