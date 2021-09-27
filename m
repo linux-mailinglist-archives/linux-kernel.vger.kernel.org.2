@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FBE4195B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3610D4195A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhI0OBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47982 "EHLO mail.kernel.org"
+        id S234731AbhI0OBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:01:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234704AbhI0OBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234583AbhI0OBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 10:01:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49A8A610A2;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D5560F46;
         Mon, 27 Sep 2021 13:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632751197;
-        bh=JSJGD8oEtr4UgVNxX4nTLt/BvMiQeGS7fW3nJC9PfHQ=;
+        bh=BNlZNAUTMLhlrg2wEynRw5qh+hUiXumdL2pp1O0ToQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A0vKUaz5FtH5vI9VuGPWauA82jY05IzDAg8jcZvx46YnD5FnY0u3DCvuQhWi7ZlRL
-         7C2FDDA0WP/CyN4GzGQoKfc2UqWLHtpbmSRnSkkvW1uzaqkRLd4AMUzz56uJAeOU+w
-         97VfpOXhBctYEEZQMLi0QwkzFx0FMEfvr5uS4GIJlkXLrcfnffhd6EeZg3G3gsJcjg
-         gceAnm9oixMQQ703pe23KCFo5EiBHcag7vAYdDLInn6SdswB7HdviOwzXIdytkrK8y
-         Nrz1Z3b+nmjP/q344St1utX17jnjsicd1ZyvHXqwJ550Ok78We1+1P8CyEX46eQOjk
-         5yYm2iIT6jdUQ==
+        b=jEj/McxIgpZNztQbEVauHZ4/P9ef2XBY1li7PtqfdB6hGDjhdwFGI6J0TUgCFf2hh
+         vMYBlq1IubPsPjrGx8DmLSRODwv74z+Oy/ilchjutJJ1YDxQYBl8aSJqIO+sqIcY+7
+         GpZJUOXp6rprXCNp+wP2hPoHKwzVzoYDGuyzkXOCOZiiXyugvpdpPrmh0kRI9TQ1a0
+         3ySgS9yihLjP72HuRbUSufX4a4zr5CyUhU46kxAeqWeWUVMIEinGp3b4oUEgiYfBSA
+         TMkPVKP8i75X5lFhoFy4Sgv8lL6IKH+hNRyXUlBQKdPaVVUHHGuv8Yiukm26TAz5sf
+         slqxIfeO2SnIw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mUrAh-000Ata-8i; Mon, 27 Sep 2021 15:59:55 +0200
+        id 1mUrAh-000Atd-AJ; Mon, 27 Sep 2021 15:59:55 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/17] ABI: stable/sysfs-module: better document modules
-Date:   Mon, 27 Sep 2021 15:59:34 +0200
-Message-Id: <35876c1eabbcd03170d658081030db980b403297.1632750608.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 02/17] ABI: stable/sysfs-module: document version and srcversion
+Date:   Mon, 27 Sep 2021 15:59:35 +0200
+Message-Id: <82bc7ebcc56c68c39b0e9de89cd0e023339d0597.1632750608.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632750608.git.mchehab+huawei@kernel.org>
 References: <cover.1632750608.git.mchehab+huawei@kernel.org>
@@ -44,58 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of placing almost everything there as a text, use
-the proper What: for each component of the ABI.
-
-This allows it to be better documented and parsed by
-get_abi.pl.
-
-While here, use wildcards for MODULENAME.
+Changeset c988d2b28454 ("[PATCH] modules: add version and srcversion to sysfs")
+added version and srcversion ABI to modules. Document them.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 See [PATCH 00/17] at: https://lore.kernel.org/all/cover.1632750608.git.mchehab+huawei@kernel.org/
 
- Documentation/ABI/stable/sysfs-module | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ Documentation/ABI/stable/sysfs-module | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
-index 6272ae5fb366..5c028af9921a 100644
+index 5c028af9921a..560b4a3278df 100644
 --- a/Documentation/ABI/stable/sysfs-module
 +++ b/Documentation/ABI/stable/sysfs-module
-@@ -1,8 +1,7 @@
--What:		/sys/module
--Description:
--	The /sys/module tree consists of the following structure:
-+The /sys/module tree consists of the following structure:
- 
--	/sys/module/MODULENAME
-+What:		/sys/module/<MODULENAME>
+@@ -33,3 +33,15 @@ Description:
+ 		Note: If the module is built into the kernel, or if the
+ 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
+ 		this file will not be present.
++
++What:		/sys/module/<MODULENAME>/srcversion
++Date:		Jun 2005
 +Description:
- 		The name of the module that is in the kernel.  This
- 		module name will always show up if the module is loaded as a
- 		dynamic module.  If it is built directly into the kernel, it
-@@ -12,7 +11,8 @@ Description:
- 		Note: The conditions of creation in the built-in case are not
- 		by design and may be removed in the future.
- 
--	/sys/module/MODULENAME/parameters
-+What:		/sys/module/<MODULENAME>/parameters
++		If the module source has MODULE_VERSION, this file will contain
++		the checksum of the the source code.
++
++What:		/sys/module/<MODULENAME>/version
++Date:		Jun 2005
 +Description:
- 		This directory contains individual files that are each
- 		individual parameters of the module that are able to be
- 		changed at runtime.  See the individual module
-@@ -25,7 +25,8 @@ Description:
- 		individual driver documentation for details as to the
- 		stability of the different parameters.
- 
--	/sys/module/MODULENAME/refcnt
-+What:		/sys/module/<MODULENAME>/refcnt
-+Description:
- 		If the module is able to be unloaded from the kernel, this file
- 		will contain the current reference count of the module.
- 
++		If the module source has MODULE_VERSION, this file will contain
++		the version of the source code.
 -- 
 2.31.1
 
