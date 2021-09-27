@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D0141A192
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51F641A193
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbhI0V6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237393AbhI0V61 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:58:27 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B33C061575;
-        Mon, 27 Sep 2021 14:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=hGX2uraOWKcbdqvQEGEcWfwcUwznDEuW9gnPoVw/EgI=; b=shlhIoloA5/y4cBG9UooN5GbSW
-        ijM03Fm43/Qu54nJagQc7sk9etQwr9ldMXJEaFMwzQXMNAvsW52Kf0rw2Y9laLR8m91A/lFLEz0CN
-        Yxi7Kg1b+VGuyaM4x3jvbN27QM/lrppJjx0bPRbLhaAKUA9R+G+yPWZe30FFX32qeogOzH1gkRPCq
-        JZW6FWNvYlpGbTiibFSEDKaY0+f4mMj1KwbO4cWptBfJ6r7EpHEwZZdiNWUYS4VSNG2Utp1afkYsJ
-        nIopo5QnPbPeegK/ay3PZ0KrPf7eKryFohKiTGpy9Pi/fsLOmYGLPrEzSDuPqPsgMK20jaZ5u8Hx3
-        ER8gqQLA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUycC-004Rxw-Hi; Mon, 27 Sep 2021 21:56:48 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: [PATCH] s390/sclp_vt220: fix unused function warning
-Date:   Mon, 27 Sep 2021 14:56:47 -0700
-Message-Id: <20210927215647.11506-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S237518AbhI0V6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237468AbhI0V62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 17:58:28 -0400
+Received: from oasis.local.home (unknown [209.210.2.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6C5F60F4F;
+        Mon, 27 Sep 2021 21:56:49 +0000 (UTC)
+Date:   Mon, 27 Sep 2021 17:56:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>, namhyung@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tracing/cfi: Fix cmp_entries_* functions signature
+ mismatch
+Message-ID: <20210927175648.3e9118ce@oasis.local.home>
+In-Reply-To: <CAC_TJve2aS_tHfmMCsayPFrAPaMid5DU3NK82KXC3dB9vhPdpw@mail.gmail.com>
+References: <20210923170908.2184404-1-kaleshsingh@google.com>
+        <CABCJKucTiHDitevf1U97eCV1KdxAyui+fWvD1i7c8piVMnmjoQ@mail.gmail.com>
+        <CAC_TJve2aS_tHfmMCsayPFrAPaMid5DU3NK82KXC3dB9vhPdpw@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_SCLP_VT220_TTY=y and CONFIG_SCLP_VT220_CONSOLE is not set:
+On Mon, 27 Sep 2021 11:15:01 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
+> >
+> > Thanks for the patch! This looks correct to me and fixes the function
+> > type mismatch that trips CFI.
+> >
+> > Reviewed-by: Sami Tolvanen <samitolvanen@google.com>  
+> 
+> Thanks for the review Sami.
+> 
+> Steve, will this get picked up for your tree?
 
-../drivers/s390/char/sclp_vt220.c:771:13: warning: '__sclp_vt220_flush_buffer' defined but not used [-Wunused-function]
-  771 | static void __sclp_vt220_flush_buffer(void)
+Yeah, I can pull it through my tree, but as I'm currently traveling, I
+can't give a proper ETA on when it will hit. But at the latest, I'll be
+looking at all my patch queue next week.
 
-so move this function inside the #ifdef block where it is used.
+-- Steve
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: linux-s390@vger.kernel.org
----
-Sorry, I can't determine what the Fixes: tag for this should be
-(missing some git fu).
-
- drivers/s390/char/sclp_vt220.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- linux-next-20210927.orig/drivers/s390/char/sclp_vt220.c
-+++ linux-next-20210927/drivers/s390/char/sclp_vt220.c
-@@ -768,6 +768,8 @@ out_driver:
- }
- __initcall(sclp_vt220_tty_init);
- 
-+#ifdef CONFIG_SCLP_VT220_CONSOLE
-+
- static void __sclp_vt220_flush_buffer(void)
- {
- 	unsigned long flags;
-@@ -784,8 +786,6 @@ static void __sclp_vt220_flush_buffer(vo
- 	spin_unlock_irqrestore(&sclp_vt220_lock, flags);
- }
- 
--#ifdef CONFIG_SCLP_VT220_CONSOLE
--
- static void
- sclp_vt220_con_write(struct console *con, const char *buf, unsigned int count)
- {
