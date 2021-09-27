@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F3D419FCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F00419FCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236849AbhI0UKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
+        id S236868AbhI0UKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236821AbhI0UKT (ORCPT
+        with ESMTP id S236821AbhI0UKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:10:19 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351EFC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:08:41 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id w29so53848623wra.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:08:41 -0700 (PDT)
+        Mon, 27 Sep 2021 16:10:21 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A23C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:08:43 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id x191so11897848pgd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:08:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rammhold-de.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8OFukCSNsOqIkW6SWnwpDKuo/92QdnVzoodLvdMZQ1s=;
-        b=F7h1wVBRwn/HWEG43TcL5JNhRFRAwjMac81f0d4v9ms7SidGU8VtzSyURz1zQAKrFg
-         tdjSG/Uj006dC589FB7In1GxoYBm1NWRWxmlNWugFXmej04thXob5cEoukZv1ZGDQGwJ
-         nABGmmLTt3hmpbXiL7GKqkjDqJ0IVnPHRqTVpVpehnPZo+wSRZ3Xsj9Rz+LM9u/OPDgN
-         uoNt8ek3gr5b91ZbbveHSuXKANiGVhzwfmORuSeK9tvxVOQnqtCaqLz5/cgAzr1f+aj6
-         h1i4PwNqIFPg4iNpk65AuAyKBSYTeiRpcrsuLIMsI2LDP23siIyc7HiMw0e9UcYVX1sP
-         W6BQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=7vfeR4njAq3wig4eIDg5vJWu2BlZRMH3u0oFW9QEQ9w=;
+        b=SsW7qCUbROeP/CRGUzOa/Br/izmzwYUvqgGPPapsOJUFectwunG0+JKeVS650qdteG
+         sIK2gOB+Aj+Z2DH2JSqei6vvko+R2+RJScrsFzHb0Rzr++1I2yxjtpdSIo/7LvVHJkVL
+         mYOFe8MSLVBMO61BUfnBzNBKb7myMOqT5cMJIZXTlee2Qw8jp1hl+30JJxmg9aYLyITs
+         MFQvQkFPtRcW9mVy+6bpQ4Qrts5XKxte0gRcfqQlcY+XKenStsQRqX4bnc3dU9jpK1TU
+         IyiDnYzjMzVGcInhPec7jUHvXInfc5MCIgBacugdGOeQT+9tEkeRzDJoWZc9y85ju68M
+         fJIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8OFukCSNsOqIkW6SWnwpDKuo/92QdnVzoodLvdMZQ1s=;
-        b=NhtUu0MAHXWuqccm8LhsuXluYi50w08fVu62QUax5JOkThKSKIs6Xa4N8RbS9fyX/8
-         oGrA424d6QEd5Z+2x8VGp3nHm0AiXYJS8AuYKnSZdiglocjQpIRkyFt581OeyaILjpYZ
-         cwABbGyXSZAwUXP48CBDNhPWbngR9wTCYF96hikzA1mIFrTzZ1w51qNqLGs6c2yLe/2f
-         U6AUaxgbqnZUc0sKVEODHFjcki9y+NePWzP9/n6xSXLPISI7EgjFg7l+S089Vf8XmBuj
-         Pi8pSo3C8wGuHKcvI77JgSR2O055AMAVCOvTa2DWlwy3b8fgjGVkkVcV3xb/pycmJEse
-         mN0w==
-X-Gm-Message-State: AOAM530Kh7Anvj6rTVeNvJDftI7DulLpA0IjvVjgvooL8vj7R/1xNmPV
-        L+fXXQGaeDC7X05kMDHJrqXz5w==
-X-Google-Smtp-Source: ABdhPJzMbrnIoHvW2UzmzCwpMNQLKia0ly0WBKk1dzjdgLSz+tX7SF3zljMJ/K39ANmOM3PeaIJt4A==
-X-Received: by 2002:adf:e101:: with SMTP id t1mr2003768wrz.395.1632773319706;
-        Mon, 27 Sep 2021 13:08:39 -0700 (PDT)
-Received: from localhost ([2a00:e67:5c9:a:6d7b:fc0:e9e9:7254])
-        by smtp.gmail.com with ESMTPSA id n14sm465252wmc.38.2021.09.27.13.08.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:08:39 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 22:08:35 +0200
-From:   Andreas Rammhold <andreas@rammhold.de>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Andreas Rammhold <andreas@rammhold.de>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
- as module
-Message-ID: <20210927200835.wvazk73cek3t5tkf@wrt>
-References: <20210730012822.3460913-1-andreas@rammhold.de>
- <0d42a11a-0117-49a9-d2c9-bc6cc405235d@pengutronix.de>
- <20210927085104.vq42feghtaqiv6ni@wrt>
- <856359f263575f01d0ce2fcf8f042321f750b38c.camel@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <856359f263575f01d0ce2fcf8f042321f750b38c.camel@linux.ibm.com>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=7vfeR4njAq3wig4eIDg5vJWu2BlZRMH3u0oFW9QEQ9w=;
+        b=77W9JPM9hP+4o6lJt4+BG60WFFPFxtylO42Tw4WOibuCO9v/QdgyURBcub89D0tY+K
+         MoHKroQ+RI1rZY0wYbnvUUhvKoqlUR96JVPKw320U2zvj3UXAE86ojsFkcwO4boPgfpL
+         OQ5MFQRrMiCVEFc92548CRvRzFspYnP4HCdKe8J/fcTTrkeViTfjyTnjMpmEzec+iXBN
+         ZaStT9jS5PJ2JMViI3C1RyVTCqD8rmbl4Z07uT1XmFuxULDHwkOEzTYRIOniALJIeMg5
+         Ahm5reLgPI7EA8PK/TljfDeIVmwyDUJ0GKvW/wnWesjbrdHflL6EJRNeuET4dJD8zZe8
+         WbpQ==
+X-Gm-Message-State: AOAM531g7YhrDtU0NunRece4CCQyU4TCHvlkV3nn1Q4WI8b1jNGkdTkM
+        1Ymp+MJicqVBI7XPiB+JLlg=
+X-Google-Smtp-Source: ABdhPJxMhzemCh6titSeULgvX9XVFW7lxrKL7aHyl30hKz1EKVwHYkX4MyOwF6b6eKltSLRKeac3TQ==
+X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id b140-20020a621b92000000b003eb3f920724mr1517989pfb.3.1632773322625;
+        Mon, 27 Sep 2021 13:08:42 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id i27sm17941840pfq.184.2021.09.27.13.08.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Sep 2021 13:08:42 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH] userfaultfd: support control over mm of remote PIDs
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <21c6a41d-3f65-6a49-f604-b75ef53d2910@redhat.com>
+Date:   Mon, 27 Sep 2021 13:08:40 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <75ECD9E1-4696-42CB-BD84-FF9C350BB227@gmail.com>
+References: <20210926170637.245699-1-namit@vmware.com>
+ <83827672-0996-4c25-9991-697ad443b6b3@redhat.com>
+ <A7E15D2B-FFED-4F21-88F4-227E7228782D@gmail.com>
+ <21c6a41d-3f65-6a49-f604-b75ef53d2910@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07:27 27.09.21, Mimi Zohar wrote:
-> On Mon, 2021-09-27 at 10:51 +0200, Andreas Rammhold wrote:
-> > On 09:47 13.09.21, Ahmad Fatoum wrote:
-> > > Dear trusted key maintainers,
-> > > 
-> > > On 30.07.21 03:28, Andreas Rammhold wrote:
-> > > > Before this commit the kernel could end up with no trusted key sources
-> > > > even though both of the currently supported backends (TPM and TEE) were
-> > > > compiled as modules. This manifested in the trusted key type not being
-> > > > registered at all.
-> > > > 
-> > > > When checking if a CONFIG_… preprocessor variable is defined we only
-> > > > test for the builtin (=y) case and not the module (=m) case. By using
-> > > > the IS_REACHABLE() macro we do test for both cases.
-> > > > 
-> > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> > > > Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
-> > > > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > Does anyone intend to pick this up?
-> > 
-> > Did this end up in any tree by now? I am wondering if I should resend
-> > the patch instead. Perhaps it was just overlooked?
-> 
-> For EVM environments only using trusted and encrypted keys, not file
-> signatures, the trusted key is needed to decrypt the "master" key in
-> order to verify kernel modules.
-
-So what you are saying is that right now (before this patch & after this
-patch) you could compile a kernel that wouldn't be able to load any
-modules when the trusted keychain part is built as module?
 
 
-Andi
+> On Sep 27, 2021, at 10:06 AM, David Hildenbrand <david@redhat.com> =
+wrote:
+>=20
+> On 27.09.21 12:19, Nadav Amit wrote:
+>>> On Sep 27, 2021, at 2:29 AM, David Hildenbrand <david@redhat.com> =
+wrote:
+>>>=20
+>>> On 26.09.21 19:06, Nadav Amit wrote:
+>>>> From: Nadav Amit <namit@vmware.com>
+>>>> Non-cooperative mode is useful but only for forked processes.
+>>>> Userfaultfd can be useful to monitor, debug and manage memory of =
+remote
+>>>> processes.
+>>>> To support this mode, add a new flag, UFFD_REMOTE_PID, and an =
+optional
+>>>> second argument to the userfaultfd syscall. When the flag is set, =
+the
+>>>> second argument is assumed to be the PID of the process that is to =
+be
+>>>> monitored. Otherwise the flag is ignored.
+>>>> The syscall enforces that the caller has CAP_SYS_PTRACE to prevent
+>>>> misuse of this feature.
+>>>=20
+>>> What supposed to happen if the target process intents to use uffd =
+itself?
+>> Thanks for the quick response.
+>> First, sorry that I mistakenly dropped the changes to userfaultfd.h
+>> that define UFFD_REMOTE_PID.
+>=20
+> Didn't even notice it :)
+>=20
+>> As for your question: there are standard ways to deal with such =
+cases,
+>> similarly to when a debugged program wants to use PTRACE. One way is
+>> to block the userfaultfd syscall, using seccomp. Another way is to do
+>> chaining using ptrace (although using ptrace for anything is
+>> challenging).
+>> It is also possible to add tailor something specific to userfaultfd,
+>> but I think seccomp is a good enough solution. I am open to =
+suggestions.
+>=20
+> If we have something already in place to handle PTRACE, we'd better =
+reuse what's already there. Thanks!
+
+Just to ensure we are on the same page: I meant that this is usually
+left for the user application to handle. The 2 basic solutions are to
+not expose userfaultfd to the monitored process (easy using seccomp)
+or to chain the two monitors (hard using ptrace).
+
+Since ptrace is hard, in theory we can have facilities to =E2=80=9Chijack=E2=
+=80=9D
+a context and =E2=80=9Cinject=E2=80=9D uffd event to another monitor. I =
+just think
+it is a total overkill at this stage.=
