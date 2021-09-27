@@ -2,197 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B624196B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2DB419698
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234939AbhI0OuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234841AbhI0OuJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:50:09 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9534FC061575;
-        Mon, 27 Sep 2021 07:48:31 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 6B9E11F4217C
-Received: by earth.universe (Postfix, from userid 1000)
-        id 7486F3C0CA8; Mon, 27 Sep 2021 16:48:21 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 16:48:21 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: core: Add psy_has_property()
-Message-ID: <20210927144821.c6rzox4xyqkanzgz@earth.universe>
-References: <20210901165911.1.I61edd8453dd683a125623b4173988b438033c0af@changeid>
+        id S234841AbhI0OqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:46:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234799AbhI0OqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:46:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0330960F11;
+        Mon, 27 Sep 2021 14:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632753879;
+        bh=LS1KhJETSb4nO4pMBC+bk3+dNekoa6bYzCm72KLLax0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gRHZmq/qvgs2J/H1gdpCgH2r7s1R+jHVoPA+PTVz2mpzidJvPhpshjb+C2QZ3OBCH
+         Px3RSvx2uF1ff5F7smGu9zLxNHLPD01GvY30rQjJCKsrfneWZZH+4F+2yzY5vE0V+z
+         h9Cd5jSssFwTsfc62WrcJsNr1iyMITBevbVqgxq68MzkB+KGdSZdC+z9YqiDJ+rno+
+         Tfj4AsZEpRgDJZys0O0G+1xr69BpHjKyiYm/XELsiX4C6IKprOsBMcTBmizxPcPATH
+         pn/6/3+/a+Q580xiSNC4Vh1bATIssrxkQZQI+PzSt/J+9nUlwnnnBSxMyfC2yLHtia
+         JmI1++8x4a4rw==
+Date:   Mon, 27 Sep 2021 09:48:38 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: advansys: Prefer struct_size over open coded
+ arithmetic
+Message-ID: <20210927144838.GA168427@embeddedor>
+References: <20210925114205.11377-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zyyrfqid4cwaocss"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210901165911.1.I61edd8453dd683a125623b4173988b438033c0af@changeid>
+In-Reply-To: <20210925114205.11377-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 25, 2021 at 01:42:05PM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kzalloc() function.
+> 
+> This code was detected with the help of Coccinelle and audited and fixed
+> manually.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
---zyyrfqid4cwaocss
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Hi,
-
-On Wed, Sep 01, 2021 at 04:59:36PM -0700, Matthias Kaehlcke wrote:
-> Add the helper psy_has_property() to check whether a power supply
-> has a given property and use it instead of ad hoc iterations over
-> the property list in multiple locations.
->=20
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
+> Changelog v1 -> v2
+> - Rebase against v5.15-rc2
 
-Thanks, queued.
+Don't use mainline for these sorts of patches . Use linux-next instead:
 
--- Sebastian
+https://www.kernel.org/doc/man-pages/linux-next.html
 
->=20
->  drivers/power/supply/power_supply_core.c | 65 ++++++++++++++----------
->  1 file changed, 37 insertions(+), 28 deletions(-)
->=20
-> diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/sup=
-ply/power_supply_core.c
-> index d99e2f11c183..9309b33ed3ec 100644
-> --- a/drivers/power/supply/power_supply_core.c
-> +++ b/drivers/power/supply/power_supply_core.c
-> @@ -956,26 +956,41 @@ static struct thermal_zone_device_ops psy_tzd_ops =
-=3D {
->  	.get_temp =3D power_supply_read_temp,
->  };
-> =20
-> +static bool psy_has_property(const struct power_supply_desc *psy_desc,
-> +			     enum power_supply_property psp)
-> +{
-> +	bool found =3D false;
-> +	int i;
-> +
-> +	for (i =3D 0; i < psy_desc->num_properties; i++) {
-> +		if (psy_desc->properties[i] =3D=3D psp) {
-> +			found =3D true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return found;
-> +}
-> +
->  static int psy_register_thermal(struct power_supply *psy)
->  {
-> -	int i, ret;
-> +	int ret;
-> =20
->  	if (psy->desc->no_thermal)
->  		return 0;
-> =20
->  	/* Register battery zone device psy reports temperature */
-> -	for (i =3D 0; i < psy->desc->num_properties; i++) {
-> -		if (psy->desc->properties[i] =3D=3D POWER_SUPPLY_PROP_TEMP) {
-> -			psy->tzd =3D thermal_zone_device_register(psy->desc->name,
-> -					0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
-> -			if (IS_ERR(psy->tzd))
-> -				return PTR_ERR(psy->tzd);
-> -			ret =3D thermal_zone_device_enable(psy->tzd);
-> -			if (ret)
-> -				thermal_zone_device_unregister(psy->tzd);
-> -			return ret;
-> -		}
-> +	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
-> +		psy->tzd =3D thermal_zone_device_register(psy->desc->name,
-> +				0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
-> +		if (IS_ERR(psy->tzd))
-> +			return PTR_ERR(psy->tzd);
-> +		ret =3D thermal_zone_device_enable(psy->tzd);
-> +		if (ret)
-> +			thermal_zone_device_unregister(psy->tzd);
-> +		return ret;
->  	}
-> +
->  	return 0;
->  }
-> =20
-> @@ -1046,18 +1061,14 @@ static const struct thermal_cooling_device_ops ps=
-y_tcd_ops =3D {
-> =20
->  static int psy_register_cooler(struct power_supply *psy)
->  {
-> -	int i;
-> -
->  	/* Register for cooling device if psy can control charging */
-> -	for (i =3D 0; i < psy->desc->num_properties; i++) {
-> -		if (psy->desc->properties[i] =3D=3D
-> -				POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT) {
-> -			psy->tcd =3D thermal_cooling_device_register(
-> -							(char *)psy->desc->name,
-> -							psy, &psy_tcd_ops);
-> -			return PTR_ERR_OR_ZERO(psy->tcd);
-> -		}
-> +	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT)=
-) {
-> +		psy->tcd =3D thermal_cooling_device_register(
-> +			(char *)psy->desc->name,
-> +			psy, &psy_tcd_ops);
-> +		return PTR_ERR_OR_ZERO(psy->tcd);
->  	}
-> +
->  	return 0;
->  }
-> =20
-> @@ -1095,7 +1106,7 @@ __power_supply_register(struct device *parent,
->  {
->  	struct device *dev;
->  	struct power_supply *psy;
-> -	int i, rc;
-> +	int rc;
-> =20
->  	if (!parent)
->  		pr_warn("%s: Expected proper parent device for '%s'\n",
-> @@ -1104,11 +1115,9 @@ __power_supply_register(struct device *parent,
->  	if (!desc || !desc->name || !desc->properties || !desc->num_properties)
->  		return ERR_PTR(-EINVAL);
-> =20
-> -	for (i =3D 0; i < desc->num_properties; ++i) {
-> -		if ((desc->properties[i] =3D=3D POWER_SUPPLY_PROP_USB_TYPE) &&
-> -		    (!desc->usb_types || !desc->num_usb_types))
-> -			return ERR_PTR(-EINVAL);
-> -	}
-> +	if (psy_has_property(desc, POWER_SUPPLY_PROP_USB_TYPE) &&
-> +	    (!desc->usb_types || !desc->num_usb_types))
-> +		return ERR_PTR(-EINVAL);
-> =20
->  	psy =3D kzalloc(sizeof(*psy), GFP_KERNEL);
->  	if (!psy)
-> --=20
-> 2.33.0.153.gba50c8fa24-goog
->=20
+Thanks
+--
+Gustavo
 
---zyyrfqid4cwaocss
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFR2aoACgkQ2O7X88g7
-+ponLA/+JXJ4PqLNhqnhntei5N/CLciDWDkzpPZqzpEaGGSgXQYSs1NGHV37LhN+
-I0NJzGyQXaSFyLYpVCvhNaf1PYcivM25Qr9rhzp2LlvppdlAij33vaJjna/NmI3c
-9QBoLIqXCx7MgIFjsGLB/mozQoJ0z3UbREiioMvtqRiPB8sdCHEFF4yOTjalF4G1
-anFEtwfxaO2iAzFxvquLFCjvMSvVRZ6dqqoN+6xdPkd7nSPcSu8EmYEH5kn9AbvT
-6gKZaOI7LSEuKp+5eNkc8Ogq+xFA7dzVr+TG8GhGb1hvQxyto3YUKYfJG9REhM2M
-4JL150rhpI6TWTZX/EqvypX94nlz6raVx/lifwc7daKLUC6hb9fg324D85cfsWj6
-fCH6IsUyA6lcuIg4VklfHEPEBrcE1DiBlSWA3kisV2cwsEiPjVOnS9W46z56TvAg
-IkZsPedg4uGRN66oY9WUXsIt5sQFfk2IARd+/siwnuCXVW2wF+SJXDppB9fSEKc7
-+CLCvN0lUd29B19fVuuTahQkM8SivoZQqBXPqremXiPFlbGoZk8t2QUDyVPWnDGd
-jB+6JkvIVxzgKWnqrrTHwEVxO7GTFjvtUnDX7rw5DbIL+sPHOk+4bzBB2jp9q6xW
-iaVXD1PxjHlV94VHfH56hMiJBe8Bx9XPOB9MIG/u3wAdMMub9fk=
-=Qt/f
------END PGP SIGNATURE-----
-
---zyyrfqid4cwaocss--
+> - Remove the unnecessary "size" variable (Gustavo A. R. Silva).
+> - Update the commit changelog to inform that this code was detected
+>   using a Coccinelle script (Gustavo A. R. Silva).
+> 
+>  drivers/scsi/advansys.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
+> index ffb391967573..e341b3372482 100644
+> --- a/drivers/scsi/advansys.c
+> +++ b/drivers/scsi/advansys.c
+> @@ -7477,8 +7477,8 @@ static int asc_build_req(struct asc_board *boardp, struct scsi_cmnd *scp,
+>  			return ASC_ERROR;
+>  		}
+> 
+> -		asc_sg_head = kzalloc(sizeof(asc_scsi_q->sg_head) +
+> -			use_sg * sizeof(struct asc_sg_list), GFP_ATOMIC);
+> +		asc_sg_head = kzalloc(struct_size(asc_sg_head, sg_list, use_sg),
+> +				      GFP_ATOMIC);
+>  		if (!asc_sg_head) {
+>  			scsi_dma_unmap(scp);
+>  			set_host_byte(scp, DID_SOFT_ERROR);
+> --
+> 2.25.1
+> 
