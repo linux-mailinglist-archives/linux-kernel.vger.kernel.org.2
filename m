@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870DA418D42
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A55418D4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhI0ASa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 20:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhI0AS3 (ORCPT
+        id S232268AbhI0Abx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 20:31:53 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:21341 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232113AbhI0Abw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 20:18:29 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3363EC061570;
-        Sun, 26 Sep 2021 17:16:52 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHjqk3g9Bz4xZx;
-        Mon, 27 Sep 2021 10:16:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632701810;
-        bh=FehXuxB6oT8eAwQjsNBUfmCb7XkbAPtKUXwG4DUuwVw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=P/b09+Y+t4Irxe9D2ceeY/7hmn3peEEREivRk9rqey21NWyImqXOazkOIUo7ApVZ7
-         74x+w0lyliRp0FoZoSjWCmFfQAKCgWKs6Wh55G+XimOcRf89AB8Ovo6opCmBKtFc0l
-         ihZ6JlyXHh2Dh/puNLcntGukrg2m8Q5d4VUrugmV55J1H18CE/XXpmiUVRD34qRG+s
-         fZKp2GFkqErYPUk/TneBCii9qZYeFKxnQnq0eqgkc5ugZ8KL6EOxGm6Eva2ZtI06DB
-         5lf8L2WQz5dN23MCW8engv4tXz+7QAcMJHNCEL+w93JhGoTDgoX/OjqHwH036PZlXV
-         drVt7/ZMtUxaw==
-Date:   Mon, 27 Sep 2021 10:16:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Manish Mandlik <mmandlik@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the bluetooth tree
-Message-ID: <20210927101649.2cabe5b8@canb.auug.org.au>
+        Sun, 26 Sep 2021 20:31:52 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHk2G1RN7zRLPM;
+        Mon, 27 Sep 2021 08:25:58 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 08:30:13 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 08:30:12 +0800
+Subject: Re: [PATCH 5.4 00/49] 5.4.149-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210925120748.206179334@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <1d2d809d-30c7-1845-a4a7-bfb0ec79e0c3@huawei.com>
+Date:   Mon, 27 Sep 2021 08:30:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o_8tp.Hi.bdRwptj9h2jotG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210925120748.206179334@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/o_8tp.Hi.bdRwptj9h2jotG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the bluetooth tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+On 2021/9/25 20:13, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.149 release.
+> There are 49 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 27 Sep 2021 12:07:36 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.149-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-arm-linux-gnueabi-ld: net/bluetooth/hci_event.o: in function `msft_suspend':
-hci_event.c:(.text+0x6e60): multiple definition of `msft_suspend'; net/blue=
-tooth/hci_core.o:hci_core.c:(.text+0x36fc): first defined here
-arm-linux-gnueabi-ld: net/bluetooth/hci_event.o: in function `msft_resume':
-hci_event.c:(.text+0x6e64): multiple definition of `msft_resume'; net/bluet=
-ooth/hci_core.o:hci_core.c:(.text+0x3700): first defined here
-arm-linux-gnueabi-ld: net/bluetooth/mgmt.o: in function `msft_suspend':
-mgmt.c:(.text+0xd188): multiple definition of `msft_suspend'; net/bluetooth=
-/hci_core.o:hci_core.c:(.text+0x36fc): first defined here
-arm-linux-gnueabi-ld: net/bluetooth/mgmt.o: in function `msft_resume':
-mgmt.c:(.text+0xd18c): multiple definition of `msft_resume'; net/bluetooth/=
-hci_core.o:hci_core.c:(.text+0x3700): first defined here
-arm-linux-gnueabi-ld: net/bluetooth/hci_request.o: in function `msft_suspen=
-d':
-hci_request.c:(.text+0x2d0): multiple definition of `msft_suspend'; net/blu=
-etooth/hci_core.o:hci_core.c:(.text+0x36fc): first defined here
-arm-linux-gnueabi-ld: net/bluetooth/hci_request.o: in function `msft_resume=
-':
-hci_request.c:(.text+0x2d4): multiple definition of `msft_resume'; net/blue=
-tooth/hci_core.o:hci_core.c:(.text+0x3700): first defined here
+Tested on arm64 and x86 for 5.4.149-rc2,
 
-Caused by commit
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.149-rc2
+Commit: e9755952d24071ff6f516d4c381e911abec76d27
+Compiler: gcc version 7.3.0 (GCC)
 
-  47cb49448039 ("Bluetooth: Fix Advertisement Monitor Suspend/Resume")
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-# CONFIG_BT_MSFTEXT is not set
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-Forgot the "static inline"?
-
-I have used the bluetooth tree from next-20210924 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/o_8tp.Hi.bdRwptj9h2jotG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFRDXEACgkQAVBC80lX
-0GyQwQf/XngLPfadG/MBTnGRtvf2/emOPDl2plr0bI6uhFExFm8kbOOyYHkF9QKt
-+GEATKr9QZKn2w/p9BVd11NSG60zCrPbLXNzQD552h7aDTEPSWzwjrWVgSkMerBp
-1lzU4aayNxelYNOhe69p3lMLGFgcEMdL3TuAiVS7bFYeIMQMZH+slWf5meCUV+N5
-Q27q10XiNvfOKjGqGEbFgpoep8NaNoAMrpgCVYm8GBBDtlIfhXIeWf4MPEOF1G9c
-a5qwSFRLuhsfhkGomUt9xOfu2bKCSggSB5f0lo16WMirWT4sAQaDDn4SS8guJkWC
-1muhUcaVfrJtgkOvpFKrsrZWPItaDQ==
-=dMWx
------END PGP SIGNATURE-----
-
---Sig_/o_8tp.Hi.bdRwptj9h2jotG--
+Tested-by: Hulk Robot <hulkrobot@huawei.com>\
