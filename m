@@ -2,67 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA8D41983D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C4941983F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhI0Pwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:52:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235202AbhI0Pwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:52:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB3066103B;
-        Mon, 27 Sep 2021 15:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632757858;
-        bh=UCCvAHzd6lqyG1Rjf5H7gKg4GmJepqO6vvcgkEy7RZk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XQ7PLdBdmuetfPXJ+PSPCgtbNt6QSQONep2sWIwT3Fl6uEyefMyjSyj9BXRQX8yND
-         dUrCCIq3czIyt0u7FZSuEvl+Ul0WW8+nSiJZtoCo2IjtyUfnI+To5GVW4Ak4eNx17N
-         eFYBEnHT8vGskYHaRBgzWwqebJv4TvJpwlOYcqXQ=
-Date:   Mon, 27 Sep 2021 17:50:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: most: dim2: force fcnt=3 on Renesas GEN3
-Message-ID: <YVHoXyULqXsWktMN@kroah.com>
-References: <20210921165130.24178-1-nikita.yoush@cogentembedded.com>
- <YVHjQ95lbDjvVR73@kroah.com>
- <17e51208-18b9-56d8-e8e3-2e40d6e94438@cogentembedded.com>
+        id S235265AbhI0PxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:53:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235100AbhI0PxX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:53:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632757905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/vgpSXmiTJjoeFVzvxVktr7agfW9UwhR9y61Ap04cEk=;
+        b=dg1M2tErlrZL2UZ5+qxSyU5xjL8aS4sHgpfmVyOJkzXV1pI0ndsuPWoivZDw3tPzH8BXZl
+        4S0xqe6bP55zgTmhwosxquGEXko+B4gSzRRatp1PJdFXFlgVYQc8fU5BfRFX4vDelcIvs+
+        tsWM13zYfxvKZN97Otj07X9rqusWaXU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-515-Awii3jzhPUGjT4rCBDaSQw-1; Mon, 27 Sep 2021 11:51:44 -0400
+X-MC-Unique: Awii3jzhPUGjT4rCBDaSQw-1
+Received: by mail-wr1-f72.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso14209346wrb.20
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:51:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/vgpSXmiTJjoeFVzvxVktr7agfW9UwhR9y61Ap04cEk=;
+        b=xqzpzU5ZMjkEwyurOaNNtenCkqnVbw7g0rad6M1U2UJzll+9EkctrXwpTynGSuEMo4
+         wY52OBDfVJMJQCie9fgN/4YKc4sY9qYqp8at9XRjCzadc/JggbLxTZe6BYr1Xi3KFz6U
+         40U3Lgp8HPHKSkcnYM3p09KLtycqBaSXkNm76HyCACTChAqLIDnYCVZAggLvH95eHxHA
+         YFteaK263CjESGmPmrQ47ew177yFfIoWbAF1FR1asOaHQ5vV8cwEttBDl6KizChSUWCz
+         a1dfJ9u8haJKsqUIi3SQ0pY15ccu6E6zXsmVURGx6cMVVk/sX9Dc5nE6oKwbGB4G/t5t
+         OeFg==
+X-Gm-Message-State: AOAM530Csnnl2m+buyEhvYz4FR6l8hjYmFNmYBjarILTMSA63K/pueJa
+        mcG0cVPgtVL1HL0UDDtLnENepu0MLEjFf9ICq1dViaUmP/PFiuZmrezbeKM84hBXUsyOuv6X8Oe
+        pUPk8fosQzYDP/3A0Z5RhkUYU
+X-Received: by 2002:a1c:a78d:: with SMTP id q135mr685570wme.36.1632757903078;
+        Mon, 27 Sep 2021 08:51:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWTyyR4BQrL35V7YoVFE/8tnjzyceGwJuLvzKyMN+8BuumNqGsYOneMg0dw3n5qeSkT146PA==
+X-Received: by 2002:a1c:a78d:: with SMTP id q135mr685553wme.36.1632757902915;
+        Mon, 27 Sep 2021 08:51:42 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c654d.dip0.t-ipconnect.de. [91.12.101.77])
+        by smtp.gmail.com with ESMTPSA id c18sm9623733wmb.27.2021.09.27.08.51.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 08:51:42 -0700 (PDT)
+Subject: Re: [RFC] arm64: mm: update max_pfn after memory hotplug
+To:     Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
+ <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <833493d2-d585-47ee-c258-79eae5deff36@redhat.com>
+Date:   Mon, 27 Sep 2021 17:51:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17e51208-18b9-56d8-e8e3-2e40d6e94438@cogentembedded.com>
+In-Reply-To: <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 06:40:13PM +0300, Nikita Yushchenko wrote:
-> > > +	dev_fcnt = pdata && pdata->fcnt ? pdata->fcnt : fcnt;
-> > 
-> > Please use a real if () statement here and do not bury real logic in a
-> > crazy line like this one, as that is all but impossible to maintain over
-> > time.
+On 24.09.21 00:54, Chris Goldsworthy wrote:
+> From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
 > 
-> The same source file already uses the same form of conditional expressions several lines above:
+> After new memory blocks have been hotplugged, max_pfn and max_low_pfn
+> needs updating to reflect on new PFNs being hot added to system.
 > 
-> > ret = pdata && pdata->enable ? pdata->enable(pdev) : 0;
-
-It's not good there either.
-
-There is a reason this code is still in drivers/staging/ and that is one
-of them.  Let's not duplicate bad code for no real reason please.
-
-> > dev->disable_platform = pdata ? pdata->disable : NULL;
+> Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+> ---
+>   arch/arm64/mm/mmu.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> Shall I use real if statement for my expression while keeping those as-is? This looks ... strange.
-> Or shall I convert all conditional expressions to if statements?
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index cfd9deb..fd85b51 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>   	if (ret)
+>   		__remove_pgd_mapping(swapper_pg_dir,
+>   				     __phys_to_virt(start), size);
+> +	else {
+> +		max_pfn = PFN_UP(start + size);
+> +		max_low_pfn = max_pfn;
+> +	}
+> +
+>   	return ret;
 
-Do not add additional ? : statements in this patch.  I would be glad to
-take an add-on patch after this that fixes up the other uses in the
-driver, but that should be separate as that is a separate issue here.
+Note: didn't verify if updating max_low_pfn is correct here.
 
-thanks,
+Acked-by: David Hildenbrand <david@redhat.com>
 
-greg k-h
+
+-- 
+Thanks,
+
+David / dhildenb
+
