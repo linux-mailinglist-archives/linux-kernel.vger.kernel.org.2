@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B912241980E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648C8419810
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhI0Plp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:41:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235100AbhI0Pln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:41:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B4E160F6C;
-        Mon, 27 Sep 2021 15:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632757205;
-        bh=j+CKkGUGWTO8eYdtb3jkg0EQqw0sy92Yr/hAjQEmnAw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=clVRMS8mohxD0Mm87m/nLRJxOOXVE7yywHbWPjg6XDp0FpvBXjW2bBcY46zDWzgsB
-         goBIkBiJlNHlVkEU3g8SBiedTw6O3uD9pdO8IYE+MDRzr8PQ27eQ+r2hL46Yu8zVPw
-         VRanyh0iZPkBfAiWHEfZGAaXlOJmus2VRYLbF1MI=
-Date:   Mon, 27 Sep 2021 17:40:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Samuel Iglesias =?iso-8859-1?Q?Gons=E1lvez?= 
-        <siglesias@igalia.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        industrypack-devel@lists.sourceforge.net,
+        id S235228AbhI0PmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235112AbhI0PmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:42:01 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D90C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:40:23 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i25so79801862lfg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7uZ+gRol/KIudEZLw050U1sUe4rvi6xJlQLIYjTorQM=;
+        b=rL77yan5j9TgD01AEbbvHMzXYMfKv4dJ26BM4zP8IZ6+cYTvwMuBGNfRQNDgT3Vzex
+         FvKQUR6kkwiGaWS3YX3PuKuzKCjqUZA/1JTOtA/NMrNf7MzJxTXh9PB/SUx5RFdf5j5v
+         vKtH6iN3iIxJogpizrlG0WYQMZfruwlFZloIxakBRsyQZ8dp2FWYE1XNuah5bcGiHHeN
+         pJL/uLYuj8HUHG6ecfHIMiF74aIM1QTyi9+v07MM/c8HfztymCExC4sw8pdEeKArKFaF
+         Acy4Lz3Q6W5Ksg2voyH0oTeyCHijuaah5Rle+Cr2nPjawOYm+lTXJ2YJfSkG8ZDAZdCn
+         iWeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7uZ+gRol/KIudEZLw050U1sUe4rvi6xJlQLIYjTorQM=;
+        b=Llx9AxyE8rxdRFU4HowGntzMDxHjrxSO/jsdmQmsyxpPZjF1yE1PGuWhncxQNkBW9z
+         oHhJuv82QEjFVS4EAHexFPt9mL9ubB+OE6bOijMrv1IBqr0u6QxjZHAYg2L7dVRC2om7
+         f5RkMLC14zkr2bQoMDxSR+7vgWqiDyBC1Emhe7F3ANGQ56kOQcVn/XxFt3vOjhW/obfk
+         MF+/cKCKRT+ECn+tQ6bf53qnThSzrlE/YkxwgZArN8r0/Boj1MX6ebm4qeqEXyjC3Tvk
+         /xqC/pjscxZz1ymNqQ5dQ/mICdOP+BlP+tfa6tXDUU+2i09FXacf7c40CREvGiS8Bec7
+         /MBA==
+X-Gm-Message-State: AOAM5304rG48uw+p9ECpyWhuFA757cnzqWFXOoYJav0twZQVlCOawZti
+        Je6gtNc7Svzej6scSvSVuY77OOk0wAtVBeoJ
+X-Google-Smtp-Source: ABdhPJzghrKub0OezplaDpxg3KRDVv3kVAzRjV6EiLmXpfkTimU7SUxOcd+xcDA9Cc5G16NdaS3K2w==
+X-Received: by 2002:a05:651c:21b:: with SMTP id y27mr547301ljn.106.1632757215039;
+        Mon, 27 Sep 2021 08:40:15 -0700 (PDT)
+Received: from [192.168.112.17] (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id a11sm1635394lfo.5.2021.09.27.08.40.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 08:40:14 -0700 (PDT)
+Subject: Re: [PATCH] staging: most: dim2: force fcnt=3 on Renesas GEN3
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] ipack: ipoctal: fix info leak and other bugs
-Message-ID: <YVHl01zC49e3pgSv@kroah.com>
-References: <20210917114622.5412-1-johan@kernel.org>
- <259e8411270f663352829e8df9af627d6fba4d1b.camel@igalia.com>
+References: <20210921165130.24178-1-nikita.yoush@cogentembedded.com>
+ <YVHjQ95lbDjvVR73@kroah.com>
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Message-ID: <17e51208-18b9-56d8-e8e3-2e40d6e94438@cogentembedded.com>
+Date:   Mon, 27 Sep 2021 18:40:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <259e8411270f663352829e8df9af627d6fba4d1b.camel@igalia.com>
+In-Reply-To: <YVHjQ95lbDjvVR73@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 07:49:45AM +0200, Samuel Iglesias Gonsálvez wrote:
-> Hi Johan,
+>> +	dev_fcnt = pdata && pdata->fcnt ? pdata->fcnt : fcnt;
 > 
-> Thanks for the patch series!
-> 
-> Patch series is,
-> 
-> Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-> 
-> Greg, Would you mind picking this patch series through your char-misc
-> tree?
+> Please use a real if () statement here and do not bury real logic in a
+> crazy line like this one, as that is all but impossible to maintain over
+> time.
 
-Now done.
+The same source file already uses the same form of conditional expressions several lines above:
 
-I'll wait to take patch 6/6 after the first 5 go into Linus's tree as
-that one is not needed for 5.15-final.
+ > ret = pdata && pdata->enable ? pdata->enable(pdev) : 0;
 
-thanks,
+ > dev->disable_platform = pdata ? pdata->disable : NULL;
 
-greg k-h
+Shall I use real if statement for my expression while keeping those as-is? This looks ... strange.
+Or shall I convert all conditional expressions to if statements?
+
+Nikita
