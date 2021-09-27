@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F4A41A0ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C15C41A0F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237087AbhI0VBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:01:40 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:39612 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhI0VBj (ORCPT
+        id S237149AbhI0VB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhI0VBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:01:39 -0400
-Received: by mail-ot1-f43.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so26211789ota.6;
-        Mon, 27 Sep 2021 14:00:00 -0700 (PDT)
+        Mon, 27 Sep 2021 17:01:54 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403B1C061575;
+        Mon, 27 Sep 2021 14:00:16 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g7so15045572edv.1;
+        Mon, 27 Sep 2021 14:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+02IDEYrPYq3F1M6y7pim37RPPbUvjKhUbqQrSE7xPE=;
+        b=UL2Kc6yJm+n5Ftehbwc/ffXWaAzHQTACtoWpSBsw4Ccd4OQmWwbX8zk0UQruYz4P+Q
+         A8OgAr1iMnsHVyv3Aadu1TBMuLa7Gj8CykXzsz8MVBfc1KI5yeUqVykqRBAxILSQsav/
+         YHfh9zNnboDWOFlXLFHAhd2nqfCKTL1toTw2WIuuTswatPp+bqSbE9PyHyUinOEy69Nl
+         v7KLZ5PP+ZPuPvjfiAqNf3MkF5QxfPTEUqW+O5K6PHNBRJ89zekBTAXhuWExyS6JTE38
+         pXKE1vdlLDrO12Jsni2TIB4gduLmWBlgHUxFylR+BKLO//Qx4vsFccYGVEuusnLvSxGt
+         e3kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hfxAWgi9IMrylht0jZi+Ig2uHEKFPTa9u+u7zjuCrqg=;
-        b=LDcCQUhqJEuGNn2T+btTWFSJ63Dh8AvYflOohev7cbMYXtYrhbMhN0PoGHm493NeDq
-         nwnAdZV8oSA7SZNQLVclYliOP1KIQSw6fW1sr/6pnO5ZUhdWjKKrDn3Q6Z9Sz001Kg4+
-         9XxpJgLEpxOFCTXF2vFqGPG6m8Cnez3qYO42xSF3Y2fp3s9qJH702bd+U3p8+t8giowd
-         WbLF/klOS2BsZJmRZJYXoYemVrrOIldbYZnXb60VvNl8HtXdcRzNuGCNfzSdYXCPJf9v
-         7pfmVzQF1mI4xq6Nil+2OKOXq9FW6ELOx0vUwo12cYASYFsMdQpzxvs/mKdtYLdccjVk
-         hQeQ==
-X-Gm-Message-State: AOAM5329IQAwXhT9zbBgJswTipdupNK5oC1JGw9d16Zi8qkbhwGFz5ym
-        PG+C5w0h1QMs7GbdC2qv2w==
-X-Google-Smtp-Source: ABdhPJzJDxoA1sPhYLp9QFMrH/V+8MB+O8p7EXLsBwQzCZwL3dxpxDjcpK8itOQsQUJ6kwxuFOgEWg==
-X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr1874891otd.200.1632776400371;
-        Mon, 27 Sep 2021 14:00:00 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id u2sm2501724otg.51.2021.09.27.13.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:59:59 -0700 (PDT)
-Received: (nullmailer pid 3864707 invoked by uid 1000);
-        Mon, 27 Sep 2021 20:59:58 -0000
-Date:   Mon, 27 Sep 2021 15:59:58 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Olof Johansson <olof@lixom.net>,
-        Daniel Palmer <daniel@0x0f.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 3/3] ARM: dts: mstar: Add the Wireless Tag
- IDO-SBC2D06-V1B-22W
-Message-ID: <YVIwzqjYXzqIxl0a@robh.at.kernel.org>
-References: <20210923170747.5786-1-romain.perier@gmail.com>
- <20210923170747.5786-4-romain.perier@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+02IDEYrPYq3F1M6y7pim37RPPbUvjKhUbqQrSE7xPE=;
+        b=SHIDYmLvwBlUkTxYYKDpNdpE+It9TsRAnMdSFVg+TjIPe6HNzAOny5cBbaF733dwmB
+         lVs1cRLzB1ogXxCC7NoWwQcVK4Yqxct/tJ7ollwvx7ORBedQWG5xrkW/BYhkmVU4DhnZ
+         dYg8e+/1MeZfWHsQpDVRVtubPKXLfNW+CsYmzU60JFa+XQUtTc5lSMXRwRkC2r2eTxse
+         +anMECOajidewT9o8pNlZHWRb8oLq8dn9sRHjaEThRn5XIYzlKd+4VCxmV0tufkgEpcg
+         e+Nc6s0W7eM1JkBMTx8/RVb5zRlikdcgqPBO8gQLB1uVTCQ27E4y/WsLAqpUDCGvPF+t
+         mERw==
+X-Gm-Message-State: AOAM5327eX3ltobrrhRnqT0KZ3UiMF8yRk2bnv6E3r/GOAn0EtUWLhtQ
+        WssgWDCUz65OrkvZctvDdw2KlUqw2UkA+YTHkE0=
+X-Google-Smtp-Source: ABdhPJylfktO26n2FKL12pTxJEmFlZQOZIuN9A74w1/+w8gOqQT+FRA2G5lOUsCFJJSi1rEIveLt6WIegaY1AQ+eptc=
+X-Received: by 2002:a50:dacf:: with SMTP id s15mr2757371edj.385.1632776414890;
+ Mon, 27 Sep 2021 14:00:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923170747.5786-4-romain.perier@gmail.com>
+References: <cover.1632750608.git.mchehab+huawei@kernel.org> <9cdebbad008886b1d09f5f3ac5d88bee19f08d97.1632750608.git.mchehab+huawei@kernel.org>
+In-Reply-To: <9cdebbad008886b1d09f5f3ac5d88bee19f08d97.1632750608.git.mchehab+huawei@kernel.org>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 28 Sep 2021 10:00:03 +1300
+Message-ID: <CAGsJ_4xYJUCP_MSj5-bmjs6fUTbYqOM2eVVSvZcW_XJcf25w=Q@mail.gmail.com>
+Subject: Re: [PATCH 17/17] ABI: sysfs-bus-platform: add modalias description
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 19:07:47 +0200, Romain Perier wrote:
-> The Wireless Tag IDO-SBC2D06-V1B-22W[1] is an SBC powered by SSD202D
-> with a dual Ethernet and a connector for a 4-inch and 7-inch display.
-> It embeds a System-On-Module IDO-SOM2D01[2] with an Mstar SSD202 SoC
-> dual-core Cortex-A7 CPU @ 1.2Ghz , 2D GPU, 128 MB DDR3 (on-chip) and
-> a 256MB SPI NAND flash. This commit adds basic definition for this
-> board.
-> 
-> 1. http://linux-chenxing.org/infinity2/ido-sbc2d06
-> 2. http://www.wireless-tag.com/portfolio/ido-som2d01
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  .../devicetree/bindings/arm/mstar/mstar.yaml  |  2 ++
->  arch/arm/boot/dts/Makefile                    |  1 +
->  .../dts/mstar-infinity2m-ssd201-som2d01.dtsi  | 20 +++++++++++++
->  ...sd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts | 23 +++++++++++++++
->  ...ity2m-ssd202d-wirelesstag-ido-som2d01.dtsi | 28 +++++++++++++++++++
->  5 files changed, 74 insertions(+)
->  create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
->  create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
->  create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
-> 
+On Tue, Sep 28, 2021 at 3:02 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Define the modalias parameter for platform devices, including
+> the ones exposed via devicetree.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+
+> ---
+>
+> See [PATCH 00/17] at: https://lore.kernel.org/all/cover.1632750608.git.mchehab+huawei@kernel.org/
+>
+>  Documentation/ABI/testing/sysfs-bus-platform | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
+> index ff30728595ef..c4dfe7355c2d 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-platform
+> +++ b/Documentation/ABI/testing/sysfs-bus-platform
+> @@ -42,3 +42,15 @@ Date:                August 2021
+>  Contact:       Barry Song <song.bao.hua@hisilicon.com>
+>  Description:
+>                 This attribute will show "msi" if <N> is a valid msi irq
+> +
+> +What:          /sys/bus/platform/devices/.../modalias
+> +Description:
+> +               Same as MODALIAS in the uevent at device creation.
+> +
+> +               A platform device that it is exposed via devicetree uses:
+> +
+> +                       - of:N`of node name`T`type`
+> +
+> +               Other platform devices use, instead:
+> +
+> +                       - platform:`driver name`
+> --
+> 2.31.1
+>
