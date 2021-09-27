@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10A14193CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887EA4193CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhI0MEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51274 "EHLO
+        id S234199AbhI0MEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234126AbhI0MEP (ORCPT
+        with ESMTP id S234087AbhI0MEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:04:15 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA17C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:02:37 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id jo30so10935596qvb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:02:37 -0700 (PDT)
+        Mon, 27 Sep 2021 08:04:49 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB948C061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:03:11 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id y35so17161792ede.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qLGMzgcPQFDHN83z8jWEK1bxNWkGjHVB+skJQt3mBYM=;
-        b=SZY2ZrwPe20b6a9vWLqE0BRLWU5FDF9P5daqr8K7SurQjxhf296eJQASmtduozOVqI
-         l0oP1W18sDA45eA36zvQgku5Xn07XBeiQGWpll4l+Qntgc8RGrNB6CQhJ3W/JHBtjWER
-         UatI4ehAV1GLfODmmvipXAH/XJ3cCnXlK+zvdFzyemLARSvJFBHJKRitjHQxDD92HNIv
-         sBsMtEK+erfKRxztQU9F32Z0NDOqrN7Zslgw+zhbDRODvemvO3WeVzXAJArXNsNIMPDc
-         UGxR1xXfJcQCHSu7NTcpI79Tmn3CdyJbt+c9tgpQz4mtJ/MjZa6iaZfSF5g3O3g/B9WO
-         hDMg==
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HgxsgFEJyDrPgvkPyP1u+drogRTW/Ry0SDoI8qAzwZo=;
+        b=MuNocPT8FacPIl0EopBHd85thJms4slUrjm4uPzlymPqGD8YDyKfwnVY3SJnreZnlq
+         mP+QfsrAYwFZpAURiJ5bX4eFnYZNJ3O/TiRZNURNlYVHyN6TR0ACjd+c2flkpnV/rsmU
+         aJq2IOB8vFchay6qK47Nrbe0DqG0pSCszdegHFdt3Ra+LIDnnMKAvMY8oZyAolmVRdaO
+         zDEDc5EUTrOghgV0JjyoHJ5js1G/grpuDJzX4pIVFpaX2g+tphSJc0iJr77wz7n53tLI
+         xaQxlhYf0hWxNGX1/juvNoS/o4h+xTG1ACPOQ9ogtAfSxObcaLkGGWXmgsVv9vaj3d+n
+         LF2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qLGMzgcPQFDHN83z8jWEK1bxNWkGjHVB+skJQt3mBYM=;
-        b=c8nx/LcAaBPC6idjxGxGC+1nKhY6ofZTZLjezIldN7s/+Si8HvKpx/Sah7di+vK1Rd
-         5QfE39Nj5S6aaLxa9ae2wQGEfrLgWjlCsV+b7zx664sVtLcPf3NM5dG4EpKSpRXwu02y
-         1We/nbdM4e5i8lk4hCn5452qOhebNx9wM5mdnvXXM7CydKZ08A8qjFu0vTJVOBMgYEQ4
-         1vOYpdYtiG4nJoUAJECG6ROJIZmFMSon0yo6MxQZJK7Zszn+jEtRw3Rm4tSGShfYF5fk
-         VpgGUN4/JvjN2MRIMpTDW0Oj1yHgpTro3VBvuZhDDfjlmxCdqyIggckaxku1SydtRjfX
-         x3rA==
-X-Gm-Message-State: AOAM531zgi/xXoT3fsJ/TRw3EVSoX7+VhYCnJ9lpmjAMnYrChX5kLOTv
-        N051mkoHifKNaLR0DhhLez6vWUhN3uzXzA==
-X-Google-Smtp-Source: ABdhPJxDIMtDdHCzcVRtCFxWjXnJfMaqGwzWsg1D2Tgx4f3IlNpWU5MAwUf8p+lirgxXUkPHWpzv+A==
-X-Received: by 2002:ad4:568f:: with SMTP id bc15mr658137qvb.44.1632744156813;
-        Mon, 27 Sep 2021 05:02:36 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id s12sm12065144qkm.116.2021.09.27.05.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 05:02:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mUpL9-006J0p-OP; Mon, 27 Sep 2021 09:02:35 -0300
-Date:   Mon, 27 Sep 2021 09:02:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/irdma: Use dma_alloc_coherent() instead of
- kmalloc/dma_map_single()
-Message-ID: <20210927120235.GB3544071@ziepe.ca>
-References: <20210926061124.335-1-caihuoqing@baidu.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HgxsgFEJyDrPgvkPyP1u+drogRTW/Ry0SDoI8qAzwZo=;
+        b=hxTqp6zQZSUflLkRdxPFls9HkGeQS2iSUKLIbRj1xyhl2XMdY+LwDhKaXyxWMnVIba
+         Qy4KDinHjehus1gY01XN64zp6uFcqAHYIyAC/df5hTx6FLiQY1X60qBIeuv5yyg4nzvi
+         55BZe1OPLl+CaiUiHxsKKvVKz5DxSB0BY9h9Voux9iCbJTd9Zf9/dxYOXQ71CcKtO4f3
+         CNrN8BocA7KB3+0FzXS3X1wRv/wANlwxh4yFlAeSskfmKzl/a7RDCfklGx931vEXQJ9h
+         IYK7fU6RuA6YEKJPCkMKipfiuH4A560f0KXwNCCf2ZFiH+WAmMe7BqNQr0LHo+WOcaIg
+         Z4dw==
+X-Gm-Message-State: AOAM530fFaq2Lvjl/gYPLmjqdXwmG//y18AQMCcfope4NKz6Vr1EQDBo
+        vE5GNIKYDxWbXxAmCQoMTY2zx2Hu1kA2um9aLxxiww==
+X-Google-Smtp-Source: ABdhPJzmsFbA0j9GZCj2/1npqP3jxyQTWa14E7dOuuz4XzPn7iCGB9AIe6yLdGfRckAWaTGt2FG/OxeP3bKRPt4igbo=
+X-Received: by 2002:a50:e0c8:: with SMTP id j8mr22479077edl.283.1632744189819;
+ Mon, 27 Sep 2021 05:03:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926061124.335-1-caihuoqing@baidu.com>
+References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
+ <20210926223322.848641-4-isabellabdoamaral@usp.br> <CANpmjNN4z9YsD=KjGjgdXsQbKD68RGh5bu-AEX6FeryZ2GdXCQ@mail.gmail.com>
+In-Reply-To: <CANpmjNN4z9YsD=KjGjgdXsQbKD68RGh5bu-AEX6FeryZ2GdXCQ@mail.gmail.com>
+From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
+Date:   Mon, 27 Sep 2021 09:02:58 -0300
+Message-ID: <CAAniXFQv6r+dmVYc9e-MuJxLqDoyayFLfBZw0FqW3hP7+RQXjg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] test_hash.c: split test_hash_init
+To:     Marco Elver <elver@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Enzo Ferreira <ferreiraenzoa@gmail.com>,
+        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
+        <augusto.duraes33@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        ~lkcamp/patches@lists.sr.ht,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 02:11:23PM +0800, Cai Huoqing wrote:
-> Replacing kmalloc/kfree/dma_map_single/dma_unmap_single()
-> with dma_alloc_coherent/dma_free_coherent() helps to reduce
-> code size, and simplify the code, and coherent DMA will not
-> clear the cache every time.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/infiniband/hw/irdma/puda.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
+Hi, Marco,
 
-This I'm not sure about, I see lots of calls to dma_sync_single_* for
-this memory and it is not unconditionally true that using coherent
-memory is better than doing the cache flushes. It depends very much
-on the access pattern.
+On Mon, Sep 27, 2021 at 5:17 AM Marco Elver <elver@google.com> wrote:
+>
+> On Mon, 27 Sept 2021 at 00:33, 'Isabella Basso' via KUnit Development
+> <kunit-dev@googlegroups.com> wrote:
+> >
+> > Split up test_hash_init so that it calls each test more explicitly
+> > insofar it is possible without rewriting the entire file. This aims at
+> > improving readability.
+> >
+> > Split tests performed on string_or as they don't interfere with those
+> > performed in hash_or. Also separate pr_info calls about skipped tests as
+> > they're not part of the tests themselves, but only warn about
+> > (un)defined arch-specific hash functions.
+> >
+> > Changes since v1:
+> > - As suggested by David Gow:
+> >   1. Rename arch-specific test functions.
+> >   2. Remove spare whitespace changes.
+> > - As suggested by Marco Elver:
+> >   1. Add struct for carrying test variables.
+>
+> Did the patches get mixed up? The struct doesn't appear to be introduced here.
 
-At the very least if you convert to coherent memory I expect to see
-the sync's removed too..
+Yeah, thanks for the heads up! I must have mixed the messages when rebasing.
+Sorry about that. The struct was actually introduced in patch 2/5. Do
+you want to
+have a look at it or should I send the v3 with the correct message before that?
 
-Jason
+Cheers,
+Isabella Basso
