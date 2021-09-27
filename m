@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1F441A138
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA87B41A13E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbhI0VPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S237167AbhI0VS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234848AbhI0VPf (ORCPT
+        with ESMTP id S230046AbhI0VS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:15:35 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3111AC061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:13:57 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id g41so83044119lfv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:13:57 -0700 (PDT)
+        Mon, 27 Sep 2021 17:18:58 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C199C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:17:19 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id e7so19023831pgk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=StkEwZukQIXbK1uuB3PfKHlHFMrtoXm8L/aNxJSj/hI=;
-        b=RKYGFrdRGUY0Qr4PrQoA7DMKX7/lPkgHNsgatrG4a4+upKxYnI9RUCkzF2W4SC8OSM
-         /bPbvm3yhSi1Ya1CWbiyJiQLV7y1tbZm2WjnakYCf00rhvgCMJOPpvf39D3PxEEC/ExW
-         b0tRnT3yAPubfdQTf7dbw5P0j6l1RwO7Bh1biJ1IuLAk5CyOYbeWeWbKDh4+mSoDYliM
-         2KnoyUqKcFUHdEm0fG+WtbbS7yiKi5w0MnFzG+Eoo6oxsZnLmr6M37W6K7NdDCtm6zAz
-         8ZRnTq0fOlKHvltoaXSRd/DQtuVSFcq03kyh2Qk6htu2dMZxOjUvxFcpEGoal31V1zkK
-         JjFg==
+        d=llnw.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=JLK/sRP9I8Wlr+P16AIpY8iwsR/LeBc/3r2jJEyV9+M=;
+        b=MLsXgdgEfYiZnTCSOSviYe/vWLecYqTiMgSmbLz9hNdVt/iFfJjdDMe5Ki9FfF4+fi
+         piKeRePfkqMQijTnNQUp3p/EkmTknRbReMYjQp3rAT1CbNRyJ0/YOFjAIiQV6JzDlrK4
+         8FFMHNE+TQDURRnMyfOly21j523SG3sA40Yz+CcsjIi52NU6EJzKFPpHRR7MAF/Hcunm
+         dnI/VTHT3/GEMfd5MHEhA8YtTZQFAUVgsaNQusUCyoyQOYBmNFp2L8KOIJndLneeVCU9
+         PmXgFLHaDX8eDrgaZo8thJsfLXPbhYGxX2lWsNTUSO8zdEs0uRzXX1GKU2DvgDu3YR4R
+         VUoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=StkEwZukQIXbK1uuB3PfKHlHFMrtoXm8L/aNxJSj/hI=;
-        b=xt56ZI/w3WIMJ0O52LBH9OO1PodTld/vBx/IPRkVFoed4MHL+B2eUPjYf5khezyeq8
-         30cPbSkK41gQhxfEFb91ZyTT1ED4lhaivBPM227BRWKl9W6xiPH1d/xnJTowngawSF6L
-         dsh6tGdekvOUjfWDcdQmv4imsJtwEaS5bJkS4dzdFcTxbPeY0Lxqm7IaKarY4FBSLB2p
-         fasl9S+ShS59mxDjASGrlAc5LotWbnxWirqBGjMlsba3a9IRu/G++8EtM7HgAhtB5vp8
-         EWQtuu1k2/b4wN8dyh2PmAd/dX8WbGa1WehIZZ4KDRLxUPuTDAD8EYrBxqJfVEUN0HOs
-         1RbA==
-X-Gm-Message-State: AOAM533aYEe1QKnkkyQUZmuVf/ul0RarLsDTvjMsPZtCJNbvuvk6X4Wf
-        avGpTKcnOvy1QLYNf//5m2IBMg==
-X-Google-Smtp-Source: ABdhPJxsGvDOsHqzStbGibFeaveUORepFkw5kE7+/rNCfQBFIjMTzwvhwTl21th2x6sxeU3Uu8zF5A==
-X-Received: by 2002:a05:6512:3e03:: with SMTP id i3mr1995773lfv.374.1632777235106;
-        Mon, 27 Sep 2021 14:13:55 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id t12sm1706864lfd.112.2021.09.27.14.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 14:13:54 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v5.15-rc4
-Date:   Mon, 27 Sep 2021 23:13:52 +0200
-Message-Id: <20210927211352.21266-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JLK/sRP9I8Wlr+P16AIpY8iwsR/LeBc/3r2jJEyV9+M=;
+        b=cmWvQgmoeYjp/IDPUgllNoyK6I5h219A9Rgqc/O93OIes+sB4dsjXzetQ00QFDrc5r
+         vCJID9sATHVS0nxTwDABRqOJa1DXIa90ll6h+BzrNdjDC20AXcvjGUBR8BS4NUfAB1lb
+         ANdZlfoMj4FIj861otwx1R8mB5bUYDK+c00Xx/Batix9BNT9iqJtiNKKheXJwJZL2jxN
+         QG1vIiKBu2vfBGlBBJvMiKjwrlszO5e4DGPADnSRTOMXycH8UnUwB6iy0HIxVI6ea8aC
+         ls11RU5rlSGG6hIoQR/AlkqMLwAo0gLMRoXEbFcqozqfuuwBiUEffZ7ZYg3I6D8xNkqA
+         ZTRg==
+X-Gm-Message-State: AOAM530Nnnc4lmhxLLG6r/becYNLOkj3OGdKJl8nVgoaMFWV8Yzb0Q9c
+        XIY4rEUX5pECk26KBVWgZVkr3A==
+X-Google-Smtp-Source: ABdhPJxD0IrKG948IZYTdp1EHmpPNjp0LH3HT44kue1APLm8pe3Bt5IJ0OMxeKccvYGPC0RAW1G/lQ==
+X-Received: by 2002:a62:2c51:0:b029:329:932b:9484 with SMTP id s78-20020a622c510000b0290329932b9484mr1975282pfs.13.1632777438957;
+        Mon, 27 Sep 2021 14:17:18 -0700 (PDT)
+Received: from [10.50.24.214] (wsip-184-181-13-226.ph.ph.cox.net. [184.181.13.226])
+        by smtp.gmail.com with ESMTPSA id d18sm20267747pgk.24.2021.09.27.14.17.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 14:17:18 -0700 (PDT)
+Subject: Re: [PATCH] fs: eventpoll: add empty event
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Alexander Aring <aahringo@redhat.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        netdev <netdev@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>
+References: <20210927202923.7360-1-jlundberg@llnw.com>
+ <CANn89iJP7xpVnw6UnZwnixaAh=2+5f571CiqepYi2sy3-1MXmQ@mail.gmail.com>
+From:   Johannes Lundberg <jlundberg@llnw.com>
+Message-ID: <c675343d-a5bc-dce0-bcde-8a952682e698@llnw.com>
+Date:   Mon, 27 Sep 2021 14:17:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iJP7xpVnw6UnZwnixaAh=2+5f571CiqepYi2sy3-1MXmQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Here's a PR with a couple of MMC fixes intended for v5.15-rc4. Details about the
-highlights are as usual found in the signed tag.
+On 9/27/21 1:47 PM, Eric Dumazet wrote:
+> On Mon, Sep 27, 2021 at 1:30 PM Johannes Lundberg <jlundberg@llnw.com> wrote:
+>> The EPOLLEMPTY event will trigger when the TCP write buffer becomes
+>> empty, i.e., when all outgoing data have been ACKed.
+>>
+>> The need for this functionality comes from a business requirement
+>> of measuring with higher precision how much time is spent
+>> transmitting data to a client. For reference, similar functionality
+>> was previously added to FreeBSD as the kqueue event EVFILT_EMPTY.
+>
+> Adding yet another indirect call [1] in TCP fast path, for something
+> (measuring with higher precision..)
+> which is already implemented differently in TCP stack [2] is not desirable.
+>
+> Our timestamping infrastructure should be ported to FreeBSD instead :)
+>
+> [1] CONFIG_RETPOLINE=y
+>
+> [2] Refs :
+>     commit e1c8a607b28190cd09a271508aa3025d3c2f312e
+>        net-timestamp: ACK timestamp for bytestreams
+>      tools/testing/selftests/net/txtimestamp.c
 
-Please pull this in!
+Hi Eric
 
-Kind regards
-Ulf Hansson
+Thanks for the feedback! If there's a way to achieve the same thing with 
+current Linux I'm all for it. I'll look into how to use timestamps for this.
 
-
-The following changes since commit 27151f177827d478508e756c7657273261aaf8a9:
-
-  Merge tag 'perf-tools-for-v5.15-2021-09-04' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux (2021-09-05 11:56:18 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15-2
-
-for you to fetch changes up to b81bede4d138ce62f7342e27bf55ac93c8071818:
-
-  mmc: renesas_sdhi: fix regression with hard reset on old SDHIs (2021-09-06 18:10:49 +0200)
-
-----------------------------------------------------------------
-MMC host:
- - renesas_sdhi: Fix regression with hard reset on old SDHIs
- - dw_mmc: Only inject fault before done/error
-
-----------------------------------------------------------------
-Vincent Whitchurch (1):
-      mmc: dw_mmc: Only inject fault before done/error
-
-Wolfram Sang (1):
-      mmc: renesas_sdhi: fix regression with hard reset on old SDHIs
-
- drivers/mmc/host/dw_mmc.c            | 15 ++++++++++++---
- drivers/mmc/host/renesas_sdhi_core.c |  2 ++
- 2 files changed, 14 insertions(+), 3 deletions(-)
