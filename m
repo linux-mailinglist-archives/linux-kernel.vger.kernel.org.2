@@ -2,119 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F491419803
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6186C419807
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhI0PhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:37:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41948 "EHLO mail.kernel.org"
+        id S235222AbhI0Pjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234622AbhI0PhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:37:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43B40604DB;
-        Mon, 27 Sep 2021 15:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632756941;
-        bh=Q9+I4wEImnOLr+V45cPev4boT5DC7GTCSjTGy4LHB8c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Bbe6MG/sIZlfd7j0Z7SWSkQNRe1rilXRFw6/rELmbymUmfJWXEPwYOcTIZdx+knMf
-         mwl/ee5Ww5G5z1hWB2agF3rSHWiW+vpdgdtdeDfr1sqvAEurWy78Kj9MgjTw9KSgaA
-         bTaTR3DR9D/0fWVatQa1zelJi6Lz03f/iF6k0oCZv687v7Iu9NHYC6AmHpB4+uPo2S
-         iabiS62MQKVXD6HJHQAD4mAi4LkW9gOmj1abjn4V6Lv7KseWbHntQxbZnAyLY9Elyw
-         ajlBTWDu3R0BpxQ0rQnHPSkMGKFJ+l1xud/nuZImTQ2SaBb6ilyPJWK0cCLL8Rbs3v
-         pwecnp8mbF8gw==
-From:   Keith Busch <kbusch@kernel.org>
-To:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Orlando Chamberlain <redecorating@protonmail.com>,
-        Aditya Garg <gargaditya08@live.com>
-Subject: [PATCH] nvme: add command id quirk for apple controllers
-Date:   Mon, 27 Sep 2021 08:35:39 -0700
-Message-Id: <20210927153539.372986-1-kbusch@kernel.org>
-X-Mailer: git-send-email 2.25.4
+        id S234158AbhI0Pjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:39:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D7736103B;
+        Mon, 27 Sep 2021 15:38:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632757087;
+        bh=01pncTuL6mO/zCZjIXlbG8UzM8/W78TrZdnq4pIw33o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WEyrA67ttikhX6GLVEUDRcYmxqD9leWM5LJz6W62G+Du840GRcEsMo+hCrNx107XE
+         LO0OVd+DcdRgfhWDVnHRut1UEKtXlwCWi83DsF+Lz9Ww1Svn9AoZtvYQ0ro/qGm220
+         9Z7ttoqdls5NZWyrDMe5mUY+X6JSGPexQxm4BSvA=
+Date:   Mon, 27 Sep 2021 17:37:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH v9 10/16] staging: r8188eu: shorten and simplify calls
+ chains
+Message-ID: <YVHlRf7C6m+2Si+3@kroah.com>
+References: <20210924122705.3781-1-fmdefrancesco@gmail.com>
+ <1836626.W0nMHyKdkH@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1836626.W0nMHyKdkH@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some apple controllers use the command id as an index to implementation
-specific data structures and will fail if the value is out of bounds.
-The nvme driver's recently introduced command sequence number breaks
-this controller.
+On Fri, Sep 24, 2021 at 02:37:52PM +0200, Fabio M. De Francesco wrote:
+> On Friday, September 24, 2021 2:26:49 PM CEST Fabio M. De Francesco wrote:
+> > --- Preface ---
+> > 
+> > This is v10 of "shorten and simplify calls chain". The 14 (v7) + 2 (v8) 
+> > patches have already been applied to staging-testing, so we have been 
+> > requested to reset the numbering of the remaining patches to 01/16, while 
+> > discarding from v9 the above-mentioned 16 patches (otherwise we would
+> > have submitted a series containing 32 patches, that is 1 patch less than
+> > v8 because it has been dropped by us in what we considered it
+> > unnecessary - it was about fixing a misspelled word in a comment).
+> 
+> Hello all,
+> 
+> Please disregard this weird cover. I don't know how I've been able to make 
+> the mess you see in the subject. The good one has been sent soon after this.
+> And please, let me know if it is necessary to resend in order to have the 
+> cover letter as the first email of the thread.
 
-Provide a quirk so these spec incompliant controllers can function as
-before. The driver will not have the ability to detect bad completions
-when this quirk is used, but we weren't previously checking this anyway.
+Nah, I can figure it out, looks good, let's queue it up and see what
+breaks :)
 
-The quirk bit was selected so that it can readily apply to stable.
+thanks,
 
-Fixes: e7006de6c2380 ("nvme: code command_id with a genctr for use-after-free validation")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214509
-Cc: Sven Peter <sven@svenpeter.dev>
-Reported-by: Orlando Chamberlain <redecorating@protonmail.com>
-Reported-by: Aditya Garg <gargaditya08@live.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
----
- drivers/nvme/host/core.c | 4 +++-
- drivers/nvme/host/nvme.h | 6 ++++++
- drivers/nvme/host/pci.c  | 3 ++-
- 3 files changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index e486845d2c7e..afbd47e16293 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -978,6 +978,7 @@ EXPORT_SYMBOL_GPL(nvme_cleanup_cmd);
- blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req)
- {
- 	struct nvme_command *cmd = nvme_req(req)->cmd;
-+	struct nvme_ctrl *ctrl = nvme_req(req)->ctrl;
- 	blk_status_t ret = BLK_STS_OK;
- 
- 	if (!(req->rq_flags & RQF_DONTPREP)) {
-@@ -1026,7 +1027,8 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req)
- 		return BLK_STS_IOERR;
- 	}
- 
--	nvme_req(req)->genctr++;
-+	if (!ctrl->quirks & NVME_QUIRK_SKIP_CID_GEN)
-+		nvme_req(req)->genctr++;
- 	cmd->common.command_id = nvme_cid(req);
- 	trace_nvme_setup_cmd(req, cmd);
- 	return ret;
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 9871c0c9374c..ed79a6c7e804 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -138,6 +138,12 @@ enum nvme_quirks {
- 	 * 48 bits.
- 	 */
- 	NVME_QUIRK_DMA_ADDRESS_BITS_48		= (1 << 16),
-+
-+	/*
-+	 * The controller requires the command_id value be be limited, so skip
-+	 * encoding the generation sequence number.
-+	 */
-+	NVME_QUIRK_SKIP_CID_GEN			= (1 << 17),
- };
- 
- /*
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index b82492cd7503..456a0e8a5718 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3369,7 +3369,8 @@ static const struct pci_device_id nvme_id_table[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2005),
- 		.driver_data = NVME_QUIRK_SINGLE_VECTOR |
- 				NVME_QUIRK_128_BYTES_SQES |
--				NVME_QUIRK_SHARED_TAGS },
-+				NVME_QUIRK_SHARED_TAGS |
-+				NVME_QUIRK_SKIP_CID_GEN },
- 
- 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
- 	{ 0, }
--- 
-2.25.4
-
+greg k-h
