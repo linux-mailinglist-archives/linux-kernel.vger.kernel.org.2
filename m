@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3FB419A0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92142419B3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236011AbhI0RGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:06:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44560 "EHLO mail.kernel.org"
+        id S237014AbhI0RQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:16:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235929AbhI0RGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BF806113A;
-        Mon, 27 Sep 2021 17:04:22 +0000 (UTC)
+        id S236324AbhI0RLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:11:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA6BA61205;
+        Mon, 27 Sep 2021 17:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762262;
-        bh=ddjRpM4FxVyZt5Ae/yxSo/QEoLsCMBmjqDKiTYP+zK4=;
+        s=korg; t=1632762502;
+        bh=+IVlsfsqQGtAQEzOZrYN1MEkm3qMZKeYc6Xdqh4kBhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rFBQYdKcW/6ovb75s6ppjbnd1ybWLu5APYYJ68PM8TBtig0VDaqUA8oWYDcM0W6lR
-         8mBkLZuWPfGdvGJ59ogrhZVFDrRRIGDVOqvoOAqcDP7jXV+E+/Pa8M5cQOuIkribKr
-         1cPvrY/ttLjku3RmAh9+NbflFtwy0uq3Yk7Kkvps=
+        b=LgEs04bOX7zJHXDHAML617sW5jFaHlHKuKDczrLfgo0WVWn/UYYZAI6e7ZzwI/7qg
+         PFVgBvWkD8rXOG9HUDF1RqAb+8Df4iQeheMtAUlCU/X9oGaKNyoJ7tpjoh4eq70uKN
+         K4UQl5OeTBRqd2pdEhVUvWKUfTelHbIoFHBsfZag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.4 23/68] serial: mvebu-uart: fix drivers tx_empty callback
+        stable@vger.kernel.org, Stefan Raspl <raspl@linux.ibm.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.10 047/103] s390/qeth: fix NULL deref in qeth_clear_working_pool_list()
 Date:   Mon, 27 Sep 2021 19:02:19 +0200
-Message-Id: <20210927170220.753300096@linuxfoundation.org>
+Message-Id: <20210927170227.382896885@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-commit 74e1eb3b4a1ef2e564b4bdeb6e92afe844e900de upstream.
+[ Upstream commit 248f064af222a1f97ee02c84a98013dfbccad386 ]
 
-Driver's tx_empty callback should signal when the transmit shift register
-is empty. So when the last character has been sent.
+When qeth_set_online() calls qeth_clear_working_pool_list() to roll
+back after an error exit from qeth_hardsetup_card(), we are at risk of
+accessing card->qdio.in_q before it was allocated by
+qeth_alloc_qdio_queues() via qeth_mpc_initialize().
 
-STAT_TX_FIFO_EMP bit signals only that HW transmit FIFO is empty, which
-happens when the last byte is loaded into transmit shift register.
+qeth_clear_working_pool_list() then dereferences NULL, and by writing to
+queue->bufs[i].pool_entry scribbles all over the CPU's lowcore.
+Resulting in a crash when those lowcore areas are used next (eg. on
+the next machine-check interrupt).
 
-STAT_TX_EMP bit signals when the both HW transmit FIFO and transmit shift
-register are empty.
+Such a scenario would typically happen when the device is first set
+online and its queues aren't allocated yet. An early IO error or certain
+misconfigs (eg. mismatched transport mode, bad portno) then cause us to
+error out from qeth_hardsetup_card() with card->qdio.in_q still being
+NULL.
 
-So replace STAT_TX_FIFO_EMP check by STAT_TX_EMP in mvebu_uart_tx_empty()
-callback function.
+Fix it by checking the pointer for NULL before accessing it.
 
-Fixes: 30530791a7a0 ("serial: mvebu-uart: initial support for Armada-3700 serial port")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20210911132017.25505-1-pali@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Note that we also have (rare) paths inside qeth_mpc_initialize() where
+a configuration change can cause us to free the existing queues,
+expecting that subsequent code will allocate them again. If we then
+error out before that re-allocation happens, the same bug occurs.
+
+Fixes: eff73e16ee11 ("s390/qeth: tolerate pre-filled RX buffer")
+Reported-by: Stefan Raspl <raspl@linux.ibm.com>
+Root-caused-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/mvebu-uart.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/net/qeth_core_main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -164,7 +164,7 @@ static unsigned int mvebu_uart_tx_empty(
- 	st = readl(port->membase + UART_STAT);
- 	spin_unlock_irqrestore(&port->lock, flags);
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 4d51c4ace8ea..7b0155b0e99e 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -210,6 +210,9 @@ static void qeth_clear_working_pool_list(struct qeth_card *card)
+ 				 &card->qdio.in_buf_pool.entry_list, list)
+ 		list_del(&pool_entry->list);
  
--	return (st & STAT_TX_FIFO_EMP) ? TIOCSER_TEMT : 0;
-+	return (st & STAT_TX_EMP) ? TIOCSER_TEMT : 0;
++	if (!queue)
++		return;
++
+ 	for (i = 0; i < ARRAY_SIZE(queue->bufs); i++)
+ 		queue->bufs[i].pool_entry = NULL;
  }
- 
- static unsigned int mvebu_uart_get_mctrl(struct uart_port *port)
+-- 
+2.33.0
+
 
 
