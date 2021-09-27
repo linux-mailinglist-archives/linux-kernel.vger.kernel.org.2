@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6171C419B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9080419A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236017AbhI0RTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbhI0ROk (ORCPT
+        id S236371AbhI0RJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:09:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56616 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236351AbhI0RI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:14:40 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6294BC051740
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:06:03 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z184so3305277iof.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9Q9onsPk/TXaOCMEv4AT2657vSl1grxBTxAt6ZfawYo=;
-        b=TmTxwovudp5NuP4w1Yeav+5kzXC8glrF0pAih0hr9exRJq9p+mHHhKDJElNbNQb1Ij
-         h+r066Z2Av7U6b40IEiWrx12F7aN4+Z5f8L9+T7LzV4stdIMkoGD8e3ug2D5RsKORi/i
-         nhLKqjHNYmRrcQr30jTbOCBw6CP6HDWTkcMekBeDmzIpiBtjcvgqj2vbN99Tk5LReCQh
-         bF1qrR6bCgYDfsgmNDbd5XtDvWz9+ca1ZnElRUxlI0oIHsmrzcVzC4L5Bk45+AtRdHnI
-         cR+KTBa0Bi66JFv2Gv1nZWs5hxg0qBljSSrlt3NaBdHQffIeQ0Bq1bT+emufpjF4Oeab
-         5gsQ==
+        Mon, 27 Sep 2021 13:08:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632762406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=igSsZqxxeuMq7lqv87REPqLHaXVxhaGz9rpGTm3o31c=;
+        b=dJhisrrn5A44Ey6SZfk8hEGA66XW/PLHZvZLJXIzCbVJYAnQ59vmhr3jZxux0kkEzEXxkW
+        GbSu7CtA7k86AoHLP/wfMxPrmXF8tLG4zzGJ2Wi6q860WJDYFy2F2ZgExcBSZMt7yyQ82e
+        5cF5KfW3nB2Eaeb5s7/uGc9mkGkP3dM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-BSwBDaNKN3adHaG4iKnEdQ-1; Mon, 27 Sep 2021 13:06:45 -0400
+X-MC-Unique: BSwBDaNKN3adHaG4iKnEdQ-1
+Received: by mail-wr1-f72.google.com with SMTP id e12-20020a056000178c00b001606927de88so1230577wrg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:06:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9Q9onsPk/TXaOCMEv4AT2657vSl1grxBTxAt6ZfawYo=;
-        b=h5lZ1WZNADM9tZwMt2TbOkLlh4LR76UWxW4gwpZSZ/01gpGM4yHCW9rpX8Uuu5OyRm
-         Do3FcGwtdRO4iBOP8EkUn97+8ju9xC3OrNBdCrt9G67jbG7kK7yZOokgS1Qxg1D/vv89
-         CdGKCFvXfJI39FdAPqiJolm3GBukzUXFJeKprGmY1jO+2hWLFkO7+5guAGY8hWoc6xwa
-         vuVrmqyYLlQjZ9y6FKQSiOqMUktX9TzFz2Ey96m+MxFwEwYpoSt/LQIlLISW+WaDr+/B
-         xYT5Ec8xdBCmiNsscl4HcO/NMAWPn/LseaNWlac4N0hzcz0jzRnoqXuJHdqevW/EAsGB
-         pyuQ==
-X-Gm-Message-State: AOAM530IkyM0g0oZok/+D+V2+ZXwgLEksOXPXw1ORAtC09KHOKd9Mmkv
-        n3y/ioZaJoVha2zSCggWbIkSKMrQpnhQaqBGIm8PAA==
-X-Google-Smtp-Source: ABdhPJzkXYuDVcmVIoUNLd6urdFTTEYgOR6P/eci74DDABaFSKWw4J2VkcNJElNnd4nCoY4BMaiZPqBe1B+b6Az61+0=
-X-Received: by 2002:a02:1049:: with SMTP id 70mr827455jay.123.1632762362607;
- Mon, 27 Sep 2021 10:06:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=igSsZqxxeuMq7lqv87REPqLHaXVxhaGz9rpGTm3o31c=;
+        b=uQthWKFIyazq/SPdMh3UkTfVXMGPHS+g6v9MfxVzG7NO8yPtin/dQUy7aTDzs9TayB
+         M9z2YYAuxDAUbwGzMl9toySfewQuv/4ZHbBbkWw4Kr2/m6ooSZDwfHfrfpwkECiU+D9B
+         ZZyJ4Mbh2kJVtlPttJgY97otDRPvcqvcI9w2G3bkpayqEfqAra9HqQ+4Aj8HoBRDddAs
+         5CqWhMgVya03Iy0tOAT6KjuBDtnbqfL2jFoZTen8XuxGC+iRSnIKno7xZo6IeTyf/QIW
+         CymWd6esGEe9H/rWSugwOU21MqcnR48Mw33lF4xLJoZsZOiV+1OKofPDwyX5S8ye/irF
+         +8pQ==
+X-Gm-Message-State: AOAM5325Kx07G0A+oavBOkNiciBvWl++a6KHq3tqJnAmXmwvI1c+ca/r
+        b07XKQxLmVIsJiiZUq7ACjpezc33IX4l6qUQxlQBTxJtwosbhb0Ec8NK1eSc0RWg4c5rMhZOdzK
+        zLzTq5tAgylKimsex6jKvtnxv
+X-Received: by 2002:a05:600c:190b:: with SMTP id j11mr154419wmq.138.1632762404140;
+        Mon, 27 Sep 2021 10:06:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2VhzlquKBuGwMC/pWh0Q+PuVz+G+F5/MHHBFIbvk1oU85YEG/416rDIbobz2zRzNLZ/Xbrg==
+X-Received: by 2002:a05:600c:190b:: with SMTP id j11mr154390wmq.138.1632762403929;
+        Mon, 27 Sep 2021 10:06:43 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c654d.dip0.t-ipconnect.de. [91.12.101.77])
+        by smtp.gmail.com with ESMTPSA id h18sm2040722wrs.75.2021.09.27.10.06.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 10:06:43 -0700 (PDT)
+Subject: Re: [RFC PATCH] userfaultfd: support control over mm of remote PIDs
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>
+References: <20210926170637.245699-1-namit@vmware.com>
+ <83827672-0996-4c25-9991-697ad443b6b3@redhat.com>
+ <A7E15D2B-FFED-4F21-88F4-227E7228782D@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <21c6a41d-3f65-6a49-f604-b75ef53d2910@redhat.com>
+Date:   Mon, 27 Sep 2021 19:06:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210922222935.495290-1-irogers@google.com> <e126f901-f3ce-1325-b3c1-9d325bbc8249@iogearbox.net>
- <014c2f18-cede-ccc6-6d45-ca09093a6c76@iogearbox.net>
-In-Reply-To: <014c2f18-cede-ccc6-6d45-ca09093a6c76@iogearbox.net>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 27 Sep 2021 10:05:48 -0700
-Message-ID: <CAP-5=fWr9EunVXMoYu08AwVpK_Gq2qWixof_Gw5CWJGCeWeD6A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] tools/include: Update if_link.h and netlink.h
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Mark Starovoytov <mstarovoitov@marvell.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Vlad Buslov <vladbu@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Alexandre Cassen <acassen@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <A7E15D2B-FFED-4F21-88F4-227E7228782D@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:03 AM Daniel Borkmann <daniel@iogearbox.net> wro=
-te:
->
-> On 9/27/21 7:02 PM, Daniel Borkmann wrote:
-> > On 9/23/21 12:29 AM, Ian Rogers wrote:
-> >> Sync the uAPI headers so that userspace and the kernel match. These
-> >> changes make the tools version match the updates to the files in the
-> >> kernel directory that were updated by commits:
-> >>
-> >> if_link.h:
-> >> 8f4c0e01789c hsr: enhance netlink socket interface to support PRP
-> >> 427f0c8c194b macvlan: Add nodst option to macvlan type source
-> >> 583be982d934 mctp: Add device handling and netlink interface
-> >> c7fa1d9b1fb1 net: bridge: mcast: dump ipv4 querier state
-> >> 2dba407f994e net: bridge: multicast: make tracked EHT hosts limit conf=
-igurable
-> >> b6e5d27e32ef net: ethernet: rmnet: Add support for MAPv5 egress packet=
-s
-> >> 14452ca3b5ce net: qualcomm: rmnet: Export mux_id and flags to netlink
-> >> 78a3ea555713 net: remove comments on struct rtnl_link_stats
-> >> 0db0c34cfbc9 net: tighten the definition of interface statistics
-> >> 571912c69f0e net: UDP tunnel encapsulation module for tunnelling diffe=
-rent protocols like MPLS, IP, NSH etc.
-> >> 00e77ed8e64d rtnetlink: add IFLA_PARENT_[DEV|DEV_BUS]_NAME
-> >> 829eb208e80d rtnetlink: add support for protodown reason
-> >>
-> >> netlink.h:
-> >> d07dcf9aadd6 netlink: add infrastructure to expose policies to userspa=
-ce
-> >> 44f3625bc616 netlink: export policy in extended ACK
-> >> d409989b59ad netlink: simplify NLMSG_DATA with NLMSG_HDRLEN
-> >> a85cbe6159ff uapi: move constants from <linux/kernel.h> to <linux/cons=
-t.h>
-> >>
-> >> v2. Is a rebase and sync to the latest versions. A list of changes
-> >>      computed via diff and blame was added to the commit message as su=
-ggested
-> >>      in:
-> >> https://lore.kernel.org/lkml/20201015223119.1712121-1-irogers@google.c=
-om/
-> >>
-> >> Signed-off-by: Ian Rogers <irogers@google.com>
-> >
-> > With both patches applied to bpf-next, this would break our CI:
-> >
-> > [...]
-> >    CC       bench.o
-> >    CC       bench_count.o
-> >    CC       bench_rename.o
-> >    CC       bench_trigger.o
-> >    CC       bench_ringbufs.o
-> >    BINARY   bench
-> >    BINARY   xdpxceiver
-> > xdpxceiver.c: In function =E2=80=98testapp_invalid_desc=E2=80=99:
-> > xdpxceiver.c:1223:41: warning: implicit declaration of function =E2=80=
-=98ARRAY_SIZE=E2=80=99 [-Wimplicit-function-declaration]
-> >   1223 |  pkt_stream_generate_custom(test, pkts, ARRAY_SIZE(pkts));
-> >        |                                         ^~~~~~~~~~
-> > /usr/bin/ld: /tmp/ccoQONpi.o: in function `testapp_invalid_desc':
-> > /root/daniel/bpf/tools/testing/selftests/bpf/xdpxceiver.c:1223: undefin=
-ed reference to `ARRAY_SIZE'
-> > collect2: error: ld returned 1 exit status
-> > make: *** [Makefile:166: /root/daniel/bpf/tools/testing/selftests/bpf/x=
-dpxceiver] Error 1
-> >
-> > Please take a look and submit v3 of the series with the build issue fix=
-ed.
->
-> See also: https://github.com/kernel-patches/bpf/pull/1822/checks?check_ru=
-n_id=3D3714445336
+On 27.09.21 12:19, Nadav Amit wrote:
+> 
+> 
+>> On Sep 27, 2021, at 2:29 AM, David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 26.09.21 19:06, Nadav Amit wrote:
+>>> From: Nadav Amit <namit@vmware.com>
+>>> Non-cooperative mode is useful but only for forked processes.
+>>> Userfaultfd can be useful to monitor, debug and manage memory of remote
+>>> processes.
+>>> To support this mode, add a new flag, UFFD_REMOTE_PID, and an optional
+>>> second argument to the userfaultfd syscall. When the flag is set, the
+>>> second argument is assumed to be the PID of the process that is to be
+>>> monitored. Otherwise the flag is ignored.
+>>> The syscall enforces that the caller has CAP_SYS_PTRACE to prevent
+>>> misuse of this feature.
+>>
+>> What supposed to happen if the target process intents to use uffd itself?
+> 
+> Thanks for the quick response.
+> 
+> First, sorry that I mistakenly dropped the changes to userfaultfd.h
+> that define UFFD_REMOTE_PID.
 
+Didn't even notice it :)
 
-Thanks, this looks like an "include what you use" problem in
-xdpxceiver.c and so I'll need to add a patch to fix that ahead of
-these patches.
+> 
+> As for your question: there are standard ways to deal with such cases,
+> similarly to when a debugged program wants to use PTRACE. One way is
+> to block the userfaultfd syscall, using seccomp. Another way is to do
+> chaining using ptrace (although using ptrace for anything is
+> challenging).
+> 
+> It is also possible to add tailor something specific to userfaultfd,
+> but I think seccomp is a good enough solution. I am open to suggestions.
 
-Ian
+If we have something already in place to handle PTRACE, we'd better 
+reuse what's already there. Thanks!
 
-> Thanks,
-> Daniel
+-- 
+Thanks,
+
+David / dhildenb
+
