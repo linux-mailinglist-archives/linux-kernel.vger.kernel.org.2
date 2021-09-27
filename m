@@ -2,40 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C1C419835
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385BA419837
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235299AbhI0Pty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:49:54 -0400
-Received: from verein.lst.de ([213.95.11.211]:47368 "EHLO verein.lst.de"
+        id S235310AbhI0PuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:50:04 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:46876 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235301AbhI0Ptx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:49:53 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2DE0267373; Mon, 27 Sep 2021 17:48:12 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 17:48:12 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk,
-        Sven Peter <sven@svenpeter.dev>,
-        Orlando Chamberlain <redecorating@protonmail.com>,
-        Aditya Garg <gargaditya08@live.com>
-Subject: Re: [PATCHv2] nvme: add command id quirk for apple controllers
-Message-ID: <20210927154812.GA9730@lst.de>
-References: <20210927154306.387437-1-kbusch@kernel.org>
+        id S235313AbhI0PuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:50:02 -0400
+Received: from zn.tnic (p200300ec2f088a0026c8b82ffc70c2f8.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:26c8:b82f:fc70:c2f8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 791D51EC0345;
+        Mon, 27 Sep 2021 17:48:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632757699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sXB97txbGpnndRLiF8a7c6AhXwkwZfB4h+OruKiOVBI=;
+        b=OvgISGSXj2zbL3ZADKNFzZ7IzN588OYvgnYadirFN06DFJeAmH+bMcaSkWvDArys2SPDuP
+        Rv3+CNZvch66OafJlP73tpJSJukKX00bjPHHxxbUNFdrz0yM9x6XNIWQ1ry5tikWaxwIJU
+        o+cFdkRlL6Ycck9gMxDBuLyQkRzeCSs=
+Date:   Mon, 27 Sep 2021 17:48:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
+        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
+Message-ID: <YVHnwosFG5UbufEz@zn.tnic>
+References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
+ <YVGkDPbQmdwSw6Ff@zn.tnic>
+ <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
+ <YVGz0HXe+WNAXfdF@zn.tnic>
+ <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
+ <YVG46L++WPBAHxQv@zn.tnic>
+ <afc34b38-5596-3571-63e5-55fe82e87f6c@redhat.com>
+ <14993859-b953-b833-cdf2-ff2e29e9044d@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210927154306.387437-1-kbusch@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14993859-b953-b833-cdf2-ff2e29e9044d@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good:
+On Mon, Sep 27, 2021 at 10:47:01AM -0500, Babu Moger wrote:
+> > There are other guests than Linux.  This patch is just telling userspace
+> 
+> Yes, That is the reason for this patch.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+And can you share, per chance, what their use case is?
 
-Jens, given that you're on the thread, do you want to pick this up
-directly to reduce the patch queue latency?
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
