@@ -2,146 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D07419DC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9EA419DCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235888AbhI0SEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        id S235854AbhI0SHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235696AbhI0SEY (ORCPT
+        with ESMTP id S235815AbhI0SHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:04:24 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DB8C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:02:46 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k17so16587823pff.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:02:46 -0700 (PDT)
+        Mon, 27 Sep 2021 14:07:00 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56326C061604;
+        Mon, 27 Sep 2021 11:05:22 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so416244pjb.1;
+        Mon, 27 Sep 2021 11:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=kqA+b8WyryIpFuzgEauZMeFlbAUIee5IxoFNe6qMPlM=;
-        b=nFr1Ur+sIEeh9RC7UtVBlpyJ9mfSlsJ+VRMQq5vh8lCxhMLGAT0ACANEtHpwP/uqYR
-         hqnGRcZ9vCYeST9c9CyDDSd421BbmY5qmAwUiC8U9xMSZ2vK9QmSTyPRh1xbrbZnk9kg
-         aUjtG4KhpyuV69Bmg4JWrAmD27A3Aa5HvP5sr+DuOWEvjoLM+54qxieQ68soxMmnwgC6
-         B9wP1LEDsOi4h7G7BVS1T2GhswpIdWpkb38Tk4mAZ9V5a/8sjuiAwYUrkninKoDqI4Sl
-         s1csDojCTzy2CemjDWWmmKb87b9tKMsjEj+AS0n8FwQ65AAQu7+t7ZtvDJKwcwSK6nA4
-         i5fw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aCe9cQlxizWPqPrStonYM1I4buyo4DZsOUx0n5WkBks=;
+        b=fcug6hPK6mHISnLsphdASOBK/A/VVxD/648c8Rvcg7D9LzDUSgF1JXxcSD5INXC1PR
+         INF/i2BByIpHOOLO2AqVFq6RXXmi9FlvhxffwwdQ5kjn+E4uXEoWbdiRRHveNX12qv34
+         6CtrNmjWYSoc2kl5kWBiVhwkJyY4ZEzbeGTFy1QJ2mETV1LKaH7mAU3EgZC4Mq1HFd3d
+         d/+fEhsaJ7TOqhfVs5s+mmBSJtzSOLt+1T+fGd4cD0gKFwRyUgSV7T4tKRYVcWE+o7ik
+         Mj01GFKWO9GO8k6K0JDd6bSh0ps2Rfgz4luHqWUloDWD1q3PD9y7kpYofyxDJo/wMr98
+         fclA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=kqA+b8WyryIpFuzgEauZMeFlbAUIee5IxoFNe6qMPlM=;
-        b=ZJcEdNpZEt3/JRESkW7LM0a89BTRonQg7zpTSRI2u6Y/+dFjsZmNNENNWn6HcRAxYB
-         YPh7jSUvpn3kKlI2OHUvhanHv+ENzbIMFf/FmVhrVfYOAEjDWPDzoyFk4Ffpl0tocth1
-         ORKqXy491w5hPziZN2Nznl/+sX7DN/Gtw981+Gx/7CjswOD6cTFqWoqTZTGi7ctc+ho2
-         bRcYub6Ffhh3M/fVu17FAITaL8S/DdAL5KbsAavqOF1moOoffpCHaSeYw+aIaJ6srXBi
-         ycR6FBjKkxm5MmadPPGe+ZZQtl07dWWSqTvXS1MQXLgVhjI7HMhSAcH0IclY9SxueWww
-         aLag==
-X-Gm-Message-State: AOAM533nctFF9wHI6bYOLVp46LvFuNO3w94I1KCkyNOvhwz9LFddE27H
-        2eLWjoNSOIXn6tK6GN9nR7qzZUS+Ro/IjO17t78=
-X-Received: by 2002:a62:7f58:0:b0:44b:5ea6:9fb6 with SMTP id
- a85-20020a627f58000000b0044b5ea69fb6mt953120pfd.19.1632765765609; Mon, 27 Sep
- 2021 11:02:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aCe9cQlxizWPqPrStonYM1I4buyo4DZsOUx0n5WkBks=;
+        b=00EKBqTBygIM9QbEh9MWc5Tk3EQWgEHnEiQiOI2gdN41YF5bWesJm5cP7D2toFzFsD
+         pN0krEmP2h8qGr9FOD0+ERUAN7W7eUqAacfXgMJBgXjMfID8vEPO/GnuGHobld8MIph/
+         pa63/f7LRumKycgunGBPwT9XxKiznVjL7zDsZsJ9MOJod7U+dDn0BgkIqST2VaHienDH
+         piedCC4g1MS8rrOiZoUY2LlHPlbRakAPatLE2esjD5aYClTnsevndf+6kcUF60T/AYbK
+         /f+0Rlcu8TXPvG5MgZWT7cQZPP/HBmW7DkTyvUshx2BXgozxqj9yMGt1qloh0uu3xtYg
+         Xu3A==
+X-Gm-Message-State: AOAM531ZSzQIz+aTCS75esZLHfVDIUORTTCJY0+kjDlxxRVbADYVC9ba
+        If/7zSgxwMpczMzYenxResJ/QZCnOQU=
+X-Google-Smtp-Source: ABdhPJz6qkuWYSYWCS6+mOypEwBn+e6YltqMTa5m7Eoaa/osaM1VZAas0JNhRAM5V3h1Ym0aeYL92g==
+X-Received: by 2002:a17:902:ac96:b0:13d:f848:cbbe with SMTP id h22-20020a170902ac9600b0013df848cbbemr1149227plr.9.1632765921445;
+        Mon, 27 Sep 2021 11:05:21 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id i69sm18493369pgc.7.2021.09.27.11.05.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 11:05:21 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/103] 5.10.70-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210927170225.702078779@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ee06c7cb-d730-3e49-ce46-b803fa91651a@gmail.com>
+Date:   Mon, 27 Sep 2021 11:05:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
-In-Reply-To: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Date:   Mon, 27 Sep 2021 13:02:34 -0500
-Message-ID: <CAFUsyfJWXJEc1879uX_YOJg7cvie0gitv+bu83DiUXiE74uQww@mail.gmail.com>
-Subject: Re: [PATCH v1] x86/fpu: Remove opmask state from avx512_timestamp check
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 12:40 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
->
-> This commit creates a new mask, XFEATURE_MASK_ZMM, to test against
-> xfeatures for conditionally updating the axx512_timestamp.
->
-> Based on the comments, the avx512 state is meant to track when the
-> state would cause frequencey throttling. The opmasks (k0-k7) do not
-> cause frequency throttling, so they don't make sense to include.
->
-> The current implementation, as well as the old, still does have a
-> false positive on ymm16-ymm31 and xmm16-31 because
-> XFEATURE_MASK_Hi16_ZMM includes them.
->
-> Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
-> ---
-> Issue is reproducible with the following code on x86_64:
->
-> ```
->         .global _start
->         .text
-> _start:
->         korq    %k0, %k0, %k0
->
-> loop:
->         jmp     loop
->
->
->         movl    $60, %eax
->         xorl    %edi, %edi
->         syscall
-> ```
->
-> Pretending run as executable named "foo":
->
-> $> cat /proc/$(pidof foo)/arch_status
->
->
-> This should yield -1 as no frequency changing AVX512 instructions
-> where used but instead tracks the process.
->
-> Note there still is a false positive with ymm16-ymm31 and xmm16-xmm31
-> but since there is no state to distinguish between there use and
-> zmm16-31 that seems inevitable.
->
->
->  arch/x86/include/asm/fpu/types.h | 2 ++
->  arch/x86/kernel/fpu/core.c       | 4 +++-
->  2 files changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-> index f5a38a5f3ae1..a4816fa7d541 100644
-> --- a/arch/x86/include/asm/fpu/types.h
-> +++ b/arch/x86/include/asm/fpu/types.h
-> @@ -141,6 +141,8 @@ enum xfeature {
->  #define XFEATURE_MASK_AVX512           (XFEATURE_MASK_OPMASK \
->                                          | XFEATURE_MASK_ZMM_Hi256 \
->                                          | XFEATURE_MASK_Hi16_ZMM)
-> +#define XFEATURE_MASK_ZMM              (XFEATURE_MASK_ZMM_Hi256 \
-> +                                        | XFEATURE_MASK_Hi16_ZMM)
->
->  #define FIRST_EXTENDED_XFEATURE        XFEATURE_YMM
->
-> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> index 7ada7bd03a32..342620a2e8ef 100644
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -104,8 +104,10 @@ void save_fpregs_to_fpstate(struct fpu *fpu)
->                 /*
->                  * AVX512 state is tracked here because its use is
->                  * known to slow the max clock speed of the core.
-> +                * Note: This has a false positive on Hi16 ymm and
-> +                * xmm registers.
->                  */
-> -               if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
-> +               if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_ZMM)
->                         fpu->avx512_timestamp = jiffies;
->                 return;
->         }
-> --
-> 2.25.1
->
-Ping
+On 9/27/21 10:01 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.70 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 29 Sep 2021 17:02:05 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.70-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-(sorry if this has shown up multiple times for anyone,
-was accidentally including HTML earlier)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
