@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB9A419A73
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AA3419B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbhI0RJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48546 "EHLO mail.kernel.org"
+        id S236091AbhI0RR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236313AbhI0RIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A7C61206;
-        Mon, 27 Sep 2021 17:06:22 +0000 (UTC)
+        id S235871AbhI0ROg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:14:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4447D61362;
+        Mon, 27 Sep 2021 17:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762383;
-        bh=nZzdwmBTTzIKwoK0VaxsvIWM7tsM9iZiIYzeTDcxxyY=;
+        s=korg; t=1632762625;
+        bh=DBHRgJEr/2D6Bw5rELvKRtFWdt7jdM6yQlWdM3okMJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x3fWCjlByysOe08mMxcuylOskPmUfqOr/3IyijdXU5Q7Kz2a+FRaH2qP4M+Xt+cU+
-         mtke/ygBoINLfBzwQPK3ixMI/duhmJ4j89UXX7Emewm7QIjwI1R9iMAOv7O+RupyWx
-         2G6Nyl9X6GLpYzqodeAz7QYpM9v2MI8fhgH1nAcY=
+        b=2k2QIe96Br/u72rJlg8MpXcqxPDW4VWRplZtzd+g8BOzkmnH0aQK0SpmcNco8Qu0S
+         JItRMLwafvwMclQltyw+nccSmSJENUpznaD2GNz7J9Vqbw/SiJUGkyDD8SU8uhX4Th
+         /dUz4s3WYJ9B41DqxO69zCxn+b0p8fQey6nbjD4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 38/68] thermal/core: Potential buffer overflow in thermal_build_list_of_policies()
+Subject: [PATCH 5.10 062/103] thermal/core: Potential buffer overflow in thermal_build_list_of_policies()
 Date:   Mon, 27 Sep 2021 19:02:34 +0200
-Message-Id: <20210927170221.290193517@linuxfoundation.org>
+Message-Id: <20210927170227.922523104@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,10 +61,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index f526ce31f5a2..20eab56b02cb 100644
+index e669f83faa3c..17de8a9b991e 100644
 --- a/drivers/thermal/thermal_core.c
 +++ b/drivers/thermal/thermal_core.c
-@@ -228,15 +228,14 @@ int thermal_build_list_of_policies(char *buf)
+@@ -224,15 +224,14 @@ int thermal_build_list_of_policies(char *buf)
  {
  	struct thermal_governor *pos;
  	ssize_t count = 0;
