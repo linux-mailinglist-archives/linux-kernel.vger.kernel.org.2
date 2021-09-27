@@ -2,214 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15206419109
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B6341910C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhI0Inw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 04:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
+        id S233526AbhI0IpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 04:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233403AbhI0Inu (ORCPT
+        with ESMTP id S233517AbhI0IpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 04:43:50 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3274C061575;
-        Mon, 27 Sep 2021 01:42:12 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id b20so74230149lfv.3;
-        Mon, 27 Sep 2021 01:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=1BG0A7psUXeGAUQUvHgRgao8dcZIRyXeRNw4ym7V7hQ=;
-        b=YUkw8+PzjqCIs3sdkd0kJKxzjL53C40Ukx8I5yuZZPCkVvKLn/Nq8tvO+VpJy4+noU
-         Y7aNcUkEHDjA+8NCOHX5tS9F59FkKqaUmnO6M9c0V5LLVCDJ420UfA0kw9g8+x6ZBcvP
-         O2DLhwYba4pe5bZLLuhzKcRu4rfojLvcGdHWSX0ybYwlLFJnjKG9qj0GBAwhPvWFBK8J
-         HZcPHBJU5LnxF6Sp4dM47l0PxoTKzzHU0VIcj145UDhpKXBCGjRd2FyHsGhoDoRqQLAW
-         F+Cb3oqtlf7Rxn0VjMiObE/sBZAOLzmnU/7ajAEuwLOCtuUpWvffiLF8lsml2VKY19Wj
-         di1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=1BG0A7psUXeGAUQUvHgRgao8dcZIRyXeRNw4ym7V7hQ=;
-        b=gLI9Xp3iarnYj6lxbwB2KIFHEgCgFo/ZToDb95jmTk2S0pZNrK7Ukmw3puD/BlBL0j
-         03NL7AdZvc5nxGxuuuAv10Eg+oyo/MNfVBdnb1sVxYWwF2TekcRwoReHex8YcciDDchf
-         p69FHT91NiM56PPsLsLhsC5OPmAkA95B8wtjXgJJms42VGHraOdOZNh5OnFT2X5T2rAX
-         u/oP73QrgOa5V6Y7ddgCjoFZkTJt+GYujKKXAcwggyqIfNGhk9PkhdLtnLcZC2hGJgXI
-         vZbyaFnUEJDeuibAd0cQGtK3gzdBdeHVNRWDV8GK6hozIxss7/8BTQBuN3ueaV9PnPQn
-         PgIA==
-X-Gm-Message-State: AOAM532ttiYDFU1OGZKycb9IFb9A53TivCPdIGiqN0isJxKQmil4R84A
-        zFZSVz8Em3e/neReaXs3VOo=
-X-Google-Smtp-Source: ABdhPJz9IEdgS3tt3ObWODiNcVsXRujmPf+tYf3g2mh+Z4t7iY4w5zOjn9nOjTj61PF93sYD/eTBmg==
-X-Received: by 2002:ac2:4c52:: with SMTP id o18mr22119107lfk.108.1632732131214;
-        Mon, 27 Sep 2021 01:42:11 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id v1sm1529371lfp.215.2021.09.27.01.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 01:42:10 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 11:42:01 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian =?UTF-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Michel =?UTF-8?B?RMOkbnplcg==?= <michel@daenzer.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-media@vger.kernel.org (open list:SYNC FILE FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH v3 8/9] dma-buf/sync_file: Add SET_DEADLINE ioctl
-Message-ID: <20210927114201.1f8fdc17@eldfell>
-In-Reply-To: <20210903184806.1680887-9-robdclark@gmail.com>
-References: <20210903184806.1680887-1-robdclark@gmail.com>
-        <20210903184806.1680887-9-robdclark@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 27 Sep 2021 04:45:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A760C061740
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 01:43:41 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mUmEU-0006ND-Lz; Mon, 27 Sep 2021 10:43:30 +0200
+Message-ID: <c9d57b1fb86173cc7ccbd391af4b18aaed6cd1ac.camel@pengutronix.de>
+Subject: Re: [PATCH v2 4/4] phy: freescale: pcie: initialize the imx8 pcie
+ standalone phy driver
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org, galak@kernel.crashing.org,
+        shawnguo@kernel.org
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com
+Date:   Mon, 27 Sep 2021 10:43:28 +0200
+In-Reply-To: <1632641983-1455-5-git-send-email-hongxing.zhu@nxp.com>
+References: <1632641983-1455-1-git-send-email-hongxing.zhu@nxp.com>
+         <1632641983-1455-5-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ae3zq/xxfd0mOmS+IV/YXES";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ae3zq/xxfd0mOmS+IV/YXES
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Am Sonntag, dem 26.09.2021 um 15:39 +0800 schrieb Richard Zhu:
+> Add the standalone i.MX8 PCIe PHY driver.
+> Some reset bits should be manipulated between PHY configurations and
+> status check(internal PLL is locked or not).
+> So, do the PHY configuration in the phy_calibrate().
+> And check the PHY is ready or not in the phy_init().
 
-On Fri,  3 Sep 2021 11:47:59 -0700
-Rob Clark <robdclark@gmail.com> wrote:
+I would really like to see the PCIe controller driver side of this
+also, as it's hard to review standalone. For example I'm not sure if
+some of those reset bits should also be driven from the PHY driver,
+even if they are currently hooked up to the controller driver.
 
-> From: Rob Clark <robdclark@chromium.org>
->=20
-> The initial purpose is for igt tests, but this would also be useful for
-> compositors that wait until close to vblank deadline to make decisions
-> about which frame to show.
->=20
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+Also I think the IOMUX GPR register handling belongs in the PHY driver,
+as it's configuring the reference clock routing.
+
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 > ---
->  drivers/dma-buf/sync_file.c    | 19 +++++++++++++++++++
->  include/uapi/linux/sync_file.h | 20 ++++++++++++++++++++
->  2 files changed, 39 insertions(+)
->=20
-> diff --git a/drivers/dma-buf/sync_file.c b/drivers/dma-buf/sync_file.c
-> index 394e6e1e9686..f295772d5169 100644
-> --- a/drivers/dma-buf/sync_file.c
-> +++ b/drivers/dma-buf/sync_file.c
-> @@ -459,6 +459,22 @@ static long sync_file_ioctl_fence_info(struct sync_f=
-ile *sync_file,
->  	return ret;
->  }
-> =20
-> +static int sync_file_ioctl_set_deadline(struct sync_file *sync_file,
-> +					unsigned long arg)
+>  drivers/phy/freescale/Kconfig             |   9 ++
+>  drivers/phy/freescale/Makefile            |   1 +
+>  drivers/phy/freescale/phy-fsl-imx8-pcie.c | 167 ++++++++++++++++++++++
+>  3 files changed, 177 insertions(+)
+>  create mode 100644 drivers/phy/freescale/phy-fsl-imx8-pcie.c
+
+From what I know, there are several quite different PCIe PHYs used in
+the different i.MX8 variants. I'm not sure if we want to stuff them all
+into one file. I guess we should be more specific here and call this
+imx8m-phy, or even imx8mm-phy.
+
+> 
+> diff --git a/drivers/phy/freescale/Kconfig b/drivers/phy/freescale/Kconfig
+> index 320630ffe3cd..da078a676fbc 100644
+> --- a/drivers/phy/freescale/Kconfig
+> +++ b/drivers/phy/freescale/Kconfig
+> @@ -14,3 +14,12 @@ config PHY_MIXEL_MIPI_DPHY
+>  	help
+>  	  Enable this to add support for the Mixel DSI PHY as found
+>  	  on NXP's i.MX8 family of SOCs.
+> +
+> +config PHY_FSL_IMX8_PCIE
+> +	tristate "Freescale i.MX8 PCIE PHY"
+> +	depends on OF && HAS_IOMEM
+> +	select GENERIC_PHY
+> +	default ARCH_MXC
+> +	help
+> +	  Enable this to add support for the PCIE PHY as found on i.MX8
+> +	  family of SOCs.
+> diff --git a/drivers/phy/freescale/Makefile b/drivers/phy/freescale/Makefile
+> index 1d02e3869b45..9fd467b58621 100644
+> --- a/drivers/phy/freescale/Makefile
+> +++ b/drivers/phy/freescale/Makefile
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  obj-$(CONFIG_PHY_FSL_IMX8MQ_USB)	+= phy-fsl-imx8mq-usb.o
+>  obj-$(CONFIG_PHY_MIXEL_MIPI_DPHY)	+= phy-fsl-imx8-mipi-dphy.o
+> +obj-$(CONFIG_PHY_FSL_IMX8_PCIE)		+= phy-fsl-imx8-pcie.o
+> diff --git a/drivers/phy/freescale/phy-fsl-imx8-pcie.c b/drivers/phy/freescale/phy-fsl-imx8-pcie.c
+> new file mode 100644
+> index 000000000000..ff47d6b83686
+> --- /dev/null
+> +++ b/drivers/phy/freescale/phy-fsl-imx8-pcie.c
+> @@ -0,0 +1,167 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2021 NXP
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/delay.h>
+> +#include <linux/module.h>
+> +#include <linux/phy/phy.h>
+> +#include <linux/platform_device.h>
+> +#include <dt-binding/phy/phy-fsl-imx8-pcie.h>
+> +
+> +#define IMX8MM_PCIE_PHY_CMN_REG061	0x184
+> +#define  ANA_PLL_CLK_OUT_TO_EXT_IO_EN	BIT(0)
+> +#define IMX8MM_PCIE_PHY_CMN_REG062	0x188
+> +#define  ANA_PLL_CLK_OUT_TO_EXT_IO_SEL	BIT(3)
+> +#define IMX8MM_PCIE_PHY_CMN_REG063	0x18C
+> +#define  AUX_PLL_REFCLK_SEL_SYS_PLL	GENMASK(7, 6)
+> +#define IMX8MM_PCIE_PHY_CMN_REG064	0x190
+> +#define  ANA_AUX_RX_TX_SEL_TX		BIT(7)
+> +#define  ANA_AUX_RX_TERM_GND_EN		BIT(3)
+> +#define  ANA_AUX_TX_TERM		BIT(2)
+> +#define IMX8MM_PCIE_PHY_CMN_REG065	0x194
+> +#define  ANA_AUX_RX_TERM		(BIT(7) | BIT(4))
+> +#define  ANA_AUX_TX_LVL			GENMASK(3, 0)
+> +#define IMX8MM_PCIE_PHY_CMN_REG75	0x1D4
+> +#define  PCIE_PHY_CMN_REG75_PLL_DONE	0x3
+> +#define PCIE_PHY_TRSV_REG5		0x414
+> +#define  PCIE_PHY_TRSV_REG5_GEN1_DEEMP	0x2D
+> +#define PCIE_PHY_TRSV_REG6		0x418
+> +#define  PCIE_PHY_TRSV_REG6_GEN2_DEEMP	0xF
+> +
+> +struct imx8_pcie_phy {
+> +	u32		refclk_pad_mode;
+> +	void __iomem	*base;
+> +	struct clk	*clk;
+> +	struct phy	*phy;
+> +};
+> +
+> +static int imx8_pcie_phy_init(struct phy *phy)
 > +{
-> +	struct sync_set_deadline ts;
+> +	int ret;
+> +	u32 val;
+> +	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
 > +
-> +	if (copy_from_user(&ts, (void __user *)arg, sizeof(ts)))
-> +		return -EFAULT;
+> +	ret = readl_poll_timeout(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG75,
+> +				 val, val == PCIE_PHY_CMN_REG75_PLL_DONE,
+> +				 10, 20000);
+> +	return ret;
+> +}
 > +
-> +	if (ts.pad)
-> +		return -EINVAL;
+> +static int imx8_pcie_phy_cal(struct phy *phy)
+> +{
+> +	u32 value, pad_mode;
+> +	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
 > +
-> +	dma_fence_set_deadline(sync_file->fence, ktime_set(ts.tv_sec, ts.tv_nse=
-c));
+> +	pad_mode = imx8_phy->refclk_pad_mode;
+> +	if (pad_mode == IMX8_PCIE_REFCLK_PAD_INPUT) {
+> +		/* Configure the pad as input */
+> +		value = readl(imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
+> +		writel(value & ~ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
+> +		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
+> +	} else if (pad_mode == IMX8_PCIE_REFCLK_PAD_OUTPUT) {
+> +		/* Configure the PHY to output the refclock via pad */
+> +		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_EN,
+> +		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG061);
+> +		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_SEL,
+> +		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG062);
+> +		writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
+> +		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
+> +		value = ANA_AUX_RX_TX_SEL_TX | ANA_AUX_TX_TERM;
+> +		writel(value | ANA_AUX_RX_TERM_GND_EN,
+> +		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG064);
+> +		writel(ANA_AUX_RX_TERM | ANA_AUX_TX_LVL,
+> +		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG065);
+> +	}
+> +
+> +	/* Tune PHY de-emphasis setting to pass PCIe compliance. */
+> +	writel(PCIE_PHY_TRSV_REG5_GEN1_DEEMP,
+> +	       imx8_phy->base + PCIE_PHY_TRSV_REG5);
+> +	writel(PCIE_PHY_TRSV_REG6_GEN2_DEEMP,
+> +	       imx8_phy->base + PCIE_PHY_TRSV_REG6);
 > +
 > +	return 0;
 > +}
 > +
->  static long sync_file_ioctl(struct file *file, unsigned int cmd,
->  			    unsigned long arg)
->  {
-> @@ -471,6 +487,9 @@ static long sync_file_ioctl(struct file *file, unsign=
-ed int cmd,
->  	case SYNC_IOC_FILE_INFO:
->  		return sync_file_ioctl_fence_info(sync_file, arg);
-> =20
-> +	case SYNC_IOC_SET_DEADLINE:
-> +		return sync_file_ioctl_set_deadline(sync_file, arg);
+> +static int imx8_pcie_phy_power_on(struct phy *phy)
+> +{
+> +	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
 > +
->  	default:
->  		return -ENOTTY;
->  	}
-> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_fil=
-e.h
-> index ee2dcfb3d660..f67d4ffe7566 100644
-> --- a/include/uapi/linux/sync_file.h
-> +++ b/include/uapi/linux/sync_file.h
-> @@ -67,6 +67,18 @@ struct sync_file_info {
->  	__u64	sync_fence_info;
->  };
-> =20
-> +/**
-> + * struct sync_set_deadline - set a deadline on a fence
-> + * @tv_sec:	seconds elapsed since epoch
-> + * @tv_nsec:	nanoseconds elapsed since the time given by the tv_sec
-> + * @pad:	must be zero
+> +	return clk_prepare_enable(imx8_phy->clk);
 
-Hi Rob,
+Do we need to enable this clock when the refclock is supplied
+externally via the pad?
 
-I think you need to specify which clock this timestamp must be in.
-
-Which epoch? Sounds a bit like CLOCK_REALTIME to me which would not
-make sense.
-
-Also I cannot guess how a compositor should be using this, so
-explaining the expected usage would be really good, with reasons for
-why should userspace bother.
-
-
-Thanks,
-pq
-
-> + */
-> +struct sync_set_deadline {
-> +	__s64	tv_sec;
-> +	__s32	tv_nsec;
-> +	__u32	pad;
+> +}
+> +
+> +static int imx8_pcie_phy_power_off(struct phy *phy)
+> +{
+> +	struct imx8_pcie_phy *imx8_phy = phy_get_drvdata(phy);
+> +
+> +	clk_disable_unprepare(imx8_phy->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct phy_ops imx8_pcie_phy_ops = {
+> +	.init		= imx8_pcie_phy_init,
+> +	.calibrate	= imx8_pcie_phy_cal,
+> +	.power_on	= imx8_pcie_phy_power_on,
+> +	.power_off	= imx8_pcie_phy_power_off,
+> +	.owner		= THIS_MODULE,
 > +};
 > +
->  #define SYNC_IOC_MAGIC		'>'
-> =20
->  /**
-> @@ -95,4 +107,12 @@ struct sync_file_info {
->   */
->  #define SYNC_IOC_FILE_INFO	_IOWR(SYNC_IOC_MAGIC, 4, struct sync_file_inf=
-o)
-> =20
+> +static int imx8_pcie_phy_probe(struct platform_device *pdev)
+> +{
+> +	struct phy_provider *phy_provider;
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct imx8_pcie_phy *imx8_phy;
+> +	struct resource *res;
 > +
-> +/**
-> + * DOC: SYNC_IOC_SET_DEADLINE - set a deadline on a fence
-> + *
-> + * Allows userspace to set a deadline on a fence, see dma_fence_set_dead=
-line()
-> + */
-> +#define SYNC_IOC_SET_DEADLINE	_IOW(SYNC_IOC_MAGIC, 5, struct sync_set_de=
-adline)
+> +	imx8_phy = devm_kzalloc(dev, sizeof(*imx8_phy), GFP_KERNEL);
+> +	if (!imx8_phy)
+> +		return -ENOMEM;
 > +
->  #endif /* _UAPI_LINUX_SYNC_H */
+> +	/* get PHY refclk pad mode */
+> +	of_property_read_u32(np, "fsl,refclk-pad-mode",
+> +			     &imx8_phy->refclk_pad_mode);
+> +
+> +	imx8_phy->clk = devm_clk_get(dev, "phy");
+> +	if (IS_ERR(imx8_phy->clk)) {
+> +		dev_err(dev, "failed to get imx pcie phy clock\n");
+> +		return PTR_ERR(imx8_phy->clk);
+> +	}
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	imx8_phy->base = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(imx8_phy->base))
+> +		return PTR_ERR(imx8_phy->base);
+> +
+> +	imx8_phy->phy = devm_phy_create(dev, NULL, &imx8_pcie_phy_ops);
+> +	if (IS_ERR(imx8_phy->phy))
+> +		return PTR_ERR(imx8_phy->phy);
+> +
+> +	phy_set_drvdata(imx8_phy->phy, imx8_phy);
+> +
+> +	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+> +
+> +	return PTR_ERR_OR_ZERO(phy_provider);
+> +}
+> +
+> +static const struct of_device_id imx8_pcie_phy_of_match[] = {
+> +	{.compatible = "fsl,imx8mm-pcie-phy",},
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, imx8_pcie_phy_of_match);
+> +
+> +static struct platform_driver imx8_pcie_phy_driver = {
+> +	.probe	= imx8_pcie_phy_probe,
+> +	.driver = {
+> +		.name	= "imx8-pcie-phy",
+> +		.of_match_table	= imx8_pcie_phy_of_match,
+> +	}
+> +};
+> +module_platform_driver(imx8_pcie_phy_driver);
+> +
+> +MODULE_DESCRIPTION("FSL IMX8 PCIE PHY driver");
+> +MODULE_LICENSE("GPL");
 
 
---Sig_/Ae3zq/xxfd0mOmS+IV/YXES
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmFRg9kACgkQI1/ltBGq
-qqerWg//URIwzyumTcB8NXNy0zbIi4YZDXfe6dn9jZvFT+6n4Gdze1shYvrcxMli
-32IX5GxFXHhKZcjH4ugvlN3PJ+yn1IwuxJ7W2eCkj/IRPHWe8xvgvzzv/VWKhriW
-g9tYOOkEtD4z31Gl2pBV9c3I9wSot2mpToMHQcx2Df0QZmyXqol5QbX6SkcZsIL8
-tCsuYY9tpe2v91NpMEFZtJEmIuDezKh6JEy3djZ+Jd3LB0aFCRuH3ewKYaxpRH+9
-f9qrpzIe/1r1bu2t/y/YQSg/HhaX38TKcNme7hyc60k2b31RJU/LkyCrjBYt7wua
-qXCr/7ZYJF4kELTuDKAkhdeX4dtI8ijD9VVjlqsm22pPiNlzIulMtkrTXwGGHaA1
-QqiunoZOzdXO3PDA6ogOkEnjjWQJPLIiQC7DJ1F9fffy0AnbHvyOAREt1ETlZ+lE
-GDufS931n4Cwv4TXpoMNeDeKrVjd/VMfP+cvG/gyitBDqKH5L75boTdJKXGFUZmW
-I2SrhTkQ36n4eoeujHr6ed5E2WAye3rhCZbwkMIE39RE2x8FIHm954DXI4Jj9if1
-MHmbrWR5/btLEJt1yldy07+zfFSr3xQiCEAA8q1ZXULRPzbXwa2JuWrjsOHuUjQv
-bDi20VmhLKrjDNUBtg8Su1s+u+fpv9iDhsIoCBLIEMAFbe2b+70=
-=jyP1
------END PGP SIGNATURE-----
-
---Sig_/Ae3zq/xxfd0mOmS+IV/YXES--
