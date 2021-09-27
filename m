@@ -2,249 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC62419E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B639419E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236345AbhI0Sq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:46:26 -0400
-Received: from mail-co1nam11on2099.outbound.protection.outlook.com ([40.107.220.99]:31180
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236274AbhI0SqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:46:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=byP26pBkEMlZroylmp/YXrjMKrRYsH6zswQm/rdAI7xHAbLBoXUji/rnkoeThLxL7djJo6Ji2QF2OsQ7m0CglzKDUYiXtu+JoTm7IpwDvnLcwGIZLsdVIQ5YqSNNrKhi007px2NxrARvudF9SxnM0DQXdON6mFqh99HrQ8kG/PfYVYMjDeinJSCO1qamJXh0bFgR59qI49jq1IyLUuDZLTYYY2vhLe6RXeWjezRsIaKOc37264/OfZHxP56lN+fs4T6AocQMompteP+UkcvDF4MesvDEiVKmi52Xxdn+v58a+N+BAn3HcqHwaB733aygjxazPeOlAatqHL0H6NP/3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ORRLEw0Wsbe1xT5ivTI1y+6dqHpInulVCodMz7Mz17g=;
- b=dJuHKsdu5cnKeUU+GZo4wyviRBKgUVP2/f5fGETxv+/oNeL6FjiAgRh9qtduZL/gs93rU6wxwiFfmLCOL4LrsQaZ0ZK1FlZ9fYXigH4uPcv8PLcLC1XEDR+v75hUUFu/fPyy7bCJnLfzgLlKmR2Qg6eqQWyXTssQiyRNlTrBKv5vu6S9v4eBLVkEbiwXS601ufq+jmu3VEJ3S7EaHISQpelfsOTMKPmWKn2gnRAUxs68PJqLxBl1yrz9KqPPdIqe59gGDU2iFWruZQ/sFxU1DHNYA+Rq+khI/U+Cvmhrh08tXEgrH/7FWIKtgGo+BAssgetWYE+jVu5LJTUe9mqWPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ORRLEw0Wsbe1xT5ivTI1y+6dqHpInulVCodMz7Mz17g=;
- b=gGuUlvNZW48T8BpQ/ocqcHz/k1hz/PngSm4YD5w9akKQop3UABX+M9EIGXaS5IMl/XibaHl0lMyBs541PBKIkTviK8QZxKqOOnz/ine25PA+Ya9Mat+H+GGCYaCrcPPRaoKLUu7/pFWDMfaK2d6cV9pFr4sW5IcuDvRDZ/uOZS4=
-Received: from SJ0PR11MB5661.namprd11.prod.outlook.com (2603:10b6:a03:3b9::5)
- by SJ0PR11MB5598.namprd11.prod.outlook.com (2603:10b6:a03:304::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Mon, 27 Sep
- 2021 18:44:45 +0000
-Received: from SJ0PR11MB5661.namprd11.prod.outlook.com
- ([fe80::31bb:4f91:1eb5:7178]) by SJ0PR11MB5661.namprd11.prod.outlook.com
- ([fe80::31bb:4f91:1eb5:7178%7]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
- 18:44:45 +0000
-From:   Ryan Lee <RyanS.Lee@maximintegrated.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
-Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Thread-Index: AQHXsZF45/jZbOMADUKIjx+r35kUIKu3/BEAgAAPiFCAAAR+AIAAC+UAgAAIKhA=
-Date:   Mon, 27 Sep 2021 18:44:45 +0000
-Message-ID: <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
-References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
- <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
- <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <20210927160622.GE4199@sirena.org.uk>
- <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
-In-Reply-To: <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
-Accept-Language: en-US, ko-KR
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=maximintegrated.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 747e6ccd-6070-451e-fc50-08d981e6e076
-x-ms-traffictypediagnostic: SJ0PR11MB5598:
-x-microsoft-antispam-prvs: <SJ0PR11MB5598AAEE793C28DAF8AB1A75E7A79@SJ0PR11MB5598.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HacFYvOAWKQPLGiIEALKxlym6/wIHerCYpFT2FNaTEH2+/4y8+IcWc4S8FzRyvtSzfAs/PLCL/6EGfyGHomKF2W4e8QelNevgViuVk1E6C0ogIQE69Gu6dgMgd0O3UMYWnzGOfP65ZWdoyS5BMimnE7+DOuAW7WZbqJHvwuy574OkrxxTaYlpzWzL4fC5UcAWJZJKUrAh7oYYZ308F8aLVmEKLO5mW42OLXAJ7wmZBcaVrTDlx4Gd0yhdq4rQPB/FD60XHatBCafwfmZA+HCRTwPQCU+sI46PkQUn9rp138YHaENgj+4cKJkoWluzcZ7T7SKcgpbpNzp/uyPy0bwgvSoQA+lLVufaKNplMaIGTkB761V1c8wtcsy1phFEn3XFGQX1l1Mz2Q/Je/vWGpGlsZrfo0ApfooLnKexaJIUP6+1FQZdtVH2xrcSrXMTOe59fFxrHz6TFZQkXPOb8qqNdtfGrXApyMjkUv/PvA+1oSYODay84LaNK3kwjUeNSbkXV+9Mrk7L/LO0FJd273NCwhTGpXnwNAh8HBBuhFu871e2+fHo80ViigSuEoCH1hNT/YjhOz1nZ4Amg0eg1r/mdnvidGwKJenkgiRGOy61kYAZ2orkjwsLyOFsKkt1OAYwhGsq9cr1M9pTZxuJsANkp+zEYXDddTRWPUtFCLtU8NAn6QCXsJXn/OY5Xdho/mdfiRsy9zv23mGLY+XX0d3TaC+cT3n3+cZLAvA5ZQSSdQwXcukxDwBPOBX2mp4GfsK8L06hXNTlXfALy/snS5BeFkozI5Z4PBGaZfGUQp1VW0+OiAGfNOI24UWfw4TeSuj
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5661.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(6506007)(508600001)(55016002)(38070700005)(7696005)(71200400001)(4326008)(33656002)(86362001)(53546011)(83380400001)(186003)(122000001)(54906003)(26005)(52536014)(7416002)(76116006)(66446008)(110136005)(66946007)(66476007)(66556008)(64756008)(9686003)(8936002)(316002)(2906002)(5660300002)(8676002)(45080400002)(14143004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?f9K7ngj3gBzIsnBAHhSPA0FZZC/M6fIhzbTNf90rsrLAE6HJYkkCH0okjzrJ?=
- =?us-ascii?Q?bvpp5uKJpVQhS2A5vZI2ynZvpoToB+06USiNTm7N6gBfFstiG6gwd7++TuMi?=
- =?us-ascii?Q?9Of+XauGLhNUDUSx9u79PvmzOxX4TqYnG8bkMP/DgIq92tvHQOT05gBL6aJ/?=
- =?us-ascii?Q?3RNbXT5I1pQcsP1IS0fIH+7cGfvQPk6AsqeQdqUHMt/56vSiAAIeuS6juSvO?=
- =?us-ascii?Q?Rq41oRaScxK0id2DvToSwGlZwVmIsgXI1N6SxefEttm5b4SFpFGYMv0HGHsY?=
- =?us-ascii?Q?uwBMXENmUhVxI+PboGBJATqW0F0MKAPth/q4oYUJCvockjhjbww5MMV4uIsA?=
- =?us-ascii?Q?aNAj/3xie6cKbD+mbxKHR7NNR8XgM2+TWci6BKLVaB8aL/KW7g8JHb9Dn2br?=
- =?us-ascii?Q?djGUX/XJhzK0wBqeL0eMVsOBA96+z/Y8Mxm5fGCy0Qsu1P1Fii8hUiPe/yjw?=
- =?us-ascii?Q?CiDon9DtekT1ccc8VBqDrbyy2F9MtbH+BLwAWJnx6XZWbZJe2X7A7w6ICF0Z?=
- =?us-ascii?Q?a6n2F0EZgZfYjXTo4d+FjhieACm5Qq7QIdkGBtmSOphor8h36/0G7xl4Y/Yu?=
- =?us-ascii?Q?Cl+jc2Q43d5kih/cD8AreGTUqJHuF1vWCV96BODUQ3WXJhdl0FaHKbC1IgVb?=
- =?us-ascii?Q?twb8ITwdm37jsR3yMNN1fJG5pSwRuRLF4r/dzN5MRVkhP9OdEG82DuA8d3qv?=
- =?us-ascii?Q?hjXBySmadmY2r6lDyDEh5/3v7MlDXpm+oOhifPzeQqKVOHxeC867Qmcs5aaO?=
- =?us-ascii?Q?RSLTFy4RmM1U+ltA0w9Jg67NR/jbNhhhChj5rPrndOoq/HtPmnhs1ScX40o6?=
- =?us-ascii?Q?YgSAZ/D0buTTttaFiwruSHG37oXssFhwvmI4mrGPCkNQT/IUs6POG/DneW6w?=
- =?us-ascii?Q?Q5nxF8Hr6YvqQXAC5nrFKYRxF6oH3TqpMp9iaxu+MfWhha1/m0mqpp9/bfWl?=
- =?us-ascii?Q?v/Lxm3iA2GgJCAEEBuTxzoHLUMpV0tpf/9CFktcwi5CKIhkc7VQfEFLhUNvW?=
- =?us-ascii?Q?bEup023blxeZFzNVpii7T9qtH43HGIqSiClMNVaPFU6ezmbuoXDkasBO9GIp?=
- =?us-ascii?Q?SKisz0F2DUwUHl9/1fmXHZLu9MDWgLJfe1jHFPkK5lQreM0Uhu6I3d6MrOCd?=
- =?us-ascii?Q?WxGWNutnK/CgbH747ZNle33M4M72rFqAXy3+FG4o2vyIqfACLiOOyx6TmHP4?=
- =?us-ascii?Q?PiufnRIocKs+56oJYvhXs+KfTKUJtSFka36r8x+yx0Y3BbGmllYkZmn8OIKk?=
- =?us-ascii?Q?rp1kud3oYigKrF6sal6vo3IJQxTqoJMc5l5dfXMmmU/dTgRoU05MOHBJnUWY?=
- =?us-ascii?Q?fg2rGiN/KqyUEIduKNBuG6mt?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S236334AbhI0Ssa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234211AbhI0Ss2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 14:48:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 351AC60F70;
+        Mon, 27 Sep 2021 18:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632768410;
+        bh=aAUpJLAvxQ+tHaQKvkiHUoC8zvr3SDhJ8uiCDNoeqXs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=qzynkof5Gd1zNVPHo3jVrAnP115kuAFhtBukKFpONdjp87NprCm91HDbrE/owxdhZ
+         xxo+KOoGVV8xi+r/xixAGATY/mdBwwFHbvwyMTntL/h4E9NIije4CwzKImO+Ft2TkT
+         esRYtMPRx+sjIdI+yAhG+ZMuViJGWjFRbn/mUsDAUOmzw+aAGycJPSGKcxVsrEIzp8
+         X0mn6JIfspomXpax77aqWhehi+1mnH/vQ4jhS6hEKe6Mz0SIuDNSMiJKjScDPZ41Nq
+         qTUq0ayObtqPUirRQM9z42nmYatHl4UCiTIAydz4MMVW/EurQNGzuSW/wTRFFDwp+A
+         k19lzCPqTmXVQ==
+Date:   Mon, 27 Sep 2021 13:46:48 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 03/20] PCI/P2PDMA: make pci_p2pdma_map_type()
+ non-static
+Message-ID: <20210927184648.GA667259@bhelgaas>
 MIME-Version: 1.0
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5661.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 747e6ccd-6070-451e-fc50-08d981e6e076
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2021 18:44:45.6368
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q0/BkHoICM1o8QWD4+nwgkvUB82pNVtdmpXi1y+6f+A5kNkZ3GN0n+tMYoAdi4JmN3a1QYWoDrDTl9T16pIMjSV9prepR+e2CMRGZ+bfQGM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5598
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916234100.122368-4-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Sent: Monday, September 27, 2021 9:49 AM
-> To: Mark Brown <broonie@kernel.org>; Ryan Lee
-> <RyanS.Lee@maximintegrated.com>
-> Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com; yung-
-> chuan.liao@linux.intel.com; guennadi.liakhovetski@linux.intel.com; alsa-
-> devel@alsa-project.org; linux-kernel@vger.kernel.org;
-> sathya.prakash.m.r@intel.com; ryan.lee.maxim@gmail.com
-> Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty
-> before entering sleep
->=20
-> EXTERNAL EMAIL
->=20
->=20
->=20
-> On 9/27/21 11:06 AM, Mark Brown wrote:
-> > On Mon, Sep 27, 2021 at 04:01:25PM +0000, Ryan Lee wrote:
-> >
-> >>>>       regcache_cache_only(max98373->regmap, true);
-> >>>> +     regcache_mark_dirty(max98373->regmap);
-> >
-> >>> We already do the following sequence in max98373_io_init() when the
-> >>> amplifier re-attaches:
-> >
-> >>>         if (max98373->first_hw_init) {
-> >>>                 regcache_cache_bypass(max98373->regmap, false);
-> >>>                 regcache_mark_dirty(max98373->regmap);
-> >>>         }
-> >
-> >>> I don't see what marking the cache as dirty on suspend might do, we
-> >>> will do a sync only in the resume step.
-> >
-> >>> IIRC this is a patch that we've seen before and removed since it
-> >>> wasn't aligned with any other codec driver.
-> >
-> >> Yes, it does. There was an mute problem report due to amp register
-> >> reset during suspend/resume. and we confirmed that the modification
-> >> is effective.
-> >>
-> (https://nam02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpa
-> >>
-> rtnerissuetracker.corp.google.com%2Fissues%2F194472331&amp;data=3D04%
-> 7C
-> >>
-> 01%7Cryans.lee%40maximintegrated.com%7C56f7bb3f05ae4c199dce08d98
-> 1d6b8
-> >>
-> 94%7Cfbd909dfea694788a554f24b7854ad03%7C0%7C0%7C6376835814870
-> 22873%7C
-> >>
-> Unknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJB
-> TiI6Ik1
-> >>
-> haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DU1LZabH5MbrotS976TKK8Rh
-> 9nqi0ueRO
-> >> %2FxR0obeQlrM%3D&amp;reserved=3D0) The added code helps to re-write
-> >> valid values in cache to the amp hardware when audio resume. Same
-> >> code was there on i2c driver, but not on Soundwire driver.
->=20
-> Ryan, we removed this in f184892613dd ('ASoC: codecs: max98373-sdw:
-> align regmap use with other codecs'), so even if this was needed you'd ne=
-ed
-> a mention that this is a revert and why this sequence is better.
-> You are suggesting a change based on an analogy with I2C which is
-> questionable: when a SoundWire device regains sync on the bus, it will be=
- re-
-> initialized using a callback, and the resume waits for the initialization=
- to
-> complete.
+On Thu, Sep 16, 2021 at 05:40:43PM -0600, Logan Gunthorpe wrote:
+> pci_p2pdma_map_type() will be needed by the dma-iommu map_sg
+> implementation because it will need to determine the mapping type
+> ahead of actually doing the mapping to create the actual iommu mapping.
 
-I think there is always possibility that amp lose its power or is reset by =
-hw reset
-pin control during audio suspension to minimize current consumption.
-Register restoration process is required for both i2c and Soundwire case
-when the amp was reset by some reason.
-max98373_update_status () is called when audio resume but
-' sdw_slave_status' remains ' SDW_SLAVE_ATTACHED' and ' first_hw_init' is 1=
-,
-so restoration is not happening. This is software variable and the value re=
-mains
-the same for the amp hardware reset not triggered by the software driver.
-If regcache_mark_dirty() is not called, regcache_sync() will assume that
-the hardware state still matches the cache state which causes the mute
-problem here.
+I don't expect this to go via the PCI tree, but if it did I would
+silently:
 
->=20
-> > More specifically what it does is make the invalidation of the
-> > register cache unconditional.  It doesn't really matter if the
-> > invalidation is done on suspend or resume, so long as it happens
-> > before we attempt to resync - this could also be done by deleting the
-> first_hw_init check.
+  s/PCI/P2PDMA: make pci_p2pdma_map_type() non-static/
+    PCI/P2PDMA: Expose pci_p2pdma_map_type()/
+  s/iommu/IOMMU/
 
-I tried to delete the first_hw_init, but it didn't work because
-other status variable is also related.
-Calling regcache_mark_dirty() is needed to solve a synchronization issue
-between cache and actual hardware value during suspend/resume,
-but it was not called.
+and mention what this patch does in the commit log (in addition to the
+subject) and fix a couple minor typos below.
 
->=20
-> Mark, that's exactly my point: if the amp rejoins the bus, we will
-> *always* mark the cache as dirty, before the resync is done in the resume
-> sequence.
->=20
-> I am really trying to figure out if we have a major flaw in the resume
-> sequence and why things are different in the case of the Maxim amp.
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 
-Maybe other amps were not reset during audio suspend/resume.
-Even max98373 was okay with the previous gen. Intel board.
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
->=20
-> Instead of changing the suspend sequence, can we please try to modify the
-> max98373_io_init() routine to unconditionally flag the cache as dirty, ma=
-ybe
-> this points to a problem with the management of the
-> max98373->first_hw_init flag.
+> ---
+>  drivers/pci/p2pdma.c       | 24 +++++++++++++---------
+>  include/linux/pci-p2pdma.h | 41 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 56 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index 1192c465ba6d..b656d8c801a7 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -20,13 +20,6 @@
+>  #include <linux/seq_buf.h>
+>  #include <linux/xarray.h>
+>  
+> -enum pci_p2pdma_map_type {
+> -	PCI_P2PDMA_MAP_UNKNOWN = 0,
+> -	PCI_P2PDMA_MAP_NOT_SUPPORTED,
+> -	PCI_P2PDMA_MAP_BUS_ADDR,
+> -	PCI_P2PDMA_MAP_THRU_HOST_BRIDGE,
+> -};
+> -
+>  struct pci_p2pdma {
+>  	struct gen_pool *pool;
+>  	bool p2pmem_published;
+> @@ -841,8 +834,21 @@ void pci_p2pmem_publish(struct pci_dev *pdev, bool publish)
+>  }
+>  EXPORT_SYMBOL_GPL(pci_p2pmem_publish);
+>  
+> -static enum pci_p2pdma_map_type pci_p2pdma_map_type(struct dev_pagemap *pgmap,
+> -						    struct device *dev)
+> +/**
+> + * pci_p2pdma_map_type - return the type of mapping that should be used for
+> + *	a given device and pgmap
+> + * @pgmap: the pagemap of a page to determine the mapping type for
+> + * @dev: device that is mapping the page
+> + *
+> + * Returns one of:
+> + *	PCI_P2PDMA_MAP_NOT_SUPPORTED - The mapping should not be done
+> + *	PCI_P2PDMA_MAP_BUS_ADDR - The mapping should use the PCI bus address
+> + *	PCI_P2PDMA_MAP_THRU_HOST_BRIDGE - The mapping should be done normally
+> + *		using the CPU physical address (in dma-direct) or an IOVA
+> + *		mapping for the IOMMU.
+> + */
+> +enum pci_p2pdma_map_type pci_p2pdma_map_type(struct dev_pagemap *pgmap,
+> +					     struct device *dev)
+>  {
+>  	enum pci_p2pdma_map_type type = PCI_P2PDMA_MAP_NOT_SUPPORTED;
+>  	struct pci_dev *provider = to_p2p_pgmap(pgmap)->provider;
+> diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
+> index 8318a97c9c61..caac2d023f8f 100644
+> --- a/include/linux/pci-p2pdma.h
+> +++ b/include/linux/pci-p2pdma.h
+> @@ -16,6 +16,40 @@
+>  struct block_device;
+>  struct scatterlist;
+>  
+> +enum pci_p2pdma_map_type {
+> +	/*
+> +	 * PCI_P2PDMA_MAP_UNKNOWN: Used internally for indicating the mapping
+> +	 * type hasn't been calculated yet. Functions that return this enum
+> +	 * never return this value.
+> +	 */
+> +	PCI_P2PDMA_MAP_UNKNOWN = 0,
+> +
+> +	/*
+> +	 * PCI_P2PDMA_MAP_NOT_SUPPORTED: Indicates the transaction will
+> +	 * traverse the host bridge and the host bridge is not in the
+> +	 * whitelist. DMA Mapping routines should return an error when
+> +	 * this is returned.
+> +	 */
+> +	PCI_P2PDMA_MAP_NOT_SUPPORTED,
+> +
+> +	/*
+> +	 * PCI_P2PDMA_BUS_ADDR: Indicates that two devices can talk to
+> +	 * eachother directly through a PCI switch and the transaction will
+> +	 * not traverse the host bridge. Such a mapping should program
+> +	 * the DMA engine with PCI bus addresses.
 
-max98373_io_init() is not called because ' sdw_slave_status' remains
-' SDW_SLAVE_ATTACHED' and 'max98373->hw_init' is already true.
-Removing 'if (max98373->hw_init || status !=3D SDW_SLAVE_ATTACHED)'
-condition in max98373_update_status() function instead of adding
-regcache_mark_dirty() into max98373_suspend() can be an alternative way.
-I think it is all about where regcache_mark_dirty() is called from.
-The difference is that max98373_io_init() really do the software reset and
-do amp initialization again which could be an overhead.
+s/eachother/each other/
+
+> +	 */
+> +	PCI_P2PDMA_MAP_BUS_ADDR,
+> +
+> +	/*
+> +	 * PCI_P2PDMA_MAP_THRU_HOST_BRIDGE: Indicates two devices can talk
+> +	 * to eachother, but the transaction traverses a host bridge on the
+> +	 * whitelist. In this case, a normal mapping either with CPU physical
+> +	 * addresses (in the case of dma-direct) or IOVA addresses (in the
+> +	 * case of IOMMUs) should be used to program the DMA engine.
+
+s/eachother/each other/
+
+> +	 */
+> +	PCI_P2PDMA_MAP_THRU_HOST_BRIDGE,
+> +};
+> +
+>  #ifdef CONFIG_PCI_P2PDMA
+>  int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
+>  		u64 offset);
+> @@ -30,6 +64,8 @@ struct scatterlist *pci_p2pmem_alloc_sgl(struct pci_dev *pdev,
+>  					 unsigned int *nents, u32 length);
+>  void pci_p2pmem_free_sgl(struct pci_dev *pdev, struct scatterlist *sgl);
+>  void pci_p2pmem_publish(struct pci_dev *pdev, bool publish);
+> +enum pci_p2pdma_map_type pci_p2pdma_map_type(struct dev_pagemap *pgmap,
+> +					     struct device *dev);
+>  int pci_p2pdma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
+>  		int nents, enum dma_data_direction dir, unsigned long attrs);
+>  void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+> @@ -83,6 +119,11 @@ static inline void pci_p2pmem_free_sgl(struct pci_dev *pdev,
+>  static inline void pci_p2pmem_publish(struct pci_dev *pdev, bool publish)
+>  {
+>  }
+> +static inline enum pci_p2pdma_map_type
+> +pci_p2pdma_map_type(struct dev_pagemap *pgmap, struct device *dev)
+> +{
+> +	return PCI_P2PDMA_MAP_NOT_SUPPORTED;
+> +}
+>  static inline int pci_p2pdma_map_sg_attrs(struct device *dev,
+>  		struct scatterlist *sg, int nents, enum dma_data_direction dir,
+>  		unsigned long attrs)
+> -- 
+> 2.30.2
+> 
