@@ -2,91 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60ED41938D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC49419391
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhI0LsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:48:18 -0400
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:44651 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234146AbhI0LsQ (ORCPT
+        id S234148AbhI0Lsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:48:41 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:36562 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234037AbhI0Lsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:48:16 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 3AD871B02
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:46:37 +0100 (IST)
-Received: (qmail 12512 invoked from network); 27 Sep 2021 11:46:36 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Sep 2021 11:46:36 -0000
-Date:   Mon, 27 Sep 2021 12:46:35 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mike Galbraith <efault@gmx.de>, Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] sched/fair: Null terminate buffer when updating
- tunable_scaling
-Message-ID: <20210927114635.GH3959@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 27 Sep 2021 07:48:39 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 27 Sep 2021 04:47:02 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 27 Sep 2021 04:47:00 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 27 Sep 2021 17:16:44 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id C658121BAE; Mon, 27 Sep 2021 17:16:42 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mchehab@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v4] dt-bindings: media: venus: Add sc7280 dt schema
+Date:   Mon, 27 Sep 2021 17:16:37 +0530
+Message-Id: <1632743197-32291-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch null-terminates the temporary buffer in sched_scaling_write()
-so kstrtouint() does not return failure and checks the value is valid.
+Add a schema description for the venus video encoder/decoder on the sc7280.
 
-Before
-$ cat /sys/kernel/debug/sched/tunable_scaling
-1
-$ echo 0 > /sys/kernel/debug/sched/tunable_scaling
--bash: echo: write error: Invalid argument
-$ cat /sys/kernel/debug/sched/tunable_scaling
-1
-
-After
-$ cat /sys/kernel/debug/sched/tunable_scaling
-1
-$ echo 0 > /sys/kernel/debug/sched/tunable_scaling
-$ cat /sys/kernel/debug/sched/tunable_scaling
-0
-$ echo 3 > /sys/kernel/debug/sched/tunable_scaling
--bash: echo: write error: Invalid argument
-
-Fixes: 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- kernel/sched/debug.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+change since v3:
+    Added missing dependency.
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 49716228efb4..17a653b67006 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -173,16 +173,22 @@ static ssize_t sched_scaling_write(struct file *filp, const char __user *ubuf,
- 				   size_t cnt, loff_t *ppos)
- {
- 	char buf[16];
-+	unsigned int scaling;
- 
- 	if (cnt > 15)
- 		cnt = 15;
- 
- 	if (copy_from_user(&buf, ubuf, cnt))
- 		return -EFAULT;
-+	buf[cnt] = '\0';
- 
--	if (kstrtouint(buf, 10, &sysctl_sched_tunable_scaling))
-+	if (kstrtouint(buf, 10, &scaling))
- 		return -EINVAL;
- 
-+	if (scaling >= SCHED_TUNABLESCALING_END)
-+		return -EINVAL;
+ .../bindings/media/qcom,sc7280-venus.yaml          | 160 +++++++++++++++++++++
+ 1 file changed, 160 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+
+diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+new file mode 100644
+index 0000000..12a42a0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+@@ -0,0 +1,160 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +
-+	sysctl_sched_tunable_scaling = scaling;
- 	if (sched_update_scaling())
- 		return -EINVAL;
- 
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Qualcomm Venus video encode and decode accelerators
++
++maintainers:
++  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
++
++description: |
++  The Venus Iris2 IP is a video encode and decode accelerator present
++  on Qualcomm platforms
++
++properties:
++  compatible:
++    const: qcom,sc7280-venus
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  power-domains:
++    minItems: 2
++    maxItems: 3
++
++  power-domain-names:
++    minItems: 2
++    maxItems: 3
++    items:
++      - const: venus
++      - const: vcodec0
++      - const: cx
++
++  clocks:
++    maxItems: 5
++
++  clock-names:
++    items:
++      - const: core
++      - const: bus
++      - const: iface
++      - const: vcodec_core
++      - const: vcodec_bus
++
++  iommus:
++    maxItems: 2
++
++  memory-region:
++    maxItems: 1
++
++  interconnects:
++    maxItems: 2
++
++  interconnect-names:
++    items:
++      - const: cpu-cfg
++      - const: video-mem
++
++  video-decoder:
++    type: object
++
++    properties:
++      compatible:
++        const: venus-decoder
++
++    required:
++      - compatible
++
++    additionalProperties: false
++
++  video-encoder:
++    type: object
++
++    properties:
++      compatible:
++        const: venus-encoder
++
++    required:
++      - compatible
++
++    additionalProperties: false
++
++  video-firmware:
++    type: object
++
++    description: |
++      Firmware subnode is needed when the platform does not
++      have TrustZone.
++
++    properties:
++      iommus:
++        maxItems: 1
++
++    required:
++      - iommus
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - power-domains
++  - power-domain-names
++  - clocks
++  - clock-names
++  - iommus
++  - memory-region
++  - video-decoder
++  - video-encoder
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
++
++        venus: video-codec@aa00000 {
++                compatible = "qcom,sc7280-venus";
++                reg = <0x0aa00000 0xd0600>;
++                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++                clock-names = "core", "bus", "iface",
++                              "vcodec_core", "vcodec_bus";
++
++                power-domains = <&videocc MVSC_GDSC>,
++                                <&videocc MVS0_GDSC>;
++                                <&rpmhpd SC7280_CX>;
++                power-domain-names = "venus", "vcodec0", "cx";
++
++                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>
++                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++                interconnect-names = "cpu-cfg", "video-mem";
++
++                iommus = <&apps_smmu 0x2180 0x20>,
++                         <&apps_smmu 0x2184 0x20>;
++
++                memory-region = <&video_mem>;
++
++                video-decoder {
++                        compatible = "venus-decoder";
++                };
++
++                video-encoder {
++                        compatible = "venus-encoder";
++                };
++
++                video-firmware {
++                        iommus = <&apps_smmu 0x21a2 0x0>;
++                };
++        };
+-- 
+2.7.4
+
