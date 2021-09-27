@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2703041A182
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A0B41A184
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbhI0Vub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
+        id S237336AbhI0Vvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237009AbhI0Vu0 (ORCPT
+        with ESMTP id S237009AbhI0Vvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:50:26 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E852C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:48:47 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i25so84090414lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:48:47 -0700 (PDT)
+        Mon, 27 Sep 2021 17:51:44 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96149C061575;
+        Mon, 27 Sep 2021 14:50:05 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id k13so5662174ilo.7;
+        Mon, 27 Sep 2021 14:50:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lQziuvBfMARHu13Vd8UtdQcVHSAZAA1BW8ACAK1SnhE=;
-        b=NGpFDJkITm1KfPEm3AGsnSRalQF0DwNDYxx0+9BDd5ChQE9kL6NB5KDsHAmMwVhIgP
-         ACUY3BOQZVr6hHMpD6sr5qPQZLozbKu6ibg2WhIpWCB9r4XzmqAuaSYsBT/322WUD+gn
-         t8lLVz5wiX7/CJTHCNVlutwPKAddZlDG1Dejg+c5P/TrWhUHDXuBN5q1PWTmbTI4VIto
-         qsCm/jmnE30fATndaSCtSCkRj9+cQGETpJAdy091YpXA87AUrsFUrbi6wMN7NyuZvYGj
-         UIOw6K7hzQFtdWHvMK2T8QFeL10xFIzxJr0+5y1YxIEK0t4MMs8X26ytL8QTcYvhguRp
-         qt9g==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=tikSQPAyzklwRveDS3Z5YihXzUXmcK3zSUGwoQRh0mc=;
+        b=WCJ5uXuAys8JIc4FJY6+TyBLOu0iSZALBoDMh0XWbTcFi2aJIETo/yqf/AjfnKtxnn
+         0FmAeBYXE43yDnmGh9+2yI8bTsS2TUpfLqJj3PpAWGwH4bvr76+eM6jXCTkqJwsTU4ah
+         s09X8BGtUm9sz3QLPJT+w6fBCYO5NRCjdqFWRY7Jb3kQ/2d9PzKi1CxLJpg/7IXjXfAf
+         zvkPACfIKQcKMjSZQS2htY6U2oN2RappU9rck9T9eC84EV80vWi7kGFYXT4PdfqI5pbk
+         u2Zt5JCsvKsQiinEpuDKtzunYtNGHFd6GPeBbz8+FdOso5NcIf8yK5JWXcHEfJnx2ii+
+         RR6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQziuvBfMARHu13Vd8UtdQcVHSAZAA1BW8ACAK1SnhE=;
-        b=c7zmsORRse75AZq0N4W0CnubM7noVrm6NH2jxe57sOqENpI3ytxbxql/gmvRU7+sd+
-         5rSnhoMarTswgyEN6bMN7oltff1IF3Wh5hHP9NWc5rm7nxyFtZYScBtLDzq/lHmQABtf
-         mSPZszSBd09EZ9s1ZVfmsVl8h566UqXodJNA19BAKCzMCwWdvty9vncttazA4ixBV58+
-         GtCED+NKgdWNenk2ISxGcf9WfevZpnMG/+1McgwkcRuowgKfnuBuY3ZNXIvCNiO8s3NO
-         MWS0/704rm4hWbm7tUwJHNYvJ/+1NauD2jS+ZD291KeHqPTudsODUbMtgV4Wg7S2JbjN
-         PptA==
-X-Gm-Message-State: AOAM533XQfMdcR0dsIcatl0mbBjbWvaTE2ATHuU4CbjCgCGKzdEXVY8b
-        +rrCkdQKzw27xaYvXPUSbJXADGOlDw9DVs8ZfG4F6w==
-X-Google-Smtp-Source: ABdhPJxP+ChpDdQIABcI5f3CK9us5oK3lnIFxWcqw0cBy+9IUsI6SeIO9UhwDiMik2DcBMb6VXtvjgnuaa+Js+P7ih0=
-X-Received: by 2002:a2e:5059:: with SMTP id v25mr2204795ljd.128.1632779325708;
- Mon, 27 Sep 2021 14:48:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=tikSQPAyzklwRveDS3Z5YihXzUXmcK3zSUGwoQRh0mc=;
+        b=cUogIRPQNUy2CVIROWSQiPp85C6+KpGmo3A4WDpBdOjM+fR6HJTko1UeEK3iXBVu80
+         C4I7WH6XoI0qSI5IxJnJSmdQC2Ju1LMEuN/SltxxVbKiSN7WcpNA0/Mrs+hxRMG75Occ
+         N7feb+Iq1k1l1YBIrOYGbbQXnER1I/V/lGPiN2T4TBD3l3M/Chi6fN6Lhr6Pm0Lc/+n7
+         mSoCv73P9Mm94Cz9ygZd3HFENs2J/h4kga9iSeYO6DUse6RexdrgdyRk40dPcYoKV6hw
+         sg9Bw0LoZ6RppvbKlQw/qsoGdbBFEJjHAQENwKc2Xps4JBQBvs6ckYbNSSiTan0pV/yy
+         hUOw==
+X-Gm-Message-State: AOAM530Xahm4r4ILXFoegdnm8aRYuKuS2CWOL8DgSBDGyLwH9dM6bpbv
+        5cPCUdJy9CQYUKyLAQj4xoMrb3cxmXvvpvvJUyI=
+X-Google-Smtp-Source: ABdhPJwI1HhPHfNS/jXu1lg9HT/GpcVmrGU610X6rk5pu8ryCEJDbylB19fni9LnAz0JzfBioEfmzzvsqBecthg6Ss4=
+X-Received: by 2002:a05:6e02:1a46:: with SMTP id u6mr1723814ilv.214.1632779405064;
+ Mon, 27 Sep 2021 14:50:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <CA+icZUUuacTuaWXopzH_YC3pCa3FPB=GReJ6BwE5zJ1j2WB_ew@mail.gmail.com>
  <20210927214715.GE964074@nvidia.com>
 In-Reply-To: <20210927214715.GE964074@nvidia.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 27 Sep 2021 14:48:33 -0700
-Message-ID: <CAKwvOdnmbLO3+8jwwyoS3Cw_wSfr18Zqf3QyHpEJN5Dok46CQg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 27 Sep 2021 23:49:29 +0200
+Message-ID: <CA+icZUW3=-FiUebSEsqgBQcHGrk=ket906V9mAqd_COJAmTDhA@mail.gmail.com>
 Subject: Re: Linux 5.15-rc3
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 2:47 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Mon, Sep 27, 2021 at 11:47 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
 > On Mon, Sep 27, 2021 at 10:48:42PM +0200, Sedat Dilek wrote:
 > > [ Please CC me I am not subscribed to LKML and linux-rdma ]
@@ -85,9 +87,8 @@ On Mon, Sep 27, 2021 at 2:47 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
 > It should come as a PR this week, I don't think we need to do anything
 > special urgent here, do we?
+>
 
-I think that should be fine. Thanks Jason for doing so, and Sedat for
-help testing/reporting.
--- 
-Thanks,
-~Nick Desaulniers
+Personally, I am fine with this.
+
+- Sedat -
