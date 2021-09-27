@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C572E419A0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1565419CB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236020AbhI0RGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44876 "EHLO mail.kernel.org"
+        id S237685AbhI0RbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:31:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235770AbhI0RFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60D5A6109F;
-        Mon, 27 Sep 2021 17:04:17 +0000 (UTC)
+        id S238092AbhI0R0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:26:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF24F61209;
+        Mon, 27 Sep 2021 17:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762257;
-        bh=Ym3Vf9ttUlHucIgpHbJ2AKZ57nr98JcZFbq3K6pg2Nc=;
+        s=korg; t=1632762971;
+        bh=SZQZzLHMv4tAi3FLBMJCwjakkIetWgWA7Eb4NsIYgcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kaG9reToesE2yxeb8MZupED5VTvSkK0lqaopywd2zZDfxNSkFm+QT7iiV7HVgCAOD
-         CKSkaC1sy1Z25Poj3/kOitid6zOAGuyVnyQgkUxO1nwQXYa31e/KWlITT4xD4fLBTi
-         f24sZfV7+E6Rb+4AzAgym1EJ1tg+Qt/x5G4SGDc4=
+        b=RGWPetKltOXX8XPmGL+B66K7EvKUcyTuS6HbTTtg6zpN+llDhgIE8J8lTFh5EE49/
+         HPXtJML+6EmCNVGrqDAZl8tmCddyFfsRNRPYguXTzjGn/EkL6wuSvprw2wQ8ish147
+         NRPEA6Xx1BusAMsFUu94S1gDZvI/2yMsRMJn5lJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli V <eliventer@gmail.com>,
-        Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 21/68] btrfs: prevent __btrfs_dump_space_info() to underflow its free space
-Date:   Mon, 27 Sep 2021 19:02:17 +0200
-Message-Id: <20210927170220.686912121@linuxfoundation.org>
+        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
+        Baokun Li <libaokun1@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 092/162] scsi: iscsi: Adjust iface sysfs attr detection
+Date:   Mon, 27 Sep 2021 19:02:18 +0200
+Message-Id: <20210927170236.621781621@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Baokun Li <libaokun1@huawei.com>
 
-commit 0619b7901473c380abc05d45cf9c70bee0707db3 upstream.
+[ Upstream commit 4e28550829258f7dab97383acaa477bd724c0ff4 ]
 
-It's not uncommon where __btrfs_dump_space_info() gets called
-under over-commit situations.
+ISCSI_NET_PARAM_IFACE_ENABLE belongs to enum iscsi_net_param instead of
+iscsi_iface_param so move it to ISCSI_NET_PARAM. Otherwise, when we call
+into the driver, we might not match and return that we don't want attr
+visible in sysfs. Found in code review.
 
-In that case free space would underflow as total allocated space is not
-enough to handle all the over-committed space.
-
-Such underflow values can sometimes cause confusion for users enabled
-enospc_debug mount option, and takes some seconds for developers to
-convert the underflow value to signed result.
-
-Just output the free space as s64 to avoid such problem.
-
-Reported-by: Eli V <eliventer@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CAJtFHUSy4zgyhf-4d9T+KdJp9w=UgzC2A0V=VtmaeEpcGgm1-Q@mail.gmail.com/
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210901085336.2264295-1-libaokun1@huawei.com
+Fixes: e746f3451ec7 ("scsi: iscsi: Fix iface sysfs attr detection")
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/space-info.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/scsi_transport_iscsi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -262,9 +262,10 @@ static void __btrfs_dump_space_info(stru
- {
- 	lockdep_assert_held(&info->lock);
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index d8b05d8b5470..922e4c7bd88e 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -441,9 +441,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 	struct iscsi_transport *t = iface->transport;
+ 	int param = -1;
  
--	btrfs_info(fs_info, "space_info %llu has %llu free, is %sfull",
-+	/* The free space could be negative in case of overcommit */
-+	btrfs_info(fs_info, "space_info %llu has %lld free, is %sfull",
- 		   info->flags,
--		   info->total_bytes - btrfs_space_info_used(info, true),
-+		   (s64)(info->total_bytes - btrfs_space_info_used(info, true)),
- 		   info->full ? "" : "not ");
- 	btrfs_info(fs_info,
- 		"space_info total=%llu, used=%llu, pinned=%llu, reserved=%llu, may_use=%llu, readonly=%llu",
+-	if (attr == &dev_attr_iface_enabled.attr)
+-		param = ISCSI_NET_PARAM_IFACE_ENABLE;
+-	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
++	if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
+ 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
+ 	else if (attr == &dev_attr_iface_header_digest.attr)
+ 		param = ISCSI_IFACE_PARAM_HDRDGST_EN;
+@@ -483,7 +481,9 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 	if (param != -1)
+ 		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
+ 
+-	if (attr == &dev_attr_iface_vlan_id.attr)
++	if (attr == &dev_attr_iface_enabled.attr)
++		param = ISCSI_NET_PARAM_IFACE_ENABLE;
++	else if (attr == &dev_attr_iface_vlan_id.attr)
+ 		param = ISCSI_NET_PARAM_VLAN_ID;
+ 	else if (attr == &dev_attr_iface_vlan_priority.attr)
+ 		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
+-- 
+2.33.0
+
 
 
