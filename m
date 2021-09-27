@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0CF4195E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888EA4195F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbhI0OHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52178 "EHLO mail.kernel.org"
+        id S234691AbhI0OJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:09:49 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:33792 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234461AbhI0OH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:07:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 457AD60F46;
-        Mon, 27 Sep 2021 14:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632751549;
-        bh=6VROViTQrHqhxIEB6/H5ChtA2FaNKxLZXhP74mU/Srk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zs7AHqdCHiOKiAq0eNsgaiimlkEPCatu+nACNpXC3yTOp8BJYfDeYp6DThh5oRmUX
-         8ayUntOGkOtmubwGLS79GH3JdZz0FD5+YMIwuUJqN58Nu2zeKSRoZtpsnMhK7NIZo8
-         Yy0gqjkVUC84QQnC46OVh2+L7H2j7a1EltC/hdwIhHP+F4FgrLXTOSJp06MITtZVR4
-         OqVuIyfSIMlxSfSUPofKTQ82EB/2Dxfou6HDpph4EwPxD9p72xjCOfBS/7vyKWvLpm
-         id1tzNao8SFJzNu2uNrra3RLxADwHR1Izyv7wE9NFrc3iWA9nBjMkCAYFe9ZvP2TMz
-         x5KMD90mWrvyw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mUrGN-0001wu-UU; Mon, 27 Sep 2021 16:05:48 +0200
-Date:   Mon, 27 Sep 2021 16:05:47 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] serial: core: Add new prep_tx for power management
-Message-ID: <YVHPu7KGYDWOCav9@hovoldconsulting.com>
-References: <20210921103346.64824-1-tony@atomide.com>
- <20210921103346.64824-4-tony@atomide.com>
- <YUx3AkT4Du/PT+V5@hovoldconsulting.com>
- <YUyXA5UStMHGQDZZ@atomide.com>
- <YU3isENYUb+aE4qi@hovoldconsulting.com>
- <YU3qHiMNHVz/JX/y@atomide.com>
+        id S234645AbhI0OJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:09:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=IckG1sRzJnW/Mx/vKohnDrPDQtYCCkvkQ4ZGzZAHtkc=; b=P2UElf26lwjvNVBZKnhDCN+NU6
+        nu8C7CXIA6aQ8Pg+wPzDJnZ8ZpG4Zn7vt+ekLSI1WmIHOKKF7DxZbFUFJWPogl/1dbuDJbai2v5iL
+        Yvb5c1k80++7eOVUSMEJMbNTiSXb7/tUys28eWUvJ+xL5cSitKtw8O6QZAUEXrhLYMWQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mUrIX-008RkP-4J; Mon, 27 Sep 2021 16:08:01 +0200
+Date:   Mon, 27 Sep 2021 16:08:01 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        David Thompson <davthompson@nvidia.com>
+Subject: Re: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YVHQQcv2M6soJR6u@lunn.ch>
+References: <20210923202216.16091-1-asmaa@nvidia.com>
+ <20210923202216.16091-2-asmaa@nvidia.com>
+ <YU26lIUayYXU/x9l@lunn.ch>
+ <CACRpkdbUJF6VUPk9kCMPBvjeL3frJAbHq+h0-z7P-a1pSU+fiw@mail.gmail.com>
+ <CH2PR12MB38951F2326196AB5B573A73DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YU3qHiMNHVz/JX/y@atomide.com>
+In-Reply-To: <CH2PR12MB38951F2326196AB5B573A73DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 06:09:18PM +0300, Tony Lindgren wrote:
-> * Johan Hovold <johan@kernel.org> [210924 14:38]:
-> > On Thu, Sep 23, 2021 at 06:02:27PM +0300, Tony Lindgren wrote:
+> The BlueField GPIO HW only support Edge interrupts.
 
-> > > > No need to be patching line disciplines for this.
-> > > 
-> > > Do you see issues with handling the errors in line disciplines?
-> > 
-> > It's just conceptually wrong to push retrying up the stack, possible all
-> > the way to user space in case of non-blocking opens, just because the
-> > device isn't already runtime active.
-> 
-> Yes, I don't see a way around that currently. Maybe if we start making
-> use of uart_tx_stopped() or something similar that could be simplified.
-> And we'll be still hit these line discipline error handling cases
-> anyways depending on how long the serial port wake up takes.
+O.K. So please remove all level support from this driver, and return
+-EINVAL if requested to do level.
 
-I didn't really look at the ldisc change so not saying it isn't needed
-for other reasons such as a full write buffer. But then I'd expect it to
-be presented as a bug fix (perhaps it was).
+This also means, you cannot use interrupts with the Ethernet PHY. The
+PHY is using level interrupts.
 
-Johan
+    Andrew
