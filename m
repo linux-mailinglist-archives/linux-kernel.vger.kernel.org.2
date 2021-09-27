@@ -2,149 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06369419798
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588994197A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbhI0PTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:19:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42288 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234972AbhI0PTb (ORCPT
+        id S235131AbhI0PVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:21:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54050 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235121AbhI0PVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:19:31 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18RDtpLQ005737;
-        Mon, 27 Sep 2021 11:17:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ZEE60/MIiE9EAlUoL+qREn3xlXTzM3VY0WrkyxkxqVs=;
- b=Z/cSuPKy4WW6nyyvwgn3IEag+/NHeYMwaeEME56kq6Tji5iOugywvpgYi/UrL76eiMlQ
- rqEPuprIVzPaSCoLhjioaWlVTcIVsBDa+BA3b0xkuLj5/GnMyTHk2MNuk4ZeOpaxlIdh
- fVNQRMiw9Sx1bGglHa/7T+LtdguH++5KUhh0CKWYUckSQu30s46iS9WHlnBUJMdwW4Ng
- TPRatQYOroLn2gAkBttRiI+2eb+7Sc0GcsX/4RwXQOVsRsjZJDSIqOIhj/Z00w6+xpwf
- Qrb5Z+SFGSV0kGRWevI032kOeI59xbuvImCf0qXbfzOKh0GfkRM9ISCwmpD8AKh8rXze aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagx4y7q1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 11:17:04 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18RCd4rR028652;
-        Mon, 27 Sep 2021 11:17:02 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagx4y7p6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 11:17:02 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18RFDnB9014438;
-        Mon, 27 Sep 2021 15:17:00 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 3b9ud955wc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 15:16:59 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18RFGtkp38339018
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Sep 2021 15:16:55 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 811A24C050;
-        Mon, 27 Sep 2021 15:16:55 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80DD44C04E;
-        Mon, 27 Sep 2021 15:16:52 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.4.236])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Sep 2021 15:16:52 +0000 (GMT)
-Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
- Halt-polling fixes, cleanups and a new stat)
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     David Matlack <dmatlack@google.com>,
-        Jon Cargille <jcargill@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Janosch Frank <frankja@linux.ibm.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
- <YVHcY6y1GmvGJnMg@google.com>
- <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
-Date:   Mon, 27 Sep 2021 17:16:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eb5BjgGXgLT0dQk2cLo1gGaMMdASPGv7
-X-Proofpoint-ORIG-GUID: m0HV4GnBNkTGM5q4JkVIpGynJneqKgrK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-27_06,2021-09-24_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 bulkscore=0 clxscore=1015 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109270103
+        Mon, 27 Sep 2021 11:21:43 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id B95D11F42DB7
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+Subject: [PATCH v6 00/10] VP9 codec V4L2 control interface
+Date:   Mon, 27 Sep 2021 17:19:48 +0200
+Message-Id: <20210927151958.24426-1-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear all,
+
+This patch series adds VP9 codec V4L2 control interface and two drivers
+using the new controls. It is a follow-up of previous v5 series [1]
+and it introduces only changes to the documentation and adds 3
+Reviewed-by tags.
+
+In this iteration, we've implemented VP9 hardware decoding on two devices:
+Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
+The i.MX8M driver needs proper power domains support, though, which is a
+subject of a different effort, but in all 3 cases we were able to run the
+drivers.
+
+GStreamer support is also available, the needed changes have been submitted
+by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
+VP9 V4L2 controls to be merged and released.
+
+Both rkvdec and hantro drivers are passing a significant number of VP9 tests
+using Fluster[3]. There are still a few tests that are not passing, due to
+dynamic frame resize (not yet supported by V4L2) and small size videos
+(due to IP block limitations).
+
+The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
+merged without passing through staging, as agreed[4]. The ABI has been checked
+for padding and verified to contain no holes.
+
+[1] https://www.spinics.net/lists/arm-kernel/msg922040.html
+[2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
+[3] https://github.com/fluendo/fluster
+[4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
+
+Changes related to v5:
+- improved the doc comments as per Ezequiel's review (thanks, Ezequiel)
+- improved pdf output of documentation
+- added Benjamin's Reviewed-by (thanks, Benjamin)
+
+Changes related to v4:
+- removed unused enum v4l2_vp9_intra_prediction_mode
+- converted remaining enums to defines to follow the convention
+- improved the documentation, in particular better documented how to use segmentation 
+features
+
+Changes related to v3:
+
+Apply suggestions from Jernej's review (thanks, Jernej):
+- renamed a control and two structs:
+	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
+		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
+	v4l2_ctrl_vp9_compressed_hdr_probs =>
+		v4l2_ctrl_vp9_compressed_hdr
+	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
+- moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
+- fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
+- explicitly assigned values to all other vp9 enums
+
+Apply suggestion from Nicolas's review (thanks, Nicolas):
+- explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
+and implemented only by drivers which need it
+
+Changes related to the RFC v2:
+
+- added another driver including a postprocessor to de-tile
+        codec-specific tiling
+- reworked uAPI structs layout to follow VP8 style
+- changed validation of loop filter params
+- changed validation of segmentation params
+- changed validation of VP9 frame params
+- removed level lookup array from loop filter struct
+        (can be computed by drivers)
+- renamed some enum values to match the spec more closely
+- V4L2 VP9 library changed the 'eob' member of
+        'struct v4l2_vp9_frame_symbol_counts' so that it is an array
+        of pointers instead of an array of pointers to arrays
+        (IPs such as g2 creatively pass parts of the 'eob' counts in
+        the 'coeff' counts)
+- factored out several repeated portions of code
+- minor nitpicks and cleanups
+
+The series depends on the YUV tiled format support prepared by Ezequiel:
+https://www.spinics.net/lists/linux-media/msg197047.html
+
+Rebased onto latest media_tree.
+
+Andrzej Pietrasiewicz (4):
+  media: uapi: Add VP9 stateless decoder controls
+  media: Add VP9 v4l2 library
+  media: hantro: Prepare for other G2 codecs
+  media: hantro: Support VP9 on the G2 core
+
+Boris Brezillon (1):
+  media: rkvdec: Add the VP9 backend
+
+Ezequiel Garcia (5):
+  hantro: postproc: Fix motion vector space size
+  hantro: postproc: Introduce struct hantro_postproc_ops
+  hantro: Simplify postprocessor
+  hantro: Add quirk for NV12/NV12_4L4 capture format
+  media: hantro: Support NV12 on the G2 core
+
+ .../userspace-api/media/v4l/biblio.rst        |   10 +
+ .../media/v4l/ext-ctrls-codec-stateless.rst   |  573 +++++
+ .../media/v4l/pixfmt-compressed.rst           |   15 +
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
+ .../media/v4l/vidioc-queryctrl.rst            |   12 +
+ .../media/videodev2.h.rst.exceptions          |    2 +
+ drivers/media/v4l2-core/Kconfig               |    4 +
+ drivers/media/v4l2-core/Makefile              |    1 +
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
+ drivers/staging/media/hantro/Kconfig          |    1 +
+ drivers/staging/media/hantro/Makefile         |    7 +-
+ drivers/staging/media/hantro/hantro.h         |   40 +-
+ drivers/staging/media/hantro/hantro_drv.c     |   18 +-
+ drivers/staging/media/hantro/hantro_g2.c      |   27 +
+ .../staging/media/hantro/hantro_g2_hevc_dec.c |   31 -
+ drivers/staging/media/hantro/hantro_g2_regs.h |  104 +
+ .../staging/media/hantro/hantro_g2_vp9_dec.c  |  978 +++++++++
+ drivers/staging/media/hantro/hantro_hw.h      |   83 +-
+ .../staging/media/hantro/hantro_postproc.c    |   79 +-
+ drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
+ drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
+ drivers/staging/media/hantro/hantro_vp9.h     |  103 +
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
+ .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
+ .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
+ drivers/staging/media/rkvdec/Kconfig          |    1 +
+ drivers/staging/media/rkvdec/Makefile         |    2 +-
+ drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
+ drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
+ drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
+ include/media/v4l2-ctrls.h                    |    4 +
+ include/media/v4l2-vp9.h                      |  182 ++
+ include/uapi/linux/v4l2-controls.h            |  284 +++
+ include/uapi/linux/videodev2.h                |    6 +
+ 37 files changed, 5993 insertions(+), 71 deletions(-)
+ create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+ create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
+ create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
+ create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+ create mode 100644 include/media/v4l2-vp9.h
 
 
-Am 27.09.21 um 17:03 schrieb Paolo Bonzini:
-> On 27/09/21 16:59, Sean Christopherson wrote:
->>> commit acd05785e48c01edb2c4f4d014d28478b5f19fb5
->>> Author:     David Matlack<dmatlack@google.com>
->>> AuthorDate: Fri Apr 17 15:14:46 2020 -0700
->>> Commit:     Paolo Bonzini<pbonzini@redhat.com>
->>> CommitDate: Fri Apr 24 12:53:17 2020 -0400
->>>
->>>      kvm: add capability for halt polling
->>>
->>> broke the possibility for an admin to disable halt polling for already running KVM guests.
->>> In past times doing
->>> echo 0 > /sys/module/kvm/parameters/halt_poll_ns
->>>
->>> stopped polling system wide.
->>> Now all KVM guests will use the halt_poll_ns value that was active during
->>> startup - even those that do not use KVM_CAP_HALT_POLL.
->>>
->>> I guess this was not intended?
-> 
-> No, but...
-> 
->> I would go so far as to say that halt_poll_ns should be a hard limit on
->> the capability
-> 
-> ... this would not be a good idea I think.  Anything that wants to do a lot of polling can just do "for (;;)".
-> 
-> So I think there are two possibilities that makes sense:
-> 
-> * track what is using KVM_CAP_HALT_POLL, and make writes to halt_poll_ns follow that
+base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+-- 
+2.17.1
 
-what about using halt_poll_ns for those VMs that did not uses KVM_CAP_HALT_POLL and the private number for those that did.
-> 
-> * just make halt_poll_ns read-only.
-> 
-> Paolo
-> 
