@@ -2,66 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6CA419439
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200C3419437
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhI0MaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:30:14 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45424 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234336AbhI0MaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:30:13 -0400
-Received: from zn.tnic (p200300ec2f088a003e7a3db711c29d58.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:3e7a:3db7:11c2:9d58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56BAE1EC034B;
-        Mon, 27 Sep 2021 14:28:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632745710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SgaMeX7xObXmRf9caHAL7p62gvmW25yv2YUmegEBHNg=;
-        b=kKFoLugjA8HL+d62mLUdykCnB7hVZ5dch+yOqKvYIIwcHOjsD3qZc/XZ6lKmDwc2Tf6x+e
-        Xdi9Sl0kUJU3F+HRn4CU/aGMsblGw9S1+aLc6wEeszbliWmM50gJXGVVdG+jWD6uint2T7
-        b3Om/PysATOfZ82wHiYxkvMijyE80gM=
+        id S234339AbhI0MaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:30:10 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:36622 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234283AbhI0MaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:30:04 -0400
+Received: from [192.168.224.11] (ert768.prtnl [192.168.224.11])
+        by sparta.prtnl (Postfix) with ESMTP id 4D95C44A024E;
+        Mon, 27 Sep 2021 14:28:24 +0200 (CEST)
+Subject: Re: [PATCH v3 3/4] drivers: iio: chemical: Add support for Sensirion
+ SCD4x CO2 sensor
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>
+References: <20210922103925.2742362-1-roan@protonic.nl>
+ <20210922103925.2742362-4-roan@protonic.nl>
+ <20210925172307.305be961@jic23-huawei>
+From:   Roan van Dijk <roan@protonic.nl>
+Message-ID: <b9cffd75-0b86-544c-4832-070d12606de4@protonic.nl>
 Date:   Mon, 27 Sep 2021 14:28:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Babu Moger <babu.moger@amd.com>, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
-        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
-        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
-Message-ID: <YVG46L++WPBAHxQv@zn.tnic>
-References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
- <YVGkDPbQmdwSw6Ff@zn.tnic>
- <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
- <YVGz0HXe+WNAXfdF@zn.tnic>
- <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
+In-Reply-To: <20210925172307.305be961@jic23-huawei>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: nl
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:14:52PM +0200, Paolo Bonzini wrote:
-> Right, not which MSR to write but which value to write.  It doesn't know
-> that the PSF disable bit is valid unless the corresponding CPUID bit is set.
 
-There's no need for the separate PSF CPUID bit yet. We have decided for
-now to not control PSF separately but disable it through SSB. Please
-follow this thread:
 
-https://lore.kernel.org/all/20210904172334.lfjyqi4qfzvbxef7@treble/T/#u
+On 25-09-2021 18:23, Jonathan Cameron wrote:
+> On Wed, 22 Sep 2021 12:39:24 +0200
+> Roan van Dijk <roan@protonic.nl> wrote:
+> 
+>> This is a driver for the SCD4x CO2 sensor from Sensirion. The sensor is
+>> able to measure CO2 concentration, temperature and relative humdity.
+>> The sensor uses a photoacoustic principle for measuring CO2 concentration.
+>> An I2C interface is supported by this driver in order to communicate with
+>> the sensor.
+>>
+>> Signed-off-by: Roan van Dijk <roan@protonic.nl>
+> 
+> Hi Roan,
+> 
+> Only thing in here of significance is that the format for available attribute
+> is wrong + it needs adding to the ABI docs.
+> 
+> Given we are going to have a v4, I noted a few other minor things to tidy up.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
 
--- 
-Regards/Gruss,
-    Boris.
+Thank you for your feedback. I will make a new patch with these fixes.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+The documentation for the _available and the fixes you suggested, have 
+already been added in patch [PATCH v3 4/4]. Do I still need to add 
+something to the ABI documentation or is it fine like this?
+
+However, I will change the KernelVersion to 5.15 of the _available 
+description in patch v4. I left this at 5.8 and that's not right, 
+because this information is newly added.
+
+Thanks,
+
+Roan
+
+> 
+>> +static int scd4x_read(struct scd4x_state *state, enum scd4x_cmd cmd,
+>> +			void *response, int response_sz)
+>> +{
+>> +	struct i2c_client *client = state->client;
+>> +	char buf[SCD4X_READ_BUF_SIZE];
+>> +	char *rsp = response;
+>> +	int i, ret;
+>> +	char crc;
+>> +
+>> +	/*
+>> +	 * Measurement needs to be stopped before sending commands.
+>> +	 * Except for reading measurement and data ready command.
+>> +	 */
+>> +	if ((cmd != CMD_GET_DATA_READY) && (cmd != CMD_READ_MEAS)) {
+>> +		ret = scd4x_send_command(state, CMD_STOP_MEAS);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		/* execution time for stopping measurement */
+>> +		msleep_interruptible(500);
+>> +	}
+>> +
+>> +	/*CRC byte for every 2 bytes of data */
+> 
+> /* CRC..
+> 
+> Please check for similar as otherwise we'll get 'cleanup' patches the moment various
+> scripts hit this new code and it'll waste our time!
+> 
+>> +	response_sz += response_sz / 2;
+>> +
+>> +	put_unaligned_be16(cmd, buf);
+>> +	ret = scd4x_i2c_xfer(state, buf, 2, buf, response_sz);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	for (i = 0; i < response_sz; i += 3) {
+>> +		crc = crc8(scd4x_crc8_table, buf + i, 2, CRC8_INIT_VALUE);
+>> +		if (crc != buf[i + 2]) {
+>> +			dev_err(&client->dev, "CRC error\n");
+>> +			return -EIO;
+>> +		}
+>> +
+>> +		*rsp++ = buf[i];
+>> +		*rsp++ = buf[i + 1];
+>> +	}
+>> +
+>> +	/* start measurement */
+>> +	if ((cmd != CMD_GET_DATA_READY) && (cmd != CMD_READ_MEAS)) {
+>> +		ret = scd4x_send_command(state, CMD_START_MEAS);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+> 
+> ...
+> 
+>> +
+>> +static IIO_DEVICE_ATTR_RW(calibration_auto_enable, 0);
+>> +static IIO_DEVICE_ATTR_WO(calibration_forced_value, 0);
+>> +
+>> +static IIO_CONST_ATTR(calibration_forced_value_available,
+>> +	       __stringify(SCD4X_FRC_MIN_PPM 1 SCD4X_FRC_MAX_PPM));
+> 
+> Ah, I wasn't completely clear on this.  See the main ABI doc for
+> _available
+> 
+> Format for this needs to include brackets to indicate it's a range
+> rather than 3 numbers
+> "[MIN 1  MAX]"
+> 
+> 
+> Having added this it also needs to be in the ABI documentation.
+> Whilst somewhat trivial, all ABI should be documented there.
+> 
+>> +
+>> +static struct attribute *scd4x_attrs[] = {
+>> +	&iio_dev_attr_calibration_auto_enable.dev_attr.attr,
+>> +	&iio_dev_attr_calibration_forced_value.dev_attr.attr,
+>> +	&iio_const_attr_calibration_forced_value_available.dev_attr.attr,
+>> +	NULL
+>> +};
+>> +
+>> +static const struct attribute_group scd4x_attr_group = {
+>> +	.attrs = scd4x_attrs,
+>> +};
+>> +
+>> +static const struct iio_info scd4x_info = {
+>> +	.attrs = &scd4x_attr_group,
+>> +	.read_raw = scd4x_read_raw,
+>> +	.write_raw = scd4x_write_raw,
+>> +};
+>> +
+> 
+> ...
+> 
+>> +
+>> +static irqreturn_t scd4x_trigger_handler(int irq, void *p)
+>> +{
+>> +	struct iio_poll_func *pf = p;
+>> +	struct iio_dev *indio_dev = pf->indio_dev;
+>> +	struct scd4x_state *state = iio_priv(indio_dev);
+>> +	struct {
+>> +		uint16_t data[3];
+>> +		int64_t ts __aligned(8);
+>> +	} scan;
+>> +	int ret;
+>> +	uint16_t buf[3];
+>> +
+>> +	mutex_lock(&state->lock);
+>> +	ret = scd4x_read_poll(state, buf);
+>> +	mutex_unlock(&state->lock);
+>> +	if (ret)
+>> +		goto out;
+>> +
+>> +	memset(&scan, 0, sizeof(scan));
+>> +	memcpy(scan.data, buf, sizeof(buf));
+> 
+> I missed this before, but why not do the scd4x_read_poll() directly into scan->data after
+> you've done the memset?  That way you avoid the need for a memcpy.
+> 
+> i.e.
+> 
+> 	memset(&scan, 0, sizeof(scan));
+> 	mutex_lock(&state->lock)
+> 	ret = scd4x_read_poll(state, scan->data);
+> 	mutex_unlock(&state->lock);
+> 	if (ret)
+> 	...
+> 
+> 
+>> +
+>> +	iio_push_to_buffers_with_timestamp(indio_dev, &scan, iio_get_time_ns(indio_dev));
+>> +out:
+>> +	iio_trigger_notify_done(indio_dev->trig);
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
