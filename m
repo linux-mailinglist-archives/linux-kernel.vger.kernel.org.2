@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D130419FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D6B41A003
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236967AbhI0URn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:17:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35706 "EHLO mail.kernel.org"
+        id S236940AbhI0UTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236763AbhI0URl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:17:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46BD5611C3;
-        Mon, 27 Sep 2021 20:16:03 +0000 (UTC)
+        id S236897AbhI0UTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:19:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D72E61041
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632773763;
-        bh=Lb3LIgfAEjVXdf1vE2V7OoMMbogeWMravjEabJ1Nxyg=;
+        s=k20201202; t=1632773886;
+        bh=IHsvUyvzsKP7lWOY4wr3zpA6gSFdzHNOrAmHGV/uNv0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aoqynUkGyB6ZPUI0PZbhRVWrRQEh4dUFl+HnGRbJEjz36swl07OI+waO5juXrxZEL
-         jHlAKLJtp7vLEn53dGPq9ybdvqoV7skp3bnJ2v0dt7b3LCLaWszZoJwfgXGV5CewIZ
-         EeT9Puax/p5vO3xFfjNQpP/s5z+vV6IucH/tDVc9OrhV9apJ4xfqmWfbZVQ6mT6zds
-         T7V/1iyHvtmaHFbCozBGLs87R9buQKkqhGe1GFJbwuhVxRAw/14pw6aQABaZ9IXQ/3
-         OdqLZFHV5ZJBQxWkAwNJ0thZGMxGk74lNv+sDueBnQKqvqp7vbKRWok7c77AtHcBAs
-         PL2/kpsfVk1jA==
-Received: by mail-wr1-f53.google.com with SMTP id g16so54027899wrb.3;
-        Mon, 27 Sep 2021 13:16:03 -0700 (PDT)
-X-Gm-Message-State: AOAM533A9Dlo5xlQ9wTe8lwQ5Rw/y18zWiNA8hEYg0fKcAx9F0YYwwjL
-        WQIZl1vHv7uaSF3bXhgVCcdRMt2ZOCzYk9VWg9E=
-X-Google-Smtp-Source: ABdhPJxhSUG+xfsMcnYBJG/aU9zQ/jW83Rbf6e2ezlqzSM1qdDuC1ur8sa8pPTTU3lbMghJJfkyUaLecI/p3sCcMSis=
-X-Received: by 2002:a5d:6cb4:: with SMTP id a20mr1431020wra.428.1632773761805;
- Mon, 27 Sep 2021 13:16:01 -0700 (PDT)
+        b=biT1ueVmFhaYAmS6xk951LigOoHAZwceTHazGzH1RUDITt1Ofg8fYXAzXIvNA0HLx
+         ESi/KT+3i/UCkN4j9O2uv+CVR87GGQtgeMI5JBR2rjkZV+GDnptNuhE+EKHzXM0ZEZ
+         QrnVbY5R+esVTxIEzqrptGnVjzKGhPwAGVEWQ5kJ5ZKlRAqiuyexszSpw/2zOdM9Oy
+         VQJHvZSpxIghowA0GQka343IuRS0GDu59rSlK3Elw/fmsKeVtuN7Ze7nBRH3O2qthU
+         6eSep5oKojfAgw9jrDllV7wnTksrp+/1Mo7S5kbLTZJzwOX0Lj6i480iC7bUmaaOGf
+         RPdanXpiw4lJA==
+Received: by mail-lf1-f45.google.com with SMTP id t10so82531783lfd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:18:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531elmX6l+ogcx/NjSStvG02Rx4j23s8sW9X+pyu3LZuBoT+vQdU
+        oVbXgXJ20VzseKE2/GbTKn2E43Lwkz4dkw+mAF8=
+X-Google-Smtp-Source: ABdhPJxVWT+r5zUMOL7sfAvIIewnSZ9Yfy72XldH6iZRlXsSzs31t2vw7rOv9KFwMaaclEv8II2vDy6exbnoMffLr/s=
+X-Received: by 2002:a2e:5442:: with SMTP id y2mr1877130ljd.436.1632773884184;
+ Mon, 27 Sep 2021 13:18:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927152412.2900928-1-arnd@kernel.org> <YVIg9CxJGaJr1vpp@ripper>
-In-Reply-To: <YVIg9CxJGaJr1vpp@ripper>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 27 Sep 2021 22:15:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1fEuFsQVY9b1oGdTOHzr8pu9wvrSBCMn2iOvgWqtHNnA@mail.gmail.com>
-Message-ID: <CAK8P3a1fEuFsQVY9b1oGdTOHzr8pu9wvrSBCMn2iOvgWqtHNnA@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev
+References: <20210909075700.4025355-1-eranian@google.com> <YTnL814pES+YWWnm@hirez.programming.kicks-ass.net>
+ <CABPqkBROKmSLLCwFjiqObDpQz4iBUeO-0OaziNy05kxs3-4JHQ@mail.gmail.com>
+In-Reply-To: <CABPqkBROKmSLLCwFjiqObDpQz4iBUeO-0OaziNy05kxs3-4JHQ@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Sep 2021 13:17:53 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7qnu4aaTNKigQdbfGO83Ku22DQm+_xzOXnMW=r6=oTww@mail.gmail.com>
+Message-ID: <CAPhsuW7qnu4aaTNKigQdbfGO83Ku22DQm+_xzOXnMW=r6=oTww@mail.gmail.com>
+Subject: Re: [PATCH v1 00/13] perf/x86/amd: Add AMD Fam19h Branch Sampling support
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, kim.phillips@amd.com,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 9:52 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
-> On Mon 27 Sep 08:22 PDT 2021, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> >  - To avoid a circular dependency chain involving RESET_CONTROLLER
-> >    and PINCTRL_SUNXI, change the 'depends on RESET_CONTROLLER' in
-> >    the latter one to 'select'.
+Hi Stephane,
+
+On Tue, Sep 14, 2021 at 10:57 PM Stephane Eranian <eranian@google.com> wrote:
 >
-> Can you please help me understand why this is part of the same patch?
+> On Thu, Sep 9, 2021 at 1:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Sep 09, 2021 at 12:56:47AM -0700, Stephane Eranian wrote:
+> > > This patch series adds support for the AMD Fam19h 16-deep branch sampling
+> > > feature as described in the AMD PPR Fam19h Model 01h Revision B1 section 2.1.13.
+> >
+> > Yay..
+> >
+> > > BRS interacts with the NMI interrupt as well. Because enabling BRS is expensive,
+> > > it is only activated after P event occurrences, where P is the desired sampling period.
+> > > At P occurrences of the event, the counter overflows, the CPU catches the NMI interrupt,
+> > > activates BRS for 16 branches until it saturates, and then delivers the NMI to the kernel.
+> >
+> > WTF... ?!? Srsly? You're joking right?
+> >
+>
+> As I said, this is because of the cost of running BRS usually for
+> millions of branches to keep only the last 16.
+> Running branch sampling in general on any arch is  never totally free.
 
-This can be done as a preparatory patch if we decide to do it this way,
-for the review it seemed better to spell out that this is required.
+Could you please share some data on how expensive the BRS is? We are
+hoping to use
+BRS/LBR without PMI (bpf_get_branch_snapshot). If it is too expensive,
+we may need
+some heuristic to turn it on/off.
 
-I still hope that we can avoid adding another 'select RESET_CONTROLLER'
-if someone can figure out what to do instead.
-
-The problem here is that QCOM_SCM selects RESET_CONTROLLER,
-and turning that into 'depends on' would in turn mean that any driver that
-wants to select QCOM_SCM would have to have the same RESET_CONTROLLER
-dependency.
-
-An easier option might be to find a way to build QCOM_SCM without
-RESET_CONTROLLER for compile testing purposes. I don't know
-what would break from that.
-
-     Arnd
+Thanks,
+Song
