@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8736041A312
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFE641A316
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237883AbhI0WeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S237953AbhI0Wed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237899AbhI0WeT (ORCPT
+        with ESMTP id S237791AbhI0Web (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:34:19 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1D7C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:32:40 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y26so44665971lfa.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:32:40 -0700 (PDT)
+        Mon, 27 Sep 2021 18:34:31 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0E9C061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:32:52 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b15so82823050lfe.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aZmS6rLgK39LtutF7yAa96lv04t7RDe75/Kx+aSiY2E=;
-        b=X6FX1tN9L59q05EXpGd4/f2lf4YcQ/iruEPmtTVrvi72cWYyC2tR+io4b2N4pWqI0E
-         TU04vV+aR009Wg+KsH3HiR04dIxiRNDcoEK2KceAYY9MA8Clynu7Mye8zGh0vuXtI6aA
-         8Cj8jRmReUUJuGK+T+FaJq/oTcQhsVIkLv9XrAplkstiW87A/mqW2BJ1rZHsQHtHPcYE
-         HpXz+3dQIaaVJL7BQdaZFHi46DfOckJAcRTgyYqiHVyfYEOgxSGlU9UTgLzMdyTnrS9d
-         1vGSDwDDyxAuZfCN4h4ouEfcwCU3J8fiOm1GE2AcVRMXPpR3Ob1ullwB79hnGDROEYCz
-         wcAA==
+        bh=mylYr9AxO1lp/qjqY3iRM44WQJLHrj/GgtihC6w17dA=;
+        b=uZdSs2h7nd01pW0t9cpgr5Cba8CT1umQcEJ2lHA0ntFmU4NeTExjMhagqDQgy/WbM8
+         rDB64bTKZhlk48jrpydjYgSpiT8Vk+08AqHHT90Ke/+LOZ9KbAqBIy+JSeSdg2VMx9Ne
+         tSOF58fk8b0uzBp5RIK8yA6sjl8YB8wUc3n5UsWfl4751/Nm/cEZnJpfA3D6rPIy0BdM
+         8OaU72xx8ENuKjghJkOOZN68bMrXknjRABGAHTw+G3pMjbLaR1LWFHDwZ5pY6z7lY9Cf
+         trV7YIXiUxtYoNSposH2DLu1/NGpk6V2A5mM3ZO5GUPRB02wLyTy1BeZZBQN87bkXUH+
+         5rsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aZmS6rLgK39LtutF7yAa96lv04t7RDe75/Kx+aSiY2E=;
-        b=N/TkuJVJTMuupffml8ZQZvNJvvBLR0oJUI5iIKo1+gEO4ZAFNrtO8bYiqN1qR9uHIY
-         Kp9lcduvr0NA+xA67PIJWgsYhgCOyjgIS0R1nBSQRyITkEmm05iK3FFnzdXvwoZWnN+5
-         6Mcz6tLsDOLgphBaVoYCCyHneu7toegVuBLZsagxvE0moQDEZVMrmT9/2eIs0kCxHlmE
-         C0FdX97UHngw/+42jjxcgl+lzi5HfIXBBfeJ/6rjqlnbcDMM3c+b/dw99RxagnwzTgqS
-         mO5z2gB/4Q80xe0YPQfgVm2uasCXy3WKSK6RdWt8ZQlj99y4MrlBKbEBs1uUVf/s6GKe
-         OruQ==
-X-Gm-Message-State: AOAM531jnXg7iR40Y6lx1eQ4tgZ4VFIC7Q5flzi74XblA2Dnk9swElOK
-        Dnoy1c0HLH0PSuhWE6kpqfhDKk6jtyPI+a3B57MuOQ==
-X-Google-Smtp-Source: ABdhPJw6amc1LcHW1FQv1swccHY5vLgF6UhTt8kYXV8iC/5wcxE6mB/3V0jzQcB68Qw1TjUMsPEEulq2xNR1ujfC9Us=
-X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr2292117lfb.71.1632781958851;
- Mon, 27 Sep 2021 15:32:38 -0700 (PDT)
+        bh=mylYr9AxO1lp/qjqY3iRM44WQJLHrj/GgtihC6w17dA=;
+        b=TyCSWjOBKZ92p7eWzGgP1ChJ9QINIvNtWOKk1ml1V9Dm2vTPPPdMqKRvoRBGIXlwut
+         c2ZPkPLxq9XU90y6hwLPLh1MhYNy9iGRbCN/gVvespjsz/glXHZBYwnSGjmSsyz/g3PR
+         U77pe6/lPLo2qiuKjG04clRELhU74U1B3WlexivJU/cISEWbhImgFEbm+9UrpxxOw8lh
+         4Q+6hPCC+8RYbY5+uf/qRHajCzztQABGGzHt+1pWv7gqdDgKXqZHWHnwSScVd1sO4aok
+         IGJPM56sXrOD1qo7Q7icwCQCcM6DbPdp2UnxGY5u9mW8CbnI8IYXUSAftFgz7Domj8Tt
+         RLxw==
+X-Gm-Message-State: AOAM533XXMqLToy1Uw1GS0YTG40xPUeCOF7feWYxshCfTDJ7Bz47JnCb
+        7k6UoREdBRUpVYC7z1odzsN02fKA5y9eLDocA9uGMA==
+X-Google-Smtp-Source: ABdhPJw/h1r/YFDP5Wc1Qi+JuEXjneeg18sMNnQ4fQ+Mw86L+IFScl+H99pJQIE4Z4Rsia9g2q6Cx6NELi5xjFZvs3w=
+X-Received: by 2002:a2e:1548:: with SMTP id 8mr2296321ljv.229.1632781970877;
+ Mon, 27 Sep 2021 15:32:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210924225111.143112-1-colin.king@canonical.com>
-In-Reply-To: <20210924225111.143112-1-colin.king@canonical.com>
+References: <20210926092835.146449-1-zhang.lyra@gmail.com>
+In-Reply-To: <20210926092835.146449-1-zhang.lyra@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 28 Sep 2021 00:32:02 +0200
-Message-ID: <CAPDyKFq_eEP+HayXhGRSGWXVG9Gq0dq4DEnYG+qwjLktwnyvEw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-o2micro: Fix spelling mistake "unsupport"
- -> "unsupported"
-To:     Colin King <colin.king@canonical.com>
+Date:   Tue, 28 Sep 2021 00:32:14 +0200
+Message-ID: <CAPDyKFrMEs-9fUHWPVofR0VG45ywXPLb4Hf5tg5kMjvOwR+KGA@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-sprd: Wait until DLL locked after being configured
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         linux-mmc <linux-mmc@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Sept 2021 at 00:51, Colin King <colin.king@canonical.com> wrote:
+On Sun, 26 Sept 2021 at 11:28, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
 >
-> From: Colin Ian King <colin.king@canonical.com>
+> From: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
 >
-> There is a spelling mistake in a pr_info message. Fix it. Also
-> put msi in capital letters.
+> According to the specification, DLL status has to be locked before using it.
 >
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Zhenxiong Lai <zhenxiong.lai@unisoc.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
 Applied for next, thanks!
 
@@ -78,22 +80,50 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/sdhci-pci-o2micro.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes since v1:
+> * Use read_poll_timeout() instead of while loop.
+> ---
+>  drivers/mmc/host/sdhci-sprd.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 >
-> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
-> index 51d55a87aebe..f045c1ee4667 100644
-> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
-> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
-> @@ -489,7 +489,7 @@ static void sdhci_pci_o2_enable_msi(struct sdhci_pci_chip *chip,
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> index 11e375579cfb..f33e9349e4e6 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/highmem.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> @@ -39,6 +40,9 @@
+>  #define  SDHCI_SPRD_BIT_POSRD_DLY_INV          BIT(21)
+>  #define  SDHCI_SPRD_BIT_NEGRD_DLY_INV          BIT(29)
 >
->         ret = pci_find_capability(chip->pdev, PCI_CAP_ID_MSI);
->         if (!ret) {
-> -               pr_info("%s: unsupport msi, use INTx irq\n",
-> +               pr_info("%s: unsupported MSI, use INTx irq\n",
->                         mmc_hostname(host->mmc));
->                 return;
->         }
+> +#define SDHCI_SPRD_REG_32_DLL_STS0     0x210
+> +#define SDHCI_SPRD_DLL_LOCKED          BIT(18)
+> +
+>  #define SDHCI_SPRD_REG_32_BUSY_POSI            0x250
+>  #define  SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN       BIT(25)
+>  #define  SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN       BIT(24)
+> @@ -256,6 +260,15 @@ static void sdhci_sprd_enable_phy_dll(struct sdhci_host *host)
+>         sdhci_writel(host, tmp, SDHCI_SPRD_REG_32_DLL_CFG);
+>         /* wait 1ms */
+>         usleep_range(1000, 1250);
+> +
+> +       if (read_poll_timeout(sdhci_readl, tmp, (tmp & SDHCI_SPRD_DLL_LOCKED),
+> +               2000, USEC_PER_SEC, false, host, SDHCI_SPRD_REG_32_DLL_STS0)) {
+> +               pr_err("%s: DLL locked fail!\n", mmc_hostname(host->mmc));
+> +               pr_info("%s: DLL_STS0 : 0x%x, DLL_CFG : 0x%x\n",
+> +                        mmc_hostname(host->mmc),
+> +                        sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_STS0),
+> +                        sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG));
+> +       }
+>  }
+>
+>  static void sdhci_sprd_set_clock(struct sdhci_host *host, unsigned int clock)
 > --
-> 2.32.0
+> 2.25.1
 >
