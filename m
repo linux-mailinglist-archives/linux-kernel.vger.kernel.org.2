@@ -2,97 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2A4418EAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 07:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B67418EB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 07:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhI0FdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 01:33:19 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:32919 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232910AbhI0FdS (ORCPT
+        id S232924AbhI0Fll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 01:41:41 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:50645 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232910AbhI0Flk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 01:33:18 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3522D5C00CA;
-        Mon, 27 Sep 2021 01:31:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 27 Sep 2021 01:31:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
-        5RSO3LTxmppqOTxU1Fq8i0gFbE0Ym22fxDCcb5hNdBU=; b=dD2LvoTqZYZMG2Vg
-        LfEcGypnJm+/ZHvdAbnd5ic+Ge2zdgezP/za/2J5ZfTCjy520dxmYwCii6ubNdii
-        m3XgbmMhmr/ULUxixnVPmCS8yL25nyvRet8ep0U1ItIKEwC+cm6lmRXJzvAyOEw7
-        mVAjg0DDNGQJLNdRIfXN9kc16pWXnGMudWmMFmcwbn6XNuJcHyBxeJcOb88BmJV8
-        D9jTmV4uyXRU6Tf9nU1FVFdTaHTfivOjfE8KbfQYRRykGNMtRfhMJHW1kDjp4VaJ
-        m8X4D0u2tiMfR3H42l5EAP1LHRObEjOj82++4L205WNw7EmJ/sAZsW+WY7raHotS
-        PH1MkA==
+        Mon, 27 Sep 2021 01:41:40 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2C4B2580BC7;
+        Mon, 27 Sep 2021 01:40:02 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Mon, 27 Sep 2021 01:40:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=ak1/NyNHcL+y89gvyMRS1SkX9a8U
+        UV2UncuVzD4o65U=; b=diT6Gng5AR5WB6gQReTE6zaaYmRzH7nxmiLpKVWe1q1z
+        E37yJJnMLNKLxhIU/1n3lW2p0uba4K5VSAe4J1UBG7dFoVRpwGbSMQGBtVMXzsRG
+        BNKUsr3ZjRRaBuSZfm5ZFq4FmN96YS+EmXAerY2Mo5Ih6yqx2BjhLklaaHxtK7sK
+        OuOvakC3Z5JSAN4K5OSKCNXBKNhnk99uRBC+ZWnJuEt3D621j0fKzN0YxeHg/OJP
+        VV8ncWeMKovAJF17uVAT3miGyPp135vr2BIAYg50BpHNnD4j5c6u2XXK6dCpcejG
+        vG9VyrupeYOfPZIdlomy1KHi0IZ9La6kZ8NOcvRT+Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=5RSO3LTxmppqOTxU1Fq8i0gFbE0Ym22fxDCcb5hNd
-        BU=; b=Isz10WBs0jtGdolBY/WiXyacfLrKesdQWG3MNQxcETxwxq4qGa3cIINvj
-        NLcrFGafPBJQNlT6kODuOiOcRxsrCIuQ5CI271cHcz0lKLscF4cbfyvpfIExtGCM
-        2766f73J5SlI0ydKzDjWkLa+eZptwY3JSzebafEPoTNs+TFVHvOhrMWIbhF6/8IY
-        1mPmpfFi4fi9KnBIzAYAiPvqckUZgA1joQPVPzi6ljvrl4jOCIj9f3qORuGsrnsV
-        P3aIGCz8+1TX3dvnq3jqxUBV55eZEW3+GEssGWhaVrSTLWfg8jRN2G4GYldUdqvl
-        C43Xp40wyob8GGximjecaIR3KdKKA==
-X-ME-Sender: <xms:PVdRYY_R9BgzyRXTjAQ388O5-fqULvD3VfINYmA7MEiL0GutIX0pog>
-    <xme:PVdRYQvQTQ4aRruY0Ee8OHH6UXQk_WlfO0Ff6EKkmi65RRaHDzgrZwkAHQDnn4rUW
-    9Bm5mT6JOpB>
-X-ME-Received: <xmr:PVdRYeDOj0twKsrF8TI1n4OrEFrh_eL0yFzZTLUv67XtGpyArgx3NDPDRKGerhCGKGR7TTY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejjedgleehucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ak1/Ny
+        NHcL+y89gvyMRS1SkX9a8UUV2UncuVzD4o65U=; b=NleN4unVajTeBeEiak931q
+        iqRGvaXFdxAUMpgNeqQR+buTPw1HKWzfcgKTbnWWcTFWP5O+z4QcAzXB2csa1MKx
+        lAmFAyH7pffzQsdXUVlBGwd99yVio6vQA2fQZqU4jEZmLeIOMRayctKaocyIp34t
+        5MV8SVzWMmOdv4eXBbwpEAPud2qp8SGy2PNpVFFL1/EMEkWJ3VmdCRiSogfxQmdp
+        CpwuORA5pNkyGT6uQQDt5gtAQ0IrhZ+cva5xe1GVk9HuK9FKT98/FfkPvw8WF6Jr
+        S96sug6xMiK9dDajX1nyshkhpv6IWALpxZqMH6i4AxB6V0M0cY0/5rt5nr58mZ4w
+        ==
+X-ME-Sender: <xms:L1lRYReMadmShvwxJ7Yp1n5SQr2S6rmJMLuxf5TOgZdNDLSaZXn0Lw>
+    <xme:L1lRYfNr98SE5ZZz1cmmrjyeiVA090I-l56QJdaApXB-OWSPhIZUBtRMgA_kvhwtM
+    sLd8yNsct83jSCph2I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejjedgleeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthejredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    effeettedvgeduvdevfeevfeettdffudduheeuiefhueevgfevheffledugefgjeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:PVdRYYfBe5sYZLkN4A8seaX2Ss_4F-UTs6ebn7vSOnNvS826dzqxNA>
-    <xmx:PVdRYdN0SBrYjVIFb1eYW0T6mASrHct6lvM6NW_HsVy-C95Ks3eKzA>
-    <xmx:PVdRYSnsOXedwBAMZ4dKbe56xs-NBOfZUMtKeW85EqEfsL_w3qjOGg>
-    <xmx:PVdRYSoIn2cO2K-9KMl_pKMvTuqci4oXJNBSDKGHHdSa-f8GHPSM_A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Sep 2021 01:31:38 -0400 (EDT)
-Message-ID: <335238991ddf09e8873796feab9d53123d26b46d.camel@themaw.net>
-Subject: Re: [PATCH] kernfs: fix the race in the creation of negative dentry
-From:   Ian Kent <raven@themaw.net>
-To:     Hou Tao <houtao1@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Miklos Szeredi <mszeredi@redhat.com>
-Cc:     viro@ZenIV.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 27 Sep 2021 13:31:34 +0800
-In-Reply-To: <13592fb7-5bc1-41cf-f19d-150b1e634fb2@huawei.com>
-References: <20210911021342.3280687-1-houtao1@huawei.com>
-         <7b92b158200567f0bba26a038191156890921f13.camel@themaw.net>
-         <6c8088411523e52fc89b8dd07710c3825366ce64.camel@themaw.net>
-         <747aee3255e7a07168557f29ad962e34e9cb964b.camel@themaw.net>
-         <e3d22860-f2f0-70c1-35ef-35da0c0a44d2@huawei.com>
-         <077362887b4ceeb01c27fbf36fa35adae02967c9.camel@themaw.net>
-         <13592fb7-5bc1-41cf-f19d-150b1e634fb2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
+    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:L1lRYaiguV0BscYi_hIzrHWwI4YouVy_3RpEZfHsNKjOVpKFwd2rZQ>
+    <xmx:L1lRYa_DI75kAK1JgESQWyfeHcG6zDoHDCcTscUm3VFRjoUPoU3chQ>
+    <xmx:L1lRYdtPoXp-hnu0gyOmumQr-OWqFpazq-eqyNoIkWxQDEjzwT9wxg>
+    <xmx:MllRYW-jA2G63ae78zi9DHtJ_FjL6HEXcvBOXjGSSeG1WVGpOWel0g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7811E51C0060; Mon, 27 Sep 2021 01:39:59 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1303-gb2406efd75-fm-20210922.002-gb2406efd
+Mime-Version: 1.0
+Message-Id: <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
+In-Reply-To: <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
+References: <6487d099-e0d6-4ea3-d312-6adbd94589f4@xenosoft.de>
+ <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
+Date:   Mon, 27 Sep 2021 07:39:39 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Christian Zigotzky" <chzigotzky@xenosoft.de>
+Cc:     "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>,
+        "Olof Johansson" <olof@lixom.net>, "Arnd Bergmann" <arnd@arndb.de>,
+        "Hector Martin" <marcan@marcan.st>, mohamed.mediouni@caramail.com,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        linux-arm-kernel@lists.infradead.org,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        "Darren Stevens" <darren@stevens-zone.net>,
+        "Matthew Leaman" <matthew@a-eon.biz>,
+        "R.T.Dickinson" <rtd@a-eon.com>
+Subject: Re: Add Apple M1 support to PASemi i2c driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-27 at 09:51 +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 9/23/2021 10:50 AM, Ian Kent wrote:
-> > Great, although I was hoping you would check it worked as expected.
-> > Did you check?
-> > If not could you please do that check?
-> It fixes the race. I rerun the stress test of module addition and
-> removal,
-> and the problem doesn't occur after 12 hours.
+Hi Christian,
 
-Great, thanks, I'll forward the patch to Greg after some basic testing.
+Thanks already for volunteering to test this!
 
-Ian
+On Sun, Sep 26, 2021, at 22:27, Christian Zigotzky wrote:
+> Hi Sven,
+>
+> I can't apply your patch 5 (i2c: pasemi: Split pci driver to its own 
+> file). [1]
 
+That's strange because it should apply cleanly. I'll double check
+after to work today to see if I messed up while sending this.
+
+>
+> Error message:
+>
+> patching file b/drivers/i2c/busses/i2c-pasemi-core.c (renamed from 
+> a/drivers/i2c/busses/i2c-pasemi.c)
+> Hunk #3 FAILED at 344.
+> 1 out of 3 hunks FAILED -- saving rejects to file 
+> b/drivers/i2c/busses/i2c-pasemi-core.c.rej
+> patching file b/drivers/i2c/busses/i2c-pasemi-core.h
+> patching file b/drivers/i2c/busses/i2c-pasemi-pci.c
+>
+> Please post one patch with all your modifications.
+>
+
+Sure, will do that later as well!
+
+
+Best,
+
+
+Sven
