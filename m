@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795E0419566
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D60419563
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbhI0Nvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41822 "EHLO mail.kernel.org"
+        id S234630AbhI0Nvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:51:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234587AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234585AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 09:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C2361041;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90A0360F41;
         Mon, 27 Sep 2021 13:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632750595;
-        bh=zD4KYLKbpYsa+QdN3zoc7BXcSqR3F/IXfm8tiArJ/CQ=;
+        bh=8xhgJ1VxubUEF7re8obYZLRRe6xW79b6UPbCJOr+N1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TB8Ghz8NNJyqXO/SbVTTdGbuqc655VYelCJDzALh3QgVRMO0Wdn5aJEt9Rj8MYjKH
-         66MKjPIuSQcKq4/WliDtaDMyeMp0ZvSADI5Si1iUi08DuEWCnv5EHXAJiaJtYLkV0I
-         JYL1D94ugRt0EKZByivf7kkk5y7p/U/fPxNZ2dKBJW9Q/dWM9KFF5LBqbCawZYd0A7
-         mCsKp0hPZxnqhCF/EgckRGXtFWwMYSzWFdpDaTq+LJ+hX0kN+kw4dtxQZ33rY66nNo
-         L1a1GAj4etuTbB1cGVinvfqtv1J34HVIIJWUSJQ4la/WsVfKl7vC0Z+BqOwq0k10a9
-         DUvq0xNk3TQpQ==
+        b=XKg2Mvhj9NnmZarL2zGE5MA1ZOlXsHiNjUH272XMBQVCvWYLzwELRuI0VUqmFZ9lL
+         HHWHz43SkGgz9LtVQKjYsQ/MgRBglqjzUBEX5QYnSl/hwHmS0YhLcILh5SH2YTPY6p
+         QngucrUwQskbHIRALJanBUjlOH9Q/v/kuwmpMliYOpTlxid42oj99c/gWsmgcChWog
+         QYZw+0iZ1yf2L3WAesvTm7IXa/PqHBA3JMRQo0fp5jdQJM9efl/L7VbD45yUmnR3/G
+         g4D5+AoUyKKyGq0SyyUpfkZIGD1pppAc5ELIkRsXWHrd+SvjqRfnsW+eVvMP0HNap3
+         YKYbCjqSnK0eg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mUr0z-000AjY-Ki; Mon, 27 Sep 2021 15:49:53 +0200
+        id 1mUr0z-000Ajc-M8; Mon, 27 Sep 2021 15:49:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] scripts: get_abi.pl: fix parse logic for DT firmware
-Date:   Mon, 27 Sep 2021 15:49:50 +0200
-Message-Id: <1c806eaec96f6706db4b041bbe6a0e2519e9637e.1632750315.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 3/3] scripts: get_abi.pl: update its documentation
+Date:   Mon, 27 Sep 2021 15:49:51 +0200
+Message-Id: <89fcd301e065ed86dfd8670725144b196266b6a4.1632750315.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1632750315.git.mchehab+huawei@kernel.org>
 References: <cover.1632750315.git.mchehab+huawei@kernel.org>
@@ -44,73 +44,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It doesn't make any sense to parse ABI entries under
-/sys/firmware, as those are either specified by ACPI specs
-or by Documentation/devicetree.
+The current highlight schema is not working properly. So, use,
+instead, Pod::Text.
 
-The current logic to ignore firmware entries is incomplete,
-as it ignores just the relative name of the file, and not
-its absolute name. This cause errors while parsing the
-symlinks.
-
-So, rewrite the logic for it to do a better job.
-
-Tested with both x86 and arm64 (HiKey970) systems.
+While here, also update the copyright in order to reflect the latest
+changes and the e-mail I'm currently using.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
 
 See [PATCH 0/3] at: https://lore.kernel.org/all/cover.1632750315.git.mchehab+huawei@kernel.org/
 
- scripts/get_abi.pl | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+ scripts/get_abi.pl | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index 26a3f8ff566a..d14f5cfc3138 100755
+index d14f5cfc3138..4978163f5b16 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -635,20 +635,30 @@ my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\x
- sub parse_existing_sysfs {
- 	my $file = $File::Find::name;
+@@ -1,10 +1,12 @@
+ #!/usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0
  
--	# Ignore cgroup and firmware
--	return if ($file =~ m#^/sys/(fs/cgroup|firmware)/#);
--
--	# Ignore some sysfs nodes
--	return if ($file =~ m#/(sections|notes)/#);
--
--	# Would need to check at
--	# Documentation/admin-guide/kernel-parameters.txt, but this
--	# is not easily parseable.
--	return if ($file =~ m#/parameters/#);
--
- 	my $mode = (lstat($file))[2];
- 	my $abs_file = abs_path($file);
++BEGIN { $Pod::Usage::Formatter = 'Pod::Text::Termcap'; }
++
+ use strict;
+ use warnings;
+ use utf8;
+-use Pod::Usage;
++use Pod::Usage qw(pod2usage);
+ use Getopt::Long;
+ use File::Find;
+ use Fcntl ':mode';
+@@ -47,7 +49,7 @@ GetOptions(
+ ) or pod2usage(2);
  
-+	my @tmp;
-+	push @tmp, $file;
-+	push @tmp, $abs_file if ($abs_file ne $file);
-+
-+	foreach my $f(@tmp) {
-+		# Ignore cgroup, as this is big and has zero docs under ABI
-+		return if ($f =~ m#^/sys/fs/cgroup/#);
-+
-+		# Ignore firmware as it is documented elsewhere
-+		# Either ACPI or under Documentation/devicetree/bindings/
-+		return if ($f =~ m#^/sys/firmware/#);
-+
-+		# Ignore some sysfs nodes that aren't actually part of ABI
-+		return if ($f =~ m#/sections|notes/#);
-+
-+		# Would need to check at
-+		# Documentation/admin-guide/kernel-parameters.txt, but this
-+		# is not easily parseable.
-+		return if ($f =~ m#/parameters/#);
-+	}
-+
- 	if (S_ISLNK($mode)) {
- 		$aliases{$file} = $abs_file;
- 		return;
+ pod2usage(1) if $help;
+-pod2usage(-exitstatus => 0, -verbose => 2) if $man;
++pod2usage(-exitstatus => 0, -noperldoc, -verbose => 2) if $man;
+ 
+ pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
+ 
+@@ -923,18 +925,18 @@ B<abi_book.pl> [--debug <level>] [--enable-lineno] [--man] [--help]
+ 	       [--search-string <regex>]
+ 	       <COMAND> [<ARGUMENT>]
+ 
+-Where <COMMAND> can be:
++Where B<COMMAND> can be:
+ 
+ =over 8
+ 
+-B<search> [SEARCH_REGEX] - search for [SEARCH_REGEX] inside ABI
++B<search> I<SEARCH_REGEX> - search for I<SEARCH_REGEX> inside ABI
+ 
+-B<rest>                  - output the ABI in ReST markup language
++B<rest>                   - output the ABI in ReST markup language
+ 
+-B<validate>              - validate the ABI contents
++B<validate>               - validate the ABI contents
+ 
+-B<undefined>             - existing symbols at the system that aren't
+-                           defined at Documentation/ABI
++B<undefined>              - existing symbols at the system that aren't
++                            defined at Documentation/ABI
+ 
+ =back
+ 
+@@ -950,9 +952,9 @@ the Documentation/ABI directory.
+ =item B<--rst-source> and B<--no-rst-source>
+ 
+ The input file may be using ReST syntax or not. Those two options allow
+-selecting between a rst-compliant source ABI (--rst-source), or a
++selecting between a rst-compliant source ABI (B<--rst-source>), or a
+ plain text that may be violating ReST spec, so it requres some escaping
+-logic (--no-rst-source).
++logic (B<--no-rst-source>).
+ 
+ =item B<--enable-lineno>
+ 
+@@ -972,7 +974,7 @@ following bitmask:
+ Show hints about possible definitions for the missing ABI symbols.
+ Used only when B<undefined>.
+ 
+-=item B<--search-string> [regex string]
++=item B<--search-string> I<regex string>
+ 
+ Show only occurences that match a search string.
+ Used only when B<undefined>.
+@@ -1021,11 +1023,11 @@ $ scripts/get_abi.pl rest --dir Documentation/ABI/obsolete
+ 
+ =head1 BUGS
+ 
+-Report bugs to Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
++Report bugs to Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+ 
+ =head1 COPYRIGHT
+ 
+-Copyright (c) 2016-2019 by Mauro Carvalho Chehab <mchehab+samsung@kernel.org>.
++Copyright (c) 2016-2021 by Mauro Carvalho Chehab <mchehab+huawei@kernel.org>.
+ 
+ License GPLv2: GNU GPL version 2 <http://gnu.org/licenses/gpl.html>.
+ 
 -- 
 2.31.1
 
