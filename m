@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A2D419752
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14EB419755
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbhI0PJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:09:44 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46938
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234976AbhI0PJm (ORCPT
+        id S235079AbhI0PJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:09:54 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54422 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234976AbhI0PJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:09:42 -0400
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A596A401A9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632755283;
-        bh=1q/DcpUc3XiR6bWmSAxCheMZIC3a2GduwPENrVEfX+Q=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=eXE/txZpIV2+fxANN9Ox66B3tFfzEY3V0PsootPnsxm1flfq6ePaVAqgPhEWsVJ9t
-         OOqRFF3h1rx+ohaUDw4NjJyrehqoy1FPAQxiyp6LF3Nu5cXRROUPXzKe3kJx5BuBYn
-         Q+78ynW1/R7V5+Tf2qLrDQhfsO2kQigoBX/chXsGRHaeCTQp75EcJ7vnr0uLe2tXTa
-         +DiqlOVR5HMAU8BGtTG6p6C6wYu/Usw+jnwDaXnWxW3pLb9gwlvCpdiL17l/AvDS3Z
-         mtyHKEIfCVehM+JxgjSksge+61RvpoCaQQIN8TzBpRonGTIPW65xHCNKXPT8EfXrGz
-         iM7Iu0k/v/yuQ==
-Received: by mail-pg1-f198.google.com with SMTP id w5-20020a654105000000b002692534afceso13104311pgp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:08:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1q/DcpUc3XiR6bWmSAxCheMZIC3a2GduwPENrVEfX+Q=;
-        b=ltXMwLs5Gy2eZk8bpHikKg8e0s9Vq/x6u6JVXgv33alq4F1MJ0hDL8TT6u+CIuBXKw
-         KM+GSdi8ftrIZHlqE62FtL4QyDG/REi9PzFQfZmVpNaaDAfQgx1ZbDCLdId8jS19HPqf
-         AeLBSulup3SnRMwngBw3vIO9Du/CqrDHg1gNPeIChLeXMAiEfWg1HF/22anqw4uifcEG
-         y9BcbU0evF9F7to3IZrEJnhGvgfMO9tOArOhlbwhttwUQ4aE81dM3qgGV5lRw5zgUzMC
-         UKq0/O77dey32mWbKbBrPDX7iu1RHv/E/gASHE6bDk5UphQTkdO88BZCzQ/JDPHqxElo
-         rOTg==
-X-Gm-Message-State: AOAM531wC/GjCJsMM9VLz8x/XrK26R8TLoge5P4NRgoXglkioKpDE7zQ
-        XhkoA9fRl2CbLCCIdjx85/4gwjG79Im6c3H4nTacGWABLI+NHUqlJkP1KOObbZrPXUwo49tCE/A
-        kAKcICC+vNLX6Gwv6qCMTDOfi3DnHu7jlCoHJRSigTw==
-X-Received: by 2002:a17:90a:311:: with SMTP id 17mr20487555pje.121.1632755281933;
-        Mon, 27 Sep 2021 08:08:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFzOCZGKP1K5PJtBQasVhwsqVTuP6aOioiRpVP9zX9xcJNqrJjCrwwR7QVLL8geh28dmBKLQ==
-X-Received: by 2002:a17:90a:311:: with SMTP id 17mr20487527pje.121.1632755281710;
-        Mon, 27 Sep 2021 08:08:01 -0700 (PDT)
-Received: from localhost.localdomain ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id i27sm17510152pfq.184.2021.09.27.08.08.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 08:08:01 -0700 (PDT)
-From:   Tim Gardner <tim.gardner@canonical.com>
-To:     ath11k@lists.infradead.org
-Cc:     tim.gardner@canonical.com, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ath11k: Remove unused variable in ath11k_dp_rx_mon_merg_msdus()
-Date:   Mon, 27 Sep 2021 09:07:43 -0600
-Message-Id: <20210927150743.19816-1-tim.gardner@canonical.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 27 Sep 2021 11:09:53 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18RF89R3042957;
+        Mon, 27 Sep 2021 10:08:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632755289;
+        bh=bEegF4afA1bvapjzNS3QbQh/0LbycubKms/39orBhoc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=VdCMKDgdhO+efvFQQHTh2wMcArbIjohHOrZVYhbATB1QKxell4V6Ces/gnDNEAadf
+         khlMsNZJB7rEsBo0ivYM6YJrqSlqIi2H0zzcCKTzKnT7dIlu5WpEyY8m9cBFGVwYJe
+         EjkrKsJRWj8GonBDg7WWWm0uSKQE1SHR1fEOmZcc=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18RF89b8098136
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Sep 2021 10:08:09 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 27
+ Sep 2021 10:08:08 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 27 Sep 2021 10:08:08 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18RF88Lw002298;
+        Mon, 27 Sep 2021 10:08:08 -0500
+Date:   Mon, 27 Sep 2021 10:08:08 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
+CC:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        Sinthu Raja <sinthu.raja@ti.com>
+Subject: Re: [PATCH V4 0/2] dt-bindings: remoteproc: k3-r5f|dsp: Remove
+Message-ID: <20210927150808.rnkmeww5uciuafmc@underpay>
+References: <20210927103811.11222-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210927103811.11222-1-sinthu.raja@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity complains that a constant variable guards dead code. In fact,
-mpdu_buf is set NULL and never updated.
+On 16:08-20210927, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
+> 
+> Hi All,
+> The series of patches are meant to help make the rproc bindings for K3
+> r5f and dsp support independent of board/platform involved.
+> 
+> Changes in V4:
+> Addressed review comments:
+> - Removed Fixes tags from the commit descriptions.
+> - Updated subject and commit description to emphasis on cleaning up of the 
+>   example to address the dt_binding_check warnings.
+> 
+> 
+> V3: https://lore.kernel.org/all/20210917095426.19277-1-sinthu.raja@ti.com/
+> V2: https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
+> V1: https://lore.kernel.org/all/20210817152005.21575-1-sinthu.raja@ti.com/
+> 
+> Sinthu Raja (2):
+>   dt-bindings: remoteproc: k3-r5f: Cleanup SoC compatible from DT
+>     example
+>   dt-bindings: remoteproc: k3-dsp: Cleanup SoC compatible from DT
+>     example
+> 
 
-4834err_merge_fail:
-    	null: At condition mpdu_buf, the value of mpdu_buf must be NULL.
-    	dead_error_condition: The condition mpdu_buf cannot be true.
-CID 92162 (#1 of 1): 'Constant' variable guards dead code (DEADCODE)
-dead_error_line: Execution cannot reach the expression decap_format !=
-  DP_RX_DECAP_TYPE_RAW inside this statement: if (mpdu_buf && decap_forma....
-Local variable mpdu_buf is assigned only once, to a constant value, making it
-  effectively constant throughout its scope. If this is not the intent, examine
-  the logic to see if there is a missing assignment that would make mpdu_buf not
-  remain constant.
-4835        if (mpdu_buf && decap_format != DP_RX_DECAP_TYPE_RAW) {
 
-Fix this by removing mpdu_buf and unreachable code.
+Reviewed-by: Nishanth Menon <nm@ti.com>
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: ath11k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
----
- drivers/net/wireless/ath/ath11k/dp_rx.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
-index 9a224817630a..7d57952fd73c 100644
---- a/drivers/net/wireless/ath/ath11k/dp_rx.c
-+++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
-@@ -4740,7 +4740,7 @@ ath11k_dp_rx_mon_merg_msdus(struct ath11k *ar,
- 			    struct ieee80211_rx_status *rxs)
- {
- 	struct ath11k_base *ab = ar->ab;
--	struct sk_buff *msdu, *mpdu_buf, *prev_buf;
-+	struct sk_buff *msdu, *prev_buf;
- 	u32 wifi_hdr_len;
- 	struct hal_rx_desc *rx_desc;
- 	char *hdr_desc;
-@@ -4748,8 +4748,6 @@ ath11k_dp_rx_mon_merg_msdus(struct ath11k *ar,
- 	struct ieee80211_hdr_3addr *wh;
- 	struct rx_attention *rx_attention;
- 
--	mpdu_buf = NULL;
--
- 	if (!head_msdu)
- 		goto err_merge_fail;
- 
-@@ -4832,12 +4830,6 @@ ath11k_dp_rx_mon_merg_msdus(struct ath11k *ar,
- 	return head_msdu;
- 
- err_merge_fail:
--	if (mpdu_buf && decap_format != DP_RX_DECAP_TYPE_RAW) {
--		ath11k_dbg(ab, ATH11K_DBG_DATA,
--			   "err_merge_fail mpdu_buf %pK", mpdu_buf);
--		/* Free the head buffer */
--		dev_kfree_skb_any(mpdu_buf);
--	}
- 	return NULL;
- }
- 
 -- 
-2.33.0
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
