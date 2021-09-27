@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A524199B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022F141999C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhI0Qyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbhI0Qyp (ORCPT
+        id S235586AbhI0QuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:50:05 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32500 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235467AbhI0QuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:54:45 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B79C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:53:06 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y35so20750045ede.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:53:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nMa3M1bs6F4XDDZsVandl5JemeFlfQBynfNRsq6BDAQ=;
-        b=j/wKp7D6FSZhZSwNHaN+/7yrcCHyNCLHO9LiQ7AItO19rTT3AEdAGjAO4PLFuEI43x
-         5WzAce1yY+R2sh/LE/m2qTq/KatnhCqhE5cuHJUM6H7N/sDcagUivWuH5yiD9qPai2jH
-         RHDG1SjnfKnuy3BB1Z3djAap+7QTMSwSxuMvfP51+P/JhAXlyFcxeCJN37aQW15vQD+y
-         kFnx6Ct42Kb/uf0NMX9N8IWUt88EE3QgnoIzjwOiSmjS30gre4WFS2JJBuE5dWlyFxxZ
-         LoPb5SljuSZDXeJkydsSvAneiqyjohnxAmAnMg4INzoRoTAYa6l1qN14/OmGG+rnY5t6
-         oFTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nMa3M1bs6F4XDDZsVandl5JemeFlfQBynfNRsq6BDAQ=;
-        b=TqSy1UN6mgizUfniMTOwGFiUVvAaskWje7HVl0i1NZdheIdapxO5rXO7JbRvT3q9SK
-         uDj57NNwv1Rf1Yirl8/Cxpnm7NJDFQXPEXDbollYIm9dzmK2xOtfJotllREZlto+2Ck/
-         c3PcBxucNi8dpDEGziKBNos/gSniz+HxTxPEKoW/JvzhiQ6ndYdUPz3u4mYxE3/mqdkO
-         ljhgCf/wPl1UpUMCr0dRJTKv+QWRNuLnNA592n1eIVbJVEHQdXhOdxw2cRAg/3FmNBNM
-         lpb3EKgIAvNJo8stvRJUx4lY4wM/VluGoD9TzY8l5Mh9faEg7fjKY8JxJbL6bXgvQotG
-         qcCA==
-X-Gm-Message-State: AOAM532WGhA9PAJXzZMbTdR0fj5djwGecJPndTo5LYr9An7YYq+AWtrD
-        mSM1pYouftMmWF1IUXCP+Ds=
-X-Google-Smtp-Source: ABdhPJysvTphbDucZcDQxa0AnvAbpnjIbT24c+ysEFd9fsbh7unovF7upOwbsRV3h34ERGp5YSJx0g==
-X-Received: by 2002:a17:906:3a4d:: with SMTP id a13mr1199259ejf.220.1632761585538;
-        Mon, 27 Sep 2021 09:53:05 -0700 (PDT)
-Received: from localhost.localdomain (host-212-171-30-160.retail.telecomitalia.it. [212.171.30.160])
-        by smtp.gmail.com with ESMTPSA id p24sm10733641edq.27.2021.09.27.09.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:53:04 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: Re: [PATCH v9 10/16] staging: r8188eu: shorten and simplify calls chains
-Date:   Mon, 27 Sep 2021 18:45:49 +0200
-Message-ID: <2224179.S7mhbqmIgH@localhost.localdomain>
-In-Reply-To: <YVHlRf7C6m+2Si+3@kroah.com>
-References: <20210924122705.3781-1-fmdefrancesco@gmail.com> <1836626.W0nMHyKdkH@localhost.localdomain> <YVHlRf7C6m+2Si+3@kroah.com>
+        Mon, 27 Sep 2021 12:50:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632761304; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=fblYSmlJg3v1/K9Wc+iQX7C7OT939c5R18PSUSeDZU0=; b=t6mudhm+Z0bb+5CvQnvTh/Erilt278YoMldcf79YS/EJ1T4BV4sXhaQgBgDoOSjlCpCZ0W89
+ sdHJMQRqPnQKCH6qQZaDPiHBwVO6EgxcNtYiYTG7YAz/BYL4prTURXp98PDgUiffrQJQVTq+
+ MgcrgiJSAJJxlwbMzIz3tTtZsaI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6151f5c7605ecf100b1893e4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Sep 2021 16:48:07
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 089D0C4360D; Mon, 27 Sep 2021 16:48:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.239.90] (unknown [157.47.14.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68156C4338F;
+        Mon, 27 Sep 2021 16:47:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 68156C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 3/5] ASoC: codecs: tx-macro: Enable tx top soundwire
+ mic clock
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <agross@kernel.org; bjorn.andersson@linaro.org;
+ lgirdwood@gmail.com; broonie@kernel.org;robh+dt@kernel.org;
+ plai@codeaurora.org; bgoswami@codeaurora.org; perex@perex.cz;
+ tiwai@suse.com;srinivas.kandagatla@linaro.org; rohitkr@codeaurora.org;
+ linux-arm-msm@vger.kernel.org; alsa-devel@alsa-project.org;
+ devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+ swboyd@chromium.org; judyhsiao@chromium.org;>
+ <1632313878-12089-1-git-send-email-srivasam@codeaurora.org>
+ <1632313878-12089-4-git-send-email-srivasam@codeaurora.org>
+ <1e176dd1-fc8b-09dc-eb73-35b7d268e89a@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <39b035a5-0f5c-7ddb-d7a3-d6c42684e3e8@codeaurora.org>
+Date:   Mon, 27 Sep 2021 22:17:56 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1e176dd1-fc8b-09dc-eb73-35b7d268e89a@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 27, 2021 5:37:41 PM CEST Greg Kroah-Hartman wrote:
-> On Fri, Sep 24, 2021 at 02:37:52PM +0200, Fabio M. De Francesco wrote:
-> > On Friday, September 24, 2021 2:26:49 PM CEST Fabio M. De Francesco 
-wrote:
-> > > --- Preface ---
-> > > 
-> > > This is v10 of "shorten and simplify calls chain". 
-> > > [...]
-> > [...]
-> 
-> Nah, I can figure it out, looks good, let's queue it up and see what
-> breaks :)
 
-"[and] see what breaks :)". Interesting...
-
-This is the second or third time you have written me these words (I cannot 
-speak for Pavel). I guess I'll have to work on it :)
-
-All kidding aside, we seriously appreciate that you have decided to accept 
-the patches.
-
-Regards,
-
-Fabio
-
-> thanks,
-> 
-> greg k-h
-> 
-
-
-
+On 9/27/2021 5:51 PM, Srinivas Kandagatla wrote:
+>
+>
+Thanks for your time Srini!!!
+> On 22/09/2021 13:31, Srinivasa Rao Mandadapu wrote:
+>> Enable tx path soundwire mic0 and mic1 clock.
+>>
+>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> ---
+>>   sound/soc/codecs/lpass-tx-macro.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
+>> b/sound/soc/codecs/lpass-tx-macro.c
+>> index 5dcae73..e980b2e 100644
+>> --- a/sound/soc/codecs/lpass-tx-macro.c
+>> +++ b/sound/soc/codecs/lpass-tx-macro.c
+>> @@ -1674,6 +1674,8 @@ static int tx_macro_component_probe(struct 
+>> snd_soc_component *comp)
+>>         snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 0x3F,
+>>                         0x0A);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
+>
+> This needs a comment for more clarity to readers.
+Okay! Will add comment and resend it.
+>
+> --srini
+>>         return 0;
+>>   }
+>>
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
