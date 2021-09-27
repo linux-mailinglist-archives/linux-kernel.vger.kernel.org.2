@@ -2,164 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7137141913C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59276419138
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 10:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhI0JCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:02:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233593AbhI0JCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D28660F24;
-        Mon, 27 Sep 2021 09:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632733230;
-        bh=xAZwg+lSydwOsUcTeez66x1D03IkBwER7qnzAYtH1cs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qFPa68IzE/5mgwe7cQSNpMiwKyqTJTCTrlR8RE9SkZq/1y7hMNgn3kbXHJkRlO9b8
-         2cYh8ijKNxCqXggFuxDzPDQoqZ6aowhUBC1aPAKhuvdGKAQrS71kNrkbPzrghfXgNN
-         snnTnJfC58AR0eCpqjXHN8nAf3mPLE3lGwO40UtH5UUZIhqw7sk0sAfe/zjTr+seF+
-         QVjINZAKlnekMNTGE+n4gTx+LPJt7mhBXfCmFI9QB12NnGrxCc6OgS0BxEyq1VasTv
-         +xJ5Yf//t4AY93AXd+j9+UuCPPeeYMmxgMkVhWP/9m6YaMFA7QgMMG22RThkCpRLaH
-         zIBL17FQfwzHw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mUmUu-0003ld-MN; Mon, 27 Sep 2021 11:00:28 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Malte Di Donato <malte@neo-soft.org>
-Subject: [PATCH stable-5.10] USB: serial: cp210x: fix dropped characters with CP2102
-Date:   Mon, 27 Sep 2021 11:00:12 +0200
-Message-Id: <20210927090012.14437-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S233605AbhI0JBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:01:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3876 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233593AbhI0JBR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:01:17 -0400
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HHxMn2wh8z67gvx;
+        Mon, 27 Sep 2021 16:56:53 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 10:59:38 +0200
+Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 27 Sep
+ 2021 09:59:37 +0100
+Subject: Re: [PATCH v4 11/13] blk-mq: Refactor and rename
+ blk_mq_free_map_and_{requests->rqs}()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "hare@suse.de" <hare@suse.de>
+References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+ <1632472110-244938-12-git-send-email-john.garry@huawei.com>
+ <YU/Va9T+zcRNExUF@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <45c0c587-59a2-1761-e175-3920669d0bfb@huawei.com>
+Date:   Mon, 27 Sep 2021 10:02:40 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YU/Va9T+zcRNExUF@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.85.67]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit c32dfec6c1c36bbbcd5d33e949d99aeb215877ec upstream.
+On 26/09/2021 03:05, Ming Lei wrote:
+> On Fri, Sep 24, 2021 at 04:28:28PM +0800, John Garry wrote:
+>> Refactor blk_mq_free_map_and_requests() such that it can be used at many
+>> sites at which the tag map and rqs are freed.
+>>
+>> Also rename to blk_mq_free_map_and_rqs(), which is shorter and matches the
+>> alloc equivalent.
+>>
+>> Suggested-by: Ming Lei<ming.lei@redhat.com>
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+>> Reviewed-by: Hannes Reinecke<hare@suse.de>
+>> ---
+>>   block/blk-mq-tag.c |  3 +--
+>>   block/blk-mq.c     | 40 ++++++++++++++++++++++++----------------
+>>   block/blk-mq.h     |  4 +++-
+>>   3 files changed, 28 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+>> index db99f1246795..a0ecc6d88f84 100644
+>> --- a/block/blk-mq-tag.c
+>> +++ b/block/blk-mq-tag.c
+>> @@ -607,8 +607,7 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>>   		if (!new)
+>>   			return -ENOMEM;
+>>   
+>> -		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
+>> -		blk_mq_free_rq_map(*tagsptr, set->flags);
+>> +		blk_mq_free_map_and_rqs(set, *tagsptr, hctx->queue_num);
+>>   		*tagsptr = new;
+>>   	} else {
+>>   		/*
+>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>> index 46772773b9c4..464ea20b9bcb 100644
+>> --- a/block/blk-mq.c
+>> +++ b/block/blk-mq.c
+>> @@ -2878,15 +2878,15 @@ static bool __blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+>>   	return set->tags[hctx_idx];
+>>   }
+>>   
+>> -static void blk_mq_free_map_and_requests(struct blk_mq_tag_set *set,
+>> -					 unsigned int hctx_idx)
+>> +void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+>> +			     struct blk_mq_tags *tags,
+>> +			     unsigned int hctx_idx)
+>>   {
+>>   	unsigned int flags = set->flags;
+>>   
+>> -	if (set->tags && set->tags[hctx_idx]) {
+>> -		blk_mq_free_rqs(set, set->tags[hctx_idx], hctx_idx);
+>> -		blk_mq_free_rq_map(set->tags[hctx_idx], flags);
+>> -		set->tags[hctx_idx] = NULL;
+>> +	if (tags) {
+>> +		blk_mq_free_rqs(set, tags, hctx_idx);
+>> +		blk_mq_free_rq_map(tags, flags);
+>>   	}
+>>   }
+>>   
+>> @@ -2967,8 +2967,10 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+>>   			 * fallback in case of a new remap fails
+>>   			 * allocation
+>>   			 */
+>> -			if (i && set->tags[i])
+>> -				blk_mq_free_map_and_requests(set, i);
+>> +			if (i && set->tags[i]) {
+>> +				blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>> +				set->tags[i] = NULL;
+>> +			}
+>>   
+>>   			hctx->tags = NULL;
+>>   			continue;
+>> @@ -3264,8 +3266,8 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
+>>   		struct blk_mq_hw_ctx *hctx = hctxs[j];
+>>   
+>>   		if (hctx) {
+>> -			if (hctx->tags)
+>> -				blk_mq_free_map_and_requests(set, j);
+>> +			blk_mq_free_map_and_rqs(set, set->tags[j], j);
+>> +			set->tags[j] = NULL;
+>>   			blk_mq_exit_hctx(q, set, hctx, j);
+>>   			hctxs[j] = NULL;
+>>   		}
+>> @@ -3361,8 +3363,10 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
+>>   	return 0;
+>>   
+>>   out_unwind:
+>> -	while (--i >= 0)
+>> -		blk_mq_free_map_and_requests(set, i);
+>> +	while (--i >= 0) {
+>> +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>> +		set->tags[i] = NULL;
+>> +	}
+>>   
+>>   	return -ENOMEM;
+>>   }
+>> @@ -3557,8 +3561,10 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
+>>   	return 0;
+>>   
+>>   out_free_mq_rq_maps:
+>> -	for (i = 0; i < set->nr_hw_queues; i++)
+>> -		blk_mq_free_map_and_requests(set, i);
+>> +	for (i = 0; i < set->nr_hw_queues; i++) {
+>> +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>> +		set->tags[i] = NULL;
+>> +	}
+>>   out_free_mq_map:
+>>   	for (i = 0; i < set->nr_maps; i++) {
+>>   		kfree(set->map[i].mq_map);
+>> @@ -3590,8 +3596,10 @@ void blk_mq_free_tag_set(struct blk_mq_tag_set *set)
+>>   {
+>>   	int i, j;
+>>   
+>> -	for (i = 0; i < set->nr_hw_queues; i++)
+>> -		blk_mq_free_map_and_requests(set, i);
+>> +	for (i = 0; i < set->nr_hw_queues; i++) {
+>> +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+>> +		set->tags[i] = NULL;
+>> +	}
+> There are 5 callers in which 'set->tags[i]' is cleared, so just
+> wondering why you don't clear set->tags[i] at default in
+> blk_mq_free_map_and_rqs(). And just call __blk_mq_free_map_and_rqs()
+> for the only other user?
 
-Some CP2102 do not support event-insertion mode but return no error when
-attempting to enable it.
+blk_mq_free_map_and_rqs() is not always passed set->tags[i]:
 
-This means that any event escape characters in the input stream will not
-be escaped by the device and consequently regular data may be
-interpreted as escape sequences and be removed from the stream by the
-driver.
+- blk_mq_tag_update_depth() calls blk_mq_free_map_and_rqs() for sched tags
 
-The reporter's device has batch number DCL00X etched into it and as
-discovered by the SHA2017 Badge team, counterfeit devices with that
-marking can be detected by sending malformed vendor requests. [1][2]
+- __blk_mq_alloc_rq_maps() calls blk_mq_free_map_and_rqs() for 
+shared_sbitmap_tags
 
-Tests confirm that the possibly counterfeit CP2102 returns a single byte
-in response to a malformed two-byte part-number request, while an
-original CP2102 returns two bytes. Assume that every CP2102 that behaves
-this way also does not support event-insertion mode (e.g. cannot report
-parity errors).
+Function __blk_mq_free_map_and_rqs() is not public and really only 
+intended for set->tags[i]
 
-[1] https://mobile.twitter.com/sha2017badge/status/1167902087289532418
-[2] https://hackaday.com/2017/08/14/hands-on-with-the-shacamp-2017-badge/#comment-3903376
+So I did consider passing the address of the tags pointer to
+blk_mq_free_map_and_rqs(), like:
 
-Reported-by: Malte Di Donato <malte@neo-soft.org>
-Tested-by: Malte Di Donato <malte@neo-soft.org>
-Fixes: a7207e9835a4 ("USB: serial: cp210x: add support for line-status events")
-Link: https://lore.kernel.org/r/20210922113100.20888-1-johan@kernel.org
-Cc: stable@vger.kernel.org	# 5.9
-Signed-off-by: Johan Hovold <johan@kernel.org>
-[ johan: backport to 5.10; adjust context, add quirk helper ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/cp210x.c | 46 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+			struct blk_mq_tag **tags,
+			unsigned int hctx_idx)
 
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 329fc25f78a4..c30c84a7775b 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -260,6 +260,7 @@ struct cp210x_serial_private {
- 	speed_t			min_speed;
- 	speed_t			max_speed;
- 	bool			use_actual_rate;
-+	bool			no_event_mode;
- };
- 
- enum cp210x_event_state {
-@@ -1331,12 +1332,16 @@ static void cp210x_change_speed(struct tty_struct *tty,
- 
- static void cp210x_enable_event_mode(struct usb_serial_port *port)
- {
-+	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
- 	int ret;
- 
- 	if (port_priv->event_mode)
- 		return;
- 
-+	if (priv->no_event_mode)
-+		return;
-+
- 	port_priv->event_state = ES_DATA;
- 	port_priv->event_mode = true;
- 
-@@ -2086,6 +2091,46 @@ static void cp210x_init_max_speed(struct usb_serial *serial)
- 	priv->use_actual_rate = use_actual_rate;
- }
- 
-+static void cp2102_determine_quirks(struct usb_serial *serial)
-+{
-+	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-+	u8 *buf;
-+	int ret;
-+
-+	buf = kmalloc(2, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+	/*
-+	 * Some (possibly counterfeit) CP2102 do not support event-insertion
-+	 * mode and respond differently to malformed vendor requests.
-+	 * Specifically, they return one instead of two bytes when sent a
-+	 * two-byte part-number request.
-+	 */
-+	ret = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-+			CP210X_VENDOR_SPECIFIC, REQTYPE_DEVICE_TO_HOST,
-+			CP210X_GET_PARTNUM, 0, buf, 2, USB_CTRL_GET_TIMEOUT);
-+	if (ret == 1) {
-+		dev_dbg(&serial->interface->dev,
-+				"device does not support event-insertion mode\n");
-+		priv->no_event_mode = true;
-+	}
-+
-+	kfree(buf);
-+}
-+
-+static void cp210x_determine_quirks(struct usb_serial *serial)
-+{
-+	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-+
-+	switch (priv->partnum) {
-+	case CP210X_PARTNUM_CP2102:
-+		cp2102_determine_quirks(serial);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- static int cp210x_attach(struct usb_serial *serial)
- {
- 	int result;
-@@ -2106,6 +2151,7 @@ static int cp210x_attach(struct usb_serial *serial)
- 
- 	usb_set_serial_data(serial, priv);
- 
-+	cp210x_determine_quirks(serial);
- 	cp210x_init_max_speed(serial);
- 
- 	result = cp210x_gpio_init(serial);
--- 
-2.32.0
+{
+	...
+	*tags = NULL;
+}
+
+But then the API becomes a bit asymmetric, as we deal with tags pointer 
+normally:
+
+struct blk_mq_tags *blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+					     unsigned int hctx_idx,
+					     unsigned int depth);
+
+
+However, apart from this, I can change __blk_mq_free_map_and_rqs() to 
+NULLify set->tags[i], as it is always passed set->tags[i].
+
+Do you have a preference?
+
+Thanks,
+John
+
 
