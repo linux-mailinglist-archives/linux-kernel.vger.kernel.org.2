@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3DA41950E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FB3419513
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbhI0N2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbhI0N2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:28:11 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE0BC061575;
-        Mon, 27 Sep 2021 06:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=D69+WMYjsBza4pCHXiDUwD0y0AQnmhzf6CDyMOe/EuU=; b=ikyBuHzwSU4yHkTXEHatgY0pCC
-        D5KLVQhHXayUMSj5wV+7RwDYy1+H5DALN1ZCI5xMUjd0wMfjEapDwmXWXNlLv3RKP1XojtQtcQ3Xb
-        CxOPoSKq7GFCdK3iuMsGzCpSgtg+qj8g2sQxGwH9OyQMyWnzRy0QDNNK+2rSiNmuI3cgkK//mdEls
-        Y32ZTSJkShqGTQUtOAOjhQEpPLLwbywE0ql9Jwty2ID5sHS+HUYiEgUiCo3LmVOc/rUqwwb+W4o20
-        8NSNIaD/vLJIIKFkdfyL+nLmdEE0yoTnqEk7tq+GZodm/0E5lK2A42yqn8rYodDNfZ6dohUj9KK4T
-        1jBUGbQg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54812)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mUqe4-0008RG-2Z; Mon, 27 Sep 2021 14:26:12 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mUqdy-0000mU-U4; Mon, 27 Sep 2021 14:26:06 +0100
-Date:   Mon, 27 Sep 2021 14:26:06 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] net: stmmac: fix gcc-10 -Wrestrict warning
-Message-ID: <YVHGblt9rYg7kbWR@shell.armlinux.org.uk>
-References: <20210927100336.1334028-1-arnd@kernel.org>
+        id S234515AbhI0NaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:30:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234058AbhI0NaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:30:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 688CC61058
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632749320;
+        bh=vns6d7q7snjlnOGxuPZz3LzGfbU3pA9uIcUCFNFCBl0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rhhWa5RW0yQoJ4jqoEt5H5Uofm+jScQJy35aNLJ8PXqNbOcyKf2XD/jgwAfSdt3pB
+         M3FWGdOlZTUrpTCAaddDpXdsWXc1Z/OBuQ5++wdyvmpKg5uj/k8/q69ormsZIgSyrX
+         iIQgHs0qvuwnYWepuH2y9TPA+0pQIXNkZY/G0Rig+Z4MEe0yj1SKhmLVze4NzgLxIe
+         iuC1W0XQMvp9TH7sWmhFTKnc4tPSN5ojmoeupA+c4+NBXteLHhgRL8oITIjJ/1vMX8
+         8UzDqzxBX8eztOurMyEa9jTnKkiDIDOgTuGAjoN2FmqP66lGogVi6kcNxUqkP81BSU
+         ToF3bTNBQqV/g==
+Received: by mail-wr1-f44.google.com with SMTP id w29so51843822wra.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:28:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532gfr+ST+0PQavxV8PxnIrFl6GsGyNrr9+1nP6uNceUSODzrKHi
+        7s+u4ds54tBFlD+notY+oAiVQEB3QJq/o28tbDQ=
+X-Google-Smtp-Source: ABdhPJxbWPlRuOELSlE0iUvzwb9mv8lxk5wVCNSZHg1zaADn1v3AAN1pQjR4+krJ1avS9O0dJh2L8K7krNWt2DcmhtQ=
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr27956996wrs.71.1632749318987;
+ Mon, 27 Sep 2021 06:28:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927100336.1334028-1-arnd@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210927125007.1581919-1-arnd@kernel.org> <YVHE1qclD6ZyjvvD@chrisdown.name>
+In-Reply-To: <YVHE1qclD6ZyjvvD@chrisdown.name>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 27 Sep 2021 15:28:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3_0njnrTokeXmOuZ1vA00Nk9pqbxsOZw+6QcCL-Ng=xg@mail.gmail.com>
+Message-ID: <CAK8P3a3_0njnrTokeXmOuZ1vA00Nk9pqbxsOZw+6QcCL-Ng=xg@mail.gmail.com>
+Subject: Re: [PATCH] printk: avoid -Wsometimes-uninitialized warning
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jessica Yu <jeyu@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 12:02:44PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc-10 and later warn about a theoretical array overrun when
-> accessing priv->int_name_rx_irq[i] with an out of bounds value
-> of 'i':
-> 
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c: In function 'stmmac_request_irq_multi_msi':
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3528:17: error: 'snprintf' argument 4 may overlap destination object 'dev' [-Werror=restrict]
->  3528 |                 snprintf(int_name, int_name_len, "%s:%s-%d", dev->name, "tx", i);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3404:60: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
->  3404 | static int stmmac_request_irq_multi_msi(struct net_device *dev)
->       |                                         ~~~~~~~~~~~~~~~~~~~^~~
-> 
-> The warning is a bit strange since it's not actually about the array
-> bounds but rather about possible string operations with overlapping
-> arguments, but it's not technically wrong.
-> 
-> Avoid the warning by adding an extra bounds check.
-> 
-> Fixes: 8532f613bc78 ("net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX")
-> Link: https://lore.kernel.org/all/20210421134743.3260921-1-arnd@kernel.org/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 553c4403258a..640c0ffdff3d 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -3502,6 +3502,8 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  
->  	/* Request Rx MSI irq */
->  	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
-> +		if (i > MTL_MAX_RX_QUEUES)
-> +			break;
->  		if (priv->rx_irq[i] == 0)
->  			continue;
+On Mon, Sep 27, 2021 at 3:20 PM Chris Down <chris@chrisdown.name> wrote:
+>
+> Hi Arnd,
+>
+> Arnd Bergmann writes:
+> >From: Arnd Bergmann <arnd@arndb.de>
+> >
+> >clang notices that the pi_get_entry() function would use
+> >uninitialized data if it was called with a non-NULL module
+> >pointer on a kernel that does not support modules:
+>
+> On a !CONFIG_MODULES kernel, we _never_ pass a non-NULL module pointer. This
+> isn't just convention: we don't even have `struct module` fully fleshed out, so
+> it technically cannot be so.
 
-This looks rather weird. rx_irq[] is defined as:
+Yes, I understand that part, hence the "if it was called" rather then
+"when it is called".
 
-        int rx_irq[MTL_MAX_RX_QUEUES];
+> >kernel/printk/index.c:32:6: error: variable 'nr_entries' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+> >        if (!mod) {
+> >            ^~~~
+> >kernel/printk/index.c:38:13: note: uninitialized use occurs here
+> >        if (pos >= nr_entries)
+> >                   ^~~~~~~~~~
+> >kernel/printk/index.c:32:2: note: remove the 'if' if its condition is always true
+> >        if (!mod) {
+> >
+> >Rework the condition to make it clear to the compiler that we are always
+> >in the second case. Unfortunately the #ifdef is still required as the
+> >definition of 'struct module' is hidden when modules are disabled.
+>
+> Having IS_ENABLED and then an #ifdef seems to hurt code readability to me.
+>
+> >Fixes: 337015573718 ("printk: Userspace format indexing support")
+>
+> Does this really fix anything, or just clang's ignorance? If the latter, clang
+> needs to be smarter here: as far as I can see there are no occasions where
+> there's even any opportunity for a non-NULL pointer to come in on a
+> !CONFIG_MODULES kernel, since `struct module` isn't even complete.
 
-If "i" were to become MTL_MAX_RX_QUEUES, then the above code overlows
-the array.
+I don't see how you would expect clang to understand that part. It does
+not do cross-function analysis for the purpose of diagnostic output, and
+even if it did, then this caller
 
-So while this may stop gcc-10 complaining, I'd argue that making the
-new test ">=" rather than ">" would have also made it look correct.
+static void *pi_next(struct seq_file *s, void *v, loff_t *pos)
+{
+        const struct module *mod = s->file->f_inode->i_private;
+        struct pi_entry *entry = pi_get_entry(mod, *pos);
+...
+}
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+has no indication that "s->file->f_inode->i_private" is guaranteed to
+be a NULL pointer.
+
+         Arnd
