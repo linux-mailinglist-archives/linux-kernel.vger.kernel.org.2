@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B78141A2F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637E541A2FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237801AbhI0Wbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:31:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26753 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237679AbhI0Wbv (ORCPT
+        id S237643AbhI0WdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237545AbhI0WdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:31:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632781811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=eCL0AZojEkxKxjkt+7Wlncn1gJOK+2tgTrPIC34EBbc=;
-        b=F7NLL47YIt4QFYMyfG9mA6LIRK8MDfmkWNDV/4Hrm88+O2xvbbS8et8Wem34J7WJk+HRwT
-        cUKqhczRQ4e8E2HllC40rphSb0Dqg3gXav8jG0PY3mvz39yKln+VQVrce8HHrpXTRCCH8a
-        1+e50a3vBAGFVgrAqSqtpXvzS4VcUQY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-GtMMDc57O_KvJrdIeeCN4w-1; Mon, 27 Sep 2021 18:30:10 -0400
-X-MC-Unique: GtMMDc57O_KvJrdIeeCN4w-1
-Received: by mail-wm1-f70.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so476365wmj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:30:09 -0700 (PDT)
+        Mon, 27 Sep 2021 18:33:00 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D550C061575;
+        Mon, 27 Sep 2021 15:31:20 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id n2so12760027plk.12;
+        Mon, 27 Sep 2021 15:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jtohzWpaqkO4tU2pAeEn9Z5yAnnkQyBYiaAEVGUJmac=;
+        b=YQicmZtm0w6K2IXXhrqHlHrViMkMyd07v8gqlk365KYOU0spBQS4exom6/om/3WcjL
+         c3rp8Lplq7zhtrl0s4verCbiToNLsHwf2N1a46iD1NshaU75szMCfvC2Ve6SDwsAmile
+         +5u4+X0gQRA5RO5oMgX4tcmHvGyh2HcFIIut1U5CEBUx0Le4uJJEed+nonnGQWtgP37L
+         T+SeFD5Kts1c+1cN0APv5MkHqQ3lTOrH/coOC+73A3h1cEgyRe5Ve4op5yU76WK3rsQ2
+         eOLmTij9la89JEoFqJ5mXJhfJVs2vTIfklEBfqmXx/2Be5JjX310tX2FxMta7hW6TxqI
+         dpfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=eCL0AZojEkxKxjkt+7Wlncn1gJOK+2tgTrPIC34EBbc=;
-        b=B50/xQ29lLD/ie69OjFPDAJSBmLc8F66r3bDvgYcLTraoW0QlDdxJPL3D+2jo9b4QO
-         JOwUEEwOKtAWT57khb9mYqCNri7AvivhDQgnKBu0vx8zscaALqHfhY500T+UXOajnrhP
-         pSy2z/LDi8nLofjqZpdpr4+nuCDdJN3H29OwuHjyMlKoT1XUgwgd6+ju7qobV4Uo1d/z
-         m5Tr4toUMjeIv+BacMwUxqfuGEn/iTYOvCodk5jSPJkGgT5QXD/qje36eNxFquyXirqD
-         ifhPle5OWh/xhDg35HuXgTpQe21PFMNfVxGNQfH8v+7SCWOvb3n9xtjNt3qUMT5oZzlZ
-         7zAQ==
-X-Gm-Message-State: AOAM533M3utMtfsVVQKpF8InfdqZO6i5c5QCXw6MY5eqOB5KmRfGDJpt
-        uP2saGcmboQo1GWJQjYBkV3Xa+F4Ddj6VyAwk654cjc4j9C3U6aefXXIh5Er5Wh1pXvoRD5bPsV
-        8Y00gL9+s2rT24iNPVDYnGn9E
-X-Received: by 2002:a05:6000:d2:: with SMTP id q18mr2722613wrx.4.1632781809009;
-        Mon, 27 Sep 2021 15:30:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrsPsib+hEYb8pFtjMLnI7CifdC97NAniAu5m3nBLmbR4U5TSkin30Vu44yOu2ox2ibxz4Yg==
-X-Received: by 2002:a05:6000:d2:: with SMTP id q18mr2722587wrx.4.1632781808842;
-        Mon, 27 Sep 2021 15:30:08 -0700 (PDT)
-Received: from redhat.com ([2.55.4.59])
-        by smtp.gmail.com with ESMTPSA id w18sm2490799wrt.79.2021.09.27.15.30.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jtohzWpaqkO4tU2pAeEn9Z5yAnnkQyBYiaAEVGUJmac=;
+        b=Scs/Mr+6s3CFUnbAB4jjfodQYj8nLoQxP+XWvsBgJh286eBOva5G+IvpFg1H33kwhM
+         r7zX1nUpnDNajEvrBOkG1wBlxAV+CRgKFLA5wONjnD0O/pwsgiiK0rwfu02eK+2+Wu5p
+         jz4IulfmLHNpM1hhMpSfi+hNUYY19lYdhNrSt8GlHOOccyctL1l59rbxsVsfRtosd7Wm
+         rPxrs57EiPG4Rn58ZzrStAwz/mKdgYoBTPaeYEaDthm0xwBmP4hV0SrkcshOkrwgaY0p
+         MKX55PDKi0ayIKWIPQnElIp8W9DJTU+JVtTsBF/pBRgJxFmhZusV1DioDGNdodVg22OS
+         mINw==
+X-Gm-Message-State: AOAM532zb9V5lK6et2bO4On04biG7lZRJJQbJoBXQNC4yNosGIruLVGA
+        fMMwY2AY5XW1cqa58a5ezZM6c6Osa6sbDA==
+X-Google-Smtp-Source: ABdhPJx+938LPA9dvs/fmtwyLbAOxayWi/5NhCHKMwzyhefBHQ9RXoTJULKWwqoyToQX5TtiN7Gc6g==
+X-Received: by 2002:a17:90a:854b:: with SMTP id a11mr222853pjw.4.1632781880154;
+        Mon, 27 Sep 2021 15:31:20 -0700 (PDT)
+Received: from titan.corp.tusimple.io ([2601:644:8300:136:a6bb:6dff:feb6:3500])
+        by smtp.gmail.com with ESMTPSA id i27sm18081225pfq.184.2021.09.27.15.31.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 15:30:08 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 18:30:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        aik@ozlabs.ru, arnd@arndb.de, dan.carpenter@oracle.com,
-        elic@nvidia.com, jasowang@redhat.com, linux@roeck-us.net,
-        mst@redhat.com, viresh.kumar@linaro.org, xieyongji@bytedance.com
-Subject: [GIT PULL] virtio,vdpa: fixes
-Message-ID: <20210927183003-mutt-send-email-mst@kernel.org>
+        Mon, 27 Sep 2021 15:31:19 -0700 (PDT)
+From:   Jinshan Xiong <jinshan.xiong@gmail.com>
+To:     jolsa@redhat.com, arnaldo.melo@gmail.com
+Cc:     Jinshan Xiong <jinshan.xiong@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] tools/lib/perf: make the static libperf complete
+Date:   Mon, 27 Sep 2021 15:30:26 -0700
+Message-Id: <20210927223101.3155964-1-jinshan.xiong@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CABoqRjsUPhJk6A7QOh_9z6zHLyqX=ZZG7gkcEZeui1uO4m7Bbg@mail.gmail.com>
+References: <CABoqRjsUPhJk6A7QOh_9z6zHLyqX=ZZG7gkcEZeui1uO4m7Bbg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+This patch makes libperf.a complete. Initially it misses the symbols
+fdarray_* that makes it unusable after being installed by:
+   $ make install DESTDIR=<install_dir>
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+Check missing symbols:
+   $ nm tools/lib/perf/libperf.a | grep fdarray_
+                    U fdarray__add
+   0000000000002b3e t fdarray__available_entries
+                    U fdarray__exit
+                    U fdarray__filter
+                    U fdarray__grow
+                    U fdarray__init
+                    U fdarray__poll
 
-are available in the Git repository at:
+After this patch is applied:
+    $ nm tools/lib/perf/libperf-ext.a | grep fdarray_
+    00000000000063f7 T fdarray__add
+    ......
+    00000000000065d4 T fdarray__poll
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+Signed-off-by: "Jinshan Xiong" <jinshan.xiong@gmail.com>
+---
+ tools/lib/perf/Makefile | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-for you to fetch changes up to be9c6bad9b46451ba5bb8d366c51e2475f374981:
-
-  vdpa: potential uninitialized return in vhost_vdpa_va_map() (2021-09-14 18:10:43 -0400)
-
-----------------------------------------------------------------
-virtio,vdpa: fixes
-
-Fixes up some issues in rc1.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Dan Carpenter (2):
-      vduse: missing error code in vduse_init()
-      vdpa: potential uninitialized return in vhost_vdpa_va_map()
-
-Eli Cohen (2):
-      vdpa/mlx5: Clear ready indication for control VQ
-      vdpa/mlx5: Avoid executing set_vq_ready() if device is reset
-
-Michael S. Tsirkin (1):
-      virtio: don't fail on !of_device_is_compatible
-
-Xie Yongji (1):
-      vduse: Cleanup the old kernel states after reset failure
-
- drivers/vdpa/mlx5/net/mlx5_vnet.c  |  5 +++++
- drivers/vdpa/vdpa_user/vduse_dev.c | 10 +++++-----
- drivers/vhost/vdpa.c               |  2 +-
- drivers/virtio/virtio.c            |  7 ++++++-
- 4 files changed, 17 insertions(+), 7 deletions(-)
+diff --git a/tools/lib/perf/Makefile b/tools/lib/perf/Makefile
+index 08fe6e3c4089..b2f7f4fd7065 100644
+--- a/tools/lib/perf/Makefile
++++ b/tools/lib/perf/Makefile
+@@ -94,7 +94,8 @@ LIBPERF_A  := $(OUTPUT)libperf.a
+ LIBPERF_IN := $(OUTPUT)libperf-in.o
+ LIBPERF_PC := $(OUTPUT)libperf.pc
+ 
+-LIBPERF_ALL := $(LIBPERF_A) $(OUTPUT)libperf.so*
++LIBPERF_A_EXT        := $(OUTPUT)libperf-ext.a
++LIBPERF_LIBS_INSTALL := $(LIBPERF_A_EXT) $(OUTPUT)libperf.so*
+ 
+ LIB_DIR := $(srctree)/tools/lib/api/
+ 
+@@ -124,6 +125,9 @@ $(LIBPERF_IN): FORCE
+ $(LIBPERF_A): $(LIBPERF_IN)
+ 	$(QUIET_AR)$(RM) $@ && $(AR) rcs $@ $(LIBPERF_IN)
+ 
++$(LIBPERF_A_EXT): $(LIBPERF_IN) $(LIBAPI)
++	$(QUIET_AR)$(RM) $@ && $(LD) -r -o libperf-ext.o $^ && $(AR) rcs $@ libperf-ext.o
++
+ $(LIBPERF_SO): $(LIBPERF_IN) $(LIBAPI)
+ 	$(QUIET_LINK)$(CC) --shared -Wl,-soname,libperf.so \
+                                     -Wl,--version-script=$(VERSION_SCRIPT) $^ -o $@
+@@ -131,7 +135,7 @@ $(LIBPERF_SO): $(LIBPERF_IN) $(LIBAPI)
+ 	@ln -sf $(@F) $(OUTPUT)libperf.so.$(LIBPERF_VERSION)
+ 
+ 
+-libs: $(LIBPERF_A) $(LIBPERF_SO) $(LIBPERF_PC)
++libs: $(LIBPERF_A) $(LIBPERF_A_EXT) $(LIBPERF_SO) $(LIBPERF_PC)
+ 
+ all: fixdep
+ 	$(Q)$(MAKE) libs
+@@ -183,9 +187,9 @@ define do_install
+ endef
+ 
+ install_lib: libs
+-	$(call QUIET_INSTALL, $(LIBPERF_ALL)) \
++	$(call QUIET_INSTALL, $(LIBPERF_LIBS_INSTALL)) \
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+-		cp -fpR $(LIBPERF_ALL) $(DESTDIR)$(libdir_SQ)
++		cp -fpR $(LIBPERF_LIBS_INSTALL) $(DESTDIR)$(libdir_SQ)
+ 
+ install_headers:
+ 	$(call QUIET_INSTALL, headers) \
+-- 
+2.30.2
 
