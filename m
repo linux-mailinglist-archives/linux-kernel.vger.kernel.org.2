@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A8041A03A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8340241A03C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhI0Ui7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:38:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235865AbhI0Ui5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:38:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632775038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kVhbRAJmKSprlQgg0jXpRAyAty2Z7WA2uiN0tVCX8Ys=;
-        b=gL/puVNQO3KYaGtpamy4HtjmX06nmvWR+xvDwj4rzZBTZ7jY7Hpu5vc+v7Q4R+HIbkSQ95
-        ZJOujZCwjTvpWuf0c2sR5ed3kQTo6pblVzmRAOuIyifKabBF7zOKi2pRgyqTj7+7R0L0Ex
-        uCex6lDr5u2aC3tTdTzobUnPWqSyeCo=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-M5_YEQCLNzi4jgOt8B5mnA-1; Mon, 27 Sep 2021 16:37:15 -0400
-X-MC-Unique: M5_YEQCLNzi4jgOt8B5mnA-1
-Received: by mail-qk1-f200.google.com with SMTP id r5-20020a05620a298500b0045dac5fb940so60899934qkp.17
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:37:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kVhbRAJmKSprlQgg0jXpRAyAty2Z7WA2uiN0tVCX8Ys=;
-        b=e3jkG1XQ4YoNbVmjFc/aQ8svYd62yslj0TC2S4QSEQYViIrxc4zHdirsEhbdCRKEGE
-         nAlIrd05/bBE5vtLTKtrEY8KGWJLua27bXOl83VCtB9WnGJHfVZLCV1rwCl9H97wGoYh
-         xM7YVQD3wN0YMmRtwGbbRewUyv14JwMfyeBhJ2wE5MJEfY0vEjG0zBQBbljvGiKqkSn5
-         W77SBoaNuaPkPyI089pngFIsbl6zgwhoNEhwB3NnO3+qyCyfPdVe+tE+VhU5Tj6xi2ta
-         vfYT0UcztvNEfj59FLPgWlGO5cTGtcPSiqt2gz8I2iR8vuq3mwUuxb7CqdX7UJNvMjib
-         BjbA==
-X-Gm-Message-State: AOAM5339fAYFAB+h3ODa8xuflT5Uf2agWBESPtxKSqy52Tmx7NZPmKko
-        iZtVdB6zkvE2VdXEF8YWMwtht2FAb6RZ9Wx0CEVRTyWC+nX5TZ4sgaTv9MbPRZPTUIig6Atl3jt
-        ry6ghbmn5FH2btK4bNEMLqdrK
-X-Received: by 2002:a37:9c12:: with SMTP id f18mr2000950qke.18.1632775035140;
-        Mon, 27 Sep 2021 13:37:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgG4CZqC/O53dsfz8veZQDVuVytxC0nWOpDZX1csnQsSimgxnlUx4eZ2tkw/L+ekLBM11Mgg==
-X-Received: by 2002:a37:9c12:: with SMTP id f18mr2000928qke.18.1632775034799;
-        Mon, 27 Sep 2021 13:37:14 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id j14sm11851289qtv.36.2021.09.27.13.37.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:37:14 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 16:37:12 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
-Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
- thp enabled
-Message-ID: <YVIreLvxtoW3awYr@t490s>
-References: <20210923232512.210092-1-peterx@redhat.com>
- <CAJHvVci8ig4WCY2aK-GvmHP=Uw3s8DrGahk-Yh37GX2kR35kww@mail.gmail.com>
- <YU4uJLJHsHLVsS2w@t490s>
- <YVIBCh+jrZABo3xS@t490s>
- <CAJHvVcj976vz5xC=CzDQvVY7Yf8ZoDnt9jv_SwPtUKs_1LjATA@mail.gmail.com>
+        id S236732AbhI0UjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:39:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235925AbhI0UjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 16:39:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C6EB610FC
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632775057;
+        bh=NeUUzwH/N8Mxr/MptmnO1QpXNuxBYMSvWijcnRAB0rs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dM7a5n6bKskDFm+rcd423iRtrg5HlMw5RYVivLUvqi2jbLSmcL+mOVQXMdd/Qd0C8
+         tlgYFY6w0DR9YZVjij4dWFj258tIDdI8NN0eZIJqLpDs35C4+TygQGLcUkOFYvxv4g
+         u8yCP/FG/vMBxWCbSv05voHX52ygh8V2EJJZ8rYXV56/YGnCXQUp6J4uTiqJd+NFYJ
+         IjU8p2KZ/0ebKvc0M7PptMKv89TOpIuBhfTfBnOfy0XdcXzYeCtiEMheMDRG1yN2vk
+         cSJhlzSz7WgN6eQxB/WzgOhO48d/m7ufBt88PYvtDOlplgxL3sSESwBAXOPWRT67Ce
+         iO4qUs9sTVBbA==
+Received: by mail-wr1-f53.google.com with SMTP id g16so54115966wrb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:37:37 -0700 (PDT)
+X-Gm-Message-State: AOAM530VtM3+p/xseS2Fm2ZoQ50kUkvlfwRb8avdSULgmGD80a/+Hpn/
+        6RrlZ3pd4D1c1Uq1ZGdLrr1ow0TFUTrVL1YS4d4=
+X-Google-Smtp-Source: ABdhPJyUjAenq8joWGQ+N3TX7sXIr6eIaAVJ4XnFudXXN00YfpEG4fWYLlCkpjLBJK0bxVz4FkbyqI3WSSR4KdJleDM=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr2122067wro.411.1632775056188;
+ Mon, 27 Sep 2021 13:37:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJHvVcj976vz5xC=CzDQvVY7Yf8ZoDnt9jv_SwPtUKs_1LjATA@mail.gmail.com>
+References: <20210927113702.3866843-1-arnd@kernel.org> <20210927122658.GF2048@kadam>
+ <011c53e6-d628-02b7-fc18-ca3165a45f98@raspberrypi.com>
+In-Reply-To: <011c53e6-d628-02b7-fc18-ca3165a45f98@raspberrypi.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 27 Sep 2021 22:37:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0_RBc6dCzzGcxzC=g5ODDia-9nQcKROWSPm4jVAJgEnA@mail.gmail.com>
+Message-ID: <CAK8P3a0_RBc6dCzzGcxzC=g5ODDia-9nQcKROWSPm4jVAJgEnA@mail.gmail.com>
+Subject: Re: [PATCH] staging: vc04_services: shut up out-of-range warning
+To:     Phil Elwell <phil@raspberrypi.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Ojaswin Mujoo <ojaswin98@gmail.com>,
+        Amarjargal Gundjalam <amarjargal16@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:49:39AM -0700, Axel Rasmussen wrote:
-> One small comment:
-> 
-> I'd prefer to keep the "uffd_test_ops->release_pages(area_src);"
-> above, to ensure the src region is empty. It's not immediately obvious
-> to me that we overwrite *all* of the bytes in src when we initialize
-> it. (I'd have to go look at the definition of area_count and read the
-> loop carefully.) It may not be technically needed, but it makes the
-> guarantee that we're starting with a clean slate, free from any
-> changes from previous test cases, very clear + explicit.
-
-I think there're only two fields used, area_mutex and area_count.  I'm not sure
-what's the initial idea from Andrea when the test case is merged, but IMHO it
-can be written as a struct too instead of using the long macros; struct could
-make it easier to undertand.
-
-And note again that we have your uffd_test_ctx_clear() called which contains
-munmap() of all the buffers before the release_pages() calls.  It means at
-least for anon and shmem the pages won't be there 100% sure to me.  hugetlbfs
-is the only one that may still keep the pages as the fs should hold another
-refcount on the inode, however as all the two fields got re-written anyway, so
-I think it'll be still very safe to drop the two release_pages().
-
-> 
-> Moving the release_pages(area_dst) down as you've done seems correct to me.
-> 
-> Either way you can take:
-> 
-> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
-> 
+On Mon, Sep 27, 2021 at 3:22 PM Phil Elwell <phil@raspberrypi.com> wrote:
+> On 27/09/2021 13:26, Dan Carpenter wrote:
+> > On Mon, Sep 27, 2021 at 01:36:56PM +0200, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> -    if (num_pages > (SIZE_MAX - sizeof(struct pagelist) -
+> >> +    if ((size_t)num_pages > (SIZE_MAX - sizeof(struct pagelist) -
+> >>                       sizeof(struct vchiq_pagelist_info)) /
+> >>                      (sizeof(u32) + sizeof(pages[0]) +
+> >>                       sizeof(struct scatterlist)))
 > >
-> > It's just that after the weekend when I look back I still don't see a 100%
-> > clean way to fix it yet.  Mapping 4K PROT_NONE before/after each allocation is
-> > the most ideal but still looks tricky to me.
+> > The temptation would be to declare "num_pages" as size_t instead of
+> > adding this cost.  But then something will complain about the
+> > "pagelistinfo->num_pages = num_pages;" assignment because
+> > "pagelistinfo->num_pages" is a u32.
 > >
-> > Would you have time on looking for a better solution, so as to (see it a way
-> > to) complete what commit 8ba6e8640844 whats to do afterwards?
-> 
-> Sure, it seems related to the other THP investigations we talked about
-> in the other thread, so I'm happy to look into it.
-> 
-> Just to set expectations, progress may be slightly slow as I'm
-> balancing other work my employer wants done, and some upcoming time
-> off. But, I think with your patch the test is at least stable (not
-> flaky) enough that there is no *urgent* need for this, so it should be
-> fine.
+> > The next temptation is to change the SIZE_MAX to UINT_MAX.  I didn't
+> > do that originally because I can't test this and I was trying not to
+> > break things...  We probably still don't want to break things, but maybe
+> > there is someone who is more familiar with this who knows if UINT_MAX is
+> > okay?
+>
+> The VPU can't address more than 1GB directly, so UINT_MAX is more than sufficient.
 
-Thanks a lot on both reviewing the patch and willing to look into it.  As long
-as we don't get any report for khugepaged (if it happens, I'll provide the
-PROT_NONE hack instead - that'll work 100% I believe but less clean; but for
-now IMHO we don't need to bother) then we don't need to rush on that.
+Is there a macro that already defines that 1GB size, or maybe an even smaller
+value that makes sense as an upper bound?
 
--- 
-Peter Xu
-
+         Arnd
