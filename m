@@ -2,198 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD050419DEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0334419DF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235950AbhI0SQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235832AbhI0SQu (ORCPT
+        id S235983AbhI0SR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:17:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32033 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235832AbhI0SR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:16:50 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD356C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:15:12 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id k24so18568922pgh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NCTL+GkFcHJppp9EC1SmQtFoGIBu5+0m2/FwLTOnDy8=;
-        b=VJxOzKAb1Lyhe6rLoEGSyu3SDBfj/nfG95Oe1MNkzTsZo8Lwn9VbKGj5y8O2VYrvZk
-         jcGxola9iyq+R+lmJBNMoG90g8GbTzrkrTuaTcPnHRG0pfdOG5LYbFj2F7QktncDx+gQ
-         UuC1/ki+u8TdzFWdDuWv8ei3xSMq+e9YFfrLZ+lCouKBXJcKQDZI9y/pXrrAkpav++4I
-         hXpJoGZDM3hSTcbnZrv5uHn4iKLLzwXfgqO4ucWUllIm0vlS6+T+Z7Swtx/96F2bmbv5
-         ylBoP9gMjQQGJTP/GxMYd/gORWR0H8hq/chIyT5VDD946Rb5kjKYhSpe5phiXNLEZ2Ft
-         hsgw==
+        Mon, 27 Sep 2021 14:17:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632766580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jS5GOWeYO/PMnGFwElUXmol7i16a0IRUl5OnPrJSSw8=;
+        b=Drufaud5rL3Zwihag5YgZoxHT7+EYRnG1JYSvMKx+RZPinMtfRTI9iUCHedv/VgFyG4Wq5
+        0kE7ksMGNSCdHgYs1XnyC3mg+GLU3rrjU4SiriD/6WZuAjLhjUfXmTiY8R2yMQG7vAH6k7
+        zLAwE2yDhL7aH6MSc/Q8qn/5pWyHFRU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-rZd28iMJPzKe9FkhF-dulw-1; Mon, 27 Sep 2021 14:16:18 -0400
+X-MC-Unique: rZd28iMJPzKe9FkhF-dulw-1
+Received: by mail-wr1-f69.google.com with SMTP id e12-20020a056000178c00b001606927de88so1268205wrg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:16:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NCTL+GkFcHJppp9EC1SmQtFoGIBu5+0m2/FwLTOnDy8=;
-        b=UMM/MY8fNCziNRypmjBBd5M2tUH29m48EOpbcUM+/n7AmfCnnfdInRdNC0m3IHzXS9
-         ONGbpVsSJxzoq0ZruWhcnpxzXP7yR+Sqvgy3s9WnUi3chH8Fb9QEl7OL9yXG7MDFc5fO
-         TgxXdgVIe1LwaZbWhs32Rl/broTV/pHi0THggaYuIBTEqwpHNYMKVaP729RGeCnSjFVm
-         0k32r9Sodff0WxSVkiSIPv4PDJEM+lvEoiNFCOtJVe3drNR3X8FQmzEr104c94eFGaNZ
-         Mo6MZxlQ3pLZCWrqyBQC33sQFpqaAPHbBj6ougsIkNo7eUO1vU3m5nePwpnOxe6YBlcD
-         IGVw==
-X-Gm-Message-State: AOAM533Bo1ZayQDjbXNHi+fUIedEjmRsRG70Y8N6zNu85r5M2VdAXTos
-        LnLtoMa3ljJimgdpFQ7Pa+fL4V9EJetqztEqIzgzYg==
-X-Google-Smtp-Source: ABdhPJyzFB0sgGo233U9WVRjhQx6vdhiFA22uPP/2aPHxvV74P1nCuZ3PssQcQXOms938mEloRglKKjrw6nTavtmrZU=
-X-Received: by 2002:aa7:8246:0:b0:44b:4870:1b09 with SMTP id
- e6-20020aa78246000000b0044b48701b09mr1282894pfn.82.1632766512066; Mon, 27 Sep
- 2021 11:15:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jS5GOWeYO/PMnGFwElUXmol7i16a0IRUl5OnPrJSSw8=;
+        b=SDkknNOPY628OqmxDsOZmENMWlXdygEUIrMrAcMU48qv74/nuFjznkXc7rdzL1qdzZ
+         +4KcdGBELae1ZFJObHa/xVQirRmdstpGk9cEPVfl3fTORJGntjNiPWpUr78bRAOVwIQp
+         qIyqxJTdQsubhYJ9tXVCJ8/ejb8kngexGctvQJCIw7aSjEtqrb3iyCc4mlvSYg4UjFsc
+         5sDMYZBhQY97yDegg5+BpRyF71PK8VtKAgIani/rTtKC6VW3EWkP0gY87SurjCKdioQq
+         uFR3KNqURXGIQJkNLeOmdVvWbZaUb2c66HtSbIhuR1ALMJrasaG8rwsswWWWp3i8HVNx
+         b+WA==
+X-Gm-Message-State: AOAM531qZEkOZDp0vJUNk6lU4A8UksyzYxNmFfMUxqL63Mq0VBlHIQqw
+        2HxhkCRXLCW8LGnak1ceA3wtIHSgsfJPI0yglTU5cEbmX2xwT911EvZAtfnQvsBjDPp84Bz5d6C
+        vnZPrvovmVyJNtggYbledjMu0
+X-Received: by 2002:a05:6000:1103:: with SMTP id z3mr1529643wrw.312.1632766577622;
+        Mon, 27 Sep 2021 11:16:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxde2berEnif/kOAuNLM3Hq9ossbeVALJbBhinBf8mTyIIPx9GSxH9wvRZbz1S2MpTYzK7rA==
+X-Received: by 2002:a05:6000:1103:: with SMTP id z3mr1529627wrw.312.1632766577439;
+        Mon, 27 Sep 2021 11:16:17 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c654d.dip0.t-ipconnect.de. [91.12.101.77])
+        by smtp.gmail.com with ESMTPSA id n15sm17686984wrg.58.2021.09.27.11.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 11:16:16 -0700 (PDT)
+Subject: Re: Struct page proposal
+To:     Matthew Wilcox <willy@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
+ <bc22b4d0-ba63-4559-88d9-a510da233cad@suse.cz>
+ <YVIH5j5xkPafvNds@casper.infradead.org> <YVII7eM7P42riwoI@moria.home.lan>
+ <YVIJg+kNqqbrBZFW@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <b57911a4-3963-aa65-1f8e-46578b3c0623@redhat.com>
+Date:   Mon, 27 Sep 2021 20:16:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210923170908.2184404-1-kaleshsingh@google.com> <CABCJKucTiHDitevf1U97eCV1KdxAyui+fWvD1i7c8piVMnmjoQ@mail.gmail.com>
-In-Reply-To: <CABCJKucTiHDitevf1U97eCV1KdxAyui+fWvD1i7c8piVMnmjoQ@mail.gmail.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Mon, 27 Sep 2021 11:15:01 -0700
-Message-ID: <CAC_TJve2aS_tHfmMCsayPFrAPaMid5DU3NK82KXC3dB9vhPdpw@mail.gmail.com>
-Subject: Re: [PATCH] tracing/cfi: Fix cmp_entries_* functions signature mismatch
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>, namhyung@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YVIJg+kNqqbrBZFW@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 8:20 AM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> Hi Kalesh,
->
-> On Thu, Sep 23, 2021 at 10:09 AM Kalesh Singh <kaleshsingh@google.com> wrote:
-> >
-> > If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
-> > the kernel to panic due to failed CFI check.
-> >
-> >     1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
-> >     2. cat >> events/sched/sched_switch/hist
-> >     3. kernel panices on attempting to read hist
-> >
-> > This happens because the sort() function expects a generic
-> > int (*)(const void *, const void *) pointer for the compare function.
-> > To prevent this CFI failure, change tracing map cmp_entries_* function
-> > signatures to match this.
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > ---
-> >  kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
-> >  1 file changed, 23 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
-> > index d6bddb157ef2..a8c80ebbf9da 100644
-> > --- a/kernel/trace/tracing_map.c
-> > +++ b/kernel/trace/tracing_map.c
-> > @@ -834,19 +834,21 @@ int tracing_map_init(struct tracing_map *map)
-> >         return err;
-> >  }
-> >
-> > -static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
-> > -                          const struct tracing_map_sort_entry **b)
-> > +static int cmp_entries_dup(const void *__a, const void *__b)
-> >  {
-> >         int ret = 0;
-> > +       const struct tracing_map_sort_entry *a
-> > +               = *(const struct tracing_map_sort_entry **)__a;
-> > +       const struct tracing_map_sort_entry *b
-> > +               = *(const struct tracing_map_sort_entry **)__b;
-> >
-> > -       if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
-> > +       if (memcmp(a->key, b->key, a->elt->map->key_size))
-> >                 ret = 1;
-> >
-> >         return ret;
-> >  }
-> >
-> > -static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> > -                          const struct tracing_map_sort_entry **b)
-> > +static int cmp_entries_sum(const void *__a, const void *__b)
-> >  {
-> >         const struct tracing_map_elt *elt_a, *elt_b;
-> >         struct tracing_map_sort_key *sort_key;
-> > @@ -854,9 +856,13 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> >         tracing_map_cmp_fn_t cmp_fn;
-> >         void *val_a, *val_b;
-> >         int ret = 0;
-> > +       const struct tracing_map_sort_entry *a
-> > +               = *(const struct tracing_map_sort_entry **)__a;
-> > +       const struct tracing_map_sort_entry *b
-> > +               = *(const struct tracing_map_sort_entry **)__b;
-> >
-> > -       elt_a = (*a)->elt;
-> > -       elt_b = (*b)->elt;
-> > +       elt_a = a->elt;
-> > +       elt_b = b->elt;
-> >
-> >         sort_key = &elt_a->map->sort_key;
-> >
-> > @@ -873,8 +879,7 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> >         return ret;
-> >  }
-> >
-> > -static int cmp_entries_key(const struct tracing_map_sort_entry **a,
-> > -                          const struct tracing_map_sort_entry **b)
-> > +static int cmp_entries_key(const void *__a, const void *__b)
-> >  {
-> >         const struct tracing_map_elt *elt_a, *elt_b;
-> >         struct tracing_map_sort_key *sort_key;
-> > @@ -882,9 +887,13 @@ static int cmp_entries_key(const struct tracing_map_sort_entry **a,
-> >         tracing_map_cmp_fn_t cmp_fn;
-> >         void *val_a, *val_b;
-> >         int ret = 0;
-> > +       const struct tracing_map_sort_entry *a
-> > +               = *(const struct tracing_map_sort_entry **)__a;
-> > +       const struct tracing_map_sort_entry *b
-> > +               = *(const struct tracing_map_sort_entry **)__b;
-> >
-> > -       elt_a = (*a)->elt;
-> > -       elt_b = (*b)->elt;
-> > +       elt_a = a->elt;
-> > +       elt_b = b->elt;
-> >
-> >         sort_key = &elt_a->map->sort_key;
-> >
-> > @@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
-> >                            struct tracing_map_sort_key *primary_key,
-> >                            struct tracing_map_sort_key *secondary_key)
-> >  {
-> > -       int (*primary_fn)(const struct tracing_map_sort_entry **,
-> > -                         const struct tracing_map_sort_entry **);
-> > -       int (*secondary_fn)(const struct tracing_map_sort_entry **,
-> > -                           const struct tracing_map_sort_entry **);
-> > +       int (*primary_fn)(const void *, const void *);
-> > +       int (*secondary_fn)(const void *, const void *);
-> >         unsigned i, start = 0, n_sub = 1;
-> >
-> >         if (is_key(map, primary_key->field_idx))
-> > @@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
-> >                              unsigned int n_sort_keys,
-> >                              struct tracing_map_sort_entry ***sort_entries)
-> >  {
-> > -       int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
-> > -                             const struct tracing_map_sort_entry **);
-> > +       int (*cmp_entries_fn)(const void *, const void *);
-> >         struct tracing_map_sort_entry *sort_entry, **entries;
-> >         int i, n_entries, ret;
-> >
-> >
->
-> Thanks for the patch! This looks correct to me and fixes the function
-> type mismatch that trips CFI.
->
-> Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+On 27.09.21 20:12, Matthew Wilcox wrote:
+> On Mon, Sep 27, 2021 at 02:09:49PM -0400, Kent Overstreet wrote:
+>> On Mon, Sep 27, 2021 at 07:05:26PM +0100, Matthew Wilcox wrote:
+>>> On Mon, Sep 27, 2021 at 07:48:15PM +0200, Vlastimil Babka wrote:
+>>>> On 9/23/21 03:21, Kent Overstreet wrote:
+>>>>> So if we have this:
+>>>>>
+>>>>> struct page {
+>>>>> 	unsigned long	allocator;
+>>>>> 	unsigned long	allocatee;
+>>>>> };
+>>>>>
+>>>>> The allocator field would be used for either a pointer to slab/slub's state, if
+>>>>> it's a slab page, or if it's a buddy allocator page it'd encode the order of the
+>>>>> allocation - like compound order today, and probably whether or not the
+>>>>> (compound group of) pages is free.
+>>>>
+>>>> The "free page in buddy allocator" case will be interesting to implement.
+>>>> What the buddy allocator uses today is:
+>>>>
+>>>> - PageBuddy - determine if page is free; a page_type (part of mapcount
+>>>> field) today, could be a bit in "allocator" field that would have to be 0 in
+>>>> all other "page is allocated" contexts.
+>>>> - nid/zid - to prevent merging accross node/zone boundaries, now part of
+>>>> page flags
+>>>> - buddy order
+>>>> - a list_head (reusing the "lru") to hold the struct page on the appropriate
+>>>> free list, which has to be double-linked so page can be taken from the
+>>>> middle of the list instantly
+>>>>
+>>>> Won't be easy to cram all that into two unsigned long's, or even a single
+>>>> one. We should avoid storing anything in the free page itself. Allocating
+>>>> some external structures to track free pages is going to have funny
+>>>> bootstrap problems. Probably a major redesign would be needed...
+>>>
+>>> Wait, why do we want to avoid using the memory that we're allocating?
+>>
+>> The issue is where to stick the state for free pages. If that doesn't fit in two
+>> ulongs, then we'd need a separate allocation, which means slab needs to be up
+>> and running before free pages are initialized.
+> 
+> But the thing we're allocating is at least PAGE_SIZE bytes in size.
+> Why is "We should avoid storing anything in the free page itself" true?
+> 
 
-Thanks for the review Sami.
+Immediately comes to mind:
+* Free page reporting via virtio-balloon
+* CMA on s390x (see arch_free_page())
+* Free page poisoning
+* init_on_free
 
-Steve, will this get picked up for your tree?
+-- 
+Thanks,
 
->
-> Sami
+David / dhildenb
+
