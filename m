@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706E4419B13
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD9B419A22
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235917AbhI0RPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
+        id S236021AbhI0RG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236565AbhI0RMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:12:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E9161279;
-        Mon, 27 Sep 2021 17:08:55 +0000 (UTC)
+        id S235666AbhI0RGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:06:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC94611C5;
+        Mon, 27 Sep 2021 17:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762536;
-        bh=ddjRpM4FxVyZt5Ae/yxSo/QEoLsCMBmjqDKiTYP+zK4=;
+        s=korg; t=1632762285;
+        bh=7Cf9Nlh9ZIQXG95pGqRCQM8ZX7Gsrd96+itvA0E4Q+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B1fLZ4A0WVSIaYNm793PvufGqChji3k5KZ/JHwWB7ZtVIK0NBRTUKw3vv275Dy143
-         GC/v5kwMt5xNGnzxYOb3AGAX0XIROPTtUbV/W7GIstjqG134YEaoYOQOutB9I7/gcu
-         uLDMla+pjL8scXi74T2FApkdMHb3hXtnJyZqPybk=
+        b=Y69jBK36R3p5yKuSSUTqQfYOII00ifU0F4TJzN+/t+ovt/utD2jmTkjfeyxItzSbE
+         Oe08jdD8nQwLtsn+VoxV+wRymVs9f73xDbzK8qSgf09k1KlUyY+ZBzTSmgLAeuSufO
+         /N/S5svrfoF9pkJmp00F8PxJa+iDpypDFoRXDF9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.10 028/103] serial: mvebu-uart: fix drivers tx_empty callback
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Subject: [PATCH 5.4 04/68] usb: dwc2: gadget: Fix ISOC transfer complete handling for DDMA
 Date:   Mon, 27 Sep 2021 19:02:00 +0200
-Message-Id: <20210927170226.715243770@linuxfoundation.org>
+Message-Id: <20210927170220.054402401@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 
-commit 74e1eb3b4a1ef2e564b4bdeb6e92afe844e900de upstream.
+commit dbe2518b2d8eabffa74dbf7d9fdd7dacddab7fc0 upstream.
 
-Driver's tx_empty callback should signal when the transmit shift register
-is empty. So when the last character has been sent.
+When last descriptor in a descriptor list completed with XferComplete
+interrupt, core switching to handle next descriptor and assert BNA
+interrupt. Both these interrupts are set while dwc2_hsotg_epint()
+handler called. Each interrupt should be handled separately: first
+XferComplete interrupt then BNA interrupt, otherwise last completed
+transfer will not be giveback to function driver as completed
+request.
 
-STAT_TX_FIFO_EMP bit signals only that HW transmit FIFO is empty, which
-happens when the last byte is loaded into transmit shift register.
-
-STAT_TX_EMP bit signals when the both HW transmit FIFO and transmit shift
-register are empty.
-
-So replace STAT_TX_FIFO_EMP check by STAT_TX_EMP in mvebu_uart_tx_empty()
-callback function.
-
-Fixes: 30530791a7a0 ("serial: mvebu-uart: initial support for Armada-3700 serial port")
+Fixes: 729cac693eec ("usb: dwc2: Change ISOC DDMA flow")
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20210911132017.25505-1-pali@kernel.org
+Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Link: https://lore.kernel.org/r/a36981accc26cd674c5d8f8da6164344b94ec1fe.1631386531.git.Minas.Harutyunyan@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/mvebu-uart.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc2/gadget.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -164,7 +164,7 @@ static unsigned int mvebu_uart_tx_empty(
- 	st = readl(port->membase + UART_STAT);
- 	spin_unlock_irqrestore(&port->lock, flags);
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -3067,9 +3067,7 @@ static void dwc2_hsotg_epint(struct dwc2
  
--	return (st & STAT_TX_FIFO_EMP) ? TIOCSER_TEMT : 0;
-+	return (st & STAT_TX_EMP) ? TIOCSER_TEMT : 0;
- }
- 
- static unsigned int mvebu_uart_get_mctrl(struct uart_port *port)
+ 		/* In DDMA handle isochronous requests separately */
+ 		if (using_desc_dma(hsotg) && hs_ep->isochronous) {
+-			/* XferCompl set along with BNA */
+-			if (!(ints & DXEPINT_BNAINTR))
+-				dwc2_gadget_complete_isoc_request_ddma(hs_ep);
++			dwc2_gadget_complete_isoc_request_ddma(hs_ep);
+ 		} else if (dir_in) {
+ 			/*
+ 			 * We get OutDone from the FIFO, so we only
 
 
