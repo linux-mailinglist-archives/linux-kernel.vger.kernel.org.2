@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9D7419AD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EAE419C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbhI0RMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:12:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48116 "EHLO mail.kernel.org"
+        id S237849AbhI0RZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:25:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236610AbhI0RKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEAC861178;
-        Mon, 27 Sep 2021 17:07:51 +0000 (UTC)
+        id S237273AbhI0RWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:22:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68FEB61362;
+        Mon, 27 Sep 2021 17:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762472;
-        bh=Qph3P2vCb/2ExWigLookIyt32+Kp6aSqwYW2z8dJTbE=;
+        s=korg; t=1632762871;
+        bh=RSZkiJ2yqzaRdXX9rL57ZA7zNS/yRoj+t1rLaJ5pFUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sPLUkI+6fr9OKKIAo2HWg4FrFIniEEct+locW2JzIlcOXdK6PDzvnxljytjgyQ6vv
-         /G+z5wkBHjJR14bulrUX6W+9CQilJZkolsVKIfm6lK2nJAEDhH5oZkLxs74oYI4I7r
-         SD/26nuocrz2Z6Jq4zUtaIuNp1zTeZrAkNlJ/pQg=
+        b=08cu1aWLfNAWcQL+7iQ5YhqIgWXw62ADbmV72PGCwWqqm3qq6y40EK694vvNk1vXw
+         LzddOPepyAlWqnN2iie0bovxlAuOssQd0ULz6XaEoJ+hkj+igTVHQ1CWJS++c79CBX
+         UGQ+b25YZcKJJdpjCYgE2G4Zjat6Bmd/XIGkLGv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        stable@vger.kernel.org, Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/103] enetc: Fix illegal access when reading affinity_hint
+Subject: [PATCH 5.14 082/162] qed: rdma - dont wait for resources under hw error recovery flow
 Date:   Mon, 27 Sep 2021 19:02:08 +0200
-Message-Id: <20210927170226.996416573@linuxfoundation.org>
+Message-Id: <20210927170236.283512377@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit 7237a494decfa17d0b9d0076e6cee3235719de90 ]
+[ Upstream commit 1ea7812326004afd2803cc968a4776ae5120a597 ]
 
-irq_set_affinity_hit() stores a reference to the cpumask_t
-parameter in the irq descriptor, and that reference can be
-accessed later from irq_affinity_hint_proc_show(). Since
-the cpu_mask parameter passed to irq_set_affinity_hit() has
-only temporary storage (it's on the stack memory), later
-accesses to it are illegal. Thus reads from the corresponding
-procfs affinity_hint file can result in paging request oops.
+If the HW device is during recovery, the HW resources will never return,
+hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
+This fix speeds up the error recovery flow.
 
-The issue is fixed by the get_cpu_mask() helper, which provides
-a permanent storage for the cpumask_t parameter.
-
-Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Fixes: 64515dc899df ("qed: Add infrastructure for error detection and recovery")
+Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.c | 8 ++++++++
+ drivers/net/ethernet/qlogic/qed/qed_roce.c  | 8 ++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index df4a858c8001..6877f8e2047b 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1320,7 +1320,6 @@ static void enetc_clear_bdrs(struct enetc_ndev_priv *priv)
- static int enetc_setup_irqs(struct enetc_ndev_priv *priv)
- {
- 	struct pci_dev *pdev = priv->si->pdev;
--	cpumask_t cpu_mask;
- 	int i, j, err;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
+index a99861124630..68fbe536a1f3 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
+@@ -1297,6 +1297,14 @@ qed_iwarp_wait_cid_map_cleared(struct qed_hwfn *p_hwfn, struct qed_bmap *bmap)
+ 	prev_weight = weight;
  
- 	for (i = 0; i < priv->bdr_int_num; i++) {
-@@ -1349,9 +1348,7 @@ static int enetc_setup_irqs(struct enetc_ndev_priv *priv)
+ 	while (weight) {
++		/* If the HW device is during recovery, all resources are
++		 * immediately reset without receiving a per-cid indication
++		 * from HW. In this case we don't expect the cid_map to be
++		 * cleared.
++		 */
++		if (p_hwfn->cdev->recov_in_prog)
++			return 0;
++
+ 		msleep(QED_IWARP_MAX_CID_CLEAN_TIME);
  
- 			enetc_wr(hw, ENETC_SIMSITRV(idx), entry);
- 		}
--		cpumask_clear(&cpu_mask);
--		cpumask_set_cpu(i % num_online_cpus(), &cpu_mask);
--		irq_set_affinity_hint(irq, &cpu_mask);
-+		irq_set_affinity_hint(irq, get_cpu_mask(i % num_online_cpus()));
- 	}
- 
- 	return 0;
+ 		weight = bitmap_weight(bmap->bitmap, bmap->max_count);
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c b/drivers/net/ethernet/qlogic/qed/qed_roce.c
+index f16a157bb95a..cf5baa5e59bc 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_roce.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_roce.c
+@@ -77,6 +77,14 @@ void qed_roce_stop(struct qed_hwfn *p_hwfn)
+ 	 * Beyond the added delay we clear the bitmap anyway.
+ 	 */
+ 	while (bitmap_weight(rcid_map->bitmap, rcid_map->max_count)) {
++		/* If the HW device is during recovery, all resources are
++		 * immediately reset without receiving a per-cid indication
++		 * from HW. In this case we don't expect the cid bitmap to be
++		 * cleared.
++		 */
++		if (p_hwfn->cdev->recov_in_prog)
++			return;
++
+ 		msleep(100);
+ 		if (wait_count++ > 20) {
+ 			DP_NOTICE(p_hwfn, "cid bitmap wait timed out\n");
 -- 
 2.33.0
 
