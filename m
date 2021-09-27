@@ -2,95 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0647418D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97284418D58
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhI0Asm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 20:48:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231593AbhI0Asl (ORCPT
+        id S232289AbhI0Awl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 20:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229865AbhI0Awj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 20:48:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632703623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cVw85k2snfak8ZbeQRTcOmFBsIUpFb7SW/aKWyErre0=;
-        b=RnJzr2coh59tr8qY2zaTHoebcS1hMN6UAI/A9w6qslkQc8xaPtT8Z6U6c20V2XZ29vi2tC
-        ft6SYY63SYjSRtb6ncnVY/l64W5pyWQFBZAcJGsb+JTNlK3OBsUBQYnQJ3VqajwUePwE7R
-        iuE5GH0UzYh13xvd8d1tzEPba7OpSqQ=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-X0lAW2b4Pn6IWqAlswwLzQ-1; Sun, 26 Sep 2021 20:47:02 -0400
-X-MC-Unique: X0lAW2b4Pn6IWqAlswwLzQ-1
-Received: by mail-qk1-f197.google.com with SMTP id r5-20020a05620a298500b0045dac5fb940so49811995qkp.17
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:47:02 -0700 (PDT)
+        Sun, 26 Sep 2021 20:52:39 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13ECDC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:51:03 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id e7so16205031pgk.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QsdM6aopx9gxxLgRRxYhXTLHWovYEZKaxBqN+pAsLlI=;
+        b=iCYCIrYHrbK8cdGtn6MR8fwASSIoV80M93RdizJldcwb0F1vOjxJeH29f4/xfyieDS
+         hOrYSxPnhwLJ8ZDSqC9qdnuiQ8Yuvu4/RYvmMRMqra5oAneJoGvmFsmtclMK/RIE8MaY
+         cJSKPWqGgl8X6ycl8vhsvvhde25kem3DuC4ZZfvZHcKb3ZFke1656iCbrEeySSAB9E/H
+         dAvxN/urxoD4mCaYCcPKGfpQ3EdAT4d0L6DlSZ2bcqCzP/tmp/SG3cV3l+XUJEkFsSdk
+         1nuzuYsNzMhN1EIJa/YfLlg/xqrVgNomi5CC3Czb0hM1TIpZ+4sXV+YHDAKiXp25JBoQ
+         aQqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=cVw85k2snfak8ZbeQRTcOmFBsIUpFb7SW/aKWyErre0=;
-        b=3zfN4nzXVllWNLHVg7sEI6fdLZL2KI23vmbrLbNsoyBCyNOl5PqzumR0aop0B55S6K
-         c4UygyvYyP9VQz/wIXpV13+Daun0k3sQdRUyFbjT9GE5lo/TQ/wPajcezpcvklP2zbBC
-         uX9YMUyJJkbSsYgONJYrj9KXCmgs7agWBCKDxrFooNtMeoB2YEwKcW1LcFQFn9Dwn9qd
-         0DCSqJGVRaUbshEBSrBv5Rd74xz4SixXdCaiPPde6thJPML1fHFi9Xli9PU3lAv5Qihn
-         9Iqcu9cjNQakjlkFzkn4tLKNtVnYOemBjOD9T8hhjrdKEuq3e2HeGBm0IIE2WWbrYyAS
-         Ddtg==
-X-Gm-Message-State: AOAM531iEgS2B9r2M+zJJLD4Q3AWu2OdW3XDS+jSJyhFAmTP8qiV470L
-        G5oRQUsd/90dGJpvrEb8dRNFE83x3AG7qub57TCfhvkR2CI8Mad43nFEDOobqFLxitlCs8l4GJK
-        u7CAd33D9ucToLP1rSI9Zvamj5hTJXxsPeTpAXp9vc1H9A/Ep252FSysIignZbAKwN8cesLVk
-X-Received: by 2002:ac8:7d46:: with SMTP id h6mr16620902qtb.162.1632703621367;
-        Sun, 26 Sep 2021 17:47:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJze3ThFZW7I8e8WmDukK2teTxlFyW3+TzKk0aDZgbd2TOtSe1cd8NQRUN9AybWqFSZz3BGTVA==
-X-Received: by 2002:ac8:7d46:: with SMTP id h6mr16620890qtb.162.1632703621116;
-        Sun, 26 Sep 2021 17:47:01 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id h2sm11955344qkf.106.2021.09.26.17.46.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Sep 2021 17:47:00 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 1/2] locking/mutex: remove rcu_read_lock/unlock as we
- already disabled preemption
-To:     Yanfei Xu <yanfei.xu@windriver.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20210926101624.2460704-1-yanfei.xu@windriver.com>
- <9569eee4-266f-d83b-2af6-194a1a8b165c@redhat.com>
-Message-ID: <70424003-1b4a-bb92-1123-7820d6321717@redhat.com>
-Date:   Sun, 26 Sep 2021 20:46:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QsdM6aopx9gxxLgRRxYhXTLHWovYEZKaxBqN+pAsLlI=;
+        b=5KwdimOrQ1ZGG+Dbf557bGvBsRWz91IVJaFLkhukgE1qNDumEcSpQsOYbziTpfYqbj
+         F1PuOhClQhvTJvDAaRaFRmvd44iTaIF8rYU1/Xs2l6BBw70smUC6ArQkymEAccWWHUjg
+         G6KJljJRtGuTHkClvnSM4Ek+AsYR2EK/quGAewRb5EuhxTwb9ukh7H69+EIQGio5azrO
+         A703zte8ixFk87zwyiKL35d3hnci/XrDYCnYJ3hk/a9sau4jQLEKLpPFF9MzYGcQyoPY
+         fJLsFLxPv6k7awRlObqTFPHs+sMvnG6eo8N1pzcZ3bp7S8mBObuCWZQwlvqxSHbsXOHr
+         DQWA==
+X-Gm-Message-State: AOAM533+TxFKsUr1KNtCqCykmHO1i3SDoqpbxM5ZCyNoo0Jt20ima6aN
+        L1QAulI/koD7+kZ9Z5kY6bM=
+X-Google-Smtp-Source: ABdhPJw7USP55NiL7P6tGkUgDeqfHmAd76+FYrDcWgcQ/zcLtuw7nL4ClcgEDjGQDUOdgTakIIJCbg==
+X-Received: by 2002:a62:8855:0:b0:44b:8cc3:8f6d with SMTP id l82-20020a628855000000b0044b8cc38f6dmr2739498pfd.44.1632703862615;
+        Sun, 26 Sep 2021 17:51:02 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id i27sm15032280pfq.184.2021.09.26.17.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Sep 2021 17:51:02 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     kexec@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, Coiby Xu <coxu@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT))
+Subject: [PATCH 1/2] kexec, KEYS: make the code in bzImage64_verify_sig public
+Date:   Mon, 27 Sep 2021 08:50:03 +0800
+Message-Id: <20210927005004.36367-2-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210927005004.36367-1-coiby.xu@gmail.com>
+References: <20210927005004.36367-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9569eee4-266f-d83b-2af6-194a1a8b165c@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/21 3:16 PM, Waiman Long wrote:
-> On 9/26/21 6:16 AM, Yanfei Xu wrote:
->> preempt_disable/enable() is equal to RCU read-side crital section,
->> and the mutex lock slowpath disable the preemption throughout the
->> entire slowpath. Let's remove the rcu_read_lock/unlock for saving
->> some cycles in hot codes.
->
-> The description is wrong. Preemption is disabled only in the 
-> optimistic spinning code which is not the complete slowpath. Even 
-> though it may sound reasonable that disable preemption is likely to 
-> prevent reaching quiescent state, but I am not totally sure that will 
-> always be the case as there are different RCU favors. 
+From: Coiby Xu <coxu@redhat.com>
 
-It does look like that disable preemption can serve as a substitute for 
-rcu_read_lock(). However, I will suggest that you also insert a comment 
-saying so and the task structure won't go away during the spinning period.
+The code in bzImage64_verify_sig could make use of system keyrings including
+.buitin_trusted_keys, .secondary_trusted_keys and .platform keyring to verify
+signed kernel image as PE file. Move it to a public function.
 
-Cheers,
-Longman
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ arch/x86/kernel/kexec-bzimage64.c | 13 +------------
+ include/linux/kexec.h             |  3 +++
+ kernel/kexec_file.c               | 15 +++++++++++++++
+ 3 files changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index 170d0fd68b1f..4136dd3be5a9 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -17,7 +17,6 @@
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/efi.h>
+-#include <linux/verification.h>
+ 
+ #include <asm/bootparam.h>
+ #include <asm/setup.h>
+@@ -531,17 +530,7 @@ static int bzImage64_cleanup(void *loader_data)
+ #ifdef CONFIG_KEXEC_BZIMAGE_VERIFY_SIG
+ static int bzImage64_verify_sig(const char *kernel, unsigned long kernel_len)
+ {
+-	int ret;
+-
+-	ret = verify_pefile_signature(kernel, kernel_len,
+-				      VERIFY_USE_SECONDARY_KEYRING,
+-				      VERIFYING_KEXEC_PE_SIGNATURE);
+-	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+-		ret = verify_pefile_signature(kernel, kernel_len,
+-					      VERIFY_USE_PLATFORM_KEYRING,
+-					      VERIFYING_KEXEC_PE_SIGNATURE);
+-	}
+-	return ret;
++	return arch_kexec_kernel_verify_pe_sig(kernel, kernel_len);
+ }
+ #endif
+ 
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 0c994ae37729..d45f32336dbe 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -19,6 +19,7 @@
+ #include <asm/io.h>
+ 
+ #include <uapi/linux/kexec.h>
++#include <linux/verification.h>
+ 
+ #ifdef CONFIG_KEXEC_CORE
+ #include <linux/list.h>
+@@ -199,6 +200,8 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image);
+ #ifdef CONFIG_KEXEC_SIG
+ int arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+ 				 unsigned long buf_len);
++int arch_kexec_kernel_verify_pe_sig(const char *kernel,
++				    unsigned long kernel_len);
+ #endif
+ int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf);
+ 
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index 33400ff051a8..85ed6984ad8f 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -106,6 +106,21 @@ int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+ {
+ 	return kexec_image_verify_sig_default(image, buf, buf_len);
+ }
++
++int arch_kexec_kernel_verify_pe_sig(const char *kernel, unsigned long kernel_len)
++{
++	int ret;
++
++	ret = verify_pefile_signature(kernel, kernel_len,
++				      VERIFY_USE_SECONDARY_KEYRING,
++				      VERIFYING_KEXEC_PE_SIGNATURE);
++	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
++		ret = verify_pefile_signature(kernel, kernel_len,
++					      VERIFY_USE_PLATFORM_KEYRING,
++					      VERIFYING_KEXEC_PE_SIGNATURE);
++	}
++	return ret;
++}
+ #endif
+ 
+ /*
+-- 
+2.33.0
 
