@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73267419A21
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF09B419C57
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235804AbhI0RGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
+        id S237277AbhI0R1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236014AbhI0RGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:06:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F16461074;
-        Mon, 27 Sep 2021 17:04:42 +0000 (UTC)
+        id S237905AbhI0RYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:24:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C5E2613E8;
+        Mon, 27 Sep 2021 17:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762283;
-        bh=YK9aUxM+x/SVjA1+AFEDmwnpEuww1OfFA0kiRSklzZw=;
+        s=korg; t=1632762919;
+        bh=Q9BU+vRW1PHvBnNesGxQhgfPeRJFUcEnpF1D1ag+PP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pmcJYLGpmydgqg9rAZyEzTk6AYKwvQ0MclQ42YpJ8ueSdjHanbAxBdHKOblSX6uyg
-         AoDPi4FYjC3KLS07ZjoqFmXAbwx4d5crAYx0KoLKjWan2u6egFUIxISanrzD2C2MIF
-         oUGbN7Ld2b8YE+XS+kOVJJv//gqQnrRcXJpgRB58=
+        b=nqUzLMPZ5m9FkLV4vBvGUj6yWWx1y2SvnWgkwpX5yVSVdVfzFpgl7OO2noW9+VJ1N
+         Yd/agaHNxUFTjE5Tjt0hc/+YylJJ5VB23/3orkEoR76HAS+9943ALACFTUhWbrDM1a
+         hszroB8LMvksqLlDU0m2YtpT5zvXISuhreQCtQ7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 30/68] gpio: uniphier: Fix void functions to remove return value
-Date:   Mon, 27 Sep 2021 19:02:26 +0200
-Message-Id: <20210927170221.013699834@linuxfoundation.org>
+Subject: [PATCH 5.14 101/162] cifs: fix a sign extension bug
+Date:   Mon, 27 Sep 2021 19:02:27 +0200
+Message-Id: <20210927170236.943554915@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 2dd824cca3407bc9a2bd11b00f6e117b66fcfcf1 ]
+[ Upstream commit e946d3c887a9dc33aa82a349c6284f4a084163f4 ]
 
-The return type of irq_chip.irq_mask() and irq_chip.irq_unmask() should
-be void.
+The problem is the mismatched types between "ctx->total_len" which is
+an unsigned int, "rc" which is an int, and "ctx->rc" which is a
+ssize_t.  The code does:
 
-Fixes: dbe776c2ca54 ("gpio: uniphier: add UniPhier GPIO controller driver")
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+	ctx->rc = (rc == 0) ? ctx->total_len : rc;
+
+We want "ctx->rc" to store the negative "rc" error code.  But what
+happens is that "rc" is type promoted to a high unsigned int and
+'ctx->rc" will store the high positive value instead of a negative
+value.
+
+The fix is to change "rc" from an int to a ssize_t.
+
+Fixes: c610c4b619e5 ("CIFS: Add asynchronous write support through kernel AIO")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-uniphier.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/cifs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-uniphier.c b/drivers/gpio/gpio-uniphier.c
-index 93cdcc41e9fb..0f1cf50b4dce 100644
---- a/drivers/gpio/gpio-uniphier.c
-+++ b/drivers/gpio/gpio-uniphier.c
-@@ -188,7 +188,7 @@ static void uniphier_gpio_irq_mask(struct irq_data *data)
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index 9d3bc6784771..ab2734159c19 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -3110,7 +3110,7 @@ static void collect_uncached_write_data(struct cifs_aio_ctx *ctx)
+ 	struct cifs_tcon *tcon;
+ 	struct cifs_sb_info *cifs_sb;
+ 	struct dentry *dentry = ctx->cfile->dentry;
+-	int rc;
++	ssize_t rc;
  
- 	uniphier_gpio_reg_update(priv, UNIPHIER_GPIO_IRQ_EN, mask, 0);
- 
--	return irq_chip_mask_parent(data);
-+	irq_chip_mask_parent(data);
- }
- 
- static void uniphier_gpio_irq_unmask(struct irq_data *data)
-@@ -198,7 +198,7 @@ static void uniphier_gpio_irq_unmask(struct irq_data *data)
- 
- 	uniphier_gpio_reg_update(priv, UNIPHIER_GPIO_IRQ_EN, mask, mask);
- 
--	return irq_chip_unmask_parent(data);
-+	irq_chip_unmask_parent(data);
- }
- 
- static int uniphier_gpio_irq_set_type(struct irq_data *data, unsigned int type)
+ 	tcon = tlink_tcon(ctx->cfile->tlink);
+ 	cifs_sb = CIFS_SB(dentry->d_sb);
 -- 
 2.33.0
 
