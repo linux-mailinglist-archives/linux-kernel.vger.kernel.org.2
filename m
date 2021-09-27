@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F8A41A132
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1F441A138
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbhI0VLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        id S237143AbhI0VPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237080AbhI0VLh (ORCPT
+        with ESMTP id S234848AbhI0VPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:11:37 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100ABC061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:59 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id l8so27006715edw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:09:58 -0700 (PDT)
+        Mon, 27 Sep 2021 17:15:35 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3111AC061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:13:57 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g41so83044119lfv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 14:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gJAXD96CPfgt0k2rLm/xHPPYTbUQFkgj3sTpz5RYoJU=;
-        b=IMiK9JWs2owM7s+HAxUeRLCmd0WYta2r2MOsIu1hOHWbjcaYDenyyGSwo5oopHSdyJ
-         s3mN2csyCGcBY4Z0ielW2QFqLVdWok5lNYg8OiNakkVKtkgpQHoewP7EMFwuQYdksRVM
-         gaU7kRjVYOT7BeKlNPqSt0mfSmsGwGdA4z4Krrv1lvA0GUZpRBGTnrmRpZNQnA4epbGW
-         sJbb/bHb9hxZ/daYrwL1Upwk+BUrfw55L394UR3Y84YWTtp25M5+fVPj+em4GKkguyDI
-         7AXEXGN/ZeyEeHEkppDiu1XedAGtuW8g9VdnY54ZZdLZUP/2jRnj5h63C2gH2b21QnhW
-         f6hg==
+        bh=StkEwZukQIXbK1uuB3PfKHlHFMrtoXm8L/aNxJSj/hI=;
+        b=RKYGFrdRGUY0Qr4PrQoA7DMKX7/lPkgHNsgatrG4a4+upKxYnI9RUCkzF2W4SC8OSM
+         /bPbvm3yhSi1Ya1CWbiyJiQLV7y1tbZm2WjnakYCf00rhvgCMJOPpvf39D3PxEEC/ExW
+         b0tRnT3yAPubfdQTf7dbw5P0j6l1RwO7Bh1biJ1IuLAk5CyOYbeWeWbKDh4+mSoDYliM
+         2KnoyUqKcFUHdEm0fG+WtbbS7yiKi5w0MnFzG+Eoo6oxsZnLmr6M37W6K7NdDCtm6zAz
+         8ZRnTq0fOlKHvltoaXSRd/DQtuVSFcq03kyh2Qk6htu2dMZxOjUvxFcpEGoal31V1zkK
+         JjFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=gJAXD96CPfgt0k2rLm/xHPPYTbUQFkgj3sTpz5RYoJU=;
-        b=Ntbxsfvfo1XOEzCenZ4d4sLub3Qe9a4lfvRqvbDwxyLg016ViokVrchrVvNrbVSTUR
-         LBwlN9/Z7gossEY2Z5sehUVkT6So5aoWBOqxdysgwJDr4BmelmDCr/QAFiCJMJzf2bj8
-         /p8C9W/jBt6bZN/Dlnt2sSFHqi6XQAWzLuhDWMSvpJ4bchZuPLOxHRsE2/GfIaSDrgUg
-         Vvekq3wxgqBeDX0+rmeT1viiFtf1rKzouNzn4+pJs/K3273CPsHi8dSVw3Bbf6NOhig4
-         eKkKYxEt/Np+tlhHeOC4aztj7IgozthrCBgwpWlLlNPIhawa0N60S7w4VXc3Xr5ccE2h
-         F+rA==
-X-Gm-Message-State: AOAM530Tc1nAYDid9zZgeimJRNlSdczd4mNXTKUD57cOxBk3YVNoUgJ0
-        jAF/hRkpyU0CvsnZx/y+Aqw61RHF7vQblTjrp1Q=
-X-Google-Smtp-Source: ABdhPJx92T8QwsfUPl4ocA9x+uztkWweo/BGirLqm0ZUDB3yM3OIurw07AdPCmHCnFkGKl6D21mUTlYyjJkem9/geKQ=
-X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr2501665ejz.518.1632776997373;
- Mon, 27 Sep 2021 14:09:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=StkEwZukQIXbK1uuB3PfKHlHFMrtoXm8L/aNxJSj/hI=;
+        b=xt56ZI/w3WIMJ0O52LBH9OO1PodTld/vBx/IPRkVFoed4MHL+B2eUPjYf5khezyeq8
+         30cPbSkK41gQhxfEFb91ZyTT1ED4lhaivBPM227BRWKl9W6xiPH1d/xnJTowngawSF6L
+         dsh6tGdekvOUjfWDcdQmv4imsJtwEaS5bJkS4dzdFcTxbPeY0Lxqm7IaKarY4FBSLB2p
+         fasl9S+ShS59mxDjASGrlAc5LotWbnxWirqBGjMlsba3a9IRu/G++8EtM7HgAhtB5vp8
+         EWQtuu1k2/b4wN8dyh2PmAd/dX8WbGa1WehIZZ4KDRLxUPuTDAD8EYrBxqJfVEUN0HOs
+         1RbA==
+X-Gm-Message-State: AOAM533aYEe1QKnkkyQUZmuVf/ul0RarLsDTvjMsPZtCJNbvuvk6X4Wf
+        avGpTKcnOvy1QLYNf//5m2IBMg==
+X-Google-Smtp-Source: ABdhPJxsGvDOsHqzStbGibFeaveUORepFkw5kE7+/rNCfQBFIjMTzwvhwTl21th2x6sxeU3Uu8zF5A==
+X-Received: by 2002:a05:6512:3e03:: with SMTP id i3mr1995773lfv.374.1632777235106;
+        Mon, 27 Sep 2021 14:13:55 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id t12sm1706864lfd.112.2021.09.27.14.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 14:13:54 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC fixes for v5.15-rc4
+Date:   Mon, 27 Sep 2021 23:13:52 +0200
+Message-Id: <20210927211352.21266-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a50:36c6:0:0:0:0:0 with HTTP; Mon, 27 Sep 2021 14:09:56
- -0700 (PDT)
-Reply-To: ahmadmustafa.7800@gmail.com
-From:   Ahmad Mustafa <issaj4559@gmail.com>
-Date:   Mon, 27 Sep 2021 22:09:56 +0100
-Message-ID: <CAF=beNuykHyj8FPDZaCMatwjL_cq63Q9g2YvZ+=wEky=h24CpA@mail.gmail.com>
-Subject: =?UTF-8?B?64yA7LacIOuwjyDtiKzsnpAgZGFlY2h1bCBtaWNoIHR1amEvTE9BTiBBTkQgSU5WRVNUTQ==?=
-        =?UTF-8?B?RU5U?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-6reA7ZWY7JeQ6rKMLA0KDQpBc2VlbCDsnbTsiqzrnowg6riI7Jy1IFBKU0PripQgMjAwNuuFhOyX
-kCDshKTrpr3rkJwg66+86rCEIOyjvOyLnSDtmozsgqzroZwg67aA64+Z7IKwLCDsiJnrsJUsIOyC
-sOyXhSDrsI8g7KeA7IaNIOqwgOuKpe2VnCDquLDsiKAsIOyghOuetSDquIjsnLUNCuu2hOyVvOyd
-mCDrjIDstpwg6riI7Jy1IOuwjyDtiKzsnpAg7Zmc64+Z7J2EIOyghOusuOycvOuhnCDtlZjripQg
-VUFFIOydtOyKrOuejCDquIjsnLUg7Iuc7J6l7JeQ7IScIOyEoOuRkOyggeyduCDsi5zsnqUg7KeA
-7JyE66W8IOq1rOy2le2WiOyKteuLiOuLpC4g7Yis7J6QLCDsoITrrLgNCuq1kOycoSwg7J2Y66OM
-IOyEnOu5hOyKpCwg64aN7JeFLCDsoJzsobAsIOq0keyXhSwg7JeQ64SI7KeAIOuwjyDquLDtg4Ag
-7ZmY6rK97KCB7Jy866GcIOyngOyGjSDqsIDriqXtlZwg7ZSE66Gc7KCd7Yq4Lg0KDQrsoJwg7J20
-66aE7J2AIElibiBBaG1hZCBNdXN0YWZh7J6F64uI64ukLiDsnpDquIjsnbQg7ZWE7JqU7ZWcIO2U
-hOuhnOygne2KuOqwgCDsnojsirXri4jquYw/IOyasOumrOuKlCAy7KGwIOqwnCDsnbTsg4HsnZgg
-6rCc7J24IOuwjyDquLDsl4UNCu2IrOyekCDtj6ztirjtj7TrpqzsmKTroZwg6reA7ZWY7J2YIO2U
-hOuhnOygne2KuOyXkCDsgqzsmqntlaAg7IiYIOyeiOuKlCDsnpDquIjsnYQg67O07Jyg7ZWY6rOg
-IOyeiOyKteuLiOuLpC4gQXNlZWwg7J207Iqs656MIOq4iOyctSBQSlND64qUIOy1nOuMgA0KNC41
-JeydmCDsnbTsnpDrpbwg7KeA67aI7ZWY6rOgIDXrhYTsl5DshJwgMTDrhYQg64+Z7JWIIOyngOu2
-hOydmCDsnbzrtoDrpbwg67O07Jyg7ZWgIOyngOu2hCDtjIztirjrhIgsIOq4sOyXheqwgCwg7J6Q
-6riIIOyhsOuLrOyekCDrsI8g7Y+s7Yq47Y+066as7JikDQrqtIDrpqzsnpDrpbwg7LC+6rOgIOye
-iOyKteuLiOuLpC4gMjAzMOuFhOyXkOuKlCDtmITsnqzsnZgg7Iuc7J6lIOyCrOydtO2BtOydhCDt
-mZzsmqntlZjquLAg7JyE7ZW0IOy1nOuMgCAy7KGwIOqwnOydmCDqs6Dtkojsp4gg7KCA7JyE7ZeY
-IOyekOyCsCDrsI8g7Yis7J6Q66W8DQrsnbjsiJjtlaAg6rOE7ZqN7J6F64uI64ukLg0KDQpBc2Vl
-bCDsnbTsiqzrnowg6riI7Jy1IFBKU0PripQg64yA7LacIOq4sOq0gCDsl63tlaDsnYQg7ZWY6rOg
-IOyeiOycvOupsCDtiKzsnpAg7ZSE66Gc7KCd7Yq47JeQIOuMgO2VtCDsp4DrtoQg7YyM7Yq464SI
-IOuwjyDquLDsl4XqsIDsl5Dqsowg7Jew6rCEDQozLjUl7J2YIOuqhe2Zle2VnCDsnbTsnpDsnKjr
-oZwg6riw6riI7J20IOyngOq4ieuQqeuLiOuLpC4g7Jqw66as64qUIOuYkO2VnCDsnqzsoJUg65iQ
-64qUIOq4sO2DgCDquLDtmozrpbwg7JyE7ZW0IO2UhOuhnOygne2KuCDshozsnKDsnpDrpbwg642w
-66Ck7Jik64qUIOykkeqwnOyduOyXkOqyjA0KMiXsnZgg7IiY7IiY66OM66W8IOygnOqzte2VqeuL
-iOuLpC4NCg0K7J6Q7IS47ZWcIOuCtOyaqeydgCDsgqzsl4Ug6rOE7ZqN7J2064KYIO2UhOuhnOyg
-ne2KuCDsmpTslb3snYQg67O064K07KO87Iut7Iuc7JikLg0KDQrrrLjslYgg7J247IKsLA0KDQoN
-CuydtOu4kCDslYTrp4jrk5wg66y07Iqk7YOA7YyMIOyUqA0K6rWt7KCcIOu5hOymiOuLiOyKpCDs
-vZTrlJTrhKTsnbTthLANCkFzZWVsIOydtOyKrOuejCDquIjsnLUgUEpTQw0K7JWMIOunjOy/qCwg
-65GQ67CU7J20IEMyIO2DgOybjCwNCjHsuLUsIFAuTyA5NDY2OSDrkZDrsJTsnbQsIFVBRQ0K7JWE
-67aAIOuLpOu5hCwg7JWE656NIOyXkOuvuOumrO2KuA0K7J2066mU7J28IDogYWhtYWRtdXN0YWZh
-Ljc4MDBAZ21haWwuY29tDQoNCmd3aWhhLWVnZSwNCg0KQXNlZWwgaXNldWxsYW0gZ2V1bS15dW5n
-IFBKU0NuZXVuIDIwMDZueWVvbi1lIHNlb2xsaWJkb2VuIG1pbmdhbiBqdXNpZw0KaG9lc2FsbyBi
-dWRvbmdzYW4sIHN1Z2JhZywgc2FuLWVvYiBtaWNoIGppc29nIGdhbmV1bmdoYW4gZ2lzdWwsDQpq
-ZW9ubHlhZyBnZXVtLXl1bmcgYnVuLXlhdWkgZGFlY2h1bCBnZXVtLXl1bmcgbWljaCB0dWphIGh3
-YWxkb25nLWV1bA0KamVvbm11bi1ldWxvIGhhbmV1biBVQUUgaXNldWxsYW0gZ2V1bS15dW5nIHNp
-amFuZy1lc2VvIHNlb25kdWplb2ctaW4NCnNpamFuZyBqaXdpbGV1bCBndWNodWdoYWVzc3NldWJu
-aWRhLiB0dWphLCBqZW9ubXVuIGd5b3l1ZywgdWlseW8NCnNlb2Jpc2V1LCBub25nLWVvYiwgamVq
-bywgZ3dhbmctZW9iLCBlbmVvamkgbWljaCBnaXRhDQpod2FuZ3llb25namVvZy1ldWxvIGppc29n
-IGdhbmV1bmdoYW4gcGV1bG9qZWd0ZXUuDQoNCmplIGlsZXVtLWV1biBJYm4gQWhtYWQgTXVzdGFm
-YWlibmlkYS4gamFnZXVtLWkgcGlsLXlvaGFuIHBldWxvamVndGV1Z2ENCmlzc3NldWJuaWtrYT8g
-dWxpbmV1biAyam8gZ2FlIGlzYW5nLXVpIGdhZWluIG1pY2ggZ2llb2IgdHVqYQ0KcG90ZXVwb2xs
-aW9sbyBnd2loYXVpIHBldWxvamVndGV1ZSBzYXlvbmdoYWwgc3UgaXNzbmV1biBqYWdldW0tZXVs
-DQpib3l1aGFnbyBpc3NzZXVibmlkYS4gQXNlZWwgaXNldWxsYW0gZ2V1bS15dW5nIFBKU0NuZXVu
-IGNob2VkYWUgNC41JXVpDQppamFsZXVsIGppYnVsaGFnbyA1bnllb24tZXNlbyAxMG55ZW9uIGRv
-bmctYW4gamlidW4tdWkgaWxidWxldWwNCmJveXVoYWwgamlidW4gcGF0ZXVuZW8sIGdpZW9iZ2Es
-IGphZ2V1bSBqb2RhbGphIG1pY2ggcG90ZXVwb2xsaW8NCmd3YW5saWphbGV1bCBjaGFqZ28gaXNz
-c2V1Ym5pZGEuIDIwMzBueWVvbi1lbmV1biBoeWVvbmphZXVpIHNpamFuZw0Kc2Fpa2V1bC1ldWwg
-aHdhbC15b25naGFnaSB3aWhhZSBjaG9lZGFlIDJqbyBnYWV1aSBnb3B1bWppbCBqZW93aWhlb20N
-Cmphc2FuIG1pY2ggdHVqYWxldWwgaW5zdWhhbCBneWVob2VnLWlibmlkYS4NCg0KQXNlZWwgaXNl
-dWxsYW0gZ2V1bS15dW5nIFBKU0NuZXVuIGRhZWNodWwgZ2lnd2FuIHllb2doYWwtZXVsIGhhZ28N
-Cmlzcy1ldW15ZW8gdHVqYSBwZXVsb2plZ3RldWUgZGFlaGFlIGppYnVuIHBhdGV1bmVvIG1pY2gg
-Z2llb2JnYS1lZ2UNCnllb25nYW4gMy41JXVpIG15ZW9uZ2h3YWdoYW4gaWpheXVsbG8gZ2lnZXVt
-LWkgamlnZXViZG9lYm5pZGEuIHVsaW5ldW4NCnR0b2hhbiBqYWVqZW9uZyB0dG9uZXVuIGdpdGEg
-Z2lob2VsZXVsIHdpaGFlIHBldWxvamVndGV1IHNveXVqYWxldWwNCmRlbHllb29uZXVuIGp1bmct
-Z2FlaW4tZWdlIDIldWkgc3VzdWx5b2xldWwgamVnb25naGFibmlkYS4NCg0KamFzZWhhbiBuYWV5
-b25nLWV1biBzYS1lb2IgZ3llaG9lZy1pbmEgcGV1bG9qZWd0ZXUgeW95YWctZXVsIGJvbmFlanVz
-aWJzaW8uDQoNCm11bi1hbiBpbnNhLA0KDQoNCmliZXVuIGFtYWRldSBtdXNldXRhcGEgc3NpDQpn
-dWdqZSBiaWpldW5pc2V1IGtvZGluZWl0ZW8NCkFzZWVsIGlzZXVsbGFtIGdldW0teXVuZyBQSlND
-DQphbCBtYW5rdWwsIGR1YmFpIEMyIHRhd28sDQoxY2hldW5nLCBQLk8gOTQ2NjkgZHViYWksIFVB
-RQ0KYWJ1IGRhYmksIGFsYWIgZW1pbGl0ZXUNCmltZWlsIDogYWhtYWRtdXN0YWZhLjc4MDBAZ21h
-aWwuY29tDQoNCg0KDQoNCg0KDQoNCkRlYXIgU2lyLA0KDQpBc2VlbCBJc2xhbWljIGZpbmFuY2Ug
-UEpTQyBpcyBwcml2YXRlIGpvaW50IHN0b2NrIGNvbXBhbnkgdGhhdCB3YXMNCmVzdGFibGlzaGVk
-IGluIDIwMDYgYW5kIGhhcyBidWlsdCBhIGxlYWRpbmcgbWFya2V0IHBvc2l0aW9uIGZvciBpdHNl
-bGYNCmluIHRoZSBVQUUncyBJc2xhbWljIGZpbmFuY2UgbWFya2V0IHdoaWNoIHNwZWNpYWxpemVz
-IGluIGxvYW4gZmluYW5jZQ0KYW5kIGludmVzdG1lbnQgYWN0aXZpdGllcyBpbiByZWFsIGVzdGF0
-ZSwgaG9zcGl0YWxpdHksIGluZHVzdHJpYWwgJg0Kc3VzdGFpbmFibGUgdGVjaG5vbG9naWVzLCBz
-dHJhdGVnaWMgZmluYW5jaWFsIGludmVzdG1lbnRzLCBzcGVjaWFsaXplZA0KZWR1Y2F0aW9uLCBo
-ZWFsdGhjYXJlIHNlcnZpY2VzLCBhZ3JpY3VsdHVyZSwgbWFudWZhY3R1cmluZywNCm1pbmluZyxl
-bmVyZ3kgYW5kIGFkZGl0aW9uYWwgZW52aXJvbm1lbnRhbGx5IHN1c3RhaW5hYmxlIHByb2plY3Rz
-Lg0KDQpNeSBuYW1lIGlzIE1yLiBJYm4gQWhtYWQgTXVzdGFmYSAuIERvIHlvdSBoYXZlIHByb2pl
-Y3RzIHRoYXQgcmVxdWlyZQ0KZnVuZGluZz8gV2UgaGF2ZSBmaW5hbmNlIGF2YWlsYWJsZSBmb3Ig
-eW91ciBwcm9qZWN0cyB3aXRoIG92ZXIgMg0KdHJpbGxpb24gcHJpdmF0ZSBhbmQgY29ycG9yYXRl
-IGludmVzdG1lbnQgcG9ydGZvbGlvcy4gIEFzZWVsIElzbGFtaWMNCmZpbmFuY2UgUEpTQyBpcyBs
-b29raW5nIGZvciBlcXVpdHkgcGFydG5lcnMsIGVudHJlcHJlbmV1ciwgZnVuZA0KcmFpc2VycyBh
-bmQgcG9ydGZvbGlvIG1hbmFnZXJzIHdobyB3aWxsIHBheSB1cCB0byA0LjUlIGludGVyZXN0IGFu
-ZC9vcg0KcGFydCBlcXVpdHkgcG9zaXRpb24gd2l0aCBhIDUgdG8gMTAgeWVhciBob2xkLiBJbiAy
-MDMwLCB3ZSBwbGFuIG9uDQphY3F1aXJpbmcgdXAgdG8gMiB0cmlsbGlvbiBpbiBoaWdoLXF1YWxp
-dHksIGxvdyByaXNrIGFzc2V0cyBhbmQNCmludmVzdG1lbnRzIHRvIGNhcGl0YWxpemUgb24gdGhl
-IGN1cnJlbnQgbWFya2V0IGN5Y2xlLg0KDQpBc2VlbCBJc2xhbWljIGZpbmFuY2UgUEpTQyBpcyBh
-Y3RpbmcgYXMgYSBsZW5kZXIgYW5kIHRoZSBmdW5kIHdpbGwgYmUNCmRpc2J1cnNlZCBvbiBhIGNs
-ZWFyIGludGVyZXN0IHJhdGUgb2YgMy41JSBhbm51YWxseSB0byB0aGUgZXF1aXR5DQpwYXJ0bmVy
-cyBhbmQgZW50cmVwcmVuZXVycyBmb3IgdGhlaXIgaW52ZXN0bWVudCBwcm9qZWN0cy4gV2UgYWxz
-byBnaXZlDQphIDIlIGNvbW1pc3Npb24gdG8gYnJva2Vycywgd2hvIGJyaW5nIHByb2plY3Qgb3du
-ZXJzIGZvciBmaW5hbmNlIG9yDQpvdGhlciBvcHBvcnR1bml0aWVzLg0KDQpGb3IgZnVydGhlciBk
-ZXRhaWxzLCBraW5kbHkgc2VuZCB1cyB5b3VyIGJ1c2luZXNzIHBsYW5zIG9yIHByb2plY3Qgc3Vt
-bWFyeS4NCg0KUmVnYXJkcywNCg0KDQpNci4gSWJuIEFobWFkIE11c3RhZmENCkludGVybmF0aW9u
-YWwgQnVzaW5lc3MgQ29vcmRpbmF0b3INCkFzZWVsIElzbGFtaWMgRmluYW5jZSBQSlNDDQpBbCBN
-YW5raG9vbCwgRHViYWkgQzIgVG93ZXIsDQpHcm91bmQgZmxvb3IsUC5PIDk0NjY5IER1YmFpLCBV
-QUUNCkFidSBEaGFiaSAtIFVuaXRlZCBBcmFiIEVtaXJhdGVzDQpFbWFpbCA6IGFobWFkbXVzdGFm
-YS43ODAwQGdtYWlsLmNvbQ0K
+Hi Linus,
+
+Here's a PR with a couple of MMC fixes intended for v5.15-rc4. Details about the
+highlights are as usual found in the signed tag.
+
+Please pull this in!
+
+Kind regards
+Ulf Hansson
+
+
+The following changes since commit 27151f177827d478508e756c7657273261aaf8a9:
+
+  Merge tag 'perf-tools-for-v5.15-2021-09-04' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux (2021-09-05 11:56:18 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15-2
+
+for you to fetch changes up to b81bede4d138ce62f7342e27bf55ac93c8071818:
+
+  mmc: renesas_sdhi: fix regression with hard reset on old SDHIs (2021-09-06 18:10:49 +0200)
+
+----------------------------------------------------------------
+MMC host:
+ - renesas_sdhi: Fix regression with hard reset on old SDHIs
+ - dw_mmc: Only inject fault before done/error
+
+----------------------------------------------------------------
+Vincent Whitchurch (1):
+      mmc: dw_mmc: Only inject fault before done/error
+
+Wolfram Sang (1):
+      mmc: renesas_sdhi: fix regression with hard reset on old SDHIs
+
+ drivers/mmc/host/dw_mmc.c            | 15 ++++++++++++---
+ drivers/mmc/host/renesas_sdhi_core.c |  2 ++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
