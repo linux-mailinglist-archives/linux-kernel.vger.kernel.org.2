@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A7A419DBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C58419DC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbhI0SCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235900AbhI0SCD (ORCPT
+        id S235892AbhI0SCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:02:42 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:46770 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235757AbhI0SCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:02:03 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1533C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:00:25 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h3so18512266pgb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:00:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1+a7FKoAYL96RPr7QGB+xkOteevSmzHcwGmtuLohIN4=;
-        b=b/opL5QdAO5JDtZRjNuLtZQB/wib0usA33ZEHqJAYreIpRU/NtWka3Z1lPgKGBurqF
-         qtg47my+uHjW3vpgdrtd9bvjcDcayVvHg0fMWGju5Uwm4LP2FFLetaGlofSo6sL5vi/y
-         XNVcsAIuTod4ooj0W5mOYNv54mwVOVVemSZCQ=
+        Mon, 27 Sep 2021 14:02:41 -0400
+Received: by mail-ot1-f42.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so23472781ota.13;
+        Mon, 27 Sep 2021 11:01:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1+a7FKoAYL96RPr7QGB+xkOteevSmzHcwGmtuLohIN4=;
-        b=5vkl+KUIztSylW1SeYJcoGDPKlCp7vuHHGGQhkwzfunrXmFROW+zaaU4HvAKqRAK3U
-         eFspq0+nPY4TpjNNhQK1dyUWW4EPsUkg9/ZHt2CEOp7Zh2Jsp9NYkmE/GMWR7PavW579
-         VYHaZmLJbJaJiwdqQwJlv0tynkfpMuyfB7rkfZnd6TCc5+uyR4ws6ksoD6L6Z+64a29y
-         bA+iikJwObM/gobAsXzGTferhtT5qukW8MPbxRG2+mreJ2D3xD3iQa0vJFZfhr04UvyJ
-         vkIFcssGBj1WkKZkQV3XYRuzm67RBHQXyC+og7x5MBk2uWU2ic8TGDx3YIiJP7rzJj9o
-         RB4w==
-X-Gm-Message-State: AOAM531NMGU6EKqukMSnZ5lx5+4wH9qVTtdPKiA0tmXRnpvAnB9l4/rX
-        n5m1DXjI76vdF4fGZ3YWHCiA1A==
-X-Google-Smtp-Source: ABdhPJxq7Y5R55DSsFgb767+FM/jYFg4xB9p3IXsKCB/X5PXOi8QwLfnVvoTDnR7LOJjxiCl1fIfRg==
-X-Received: by 2002:a63:8541:: with SMTP id u62mr822463pgd.308.1632765625576;
-        Mon, 27 Sep 2021 11:00:25 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:82d7:f099:76bc:7017])
-        by smtp.gmail.com with UTF8SMTPSA id b2sm18139527pfr.58.2021.09.27.11.00.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 11:00:25 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Thomas Hebb <tommyhebb@gmail.com>, dri-devel@lists.freedesktop.org,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        linux-rockchip@lists.infradead.org,
-        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-Subject: [PATCH v2 3/3] drm/rockchip: dsi: Disable PLL clock on bind error
-Date:   Mon, 27 Sep 2021 10:59:44 -0700
-Message-Id: <20210927105928.v2.3.I8bb7a91ecc411d56bc155763faa15f289d7fc074@changeid>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-In-Reply-To: <20210927175944.3381314-1-briannorris@chromium.org>
-References: <20210927175944.3381314-1-briannorris@chromium.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bk6IEL1uZf2s3dmk9m5afP7AhxL2b1kO1A39LyNaXkM=;
+        b=fp+/51zeajmpv0BBka8cdE+n0Xgn5zR7QvehDlgPBEhL+/FSJkkaG5vWheNLVLxm8j
+         m4SN081RkafWUMqyr3jbxbnS/L4bD/9bGdJjGyXkmg2LyV68ukezFMh5vhSPczrs31jr
+         kWKQZG/1Bqf15V+8EvxAzjH06wKTxOViA/p1/MHfV+AsXPtHki+Q537JatHF6sWEbLuK
+         flbMAo5A7jMVXIY8E/hjLxUCvUjyOf03OgHHuCr/nRFxaWbJ5hglp/yGE//UqDAFyZ3e
+         4Kv01SD1TnfUsb8Ss6qOJgKv+OnYG0EWjQOdOfN5WXsuFzIW4yFxb/z5iriwOMPnjuXV
+         qf4w==
+X-Gm-Message-State: AOAM530iqDbUGZfBPbW26Y/Gcslt/Fc+N/MJRMZRmYDRJ662Z/m7ZLCL
+        4cRIMkv4dlRjRntrO+aNeA==
+X-Google-Smtp-Source: ABdhPJy1u1047PO9kAE4IDPov+AHa+ZWbRS+2hfY06WstvUKSl+QP0r+E7Y8mYsUq1/d7F3I8OpOWw==
+X-Received: by 2002:a05:6830:2f2:: with SMTP id r18mr1223863ote.228.1632765662725;
+        Mon, 27 Sep 2021 11:01:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id g23sm4108432otl.23.2021.09.27.11.01.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 11:01:02 -0700 (PDT)
+Received: (nullmailer pid 3555843 invoked by uid 1000);
+        Mon, 27 Sep 2021 18:01:01 -0000
+Date:   Mon, 27 Sep 2021 13:01:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     devicetree@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.ne@posteo.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: nintendo-aes: Document the Wii and Wii
+ U AES support
+Message-ID: <YVIG3aOWt7jqtZIl@robh.at.kernel.org>
+References: <20210921213930.10366-1-linkmauve@linkmauve.fr>
+ <20210921213930.10366-3-linkmauve@linkmauve.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921213930.10366-3-linkmauve@linkmauve.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some error handling here noticed in review of other changes.
+On Tue, Sep 21, 2021 at 11:39:28PM +0200, Emmanuel Gil Peyrot wrote:
+> Both of these consoles use the exact same AES engine, which only
+> supports CBC mode with 128-bit keys.
+> 
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> ---
+>  .../bindings/crypto/nintendo-aes.yaml         | 34 +++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/crypto/nintendo-aes.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/nintendo-aes.yaml b/Documentation/devicetree/bindings/crypto/nintendo-aes.yaml
+> new file mode 100644
+> index 000000000000..e62a2bfc571c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/nintendo-aes.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-Reported-by: Chen-Yu Tsai <wenst@chromium.org>
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
+Dual license new bindings. checkpatch.pl will tell you this.
 
-Changes in v2:
-- New
-
- drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-index fa4080176719..0ed13d81fe60 100644
---- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -943,7 +943,7 @@ static int dw_mipi_dsi_rockchip_bind(struct device *dev,
- 	ret = clk_prepare_enable(dsi->grf_clk);
- 	if (ret) {
- 		DRM_DEV_ERROR(dsi->dev, "Failed to enable grf_clk: %d\n", ret);
--		goto out_pm_runtime;
-+		goto out_pll_clk;
- 	}
- 
- 	dw_mipi_dsi_rockchip_config(dsi);
-@@ -955,17 +955,19 @@ static int dw_mipi_dsi_rockchip_bind(struct device *dev,
- 	ret = rockchip_dsi_drm_create_encoder(dsi, drm_dev);
- 	if (ret) {
- 		DRM_DEV_ERROR(dev, "Failed to create drm encoder\n");
--		goto out_pm_runtime;
-+		goto out_pll_clk;
- 	}
- 
- 	ret = dw_mipi_dsi_bind(dsi->dmd, &dsi->encoder);
- 	if (ret) {
- 		DRM_DEV_ERROR(dev, "Failed to bind: %d\n", ret);
--		goto out_pm_runtime;
-+		goto out_pll_clk;
- 	}
- 
- 	return 0;
- 
-+out_pll_clk:
-+	clk_disable_unprepare(dsi->pllref_clk);
- out_pm_runtime:
- 	pm_runtime_put(dsi->dev);
- 	if (dsi->slave)
--- 
-2.33.0.685.g46640cef36-goog
-
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/nintendo-aes.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nintendo Wii and Wii U AES engine
+> +
+> +maintainers:
+> +  - Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> +
+> +description: |+
+> +  The AES engine in the Nintendo Wii and Wii U supports the following:
+> +  -- Advanced Encryption Standard (AES) in CBC mode, with 128-bit keys
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: nintendo,hollywood-aes
+> +      - const: nintendo,latte-aes
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Not supported yet.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> -- 
+> 2.33.0
+> 
+> 
