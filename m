@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C5A419155
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B36B419161
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbhI0JMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:12:14 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3877 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233519AbhI0JMH (ORCPT
+        id S233641AbhI0JQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233519AbhI0JQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:12:07 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HHxcW4cMTz67P1q;
-        Mon, 27 Sep 2021 17:07:55 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 11:10:27 +0200
-Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 27 Sep
- 2021 10:10:26 +0100
-Subject: Re: [PATCH v4 12/13] blk-mq: Use shared tags for shared sbitmap
- support
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <hare@suse.de>
-References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
- <1632472110-244938-13-git-send-email-john.garry@huawei.com>
- <YU/oIu2uQ420ol8F@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <6f52adfd-6904-6efb-adfc-f5f20eb5c1cf@huawei.com>
-Date:   Mon, 27 Sep 2021 10:13:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 27 Sep 2021 05:16:27 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66BA1C061575;
+        Mon, 27 Sep 2021 02:14:50 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id p72so3063914vkp.7;
+        Mon, 27 Sep 2021 02:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WbaNXMBECXey7ELal8uMHHShxWFOFNevhVPa8lYniYY=;
+        b=RAemMbnGVpPW/DQd2waEBePc7ixfmJGa8M5Q4s3tmglGzdGIvF8j9/K+dnEt0H/cQZ
+         FaV0D9LcwiiHh3HgvZClJEkRNeRkOdJW9u4xPC0W5feThfZ1l0tQc25gPgiKt4PS+vin
+         2ZsM+1Ou3dJHWoN/2Fe6vv2NgrY+tf5OipUjplK9IVw7N7dn96qXfDkg5Uo0IVneo7jY
+         EeWDpUua9SjCMGrkwkRiN4z1HvVHIqEwJayb3FQLNbjFSbWQpZAjSYKDtulBb5X+xm/C
+         eRc1qLCgvQa1V677/HfypA114QyRcn5OPw86n3HEBM6eDsLzGorTIAH5GeZjrINsoMRG
+         QpKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WbaNXMBECXey7ELal8uMHHShxWFOFNevhVPa8lYniYY=;
+        b=NlOsX85jnngzJZyCEAH9gKoemhqwsOtAzr1zkgKZaz3aKGA9Hrn1MwYpDoNK32XtkI
+         pazT+cz6UCu/TOwwbzJSkYhXuPOJ2gDHmVhcYocOtZKbvEivmY7Gg/qCF9pP8Yi0v75D
+         dSsvfFaImKiJxBHbP1wKct3gawfeZkEiDjCq1M+8t0VzcB+cgi8wgXEf0N4Dw8yFpI2Y
+         1Vqc9PrDc8D/Un1Z3wtooHdBw/A509ACN/S2QRzu9r9iDiAmG9rLhRuzyctg8rLzNmUJ
+         4VB0Aos5mlPrE4Cp3REOupCPOq9NKyLQSCE9wqgW03DW8TzD9Z0hBgYxh8yABJNwXqHl
+         kIew==
+X-Gm-Message-State: AOAM532AtQ1jCdYIRaBwE31qUVSo+nxahh8YjktRqFlvFesjCBStRKgq
+        xDEAw1gKoiazZOGvoiaIWMfpVwrrbwcXhd6ezLY=
+X-Google-Smtp-Source: ABdhPJwBqIxeWAX6bgr87UbnnhqSB8U3yyRByhoxX5/LWxHm2KmuWgE7NKQp4aPlSFAPKp/L5UzWU5/+0C6hYH08ImQ=
+X-Received: by 2002:a1f:900c:: with SMTP id s12mr14749733vkd.1.1632734089613;
+ Mon, 27 Sep 2021 02:14:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YU/oIu2uQ420ol8F@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.67]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210925203224.10419-1-sergio.paracuellos@gmail.com> <CAK8P3a3+54S2=-=ch1+XWuNQRoOCDdQhtBhu3CKOdqcSNzu8YA@mail.gmail.com>
+In-Reply-To: <CAK8P3a3+54S2=-=ch1+XWuNQRoOCDdQhtBhu3CKOdqcSNzu8YA@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 27 Sep 2021 11:14:38 +0200
+Message-ID: <CAMhs-H9JyD8kBMJfjER1QQwDNmsy6gY6At+d-UOvAe_Q0FQs0w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] MIPS: ralink: fix PCI IO resources
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2021 04:25, Ming Lei wrote:
->> c
->> @@ -27,10 +27,11 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
->>   	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
->>   		struct request_queue *q = hctx->queue;
->>   		struct blk_mq_tag_set *set = q->tag_set;
->> +		struct blk_mq_tags *tags = set->shared_sbitmap_tags;
-> The local variable of 'set' can be removed and just retrieve 'tags' from
-> hctx->tags.
-> 
->>   
->>   		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags) &&
->>   		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
->> -			atomic_inc(&set->active_queues_shared_sbitmap);
->> +			atomic_inc(&tags->active_queues);
->>   	} else {
->>   		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state) &&
->>   		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
->> @@ -61,10 +62,12 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
->>   	struct blk_mq_tag_set *set = q->tag_set;
->>   
->>   	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
->> +		struct blk_mq_tags *tags = set->shared_sbitmap_tags;
->> +
-> Same with above.
+Hi Arnd,
 
-ok
+On Mon, Sep 27, 2021 at 9:51 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Sat, Sep 25, 2021 at 10:33 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > Patches related with reverts are from this merge cycle so they are only
+> > added to the staging git tree. So to have all stuff together I'd like to
+> > get everybody Ack's to get all of this series through staging tree if
+> > possible :).
+> >
+> > Thanks in advance for your time.
+>
+> Looks all good to me now, just one general remark: Try to give a little more
+> time between respinning the entire series, otherwise you get the opposite
+> effect and reviewers start ignoring your emails after getting annoyed at the
+> number of emails. Once you are reasonably sure that no more comments are
+> coming in, or you have made substantial changes, it's time to resend the
+> series.
 
-> 
->>   		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_ACTIVE,
->>   					&q->queue_flags))
->>   			return;
->> -		atomic_dec(&set->active_queues_shared_sbitmap);
->> +		atomic_dec(&tags->active_queues);
->>   	} else {
->>   		if (!test_and_clear_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
->>   			return;
->> @@ -510,38 +513,10 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
->>   	return 0;
->>   }
+Thanks for reviewing this and also for the advice. Will take it into
+account from now on.
 
-...
+>
+>         Arnd
 
->> -	struct sbitmap_queue	__bitmap_tags;
->> -	struct sbitmap_queue	__breserved_tags;
->>   	struct blk_mq_tags	**tags;
->>   
->> +	struct blk_mq_tags	*shared_sbitmap_tags;
->> +
->>   	struct mutex		tag_list_lock;
->>   	struct list_head	tag_list;
->>   };
->> @@ -432,6 +429,8 @@ enum {
->>   	((policy & ((1 << BLK_MQ_F_ALLOC_POLICY_BITS) - 1)) \
->>   		<< BLK_MQ_F_ALLOC_POLICY_START_BIT)
->>   
->> +#define BLK_MQ_NO_HCTX_IDX	(-1U)
->> +
->>   struct gendisk *__blk_mq_alloc_disk(struct blk_mq_tag_set *set, void *queuedata,
->>   		struct lock_class_key *lkclass);
->>   #define blk_mq_alloc_disk(set, queuedata)				\
->> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
->> index 4baf9435232d..17e50e5ef47b 100644
->> --- a/include/linux/blkdev.h
->> +++ b/include/linux/blkdev.h
->> @@ -459,8 +459,7 @@ struct request_queue {
->>   
->>   	atomic_t		nr_active_requests_shared_sbitmap;
->>   
->> -	struct sbitmap_queue	sched_bitmap_tags;
->> -	struct sbitmap_queue	sched_breserved_tags;
->> +	struct blk_mq_tags	*shared_sbitmap_tags;
-> Maybe better with shared_sched_sbitmap_tags or sched_sbitmap_tags?
-
-Yeah, I suppose I should add "sched" to the name, as before.
-
-BTW, Do you think that I should just change shared_sbitmap -> 
-shared_tags naming now globally? I'm thinking now that I should...
-
-Thanks,
-John
+Best regards,
+    Sergio Paracuellos
