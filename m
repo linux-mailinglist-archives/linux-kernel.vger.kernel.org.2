@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AB8419B08
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CE0419C3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhI0RPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48178 "EHLO mail.kernel.org"
+        id S236287AbhI0R0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236605AbhI0RMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98B9E61371;
-        Mon, 27 Sep 2021 17:08:44 +0000 (UTC)
+        id S237124AbhI0RVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:21:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D0B861372;
+        Mon, 27 Sep 2021 17:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762525;
-        bh=qpgKfRSy0WRL//yUVgg/fqWsO5jm6cAXesAzEz4hoBA=;
+        s=korg; t=1632762836;
+        bh=JOHXo35h9rX1L/lWwohaM3olhp+13RbmxfxEwixT9o4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G8frSzlT0/vg5NJoLNTgiMmEQdYlp/FHqGwup0DMcYEvU2A5wx3h/9ZWu65i+bSmt
-         yY7Y7Boaehb3jMCDLlmZvJIqG4bTQ1bKLwbtDZ+PFC/ArKr4x/wYYoNdypIjwB8lNk
-         UiAGMpZ5Dka+r3sGNgwlsH3cpzQX1pJ5jzD48tUk=
+        b=bLys4gmp59RbyKURk5k26bJNS4GIWKou9WHEzesywDn+IxvrxU8dZgkW5L9xYMNa9
+         kga6U3JS8RJhyJOgmaYkvnFhyEhmUbBbPDE3MZ+210ALttveCWa6L+okY9E2oaOl+j
+         wUz+mqeioNn3LW+aF7ypkMOiJQFppHkbLKkbVx/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH 5.10 024/103] erofs: fix up erofs_lookup tracepoint
+        stable@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 070/162] net/smc: fix workqueue leaked lock in smc_conn_abort_work
 Date:   Mon, 27 Sep 2021 19:01:56 +0200
-Message-Id: <20210927170226.561667456@linuxfoundation.org>
+Message-Id: <20210927170235.884800708@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Karsten Graul <kgraul@linux.ibm.com>
 
-commit 93368aab0efc87288cac65e99c9ed2e0ffc9e7d0 upstream.
+[ Upstream commit a18cee4791b1123d0a6579a7c89f4b87e48abe03 ]
 
-Fix up a misuse that the filename pointer isn't always valid in
-the ring buffer, and we should copy the content instead.
+The abort_work is scheduled when a connection was detected to be
+out-of-sync after a link failure. The work calls smc_conn_kill(),
+which calls smc_close_active_abort() and that might end up calling
+smc_close_cancel_work().
+smc_close_cancel_work() cancels any pending close_work and tx_work but
+needs to release the sock_lock before and acquires the sock_lock again
+afterwards. So when the sock_lock was NOT acquired before then it may
+be held after the abort_work completes. Thats why the sock_lock is
+acquired before the call to smc_conn_kill() in __smc_lgr_terminate(),
+but this is missing in smc_conn_abort_work().
 
-Link: https://lore.kernel.org/r/20210921143531.81356-1-hsiangkao@linux.alibaba.com
-Fixes: 13f06f48f7bf ("staging: erofs: support tracepoint")
-Cc: stable@vger.kernel.org # 4.19+
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix that by acquiring the sock_lock first and release it after the
+call to smc_conn_kill().
+
+Fixes: b286a0651e44 ("net/smc: handle incoming CDC validation message")
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/trace/events/erofs.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/smc/smc_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/include/trace/events/erofs.h
-+++ b/include/trace/events/erofs.h
-@@ -35,20 +35,20 @@ TRACE_EVENT(erofs_lookup,
- 	TP_STRUCT__entry(
- 		__field(dev_t,		dev	)
- 		__field(erofs_nid_t,	nid	)
--		__field(const char *,	name	)
-+		__string(name,		dentry->d_name.name	)
- 		__field(unsigned int,	flags	)
- 	),
+diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+index c160ff50c053..116cfd6fac1f 100644
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -1474,7 +1474,9 @@ static void smc_conn_abort_work(struct work_struct *work)
+ 						   abort_work);
+ 	struct smc_sock *smc = container_of(conn, struct smc_sock, conn);
  
- 	TP_fast_assign(
- 		__entry->dev	= dir->i_sb->s_dev;
- 		__entry->nid	= EROFS_I(dir)->nid;
--		__entry->name	= dentry->d_name.name;
-+		__assign_str(name, dentry->d_name.name);
- 		__entry->flags	= flags;
- 	),
++	lock_sock(&smc->sk);
+ 	smc_conn_kill(conn, true);
++	release_sock(&smc->sk);
+ 	sock_put(&smc->sk); /* sock_hold done by schedulers of abort_work */
+ }
  
- 	TP_printk("dev = (%d,%d), pnid = %llu, name:%s, flags:%x",
- 		show_dev_nid(__entry),
--		__entry->name,
-+		__get_str(name),
- 		__entry->flags)
- );
- 
+-- 
+2.33.0
+
 
 
