@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9942C41A0BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5906241A0BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbhI0U4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S237043AbhI0U4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237148AbhI0Uzs (ORCPT
+        with ESMTP id S237164AbhI0Uzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:55:48 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7528C06177A
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:54:06 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so26171010otb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:54:06 -0700 (PDT)
+        Mon, 27 Sep 2021 16:55:52 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FCAC061783
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:54:07 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so26178886otq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CcbTnFMkK4SUt9SM19RFSE4qtQlYRc5S1R8rKkOEREg=;
-        b=Gi7uCoVnUx/LO/jAW+68xaGlZHbxNk4+P7uKBIpXdngGI8oDmHhyKpUDPmHK2USFi0
-         oASbZBBz8ta18tEDtVLB1QuNSBuHDakFf9L8MjBCgZk/Bq77wKd+IaDUL+BrSExXvFvp
-         N7XkuMeP1XOn/NVj4q4FA3OdF0rycWMpTVxrK04QH8AVABbWQwq6yvOKo4sAQXpkHBXJ
-         lxtQOUROZHDv1Su3W33tydJVx2JqYr/uUdmNBppxH6p1KzWnoaH9qoVKPzd6cYdBehqP
-         T/3pR8k3+8bd4vzW5iC98bYZmPCneLHqWMpRXPfQDXCvkT4U4tKlPAs35GfdSNdEwsWl
-         pQ2Q==
+        bh=H/1gZtc1poDY8bi7y1uCSE4LwRoLuhavbBlTDBIZBIs=;
+        b=OS/9OXvdxz2u/sAdEd9Um2VSv1Or5L6pwwGm8sWU2Y5gGr7IvOEKIUY8qGxra55iZU
+         5UwJJsgNfhbxYFmjg/0y2mnKfOEaseOvbmLFzw/GNqELKwLeJWc8SZmOLdKHPQjVgu6A
+         KXr0oYjHNuy2X5AdPIWDq0EVUXsl0Rn+A138p4ASjrOFOB2bqdVpecRG2cBccfGe1ayV
+         udPCOxqtqNBYM4HlHm27pvDuMM8NGUaE/v4juspZzEfG9bcQD+oA5uXeiU8pEJTNx6O8
+         t5WdLCmbxqKGWWy84hz+S75Uq8nlDEOtDyrXg1uOqN+0tZB3+iRmn449Rtb8hacXQ3y1
+         /uQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CcbTnFMkK4SUt9SM19RFSE4qtQlYRc5S1R8rKkOEREg=;
-        b=4vYHMYkeBjlPUvF/G5nYvvT/ylh7fU6XKGovcgUDB+4lZCrA75EY94iuYAlez5B9oK
-         dIPgM+gKBndq+/5XwbQicj9VFQQRK1zfitqiyaYFDxn0ILPnsb4EHcEgskTAF8hgC5he
-         +9iI5k4RgWdnXSt+ycVZ2EW9b3Qh0fbho2LNrRzXJRBzAfYl1Jlj8H93gMm8sMXrjy07
-         zZO+RGUfzNLADllF5rF2k+CzQfMfOij00KmUj2BHfvKy/shqIbZNWAV7qCSlHE4cIh95
-         CCcBqcAvyE/5ILJR95G+x972wlqiFoC3Yv1IIjz6J73liqZBVjXsA1q1ezvGQUuJvxcz
-         c/4Q==
-X-Gm-Message-State: AOAM533+t1LF5uRNh14DdB4cOrFNlVggO4pvIV2a2e+Ef9mvgEekX5Mc
-        PIQIAyeAh1dg0JavLcHilfK73g==
-X-Google-Smtp-Source: ABdhPJzuw/e1NuyevgoKu1/ZLyZqjPk04T9ipa+X8G2iHI7B+Jj7qBlRqw8eL1BLUTec5dxcv245Lg==
-X-Received: by 2002:a9d:6206:: with SMTP id g6mr1850162otj.62.1632776045994;
-        Mon, 27 Sep 2021 13:54:05 -0700 (PDT)
+        bh=H/1gZtc1poDY8bi7y1uCSE4LwRoLuhavbBlTDBIZBIs=;
+        b=wqQov+bys3qsWMynm90bEY3I7rtKNwF3a8Ewtyd1JpgGB3k1PSmquqJO3S2D8dm/Wl
+         gDPrurqWcI5u5BDHVR+ulaK96iAJ1nB3xxRvcvlKO/eWFsPVmhO3Eknf2i91X3vI1fC7
+         9vezL6c23SyTPCgOnsAPJB2Hab28mi3KtGh1AnRV0mE1f/YFV4pWYNnoFx8Tmzex5K6e
+         Du8RbWBPJtuUotbxIi82zK0JR480LgaSDvj0fsBfQDxmomOpkC8308Sd0cejkPfE491P
+         oZ7OBMlwOYZatYpdFzBprLp7HUGABup6biCI3oGDXUl4ychxfgfXv+rm2tNopuwTKBcy
+         +7kg==
+X-Gm-Message-State: AOAM5334ml9+9scOchrrXA5C5hSZRBpfPA7iVePN5aQkvCWSzk/zvgPe
+        yITgx4/V6D4umi6WU7aPMbfLxg==
+X-Google-Smtp-Source: ABdhPJxfkuE6fsAjAJhVV9xU/JhO/XLGt0nkHD77Y4BTOBoKXpAkEhRGu0cTm6LkL/+eLLFq96zScQ==
+X-Received: by 2002:a9d:734f:: with SMTP id l15mr1810307otk.4.1632776046881;
+        Mon, 27 Sep 2021 13:54:06 -0700 (PDT)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z10sm4187275otq.64.2021.09.27.13.54.05
+        by smtp.gmail.com with ESMTPSA id z10sm4187275otq.64.2021.09.27.13.54.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:54:05 -0700 (PDT)
+        Mon, 27 Sep 2021 13:54:06 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     mka@chromium.org, robh+dt@kernel.org, swboyd@chromium.org,
         Sibi Sankar <sibis@codeaurora.org>
@@ -57,12 +57,12 @@ Cc:     ohad@wizery.com, sidgup@codeaurora.org,
         rjw@rjwysocki.net, mathieu.poirier@linaro.org,
         dianders@chromium.org, devicetree@vger.kernel.org,
         ulf.hansson@linaro.org, agross@kernel.org
-Subject: Re: (subset) [PATCH v7 09/13] arm64: dts: qcom: sm8250: Use QMP property to control load state
-Date:   Mon, 27 Sep 2021 15:53:56 -0500
-Message-Id: <163277593826.1470888.14711484433465736927.b4-ty@linaro.org>
+Subject: Re: (subset) [PATCH v7 10/13] arm64: dts: qcom: sm8350: Use QMP property to control load state
+Date:   Mon, 27 Sep 2021 15:53:57 -0500
+Message-Id: <163277593826.1470888.1989839830062398875.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <1631800770-371-10-git-send-email-sibis@codeaurora.org>
-References: <1631800770-371-1-git-send-email-sibis@codeaurora.org> <1631800770-371-10-git-send-email-sibis@codeaurora.org>
+In-Reply-To: <1631800770-371-11-git-send-email-sibis@codeaurora.org>
+References: <1631800770-371-1-git-send-email-sibis@codeaurora.org> <1631800770-371-11-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,17 +70,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 19:29:26 +0530, Sibi Sankar wrote:
+On Thu, 16 Sep 2021 19:29:27 +0530, Sibi Sankar wrote:
 > Use the Qualcomm Mailbox Protocol (QMP) property to control the load
-> state resources on SM8250 SoCs and drop deprecated power-domains exposed
+> state resources on SM8350 SoCs and drop deprecated power-domains exposed
 > by AOSS QMP node.
 > 
 > 
 
 Applied, thanks!
 
-[09/13] arm64: dts: qcom: sm8250: Use QMP property to control load state
-        commit: b74ee2d71be84837648695465ce81dfb44420b7b
+[10/13] arm64: dts: qcom: sm8350: Use QMP property to control load state
+        commit: 6b7cb2d23791c541dff2f152d9c5c2f9da065289
 
 Best regards,
 -- 
