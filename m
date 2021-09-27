@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD9B419A22
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06C7419C3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhI0RG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:06:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44560 "EHLO mail.kernel.org"
+        id S237727AbhI0R01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:26:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235666AbhI0RGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:06:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC94611C5;
-        Mon, 27 Sep 2021 17:04:44 +0000 (UTC)
+        id S237066AbhI0RWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:22:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2785613AC;
+        Mon, 27 Sep 2021 17:14:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762285;
-        bh=7Cf9Nlh9ZIQXG95pGqRCQM8ZX7Gsrd96+itvA0E4Q+4=;
+        s=korg; t=1632762852;
+        bh=Jg/dchFRl2rrd7zTyH4d36yYuruokrwJB9U1vQ8Skvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y69jBK36R3p5yKuSSUTqQfYOII00ifU0F4TJzN+/t+ovt/utD2jmTkjfeyxItzSbE
-         Oe08jdD8nQwLtsn+VoxV+wRymVs9f73xDbzK8qSgf09k1KlUyY+ZBzTSmgLAeuSufO
-         /N/S5svrfoF9pkJmp00F8PxJa+iDpypDFoRXDF9M=
+        b=mERd1w1FlG7wKlo/9QijHEp9BfzMjTsdGOkY/bISHkRgDJH858H+N0Jtcu+yqJk1A
+         oneh1Mmx7c0UlokNz2c5VmoWvA+dhJBiCrb/PQtU2YmM3/Ub5hYQE/Ox7wDAR/89cV
+         Lvz4PUWM3B2VJgXfvhQqMHIYfeIa63FuF4NnQuyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Subject: [PATCH 5.4 04/68] usb: dwc2: gadget: Fix ISOC transfer complete handling for DDMA
-Date:   Mon, 27 Sep 2021 19:02:00 +0200
-Message-Id: <20210927170220.054402401@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 075/162] kselftest/arm64: signal: Add SVE to the set of features we can check for
+Date:   Mon, 27 Sep 2021 19:02:01 +0200
+Message-Id: <20210927170236.052759270@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+From: Mark Brown <broonie@kernel.org>
 
-commit dbe2518b2d8eabffa74dbf7d9fdd7dacddab7fc0 upstream.
+[ Upstream commit d4e4dc4fab686c5f3f185272a19b83930664bef5 ]
 
-When last descriptor in a descriptor list completed with XferComplete
-interrupt, core switching to handle next descriptor and assert BNA
-interrupt. Both these interrupts are set while dwc2_hsotg_epint()
-handler called. Each interrupt should be handled separately: first
-XferComplete interrupt then BNA interrupt, otherwise last completed
-transfer will not be giveback to function driver as completed
-request.
+Allow testcases for SVE signal handling to flag the dependency and be
+skipped on systems without SVE support.
 
-Fixes: 729cac693eec ("usb: dwc2: Change ISOC DDMA flow")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Link: https://lore.kernel.org/r/a36981accc26cd674c5d8f8da6164344b94ec1fe.1631386531.git.Minas.Harutyunyan@synopsys.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210819134245.13935-2-broonie@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/gadget.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/testing/selftests/arm64/signal/test_signals.h       | 2 ++
+ tools/testing/selftests/arm64/signal/test_signals_utils.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -3067,9 +3067,7 @@ static void dwc2_hsotg_epint(struct dwc2
+diff --git a/tools/testing/selftests/arm64/signal/test_signals.h b/tools/testing/selftests/arm64/signal/test_signals.h
+index f96baf1cef1a..ebe8694dbef0 100644
+--- a/tools/testing/selftests/arm64/signal/test_signals.h
++++ b/tools/testing/selftests/arm64/signal/test_signals.h
+@@ -33,10 +33,12 @@
+  */
+ enum {
+ 	FSSBS_BIT,
++	FSVE_BIT,
+ 	FMAX_END
+ };
  
- 		/* In DDMA handle isochronous requests separately */
- 		if (using_desc_dma(hsotg) && hs_ep->isochronous) {
--			/* XferCompl set along with BNA */
--			if (!(ints & DXEPINT_BNAINTR))
--				dwc2_gadget_complete_isoc_request_ddma(hs_ep);
-+			dwc2_gadget_complete_isoc_request_ddma(hs_ep);
- 		} else if (dir_in) {
- 			/*
- 			 * We get OutDone from the FIFO, so we only
+ #define FEAT_SSBS		(1UL << FSSBS_BIT)
++#define FEAT_SVE		(1UL << FSVE_BIT)
+ 
+ /*
+  * A descriptor used to describe and configure a test case.
+diff --git a/tools/testing/selftests/arm64/signal/test_signals_utils.c b/tools/testing/selftests/arm64/signal/test_signals_utils.c
+index 2de6e5ed5e25..6836510a522f 100644
+--- a/tools/testing/selftests/arm64/signal/test_signals_utils.c
++++ b/tools/testing/selftests/arm64/signal/test_signals_utils.c
+@@ -26,6 +26,7 @@ static int sig_copyctx = SIGTRAP;
+ 
+ static char const *const feats_names[FMAX_END] = {
+ 	" SSBS ",
++	" SVE ",
+ };
+ 
+ #define MAX_FEATS_SZ	128
+@@ -263,6 +264,8 @@ int test_init(struct tdescr *td)
+ 		 */
+ 		if (getauxval(AT_HWCAP) & HWCAP_SSBS)
+ 			td->feats_supported |= FEAT_SSBS;
++		if (getauxval(AT_HWCAP) & HWCAP_SVE)
++			td->feats_supported |= FEAT_SVE;
+ 		if (feats_ok(td))
+ 			fprintf(stderr,
+ 				"Required Features: [%s] supported\n",
+-- 
+2.33.0
+
 
 
