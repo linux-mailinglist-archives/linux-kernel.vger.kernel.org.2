@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0655419D5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E7E419D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237463AbhI0RsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbhI0RsB (ORCPT
+        id S237759AbhI0Rjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:39:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46621 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238513AbhI0Rh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:48:01 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94378C04A509
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:34:42 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id s20so23804910ioa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ju0i6KmuCXf0Y8f28twVBwRvi9cYB/Cv7YJM46OaRDg=;
-        b=Xb2P1lUNNyTkjRvl/Od0jpIuYij3PEuS44FpO6RCeuYQARbhXQAlrzHisVd7g21dx+
-         i31HTNXkTxYl2cxhmyakx2CSMtkGqvj2uh8eFi4kLLRd1PhJ/4n6Jotw/2ywe/P7Lrb3
-         VGCJ9o7MjPX8YO55/Ej1uZ2039hZ4U7DhMjFQmHEYYvzrOU+xXfOs8dRU1dDr+cV6Nwz
-         9GCHY+941Nw0t4puq7Ff5Qjv5egduRn9q9YHH6+5efJUqgZueZQ3uFRrRWiyWMujfl6V
-         0e+J2UlyjyQufjlc6BcHb3n2gqrzII+2AT0fgzeVRTaZDOi/6p3M7t4nm+MBjgtuhfVO
-         Jmxg==
+        Mon, 27 Sep 2021 13:37:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632764175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kx1DzZsvr2Xg6OJE0dxcX64G8Fhnxv7OEFrQ0oSnlMA=;
+        b=LBf+rYl2/cm16PPSNHyM8xcYJobT7yiVhawvcL6jRMOcmqSfGX/TgW8g9om/izyS7jGgjy
+        xegsVb5uukeHNjU5q4aY4/xR8y50rMCY1ioWaGTWJHNg9/Tcpg3y4dGRNK68i+2K0jeiqF
+        I5+sf8m07bJBKAOrzcKYW9BEeLk7BTM=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-NVAHndy5P7CeIJVB7zje3Q-1; Mon, 27 Sep 2021 13:36:14 -0400
+X-MC-Unique: NVAHndy5P7CeIJVB7zje3Q-1
+Received: by mail-il1-f198.google.com with SMTP id t10-20020a056e02160a00b0022c6a64f952so19490558ilu.20
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:36:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ju0i6KmuCXf0Y8f28twVBwRvi9cYB/Cv7YJM46OaRDg=;
-        b=MXf/+SwjOuCBZfP7j6ao0hBo5Cyq9mpmDsL3XIOf1aTpyZioMA12enOKmskEJLz40O
-         ewj5HJiGIJp3jsuuNF77CYIP6JRYZJjat5PEk0+vVActMFezVteNK8GooYZlw0KAwnOK
-         dgMIrQxyg6sffUJ00CgRVryfMkY8mip7pB+36aAB2bnp+BlS+mRF7HbC5KxTShIPKpu+
-         nkpyUy8K9QGRunLQcN+2BSNjSlrmweco0S/HdjkZnyH4rMPcCab0DrnfHTUwhlL8Ff7R
-         YXw2SMsvKuwrNx60jBKy0GOM7WSAlWAhk0Swf/mOMbCGHz9PFBtjPEAPa6bGLHGgVVzF
-         S5KQ==
-X-Gm-Message-State: AOAM53132Jk/uET32hQ+cZqo1uhJlnGIEyt6V0aOFJLWhoS/noFi+v60
-        D/hHfTKfAdzUlYD6K3oKXgA0OjQDvTQRMndkrc0o8hwWlIs=
-X-Google-Smtp-Source: ABdhPJzbJA1evZE5AUAluhy7MYFmrXxwibyO9sgFGsJIj89IVO2Sx27SLZ1c5HaP9OmFZ66G2up63sYwKhVA/GUqEUM=
-X-Received: by 2002:a5e:db0c:: with SMTP id q12mr699484iop.32.1632764081836;
- Mon, 27 Sep 2021 10:34:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923232512.210092-1-peterx@redhat.com> <CAJHvVci8ig4WCY2aK-GvmHP=Uw3s8DrGahk-Yh37GX2kR35kww@mail.gmail.com>
- <YU4uJLJHsHLVsS2w@t490s>
-In-Reply-To: <YU4uJLJHsHLVsS2w@t490s>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Mon, 27 Sep 2021 10:34:06 -0700
-Message-ID: <CAJHvVcjniq3TS=69O2tkAVD02tRCnRtw1Xf5Hu2Me4deQbq9sQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with thp enabled
-To:     Peter Xu <peterx@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kx1DzZsvr2Xg6OJE0dxcX64G8Fhnxv7OEFrQ0oSnlMA=;
+        b=Qe8NALwlIKb/7dYC46vJzJMaGDYQ/QzwtqAtUPfLwFe1l56Yz82hxTyoR5BJfgIHDE
+         iuGyJyAKPVXhYU6Vr5zZfej/AEpm5//dFupeKTytZq4r3GZ7yv94ROxnJQpsQVfnmg/p
+         YCVUFJV8N9GX6AUuwBgIgkY9ub7POOmj5orGxZj7iZCM0oFS/HdT13cQO71RpF5Hl1UD
+         cpKqsi2RNBRp/renSVmR8O8f6leIto42GxAscSQpiUm5yjsfk/yDb1s9IY4EdmFQTOJX
+         Lf5Rw8ZvP1Ke0bGYC8Bkn51iFAU3ZKEKowNwbzTDuSQrdaCq7utrx3CIPahcGhj/sjD2
+         LRcA==
+X-Gm-Message-State: AOAM531AWAnxqCV9RzoEYTjH/X6N35ffzmOojvXxNebKUqRBQ+N+EqX8
+        S3COQ5CMG9AB7nedAqcyZJ4Du2yvhPFLSP8P5cMTZEY8w8A68UDNA+kcKSciebKYc2EP8e9DWp3
+        Bx0480UocYC6v7as777RRPoRs
+X-Received: by 2002:a6b:f805:: with SMTP id o5mr638398ioh.131.1632764173455;
+        Mon, 27 Sep 2021 10:36:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQvaPSgeWlbzwDiqYEYVMbq1Xj6c+GiHHrarcR7/YoxjzTe8wNONJynFvm0oNyk1dAFEsafw==
+X-Received: by 2002:a6b:f805:: with SMTP id o5mr638377ioh.131.1632764173188;
+        Mon, 27 Sep 2021 10:36:13 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id h5sm9318414ioz.31.2021.09.27.10.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 10:36:12 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 13:36:10 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
 Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Nadav Amit <nadav.amit@gmail.com>, Li Wang <liwan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mm/userfaultfd: selftests: Fix memory corruption with
+ thp enabled
+Message-ID: <YVIBCh+jrZABo3xS@t490s>
+References: <20210923232512.210092-1-peterx@redhat.com>
+ <CAJHvVci8ig4WCY2aK-GvmHP=Uw3s8DrGahk-Yh37GX2kR35kww@mail.gmail.com>
+ <YU4uJLJHsHLVsS2w@t490s>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YU4uJLJHsHLVsS2w@t490s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 12:59 PM Peter Xu <peterx@redhat.com> wrote:
->
+On Fri, Sep 24, 2021 at 03:59:32PM -0400, Peter Xu wrote:
 > On Fri, Sep 24, 2021 at 10:21:30AM -0700, Axel Rasmussen wrote:
 > > On Thu, Sep 23, 2021 at 4:25 PM Peter Xu <peterx@redhat.com> wrote:
 > > >
@@ -100,7 +108,7 @@ On Fri, Sep 24, 2021 at 12:59 PM Peter Xu <peterx@redhat.com> wrote:
 > > > userfaultfd missing mode, then it'll cause memory corruption as described.
 > > >
 > > > To fix it, do release_pages() after initializing the src buffer.
-> >
+> > 
 > > But, if I understand correctly, release_pages() will just free the
 > > physical pages, but not touch the VMA(s). So, with the right
 > > max_ptes_none setting, why couldn't khugepaged just decide to
@@ -108,33 +116,34 @@ On Fri, Sep 24, 2021 at 12:59 PM Peter Xu <peterx@redhat.com> wrote:
 > > causing the same problem? It seems to me this change just
 > > significantly narrows the race window (which explains why we see less
 > > of the issue), but doesn't fix it fundamentally.
->
+> 
 > Did you mean you can reproduce the issue even with this patch?
-
-No, I haven't actually seen this happen after the patch. I suspect
-with this patch the window for it to happen is small, so reproducing
-may be hard. But from a theoretical standpoint, I don't see why it
-couldn't happen.
-
->
+> 
 > It is a good point anyway, indeed I don't see anything stops it from happening.
->
+> 
 > I wanted to prepare a v2 by releasing the pages after uffdio registration where
 > we'll do the vma split, but it won't simply work because release_pages() will
 > cause the process to hang death since that test registers with EVENT_REMOVE,
 > and release_pages() upon the thp will trigger synchronous EVENT_REMOVE which
 > cannot be handled by anyone.
->
+> 
 > Another solution is to map some PROT_NONE regions between the buffers, to make
 > sure they won't share a VMA.  I'll need to think more about which is better..
 
-One possibility would be to MADV_NOHUGEPAGE the regions, which at
-least would fix the immediate flakiness. Then we could spend some time
-adding a test case which specifically targets THP interactions? (I do
-think we want test coverage of that in the end, but with the current
-tests it's kind of "accidental".)
+Axel, let me know if you can reproduce an issue with this patch, or otherwise
+would you mind we keep this patch in -mm and fix the issue first?  I can never
+reproduce any issue with current patch even if I agree you're probably right,
+however before the patch is mostly 100% reproducable to fail.
 
->
-> --
-> Peter Xu
->
+It's just that after the weekend when I look back I still don't see a 100%
+clean way to fix it yet.  Mapping 4K PROT_NONE before/after each allocation is
+the most ideal but still looks tricky to me.
+
+Would you have time on looking for a better solution, so as to (see it a way
+to) complete what commit 8ba6e8640844 whats to do afterwards?
+
+Thanks,
+
+-- 
+Peter Xu
+
