@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B358F419C59
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E75D419B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237346AbhI0R1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:27:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40804 "EHLO mail.kernel.org"
+        id S236828AbhI0RRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238013AbhI0RYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C02B6613CF;
-        Mon, 27 Sep 2021 17:15:32 +0000 (UTC)
+        id S237376AbhI0ROf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:14:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFEF061361;
+        Mon, 27 Sep 2021 17:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762933;
-        bh=ba5EEh/I08Xl0pCyRsGryz+inYCK3L39IttSecK1Px8=;
+        s=korg; t=1632762623;
+        bh=Fg3r0Sa9za4VvlVWqNVgik2ceW728BMIdPknOBkgBnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i/ALWg2jeFGzPoh9XYuIlLKOtUNv+zTaZcWOtVh1b306lVaSXdPVvuKbKN/pCxBTT
-         mCchHmhtmxwufuiV8nOW1cgtvXfT5pY4d4IEmEikEvoYtpGVUB7sOJ5NijOMMoWaoG
-         Q8FeSDyHWFmijNfbwrd3H44xJ6Tkka4Tnc1brPJE=
+        b=o9BhyvYY8EnVe7gs8ImWR8hwxZkmGSuaV8zGFktOlYJ3p1uvGraXOXu/aThkEaGI5
+         z9tfwKRW77MiANyYuHNEDK37vA8XCDVzjWBGr7PfiRYxzJacY2FIbnFiBJkskDpLnw
+         R4OXDCvUeRtSRqh3uUZrT99G+brJL3m+rd54VpCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Anton Eidelman <anton.eidelman@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 106/162] scsi: qla2xxx: Restore initiator in dual mode
-Date:   Mon, 27 Sep 2021 19:02:32 +0200
-Message-Id: <20210927170237.111569177@linuxfoundation.org>
+Subject: [PATCH 5.10 061/103] nvme: keep ctrl->namespaces ordered
+Date:   Mon, 27 Sep 2021 19:02:33 +0200
+Message-Id: <20210927170227.889773417@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +44,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 5f8579038842d77e6ce05e1df6bf9dd493b0e3ef ]
+[ Upstream commit 298ba0e3d4af539cc37f982d4c011a0f07fca48c ]
 
-In dual mode in case of disabling the target, the whole port goes offline
-and initiator is turned off too.
+Various places in the nvme code that rely on ctrl->namespace to be
+ordered.  Ensure that the namespae is inserted into the list at the
+right position from the start instead of sorting it after the fact.
 
-Fix restoring initiator mode after disabling target in dual mode.
-
-Link: https://lore.kernel.org/r/20210915153239.8035-1-d.bogdanov@yadro.com
-Fixes: 0645cb8350cd ("scsi: qla2xxx: Add mode control for each physical port")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 540c801c65eb ("NVMe: Implement namespace list scanning")
+Reported-by: Anton Eidelman <anton.eidelman@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_init.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index f8f471157109..70b507d177f1 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -7014,7 +7014,8 @@ qla2x00_abort_isp(scsi_qla_host_t *vha)
- 				return 0;
- 			break;
- 		case QLA2XXX_INI_MODE_DUAL:
--			if (!qla_dual_mode_enabled(vha))
-+			if (!qla_dual_mode_enabled(vha) &&
-+			    !qla_ini_mode_enabled(vha))
- 				return 0;
- 			break;
- 		case QLA2XXX_INI_MODE_ENABLED:
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 9c97628519e0..bbc3efef5027 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -13,7 +13,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/backing-dev.h>
+-#include <linux/list_sort.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/pr.h>
+@@ -3801,15 +3800,6 @@ out_unlock:
+ 	return ret;
+ }
+ 
+-static int ns_cmp(void *priv, const struct list_head *a,
+-		const struct list_head *b)
+-{
+-	struct nvme_ns *nsa = container_of(a, struct nvme_ns, list);
+-	struct nvme_ns *nsb = container_of(b, struct nvme_ns, list);
+-
+-	return nsa->head->ns_id - nsb->head->ns_id;
+-}
+-
+ struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+ {
+ 	struct nvme_ns *ns, *ret = NULL;
+@@ -3830,6 +3820,22 @@ struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+ }
+ EXPORT_SYMBOL_NS_GPL(nvme_find_get_ns, NVME_TARGET_PASSTHRU);
+ 
++/*
++ * Add the namespace to the controller list while keeping the list ordered.
++ */
++static void nvme_ns_add_to_ctrl_list(struct nvme_ns *ns)
++{
++	struct nvme_ns *tmp;
++
++	list_for_each_entry_reverse(tmp, &ns->ctrl->namespaces, list) {
++		if (tmp->head->ns_id < ns->head->ns_id) {
++			list_add(&ns->list, &tmp->list);
++			return;
++		}
++	}
++	list_add(&ns->list, &ns->ctrl->namespaces);
++}
++
+ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 		struct nvme_ns_ids *ids)
+ {
+@@ -3889,9 +3895,8 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	}
+ 
+ 	down_write(&ctrl->namespaces_rwsem);
+-	list_add_tail(&ns->list, &ctrl->namespaces);
++	nvme_ns_add_to_ctrl_list(ns);
+ 	up_write(&ctrl->namespaces_rwsem);
+-
+ 	nvme_get_ctrl(ctrl);
+ 
+ 	device_add_disk(ctrl->device, ns->disk, nvme_ns_id_attr_groups);
+@@ -4160,10 +4165,6 @@ static void nvme_scan_work(struct work_struct *work)
+ 	if (nvme_scan_ns_list(ctrl) != 0)
+ 		nvme_scan_ns_sequential(ctrl);
+ 	mutex_unlock(&ctrl->scan_lock);
+-
+-	down_write(&ctrl->namespaces_rwsem);
+-	list_sort(NULL, &ctrl->namespaces, ns_cmp);
+-	up_write(&ctrl->namespaces_rwsem);
+ }
+ 
+ /*
 -- 
 2.33.0
 
