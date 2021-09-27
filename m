@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27440419AFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B46419CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbhI0ROu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
+        id S238033AbhI0Rgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:36:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236730AbhI0RML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:12:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F8CE60F3A;
-        Mon, 27 Sep 2021 17:08:34 +0000 (UTC)
+        id S237943AbhI0Raz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:30:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CBA76113D;
+        Mon, 27 Sep 2021 17:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762515;
-        bh=9hHHiGvMPXCrtVKoR3Bpj+phxErEmOi4tiFKHXRbF4s=;
+        s=korg; t=1632763387;
+        bh=FyIoA/F2sgzljwJzCSywgfeR1zCGkXO2Y7KRzjjcGko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uqRH1TmO6jR4B5q7Mnmz1+7+/HRjV6681PdM8VxD2bxsRLyvj9FqHaIkrijAEviJV
-         0cXt9VEBvaYhkpa1nRGEsjp/vkTm3c0brT/5N7bn1/wWY3TiE4P8s6ve6pcKUmNERq
-         hfmyUv2h5ZjDszbdM8DxtIcV5vlNpAyruYTs7GPc=
+        b=WRxEHycxt+KiBoUxBeDfhdayiaPXHol1BYx9+OGQhxKRBhRtliDy2zyfyj63KjTpH
+         Vx5IgBSa0wIdtyTy06Hq6JfIqwlrg52fklw/gSRdGRQXDeqjwD12B6xW3I2sPF8xsa
+         c2/E+BsswQJmbzlSEEcNvpTkwqG+gJcikNkkcA9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 051/103] net/mlx4_en: Dont allow aRFS for encapsulated packets
-Date:   Mon, 27 Sep 2021 19:02:23 +0200
-Message-Id: <20210927170227.517554246@linuxfoundation.org>
+        stable@vger.kernel.org, "Nowak, Lukasz" <Lukasz.Nowak@Dell.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 098/162] nvme-tcp: fix incorrect h2cdata pdu offset accounting
+Date:   Mon, 27 Sep 2021 19:02:24 +0200
+Message-Id: <20210927170236.838116698@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit fdbccea419dc782079ce5881d2705cc9e3881480 ]
+[ Upstream commit e371af033c560b9dd1e861f8f0b503142bf0a06c ]
 
-Driver doesn't support aRFS for encapsulated packets, return early error
-in such a case.
+When the controller sends us multiple r2t PDUs in a single
+request we need to account for it correctly as our send/recv
+context run concurrently (i.e. we get a new r2t with r2t_offset
+before we updated our iterator and req->data_sent marker). This
+can cause wrong offsets to be sent to the controller.
 
-Fixes: 1eb8c695bda9 ("net/mlx4_en: Add accelerated RFS support")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+To fix that, we will first know that this may happen only in
+the send sequence of the last page, hence we will take
+the r2t_offset to the h2c PDU data_offset, and in
+nvme_tcp_try_send_data loop, we make sure to increment
+the request markers also when we completed a PDU but
+we are expecting more r2t PDUs as we still did not send
+the entire data of the request.
+
+Fixes: 825619b09ad3 ("nvme-tcp: fix possible use-after-completion")
+Reported-by: Nowak, Lukasz <Lukasz.Nowak@Dell.com>
+Tested-by: Nowak, Lukasz <Lukasz.Nowak@Dell.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/nvme/host/tcp.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-index 49a11406b6ab..00fe2e2893cd 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -372,6 +372,9 @@ mlx4_en_filter_rfs(struct net_device *net_dev, const struct sk_buff *skb,
- 	int nhoff = skb_network_offset(skb);
- 	int ret = 0;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 19a711395cdc..fd28a23d45ed 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -614,7 +614,7 @@ static int nvme_tcp_setup_h2c_data_pdu(struct nvme_tcp_request *req,
+ 		cpu_to_le32(data->hdr.hlen + hdgst + req->pdu_len + ddgst);
+ 	data->ttag = pdu->ttag;
+ 	data->command_id = nvme_cid(rq);
+-	data->data_offset = cpu_to_le32(req->data_sent);
++	data->data_offset = pdu->r2t_offset;
+ 	data->data_length = cpu_to_le32(req->pdu_len);
+ 	return 0;
+ }
+@@ -940,7 +940,15 @@ static int nvme_tcp_try_send_data(struct nvme_tcp_request *req)
+ 			nvme_tcp_ddgst_update(queue->snd_hash, page,
+ 					offset, ret);
  
-+	if (skb->encapsulation)
-+		return -EPROTONOSUPPORT;
+-		/* fully successful last write*/
++		/*
++		 * update the request iterator except for the last payload send
++		 * in the request where we don't want to modify it as we may
++		 * compete with the RX path completing the request.
++		 */
++		if (req->data_sent + ret < req->data_len)
++			nvme_tcp_advance_req(req, ret);
 +
- 	if (skb->protocol != htons(ETH_P_IP))
- 		return -EPROTONOSUPPORT;
- 
++		/* fully successful last send in current PDU */
+ 		if (last && ret == len) {
+ 			if (queue->data_digest) {
+ 				nvme_tcp_ddgst_final(queue->snd_hash,
+@@ -952,7 +960,6 @@ static int nvme_tcp_try_send_data(struct nvme_tcp_request *req)
+ 			}
+ 			return 1;
+ 		}
+-		nvme_tcp_advance_req(req, ret);
+ 	}
+ 	return -EAGAIN;
+ }
 -- 
 2.33.0
 
