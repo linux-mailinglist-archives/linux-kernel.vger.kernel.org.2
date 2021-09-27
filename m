@@ -2,84 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C144195C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D99C4195C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhI0OCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:02:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234716AbhI0OBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:01:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC9F61266;
-        Mon, 27 Sep 2021 13:59:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632751197;
-        bh=pRwgBygJCF0uygrQacxkXypNnIIkSYPVhWcJIvDJP+w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Afc7CKApuP93zxKkhdmMXgr1HeevKwd2lvd9mZA8UvYuYTgDl5vqqYZ9+kJHJnxB6
-         nnuYUnvYX3lgCnZo3uddqmyuLzr3UNTeYdGQ+1wGOdoEScLOdjg2l8VpJ+d1OHzO/x
-         RNMDwSb7y7+Zgb82dwv5XQtS5zREtXdRuxhOI1IpWxRX3MD479UtLdsKcXwKpR4Wrq
-         6S2RRAy97VbTzBhB1M4Ofg4bUEEWZW3TtmQB+DUEDtWhfl9kH/KNUdZKzHXtZhMXz5
-         I5ZIOK/2CZz4Q+ojwEbnUjlvoHljoXJoKDRPbL96AINszlO1gLZEkDBcn+S/Qvb/rN
-         d3ESzHa7H7XEA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mUrAi-000Auc-2l; Mon, 27 Sep 2021 15:59:56 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 17/17] ABI: sysfs-bus-platform: add modalias description
-Date:   Mon, 27 Sep 2021 15:59:50 +0200
-Message-Id: <9cdebbad008886b1d09f5f3ac5d88bee19f08d97.1632750608.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632750608.git.mchehab+huawei@kernel.org>
-References: <cover.1632750608.git.mchehab+huawei@kernel.org>
+        id S234901AbhI0OCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:02:45 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:64362 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234839AbhI0OCO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:02:14 -0400
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 18RE07Fv028280;
+        Mon, 27 Sep 2021 23:00:07 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 18RE07Fv028280
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1632751208;
+        bh=+Hloq7pOWn+uCkJoTRCg/87ciA9Hg53ptAbmWaWlSNI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rsMuJ8ftbFfHF2vWJhdb7xNenWQmLOEYRydU83zeYdXTr2nNvryEiBJUxFEkVuUx8
+         rVFCFCFWAkyC+3JjV13cfUWgU5o7xlNy/OEMtc38cnhtt14pjNiYYeL+jyDZsxPC+S
+         BpwVxnhojJd+DA83hKqHMdidPEGZA5N/rw6uD5ABy8HvfkFfSX9yyd3xbLkn0XQi/J
+         /xZgu9AgZwsND/iM+wDqvvj3GadK+/VQkB9fkHc/D5wvd8ijOWCKAazbs9dv3QqVvF
+         D9xT18IZbpg0xo6AQEeHKuP92zeekXTJUKd0+k0F1RnIg86gBzaV4tER6bUpQIZzET
+         E6Aj3YyeWL/4w==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [RESEND PATCH 0/4] block: clean up Kconfig and Makefile
+Date:   Mon, 27 Sep 2021 22:59:56 +0900
+Message-Id: <20210927140000.866249-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the modalias parameter for platform devices, including
-the ones exposed via devicetree.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+This is a resend of
+https://lore.kernel.org/linux-block/20210528184435.252924-1-masahiroy@kernel.org/#t
 
-See [PATCH 00/17] at: https://lore.kernel.org/all/cover.1632750608.git.mchehab+huawei@kernel.org/
 
- Documentation/ABI/testing/sysfs-bus-platform | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
-index ff30728595ef..c4dfe7355c2d 100644
---- a/Documentation/ABI/testing/sysfs-bus-platform
-+++ b/Documentation/ABI/testing/sysfs-bus-platform
-@@ -42,3 +42,15 @@ Date:		August 2021
- Contact:	Barry Song <song.bao.hua@hisilicon.com>
- Description:
- 		This attribute will show "msi" if <N> is a valid msi irq
-+
-+What:		/sys/bus/platform/devices/.../modalias
-+Description:
-+		Same as MODALIAS in the uevent at device creation.
-+
-+		A platform device that it is exposed via devicetree uses:
-+
-+			- of:N`of node name`T`type`
-+
-+		Other platform devices use, instead:
-+
-+			- platform:`driver name`
+Masahiro Yamada (4):
+  block: remove redundant =y from BLK_CGROUP dependency
+  block: simplify Kconfig files
+  block: move menu "Partition type" to block/partitions/Kconfig
+  block: move CONFIG_BLOCK guard to top Makefile
+
+ Makefile                 |  3 ++-
+ block/Kconfig            | 28 ++++++++++------------------
+ block/Kconfig.iosched    |  4 ----
+ block/Makefile           |  2 +-
+ block/partitions/Kconfig |  4 ++++
+ 5 files changed, 17 insertions(+), 24 deletions(-)
+
 -- 
-2.31.1
+2.30.2
 
