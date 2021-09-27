@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B2F41A318
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD86941A31A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237955AbhI0Wep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S237988AbhI0Wex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237976AbhI0Wen (ORCPT
+        with ESMTP id S237962AbhI0Wew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:34:43 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2FFC061740
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id z24so84967810lfu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:05 -0700 (PDT)
+        Mon, 27 Sep 2021 18:34:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AFFC061765
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:13 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id y28so83611325lfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I15WPZIIpocs3G+JmlLPOy9NymMqM29RVT5hOe2pQ/I=;
-        b=vSDbSgUP2Di4FwmkQvN5iGnb4Hk8Cgsc/2exc8E7ZVUr8RLiXT36Nl0Eqx8GKT9CBA
-         P9tcUzUWQTqnYKbbDun5StBCWZTKUDW4OwG6WZwEJg28ucGk77PR/E5ftDqrjmBf+Q2a
-         DMExwu3LEynnZUE8N9O3eTZ1rzHxMx56LpMzUTnUNvcnk76ACZHjl9aXyLYUY+9jjqRi
-         PMY1QpVshdG5XEYo4Kh6UOnBeT6ml+Ra1Yv6DQv6u49nui3wcEDhe6Xq4BBJrxW4zNM0
-         Lmpxz95XtW3Z1KVeGh9aQJbZWscyKt50/9btqvgqL9MEEO/CQaIWCvezCHf///gzxAbM
-         OyIw==
+         :cc;
+        bh=J5B5aRrfRKxmEaCw/eYdgCvEsvYkoIwQ0WLhniYNwbI=;
+        b=kYygzng7VhqaJXdTP6kzR7OPAzr15D5nDlu3AwMx396lbeNKRIYI1t7OdplEWJTOBM
+         crw4TmSJXzGUQAhdSJkllt8wej/7iJUbFs6i9QWR/c60LzxciZUjf28l8lTKxjYoqeVs
+         DoU0qpB+2RFpCyuEaqsR1aEw9ts8yaMh1jmCTnqhOGzqgn6sXcMoR6TNLTjhb6CDRnuy
+         9bitaSBcArarBDG1HzPuexoRxS9Jzjm3Tj8KK4nva9LOhq2wlwQwWzAZQM9QZIJc+Mtz
+         LueUcHpgYHGtjmFL0t2+os01rx9GvigUAZB1vTOaszMLtJvjPmj/X3GL42W41Yp2hiLR
+         UB/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I15WPZIIpocs3G+JmlLPOy9NymMqM29RVT5hOe2pQ/I=;
-        b=5RfZTzeyo90/OogjbtPQtgSEgggOsVnflkEdv0PSBwhqJgvVaBAHs5azTEft/zNFnv
-         IBcIUxVHpzUj9IUXthrTuZCumoJ6C7aSpAnmz/Y1SRjS4q7ADcaDK1FZGcOHOU8Vp4Z5
-         suNSPA/x3a7RLCITshpUVjbKC2t2kyfh/wb3WieVxT83060x062RPT9+5+G3cyYIz03I
-         RXM6hm/IJVSHxqlkm7Qcfoa3Ve7Nn/+OyNUuxsZh3T4C88WOZrZX6W6an2Xkg67mdic8
-         Oqy9CqTwa5bos+MN4JMiCIC3fWmMvpxU6/XVoITkc+I5YSVieyFUDz5FnDfp4G397KZ5
-         NXsQ==
-X-Gm-Message-State: AOAM532QgjCEdCxjBdGTj3+1NSKFImjWdeLUqEEwHAnYsJV6Ev/THWct
-        W74RGpQiV5zYOBeYtxlIQRvo9WgktbnJgRQV0/UU9A==
-X-Google-Smtp-Source: ABdhPJyxBGWiBc4Azjidi9rycgneWjrmFFuGJT4rTG0L/rzqF2tXs/eZ6AtBTZQFKQpWUQ8wE3izb/7yQauawTmc4qs=
-X-Received: by 2002:a2e:898c:: with SMTP id c12mr2434278lji.16.1632781983522;
- Mon, 27 Sep 2021 15:33:03 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=J5B5aRrfRKxmEaCw/eYdgCvEsvYkoIwQ0WLhniYNwbI=;
+        b=xzxzjcTFfQzijRS02d5j9omDQm6tt/Wn4/yZ2HTYNSLXDUMcQOW0s/NKWZMw+ihqVL
+         Ib/qXMycxPWeQaYeLg4ORDgF1amjg5ypJt2nG8VnzSBaSDwgEhoWXyTiBkimAqZFOCVv
+         CVHWTkyLXaJ7AhKgnSl/qfBZolFqrwgulhoPVt2v3js4D9ZC3r/KjfYOQcfkJiQKtCwN
+         sSHhKnduZ3CFjOLdDgPEIkeHE8x2YsyzNXUSKloAJgZJfyLUa8eFliNSuPziPxlBV0vT
+         JkJKb4FlpyRosbsgFA12NV5MMgK1umK+t75MHMuucPmqoioWErb87Y8EKVZxIZglnWYP
+         3rdw==
+X-Gm-Message-State: AOAM532r7vbzEo25lvA8ulTC7BZXgXnZTKyNmtNn0V/C/RABOu+mxDT9
+        1s1oHU6pZd67Dj0uXp07if+uztIg546ZkNrnc+0l5w==
+X-Google-Smtp-Source: ABdhPJznzEIvFTY3UXzATF0un+whaXvXmw3gl+DlOYKWnactBuyqALPfu5jWI1cyGk26hMDaFqSyAwpGIHNXJFl5U2I=
+X-Received: by 2002:a2e:85c2:: with SMTP id h2mr2393248ljj.367.1632781991920;
+ Mon, 27 Sep 2021 15:33:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927015759.30855-1-xiongx18@fudan.edu.cn>
-In-Reply-To: <20210927015759.30855-1-xiongx18@fudan.edu.cn>
+References: <20210927094520.696665-1-arnd@kernel.org>
+In-Reply-To: <20210927094520.696665-1-arnd@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 28 Sep 2021 00:32:27 +0200
-Message-ID: <CAPDyKFoeA01fy6pAcSu2qaqs9U2VcgTLSvhzvNObhhprPdDT9g@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers/mmc: fix reference count leaks in moxart_probe
-To:     Xin Xiong <xiongx18@fudan.edu.cn>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+Date:   Tue, 28 Sep 2021 00:32:36 +0200
+Message-ID: <CAPDyKFqFwv7gV2dOEMK8A_Cwpfyh6tzzO8DC3n7Hak2-=o3GSw@mail.gmail.com>
+Subject: Re: [PATCH] memstick: avoid out-of-range warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 04:00, Xin Xiong <xiongx18@fudan.edu.cn> wrote:
+On Mon, 27 Sept 2021 at 11:45, Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> The issue happens in several error handling paths on two refcounted
-> object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-> these paths, the function forgets to decrement one or both objects'
-> reference count increased earlier by dma_request_chan(), causing
-> reference count leaks.
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Fix it by balancing the refcounts of both objects in some error
-> handling paths.
+> clang-14 complains about a sanity check that always passes when the
+> page size is 64KB or larger:
 >
-> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> drivers/memstick/core/ms_block.c:1739:21: error: result of comparison of constant 65536 with expression of type 'unsigned short' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         if (msb->page_size > PAGE_SIZE) {
+>             ~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+>
+> This is fine, it will still work on all architectures, so just shut
+> up that warning with a cast.
+>
+> Fixes: 0ab30494bc4f ("memstick: add support for legacy memorysticks")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The code looks good to me! However, checkpatch is complaining about
-the format. Please run it and fixup the reported warnings/errors.
+Applied for next, thanks!
 
 Kind regards
-=C3=9Cffe
+Uffe
 
 
 > ---
->  drivers/mmc/host/moxart-mmc.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  drivers/memstick/core/ms_block.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.=
-c
-> index 6c9d38132..e27ab3446 100644
-> --- a/drivers/mmc/host/moxart-mmc.c
-> +++ b/drivers/mmc/host/moxart-mmc.c
-> @@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev=
-)
->                         ret =3D -EPROBE_DEFER;
->                         goto out;
->                 }
-> +        if (!IS_ERR(host->dma_chan_tx)) {
-> +            dma_release_channel(host->dma_chan_tx);
-> +            host->dma_chan_tx =3D NULL;
-> +        }
-> +        if (!IS_ERR(host->dma_chan_rx)) {
-> +            dma_release_channel(host->dma_chan_rx);
-> +            host->dma_chan_rx =3D NULL;
-> +        }
->                 dev_dbg(dev, "PIO mode transfer enabled\n");
->                 host->have_dma =3D false;
->         } else {
-> @@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev=
-)
->         return 0;
+> diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
+> index acf36676e388..487e4cc2951e 100644
+> --- a/drivers/memstick/core/ms_block.c
+> +++ b/drivers/memstick/core/ms_block.c
+> @@ -1736,7 +1736,7 @@ static int msb_init_card(struct memstick_dev *card)
+>         msb->pages_in_block = boot_block->attr.block_size * 2;
+>         msb->block_size = msb->page_size * msb->pages_in_block;
 >
->  out:
-> +    if (!IS_ERR_OR_NULL(host->dma_chan_tx))
-> +        dma_release_channel(host->dma_chan_tx);
-> +    if (!IS_ERR_OR_NULL(host->dma_chan_rx))
-> +        dma_release_channel(host->dma_chan_rx);
->         if (mmc)
->                 mmc_free_host(mmc);
->         return ret;
+> -       if (msb->page_size > PAGE_SIZE) {
+> +       if ((size_t)msb->page_size > PAGE_SIZE) {
+>                 /* this isn't supported by linux at all, anyway*/
+>                 dbg("device page %d size isn't supported", msb->page_size);
+>                 return -EINVAL;
 > --
-> 2.25.1
+> 2.29.2
 >
