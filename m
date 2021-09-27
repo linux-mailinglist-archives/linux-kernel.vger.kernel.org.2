@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAAC419C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048CE4199FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237220AbhI0R0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:26:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36852 "EHLO mail.kernel.org"
+        id S235846AbhI0RF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237367AbhI0RXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:23:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8956A613AD;
-        Mon, 27 Sep 2021 17:14:38 +0000 (UTC)
+        id S235838AbhI0RFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:05:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 632C36109F;
+        Mon, 27 Sep 2021 17:03:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762879;
-        bh=yxTCZbKVWBfVNB0QLGILPj25o5bLdsGVy+pP44dlteY=;
+        s=korg; t=1632762239;
+        bh=J2lFQRkZ3VNG8KWYoO99vskLL4IvJPJ40iwrcC1nPF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ThtxOn1ozlhz/h6pYMKAWosW9YH1f2/nkOC3VE4mFjYscuh3lnMC9zyKNOjKM9wlV
-         8u256nat6bHsDPbrYkvjeSlOA8Akd31nhRbzVP2bTLnyRfdonFzQh9+0GVlgCm6tRq
-         nhiIMquX+/B0pyGjlhHqvYSz97zgxMb5vHYNxVuw=
+        b=tzDOwPyIeHvmOkIZNz9JY39nGuXA6oHbnnSeEqTbaIFYfXCnBXBiQgG596+hF6D9T
+         kWNcJMwcx6fGGzmjv9x7++8OmUsnFKEYl+EAHs5cuZFAa+lO7eDjM8a6znXfH/eux2
+         Z9W2GSNwmTvwsixQDu+CfpaBxOXUVFRcG+jB0p5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 084/162] nexthop: Fix memory leaks in nexthop notification chain listeners
-Date:   Mon, 27 Sep 2021 19:02:10 +0200
-Message-Id: <20210927170236.345165650@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 15/68] USB: serial: mos7840: remove duplicated 0xac24 device ID
+Date:   Mon, 27 Sep 2021 19:02:11 +0200
+Message-Id: <20210927170220.469852390@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,163 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 3106a0847525befe3e22fc723909d1b21eb0d520 ]
+commit 211f323768a25b30c106fd38f15a0f62c7c2b5f4 upstream.
 
-syzkaller discovered memory leaks [1] that can be reduced to the
-following commands:
+0xac24 device ID is already defined and used via
+BANDB_DEVICE_ID_USO9ML2_4.  Remove the duplicate from the list.
 
- # ip nexthop add id 1 blackhole
- # devlink dev reload pci/0000:06:00.0
-
-As part of the reload flow, mlxsw will unregister its netdevs and then
-unregister from the nexthop notification chain. Before unregistering
-from the notification chain, mlxsw will receive delete notifications for
-nexthop objects using netdevs registered by mlxsw or their uppers. mlxsw
-will not receive notifications for nexthops using netdevs that are not
-dismantled as part of the reload flow. For example, the blackhole
-nexthop above that internally uses the loopback netdev as its nexthop
-device.
-
-One way to fix this problem is to have listeners flush their nexthop
-tables after unregistering from the notification chain. This is
-error-prone as evident by this patch and also not symmetric with the
-registration path where a listener receives a dump of all the existing
-nexthops.
-
-Therefore, fix this problem by replaying delete notifications for the
-listener being unregistered. This is symmetric to the registration path
-and also consistent with the netdev notification chain.
-
-The above means that unregister_nexthop_notifier(), like
-register_nexthop_notifier(), will have to take RTNL in order to iterate
-over the existing nexthops and that any callers of the function cannot
-hold RTNL. This is true for mlxsw and netdevsim, but not for the VXLAN
-driver. To avoid a deadlock, change the latter to unregister its nexthop
-listener without holding RTNL, making it symmetric to the registration
-path.
-
-[1]
-unreferenced object 0xffff88806173d600 (size 512):
-  comm "syz-executor.0", pid 1290, jiffies 4295583142 (age 143.507s)
-  hex dump (first 32 bytes):
-    41 9d 1e 60 80 88 ff ff 08 d6 73 61 80 88 ff ff  A..`......sa....
-    08 d6 73 61 80 88 ff ff 01 00 00 00 00 00 00 00  ..sa............
-  backtrace:
-    [<ffffffff81a6b576>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
-    [<ffffffff81a6b576>] slab_post_alloc_hook+0x96/0x490 mm/slab.h:522
-    [<ffffffff81a716d3>] slab_alloc_node mm/slub.c:3206 [inline]
-    [<ffffffff81a716d3>] slab_alloc mm/slub.c:3214 [inline]
-    [<ffffffff81a716d3>] kmem_cache_alloc_trace+0x163/0x370 mm/slub.c:3231
-    [<ffffffff82e8681a>] kmalloc include/linux/slab.h:591 [inline]
-    [<ffffffff82e8681a>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff82e8681a>] mlxsw_sp_nexthop_obj_group_create drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:4918 [inline]
-    [<ffffffff82e8681a>] mlxsw_sp_nexthop_obj_new drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:5054 [inline]
-    [<ffffffff82e8681a>] mlxsw_sp_nexthop_obj_event+0x59a/0x2910 drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:5239
-    [<ffffffff813ef67d>] notifier_call_chain+0xbd/0x210 kernel/notifier.c:83
-    [<ffffffff813f0662>] blocking_notifier_call_chain kernel/notifier.c:318 [inline]
-    [<ffffffff813f0662>] blocking_notifier_call_chain+0x72/0xa0 kernel/notifier.c:306
-    [<ffffffff8384b9c6>] call_nexthop_notifiers+0x156/0x310 net/ipv4/nexthop.c:244
-    [<ffffffff83852bd8>] insert_nexthop net/ipv4/nexthop.c:2336 [inline]
-    [<ffffffff83852bd8>] nexthop_add net/ipv4/nexthop.c:2644 [inline]
-    [<ffffffff83852bd8>] rtm_new_nexthop+0x14e8/0x4d10 net/ipv4/nexthop.c:2913
-    [<ffffffff833e9a78>] rtnetlink_rcv_msg+0x448/0xbf0 net/core/rtnetlink.c:5572
-    [<ffffffff83608703>] netlink_rcv_skb+0x173/0x480 net/netlink/af_netlink.c:2504
-    [<ffffffff833de032>] rtnetlink_rcv+0x22/0x30 net/core/rtnetlink.c:5590
-    [<ffffffff836069de>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-    [<ffffffff836069de>] netlink_unicast+0x5ae/0x7f0 net/netlink/af_netlink.c:1340
-    [<ffffffff83607501>] netlink_sendmsg+0x8e1/0xe30 net/netlink/af_netlink.c:1929
-    [<ffffffff832fde84>] sock_sendmsg_nosec net/socket.c:704 [inline]
-    [<ffffffff832fde84>] sock_sendmsg net/socket.c:724 [inline]
-    [<ffffffff832fde84>] ____sys_sendmsg+0x874/0x9f0 net/socket.c:2409
-    [<ffffffff83304a44>] ___sys_sendmsg+0x104/0x170 net/socket.c:2463
-    [<ffffffff83304c01>] __sys_sendmsg+0x111/0x1f0 net/socket.c:2492
-    [<ffffffff83304d5d>] __do_sys_sendmsg net/socket.c:2501 [inline]
-    [<ffffffff83304d5d>] __se_sys_sendmsg net/socket.c:2499 [inline]
-    [<ffffffff83304d5d>] __x64_sys_sendmsg+0x7d/0xc0 net/socket.c:2499
-
-Fixes: 2a014b200bbd ("mlxsw: spectrum_router: Add support for nexthop objects")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 27f1281d5f72 ("USB: serial: Extra device/vendor ID for mos7840 driver")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/vxlan.c |  2 +-
- net/ipv4/nexthop.c  | 19 ++++++++++++++-----
- 2 files changed, 15 insertions(+), 6 deletions(-)
+ drivers/usb/serial/mos7840.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 5a8df5a195cb..141635a35c28 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -4756,12 +4756,12 @@ static void __net_exit vxlan_exit_batch_net(struct list_head *net_list)
- 	LIST_HEAD(list);
- 	unsigned int h;
+--- a/drivers/usb/serial/mos7840.c
++++ b/drivers/usb/serial/mos7840.c
+@@ -114,7 +114,6 @@
+ #define BANDB_DEVICE_ID_USOPTL4_2P       0xBC02
+ #define BANDB_DEVICE_ID_USOPTL4_4        0xAC44
+ #define BANDB_DEVICE_ID_USOPTL4_4P       0xBC03
+-#define BANDB_DEVICE_ID_USOPTL2_4        0xAC24
  
--	rtnl_lock();
- 	list_for_each_entry(net, net_list, exit_list) {
- 		struct vxlan_net *vn = net_generic(net, vxlan_net_id);
- 
- 		unregister_nexthop_notifier(net, &vn->nexthop_notifier_block);
- 	}
-+	rtnl_lock();
- 	list_for_each_entry(net, net_list, exit_list)
- 		vxlan_destroy_tunnels(net, &list);
- 
-diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
-index 0e75fd3e57b4..9e8100728d46 100644
---- a/net/ipv4/nexthop.c
-+++ b/net/ipv4/nexthop.c
-@@ -3567,6 +3567,7 @@ static struct notifier_block nh_netdev_notifier = {
- };
- 
- static int nexthops_dump(struct net *net, struct notifier_block *nb,
-+			 enum nexthop_event_type event_type,
- 			 struct netlink_ext_ack *extack)
- {
- 	struct rb_root *root = &net->nexthop.rb_root;
-@@ -3577,8 +3578,7 @@ static int nexthops_dump(struct net *net, struct notifier_block *nb,
- 		struct nexthop *nh;
- 
- 		nh = rb_entry(node, struct nexthop, rb_node);
--		err = call_nexthop_notifier(nb, net, NEXTHOP_EVENT_REPLACE, nh,
--					    extack);
-+		err = call_nexthop_notifier(nb, net, event_type, nh, extack);
- 		if (err)
- 			break;
- 	}
-@@ -3592,7 +3592,7 @@ int register_nexthop_notifier(struct net *net, struct notifier_block *nb,
- 	int err;
- 
- 	rtnl_lock();
--	err = nexthops_dump(net, nb, extack);
-+	err = nexthops_dump(net, nb, NEXTHOP_EVENT_REPLACE, extack);
- 	if (err)
- 		goto unlock;
- 	err = blocking_notifier_chain_register(&net->nexthop.notifier_chain,
-@@ -3605,8 +3605,17 @@ EXPORT_SYMBOL(register_nexthop_notifier);
- 
- int unregister_nexthop_notifier(struct net *net, struct notifier_block *nb)
- {
--	return blocking_notifier_chain_unregister(&net->nexthop.notifier_chain,
--						  nb);
-+	int err;
-+
-+	rtnl_lock();
-+	err = blocking_notifier_chain_unregister(&net->nexthop.notifier_chain,
-+						 nb);
-+	if (err)
-+		goto unlock;
-+	nexthops_dump(net, nb, NEXTHOP_EVENT_DEL, NULL);
-+unlock:
-+	rtnl_unlock();
-+	return err;
- }
- EXPORT_SYMBOL(unregister_nexthop_notifier);
- 
--- 
-2.33.0
-
+ /* This driver also supports
+  * ATEN UC2324 device using Moschip MCS7840
+@@ -196,7 +195,6 @@ static const struct usb_device_id id_tab
+ 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_2P)},
+ 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4)},
+ 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4P)},
+-	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL2_4)},
+ 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
+ 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
+ 	{USB_DEVICE(USB_VENDOR_ID_MOXA, MOXA_DEVICE_ID_2210)},
 
 
