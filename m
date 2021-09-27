@@ -2,189 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460C0419D7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CE4419D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbhI0RwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        id S236005AbhI0Rwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236670AbhI0Rvz (ORCPT
+        with ESMTP id S235942AbhI0Rwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:51:55 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402E3C07E5FA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:46:01 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 24so26686544oix.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:46:01 -0700 (PDT)
+        Mon, 27 Sep 2021 13:52:42 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28E6C04A51B;
+        Mon, 27 Sep 2021 10:47:44 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id k17so16551133pff.8;
+        Mon, 27 Sep 2021 10:47:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t3kfBeHXWRfZBiWRf/PnTlqxU9mRTrfzhwKYnp/6N6U=;
-        b=fJHX/CqI5GKmhGEd/8PMxvcbASoJiNG04iUYm/dPeWJmKjhQ80CKj5zbfHQkh3AI8c
-         bxMGavGgFlQk5/srtivz+28SVRvj01isHjl9Phav3+BTXxIT/DG3qH/oip3y/spGFU1f
-         hp2iG6SOXzowKCa6sUz9ufVpvZenXCTzPggHr/wyZ217bL7IGV5E2quDgw9zIxzWjNuE
-         2Ki21uRev0J9o/ca4Rk0uKsgjL93vRtbbApraZYEMUoVeLGkqHAIuMcFayqoLT2J3jTF
-         407HOsko2cHP8nNcvENQFDwWxMXhTxSeR1sh3QDUr5UO8Fby+mYsitZxgRSsjCoNPERO
-         1J2g==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8NnQ5fmWzacvL/zZWYUqL5exH3PdWXZxAmvcOks4ZZ0=;
+        b=hErXiCdFXSRg55VkQzl8DdYXIayMwIIVu0wTRRX/Kt23Qhnty+3vqEYNbPaMUb5xSC
+         7DLTQKmaLgdQzjnx0TRsmEa1sajeeioSWa8x+FTHFJODLgokaw1GzGCaNyOINGdB8jva
+         VcnU+DGzpHQ2JSvt0opousmy7ZsLh8medetpefxUnstT7Nf+w+uoRztFeppQRfp+zgdj
+         KEnw/cF5IWfZXFMuvc1fHzNhShw6XDUim4S5ZUoHLzAe/PrgygEqna1+fa5k7z6eKX3v
+         5mNMyfLIejlPRn+ArOOZQrJIJMQvhqO1VuZ/0TzTXASv9W3xmaxYwizv9EWBPw7x/WkV
+         mvsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t3kfBeHXWRfZBiWRf/PnTlqxU9mRTrfzhwKYnp/6N6U=;
-        b=MVONUzmITK2uXc6IkSLtOeyrdVz7LotBsVXKnkvKO6aKCfyP1ZlIanqXY5IbDUYxHA
-         hQ878ZTVIUa9R/CFw8p0eyA2j1trxS3tHvFfzl5L95Dj96LJW9ewUSPTQKj5MCeYzc4X
-         5EikryDtjo1ueA4bz5namxpr3Yx90cPlGPvvlm+2OVuNNlNIHvNSroCIzG4fpCJIFrJV
-         3raHMeaRJTGxyGjkux3A1wmeCcslDMjXWT2xUwGnW33MDqYDW/vUcBSww/eBwdbf51q3
-         hZk+sbKUwSzhZXLHFdhLpnsRlapm08BGtAbivUJOuSmDNVXdYhsSUl+iwD+H6VZc/Ey+
-         iR1A==
-X-Gm-Message-State: AOAM530kHpbwGvTnmL+wxnquPvT++YZGdU0mUu32NP1Ab/SrkyBPkkY8
-        wpTet8WK18dRqhCEsvxCRxi1FQ+MLkmAG0gKg2fm+A==
-X-Google-Smtp-Source: ABdhPJytAF8/STDSBekRMIlX8B09lphHyRtB50P9AbP8CLk16u5zMLU+O5lbNzfhNR/DdxYhvFLletdF6++ZIyZSR4Y=
-X-Received: by 2002:a54:418a:: with SMTP id 10mr243831oiy.13.1632764760257;
- Mon, 27 Sep 2021 10:46:00 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8NnQ5fmWzacvL/zZWYUqL5exH3PdWXZxAmvcOks4ZZ0=;
+        b=QpLBpXkEKk013Ttdc6W6uilpQ8zXiGflHUThB22HsJp9IxDelTuqog4s2YzEzYnHww
+         zLBn5fAsKL/2ggQJ7dulrBw0hi55sgAQI6cI2cMm6iO1y+/EFjxxtZo4v98LemmVYXmf
+         n9Kx7zWlQyBN+wIVfa5W/Eg/xOCtkcwu2e2+1C4MXhPDP4vt1Oh35rlCVb6gMgEu43T/
+         Ui4mZCQ/+NVgtTe82G3jX3Zq5l0z2JCoxGbRCV9lWNh6DfRdiUdLJvfgaAkddHHGsB1s
+         /Jl1NRfWmYdxkK/fbGksF9u8nIe2dD6N6/0IB75SvMwzvqJnZ8w3jmiYhMAibOJ76+jj
+         ak9Q==
+X-Gm-Message-State: AOAM533sqqngtF1wNzIVUCIBHS0O+RHDiD41Upr9UnU/TEMgyzIIUIY4
+        CweQ1t+aYgnqwIQMaXPPAwCSdrsI8ls=
+X-Google-Smtp-Source: ABdhPJz6fQPeWc9WXUQdnYTpow2eEkTApy2aGh2NvBRs584NTZXIEGfWblRKxvlpFw37gjuICeiq6g==
+X-Received: by 2002:a63:235f:: with SMTP id u31mr793854pgm.248.1632764863953;
+        Mon, 27 Sep 2021 10:47:43 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u12sm505547pjr.2.2021.09.27.10.47.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 10:47:43 -0700 (PDT)
+Subject: Re: [PATCH 03/11] genirq: Export irq_set_affinity_locked()
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+References: <20210924170546.805663-1-f.fainelli@gmail.com>
+ <20210924170546.805663-4-f.fainelli@gmail.com> <87tui8ub87.wl-maz@kernel.org>
+ <87tui8cpwd.ffs@tglx> <87r1dccp5z.ffs@tglx>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3e73c85e-20d1-43ae-3c3a-04322ffa970e@gmail.com>
+Date:   Mon, 27 Sep 2021 10:47:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210927170225.702078779@linuxfoundation.org> <20210927170227.414776158@linuxfoundation.org>
-In-Reply-To: <20210927170227.414776158@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 27 Sep 2021 23:15:49 +0530
-Message-ID: <CA+G9fYs2a78_RXaqfE3WMjSOh=HhuS=OjVxh9Hswzrme+pqxqQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 048/103] s390/qeth: fix deadlock during failing recovery
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87r1dccp5z.ffs@tglx>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following commit caused the build failures on s390,
+On 9/25/21 2:37 PM, Thomas Gleixner wrote:
+> On Sat, Sep 25 2021 at 23:21, Thomas Gleixner wrote:
+> 
+>> On Sat, Sep 25 2021 at 12:48, Marc Zyngier wrote:
+>>> On Fri, 24 Sep 2021 18:05:38 +0100, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>>  }
+>>>> +EXPORT_SYMBOL_GPL(irq_set_affinity_locked);
+>>>
+>>> This doesn't seem right.
+>>>
+>>> This driver seem to try and move interrupts on its own when the CPU
+>>> goes down. Why can't it rely on the normal CPU hotplug infrastructure
+>>> to do so like all the other drivers (bar some Cavium driver that does
+>>> the same thing)?
+>>>
+>>> I'd rather you take this opportunity to move these drivers into the
+>>> 21st century, so that we can kill irq_cpu_offline() and co altogether.
+>>
+>> I wanted to kill these callbacks years ago. Cavium has two variants of
+>> those offline/online callbacks:
+>>
+>>  1) octeon_irq_cpu_offline_ciu() which is doing the same as that BCM
+>>     driver. These really can go away. Just remove the callback and
+>>     everything just works.
+> 
+> For BCM this works today when that chip is used on ARM[64] simply
+> because the only architecture which invokes irq_cpu_offline() is MIPS.
 
-On Mon, 27 Sept 2021 at 22:43, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Alexandra Winter <wintera@linux.ibm.com>
->
-> [ Upstream commit d2b59bd4b06d84a4eadb520b0f71c62fe8ec0a62 ]
->
-> Commit 0b9902c1fcc5 ("s390/qeth: fix deadlock during recovery") removed
-> taking discipline_mutex inside qeth_do_reset(), fixing potential
-> deadlocks. An error path was missed though, that still takes
-> discipline_mutex and thus has the original deadlock potential.
->
-> Intermittent deadlocks were seen when a qeth channel path is configured
-> offline, causing a race between qeth_do_reset and ccwgroup_remove.
-> Call qeth_set_offline() directly in the qeth_do_reset() error case and
-> then a new variant of ccwgroup_set_offline(), without taking
-> discipline_mutex.
->
-> Fixes: b41b554c1ee7 ("s390/qeth: fix locking for discipline setup / removal")
-> Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
-> Reviewed-by: Julian Wiedmann <jwi@linux.ibm.com>
-> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/s390/include/asm/ccwgroup.h  |  2 +-
->  drivers/s390/cio/ccwgroup.c       | 10 ++++++++--
->  drivers/s390/net/qeth_core_main.c |  3 ++-
->  3 files changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/s390/include/asm/ccwgroup.h b/arch/s390/include/asm/ccwgroup.h
-> index ad3acb1e882b..8a22da9a735a 100644
-> --- a/arch/s390/include/asm/ccwgroup.h
-> +++ b/arch/s390/include/asm/ccwgroup.h
-> @@ -58,7 +58,7 @@ struct ccwgroup_device *get_ccwgroupdev_by_busid(struct ccwgroup_driver *gdrv,
->                                                  char *bus_id);
->
->  extern int ccwgroup_set_online(struct ccwgroup_device *gdev);
-> -extern int ccwgroup_set_offline(struct ccwgroup_device *gdev);
-> +int ccwgroup_set_offline(struct ccwgroup_device *gdev, bool call_gdrv);
->
->  extern int ccwgroup_probe_ccwdev(struct ccw_device *cdev);
->  extern void ccwgroup_remove_ccwdev(struct ccw_device *cdev);
-> diff --git a/drivers/s390/cio/ccwgroup.c b/drivers/s390/cio/ccwgroup.c
-> index 483a9ecfcbb1..cfdc1c7825d0 100644
-> --- a/drivers/s390/cio/ccwgroup.c
-> +++ b/drivers/s390/cio/ccwgroup.c
-> @@ -98,12 +98,13 @@ EXPORT_SYMBOL(ccwgroup_set_online);
->  /**
->   * ccwgroup_set_offline() - disable a ccwgroup device
->   * @gdev: target ccwgroup device
-> + * @call_gdrv: Call the registered gdrv set_offline function
->   *
->   * This function attempts to put the ccwgroup device into the offline state.
->   * Returns:
->   *  %0 on success and a negative error value on failure.
->   */
-> -int ccwgroup_set_offline(struct ccwgroup_device *gdev)
-> +int ccwgroup_set_offline(struct ccwgroup_device *gdev, bool call_gdrv)
->  {
->         struct ccwgroup_driver *gdrv = to_ccwgroupdrv(gdev->dev.driver);
->         int ret = -EINVAL;
-> @@ -112,11 +113,16 @@ int ccwgroup_set_offline(struct ccwgroup_device *gdev)
->                 return -EAGAIN;
->         if (gdev->state == CCWGROUP_OFFLINE)
->                 goto out;
-> +       if (!call_gdrv) {
-> +               ret = 0;
-> +               goto offline;
-> +       }
->         if (gdrv->set_offline)
->                 ret = gdrv->set_offline(gdev);
->         if (ret)
->                 goto out;
->
-> +offline:
->         gdev->state = CCWGROUP_OFFLINE;
->  out:
->         atomic_set(&gdev->onoff, 0);
-> @@ -145,7 +151,7 @@ static ssize_t ccwgroup_online_store(struct device *dev,
->         if (value == 1)
->                 ret = ccwgroup_set_online(gdev);
->         else if (value == 0)
-> -               ret = ccwgroup_set_offline(gdev);
-> +               ret = ccwgroup_set_offline(gdev, true);
->         else
->                 ret = -EINVAL;
->  out:
-> diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
-> index 7b0155b0e99e..15477bfb5bd8 100644
-> --- a/drivers/s390/net/qeth_core_main.c
-> +++ b/drivers/s390/net/qeth_core_main.c
-> @@ -5406,7 +5406,8 @@ static int qeth_do_reset(void *data)
->                 dev_info(&card->gdev->dev,
->                          "Device successfully recovered!\n");
->         } else {
-> -               ccwgroup_set_offline(card->gdev);
-> +               qeth_set_offline(card, disc, true);
-> +               ccwgroup_set_offline(card->gdev, false);
-
-drivers/s390/net/qeth_core_main.c: In function 'qeth_close_dev_handler':
-drivers/s390/net/qeth_core_main.c:83:9: error: too few arguments to
-function 'ccwgroup_set_offline'
-   83 |         ccwgroup_set_offline(card->gdev);
-      |         ^~~~~~~~~~~~~~~~~~~~
-In file included from drivers/s390/net/qeth_core.h:44,
-                 from drivers/s390/net/qeth_core_main.c:46:
-arch/s390/include/asm/ccwgroup.h:61:5: note: declared here
-   61 | int ccwgroup_set_offline(struct ccwgroup_device *gdev, bool call_gdrv);
-      |     ^~~~~~~~~~~~~~~~~~~~
-make[3]: *** [scripts/Makefile.build:280:
-drivers/s390/net/qeth_core_main.o] Error 1
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-Build url:
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1626658768#L73
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+That is correct. How would you recommend addressing that? In premise
+when this driver is used on ARM[64] it is used as a second level
+interrupt controller hanging off the ARM GIC (or another ARM CPU
+interrupt controller), so in that case I suppose I could make the
+irq_set_cpu_offline be dependent upon CONFIG_SMP and CONFIG_MIPS, would
+that be acceptable?
+-- 
+Florian
