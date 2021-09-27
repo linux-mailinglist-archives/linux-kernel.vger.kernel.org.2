@@ -2,65 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2F3418D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 03:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EE2418D98
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhI0BxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 21:53:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:21346 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232360AbhI0BxA (ORCPT
+        id S232473AbhI0CCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 22:02:18 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:39157
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S232434AbhI0CCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 21:53:00 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHlqt0NBZzRZJ4;
-        Mon, 27 Sep 2021 09:47:06 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 09:51:21 +0800
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 09:51:21 +0800
-Subject: Re: [PATCH] kernfs: fix the race in the creation of negative dentry
-To:     Ian Kent <raven@themaw.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Miklos Szeredi <mszeredi@redhat.com>
-CC:     <viro@ZenIV.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210911021342.3280687-1-houtao1@huawei.com>
- <7b92b158200567f0bba26a038191156890921f13.camel@themaw.net>
- <6c8088411523e52fc89b8dd07710c3825366ce64.camel@themaw.net>
- <747aee3255e7a07168557f29ad962e34e9cb964b.camel@themaw.net>
- <e3d22860-f2f0-70c1-35ef-35da0c0a44d2@huawei.com>
- <077362887b4ceeb01c27fbf36fa35adae02967c9.camel@themaw.net>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <13592fb7-5bc1-41cf-f19d-150b1e634fb2@huawei.com>
-Date:   Mon, 27 Sep 2021 09:51:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 26 Sep 2021 22:02:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=INcf37QQi9
+        siQzq/L1Iyk1bKxcSM2+zBRsgtdm2Bjhw=; b=lYA4G2bIi1F4zXgtFKJ7DY8PQZ
+        kaexJzBEr1Ez13IgvQuK8pDSRWMUfdKNWTfC7VH9pttlBOmeQfcRvT8azbU95AFl
+        AqZx14T+pO+20W2r3g30SsBGjOZUOjlqHwjsfhfsv8Hggc/RIo/Ft80lrGte5QCp
+        a3dD+J6OFsJBK8atM=
+Received: from localhost.localdomain (unknown [39.144.40.15])
+        by app2 (Coremail) with SMTP id XQUFCgDX3s6ZJVFhNA_yAA--.45020S4;
+        Mon, 27 Sep 2021 10:00:24 +0800 (CST)
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH v2] drivers/mmc: fix reference count leaks in moxart_probe
+Date:   Mon, 27 Sep 2021 09:57:59 +0800
+Message-Id: <20210927015759.30855-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <077362887b4ceeb01c27fbf36fa35adae02967c9.camel@themaw.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: XQUFCgDX3s6ZJVFhNA_yAA--.45020S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF1xJF4Utw4rKFyUXr4xJFb_yoW8WrW8pF
+        48Cr9IkrWUtr4akF47Ca1DWF18ur4Fyw43KrZ093s7Z34UJFsrC348Ga40qr95JryrXFZY
+        gF1YqF15uFZ5JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbBMKJUUUUU==
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiAg4REFKp2bi50AAAs+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The issue happens in several error handling paths on two refcounted
+object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+these paths, the function forgets to decrement one or both objects'
+reference count increased earlier by dma_request_chan(), causing
+reference count leaks.
 
-On 9/23/2021 10:50 AM, Ian Kent wrote:
-> Great, although I was hoping you would check it worked as expected.
-> Did you check?
-> If not could you please do that check?
-It fixes the race. I rerun the stress test of module addition and removal,
-and the problem doesn't occur after 12 hours.
+Fix it by balancing the refcounts of both objects in some error
+handling paths.
 
-Regards,
-Tao
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ drivers/mmc/host/moxart-mmc.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index 6c9d38132..e27ab3446 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
+ 			ret = -EPROBE_DEFER;
+ 			goto out;
+ 		}
++        if (!IS_ERR(host->dma_chan_tx)) {
++            dma_release_channel(host->dma_chan_tx);
++            host->dma_chan_tx = NULL;
++        }
++        if (!IS_ERR(host->dma_chan_rx)) {
++            dma_release_channel(host->dma_chan_rx);
++            host->dma_chan_rx = NULL;
++        }
+ 		dev_dbg(dev, "PIO mode transfer enabled\n");
+ 		host->have_dma = false;
+ 	} else {
+@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ out:
++    if (!IS_ERR_OR_NULL(host->dma_chan_tx))
++        dma_release_channel(host->dma_chan_tx);
++    if (!IS_ERR_OR_NULL(host->dma_chan_rx))
++        dma_release_channel(host->dma_chan_rx);
+ 	if (mmc)
+ 		mmc_free_host(mmc);
+ 	return ret;
+-- 
+2.25.1
+
