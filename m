@@ -2,225 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1EE4197F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069FF4197F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhI0Pbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:31:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32839 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234158AbhI0Pbb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:31:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632756593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mENHZjQ+BALjyt1DdN0jTcrXlMqP2xXYUM+xHN7USJE=;
-        b=KNUdJ2AmB0/KLyfUxowGvK/x8W0n7YUNQbdqoj3SsHDccIc0Sr92ZDMFr8A8ldA2jBd945
-        9dcqT7vB270RWaPXwlWt4f5K8BaBuZKvWYd0hiFkArjXNNiMOOBYKwoPu4qRljUD9mX2Ly
-        xizUdn0Wkctx/pPivx4u9MVgAti5iV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-cmZ11cD5MK61XX14reloTA-1; Mon, 27 Sep 2021 11:29:49 -0400
-X-MC-Unique: cmZ11cD5MK61XX14reloTA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 790EC180830E;
-        Mon, 27 Sep 2021 15:29:48 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 293B05C261;
-        Mon, 27 Sep 2021 15:29:48 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] (Many) KVM fixes for 5.15-rc4
-Date:   Mon, 27 Sep 2021 11:29:47 -0400
-Message-Id: <20210927152947.532485-1-pbonzini@redhat.com>
+        id S235231AbhI0Pcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:32:45 -0400
+Received: from mail-eopbgr40078.outbound.protection.outlook.com ([40.107.4.78]:28838
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235184AbhI0Pcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:32:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ImOsG1w8WWZ8PcEniYFPLLrux+62JmUG/kHcqEhY2oc=;
+ b=5TCpJROtwdeYswvnccGFF3IRqUfB3t2xCGbCTqiJOx8BPgxOPoo5Fm25C9KSi07Z6MYBVjDJaH/z5Ubw5H9XDm1U4QyKToury7qq4AwfbSdppJHL+4GQg06WN1ZasJMGXb6jJ85MKBUWmnmq/2+O4C21qRczUmG2Rdu2sKmvqCQ=
+Received: from DB9PR02CA0011.eurprd02.prod.outlook.com (2603:10a6:10:1d9::16)
+ by AM9PR08MB5972.eurprd08.prod.outlook.com (2603:10a6:20b:280::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Mon, 27 Sep
+ 2021 15:30:56 +0000
+Received: from DB5EUR03FT011.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:1d9::4) by DB9PR02CA0011.outlook.office365.com
+ (2603:10a6:10:1d9::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.17 via Frontend
+ Transport; Mon, 27 Sep 2021 15:30:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.33.187.114)
+ smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.33.187.114 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.33.187.114; helo=64aa7808-outbound-2.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-2.mta.getcheckrecipient.com (63.33.187.114)
+ by DB5EUR03FT011.mail.protection.outlook.com (10.152.20.95) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Mon, 27 Sep 2021 15:30:56 +0000
+Received: ("Tessian outbound 0e48c0de19a3:v103"); Mon, 27 Sep 2021 15:30:56 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: 51dd7f62de5821d3
+X-CR-MTA-TID: 64aa7808
+Received: from 0e48d0915ece.1
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 6C1114FC-7C8A-45E0-BBF1-467F5EAE268B.1;
+        Mon, 27 Sep 2021 15:30:43 +0000
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 0e48d0915ece.1
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Mon, 27 Sep 2021 15:30:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b42x1fOAQRZY/u45n1vvW/4w+7UV3qXq3B5pzQGcug8TbJJQq1RwCz4EtPRM1rx8GX7UCDUwVX0wYzbWcGjvtSTa2uXw92zsc4Y7X0YHZjiRuB8Z8PpNaB1QWl0gClwi5NPFHGY1xVwj6llWwBWt6QCb3bldridt0hu6VvOjAmQacqtzljZpylR26dmKydldeBJ/dsZknEBdnLovxo+BBa3mLRv8nIw4BiexcWm/pXLnAda0AaUrAPi19O6YKMgLMFP9tteRrcOIYXHjnIReMHJs3xRaq2HrD8B6E9EcHtyXWo7rWIUO4NaKGxXPDW0etqhsDY/LwvK4nrEAKkyIgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ImOsG1w8WWZ8PcEniYFPLLrux+62JmUG/kHcqEhY2oc=;
+ b=b/vcIPtLYuUZc6tgSVQPa0GppWYVEeTOGUrzpbEQM4Th5sqYc0j/DYA2OM8RcPWpwIx+iEIN8c/4Xc2t+jOlvX/hoAr5/EsOHDPy6Slwu1otPYfRfiaBYsRHbcrbyiXSPPHMKH4D2eQthACHFnK7XvmObmEqaGRjL7rHpY2VLRCq47xaHMgBScUxsNghNXItUlfG48dr+zJ6b1BITXLyXx4rnZTaWyztpMYI5oJG6Bc5xrqx6hZVvc6zD3badje+YQ1l4t6SsWZyhXQepbDj3XT0JaNllx0+lFqRsvEsJX4ElfbKU037ACKkXF/kZDZt7lVdspyAJh8lZN5th5TVHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ImOsG1w8WWZ8PcEniYFPLLrux+62JmUG/kHcqEhY2oc=;
+ b=5TCpJROtwdeYswvnccGFF3IRqUfB3t2xCGbCTqiJOx8BPgxOPoo5Fm25C9KSi07Z6MYBVjDJaH/z5Ubw5H9XDm1U4QyKToury7qq4AwfbSdppJHL+4GQg06WN1ZasJMGXb6jJ85MKBUWmnmq/2+O4C21qRczUmG2Rdu2sKmvqCQ=
+Received: from DB9PR08MB6460.eurprd08.prod.outlook.com (2603:10a6:10:254::18)
+ by DB9PR08MB6763.eurprd08.prod.outlook.com (2603:10a6:10:2af::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Mon, 27 Sep
+ 2021 15:30:41 +0000
+Received: from DB9PR08MB6460.eurprd08.prod.outlook.com
+ ([fe80::edb3:cc65:f2e0:203c]) by DB9PR08MB6460.eurprd08.prod.outlook.com
+ ([fe80::edb3:cc65:f2e0:203c%8]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 15:30:41 +0000
+From:   Ross Burton <Ross.Burton@arm.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH] scripts/gcc-plugins: consistently use HOSTCC
+Thread-Topic: [PATCH] scripts/gcc-plugins: consistently use HOSTCC
+Thread-Index: AQHXsMIs1bZyVW+fwEWHPae7z6NPnau4AhUAgAAWawA=
+Date:   Mon, 27 Sep 2021 15:30:40 +0000
+Message-ID: <C0C655F0-638B-4795-B56E-8B7118BD547B@arm.com>
+References: <20210923152811.406516-1-ross.burton@arm.com>
+ <163243252379.3933826.2645114887075876479.b4-ty@chromium.org>
+ <d2b6c3d1-45a6-5820-cedf-28390ffcc8cd@gmail.com>
+In-Reply-To: <d2b6c3d1-45a6-5820-cedf-28390ffcc8cd@gmail.com>
+Accept-Language: en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.53.21091200
+Authentication-Results-Original: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=arm.com;
+x-ms-publictraffictype: Email
+X-MS-Office365-Filtering-Correlation-Id: 5433e5ce-e20e-4766-b37f-08d981cbccfa
+x-ms-traffictypediagnostic: DB9PR08MB6763:|AM9PR08MB5972:
+X-Microsoft-Antispam-PRVS: <AM9PR08MB597283AA063259CADA8604D3E8A79@AM9PR08MB5972.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+nodisclaimer: true
+x-ms-oob-tlc-oobclassifiers: OLM:1417;OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: tlR8/UeWkanV/HfpHgV+plldxKu7Ltg01hfVqRJXXI0kyNNW5/AGSV7zzNxY+IXxBZGy43mVDjozbCcSu6v3J1qn8BQ3+FMc+KstMYuMIMRDWQS7A7kE7w7B3fwazkdyMF1aPKZYE6peHUfodI45GrvIvpDhoIEzdpPfeiNz8vJ0ELkEKKKhpKk8w0co8nZH2X+ttQ5BXOKL0QPiKHwFwOeYd/c0YvAtTqJml9olEZf0D6mINKechGiHpKbaxoSVPA+5V1LXmdoFE7pQA7a0Hh1NvQB0lJ3mYeMSdY+4mtxYBMaQvYanLKYZ3l8OYt2C8NkwfbOHa31kfJ8VBXP15ZkKLvu9MocM4A+7KUyY60hRCX6HUwf20KHE8H7CeW2j8WoYG7kyqyNlA/85bk+4uKCa1YwboIinUe5RZtJsAGK3sjPLYqmsppEFp50V8fShwEENDtFy4qvWCqmOPxvXkHmZr8SeSFBgMJ8iGs+xY+ZSinHYU5RfzdsrqhdJGY8MJs1vxGOeItmKJNM8wx1YbfVWbmI/1x3eFOv1UfSKR4vc50szbtFutDcqi6GaTpy4SXEvxJis5kwXN9kzQjFcW1Eq9jYd6AuFF6dmdoLwRAuZfguEsoHayPitMvdp4N+H8EBQsxElCKsJ4uKa1A1+x60Vn/pjQZYR+Z8fXF8CLCgPQnhY08yso9CK5rUNei7i2mrqe/IgNqrK5gmRSbVeOOWs390yHJeA3OeksYIvflM=
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB6460.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(2616005)(186003)(83380400001)(6506007)(316002)(8936002)(76116006)(6512007)(66446008)(66556008)(64756008)(110136005)(38070700005)(33656002)(26005)(91956017)(66476007)(71200400001)(66946007)(2906002)(86362001)(508600001)(5660300002)(4744005)(8676002)(38100700002)(36756003)(122000001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E340B9C5A904BA46838FD4E813E59337@eurprd08.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR08MB6763
+Original-Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: DB5EUR03FT011.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: c4048bf2-2b78-4a7d-c28f-08d981cbc3b1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gY4uPdo/+91iKzBNwuKseOjnDqj215yHV9HZTIXO+dwwCx5usJ1BFFZ0cWge/97FmfBol6ylWE1LauoifdPYFpuGyvsqrI4KrbHZ+fl6Iw22QprCNy2WyWgih6GDXvRLzt4AOR57tQs940oFC4ef2niPkALlA27HCdSETJejNcWIAvd/izWfUoCB50DXOFxu6AyEHITeR/ojrvA1ualZogiLvOONI7/ztC/rfmU/0/0of3rbFSHqIgR3FKhxr/8RXntfX5vrqvq+YOc9vjdU/dEpU+OEzV0z0mfis2HqJNfnX2l3EU5TCxyzMsI5lnwzsS4PLsL/EYsEpfBnBfZQ20+Aa7PxurffzTpvcLH3iaMIggspAMS6nmj+DrGj05JuSVbYsQFTkHgrSOVF001kTW8FCiDwekm/oqbDWeDZXr8XTLVd28CBuladeTpGdgj8HcMlqy5o1YdYz2m+bY6vEQfwMySlDh8vajCfug/BXndXzXm09x51wnBu8C+pFByWoDoQB0KCchaivMoHgypXurkl2YNHQYbY7j3yM8Quuhu9uy00YOWzJwmWtctp8GaOVmYlwPR2qJlM8KdF4+IYbXVRcibQVoqXMB1wMw6W8Glz7CXrFPFTrOkSHSzCYeIBx4gqnW9edMxvbvC41VVnTurUzWN6DH2nRhAqSHhlWhCWth2G2S6k+AuDDMWNyYP7NNuWxm/bVb9H+TjvZaEiXg==
+X-Forefront-Antispam-Report: CIP:63.33.187.114;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-2.mta.getcheckrecipient.com;PTR:ec2-63-33-187-114.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(86362001)(36860700001)(2616005)(33656002)(8936002)(336012)(316002)(186003)(36756003)(47076005)(2906002)(6512007)(82310400003)(83380400001)(4744005)(6506007)(70206006)(356005)(70586007)(26005)(508600001)(6486002)(450100002)(110136005)(81166007)(8676002)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 15:30:56.6867
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5433e5ce-e20e-4766-b37f-08d981cbccfa
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.33.187.114];Helo=[64aa7808-outbound-2.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT011.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR08MB5972
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
-
-The following changes since commit 2da4a23599c263bd4a7658c2fe561cb3a73ea6ae:
-
-  KVM: selftests: Remove __NR_userfaultfd syscall fallback (2021-09-22 10:24:02 -0400)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 50b078184604fea95adbb144ff653912fb0e48c6:
-
-  Merge tag 'kvmarm-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master (2021-09-24 06:04:42 -0400)
-
-----------------------------------------------------------------
-x86:
-
-- missing TLB flush
-
-- nested virtualization fixes for SMM (secure boot on nested hypervisor)
-  and other nested SVM fixes
-
-- syscall fuzzing fixes
-
-- live migration fix for AMD SEV
-
-- mirror VMs now work for SEV-ES too
-
-- fixes for reset
-
-- possible out-of-bounds access in IOAPIC emulation
-
-- fix enlightened VMCS on Windows 2022
-
-ARM:
-
-- Add missing FORCE target when building the EL2 object
-
-- Fix a PMU probe regression on some platforms
-
-Generic:
-
-- KCSAN fixes
-
-selftests:
-
-- random fixes, mostly for clang compilation
-
-----------------------------------------------------------------
-
-A bit late...  I got sidetracked by back-from-vacation routines first and
-conferences second.  But most of these patches are already a few weeks
-old and things look more calm on the mailing list than what this pull
-request would suggest.
-
-Paolo
-
-Chenyi Qiang (1):
-      KVM: nVMX: Fix nested bus lock VM exit
-
-David Matlack (3):
-      KVM: selftests: Change backing_src flag to -s in demand_paging_test
-      KVM: selftests: Refactor help message for -s backing_src
-      KVM: selftests: Create a separate dirty bitmap per slot
-
-Fares Mehanna (1):
-      kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
-
-Haimin Zhang (1):
-      KVM: x86: Handle SRCU initialization failure during page track init
-
-Hou Wenlong (1):
-      kvm: fix wrong exception emulation in check_rdtsc
-
-Lai Jiangshan (3):
-      KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
-      KVM: X86: Synchronize the shadow pagetable before link it
-      KVM: Remove tlbs_dirty
-
-Marc Zyngier (1):
-      KVM: arm64: Fix PMU probe ordering
-
-Maxim Levitsky (11):
-      KVM: x86: nSVM: restore the L1 host state prior to resuming nested guest on SMM exit
-      KVM: x86: reset pdptrs_from_userspace when exiting smm
-      KVM: x86: SVM: call KVM_REQ_GET_NESTED_STATE_PAGES on exit from SMM mode
-      KVM: x86: nSVM: refactor svm_leave_smm and smm_enter_smm
-      KVM: x86: VMX: synthesize invalid VM exit when emulating invalid guest state
-      KVM: x86: nVMX: don't fail nested VM entry on invalid guest state if !from_vmentry
-      KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
-      KVM: x86: nSVM: restore int_vector in svm_clear_vintr
-      KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 and L0
-      KVM: x86: nSVM: test eax for 4K alignment for GP errata workaround
-      KVM: x86: nSVM: don't copy virt_ext from vmcb12
-
-Mingwei Zhang (1):
-      KVM: SVM: fix missing sev_decommission in sev_receive_start
-
-Oliver Upton (4):
-      selftests: KVM: Fix check for !POLLIN in demand_paging_test
-      selftests: KVM: Align SMCCC call with the spec in steal_time
-      selftests: KVM: Call ucall_init when setting up in rseq_test
-      selftests: KVM: Explicitly use movq to read xmm registers
-
-Paolo Bonzini (1):
-      Merge tag 'kvmarm-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master
-
-Peter Gonda (3):
-      KVM: SEV: Acquire vcpu mutex when updating VMSA
-      KVM: SEV: Update svm_vm_copy_asid_from for SEV-ES
-      KVM: SEV: Allow some commands for mirror VM
-
-Sean Christopherson (8):
-      KVM: x86: Mark all registers as avail/dirty at vCPU creation
-      KVM: x86: Clear KVM's cached guest CR3 at RESET/INIT
-      KVM: VMX: Remove defunct "nr_active_uret_msrs" field
-      KVM: SEV: Pin guest memory for write for RECEIVE_UPDATE_DATA
-      KVM: x86: Query vcpu->vcpu_idx directly and drop its accessor
-      KVM: x86: Identify vCPU0 by its vcpu_idx instead of its vCPUs array entry
-      KVM: Clean up benign vcpu->cpu data races when kicking vCPUs
-      KVM: KVM: Use cpumask_available() to check for NULL cpumask when kicking vCPUs
-
-Sergey Senozhatsky (1):
-      KVM: do not shrink halt_poll_ns below grow_start
-
-Vitaly Kuznetsov (2):
-      KVM: x86: Fix stack-out-of-bounds memory access from ioapic_write_indirect()
-      KVM: nVMX: Filter out all unsupported controls when eVMCS was activated
-
-Yu Zhang (1):
-      KVM: nVMX: fix comments of handle_vmon()
-
-Zenghui Yu (1):
-      KVM: arm64: nvhe: Fix missing FORCE for hyp-reloc.S build rule
-
- arch/arm64/kvm/hyp/nvhe/Makefile                   |   2 +-
- arch/arm64/kvm/perf.c                              |   3 -
- arch/arm64/kvm/pmu-emul.c                          |   9 +-
- arch/s390/kvm/interrupt.c                          |   4 +-
- arch/s390/kvm/kvm-s390.c                           |   2 +-
- arch/s390/kvm/kvm-s390.h                           |   2 +-
- arch/x86/include/asm/kvm_page_track.h              |   2 +-
- arch/x86/kvm/emulate.c                             |   2 +-
- arch/x86/kvm/hyperv.c                              |   7 +-
- arch/x86/kvm/hyperv.h                              |   2 +-
- arch/x86/kvm/ioapic.c                              |  10 +-
- arch/x86/kvm/mmu/mmu.c                             |  17 +--
- arch/x86/kvm/mmu/page_track.c                      |   4 +-
- arch/x86/kvm/mmu/paging_tmpl.h                     |  46 +++----
- arch/x86/kvm/svm/nested.c                          |  10 +-
- arch/x86/kvm/svm/sev.c                             |  92 +++++++++-----
- arch/x86/kvm/svm/svm.c                             | 137 +++++++++++----------
- arch/x86/kvm/svm/svm.h                             |   3 +-
- arch/x86/kvm/vmx/evmcs.c                           |  12 +-
- arch/x86/kvm/vmx/nested.c                          |  24 ++--
- arch/x86/kvm/vmx/vmx.c                             |  37 ++++--
- arch/x86/kvm/vmx/vmx.h                             |   5 +-
- arch/x86/kvm/x86.c                                 |  28 ++++-
- drivers/perf/arm_pmu.c                             |   2 +
- include/kvm/arm_pmu.h                              |   3 -
- include/linux/kvm_host.h                           |   6 -
- include/linux/perf/arm_pmu.h                       |   6 +
- tools/testing/selftests/kvm/.gitignore             |   1 +
- tools/testing/selftests/kvm/Makefile               |   1 +
- .../selftests/kvm/access_tracking_perf_test.c      |   6 +-
- tools/testing/selftests/kvm/demand_paging_test.c   |  15 ++-
- tools/testing/selftests/kvm/dirty_log_perf_test.c  |  62 +++++++---
- tools/testing/selftests/kvm/include/test_util.h    |   4 +-
- .../selftests/kvm/include/x86_64/processor.h       |  34 ++---
- tools/testing/selftests/kvm/kvm_page_table_test.c  |   7 +-
- tools/testing/selftests/kvm/lib/test_util.c        |  17 ++-
- tools/testing/selftests/kvm/rseq_test.c            |   1 +
- tools/testing/selftests/kvm/steal_time.c           |   4 +-
- .../selftests/kvm/x86_64/svm_int_ctl_test.c        | 128 +++++++++++++++++++
- virt/kvm/kvm_main.c                                |  68 +++++++---
- 40 files changed, 556 insertions(+), 269 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c
-
+PiBJJ20gZ2V0dGluZyB0aGVzZSBlcnJvcnMgd2hlbiBjb21waWxpbmcgQVJNMzIga2VybmVsIHVz
+aW5nIHRvZGF5J3MgLW5leHQ6DQoNCkhtLCB5ZXMsIEkgdGhpbmsgSSBtYW5hZ2VkIHRvIG1pc3Vu
+ZGVyc3RhbmQgc29tZXRoaW5nIGFuZCBmaXhlZCBvbmUgYnVpbGQgd2hpbHN0IGJyZWFraW5nIGFu
+b3RoZXIuDQoNCktlZXMsIGNhbiB5b3UgZHJvcCB0aGlzPyAgSeKAmWxsIGNvbWUgYmFjayB3aXRo
+IGEgdjIuDQoNClJvc3MNCg0KSU1QT1JUQU5UIE5PVElDRTogVGhlIGNvbnRlbnRzIG9mIHRoaXMg
+ZW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBhcmUgY29uZmlkZW50aWFsIGFuZCBtYXkgYWxzbyBi
+ZSBwcml2aWxlZ2VkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVh
+c2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRlbHkgYW5kIGRvIG5vdCBkaXNjbG9zZSB0aGUg
+Y29udGVudHMgdG8gYW55IG90aGVyIHBlcnNvbiwgdXNlIGl0IGZvciBhbnkgcHVycG9zZSwgb3Ig
+c3RvcmUgb3IgY29weSB0aGUgaW5mb3JtYXRpb24gaW4gYW55IG1lZGl1bS4gVGhhbmsgeW91Lg0K
