@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A3E4199C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7994F4199D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbhI0Q7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        id S235515AbhI0RA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235316AbhI0Q7G (ORCPT
+        with ESMTP id S235421AbhI0RA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:59:06 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E153C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:57:28 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id il14-20020a17090b164e00b0019c7a7c362dso342415pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:57:28 -0700 (PDT)
+        Mon, 27 Sep 2021 13:00:58 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10992C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:59:20 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id z24so81255815lfu.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:59:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aVNQ/TSsFCpHmH8roUzHH7XvMBrRFI54b0VHaTyCBAo=;
-        b=H2Xr5yJsBofJ/L/K2Flfee0MrlLW+ZGJJrFO6lbGWTaUDBcZejvtb2ieSHb+Bbw2ZZ
-         Vk4gxdiUZvSLZIs2Le2caEJehi/oaWfRhLnDG4pxebjQmt0k7zkaAXOxpiaFG4rZv3p3
-         hiyXHRhWeepe9Bpde8CGoev4fTdTy/KAzSAMCFJm7YWiJDj52u/dklOyA2ofzWqKC9uN
-         3u7FjBj3BjGrs9gfk9onOkssEoetu96nAlDI+qzitgSTbEr3LOEuyVIZKVgF0R3h2UYn
-         Z+7ssBzfqMlg/NLIeJwACpOeRZvwjvirJnriJMZjNVKzeD+4XQnvJO6Ug7nRU288Gb/w
-         Zf/Q==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=boyhOy7c3Zv3+YHD3yPMRV9jTZZHINKXKipnorJKcwg=;
+        b=EFsgbbFE2kAt7wByLaFcasmCsfVIgNxk/m8G/nDr+HQQCPZquhtvMBtAa+Duc5+kXQ
+         UtY1CeMLlZTD94anpjzQv4K2YgUm9xVsItVLuyYt7PzuN+o60dJjWiO6ZURLbhkP7mzD
+         l/1wphgAzzIFt+bnAvBUh1vmO0XgUCFQbkR5nyhNqwPHp4lRcD3QYQpAbbn7KH5W/ysv
+         OQmlCYcjYrF8BVfGjUkclx0OrNnd/IdHMhsMfPOv7/HS8Qxd6WyABtIhI1iDB0FR5uaE
+         W0Ua9w0Kzy0A9r7i69bL0pt1y0fFyfV6OwYtL3O/7ZJwWx+dXki0Z+PUBsXBMwLQP/I9
+         ShZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aVNQ/TSsFCpHmH8roUzHH7XvMBrRFI54b0VHaTyCBAo=;
-        b=f5E41XSZ52jphiSHPrGnKDTNL0mpX3I5wdsQtRiI8wZOQCNOtS5+UEGiiuHr/WECRe
-         83emKcB3WbRukh70R95b4JLIlwvznopPIiDl3N9zoWSeP9yduLHe3r7Y/f8Oge0F/SVP
-         cSAZnyOgIpuAnNuahJf1yhQrYwezLsn7VmSzwg6gR4//grI9uUPRWWuYWv7SMN6EJKBk
-         /+1BlKL2n/XfXEz1Mj/13wiaJ1lHTh90DLKKaBBu2JbHs/C+0eq26pE0hA1Kgfq3e2JA
-         KMHdd+7kBLo3EHkpW6Fi639HeegWvN7yKAQXkvDruhRiodJHEYJfQXWMydh4AO8CIun1
-         NcyQ==
-X-Gm-Message-State: AOAM533BtMnHVbVdYj80AS9gnyIBMKvdSDCsOQBZnGKXiJ85pl/xjY7h
-        fNKsWAE+9uP5FJfUUCK47BP/08l0uDE=
-X-Google-Smtp-Source: ABdhPJxJXBOKwYLop10cvnqJmzrtdGdUQxPxtN2GE6+btno8uowYMKey7A3sNNHXf7NdbYYeSdH+dQ==
-X-Received: by 2002:a17:90a:1a19:: with SMTP id 25mr145642pjk.34.1632761847787;
-        Mon, 27 Sep 2021 09:57:27 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:ecea:c8ec:ff7b:52])
-        by smtp.gmail.com with ESMTPSA id n22sm2686769pfa.220.2021.09.27.09.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:57:24 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] xtensa: call irqchip_init only when CONFIG_USE_OF is selected
-Date:   Mon, 27 Sep 2021 09:57:06 -0700
-Message-Id: <20210927165706.22938-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=boyhOy7c3Zv3+YHD3yPMRV9jTZZHINKXKipnorJKcwg=;
+        b=F4QxrpQ7i5BrSd4/A4gqAdT6lOQKNdShknNWcAaj6XuHtlDR+FT+2nlJF7kFXQBHeE
+         OdnK9LGvITSUc06Cbq8s/AXpCuTuYLG1npovNkmEPLmefv/09GS/QMHpUvVw6uvwrmfI
+         UClWCSOVEeOSQRSlD+eOka64GMWPyofDV73vs5XQiaRPi3A5zhQGmHHaX5EljrivJdBY
+         aDf8bncVbvY2TUwqNHVpHLXD8PV42WchWRbUDosZcGwhZuUe719sfwMeeb/b50zZ4Gis
+         DDGXezfjk4t8rFAraiYVIKtELs05Mh1s8lXg7QmCNrW/f9zJ/U0RLet7L0Y8DrCM6zNK
+         lyAg==
+X-Gm-Message-State: AOAM531VWqvxIZStoptqEvb+i55iVnSVnmr1e1usXRlKdl4SYHhEC4xB
+        U9DSTXjiuJQRdvNWZJGzLcTetbZ6Fv6uteO+fxrVoQ==
+X-Google-Smtp-Source: ABdhPJyvrc2iIXbcC8YaiVkzYO41Psj9zevIrEPYYOmLf26TIPB4wujR7R6xkm6OJn238QJWJUKaISQGVYiRf4/ylng=
+X-Received: by 2002:a19:c349:: with SMTP id t70mr843112lff.102.1632761958145;
+ Mon, 27 Sep 2021 09:59:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210925005528.1145584-1-seanjc@google.com> <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
+ <YVHcY6y1GmvGJnMg@google.com> <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
+ <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
+In-Reply-To: <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Mon, 27 Sep 2021 09:58:51 -0700
+Message-ID: <CALzav=cxeYieTkKJhT0kFZOjdv6k5eCZXKWs=ZQGCJg0x-oFjQ@mail.gmail.com>
+Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
+ Halt-polling fixes, cleanups and a new stat)
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jon Cargille <jcargill@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org,
+        KVMARM <kvmarm@lists.cs.columbia.edu>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        KVMPPC <kvm-ppc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During boot time kernel configured with OF=y but USE_OF=n displays the
-following warnings and hangs shortly after starting userspace:
+On Mon, Sep 27, 2021 at 8:17 AM Christian Borntraeger
+<borntraeger@de.ibm.com> wrote:
+>
+>
+>
+> Am 27.09.21 um 17:03 schrieb Paolo Bonzini:
+> > On 27/09/21 16:59, Sean Christopherson wrote:
+> >>> commit acd05785e48c01edb2c4f4d014d28478b5f19fb5
+> >>> Author:     David Matlack<dmatlack@google.com>
+> >>> AuthorDate: Fri Apr 17 15:14:46 2020 -0700
+> >>> Commit:     Paolo Bonzini<pbonzini@redhat.com>
+> >>> CommitDate: Fri Apr 24 12:53:17 2020 -0400
+> >>>
+> >>>      kvm: add capability for halt polling
+> >>>
+> >>> broke the possibility for an admin to disable halt polling for already running KVM guests.
+> >>> In past times doing
+> >>> echo 0 > /sys/module/kvm/parameters/halt_poll_ns
+> >>>
+> >>> stopped polling system wide.
+> >>> Now all KVM guests will use the halt_poll_ns value that was active during
+> >>> startup - even those that do not use KVM_CAP_HALT_POLL.
+> >>>
+> >>> I guess this was not intended?
+> >
+> > No, but...
+> >
+> >> I would go so far as to say that halt_poll_ns should be a hard limit on
+> >> the capability
+> >
+> > ... this would not be a good idea I think.  Anything that wants to do a lot of polling can just do "for (;;)".
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at kernel/irq/irqdomain.c:695 irq_create_mapping_affinity+0x29/0xc0
-irq_create_mapping_affinity(, 6) called with NULL domain
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.15.0-rc3-00001-gd67ed2510d28 #30
-Call Trace:
-  __warn+0x69/0xc4
-  warn_slowpath_fmt+0x6c/0x94
-  irq_create_mapping_affinity+0x29/0xc0
-  local_timer_setup+0x40/0x88
-  time_init+0xb1/0xe8
-  start_kernel+0x31d/0x3f4
-  _startup+0x13b/0x13b
----[ end trace 1e6630e1c5eda35b ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at arch/xtensa/kernel/time.c:141 local_timer_setup+0x58/0x88
-error: can't map timer irq
-CPU: 0 PID: 0 Comm: swapper Tainted: G        W         5.15.0-rc3-00001-gd67ed2510d28 #30
-Call Trace:
-  __warn+0x69/0xc4
-  warn_slowpath_fmt+0x6c/0x94
-  local_timer_setup+0x58/0x88
-  time_init+0xb1/0xe8
-  start_kernel+0x31d/0x3f4
-  _startup+0x13b/0x13b
----[ end trace 1e6630e1c5eda35c ]---
-Failed to request irq 0 (timer)
+I agree. It would also be a maintenance burden and subtle "gotcha" to
+have to increase halt_poll_ns anytime one wants to increase
+KVM_CAP_HALT_POLL.
 
-Fix that by calling irqchip_init only when CONFIG_USE_OF is selected and
-calling legacy interrupt controller init otherwise.
+> >
+> > So I think there are two possibilities that makes sense:
+> >
+> > * track what is using KVM_CAP_HALT_POLL, and make writes to halt_poll_ns follow that
+>
+> what about using halt_poll_ns for those VMs that did not uses KVM_CAP_HALT_POLL and the private number for those that did.
 
-Fixes: da844a81779e ("xtensa: add device trees support")
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/kernel/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+None of these options would cover Christian's original use-case
+though. (Write to module to disable halt-polling system-wide.)
 
-diff --git a/arch/xtensa/kernel/irq.c b/arch/xtensa/kernel/irq.c
-index 764b54bef701..15051a8a1539 100644
---- a/arch/xtensa/kernel/irq.c
-+++ b/arch/xtensa/kernel/irq.c
-@@ -143,7 +143,7 @@ unsigned xtensa_get_ext_irq_no(unsigned irq)
- 
- void __init init_IRQ(void)
- {
--#ifdef CONFIG_OF
-+#ifdef CONFIG_USE_OF
- 	irqchip_init();
- #else
- #ifdef CONFIG_HAVE_SMP
--- 
-2.20.1
+What about adding a writable "enable_halt_polling" module parameter
+that affects all VMs? Once that is in place we could also consider
+getting rid of halt_poll_ns entirely.
 
+> >
+> > * just make halt_poll_ns read-only.
+> >
+> > Paolo
+> >
