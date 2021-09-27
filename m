@@ -2,201 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE1241A380
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BA441A38D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 01:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238091AbhI0XCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 19:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S238012AbhI0XHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 19:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237780AbhI0XCA (ORCPT
+        with ESMTP id S229911AbhI0XHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 19:02:00 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9DCC061575;
-        Mon, 27 Sep 2021 16:00:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so317041pjv.5;
-        Mon, 27 Sep 2021 16:00:21 -0700 (PDT)
+        Mon, 27 Sep 2021 19:07:37 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F89C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:05:59 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id z5so27595025ybj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:05:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4rbLOO10kE7IzUzgrNCp18mct+mNdp/gWXsyE0YgXgA=;
-        b=I62cA8quqW9adN9QhJVpPFvFlzGroeNfhwxgIjahjW4W1zokWRtF3RBXmvV9qpzKZR
-         KlzsEK2U7EJLFR6aeVm31MQUvxnvInsreHPjdbiDeguDnkPWr6mS+gDqVZrT+K7G/1U/
-         AYSIcE6rq2wkMze3oMZ2PgeGY1Asqh2ELq6vE/IrEzb/QctT5XxBgkXApJU+0tHb5MEG
-         rWjZLC6bz7PVqlgd35/BR0XJFGZgBIdKSmB5wSZrDs8a/HB4VHVCWaGw3wCIVSfTNnKo
-         kaOM2AMiQlYk1/9bp9KCKk6okR2sORxBnPgvotwNc5hECpKhsDhPnfQfR2nUOO4ywO5o
-         Tpig==
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=te3ufbbhdLYzLpKReFSUnhdYPCC2UOLB8sm0ImQvwSg=;
+        b=tNVc7cvyLru14b2J2DjRw5M7+f0Vzr9bnjoC8qr9Yj/j57ncp7ve6/9lPPOqy7Go6u
+         hJd0SUmECBMfaKUTi51ak+Ha0jxqIFJx59rUJpFe0QEpvJKAwAnc5gbjxmcXfS93crs0
+         jg0ho6LXbTNK6AaR4dp3FkJfB5XtEKDN7ObrY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4rbLOO10kE7IzUzgrNCp18mct+mNdp/gWXsyE0YgXgA=;
-        b=BF3zLtOCtXdkApLHpLR8OQ1ZqkcP9xMFqmZ3wRDKIKxWbBo+66Gtkw7IDrc9O5sqFt
-         PncFb8Eh7Im9rtRs28R7o10bH3mxMhjPen+jdZeqpWOX228162hjesxm/K5/TSpBE5nv
-         N37DWgusUl/PWRKq1Hj/mrcNm+atMCCyFvJ8UYZ/aa3fpHRT+BkIOV7/QqJiovYrva1w
-         m/CCwyE9GXiSRQ8THr+RNsqa9i/IrU7X/bURgdHS5CBZnPtBaW+/4IJaBz7WwUh0irDy
-         jDH8m//felrCfYV8avluhAlUGCwuKt0actqKokAxQChxWGYsdvcPWwjTKXLbfScBc0Ud
-         diGA==
-X-Gm-Message-State: AOAM532/K4fa50ashbvTWOBUrHTxADm2BjDKT7+0mw6DmgdwXp9tGPqw
-        tzXyqrXCmw/tFDcmjjFUdM8Wgdgm8ek=
-X-Google-Smtp-Source: ABdhPJzuknYifE3KPt5cVuBI+RL/qmqMB1RznGFPDXHlgg/SO4wWp2Q/1kzjyHxtcauARjqGVJ7rGg==
-X-Received: by 2002:a17:90a:728b:: with SMTP id e11mr1729887pjg.107.1632783621244;
-        Mon, 27 Sep 2021 16:00:21 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id 23sm20582922pfw.97.2021.09.27.16.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 16:00:20 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/msm/devfreq: Add 1ms delay before clamping freq
-Date:   Mon, 27 Sep 2021 16:04:54 -0700
-Message-Id: <20210927230455.1066297-2-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927230455.1066297-1-robdclark@gmail.com>
-References: <20210927230455.1066297-1-robdclark@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=te3ufbbhdLYzLpKReFSUnhdYPCC2UOLB8sm0ImQvwSg=;
+        b=HwHWmAwc0KzLnmDmPCcAd/t2uJFdXL6WI7rH3PAvfh7Bf4G2GN68SUGRJaa310RH9U
+         WrzkKSxOEwFgSBMngV3z7FTGrnyqPLRAaUR25CBh5sIxOfY8F/+NBVzRJTnykq3HxQWj
+         XoNYegoePoaSGYjzm/AR2DcrSl6m+gL/HtNJcDS9AQOKiTSoLJwc17P5axq3ARxIYbHu
+         nsa7JwthEKe/S7R07WaF3BrWy6kawGepI6F6DV1osjFyx6N/Htot7Q3NzJxkapEuS+gU
+         RzgIPKdLUYdDG7/euOF+FCjmZ3MAmKqTH7JpquAx0vMwEQ6jTyw/3FBPKCXaLLQSFO8e
+         OZEA==
+X-Gm-Message-State: AOAM531ktU1+85eDzfrrX9TI8Bboo01+o7B1sd9mXw4Bxo7kYaLzamvs
+        8ubV8Rpr0jMt6/L8+If5+njZ8r9NpPiK4qaXaWbL
+X-Google-Smtp-Source: ABdhPJznvZBPCpgBv8Jgcg/OQuqyDWj+Q8Gey0hZLrv3MRRacKbPCtHWdja625jSae5btgDes2J7CcmXcNdir+qyoQM=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr2751056ybc.35.1632783958580;
+ Mon, 27 Sep 2021 16:05:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210923172107.1117604-1-guoren@kernel.org> <CAOnJCUJWnDB+uRxDh=YSbGW4bf5RQvke03iCTYMYHPsw3cwnHQ@mail.gmail.com>
+ <CAOnJCULrE595ex3gBTnu4GnPazO4mg8Tkrtbv6j8iLWe+sKJSA@mail.gmail.com> <CA+Qh7T=kud8AM-6JjuWNwJY0r_gkmnP6SmzVXqeE2VYxViLUoQ@mail.gmail.com>
+In-Reply-To: <CA+Qh7T=kud8AM-6JjuWNwJY0r_gkmnP6SmzVXqeE2VYxViLUoQ@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 27 Sep 2021 16:05:47 -0700
+Message-ID: <CAOnJCUJp9UatyReA8-Jq=WGY_QgV4CbL4Qs2F9rXJzOHsXeW5Q@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] riscv: Add RISC-V svpbmt extension
+To:     Greg Favor <gfavor@ventanamicro.com>
+Cc:     Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        Xinhaoqu <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Mon, Sep 27, 2021 at 1:53 PM Greg Favor <gfavor@ventanamicro.com> wrote:
+>
+> With the big caveat that I haven't been in the middle of this discussion,=
+ it seems like Allwinner D1's changes represent a custom (and nonconforming=
+) extension.
 
-Add a short delay before clamping to idle frequency on active->idle
-transition.  It takes ~0.5ms to increase the freq again on the next
-idle->active transition, so this helps avoid extra freq transitions
-on workloads that bounce between CPU and GPU.
+As per the v1.12 privilege specification, bit 63 is reserved for
+Svnapot extension while bit 60=E2=80=9354 are reserved for future standard
+use.
+D1's implementation uses both 60 and 63 bit for their custom "PBMT"
+extension in addition to bit 61 & 62 [1].
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
-Note that this sort of re-introduces the theoretical race solved
-by [1].. but that should not be a problem with something along the
-lines of [2]. 
+> Isn't this just a matter of the patch needing to be treated as for a RISC=
+-V custom extension per the recently clarified policy for handling upstream=
+ing/etc. of custom extensions?  (Philipp can > speak to this clarified poli=
+cy.)  Or what am I missing?
 
-[1] https://patchwork.freedesktop.org/patch/455910/?series=95111&rev=1
-[2] https://patchwork.freedesktop.org/patch/455928/?series=95119&rev=1
+Linux kernel upstream policy is yet to adopt that clarification as it
+was recently discussed at RVI meetings. Is there a written definition
+of non-conforming/custom/incompatible ?
+Moreover, as per the platform specification[2],
 
- drivers/gpu/drm/msm/msm_gpu.h         |  7 +++++
- drivers/gpu/drm/msm/msm_gpu_devfreq.c | 38 +++++++++++++++++++++------
- 2 files changed, 37 insertions(+), 8 deletions(-)
+A non-conforming extension that conflicts with a supported standard
+extensions must satisfy at least one of the following:
+  --- It must be disabled by default.
+  --- The supported standard extension must be declared as unsupported
+in all feature discovery structures used by software.
+      This option is allowed only if the standard extension is not required=
+.
 
-diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-index 32a859307e81..2fcb6c195865 100644
---- a/drivers/gpu/drm/msm/msm_gpu.h
-+++ b/drivers/gpu/drm/msm/msm_gpu.h
-@@ -120,6 +120,13 @@ struct msm_gpu_devfreq {
- 	 * it is inactive.
- 	 */
- 	unsigned long idle_freq;
-+
-+	/**
-+	 * idle_work:
-+	 *
-+	 * Used to delay clamping to idle freq on active->idle transition.
-+	 */
-+	struct msm_hrtimer_work idle_work;
- };
- 
- struct msm_gpu {
-diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-index 15b64f35c0f6..36e1930ee26d 100644
---- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-+++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-@@ -96,8 +96,12 @@ static struct devfreq_dev_profile msm_devfreq_profile = {
- 	.get_cur_freq = msm_devfreq_get_cur_freq,
- };
- 
-+static void msm_devfreq_idle_work(struct kthread_work *work);
-+
- void msm_devfreq_init(struct msm_gpu *gpu)
- {
-+	struct msm_gpu_devfreq *df = &gpu->devfreq;
-+
- 	/* We need target support to do devfreq */
- 	if (!gpu->funcs->gpu_busy)
- 		return;
-@@ -113,25 +117,27 @@ void msm_devfreq_init(struct msm_gpu *gpu)
- 	msm_devfreq_profile.freq_table = NULL;
- 	msm_devfreq_profile.max_state = 0;
- 
--	gpu->devfreq.devfreq = devm_devfreq_add_device(&gpu->pdev->dev,
-+	df->devfreq = devm_devfreq_add_device(&gpu->pdev->dev,
- 			&msm_devfreq_profile, DEVFREQ_GOV_SIMPLE_ONDEMAND,
- 			NULL);
- 
--	if (IS_ERR(gpu->devfreq.devfreq)) {
-+	if (IS_ERR(df->devfreq)) {
- 		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
--		gpu->devfreq.devfreq = NULL;
-+		df->devfreq = NULL;
- 		return;
- 	}
- 
--	devfreq_suspend_device(gpu->devfreq.devfreq);
-+	devfreq_suspend_device(df->devfreq);
- 
--	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
--			gpu->devfreq.devfreq);
-+	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node, df->devfreq);
- 	if (IS_ERR(gpu->cooling)) {
- 		DRM_DEV_ERROR(&gpu->pdev->dev,
- 				"Couldn't register GPU cooling device\n");
- 		gpu->cooling = NULL;
- 	}
-+
-+	msm_hrtimer_work_init(&df->idle_work, gpu->worker, msm_devfreq_idle_work,
-+			      CLOCK_MONOTONIC, HRTIMER_MODE_REL);
- }
- 
- void msm_devfreq_cleanup(struct msm_gpu *gpu)
-@@ -179,6 +185,11 @@ void msm_devfreq_active(struct msm_gpu *gpu)
- 	unsigned int idle_time;
- 	unsigned long target_freq = df->idle_freq;
- 
-+	/*
-+	 * Cancel any pending transition to idle frequency:
-+	 */
-+	hrtimer_cancel(&df->idle_work.timer);
-+
- 	/*
- 	 * Hold devfreq lock to synchronize with get_dev_status()/
- 	 * target() callbacks
-@@ -209,9 +220,12 @@ void msm_devfreq_active(struct msm_gpu *gpu)
- 	mutex_unlock(&df->devfreq->lock);
- }
- 
--void msm_devfreq_idle(struct msm_gpu *gpu)
-+
-+static void msm_devfreq_idle_work(struct kthread_work *work)
- {
--	struct msm_gpu_devfreq *df = &gpu->devfreq;
-+	struct msm_gpu_devfreq *df = container_of(work,
-+			struct msm_gpu_devfreq, idle_work.work);
-+	struct msm_gpu *gpu = container_of(df, struct msm_gpu, devfreq);
- 	unsigned long idle_freq, target_freq = 0;
- 
- 	/*
-@@ -229,3 +243,11 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
- 
- 	mutex_unlock(&df->devfreq->lock);
- }
-+
-+void msm_devfreq_idle(struct msm_gpu *gpu)
-+{
-+	struct msm_gpu_devfreq *df = &gpu->devfreq;
-+
-+	msm_hrtimer_queue_work(&df->idle_work, ms_to_ktime(1),
-+			       HRTIMER_MODE_ABS);
-+}
--- 
-2.31.1
+In this case, the custom non-conforming implementation can not be
+disabled or marked unsupported as it is critical for all the necessary
+I/O devices (usb, mmc, ethernet).
+Without this custom implementation support in upstream, we can not
+really use the mainline kernel for Allwinner D1.
 
+[1] https://linuxplumbersconf.org/event/11/contributions/1100/attachments/8=
+41/1607/What%E2%80%99s%20the%20problem%20with%20D1%20Linux%20upstream-.pdf
+[2] https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-=
+spec.adoc#2112-general
+
+>
+> Greg
+>
+> On Mon, Sep 27, 2021 at 1:14 PM Atish Patra <atishp@atishpatra.org> wrote=
+:
+>>
+>> > @Palmer Dabbelt @Guo Ren
+>> >
+>> > Can we first decide what to do with D1's upstreaming plan ? I had a sl=
+ide[1] to discuss that during RISC-V BoF.
+>> > But we ran out of time. Let's continue the discussion here.
+>> >
+>> > We all agree that Allwinner D1 has incompatible changes with privilege=
+ specification because it uses two reserved bits even after Svpbmt is merge=
+d.
+>> > Let's not argue on the reasoning behind this change. The silicon is al=
+ready out and the specification just got frozen.
+>> > Unfortunately, we don't have a time stone to change the past ;).
+>> >
+>> > We need to decide whether we should support the upstream kernel for D1=
+. Few things to consider.
+>> > =E2=80=93 Can it be considered as an errata ?
+>> > =E2=80=93 Does it set a bad precedent and open can of worms in future =
+?
+>> > =E2=80=93 Can we just ignore D1 given the mass volume ?
+>> >
+>> > One solution I can think of is that we allow this as an exception to t=
+he patch acceptance policy.
+>> > We need to explicitly specify this board as an exception because the p=
+olicy was not in place during the design phase of the hardware.
+>> > At least, it protects us from accepting the incompatible changes in th=
+e future. Any other ideas ?
+>> >
+>> > [1] https://linuxplumbersconf.org/event/11/contributions/1128/attachme=
+nts/846/1757/RISC-V%20Bof.pdf
+
+
+
+--=20
+Regards,
+Atish
