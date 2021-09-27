@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E5B4191DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC154191E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233775AbhI0J5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:57:41 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33552
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233768AbhI0J5k (ORCPT
+        id S233780AbhI0J6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:58:31 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39834
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233717AbhI0J62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:57:40 -0400
+        Mon, 27 Sep 2021 05:58:28 -0400
 Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E000C40790
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:55:59 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8B47A4079E
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:56:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632736559;
-        bh=nIU5tLYb8kiPoNkLCvMx2HqJO/MUaTxKgEujQiXGrPI=;
+        s=20210705; t=1632736610;
+        bh=8izaMMzdZFyOj97+0PH0WvhjiKv4VMQW7lnH7kNs5mE=;
         h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
          In-Reply-To:Content-Type;
-        b=JSy+4eYnCTplSl+dSVzoeHu5juCEE7J6rLBOPRIxYenATLauGNMlxxpuQfEE/+aVP
-         EB4BFKceHi793dN/Z7d/XUjgW6bXcXUCxHZ8ICSt7NF9s8ZcvMY1T8oQUI212Rr12f
-         3LxBHNuBSsp3t6jVWu8+t65nuZOUWHWRmuWFptamtvXEDZ/6d1KiwcOR9DyVf64jsV
-         uw2kSybRBUQPLLbtTDIhgxXeXjggk5fGcao2ZTmXLQ7UJYlA1EzPVeXIk1hso3z72o
-         NnauAfr94+CSqNK4Psk/UZm35uuwwUmNFddEd4YcOXXonRNPSjY0AyGDVKzo5KbZ9E
-         UawS+6gtvgxLA==
-Received: by mail-lf1-f69.google.com with SMTP id v197-20020a1948ce000000b003fc99be7fecso15303103lfa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:55:59 -0700 (PDT)
+        b=P8IksPXWNPx7+KgWU7P8ObsC8raaz6/3+4uTi8oVC8IblUuB5FBJIiNisQMpmj52U
+         6Ei6HGl46pIwyZJP15h68wiW/oUq1bn44dyNFBcYv/9vBogR54cHHX6D8enECxPytF
+         Q84ORN7L0tf10h1SqrALz1aSuDAW+FP9065O18pKofMCRo0Y7ILeGVfT/QCUYa3Bjz
+         vacyRBvZASZNPrIJPf7+aHHYtC0j7JciotFu4KXvHzXT5vyVc5VE4oITFQT45ozL4j
+         PfkCO2CIh260950rzHyE92rx9YVP+cYTgodl0O6AvPXbFFqfLAua7h7Gv6FjTBA1ql
+         a2Yu9QFEqjnxQ==
+Received: by mail-lf1-f69.google.com with SMTP id d16-20020a056512369000b003fca9e038ddso14162613lfs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:56:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=nIU5tLYb8kiPoNkLCvMx2HqJO/MUaTxKgEujQiXGrPI=;
-        b=00ho4dy+hnCYozZxeqfjLTfCp2L2gE1VgjG/y1F4qhhXZ415ItxdiMSuZUC5Dwb8qk
-         o3i8w+dtWMe82QOVCp+sWNwQpV5jFB/g0dLWdG9VJCC2hTd63iwH3PM3HaWJkyBxq4SU
-         r0sb9K3/sxhT5KKe+w9z8ZfnVW2PDxdXdlW7N9+TIvVRr2zFfm+OWe/s41xA7VIMUYXK
-         QjLhCo/0ltMi1bxZKVdsH7tnohqVDiWE6kQYMS//hRP2Ljuv71Iyw5ZgzYP4IS0aiq1d
-         VJaan8ne13W8q+h373d+ja4x7b62s7FGp4gsL4kWAR39m2IEweqbBOYpyRHS5el/Nwou
-         otjg==
-X-Gm-Message-State: AOAM531LpEeOYYnqA2TZD6OaFkLfEyrwvBFpv2sLJmuZKYiizF3JvEqW
-        wQPZoop+bToaDQHd29kuY/XFqIKigCt3MLWQHJrq9x4AUEyfHYHL61uuiZwyI77eGiGl+Aw5iBr
-        /JhhmHQyRAi9txaUwmol6ktw5rXyMiySDXjj6s2JNWA==
-X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr22993039lfu.81.1632736558905;
-        Mon, 27 Sep 2021 02:55:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzsQ6KVBbhaTPACnyZPmIXhjr9se2x7ZwWQTaBMxZMqHiZxJFGWKh3hO/D3QI+51qPHcHs7eQ==
-X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr22993025lfu.81.1632736558751;
-        Mon, 27 Sep 2021 02:55:58 -0700 (PDT)
+        bh=8izaMMzdZFyOj97+0PH0WvhjiKv4VMQW7lnH7kNs5mE=;
+        b=aBV3NngAyQ/CPi4EQpMIfWL8Xa+sKPxisg6dll3RQD1UV41y0sVRze/+Iut7R0wN5+
+         v6/ObskG2y4Ag/GXiQkFul0S55/0pnik6eankAKYsq7zEr0hxqzNsgNVKTZEXuV8FKbO
+         +C38/ZXgLOH6LJo+M09/G2iQ55VUkDTl7sgU+ikuShCdevSv7RNcdA+xZDjseSm2JbSp
+         oJFVBLP7ajb7eUYouiCacSk/3eG4l7ta6YMlvITTXUwUkJMg6ohDJsLhTzMM6I+Gn/dW
+         gAhYzMn3N45HPHPehi3sKPNth0mH8TR5/IiiLQ/Muv7VWo1LIa+vfawCIedVQCvogt6O
+         Ix1g==
+X-Gm-Message-State: AOAM532GnDx4K2OcHaYTCWVglBrNB+AGTyyNwVzJabXyW2xw2NCA8R6x
+        o1LIrqLbMpw540ufGPx3u7qZj7xpdE0LZILxJ5Asgt3vEfG180B9WT1ZpJoGfm4LZ34bGriPDqY
+        oo0MulAOOsCkmPlia8jvfskQEaXfzGgpNz9NhYOgC2A==
+X-Received: by 2002:a05:651c:21b:: with SMTP id y27mr27717121ljn.489.1632736609659;
+        Mon, 27 Sep 2021 02:56:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsalFADlVVVTu6/XTNSAKB3HNcwAnUH9lAMPjtuA1GXtlKiHFEQOe/tRpUNI0FkSI2EPyMRA==
+X-Received: by 2002:a05:651c:21b:: with SMTP id y27mr27717103ljn.489.1632736609508;
+        Mon, 27 Sep 2021 02:56:49 -0700 (PDT)
 Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id br38sm1537149lfb.305.2021.09.27.02.55.57
+        by smtp.gmail.com with ESMTPSA id a7sm1078846ljp.21.2021.09.27.02.56.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 02:55:58 -0700 (PDT)
-Subject: Re: [PATCH] cpufreq: s3c244x: add fallthrough comments for switch
+        Mon, 27 Sep 2021 02:56:49 -0700 (PDT)
+Subject: Re: [PATCH] ASoC: samsung: add missing "fallthrough;"
 To:     Arnd Bergmann <arnd@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-References: <20210927095150.944127-1-arnd@kernel.org>
+References: <20210927095449.1070639-1-arnd@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <6695844c-e79d-d62e-87da-f96f8d5ca3bf@canonical.com>
-Date:   Mon, 27 Sep 2021 11:55:57 +0200
+Message-ID: <bb24d3b0-aa8f-3649-1837-3b8f43ef7e0f@canonical.com>
+Date:   Mon, 27 Sep 2021 11:56:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210927095150.944127-1-arnd@kernel.org>
+In-Reply-To: <20210927095449.1070639-1-arnd@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,39 +78,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2021 11:51, Arnd Bergmann wrote:
+On 27/09/2021 11:54, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Apparently nobody has so far caught this warning, I hit it in randconfig
-> build testing:
+> With gcc, we get a warning in this file:
 > 
-> drivers/cpufreq/s3c2440-cpufreq.c: In function 's3c2440_cpufreq_setdivs':
-> drivers/cpufreq/s3c2440-cpufreq.c:175:10: error: this statement may fall through [-Werror=implicit-fallthrough=]
->    camdiv |= S3C2440_CAMDIVN_HCLK3_HALF;
->           ^
-> drivers/cpufreq/s3c2440-cpufreq.c:176:2: note: here
->   case 3:
->   ^~~~
-> drivers/cpufreq/s3c2440-cpufreq.c:181:10: error: this statement may fall through [-Werror=implicit-fallthrough=]
->    camdiv |= S3C2440_CAMDIVN_HCLK4_HALF;
->           ^
-> drivers/cpufreq/s3c2440-cpufreq.c:182:2: note: here
->   case 4:
+> In file included from include/linux/io.h:13,
+>                  from sound/soc/samsung/s3c-i2s-v2.c:16:
+> sound/soc/samsung/s3c-i2s-v2.c: In function 's3c2412_i2s_trigger':
+> arch/arm/include/asm/io.h:92:22: error: this statement may fall through [-Werror=implicit-fallthrough=]
+>  #define __raw_writel __raw_writel
+>                       ^
+> arch/arm/include/asm/io.h:299:29: note: in expansion of macro '__raw_writel'
+>  #define writel_relaxed(v,c) __raw_writel((__force u32) cpu_to_le32(v),c)
+>                              ^~~~~~~~~~~~
+> arch/arm/include/asm/io.h:307:36: note: in expansion of macro 'writel_relaxed'
+>  #define writel(v,c)  ({ __iowmb(); writel_relaxed(v,c); })
+>                                     ^~~~~~~~~~~~~~
+> sound/soc/samsung/s3c-i2s-v2.c:398:3: note: in expansion of macro 'writel'
+>    writel(0x0, i2s->regs + S3C2412_IISFIC);
+>    ^~~~~~
+> sound/soc/samsung/s3c-i2s-v2.c:400:2: note: here
+>   case SNDRV_PCM_TRIGGER_RESUME:
 >   ^~~~
 > 
-> Both look like the fallthrough is intentional, so add the new
-> "fallthrough;" keyword.
+> From all I can tell, this was indeed meant to fall through, so
+> add "fallthrough;" statement to avoid the warning.
 > 
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/cpufreq/s3c2440-cpufreq.c | 2 ++
+>  sound/soc/samsung/s3c-i2s-v2.c | 2 ++
 >  1 file changed, 2 insertions(+)
+> 
 
-I think I saw it but back then implicit-fallthrough was not an error :)
 
-LGTM:
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 
 Best regards,
