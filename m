@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D064199F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4613D419AD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235736AbhI0RFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:05:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44260 "EHLO mail.kernel.org"
+        id S236419AbhI0RMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:12:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235804AbhI0RF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:05:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E44CB6108E;
-        Mon, 27 Sep 2021 17:03:50 +0000 (UTC)
+        id S236237AbhI0RKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:10:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B371611C3;
+        Mon, 27 Sep 2021 17:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762231;
-        bh=IxJk3uBT02QfLwxXVpThNpn4hTwHNadWtRT3O8KxaFU=;
+        s=korg; t=1632762474;
+        bh=u5hZJU/JVpiUgVVDRqOJzkqDord0GSfEfYc0az6Wsww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rv2RTc2FsRzMenqaoWbnpoLLxjwoTQqEXowUbVJXvobxsWFpWYP/AxYVPBcgonfvF
-         cloisJTFM+nHAGIKQeXXYvDSBJmjzVDDD3w5bpmXDfIhFoDUO1hANczLZXkygyQrvV
-         gH2/pqsWPUww7me92NBqY0IwibbbY8I+L1rLqfr4=
+        b=1aPOdl9/2ltNW0Cn4iC4zS6xPM2E4lBRV9X0QY2DIqIMbLFgzPSykDA2dTnxgWNO9
+         kiQHdoIAHXI6pCIxfvN1PnFXJYfjkP6SParBeOaXo88Ks3FshGPnsU3crsVYW44oZa
+         4VdTVWEY/nsbiHpsJp8Mto0a+7zZ3vmXN7MwxOlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 12/68] staging: greybus: uart: fix tty use after free
-Date:   Mon, 27 Sep 2021 19:02:08 +0200
-Message-Id: <20210927170220.363647220@linuxfoundation.org>
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 037/103] enetc: Fix uninitialized struct dim_sample field usage
+Date:   Mon, 27 Sep 2021 19:02:09 +0200
+Message-Id: <20210927170227.029475056@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,172 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-commit 92dc0b1f46e12cfabd28d709bb34f7a39431b44f upstream.
+[ Upstream commit 9f7afa05c9522b086327929ae622facab0f0f72b ]
 
-User space can hold a tty open indefinitely and tty drivers must not
-release the underlying structures until the last user is gone.
+The only struct dim_sample member that does not get
+initialized by dim_update_sample() is comp_ctr. (There
+is special API to initialize comp_ctr:
+dim_update_sample_with_comps(), and it is currently used
+only for RDMA.) comp_ctr is used to compute curr_stats->cmps
+and curr_stats->cpe_ratio (see dim_calc_stats()) which in
+turn are consumed by the rdma_dim_*() API.  Therefore,
+functionally, the net_dim*() API consumers are not affected.
+Nevertheless, fix the computation of statistics based
+on an uninitialized variable, even if the mentioned statistics
+are not used at the moment.
 
-Switch to using the tty-port reference counter to manage the life time
-of the greybus tty state to avoid use after free after a disconnect.
-
-Fixes: a18e15175708 ("greybus: more uart work")
-Cc: stable@vger.kernel.org      # 4.9
-Reviewed-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210906124538.22358-1-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ae0e6a5d1627 ("enetc: Add adaptive interrupt coalescing")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/uart.c |   62 +++++++++++++++++++++--------------------
- 1 file changed, 32 insertions(+), 30 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -789,6 +789,17 @@ out:
- 	gbphy_runtime_put_autosuspend(gb_tty->gbphy_dev);
- }
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 6877f8e2047b..15aa3b3c0089 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -299,7 +299,7 @@ static void enetc_rx_dim_work(struct work_struct *w)
  
-+static void gb_tty_port_destruct(struct tty_port *port)
-+{
-+	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
-+
-+	if (gb_tty->minor != GB_NUM_MINORS)
-+		release_minor(gb_tty);
-+	kfifo_free(&gb_tty->write_fifo);
-+	kfree(gb_tty->buffer);
-+	kfree(gb_tty);
-+}
-+
- static const struct tty_operations gb_ops = {
- 	.install =		gb_tty_install,
- 	.open =			gb_tty_open,
-@@ -814,6 +825,7 @@ static const struct tty_port_operations
- 	.dtr_rts =		gb_tty_dtr_rts,
- 	.activate =		gb_tty_port_activate,
- 	.shutdown =		gb_tty_port_shutdown,
-+	.destruct =		gb_tty_port_destruct,
- };
+ static void enetc_rx_net_dim(struct enetc_int_vector *v)
+ {
+-	struct dim_sample dim_sample;
++	struct dim_sample dim_sample = {};
  
- static int gb_uart_probe(struct gbphy_device *gbphy_dev,
-@@ -826,17 +838,11 @@ static int gb_uart_probe(struct gbphy_de
- 	int retval;
- 	int minor;
+ 	v->comp_cnt++;
  
--	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
--	if (!gb_tty)
--		return -ENOMEM;
--
- 	connection = gb_connection_create(gbphy_dev->bundle,
- 					  le16_to_cpu(gbphy_dev->cport_desc->id),
- 					  gb_uart_request_handler);
--	if (IS_ERR(connection)) {
--		retval = PTR_ERR(connection);
--		goto exit_tty_free;
--	}
-+	if (IS_ERR(connection))
-+		return PTR_ERR(connection);
- 
- 	max_payload = gb_operation_get_payload_size_max(connection);
- 	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
-@@ -844,13 +850,23 @@ static int gb_uart_probe(struct gbphy_de
- 		goto exit_connection_destroy;
- 	}
- 
-+	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
-+	if (!gb_tty) {
-+		retval = -ENOMEM;
-+		goto exit_connection_destroy;
-+	}
-+
-+	tty_port_init(&gb_tty->port);
-+	gb_tty->port.ops = &gb_port_ops;
-+	gb_tty->minor = GB_NUM_MINORS;
-+
- 	gb_tty->buffer_payload_max = max_payload -
- 			sizeof(struct gb_uart_send_data_request);
- 
- 	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
- 	if (!gb_tty->buffer) {
- 		retval = -ENOMEM;
--		goto exit_connection_destroy;
-+		goto exit_put_port;
- 	}
- 
- 	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
-@@ -858,7 +874,7 @@ static int gb_uart_probe(struct gbphy_de
- 	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
- 			     GFP_KERNEL);
- 	if (retval)
--		goto exit_buf_free;
-+		goto exit_put_port;
- 
- 	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
- 	init_completion(&gb_tty->credits_complete);
-@@ -872,7 +888,7 @@ static int gb_uart_probe(struct gbphy_de
- 		} else {
- 			retval = minor;
- 		}
--		goto exit_kfifo_free;
-+		goto exit_put_port;
- 	}
- 
- 	gb_tty->minor = minor;
-@@ -881,9 +897,6 @@ static int gb_uart_probe(struct gbphy_de
- 	init_waitqueue_head(&gb_tty->wioctl);
- 	mutex_init(&gb_tty->mutex);
- 
--	tty_port_init(&gb_tty->port);
--	gb_tty->port.ops = &gb_port_ops;
--
- 	gb_tty->connection = connection;
- 	gb_tty->gbphy_dev = gbphy_dev;
- 	gb_connection_set_data(connection, gb_tty);
-@@ -891,7 +904,7 @@ static int gb_uart_probe(struct gbphy_de
- 
- 	retval = gb_connection_enable_tx(connection);
- 	if (retval)
--		goto exit_release_minor;
-+		goto exit_put_port;
- 
- 	send_control(gb_tty, gb_tty->ctrlout);
- 
-@@ -918,16 +931,10 @@ static int gb_uart_probe(struct gbphy_de
- 
- exit_connection_disable:
- 	gb_connection_disable(connection);
--exit_release_minor:
--	release_minor(gb_tty);
--exit_kfifo_free:
--	kfifo_free(&gb_tty->write_fifo);
--exit_buf_free:
--	kfree(gb_tty->buffer);
-+exit_put_port:
-+	tty_port_put(&gb_tty->port);
- exit_connection_destroy:
- 	gb_connection_destroy(connection);
--exit_tty_free:
--	kfree(gb_tty);
- 
- 	return retval;
- }
-@@ -958,15 +965,10 @@ static void gb_uart_remove(struct gbphy_
- 	gb_connection_disable_rx(connection);
- 	tty_unregister_device(gb_tty_driver, gb_tty->minor);
- 
--	/* FIXME - free transmit / receive buffers */
--
- 	gb_connection_disable(connection);
--	tty_port_destroy(&gb_tty->port);
- 	gb_connection_destroy(connection);
--	release_minor(gb_tty);
--	kfifo_free(&gb_tty->write_fifo);
--	kfree(gb_tty->buffer);
--	kfree(gb_tty);
-+
-+	tty_port_put(&gb_tty->port);
- }
- 
- static int gb_tty_init(void)
+-- 
+2.33.0
+
 
 
