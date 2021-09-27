@@ -2,189 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD733418FB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB75418FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbhI0HMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S233158AbhI0HSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbhI0HME (ORCPT
+        with ESMTP id S233035AbhI0HSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:12:04 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F31C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:10:26 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id u8so72161920lff.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 00:10:26 -0700 (PDT)
+        Mon, 27 Sep 2021 03:18:21 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B948C061570;
+        Mon, 27 Sep 2021 00:16:44 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id h30so17094267vsq.3;
+        Mon, 27 Sep 2021 00:16:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Aq6qXeEc6aCYUKeljOyg151CIpIcZX36L8L/emY/OsE=;
-        b=cdo8ZMZPgS23dQDWWQhIUz40AnsyRN1qLMaZytqB14q9S3g5rNWtoNuUWOrk4IfySl
-         /WqSq2xp+D35x4/2OYOxaqEtEKbQwSXukciLeOIfR2YGJBFlv29MPoefU3H0JMAAT917
-         6THv9CbJ71Fl8F9NaahSeJGT/JbieFnYEF/n0=
+         :cc:content-transfer-encoding;
+        bh=bKQ5SBS3VeZbZeCRmHaBxyFDUPmst2G26fgrNqeDpm8=;
+        b=MrqpTAcU9thn2QbLYeP0+Sjx17yCxkEYpOWgbpYpc5ZFjbVrL+CzJQjmZ0yUI+YRTj
+         jWS5btM4JRZa2FVIMdBBgAggXiwwG4eOojjhtFFHgY/65F9QDGy7PqaS0Z02Uyh81+78
+         NcmE1YjMBP/7O8WsY/KztCM+wtFQEa6VdCJxtC5fzKu/RSlnzDYJHj6qfqtGhbWm/y4q
+         4q3FZOm1fE2Kzk2+C9p8hZHCUxh6NznyaL6vfk1lfvYq5Ep4aFod39tuD0NEbBMFwcxg
+         L8MgLMclaVLjks3VTY5YZtKCmsdhZWsJsH5C1qWsYjqS7nn1a6oBMRdu9PIjI56tsX7N
+         /9MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Aq6qXeEc6aCYUKeljOyg151CIpIcZX36L8L/emY/OsE=;
-        b=VQGgMgli/E2TV7rTy9UU2iRypENurqZ81/Kcv8mJY+VY7LhuiVD+NPDy/pjMgJBlzv
-         qjT6uOEVTPQZPi4gdgehVhKP+o18brIYqF2qi0ECBni1E93to1poKR8h2UUb7awHY1eL
-         QPV90DzatNqD54mPwhLSQEURoOl8f9nNX/xvl19xMsNPKLVnn8U/fbE5w0Gr7r5RRzOv
-         r3PDRTOgCzubMuWyXUv3nKxWOxwGiggLr18FmvJF6SRWs8n3fcHsDBEO5pSQCTCkBdRE
-         uFat99VMX9H9XNUOg3Zgl8xETHcqVtSaOgd5FlZ8Sx9jkHMlS9prrwslG7UfnHHFKH1U
-         ktNQ==
-X-Gm-Message-State: AOAM531Gry/hbr8RIGbjei+XveHU7D44uts5lvP3pa7rOdXscOTcihuS
-        SIC6IhZLtq7qgCSNcn2DfEjFwLjAJOfxONSNGNUvJA==
-X-Google-Smtp-Source: ABdhPJw8o1CtMltYtGlZxX1NQvnWcDA0rZNViVBF1JsDNzpK+VPC78MlnTbnnUbT6xZKIPOB+g1kjbzjQtQSPw/FcV8=
-X-Received: by 2002:a05:651c:1505:: with SMTP id e5mr27957292ljf.9.1632726624665;
- Mon, 27 Sep 2021 00:10:24 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bKQ5SBS3VeZbZeCRmHaBxyFDUPmst2G26fgrNqeDpm8=;
+        b=0kYQ4ppW9vYHYAMT9Ko3ETjU3o2Qoc7OlaJr/G0mYpvHhiLXwBuIsnn2TcZpN0OGXE
+         757SQldyITim0isvJiykK5nPgMx49OLAlmwg78lwhCcph65uPtwj+rbreuyneBfxU7ee
+         +K3ooonhUayk4/N6NfXW9h448KAoWuLgv4ogyR236y4w8GlcQSNLLpTrTMTaPvyrBe38
+         d6KRHXzcwXG1FDlz+bYLqtjGgnFL7LwlEGddV25STf8AIR7MzSM19hV8gd2IwaxxQEiI
+         3rtcA6bCzSCvXKl4tyXOHAUuAl5e3Y7X7+m3WxboSVnHkDYLAl58ixg71BWalPGlONT+
+         Wrzw==
+X-Gm-Message-State: AOAM531CPcHRqybsEve+P6NcP1FC0ItdDaHcJFjAXS5VwAZmle/uUBE/
+        +bT10frL7oebvXerTnTuVWWCxyyJtfhl+Am9Ssdi+npfXt8=
+X-Google-Smtp-Source: ABdhPJzNJhETrryKM63V8MsXDo94avqga9M4AimrMJ3v01oNThXKpvrOWbpSTX7sCnm0Z2RUibewdfiLWA6M33KlruY=
+X-Received: by 2002:a67:7247:: with SMTP id n68mr17445711vsc.56.1632727003419;
+ Mon, 27 Sep 2021 00:16:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
-In-Reply-To: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 27 Sep 2021 15:10:13 +0800
-Message-ID: <CAGXv+5Ej=sDXOy1Hg9fQrdxN-OEmxpfUjE8PfxgfBkWu9dvOXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/rockchip: dsi: hold pm-runtime across bind/unbind
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        aleksandr.o.makarov@gmail.com, stable@vger.kernel.org
+References: <20210927131027.13113c97@canb.auug.org.au>
+In-Reply-To: <20210927131027.13113c97@canb.auug.org.au>
+From:   Romain Perier <romain.perier@gmail.com>
+Date:   Mon, 27 Sep 2021 09:16:29 +0200
+Message-ID: <CABgxDo+EtzEhi1p9HvXNucrX-6O8G_uWm7_d2vp7BiXLjpSO4g@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the rtc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Sat, Sep 25, 2021 at 7:24 AM Brian Norris <briannorris@chromium.org> wrote:
->
-> In commit 59eb7193bef2, we moved most HW configuration to bind(), but we
-> didn't move the runtime PM management. Therefore, depending on initial
-> boot state, runtime-PM workqueue delays, and other timing factors, we
-> may disable our power domain in between the hardware configuration
-> (bind()) and when we enable the display. This can cause us to lose
-> hardware state and fail to configure our display. For example:
->
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-innolux-p079zca ff960000.mipi.0: failed to write command 0
->
-> or:
->
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
->
-> We should match the runtime PM to the lifetime of the bind()/unbind()
-> cycle.
+Whoops, my bad, it is probably caused by missing CONFIG_WERROR on my side.
+It seems to be fixed by
+https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git/commit/?=
+id=3D27ff63eb076c31086e0a72d41b5c635193a58516
 
-I'm not too familiar with MIPI DSI, but it seems that the subsystem expects
-the DSI link to be always available, and in LPM if power saving is required?
-If so then this change matches that expectation, though we might lose some
-power savings compared to the previous non-conforming behavior.
+Regards,
+Romain
 
-> Tested on Acer Chrometab 10 (RK3399 Gru-Scarlet), with panel drivers
-> built either as modules or built-in.
+Le lun. 27 sept. 2021 =C3=A0 05:10, Stephen Rothwell <sfr@canb.auug.org.au>=
+ a =C3=A9crit :
 >
-> Side notes: it seems one is more likely to see this problem when the
-> panel driver is built into the kernel. I've also seen this problem
-> bisect down to commits that simply changed Kconfig dependencies, because
-> it changed the order in which driver init functions were compiled into
-> the kernel, and therefore the ordering and timing of built-in device
-> probe.
+> Hi all,
 >
-> Fixes: 59eb7193bef2 ("drm/rockchip: dsi: move all lane config except LCDC mux to bind()")
-
-This hash is from some stable branch. The mainline one is:
-
-43c2de1002d2 drm/rockchip: dsi: move all lane config except LCDC mux to bind()
-
-> Link: https://lore.kernel.org/linux-rockchip/9aedfb528600ecf871885f7293ca4207c84d16c1.camel@gmail.com/
-> Reported-by: <aleksandr.o.makarov@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
+> After merging the rtc tree, today's linux-next build (x86_64 allmodconfig=
+)
+> failed like this:
 >
->  .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 22 +++++++------------
->  1 file changed, 8 insertions(+), 14 deletions(-)
+> drivers/rtc/rtc-msc313.c: In function 'msc313_rtc_read_alarm':
+> drivers/rtc/rtc-msc313.c:54:12: error: implicit declaration of function '=
+readw' [-Werror=3Dimplicit-function-declaration]
+>    54 |  seconds =3D readw(priv->rtc_base + REG_RTC_MATCH_VAL_L)
+>       |            ^~~~~
+> drivers/rtc/rtc-msc313.c: In function 'msc313_rtc_alarm_irq_enable':
+> drivers/rtc/rtc-msc313.c:75:2: error: implicit declaration of function 'w=
+ritew' [-Werror=3Dimplicit-function-declaration]
+>    75 |  writew(reg, priv->rtc_base + REG_RTC_CTRL);
+>       |  ^~~~~~
 >
-> diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> index a2262bee5aa4..4340a99edb97 100644
-> --- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> +++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> @@ -773,10 +773,6 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
->         if (mux < 0)
->                 return;
+> Caused by commit
 >
-> -       pm_runtime_get_sync(dsi->dev);
-> -       if (dsi->slave)
-> -               pm_runtime_get_sync(dsi->slave->dev);
-> -
->         /*
->          * For the RK3399, the clk of grf must be enabled before writing grf
->          * register. And for RK3288 or other soc, this grf_clk must be NULL,
-> @@ -795,20 +791,10 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
->         clk_disable_unprepare(dsi->grf_clk);
->  }
+>   be7d9c9161b9 ("rtc: Add support for the MSTAR MSC313 RTC")
 >
-> -static void dw_mipi_dsi_encoder_disable(struct drm_encoder *encoder)
-> -{
-> -       struct dw_mipi_dsi_rockchip *dsi = to_dsi(encoder);
-> -
-> -       if (dsi->slave)
-> -               pm_runtime_put(dsi->slave->dev);
-> -       pm_runtime_put(dsi->dev);
-> -}
-> -
->  static const struct drm_encoder_helper_funcs
->  dw_mipi_dsi_encoder_helper_funcs = {
->         .atomic_check = dw_mipi_dsi_encoder_atomic_check,
->         .enable = dw_mipi_dsi_encoder_enable,
-> -       .disable = dw_mipi_dsi_encoder_disable,
->  };
+> I have used the rtc tree from next-20210924 for today.
 >
->  static int rockchip_dsi_drm_create_encoder(struct dw_mipi_dsi_rockchip *dsi,
-> @@ -938,6 +924,10 @@ static int dw_mipi_dsi_rockchip_bind(struct device *dev,
->                 put_device(second);
->         }
->
-> +       pm_runtime_get_sync(dsi->dev);
-> +       if (dsi->slave)
-> +               pm_runtime_get_sync(dsi->slave->dev);
-> +
->         ret = clk_prepare_enable(dsi->pllref_clk);
->         if (ret) {
->                 DRM_DEV_ERROR(dev, "Failed to enable pllref_clk: %d\n", ret);
-
-The bind function is missing an error cleanup path. We might end up with
-unbalanced runtime PM references. (And also possibly an enabled pllref clk.)
-This is a pre-existing issue though. The code changes here look correct.
-
-Regards
-ChenYu
-
-
-> @@ -989,6 +979,10 @@ static void dw_mipi_dsi_rockchip_unbind(struct device *dev,
->         dw_mipi_dsi_unbind(dsi->dmd);
->
->         clk_disable_unprepare(dsi->pllref_clk);
-> +
-> +       pm_runtime_put(dsi->dev);
-> +       if (dsi->slave)
-> +               pm_runtime_put(dsi->slave->dev);
->  }
->
->  static const struct component_ops dw_mipi_dsi_rockchip_ops = {
 > --
-> 2.33.0.685.g46640cef36-goog
->
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> Cheers,
+> Stephen Rothwell
