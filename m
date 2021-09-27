@@ -2,248 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D6241988D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7225E41988E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhI0QLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235305AbhI0QLg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:11:36 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423BEC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:09:58 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id d18so23366668iof.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2GQ/4yVo5M6uC3IK/BIrMcprTNmZ6x0QiXuUrYuvaGQ=;
-        b=fvYVIROgMYloEMngAaoX++4PKLGL4I2Y6ORD7LIBRQ4TqPvpXEH02N1pz7M2Neokis
-         3qmzHiem+1W3OryQkA9+ZA+YyOchpW5Rd5FMeYPXfOonp8QTbHG48R0EtbzjEhjZdw3j
-         MStsGq02w6aP5HFKVSJXxwKxYK/xq38+M9t9LPxAftVQ1r0T4idsE3JDePie7/l0qYvl
-         G3Jr1NO2CMKU2YYX9G70Xfa6MC16r+KxHX7tgEqb92HEOEpxuOAlDKxisFD8QgR5vRfo
-         rNGHyFfm1gFba2uyuXeVBw4h/+4bjtNk5OyMmuPPq2coY1rc5V0svaB4X/fvyf2vZcjX
-         9A8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2GQ/4yVo5M6uC3IK/BIrMcprTNmZ6x0QiXuUrYuvaGQ=;
-        b=hSiLeeXSWSkvxoZwfrQ9Z6Sz9rbrvMX9LwE9M27r6pd2PFsxOyT1JULrVI2Y6rbMGI
-         7hQfSO+DTlucV/rREMQBeiO9scvLnQbpmL2pPfSZ/jgxuxYjlU19eOPqXsw04b8CEVXj
-         XW3wExCbJCpKv3kqigctG6OVR7pGSbmMmCAVFf6rYgliZgPdihvAAbryMjj8ppUBdPRT
-         aj+usaF/R+1BNga0lOP1ugwHKEtushG3LUpxJ13vDGlbZL7YWUII3FaD94hEUu7s7KcC
-         4Ul2eyYtJ1DyMfDpMWbZjIKi+2atisgagkF0X05K+l1utmv0KpDeElpkPxFNvoKhx4KT
-         +9cA==
-X-Gm-Message-State: AOAM531GlfOBOyiNjnxfDKtLMtWZA0OFXL6uRFOotAWPkWR0SCd/0X+U
-        /FMn7Downto6h0dUMoNJyNecUqiZJ5gxwULCgSfk6w==
-X-Google-Smtp-Source: ABdhPJwLXol1mbrw3uK9YsUwzKgrmzt2KzIExT1goYjNVKmnCt28a+gzwC3rgUPIRPogNnVM8mp8S7dTGtrExQw91JM=
-X-Received: by 2002:a02:8790:: with SMTP id t16mr666255jai.14.1632758997457;
- Mon, 27 Sep 2021 09:09:57 -0700 (PDT)
+        id S235345AbhI0QMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:12:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235261AbhI0QMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 12:12:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F93A60F24;
+        Mon, 27 Sep 2021 16:10:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632759046;
+        bh=F+UegogzQUd6lQGfpVddtwodkH6FMEhe5nAdym7ukz4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hyR9PMh5ejEwybOGdxb6WLqLhNYOsg228WFDNgq4h4JAYZuN4zhHixjHpzG9nUSO0
+         Io9+0oY/Etdl4/F5/UFBaYeACVsq7Dw7uxX2TtUMTu5lgtPsrkFYGk/BvLdx7dyqb9
+         PngD7G64G49V0Nl7YXySEpL87xztC/iqmyZhGwv/VWwIeExEE8MKDjPyeDb5whxvrl
+         HmBoqUdtXtCWWoL3LxktTyh/G9YzL/lnnyD154Urf75a9+InCN2635SnY9BjY71zw1
+         m/t/rRW/mjf6uiLAeQuM0m1tZImkO9sXD0azIJlxPcqAv45E2ukAzPp1TFqGVkiYpW
+         80b3xPrFnTOcQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5D4A95C0926; Mon, 27 Sep 2021 09:10:46 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 09:10:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Guillaume Morin <guillaume@morinfr.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: call_rcu data race patch
+Message-ID: <20210927161046.GU880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210917213404.GA14271@bender.morinfr.org>
+ <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918003933.GA25868@bender.morinfr.org>
+ <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918070836.GA19555@bender.morinfr.org>
+ <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210920160540.GA31426@bender.morinfr.org>
+ <20210922191406.GA31531@bender.morinfr.org>
+ <20210922192448.GB880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210927153842.GA12620@bender.morinfr.org>
 MIME-Version: 1.0
-References: <20210922081959.390059-1-irogers@google.com> <YUumPj7Oa1HvVGW/@krava>
- <CAP-5=fVd8zU-uHMg1KjyNPDv-_y-Q562PvPpoWSi1rS-KD0ezw@mail.gmail.com> <YVDlL28JgxaRwMJs@krava>
-In-Reply-To: <YVDlL28JgxaRwMJs@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 27 Sep 2021 09:09:43 -0700
-Message-ID: <CAP-5=fXkfMW9jHYz8X9p==gsRRzRCsx5WrGdmzE5YWe+idBeQw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] Start aligning perf test with kunit style
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>, eranian@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927153842.GA12620@bender.morinfr.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 2:25 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Sep 22, 2021 at 04:36:05PM -0700, Ian Rogers wrote:
-> > On Wed, Sep 22, 2021 at 2:55 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Wed, Sep 22, 2021 at 01:19:53AM -0700, Ian Rogers wrote:
-> > > > Perf test uses its own structs and code layout that differs from kunit
-> > > > that was more recently introduced to the kernel. Besides consistency,
-> > > > it is hoped that moving in the direction of kunit style will enable
-> > > > reuse of infrastructure like test output formatting for continuous
-> > > > testing systems. For example:
-> > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-> > > >
-> > > > The motivation for this restructuring comes from wanting to be able to
-> > > > tag tests with a size:
-> > > > https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
-> > > > To have more exhaustive and slower running tests.  This isn't
-> > > > something kunit currently supports, nor is the execution of python and
-> > > > shell tests, but it seems sensible to work on an approach with kunit
-> > > > rather to invent a new wheel inside of perf.
-> > > >
-> > > > These initial patches are just refactoring the main test suite
-> > > > definitions to be in a more kunit style. Kunit isn't depended upon, it
-> > > > is hoped that this can be done in later patches for the sake of
-> > > > consistency.
-> > >
-> > > seems good.. how far away from kunit is the code now?
-> >
-> > Thanks Jiri, It is a ways away from complete. I was thinking to follow up with:
-> > * Migrate the current sub-test approach to use kunit style test cases
-> > within a suite.
-> > * Combine what are currently independent test suites into one test
-> > suite with different test cases, for example stat.c contains stat,
-> > stat_config and stat_round tests.
-> >
-> > Once this is done then to unify with kunit we need to work out a
-> > common pattern for skipping a test, etc. There's already a lot here
-> > and so I wanted to get an opinion before pushing along further.
-> >
-> > > >
-> > > > v1. Built/tested on x86.
-> > > >
-> > > > Ian Rogers (5):
-> > > >   perf test: Use macro for "suite" declarations
-> > > >   perf test: Use macro for "suite" definitions
-> > > >   perf test: Make each test/suite its own struct.
-> > > >   perf test: Move each test suite struct to its test
-> > > >   perf test: Rename struct test to test_suite
-> > > >
-> > > >  tools/perf/arch/arm/include/arch-tests.h      |   2 +-
-> > > >  tools/perf/arch/arm/tests/arch-tests.c        |  21 +-
-> > > >  tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
-> > > >  tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
-> > > >  tools/perf/arch/arm64/tests/arch-tests.c      |  15 +-
-> > > >  tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
-> > > >  tools/perf/arch/powerpc/tests/arch-tests.c    |  15 +-
-> > >
-> > > I can run/test this on ppc/arm if you don't have any
-> >
-> > I have pretty easy access to ARM but lost access to PowerPC. If we're
-> > happy with the direction then I can test ARM and ask for help on
-> > PowerPC.
->
-> it compiles fine on powerpc and failed tests seem reasonable,
-> before/after perf test output is same apart from this:
->
-> [root@ibm-p9z-06-lp7 perf]# diff -puw out.old out.new
-> --- out.old     2021-09-26 17:15:57.947807813 -0400
-> +++ out.new     2021-09-26 17:20:51.789918644 -0400
-> @@ -81,7 +81,7 @@
->  69: PE file support                                                 : Ok
->  70: Event expansion for cgroups                                     : Ok
->  72: dlfilter C API                                                  : Ok
-> -73: Test dwarf unwind                                               : Ok
-> +73: DWARF unwind                                                    : Ok
->  74: build id cache operations                                       : Ok
->  75: daemon operations                                               : Ok
->  76: perf pipe recording and injection test                          : Ok
->
-> not sure there's somebody out there parsing this output,
-> maybe we can find out ;-)
+On Mon, Sep 27, 2021 at 05:38:42PM +0200, Guillaume Morin wrote:
+> On 22 Sep 12:24, Paul E. McKenney wrote:
+> > On Wed, Sep 22, 2021 at 09:14:07PM +0200, Guillaume Morin wrote:
+> > > I am little afraid of jinxing it :) but so far so good. I have the a
+> > > patched kernel running on a few machines (including my most "reliable
+> > > crasher") and they've been stable so far.
+> > > 
+> > > It's definitely too early to declare victory though. I will keep you
+> > > posted.
+> > 
+> > Here is hoping!  ;-)
+> 
+> Things are still stable. So I am pretty optimistic. How are you planning
+> to proceeed?
 
-Thanks, actually we have a parser on this output :-) I will correct the issue.
+Very good!  Would you be willing to give me your Tested-by?
 
-Ian
+> The first patch is already in your rcu tree and my gut feeling is that
+> it is the one that fixes the issue but you're the expert here... Though
+> I think it should be probably fast tracked and marked for stable?
+> 
+> Are you planning on committing the 2nd patch to your tree?
 
-> jirka
->
-> >
-> > Thanks,
-> > Ian
-> >
-> > > jirka
-> > >
-> > > >  tools/perf/arch/x86/include/arch-tests.h      |  14 +-
-> > > >  tools/perf/arch/x86/tests/arch-tests.c        |  47 +-
-> > > >  tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
-> > > >  tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
-> > > >  tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
-> > > >  .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
-> > > >  tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
-> > > >  tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
-> > > >  tools/perf/tests/api-io.c                     |   6 +-
-> > > >  tools/perf/tests/attr.c                       |   4 +-
-> > > >  tools/perf/tests/backward-ring-buffer.c       |   4 +-
-> > > >  tools/perf/tests/bitmap.c                     |   4 +-
-> > > >  tools/perf/tests/bp_account.c                 |  10 +-
-> > > >  tools/perf/tests/bp_signal.c                  |   8 +-
-> > > >  tools/perf/tests/bp_signal_overflow.c         |   8 +-
-> > > >  tools/perf/tests/bpf.c                        |  22 +-
-> > > >  tools/perf/tests/builtin-test.c               | 441 ++++--------------
-> > > >  tools/perf/tests/clang.c                      |  18 +-
-> > > >  tools/perf/tests/code-reading.c               |   4 +-
-> > > >  tools/perf/tests/cpumap.c                     |  10 +-
-> > > >  tools/perf/tests/demangle-java-test.c         |   4 +-
-> > > >  tools/perf/tests/demangle-ocaml-test.c        |   4 +-
-> > > >  tools/perf/tests/dlfilter-test.c              |   4 +-
-> > > >  tools/perf/tests/dso-data.c                   |  10 +-
-> > > >  tools/perf/tests/dwarf-unwind.c               |   2 +-
-> > > >  tools/perf/tests/event-times.c                |   4 +-
-> > > >  tools/perf/tests/event_update.c               |   4 +-
-> > > >  tools/perf/tests/evsel-roundtrip-name.c       |   4 +-
-> > > >  tools/perf/tests/evsel-tp-sched.c             |   4 +-
-> > > >  tools/perf/tests/expand-cgroup.c              |   6 +-
-> > > >  tools/perf/tests/expr.c                       |   4 +-
-> > > >  tools/perf/tests/fdarray.c                    |   7 +-
-> > > >  tools/perf/tests/genelf.c                     |   6 +-
-> > > >  tools/perf/tests/hists_cumulate.c             |   4 +-
-> > > >  tools/perf/tests/hists_filter.c               |   4 +-
-> > > >  tools/perf/tests/hists_link.c                 |   4 +-
-> > > >  tools/perf/tests/hists_output.c               |   4 +-
-> > > >  tools/perf/tests/is_printable_array.c         |   4 +-
-> > > >  tools/perf/tests/keep-tracking.c              |   4 +-
-> > > >  tools/perf/tests/kmod-path.c                  |   4 +-
-> > > >  tools/perf/tests/llvm.c                       |  22 +-
-> > > >  tools/perf/tests/maps.c                       |   4 +-
-> > > >  tools/perf/tests/mem.c                        |   4 +-
-> > > >  tools/perf/tests/mem2node.c                   |   4 +-
-> > > >  tools/perf/tests/mmap-basic.c                 |   4 +-
-> > > >  tools/perf/tests/mmap-thread-lookup.c         |   4 +-
-> > > >  tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
-> > > >  tools/perf/tests/openat-syscall-tp-fields.c   |   4 +-
-> > > >  tools/perf/tests/openat-syscall.c             |   5 +-
-> > > >  tools/perf/tests/parse-events.c               |   4 +-
-> > > >  tools/perf/tests/parse-metric.c               |   4 +-
-> > > >  tools/perf/tests/parse-no-sample-id-all.c     |   4 +-
-> > > >  tools/perf/tests/pe-file-parsing.c            |   6 +-
-> > > >  tools/perf/tests/perf-hooks.c                 |   4 +-
-> > > >  tools/perf/tests/perf-record.c                |   4 +-
-> > > >  tools/perf/tests/perf-time-to-tsc.c           |  10 +-
-> > > >  tools/perf/tests/pfm.c                        |  16 +-
-> > > >  tools/perf/tests/pmu-events.c                 |  19 +-
-> > > >  tools/perf/tests/pmu.c                        |   4 +-
-> > > >  tools/perf/tests/python-use.c                 |   4 +-
-> > > >  tools/perf/tests/sample-parsing.c             |   4 +-
-> > > >  tools/perf/tests/sdt.c                        |   6 +-
-> > > >  tools/perf/tests/stat.c                       |  10 +-
-> > > >  tools/perf/tests/sw-clock.c                   |   4 +-
-> > > >  tools/perf/tests/switch-tracking.c            |   4 +-
-> > > >  tools/perf/tests/task-exit.c                  |   4 +-
-> > > >  tools/perf/tests/tests.h                      | 179 ++++---
-> > > >  tools/perf/tests/thread-map.c                 |  10 +-
-> > > >  tools/perf/tests/thread-maps-share.c          |   4 +-
-> > > >  tools/perf/tests/time-utils-test.c            |   4 +-
-> > > >  tools/perf/tests/topology.c                   |   4 +-
-> > > >  tools/perf/tests/unit_number__scnprintf.c     |   4 +-
-> > > >  tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
-> > > >  tools/perf/tests/wp.c                         |  22 +-
-> > > >  81 files changed, 543 insertions(+), 618 deletions(-)
-> > > >
-> > > > --
-> > > > 2.33.0.464.g1972c5931b-goog
-> > > >
-> > >
-> >
->
+This is the second patch, correct?  (Too many patches!)
+
+If so, I add your Tested-by and fill out the commit log.  It would be
+slated for the v5.17 merge window by default, that is, not the upcoming
+merge window but the one after that.  Please let me know if you need
+it sooner.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 1a792b59071b697defd4ccdc8b951cce49de9d2f
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Sep 17 15:04:48 2021 -0700
+
+    EXP rcu: Tighten rcu_advance_cbs_nowake() checks
+    
+    This is an experimental shot-in-the-dark debugging patch.
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6a1e9d3374db..6d692a591f66 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1590,10 +1590,14 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+ 						  struct rcu_data *rdp)
+ {
+ 	rcu_lockdep_assert_cblist_protected(rdp);
+-	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) ||
++	// Don't do anything unless the current grace period is guaranteed
++	// not to end.  This means a grace period in progress and at least
++	// one holdout CPU.
++	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !READ_ONCE(rnp->qsmask) ||
+ 	    !raw_spin_trylock_rcu_node(rnp))
+ 		return;
+-	WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
++	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) && READ_ONCE(rnp->qsmask))
++		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+ 	raw_spin_unlock_rcu_node(rnp);
+ }
+ 
