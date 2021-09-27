@@ -2,133 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8193E41966B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A790741966D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234893AbhI0Obq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Sep 2021 10:31:46 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:44091 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234706AbhI0Obp (ORCPT
+        id S234876AbhI0OcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234843AbhI0OcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:31:45 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 40A2A60005;
-        Mon, 27 Sep 2021 14:30:05 +0000 (UTC)
-Date:   Mon, 27 Sep 2021 16:30:04 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Nuno Sa <Nuno.Sa@analog.com>
-Subject: Re: [PATCH v4 14/16] iio: adc: max1027: Use the EOC IRQ when
- populated for single reads
-Message-ID: <20210927163004.54f1a824@xps13>
-In-Reply-To: <20210926153659.70162a99@jic23-huawei>
-References: <20210921115408.66711-1-miquel.raynal@bootlin.com>
-        <20210921115408.66711-15-miquel.raynal@bootlin.com>
-        <20210926153659.70162a99@jic23-huawei>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 27 Sep 2021 10:32:11 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186FCC061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:30:34 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso24588053otv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6dmz57ALv5dyWaJka72N6EgNZfMkHkaGezhc8htEAYU=;
+        b=E1wTmoLziG57ZgXn4YpZyDAdwICHaYbC91LxvyK5ctK0KWegf4dHher5qBu+boHcX0
+         /eOgwxw8rkh8cqvmgKO3wStvqc0G0Ch7PsIf9TJvIflDzZ1g637cJXdCF8ytHMASsIPS
+         qGlRLjG0Tb5M2KbOM+PCJSPirZeFqicIcx4jGyGH/q6jgkbtLwGXk2uc77cAK9pR+34s
+         Yua5lozoVph51lrBhzPt0R4TRS0eYrw1ZH08pdSeXsqnC8sMHyHNKHJeXfWYckif4gKh
+         khaB5sYgk+ZnGJuYG9hYZLWamAaxUucjeeMvE+xUBjeroE+F5aRhE9N9htnPQeMo97/8
+         6BsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6dmz57ALv5dyWaJka72N6EgNZfMkHkaGezhc8htEAYU=;
+        b=Zu5aGOFNJ6ErYyn3Tydo1P3tB4yjPsxNK3dKye0FhymzlLiPpof6f6ixlnoA9Vponn
+         INVUCM9zXd1CQjO5Lx3H44KZL3/+0TKObrHHyvWrpn1btkRM+QbmA6TABakqy34NaPHd
+         e65Yz6eDrVkOfjIibdCo+vYr9rrnV0yFDBFzqKY3zf40VZFXxzHXO7OvozSCqRw3CAgC
+         lAaLaQjLQRxJZgQ5rW0WEVqEewp7/3QBPL1do2tWUUN+UI7ekP4e+i5avOBdD+yRbFVn
+         05EbJOLbiAY1Fp2x9mqu5m+JLOsDru6TEGLwHtsuAC4r2tOTCNuzv1PaLqZGrSFIE7QJ
+         ad8w==
+X-Gm-Message-State: AOAM533NLP47IhsCx5GHQM05hM0ef4dQvFqXGncYMfePJI6NYui5wama
+        vvmp5XVVF90/MhxhoFfdwgU/Y9m8URL9jRBPv3zD8TWMCTf4KA==
+X-Google-Smtp-Source: ABdhPJyCI0QukB0UbR3iGF+fPJ3OA4Q45A77r6jFBugI6sybcZfPvV/34RjoIU5+LpsqmC2foR03rH3e774UajvwXOY=
+X-Received: by 2002:a05:6830:82b:: with SMTP id t11mr267648ots.319.1632753033087;
+ Mon, 27 Sep 2021 07:30:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <000000000000a3cf8605cb2a1ec0@google.com> <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
+ <20210921165134.GE35846@C02TD0UTHF1T.local> <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 27 Sep 2021 16:30:22 +0200
+Message-ID: <CACT4Y+ZBxuioOdYwRxrP+CiKrztLnKunKogjYAhc1+1Cy0eiwA@mail.gmail.com>
+Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in __entry_tramp_text_end
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        Will Deacon <willdeacon@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Mon, 27 Sept 2021 at 16:27, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Tue, 21 Sept 2021 at 18:51, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > Hi Dmitry,
+> >
+> > The good news is that the bad unwind is a known issue, the bad news is
+> > that we don't currently have a way to fix it (and I'm planning to talk
+> > about this at the LPC "objtool on arm64" talk this Friday).
+> >
+> > More info below: the gist is we can produce spurious entries at an
+> > exception boundary, but shouldn't miss a legitimate value, and there's a
+> > plan to make it easier to spot when entries are not legitimate.
+> >
+> > On Fri, Sep 17, 2021 at 05:03:48PM +0200, Dmitry Vyukov wrote:
+> > > > Call trace:
+> > > >  dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
+> > > >  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
+> > > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > > >  dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
+> > > >  print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
+> > > >  __kasan_report mm/kasan/report.c:442 [inline]
+> > > >  kasan_report+0x134/0x380 mm/kasan/report.c:459
+> > > >  __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
+> > > >  do_bad_area arch/arm64/mm/fault.c:466 [inline]
+> > > >  do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
+> > > >  do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
+> > > >  el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
+> > > >  el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
+> > > >  el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
+> > > >  __entry_tramp_text_end+0xdfc/0x3000
+> > >
+> > > /\/\/\/\/\/\/\
+> > >
+> > > This is broken unwind on arm64. d_lookup statically calls __d_lookup,
+> > > not __entry_tramp_text_end (which is not even a function).
+> > > See the following thread for some debugging details:
+> > > https://lore.kernel.org/lkml/CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com/
+> >
+> > The problem here is that our calling convention (AAPCS64) only allows us
+> > to reliably unwind at function call boundaries, where the state of both
+> > the Link Register (LR/x30) and Frame Pointer (FP/x29) are well-defined.
+> > Within a function, we don't know whether to start unwinding from the LR
+> > or FP, and we currently start from the LR, which can produce spurious
+> > entries (but ensures we don't miss anything legitimte).
+> >
+> > In the short term, I have a plan to make the unwinder indicate when an
+> > entry might not be legitimate, with the usual stackdump code printing an
+> > indicator like '?' on x86.
+> >
+> > In the longer term, we might be doing things with objtool or asking for
+> > some toolchain help such that we can do better in these cases.
+>
+> Hi Mark,
+>
+> Any updates after the LPC session?
+>
+> If the dumper adds " ? ", then syzkaller will strip these frames
+> (required for x86).
+> However, I am worried that we can remove the true top frame then and
+> attribute crashes to wrong frames again?
+>
+> Some naive questions:
+> 1. Shouldn't the top frame for synchronous faults be in the PC/IP
+> register (I would assume LR/FP contains the caller of the current
+> frame)?
+> 2. How __entry_tramp_text_end, which is not a function, even ended up
+> in LR? shouldn't it always contain some code pointer (even if stale)?
+> 3. Isn't there already something in the debug info to solve this
+> problem? Userspace programs don't use objtool, but I assume that can
+> print crash stacks somehow (?).
 
-jic23@kernel.org wrote on Sun, 26 Sep 2021 15:36:59 +0100:
++Will, Serban,
 
-> On Tue, 21 Sep 2021 13:54:06 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > So far the End-Of-Conversion interrupt was only used in conjunction with
-> > the internal trigger to process the data. Let's extend the use of this
-> > interrupt handler to support regular single-shot conversions as well.
-> > 
-> > Doing so requires writing our own hard IRQ handler. This handler has to
-> > check if buffers are enabled or not:
-> > 
-> > *** Buffers disabled condition ***
-> > 
-> >   This means the user requested a single conversion and the sample is
-> >   ready to be retrieved.
-> >   
-> >     -> This implies adding the relevant completion boilerplate.    
-> > 
-> > *** Buffers enabled condition ***
-> > 
-> >   Triggers are used. So far there is only support for the internal
-> >   trigger but this trigger might soon be attached to another device as
-> >   well so it is the core duty to decide which handler to call in order
-> >   to process the data. The core will decide to either:
-> > 
-> >   * Call the internal trigger handler which will extract the data that
-> >     is already present in the ADC FIFOs
-> > 
-> >   or
-> > 
-> >   * Call the trigger handler of another driver when using this trigger
-> >     with another device, even though this call will be slightly delayed
-> >     by the fact that the max1027 IRQ is a data-ready interrupt rather
-> >     than a real trigger:
-> >   
-> >   -> The new handler will manually inform the core about the trigger    
-> >      having transitioned by directly calling iio_trigger_poll() (which
-> >      iio_trigger_generic_data_rdy_poll() initially did).
-> > 
-> > In order for the handler to be "source" agnostic, we also need to change
-> > the private pointer and provide the IIO device instead of the trigger
-> > object.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> > 
-> > Jonathan,
-> > 
-> > I hope this fits the IIO model now. In order to be sure I got the big
-> > picture I first refused to look at your code snippets. Just with your
-> > "plain english" explanations I wrote most of these three patches, before
-> > checking back that they were indeed fully aligned with your examples. I
-> > truly hope they do now, but do not hesitate if I missed something.  
-> 
-> Looks great to me (in fact I just applied it but I'll reply to the cover letter
-> shortly for that).
-
-Great, thanks!
-
-> Thanks for persisting with this and I'm looking forward to that blog you
-> mentioned.
-
-Thank you for all the time you put in these reviews.
-
-I wrote most of it, it's not very long but I tried to cover most of the
-common interactions with the core. It is under internal review, I'll
-certainly show you its content before publishing in case you have
-comments or spot any mistake.
-
->  If you have time / inclination to help improve the documentation
-> in the kernel tree that would also be great.  This discussion has made it
-> clear to me that it would be great to have a set of 'patterns' for common
-> types of device + how we map them onto the model of IIO (particularly
-> when they don't quite fit that idealised model).  There are similar
-> compromises around when to use multiple buffers for instance.
-> 
-> It is always on the list of things to work on but somehow there is always
-> something else more urgent :(
-
-Hehe :) I know, documentation is always a good-to-have item that is not
-often reached... I feel I need more occasions to work in the IIO
-area (for example with hardware fifos/buffers or events) before being
-able to fully appreciate the internal design, but I agree having a set
-of 'usual patterns' that drivers should conform with depending on the
-devices capabilities/constraints would be a must.
-
-In the mean time, let's start by clarifying this 'iio_dev->modes'
-property :)
-
-Thanks,
-Miquèl
+This ARM64 unwinder issue also means that all kernel MTE reports will
+contain wrong top frame, right?
