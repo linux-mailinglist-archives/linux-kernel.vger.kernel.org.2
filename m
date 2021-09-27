@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135A6419252
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BA741925A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhI0KkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:40:11 -0400
-Received: from egress-ip4a.ess.de.barracuda.com ([18.184.203.227]:42294 "EHLO
-        egress-ip4a.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233858AbhI0KkH (ORCPT
+        id S233860AbhI0KnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233800AbhI0Km6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:40:07 -0400
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71]) by mx-outbound40-42.eu-central-1c.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Mon, 27 Sep 2021 10:38:26 +0000
-Received: by mail-pj1-f71.google.com with SMTP id gq10-20020a17090b104a00b0019ec5538b25so4466210pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 03:38:27 -0700 (PDT)
+        Mon, 27 Sep 2021 06:42:58 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A37C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 03:41:21 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id w14so15454618pfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 03:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mistralsolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sCG/LglCvdRg/oGkfksE39oKp0qqB5Zh3UzOqOO6HuM=;
-        b=FwQfvnoxXTujx5hOw76v4pnT2w7YEeZHvO6q7nOgbKKqy96GE0NSlCjZeKpxPwrREr
-         L4LvQDN/jpwZoBNV35bquH70KAZxYOKTiaFYsZc/IUjrwkhcwV/56Ph0WRtRJ4tEOXcW
-         oPMU9OUSIbkmeIimgN+ulbnArdtLknRmMuJLI=
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=k9dfhVa8WXGArQxd4uC/otj1zB4dJvIcYzxwUa5C/4E=;
+        b=QoT3ZFF4ugQruiwS7E5XFSORyz5Nmov5GuWG9OVsPNrkuuqeUaqV7m145MWFi4/BLa
+         U0885TlxBLnajthlt9guvH4SM1UUE0D0CDJRp7++csUMgtDJFVjEObXcLDzuX1gPOQ0k
+         MwxjEFZ5CDiIlBiHTL3I9f/5pTZARLnslWVeAi+LRUzZBuK7H4syUSwUm1cyrHhBNNfl
+         3/aWn/leiUtxd+xOwIFmChYEnzf30MwhrrQK5WFtwjXKOMyUGrjRkdWoJPvEH3/UQBbT
+         aHdKIGg40nuqiVO+rNBYfKbUSyjWTkBsLWR0TMeWFt80OK9ByLyfW2h7Y77lLD1HoAUS
+         jRSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sCG/LglCvdRg/oGkfksE39oKp0qqB5Zh3UzOqOO6HuM=;
-        b=hppdKfxjqliEm1HsRCWoorzKIoHeZxOUbp1oCWx3F8egIz9lwqGY+6ZIXWpo5Wpj4v
-         61fLepm/ELgvVyEOir1bNd51kAPvT5oznBhisIvgwUtm5szPa5HZzCEUZwqB1giEn/wx
-         +mxjnOK4/HMR7FjJhFCbx0VR1S7WmEkDHXjFoCjlrLC3aYio+btf24zWAhzcBmN9VHHq
-         nMgL8C+5soDFckdUDHeWkk4D0eBj8LEGpln+/66Z/gQZ/HnfaYo+9pgI6XEvkwYZZ76z
-         ShL/kbUoa1OFO3kWls13MxBQKak6w6sUpMDG/04Fv+Or4f4qT0eyTSVEmjYBcCtMl+ai
-         IiIA==
-X-Gm-Message-State: AOAM533AEvG7LYS4ykstPBQak3KvewuF1MkEHW59OOzb99oD4lxx4ciW
-        QMM0N6wnMeZfpa996ZFPL9z7LN8G+M3R/W0MtCKjDkU4kKzdnUADAlu/p0sGNQY/SbPt/FmdDtj
-        8gxP+saByrJafWHLSjkQiXm3GF+NNEWElbbcuVhx1N9MopNYjGQzzhp/qg86b
-X-Received: by 2002:a17:90b:1102:: with SMTP id gi2mr18954386pjb.43.1632739105764;
-        Mon, 27 Sep 2021 03:38:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzciYVKi71v8xhIPcFz9bTM5VAy8i1i3VXdLzJ4HCmoplHzneMMjjuWJuzNm1cOfqljbCNOmw==
-X-Received: by 2002:a17:90b:1102:: with SMTP id gi2mr18954367pjb.43.1632739105559;
-        Mon, 27 Sep 2021 03:38:25 -0700 (PDT)
-Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id t68sm18030894pgc.59.2021.09.27.03.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 03:38:25 -0700 (PDT)
-From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
-X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
-To:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH V4 2/2] dt-bindings: remoteproc: k3-dsp: Cleanup SoC compatible from DT example
-Date:   Mon, 27 Sep 2021 16:08:11 +0530
-Message-Id: <20210927103811.11222-3-sinthu.raja@ti.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927103811.11222-1-sinthu.raja@ti.com>
-References: <20210927103811.11222-1-sinthu.raja@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1632739106-310282-5424-278-1
-X-BESS-VER: 2019.1_20210921.2035
-X-BESS-Apparent-Source-IP: 209.85.216.71
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.234758 [from 
-        cloudscan23-46.eu-central-1b.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
-X-BESS-BRTS-Status: 1
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=k9dfhVa8WXGArQxd4uC/otj1zB4dJvIcYzxwUa5C/4E=;
+        b=M8vbuiBd4tHQgMoPlVZrY0BjeiTvomGydnPwHhKVgo4XWqtgdrG2N5ZfWPZ3VHRwly
+         xsM978s3U0XXsQztfp0OTN+rsYIdUE9ClBAUu5kVtOeWPU8Crpvz2kGsBbnyH8d6FOet
+         QA+Gx/fXXQpntoewdm5CSf1Lkyh45i0O5fOdQf+PV4U2Z+MhCyZ3rxAiiAtUi6d40GVe
+         gzqmjcoersr7IqPlhjcdTfd8howJq4sap0fPboX18K4yeafQMsGC8zx/BAiN2USu+F98
+         oNEs5sC5VZ3K2eAI8RHI6YZD+XX2FDsUUfmCL+3Ah5aNxaZ6E+bkpC/nJtJ8nAlolD1C
+         uhDA==
+X-Gm-Message-State: AOAM530KhFXjnp5ByzKAhwBIfKRAEaFwRPKGNJGyA0CNGgxzUh1vQmIx
+        7f0m8ItVO0Cqv0E1G3P9ig8=
+X-Google-Smtp-Source: ABdhPJzQf6NRl42y9fS/bj1j4AdFeAX4xhGcRWLrwBaZo4mBNoKiBgoChczpGErUH0r0xOxD3+I8MQ==
+X-Received: by 2002:a63:e446:: with SMTP id i6mr16239207pgk.288.1632739280717;
+        Mon, 27 Sep 2021 03:41:20 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id r5sm15326341pjd.13.2021.09.27.03.41.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Sep 2021 03:41:20 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+Date:   Mon, 27 Sep 2021 03:41:18 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sinthu Raja <sinthu.raja@ti.com>
 
-The K3 DSP binding example used the root-node with a SoC compatible
-property originally to address the dt_binding_check warnings resulting
-from using a value of 2 for #address-cells and #size-cells as per most
-common usage on K3 SoCs. Clean this up and replace it with a generic soc
-node to keep it agnostic of the SoC or board compatibles that are outside
-the scope of this binding.
 
-Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Acked-by: Suman Anna <s-anna@ti.com>
----
+> On Sep 27, 2021, at 2:24 AM, David Hildenbrand <david@redhat.com> =
+wrote:
+>=20
+> On 26.09.21 18:12, Nadav Amit wrote:
+>> From: Nadav Amit <namit@vmware.com>
+>> The goal of these patches is to add support for
+>> process_madvise(MADV_DONTNEED). Yet, in the process some (arguably)
+>> useful cleanups, a bug fix and performance enhancements are =
+performed.
+>> The patches try to consolidate the logic across different behaviors, =
+and
+>> to a certain extent overlap/conflict with an outstanding patch that =
+does
+>> something similar [1]. This consolidation however is mostly =
+orthogonal
+>> to the aforementioned one and done in order to clarify what is done =
+in
+>> respect to locks and TLB for each behavior and to batch these =
+operations
+>> more efficiently on process_madvise().
+>> process_madvise(MADV_DONTNEED) is useful for two reasons: (a) it =
+allows
+>> userfaultfd monitors to unmap memory from monitored processes; and =
+(b)
+>> it is more efficient than madvise() since it is vectored and batches =
+TLB
+>> flushes more aggressively.
+>=20
+> MADV_DONTNEED on MAP_PRIVATE memory is a target-visible operation; =
+this is very different to all the other process_madvise() calls we =
+allow, which are merely hints, but the target cannot be broken . I don't =
+think this is acceptable.
 
-Changes since V4:
-* review comment updates, including, commit message and $subject updates
-  & dropped Fixes tag.
+This is a fair point, which I expected, but did not address properly.
 
-V3: https://lore.kernel.org/all/20210917095426.19277-3-sinthu.raja@ti.com/
-V2: https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
-V1: https://lore.kernel.org/all/20210817152005.21575-1-sinthu.raja@ti.com/
-
- .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml       | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-index 6070456a7b67..5ec6505ac408 100644
---- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-@@ -133,9 +133,7 @@ unevaluatedProperties: false
- 
- examples:
-   - |
--    / {
--        model = "Texas Instruments K3 J721E SoC";
--        compatible = "ti,j721e";
-+    soc {
-         #address-cells = <2>;
-         #size-cells = <2>;
- 
--- 
-2.31.1
+I guess an additional capability, such as CAP_SYS_PTRACE needs to be
+required in this case. Would that ease your mind?
 
