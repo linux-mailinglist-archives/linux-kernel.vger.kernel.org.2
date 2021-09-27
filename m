@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BF14195F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B43F4195FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhI0OKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:10:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234682AbhI0OKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83FDA61058;
-        Mon, 27 Sep 2021 14:08:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632751717;
-        bh=ktYooaNuS/l3irntvYIc/zVHS2lkWkI0eqToMcMCx2E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kcGaU0v0nba50XYMKsMamhr0rLGzBMSZWaHpSTRib+yKqXH/U6tWEb8CPoiN8O+59
-         MZEXnipoWbW1iGLTX3P6TdAFcvgiOsNCNbldOrUzQuy0Yts1BUXLwH/YZGVsDHQt3q
-         /AgycnnEnV92XxyF70rmozpdlSID1/aUUn/IofgfBsv4wpinI6UW0au+slNul8TVK2
-         +mGh3sG/8sYGyYoaq5nBKqb2ade+Q+mfikMQeJLGffLThF/hrKCHcfELZ3ZYRrrZYt
-         gq9rvaKiqiKemJWabeRPsO7CFTShSaLffyYB+gE1M7ziQxmqQeJ/kyFDvM6iyTuRIn
-         lQLT1vNv9SMxQ==
-Received: by mail-lf1-f41.google.com with SMTP id b20so78287516lfv.3;
-        Mon, 27 Sep 2021 07:08:37 -0700 (PDT)
-X-Gm-Message-State: AOAM530dlTeZq3YlX4H1rmCVW5Ytd6OMzyg/5rBNhECTLVF4GBpZ9/jP
-        wqXaiTpiYNIyFBQicT7THd22LZFIWgXcJQnRXyM=
-X-Google-Smtp-Source: ABdhPJw58woOx1/DECIFcI12BF3oWqo7EXg8x8s/UAp+Mt0Uzqbc0lPLAL1Ez4D+D6eUalDBenubb3TfsyhKwS1p1a4=
-X-Received: by 2002:a05:6512:6d0:: with SMTP id u16mr23505110lff.641.1632751715269;
- Mon, 27 Sep 2021 07:08:35 -0700 (PDT)
+        id S234723AbhI0OLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:11:31 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51794 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234677AbhI0OL3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:11:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 250351C0B7A; Mon, 27 Sep 2021 16:09:49 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 16:09:48 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] led-class-flash: fix -Wrestrict warning
+Message-ID: <20210927140948.GA5809@duo.ucw.cz>
+References: <20210927131557.1587062-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
- <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com> <083297b0-58e2-aa1e-2f8a-47845a9b373e@huawei.com>
-In-Reply-To: <083297b0-58e2-aa1e-2f8a-47845a9b373e@huawei.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 27 Sep 2021 22:08:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQVFuOZkKrjL5YtNGgxxZRuE1ve+s9DWQHX4w8EtDAYSw@mail.gmail.com>
-Message-ID: <CAJF2gTQVFuOZkKrjL5YtNGgxxZRuE1ve+s9DWQHX4w8EtDAYSw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
+Content-Disposition: inline
+In-Reply-To: <20210927131557.1587062-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 8:35 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
->
-> On 2021/9/27 20:09, Guo Ren wrote:
-> > I didn't see the patch delete:
-> > #else /* !CONFIG_SPARSE_IRQ */
-> > struct irq_desc irq_desc[NR_IRQS] __cacheline_aligned_in_smp = {
-> >          [0 ... NR_IRQS-1] = {
-> >                  .handle_irq     = handle_bad_irq,
-> >                  .depth          = 1,
-> >                  .lock           = __RAW_SPIN_LOCK_UNLOCKED(irq_desc->lock),
-> >          }
-> > };
-> > ...
-> >
-> > Flat irq_desc[] is simple and easy for debugging. We do want to del it?
->
-> This patches want to kill MAY_HAVE_SPARSE_IRQ,  not !SPARSE_IRQ.
->
-> so I won't delete above parts(eg, ARM could use both SPARSE_IRQ and
->
-> !SPARSE_IRQ via different config,)
->
-> >
-> > On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> >> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
-> >> only sh and csky select it, but the could use SPARSE_IRQ too, let's
-> >> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
-Why couldn't choice SPARSE in menuconfig?
 
-> >>
-> >> Kefeng Wang (3):
-> >>    sh: Cleanup about SPARSE_IRQ
-> >>    csky: Use SPARSE_IRQ
-> >>    genirq: Cleanup Kconfig
-> >>
-> >>   arch/csky/Kconfig         |  2 +-
-> >>   arch/sh/Kconfig           |  1 -
-> >>   arch/sh/include/asm/irq.h |  9 -------
-> >>   kernel/irq/Kconfig        | 50 ++++++++++++++++-----------------------
-> >>   4 files changed, 21 insertions(+), 41 deletions(-)
-> >>
-> >> --
-> >> 2.26.2
-> >>
-> >
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
+> gcc-11 warns when building with W=3D1:
+>=20
+> drivers/leds/led-class-flash.c: In function 'flash_fault_show':
+> drivers/leds/led-class-flash.c:210:16: error: 'sprintf' argument 3 overla=
+ps destination object 'buf' [-Werror=3Drestrict]
+>   210 |         return sprintf(buf, "%s\n", buf);
+>       |                ^~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/leds/led-class-flash.c:187:54: note: destination object reference=
+d by 'restrict'-qualified argument 1 was declared here
+>   187 |                 struct device_attribute *attr, char *buf)
+>       |                                                ~~~~~~^~~
+>=20
+> There is no need for the sprintf() here when a strcat() does
+> the same thing without invoking undefined behavior.
 
--- 
-Best Regards
- Guo Ren
+Thanks, applied.
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-ML: https://lore.kernel.org/linux-csky/
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYVHQrAAKCRAw5/Bqldv6
+8nbMAJ9p8yuZLjq/xysDh5/axd2reUccOACeOboBID9EufGo7mr90khPRTxRpf4=
+=Ie2P
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
