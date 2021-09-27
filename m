@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB996419A6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C0A419B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhI0RJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
+        id S236467AbhI0RUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:20:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236110AbhI0RHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C41FC611F0;
-        Mon, 27 Sep 2021 17:06:12 +0000 (UTC)
+        id S236568AbhI0RPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:15:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBD826137C;
+        Mon, 27 Sep 2021 17:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762373;
-        bh=xi95IEWQSZdZ1nRNe0fmKxA2/HNzYWWNPOdEgCniOxk=;
+        s=korg; t=1632762669;
+        bh=fWjdsQvfYIIqpLa9i2nBmD08qc6V7uV2NfM5YXqQBA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zo95UljvxGwkJgcjpogfM0PHboNkkoz9pw/PiPBhvBo/dzgl3HdNfmJ1o+ubu516V
-         yykpjaXBgM0aeBwp7CkqB23DITTVrof5lxSeB5zaRg1T7DVYuM6FAJaGczMsx5tAIc
-         jKt09Ardlmsu4BpKVDQrsfXZpZVV2kK7/ie/onoY=
+        b=nn/AeZ0oIlZOpIL3COoopI4BdsI717DHxdhd8Lfo455kfOJ3h6Txnowsohx0eBRJY
+         11FKZAEB9IQZUoH3plhKwoM2niXfkw1V7YbAv7V9u85whTPQTk5LPPvIfhkdg/VhYb
+         NDmagsVVZd/x00u3LJBfx3i9tVeMHB2po1TDfimo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pIandruvada@linux.intel.com>
-Subject: [PATCH 5.4 65/68] thermal/drivers/int340x: Do not set a wrong tcc offset on resume
-Date:   Mon, 27 Sep 2021 19:03:01 +0200
-Message-Id: <20210927170222.218389250@linuxfoundation.org>
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 090/103] net: i825xx: Use absolute_pointer for memcpy from fixed memory location
+Date:   Mon, 27 Sep 2021 19:03:02 +0200
+Message-Id: <20210927170228.888246061@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 8b4bd256674720709a9d858a219fcac6f2f253b5 upstream.
+[ Upstream commit dff2d13114f0beec448da9b3716204eb34b0cf41 ]
 
-After upgrading to Linux 5.13.3 I noticed my laptop would shutdown due
-to overheat (when it should not). It turned out this was due to commit
-fe6a6de6692e ("thermal/drivers/int340x/processor_thermal: Fix tcc setting").
+gcc 11.x reports the following compiler warning/error.
 
-What happens is this drivers uses a global variable to keep track of the
-tcc offset (tcc_offset_save) and uses it on resume. The issue is this
-variable is initialized to 0, but is only set in
-tcc_offset_degree_celsius_store, i.e. when the tcc offset is explicitly
-set by userspace. If that does not happen, the resume path will set the
-offset to 0 (in my case the h/w default being 3, the offset would become
-too low after a suspend/resume cycle).
+  drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
+  arch/m68k/include/asm/string.h:72:25: error:
+	'__builtin_memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
 
-The issue did not arise before commit fe6a6de6692e, as the function
-setting the offset would return if the offset was 0. This is no longer
-the case (rightfully).
+Use absolute_pointer() to work around the problem.
 
-Fix this by not applying the offset if it wasn't saved before, reverting
-back to the old logic. A better approach will come later, but this will
-be easier to apply to stable kernels.
-
-The logic to restore the offset after a resume was there long before
-commit fe6a6de6692e, but as a value of 0 was considered invalid I'm
-referencing the commit that made the issue possible in the Fixes tag
-instead.
-
-Fixes: fe6a6de6692e ("thermal/drivers/int340x/processor_thermal: Fix tcc setting")
-Cc: stable@vger.kernel.org
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Tested-by: Srinivas Pandruvada <srinivas.pI andruvada@linux.intel.com>
-Link: https://lore.kernel.org/r/20210909085613.5577-2-atenart@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/intel/int340x_thermal/processor_thermal_device.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/i825xx/82596.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-@@ -179,7 +179,7 @@ static int tcc_offset_update(unsigned in
- 	return 0;
- }
- 
--static unsigned int tcc_offset_save;
-+static int tcc_offset_save = -1;
- 
- static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
- 				struct device_attribute *attr, const char *buf,
-@@ -703,7 +703,8 @@ static int proc_thermal_resume(struct de
- 	proc_dev = dev_get_drvdata(dev);
- 	proc_thermal_read_ppcc(proc_dev);
- 
--	tcc_offset_update(tcc_offset_save);
-+	if (tcc_offset_save >= 0)
-+		tcc_offset_update(tcc_offset_save);
- 
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/i825xx/82596.c b/drivers/net/ethernet/i825xx/82596.c
+index fc8c7cd67471..8b12a5ab3818 100644
+--- a/drivers/net/ethernet/i825xx/82596.c
++++ b/drivers/net/ethernet/i825xx/82596.c
+@@ -1155,7 +1155,7 @@ struct net_device * __init i82596_probe(int unit)
+ 			err = -ENODEV;
+ 			goto out;
+ 		}
+-		memcpy(eth_addr, (void *) 0xfffc1f2c, ETH_ALEN);	/* YUCK! Get addr from NOVRAM */
++		memcpy(eth_addr, absolute_pointer(0xfffc1f2c), ETH_ALEN); /* YUCK! Get addr from NOVRAM */
+ 		dev->base_addr = MVME_I596_BASE;
+ 		dev->irq = (unsigned) MVME16x_IRQ_I596;
+ 		goto found;
+-- 
+2.33.0
+
 
 
