@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2154193F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9C14193F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbhI0MSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:18:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234162AbhI0MRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:17:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E18C61002;
-        Mon, 27 Sep 2021 12:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632744975;
-        bh=VLo/T7QE7PzxvCAvdD1Dx6SHSPfV7VXt+9sxJ8jwEdY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jiflBaFmGv0Wu3oK+iueZyRJ55VwwX9vyZeFt788/RY4FibsFj3Yfcniw3mRgn1P1
-         UPMUkcJ7N1KhwNeKeZHurdBjEnRW87BgiNbPsaUsjsQlQspNEOSkczWnKN9X/nx3TN
-         KKPoLgkhTZIquV2ZWTSG4ICRDfSd4EE9f42ibgPrrICx684BTza2m3gefFvx64yFUT
-         l71jotSFZ6RWl1Wm8tShtCYyU3FacgteXG2MF1G3Tb4kApaFsXxmGDEVTXp9FkMBqX
-         hyaJe9mOfWyuDo931hyPKiSoNnTtBUI/yic3oyy2qZejhhXNt7skFkwjvZfH3CvIKr
-         xV/d30/DIRj8A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH] cxgb: avoid open-coded offsetof()
-Date:   Mon, 27 Sep 2021 14:16:04 +0200
-Message-Id: <20210927121611.940046-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234181AbhI0MSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:18:20 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48216 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234280AbhI0MRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:17:55 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 30DEA200E7;
+        Mon, 27 Sep 2021 12:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632744973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2JDyFY0B3V9u0p2eeZcWAu9t3CijjbBnbN1ws98VWnc=;
+        b=gjmUPk3C5xGi5oim5i9/JuTCCSv6JcT1ecg0vJtcmB+J8Og9bG/A2m7LIp3X5sBEr2OUWJ
+        NLH5mhxkp0X4oSVSxmRvW6I7LLkBJyYLSf09WH6YkMkLI7cy/UUqw0BIHBLaRKAectrMTH
+        lgGT7DTUWirra+wKWcFlP+x0QXY1JEc=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id A22EA25D3C;
+        Mon, 27 Sep 2021 12:16:12 +0000 (UTC)
+Date:   Mon, 27 Sep 2021 14:16:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+Message-ID: <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+ <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
+ <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
+ <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon 27-09-21 05:00:11, Nadav Amit wrote:
+[...]
+> The manager is notified on memory regions that it should monitor
+> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these regions
+> using the remote-userfaultfd that you saw on the second thread. When it wants
+> to reclaim (anonymous) memory, it:
+> 
+> 1. Uses UFFD-WP to protect that memory (and for this matter I got a vectored
+>    UFFD-WP to do so efficiently, a patch which I did not send yet).
+> 2. Calls process_vm_readv() to read that memory of that process.
+> 3. Write it back to “swap”.
+> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
 
-clang-14 does not like the custom offsetof() macro in vsc7326:
+Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
 
-drivers/net/ethernet/chelsio/cxgb/vsc7326.c:597:3: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
-                HW_STAT(RxUnicast, RxUnicastFramesOK),
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/chelsio/cxgb/vsc7326.c:594:56: note: expanded from macro 'HW_STAT'
-        { reg, (&((struct cmac_statistics *)NULL)->stat_name) - (u64 *)NULL }
-
-Rewrite this to use the version provided by the kernel.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/chelsio/cxgb/vsc7326.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/chelsio/cxgb/vsc7326.c b/drivers/net/ethernet/chelsio/cxgb/vsc7326.c
-index 873c1c7b4ca0..a19284bdb80e 100644
---- a/drivers/net/ethernet/chelsio/cxgb/vsc7326.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/vsc7326.c
-@@ -591,7 +591,7 @@ static void port_stats_update(struct cmac *mac)
- 	} hw_stats[] = {
- 
- #define HW_STAT(reg, stat_name) \
--	{ reg, (&((struct cmac_statistics *)NULL)->stat_name) - (u64 *)NULL }
-+	{ reg, offsetof(struct cmac_statistics, stat_name) / sizeof(u64) }
- 
- 		/* Rx stats */
- 		HW_STAT(RxUnicast, RxUnicastFramesOK),
+MADV_DONTNEED on a remote process has been proposed in the past several
+times and it has always been rejected because it is a free ticket to all
+sorts of hard to debug problems as it is just a free ticket for a remote
+memory corruption. An additional capability requirement might reduce the
+risk to some degree but I still do not think this is a good idea.
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
