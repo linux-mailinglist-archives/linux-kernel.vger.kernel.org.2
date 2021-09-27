@@ -2,62 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DAF419828
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B328241982A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235231AbhI0PsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:48:00 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:44013 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234500AbhI0Pr7 (ORCPT
+        id S235247AbhI0Psl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:48:41 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54488 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235205AbhI0Psk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:47:59 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id B2740820E8;
-        Mon, 27 Sep 2021 18:46:17 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632757577;
-        bh=NZiieUg67Jcn8Z9LRxeMObN8UOVIM8Yfq/fco7QwMXw=;
-        h=Date:To:CC:From:Subject;
-        b=O7P1qsBcuwdooTh5TFRUBqLNhvRfk/UyieUJDGOnNu5K+C2Dnq/vADNSDhwTbmd8P
-         /xYkOMHBVGVDQq1JxIUHo66oiCKngPHI59jPKJ/PciZ/0BPH3HOv1MctqneZrprRCs
-         Ubu8m1NTXohfMkod8dNn+bItPs+YQNSJMCWV2T50=
-Received: from [192.168.211.27] (192.168.211.27) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 27 Sep 2021 18:46:17 +0300
-Message-ID: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
-Date:   Mon, 27 Sep 2021 18:46:16 +0300
+        Mon, 27 Sep 2021 11:48:40 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id AA78F1F42F4F
+Received: by earth.universe (Postfix, from userid 1000)
+        id CF5473C0CA8; Mon, 27 Sep 2021 17:46:58 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 17:46:58 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] power: supply: cpcap-battery: remove redundant check
+Message-ID: <20210927154658.mjrmbtu455cbprun@earth.universe>
+References: <20210819121137.11928-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Content-Language: en-US
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH 0/3] fs/ntfs3: Refactoring of super.c
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.27]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e2acn35dqxuwoc2q"
+Content-Disposition: inline
+In-Reply-To: <20210819121137.11928-1-tangbin@cmss.chinamobile.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix memory leak in ntfs_discard.
-Reject mount so we won't corrupt fs.
-Refactor ntfs_init_from_boot function.
 
-Konstantin Komarov (3):
-  fs/ntfs3: Fix memory leak if fill_super failed
-  fs/ntfs3: Reject mount if boot's cluster size < media sector size
-  fs/ntfs3: Refactoring of ntfs_init_from_boot
+--e2acn35dqxuwoc2q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- fs/ntfs3/ntfs_fs.h |  2 --
- fs/ntfs3/super.c   | 36 +++++++++++++++++++++++++-----------
- 2 files changed, 25 insertions(+), 13 deletions(-)
+Hi,
 
--- 
-2.33.0
+On Thu, Aug 19, 2021 at 08:11:37PM +0800, Tang Bin wrote:
+> In the function cpcap_battery_probe(), the check of '!match->data'
+> can actually never happen for the driver. First, this probe function
+> will only be called if there is a match with an entry from the OF
+> device ID table, and then all entries have .data set to a valid point.
+> So remove the redundant check.
+>=20
+> Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
 
+NAK. Instead replace the complate of_match_device() part. The driver
+only needs the data object and there is of_device_get_match_data()
+for this. Also - even better - there is a non-DT specific variant
+which is device_get_match_data(). Please use that:
+
+
+const struct cpcap_battery_config *cfg =3D device_get_match_data(&pdev->dev=
+);
+if (!cfg)
+    return -ENODEV;
+
+memcpy(&ddata->config, cfg, sizeof(ddata->config));
+
+Thanks,
+
+-- Sebastian
+
+>  drivers/power/supply/cpcap-battery.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/=
+cpcap-battery.c
+> index 8d62d4241..a3866826b 100644
+> --- a/drivers/power/supply/cpcap-battery.c
+> +++ b/drivers/power/supply/cpcap-battery.c
+> @@ -1035,12 +1035,6 @@ static int cpcap_battery_probe(struct platform_dev=
+ice *pdev)
+>  	if (!match)
+>  		return -EINVAL;
+> =20
+> -	if (!match->data) {
+> -		dev_err(&pdev->dev, "no configuration data found\n");
+> -
+> -		return -ENODEV;
+> -	}
+> -
+>  	ddata =3D devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
+>  	if (!ddata)
+>  		return -ENOMEM;
+> --=20
+> 2.20.1.windows.1
+>=20
+>=20
+>=20
+
+--e2acn35dqxuwoc2q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFR524ACgkQ2O7X88g7
++pooYQ/+NeHXz6A/FJeXt+PuIJfwREJ6Jpf76z3ejcHUFeMLhInqRKBUFJLdXGlG
+ZVJdFmfOhkUQWfVfbpojFQ+4xzwEKJ0gGx8EXem8XPY9ne7JFgOJCLEh3NkSVh7m
+8FepV97I3p331IygNcAlPWEpG02B1PDFcERWQKWVpDbQvcaKZQXIka+YPriXVPuf
+TnW8+0nlhsEkqcjktosQtX4ij3xSkYNgkQq3/RiqdkOHpZfQsEE0ejT7QDgTYj5w
+4DzjE4mrgC5rPL0gvkK7Vn5WQMoPQsl18a0UmnDHGfsA8DwHAM1LMbwpnd2/688P
+SGNRm4JVfPbGOjWsEL/5hrXQLglKejJjpMJ23SLMJzXV3AjGAsZDg1opyCaA5oYs
+B3OdhrGbFPYfv5XrOwgk+Dir8GY4BmFGdqvNLG6dRHH9DSFwlM9vKfKOk59ZgUmh
+I9k9zVj7JgBgYdINWPkShxlrTmtFaOd2lkjoPvzCP8baU9R2Eoy1WnLS51Rt3KU0
+kGJI5CJkopwhWl4WAVXxxOIgVimNBbcPfN01tzwKYjhpkGgI2GXNg+Yam8oAvt/P
+wh317POdIBJXBzoNGXyAdm4qaskGII9ES/YatcmfVudH4YqQUsr933cCyyqPQWtt
+W5UU0/SdqicYcSB/EtQ8l4a8BJKrN3imzazkgLWZhy1voQ1XcgE=
+=Pxi6
+-----END PGP SIGNATURE-----
+
+--e2acn35dqxuwoc2q--
