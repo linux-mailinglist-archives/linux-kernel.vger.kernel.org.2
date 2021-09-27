@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F74841A0E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B9C41A0E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237087AbhI0U7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:59:15 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:44904 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbhI0U7O (ORCPT
+        id S237097AbhI0U7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:59:47 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:39884 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236723AbhI0U7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:59:14 -0400
-Received: by mail-oi1-f174.google.com with SMTP id e24so17400419oig.11;
-        Mon, 27 Sep 2021 13:57:35 -0700 (PDT)
+        Mon, 27 Sep 2021 16:59:45 -0400
+Received: by mail-ot1-f42.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so26204858ota.6;
+        Mon, 27 Sep 2021 13:58:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=l5Mqh3vIaAE/8zYRBqY+q9GOKFmDCTSjBlpUeQfhV/8=;
-        b=sTiKn7ZsngORPazipC07n/0hAySz0XxXabxMp5f+nul7VY0Zjchmgpz7y392IqSdjd
-         2JfF9G53SL8yPeLUy3KOe+AV5rPj0SmZUuzHaYWA/HOe5OrIywxfnW9h1uGJq2Pq1K0d
-         oeZhMrYYWJJz9Tz7sAsp73qTYef8TBjnnTTbXvTgzzdTehi1TTM6WdYyooZkoOWmCGL6
-         pqiOqm8d3p+K1+JrxmmpR2kyBZeDjl2XnQAoxojAZA+xBJwnV6DtwcIXNtK2YlHGjrAo
-         UnjT5Gp/hIRWkPsL4wwQ6KGzxtytpJpxgBfpD1lcdxPZTHIGaive+U9wInPLWPSQ4sxD
-         Y1yg==
-X-Gm-Message-State: AOAM531JNVAYCLYeGgYZ6E5GSv5dGEHVtcjJv5H3nDRkDToY7dBId1u4
-        eHlBD6k5hzZ3YMt8D/kuaQ==
-X-Google-Smtp-Source: ABdhPJzkBg9e4PP70PY+l6j+F0sfK9E2DP+ra4/sSyP2t4qiM3CxZpWCqQMgfRVKKO0v+4tLIEFDlA==
-X-Received: by 2002:aca:32c5:: with SMTP id y188mr814898oiy.163.1632776255590;
-        Mon, 27 Sep 2021 13:57:35 -0700 (PDT)
+        bh=T+oO+q9uTHene+6MJpbDZGG/hGqpkwIsiNpAYh7tp2c=;
+        b=3gRfuHIF5rYdO630b9QRBQKYc7UbIdn8+b/oKNy3AwSUaZTFe5FCRa4a/8Xz2vufQI
+         5fsQcg4qAMwZkvg0F6vk5OwPN4wY/lC+VrNGxhvrNMUOl+KimZOWJK2WvPUgkDbcLu3A
+         IVPcLG2DmhMHYJM0OpdY6vgzHzD5v7qUeNyV5NfEJJUxsEY09V3bPQbrCUbtGBBuOBNs
+         dQxjbvEOL4MxmZGCWmm5cakS+1OwSNg4th8nDgwENhT5X4tusz25ngjweT8Jb2mf16lR
+         h44Bk6g2T6IILYSxv+e5nXToJVDWQixrZCGOU/16UkaCvVqG9wfv6PycmM47zwzbac3h
+         a1Og==
+X-Gm-Message-State: AOAM531Xiblw6/kr5/HEDkA8XxolPfiuF5tk+X3uKCMZ552lJfcqHFfc
+        ++j68T0jW239NnqBd2n3qg==
+X-Google-Smtp-Source: ABdhPJwbTL4lMi71JS4MYcb+wMczLubUBwcUPuBKqhkh2PAL1O98pWcD9XnrRWcNmRiJFE813CDSZA==
+X-Received: by 2002:a9d:4e91:: with SMTP id v17mr1830005otk.297.1632776287237;
+        Mon, 27 Sep 2021 13:58:07 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id u6sm2488378ooh.15.2021.09.27.13.57.34
+        by smtp.gmail.com with ESMTPSA id r19sm4355739otg.37.2021.09.27.13.58.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:57:35 -0700 (PDT)
-Received: (nullmailer pid 3861061 invoked by uid 1000);
-        Mon, 27 Sep 2021 20:57:34 -0000
-Date:   Mon, 27 Sep 2021 15:57:34 -0500
+        Mon, 27 Sep 2021 13:58:06 -0700 (PDT)
+Received: (nullmailer pid 3861865 invoked by uid 1000);
+        Mon, 27 Sep 2021 20:58:05 -0000
+Date:   Mon, 27 Sep 2021 15:58:05 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Geert Uytterhoeven <geert@glider.be>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        linux-renesas-soc@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        dri-devel@lists.freedesktop.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     jamipkettunen@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        martin.botka@somainline.org, Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v3.1] dt-bindings: display: renesas,du: Provide bindings
- for r8a779a0
-Message-ID: <YVIwPnRxxO0Txm2G@robh.at.kernel.org>
-References: <20210922234726.3337265-2-kieran.bingham@ideasonboard.com>
- <20210923130138.67552-1-kieran.bingham@ideasonboard.com>
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        marijn.suijten@somainline.org, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, linux-clk@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v4 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994
+ GCC driver
+Message-ID: <YVIwXXAE7HvXZxNt@robh.at.kernel.org>
+References: <20210923162645.23257-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210923130138.67552-1-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210923162645.23257-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 14:01:38 +0100, Kieran Bingham wrote:
-> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+On Thu, 23 Sep 2021 18:26:34 +0200, Konrad Dybcio wrote:
+> Add documentation for the MSM8994 GCC driver. While at it, retire its
+> compatible from the old, everyone-get-in-here file.
 > 
-> Extend the Renesas DU display bindings to support the r8a779a0 V3U.
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
-> v2:
->  - Collected Laurent's tag
->  - Remove clock-names requirement
->  - Specify only a single clock
+> Changes since v3:
+> - Don't document the compatible twice
 > 
-> v3:
->  - Use clocknames: 'du.0' instead of 'du' to remain consistent
-> 
-> v3.1:
->  - Require clock-names
->  - Collect Geert's tag
-> 
->  .../bindings/display/renesas,du.yaml          | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
+>  .../bindings/clock/qcom,gcc-msm8994.yaml      | 70 +++++++++++++++++++
+>  .../devicetree/bindings/clock/qcom,gcc.yaml   |  2 -
+>  2 files changed, 70 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
