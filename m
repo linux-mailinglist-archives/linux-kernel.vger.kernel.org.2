@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB20419CB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBD5419B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237586AbhI0Rba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:31:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
+        id S236931AbhI0RQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:16:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237704AbhI0R2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC0A861425;
-        Mon, 27 Sep 2021 17:17:12 +0000 (UTC)
+        id S237155AbhI0RN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:13:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC7FA6135E;
+        Mon, 27 Sep 2021 17:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632763033;
-        bh=O6rUdXp+SDzdPU5Z6ILATNLFRA9M7jDZ/3MxNrpFo0Y=;
+        s=korg; t=1632762588;
+        bh=eu/bJfp63toC+D5pqX4MdCsMCvLXE0Eer14DHA2QUe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZb6MOOdpL5W2VmnCajLpK7AM1nqIzzoFaLE8+0lKXt8H7TGB1kRzR4K1kbI0mPFU
-         0LSg+uVjSm8V8zNFudUzndiNpFQ5xDeal1UXS7v06D9HdWEc4tU1RhSblowpPRBK9X
-         uiW1eTONgd1+bx1UfgIZeVfiQ69Bn1nKwQx2AXkk=
+        b=rpJOmptdIVHLG1XmQ+IUNDx95QNwE9vC5+jKStD5PK+LlcXoLCD0FK8sgsHOmbZaO
+         Nu67LvoJoyMr79SOpIKa1Ow3UNZwfM+q9frCo1U0RW6fCOL5iN9cQtdxQApJ+QI2RE
+         zFVwb9iQEcFQ7oF0BY85wTObAynYmYlZOzNLgKv0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Bixuan Cui <cuibixuan@huawei.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 125/162] bpf: Add oversize check before call kvcalloc()
-Date:   Mon, 27 Sep 2021 19:02:51 +0200
-Message-Id: <20210927170237.765496277@linuxfoundation.org>
+Subject: [PATCH 5.10 080/103] bpf: Add oversize check before call kvcalloc()
+Date:   Mon, 27 Sep 2021 19:02:52 +0200
+Message-Id: <20210927170228.531386981@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -82,10 +82,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9d94ac6ff50c..592b9b68cbd9 100644
+index cba1f86e75cd..0c26757ea7fb 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -9641,6 +9641,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
+@@ -8822,6 +8822,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
  	nr_linfo = attr->line_info_cnt;
  	if (!nr_linfo)
  		return 0;
