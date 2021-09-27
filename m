@@ -2,88 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B5D4198AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3154198B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235316AbhI0QP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235315AbhI0QP0 (ORCPT
+        id S235384AbhI0QQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:16:55 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54778 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235337AbhI0QQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:15:26 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CA7C061740
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:13:48 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id 194so37108254qkj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/3GGkyrom3DTgS/bGXMlfCPlY5tmhfbrDIfBJ3BlpmI=;
-        b=FnU5pasGnw/t6IG/Vr00DXAOFAT91ktkE8GSkjIDWDGd4el/SSeNGKwBhAJyJws1d1
-         0JSayD7mKqUReGauA3ZZARDRXop/4eWNyewtHi+aTI52mqipxHWeAl5ZeYOOgQQH+2Y8
-         2ukDTTOHVOIp7BCmhCh50qQ7Rmm1wKipOgAmc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/3GGkyrom3DTgS/bGXMlfCPlY5tmhfbrDIfBJ3BlpmI=;
-        b=3hQgq3wGKF85pyHVG+C+Qz3nm4G6u69kr3D6LqX78AnD2vgpwqpUug73QS9x/OEdV0
-         /G596NC7K3GJdS+JSeDWoOsFDCABzBhPKwvxTID6Am6z4pSmE+TUIt9EPWFosLRZUB4L
-         N4Wi5fYhCb9vtXdT8FeKLJJOahkbHfUgihqDU/73kR1rJnSP3YQj9QuSTKftP47QGHEZ
-         nytQuOYRL3HdF5x+SLkmwZvu9EmFA+63rvh5OSVN5q1gwvw+g4rW+qB99Qb65iWM2lyD
-         5Rfe7PlMDSDC1YInq573qSTz3JcmRKof/QBX9xPteLEGgJotfEzAe5lNVUcZCYZAYPHD
-         J40w==
-X-Gm-Message-State: AOAM532SVser3Vm9Ihjd5wZ2O2QNxrkcW9n6kClAKo5XJgaR5r1D/70O
-        bCFnntCUZq73YfqhRRPhUs/IjA==
-X-Google-Smtp-Source: ABdhPJzUroZeu4A0rF6c09CMGFFjlCShBOW4fzZGusJgcCXEuy8+TEU0EDJ0qgrs7Ht4b4Dxf8qxYA==
-X-Received: by 2002:a37:44ca:: with SMTP id r193mr804368qka.190.1632759227376;
-        Mon, 27 Sep 2021 09:13:47 -0700 (PDT)
-Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
-        by smtp.gmail.com with ESMTPSA id j14sm11375353qtv.36.2021.09.27.09.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:13:47 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 12:13:45 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>, warthog9@kernel.org
-Subject: Re: [PATCH RESEND bpf] bpf, s390: Fix potential memory leak about
- jit_data
-Message-ID: <20210927161345.vh6w3jffo5w2z6t7@meerkat.local>
-References: <1632726374-7154-1-git-send-email-yangtiezhu@loongson.cn>
- <e9665315bc2f244d50d026863476e72e3d9b8067.camel@linux.ibm.com>
- <c02febfc-03e6-848a-8fb0-5bd6802c1869@iogearbox.net>
- <0cc48f4d-f6c0-ab11-64b0-bc219fbfe777@de.ibm.com>
+        Mon, 27 Sep 2021 12:16:53 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id A45471F42FE7
+Received: by earth.universe (Postfix, from userid 1000)
+        id BE5F23C0CA8; Mon, 27 Sep 2021 18:15:11 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 18:15:11 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Bruno Meneguele <bruno.meneguele@smartgreen.net>
+Cc:     robh+dt@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] power: supply: bq24735: add watchdog timer delay
+ support
+Message-ID: <20210927161511.iwu453xceymyviwe@earth.universe>
+References: <20210816165245.40416-1-bruno.meneguele@smartgreen.net>
+ <20210816165245.40416-2-bruno.meneguele@smartgreen.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3j7coxnatqm6aptm"
 Content-Disposition: inline
-In-Reply-To: <0cc48f4d-f6c0-ab11-64b0-bc219fbfe777@de.ibm.com>
+In-Reply-To: <20210816165245.40416-2-bruno.meneguele@smartgreen.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 05:58:54PM +0200, Christian Borntraeger wrote:
-> Interestingly enough b4 cannot find the patch email on lore.
-> Looks like Tiezhu Yang has indeed connection issues with vger.
-> CC Konstantin, in case he knows something.
 
-I'm not actually in charge of vger, so I'm not able to help any further than
-adding John to the cc's.
+--3j7coxnatqm6aptm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--K
+Hi,
+
+On Mon, Aug 16, 2021 at 01:52:44PM -0300, Bruno Meneguele wrote:
+> The BQ24735 charger allows the user to set the watchdog timer delay betwe=
+en
+> two consecutives ChargeCurrent or ChargeVoltage command writes, if the IC
+> doesn't receive any command before the timeout happens, the charge is tur=
+ned
+> off.
+>=20
+> This patch adds the support to the user to change the default/POR value w=
+ith
+> four discrete values:
+>=20
+>   0 - disabled
+>   1 - enabled, 44 sec
+>   2 - enabled, 88 sec
+>   3 - enabled, 175 sec (default at POR)
+>=20
+> These are the options supported in the ChargeOptions register bits 13&14.
+>=20
+> Also, this patch make one additional check when poll-interval is set by t=
+he
+> user: if the interval set is greater than the WDT timeout it'll fail duri=
+ng
+> the probe stage, preventing the user to set non-compatible values between
+> the two options.
+>=20
+> Signed-off-by: Bruno Meneguele <bruno.meneguele@smartgreen.net>
+> ---
+> Changelog:
+>   v3 - check wdt_timeout for the maximum and minimum available values=20
+>=20
+>  drivers/power/supply/bq24735-charger.c | 54 ++++++++++++++++++++++++++
+>  include/linux/power/bq24735-charger.h  |  1 +
+>  2 files changed, 55 insertions(+)
+>=20
+> diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/suppl=
+y/bq24735-charger.c
+> index 3ce36d09c017..7e8d0c23df9a 100644
+> --- a/drivers/power/supply/bq24735-charger.c
+> +++ b/drivers/power/supply/bq24735-charger.c
+> @@ -45,6 +45,8 @@
+>  /* ChargeOptions bits of interest */
+>  #define BQ24735_CHARGE_OPT_CHG_DISABLE	(1 << 0)
+>  #define BQ24735_CHARGE_OPT_AC_PRESENT	(1 << 4)
+> +#define BQ24735_CHARGE_OPT_WDT_OFFSET	13
+> +#define BQ24735_CHARGE_OPT_WDT		(3 << BQ24735_CHARGE_OPT_WDT_OFFSET)
+> =20
+>  struct bq24735 {
+>  	struct power_supply		*charger;
+> @@ -156,6 +158,20 @@ static int bq24735_config_charger(struct bq24735 *ch=
+arger)
+>  		}
+>  	}
+> =20
+> +	if (pdata->wdt_timeout >=3D 0 && pdata->wdt_timeout <=3D 3) {
+
+wdt_timeout is unsigned and can't be smaller than 0.
+
+> +		value =3D pdata->wdt_timeout;
+> +
+> +		ret =3D bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
+> +					  BQ24735_CHARGE_OPT_WDT,
+> +					  (value << BQ24735_CHARGE_OPT_WDT_OFFSET));
+> +		if (ret < 0) {
+> +			dev_err(&charger->client->dev,
+> +				"Failed to write watchdog timer: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -347,6 +363,23 @@ static struct bq24735_platform *bq24735_parse_dt_dat=
+a(struct i2c_client *client)
+>  	if (!ret)
+>  		pdata->input_current =3D val;
+> =20
+> +	ret =3D of_property_read_u32(np, "ti,wdt-timeout", &val);
+> +	if (!ret) {
+> +		if (val >=3D 0 && val <=3D 3) {
+
+wdt_timeout is unsigned and can't be smaller than 0.
+
+> +			pdata->wdt_timeout =3D val;
+> +		} else {
+> +			dev_warn(&client->dev,
+> +				 "Invalid value for ti,wdt-timeout: %d",
+> +				 val);
+> +		}
+> +	} else {
+> +		/* Since 0 is a valid value (disabled), set something
+> +		 * greater than the maximum limit accepted from the user to
+> +		 * represent the "no change" state. */
+> +		pdata->wdt_timeout =3D 4;
+> +	}
+> +
+> +
+>  	pdata->ext_control =3D of_property_read_bool(np, "ti,external-control");
+> =20
+>  	return pdata;
+> @@ -476,6 +509,27 @@ static int bq24735_charger_probe(struct i2c_client *=
+client,
+>  			return 0;
+>  		if (!charger->poll_interval)
+>  			return 0;
+> +		if (charger->pdata->wdt_timeout > 0) {
+> +			int wdt_ms;
+> +
+> +			switch (charger->pdata->wdt_timeout) {
+> +			case 1:
+> +				wdt_ms =3D 44000;
+> +				break;
+> +			case 2:
+> +				wdt_ms =3D 88000;
+> +				break;
+> +			case 3:
+> +				wdt_ms =3D 175000;
+> +				break;
+> +			}
+
+wdt_ms is not initialized when wdt_timeout is not 1-3 resulting in undefine=
+d behaviour.
+Also please create constants for the magic numbers, e.g.
+
+#define BQ24735_WDT_OFF                 0
+#define BQ24735_WDT_44_SEC              1
+#define BQ24735_WDT_88_SEC              2
+#define BQ24735_WDT_175_SEC             3
+#define BQ24735_WDT_INVALID             4
+
+and use them throughout the code.
+
+-- Sebastian
+
+> +
+> +			if (charger->poll_interval > wdt_ms) {
+> +				dev_err(&client->dev,
+> +					"Poll interval greater than WDT timeout\n");
+> +				return -EINVAL;
+> +			}
+> +		}
+> =20
+>  		ret =3D devm_delayed_work_autocancel(&client->dev, &charger->poll,
+>  						   bq24735_poll);
+> diff --git a/include/linux/power/bq24735-charger.h b/include/linux/power/=
+bq24735-charger.h
+> index 321dd009ce66..ce5a030ca111 100644
+> --- a/include/linux/power/bq24735-charger.h
+> +++ b/include/linux/power/bq24735-charger.h
+> @@ -12,6 +12,7 @@ struct bq24735_platform {
+>  	uint32_t charge_current;
+>  	uint32_t charge_voltage;
+>  	uint32_t input_current;
+> +	uint32_t wdt_timeout;
+> =20
+>  	const char *name;
+> =20
+> --=20
+> 2.31.1
+>=20
+
+--3j7coxnatqm6aptm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFR7gsACgkQ2O7X88g7
++pp3/w/+OT/pSW7AY6i6+vVAWn4uCbW1wPUxdnqOiZ6DPLywpVeaEttzyFltgTD3
+P8AjUlQMulOM4HCPqqsx/jKFSpKYbfeLkKDiiilRhHJfn2/4vLt3Pu2qLhCS5Bpo
+yfghI5Jnlw0OavMbpooqCpZNCFhO/DQPQo3zmJHe7CcYidlddtiddaj3LKCgLPgp
+DgS8+scC/SuEKcAv8mJwz0EQAQyGgahgrCI0RvBgKeORDkZMpz/505j9QByVdW5T
+JHQdt/fseSMR11wvbXDfpl1/D69nLp6uIYH4Q6r/q2rlPsHeLDFt7t4gxeOjnNNS
+ra0fGX8NQrCbmPjk0CKuQeQv5aPNtLti/i7/X6uRrEBF0F4QDcMUl5o9+IsVB6Gw
+ws/YE5BOek//htY1DTbrDBdHY1NuVaKxnZPohDLUfkOUXYkTkMqPdz3w4pq8HfTp
+m1Q1vcLLwZOFYlLy48g15i4W/tNzGcXZCtXpHM5LixTPGGS3hckC2vfxATqAiz0R
+SL/4nz2nCptVj+E0jV6PcEZs7beWQVIo8Bqpw5pJnB2e7Aw5rlEzqReDRsmggdI8
+XOQkfIJNtWEjzv+K0aqyIbd0yEbzQ8Ks9YuzTN68DByiA1oTcFOSOrImZ1DTRqb9
+pXnahalIf1YwZZIgzZeUhe8ujQk1pTHC6g2zRL0XaooiNhiqmHM=
+=ApGI
+-----END PGP SIGNATURE-----
+
+--3j7coxnatqm6aptm--
