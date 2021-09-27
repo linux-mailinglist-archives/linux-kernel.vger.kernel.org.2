@@ -2,141 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED1B4196AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19104196AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234957AbhI0Otx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47382 "EHLO mail.kernel.org"
+        id S234940AbhI0Oti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:49:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234864AbhI0Ots (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:49:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6231604DC;
-        Mon, 27 Sep 2021 14:48:09 +0000 (UTC)
+        id S234782AbhI0Otg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:49:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBD460FC2;
+        Mon, 27 Sep 2021 14:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632754090;
-        bh=0DBzSgWK5LF6Qt4sOIW1vtQh+POtPnCJ29sz4523Ckw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=P5ZbKNKeM87fyRR6uZqqV9jjdRPWb8eks/bGJ5SzWtQFrqn5pPDYqiPdssaxoXb54
-         8bwVuO6AMWDIk1u1mdtfq/4RiNp/HLCuaYOqbxKhshyP19LCY0EAMDW2P9r7K28SAh
-         9iakllMLaGfOF0UtYK7fgmK4uFxWDIjSvWYunJTshTtTjo+l0th5HYyeLYtZ2Htl5h
-         b9wM+QqwdyPRBuMeX810G09xqhOe6CDehklfUaZdeVdZxYAJ9m3/gfPnpCHUdI+/L5
-         oJhQ0JfoHLdzJGFubp9vSWFxoSnJaLwz0to4ghOoNKkT2vEHEM51pjv5JWoYPlBlaj
-         ZeJA3iq1w0Zog==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RESEND] firewire: fix function type cast warning
-Date:   Mon, 27 Sep 2021 16:47:55 +0200
-Message-Id: <20210927144807.2759586-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1632754078;
+        bh=zqckSjMs/haPVLnH/e6bvk6XUWFiniRiJgluMdxeWvM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=jolkaP4PVHGIwcta4Q+Jfqy+PV2WJ6vfPkLXHN03Q7s6mil8+zYCcayHdOxNMoliJ
+         iEOr1/wM3wUxnYAOjW4sXhFZPOsPPGB4aVh4UFCJjYLmKqsZERIt2c2nlxz3ZYESaF
+         4+yywiWuKo9au59rileA3AWx0iHoybNjbHAObXFnP118MO+GwjUCmHyNqD42MP3ac6
+         jDnZRYo30bjudSmKZmycnwEs7yaD5+fUJRax1E8v939zGaqDH1hw6kYKoRw0uNT2Hu
+         h2fJzGiqgvR38omIAI2bBwl6RkndEmoGhIq3PJDu94RWvEQL/iQqICHN7bK96dU5E3
+         E5lB8hMnYfNVw==
+Date:   Mon, 27 Sep 2021 09:47:56 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
+Message-ID: <20210927144756.GA643630@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVGxLH+hi1NN0oq5@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Sep 27, 2021 at 02:55:24PM +0300, Leon Romanovsky wrote:
+> On Sun, Sep 26, 2021 at 03:23:41PM -0500, Bjorn Helgaas wrote:
+> > On Sun, Sep 26, 2021 at 09:36:49AM +0300, Leon Romanovsky wrote:
+> > > On Sat, Sep 25, 2021 at 12:41:15PM -0500, Bjorn Helgaas wrote:
+> > > > On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
+> > > > > On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
+> > > > > > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
+> > > > > > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
+> > > > > > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
+> > > > > > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > > > > > 
+> > > > > > > > > The PCI core uses the VF index internally, often called the vf_id,
+> > > > > > > > > during the setup of the VF, eg pci_iov_add_virtfn().
+> > > > > > > > > 
+> > > > > > > > > This index is needed for device drivers that implement live migration
+> > > > > > > > > for their internal operations that configure/control their VFs.
+> > > > > > > > >
+> > > > > > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
+> > > > > > > > > from this series needs it and not the bus/device/function which is
+> > > > > > > > > exposed today.
+> > > > > > > > > 
+> > > > > > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
+> > > > > > > > > was used to create the bus/device/function.
+> > > > > > > > > 
+> > > > > > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> > > > > > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > > > > > 
+> > > > > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > > > > 
+> > > > > > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
+> > > > > > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
+> > > > > > > > one with a matching devfn (although it *doesn't* check for a matching
+> > > > > > > > bus number, which seems like a bug).
+> > > > > ...
+> > > > 
+> > > > > > And it still looks like the existing code is buggy.  This is called
+> > > > > > via sysfs, so if the PF is on bus X and the user writes to
+> > > > > > sriov_vf_msix_count for a VF on bus X+1, it looks like
+> > > > > > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
+> > > > > > VF.
+> > > > > 
+> > > > > In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
+> > > > > to PF which has "struct mlx5_core_dev". My expectation is that they share
+> > > > > same bus as that PF was the one who created VFs. The mlx5 devices supports
+> > > > > upto 256 VFs and it is far below the bus split mentioned in PCI spec.
+> > > > > 
+> > > > > How can VF and their respective PF have different bus numbers?
+> > > > 
+> > > > See PCIe r5.0, sec 9.2.1.2.  For example,
+> > > > 
+> > > >   PF 0 on bus 20
+> > > >     First VF Offset   1
+> > > >     VF Stride         1
+> > > >     NumVFs          511
+> > > >   VF 0,1   through VF 0,255 on bus 20
+> > > >   VF 0,256 through VF 0,511 on bus 21
+> > > > 
+> > > > This is implemented in pci_iov_add_virtfn(), which computes the bus
+> > > > number and devfn from the VF ID.
+> > > > 
+> > > > pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
+> > > > the user writes to sriov_vf_msix_count for VF 0,256, it looks like
+> > > > we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
+> > > 
+> > > This is PCI spec split that I mentioned.
+> > > 
+> > > > 
+> > > > The spec encourages devices that require no more than 256 devices to
+> > > > locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
+> > > > only have 255 VFs, you may avoid the problem.
+> > > > 
+> > > > But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
+> > > > is safe to assume the bus number is the same.
+> > > 
+> > > No problem, we will make it more clear.
+> > 
+> > IMHO you should resolve it by using the new interface.  Better
+> > performing, unambiguous regardless of how many VFs the device
+> > supports.  What's the down side?
+> 
+> I don't see any. My previous answer worth to be written.
+> "No problem, we will make it more clear with this new function".
 
-gcc -Wextra complains about a suspicious cast:
-
-rivers/firewire/core-cdev.c:985:8: warning: cast between incompatible function types from ‘void (*)(struct fw_iso_context *, dma_addr_t,  void *)’ {aka ‘void (*)(struct fw_iso_context *, long long unsigned int,  void *)’} to ‘void (*)(struct fw_iso_context *, u32,  size_t,  void *, void *)’ {aka ‘void (*)(struct fw_iso_context *, unsigned int,  long unsigned int,  void *, void *)’} [-Wcast-function-type]
-
-The behavior is correct in the end, but this is more clearly
-expressed using a transparent union.
-
-Fixes: 872e330e3880 ("firewire: add isochronous multichannel reception")
-Link: https://lore.kernel.org/lkml/20200530090839.7895-1-oscar.carter@gmx.com/
-Link: https://lore.kernel.org/all/20210924105733.GA78013@embeddedor/
-Link: https://lore.kernel.org/all/20201026215138.3893732-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-At least three people have submitted a version of this patch, but none
-of them has made it into the kernel. I don't care which version gets
-picked up, but I think we want it to get fixed.
----
- drivers/firewire/core-cdev.c |  6 +++---
- drivers/firewire/core-iso.c  |  2 +-
- include/linux/firewire.h     | 17 ++++++++---------
- 3 files changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index fb6c651214f3..8d85d52b02ca 100644
---- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -970,7 +970,7 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 		if (a->speed > SCODE_3200 || a->channel > 63)
- 			return -EINVAL;
- 
--		cb = iso_callback;
-+		cb.sc = iso_callback;
- 		break;
- 
- 	case FW_ISO_CONTEXT_RECEIVE:
-@@ -978,11 +978,11 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 		    a->channel > 63)
- 			return -EINVAL;
- 
--		cb = iso_callback;
-+		cb.sc = iso_callback;
- 		break;
- 
- 	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
--		cb = (fw_iso_callback_t)iso_mc_callback;
-+		cb.mc = iso_mc_callback;
- 		break;
- 
- 	default:
-diff --git a/drivers/firewire/core-iso.c b/drivers/firewire/core-iso.c
-index af70e74f9a7e..ddada648775a 100644
---- a/drivers/firewire/core-iso.c
-+++ b/drivers/firewire/core-iso.c
-@@ -145,7 +145,7 @@ struct fw_iso_context *fw_iso_context_create(struct fw_card *card,
- 	ctx->channel = channel;
- 	ctx->speed = speed;
- 	ctx->header_size = header_size;
--	ctx->callback.sc = callback;
-+	ctx->callback = callback;
- 	ctx->callback_data = callback_data;
- 
- 	return ctx;
-diff --git a/include/linux/firewire.h b/include/linux/firewire.h
-index aec8f30ab200..59b5e02a6d42 100644
---- a/include/linux/firewire.h
-+++ b/include/linux/firewire.h
-@@ -431,11 +431,13 @@ void fw_iso_buffer_destroy(struct fw_iso_buffer *buffer, struct fw_card *card);
- size_t fw_iso_buffer_lookup(struct fw_iso_buffer *buffer, dma_addr_t completed);
- 
- struct fw_iso_context;
--typedef void (*fw_iso_callback_t)(struct fw_iso_context *context,
--				  u32 cycle, size_t header_length,
--				  void *header, void *data);
--typedef void (*fw_iso_mc_callback_t)(struct fw_iso_context *context,
--				     dma_addr_t completed, void *data);
-+typedef union {
-+	void (*sc)(struct fw_iso_context *context, u32 cycle,
-+		   size_t header_length, void *header, void *data);
-+	void (*mc)(struct fw_iso_context *context, dma_addr_t completed,
-+		   void *data);
-+} __attribute__ ((__transparent_union__)) fw_iso_callback_t;
-+
- struct fw_iso_context {
- 	struct fw_card *card;
- 	int type;
-@@ -443,10 +445,7 @@ struct fw_iso_context {
- 	int speed;
- 	bool drop_overflow_headers;
- 	size_t header_size;
--	union {
--		fw_iso_callback_t sc;
--		fw_iso_mc_callback_t mc;
--	} callback;
-+	fw_iso_callback_t callback;
- 	void *callback_data;
- };
- 
--- 
-2.29.2
-
+Great, sorry I missed that nuance :)
