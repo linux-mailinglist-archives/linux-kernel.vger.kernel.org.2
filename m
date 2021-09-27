@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985A8419B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA956419A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhI0RTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:19:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55534 "EHLO mail.kernel.org"
+        id S236513AbhI0RJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:09:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236686AbhI0RPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:15:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EA9161374;
-        Mon, 27 Sep 2021 17:10:48 +0000 (UTC)
+        id S236161AbhI0RIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:08:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA986611CE;
+        Mon, 27 Sep 2021 17:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762648;
-        bh=2x/8C7RGicmM784+vbWKsqQcHRNQFf3C1wuczzZL2ss=;
+        s=korg; t=1632762396;
+        bh=04kIWPn05Hq1DT9FgELgq24nOOVbuN6zG7jDb7g0c10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=twNCCZZZr99L0i6zgf3+Mk4UN3zCgf1htMuNo7Bz1sb69qbjn2Aq+kBFkGiAJrxJh
-         4G8s6e5f7R7yriP/wiKnehKANpHjcZwtcdrBLVV1R3IuD2r292Sv1MTJ3KqNxf+M7K
-         i8Wu047HS7VR5zB9xHrhYxL8HqiK7zgUOC7g3Ie8=
+        b=keU/sqqUh6+hkzYarQATnS+O8GVAf0eXksEiPxI6q3VdhrNZ5jQXCsab3R8WMBz4T
+         dwJt+tng3FSCNRg1DpDjH/q1Qr4vGuEUffcLWL9AGtYt6VCJlNsFyK6kX84QgvNJKW
+         0X34V3wLcCqMXxMxITrSXihjnrDpj1r2z5q/GQqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 092/103] qnx4: avoid stringop-overread errors
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 5.4 68/68] qnx4: work around gcc false positive warning bug
 Date:   Mon, 27 Sep 2021 19:03:04 +0200
-Message-Id: <20210927170228.953995670@linuxfoundation.org>
+Message-Id: <20210927170222.317207591@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,129 +42,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit b7213ffa0e585feb1aee3e7173e965e66ee0abaa ]
+commit d5f6545934c47e97c0b48a645418e877b452a992 upstream.
 
-The qnx4 directory entries are 64-byte blocks that have different
-contents depending on the a status byte that is in the last byte of the
-block.
+In commit b7213ffa0e58 ("qnx4: avoid stringop-overread errors") I tried
+to teach gcc about how the directory entry structure can be two
+different things depending on a status flag.  It made the code clearer,
+and it seemed to make gcc happy.
 
-In particular, a directory entry can be either a "link info" entry with
-a 48-byte name and pointers to the real inode information, or an "inode
-entry" with a smaller 16-byte name and the full inode information.
+However, Arnd points to a gcc bug, where despite using two different
+members of a union, gcc then gets confused, and uses the size of one of
+the members to decide if a string overrun happens.  And not necessarily
+the rigth one.
 
-But the code was written to always just treat the directory name as if
-it was part of that "inode entry", and just extend the name to the
-longer case if the status byte said it was a link entry.
+End result: with some configurations, gcc-11 will still complain about
+the source buffer size being overread:
 
-That work just fine and gives the right results, but now that gcc is
-tracking data structure accesses much more, the code can trigger a
-compiler error about using up to 48 bytes (the long name) in a structure
-that only has that shorter name in it:
+  fs/qnx4/dir.c: In function 'qnx4_readdir':
+  fs/qnx4/dir.c:76:32: error: 'strnlen' specified bound [16, 48] exceeds source size 1 [-Werror=stringop-overread]
+     76 |                         size = strnlen(name, size);
+        |                                ^~~~~~~~~~~~~~~~~~~
+  fs/qnx4/dir.c:26:22: note: source object declared here
+     26 |                 char de_name;
+        |                      ^~~~~~~
 
-   fs/qnx4/dir.c: In function ‘qnx4_readdir’:
-   fs/qnx4/dir.c:51:32: error: ‘strnlen’ specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
-      51 |                         size = strnlen(de->di_fname, size);
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from fs/qnx4/qnx4.h:3,
-                    from fs/qnx4/dir.c:16:
-   include/uapi/linux/qnx4_fs.h:45:25: note: source object declared here
-      45 |         char            di_fname[QNX4_SHORT_NAME_MAX];
-         |                         ^~~~~~~~
+because gcc will get confused about which union member entry is actually
+getting accessed, even when the source code is very clear about it.  Gcc
+internally will have combined two "redundant" pointers (pointing to
+different union elements that are at the same offset), and takes the
+size checking from one or the other - not necessarily the right one.
 
-which is because the source code doesn't really make this whole "one of
-two different types" explicit.
+This is clearly a gcc bug, but we can work around it fairly easily.  The
+biggest thing here is the big honking comment about why we do what we
+do.
 
-Fix this by introducing a very explicit union of the two types, and
-basically explaining to the compiler what is really going on.
-
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
+Reported-and-tested-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/qnx4/dir.c | 51 ++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 34 insertions(+), 17 deletions(-)
+ fs/qnx4/dir.c |   36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
-index a6ee23aadd28..2a66844b7ff8 100644
 --- a/fs/qnx4/dir.c
 +++ b/fs/qnx4/dir.c
-@@ -15,13 +15,27 @@
- #include <linux/buffer_head.h>
- #include "qnx4.h"
- 
-+/*
-+ * A qnx4 directory entry is an inode entry or link info
-+ * depending on the status field in the last byte. The
-+ * first byte is where the name start either way, and a
-+ * zero means it's empty.
-+ */
-+union qnx4_directory_entry {
-+	struct {
-+		char de_name;
-+		char de_pad[62];
-+		char de_status;
-+	};
-+	struct qnx4_inode_entry inode;
-+	struct qnx4_link_info link;
-+};
-+
- static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- {
- 	struct inode *inode = file_inode(file);
- 	unsigned int offset;
- 	struct buffer_head *bh;
--	struct qnx4_inode_entry *de;
--	struct qnx4_link_info *le;
- 	unsigned long blknum;
- 	int ix, ino;
- 	int size;
-@@ -38,27 +52,30 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- 		}
+@@ -20,12 +20,33 @@
+  * depending on the status field in the last byte. The
+  * first byte is where the name start either way, and a
+  * zero means it's empty.
++ *
++ * Also, due to a bug in gcc, we don't want to use the
++ * real (differently sized) name arrays in the inode and
++ * link entries, but always the 'de_name[]' one in the
++ * fake struct entry.
++ *
++ * See
++ *
++ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
++ *
++ * for details, but basically gcc will take the size of the
++ * 'name' array from one of the used union entries randomly.
++ *
++ * This use of 'de_name[]' (48 bytes) avoids the false positive
++ * warnings that would happen if gcc decides to use 'inode.di_name'
++ * (16 bytes) even when the pointer and size were to come from
++ * 'link.dl_name' (48 bytes).
++ *
++ * In all cases the actual name pointer itself is the same, it's
++ * only the gcc internal 'what is the size of this field' logic
++ * that can get confused.
+  */
+ union qnx4_directory_entry {
+ 	struct {
+-		char de_name;
+-		char de_pad[62];
+-		char de_status;
++		const char de_name[48];
++		u8 de_pad[15];
++		u8 de_status;
+ 	};
+ 	struct qnx4_inode_entry inode;
+ 	struct qnx4_link_info link;
+@@ -53,29 +74,26 @@ static int qnx4_readdir(struct file *fil
  		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
  		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
-+			union qnx4_directory_entry *de;
-+			const char *name;
-+
+ 			union qnx4_directory_entry *de;
+-			const char *name;
+ 
  			offset = ix * QNX4_DIR_ENTRY_SIZE;
--			de = (struct qnx4_inode_entry *) (bh->b_data + offset);
--			if (!de->di_fname[0])
-+			de = (union qnx4_directory_entry *) (bh->b_data + offset);
-+
-+			if (!de->de_name)
+ 			de = (union qnx4_directory_entry *) (bh->b_data + offset);
+ 
+-			if (!de->de_name)
++			if (!de->de_name[0])
  				continue;
--			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
-+			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
  				continue;
--			if (!(de->di_status & QNX4_FILE_LINK))
--				size = QNX4_SHORT_NAME_MAX;
--			else
--				size = QNX4_NAME_MAX;
--			size = strnlen(de->di_fname, size);
--			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
--			if (!(de->di_status & QNX4_FILE_LINK))
-+			if (!(de->de_status & QNX4_FILE_LINK)) {
-+				size = sizeof(de->inode.di_fname);
-+				name = de->inode.di_fname;
+ 			if (!(de->de_status & QNX4_FILE_LINK)) {
+ 				size = sizeof(de->inode.di_fname);
+-				name = de->inode.di_fname;
  				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
--			else {
--				le  = (struct qnx4_link_info*)de;
--				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
-+			} else {
-+				size = sizeof(de->link.dl_fname);
-+				name = de->link.dl_fname;
-+				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
+ 			} else {
+ 				size = sizeof(de->link.dl_fname);
+-				name = de->link.dl_fname;
+ 				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
  					QNX4_INODES_PER_BLOCK +
--					le->dl_inode_ndx;
-+					de->link.dl_inode_ndx;
+ 					de->link.dl_inode_ndx;
  			}
--			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
-+			size = strnlen(name, size);
-+			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
-+			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
+-			size = strnlen(name, size);
++			size = strnlen(de->de_name, size);
+ 			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
+-			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
++			if (!dir_emit(ctx, de->de_name, size, ino, DT_UNKNOWN)) {
  				brelse(bh);
  				return 0;
  			}
--- 
-2.33.0
-
 
 
