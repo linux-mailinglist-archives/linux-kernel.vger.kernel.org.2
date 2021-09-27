@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CB8419404
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04FB419406
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhI0MUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:20:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234223AbhI0MUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:20:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C105F6103B;
-        Mon, 27 Sep 2021 12:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632745142;
-        bh=F9/Tr9COtm4Stj4bhDIokvzMkSf99FLpUsv9Um0t5FI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iQ1cVnEtOm5m5/2kAdPUnsn+F/m6UMiVUTNVuuJVHQzqfCTB37Wh92MSJMucsKtLS
-         hE6EEfH26Y7f55flpw2XxZbTXZOaSqx5aWlljUGX/puBub5sCl6FwV6KHrALTMS0fj
-         fXJcasgF8W/8SdTAezOjWsJAoAYktTuihAPRjRFtFdXLoXXkfgGk3Sgu1u/jaHthW5
-         2L+vEP9AaPWCp8njdVAzDZLerxAtaI/Cv5lOJ4OTkc1gIyZiiuNgwrdLQCd4QP6O89
-         3HeumoPYO5S/iEZyMKOr9XjdjDictDEY86eIyVDUKsZ2B+AZKZPoYfjJRhaeLjgBbJ
-         5JrGQXrIaY2Fg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH] iommu/mediatek: fix out-of-range warning with clang
-Date:   Mon, 27 Sep 2021 14:18:44 +0200
-Message-Id: <20210927121857.941160-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234262AbhI0MUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234241AbhI0MUm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:20:42 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5796C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:19:04 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id y26so37181640lfa.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hzKn1PihSVTLBn07NxNCyepUdSFNC9+ZCpNDni2IA0Q=;
+        b=KWWCYxQH7dXXcsSw6KvI24GDz1Mz+bv/Qopn6VTk6MiAZweawv3GE9zHYH9ARkhe22
+         ri8eZzYAQeIv9cwXD+9kv7aVIn70pQV8qt9GAzY0P+jhd039IMUJSlUB8m/Aaq47i2Ij
+         akrLz7+j+8CV5ndOeiGlys/XB2nceb7PPDxWi9FVhTewTyhJnkXeBsONOrZEXBPDw+Qm
+         tGNJ46JZZNpL9kgtaQ13hlHNfuCJQ8e5M/U3SwJKZgI0OdMD4im4VEZmZtQ9nQICv1H7
+         UOb0NQSn1mKE+5yqhLWtJVAml+1r3h9aI9bRLez8J1aZpGNk7a9LTbdnMcoeZHGVYwQG
+         4WZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hzKn1PihSVTLBn07NxNCyepUdSFNC9+ZCpNDni2IA0Q=;
+        b=aYQvAZBaN9jmhMaPClX3cy/5+CE3uO4cSKfF58EMR+iVKeYyiVv6sRvCCygmqC8Bt8
+         uuo9+tg/z3wvc2N9m1ESc6tqyUxPDbfC/Q8ZJNW+7IApi+1f77/i6LSY3L66XegTSL4h
+         x/RU2929xUCSEbCKa8yq4LwzGJO6wfFBd0CXXO8knu1B8OdbDslYVUtLvgDLnzUP7n58
+         pb/WDAgbUY3MZDSiV/Dd955tyCNXOWz/KSKfVbCdJb+F9yvPRMmBkIHIVUOfSe410Qyo
+         W352KR+9g0dETN1L40FSGjCmhszYEKYiZadbdA6sQzd285YcmCiec7XQUt6reIjC1FAU
+         QvcQ==
+X-Gm-Message-State: AOAM530l3G1aKdQ8i/3iQQoG7K+IfpIafWQbYAklB2D4zfJXUZ7OlGFz
+        eU38+ZRD7oYSDz5red/MiCsZ+Q==
+X-Google-Smtp-Source: ABdhPJxb7Hx7XDrSV8+tSwjeT7uO8LkszuIvMqEi+lFexR7KTie06Phg7EB/AEUXzYIGhxWZxNB5OQ==
+X-Received: by 2002:ac2:54a6:: with SMTP id w6mr23291702lfk.61.1632745143223;
+        Mon, 27 Sep 2021 05:19:03 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id d12sm1476888lfs.283.2021.09.27.05.19.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 05:19:02 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 55AD3102FD9; Mon, 27 Sep 2021 15:19:02 +0300 (+03)
+Date:   Mon, 27 Sep 2021 15:19:02 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [RFC PATCH 2/8] mm/madvise: remove unnecessary check on
+ madvise_dontneed_free()
+Message-ID: <20210927121902.r5gslag4nvvseoxo@box>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <20210926161259.238054-3-namit@vmware.com>
+ <20210927091143.tn6ediykqycu6rtu@box.shutemov.name>
+ <DD025444-B1A2-4470-9069-0072A59427A5@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DD025444-B1A2-4470-9069-0072A59427A5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Sep 27, 2021 at 04:05:47AM -0700, Nadav Amit wrote:
+> Having said that, if you want, I can turn this condition into
+> WARN_ON_ONCE() or VM_BUG_ON(), although I really see no reason to
+> do so.
 
-clang-14 notices that a comparison is never true when
-CONFIG_PHYS_ADDR_T_64BIT is disabled:
+BUILD_BUG() should be fine here.
 
-drivers/iommu/mtk_iommu.c:553:34: error: result of comparison of constant 5368709120 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
-                                     ~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Add an explicit check for the type of the variable to skip the check
-and the warning in that case.
-
-Fixes: b4dad40e4f35 ("iommu/mediatek: Adjust the PA for the 4GB Mode")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/iommu/mtk_iommu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index d837adfd1da5..25b834104790 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -550,7 +550,9 @@ static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
- 	phys_addr_t pa;
- 
- 	pa = dom->iop->iova_to_phys(dom->iop, iova);
--	if (dom->data->enable_4GB && pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
-+	if (IS_ENABLED(CONFIG_PHYS_ADDR_T_64BIT) &&
-+	    dom->data->enable_4GB &&
-+	    pa >= MTK_IOMMU_4GB_MODE_REMAP_BASE)
- 		pa &= ~BIT_ULL(32);
- 
- 	return pa;
 -- 
-2.29.2
-
+ Kirill A. Shutemov
