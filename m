@@ -2,131 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E76419555
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847AA419558
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhI0NsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:48:16 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3881 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbhI0NsM (ORCPT
+        id S234628AbhI0Nsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:48:31 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:40519 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234600AbhI0Ns3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:48:12 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HJ3kV5c1Wz67Zx5;
-        Mon, 27 Sep 2021 21:43:30 +0800 (CST)
-Received: from lhreml711-chm.china.huawei.com (10.201.108.62) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 27 Sep 2021 15:46:32 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml711-chm.china.huawei.com (10.201.108.62) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 14:46:32 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2308.008; Mon, 27 Sep 2021 14:46:32 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-Subject: RE: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
- migration
-Thread-Topic: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
- migration
-Thread-Index: AQHXqhdQM13RiELH60aUjxjG41fnUKulAGMAgAAGK3CAAZpfgIARVJdw
-Date:   Mon, 27 Sep 2021 13:46:31 +0000
-Message-ID: <a440256250c14182b9eefc77d5d399b8@huawei.com>
-References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
- <20210915095037.1149-7-shameerali.kolothum.thodi@huawei.com>
- <20210915130742.GJ4065468@nvidia.com>
- <fe5d6659e28244da82b7028b403e11ae@huawei.com>
- <20210916135833.GB327412@nvidia.com>
-In-Reply-To: <20210916135833.GB327412@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.80.194]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 27 Sep 2021 09:48:29 -0400
+Received: by mail-oo1-f49.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so6010016ooh.7;
+        Mon, 27 Sep 2021 06:46:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/2hi+Adp/K+NIix+31/wj/XzGdZQ/IRbdOwvcbW6PuQ=;
+        b=YeUa31kYCpcEpm3zumBYpq9Eb8PDqjrCWHeOIWxtXnRskUclg1QVfROTsxP/udSPk2
+         eeufimTIDE5Pft5vSLRfmCGbJlVlJLafKTNRd5mxCmEvLCAoo3YY5U9eX1gpkmPBVYJt
+         qNYRly0Eb7ludpdf3SJ9X9ClkJ9oslAOe6OuoHsSjXmj05N8i/TlqJ3k1JGmWLeCHl2X
+         xhN+7nKrMoK2qLO5tyIImBX0EaeWSQ1D4qWPgkhkPRnZQUhSB3lPyL5meIL0k1xaWa3E
+         67KkGhhcbmoH6+Ebh8jlQOVhFVqOye+FunVjMD8krEZgxqGssQkGZbnOiavlKae93pDc
+         ZQrQ==
+X-Gm-Message-State: AOAM531KMeDcUbitt6ep66yswYHDsgdXxe66Lo+Hj3wsTNYctnZYefYH
+        /dufgJ3q2AGTLf0twaAKfIN3XSpFIRvwUhmz1QI=
+X-Google-Smtp-Source: ABdhPJzZZ/aHiUC2kDwz55TfVq12Dyd1x2Mtmc3YutiuwNYlSv0ADKYAvDDqHRpDUxn0pBwNB2mHE2Ml+RrCFiIpB1c=
+X-Received: by 2002:a4a:df0b:: with SMTP id i11mr27767oou.30.1632750411428;
+ Mon, 27 Sep 2021 06:46:51 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <1800633.tdWV9SEqCh@kreacher> <8879480.rMLUfLXkoz@kreacher>
+ <069444f7-d623-fae2-5cd0-83cbbc919aff@gmail.com> <CAJZ5v0gpodPPXTagy5gFFf6mp_jCAdc864CE_giaue72ke7UyQ@mail.gmail.com>
+ <ab803fb5-045d-98dd-2754-688a916f8944@gmail.com> <d151c91c-cb65-2830-2453-a02057137400@gmail.com>
+ <CAJZ5v0howP_PudCf-43_HqgW48ydc29SeFVRC-wCm_RNKPBMtA@mail.gmail.com> <24c2c653-4087-fba1-5745-a62a8ae715c6@gmail.com>
+In-Reply-To: <24c2c653-4087-fba1-5745-a62a8ae715c6@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 27 Sep 2021 15:46:40 +0200
+Message-ID: <CAJZ5v0gE5qagoiKWR1hAxLdSJepiCvT4GHaZu4M4pKR8v83zmA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] PCI: ACPI: PM: Do not use pci_platform_pm_ops for ACPI
+To:     Ferry Toth <fntoth@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFzb24gR3VudGhvcnBl
-IFttYWlsdG86amdnQG52aWRpYS5jb21dDQo+IFNlbnQ6IDE2IFNlcHRlbWJlciAyMDIxIDE0OjU5
-DQo+IFRvOiBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIDxzaGFtZWVyYWxpLmtvbG90aHVtLnRo
-b2RpQGh1YXdlaS5jb20+DQo+IENjOiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1jcnlwdG9Admdlci5rZXJuZWwub3JnOyBhbGV4Lndp
-bGxpYW1zb25AcmVkaGF0LmNvbTsNCj4gbWd1cnRvdm95QG52aWRpYS5jb207IGxpdWxvbmdmYW5n
-IDxsaXVsb25nZmFuZ0BodWF3ZWkuY29tPjsgWmVuZ3RhbyAoQikNCj4gPHByaW1lLnplbmdAaGlz
-aWxpY29uLmNvbT47IEpvbmF0aGFuIENhbWVyb24NCj4gPGpvbmF0aGFuLmNhbWVyb25AaHVhd2Vp
-LmNvbT47IFdhbmd6aG91IChCKSA8d2FuZ3pob3UxQGhpc2lsaWNvbi5jb20+DQo+IFN1YmplY3Q6
-IFJlOiBbUEFUQ0ggdjMgNi82XSBoaXNpX2FjY192ZmlvX3BjaTogQWRkIHN1cHBvcnQgZm9yIFZG
-SU8gbGl2ZQ0KPiBtaWdyYXRpb24NCj4gDQo+IE9uIFdlZCwgU2VwIDE1LCAyMDIxIGF0IDAxOjI4
-OjQ3UE0gKzAwMDAsIFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkNCj4gd3JvdGU6DQo+ID4NCj4g
-Pg0KPiA+ID4gRnJvbTogSmFzb24gR3VudGhvcnBlIFttYWlsdG86amdnQG52aWRpYS5jb21dDQo+
-ID4gPiBTZW50OiAxNSBTZXB0ZW1iZXIgMjAyMSAxNDowOA0KPiA+ID4gVG86IFNoYW1lZXJhbGkg
-S29sb3RodW0gVGhvZGkNCj4gPHNoYW1lZXJhbGkua29sb3RodW0udGhvZGlAaHVhd2VpLmNvbT4N
-Cj4gPiA+IENjOiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnOw0KPiA+ID4gbGludXgtY3J5cHRvQHZnZXIua2VybmVsLm9yZzsgYWxleC53aWxsaWFtc29u
-QHJlZGhhdC5jb207DQo+ID4gPiBtZ3VydG92b3lAbnZpZGlhLmNvbTsgTGludXhhcm0gPGxpbnV4
-YXJtQGh1YXdlaS5jb20+OyBsaXVsb25nZmFuZw0KPiA+ID4gPGxpdWxvbmdmYW5nQGh1YXdlaS5j
-b20+OyBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPjsNCj4gPiA+IEpvbmF0
-aGFuIENhbWVyb24gPGpvbmF0aGFuLmNhbWVyb25AaHVhd2VpLmNvbT47IFdhbmd6aG91IChCKQ0K
-PiA+ID4gPHdhbmd6aG91MUBoaXNpbGljb24uY29tPg0KPiA+ID4gU3ViamVjdDogUmU6IFtQQVRD
-SCB2MyA2LzZdIGhpc2lfYWNjX3ZmaW9fcGNpOiBBZGQgc3VwcG9ydCBmb3IgVkZJTyBsaXZlDQo+
-ID4gPiBtaWdyYXRpb24NCj4gPiA+DQo+ID4gPiBPbiBXZWQsIFNlcCAxNSwgMjAyMSBhdCAxMDo1
-MDozN0FNICswMTAwLCBTaGFtZWVyIEtvbG90aHVtIHdyb3RlOg0KPiA+ID4gPiArLyoNCj4gPiA+
-ID4gKyAqIEhpU2lsaWNvbiBBQ0MgVkYgZGV2wqBNTUlPIHNwYWNlIGNvbnRhaW5zIGJvdGggdGhl
-IGZ1bmN0aW9uYWwNCj4gcmVnaXN0ZXINCj4gPiA+ID4gKyAqIHNwYWNlwqBhbmQgdGhlIG1pZ3Jh
-dGlvbiBjb250cm9sIHJlZ2lzdGVyIHNwYWNlLiBXZSBoaWRlIHRoZQ0KPiBtaWdyYXRpb24NCj4g
-PiA+ID4gKyAqIGNvbnRyb2wgc3BhY2XCoGZyb20gdGhlIEd1ZXN0LiBCdXQgdG8gc3VjY2Vzc2Z1
-bGx5IGNvbXBsZXRlIHRoZSBsaXZlDQo+ID4gPiA+ICsgKiBtaWdyYXRpb24sIHdlIHN0aWxsIG5l
-ZWQgYWNjZXNzIHRvIHRoZSBmdW5jdGlvbmFsIE1NSU8gc3BhY2UgYXNzaWduZWQNCj4gPiA+ID4g
-KyAqIHRvIHRoZSBHdWVzdC4gVG8gYXZvaWQgYW55IHBvdGVudGlhbCBzZWN1cml0eSBpc3N1ZXMs
-IHdlIG5lZWQgdG8gYmUNCj4gPiA+ID4gKyAqIGNhcmVmdWwgbm90IHRvIGFjY2VzcyB0aGlzIHJl
-Z2lvbiB3aGlsZSB0aGUgR3Vlc3QgdkNQVXMgYXJlIHJ1bm5pbmcuDQo+ID4gPiA+ICsgKg0KPiA+
-ID4gPiArICogSGVuY2UgY2hlY2sgdGhlIGRldmljZSBzdGF0ZSBiZWZvcmUgd2UgbWFwIHRoZSBy
-ZWdpb24uDQo+ID4gPiA+ICsgKi8NCj4gPiA+DQo+ID4gPiBUaGUgcHJpb3IgcGF0Y2ggcHJldmVu
-dHMgbWFwcGluZyB0aGlzIGFyZWEgaW50byB0aGUgZ3Vlc3QgYXQgYWxsLA0KPiA+ID4gcmlnaHQ/
-DQo+ID4NCj4gPiBUaGF04oCZcyByaWdodC4gSXQgd2lsbCBwcmV2ZW50IEd1ZXN0IGZyb20gbWFw
-cGluZyB0aGlzIGFyZWEuDQo+ID4NCj4gPiA+IFNvIHdoeSB0aGUgY29tbWVudCBhbmQgbG9naWM/
-IElmIHRoZSBNTUlPIGFyZWEgaXNuJ3QgbWFwcGVkIHRoZW4gdGhlcmUNCj4gPiA+IGlzIG5vdGhp
-bmcgdG8gZG8sIHJpZ2h0Pw0KPiA+ID4NCj4gPiA+IFRoZSBvbmx5IHJpc2sgaXMgUDJQIHRyYW5z
-YWN0aW9ucyBmcm9tIGRldmljZXMgaW4gdGhlIHNhbWUgSU9NTVUNCj4gPiA+IGdyb3VwLCBhbmQg
-eW91IG1pZ2h0IGRvIHdlbGwgdG8gbWl0aWdhdGUgdGhhdCBieSBhc3NlcnRpbmcgdGhhdCB0aGUN
-Cj4gPiA+IGRldmljZSBpcyBpbiBhIHNpbmdsZXRvbiBJT01NVSBncm91cD8NCj4gPg0KPiA+IFRo
-aXMgd2FzIGFkZGVkIGFzIGFuIGV4dHJhIHByb3RlY3Rpb24uIEkgd2lsbCBhZGQgdGhlIHNpbmds
-ZXRvbiBjaGVjayBpbnN0ZWFkLg0KPiA+DQo+ID4gPiA+ICtzdGF0aWMgaW50IGhpc2lfYWNjX3Zm
-aW9fcGNpX2luaXQoc3RydWN0IHZmaW9fcGNpX2NvcmVfZGV2aWNlICp2ZGV2KQ0KPiA+ID4gPiAr
-ew0KPiA+ID4gPiArCXN0cnVjdCBhY2NfdmZfbWlncmF0aW9uICphY2NfdmZfZGV2Ow0KPiA+ID4g
-PiArCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdmRldi0+cGRldjsNCj4gPiA+ID4gKwlzdHJ1Y3Qg
-cGNpX2RldiAqcGZfZGV2LCAqdmZfZGV2Ow0KPiA+ID4gPiArCXN0cnVjdCBoaXNpX3FtICpwZl9x
-bTsNCj4gPiA+ID4gKwlpbnQgdmZfaWQsIHJldDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArCXBmX2Rl
-diA9IHBkZXYtPnBoeXNmbjsNCj4gPiA+ID4gKwl2Zl9kZXYgPSBwZGV2Ow0KPiA+ID4gPiArDQo+
-ID4gPiA+ICsJcGZfcW0gPSBwY2lfZ2V0X2RydmRhdGEocGZfZGV2KTsNCj4gPiA+ID4gKwlpZiAo
-IXBmX3FtKSB7DQo+ID4gPiA+ICsJCXByX2VycigiSGlTaSBBQ0MgcW0gZHJpdmVyIG5vdCBsb2Fk
-ZWRcbiIpOw0KPiA+ID4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiA+ID4gKwl9DQo+ID4gPg0K
-PiA+ID4gTm9wZSwgdGhpcyBpcyBsb2NrZWQgd3JvbmcgYW5kIGhhcyBubyBsaWZldGltZSBtYW5h
-Z2VtZW50Lg0KPiA+DQo+ID4gT2suIEhvbGRpbmcgdGhlIGRldmljZV9sb2NrKCkgc3VmZmljaWVu
-dCBoZXJlPw0KPiANCj4gWW91IGNhbid0IGhvbGQgYSBoaXNpX3FtIHBvaW50ZXIgd2l0aCBzb21l
-IGtpbmQgb2YgbGlmZWN5Y2xlDQo+IG1hbmFnZW1lbnQgb2YgdGhhdCBwb2ludGVyLiBkZXZpY2Vf
-bG9jay9ldGMgaXMgbmVjZXNzYXJ5IHRvIGNhbGwNCj4gcGNpX2dldF9kcnZkYXRhKCkNCg0KU2lu
-Y2UgdGhpcyBtaWdyYXRpb24gZHJpdmVyIG9ubHkgc3VwcG9ydHMgVkYgZGV2aWNlcyBhbmQgdGhl
-IFBGDQpkcml2ZXIgd2lsbCBub3QgYmUgcmVtb3ZlZCB1bnRpbCBhbGwgdGhlIFZGIGRldmljZXMg
-Z2V0cyByZW1vdmVkLA0KaXMgdGhlIGxvY2tpbmcgbmVjZXNzYXJ5IGhlcmU/DQoNClRoZSBmbG93
-IGZyb20gUEYgZHJpdmVyIHJlbW92ZSgpIHBhdGggaXMgc29tZXRoaW5nIGxpa2UgdGhpcywNCg0K
-aWYgKHFtLT5mdW5fdHlwZSA9PSBRTV9IV19QRiAmJiBxbS0+dmZzX251bSkNCgkJaGlzaV9xbV9z
-cmlvdl9kaXNhYmxlKHBkZXYsIHRydWUpOw0KICAgICAgICAgIHBjaV9kaXNhYmxlX3NyaW92KHBk
-ZXYpLg0KDQpUaGFua3MsDQpTaGFtZWVyDQoNCg0K
+On Fri, Sep 24, 2021 at 11:17 PM Ferry Toth <fntoth@gmail.com> wrote:
+>
+> Hi
+>
+> Op 24-09-2021 om 14:02 schreef Rafael J. Wysocki:
+> > On Thu, Sep 23, 2021 at 10:32 PM Ferry Toth <fntoth@gmail.com> wrote:
+> >> Hi
+> >>
+> >> Op 23-09-2021 om 15:51 schreef Ferry Toth:
+> >>> Repost (with formatting removed, sorry for the noise)
+> >>> Op 23-09-2021 om 13:30 schreef Rafael J. Wysocki:
+> >>>> On Wed, Sep 22, 2021 at 11:31 PM Ferry Toth<fntoth@gmail.com>  wrote:
+> >>>>> Hi,
+> >>>>> Op 20-09-2021 om 21:17 schreef Rafael J. Wysocki:
+> >>>>>> From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+> >>>>>>
+> >>>>>> Using struct pci_platform_pm_ops for ACPI adds unnecessary
+> >>>>>> indirection to the interactions between the PCI core and ACPI PM,
+> >>>>>> which is also subject to retpolines.
+> >>>>>>
+> >>>>>> Moreover, it is not particularly clear from the current code that,
+> >>>>>> as far as PCI PM is concerned, "platform" really means just ACPI
+> >>>>>> except for the special casess when Intel MID PCI PM is used or when
+> >>>>>> ACPI support is disabled (through the kernel config or command line,
+> >>>>>> or because there are no usable ACPI tables on the system).
+> >>>>>>
+> >>>>>> To address the above, rework the PCI PM code to invoke ACPI PM
+> >>>>>> functions directly as needed and drop the acpi_pci_platform_pm
+> >>>>>> object that is not necessary any more.
+> >>>>>>
+> >>>>>> Accordingly, update some of the ACPI PM functions in question to do
+> >>>>>> extra checks in case the ACPI support is disabled (which previously
+> >>>>>> was taken care of by avoiding to set the pci_platform_ops pointer
+> >>>>>> in those cases).
+> >>>>>>
+> >>>>>> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+> >>>>>> ---
+> >>>>>>
+> >>>>>> v1 -> v2:
+> >>>>>>        * Rebase on top of the new [1/7] and move dropping struct
+> >>>>>>          pci_platform_pm_ops to a separate patch.
+> >>>>> I wanted to test this series on 5.15-rc2 but this patch 2/7 doesn't
+> >>>>> apply (after 1/7 applied). Should I apply this on another tree?
+> >>>> This is on top of
+> >>>> https://patchwork.kernel.org/project/linux-acpi/patch/2793105.e9J7NaK4W3@kreacher/
+> >>>>
+> >>>> which is not yet in any tree.
+> >>>>
+> >>>> Sorry for the confusion.
+> >>> No problem at all. If I can I will try to report back tonight. Else,
+> >>> will be delayed 2 due to a short break.
+> >> With those 3 extra patches followed by 7 from this series it builds. But
+> >> on boot I get:
+> >> dwc3 dwc3.0.auto: this is not a DesignWare USB3 DRD Core
+> >> Then after this it reboots. Nothing in the logs. Nothing else on
+> >> console, I guess something goes wrong early.
+> > It appears so.
+> >
+> > Can you please try just the 3 extra patches this series is on top of?
+> > The problem is more likely to be located in one of them.
+> Boots fine with just the 3 so up to and including "ACPI: glue: Look for
+> ACPI bus type only if ACPI companion is not known". From the log I get:
+>
+>
+> Intel MID platform detected, using MID PCI ops
+> PCI: Using configuration type 1 for base access
+> ..
+> PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs"
+> and report a bug
+> ..
+> PCI: Probing PCI hardware
+> PCI: root bus 00: using default resources
+> PCI: Probing PCI hardware (bus 00)
+> PCI: pci_cache_line_size set to 64 bytes
+> ..
+> pnp: PnP ACPI init
+> ..
+> pnp: PnP ACPI: found 2 devices
+> ..
+> xhci-hcd xhci-hcd.1.auto: xHCI Host Controller
+> xhci-hcd xhci-hcd.1.auto: new USB bus registered, assigned bus number 1
+> xhci-hcd xhci-hcd.1.auto: hcc params 0x0220f06c hci version 0x100 quirks
+> 0x0000000002010010
+> xhci-hcd xhci-hcd.1.auto: irq 14, io mem 0xf9100000
+> usb usb1: New USB device found, idVendor=1d6b, idProduct=0002,
+> bcdDevice= 5.15
+> usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+> usb usb1: Product: xHCI Host Controller
+> usb usb1: Manufacturer: Linux 5.15.0-rc2-edison-acpi-standard xhci-hcd
+> usb usb1: SerialNumber: xhci-hcd.1.auto
+> hub 1-0:1.0: USB hub found
+> hub 1-0:1.0: 1 port detected
+>
+> I continued up to "PCI: ACPI: PM: Do not use pci_platform_pm_ops for
+> ACPI", still boots.
+>
+> In the logs I still see "Intel MID platform detected, using MID PCI ops".
+>
+> Unfortunately no more time today, and tomorrow short holiday starts. I
+> will continue after returning next Sat.
+
+Thanks for the testing and feedback, much appreciated!
+
+I'm going to queue up the patches that you have tested with a
+Tested-by tag from you if that's not an issue.
+
+Also patches [3/7] ("PCI: PM: Drop struct pci_platform_pm_ops") and
+[7/7] ("PCI: PM: Simplify acpi_pci_power_manageable()") are not likely
+to introduce functional issue, because the former removes unused code
+and the latter simply rearranges some computations, so I'm going to
+queue up these two as well.
+
+Patches [4-5/7] change behavior, if only slightly, so they need to be
+double checked.
+
+In turn, patch [6/7[ contains a bug - it makes
+pci_platform_power_transition() call acpi_pci_set_power_state()
+instead of platform_pci_set_power_state() which is probably why you
+see the problem (nobody with an ACPI platform of any platform other
+then MID would see it).  Sorry about that.
+
+After queuing up the patches that are not problematic I'll prepare a
+new 3-patch series to test on top of them.
+
+Thanks!
