@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2DB419698
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056744196B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhI0OqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:46:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45728 "EHLO mail.kernel.org"
+        id S234912AbhI0OvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:51:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234799AbhI0OqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:46:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0330960F11;
-        Mon, 27 Sep 2021 14:44:38 +0000 (UTC)
+        id S234819AbhI0OvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:51:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 526FB60FC2;
+        Mon, 27 Sep 2021 14:49:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632753879;
-        bh=LS1KhJETSb4nO4pMBC+bk3+dNekoa6bYzCm72KLLax0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gRHZmq/qvgs2J/H1gdpCgH2r7s1R+jHVoPA+PTVz2mpzidJvPhpshjb+C2QZ3OBCH
-         Px3RSvx2uF1ff5F7smGu9zLxNHLPD01GvY30rQjJCKsrfneWZZH+4F+2yzY5vE0V+z
-         h9Cd5jSssFwTsfc62WrcJsNr1iyMITBevbVqgxq68MzkB+KGdSZdC+z9YqiDJ+rno+
-         Tfj4AsZEpRgDJZys0O0G+1xr69BpHjKyiYm/XELsiX4C6IKprOsBMcTBmizxPcPATH
-         pn/6/3+/a+Q580xiSNC4Vh1bATIssrxkQZQI+PzSt/J+9nUlwnnnBSxMyfC2yLHtia
-         JmI1++8x4a4rw==
-Date:   Mon, 27 Sep 2021 09:48:38 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: advansys: Prefer struct_size over open coded
- arithmetic
-Message-ID: <20210927144838.GA168427@embeddedor>
-References: <20210925114205.11377-1-len.baker@gmx.com>
+        s=k20201202; t=1632754183;
+        bh=nlm+GXqBOJFgPGuqH4ktEyVp0rZXsByzVCpaKGKn9Pw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CtSY0hs0nhLxHyr6ErsvWuAR1cv3yUK5t2GqYnY79ud/jOLtgMBvrFATh1DTQk5Wr
+         emdDTnPAPoArKZsQl3de5W+/e+Ei/O8rV7O0zRGuu/hG2q+3r5n400glzNY3fMncfY
+         bSsFfTIP/pPxAJ9T2baDtHFfCMU6qXpUwXfEghNuIyrGlhOP79telufsEH0MrhRfuR
+         Uon1rEsEJDFbGdqfsvYSUDQgTmmfQCqiOuqp47yPXAUHLS0DodF2zvxGFADDNU45P8
+         6QyNaDEy01x74UUZCCMh3Joul+V3W09gvDMPW/qq0YTwZdYKRkrNasv7R6CLNsnUDn
+         QI/RyzqUaefig==
+Received: by mail-ed1-f44.google.com with SMTP id v18so35111970edc.11;
+        Mon, 27 Sep 2021 07:49:43 -0700 (PDT)
+X-Gm-Message-State: AOAM531Ko2UvvAP8b06FLyk0UhnaNVgl9vvAEyNyBWdA5Sj4GRWIZbjy
+        aGjFR69yOPiCNg6h5FCCDiJakN4BsikI+46fag==
+X-Google-Smtp-Source: ABdhPJwAdi6VamHHELYSAbPUEIJOXg9VYm6jMbUqTQD67z8h2BqyDUn/kOFm4ji2hkz/vqnJ2ZIn0ddX0WT5DJGrUCg=
+X-Received: by 2002:a17:906:7250:: with SMTP id n16mr449630ejk.147.1632754181882;
+ Mon, 27 Sep 2021 07:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925114205.11377-1-len.baker@gmx.com>
+References: <20210927064119.127285-1-gshan@redhat.com> <20210927064119.127285-3-gshan@redhat.com>
+In-Reply-To: <20210927064119.127285-3-gshan@redhat.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 27 Sep 2021 09:49:30 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL8+_Q690-c3J4TS6LBF-mCUBxbhTfr994=Fwffqab0_w@mail.gmail.com>
+Message-ID: <CAL_JsqL8+_Q690-c3J4TS6LBF-mCUBxbhTfr994=Fwffqab0_w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of, numa: Fetch empty NUMA node ID from distance map
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 01:42:05PM +0200, Len Baker wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
-> 
-> So, use the struct_size() helper to do the arithmetic instead of the
-> argument "size + count * size" in the kzalloc() function.
-> 
-> This code was detected with the help of Coccinelle and audited and fixed
-> manually.
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
+On Mon, Sep 27, 2021 at 1:42 AM Gavin Shan <gshan@redhat.com> wrote:
+>
+> There is no device node for the empty NUMA node. However, the
+> corresponding NUMA node ID and distance map is still valid in
+> "numa-distance-map-v1" compatible device node.
+>
+> This fetches the NUMA node ID and distance map for these empty
+> NUMA node from "numa-distance-map-v1" compatible device node.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+This is much nicer.
 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
 > ---
-> Changelog v1 -> v2
-> - Rebase against v5.15-rc2
+>  drivers/of/of_numa.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/of/of_numa.c b/drivers/of/of_numa.c
+> index fe6b13608e51..5949829a1b00 100644
+> --- a/drivers/of/of_numa.c
+> +++ b/drivers/of/of_numa.c
+> @@ -111,6 +111,8 @@ static int __init of_numa_parse_distance_map_v1(struct device_node *map)
+>                         return -EINVAL;
+>                 }
+>
+> +               node_set(nodea, numa_nodes_parsed);
+> +
 
-Don't use mainline for these sorts of patches . Use linux-next instead:
+With this, couldn't we remove of_numa_parse_cpu_nodes() as the only
+thing it does is node_set()?
 
-https://www.kernel.org/doc/man-pages/linux-next.html
-
-Thanks
---
-Gustavo
-
-> - Remove the unnecessary "size" variable (Gustavo A. R. Silva).
-> - Update the commit changelog to inform that this code was detected
->   using a Coccinelle script (Gustavo A. R. Silva).
-> 
->  drivers/scsi/advansys.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
-> index ffb391967573..e341b3372482 100644
-> --- a/drivers/scsi/advansys.c
-> +++ b/drivers/scsi/advansys.c
-> @@ -7477,8 +7477,8 @@ static int asc_build_req(struct asc_board *boardp, struct scsi_cmnd *scp,
->  			return ASC_ERROR;
->  		}
-> 
-> -		asc_sg_head = kzalloc(sizeof(asc_scsi_q->sg_head) +
-> -			use_sg * sizeof(struct asc_sg_list), GFP_ATOMIC);
-> +		asc_sg_head = kzalloc(struct_size(asc_sg_head, sg_list, use_sg),
-> +				      GFP_ATOMIC);
->  		if (!asc_sg_head) {
->  			scsi_dma_unmap(scp);
->  			set_host_byte(scp, DID_SOFT_ERROR);
+>                 numa_set_distance(nodea, nodeb, distance);
+>
+>                 /* Set default distance of node B->A same as A->B */
 > --
-> 2.25.1
-> 
+> 2.23.0
+>
