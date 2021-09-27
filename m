@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17701419575
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAA1419597
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbhI0N4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:56:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44242 "EHLO mail.kernel.org"
+        id S234692AbhI0OAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234589AbhI0N4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:56:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD58E60F4F;
-        Mon, 27 Sep 2021 13:54:36 +0000 (UTC)
+        id S234645AbhI0OAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:00:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 123F460F46;
+        Mon, 27 Sep 2021 13:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632750877;
-        bh=xcFxy6MyzTR6iVTbX6fBwgGA1J9bnebZi7SNVjHXrfY=;
-        h=Date:From:To:cc:Subject:From;
-        b=sjPxw1S8k2ySZCHM8TSr1gBK5Cqu3b+CQJ1+5HlRgiV8wwX/yOThHS8sL3h3yJ/+W
-         AnGwpOoS+jIwP1LOJ56Ltz+JWJ/LArKMuJw/YYvPKGP8Eqy8WawwXHF0F80Ailtz11
-         5TSwVIXEpfSeMA8oSBEGtQ1fHuNgOhXpW6Tj3UsMGIesSJ9TcOxdQ6fsRxz+5+vx16
-         oUbBKsflU+ZzLKoX0U7Y6AnX+Q3G2W8mcEji2ASznyqlXwKxX20DCx7iDU5MTKiaZA
-         YQLMfllJIzd3pCR1E0KaXpEcfuec7S0ulzi0fXoH1KhkG8IZrK4B0ZspvdY5h5xaMA
-         ltH0D0MCokAKw==
-Date:   Mon, 27 Sep 2021 15:54:34 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] HID fixes
-Message-ID: <nycvar.YFH.7.76.2109271551130.15944@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        s=k20201202; t=1632751136;
+        bh=rXDXE/lV9ztJuIJrcfo0ufjzJVIQz5WYCaSugqmwOiM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PaCxMuZ3LY6eODYPf7LnJv+s8p8D6rwG1/Vi8HhO1hlLLeuf7i5Dm66XtPVH8AvT7
+         sfzu3hEx5RG9H0Jj8vhAU3p6w29JfBzzqEJ4yLyozjOVx+e/QSVuK1aAYFZ8O1y6oT
+         95StV/QSyno9YrKWm+F6s0nDtrF4+mENue41KReey11spVF+6SVwcd4YX5Na/vodkO
+         gaOS+1DmubBrNYsuyWV4YjpLZq5JTJ2XEMLFe6ZU9O0Y3OGNwaNzRxISEK+rXjPia4
+         A2aOqKj7rXid6BVkvfghfHDe5BR4KBKv+4ADjRwPDs5Cy1anZo5lvxZAeWDtPOtrU3
+         BqlmQVW+EBgmw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Voon Weifeng <weifeng.voon@intel.com>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: stmmac: fix off-by-one error in sanity check
+Date:   Mon, 27 Sep 2021 15:58:29 +0200
+Message-Id: <20210927135849.1595484-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+From: Arnd Bergmann <arnd@arndb.de>
 
-please pull from
+My previous patch had an off-by-one error in the added sanity
+check, the arrays are MTL_MAX_{RX,TX}_QUEUES long, so if that
+index is that number, it has overflown.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+The patch silenced the warning anyway because the strings could
+no longer overlap with the input, but they could still overlap
+with other fields.
 
-to receive HID subsystem fixes.
+Fixes: 3e0d5699a975 ("net: stmmac: fix gcc-10 -Wrestrict warning")
+Reported-by: Russell King (Oracle) <linux@armlinux.org.uk>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-=====
-- NULL pointer dereference fixes in amd_sfh driver (Basavaraj Natikar, 
-  Evgeny Novikov)
-- data processing fix for hid-u2fzero (Andrej Shadura)
-- fix for out-of-bounds write in hid-betop (F.A.Sulaiman)
-- new device IDs / device-specific quirks
-=====
-
-Thanks.
-
-----------------------------------------------------------------
-Andrej Shadura (1):
-      HID: u2fzero: ignore incomplete packets without data
-
-Basavaraj Natikar (1):
-      HID: amd_sfh: Fix potential NULL pointer dereference
-
-Evgeny Novikov (1):
-      HID: amd_sfh: Fix potential NULL pointer dereference
-
-F.A.Sulaiman (1):
-      HID: betop: fix slab-out-of-bounds Write in betop_probe
-
-Joshua-Dickens (1):
-      HID: wacom: Add new Intuos BT (CTL-4100WL/CTL-6100WL) device IDs
-
-Mizuho Mori (1):
-      HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
-
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.c |  8 ++++----
- drivers/hid/hid-apple.c                |  7 +++++++
- drivers/hid/hid-betopff.c              | 13 ++++++++++---
- drivers/hid/hid-u2fzero.c              |  4 +++-
- drivers/hid/wacom_wac.c                |  8 ++++++++
- 5 files changed, 32 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 640c0ffdff3d..fd4c6517125e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3502,7 +3502,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+ 
+ 	/* Request Rx MSI irq */
+ 	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
+-		if (i > MTL_MAX_RX_QUEUES)
++		if (i >= MTL_MAX_RX_QUEUES)
+ 			break;
+ 		if (priv->rx_irq[i] == 0)
+ 			continue;
+@@ -3527,7 +3527,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+ 
+ 	/* Request Tx MSI irq */
+ 	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
+-		if (i > MTL_MAX_TX_QUEUES)
++		if (i >= MTL_MAX_TX_QUEUES)
+ 			break;
+ 		if (priv->tx_irq[i] == 0)
+ 			continue;
 -- 
-Jiri Kosina
-SUSE Labs
+2.29.2
 
