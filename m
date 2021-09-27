@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EE2418D98
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15236418D96
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhI0CCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 22:02:18 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:39157
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S232434AbhI0CCM (ORCPT
+        id S232432AbhI0CCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 22:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232289AbhI0CCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 22:02:12 -0400
+        Sun, 26 Sep 2021 22:02:01 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AAEC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 19:00:24 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id m21so16250598pgu.13
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 19:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=INcf37QQi9
-        siQzq/L1Iyk1bKxcSM2+zBRsgtdm2Bjhw=; b=lYA4G2bIi1F4zXgtFKJ7DY8PQZ
-        kaexJzBEr1Ez13IgvQuK8pDSRWMUfdKNWTfC7VH9pttlBOmeQfcRvT8azbU95AFl
-        AqZx14T+pO+20W2r3g30SsBGjOZUOjlqHwjsfhfsv8Hggc/RIo/Ft80lrGte5QCp
-        a3dD+J6OFsJBK8atM=
-Received: from localhost.localdomain (unknown [39.144.40.15])
-        by app2 (Coremail) with SMTP id XQUFCgDX3s6ZJVFhNA_yAA--.45020S4;
-        Mon, 27 Sep 2021 10:00:24 +0800 (CST)
-From:   Xin Xiong <xiongx18@fudan.edu.cn>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fRhfaZIMy0eMtR+WN6XwxZ3efkveVfiLx2hy6oKGqxQ=;
+        b=dfcbR4kDhZ0gl4NR+Wc6aGJZHUXpkXjkImsqmPR3LqcilVOqtSdfDPG8Wa9sNm6uiZ
+         g/iD5AHm5/10gZfKrT1xzPHrsSRcNIj7PDUAKbYzH9rwBC25Iz5G9jCl5MwBOxGuLsMs
+         u2aUgSgoRzXcMBoduqJVxy6QMRYt21hn77PGH+3F5r7h+llUjtq2K4e655HmpuTlBICp
+         S0QmHxdm3o/BPdWrkpYG02P+l2/gZ23DAUbTdgWMSroRAqLi9RRmlXymH4chRkJvuGYv
+         Q8ZKHx/+heDK78gsarabaSYNobLd6Sg7JXPpQuNl2Ocz9PHiNawsNfxJKajVx5yJebKU
+         r0qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fRhfaZIMy0eMtR+WN6XwxZ3efkveVfiLx2hy6oKGqxQ=;
+        b=H4sGAat69iMIqJH6Hz86RI8JKTF141/zh+1pTrvSiLuZKjYZJB/ZhsdbMZSKfK/hyk
+         dM+WepguQO8znW9Na5inRWuj8Kndl/kPXrJzcE5haTMuWbKGi1ghHRiwWXC3X1gKJRsG
+         p3TP4p0iotnApL4j8tqp4Y+Q8h31BG+RRM+pq8Dz08b/YOxyobDsbxUyIxuVdUkrnbOc
+         oFtPFSqSZbuciFX4xPRWakUuQePNJ2KsTu/XrcnmI7YaKfoWDrvg085dop8sj3Wm5nAP
+         oqknTookX/Lcw9MkiKQJVyEiJg/6hEIiT+EFqHwapdcdkqQOW+W4uhHGa5k9hlfOYW2e
+         rWbA==
+X-Gm-Message-State: AOAM531HOPAOfTDo99jNtW1wqVHE4ojewONpZV6oyMo6mGx4gND2Uam9
+        7AnsJeMEn21axgKpE7PkfLX+Vg==
+X-Google-Smtp-Source: ABdhPJz4jMv+ZFKHUgilpdzHEejF4xPeD0JX5Z31RfTCjSg8tVRfIxlzuVybruG/dRHHjmGAg4u3yg==
+X-Received: by 2002:a63:ea44:: with SMTP id l4mr14464843pgk.210.1632708023631;
+        Sun, 26 Sep 2021 19:00:23 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id x5sm8658762pfq.136.2021.09.26.19.00.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 26 Sep 2021 19:00:23 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 10:00:08 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Caleb Connolly <caleb@connolly.tech>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH v2] drivers/mmc: fix reference count leaks in moxart_probe
-Date:   Mon, 27 Sep 2021 09:57:59 +0800
-Message-Id: <20210927015759.30855-1-xiongx18@fudan.edu.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] arm64: dts: qcom: Drop vdd-supply from qusb2-phy devices
+Message-ID: <20210927020007.GF9901@dragon>
+References: <20210926075951.28034-1-shawn.guo@linaro.org>
+ <c8d61171-225f-ca1c-db9e-7ed3f91365b8@somainline.org>
+ <20210927000715.GD9901@dragon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: XQUFCgDX3s6ZJVFhNA_yAA--.45020S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF1xJF4Utw4rKFyUXr4xJFb_yoW8WrW8pF
-        48Cr9IkrWUtr4akF47Ca1DWF18ur4Fyw43KrZ093s7Z34UJFsrC348Ga40qr95JryrXFZY
-        gF1YqF15uFZ5JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbBMKJUUUUU==
-X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiAg4REFKp2bi50AAAs+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927000715.GD9901@dragon>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue happens in several error handling paths on two refcounted
-object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-these paths, the function forgets to decrement one or both objects'
-reference count increased earlier by dma_request_chan(), causing
-reference count leaks.
+On Mon, Sep 27, 2021 at 08:07:16AM +0800, Shawn Guo wrote:
+> On Mon, Sep 27, 2021 at 12:58:19AM +0200, Konrad Dybcio wrote:
+> > 
+> > On 26.09.2021 09:59, Shawn Guo wrote:
+> > > Looking at qcom,qusb2-phy.yaml bindings and qusb2_phy_vreg_names[] in
+> > > qusb2-phy driver, vdd-supply is not a supported/valid property.  Drop it
+> > > from qusb2-phy devices on various boards.
+> > >
+> > > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > 
+> > Why not add it to the regulators list instead? It's a valid regulator for this hw.
+> 
+> I do not have enough information to be sure.  Could you cook up a patch to
+> update bindings and driver, if you think that's the case?  I will be
+> happy as long as that DTS, bindings and driver are on the same page.
 
-Fix it by balancing the refcounts of both objects in some error
-handling paths.
+Aha, I checked downstream kernel and vdd is indeed a valid supply for
+qusb2_phy.  Please disregard this patch, and I will update bindings and
+driver instead.  Thanks, Konrad!
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/mmc/host/moxart-mmc.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 6c9d38132..e27ab3446 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
- 			ret = -EPROBE_DEFER;
- 			goto out;
- 		}
-+        if (!IS_ERR(host->dma_chan_tx)) {
-+            dma_release_channel(host->dma_chan_tx);
-+            host->dma_chan_tx = NULL;
-+        }
-+        if (!IS_ERR(host->dma_chan_rx)) {
-+            dma_release_channel(host->dma_chan_rx);
-+            host->dma_chan_rx = NULL;
-+        }
- 		dev_dbg(dev, "PIO mode transfer enabled\n");
- 		host->have_dma = false;
- 	} else {
-@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
- 	return 0;
- 
- out:
-+    if (!IS_ERR_OR_NULL(host->dma_chan_tx))
-+        dma_release_channel(host->dma_chan_tx);
-+    if (!IS_ERR_OR_NULL(host->dma_chan_rx))
-+        dma_release_channel(host->dma_chan_rx);
- 	if (mmc)
- 		mmc_free_host(mmc);
- 	return ret;
--- 
-2.25.1
-
+Shawn
