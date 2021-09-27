@@ -2,137 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A479419657
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F04B419649
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbhI0O26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:28:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41008 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbhI0O24 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:28:56 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18RER9ik014579;
-        Mon, 27 Sep 2021 09:27:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632752829;
-        bh=n3yXpVmcGx109UHMZf/1+ZQmO05u3Wfv2919zo6o8tA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=KnU+JF9pRBtyOuNet34Fm8PddX09JCWA8dytQibFL64pE/g1zQlzwPk2HXPHoOkgy
-         4qygvoMEnwHTl10t8bqthdMazbSpdDV8X1lgxCI4N+Suajyb+3WiD4+WU+0IMkZb0w
-         eCy1ZqtCSxfl2B/tAFDHajmoHM1uK14Htrcb31/Y=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18RER9lE039790
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Sep 2021 09:27:09 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 27
- Sep 2021 09:26:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 27 Sep 2021 09:26:02 -0500
-Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18REQ21b002334;
-        Mon, 27 Sep 2021 09:26:02 -0500
-Subject: Re: [PATCH V2 2/4] dt-bindings: arm: ti: am642/am654: Allow for SoC
- only compatibles
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
-CC:     Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sinthu Raja <sinthu.raja@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-References: <20210925201430.11678-1-nm@ti.com>
- <20210925201430.11678-3-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <4bffc138-1a78-3876-349a-d5833c7fa5a1@ti.com>
-Date:   Mon, 27 Sep 2021 09:26:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234816AbhI0O2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:28:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234706AbhI0O2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:28:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AE646108E;
+        Mon, 27 Sep 2021 14:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632752792;
+        bh=y6jw05z4kqvX74jByJ76pgtBYsAxaKJp1OXc0rrAQIA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=st7NCBdKMvzmR5kG/s+a8GNTFBZzte2stbYbwFXbYrwvJ4bECDw5i5UWoNRkBtAhm
+         jzIzmSta6cC76Ae1SEynZxETxkJoRj8JOv06Ar8C6+DkRCM6gzkARLSCg/ftCU9TZU
+         3oUPnRFKzOreNeJ00YBDYyzNIyJf209giWOj+ptLISUsIJHjbDte9l9Lzn8joT2HxW
+         8t+2hCTpMJWNJBlmD8P6rArks9eDltTDHJQg2VyJ+YwcwZzJTIKEOeKg4yePws5HHE
+         x2XGgC07NMqVextP59WHXN9Ads+PSxtmwNou/1Tu2b1RdFpd8QVuv9UL0LkdbRRfi9
+         DeZVUHFQLlfOA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RESEND] drm/rcar: stop using 'imply' for dependencies
+Date:   Mon, 27 Sep 2021 16:26:23 +0200
+Message-Id: <20210927142629.2016647-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210925201430.11678-3-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/21 3:14 PM, Nishanth Menon wrote:
-> Maintain consistency in K3 SoCs by allowing AM654 and AM642 platforms
-> just state SoC compatibles without specific board specific compatibles
-> aligned with what we have done for J721E/J7200 platforms as well.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Suman Anna <s-anna@ti.com>
+The meaning of the 'imply' keyword has changed recently, and neither the
+old meaning (select the symbol if its dependencies are met) nor the new
+meaning (enable it by default, but let the user set any other setting)
+is what we want here.
 
-> ---
-> 
-> Motivation to introduce in V2:
-> * Retain consistency with both "soc only" and "board specific" as two
->   schemes we support across k3.
+Work around this by adding two more Kconfig options that lead to
+the correct behavior: if DRM_RCAR_USE_CMM and DRM_RCAR_USE_LVDS
+are enabled, that portion of the driver becomes usable, and no
+configuration results in a link error.
 
-Thanks for the updates and making it consistent across the K3 platforms.
+This avoids a link failure:
 
-regards
-Suman
+arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_begin':
+rcar_du_crtc.c:(.text+0x1444): undefined reference to `rcar_cmm_setup'
+arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_enable':
+rcar_du_crtc.c:(.text+0x14d4): undefined reference to `rcar_cmm_enable'
+arm-linux-gnueabi-ld: rcar_du_crtc.c:(.text+0x1548): undefined reference to `rcar_cmm_setup'
+arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_disable':
+rcar_du_crtc.c:(.text+0x18b8): undefined reference to `rcar_cmm_disable'
+arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_kms.o: in function `rcar_du_modeset_init':
 
-> 
-> V1:  did'nt exist
-> 
->  .../devicetree/bindings/arm/ti/k3.yaml        | 23 +++++++++++--------
->  1 file changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documentation/devicetree/bindings/arm/ti/k3.yaml
-> index cefb06424a4a..30c3f5c70014 100644
-> --- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
-> +++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
-> @@ -20,12 +20,15 @@ properties:
->      oneOf:
->  
->        - description: K3 AM654 SoC
-> -        items:
-> -          - enum:
-> -              - ti,am654-evm
-> -              - siemens,iot2050-basic
-> -              - siemens,iot2050-advanced
-> +        oneOf:
->            - const: ti,am654
-> +          - items:
-> +              - enum:
-> +                  - ti,am654-evm
-> +                  - siemens,iot2050-basic
-> +                  - siemens,iot2050-advanced
-> +              - const: ti,am654
-> +
->  
->        - description: K3 J721E SoC
->          oneOf:
-> @@ -44,11 +47,13 @@ properties:
->                - const: ti,j7200
->  
->        - description: K3 AM642 SoC
-> -        items:
-> -          - enum:
-> -              - ti,am642-evm
-> -              - ti,am642-sk
-> +        oneOf:
->            - const: ti,am642
-> +          - items:
-> +              - enum:
-> +                  - ti,am642-evm
-> +                  - ti,am642-sk
-> +              - const: ti,am642
->  
->  additionalProperties: true
->  
-> 
+Link: https://lore.kernel.org/all/20200417155553.675905-5-arnd@arndb.de/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+This was last posted as part of a longer series to rework the
+DRM dependencies in a more logical way. The rest of the series
+is still open, but this one is needed as a bug fix regardless of
+the rest.
+---
+ drivers/gpu/drm/rcar-du/Kconfig | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+index b47e74421e34..3e588ddba245 100644
+--- a/drivers/gpu/drm/rcar-du/Kconfig
++++ b/drivers/gpu/drm/rcar-du/Kconfig
+@@ -4,8 +4,6 @@ config DRM_RCAR_DU
+ 	depends on DRM && OF
+ 	depends on ARM || ARM64
+ 	depends on ARCH_RENESAS || COMPILE_TEST
+-	imply DRM_RCAR_CMM
+-	imply DRM_RCAR_LVDS
+ 	select DRM_KMS_HELPER
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_GEM_CMA_HELPER
+@@ -14,13 +12,17 @@ config DRM_RCAR_DU
+ 	  Choose this option if you have an R-Car chipset.
+ 	  If M is selected the module will be called rcar-du-drm.
+ 
+-config DRM_RCAR_CMM
+-	tristate "R-Car DU Color Management Module (CMM) Support"
+-	depends on DRM && OF
++config DRM_RCAR_USE_CMM
++	bool "R-Car DU Color Management Module (CMM) Support"
+ 	depends on DRM_RCAR_DU
++	default DRM_RCAR_DU
+ 	help
+ 	  Enable support for R-Car Color Management Module (CMM).
+ 
++config DRM_RCAR_CMM
++	def_tristate DRM_RCAR_DU
++	depends on DRM_RCAR_USE_CMM
++
+ config DRM_RCAR_DW_HDMI
+ 	tristate "R-Car Gen3 and RZ/G2 DU HDMI Encoder Support"
+ 	depends on DRM && OF
+@@ -28,15 +30,20 @@ config DRM_RCAR_DW_HDMI
+ 	help
+ 	  Enable support for R-Car Gen3 or RZ/G2 internal HDMI encoder.
+ 
++config DRM_RCAR_USE_LVDS
++	bool "R-Car DU LVDS Encoder Support"
++	depends on DRM_BRIDGE && OF
++	default DRM_RCAR_DU
++	help
++	  Enable support for the R-Car Display Unit embedded LVDS encoders.
++
+ config DRM_RCAR_LVDS
+-	tristate "R-Car DU LVDS Encoder Support"
+-	depends on DRM && DRM_BRIDGE && OF
++	def_tristate DRM_RCAR_DU
++	depends on DRM_RCAR_USE_LVDS
+ 	select DRM_KMS_HELPER
+ 	select DRM_PANEL
+ 	select OF_FLATTREE
+ 	select OF_OVERLAY
+-	help
+-	  Enable support for the R-Car Display Unit embedded LVDS encoders.
+ 
+ config DRM_RCAR_VSP
+ 	bool "R-Car DU VSP Compositor Support" if ARM
+-- 
+2.29.2
 
