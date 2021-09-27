@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571B3419AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719A94199F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235884AbhI0RMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
+        id S235836AbhI0RFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:05:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236428AbhI0RKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:10:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 871996124B;
-        Mon, 27 Sep 2021 17:07:56 +0000 (UTC)
+        id S235793AbhI0RFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:05:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3C1661074;
+        Mon, 27 Sep 2021 17:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762477;
-        bh=O4Vj9G28sfBGq6oCww1lLllkkX3WmK24PgaHwPsA7cs=;
+        s=korg; t=1632762237;
+        bh=7T2S4/MgXsbn+Dhnc/dhT4PRLyQOID0DAPUKR35yatI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lXCZ7Hyif+74q31Bxg+y154DjWEJamBQI6KrDk/VWsFnf5gGPy9fsg/6hXUqGcVCI
-         mku9NJ9K3KV0LsNm9+2UN8kO36kUJD+H28K3hZZEfwg/X0zzHqC4Koff4dTqAjkJNg
-         CZVO2JywktRT8PLrOzpDelmpNJARj2+dPYsYaaow=
+        b=bGfD5bJiF4WiBBwJVfRcaEbhtEc/b65LniQTLJBvioB41ZxcAp1vOMm8gx2sPd3kJ
+         yBz15XV4RVLy0tCJYixK/3hZkbGVFtBLyuGhpS57xS0lcPVCbQruFe81oQ3JY12KM9
+         o0CG+pw5+NtC/V4a2p/dyQCnUOTgFCpyaLT7rKJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Michael Chan <michael.chan@broadocm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 038/103] bnxt_en: Fix TX timeout when TX ring size is set to the smallest
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [PATCH 5.4 14/68] usb: core: hcd: Add support for deferring roothub registration
 Date:   Mon, 27 Sep 2021 19:02:10 +0200
-Message-Id: <20210927170227.062240891@linuxfoundation.org>
+Message-Id: <20210927170220.427644244@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,105 +42,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 5bed8b0704c9ecccc8f4a2c377d7c8e21090a82e ]
+commit 58877b0824da15698bd85a0a9dbfa8c354e6ecb7 upstream.
 
-The smallest TX ring size we support must fit a TX SKB with MAX_SKB_FRAGS
-+ 1.  Because the first TX BD for a packet is always a long TX BD, we
-need an extra TX BD to fit this packet.  Define BNXT_MIN_TX_DESC_CNT with
-this value to make this more clear.  The current code uses a minimum
-that is off by 1.  Fix it using this constant.
+It has been observed with certain PCIe USB cards (like Inateck connected
+to AM64 EVM or J7200 EVM) that as soon as the primary roothub is
+registered, port status change is handled even before xHC is running
+leading to cold plug USB devices not detected. For such cases, registering
+both the root hubs along with the second HCD is required. Add support for
+deferring roothub registration in usb_add_hcd(), so that both primary and
+secondary roothubs are registered along with the second HCD.
 
-The tx_wake_thresh to determine when to wake up the TX queue is half the
-ring size but we must have at least BNXT_MIN_TX_DESC_CNT for the next
-packet which may have maximum fragments.  So the comparison of the
-available TX BDs with tx_wake_thresh should be >= instead of > in the
-current code.  Otherwise, at the smallest ring size, we will never wake
-up the TX queue and will cause TX timeout.
-
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadocm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+CC: stable@vger.kernel.org # 5.4+
+Suggested-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Tested-by: Chris Chiu <chris.chiu@canonical.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Link: https://lore.kernel.org/r/20210909064200.16216-2-kishon@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c         | 8 ++++----
- drivers/net/ethernet/broadcom/bnxt/bnxt.h         | 5 +++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 2 +-
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ drivers/usb/core/hcd.c  |   29 +++++++++++++++++++++++------
+ include/linux/usb/hcd.h |    2 ++
+ 2 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 26179e437bbf..cb0c270418a4 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -381,7 +381,7 @@ static bool bnxt_txr_netif_try_stop_queue(struct bnxt *bp,
- 	 * netif_tx_queue_stopped().
- 	 */
- 	smp_mb();
--	if (bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh) {
-+	if (bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh) {
- 		netif_tx_wake_queue(txq);
- 		return false;
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -2636,6 +2636,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
+ {
+ 	int retval;
+ 	struct usb_device *rhdev;
++	struct usb_hcd *shared_hcd;
+ 
+ 	if (!hcd->skip_phy_initialization && usb_hcd_is_primary_hcd(hcd)) {
+ 		hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
+@@ -2792,13 +2793,26 @@ int usb_add_hcd(struct usb_hcd *hcd,
+ 		goto err_hcd_driver_start;
  	}
-@@ -717,7 +717,7 @@ static void bnxt_tx_int(struct bnxt *bp, struct bnxt_napi *bnapi, int nr_pkts)
- 	smp_mb();
  
- 	if (unlikely(netif_tx_queue_stopped(txq)) &&
--	    bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh &&
-+	    bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh &&
- 	    READ_ONCE(txr->dev_state) != BNXT_DEV_STATE_CLOSING)
- 		netif_tx_wake_queue(txq);
- }
-@@ -2300,7 +2300,7 @@ static int __bnxt_poll_work(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
- 		if (TX_CMP_TYPE(txcmp) == CMP_TYPE_TX_L2_CMP) {
- 			tx_pkts++;
- 			/* return full budget so NAPI will complete. */
--			if (unlikely(tx_pkts > bp->tx_wake_thresh)) {
-+			if (unlikely(tx_pkts >= bp->tx_wake_thresh)) {
- 				rx_pkts = budget;
- 				raw_cons = NEXT_RAW_CMP(raw_cons);
- 				if (budget)
-@@ -3431,7 +3431,7 @@ static int bnxt_init_tx_rings(struct bnxt *bp)
- 	u16 i;
- 
- 	bp->tx_wake_thresh = max_t(int, bp->tx_ring_size / 2,
--				   MAX_SKB_FRAGS + 1);
-+				   BNXT_MIN_TX_DESC_CNT);
- 
- 	for (i = 0; i < bp->tx_nr_rings; i++) {
- 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 95d10e7bbb04..92f9f7f5240b 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -611,6 +611,11 @@ struct nqe_cn {
- #define BNXT_MAX_RX_JUM_DESC_CNT	(RX_DESC_CNT * MAX_RX_AGG_PAGES - 1)
- #define BNXT_MAX_TX_DESC_CNT		(TX_DESC_CNT * MAX_TX_PAGES - 1)
- 
-+/* Minimum TX BDs for a TX packet with MAX_SKB_FRAGS + 1.  We need one extra
-+ * BD because the first TX BD is always a long BD.
-+ */
-+#define BNXT_MIN_TX_DESC_CNT		(MAX_SKB_FRAGS + 2)
++	/* starting here, usbcore will pay attention to the shared HCD roothub */
++	shared_hcd = hcd->shared_hcd;
++	if (!usb_hcd_is_primary_hcd(hcd) && shared_hcd && HCD_DEFER_RH_REGISTER(shared_hcd)) {
++		retval = register_root_hub(shared_hcd);
++		if (retval != 0)
++			goto err_register_root_hub;
 +
- #define RX_RING(x)	(((x) & ~(RX_DESC_CNT - 1)) >> (BNXT_PAGE_SHIFT - 4))
- #define RX_IDX(x)	((x) & (RX_DESC_CNT - 1))
++		if (shared_hcd->uses_new_polling && HCD_POLL_RH(shared_hcd))
++			usb_hcd_poll_rh_status(shared_hcd);
++	}
++
+ 	/* starting here, usbcore will pay attention to this root hub */
+-	retval = register_root_hub(hcd);
+-	if (retval != 0)
+-		goto err_register_root_hub;
++	if (!HCD_DEFER_RH_REGISTER(hcd)) {
++		retval = register_root_hub(hcd);
++		if (retval != 0)
++			goto err_register_root_hub;
  
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 1471c9a36238..6f9196ff2ac4 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -780,7 +780,7 @@ static int bnxt_set_ringparam(struct net_device *dev,
+-	if (hcd->uses_new_polling && HCD_POLL_RH(hcd))
+-		usb_hcd_poll_rh_status(hcd);
++		if (hcd->uses_new_polling && HCD_POLL_RH(hcd))
++			usb_hcd_poll_rh_status(hcd);
++	}
  
- 	if ((ering->rx_pending > BNXT_MAX_RX_DESC_CNT) ||
- 	    (ering->tx_pending > BNXT_MAX_TX_DESC_CNT) ||
--	    (ering->tx_pending <= MAX_SKB_FRAGS))
-+	    (ering->tx_pending < BNXT_MIN_TX_DESC_CNT))
- 		return -EINVAL;
+ 	return retval;
  
- 	if (netif_running(dev))
--- 
-2.33.0
-
+@@ -2841,6 +2855,7 @@ EXPORT_SYMBOL_GPL(usb_add_hcd);
+ void usb_remove_hcd(struct usb_hcd *hcd)
+ {
+ 	struct usb_device *rhdev = hcd->self.root_hub;
++	bool rh_registered;
+ 
+ 	dev_info(hcd->self.controller, "remove, state %x\n", hcd->state);
+ 
+@@ -2851,6 +2866,7 @@ void usb_remove_hcd(struct usb_hcd *hcd)
+ 
+ 	dev_dbg(hcd->self.controller, "roothub graceful disconnect\n");
+ 	spin_lock_irq (&hcd_root_hub_lock);
++	rh_registered = hcd->rh_registered;
+ 	hcd->rh_registered = 0;
+ 	spin_unlock_irq (&hcd_root_hub_lock);
+ 
+@@ -2860,7 +2876,8 @@ void usb_remove_hcd(struct usb_hcd *hcd)
+ 	cancel_work_sync(&hcd->died_work);
+ 
+ 	mutex_lock(&usb_bus_idr_lock);
+-	usb_disconnect(&rhdev);		/* Sets rhdev to NULL */
++	if (rh_registered)
++		usb_disconnect(&rhdev);		/* Sets rhdev to NULL */
+ 	mutex_unlock(&usb_bus_idr_lock);
+ 
+ 	/*
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -124,6 +124,7 @@ struct usb_hcd {
+ #define HCD_FLAG_RH_RUNNING		5	/* root hub is running? */
+ #define HCD_FLAG_DEAD			6	/* controller has died? */
+ #define HCD_FLAG_INTF_AUTHORIZED	7	/* authorize interfaces? */
++#define HCD_FLAG_DEFER_RH_REGISTER	8	/* Defer roothub registration */
+ 
+ 	/* The flags can be tested using these macros; they are likely to
+ 	 * be slightly faster than test_bit().
+@@ -134,6 +135,7 @@ struct usb_hcd {
+ #define HCD_WAKEUP_PENDING(hcd)	((hcd)->flags & (1U << HCD_FLAG_WAKEUP_PENDING))
+ #define HCD_RH_RUNNING(hcd)	((hcd)->flags & (1U << HCD_FLAG_RH_RUNNING))
+ #define HCD_DEAD(hcd)		((hcd)->flags & (1U << HCD_FLAG_DEAD))
++#define HCD_DEFER_RH_REGISTER(hcd) ((hcd)->flags & (1U << HCD_FLAG_DEFER_RH_REGISTER))
+ 
+ 	/*
+ 	 * Specifies if interfaces are authorized by default
 
 
