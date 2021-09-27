@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED3841953E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B6C419540
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhI0NmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:42:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53160 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbhI0NmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:42:12 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: nfraprado)
-        with ESMTPSA id AE8C11F42BCD
-Date:   Mon, 27 Sep 2021 10:40:26 -0300
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sandy Huang <hjc@rock-chips.com>,
-        linux-rockchip@lists.infradead.org,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        aleksandr.o.makarov@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm/rockchip: dsi: hold pm-runtime across bind/unbind
-Message-ID: <20210927134026.kijmgp3fuopt6ajh@notapiano>
-References: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
+        id S234560AbhI0Nmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:42:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232185AbhI0Nmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:42:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E2C060230;
+        Mon, 27 Sep 2021 13:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632750060;
+        bh=ImMT0WL2AytIKMoXvqRDsxJTl0zeXAJpCA6dndQsQ5U=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=nt+Lbz7zcy1PzhgbxQGKI3JLwKxO4+YMLmYBDx7PvV7WSfn3dw8xwuAaYu3M6SRyC
+         pUKZNLLDBqceYJ/2jRtUtFFARE4uljBEn8AT3/QoO19fmhSkCKFZysy2sV4UwD77Sn
+         aIyPulxmrdGmpMNtspOPVVWYw1aVJKJjiRcyJqucL+mO8cvnhbRVxIxf6XoqFAgcay
+         +5DgVUr9hA6PeLhvj9VHtZzTDnSsKagipo5leW8G1TCfY6shk3nTrH8f0K0wjUjk8i
+         TPUNZQ0fL5oXQ56YXBxPJhl06YGvxQy250x5vq4l7E4DjMwqfo+BhKtPEwT0i+TKO7
+         osd3yJ/xlBwWw==
+Subject: Re: [PATCH] NIOS2: setup.c: drop unused variable 'dram_start'
+To:     Mike Rapoport <rppt@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+References: <20210924210525.7053-1-rdunlap@infradead.org>
+ <YVAFRdc/DWN0scc7@linux.ibm.com>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <3b71b1b4-fe58-6e55-2b1e-172dc391e9db@kernel.org>
+Date:   Mon, 27 Sep 2021 08:40:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210924162321.1.Ic2904d37f30013a7f3d8476203ad3733c186827e@changeid>
+In-Reply-To: <YVAFRdc/DWN0scc7@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 04:23:45PM -0700, Brian Norris wrote:
-> In commit 59eb7193bef2, we moved most HW configuration to bind(), but we
-> didn't move the runtime PM management. Therefore, depending on initial
-> boot state, runtime-PM workqueue delays, and other timing factors, we
-> may disable our power domain in between the hardware configuration
-> (bind()) and when we enable the display. This can cause us to lose
-> hardware state and fail to configure our display. For example:
-> 
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-innolux-p079zca ff960000.mipi.0: failed to write command 0
-> 
-> or:
-> 
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
-> 
-> We should match the runtime PM to the lifetime of the bind()/unbind()
-> cycle.
-> 
-> Tested on Acer Chrometab 10 (RK3399 Gru-Scarlet), with panel drivers
-> built either as modules or built-in.
-> 
-> Side notes: it seems one is more likely to see this problem when the
-> panel driver is built into the kernel. I've also seen this problem
-> bisect down to commits that simply changed Kconfig dependencies, because
-> it changed the order in which driver init functions were compiled into
-> the kernel, and therefore the ordering and timing of built-in device
-> probe.
-> 
-> Fixes: 59eb7193bef2 ("drm/rockchip: dsi: move all lane config except LCDC mux to bind()")
-> Link: https://lore.kernel.org/linux-rockchip/9aedfb528600ecf871885f7293ca4207c84d16c1.camel@gmail.com/
-> Reported-by: <aleksandr.o.makarov@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
 
-This fixes the display enablement issue in Acer Chrometab 10 (RK3399
-Gru-Scarlet) indeed.
 
-Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+On 9/26/21 12:29 AM, Mike Rapoport wrote:
+> On Fri, Sep 24, 2021 at 02:05:25PM -0700, Randy Dunlap wrote:
+>> This is a nuisance when CONFIG_WERROR is set, so drop the variable
+>> declaration since the code that used it was removed.
+>>
+>> ../arch/nios2/kernel/setup.c: In function 'setup_arch':
+>> ../arch/nios2/kernel/setup.c:152:13: warning: unused variable 'dram_start' [-Wunused-variable]
+>>    152 |         int dram_start;
+>>
+>> Fixes: 7f7bc20bc41a ("nios2: Don't use _end for calculating min_low_pfn")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Dinh Nguyen <dinguyen@kernel.org>
+>> Cc: Andreas Oetken <andreas.oetken@siemens.com>
+>> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> 
+> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+> 
+
+Applied!
 
 Thanks,
-Nícolas
+Dinh
