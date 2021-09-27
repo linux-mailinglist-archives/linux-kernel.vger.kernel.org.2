@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22CA4197E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B314197EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhI0P3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235239AbhI0P3D (ORCPT
+        id S235272AbhI0P3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:29:19 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:43686 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235249AbhI0P3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:29:03 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6049CC061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:27:25 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id w19so22130048ybs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:27:25 -0700 (PDT)
+        Mon, 27 Sep 2021 11:29:18 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 84D9B26;
+        Mon, 27 Sep 2021 18:27:38 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=smT979GOjWN0QuT4Bcu80SU2z7cVHs3jq1N6AUdkY3Q=;
-        b=iSp90bUF+jZ2KUNc/9Sg1ELN5S1MhSa0HGrTgdjcft7IAabaxmsXbeJOmYAcYmKECy
-         jUkq7mJjYki7QXT73FehiNftHygS1qxm85rkLEXOM1s9QO2HEX4QZexMMaEhxCIAU7up
-         ESvd0BpYjPlb5KPQwm9pr4vS/NMQVCSQBUzBYoPPMJvb0CF9rA1Yf3EcraGbCArRQDJ9
-         ShATS3ohHpLrTJFmJ2qO1Ky6BcdnZsQjFjq9QfNmsOt1dn1l7CPXgxwAG4TPJufXmh76
-         ClmS3dWe1u7ySKYQWzDQftpKTsNoUIXlf4CNgfo/XAXN3znGGxKUh+ukWkc7O3upVfGu
-         ukxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=smT979GOjWN0QuT4Bcu80SU2z7cVHs3jq1N6AUdkY3Q=;
-        b=gIUxAbFjXv5vW8b9+gfVGKf9/CUmYqptL4JaF7+srja7oGXIlYpwIYLCfnSqgKD/ms
-         MHQ9Fxcn0+aeYovvD48gv1v9vuT9NSnlK6IajysLrSWqFyw+s297wf89n0rsXOgqXJSR
-         r/DutXXdW+L/sIPyCgI5yWDoo9soi6WBl6f92WWOlLEhfJAXKkSxloEymyXYpou8TrZd
-         bFcGQpW/PoOOznVI4rp2zqnkuigIs3n4FllXvzroiIQsp/WDsAQ5j5I0YAefjATYocoH
-         PgUfdgV5HjQglk0XP79NFQ7B6j683g6e+PkPXOKWfTXo2iBIVtHrXT4dxmuciWB1Rrtr
-         8nuw==
-X-Gm-Message-State: AOAM531C3vr0fjU+sruw7pk7+Ie5c3Gh6Ggko7KxSosietaen31NZLzp
-        dVqD58mO2TjbpfIGQCaaFKtBBu80thoeiVvX7niGKw==
-X-Google-Smtp-Source: ABdhPJzDwdixMqUjQHo6CBP/yz/D/ubY6GzfsquRV+edDikFEkyhNiwBTOmkC0RtFMpbO26uIw/zJ1Z1FhJTwYw10MA=
-X-Received: by 2002:a25:5b45:: with SMTP id p66mr426810ybb.273.1632756444397;
- Mon, 27 Sep 2021 08:27:24 -0700 (PDT)
+        d=paragon-software.com; s=mail; t=1632756458;
+        bh=AIg9rkQY3+i/Vv+sIzG4WbPk6OdyngEjF1gtfZjJ8+s=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=qsrEfgCKcU6HIP7LFP4aBhRaWU8ECfO69FwiEr56FyzGNj8u+kfv8QnaNVx9nkwkv
+         k+7NFmsH1m6oxanKy/wA6gQDiA/wRAYiQDY02zapwQ5db1oCW/oksMgX6+ckbZhIlQ
+         CyuOGxsISbtm4F7XmBdSy8i9MMEU5tRfGiBf6DtM=
+Received: from [192.168.211.27] (192.168.211.27) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 27 Sep 2021 18:27:38 +0300
+Message-ID: <543d770a-56b9-956f-9cd3-854172ebb725@paragon-software.com>
+Date:   Mon, 27 Sep 2021 18:27:37 +0300
 MIME-Version: 1.0
-References: <20210927121541.939745-1-arnd@kernel.org>
-In-Reply-To: <20210927121541.939745-1-arnd@kernel.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 27 Sep 2021 08:27:16 -0700
-Message-ID: <CABCJKucOoov6aWzP3bcTwewNHFRbQn=nFvtkcZQ34hSm+K8+iw@mail.gmail.com>
-Subject: Re: [PATCH] module: fix clang CFI with MODULE_UNLOAD=n
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: [PATCH v2 1/3] fs/ntfs3: Use available posix_acl_release instead of
+ ntfs_posix_acl_release
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+References: <a1204ce8-80e6-bf44-e7d1-f1674ff28dcd@paragon-software.com>
+In-Reply-To: <a1204ce8-80e6-bf44-e7d1-f1674ff28dcd@paragon-software.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.27]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+We don't need to maintain ntfs_posix_acl_release.
 
-On Mon, Sep 27, 2021 at 5:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When CONFIG_MODULE_UNLOAD is disabled, the module->exit member
-> is not defined, causing a build failure:
->
-> kernel/module.c:4493:8: error: no member named 'exit' in 'struct module'
->                 mod->exit = *exit;
->
-> add an #ifdef block around this.
->
-> Fixes: cf68fffb66d6 ("add support for Clang CFI")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/module.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 40ec9a030eec..5c26a76e800b 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -4489,8 +4489,10 @@ static void cfi_init(struct module *mod)
->         /* Fix init/exit functions to point to the CFI jump table */
->         if (init)
->                 mod->init = *init;
-> +#ifdef CONFIG_MODULE_UNLOAD
->         if (exit)
->                 mod->exit = *exit;
-> +#endif
->
->         cfi_module_add(mod, module_addr_min);
->  #endif
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/xattr.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-Thanks for the fix!
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 83bbee277e12..253a07d9aa7b 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -475,12 +475,6 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
+ }
+ 
+ #ifdef CONFIG_NTFS3_FS_POSIX_ACL
+-static inline void ntfs_posix_acl_release(struct posix_acl *acl)
+-{
+-	if (acl && refcount_dec_and_test(&acl->a_refcount))
+-		kfree(acl);
+-}
+-
+ static struct posix_acl *ntfs_get_acl_ex(struct user_namespace *mnt_userns,
+ 					 struct inode *inode, int type,
+ 					 int locked)
+@@ -641,7 +635,7 @@ static int ntfs_xattr_get_acl(struct user_namespace *mnt_userns,
+ 		return -ENODATA;
+ 
+ 	err = posix_acl_to_xattr(mnt_userns, acl, buffer, size);
+-	ntfs_posix_acl_release(acl);
++	posix_acl_release(acl);
+ 
+ 	return err;
+ }
+@@ -678,7 +672,7 @@ static int ntfs_xattr_set_acl(struct user_namespace *mnt_userns,
+ 	err = ntfs_set_acl(mnt_userns, inode, acl, type);
+ 
+ release_and_out:
+-	ntfs_posix_acl_release(acl);
++	posix_acl_release(acl);
+ 	return err;
+ }
+ 
+-- 
+2.33.0
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-Sami
