@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8484841A0C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B35A41A0D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237299AbhI0U4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        id S237099AbhI0U5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237225AbhI0Uz6 (ORCPT
+        with ESMTP id S236959AbhI0U5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:55:58 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11B0C06124D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:54:07 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso26117290otv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:54:07 -0700 (PDT)
+        Mon, 27 Sep 2021 16:57:04 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FD7C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:55:26 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v17so10753436wrv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 13:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h0YJQxMmnGDV43S6qCKWqkxM+F/CgheJgmjjy6liRV8=;
-        b=L1bSbwFbF0AOdyEi2vlfKUBgRtemomi6OmLbIk+NL1SWIsGeeMNFUDZ6m8Qz/GUrH+
-         k12swiS5MpY63k4IzuLywo14RwybloAExptULNULKAhIGneUH46d3ruvZSQOHb0tOnkD
-         64hSWbK0QFKuO5f8ZHljDhKJX3i0Og7TReW5yGbigyUCZUuE3Jsr/YcaqdlJ/WK1lLCP
-         W6Te9+bSKILW/VOg/nxnSbYc3QusLoG5ish4OpIePR5ogME8Sq7YYPYeGm8QEBFzgmAf
-         EuXkenpJwihR7V6UElWQn30yFCYyUQtZYfWwfb+VBA6wBdcxXfpYhi+uQvdkp99XTBW7
-         IXjA==
+        d=rammhold-de.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=U6zWwQxcpAE6GCT82qO+mgKANcsaLZPb64cO70Bu80I=;
+        b=Wv1EHt+93GUbuo9bJD1sXzeal5WJ6Pf0k9Tztn+pJAa1UYiPqyWFp0KfKVJqQ47iNR
+         Tkh9WS13/UTnEkYkdtT5UR1RyOb0MSola0IQRe9gcdZfWem/m0/X/cT+7hl3gB9FM3b9
+         yQPiQvONbNOEBiNCsCX6aDD7hJXcuI08t9X9GO+4Hb2fLwMRvyWF8jMIkMaUEWo62ays
+         D7XMxcDvkMTDP5/KnF0VGhkvesa+7Zp2RSzF0xIVHjm1I9lI7fZrIjJW7n9vL1bl3hx2
+         GFCctUws+PUcBLqOuBURliPEGO4IX4MkQWm6W9ikjAmFc5gs8VjzRM5tVVziPI19RyEa
+         YQ2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h0YJQxMmnGDV43S6qCKWqkxM+F/CgheJgmjjy6liRV8=;
-        b=CQIFWTvvVEfKMZeYcc6zWFkF+MF3YAGe0ljQcK7Mr3NQYo1vUaFuDS9RBT23qH+3TP
-         6uBqRW/YjKLTEtInWOK/h1BO5qNNJdfzelWNndZjmM9/AaVnmjGBHKFeQPGIRWQO/zMd
-         Y/I2KQvcFgFwu8kzGBcZVd8bG3BptPjAwg0/KASbtDPqXKyLMY1eOULSvMZdb+MbqZ7T
-         tkclrqXsjVl7MWqUdlbvNKiRq5AzGHl5FQJSJ1DGNn0nsiGGSXWpOCViWfZhxN7YqD1a
-         NEVp/wfs+0hQuzlXZbVeaGkJWzCcVpxXUhe0MKjddkvzYT/u37KokqY4KGJo/75mfV2h
-         eS1Q==
-X-Gm-Message-State: AOAM533p0w6HJbLXIO2TuYtW5GajL3dUwd0A0VnPc6U4ls1PjVhV+xMI
-        4U8Vk99FmvzDMGJWa31ebHqPVQ==
-X-Google-Smtp-Source: ABdhPJw59jTcTxZyQisD/bKNDk32TvwDIXY0esd5bQvCDGxYsikQ7DkPzChVVudrHTKZ3TXfNyqHmQ==
-X-Received: by 2002:a9d:6347:: with SMTP id y7mr1747419otk.241.1632776047321;
-        Mon, 27 Sep 2021 13:54:07 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l2sm455543otl.61.2021.09.27.13.54.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=U6zWwQxcpAE6GCT82qO+mgKANcsaLZPb64cO70Bu80I=;
+        b=dELFMusJ72NDCZmPkwui/zKfKH/VNWlsFwIh4E7tROOxDFffHLVdPi/iAHWtC1jjU+
+         O+Eev3Gla/MgUIAYhhLBtpYA0Oy9VjSkreKfIg/oCnarMx0D7XlnE2DEA7t1Zp8fQ8LA
+         izlD8q0nWztLfGllNpveki2XGuY3B+PnAMWzsrhNS9zABpM04KnpkWATmQF8aKRhJ4CX
+         gLIGW0fBRyHVwqmbBxEIrexXVJl9W100jDsUm13nWA+91AqfqNX9EuTyPwCv0LdCo+tR
+         GZsSkTIOuT3MQqO+o40cphZa1kZvj2FlP6iPbZcRl85tORu2o7yx37UWeYbSElUIUgiv
+         omXg==
+X-Gm-Message-State: AOAM531h7E71jb2z4axxN9w6ZeWAomfr4REpId2bcZMbvmZdgD0wpUZ0
+        DO/Aqg9mkDm4dutBL57lcgm5ag==
+X-Google-Smtp-Source: ABdhPJxlX63/0ctLRQO10ldC1ZakLk0B77JLbmuDyBqXiyolom3ixcRU9RcL2Ktv7BKSKEDZ6w4/Mw==
+X-Received: by 2002:adf:b748:: with SMTP id n8mr2231688wre.133.1632776125063;
+        Mon, 27 Sep 2021 13:55:25 -0700 (PDT)
+Received: from localhost ([2a00:e67:5c9:a:6d7b:fc0:e9e9:7254])
+        by smtp.gmail.com with ESMTPSA id l18sm1268642wrp.56.2021.09.27.13.55.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 13:54:07 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     robh+dt@kernel.org, Sibi Sankar <sibis@codeaurora.org>,
-        mka@chromium.org, swboyd@chromium.org
-Cc:     linux-remoteproc@vger.kernel.org, mathieu.poirier@linaro.org,
-        ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, ohad@wizery.com,
-        rishabhb@codeaurora.org, sidgup@codeaurora.org,
-        devicetree@vger.kernel.org, agross@kernel.org, rjw@rjwysocki.net,
-        dianders@chromium.org
-Subject: Re: (subset) [PATCH v7 04/13] remoteproc: qcom: q6v5: Use qmp_send to update co-processor load state
-Date:   Mon, 27 Sep 2021 15:54:04 -0500
-Message-Id: <163277598156.1471158.16807304307260432755.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <1631800770-371-5-git-send-email-sibis@codeaurora.org>
-References: <1631800770-371-1-git-send-email-sibis@codeaurora.org> <1631800770-371-5-git-send-email-sibis@codeaurora.org>
+        Mon, 27 Sep 2021 13:55:24 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 22:55:21 +0200
+From:   Andreas Rammhold <andreas@rammhold.de>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Andreas Rammhold <andreas@rammhold.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
+ as module
+Message-ID: <20210927205521.7c4psu4vz5eoyfnf@wrt>
+References: <20210730012822.3460913-1-andreas@rammhold.de>
+ <0d42a11a-0117-49a9-d2c9-bc6cc405235d@pengutronix.de>
+ <20210927085104.vq42feghtaqiv6ni@wrt>
+ <856359f263575f01d0ce2fcf8f042321f750b38c.camel@linux.ibm.com>
+ <20210927200835.wvazk73cek3t5tkf@wrt>
+ <2ad2c536367028ef6d9300745586a123cb13d9f1.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2ad2c536367028ef6d9300745586a123cb13d9f1.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 19:29:21 +0530, Sibi Sankar wrote:
-> The power domains exposed by the AOSS QMP driver control the load state
-> resources linked to modem, adsp, cdsp remoteprocs. These are used to
-> notify the Always on Subsystem (AOSS) that a particular co-processor is
-> up/down. AOSS uses this information to wait for the co-processors to
-> suspend before starting its sleep sequence.
+On 16:33 27.09.21, Mimi Zohar wrote:
+> On Mon, 2021-09-27 at 22:08 +0200, Andreas Rammhold wrote:
+> > On 07:27 27.09.21, Mimi Zohar wrote:
+> > > On Mon, 2021-09-27 at 10:51 +0200, Andreas Rammhold wrote:
+> > > > On 09:47 13.09.21, Ahmad Fatoum wrote:
+> > > > > Dear trusted key maintainers,
+> > > > > 
+> > > > > On 30.07.21 03:28, Andreas Rammhold wrote:
+> > > > > > Before this commit the kernel could end up with no trusted key sources
+> > > > > > even though both of the currently supported backends (TPM and TEE) were
+> > > > > > compiled as modules. This manifested in the trusted key type not being
+> > > > > > registered at all.
+> > > > > > 
+> > > > > > When checking if a CONFIG_… preprocessor variable is defined we only
+> > > > > > test for the builtin (=y) case and not the module (=m) case. By using
+> > > > > > the IS_REACHABLE() macro we do test for both cases.
+> > > > > > 
+> > > > > > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+> > > > > > Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
+> > > > > > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > Does anyone intend to pick this up?
+> > > > 
+> > > > Did this end up in any tree by now? I am wondering if I should resend
+> > > > the patch instead. Perhaps it was just overlooked?
+> > > 
+> > > For EVM environments only using trusted and encrypted keys, not file
+> > > signatures, the trusted key is needed to decrypt the "master" key in
+> > > order to verify kernel modules.
+> > 
+> > So what you are saying is that right now (before this patch & after this
+> > patch) you could compile a kernel that wouldn't be able to load any
+> > modules when the trusted keychain part is built as module?
 > 
-> These co-processors enter low-power modes independent to that of the
-> application processor and the load state resources linked to them are
-> expected to remain unaltered across system suspend/resume cycles. To
-> achieve this behavior lets stop using the power-domains exposed by the
-> AOSS QMP node and replace them with generic qmp_send interface instead.
-> 
-> [...]
+> Before this patch, trusted and encrypted keys are builtin, so verifying
+> kernel modules with security.evm containing an EVM hmac would succeed. 
+> Afterwards it would fail, as there's a dependency on the trusted key to
+> verify the integrity of the trusted key module.
 
-Applied, thanks!
+But building with =m was a valid configuration which is the original
+reason for me submitting the patch. So perhaps this should not be
+allowed to be a module then?
 
-[04/13] remoteproc: qcom: q6v5: Use qmp_send to update co-processor load state
-        commit: c1fe10d238c0256a77dbc4bf6493b9782b2a218d
-
-Best regards,
--- 
-Bjorn Andersson <bjorn.andersson@linaro.org>
