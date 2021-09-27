@@ -2,89 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4836141A2AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C4141A2B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237999AbhI0WJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
+        id S237829AbhI0WKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237871AbhI0WJx (ORCPT
+        with ESMTP id S237860AbhI0WK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:09:53 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C66C05174B;
-        Mon, 27 Sep 2021 15:05:37 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f088a00839935e3d35582f9.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:8399:35e3:d355:82f9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 34CAA1EC04E4;
-        Tue, 28 Sep 2021 00:05:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632780332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=AlsOtt1HkU9FHs1jkzkGfXAXEYqguAUFS1q2I7ksodo=;
-        b=Knfz4Ihnj3SPawJGXShW+AkVXIiVjF2HujWe+6V6Or/F6oYI4kxme0OQlShLrctpOKMLAX
-        aVJai24kdEs8+l44exepufmGN8bkgxmmtxJnHieNaoLAXjYZUj+GDOW9Bf0j0PeVwHXBhF
-        UFK1BYvepeFHbN/9S3rjd4VHLYKy9b8=
-Date:   Tue, 28 Sep 2021 00:05:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated
- before error simulation
-Message-ID: <YVJAIlGr5EvepsOg@zn.tnic>
-References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
- <YU2Lm+11Pqg/RBK3@zn.tnic>
- <60d4f6be-76f7-e4b6-6fb5-2af78b01d32d@amd.com>
- <YVImVgsxyfQO7TGI@zn.tnic>
- <7e790ba1-0b31-690c-7bd3-d8361109cef5@amd.com>
+        Mon, 27 Sep 2021 18:10:27 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB2DC061250
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:07:06 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so20725294otb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pE4LoJNe6aiZGbDfJevs62XkngxPShYLVoLkOqnY23Y=;
+        b=o2W/DcgMy4QSk6OPy1n/9sjhmE64IXvDpGB3MPd88YfzrNyEdSRNnNKThJIQLf4yMM
+         ig7pl/mm3fM26U1N0vpoyBnDw1XPHAvB1lJuqH4VTsceDgxCxZvt71E5RnMrVV4ASLFd
+         UrGlDY/N63RPKmZOt59huAcPs0zPi+uAEzTVBUJCzdWJ65k/2I6aUdCA0dhM0gkkG5a8
+         4lvt8TnMbsW8Egz/RHjy1BcRZ23PxSZt5n/w1nWqiq4SJXv5JbbpTjTxeRTRcbG3COKV
+         F2eXnvns0jB3zHGK5aQSw+vbRugvJly8IJlHiAuJX11g6WZdpP8nSz76X5QJMGnBb+Ow
+         mKJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pE4LoJNe6aiZGbDfJevs62XkngxPShYLVoLkOqnY23Y=;
+        b=diER1qFJ5EuJdcTc6GWz7hG8gQqpbfzpi1ARf01hrVHHxhSyRUs/B/xD8QlVdCkNLP
+         z4gtDdnzM9u9dkSOe21FrrKcLpKRtUjQxbZreyf4Etggfrj2x/xqlPqsKzvCWLIluIcE
+         /+2UmQPZeKa13be7Qt0R+/PKQrDu9+Pz57PnbbROHEVgkpC8nlL1375Zvr8NDhzVmXtJ
+         mSGNs2scKkzr/wgBiFIixGrBI2pAO2deZq9P8NM4Pi5aiVmWdbTA04/Q4Pd8JPDukvB/
+         lMj54ZHynUkVBo61X06LAYFa+GLyfA7ln1wVil2JZ5o0WWx2h8fm7oiO6l9icXywIfuZ
+         S+1A==
+X-Gm-Message-State: AOAM5302gojvChW8EvseNSEOC0NQ1v8MXTSjgUhE8+czsqOHRf6LuiMt
+        Ua718iReQwMNWmkqZHNwZv7OBQ==
+X-Google-Smtp-Source: ABdhPJxb/FzfkZZPwmaSKjlSXGlQHw6gffGSSr7sxmhcd0GOVCLaCcHwvO/pAVkdyYrfSngudlcHGg==
+X-Received: by 2002:a9d:4618:: with SMTP id y24mr2035942ote.326.1632780426192;
+        Mon, 27 Sep 2021 15:07:06 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j10sm701905oog.39.2021.09.27.15.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 15:07:05 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 17:07:03 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Philip Chen <philipchen@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, dianders@chromium.org,
+        swboyd@chromium.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
+Message-ID: <YVJAh755zCGUmobm@builder.lan>
+References: <20210924165322.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7e790ba1-0b31-690c-7bd3-d8361109cef5@amd.com>
+In-Reply-To: <20210924165322.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:56:17PM -0500, Smita Koralahalli Channabasappa wrote:
-> Yes, this makes sense to me now. But you meant to say inj_ipid_set()
-> instead of inj_bank_set()..?
+On Fri 24 Sep 18:54 CDT 2021, Philip Chen wrote:
 
-Yeah, I had it correct before:
-
-"This whole thing belongs into inj_ipid_set() where you should verify... "
-
+> Factor out ti-sn65dsi86 edp bridge as a separate dts fragment.
+> This helps us introduce the second source edp bridge later.
 > 
-> Something like this:
-> 
-> -MCE_INJECT_SET(ipid)
-> 
-> +static int inj_ipid_set(void *data, u64 val)
-> +{
-> +	struct mce *m = (struct mce*)data;
-> 
-> +	if cpu_feature_enabled(X86_FEATURE_SMCA)) {
-> 
-> +		rdmsrl_on_cpu(..
-> 		..
-> 		..
-> +	m->ipid = val;
-> +	..
-> +}
 
-Yes, and return proper error codes.
+I'd prefer to see the second patch in this series to conclude that this
+is the right approach.
 
-Thx.
+Regards,
+Bjorn
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> ---
+> 
+>  .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  1 +
+>  .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  1 +
+>  .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  1 +
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  1 +
+>  .../dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi | 87 +++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 81 -----------------
+>  6 files changed, 91 insertions(+), 81 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+> index a758e4d22612..1d13fba3bd2f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+> @@ -11,6 +11,7 @@
+>  ap_h1_spi: &spi0 {};
+>  
+>  #include "sc7180-trogdor.dtsi"
+> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+>  
+>  /* Deleted nodes from trogdor.dtsi */
+>  
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> index 00535aaa43c9..27b26a782af9 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> @@ -11,6 +11,7 @@
+>  ap_h1_spi: &spi0 {};
+>  
+>  #include "sc7180-trogdor.dtsi"
+> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+>  
+>  &ap_sar_sensor {
+>  	semtech,cs0-ground;
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+> index a246dbd74cc1..e7c7cad14989 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+> @@ -11,6 +11,7 @@
+>  ap_h1_spi: &spi0 {};
+>  
+>  #include "sc7180-trogdor.dtsi"
+> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+>  
+>  / {
+>  	thermal-zones {
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> index 2b522f9e0d8f..457c25499863 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+> @@ -13,6 +13,7 @@
+>  ap_h1_spi: &spi0 {};
+>  
+>  #include "sc7180-trogdor.dtsi"
+> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+>  
+>  / {
+>  	model = "Google Trogdor (rev1+)";
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> new file mode 100644
+> index 000000000000..7b1034a5a8e9
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Trogdor dts fragment for the boards with TI sn65dsi86 edp bridge
+> + *
+> + * Copyright 2021 Google LLC.
+> + */
+> +
+> +&dsi0_out {
+> +	remote-endpoint = <&sn65dsi86_in>;
+> +	data-lanes = <0 1 2 3>;
+> +};
+> +
+> +&edp_brij_i2c {
+> +	sn65dsi86_bridge: bridge@2d {
+> +		compatible = "ti,sn65dsi86";
+> +		reg = <0x2d>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		interrupt-parent = <&tlmm>;
+> +		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
+> +
+> +		vpll-supply = <&pp1800_edp_vpll>;
+> +		vccio-supply = <&pp1800_brij_vccio>;
+> +		vcca-supply = <&pp1200_brij>;
+> +		vcc-supply = <&pp1200_brij>;
+> +
+> +		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
+> +		clock-names = "refclk";
+> +
+> +		no-hpd;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				sn65dsi86_in: endpoint {
+> +					remote-endpoint = <&dsi0_out>;
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +				sn65dsi86_out: endpoint {
+> +					data-lanes = <0 1>;
+> +					remote-endpoint = <&panel_in_edp>;
+> +				};
+> +			};
+> +		};
+> +
+> +		aux-bus {
+> +			panel: panel {
+> +				/* Compatible will be filled in per-board */
+> +				power-supply = <&pp3300_dx_edp>;
+> +				backlight = <&backlight>;
+> +				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
+> +
+> +				port {
+> +					panel_in_edp: endpoint {
+> +						remote-endpoint = <&sn65dsi86_out>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&tlmm {
+> +	edp_brij_irq: edp-brij-irq {
+> +		pinmux {
+> +			pins = "gpio11";
+> +			function = "gpio";
+> +		};
+> +
+> +		pinconf {
+> +			pins = "gpio11";
+> +			drive-strength = <2>;
+> +			bias-pull-down;
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index 0f2b3c00e434..5ad3f15652d5 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -602,15 +602,6 @@ &camcc {
+>  &dsi0 {
+>  	status = "okay";
+>  	vdda-supply = <&vdda_mipi_dsi0_1p2>;
+> -
+> -	ports {
+> -		port@1 {
+> -			endpoint {
+> -				remote-endpoint = <&sn65dsi86_in>;
+> -				data-lanes = <0 1 2 3>;
+> -			};
+> -		};
+> -	};
+>  };
+>  
+>  &dsi_phy {
+> @@ -621,65 +612,6 @@ &dsi_phy {
+>  edp_brij_i2c: &i2c2 {
+>  	status = "okay";
+>  	clock-frequency = <400000>;
+> -
+> -	sn65dsi86_bridge: bridge@2d {
+> -		compatible = "ti,sn65dsi86";
+> -		reg = <0x2d>;
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
+> -		gpio-controller;
+> -		#gpio-cells = <2>;
+> -
+> -		interrupt-parent = <&tlmm>;
+> -		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+> -
+> -		enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
+> -
+> -		vpll-supply = <&pp1800_edp_vpll>;
+> -		vccio-supply = <&pp1800_brij_vccio>;
+> -		vcca-supply = <&pp1200_brij>;
+> -		vcc-supply = <&pp1200_brij>;
+> -
+> -		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
+> -		clock-names = "refclk";
+> -
+> -		no-hpd;
+> -
+> -		ports {
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -
+> -			port@0 {
+> -				reg = <0>;
+> -				sn65dsi86_in: endpoint {
+> -					remote-endpoint = <&dsi0_out>;
+> -				};
+> -			};
+> -
+> -			port@1 {
+> -				reg = <1>;
+> -				sn65dsi86_out: endpoint {
+> -					data-lanes = <0 1>;
+> -					remote-endpoint = <&panel_in_edp>;
+> -				};
+> -			};
+> -		};
+> -
+> -		aux-bus {
+> -			panel: panel {
+> -				/* Compatible will be filled in per-board */
+> -				power-supply = <&pp3300_dx_edp>;
+> -				backlight = <&backlight>;
+> -				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
+> -
+> -				port {
+> -					panel_in_edp: endpoint {
+> -						remote-endpoint = <&sn65dsi86_out>;
+> -					};
+> -				};
+> -			};
+> -		};
+> -	};
+>  };
+>  
+>  ap_sar_sensor_i2c: &i2c5 {
+> @@ -1245,19 +1177,6 @@ pinconf {
+>  		};
+>  	};
+>  
+> -	edp_brij_irq: edp-brij-irq {
+> -		pinmux {
+> -			pins = "gpio11";
+> -			function = "gpio";
+> -		};
+> -
+> -		pinconf {
+> -			pins = "gpio11";
+> -			drive-strength = <2>;
+> -			bias-pull-down;
+> -		};
+> -	};
+> -
+>  	en_pp3300_codec: en-pp3300-codec {
+>  		pinmux {
+>  			pins = "gpio83";
+> -- 
+> 2.33.0.685.g46640cef36-goog
+> 
