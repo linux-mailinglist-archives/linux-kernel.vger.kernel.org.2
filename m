@@ -2,108 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67461419455
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14156419457
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234381AbhI0Mfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbhI0Mfv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:35:51 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DCFC061575;
-        Mon, 27 Sep 2021 05:34:13 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id CB3791F42246
-Received: by earth.universe (Postfix, from userid 1000)
-        id 5CE603C0CA8; Mon, 27 Sep 2021 14:34:09 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 14:34:09 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org
-Subject: Re: [patch 06/11] power: reset: ltc2952: Use hrtimer_forward_now()
-Message-ID: <20210927123409.sl2ekpr3kcfqydar@earth.universe>
-References: <20210923153311.225307347@linutronix.de>
- <20210923153339.746654947@linutronix.de>
+        id S234401AbhI0MgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234380AbhI0Mf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:35:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ECEC60F41;
+        Mon, 27 Sep 2021 12:34:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632746061;
+        bh=D+5/8tHCQxdmWTOlYcOv1iIAUp7sdgYnP5xXPObXi1I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jGl+I3enIxJKufmTuRxiGyGny5Uqc+2WEAxMwMZODl9SZo8AtZRCOPfW/e35tnmj5
+         hTHi1XNUiltYTMu68VYxXYn8qMclPOOdp1iG4xJJZwYbO6xkiIx7qlD4F/PAvC0CO8
+         APu+G76FVFw47Ib0IjAtuNX3esgJYZwbz8zgcITWfKtCmJKZjk3MmHXt26R+T1ENgv
+         gAzGS7piBrm7zonQkndmC4xbrVQHtcLdhasoPaIxp4rEi1RgkohRN4fNFSJtL/Pq0H
+         qE7zdmNFkibGYyIm8EGHShVTh1gyY7hD8qPncW2phGulMeBakllVOqj/e1J6QLbWrb
+         UrlyawfD8W/pw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1027F410A1; Mon, 27 Sep 2021 09:34:19 -0300 (-03)
+Date:   Mon, 27 Sep 2021 09:34:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     William Cohen <wcohen@redhat.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] perf annotate: Add riscv64 support
+Message-ID: <YVG6S2CE4fQRgngo@kernel.org>
+References: <20210927005115.610264-1-wcohen@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nvjiw4ieghtx42oh"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210923153339.746654947@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210927005115.610264-1-wcohen@redhat.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Sun, Sep 26, 2021 at 08:51:15PM -0400, William Cohen escreveu:
+> This patch adds basic arch initialization and instruction associate
+> support for the riscv64 CPU architecture.
+> 
+> Example output:
+> 
+>   $ perf annotate --stdio2
+>   Samples: 122K of event 'task-clock:u', 4000 Hz, Event count (approx.): 30637250000, [percent: local period]
+>   strcmp() /usr/lib64/libc-2.32.so
+>   Percent
+> 
+> 	      Disassembly of section .text:
+> 
+> 	      0000000000069a30 <strcmp>:
+> 	      __GI_strcmp():
+> 	      const unsigned char *s2 = (const unsigned char *) p2;
+> 	      unsigned char c1, c2;
+> 
+> 	      do
+> 	      {
+> 	      c1 = (unsigned char) *s1++;
+>    37.30        lbu  a5,0(a0)
+> 	      c2 = (unsigned char) *s2++;
+>     1.23        addi a1,a1,1
+> 	      c1 = (unsigned char) *s1++;
+>    18.68        addi a0,a0,1
+> 	      c2 = (unsigned char) *s2++;
+>     1.37        lbu  a4,-1(a1)
+> 	      if (c1 == '\0')
+>    18.71      ↓ beqz a5,18
+> 	       return c1 - c2;
+> 	       }
 
---nvjiw4ieghtx42oh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied.
 
-Hi,
+- Arnaldo
 
-On Thu, Sep 23, 2021 at 06:04:28PM +0200, Thomas Gleixner wrote:
-> hrtimer_forward_now() provides the same functionality as the open coded
-> hrtimer_forward() invocation. Prepares for removal of hrtimer_forward()
-> from the public interfaces.
->=20
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: linux-pm@vger.kernel.org
+ 
+> Signed-off-by: William Cohen <wcohen@redhat.com>
 > ---
+>  .../perf/arch/riscv64/annotate/instructions.c | 34 +++++++++++++++++++
+>  tools/perf/util/annotate.c                    |  5 +++
+>  2 files changed, 39 insertions(+)
+>  create mode 100644 tools/perf/arch/riscv64/annotate/instructions.c
+> 
+> diff --git a/tools/perf/arch/riscv64/annotate/instructions.c b/tools/perf/arch/riscv64/annotate/instructions.c
+> new file mode 100644
+> index 000000000000..869a0eb28953
+> --- /dev/null
+> +++ b/tools/perf/arch/riscv64/annotate/instructions.c
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +static
+> +struct ins_ops *riscv64__associate_ins_ops(struct arch *arch, const char *name)
+> +{
+> +	struct ins_ops *ops = NULL;
+> +
+> +	if (!strncmp(name, "jal", 3) ||
+> +	    !strncmp(name, "jr", 2) ||
+> +	    !strncmp(name, "call", 4))
+> +		ops = &call_ops;
+> +	else if (!strncmp(name, "ret", 3))
+> +		ops = &ret_ops;
+> +	else if (name[0] == 'j' || name[0] == 'b')
+> +		ops = &jump_ops;
+> +	else
+> +		return NULL;
+> +
+> +	arch__associate_ins_ops(arch, name, ops);
+> +
+> +	return ops;
+> +}
+> +
+> +static
+> +int riscv64__annotate_init(struct arch *arch, char *cpuid __maybe_unused)
+> +{
+> +	if (!arch->initialized) {
+> +		arch->associate_instruction_ops = riscv64__associate_ins_ops;
+> +		arch->initialized = true;
+> +		arch->objdump.comment_char = '#';
+> +	}
+> +
+> +	return 0;
+> +}
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 0bae061b2d6d..d919fa993872 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -151,6 +151,7 @@ static int arch__associate_ins_ops(struct arch* arch, const char *name, struct i
+>  #include "arch/mips/annotate/instructions.c"
+>  #include "arch/x86/annotate/instructions.c"
+>  #include "arch/powerpc/annotate/instructions.c"
+> +#include "arch/riscv64/annotate/instructions.c"
+>  #include "arch/s390/annotate/instructions.c"
+>  #include "arch/sparc/annotate/instructions.c"
+>  
+> @@ -192,6 +193,10 @@ static struct arch architectures[] = {
+>  		.name = "powerpc",
+>  		.init = powerpc__annotate_init,
+>  	},
+> +	{
+> +		.name = "riscv64",
+> +		.init = riscv64__annotate_init,
+> +	},
+>  	{
+>  		.name = "s390",
+>  		.init = s390__annotate_init,
+> -- 
+> 2.27.0
 
-Thanks, queued to power-supply's for-next branch.
+-- 
 
--- Sebastian
-
->  drivers/power/reset/ltc2952-poweroff.c |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->=20
-> --- a/drivers/power/reset/ltc2952-poweroff.c
-> +++ b/drivers/power/reset/ltc2952-poweroff.c
-> @@ -94,7 +94,6 @@ static struct ltc2952_poweroff *ltc2952_
->   */
->  static enum hrtimer_restart ltc2952_poweroff_timer_wde(struct hrtimer *t=
-imer)
->  {
-> -	ktime_t now;
->  	int state;
->  	struct ltc2952_poweroff *data =3D to_ltc2952(timer, timer_wde);
-> =20
-> @@ -104,8 +103,7 @@ static enum hrtimer_restart ltc2952_powe
->  	state =3D gpiod_get_value(data->gpio_watchdog);
->  	gpiod_set_value(data->gpio_watchdog, !state);
-> =20
-> -	now =3D hrtimer_cb_get_time(timer);
-> -	hrtimer_forward(timer, now, data->wde_interval);
-> +	hrtimer_forward_now(timer, data->wde_interval);
-> =20
->  	return HRTIMER_RESTART;
->  }
->=20
-
---nvjiw4ieghtx42oh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFRukEACgkQ2O7X88g7
-+pqKFQ//T4fOnN3EQe4f7Pg4w++SqPoGhfrzFJUeAln5V4TpFHdHZGq4s7t6kZaK
-GOXOBCyzGZ6jJEH5YRce4tdW3+01yIj4GBL1RmkM28AgFOfGEtqSmlsMSMOBn9xp
-+q6CbOqWw5ZbbKPi3O9mbE5vcLKHR4tCpBxqDIbwG8FxHLuuKD2iUQ3MBoyU0ueW
-fgO7dT1Y761yYtUg6/K50NhpjR/K5nendVqNkyBvy69h5ItqLGA8etK9oovMUaTj
-7wHWiAq+S1uNCHN72DKJiXWh4CcssK1REPdGKF+c/Zpl74Cos6PYSFVgstfbdqbR
-k7KugJPeZllc3gGiXLp5vre3bNKoahO2sNqNkDdFP84QGmEhl2dt222d89WbH/XB
-0xw15rF4tFwFlXCwI60R5Fz4R+4FQhz3KWbQ3PZzTP5SD0LyMfTVn2sPtA9+FHlL
-iGeutAwscHBSahlMwXP9BsfUwd5mFOV971ElszTuzLtdrOIXLtBHW0df6OBYi+1I
-pUn4+D/KBTr7Y1rxrP95FPXoUwgxyqDly7pMhSUa/RiqB9um1MzLVbayF8hiE3lt
-ASDwrGsWkOsgkeCPIen3H8ObaXO+d4ddnyeY2qAqgnj2GQg8F0ob6Dbg9WjBxump
-kD7qNZioaB4CaOTypmfdr/AmVQIeS61vUmudIL1Pqt8piudrsqM=
-=g6vN
------END PGP SIGNATURE-----
-
---nvjiw4ieghtx42oh--
+- Arnaldo
