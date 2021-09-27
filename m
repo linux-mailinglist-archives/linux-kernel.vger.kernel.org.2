@@ -2,91 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EAD4197A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7378D4197AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhI0PVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:21:43 -0400
-Received: from mail-vk1-f179.google.com ([209.85.221.179]:42649 "EHLO
-        mail-vk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbhI0PVk (ORCPT
+        id S235200AbhI0PV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:21:57 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54122 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235129AbhI0PVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:21:40 -0400
-Received: by mail-vk1-f179.google.com with SMTP id o204so7085589vko.9;
-        Mon, 27 Sep 2021 08:20:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F5wb4ZX9gwgasne0NhWUEprI9AwQOWamOuZRWGphiLM=;
-        b=kUVo7+CyhC5FEcruzclsk61G8fYYLZZzDxNpLfe1ksKxmnRk6BT2jy6oWTstcJOnra
-         LzvUAObgEM4qHTh+1cPS96ntwekqquZtDEU5r3eUoKbwwfYWtZQ8lJUBW93a5dg/uvbe
-         VQG377Z34yci1d09lhe4VPraD8MZmdIlltFM44M1R2DXYLKHLyuKhrvhS5nYufdZVKik
-         I7Jspz4N3xepn8OKvVbQ7yKzJ7IHFYB1Kc5zQX1nDbZp6rqNFCmTBgFxEt9TqqZcWXb7
-         MAGQVoblLwp4T1BYx8Xpz8uDgrSLFCew5OdqjRkzrSQAfCHO36d0SE3hgNgMyDNWyGrz
-         YQrg==
-X-Gm-Message-State: AOAM533y2j7ZQLsx8Rh/x/x8TduU0T0zWtL0Tktc3mJecbDmInTMhx2v
-        s1KEKASZZ/hxvectbuUEMA3wnnwojDMpxFDY0Mw=
-X-Google-Smtp-Source: ABdhPJxj2OeFkxklgcIGHyfFHROJ0kJKH8P7BoepnpioKOsPmd/3DG/ainzZgT/3Vd7Z0PN8a+SyRrxXemz3PM2L1AY=
-X-Received: by 2002:a1f:230c:: with SMTP id j12mr572707vkj.11.1632756001800;
- Mon, 27 Sep 2021 08:20:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927150518.8607-1-david@redhat.com> <20210927150518.8607-3-david@redhat.com>
-In-Reply-To: <20210927150518.8607-3-david@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Sep 2021 17:19:50 +0200
-Message-ID: <CAMuHMdWuRtxwRCy-x63s9BkDKk+hkXhEfZYC5pmXomzCuDBrYg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] memblock: allow to specify flags with memblock_add_node()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 27 Sep 2021 11:21:46 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 818E01F42E29
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v6 03/10] hantro: Simplify postprocessor
+Date:   Mon, 27 Sep 2021 17:19:51 +0200
+Message-Id: <20210927151958.24426-4-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210927151958.24426-1-andrzej.p@collabora.com>
+References: <20210927151958.24426-1-andrzej.p@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 5:05 PM David Hildenbrand <david@redhat.com> wrote:
-> We want to specify flags when hotplugging memory. Let's prepare to pass
-> flags to memblock_add_node() by adjusting all existing users.
->
-> Note that when hotplugging memory the system is already up and running
-> and we don't want to add the memory first and apply flags later: it
-> should happen within one memblock call.
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+From: Ezequiel Garcia <ezequiel@collabora.com>
 
->  arch/m68k/mm/mcfmmu.c            | 3 ++-
->  arch/m68k/mm/motorola.c          | 6 ++++--
+Add a 'postprocessed' boolean property to struct hantro_fmt
+to signal that a format is produced by the post-processor.
+This will allow to introduce the G2 post-processor in a simple way.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+---
+ drivers/staging/media/hantro/hantro.h          | 2 ++
+ drivers/staging/media/hantro/hantro_postproc.c | 8 +-------
+ drivers/staging/media/hantro/imx8m_vpu_hw.c    | 1 +
+ drivers/staging/media/hantro/rockchip_vpu_hw.c | 1 +
+ drivers/staging/media/hantro/sama5d4_vdec_hw.c | 1 +
+ 5 files changed, 6 insertions(+), 7 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+index c2e01959dc00..dd5e56765d4e 100644
+--- a/drivers/staging/media/hantro/hantro.h
++++ b/drivers/staging/media/hantro/hantro.h
+@@ -263,6 +263,7 @@ struct hantro_ctx {
+  * @max_depth:	Maximum depth, for bitstream formats
+  * @enc_fmt:	Format identifier for encoder registers.
+  * @frmsize:	Supported range of frame sizes (only for bitstream formats).
++ * @postprocessed: Indicates if this format needs the post-processor.
+  */
+ struct hantro_fmt {
+ 	char *name;
+@@ -272,6 +273,7 @@ struct hantro_fmt {
+ 	int max_depth;
+ 	enum hantro_enc_fmt enc_fmt;
+ 	struct v4l2_frmsize_stepwise frmsize;
++	bool postprocessed;
+ };
+ 
+ struct hantro_reg {
+diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
+index 882fb8bc5ddd..4549aec08feb 100644
+--- a/drivers/staging/media/hantro/hantro_postproc.c
++++ b/drivers/staging/media/hantro/hantro_postproc.c
+@@ -53,15 +53,9 @@ const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+ bool hantro_needs_postproc(const struct hantro_ctx *ctx,
+ 			   const struct hantro_fmt *fmt)
+ {
+-	struct hantro_dev *vpu = ctx->dev;
+-
+ 	if (ctx->is_encoder)
+ 		return false;
+-
+-	if (!vpu->variant->postproc_fmts)
+-		return false;
+-
+-	return fmt->fourcc != V4L2_PIX_FMT_NV12;
++	return fmt->postprocessed;
+ }
+ 
+ static void hantro_postproc_g1_enable(struct hantro_ctx *ctx)
+diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+index 22fa7d2f3b64..02e61438220a 100644
+--- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
++++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+@@ -82,6 +82,7 @@ static const struct hantro_fmt imx8m_vpu_postproc_fmts[] = {
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_YUYV,
+ 		.codec_mode = HANTRO_MODE_NONE,
++		.postprocessed = true,
+ 	},
+ };
+ 
+diff --git a/drivers/staging/media/hantro/rockchip_vpu_hw.c b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+index 6c1ad5534ce5..f372f767d4ff 100644
+--- a/drivers/staging/media/hantro/rockchip_vpu_hw.c
++++ b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+@@ -62,6 +62,7 @@ static const struct hantro_fmt rockchip_vpu1_postproc_fmts[] = {
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_YUYV,
+ 		.codec_mode = HANTRO_MODE_NONE,
++		.postprocessed = true,
+ 	},
+ };
+ 
+diff --git a/drivers/staging/media/hantro/sama5d4_vdec_hw.c b/drivers/staging/media/hantro/sama5d4_vdec_hw.c
+index f3fecc7248c4..b2fc1c5613e1 100644
+--- a/drivers/staging/media/hantro/sama5d4_vdec_hw.c
++++ b/drivers/staging/media/hantro/sama5d4_vdec_hw.c
+@@ -15,6 +15,7 @@ static const struct hantro_fmt sama5d4_vdec_postproc_fmts[] = {
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_YUYV,
+ 		.codec_mode = HANTRO_MODE_NONE,
++		.postprocessed = true,
+ 	},
+ };
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
