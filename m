@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90A5419AA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0631419BE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236499AbhI0RKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
+        id S236841AbhI0RXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236487AbhI0RJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:09:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D1E06101A;
-        Mon, 27 Sep 2021 17:07:10 +0000 (UTC)
+        id S236763AbhI0RTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:19:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A48BB61357;
+        Mon, 27 Sep 2021 17:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762431;
-        bh=gnVceWG5Ho92c4gKzaRn0O46ws7FP8BK2OI+dr3qgJ0=;
+        s=korg; t=1632762785;
+        bh=M4aPNCCqKbCrvFzFZjx7zUTnetDQz8mry2ePRCFcYrQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=np2WwQvGO4fjdG8DYVzFoLeeQuR9z7SvKlRyBf1yeHA6PxSlNDcAHfCl2iG10DCbP
-         cUg79Yl+bNG5PE7CEvqVFAVNm/Alapb5tAJJwc9rzx/IlGGWgwHlTRbmV1NjKC01l0
-         xTQlFJkJaONaqIv7n76WZPHkH+FGkgWeBCPQVQ0k=
+        b=x3p870w2kd1EP8++Kdj3dpkkbV+KirTMKO8lAIuZH1b+8hdqwO/ctZHyZ1xHTaz4t
+         tEHHoMuLmOs815TCzmNDIByDXv4WxUqf+dJj1pg0ho4fupRQQKe1f2tx4XkADp5c8f
+         iERmZTc8ZDpvzz7JCV+mtDlWu93OLs6GCc66cEZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 002/103] ocfs2: drop acl cache for directories too
-Date:   Mon, 27 Sep 2021 19:01:34 +0200
-Message-Id: <20210927170225.785643829@linuxfoundation.org>
+        stable@vger.kernel.org, Markus Suvanto <markus.suvanto@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-afs@lists.infradead.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 049/162] afs: Fix incorrect triggering of sillyrename on 3rd-party invalidation
+Date:   Mon, 27 Sep 2021 19:01:35 +0200
+Message-Id: <20210927170235.195360006@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,64 +40,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wengang Wang <wen.gang.wang@oracle.com>
+From: David Howells <dhowells@redhat.com>
 
-commit 9c0f0a03e386f4e1df33db676401547e1b7800c6 upstream.
+[ Upstream commit 63d49d843ef5fffeea069e0ffdfbd2bf40ba01c6 ]
 
-ocfs2_data_convert_worker() is currently dropping any cached acl info
-for FILE before down-converting meta lock.  It should also drop for
-DIRECTORY.  Otherwise the second acl lookup returns the cached one (from
-VFS layer) which could be already stale.
+The AFS filesystem is currently triggering the silly-rename cleanup from
+afs_d_revalidate() when it sees that a dentry has been changed by a third
+party[1].  It should not be doing this as the cleanup includes deleting the
+silly-rename target file on iput.
 
-The problem we are seeing is that the acl changes on one node doesn't
-get refreshed on other nodes in the following case:
+Fix this by removing the places in the d_revalidate handling that validate
+anything other than the directory and the dirent.  It probably should not
+be looking to validate the target inode of the dentry also.
 
-  Node 1                    Node 2
-  --------------            ----------------
-  getfacl dir1
+This includes removing the point in afs_d_revalidate() where the inode that
+a dentry used to point to was marked as being deleted (AFS_VNODE_DELETED).
+We don't know it got deleted.  It could have been renamed or it could have
+hard links remaining.
 
-                            getfacl dir1    <-- this is OK
+This was reproduced by cloning a git repo onto an afs volume on one
+machine, switching to another machine and doing "git status", then
+switching back to the first and doing "git status".  The second status
+would show weird output due to ".git/index" getting deleted by the above
+mentioned mechanism.
 
-  setfacl -m u:user1:rwX dir1
-  getfacl dir1   <-- see the change for user1
+A simpler way to do it is to do:
 
-                            getfacl dir1    <-- can't see change for user1
+	machine 1: touch a
+	machine 2: touch b; mv -f b a
+	machine 1: stat a
 
-Link: https://lkml.kernel.org/r/20210903012631.6099-1-wen.gang.wang@oracle.com
-Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+on an afs volume.  The bug shows up as the stat failing with ENOENT and the
+file server log showing that machine 1 deleted "a".
+
+Fixes: 79ddbfa500b3 ("afs: Implement sillyrename for unlink and rename")
+Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Tested-by: Markus Suvanto <markus.suvanto@gmail.com>
+cc: linux-afs@lists.infradead.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214217#c4 [1]
+Link: https://lore.kernel.org/r/163111668100.283156.3851669884664475428.stgit@warthog.procyon.org.uk/
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/dlmglue.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/afs/dir.c | 46 +++++++---------------------------------------
+ 1 file changed, 7 insertions(+), 39 deletions(-)
 
---- a/fs/ocfs2/dlmglue.c
-+++ b/fs/ocfs2/dlmglue.c
-@@ -3933,7 +3933,7 @@ static int ocfs2_data_convert_worker(str
- 		oi = OCFS2_I(inode);
- 		oi->ip_dir_lock_gen++;
- 		mlog(0, "generation: %u\n", oi->ip_dir_lock_gen);
--		goto out;
-+		goto out_forget;
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index ac829e63c570..54ee54ae36bc 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -1077,9 +1077,9 @@ static struct dentry *afs_lookup(struct inode *dir, struct dentry *dentry,
+  */
+ static int afs_d_revalidate_rcu(struct dentry *dentry)
+ {
+-	struct afs_vnode *dvnode, *vnode;
++	struct afs_vnode *dvnode;
+ 	struct dentry *parent;
+-	struct inode *dir, *inode;
++	struct inode *dir;
+ 	long dir_version, de_version;
+ 
+ 	_enter("%p", dentry);
+@@ -1109,18 +1109,6 @@ static int afs_d_revalidate_rcu(struct dentry *dentry)
+ 			return -ECHILD;
  	}
  
- 	if (!S_ISREG(inode->i_mode))
-@@ -3964,6 +3964,7 @@ static int ocfs2_data_convert_worker(str
- 		filemap_fdatawait(mapping);
+-	/* Check to see if the vnode referred to by the dentry still
+-	 * has a callback.
+-	 */
+-	if (d_really_is_positive(dentry)) {
+-		inode = d_inode_rcu(dentry);
+-		if (inode) {
+-			vnode = AFS_FS_I(inode);
+-			if (!afs_check_validity(vnode))
+-				return -ECHILD;
+-		}
+-	}
+-
+ 	return 1; /* Still valid */
+ }
+ 
+@@ -1156,17 +1144,7 @@ static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 	if (IS_ERR(key))
+ 		key = NULL;
+ 
+-	if (d_really_is_positive(dentry)) {
+-		inode = d_inode(dentry);
+-		if (inode) {
+-			vnode = AFS_FS_I(inode);
+-			afs_validate(vnode, key);
+-			if (test_bit(AFS_VNODE_DELETED, &vnode->flags))
+-				goto out_bad;
+-		}
+-	}
+-
+-	/* lock down the parent dentry so we can peer at it */
++	/* Hold the parent dentry so we can peer at it */
+ 	parent = dget_parent(dentry);
+ 	dir = AFS_FS_I(d_inode(parent));
+ 
+@@ -1175,7 +1153,7 @@ static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 
+ 	if (test_bit(AFS_VNODE_DELETED, &dir->flags)) {
+ 		_debug("%pd: parent dir deleted", dentry);
+-		goto out_bad_parent;
++		goto not_found;
  	}
  
-+out_forget:
- 	forget_all_cached_acls(inode);
+ 	/* We only need to invalidate a dentry if the server's copy changed
+@@ -1201,12 +1179,12 @@ static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 	case 0:
+ 		/* the filename maps to something */
+ 		if (d_really_is_negative(dentry))
+-			goto out_bad_parent;
++			goto not_found;
+ 		inode = d_inode(dentry);
+ 		if (is_bad_inode(inode)) {
+ 			printk("kAFS: afs_d_revalidate: %pd2 has bad inode\n",
+ 			       dentry);
+-			goto out_bad_parent;
++			goto not_found;
+ 		}
  
- out:
+ 		vnode = AFS_FS_I(inode);
+@@ -1228,9 +1206,6 @@ static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 			       dentry, fid.unique,
+ 			       vnode->fid.unique,
+ 			       vnode->vfs_inode.i_generation);
+-			write_seqlock(&vnode->cb_lock);
+-			set_bit(AFS_VNODE_DELETED, &vnode->flags);
+-			write_sequnlock(&vnode->cb_lock);
+ 			goto not_found;
+ 		}
+ 		goto out_valid;
+@@ -1245,7 +1220,7 @@ static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 	default:
+ 		_debug("failed to iterate dir %pd: %d",
+ 		       parent, ret);
+-		goto out_bad_parent;
++		goto not_found;
+ 	}
+ 
+ out_valid:
+@@ -1256,16 +1231,9 @@ static int afs_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 	_leave(" = 1 [valid]");
+ 	return 1;
+ 
+-	/* the dirent, if it exists, now points to a different vnode */
+ not_found:
+-	spin_lock(&dentry->d_lock);
+-	dentry->d_flags |= DCACHE_NFSFS_RENAMED;
+-	spin_unlock(&dentry->d_lock);
+-
+-out_bad_parent:
+ 	_debug("dropping dentry %pd2", dentry);
+ 	dput(parent);
+-out_bad:
+ 	key_put(key);
+ 
+ 	_leave(" = 0 [bad]");
+-- 
+2.33.0
+
 
 
