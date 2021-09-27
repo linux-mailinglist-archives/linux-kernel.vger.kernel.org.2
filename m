@@ -2,222 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F37641A338
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E44041A332
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237918AbhI0Wot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:44:49 -0400
-Received: from mail-mw2nam10on2126.outbound.protection.outlook.com ([40.107.94.126]:22209
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237771AbhI0Wor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:44:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JtefLIfBHz2QgtrRVy9uqUyrbcf2M5rjt4kj3W/ClYP4mukEkX6wzzwfjd+uYyiiMMhwSkFidNDDOzuGwCodHx+t+P4GdbF9dv+8mjCmwmBvDMNEgneikqVDOTodwIwk81CCt93A5ptIiJeu0suwnKu93qIJWjCQcB3YhtjLpedVwqc9URW8sm9hURUC1EwO46qRUoPiwOb7Ia4UIP97rWgdsER5gGURCpbldq53J/MTq87cubzV/vkOhz61hhhhJ8gjSlifvqwUjjnIi4Wx+ePNp50EU7xfUaBz28ovsDpfEi7yRf7uhmM86iss5wVxvA/8Kzoyv6F4GSteoVJXXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=FMnBKJZGeZM8SWOYzf5ugCtif7sDrXef+dx0JnGuAmo=;
- b=fZiJK9d91BFcGiHwQRdt9gQvhQXnTmcii1eOBAjeXsk9aO2UTK89q6t+UvlqS55y0JYn0GYbXlEOp9bfQ8cm7aL3FuiemWsw1SC3pPK4EwiKkj2mJ0iEL1NFL/cH0LMxa8jf438Wf7ii3faiCxgDes2tS12AY3yuQnB28wqlKYCDflLIsu415ZFiWUeb/MBMpwrrojxaP+gPH0K41PneMZMm8kP0Y0XJOkjhy2kAjyxpB6txlrhSJzeE3w/CUZi7YwbDpMTcCrykiwl6IAKY920eyx+kttXXd9ow5WaKYrdPPi1yiRVNoL4KDArFWON9a8sspJKa5x3p4HN0+DwOiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FMnBKJZGeZM8SWOYzf5ugCtif7sDrXef+dx0JnGuAmo=;
- b=MKH0vgwbITsvDO9vMQj7LfTACn0YztleIymKKxQP7rLxgq2ZkGOVe+uP09BlUQd2lWx1Br28i8pCwvfd3RLUf61+UAw4DSFHHPQeW1zuscVcVo0ZiODFPkSi9pFL0hhTJD0WcuGdvHz9tRQDC+DBpmptnCo86EjE7rPbSiJtQOs=
-Received: from SJ0PR11MB5661.namprd11.prod.outlook.com (2603:10b6:a03:3b9::5)
- by SJ0PR11MB5661.namprd11.prod.outlook.com (2603:10b6:a03:3b9::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Mon, 27 Sep
- 2021 22:43:08 +0000
-Received: from SJ0PR11MB5661.namprd11.prod.outlook.com
- ([fe80::31bb:4f91:1eb5:7178]) by SJ0PR11MB5661.namprd11.prod.outlook.com
- ([fe80::31bb:4f91:1eb5:7178%7]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
- 22:43:08 +0000
-From:   Ryan Lee <RyanS.Lee@maximintegrated.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
-Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Thread-Index: AQHXsZF45/jZbOMADUKIjx+r35kUIKu3/BEAgAAPiFCAAAR+AIAAC+UAgAAIKhCAACX/gIAAEdyQ
-Date:   Mon, 27 Sep 2021 22:43:07 +0000
-Message-ID: <SJ0PR11MB56614118CDE45D205ACD3C12E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
-References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
- <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
- <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <20210927160622.GE4199@sirena.org.uk>
- <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
- <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
-In-Reply-To: <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
-Accept-Language: en-US, ko-KR
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=maximintegrated.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ec4941b7-fcab-4104-e25c-08d982082d51
-x-ms-traffictypediagnostic: SJ0PR11MB5661:
-x-microsoft-antispam-prvs: <SJ0PR11MB56610B35E52C401C33A7BE81E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oC4c2aCqv589whG1ODP9jAHcFYMTAzN9hFxPuuPLen1qQahmsPFIR7/B1sN3iDpAk0qy/8NjB+n7A81Xpzj9bdIGVVR3AF+qhTvlMZTlZymIAXgiZWtty2n5f5er2qiINUzvUe4WuynJAQycbQ3gm7fd1hflP42t6NFQ9SmlvJD3A/NtJpRmvEMH+5/tgXNROG9UWPIEsc+C2sKSSM6l+m7zNJ1u0eRlr9Bc50wfrB9T5qO3uDVD4uC2OMgPH+ZSep9yYLNzTS5vcIWhXLQipSThPTCWWZrjG7ojieY8m0v03FQJK9KJJMef6UZUBjGGoKiQK86szMb2mPOO4THAbi6Rhizh4j+oLtDjbc7hQYAMtP2TveoghHwqnYHw12gnZ0Q7lSgHaSj4bF2f/C6ip9dFcfECjZE3hMnsEI4aPoGjBOYLUGv5QuNBMvJMPoGj+eEe069QPnRTaBkYKd7AgCWvXCFiqQtlajyQNYypVMeTuOC7BX+UdE0H4NebbqhK1CqvJT35bQfFBSxStcDIIdjY+f7hOCjFSbRx6OrVMaOFiqfCLmDjFiS6WD/NQ4Lxo85u0rDy3JNFrVrP3mBV7DnGAyyWi29Abg/NQLr9GkAkTBzi3TOMLbfoKQdOoLSD6Z1bD3f2Y6zj3qCBVgR7Fsk1EeNuBCTGGhfJHgT6vOzyq5namO3Bgzkz/FyqVi8WysnenzTfJ+73UO9jHFv6mpAN9Sbo2jRmsUAH6kpJtTknVRUFskVtSS2R7/+FEQ1/nQLAju7ucVisf6ka30paG0274zxo2ZsABlgjFRQN6GQrJh0ftIMGuPd61QnNbbxo
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5661.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(316002)(71200400001)(7696005)(53546011)(6506007)(508600001)(966005)(45080400002)(26005)(186003)(33656002)(54906003)(66446008)(64756008)(38070700005)(110136005)(4326008)(5660300002)(66946007)(122000001)(8676002)(55016002)(7416002)(9686003)(2906002)(86362001)(8936002)(52536014)(66476007)(66556008)(38100700002)(76116006)(14143004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/jg/v3FetDVsQPcDvWfPWgBvAs7pPykJfTa2BYjnU8DV/LmEExcaAy01aoLf?=
- =?us-ascii?Q?q+k1jBwPnr01O8HtOjhY7iwY8mXspU0qwwIbv1LVwxxwvyBzJDZSHehl2iZ3?=
- =?us-ascii?Q?awotReAPcy6SiZIT6WY+Vmdybr2UcP1nd43+Qh+cBh5o2UKN73nBrAFYLAnW?=
- =?us-ascii?Q?C37LLpNaYE/W7ZfpIzTBZ1hW0/Xzgz/fuf8gpdWQSUB6RN+9fUMEgh9DB0Fm?=
- =?us-ascii?Q?Fmx0V/t2NrlsXOMPaeR2nHuLb6VIbSmG1BoAkIXXUxAvjm8keQOc4DsHKpam?=
- =?us-ascii?Q?vKtcd42Oj/u/rDRxsEM4iuxfoxt7oXxPIkvKWfKRg9UFRyFLW5jJ5e7yBE5D?=
- =?us-ascii?Q?6EePi4VBV3Htt0wekQYwOlytgcfM/myM6+6TmUhrgKBtnvddaI/lFvHYbZn9?=
- =?us-ascii?Q?o56ZLqId2La8Zp8/bOXzg0gfW4H9gJA4N3B9cvPFIR0cwt3+PW1oeWrQKnjV?=
- =?us-ascii?Q?KAIHLqlE4hc65onx0BF2kQLwjCWn33Ji6EZL+CFSeD1MGd1LrjzhXfYZU7ip?=
- =?us-ascii?Q?berEUAf+BUvI6PoOtPIbybmjhuQwp2qJ7cK1RduNZBgLJ6wP6iYLjcqnfQxK?=
- =?us-ascii?Q?NPGMjS576rl7uXdNDC367f5vk/2ehMIq8pvRY6aB8Zxcaju30oM8jHFbxgSq?=
- =?us-ascii?Q?RsvTwrgw8OeXRIZfm/COHoSd/AyRv6eKnU6N8o2Ph99ZP7+fOQ2wWkWXFFaX?=
- =?us-ascii?Q?0iLD+hCm2FDBedel4h3lOsIfDtpDAVr6AwFRlSETDOLgwJFHKKSqXvpMIJTH?=
- =?us-ascii?Q?EGlkG7YGFFiW7SRK0Fa+Vvr4hApqG4XwUXUR5XO+hZtTLe6dmBYnYkvk7YIw?=
- =?us-ascii?Q?OZ/fZRonPWJS/+1NKs+no1hYmbSx4WQCRcOQJLGTZq129OGAtz6e0sDGS3r9?=
- =?us-ascii?Q?GhQgtTh3EEkuxejoRgh3ExqD0o3wr+uVfFVoUiv3aZTMhVXn7wdS4mScNOlT?=
- =?us-ascii?Q?DkDwoDQaEZNuNPOc2pajWyEC/8W2GwlwBuEyzb0LY49wgTn/2Ktu8c4eVVGO?=
- =?us-ascii?Q?BWWX8WegMG+o55jRpTnVR1irWCLMghSfB0IzaD7V7XKMjOJKySz5TQkf4Aft?=
- =?us-ascii?Q?4FXSxf9OTC1IbBMNoncnrj1/KUrqj4kRk9tGR/hF5v3hCo/7bNymAyJMatww?=
- =?us-ascii?Q?t6g9cFMtkGr84d78Bwg7DZt9Xne8MAdC7cK04yjaPUmm/30TDGnHO3gJedJS?=
- =?us-ascii?Q?jwmXwDwHYPBCSW/GurAb3003agG+/1S9YQ1u/zQcSbFhQvd3bN9b/shA4m08?=
- =?us-ascii?Q?EOs645b3C+WaZcQh0gPsr8vr+JlspgiITmFgyiL8ymJag62dt5weQTBjVV1J?=
- =?us-ascii?Q?/j1Z63BshyIUusW+/6tdfvNX?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237801AbhI0WlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237501AbhI0WlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 18:41:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB006103B;
+        Mon, 27 Sep 2021 22:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632782384;
+        bh=jQsMfUi7sijCHy0O5BfSM8V3P+BdbGszL5QX7pxZXXY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DYKF/8qpc/4F6ifKfma2hGmYUvK8dtjn5mwyLzcvwOY72cajp0EDGXKyRFkUgldQr
+         8ANrq+f8cWJd3YEkqpS9MlwC0y4a6/z3jFa/igq+ITLSRbeueg0JHjbFxWDyhBbT2h
+         zTlM3r5DGSxbZuUmgMIJhZxyKWId0vFPmhYMzANwUWHhwYSGqcMgLe194FSkRxoKFp
+         7vACCxL1P1ReQqesKH0ivhPiYkApZ+XVqW/vetmg7AzBY0U3rCuxRSkbnh82slAJiW
+         Ran+iHz+qbxFEGLSgCeaO8FryeDJJKI/puwy1vOLQ9g8RJDedASXs8+tXGwAdS01Fn
+         30Qfyq2tfRP7A==
+Date:   Mon, 27 Sep 2021 17:43:44 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] scsi: target: tcmu: Use struct_size() helper in
+ kmalloc()
+Message-ID: <20210927224344.GA190701@embeddedor>
 MIME-Version: 1.0
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5661.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec4941b7-fcab-4104-e25c-08d982082d51
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2021 22:43:07.9713
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0ZpAaboe3Kecs5gLcR7KRjcwdjWlCgmUFzUQ+cwpboxS4x2Lw1nNJ/WpSKrMb9K40wSYQ0wLz5pbWsMazySdRDDnDu5GZARJ4KW3ChGtJvk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5661
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Sent: Monday, September 27, 2021 12:34 PM
-> To: Ryan Lee <RyanS.Lee@maximintegrated.com>; Mark Brown
-> <broonie@kernel.org>
-> Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com; yung-
-> chuan.liao@linux.intel.com; guennadi.liakhovetski@linux.intel.com; alsa-
-> devel@alsa-project.org; linux-kernel@vger.kernel.org;
-> sathya.prakash.m.r@intel.com; ryan.lee.maxim@gmail.com
-> Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty
-> before entering sleep
->=20
-> EXTERNAL EMAIL
->=20
->=20
->=20
-> >> Instead of changing the suspend sequence, can we please try to modify
-> >> the
-> >> max98373_io_init() routine to unconditionally flag the cache as
-> >> dirty, maybe this points to a problem with the management of the
-> >> max98373->first_hw_init flag.
-> >
-> > max98373_io_init() is not called because ' sdw_slave_status' remains '
-> > SDW_SLAVE_ATTACHED' and 'max98373->hw_init' is already true.
-> > Removing 'if (max98373->hw_init || status !=3D SDW_SLAVE_ATTACHED)'
-> > condition in max98373_update_status() function instead of adding
-> > regcache_mark_dirty() into max98373_suspend() can be an alternative way=
-.
-> > I think it is all about where regcache_mark_dirty() is called from.
-> > The difference is that max98373_io_init() really do the software reset
-> > and do amp initialization again which could be an overhead.
->=20
-> that description is aligned with my analysis that there's something very
-> wrong happening here, it's not just a simple miss in the regmap handling =
-but
-> a major conceptual bug or misunderstanding in the way reset is handled.
->=20
-> First, there's the spec: on a reset initiated by the host or if the devic=
-e loses
-> sync for ANY reason, its status cannot remain ATTACHED.
-> There's got to be a 16-frame period at least where the device has to moni=
-tor
-> the sync pattern and cannot drive anything on the bus.
->=20
-> Then there's the hardware behavior on resume: on resume by default the
-> Intel host will toggle the data pin for at least 4096 frames, which by sp=
-ec
-> means severe reset.
->=20
-> And last, there's the software init: we also force the status as UNATTACH=
-ED
-> in drivers/soundwire/intel.c:
->=20
->         /*
->          * make sure all Slaves are tagged as UNATTACHED and provide
->          * reason for reinitialization
->          */
->         sdw_clear_slave_status(bus,
-> SDW_UNATTACH_REQUEST_MASTER_RESET);
->=20
-> But we've also seen the opposite effect of an amplifier reporting attache=
-d
-> but losing sync immediately after the end of enumeration and never coming
-> back on the bus, see issue
-> https://nam02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgith
-> ub.com%2Fthesofproject%2Flinux%2Fissues%2F3063&amp;data=3D04%7C01%
-> 7Cryans.lee%40maximintegrated.com%7Cb9f84a1267ec4f50b7a008d981edc
-> c46%7Cfbd909dfea694788a554f24b7854ad03%7C0%7C0%7C637683680607
-> 026027%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2
-> luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DrARkwTSB3
-> DN%2BCYxGaehOhtCGEj1eLBl6Mk7QhynQSY8%3D&amp;reserved=3D0
->=20
-> In other words, we need to check what really happens on resume and why
-> the amplifier keeps reporting its status as ATTACHED despite the spec
-> requirements and software init, or loses this status after
-> enumeration....Something really does not add-up, again it's not just a
-> regmap management issue.
->=20
+Make use of the struct_size() helper instead of an open-coded version,
+in order to avoid any potential type mistakes or integer overflows
+that, in the worst scenario, could lead to heap overflows.
 
-I agree that the fix is not necessary if the reset issue was not occurred.
-Thanks for your input about the status check on Intel driver, too.
-I will continue to find the culprit who cause the amp reset, but this is no=
-t simple
-because it is not only related to Maxim driver but also other things
-on both hardware and software side.
-I think making the amp driver code more conservative by adding
-regcache_mark_dirty() can make the system robust from the glitches between
-suspend and resume. This is what I can do from the amp driver side and
-the code I added is not new but a proven way on existing drivers as we all =
-know.
-I just wonder why the issue was not observed when the code is removed.
-This probably means there is an external reason which was not exist before.
+Link: https://github.com/KSPP/linux/issues/160
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/target/target_core_user.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->=20
->=20
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 9f552f48084c..dc220fad06fa 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -1255,7 +1255,6 @@ tcmu_tmr_notify(struct se_device *se_dev, enum tcm_tmreq_table tmf,
+ {
+ 	int i = 0, cmd_cnt = 0;
+ 	bool unqueued = false;
+-	uint16_t *cmd_ids = NULL;
+ 	struct tcmu_cmd *cmd;
+ 	struct se_cmd *se_cmd;
+ 	struct tcmu_tmr *tmr;
+@@ -1292,7 +1291,7 @@ tcmu_tmr_notify(struct se_device *se_dev, enum tcm_tmreq_table tmf,
+ 	pr_debug("TMR event %d on dev %s, aborted cmds %d, afflicted cmd_ids %d\n",
+ 		 tcmu_tmr_type(tmf), udev->name, i, cmd_cnt);
+ 
+-	tmr = kmalloc(sizeof(*tmr) + cmd_cnt * sizeof(*cmd_ids), GFP_NOIO);
++	tmr = kmalloc(struct_size(tmr, tmr_cmd_ids, cmd_cnt), GFP_NOIO);
+ 	if (!tmr)
+ 		goto unlock;
+ 
+-- 
+2.27.0
 
