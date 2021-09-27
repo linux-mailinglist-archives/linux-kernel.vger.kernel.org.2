@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9012741A31D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC0A41A320
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237990AbhI0WfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        id S238012AbhI0WfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238016AbhI0WfB (ORCPT
+        with ESMTP id S237755AbhI0WfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:35:01 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC77C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:22 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id b15so82827737lfe.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:22 -0700 (PDT)
+        Mon, 27 Sep 2021 18:35:17 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789A9C061740
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:39 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id i13so21078838ilm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:33:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zM4fBOa/Cc+NJs4yahzMxnuSKuzGDGiVwQrXYFaw3GU=;
-        b=ICqqWiLqBDT0t9jn6SdzLmBUmYs8DPRMcEdkG/ON8LnfK+o2owAjxRZT39rfh4QrLn
-         p22YxgnEJr3UTYZjIE2c4ZOCvY09SBymnqCl6tPrRSPnZbYlV6juugSp0gNhHH6URqyL
-         mbHSiB74bJwO4un0kQa2UBlAo6OMSw5/ngEY5oIMd5yn504Kut5DolDmWvlYd3Kx9rZk
-         Uq7xSNHzr/9qLjG/aYPN6a57oIh/mWVxMqOo0x4qamWtNyEP6MSPvLZ3D7roH2Ns6x8M
-         u4FB/+gGQ9WtalJv/uQK8Po9mlTNNOT+9BBzObVeGwvqef+kMMCxbGe/I+NvUU1JWk/3
-         31Jg==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LOsuwHDiPC+PPoCEQN/qtQeyMVFZbR3g1AzPIbWGz1s=;
+        b=YTqmdXk5vu2O6Z09DphFzhzdWxPQ8jmaJFHrIsMI+6Jhr8dovpFIgf0hfWsFZmWJGq
+         EVBCGkS1YFFNZ8M01WgONYjDBxGTGP/DCZWSKVCmRzFam2Hh4IgqxVmjePf268PGtV81
+         f5vMDXMmwBYUfauwYcel2Rv7+Z/vgk39qzYsRkTAosBsqgB4GwDsvm6cOxLKEb7WhBzu
+         TSGL2cQt0huoDrGurVnZof3FIGpxyaHR8+jLKBQHjcW0vLlSgpEdy3xv/8pfNM0RjCzL
+         S68pit92xtiJTYJshqe0ROVs/67npCPOQRoa5DA5iXWksCwd+SjdXeI2A9yZ8hXhKis6
+         coXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zM4fBOa/Cc+NJs4yahzMxnuSKuzGDGiVwQrXYFaw3GU=;
-        b=iT57u3WHzWD2sv+oj8d4AwDm0LY25Mm1JE0xoeMzjd9dS3q2qGsBp3CNvPDmHXgMda
-         Yq2/BjzoUQ2x/8RYYfV3hCa+3mkXLNrgzJ3GKoiEfrrhGi/N7GXsLMP3IfU0FqthvlQO
-         f2DIJqKu+mFGO9D3VBwqLRqMryQbvmwuhABb3aSThpD4Tcd2GLO3t5poL5fLjKZBuc4t
-         vXUBs8a1G7fFU0PIE/Q/qU+idgsu1KY2jKe0cc0rF86th5GpI0nsfjOfxBgX0uuUPMUx
-         QcdS3E5b7AtkW7VtBku38I5KQbLpLCL4bnyHQnqbDivWRQ5rRMnBTCq5YAWTycjXN9VK
-         WZxQ==
-X-Gm-Message-State: AOAM531S8+h4eRbKb840TZMscoRP/ckZXyKYlOJZVAHQXluEjsTbgsSF
-        KJxUUDR1JY3II129InqlpcE2cY/Miw97KfzuYKFEpA==
-X-Google-Smtp-Source: ABdhPJyCkbS2MXhhj2GEIsJRQHChM3/s/YxU0WZXM/5MxIvupi0dl1BoN6G6RUeYG8MNAmtmUhre/M6FEpZgurOihS4=
-X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr2166459lfv.358.1632782000629;
- Mon, 27 Sep 2021 15:33:20 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LOsuwHDiPC+PPoCEQN/qtQeyMVFZbR3g1AzPIbWGz1s=;
+        b=HrNNTy3LeSOZQ5sd/NW1JGVF5v7F73AGYUGjyqhfEj3C5NSnohGK1I5PxY03zmIvOu
+         Okr4y/7bIgP+qo7Ly6//IYyaNh1sw7nAcA/iLniyOgyUc40JVMQY1usOfVB1HNrOXK7l
+         Q9ocyhjMKAqce6C6mMApiqOvq5SpY/AFa5nZqphQiDEBle48vdhxfN+9EFgzrByLZ7x+
+         DS5VYpIRtxoVJaipoZLj4bzCdz6o2mchzBimKefvwmtRI0isPKyPi97HcxkRI4bXgufs
+         /qC5e9syC1ApTnqE7Y2nuOxc4J2efxAx2B0IxPdQzuPTMe3dTF4vDmASSqrzGBd1gH/n
+         rlhA==
+X-Gm-Message-State: AOAM533U08DVBNADZ7w3lFkDOPwUsIHBMeFQGM4nrn8bfMWWGcBUH4Ik
+        3u0WE1X5qg5ZLUbB96L4HdCoH7OrxnpZHQ==
+X-Google-Smtp-Source: ABdhPJwueWxtKqjP8KyNWWEV43ZHbAJgLgbtzL1ErWyEowm3/77Murhw193eceS6jFlQ9sjaEQjTVg==
+X-Received: by 2002:a92:da85:: with SMTP id u5mr1851944iln.213.1632782018707;
+        Mon, 27 Sep 2021 15:33:38 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id y2sm6427866iot.45.2021.09.27.15.33.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 15:33:38 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] block: second batch of add_disk() error handling
+ conversions
+To:     Luis Chamberlain <mcgrof@kernel.org>, colyli@suse.de,
+        kent.overstreet@gmail.com, kbusch@kernel.org, sagi@grimberg.me,
+        vishal.l.verma@intel.com, dan.j.williams@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, minchan@kernel.org, ngupta@vflare.org,
+        senozhatsky@chromium.org
+Cc:     xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210927220039.1064193-1-mcgrof@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c17004ed-884f-5a97-c333-602e3f9903e7@kernel.dk>
+Date:   Mon, 27 Sep 2021 16:33:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210927125044.20046-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210927125044.20046-1-krzysztof.kozlowski@canonical.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 28 Sep 2021 00:32:44 +0200
-Message-ID: <CAPDyKFpnd0TWxvdbivkNUN9YrPyWWdiQkLLp94MNWh8pXXqxdA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/6] dt-bindings: mmc: cdns: document Microchip MPFS
- MMC/SDHCI controller
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Piotr Sroka <piotrs@cadence.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210927220039.1064193-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 14:50, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> The Microchip PolarFire SoC FPGA DTSI uses Cadence SD/SDIO/eMMC Host
-> Controller without any additional vendor compatible:
->
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible:0: 'cdns,sd4hc' is not one of ['socionext,uniphier-sd4hc']
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible: ['cdns,sd4hc'] is too short
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Rob Herring <robh@kernel.org>
+On 9/27/21 4:00 PM, Luis Chamberlain wrote:
+> This is the second series of driver conversions for add_disk()
+> error handling. You can find this set and the rest of the 7th set of
+> driver conversions on my 20210927-for-axboe-add-disk-error-handling
+> branch [0].
 
-Applied for next, thanks!
+Applied 1, thanks.
 
-Kind regards
-Uffe
+-- 
+Jens Axboe
 
-
->
-> ---
->
-> Changes since v3:
-> 1. Adjust commit msg.
-> 2. Add tags.
->
-> Changes since v2:
-> 1. Document vendor compatible instead of dropping it.
-> ---
->  Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> index af7442f73881..4207fed62dfe 100644
-> --- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> @@ -17,6 +17,7 @@ properties:
->    compatible:
->      items:
->        - enum:
-> +          - microchip,mpfs-sd4hc
->            - socionext,uniphier-sd4hc
->        - const: cdns,sd4hc
->
-> --
-> 2.30.2
->
