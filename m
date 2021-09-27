@@ -2,148 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AD741917B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE9741917D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhI0J0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbhI0J0N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:26:13 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68886C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:24:35 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id u8so73622117lff.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tyy6Dv7V4fb/Ljhb18nEvTV2h/rNzPynwFMmcx94u8M=;
-        b=Px18PFMmqv5tM0ES8a9DDmI150bGqOY2axThJnD9LQD345HFLscARXZ7aNBhhL6O9w
-         OlBxtwbGSgDcaO1tiDwu4HCuvbedUfA5kRiqW9fCvubYCDFeF7rsQkeirLA6AB9lDB/+
-         98D4prIrxs2zuHq+abJdHTtImN4MZ6SZcve32xEzHpT4+OdJq2l8OEAMiq83Zk87UMod
-         klxZJpckzW1ev6CxHOj8DP4bmrRwNgWH8pm6RSylRwDUFPZ0tzQivrWecSDw+ffgv0fi
-         DtnfuBWoG7JjfUuOBGdlE7kj2kcCELWQWqUxwX2lNaamIIYTGBkdCuSGw43dWJoeY49U
-         rLTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tyy6Dv7V4fb/Ljhb18nEvTV2h/rNzPynwFMmcx94u8M=;
-        b=23fKEsD0B+uyYNy1ckEccQ8dLx5eyWgHaQNeuJtTqha2Q1qLfuKexEU6ywyWdRKl6Z
-         qcQoouJf6oe3sw106s8Pqk2Ms1OZ2IdHkm44N5soqqwo3dhAFmNPAZjzPVyF/FmSTmv7
-         fCXxNU0ft39bDVkh194rXB4dFctpcqm0r/7ljQrSeyZYEVgrXQNYUr20jDHheQLW0+2l
-         Xqebc+RMox/BvDr107jpwAAEWXxT32g17xk6yosI+vstr9kfZyHyWDqzA3T+ABkISKlT
-         rRoY2iUqINoLkVVl9wVrUkVhOq76WE5Sw0BcgpF5kXgr8KKRW2lu4yxgpz80Kmrxy/4Z
-         RGqQ==
-X-Gm-Message-State: AOAM530l42+NUmSa/QQ1B8vmW5NDIkheKKy5toKireJeZoc3Ra/yF9FG
-        9FZJcvUFtzqrm6bG425hzuDGag==
-X-Google-Smtp-Source: ABdhPJwlx60z2P3MK7KYZvU/sSyo2JgYRYCh8HGrQBPKJikovN0Mp+E6gRY9yo5sLsfCMA1mpREAFA==
-X-Received: by 2002:a05:6512:3ee:: with SMTP id n14mr24062637lfq.589.1632734673773;
-        Mon, 27 Sep 2021 02:24:33 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u14sm1538020lfi.231.2021.09.27.02.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 02:24:33 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id B29CC10306C; Mon, 27 Sep 2021 12:24:32 +0300 (+03)
-Date:   Mon, 27 Sep 2021 12:24:32 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 3/8] mm/madvise: remove unnecessary checks on
- madvise_free_single_vma()
-Message-ID: <20210927092432.qdshyj67lkiq2cbv@box.shutemov.name>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-4-namit@vmware.com>
- <20210927091709.ksv2fjudjpqhnu3n@box.shutemov.name>
+        id S233685AbhI0J04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:26:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233657AbhI0J0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:26:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58E9D61157;
+        Mon, 27 Sep 2021 09:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632734716;
+        bh=cP8PfFLU4L7YAzlJqL8lEQFvTuQfa2qj9goDRM4Zc94=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XZmL1vyV3ONn2aDYW+HBkgtZAQ8Nn7JWBASqYGqw7L8rOVpbsj0dHCgmbfGq8PqRa
+         /9TvskfeaBT/oYW3Z/B03U0+hxAQUGPm+8cb43+M5/7pHtzXSQQanpXwc5slZtNOta
+         +UJ3AC9yRjUjEKTdcvXnM4C0SecTSF9DHfSfeCRaZQ8qfwq7mlrjq/X+fMDJQGfIvZ
+         tSe266cZyfodVB409WHy/6ikf0XWbbkN9P+gMyrly80pd+vgvqSdm0mYpAC6AGLfMP
+         ZEXXRBQWRYC/PeE8pABsCzSgUUBq3Ur03BT1y8b1KGdoO/49nY3u9IkegoOHRziAnK
+         rSVlw697Pjw3A==
+Date:   Mon, 27 Sep 2021 11:25:13 +0200
+From:   'Wolfram Sang' <wsa@kernel.org>
+To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for
+ HyperFlash
+Message-ID: <YVGN+Z1L8qPQg2uB@shikoro>
+Mail-Followup-To: 'Wolfram Sang' <wsa@kernel.org>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+References: <20210922184830.29147-1-andrew_gabbasov@mentor.com>
+ <YU7x8cabSsQiUJuE@kunai>
+ <000901d7b1fa$ff9b57f0$fed207d0$@mentor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="N2GQsXvBUVT92+1/"
 Content-Disposition: inline
-In-Reply-To: <20210927091709.ksv2fjudjpqhnu3n@box.shutemov.name>
+In-Reply-To: <000901d7b1fa$ff9b57f0$fed207d0$@mentor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 12:17:09PM +0300, Kirill A. Shutemov wrote:
-> On Sun, Sep 26, 2021 at 09:12:54AM -0700, Nadav Amit wrote:
-> > From: Nadav Amit <namit@vmware.com>
-> > 
-> > madvise_free_single_vma() currently rechecks that the range fits within
-> > the VMA, adapts it accordingly, and returns -EINVAL if the range is
-> > entirely outside of the VMA.
-> > 
-> > The error-code of -EINVAL is incorrect according to the man pages (as it
-> > should have been -ENOMEM), but anyhow the range that is provided to
-> > madvise_free_single_vma() should always be valid. It is set correctly in
-> > do_madvise() and then rechecked in madvise_dontneed_free() is the
 
-s/is/if/
+--N2GQsXvBUVT92+1/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > mmap-lock is dropped.
-> > 
-> > Remove this check.
-> > 
-> > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Minchan Kim <minchan@kernel.org>
-> > Cc: Colin Cross <ccross@google.com>
-> > Cc: Suren Baghdasarya <surenb@google.com>
-> > Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> > Signed-off-by: Nadav Amit <namit@vmware.com>
-> > ---
-> >  mm/madvise.c | 8 +-------
-> >  1 file changed, 1 insertion(+), 7 deletions(-)
-> > 
-> > diff --git a/mm/madvise.c b/mm/madvise.c
-> > index fe843513a4e8..17e39c70704b 100644
-> > --- a/mm/madvise.c
-> > +++ b/mm/madvise.c
-> > @@ -716,14 +716,8 @@ static int madvise_free_single_vma(struct vm_area_struct *vma,
-> >  	if (!vma_is_anonymous(vma))
-> >  		return -EINVAL;
-> >  
-> > -	range.start = max(vma->vm_start, start_addr);
-> > -	if (range.start >= vma->vm_end)
-> > -		return -EINVAL;
-> > -	range.end = min(vma->vm_end, end_addr);
-> > -	if (range.end <= vma->vm_start)
-> > -		return -EINVAL;
-> 
-> How did you test this change?
-> 
-> As far as I can see, you leave 'range' uninitialized, but used for
-> walk_page_range() and mmu_notifiers.
-> 
-> NAK.
+Hi Andrew,
 
-Sorry. My bad. mmu_notifier_range_init will init the range even if mmu
-notifiers are disabled.
+> It could make sense if "from" would not change along the function.
 
-> 
-> >  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm,
-> > -				range.start, range.end);
-> > +				start_addr, end_addr);
-> >  
-> >  	lru_add_drain();
-> >  	tlb_gather_mmu(&tlb, mm);
-> > -- 
-> > 2.25.1
-> > 
-> > 
-> 
-> -- 
->  Kirill A. Shutemov
+Yes. And using a pointer to unsigned long would neither make the code a
+lot more readable, I am afraid.
 
--- 
- Kirill A. Shutemov
+> I don't like #ifdef's inside the function body too, but the problem is that
+> "__raw_readq" is defined in arch/arm64/include/asm/io.h unconditionally,
+> but in include/asm-generic/io.h under "#ifdef CONFIG_64BIT" only.
+
+I see. Bad luck then :(
+
+> I looked through the whole kernel code too, and unfortunately didn't find
+> any similar code that could be re-used or had some parts, extractable as
+> a common helper. That's why I ended up with a local custom function,
+> at least so far, until it could be found useful by somebody else ;)
+
+Thanks for confirming you also had a look.
+
+Okay, the function is not exactly pretty, but my comments have been
+addressed and it fixes a serious bug, so:
+
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Still, if someone has ideas how to make the function more readable, we
+could incrementally improve it.
+
+Kind regards,
+
+   Wolfram
+
+
+--N2GQsXvBUVT92+1/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFRjfkACgkQFA3kzBSg
+Kbavdg//RQfFQIluYe9zs3pw4Z1TgRz/5fo8cu3x9+pnwxa7iSJJ1d3hITW3P7No
+Q15o1n+ap2mbbl2kJufUwfcJ9GIhJ5GrjZV3eRR7We+QDZDybJxOGSflT6tONEL8
+GZsHsWCVo87wdDmtC9UnMZca5NI2B43owKPcBEJbPDUGC1jNt3t4T0+9WC/SQDh2
+VjVGaog5GcwM/xYkNKQpO/0qXt2IzG7pr4lzi5bhZBHiZkCWbn5CGGR+7WokVKva
+z5UfGTQ4KVFIIfXQeu14rVMHSmEhpKp0S82WtbtO6aXcT7MggRUdRzMhbaS+qvZj
+uahUj1yzq6p5ntK0/inJbVDTM8lV9ofB2aalGDMjiyRh+OJmEMabCXTcBKYkzCzA
++TtEOjxdXOMx5FrzAKrB7gpmga/kL6KKGZRKdqu0iTdcw4vplWZTZJp+a763NKWZ
+hIcMYVEJ1Gvp1ApjaRmURobCy1qdBY5UG6+/+DsmAK17O/7z+xqh1Yyj728Kj4Ya
+TQUVcIvpb3ZMI/BuTa1de58JNRKxWPwTBLwF7ikO4nCwam2PgdpdQYGaOWKeTYy0
+xwsrC9ETE/vc1mNtI/MGRQFoV67JIE8quwmyRw3rvtIhGseLEoEnWgCiT1M+Ig6I
+s7mlaQCMS0SG3/6K2cDAbnx/VM5NrhBlQxlpvSgDm+fQJwyT/pc=
+=N873
+-----END PGP SIGNATURE-----
+
+--N2GQsXvBUVT92+1/--
