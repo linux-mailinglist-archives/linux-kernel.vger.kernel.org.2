@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403E5419B4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1D1419B53
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237106AbhI0RRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:17:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55992 "EHLO mail.kernel.org"
+        id S236395AbhI0RRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237219AbhI0ROT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:14:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB73F6121E;
-        Mon, 27 Sep 2021 17:09:58 +0000 (UTC)
+        id S237256AbhI0RO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:14:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F084F61372;
+        Mon, 27 Sep 2021 17:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762599;
-        bh=0zYJAE45lLThOEfIxFaR/OUCkonU2nQgap5RVqfRKwk=;
+        s=korg; t=1632762604;
+        bh=7Am295yXP2+roJTg6xQdBmZnwSTCwOsbDEkI2MsflAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LZQ1ocUJpd+0FuIss5k/jBdtVSI7+nZZZZERpPJACDTxhcan1S0zLq1gOVfhQdNqI
-         Ul66zO5Yy9ivn8Kzlf62Z/61e9vtQUxkhQvnfDZg0s5IsKPFw1BsZlD/SvVFNKCli3
-         3uWEdhXnqNkkd6eAP/FPyAf+t/tKNmEu2NvQ1aWE=
+        b=0MRukzfmHyTXKw4kPHyzJKeUZuS/d+3NnkSS7V8lrrlZfcsKJ1MGlrGsEKUMbnFpG
+         79Smb7FsviGo0KdMUII1+QyVLTvKShZvFNWUBb3YSDtx7r+FvKRIJAfc9jmUgLolCH
+         hKtmyeOYdOFk4su97owQjF1AJ/hWxLagMIHErXpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 084/103] sparc32: page align size in arch_dma_alloc
-Date:   Mon, 27 Sep 2021 19:02:56 +0200
-Message-Id: <20210927170228.671358178@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Simon Ser <contact@emersion.fr>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Harry Wentland <hwentlan@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 085/103] amd/display: downgrade validation failure log level
+Date:   Mon, 27 Sep 2021 19:02:57 +0200
+Message-Id: <20210927170228.704247683@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
 References: <20210927170225.702078779@linuxfoundation.org>
@@ -40,38 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Larsson <andreas@gaisler.com>
+From: Simon Ser <contact@emersion.fr>
 
-[ Upstream commit 59583f747664046aaae5588d56d5954fab66cce8 ]
+[ Upstream commit 7bbee36d71502ab9a341505da89a017c7ae2e6b2 ]
 
-Commit 53b7670e5735 ("sparc: factor the dma coherent mapping into
-helper") lost the page align for the calls to dma_make_coherent and
-srmmu_unmapiorange. The latter cannot handle a non page aligned len
-argument.
+In amdgpu_dm_atomic_check, dc_validate_global_state is called. On
+failure this logs a warning to the kernel journal. However warnings
+shouldn't be used for atomic test-only commit failures: user-space
+might be perfoming a lot of atomic test-only commits to find the
+best hardware configuration.
 
-Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Downgrade the log to a regular DRM atomic message. While at it, use
+the new device-aware logging infrastructure.
+
+This fixes error messages in the kernel when running gamescope [1].
+
+[1]: https://github.com/Plagman/gamescope/issues/245
+
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Simon Ser <contact@emersion.fr>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Harry Wentland <hwentlan@amd.com>
+Cc: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/kernel/ioport.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/sparc/kernel/ioport.c b/arch/sparc/kernel/ioport.c
-index 8e1d72a16759..7ceae24b0ca9 100644
---- a/arch/sparc/kernel/ioport.c
-+++ b/arch/sparc/kernel/ioport.c
-@@ -356,7 +356,9 @@ err_nomem:
- void arch_dma_free(struct device *dev, size_t size, void *cpu_addr,
- 		dma_addr_t dma_addr, unsigned long attrs)
- {
--	if (!sparc_dma_free_resource(cpu_addr, PAGE_ALIGN(size)))
-+	size = PAGE_ALIGN(size);
-+
-+	if (!sparc_dma_free_resource(cpu_addr, size))
- 		return;
- 
- 	dma_make_coherent(dma_addr, size);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index bc9df3f216f5..ce21a21ddb23 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -8962,7 +8962,8 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
+ 			goto fail;
+ 		status = dc_validate_global_state(dc, dm_state->context, false);
+ 		if (status != DC_OK) {
+-			DC_LOG_WARNING("DC global validation failure: %s (%d)",
++			drm_dbg_atomic(dev,
++				       "DC global validation failure: %s (%d)",
+ 				       dc_status_to_str(status), status);
+ 			ret = -EINVAL;
+ 			goto fail;
 -- 
 2.33.0
 
