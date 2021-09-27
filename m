@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53819418DA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4781418DB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 04:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhI0CR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 22:17:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:37310 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229811AbhI0CR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 22:17:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0896D6E;
-        Sun, 26 Sep 2021 19:16:20 -0700 (PDT)
-Received: from [10.163.73.35] (unknown [10.163.73.35])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E7C03F718;
-        Sun, 26 Sep 2021 19:16:18 -0700 (PDT)
-Subject: Re: [PATCH V2] mm: debug_vm_pgtable: Don't use __P000 directly
-To:     guoren@kernel.org, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-References: <20210924060821.1138281-1-guoren@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <30c10b5f-1b26-e0a8-8185-6fa3296d68dc@arm.com>
-Date:   Mon, 27 Sep 2021 07:47:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232498AbhI0CdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 22:33:13 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:64565 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232459AbhI0CdL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 22:33:11 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 18R2AIXn038748;
+        Mon, 27 Sep 2021 10:10:18 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 27 Sep
+ 2021 10:30:55 +0800
+From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+CC:     <osk@google.com>
+Subject: [PATCH v7 0/5] arm: aspeed: Add UART routing support
+Date:   Mon, 27 Sep 2021 10:30:48 +0800
+Message-ID: <20210927023053.6728-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210924060821.1138281-1-guoren@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 18R2AIXn038748
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add UART routing driver and the device tree nodes.
 
+v7:
+ - Drop unused 'reg-io-width' properties from LPC nodes
+ - Revise LPC bindgins as suggested by Rob
 
-On 9/24/21 11:38 AM, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> The __Pxxx/__Sxxx macros are only for protection_map[] init. All
-> usage of them in linux should come from protection_map array.
-> 
-> Because a lot of architectures would re-initilize protection_map[]
-> array, eg: x86-mem_encrypt, m68k-motorola, mips, arm, sparc.
-> 
-> Using __P000 is not rigorous.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+v6:
+ - Fix another typo in YAML file
+ - Move sysfs description from bindings to ABI document
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+v5:
+ - Fix typo in YAML file to solve the compatible string not found error
 
+v4:
+ - Convert aspeed-lpc bindings to YAML schema to resolve dependecy issues
 
-> 
-> ---
-> 
-> Changes since V2:
->  - s/init protection_map[]/protection_map[] init/
->  - s/Becasue/Because/
->  - Remove unclear part
->  - Replace __P000 and __S000 with protection_map[0] and
->    protection_map[8]
-> ---
->  mm/debug_vm_pgtable.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 1403639302e4..228e3954b90c 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -1104,13 +1104,14 @@ static int __init init_args(struct pgtable_debug_args *args)
->  	/*
->  	 * Initialize the debugging data.
->  	 *
-> -	 * __P000 (or even __S000) will help create page table entries with
-> -	 * PROT_NONE permission as required for pxx_protnone_tests().
-> +	 * protection_map[0] (or even protection_map[8]) will help create
-> +	 * page table entries with PROT_NONE permission as required for
-> +	 * pxx_protnone_tests().
->  	 */
->  	memset(args, 0, sizeof(*args));
->  	args->vaddr              = get_random_vaddr();
->  	args->page_prot          = vm_get_page_prot(VMFLAGS);
-> -	args->page_prot_none     = __P000;
-> +	args->page_prot_none     = protection_map[0];
->  	args->is_contiguous_page = false;
->  	args->pud_pfn            = ULONG_MAX;
->  	args->pmd_pfn            = ULONG_MAX;
-> 
+v3:
+ - Add individual bindings in YAML
+ - Add support for AST24xx (AST25xx shares the same design)
+ - Add more explanation for the sysfs ABI
+
+v2:
+ - Add dt-bindings
+ - Add ABI documents for the exported sysfs interface
+ - Revise driver implementation suggested by Joel
+
+Chia-Wei Wang (5):
+  ARM: dts: aspeed: Drop reg-io-width from LPC nodes
+  dt-bindings: mfd: aspeed-lpc: Convert to YAML schema
+  dt-bindings: aspeed: Add UART routing controller
+  soc: aspeed: Add UART routing support
+  ARM: dts: aspeed: Add uart routing to device tree
+
+ .../testing/sysfs-driver-aspeed-uart-routing  |  27 +
+ .../devicetree/bindings/mfd/aspeed-lpc.txt    | 157 -----
+ .../devicetree/bindings/mfd/aspeed-lpc.yaml   | 192 ++++++
+ .../bindings/soc/aspeed/uart-routing.yaml     |  56 ++
+ arch/arm/boot/dts/aspeed-g4.dtsi              |   7 +-
+ arch/arm/boot/dts/aspeed-g5.dtsi              |   7 +-
+ arch/arm/boot/dts/aspeed-g6.dtsi              |   7 +-
+ drivers/soc/aspeed/Kconfig                    |  10 +
+ drivers/soc/aspeed/Makefile                   |   9 +-
+ drivers/soc/aspeed/aspeed-uart-routing.c      | 603 ++++++++++++++++++
+ 10 files changed, 911 insertions(+), 164 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing
+ delete mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
+ create mode 100644 drivers/soc/aspeed/aspeed-uart-routing.c
+
+-- 
+2.17.1
+
