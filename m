@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F825419AEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB209419A0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhI0ROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:14:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
+        id S236008AbhI0RGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:06:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236360AbhI0RLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:11:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCB96127A;
-        Mon, 27 Sep 2021 17:08:18 +0000 (UTC)
+        id S235845AbhI0RF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93A71611C0;
+        Mon, 27 Sep 2021 17:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762499;
-        bh=+jZ7aSyNV6UgR5/ROl9hSbhKi7LWNlFWkovG3mIiCZM=;
+        s=korg; t=1632762260;
+        bh=MbkHdspzcPTIe80Wb9E9CW+bEsiWvthVlZ37+Yg7yt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UkPxlIuwr7mInoETQtD2U68FeOHh7C7JyVyZ+pWNazN85qDnKF8TPiBhNPdG/AB7Q
-         v/WbDbFD7PQqs+z04lm7+kNBaZ0XD2zupPDachYnMUJQR3zcHJCnH7Xz2G0K8FSWP3
-         SwpO31Z85BaoB7JzQ50p7fQvIxp73bzTtVFuvZTg=
+        b=xWCsSWQ24dp5g/Pk1Ihu/LwFjWiVDyCdVacEvN3RU7aTzg5P2M3OlyNSBvO0lPLbg
+         YH+PiUpts9bmM0hKrZK6mUwJHFlmC3AXgWe0k4k1/rumceiwQk+Hsx6CEHUKfCFH3p
+         2I4jT75tqDGz8JsUUPeiE3bIIZuiht7HDOUqsU94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 046/103] kselftest/arm64: signal: Skip tests if required features are missing
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [PATCH 5.4 22/68] xhci: Set HCD flag to defer primary roothub registration
 Date:   Mon, 27 Sep 2021 19:02:18 +0200
-Message-Id: <20210927170227.351661096@linuxfoundation.org>
+Message-Id: <20210927170220.720895006@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Marussi <cristian.marussi@arm.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 0e3dbf765fe22060acbcb8eb8c4d256e655a1247 ]
+commit b7a0a792f864583207c593b50fd1b752ed89f4c1 upstream.
 
-During initialization of a signal testcase, features declared as required
-are properly checked against the running system but no action is then taken
-to effectively skip such a testcase.
+Set "HCD_FLAG_DEFER_RH_REGISTER" to hcd->flags in xhci_run() to defer
+registering primary roothub in usb_add_hcd(). This will make sure both
+primary roothub and secondary roothub will be registered along with the
+second HCD. This is required for cold plugged USB devices to be detected
+in certain PCIe USB cards (like Inateck USB card connected to AM64 EVM
+or J7200 EVM).
 
-Fix core signals test logic to abort initialization and report such a
-testcase as skipped to the KSelfTest framework.
-
-Fixes: f96bf4340316 ("kselftest: arm64: mangle_pstate_invalid_compat_toggle and common utils")
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210920121228.35368-1-cristian.marussi@arm.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+CC: stable@vger.kernel.org # 5.4+
+Suggested-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Tested-by: Chris Chiu <chris.chiu@canonical.com>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Link: https://lore.kernel.org/r/20210909064200.16216-3-kishon@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/arm64/signal/test_signals_utils.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/arm64/signal/test_signals_utils.c b/tools/testing/selftests/arm64/signal/test_signals_utils.c
-index 6836510a522f..22722abc9dfa 100644
---- a/tools/testing/selftests/arm64/signal/test_signals_utils.c
-+++ b/tools/testing/selftests/arm64/signal/test_signals_utils.c
-@@ -266,16 +266,19 @@ int test_init(struct tdescr *td)
- 			td->feats_supported |= FEAT_SSBS;
- 		if (getauxval(AT_HWCAP) & HWCAP_SVE)
- 			td->feats_supported |= FEAT_SVE;
--		if (feats_ok(td))
-+		if (feats_ok(td)) {
- 			fprintf(stderr,
- 				"Required Features: [%s] supported\n",
- 				feats_to_string(td->feats_required &
- 						td->feats_supported));
--		else
-+		} else {
- 			fprintf(stderr,
- 				"Required Features: [%s] NOT supported\n",
- 				feats_to_string(td->feats_required &
- 						~td->feats_supported));
-+			td->result = KSFT_SKIP;
-+			return 0;
-+		}
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -693,6 +693,7 @@ int xhci_run(struct usb_hcd *hcd)
+ 		if (ret)
+ 			xhci_free_command(xhci, command);
  	}
++	set_bit(HCD_FLAG_DEFER_RH_REGISTER, &hcd->flags);
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+ 			"Finished xhci_run for USB2 roothub");
  
- 	/* Perform test specific additional initialization */
--- 
-2.33.0
-
 
 
