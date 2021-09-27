@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12FD419C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DBB419C41
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236887AbhI0R0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
+        id S236276AbhI0R0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237205AbhI0RWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237216AbhI0RWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 13:22:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3531E613DB;
-        Mon, 27 Sep 2021 17:14:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4DA861356;
+        Mon, 27 Sep 2021 17:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762857;
-        bh=zt4hvOLZHDrFGgDXcjKuZKFvqo4FFHPtNctULI1Ifko=;
+        s=korg; t=1632762860;
+        bh=wrxX2eap+yMjhNiAV493M40hjD0C94S0mhDnQ1OmbMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cup//lAff67sdI+gFpxsc9iyCXrZRANcpI/5UNUFN8XOUhNG1XBp1LPjMDGoFLS9d
-         z+1lPOzUV+4M/0Vv2jLKvL9Z2F6RCR8ySVHhZ9UWhMR26ZFjOpaW4MJXX236ugAkTa
-         nlOdozuL9r5KjGZCqdMeZh4vGTIMwrBib2Z1S3Ro=
+        b=b3ozN5fA+S4FH+lBWfuLsUGfQGJ28hI3dtPqtDtAHINOy/EytIVe0nrq3gq7AACBj
+         BI7b6tSxvoJjXiUxL7d4e979rt1vWEuO0EQSPEkUZmNVXJyCZ/39GiXNHpYGT6fTaK
+         EgTZipeh1BNNlnpsp3+GPQ6x7CVmAuwa6ZLZ4CMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Mark Brown <broonie@kernel.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Andreas Schwab <schwab@suse.de>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 077/162] spi: Revert modalias changes
-Date:   Mon, 27 Sep 2021 19:02:03 +0200
-Message-Id: <20210927170236.125714829@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Raspl <raspl@linux.ibm.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.14 078/162] s390/qeth: fix NULL deref in qeth_clear_working_pool_list()
+Date:   Mon, 27 Sep 2021 19:02:04 +0200
+Message-Id: <20210927170236.156926418@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
 References: <20210927170233.453060397@linuxfoundation.org>
@@ -44,98 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit 96c8395e2166efa86082f3b71567ffd84936439b ]
+[ Upstream commit 248f064af222a1f97ee02c84a98013dfbccad386 ]
 
-During the v5.13 cycle we updated the SPI subsystem to generate OF style
-modaliases for SPI devices, replacing the old Linux style modalises we
-used to generate based on spi_device_id which are the DT style name with
-the vendor removed.  Unfortunately this means that we start only
-reporting OF style modalises and not the old ones and there is nothing
-that ensures that drivers list every possible OF compatible string in
-their OF ID table.  The result is that there are systems which have been
-relying on loading modules based on the old style that are now broken,
-as found by Russell King with spi-nor on Macchiatobin.
+When qeth_set_online() calls qeth_clear_working_pool_list() to roll
+back after an error exit from qeth_hardsetup_card(), we are at risk of
+accessing card->qdio.in_q before it was allocated by
+qeth_alloc_qdio_queues() via qeth_mpc_initialize().
 
-spi-nor is a particularly problematic case for this, it only lists a
-single generic DT compatible jedec,spi-nor in the driver but supports a
-huge raft of device specific compatibles, with a large set of part
-numbers many of which are offered by multiple vendors.  Russell's
-searches of upstream device trees has turned up examples with vendor
-names written in non-standard ways too.  To make matters worse up until
-8ff16cf77ce3 ("Documentation: devicetree: m25p80: add "nor-jedec"
-binding") the generic compatible was not part of the binding so there
-are device trees out there written to that binding version which don't
-list it all.  The sheer number of parts supported together with our
-previous approach of ignoring the vendor ID makes robustly fixing this
-by adding compatibles to the spi-nor driver seem problematic, the
-current DT binding document does not list all the parts supported by the
-driver at the minute (further patches will fix this).
+qeth_clear_working_pool_list() then dereferences NULL, and by writing to
+queue->bufs[i].pool_entry scribbles all over the CPU's lowcore.
+Resulting in a crash when those lowcore areas are used next (eg. on
+the next machine-check interrupt).
 
-I've also investigated supporting both formats of modalias
-simultaneously but that doesn't seem possible, especially without
-breaking our userspace ABI which is obviously not viable.
+Such a scenario would typically happen when the device is first set
+online and its queues aren't allocated yet. An early IO error or certain
+misconfigs (eg. mismatched transport mode, bad portno) then cause us to
+error out from qeth_hardsetup_card() with card->qdio.in_q still being
+NULL.
 
-Instead revert the relevant changes for now:
+Fix it by checking the pointer for NULL before accessing it.
 
-e09f2ab8eecc ("spi: update modalias_show after of_device_uevent_modalias support")
-3ce6c9e2617e ("spi: add of_device_uevent_modalias support")
+Note that we also have (rare) paths inside qeth_mpc_initialize() where
+a configuration change can cause us to free the existing queues,
+expecting that subsequent code will allocate them again. If we then
+error out before that re-allocation happens, the same bug occurs.
 
-This will unfortunately mean that any system which had started having
-modules autoload based on the OF compatibles for drivers that list
-things there but not in the spi_device_ids will now not have those
-modules load which is itself a regression.  Since it affects a narrower
-time window and the particularly problematic spi-nor driver may be
-critical to system boot on smaller systems this seems the best of a
-series of bad options.  I will start an audit of SPI drivers to identify
-and fix cases where things won't autoload using spi_device_id, this is
-not great but seems to be the best way forward that anyone has been able
-to identify.
-
-Thanks to Russell for both his report and the additional diagnostic and
-analysis work he has done here, the detailed research above was his
-work.
-
-Fixes: e09f2ab8eecc ("spi: update modalias_show after of_device_uevent_modalias support")
-Fixes: 3ce6c9e2617e ("spi: add of_device_uevent_modalias support")
-Reported-by: Russell King (Oracle) <linux@armlinux.org.uk>
-Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Tested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Andreas Schwab <schwab@suse.de>
-Cc: Marco Felsch <m.felsch@pengutronix.de>
+Fixes: eff73e16ee11 ("s390/qeth: tolerate pre-filled RX buffer")
+Reported-by: Stefan Raspl <raspl@linux.ibm.com>
+Root-caused-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/s390/net/qeth_core_main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index e4dc593b1f32..f95f7666cb5b 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -58,10 +58,6 @@ modalias_show(struct device *dev, struct device_attribute *a, char *buf)
- 	const struct spi_device	*spi = to_spi_device(dev);
- 	int len;
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 62f88ccbd03f..51f7f4e680c3 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -207,6 +207,9 @@ static void qeth_clear_working_pool_list(struct qeth_card *card)
+ 				 &card->qdio.in_buf_pool.entry_list, list)
+ 		list_del(&pool_entry->list);
  
--	len = of_device_modalias(dev, buf, PAGE_SIZE);
--	if (len != -ENODEV)
--		return len;
--
- 	len = acpi_device_modalias(dev, buf, PAGE_SIZE - 1);
- 	if (len != -ENODEV)
- 		return len;
-@@ -367,10 +363,6 @@ static int spi_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	const struct spi_device		*spi = to_spi_device(dev);
- 	int rc;
- 
--	rc = of_device_uevent_modalias(dev, env);
--	if (rc != -ENODEV)
--		return rc;
--
- 	rc = acpi_device_uevent_modalias(dev, env);
- 	if (rc != -ENODEV)
- 		return rc;
++	if (!queue)
++		return;
++
+ 	for (i = 0; i < ARRAY_SIZE(queue->bufs); i++)
+ 		queue->bufs[i].pool_entry = NULL;
+ }
 -- 
 2.33.0
 
