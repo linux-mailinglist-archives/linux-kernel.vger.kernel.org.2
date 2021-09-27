@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B070D41922C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A76D419232
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbhI0KXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:23:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
+        id S233821AbhI0KZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233793AbhI0KXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:23:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7D2160E73;
-        Mon, 27 Sep 2021 10:22:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632738134;
-        bh=QUIvZStWayLdfYN/lFWATeOck4qVnQn2r5LIkwIhM7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dUXnNwX6cFdiuo1qovtC3+TKEisHHVVxZ6goiHEmTPuJ8xEBBwUS2yxE+QhxCDk1Z
-         Tzn/hIAah1PMhBVhe8w2fcuXLGItoUUTnLcTpOMSDegYIWYdFDWwNoXAcGe/bndSdF
-         eMxelcYVnRmbDgxQo/5N8XYZzKDGdekweoYRT2EE=
-Date:   Mon, 27 Sep 2021 12:22:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Isaac Hazan <isaac.hazan@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] led-class-flash: fix -Wrestrict warning
-Message-ID: <YVGbU1lYp6/5HyRy@kroah.com>
-References: <20210927101610.1669830-1-arnd@kernel.org>
+        id S233759AbhI0KZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1214D60F6D;
+        Mon, 27 Sep 2021 10:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632738254;
+        bh=0aOydrFoj9rdoYW/inrYYjH1DD0dFF+hrVGxPuisMZI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NNsKuk+f6pb0KyeXpv3p3KNdXyRUGsI0281odPObdSjzr18HUywXxk7QA84bEKFdC
+         1tEDbCfJ6CyRKBcnKzdnlpraoLIPvjfOUNFcLb4kHFcmHyLWqQAt6/cqt41hWu0Z5F
+         076B12c9FolL+wED9Al40dBI8+36QrnNmBg8Io2+oD9q7UqGziHxmrAWdKVESH/sgk
+         e0nllaWVyQ+Ak3JIzGzUrElbIbTSYeinjkZZmdXapT9UIk/euuIYoiHfGij40suCtm
+         dnI5URJI/y0ku7BtBFVziOec8QOsyscUf3ZuFez5J7iCN2d/Oj1HxwO8M00YuV51vL
+         pcA5zObmQZbTw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RESEND] [v2] posix-acl: avoid -Wempty-body warning
+Date:   Mon, 27 Sep 2021 12:23:56 +0200
+Message-Id: <20210927102410.1863853-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927101610.1669830-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 12:15:59PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> drivers/leds/led-class-flash.c: In function 'flash_fault_show':
-> drivers/leds/led-class-flash.c:210:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
->   210 |         return sprintf(buf, "%s\n", buf);
->       |                ^~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/leds/led-class-flash.c:187:54: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
->   187 |                 struct device_attribute *attr, char *buf)
->       |                                                ~~~~~~^~~
-> cc1: all warnings being treated as errors
-> make[5]: *** [scripts/Makefile.build:277: drivers/leds/led-class-flash.o] Error 1
-> make[5]: Target '__build' not remade because of errors.
-> make[4]: *** [scripts/Makefile.build:540: drivers/leds] Error 2
-> drivers/thunderbolt/xdomain.c: In function 'modalias_show':
-> drivers/thunderbolt/xdomain.c:733:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
->   733 |         return sprintf(buf, "%s\n", buf);
->       |                ^~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/thunderbolt/xdomain.c:727:36: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
->   727 |                              char *buf)
->       |                              ~~~~~~^~~
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/leds/led-class-flash.c | 2 +-
->  drivers/thunderbolt/xdomain.c  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/leds/led-class-flash.c b/drivers/leds/led-class-flash.c
-> index 185e17055317..6fe9d700dfef 100644
-> --- a/drivers/leds/led-class-flash.c
-> +++ b/drivers/leds/led-class-flash.c
-> @@ -207,7 +207,7 @@ static ssize_t flash_fault_show(struct device *dev,
->  		mask <<= 1;
->  	}
->  
-> -	return sprintf(buf, "%s\n", buf);
-> +	return strlen(strcat(buf, "\n"));
->  }
->  static DEVICE_ATTR_RO(flash_fault);
->  
-> diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
-> index d66ea4d616fd..eff32499610f 100644
-> --- a/drivers/thunderbolt/xdomain.c
-> +++ b/drivers/thunderbolt/xdomain.c
-> @@ -730,7 +730,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
->  
->  	/* Full buffer size except new line and null termination */
->  	get_modalias(svc, buf, PAGE_SIZE - 2);
-> -	return sprintf(buf, "%s\n", buf);
-> +	return strlen(strcat(buf, "\n"));
->  }
->  static DEVICE_ATTR_RO(modalias);
->  
-> -- 
-> 2.29.2
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-You also have a thunderbolt change in here as well :(
+The fallthrough comment for an ignored cmpxchg() return value
+produces a harmless warning with 'make W=1':
+
+fs/posix_acl.c: In function 'get_acl':
+fs/posix_acl.c:127:36: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  127 |                 /* fall through */ ;
+      |                                    ^
+
+Simplify it as a step towards a clean W=1 build.  As all architectures
+define cmpxchg() as a statement expression these days, it is no longer
+necessary to evaluate its return code, and the if() can just be droped.
+
+Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
+Link: https://lore.kernel.org/all/20210322132103.qiun2rjilnlgztxe@wittgenstein/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/posix_acl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index f5c25f580dd9..9323a854a60a 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -134,8 +134,7 @@ struct posix_acl *get_acl(struct inode *inode, int type)
+ 	 * to just call ->get_acl to fetch the ACL ourself.  (This is going to
+ 	 * be an unlikely race.)
+ 	 */
+-	if (cmpxchg(p, ACL_NOT_CACHED, sentinel) != ACL_NOT_CACHED)
+-		/* fall through */ ;
++	cmpxchg(p, ACL_NOT_CACHED, sentinel);
+ 
+ 	/*
+ 	 * Normally, the ACL returned by ->get_acl will be cached.
+-- 
+2.29.2
 
