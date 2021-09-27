@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90F0419D73
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DA9419D75
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237720AbhI0Rvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
+        id S236203AbhI0Rvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236002AbhI0Rv3 (ORCPT
+        with ESMTP id S237507AbhI0Rve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:51:29 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E7CC061A53
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:43:24 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id y201so26641504oie.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 10:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/6PqtAuxAQF2+Mkx3dvUi6/5jAweBVPbOW1F3Gm5Qus=;
-        b=TK+OvSWcoa7k2LYKZKp7aonrPA+03c8GYlBHXgBm+hFkUnsmqIqL0SH6VcjDu5x1UY
-         Mte38H6aHi83/a1WV165YfBPG/uC9g3ZukGnvXayKwhfxl1Igh+A4fCpnRdozGRDwLS5
-         f2nY1qzNHmgBICDOuz7D9m8hJcZBbDk9p3UwbafNY6lv6GieiinUqewPMCoktSCbXnQc
-         /SV4/32i9Qd+OYm6n2weVGB7/Ev+vsc3IrhmtOlV3e8Ss1JWeGW1pG6Jbwm+yYa8yq9J
-         ykVPWPIZ0070MD9jqIIpi/4ArCDJqcC08luNmkdpwf+hFSqFGaVj4tqUrmSTAIcN8hod
-         2hrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/6PqtAuxAQF2+Mkx3dvUi6/5jAweBVPbOW1F3Gm5Qus=;
-        b=aBPF3HP3qK8q7MrCmlLi9lrSuWm3BLp+JFDwJwt3SpKCKatUa94pPQVcg9S4CL4Zrq
-         8SLBgAisgSw7V5pUtLYD1ujfZrKfr9mnSV23EcnCzc0xU0KTlWYHXgVhXck56IYgquK4
-         C+0AtwWlDQL9BY4mYMJx86IHhnPyaXLjPhf0m5cVkpxSahqr0lvTuOe4crnYHpxGgMPK
-         VEPmaAtMEGgwH/wgVmcy0ck1xngJ9VDlgVd2nXIuC8I6ZuKxbredi9i/xdPzFRKlTaHy
-         xXchZ+/hvtGcvHaMT93JiwdoYud0itm0VH4iXGFsfDJ1Bx7KP0HvRcgTwdEUAbIl5SWx
-         H8Fg==
-X-Gm-Message-State: AOAM531oS8ZP3mYW/mA+6eEZ6Q83ZnVTSxX9uc6tvWozn9HotyYk/Vpp
-        VO/6iq0EFqfuJ0B8tWRk/pMLdzdsCGESKQGkvaeSnQ==
-X-Google-Smtp-Source: ABdhPJw8Qgh0R3YF8UblgpBhaO4+VlkiynxF/BTrAxLvED9CTrftnAHjlziEtuo/EiYryFMZ9GhQPRk5XPhTQ8Z314s=
-X-Received: by 2002:a05:6808:1a11:: with SMTP id bk17mr269217oib.0.1632764603683;
- Mon, 27 Sep 2021 10:43:23 -0700 (PDT)
+        Mon, 27 Sep 2021 13:51:34 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148E9C06120F;
+        Mon, 27 Sep 2021 10:44:00 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id B7CD8867;
+        Mon, 27 Sep 2021 17:43:59 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B7CD8867
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1632764639; bh=ZtnzvOYoJU2QJS7oSLw7U3mGblXZ6NQEMSpDfwmTgqI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aoZAgmTTMm5lD1s5kPvg9Lg1IqmLwITC4VJ6dW660IVZWU3CXlhQURHSKNVC73jwU
+         iTQQJjUeigqOdycqBTJCHQwIOrwW+joEr5X8kTPU+56Tip3KWRTFu+Cc3wAA/pT1hA
+         rWr+4kT3hWxD1CEyxAuFJk5vW6dAN3WZsU2ejMPf9ht/VehZ6GCh4NEiNfu2GmsAsp
+         5iOd3h5iutkzKQub0UREf38/PM587DMaf4j2KM4m7LhFcQhHlBtO5jdSONWwRhKKRe
+         nICJYtxy5IxjcOt5zw/QqX/Aq1tdNCs95lyWOat9Ap8e0xrszhAVWE1IxtT5s3QLHZ
+         7N5WiD8epPsnw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Utkarsh Verma <utkarshverma294@gmail.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: Re: [PATCH] Documentation: checkpatch: Document some more message
+ types
+In-Reply-To: <20210925201746.15917-1-utkarshverma294@gmail.com>
+References: <20210925201746.15917-1-utkarshverma294@gmail.com>
+Date:   Mon, 27 Sep 2021 11:43:59 -0600
+Message-ID: <875yulj4m8.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210927170225.702078779@linuxfoundation.org>
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 27 Sep 2021 23:13:12 +0530
-Message-ID: <CA+G9fYvJ0rqin3f+46dzrXEeGcP+s6iwsUdnHJiQr8qzkPEJFw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/103] 5.10.70-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        wintera@linux.ibm.com
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 22:40, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Utkarsh Verma <utkarshverma294@gmail.com> writes:
+
+> Added and documented 3 new message types:
+> - UNNECESSARY_INT
+> - UNSPECIFIED_INT
+> - UNNECESSARY_ELSE
 >
-> This is the start of the stable review cycle for the 5.10.70 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 29 Sep 2021 17:02:05 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.70-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+> ---
+>  Documentation/dev-tools/checkpatch.rst | 47 ++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
 
-Following commit caused the build failures on s390,
+So...when you send multiple patches with the same subject line that's
+always a bad sign.  We really want a "git --oneline" listing to give a
+good idea of what the patch does, and that depends on more descriptive
+subject lines.
 
+In this case, something like:
 
-> Alexandra Winter <wintera@linux.ibm.com>
->     s390/qeth: fix deadlock during failing recovery
+  docs: checkpatch: add UNNECESSARY/UNSPECIFIED_INT and UNNECESSARY_ELSE
 
-drivers/s390/net/qeth_core_main.c: In function 'qeth_close_dev_handler':
-drivers/s390/net/qeth_core_main.c:83:9: error: too few arguments to
-function 'ccwgroup_set_offline'
-   83 |         ccwgroup_set_offline(card->gdev);
-      |         ^~~~~~~~~~~~~~~~~~~~
-In file included from drivers/s390/net/qeth_core.h:44,
-                 from drivers/s390/net/qeth_core_main.c:46:
-arch/s390/include/asm/ccwgroup.h:61:5: note: declared here
-   61 | int ccwgroup_set_offline(struct ccwgroup_device *gdev, bool call_gdrv);
-      |     ^~~~~~~~~~~~~~~~~~~~
-make[3]: *** [scripts/Makefile.build:280:
-drivers/s390/net/qeth_core_main.o] Error 1
+I can fix up these two patches, but please try to keep this in mind for
+future work.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+(applying the patches now).
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+
+jon
