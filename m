@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407CB419A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1F5419B0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236121AbhI0RG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:06:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45786 "EHLO mail.kernel.org"
+        id S236493AbhI0RPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:15:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235841AbhI0RG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:06:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63C346113D;
-        Mon, 27 Sep 2021 17:04:47 +0000 (UTC)
+        id S235829AbhI0RMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:12:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1286B61288;
+        Mon, 27 Sep 2021 17:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762288;
-        bh=93Hh6ibWsXSldPNCAhMKgvpyIb4yq5wWd0g+7SliDRk=;
+        s=korg; t=1632762538;
+        bh=DYR4IUXWEASx8KRhNugoNGUL8PaGAxkxKKNjp8BfVns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ar+vnqV10HQFJiq5sbITqiK5gxjRbYOydkq0m6PWUxcahaoGUmA5gDrxQzgUbjuOG
-         hl2yaV6q97sIFNpECYbcjVB3ogEKruCDgqxSDEzX3MAm8WKPJfk6dj6P36g7cvR81L
-         fCFlkvO+9U6VqjbcKJf2jKwHgI5Z0dBZfVGGQkJE=
+        b=jbVtQVXtlaWQo3fWr2/3YElcXBqf+vJOeXAsmlbVEnJjTf4sxIsQCCIhgbfPHzsKM
+         jh9qnMsoxCsEMA2GXNdh4B8HbjVsYBufSs7biwNd+TjPhES8Am+H03USpErNjMLlAD
+         bCOd7pWwyEkR8mOpRMjU/SFBMPGHvo2nuiKBXxmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 5.4 05/68] usb: musb: tusb6010: uninitialized data in tusb_fifo_write_unaligned()
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 029/103] scsi: sd_zbc: Ensure buffer size is aligned to SECTOR_SIZE
 Date:   Mon, 27 Sep 2021 19:02:01 +0200
-Message-Id: <20210927170220.091091984@linuxfoundation.org>
+Message-Id: <20210927170226.752433187@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Naohiro Aota <naohiro.aota@wdc.com>
 
-commit 517c7bf99bad3d6b9360558414aae634b7472d80 upstream.
+commit 7215e909814fed7cda33c954943a4050d8348204 upstream.
 
-This is writing to the first 1 - 3 bytes of "val" and then writing all
-four bytes to musb_writel().  The last byte is always going to be
-garbage.  Zero out the last bytes instead.
+Reporting zones on a SCSI device sometimes fail with the following error:
 
-Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210916135737.GI25094@kili
+[76248.516390] ata16.00: invalid transfer count 131328
+[76248.523618] sd 15:0:0:0: [sda] REPORT ZONES start lba 536870912 failed
+
+The error (from drivers/ata/libata-scsi.c:ata_scsi_zbc_in_xlat()) indicates
+that buffer size is not aligned to SECTOR_SIZE.
+
+This happens when the __vmalloc() failed. Consider we are reporting 4096
+zones, then we will have "bufsize = roundup((4096 + 1) * 64,
+SECTOR_SIZE)" = (513 * 512) = 262656. Then, __vmalloc() failure halves
+the bufsize to 131328, which is no longer aligned to SECTOR_SIZE.
+
+Use rounddown() to ensure the size is always aligned to SECTOR_SIZE and fix
+the comment as well.
+
+Link: https://lore.kernel.org/r/20210906140642.2267569-1-naohiro.aota@wdc.com
+Fixes: 23a50861adda ("scsi: sd_zbc: Cleanup sd_zbc_alloc_report_buffer()")
+Cc: stable@vger.kernel.org # 5.5+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/tusb6010.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/sd_zbc.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -190,6 +190,7 @@ tusb_fifo_write_unaligned(void __iomem *
+--- a/drivers/scsi/sd_zbc.c
++++ b/drivers/scsi/sd_zbc.c
+@@ -155,8 +155,8 @@ static void *sd_zbc_alloc_report_buffer(
+ 
+ 	/*
+ 	 * Report zone buffer size should be at most 64B times the number of
+-	 * zones requested plus the 64B reply header, but should be at least
+-	 * SECTOR_SIZE for ATA devices.
++	 * zones requested plus the 64B reply header, but should be aligned
++	 * to SECTOR_SIZE for ATA devices.
+ 	 * Make sure that this size does not exceed the hardware capabilities.
+ 	 * Furthermore, since the report zone command cannot be split, make
+ 	 * sure that the allocated buffer can always be mapped by limiting the
+@@ -175,7 +175,7 @@ static void *sd_zbc_alloc_report_buffer(
+ 			*buflen = bufsize;
+ 			return buf;
+ 		}
+-		bufsize >>= 1;
++		bufsize = rounddown(bufsize >> 1, SECTOR_SIZE);
  	}
- 	if (len > 0) {
- 		/* Write the rest 1 - 3 bytes to FIFO */
-+		val = 0;
- 		memcpy(&val, buf, len);
- 		musb_writel(fifo, 0, val);
- 	}
+ 
+ 	return NULL;
 
 
