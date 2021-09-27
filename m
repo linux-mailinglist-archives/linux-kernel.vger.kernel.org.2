@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB4F419AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D86419C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236384AbhI0RLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:11:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46024 "EHLO mail.kernel.org"
+        id S237858AbhI0R2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:28:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236309AbhI0RH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82AFC60F46;
-        Mon, 27 Sep 2021 17:06:20 +0000 (UTC)
+        id S238034AbhI0RYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:24:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DAA5613D3;
+        Mon, 27 Sep 2021 17:15:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762381;
-        bh=y5fFDqL3z255UHGSUeDzSaWXMhOciNwAthHskb6MlVM=;
+        s=korg; t=1632762938;
+        bh=cTY7HUF9D9IpeAUHpHJzsn/rf/zmDBjy3AMO3iv/3B4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQLdtIEa3g9R8GK8ZE4fHE/tCjQcrGpI8QqXZFOkJ/mVjaRatOje06+kWBimYsl61
-         We53ooACTZATnmKW6fbK/1UBpjcBpQPnnwqoKQuTBGD/8n02LCqZjbqnDVCF2wak5A
-         tAYxfap5MiDrKUyv55wg5REq4rArjmoxczrDL8ho=
+        b=z3RhH0WmMm5EAyVSrK1HkB4pIqkJv00f23Yz2OySdok/yuxieELh5xHamPbac+A6u
+         Cp+9QZdISGSFiwilpWky1j6+ElCvIK5sE6c/klPrASp1jLGg+GWglQuOgrdo2I6+yY
+         uvEswYXAEPQTtW6fMGAdQzEIDBWYU5N0HlpUmkqs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Moritz Fischer <mdf@kernel.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Miodrag Dinic <miodrag.dinic@mips.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Goran Ferenc <goran.ferenc@mips.com>,
+        Aleksandar Markovic <aleksandar.markovic@mips.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 37/68] fpga: machxo2-spi: Fix missing error code in machxo2_write_complete()
-Date:   Mon, 27 Sep 2021 19:02:33 +0200
-Message-Id: <20210927170221.258834850@linuxfoundation.org>
+Subject: [PATCH 5.14 108/162] irqchip/goldfish-pic: Select GENERIC_IRQ_CHIP to fix build
+Date:   Mon, 27 Sep 2021 19:02:34 +0200
+Message-Id: <20210927170237.194807040@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +47,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit a1e4470823d99e75b596748086e120dea169ed3c ]
+[ Upstream commit 969ac78db78c723a24e9410666b457cc1b0cb3c3 ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'ret'.
+irq-goldfish-pic uses GENERIC_IRQ_CHIP interfaces so select that symbol
+to fix build errors.
 
-Eliminate the follow smatch warning:
+Fixes these build errors:
 
-drivers/fpga/machxo2-spi.c:341 machxo2_write_complete()
-  warn: missing error code 'ret'.
+mips-linux-ld: drivers/irqchip/irq-goldfish-pic.o: in function `goldfish_pic_of_init':
+irq-goldfish-pic.c:(.init.text+0xc0): undefined reference to `irq_alloc_generic_chip'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0xf4): undefined reference to `irq_gc_unmask_enable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0xf8): undefined reference to `irq_gc_unmask_enable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x100): undefined reference to `irq_gc_mask_disable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x104): undefined reference to `irq_gc_mask_disable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x11c): undefined reference to `irq_setup_generic_chip'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x168): undefined reference to `irq_remove_generic_chip'
 
-[mdf@kernel.org: Reworded commit message]
-Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2 support")
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: 4235ff50cf98 ("irqchip/irq-goldfish-pic: Add Goldfish PIC driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Miodrag Dinic <miodrag.dinic@mips.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Goran Ferenc <goran.ferenc@mips.com>
+Cc: Aleksandar Markovic <aleksandar.markovic@mips.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210905162519.21507-1-rdunlap@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fpga/machxo2-spi.c | 1 +
+ drivers/irqchip/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-index 2fd097c3994b..37e54e375528 100644
---- a/drivers/fpga/machxo2-spi.c
-+++ b/drivers/fpga/machxo2-spi.c
-@@ -334,6 +334,7 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
- 			break;
- 		if (++refreshloop == MACHXO2_MAX_REFRESH_LOOP) {
- 			machxo2_cleanup(mgr);
-+			ret = -EINVAL;
- 			goto fail;
- 		}
- 	} while (1);
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 4d5924e9f766..aca7b595c4c7 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -409,6 +409,7 @@ config MESON_IRQ_GPIO
+ config GOLDFISH_PIC
+        bool "Goldfish programmable interrupt controller"
+        depends on MIPS && (GOLDFISH || COMPILE_TEST)
++       select GENERIC_IRQ_CHIP
+        select IRQ_DOMAIN
+        help
+          Say yes here to enable Goldfish interrupt controller driver used
 -- 
 2.33.0
 
