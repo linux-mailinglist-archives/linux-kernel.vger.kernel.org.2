@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6524194A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBD54194AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbhI0Mzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:55:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30130 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234396AbhI0Mzv (ORCPT
+        id S234500AbhI0M5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:57:39 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:41363 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234407AbhI0M5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:55:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632747253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vqmCLZUE/RvdZRryhurm8ZYGJCB6f4ZHjcfNNE4aW4s=;
-        b=PODrkc9JYKOdWTwOBmSdo36BCDjrhdMqFxZ5pNXzZUOLF77M0BMSVk+mWHEV/sJu5eUVuK
-        2R5+BbQ0e6jq15fdYM31pyztzC7yy91B+2PWwr+BgMLerjWEYhnKZIJCYgg7gRrkN8crmz
-        5fKJ4kR73rEMxbG9Bfa02P8XX4DdUgk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-3EJklWZwM7uPvmc8DPY3HA-1; Mon, 27 Sep 2021 08:54:12 -0400
-X-MC-Unique: 3EJklWZwM7uPvmc8DPY3HA-1
-Received: by mail-ed1-f70.google.com with SMTP id h15-20020aa7de0f000000b003d02f9592d6so17609429edv.17
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 05:54:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=vqmCLZUE/RvdZRryhurm8ZYGJCB6f4ZHjcfNNE4aW4s=;
-        b=wlUPdU9nXfVZ2uP+paAzDbQ/N+bTlkDhceSCQl7IwaWgbN4Ow2iO6wpkbtCQ/m/IpV
-         wmBUc3AvSHtHNQT5SY56SbfHmf19gvAVPC3xxdA/lW8/aiy776d1NmoGB2LBZAW6DaHp
-         bCqbJcS+SMpYExbJ+Hqbnp1Fn6IrVKwrCpmf9HW5YzG6oVqPjugVzFD0RyCXSCCsep1v
-         Io52hTMN5KPWoB/1eeoF45Ta7qBnF046Fp+hjrhOWzwtUhrdQWIBNK/Bxssa3yofJcRk
-         oeN4503HMJaWnSJWEvhwtzE4X9z+2LECXrmYpndyTFMV8fgKTSiPvhWRNabx2IaIJiNj
-         XyqA==
-X-Gm-Message-State: AOAM532kuTakbWx3gVNuxFqEvIgeH8+TgAGB/iuBA0RSCUiipxTlIz0G
-        eaEsmLiYCIQAaixhYyrlv9mjJkMqgYX0PBHxqBwtZrIeRhbk6BwyZ4MAzcxKsyA/cufklXAtpWR
-        3ICdZ8G1euRmeIGy+eDnmTrXO
-X-Received: by 2002:a05:6402:336:: with SMTP id q22mr23230111edw.53.1632747251022;
-        Mon, 27 Sep 2021 05:54:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwh2KYg0dnn8JVSWbgyFbmkyYWSZ1VqCAk6GrPkabmD/MjIijY41QSlBI2wv4H6jHN8FyRGNw==
-X-Received: by 2002:a05:6402:336:: with SMTP id q22mr23230070edw.53.1632747250829;
-        Mon, 27 Sep 2021 05:54:10 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j6sm8611436ejk.114.2021.09.27.05.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 05:54:10 -0700 (PDT)
-Message-ID: <afc34b38-5596-3571-63e5-55fe82e87f6c@redhat.com>
-Date:   Mon, 27 Sep 2021 14:54:08 +0200
+        Mon, 27 Sep 2021 08:57:36 -0400
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 18RCt8TG023197;
+        Mon, 27 Sep 2021 21:55:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 18RCt8TG023197
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1632747338;
+        bh=bigzbXu0L332ubAdRCsgigHj9DxBvQaZOIfvn8Lvoxc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ns5zwKqtP+OabPMER9kfxBut4mj5Y6gSWYpcsKQ8E3y0fYU7zEncKNY6mFLud68t7
+         MmiVjZVRA0L4YpoSVpZP6lRFypOheWayQw+h0sfqr0wT2ItPDLaYV/8JtmmNXl9Lxh
+         MdySQo/bPL1LKNAz9dV/6IOJmtafAl7cFC7uPW7nvhCtvAuJqP7h9BGf9aDRwKFNkl
+         4Dw4uxUOZQSzXGq/Q0HwOrM6QJrTFT5bDyAOFKIAjr/I9j9ejSooo1ydbMx1+KalLC
+         ilMl2op6ECH0Q4BNOTn/RjpXHw2uefSfX4yLMFaJ4nb/Z8/oib+ZenxZIWDJvU+u+s
+         wBNIqyX45J+xQ==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kconfig: narrow the scope of variables in the lexer
+Date:   Mon, 27 Sep 2021 21:54:36 +0900
+Message-Id: <20210927125437.818092-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Babu Moger <babu.moger@amd.com>, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
-        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
-        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
- <YVGkDPbQmdwSw6Ff@zn.tnic> <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
- <YVGz0HXe+WNAXfdF@zn.tnic> <bcd40d94-2634-a40c-0173-64063051a4b2@redhat.com>
- <YVG46L++WPBAHxQv@zn.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YVG46L++WPBAHxQv@zn.tnic>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/21 14:28, Borislav Petkov wrote:
-> On Mon, Sep 27, 2021 at 02:14:52PM +0200, Paolo Bonzini wrote:
->> Right, not which MSR to write but which value to write.  It doesn't know
->> that the PSF disable bit is valid unless the corresponding CPUID bit is set.
-> 
-> There's no need for the separate PSF CPUID bit yet. We have decided for
-> now to not control PSF separately but disable it through SSB. Please
-> follow this thread:
+The variables, "ts" and "i", are used locally in the action of
+the [ \t]+ pattern in the <HELP> start state.
 
-There are other guests than Linux.  This patch is just telling userspace 
-that KVM knows what the PSFD bit is.  It is also possible to expose the 
-bit in KVM without having any #define in cpufeatures.h or without the 
-kernel using it.  For example KVM had been exposing FSGSBASE long before 
-Linux supported it.
+Define them where they are used.
 
-That said, the patch is incomplete because it should also add the new 
-CPUID bit to guest_has_spec_ctrl_msr (what KVM *really* cares about is 
-not the individual bits, only whether SPEC_CTRL exists at all).
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Paolo
+ scripts/kconfig/lexer.l | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
+index 312cbad2d34d..efe487859308 100644
+--- a/scripts/kconfig/lexer.l
++++ b/scripts/kconfig/lexer.l
+@@ -85,7 +85,6 @@ n	[A-Za-z0-9_-]
+ 
+ %%
+ 	int str = 0;
+-	int ts, i;
+ 
+ #.*			/* ignore comment */
+ [ \t]*			/* whitespaces */
+@@ -196,6 +195,8 @@ n	[A-Za-z0-9_-]
+ 
+ <HELP>{
+ 	[ \t]+	{
++		int ts, i;
++
+ 		ts = 0;
+ 		for (i = 0; i < yyleng; i++) {
+ 			if (yytext[i] == '\t')
+-- 
+2.30.2
 
