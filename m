@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC26419ABE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12FD419C42
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235997AbhI0RMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
+        id S236887AbhI0R0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:26:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236348AbhI0RJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:09:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C414A61251;
-        Mon, 27 Sep 2021 17:07:38 +0000 (UTC)
+        id S237205AbhI0RWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:22:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3531E613DB;
+        Mon, 27 Sep 2021 17:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762459;
-        bh=B8RYZ8b3CUrbdju2a7VI1DqzjM5fNQVa0lAXuCtGlhY=;
+        s=korg; t=1632762857;
+        bh=zt4hvOLZHDrFGgDXcjKuZKFvqo4FFHPtNctULI1Ifko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e0GnH/ojFMqw5ADDoCAm57EzIS3g9m3k0kyWWFdpp91PFHclEvWFXsdI8E8xahBmr
-         I5FNbx4Mv+5tNX6jSqRnS10eQw3RD6DKwk6PFOVeYEXBMggogFxehvsk4+F+VRrFYL
-         AzKPKl/Ci1sV6Sqv6ag2rKBPVJG8UxOpZi8T8K/c=
+        b=Cup//lAff67sdI+gFpxsc9iyCXrZRANcpI/5UNUFN8XOUhNG1XBp1LPjMDGoFLS9d
+         z+1lPOzUV+4M/0Vv2jLKvL9Z2F6RCR8ySVHhZ9UWhMR26ZFjOpaW4MJXX236ugAkTa
+         nlOdozuL9r5KjGZCqdMeZh4vGTIMwrBib2Z1S3Ro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 031/103] net: hso: fix muxed tty registration
+        stable@vger.kernel.org,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Mark Brown <broonie@kernel.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Andreas Schwab <schwab@suse.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 077/162] spi: Revert modalias changes
 Date:   Mon, 27 Sep 2021 19:02:03 +0200
-Message-Id: <20210927170226.817952169@linuxfoundation.org>
+Message-Id: <20210927170236.125714829@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Mark Brown <broonie@kernel.org>
 
-commit e8f69b16ee776da88589b5271e3f46020efc8f6c upstream.
+[ Upstream commit 96c8395e2166efa86082f3b71567ffd84936439b ]
 
-If resource allocation and registration fail for a muxed tty device
-(e.g. if there are no more minor numbers) the driver should not try to
-deregister the never-registered (or already-deregistered) tty.
+During the v5.13 cycle we updated the SPI subsystem to generate OF style
+modaliases for SPI devices, replacing the old Linux style modalises we
+used to generate based on spi_device_id which are the DT style name with
+the vendor removed.  Unfortunately this means that we start only
+reporting OF style modalises and not the old ones and there is nothing
+that ensures that drivers list every possible OF compatible string in
+their OF ID table.  The result is that there are systems which have been
+relying on loading modules based on the old style that are now broken,
+as found by Russell King with spi-nor on Macchiatobin.
 
-Fix up the error handling to avoid dereferencing a NULL pointer when
-attempting to remove the character device.
+spi-nor is a particularly problematic case for this, it only lists a
+single generic DT compatible jedec,spi-nor in the driver but supports a
+huge raft of device specific compatibles, with a large set of part
+numbers many of which are offered by multiple vendors.  Russell's
+searches of upstream device trees has turned up examples with vendor
+names written in non-standard ways too.  To make matters worse up until
+8ff16cf77ce3 ("Documentation: devicetree: m25p80: add "nor-jedec"
+binding") the generic compatible was not part of the binding so there
+are device trees out there written to that binding version which don't
+list it all.  The sheer number of parts supported together with our
+previous approach of ignoring the vendor ID makes robustly fixing this
+by adding compatibles to the spi-nor driver seem problematic, the
+current DT binding document does not list all the parts supported by the
+driver at the minute (further patches will fix this).
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org	# 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I've also investigated supporting both formats of modalias
+simultaneously but that doesn't seem possible, especially without
+breaking our userspace ABI which is obviously not viable.
+
+Instead revert the relevant changes for now:
+
+e09f2ab8eecc ("spi: update modalias_show after of_device_uevent_modalias support")
+3ce6c9e2617e ("spi: add of_device_uevent_modalias support")
+
+This will unfortunately mean that any system which had started having
+modules autoload based on the OF compatibles for drivers that list
+things there but not in the spi_device_ids will now not have those
+modules load which is itself a regression.  Since it affects a narrower
+time window and the particularly problematic spi-nor driver may be
+critical to system boot on smaller systems this seems the best of a
+series of bad options.  I will start an audit of SPI drivers to identify
+and fix cases where things won't autoload using spi_device_id, this is
+not great but seems to be the best way forward that anyone has been able
+to identify.
+
+Thanks to Russell for both his report and the additional diagnostic and
+analysis work he has done here, the detailed research above was his
+work.
+
+Fixes: e09f2ab8eecc ("spi: update modalias_show after of_device_uevent_modalias support")
+Fixes: 3ce6c9e2617e ("spi: add of_device_uevent_modalias support")
+Reported-by: Russell King (Oracle) <linux@armlinux.org.uk>
+Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Tested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: Andreas Schwab <schwab@suse.de>
+Cc: Marco Felsch <m.felsch@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/spi/spi.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2721,14 +2721,14 @@ struct hso_device *hso_create_mux_serial
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index e4dc593b1f32..f95f7666cb5b 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -58,10 +58,6 @@ modalias_show(struct device *dev, struct device_attribute *a, char *buf)
+ 	const struct spi_device	*spi = to_spi_device(dev);
+ 	int len;
  
- 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
- 	if (!serial)
--		goto exit;
-+		goto err_free_dev;
+-	len = of_device_modalias(dev, buf, PAGE_SIZE);
+-	if (len != -ENODEV)
+-		return len;
+-
+ 	len = acpi_device_modalias(dev, buf, PAGE_SIZE - 1);
+ 	if (len != -ENODEV)
+ 		return len;
+@@ -367,10 +363,6 @@ static int spi_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	const struct spi_device		*spi = to_spi_device(dev);
+ 	int rc;
  
- 	hso_dev->port_data.dev_serial = serial;
- 	serial->parent = hso_dev;
- 
- 	if (hso_serial_common_create
- 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
--		goto exit;
-+		goto err_free_serial;
- 
- 	serial->tx_data_length--;
- 	serial->write_data = hso_mux_serial_write_data;
-@@ -2744,11 +2744,9 @@ struct hso_device *hso_create_mux_serial
- 	/* done, return it */
- 	return hso_dev;
- 
--exit:
--	if (serial) {
--		tty_unregister_device(tty_drv, serial->minor);
--		kfree(serial);
--	}
-+err_free_serial:
-+	kfree(serial);
-+err_free_dev:
- 	kfree(hso_dev);
- 	return NULL;
- 
+-	rc = of_device_uevent_modalias(dev, env);
+-	if (rc != -ENODEV)
+-		return rc;
+-
+ 	rc = acpi_device_uevent_modalias(dev, env);
+ 	if (rc != -ENODEV)
+ 		return rc;
+-- 
+2.33.0
+
 
 
