@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE884198D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42F94198D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 18:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhI0QZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 12:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbhI0QZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:25:24 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E45C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:23:46 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h3so18269173pgb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 09:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GrJG+rwDoaYG7HFW8GCZPuZNJMWLA/Q3Bhmee7Qx6+Q=;
-        b=nDkeCEeP/JnEXHtclCNjpgccysiO9z5+1qsvWdza+YdXdRzWVM8VpwMJOqaWO8Lv6f
-         yVgyPZxKBFT/xMah8M5RXQr04lLRWPPD18RH7rfUumFbV2eXqu49oskx5rqJNLRaoy26
-         Gu5A9XBRje0GDqgHWZv2XPw/ycZqDy/v8Lf3o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GrJG+rwDoaYG7HFW8GCZPuZNJMWLA/Q3Bhmee7Qx6+Q=;
-        b=gEIA4zKVV/kb2YpBCrLmu4TbW8GFmhViz6GguZFv9rkh83LeDXU/v0nNO8D7cnjIHn
-         StyLLMDFtGgymYqKjNKWLO2gLJxbDfmA9uPf5I8AZQ9/0WRXI81XuEC/dcqpPWM1IGVI
-         9Ve2kZy+kAriPbfz2V0y1JnmBgNGbpYjN3ir48xzkRpIT4F9GUQ6OJAr8WwXTrvzEISI
-         uE97YPSnpz27HUWA4kCzodlGd+Yt6gQIS2BYiDBtZbtfrf43dnkJppapJSkj2v4NlhUK
-         LldMQd+/r+fz8pIIdJxpriicbV5BKpbIBejiLuml2w6cQZW6pBVu/kDV044Wmw0p9MPV
-         BAUg==
-X-Gm-Message-State: AOAM531WOEcvfOM2gSEz8d4j4wO9o3x3mnv1vyD832PULtSbKzOsfCBD
-        BHC40pEstPt7mp6ThYpR/gDh6g==
-X-Google-Smtp-Source: ABdhPJxgip2RoIeiUy0OKwHW6HRCTe1Y1Iw84My0njAXIF+cR6eK9S/VGJsCSQIsay9o/bzTXSvBZA==
-X-Received: by 2002:a62:8688:0:b0:44b:38cd:c2b8 with SMTP id x130-20020a628688000000b0044b38cdc2b8mr790332pfd.12.1632759826508;
-        Mon, 27 Sep 2021 09:23:46 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w18sm18561806pff.39.2021.09.27.09.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:23:46 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 09:23:45 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
-Message-ID: <202109270923.97AFDE89DB@keescook>
-References: <20210927142816.2069269-1-arnd@kernel.org>
+        id S235470AbhI0QZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 12:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235338AbhI0QZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 12:25:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6806161058;
+        Mon, 27 Sep 2021 16:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632759829;
+        bh=ahbLyZ8Wv5gvxyTSBNy6NXQAnOFTP57heCOScjz9m8I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=hTkybTtCve3N/NOAkASYAmrf0pxHRVSX9uIBlvrWeo3qQ01O30yCvXfCbfXXYHDiC
+         avWfGXzY8Squww313qv1uvj6Z5P5Xf0nzBijyK3CFXA8fW8WGFb/3DLGrdNAVdyWWn
+         yd2Zi9vLtaGfS1BaigLTKRWnaVyvvzrcQziDFFuqnViqfSEbBhSKXfaeeFgw1RFecX
+         OTI5jZof+bBHXM4fguZsTLVE2MtPIufg5CPdCpIGh9lcaNBfC1BAtCS/4LkxtI4Syj
+         Hc6tEeemjDsYUihr1ClsWwIdbdX0PF8/BnXSjAFhunmwoPVJO0FqENYiWUjnzY3/Xr
+         1Ua02QS+pvb6A==
+Date:   Mon, 27 Sep 2021 11:23:48 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
+ CRS response
+Message-ID: <20210927162348.GA650225@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210927142816.2069269-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210926111319.sgtfsjovkhfkh4qs@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:28:02PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> With CONFIG_FB=m and CONFIG_DRM=y, we get a link error in the fb helper:
-> 
-> aarch64-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
-> (.text+0x10cc): undefined reference to `framebuffer_alloc'
-> 
-> Tighten the dependency so it is only allowed in the case that DRM can
-> link against FB.
-> 
-> Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
-> Link: https://lore.kernel.org/all/20210721152211.2706171-1-arnd@kernel.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Sun, Sep 26, 2021 at 01:13:19PM +0200, Pali Rohár wrote:
+> On Wednesday 22 September 2021 11:48:03 Bjorn Helgaas wrote:
 
-Thanks for fixing this!
+> > The config read of Vendor ID after a reset should be done by the PCI
+> > core, not a device driver.
+> 
+> Of course. But in case of unexpected reset (which PCI code does not
+> detect), card driver at the same time could issue some config read/write
+> request.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+By "unexpected reset", you mean a reset performed autonomously by the
+device, or a reset initiated by the driver without help from the PCI
+core?  Either way, I think the PCI core is pretty much out of the
+picture and the driver is on its own.
 
--- 
-Kees Cook
+> > If we disable CRS SV, the only outcomes of
+> > that read are:
+> > 
+> >   1) Valid Vendor ID data, or
+> > 
+> >   2) Failed transaction, typically reported as 0xffff data (and, I
+> >      expect, an Unsupported Request or similar error logged)
+> 
+> Yes. And I think it should apply also for any other config register, not
+> just vendor id.
+
+Yes.
+
+> In case error reporting or AER functionality is not supported then there
+> would be no error logged. And PCI core / kernel does not have to know
+> that such thing happened.
+
+There *should* be at least the logging in Device Status for all PCIe
+devices, though I'm not sure the PCI core handles that nicely.  I'm
+looking at PCIe r5.0, sec 6.2.5: https://imgur.com/a/0yqygiM
+
+Bjorn
