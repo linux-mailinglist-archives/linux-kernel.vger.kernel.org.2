@@ -2,156 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FA84194C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAD64194C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhI0NGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:06:49 -0400
-Received: from mail-bn8nam11on2100.outbound.protection.outlook.com ([40.107.236.100]:10048
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234454AbhI0NGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:06:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SXt2naogi3vjNQoKL7N7nQyb6xIBkRv8KvljjAUxGVGR3CuBvp6FmpTJe4q/q8RGgLCfE3Je/PUwPcWaIquH2dncBjKEN+MFy8tHl6/Bcha5wM424TdmcAZhaqed53fG1uoxt8aHkctDLqhZJB4JPtQWwpRWkdHvoOROxQ1cYRzriFwS9jZruDq8wQSX/dCNTAU2G8VFps8hdoAw5aPzMhFkIdH8HHU36ebzVZ9xzVmh6CqdGBcb/51d2eu489ClIGlS7VfGcgddC1Etsjw5kohNYw3Acz4s3biOF1UdxF/w8bxwQcaA9u5R57JSUIBR8GDqlP8bIVwynMSNZGs0ng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=cMs8cKMRC0+yld1I3WpswU7qiY59Xn0KUymN9u6FHSU=;
- b=KXjqMQ68CF5aD87O5ov80CUhQ5fggXMI3gr/xUVTscB61Y4QPfNzWIw6/9WmpTH6Kw3Z3ByNS1OaHIa62yg0bw8eFsG+88veYvcwXXmW4ooTsPR86pEiT6zzv79d/QqTbxBPt12NuFquoc2KWMDEvbnKr/RKyOPsk3sKNAMMlrgWyetsPtvwcRLG8p0wDoBPaZxEOYZkZKOHACQgQ8Px66lQuUschedGKEJa9/IYTbVCm9CXahMT2ybEMCnoWNmBGHPA718PMKNw8SevXJqnoa+0huuEVjOO8whPfYGeBEjL+VBmFc0SmWRh3kpt9Bsfk2v7ugtug3TBUNThLMDa/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cMs8cKMRC0+yld1I3WpswU7qiY59Xn0KUymN9u6FHSU=;
- b=SENBRCpoo5Gm2Ov4yEBxvSRJcwRfECd+OYTJUGbtfXZNwL3bANCyOGLMF+g47VuRQcqoWh7x2T4Gv8vwQCNaSYHZ9bMMey28qoA+Yh6TGHYq3cNcYI0OvKd9qd33suUvBYXnNpCspzu5V2BbHRllvbQdECiBu/ORDiCwSxu9z2LwEcQFKS3x1GJt5Gl3SjtP9P4ymtsfSjQt9/jZaAuxqDMyrhXb3NyJ/u7lNx+qwauGuLbQ/rf0PziH8PE01RQ9llGbOetN3uEq+8KWsURWUKTAMAsBj1dBKQxlIUJ9727gUzgAw9yf4qHp75KvW3msvaFpyRx5rxfAhKxMNxIqoA==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB5941.prod.exchangelabs.com (2603:10b6:610:4a::27) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.14; Mon, 27 Sep 2021 13:05:07 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::30a8:19a9:b5c7:96cd]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::30a8:19a9:b5c7:96cd%9]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
- 13:05:07 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Topic: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Index: AQHXr7imk55risfKAUmS2+aCDTMROau34IPg
-Date:   Mon, 27 Sep 2021 13:05:07 +0000
-Message-ID: <CH0PR01MB7153E9B96065CEB8308816B2F2A79@CH0PR01MB7153.prod.exchangelabs.com>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
-In-Reply-To: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: sjtu.edu.cn; dkim=none (message not signed)
- header.d=none;sjtu.edu.cn; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cbcbbd02-9dc9-4f8d-aa8a-08d981b76de7
-x-ms-traffictypediagnostic: CH2PR01MB5941:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR01MB59413628C19993E25B8D585DF2A79@CH2PR01MB5941.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oNZ3hNe+o3TQ/vozAMLNbmyQ2Khw4GHgpGprhsEXXkLwus9TkIwZZQyWiWqpIpZXLLdg0JGVz/pCfjw7ovkkRoAEbu6q8jHgS2I/BjqdfqgOwMzRqsGaNmpipTAI8MLeQ392sILwhgSVgUvERTFyNT8RSd0UB4fV0+Wln9uYDVKa97p4mcIjuwPOk4j8cmx4CXHzucbk8tWTysOPFj013UAPShnAfL+u05WqIIagNO8KyavUQSmUKveaz7/AAEXdjPe5gp3rXl4gExFxJxoiCh3bfvUf85+V0Nuf+RPbFqc4AEd0ot7idjtnPgaEDVfP/Jop5HbL4fW1oRUR8PONKWmbPdZQ5pqawP2GqDNqEJ2K3XO7mDuMO828sHaBGijgmUO2esaWsMMv9QJVihSlABnJqAMci9UyfX6J1NGlMpZM+I6/BDzeNHTWoyOxHMZSXVquwXWrIwoGjlTuF+jaJcmCjzXjDMiG4Xcb4wf1zUZQzReQciCqWJwpPCVGsLJ7/RiiPbW9l1yX8Ja1RCVdyZvYBZpl0D8ulnGL7sEEFqvD2B3MbPYklSeXKE4ZIT84lyWBQ239RICdpAC3HvFq/ybbXNOBdS8+FuRIKp2N8w83on9Co5jcHAqyZiVySqrWXj5nHxl7Lqv1WlnzfeLOPvCE/cpMvr9IPoj6wgjz91eaOjHibnVoABqwosh4mIWy+SdZ4zme5aVQIvgch+7QbQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(376002)(39830400003)(66946007)(38100700002)(83380400001)(52536014)(33656002)(71200400001)(4326008)(9686003)(5660300002)(86362001)(55016002)(66446008)(122000001)(508600001)(66476007)(66556008)(64756008)(6506007)(76116006)(186003)(8676002)(7696005)(2906002)(26005)(316002)(8936002)(54906003)(110136005)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/9fM00J2UTWx/KJ2rKIurchb+RltwdcxBAW9AssS3SX7X7IiLOo1mvtnuFe3?=
- =?us-ascii?Q?+pglFPElqrELXDC62Mb4xq6J6Kk9SKiOS3WlnBekzD73otlvhD9PoW9XK0Kl?=
- =?us-ascii?Q?FdSiROtrWfDfnkU1eMHKq74+SykXmCZQ3XzeqcY6Xjm302eoaQEE+rC76lsI?=
- =?us-ascii?Q?DQy9shpg+JHNnnZQyClmxVyS2W+H0xa/HZLW0kCY801BbJ2nWb1yWX/r5Cfp?=
- =?us-ascii?Q?Ugx1VzVQNA5HHSRf5rLi2NfF/1H1mXZ/LwefB/eJqBz+skxO4SNy/5PasU0y?=
- =?us-ascii?Q?C9hWb3rbQzWzeK1vgucbhphSF14k1oxCTpm1MwJ/hElbH4Xeqec3opzSz8nK?=
- =?us-ascii?Q?PdX+8CZ4uLf0vgJzuoMjlwUZgX0WEbPpp+0pZ8RUCf6zpglUVl9U0M8hu2tC?=
- =?us-ascii?Q?zKgEkVBqufR1bCF8vnvIf3ZmDTpMimND3JQO96BC1lxy6KfnGLgQdKxehESw?=
- =?us-ascii?Q?ZnZx4jVl9a00XSlzYAHolIKehWizflVYMi3u4cm6989BReP5jJgHL5BSNHDw?=
- =?us-ascii?Q?5mD/zZpp3bMxiqkaclg+VGTyhOlfrMd2tzprB4vgIo5Zw2uZO3JDsiRZzZSq?=
- =?us-ascii?Q?W22eHSJsdx7nx2Sn1Bkqw7mOTO2f6bp4X25kIKBwR0DeVFNcRfFzF+0chWrn?=
- =?us-ascii?Q?rs77/EDvSeSWGcsGaqgLLW/DaQn/Iw+jF6FHmGNsh3ibixDyjDWgihVxfbR8?=
- =?us-ascii?Q?oJxTZv/24Qu3+opOyjzqrjWMFZnonKBdSCeOcf+kpPBfLVXFliZHNBJ/Ty1b?=
- =?us-ascii?Q?TXdhnJc6o/MI6lhHJuZEztTZdTZlJ1QErOtM5aVubTH6l9/uAp4+mSh64VDj?=
- =?us-ascii?Q?dt93sbPm4FxP+lAqM8f1aXyrW0J5WyZliiciEBAHuyD1AECWQO9UwL0vF3pg?=
- =?us-ascii?Q?u9iJCU76Eq6zvyGXg0bM0VcD9gujcNE/YSra2boAP2VrszR2+k1B/6vvGa3D?=
- =?us-ascii?Q?3dbfYDJ5wluqmxo+K/26QkFl+RkUTbbyx9fQwPFoNDAbrxCDlxfN2I/o4RG0?=
- =?us-ascii?Q?pJrzuU60XZkD9O34Y2QlsPeNe3f9ljDg5PPQXzbuT9MJi2G0f/x/GJ1ujZV7?=
- =?us-ascii?Q?BqMO2g5C/57VYa7Y6EesqwMxU9SPewksfNiiN3SSUyoulZhDFzJPQ45r2EfN?=
- =?us-ascii?Q?e9oHu4QKVBQuSlL9qE7an1fR+cvDsMDz7AsrG+wK4OB60JWGl/iwtFQRovm7?=
- =?us-ascii?Q?lGzKQAYE1n07rSPj56/FakL7Z8gOWYibmT9AAz95xsBnrlXByoj24opTvl3j?=
- =?us-ascii?Q?XAiyEVs0Z9SkRpd7xC0BgLdRvGWFPrGoKSxrDeWbnSTV7d5aY6Rl7KVOdBly?=
- =?us-ascii?Q?/E8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234532AbhI0NI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:08:27 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:55091 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230089AbhI0NI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:08:26 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CCD4E3200BF9;
+        Mon, 27 Sep 2021 09:06:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 27 Sep 2021 09:06:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=/
+        GKVm9aT1QMpB/PByfoVomF5FC+99BMfJqPbdonFHp4=; b=YS1kiQTMUOFzQSTzT
+        Kfv2rv7W/w1qHoGhCyLgmR7ixr5gyB3NmITvwsC9YmAhiS3omMnq75e5+Z1Yw7rY
+        BkJ+aHrBO0RTxtFNaVHs4FN7vBKy18hd4BrIjnHz0Fl3lm7JQ0YRVrm4rvI44IaY
+        BK/HkB5FJgwkv9uNRchLwjpsyh0uWLbhbUCftEAK81sdtthaxmOyumNGwp1u4fek
+        l4yppv7tjT+Ep4PI8kShCuTD0A6IeM83o+x6+vFSF0Y0FNNRY5ygNH6mGAJUp6um
+        9p5TqXIxtBNCislqinmGEqqj0VoSaPXLHBpgChg4SE4TqyX4W7DYm2XMr7u0fvHL
+        2OpNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=/GKVm9aT1QMpB/PByfoVomF5FC+99BMfJqPbdonFH
+        p4=; b=K25pBMePdTG4j5ulgG0Vgs0SXd5RIo28O7/AK+XLgMlHWqVJSJrBK0J3a
+        Y+9sedgG2LQE+gTFTaNcapB31/3S2BOkXpw8UPeaLI+8BJpsrZXSsxg4FSrgrAsp
+        +nc4Pu1aDMaZjkMRb0zQ+q0GlxEDo6PhQbeZIGaELsTxhaAQ+vp+fCkaeYzb30lI
+        D2sNpCm4aVPH0dPjmKOQ08cVI9Ev7Df7p/udHMo+quw/AN1EhoHu6ozhokW++w39
+        em4dCu4wQECwdl6vPJEIqR0rtNct1k75LzdWU0ln5eR9VDJlxFkw7sGgzFC73FRk
+        C6pLrJ0/WT/nbhFLP77R2YyeWlZZQ==
+X-ME-Sender: <xms:58FRYax23m1wBEGwFvzO_19kjjp-mMoJ7UFnqSjLV4YoBSXQwaPi4w>
+    <xme:58FRYWQr3Xyjur_pRLpT7VnveLXUj4qL2pyCZBPGxGYQmCnpphXz9tiLAfr59wkZi
+    EB1SOp45AsFsuvY>
+X-ME-Received: <xmr:58FRYcWpt47LZa6xz3tXPUtXW5zdMilMwdBf6bf8YQvByAi9hhBieNLxVtCZ1uLtbVM1Z3xmfWwWzFTjPU3-k8BEWuPhSdQXEIQVM6J1hOfTlLgdkqUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejkedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeduhfdvuefgieejueekjefhieeuffeigfdtvedu
+    ledutdejtdehueegfedugeduueenucffohhmrghinhepsggtrggthhgvfhhsrdhorhhgne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsggvrhhn
+    ugdrshgthhhusggvrhhtsehfrghsthhmrghilhdrfhhm
+X-ME-Proxy: <xmx:58FRYQizOWPCrsi2RmJN95TDBUzHhXcxqZorO0gBkLvPQVXeSp4VwQ>
+    <xmx:58FRYcAuDk58yfqeuG408CxWEfCt6dFJgvl5455BHEKGiF6pqHXLtw>
+    <xmx:58FRYRIE8RO5CFJhkk-1ijRBcRVTBqgSqDl11fAZgaqfq1H0m6uAJw>
+    <xmx:58FRYfNTaJ3w07NlPUFx2cP3KA6HWdjo_myz4onw1wVO6uaZ8hEc7A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Sep 2021 09:06:46 -0400 (EDT)
+Subject: Re: bcachefs - snapshots
+To:     Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <YVEjEwCiqje7yDyV@moria.home.lan>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+Message-ID: <dbe56ac2-22bd-74d5-ab5d-9f6673884212@fastmail.fm>
+Date:   Mon, 27 Sep 2021 15:06:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbcbbd02-9dc9-4f8d-aa8a-08d981b76de7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2021 13:05:07.0521
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KDYB7FhMbqCW2xmfyqzCdvPFObQCU2sV9f+u7oF8LE8pQfIryEv+gHeM/sIEXntLEDpc4p4bUxzTOysFU9zzlIq2py4Xkr/JznyuWPvYF1QX4yFapn1BQ1hnegJU0m6z
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB5941
+In-Reply-To: <YVEjEwCiqje7yDyV@moria.home.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
->=20
-> Pointers should be printed with %p or %px rather than cast to (unsigned l=
-ong
-> long) and printed with %llx.
-> Change %llx to %p to print the pointer.
->=20
-> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
-> ---
->  drivers/infiniband/hw/hfi1/ipoib_tx.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-> b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-> index e74ddbe4658..15b0cb0f363 100644
-> --- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-> +++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-> @@ -876,14 +876,14 @@ void hfi1_ipoib_tx_timeout(struct net_device
-> *dev, unsigned int q)
->  	struct hfi1_ipoib_txq *txq =3D &priv->txqs[q];
->  	u64 completed =3D atomic64_read(&txq->complete_txreqs);
->=20
-> -	dd_dev_info(priv->dd, "timeout txq %llx q %u stopped %u stops %d
-> no_desc %d ring_full %d\n",
-> -		    (unsigned long long)txq, q,
-> +	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d
-> no_desc %d ring_full %d\n",
-> +		    txq, q,
->  		    __netif_subqueue_stopped(dev, txq->q_idx),
->  		    atomic_read(&txq->stops),
->  		    atomic_read(&txq->no_desc),
->  		    atomic_read(&txq->ring_full));
-> -	dd_dev_info(priv->dd, "sde %llx engine %u\n",
-> -		    (unsigned long long)txq->sde,
-> +	dd_dev_info(priv->dd, "sde %p engine %u\n",
-> +		    txq->sde,
->  		    txq->sde ? txq->sde->this_idx : 0);
->  	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
->  	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
-> --
-> 2.33.0
 
-This patch has the correct case, but is not noted as a V2.
 
-Jason, this one is ok.
+On 9/27/21 3:49 AM, Kent Overstreet wrote:
+> Snapshots have been merged! 9 months of work and 3k lines of new code, finally
+> released. Some highlights:
+> 
+>  - btrfs style subvolumes & snapshots interface
+>  - snapshots are writeable
+>  - highly scalable: number of snapshots is limited only by your disk space
+>  - highly space efficient: no internal fragmentation issues
+> 
+> Design doc here: https://bcachefs.org/Snapshots/
+> 
+> The core functionality is complete - snapshot creation and deletion works, fsck
+> changes are done (most of the complexity was in making fsck work without
+> O(number of snapshots) performance - tricky). Everything else is a todo item:
+> 
+>  - still need to export different st_dev for files in different subvolumes
+>    (we'll never allocate a new inode with an inode number that collides with an
+>    inode inother subvolume - but snapshots will naturally result in colliding
+>    inode numbers)
 
-Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+With my limited high level view on it - shouldn't you discuss with Neil
+about a solution and to avoid going the btrfs route for colliding inode
+numbers?
