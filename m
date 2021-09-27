@@ -2,136 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46156419166
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1C9419170
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbhI0JSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbhI0JSt (ORCPT
+        id S233652AbhI0JV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:21:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233635AbhI0JVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:18:49 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE122C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:17:11 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y28so73937125lfb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XM3IPd5Y/B3XydJlqavKkI7QaMPjEtgvkFbwbgV1/iA=;
-        b=1Q6708tvyLCT+ef9O4jgFQMKEEc7HbJpaH/zXY3a37umoGOMBeZVmoGrsut1XykdFw
-         Jmh0iITH0gc8KQFV8t9wWRNaNfo9z/wfSe/uMb+ch/oemogWJ9AgUkmaD2wUt/WvEqNO
-         n31QGdgKiAsMMUE9oh/KX0l1yJzQq8Nya3do21ITVU6O2pcfYQcgswlYcwIcSJjFLiFi
-         GGP+FDWdcu2ULdUVR1FPEBn1ZdrruYUOrEqn/pEsTCkOmpujwSvlR4gsbjIMhk11lDHL
-         TfEswBQ27FmZMREtaCmLUYjPs3Xs2pji+Rspo5aE5LcyjUm6Sijxdl4k+3TFu1Rtpq+Z
-         ycSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XM3IPd5Y/B3XydJlqavKkI7QaMPjEtgvkFbwbgV1/iA=;
-        b=Mjtt8DLFuwPUSi2dozaD7/uT3PSuj0w+KJFFByrhhjRZa70dwNOI+d0WwF8AfpH1gS
-         7fSmZuml6isv6gKim8haaie9fgsVIgjRpG/MCz9UABRBLDZ1vhovoszE5ZdkCikp8aX8
-         5aVg3fSEjyP+oLFAgb1Kw8aXqE5Awj4VPIPFlBUmfoEdhzyBCtxrjyNKdOerdJRPuF8R
-         xyEtw6dMOe7L3VIc6MoFq/m/7kOaBuihbdafvjx/Wfw5gJAqh/l0z/CTzUP+iyYkj4VT
-         AOyKWuIwq8zBbm+Cf/ReAF7crGDSlqDeNl4ge0Lh1zCXEmSJtKkDOaA6s7dniL4O9YYS
-         9O0A==
-X-Gm-Message-State: AOAM530L83B9XS52AXcCL8ylCrnAT2xkda5xJA8s51GAzo9BfpQzV5fs
-        1yHE4eSPEVjDkuUBU5h++8BAjQ==
-X-Google-Smtp-Source: ABdhPJyz8uOfrsdc9H8zpTerjSbSsa5CUwJBTezYs+Mz79tiJ2/wjNLzHO9OqKjyaWJnt4XJcDjdFg==
-X-Received: by 2002:a19:5e11:: with SMTP id s17mr23486926lfb.404.1632734230305;
-        Mon, 27 Sep 2021 02:17:10 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o1sm1684460lfc.110.2021.09.27.02.17.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 02:17:09 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 29B5F10306C; Mon, 27 Sep 2021 12:17:09 +0300 (+03)
-Date:   Mon, 27 Sep 2021 12:17:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 3/8] mm/madvise: remove unnecessary checks on
- madvise_free_single_vma()
-Message-ID: <20210927091709.ksv2fjudjpqhnu3n@box.shutemov.name>
-References: <20210926161259.238054-1-namit@vmware.com>
- <20210926161259.238054-4-namit@vmware.com>
+        Mon, 27 Sep 2021 05:21:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632734411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tCYMpg/ChC/Ji/lW0LlV5PGYAJ6Ra2J+9wLmvCKh2Ls=;
+        b=BxqEd5Xcy5WRdsVHsTMmeahykHD6eyP+65Tz7mS4lZbnIthHnCmWCnqsEq8D0DSYsBnnRH
+        3OBgUT5XexUmPqhkGsNWWPbrV+wjQSgEgH4VctTMtxz6rayoPTtpR/wTEWkhD8uHsnzUR1
+        crBloslnn6t2xIsk7oG0l3xpVO8WXyI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-E5j_XAlfML6sCSSR6cdvtQ-1; Mon, 27 Sep 2021 05:20:08 -0400
+X-MC-Unique: E5j_XAlfML6sCSSR6cdvtQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9A8F802921;
+        Mon, 27 Sep 2021 09:20:06 +0000 (UTC)
+Received: from T590 (ovpn-8-37.pek2.redhat.com [10.72.8.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5D6595BAE2;
+        Mon, 27 Sep 2021 09:20:02 +0000 (UTC)
+Date:   Mon, 27 Sep 2021 17:19:58 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "hare@suse.de" <hare@suse.de>
+Subject: Re: [PATCH v4 11/13] blk-mq: Refactor and rename
+ blk_mq_free_map_and_{requests->rqs}()
+Message-ID: <YVGMvlU5T8zaoEnM@T590>
+References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
+ <1632472110-244938-12-git-send-email-john.garry@huawei.com>
+ <YU/Va9T+zcRNExUF@T590>
+ <45c0c587-59a2-1761-e175-3920669d0bfb@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210926161259.238054-4-namit@vmware.com>
+In-Reply-To: <45c0c587-59a2-1761-e175-3920669d0bfb@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 09:12:54AM -0700, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
+On Mon, Sep 27, 2021 at 10:02:40AM +0100, John Garry wrote:
+> On 26/09/2021 03:05, Ming Lei wrote:
+> > On Fri, Sep 24, 2021 at 04:28:28PM +0800, John Garry wrote:
+> > > Refactor blk_mq_free_map_and_requests() such that it can be used at many
+> > > sites at which the tag map and rqs are freed.
+> > > 
+> > > Also rename to blk_mq_free_map_and_rqs(), which is shorter and matches the
+> > > alloc equivalent.
+> > > 
+> > > Suggested-by: Ming Lei<ming.lei@redhat.com>
+> > > Signed-off-by: John Garry<john.garry@huawei.com>
+> > > Reviewed-by: Hannes Reinecke<hare@suse.de>
+> > > ---
+> > >   block/blk-mq-tag.c |  3 +--
+> > >   block/blk-mq.c     | 40 ++++++++++++++++++++++++----------------
+> > >   block/blk-mq.h     |  4 +++-
+> > >   3 files changed, 28 insertions(+), 19 deletions(-)
+> > > 
+> > > diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> > > index db99f1246795..a0ecc6d88f84 100644
+> > > --- a/block/blk-mq-tag.c
+> > > +++ b/block/blk-mq-tag.c
+> > > @@ -607,8 +607,7 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+> > >   		if (!new)
+> > >   			return -ENOMEM;
+> > > -		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
+> > > -		blk_mq_free_rq_map(*tagsptr, set->flags);
+> > > +		blk_mq_free_map_and_rqs(set, *tagsptr, hctx->queue_num);
+> > >   		*tagsptr = new;
+> > >   	} else {
+> > >   		/*
+> > > diff --git a/block/blk-mq.c b/block/blk-mq.c
+> > > index 46772773b9c4..464ea20b9bcb 100644
+> > > --- a/block/blk-mq.c
+> > > +++ b/block/blk-mq.c
+> > > @@ -2878,15 +2878,15 @@ static bool __blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+> > >   	return set->tags[hctx_idx];
+> > >   }
+> > > -static void blk_mq_free_map_and_requests(struct blk_mq_tag_set *set,
+> > > -					 unsigned int hctx_idx)
+> > > +void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+> > > +			     struct blk_mq_tags *tags,
+> > > +			     unsigned int hctx_idx)
+> > >   {
+> > >   	unsigned int flags = set->flags;
+> > > -	if (set->tags && set->tags[hctx_idx]) {
+> > > -		blk_mq_free_rqs(set, set->tags[hctx_idx], hctx_idx);
+> > > -		blk_mq_free_rq_map(set->tags[hctx_idx], flags);
+> > > -		set->tags[hctx_idx] = NULL;
+> > > +	if (tags) {
+> > > +		blk_mq_free_rqs(set, tags, hctx_idx);
+> > > +		blk_mq_free_rq_map(tags, flags);
+> > >   	}
+> > >   }
+> > > @@ -2967,8 +2967,10 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+> > >   			 * fallback in case of a new remap fails
+> > >   			 * allocation
+> > >   			 */
+> > > -			if (i && set->tags[i])
+> > > -				blk_mq_free_map_and_requests(set, i);
+> > > +			if (i && set->tags[i]) {
+> > > +				blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> > > +				set->tags[i] = NULL;
+> > > +			}
+> > >   			hctx->tags = NULL;
+> > >   			continue;
+> > > @@ -3264,8 +3266,8 @@ static void blk_mq_realloc_hw_ctxs(struct blk_mq_tag_set *set,
+> > >   		struct blk_mq_hw_ctx *hctx = hctxs[j];
+> > >   		if (hctx) {
+> > > -			if (hctx->tags)
+> > > -				blk_mq_free_map_and_requests(set, j);
+> > > +			blk_mq_free_map_and_rqs(set, set->tags[j], j);
+> > > +			set->tags[j] = NULL;
+> > >   			blk_mq_exit_hctx(q, set, hctx, j);
+> > >   			hctxs[j] = NULL;
+> > >   		}
+> > > @@ -3361,8 +3363,10 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
+> > >   	return 0;
+> > >   out_unwind:
+> > > -	while (--i >= 0)
+> > > -		blk_mq_free_map_and_requests(set, i);
+> > > +	while (--i >= 0) {
+> > > +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> > > +		set->tags[i] = NULL;
+> > > +	}
+> > >   	return -ENOMEM;
+> > >   }
+> > > @@ -3557,8 +3561,10 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
+> > >   	return 0;
+> > >   out_free_mq_rq_maps:
+> > > -	for (i = 0; i < set->nr_hw_queues; i++)
+> > > -		blk_mq_free_map_and_requests(set, i);
+> > > +	for (i = 0; i < set->nr_hw_queues; i++) {
+> > > +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> > > +		set->tags[i] = NULL;
+> > > +	}
+> > >   out_free_mq_map:
+> > >   	for (i = 0; i < set->nr_maps; i++) {
+> > >   		kfree(set->map[i].mq_map);
+> > > @@ -3590,8 +3596,10 @@ void blk_mq_free_tag_set(struct blk_mq_tag_set *set)
+> > >   {
+> > >   	int i, j;
+> > > -	for (i = 0; i < set->nr_hw_queues; i++)
+> > > -		blk_mq_free_map_and_requests(set, i);
+> > > +	for (i = 0; i < set->nr_hw_queues; i++) {
+> > > +		blk_mq_free_map_and_rqs(set, set->tags[i], i);
+> > > +		set->tags[i] = NULL;
+> > > +	}
+> > There are 5 callers in which 'set->tags[i]' is cleared, so just
+> > wondering why you don't clear set->tags[i] at default in
+> > blk_mq_free_map_and_rqs(). And just call __blk_mq_free_map_and_rqs()
+> > for the only other user?
 > 
-> madvise_free_single_vma() currently rechecks that the range fits within
-> the VMA, adapts it accordingly, and returns -EINVAL if the range is
-> entirely outside of the VMA.
+> blk_mq_free_map_and_rqs() is not always passed set->tags[i]:
 > 
-> The error-code of -EINVAL is incorrect according to the man pages (as it
-> should have been -ENOMEM), but anyhow the range that is provided to
-> madvise_free_single_vma() should always be valid. It is set correctly in
-> do_madvise() and then rechecked in madvise_dontneed_free() is the
-> mmap-lock is dropped.
+> - blk_mq_tag_update_depth() calls blk_mq_free_map_and_rqs() for sched tags
 > 
-> Remove this check.
+> - __blk_mq_alloc_rq_maps() calls blk_mq_free_map_and_rqs() for
+> shared_sbitmap_tags
 > 
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Colin Cross <ccross@google.com>
-> Cc: Suren Baghdasarya <surenb@google.com>
-> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> ---
->  mm/madvise.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
+> Function __blk_mq_free_map_and_rqs() is not public and really only intended
+> for set->tags[i]
 > 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index fe843513a4e8..17e39c70704b 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -716,14 +716,8 @@ static int madvise_free_single_vma(struct vm_area_struct *vma,
->  	if (!vma_is_anonymous(vma))
->  		return -EINVAL;
->  
-> -	range.start = max(vma->vm_start, start_addr);
-> -	if (range.start >= vma->vm_end)
-> -		return -EINVAL;
-> -	range.end = min(vma->vm_end, end_addr);
-> -	if (range.end <= vma->vm_start)
-> -		return -EINVAL;
+> So I did consider passing the address of the tags pointer to
+> blk_mq_free_map_and_rqs(), like:
+> 
+> void blk_mq_free_map_and_rqs(struct blk_mq_tag_set *set,
+> 			struct blk_mq_tag **tags,
+> 			unsigned int hctx_idx)
+> 
+> {
+> 	...
+> 	*tags = NULL;
+> }
+> 
+> But then the API becomes a bit asymmetric, as we deal with tags pointer
+> normally:
+> 
+> struct blk_mq_tags *blk_mq_alloc_map_and_rqs(struct blk_mq_tag_set *set,
+> 					     unsigned int hctx_idx,
+> 					     unsigned int depth);
+> 
+> 
+> However, apart from this, I can change __blk_mq_free_map_and_rqs() to
+> NULLify set->tags[i], as it is always passed set->tags[i].
+> 
+> Do you have a preference?
 
-How did you test this change?
+I meant there are 5 following uses in your patch:
 
-As far as I can see, you leave 'range' uninitialized, but used for
-walk_page_range() and mmu_notifiers.
++                               blk_mq_free_map_and_rqs(set, set->tags[i], i);
++                               set->tags[i] = NULL;
 
-NAK.
+and one new helper(blk_mq_free_set_map_and_rqs(set, i)?) can be added for just
+doing that, 
 
->  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm,
-> -				range.start, range.end);
-> +				start_addr, end_addr);
->  
->  	lru_add_drain();
->  	tlb_gather_mmu(&tlb, mm);
-> -- 
-> 2.25.1
-> 
-> 
+Thanks,
+Ming
 
--- 
- Kirill A. Shutemov
