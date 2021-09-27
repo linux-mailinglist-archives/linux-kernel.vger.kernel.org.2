@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BF1419176
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3BD41917A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhI0JZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233587AbhI0JZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:25:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B51FD61157;
-        Mon, 27 Sep 2021 09:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632734603;
-        bh=C+3W9J7B6ZG7F8nbyDNhMaUe9/T5jR1uVU7Ci2T0nno=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0LWq/vs/7g7LXEctYGdAq207EPtS+ElzMiUA4M38O7xG9DtIGssFpTHbhTlM0vD4v
-         iUt1rmimgksduewoe7lAm8ryEAu1dJpFZ/BAocLdVx0uji0J1AbMS7OB8WdCKGDXeQ
-         ck1kbTVVwToq/9ZM7aXfpJ8IWRmn5891mYKcFxTc=
-Date:   Mon, 27 Sep 2021 11:23:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/8] (REBASED) get_abi.pl undefined: improve precision
- and performance
-Message-ID: <YVGNiPXNbWWy3CSj@kroah.com>
-References: <YUyICHTRdfL8Ul7X@kroah.com>
- <cover.1632411447.git.mchehab+huawei@kernel.org>
- <YUy1oPjdLTh9rEfq@kroah.com>
- <20210927105553.105f22c5@coco.lan>
+        id S233669AbhI0J0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:26:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59689 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233638AbhI0JZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:25:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632734653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jp02F8QsbdFJf3j7YUtw+WzbWBUYKqtVXobt73sBmVU=;
+        b=e7M6ml89Xpoq2Bk4kcJfPrWXt9LFZeRMWu8ldslSjrLnN2p50ra0zHCXXQ9kbL+o7wJ8WI
+        urWYsUeSP9244oDyUVi6TujAHKGLwLxRFJghe7ZgNy6MlifCY12CKKCv/yaz+pDDLyLTp/
+        62+8d1jkzwNOGPFLEOHkVPOeLFwHyaw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-ASwCXpcuMvOhFvMx43YiOg-1; Mon, 27 Sep 2021 05:24:12 -0400
+X-MC-Unique: ASwCXpcuMvOhFvMx43YiOg-1
+Received: by mail-wr1-f70.google.com with SMTP id a17-20020adfed11000000b00160525e875aso6248202wro.23
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:24:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Jp02F8QsbdFJf3j7YUtw+WzbWBUYKqtVXobt73sBmVU=;
+        b=J1xlurBlMaqJT/2pc34T8FjzUS8Uq3AfKbxSRp7YQGttwrIIKfwXtMmy4WTLi8XvQj
+         SdZNvq6VCQ5llE6QqcqrPk3RqrE+EP9nZDjSmiw7o9FFy4LbxdoNYtWy0N0lZD+inZQO
+         AYulNTeMxGl/CLv1stS7sOFNj5MPR/DNYLhTpEp2hzhT9EC3ewbbXRZzjAg43H4NDm0+
+         2fTPezpTbig3oAlVd12XYOMc6pF9XnoKQN3NsVvAYzrjGU7jkHf1FtjrZz0uwyw6TS68
+         JKuufpbwQ+uBZXV2Gf4B4ub8KUOg2yiMdOAc2oMUSad3zN3K7IIprQ+aQXCqr3PVDGVR
+         GgVg==
+X-Gm-Message-State: AOAM5320yMzVmK4vQqpUz4yfH3roRoWYrym3Wi8Iyx7w7qTsTbQEHart
+        QX5P193RStODyYMpOVxovgNDGs70SrScWD7E2ld/BrQdLuih2DZ9qLAnJNNXLb4UzL7G0JmMwZ5
+        p8MMcnKkJsdAvaFuog0YfYP0G
+X-Received: by 2002:a5d:6c6e:: with SMTP id r14mr25885627wrz.319.1632734651150;
+        Mon, 27 Sep 2021 02:24:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygT4hurYn4CrYnSURJEf3gzm1/6pBYoxY+DcI2dUbDLFXRFlGkxtYsqSUAIJKK4I3S6u0tsw==
+X-Received: by 2002:a5d:6c6e:: with SMTP id r14mr25885610wrz.319.1632734650963;
+        Mon, 27 Sep 2021 02:24:10 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c654d.dip0.t-ipconnect.de. [91.12.101.77])
+        by smtp.gmail.com with ESMTPSA id g21sm622229wmk.10.2021.09.27.02.24.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 02:24:10 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Peter Xu <peterx@redhat.com>, Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+Date:   Mon, 27 Sep 2021 11:24:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927105553.105f22c5@coco.lan>
+In-Reply-To: <20210926161259.238054-1-namit@vmware.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:55:53AM +0200, Mauro Carvalho Chehab wrote:
-> Em Thu, 23 Sep 2021 19:13:04 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+On 26.09.21 18:12, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
 > 
-> > On Thu, Sep 23, 2021 at 05:41:11PM +0200, Mauro Carvalho Chehab wrote:
-> > > Hi Greg,
-> > > 
-> > > As requested, this is exactly the same changes, rebased on the top of
-> > > driver-core/driver-core-next.
-> > > 
-> > > -
-> > > 
-> > > It follows a series of improvements for get_abi.pl. it is on the top of driver-core/driver-core-next.
-> > > 
-> > > With such changes, on my development tree, the script is taking 6 seconds to run 
-> > > on my desktop:
-> > > 
-> > > 	$ !1076
-> > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined_after && cat undefined_after| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined_after undefined_symbols
-> > > 
-> > > 	real	0m6,292s
-> > > 	user	0m5,640s
-> > > 	sys	0m0,634s
-> > > 	  6838 undefined_after
-> > > 	   808 undefined_symbols
-> > > 	  7646 total
-> > > 
-> > > And 7 seconds on a Dell Precision 5820:
-> > > 
-> > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
-> > > 
-> > > 	real	0m7.162s
-> > > 	user	0m5.836s
-> > > 	sys	0m1.329s
-> > > 	6548 undefined
-> > > 	772 undefined_symbols
-> > > 
-> > > Both tests were done against this tree (based on today's linux-next):
-> > > 
-> > > 	$ https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_abi_undefined-latest
-> > > 
-> > > It should be noticed that, as my tree has several ABI fixes,  the time to run the
-> > > script is likely less than if you run on your tree, as there will be less symbols to
-> > > be reported, and the algorithm is optimized to reduce the number of regexes
-> > > when a symbol is found.
-> > > 
-> > > Besides optimizing and improving the seek logic, this series also change the
-> > > debug logic. It how receives a bitmap, where "8" means to print the regexes
-> > > that will be used by "undefined" command:
-> > > 
-> > > 	$ time ./scripts/get_abi.pl undefined --debug 8 >foo
-> > > 	real	0m17,189s
-> > > 	user	0m13,940s
-> > > 	sys	0m2,404s
-> > > 
-> > > 	$wc -l foo
-> > > 	18421939 foo
-> > > 
-> > > 	$ cat foo
-> > > 	...
-> > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_voltage.*_scale_available$)$/
-> > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_voltage.*_scale_available$)$/
-> > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_altvoltage.*_scale_available$)$/
-> > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_pressure.*_scale_available$)$/
-> > > 	...
-> > > 
-> > > On other words, on my desktop, the /sys match is performing >18M regular 
-> > > expression searches, which takes 6,2 seconds (or 17,2 seconds, if debug is 
-> > > enabled and sent to an area on my nvme storage).  
-> > 
-> > Better, it's down to 10 minutes on my machine now:
-> > 
-> > 	real	10m39.218s
-> > 	user	10m37.742s
-> > 	sys	0m0.775s
+> The goal of these patches is to add support for
+> process_madvise(MADV_DONTNEED). Yet, in the process some (arguably)
+> useful cleanups, a bug fix and performance enhancements are performed.
 > 
-> A lot better, but not clear why it is still taking ~40x more than here...
-> It could well be due to the other ABI changes yet to be applied
-> (I'll submit it probably later today), but it could also be related to
-> something else. Could this be due to disk writes?
+> The patches try to consolidate the logic across different behaviors, and
+> to a certain extent overlap/conflict with an outstanding patch that does
+> something similar [1]. This consolidation however is mostly orthogonal
+> to the aforementioned one and done in order to clarify what is done in
+> respect to locks and TLB for each behavior and to batch these operations
+> more efficiently on process_madvise().
+> 
+> process_madvise(MADV_DONTNEED) is useful for two reasons: (a) it allows
+> userfaultfd monitors to unmap memory from monitored processes; and (b)
+> it is more efficient than madvise() since it is vectored and batches TLB
+> flushes more aggressively.
 
-Disk writes to where for what?  This is a very fast disk (nvme raid
-array)  It's also a very "big" system, with lots of sysfs files:
+MADV_DONTNEED on MAP_PRIVATE memory is a target-visible operation; this 
+is very different to all the other process_madvise() calls we allow, 
+which are merely hints, but the target cannot be broken . I don't think 
+this is acceptable.
 
-	$ find /sys/devices/ -type f | wc -l
-	44334
+-- 
+Thanks,
 
-compared to my laptop that only has 17k entries in /sys/devices/
+David / dhildenb
 
-I'll run this updated script on my laptop later today and give you some
-numbers.  And any Documentation/ABI/ updates you might have I'll gladly
-take as well.
-
-thanks,
-
-greg k-h
