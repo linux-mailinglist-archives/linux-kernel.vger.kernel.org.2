@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4000F419527
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC33419529
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhI0NgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:36:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33082 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhI0NgC (ORCPT
+        id S234606AbhI0Ng0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:36:26 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47212 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234500AbhI0NgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:36:02 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 58884200FB;
-        Mon, 27 Sep 2021 13:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632749663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x3vMfvWadaNokYsZFv/qttPpg+8T11uFbVvjR0mtxDA=;
-        b=DYR138EClhQud7GMJv/nceDVuoziIDrW1E2V6snusD4adI7tklblrlHRugA5k/TwzqXM47
-        UtypAVEtPl0aa4Zx/P/gNpqA81Ae+4apzRFvN1asxySpptbP2uDOhRFkyFaD5kVvPhd1DZ
-        ZR7O86evXuHhJJX6E/dtWBtkci/nkxY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632749663;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x3vMfvWadaNokYsZFv/qttPpg+8T11uFbVvjR0mtxDA=;
-        b=oCAw4JMs5v0FIiVdy17zPjrH7+2vAPkmOiHGDxRsgtlzJT023Gew1U4PKjG6xpmz7XYpyW
-        9H6UI6wRL7espHBQ==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id 08BF825D45;
-        Mon, 27 Sep 2021 13:34:23 +0000 (UTC)
-Date:   Mon, 27 Sep 2021 15:34:22 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     Luis Chamberlain <mcgrof@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] module: fix clang CFI with MODULE_UNLOAD=n
-In-Reply-To: <20210927121541.939745-1-arnd@kernel.org>
-Message-ID: <alpine.LSU.2.21.2109271534060.5803@pobox.suse.cz>
-References: <20210927121541.939745-1-arnd@kernel.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Mon, 27 Sep 2021 09:36:24 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mUqmH-0004tz-Hv; Mon, 27 Sep 2021 15:34:41 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mUqmH-0001qc-9p; Mon, 27 Sep 2021 15:34:41 +0200
+Subject: Re: [PATCH bpf-next 4/4] bpf: export bpf_jit_current
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210924095542.33697-1-lmb@cloudflare.com>
+ <20210924095542.33697-5-lmb@cloudflare.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a076398b-f1da-c939-3c71-ac157ad96939@iogearbox.net>
+Date:   Mon, 27 Sep 2021 15:34:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210924095542.33697-5-lmb@cloudflare.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26305/Mon Sep 27 11:04:42 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021, Arnd Bergmann wrote:
+On 9/24/21 11:55 AM, Lorenz Bauer wrote:
+> Expose bpf_jit_current as a read only value via sysctl.
+> 
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>   include/linux/filter.h     | 1 +
+>   kernel/bpf/core.c          | 3 +--
+>   net/core/sysctl_net_core.c | 7 +++++++
+>   3 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index ef03ff34234d..b2143ad5ce00 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -1052,6 +1052,7 @@ extern int bpf_jit_harden;
+>   extern int bpf_jit_kallsyms;
+>   extern long bpf_jit_limit;
+>   extern long bpf_jit_limit_max;
+> +extern atomic_long_t bpf_jit_current;
+>   
+>   typedef void (*bpf_jit_fill_hole_t)(void *area, unsigned int size);
+>   
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index e844a2a4c99a..93f95e9ee8be 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -525,6 +525,7 @@ int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
+>   int bpf_jit_harden   __read_mostly;
+>   long bpf_jit_limit   __read_mostly;
+>   long bpf_jit_limit_max __read_mostly;
+> +atomic_long_t bpf_jit_current __read_mostly;
+>   
+>   static void
+>   bpf_prog_ksym_set_addr(struct bpf_prog *prog)
+> @@ -800,8 +801,6 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+>   	return slot;
+>   }
+>   
+> -static atomic_long_t bpf_jit_current;
+> -
+>   /* Can be overridden by an arch's JIT compiler if it has a custom,
+>    * dedicated BPF backend memory area, or if neither of the two
+>    * below apply.
+> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> index 5f88526ad61c..674aac163b84 100644
+> --- a/net/core/sysctl_net_core.c
+> +++ b/net/core/sysctl_net_core.c
+> @@ -421,6 +421,13 @@ static struct ctl_table net_core_table[] = {
+>   		.extra1		= &long_one,
+>   		.extra2		= &bpf_jit_limit_max,
+>   	},
+> +	{
+> +		.procname	= "bpf_jit_current",
+> +		.data		= &bpf_jit_current,
+> +		.maxlen		= sizeof(long),
+> +		.mode		= 0400,
+> +		.proc_handler	= proc_dolongvec_minmax_bpf_restricted,
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_MODULE_UNLOAD is disabled, the module->exit member
-> is not defined, causing a build failure:
-> 
-> kernel/module.c:4493:8: error: no member named 'exit' in 'struct module'
->                 mod->exit = *exit;
-> 
-> add an #ifdef block around this.
-> 
-> Fixes: cf68fffb66d6 ("add support for Clang CFI")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Overall series looks good to me. The only nit I would have is that the above could (in theory)
+be subject to atomic_long_t vs long type confusion. I would rather prefer to have a small handler
+which properly reads out the atomic_long_t and then passes it onwards as a temporary/plain long
+to user space.
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Thanks,
+Daniel
 
-M
+> +	},
+>   #endif
+>   	{
+>   		.procname	= "netdev_tstamp_prequeue",
+> 
+
