@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA13D419A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB20419CB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236197AbhI0RIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
+        id S237586AbhI0Rba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235898AbhI0RHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:07:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BAB611C0;
-        Mon, 27 Sep 2021 17:05:43 +0000 (UTC)
+        id S237704AbhI0R2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:28:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC0A861425;
+        Mon, 27 Sep 2021 17:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762344;
-        bh=n4DvtcZTm04iQNomVKcZGE6ClvJcKBb5pWQr++Yt2Es=;
+        s=korg; t=1632763033;
+        bh=O6rUdXp+SDzdPU5Z6ILATNLFRA9M7jDZ/3MxNrpFo0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kNb97gI4laGgKGJhx03vpRFoiWunEoMAYsi77abDIUlngRMeRuZNGti05+XkFvFJy
-         Ee30JoCLp5HQqwgksakS/LhoqXX+6rBWWVO2o+TzgjM97eJa1N1HtDvwUA5SRHgvXe
-         h7pI5dxZFTWMdDKacyKLse2Z2Ve6hIifQjDseCYQ=
+        b=QZb6MOOdpL5W2VmnCajLpK7AM1nqIzzoFaLE8+0lKXt8H7TGB1kRzR4K1kbI0mPFU
+         0LSg+uVjSm8V8zNFudUzndiNpFQ5xDeal1UXS7v06D9HdWEc4tU1RhSblowpPRBK9X
+         uiW1eTONgd1+bx1UfgIZeVfiQ69Bn1nKwQx2AXkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 55/68] compiler.h: Introduce absolute_pointer macro
+        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 125/162] bpf: Add oversize check before call kvcalloc()
 Date:   Mon, 27 Sep 2021 19:02:51 +0200
-Message-Id: <20210927170221.863503653@linuxfoundation.org>
+Message-Id: <20210927170237.765496277@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
-References: <20210927170219.901812470@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit f6b5f1a56987de837f8e25cd560847106b8632a8 ]
+[ Upstream commit 0e6491b559704da720f6da09dd0a52c4df44c514 ]
 
-absolute_pointer() disassociates a pointer from its originating symbol
-type and context. Use it to prevent compiler warnings/errors such as
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
+oversize check. When the allocation is larger than what kmalloc() supports,
+the following warning triggered:
 
-  drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
-  arch/m68k/include/asm/string.h:72:25: error:
-	'__builtin_memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
+WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
+Modules linked in:
+CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
+Call Trace:
+ kvmalloc include/linux/mm.h:806 [inline]
+ kvmalloc_array include/linux/mm.h:824 [inline]
+ kvcalloc include/linux/mm.h:829 [inline]
+ check_btf_line kernel/bpf/verifier.c:9925 [inline]
+ check_btf_info kernel/bpf/verifier.c:10049 [inline]
+ bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
+ bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
+ __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Such warnings may be reported by gcc 11.x for string and memory
-operations on fixed addresses.
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210911005557.45518-1-cuibixuan@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/compiler.h | 2 ++
+ kernel/bpf/verifier.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 9446e8fbe55c..bce983406aaf 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -233,6 +233,8 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-     (typeof(ptr)) (__ptr + (off)); })
- #endif
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9d94ac6ff50c..592b9b68cbd9 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9641,6 +9641,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
+ 	nr_linfo = attr->line_info_cnt;
+ 	if (!nr_linfo)
+ 		return 0;
++	if (nr_linfo > INT_MAX / sizeof(struct bpf_line_info))
++		return -EINVAL;
  
-+#define absolute_pointer(val)	RELOC_HIDE((void *)(val), 0)
-+
- #ifndef OPTIMIZER_HIDE_VAR
- /* Make the optimizer believe the variable can be manipulated arbitrarily. */
- #define OPTIMIZER_HIDE_VAR(var)						\
+ 	rec_size = attr->line_info_rec_size;
+ 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
 -- 
 2.33.0
 
