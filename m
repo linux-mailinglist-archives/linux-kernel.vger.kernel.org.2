@@ -2,231 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B17419A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0303419AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236239AbhI0RKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:10:18 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38123 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235931AbhI0RIo (ORCPT
+        id S236393AbhI0RMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:12:02 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:38490 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236552AbhI0RKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:44 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DFDF5580864;
-        Mon, 27 Sep 2021 13:07:05 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 27 Sep 2021 13:07:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:date:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=C23JHerz+uo3XKNwE1t4BeW8sj1
-        7nTbI7dVeuDRxUmU=; b=FcORk3VtJdjphBsYbRbfRwmkQK0fVtv6KQAIYwW7isK
-        6JIGneIoognErzIYqDOHKAKxCXEOA97UfJe1XNL8KCZy8z7TfiukdS5xsrfUzZFp
-        rLf1fXa/HhdxtP5RSuCc1gPCJ8lcgMq9TMCIEl5GmCOa+P3etfg2GKIoqxTwDu6O
-        o5isglcnxLJTUfwwrLgHlWiNV9Xn+hro7q37PLO6beNC5Q9MeNwiDjQSgAatt4iJ
-        TtU1COq0WVqcATwApgUmgypJT+YSZHXWVDOh5lmBljaejYfqEy8OgU1XpEfQwup6
-        m+CRz1rNsNEZeWcHM3QIPEkGog/hn7HVe7waFweNpcw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=C23JHe
-        rz+uo3XKNwE1t4BeW8sj17nTbI7dVeuDRxUmU=; b=AumqthNKsvCRFbLaVtRxgg
-        9Yh9K6j3P6zDURnIOPUIBIQnt3kQV5ME+Osou3m5wyqpR5O6jqohCchhebTPjs2G
-        Ssp3YAdeue5Rve0d3tMBdWQvuwO5PnALLztya6mGYr6cA2/2ZSa2RZg6j1WouguO
-        rFmO6bnabo/4AsHhjfz56e4uzX2eApWpO5HQrVTrD5WhxP2LM7gCHBvrRbelBn16
-        7q3fO63OAVi/ei9znwsKGSz476hb8NDzNluK1x7ppEbYiGHM1TusP4AcBa6fw+5y
-        dGhvfV93CpBoL7yGxi/xwOrx2/xBoMAinRI+oZuht2QIS7WNFCm9UilMcVXMfzIw
-        ==
-X-ME-Sender: <xms:OPpRYQAVxJO_y9oFDk94UQbD8i43-Na3ZSIfFhVy-7sStCLUhETxKg>
-    <xme:OPpRYSgNUbm4kWXiGvrshDYS2Fi_33smii0aUr5AD7juzh31pPbiGCJJh4OjU-PFo
-    HCshIIb8tWMU70pLaE>
-X-ME-Received: <xmr:OPpRYTnilIFfe_2pucrU1nTgecs_MbEGb6vwi5q8bYYW6_PoQIYBhS-t3zTA735gk2p1Xubf6cbQQhMX1F41JdvQq1B0IBH8DsvPytPz>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejkedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhfffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepmhgrgihi
-    mhgvsegtvghrnhhordhtvggthhenucggtffrrghtthgvrhhnpeeihfdvlefhtefgtefgtd
-    evieekjeegvdejffdvtefgudelkeefieetgeevieevteenucffohhmrghinhepuggvvhhi
-    tggvthhrvggvrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:OPpRYWz0Ei924i9XTUkRI9ZFTqwq4hwGIR29C19Y7aOMfH08dA5_vg>
-    <xmx:OPpRYVTefkrUwtlUuydnAUS73rH5KBQ9y8qQmBpaTMqKSuclzGHfvA>
-    <xmx:OPpRYRa-GgKxFXK1LU-lbELSV3TWdJo6pg9t6hQdHgyGuee6256Q9Q>
-    <xmx:OfpRYQ_wtch0dhFxsEjUSkpu8hhFfGkZg8f6H95OyjzjJYVI2GXj5A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Sep 2021 13:07:04 -0400 (EDT)
-From:   maxime@cerno.tech
-Date:   Mon, 27 Sep 2021 19:07:02 +0200
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Mon, 27 Sep 2021 13:10:00 -0400
+Received: by mail-oi1-f174.google.com with SMTP id u22so26459579oie.5;
+        Mon, 27 Sep 2021 10:08:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LP975dl3xHlgyqPGMVgzcJgxzN1j0uNYB1HMMJCHNTg=;
+        b=e9bADm+nFDh1D9qU45S65OooI67eF8kuz0G34i1Lcl8PA7CWnwXlPZxJ4iSle8/ZWZ
+         69SzobrpRoQwfNFKWC2dYfJi2opY5FfD05rNom6M13iFZum+RW4NB/yy1jfgYBj4tqq2
+         UQGtF6vn4wNczh4nkEBUZH/2JPs8DSweuNLhJ1n4cZeuhmaaB4a8iQYS2m5XDzWeySIF
+         H7j0sJC/WKKDRYWZ1oV15bZ0+YSw1+OQch2XmQgH0NZGCOfN/ERVZ+Ei+jq5P3EhP+6V
+         wYxMvUkOHIFM2Cq4v3Zp/1kjbgY9CwkxTf/D78azAE00SwWJAtH9iZAB8GaX3VCPSZH4
+         Tgdw==
+X-Gm-Message-State: AOAM5305dF5q1w9iHvDFTOgrkNvQfVwt0GwBKm0LIuIkOVsslQHCatDy
+        oOaHUdwMpErz+RiQTOzT5w==
+X-Google-Smtp-Source: ABdhPJzTrUa14LFZIHggVDOTBYg5Zt0YNgNpRcOEWlaeESALOxzCAyAUF81ovmdfNwoyyc9kfuLQrA==
+X-Received: by 2002:aca:a88e:: with SMTP id r136mr96832oie.101.1632762501505;
+        Mon, 27 Sep 2021 10:08:21 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x34sm1897955otr.8.2021.09.27.10.08.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 10:08:20 -0700 (PDT)
+Received: (nullmailer pid 3478888 invoked by uid 1000);
+        Mon, 27 Sep 2021 17:08:19 -0000
+Date:   Mon, 27 Sep 2021 12:08:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     devicetree@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-gpio@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 03/10] dt-bindings: display: Add
- ingenic,jz4780-dw-hdmi DT Schema
-Message-ID: <20210927170702.on243lp24fcfdhbj@gilmour>
-65;6402;1cFrom: Maxime Ripard <maxime@cerno.tech>
-References: <cover.1632761067.git.hns@goldelico.com>
- <6c8b72a03703de54fa02b29c1a53c84ca0889e50.1632761067.git.hns@goldelico.com>
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC PATCH v2 1/4] dt-bindings: interrupt-controller: Add
+ Renesas RZ/G2L Interrupt Controller
+Message-ID: <YVH6gxfzpo2vT+Ar@robh.at.kernel.org>
+References: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210921193028.13099-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j6vwrplgw63cjval"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6c8b72a03703de54fa02b29c1a53c84ca0889e50.1632761067.git.hns@goldelico.com>
+In-Reply-To: <20210921193028.13099-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---j6vwrplgw63cjval
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Sep 27, 2021 at 06:44:21PM +0200, H. Nikolaus Schaller wrote:
-> From: Sam Ravnborg <sam@ravnborg.org>
->=20
-> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
-> Based on .txt binding from Zubair Lutfullah Kakakhel
->=20
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: devicetree@vger.kernel.org
+On Tue, 21 Sep 2021 20:30:25 +0100, Lad Prabhakar wrote:
+> Add DT bindings for the Renesas RZ/G2L Interrupt Controller.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > ---
->  .../bindings/display/ingenic-jz4780-hdmi.yaml | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4=
-780-hdmi.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdm=
-i.yaml b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> new file mode 100644
-> index 000000000000..5e60cdac4f63
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Bindings for Ingenic JZ4780 HDMI Transmitter
-> +
-> +maintainers:
-> +  - H. Nikolaus Schaller <hns@goldelico.com>
-> +
-> +description: |
-> +  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys DesignWare HD=
-MI 1.4
-> +  TX controller IP with accompanying PHY IP.
-> +
-> +allOf:
-> +  - $ref: panel/panel-common.yaml#
+>  .../renesas,rzg2l-irqc.yaml                   | 130 ++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
+> 
 
-Is it a panel though?
-
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: ingenic,jz4780-dw-hdmi
-
-This can just be a const, there's no need for the items
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: the address & size of the LCD controller registers
-
-There's no need for that description, it's obvious enough
-
-> +  reg-io-width:
-> +    const: 4
-
-If it's fixed, why do you need it in the first place?
-
-> +  interrupts:
-> +    maxItems: 1
-> +    description: Specifies the interrupt provided by parent
-
-There's no need for that description, it's obvious enough
-
-> +  clocks:
-> +    maxItems: 2
-> +    description: Clock specifiers for isrf and iahb clocks
-
-This can be defined as
-
-clocks:
-  items:
-    - description: isrf
-    - description: iahb
-
-A better description about what these clocks are would be nice as well
-
-> +  clock-names:
-> +    items:
-> +      - const: isfr
-
-Is it isfr or isrf?
-
-> +      - const: iahb
-> +
-> +  hdmi-regulator: true
-> +    description: Optional regulator to provide +5V at the connector
-
-regulators need to be suffixed by -supply
-
-You also can just provide the description, you don't need the true there
-
-> +  ddc-i2c-bus: true
-
-ditto
-
-> +    description: An I2C interface if the internal DDC I2C driver is not =
-to be used
-> +  ports: true
-
-If there's a single port, you don't need ports
-
-You should also include /schemas/graph.yaml#/$defs/port-base
-
-Maxime
-
-
---j6vwrplgw63cjval
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYVH6NgAKCRDj7w1vZxhR
-xalAAP4tvNejSW/x6s4rB4S+KzL6lJIvVmJobeQcfT8CtoUBOQEAg/6rE4/wtT/n
-IHVxntZxhsCa4XBOGO/RZGHSn6WlHwY=
-=hZe+
------END PGP SIGNATURE-----
-
---j6vwrplgw63cjval--
+Reviewed-by: Rob Herring <robh@kernel.org>
