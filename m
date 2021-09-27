@@ -2,54 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2690E419BA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBFB419C94
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237002AbhI0RVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:21:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56430 "EHLO mail.kernel.org"
+        id S236510AbhI0RaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:30:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236702AbhI0RQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:16:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4496161206;
-        Mon, 27 Sep 2021 17:11:21 +0000 (UTC)
+        id S236779AbhI0R1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:27:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A7F6140B;
+        Mon, 27 Sep 2021 17:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632762681;
-        bh=YIj1ttTgSoJXrNem4LCwjOWEjR6amIHkBClahFPqxCk=;
+        s=k20201202; t=1632763013;
+        bh=f/BEVjLTb49Z6TVWWDAkvRhydk7RaDnxPLSTajgJNYc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bQpDrq44YdtHSTvkRChK+pqC47EzUI7ZnD4oL00JGKT33Qh/Pkbvl4z2RdNK62AKc
-         YeJ1pY7WhZckso1550bSxgeLJ0r7PDhOG4pPgctajdWKxELzDyh36ficRuBkmqEidE
-         h6kLnYXUj0M91IT9atxCCR8Vs6ZZdViovIKstvJLRfcewf/0p+1/yaec79p8vqQA93
-         wddJnDJH7KEBkTLLVYdZbU8xOh7J8ex/lrGw0IRVtMrS3YUpQ/1H0Ntpa6e4EU0onP
-         lkC4SeM+xHLEXecYQkh4cqlhptFqOs1T8vGZXvfUaZrKFwbKCGt9UfwBGv6SVvV7yc
-         giILeUx6mEyvQ==
-Date:   Mon, 27 Sep 2021 18:10:33 +0100
+        b=sIlsM4lK4EkXw3AcZ+N6ayBYbjJvte7NeC3D2nnuHIMwY49LwN5+5zBwwT2mf6ecT
+         xA8MnpKcZkKOrMs3gCAvIFe5JiTHQgMUmsaDC44ZigYnP20i/UMwkSzItRxQd6Shr2
+         cgF58c+n0tzaRaEmm03//ltDP/U21LjZflSv/00snbCevfqVf5W1716noRXKvtNNj3
+         EZMGIPIQq7vxYnv6seq7QQ6EsDZH/hCPFWMYZHcrDoqRRaBI009FW/owgwB/V0awV8
+         MWHLGtb4B/wuvcaG7uUoW0iwy9IAW01w6yNt/K/A6Ooasyjf4lWy+ZqQInxt/pwhtd
+         i0vR2cZITu/+w==
+Date:   Mon, 27 Sep 2021 18:16:02 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Ryan Lee <RyanS.Lee@maximintegrated.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
-Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Message-ID: <20210927171033.GF4199@sirena.org.uk>
-References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
- <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
- <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <20210927160622.GE4199@sirena.org.uk>
- <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.14 075/162] kselftest/arm64: signal: Add SVE to the set
+ of features we can check for
+Message-ID: <20210927171602.GG4199@sirena.org.uk>
+References: <20210927170233.453060397@linuxfoundation.org>
+ <20210927170236.052759270@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vA66WO2vHvL/CRSR"
+        protocol="application/pgp-signature"; boundary="vJguvTgX93MxBIIe"
 Content-Disposition: inline
-In-Reply-To: <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+In-Reply-To: <20210927170236.052759270@linuxfoundation.org>
 X-Cookie: 98% lean.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -57,49 +46,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---vA66WO2vHvL/CRSR
+--vJguvTgX93MxBIIe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 27, 2021 at 11:48:56AM -0500, Pierre-Louis Bossart wrote:
-> On 9/27/21 11:06 AM, Mark Brown wrote:
+On Mon, Sep 27, 2021 at 07:02:01PM +0200, Greg Kroah-Hartman wrote:
+> From: Mark Brown <broonie@kernel.org>
+>=20
+> [ Upstream commit d4e4dc4fab686c5f3f185272a19b83930664bef5 ]
+>=20
+> Allow testcases for SVE signal handling to flag the dependency and be
+> skipped on systems without SVE support.
 
-> > More specifically what it does is make the invalidation of the register
-> > cache unconditional.  It doesn't really matter if the invalidation is
-> > done on suspend or resume, so long as it happens before we attempt to
-> > resync - this could also be done by deleting the first_hw_init check.
+Unless you're backporting some test that makes use of this I'm not sure
+why this is stable material?
 
-> Mark, that's exactly my point: if the amp rejoins the bus, we will
-> *always* mark the cache as dirty, before the resync is done in the
-> resume sequence.
-
-Ah, yes - I see.
-
-> I am really trying to figure out if we have a major flaw in the resume
-> sequence and why things are different in the case of the Maxim amp.
-
-> Instead of changing the suspend sequence, can we please try to modify
-> the max98373_io_init() routine to unconditionally flag the cache as
-> dirty, maybe this points to a problem with the management of the
-> max98373->first_hw_init flag.
-
-A quick survey of other drivers suggests that this pattern should be
-factored out into some helpers as it looks like there's several ways of
-implementing it that look very similar but not quite the same...
-
---vA66WO2vHvL/CRSR
+--vJguvTgX93MxBIIe
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFR+wgACgkQJNaLcl1U
-h9A6bgf/cTWeKoYgzRvwlZJiKiKpOgHaFh+QmrmyBmmUJXA6VH6m0Fze8+zv238K
-RxgyPpu8fmSAZ+7QuLhbVl6G9dUKV1WSQM7QirWFidSndmUBEUmHfrkREVMn0N7I
-vWYkFVrWqlbxCPbh8s4H3bwFKZCbz4HQDnhKJH/Q5VhAMVSKEt22ybcZDUEvCzrB
-z+fu8ayfDdfbUeJ+/mQJIUdOm9vC9/iHZz5K2EU7Jh1JFQyOsKM7h+pVh51DMe5e
-p+GuZtmivYRLr7OA74wKxRMwstKwPJ0oZClBxdKvMZfZ4j3n+BET+28YxSMZMZXB
-yUa/XvmUfCcybDNwVsFuVnqVjug5aQ==
-=gqsX
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFR/FIACgkQJNaLcl1U
+h9Be4Qf/RiMUSdDNsQDz597c+r5WftWviZyAJ+TdXKwLV4E68sxcJ/LywwZL8w9e
+qinCapGHMk5z0EsBkxzTxqFskoBP0Rm0Uub5LfHPO1Kj8pDrro8LI7UZIwYIystn
+h3wpj0cvT2RJEimnKTGxPG0+73iND8CipK62v8c6AAPrnWJ6ZRvi4n/EK7N4BWmo
+veheNhL/aV46cig+dzLHfih7oZGYHAdOTGrTHwFtY6dONI92GBofSrJ6OgAbju29
+n9ZeUB2kfwhT1qEWaIohadXi+oKCzx6rRxXZ6I0tcLnLWrZ1EQWysx/7gtVvbCoa
+IiwZpH14A3AkfQHi/5VmfIFP4ar5Tg==
+=Zrou
 -----END PGP SIGNATURE-----
 
---vA66WO2vHvL/CRSR--
+--vJguvTgX93MxBIIe--
