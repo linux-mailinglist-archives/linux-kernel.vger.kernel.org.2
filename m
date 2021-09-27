@@ -2,205 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CE3418D50
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02E1418D36
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 02:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbhI0AjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 20:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
+        id S232113AbhI0AJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 20:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbhI0AjR (ORCPT
+        with ESMTP id S230401AbhI0AJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 20:39:17 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3416C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:37:40 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id r7so10625526pjo.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:37:40 -0700 (PDT)
+        Sun, 26 Sep 2021 20:09:01 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3071C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:07:24 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id w11so10503303plz.13
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 17:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZA8HS1ivZg91Ke/y1Kgrf08VWpYbEytVu6rjydTPJL8=;
-        b=KkRXvfr5yUVD7EXZ1b8SudB7kjuBVYemqMEsFXA6Xu4K2gvSmOnJYzi64fbEe/4BKD
-         amkcSM/XUjEkDPjr9RdpAB4MVUEIITrA+d8Y9rgpSADvqSmt8wWxG1gfBSUiURrvtcWL
-         cJ/3lRzcZ/S9cnrZMQiDXguDeZyI0GIHwh2b7p4A+2cE6cGPFuVD7hw7+JeCfliKrs+O
-         ssLdCXKBcvk7zbLaW8jhv39Ez5rRHiWOb31TjTjEhcQSJR+GZwWgy5CfyEc5ZBPHnsMc
-         6v//1Ld+59hh2xQngljolo5ovJFLGPc/FqnkdDI4/BwZFMnYk+LMgbwIYuPHKQRQSrNl
-         rQXA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TnL3/Du6Wty+HxO0knBzzKlL1BHmQ2erkxGPMnhKrTg=;
+        b=vLR0B0cI/pUW6GnIM4PYQP/D0cozOnKs+MoY0CXhQ+rgkRAFxIpUV2tQjAMaM6UC3Q
+         O+txzCwIu9EeENUZldLesA4oiFrQ6iVNEarym5WOujKaWczMAPcu49vPU7/GEX4c2CFw
+         2kAqAmJGbEHoClOjEf8W7pmTvFtLnkrco0GjFLVf64BhLTF1A8nAk3IQQo2EhDVNK+jt
+         6JwP9MtoHLjD/Bd3jnPHmM7QEtdYdbYEvAQfo0CPw+YTxKLW0MC4HqBrlYl3W+SYU0m6
+         GQkjM5HdCmHPqTzfBNM6Uz+2cSVqrWf8ehHgbHoMgKIUjfzHVfhaWkFuE8zpTtw13/1c
+         UCPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZA8HS1ivZg91Ke/y1Kgrf08VWpYbEytVu6rjydTPJL8=;
-        b=ZWwuYSCcyiihLtVlAuLDQtVVnaDoutMVxHz0fcGnLpkZec3uyLQ8QbyqNJppRnfit+
-         tNkRwZsHmyl51QgdyGb9zRZ4bMDbx9z38EXf7EO5IpyUdP8Bb8zjQebJPLThVjYz43a/
-         gwQx7KgP8Ks/WiOGG3Eoa3wMnrjmJhMtGaR4YA1+SIjkOO9wAwubQUiaO/PElsCpCJx+
-         tq4xvjtG/nzuHmYyL4VN95MVUGNIg8Wr0DciEMmrT3BcdkfwYdYsSF3ofk16n0KICy3e
-         HJAHm0zfrJYzUsXUBc6e3XLwqhVenpqybf6OQRDLPbF/GSLGQs9ieEAu+4x2xNA8Z9F0
-         Gjfg==
-X-Gm-Message-State: AOAM531ptrr/f5E1fRL+t041PaVobuIT7u9eMbWftvHkaE+OCnWUug0x
-        PRZfVykdJB8etYer2Owcqr0vHD5mp7o=
-X-Google-Smtp-Source: ABdhPJzvkzM/By793UAtTLXntevGRAwBN2++gpIagGa2o4rNumDxFnwr2T6EBQxFv3+CbRgOkpT9PQ==
-X-Received: by 2002:a17:90a:c982:: with SMTP id w2mr16299956pjt.30.1632703059970;
-        Sun, 26 Sep 2021 17:37:39 -0700 (PDT)
-Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id i15sm16445277pgo.4.2021.09.26.17.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Sep 2021 17:37:39 -0700 (PDT)
-From:   Nadav Amit <nadav.amit@gmail.com>
-X-Google-Original-From: Nadav Amit
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: [RFC PATCH] userfaultfd: support control over mm of remote PIDs
-Date:   Sun, 26 Sep 2021 10:06:37 -0700
-Message-Id: <20210926170637.245699-1-namit@vmware.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TnL3/Du6Wty+HxO0knBzzKlL1BHmQ2erkxGPMnhKrTg=;
+        b=oxCC1PBUlHl46SLJZZ311z9qvFTTtN879tL8pm18Li5RCqnrAe42eXtwvcoLoOZXmV
+         7lKoDGXEgAzK0jaRi4paJqw4DLEviYq2rt87fUR7toyt2gBGEKxl+1JAt1eogGOEaV9m
+         r0QKFV3dtXv81fiku8wbH/58COruc2f+D7UFAieKms75cEV4ywNJ6BrlwU7hWd7J02fj
+         yfzPK3nEk06TIDbY8ZfesLB2HcT59P0mJX7LROBoMCniOdN66nZ2fzGnNn5WlhatDXJz
+         JZ6iTQYcic2Z7CXGv4bdjfLUhziuSQMQ5lnCO0TO+yW3J6nAil9sosGLumgKnxmhuMAH
+         BUjA==
+X-Gm-Message-State: AOAM5331W53aR0d65BQXkmihEkbGIZT4M8pl+LqWDzAUXIQQu4m6z3/9
+        LuPHQfH4eE+fdXWmlxw4q3zEtw==
+X-Google-Smtp-Source: ABdhPJxeBWbyQ4nzQndjCCHFZRi4H8BGcBT0QXk+9L6HtTXd0aHJHRqnSE5c073iH7u311I4vPbDcg==
+X-Received: by 2002:a17:90a:928e:: with SMTP id n14mr16221326pjo.129.1632701244039;
+        Sun, 26 Sep 2021 17:07:24 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id c22sm14005032pja.10.2021.09.26.17.07.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 26 Sep 2021 17:07:23 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 08:07:16 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Caleb Connolly <caleb@connolly.tech>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: Drop vdd-supply from qusb2-phy devices
+Message-ID: <20210927000715.GD9901@dragon>
+References: <20210926075951.28034-1-shawn.guo@linaro.org>
+ <c8d61171-225f-ca1c-db9e-7ed3f91365b8@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8d61171-225f-ca1c-db9e-7ed3f91365b8@somainline.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+On Mon, Sep 27, 2021 at 12:58:19AM +0200, Konrad Dybcio wrote:
+> 
+> On 26.09.2021 09:59, Shawn Guo wrote:
+> > Looking at qcom,qusb2-phy.yaml bindings and qusb2_phy_vreg_names[] in
+> > qusb2-phy driver, vdd-supply is not a supported/valid property.  Drop it
+> > from qusb2-phy devices on various boards.
+> >
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> 
+> Why not add it to the regulators list instead? It's a valid regulator for this hw.
 
-Non-cooperative mode is useful but only for forked processes.
-Userfaultfd can be useful to monitor, debug and manage memory of remote
-processes.
+I do not have enough information to be sure.  Could you cook up a patch to
+update bindings and driver, if you think that's the case?  I will be
+happy as long as that DTS, bindings and driver are on the same page.
 
-To support this mode, add a new flag, UFFD_REMOTE_PID, and an optional
-second argument to the userfaultfd syscall. When the flag is set, the
-second argument is assumed to be the PID of the process that is to be
-monitored. Otherwise the flag is ignored.
-
-The syscall enforces that the caller has CAP_SYS_PTRACE to prevent
-misuse of this feature.
-
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Peter Xu <peterx@redhat.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
-
----
-
-I know that I have an RFC regarding the use of iouring with userfaultfd.
-I do intend to follow this RFC as well, but it requires some more work.
----
- fs/userfaultfd.c | 71 ++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 59 insertions(+), 12 deletions(-)
-
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 003f0d31743e..cf44e1e13a03 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -2053,10 +2053,39 @@ static void init_once_userfaultfd_ctx(void *mem)
- 	seqcount_spinlock_init(&ctx->refile_seq, &ctx->fault_pending_wqh.lock);
- }
- 
--SYSCALL_DEFINE1(userfaultfd, int, flags)
-+static int userfaultfd_get_remote_mm(struct userfaultfd_ctx *ctx, int pidfd)
- {
--	struct userfaultfd_ctx *ctx;
--	int fd;
-+	struct task_struct *task;
-+	struct pid *pid;
-+	struct fd f;
-+	int ret;
-+
-+	f = fdget(pidfd);
-+	if (!f.file)
-+		return -EBADF;
-+
-+	pid = pidfd_pid(f.file);
-+
-+	task = get_pid_task(pid, PIDTYPE_PID);
-+	ret = -ESRCH;
-+	if (!task)
-+		goto err_out;
-+
-+	ctx->mm = task->mm;
-+	mmgrab(ctx->mm);
-+	put_task_struct(task);
-+	ret = 0;
-+out:
-+	return ret;
-+err_out:
-+	fdput(f);
-+	goto out;
-+}
-+
-+SYSCALL_DEFINE2(userfaultfd, int, flags, int, pidfd)
-+{
-+	struct userfaultfd_ctx *ctx = NULL;
-+	int ret;
- 
- 	if (!sysctl_unprivileged_userfaultfd &&
- 	    (flags & UFFD_USER_MODE_ONLY) == 0 &&
-@@ -2067,14 +2096,19 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 		return -EPERM;
- 	}
- 
-+	if ((flags & UFFD_REMOTE_PID) && !capable(CAP_SYS_PTRACE))
-+		return -EPERM;
-+
- 	BUG_ON(!current->mm);
- 
- 	/* Check the UFFD_* constants for consistency.  */
-+	BUILD_BUG_ON(UFFD_REMOTE_PID & UFFD_SHARED_FCNTL_FLAGS);
- 	BUILD_BUG_ON(UFFD_USER_MODE_ONLY & UFFD_SHARED_FCNTL_FLAGS);
- 	BUILD_BUG_ON(UFFD_CLOEXEC != O_CLOEXEC);
- 	BUILD_BUG_ON(UFFD_NONBLOCK != O_NONBLOCK);
- 
--	if (flags & ~(UFFD_SHARED_FCNTL_FLAGS | UFFD_USER_MODE_ONLY))
-+	if (flags & ~(UFFD_SHARED_FCNTL_FLAGS | UFFD_USER_MODE_ONLY |
-+		      UFFD_REMOTE_PID))
- 		return -EINVAL;
- 
- 	ctx = kmem_cache_alloc(userfaultfd_ctx_cachep, GFP_KERNEL);
-@@ -2086,17 +2120,30 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	ctx->features = 0;
- 	ctx->released = false;
- 	atomic_set(&ctx->mmap_changing, 0);
--	ctx->mm = current->mm;
--	/* prevent the mm struct to be freed */
--	mmgrab(ctx->mm);
-+	ctx->mm = NULL;
-+
-+	if (flags & UFFD_REMOTE_PID) {
-+		/* the remote mm is grabbed by the following call */
-+		ret = userfaultfd_get_remote_mm(ctx, pidfd);
-+		if (ret)
-+			goto err_out;
-+	} else {
-+		ctx->mm = current->mm;
-+		/* prevent the mm struct to be freed */
-+		mmgrab(ctx->mm);
-+	}
- 
--	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
-+	ret = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
- 			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
--	if (fd < 0) {
-+	if (ret < 0)
-+		goto err_out;
-+out:
-+	return ret;
-+err_out:
-+	if (ctx->mm)
- 		mmdrop(ctx->mm);
--		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
--	}
--	return fd;
-+	kmem_cache_free(userfaultfd_ctx_cachep, ctx);
-+	goto out;
- }
- 
- static int __init userfaultfd_init(void)
--- 
-2.25.1
-
+Shawn
