@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23EE41927E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBE3419284
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 12:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhI0Kuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 06:50:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:41058 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233848AbhI0Kui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 06:50:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACA89ED1;
-        Mon, 27 Sep 2021 03:49:00 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.49.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0088A3F70D;
-        Mon, 27 Sep 2021 03:48:57 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 11:48:51 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: fix non-converging vmlinux link
-Message-ID: <20210927104851.GA3292@C02TD0UTHF1T.local>
-References: <20210927093043.380604-1-arnd@kernel.org>
+        id S233913AbhI0KvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 06:51:17 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40456 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233917AbhI0KvO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 06:51:14 -0400
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C91B920B4846;
+        Mon, 27 Sep 2021 03:49:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C91B920B4846
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1632739772;
+        bh=VZvw/wIlq/UcIn6rQL0WGXaz3mDbsqOb4IhjmRl4FHY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pw7JHDXW5hAtNU1o+qCli2Bl5b7+zDkuD+JHUDwagxb7XcKsBrCOm4nWD7s3RqNNx
+         T5R3SD7qZVctJCrTpSZ9BBTH0fIRnR1iZdfUEmgC6yDdg6NqqhIHApsgcHo9kTS4Ns
+         BJ0NKbmav13sVT5kQEe5hvU0jwYc7kJXpxCT1wjk=
+Received: by mail-pj1-f47.google.com with SMTP id h12so1799595pjj.1;
+        Mon, 27 Sep 2021 03:49:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533x5OWQGq63CW5Ay3yS8HXhRe79lJcWSPisZMXOBwIqr2bfO/nU
+        9H6FNB3RiOZopd6b6RvZ9zHIC0eJD0NcB5/jhuA=
+X-Google-Smtp-Source: ABdhPJwWrdUZbG6u6ik5z6zlzTdgcwT/NZeHyQQPSrmqvewNPKVfDBt9KV1cs+l0aSm29Sx+YJjL60kJr8YCPUPBr04=
+X-Received: by 2002:a17:902:7e8a:b0:13d:95e2:d9c2 with SMTP id
+ z10-20020a1709027e8a00b0013d95e2d9c2mr21933306pla.8.1632739772259; Mon, 27
+ Sep 2021 03:49:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927093043.380604-1-arnd@kernel.org>
+References: <20210919192104.98592-3-mcroce@linux.microsoft.com> <202109200526.YYwdkOeI-lkp@intel.com>
+In-Reply-To: <202109200526.YYwdkOeI-lkp@intel.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Mon, 27 Sep 2021 12:48:56 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2bhWVd-SdSaK3ppFNkoBpJa+-0+kSrWzdxrmYNjyM+Zg@mail.gmail.com>
+Message-ID: <CAFnufp2bhWVd-SdSaK3ppFNkoBpJa+-0+kSrWzdxrmYNjyM+Zg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] riscv: optimized memmove
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd, Ard,
-
-On Mon, Sep 27, 2021 at 11:30:11AM +0200, Arnd Bergmann wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
-> 
-> When the size of the vmlinux file is just below 64MB, the kernel
-> may fail to link with lld, producing output such as
-> 
-> ld.lld: error: assignment to symbol init_pg_end does not converge
-> ld.lld: error: assignment to symbol __pecoff_data_size does not converge
-> 
-> Change the INIT_DIR_SIZE definition to include init_pg_dir
-                                        ^
-Missing "not" here ---------------------'
-
-We *need* to access `init_pg_dir` while using `init_pg_dir`, since e.g.
-early_fixmap_init() needs to conntect the fixmap tables into it, so we
-*must* map at least a portion of `init_pg_dir`.
-
-We happen to over-map when using 4K pages, and so depending on the
-alignment and size of the kernel Image this can work by chance. Also,
-prior to v5.15-rc1, we'd over-map in all configurations, and this could
-happen to work, but that was fixed in commit:
-
-  90268574a3e8a6b8 ("arm64: head: avoid over-mapping in map_memory")
-
-So as-is, this patch regresses working configurations at runtime,
-including all 16K and 64K configs.
-
-Is there some way we can over-estimate the size such that this will
-converge? e.g. add some alignment padding such that `_end` won't
-oscillate as `init_pg_end` changes?
-
-Thanks,
-Mark.
-
-> to get a stable size calculation.
-> 
-> Arnd did the original report and analysis, but Ard figured what
-> to do about and wrote the changes to the code.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1219
-> Co-developed-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, Sep 20, 2021 at 12:06 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Matteo,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on linux/master]
+> [also build test ERROR on linus/master v5.15-rc1 next-20210917]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Matteo-Croce/riscv-optimized-mem-functions/20210920-032303
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git bdb575f872175ed0ecf2638369da1cb7a6e86a14
+> config: riscv-randconfig-r004-20210919 (attached as .config)
+> compiler: riscv64-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/9a948fd7d78a58890608e9dd0f77e5ff84f36e3e
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Matteo-Croce/riscv-optimized-mem-functions/20210920-032303
+>         git checkout 9a948fd7d78a58890608e9dd0f77e5ff84f36e3e
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=riscv SHELL=/bin/bash
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    arch/riscv/lib/string.c: In function '__memmove':
+> >> arch/riscv/lib/string.c:89:7: error: inlining failed in call to 'always_inline' 'memcpy': function body can be overwritten at link time
+>       89 | void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy);
+>          |       ^~~~~~
+>    arch/riscv/lib/string.c:99:24: note: called from here
+>       99 |                 return memcpy(dest, src, count);
+>          |                        ^~~~~~~~~~~~~~~~~~~~~~~~
+>
+>
+> vim +89 arch/riscv/lib/string.c
+>
+> 86c5866e9b7fdd Matteo Croce 2021-09-19  88
+> 86c5866e9b7fdd Matteo Croce 2021-09-19 @89  void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy);
+> 86c5866e9b7fdd Matteo Croce 2021-09-19  90  EXPORT_SYMBOL(memcpy);
+> 9a948fd7d78a58 Matteo Croce 2021-09-19  91
+>
 > ---
-> Ard, I had this in my randconfig tree with comment "Ard will
-> submit this with a proper changelog", but it seems we both forgot
-> about it, or maybe there was something wrong with it in the
-> end.
-> 
-> While looking for randconfig -Werror warnings in mainline I came
-> across it again and can confirm that this patch (or something like
-> it) is still needed. Let me know if you are happy with this version
-> or if you have a better description for it. I unfortunately forgot
-> the details of how this works.
-> ---
->  arch/arm64/include/asm/kernel-pgtable.h | 2 +-
->  arch/arm64/kernel/head.S                | 5 ++---
->  arch/arm64/kernel/vmlinux.lds.S         | 3 +++
->  3 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-> index 96dc0f7da258..5c622c18280a 100644
-> --- a/arch/arm64/include/asm/kernel-pgtable.h
-> +++ b/arch/arm64/include/asm/kernel-pgtable.h
-> @@ -86,7 +86,7 @@
->  			+ EARLY_PGDS((vstart), (vend)) 	/* each PGDIR needs a next level page table */	\
->  			+ EARLY_PUDS((vstart), (vend))	/* each PUD needs a next level page table */	\
->  			+ EARLY_PMDS((vstart), (vend)))	/* each PMD needs a next level page table */
-> -#define INIT_DIR_SIZE (PAGE_SIZE * EARLY_PAGES(KIMAGE_VADDR, _end))
-> +#define INIT_DIR_SIZE (PAGE_SIZE * EARLY_PAGES(KIMAGE_VADDR, init_pg_dir))
->  #define IDMAP_DIR_SIZE		(IDMAP_PGTABLE_LEVELS * PAGE_SIZE)
->  
->  /* Initial memory map size */
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 17962452e31d..2c3011660e48 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -366,10 +366,9 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	mov_q	x5, KIMAGE_VADDR		// compile time __va(_text)
->  	add	x5, x5, x23			// add KASLR displacement
->  	mov	x4, PTRS_PER_PGD
-> -	adrp	x6, _end			// runtime __pa(_end)
->  	adrp	x3, _text			// runtime __pa(_text)
-> -	sub	x6, x6, x3			// _end - _text
-> -	add	x6, x6, x5			// runtime __va(_end)
-> +	sub	x6, x0, x3			// init_pg_dir - _text
-> +	add	x6, x6, x5			// runtime __va(init_pg_dir)
->  
->  	map_memory x0, x1, x5, x6, x7, x3, x4, x10, x11, x12, x13, x14
->  
-> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> index f6b1a88245db..4792ddd1ae73 100644
-> --- a/arch/arm64/kernel/vmlinux.lds.S
-> +++ b/arch/arm64/kernel/vmlinux.lds.S
-> @@ -287,6 +287,9 @@ SECTIONS
->  	BSS_SECTION(SBSS_ALIGN, 0, 0)
->  
->  	. = ALIGN(PAGE_SIZE);
-> +
-> +	/* ----- kernel virtual mapping ends here ---- */
-> +
->  	init_pg_dir = .;
->  	. += INIT_DIR_SIZE;
->  	init_pg_end = .;
-> -- 
-> 2.29.2
-> 
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+How can we fix this? Maybe calling __memcpy() instead?
+
+-- 
+per aspera ad upstream
