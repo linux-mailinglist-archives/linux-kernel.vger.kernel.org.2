@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7BB41984A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C81419825
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235287AbhI0P5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhI0P5E (ORCPT
+        id S235210AbhI0Pqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:46:48 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49146
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234500AbhI0Pqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:57:04 -0400
-X-Greylist: delayed 597 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Sep 2021 08:55:26 PDT
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3850C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:55:26 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id C4D887056; Mon, 27 Sep 2021 17:45:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1632757523;
-        bh=uINzckaHWRAB6bDI1ZJ2oBSaftYRznM27HEgddxJZKM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eSO8ov2jfCvB+3BlliFk88AdmhWOL8hzLCPoXRUuz8hCrrwE7txUkyeHpgicqVVHR
-         QxWVF8anepK+dq/aMWHuYAh3XOLMEf6joPjPpGDqFEEy4BaxinGnB1oH15VnGLX+3I
-         9MG9UgyDVhsfHoynwPSSp7uEjynw0Q+XBG7R6/Mx6CxEVYSNsJTTfHdeqhmyQ1OAgE
-         DkCzUOLZkh23aVTlVTG+cnzS2HOyWUz2LxPQ5JVI/jxqNtp7n7oHs+ddL8WiVXp74T
-         nN8erRqaNgyd6gUcqb7QVN43aurGy7X37wETW8arEV9cSK3gkIVUoupWnSESCfQevl
-         /lSpBtMi9MMXITru5LSd0BFLE1J9ag5qif9mBEBPYLYGUUnFJNcVBwTJVRzBnysKuq
-         ZXo8xTCR5/ChyKCf3s6YwXKr2XNYS2gP4MhKm+8gwmqNasn/qFmIvFuEWL34a4JOCh
-         rgviaq+1Go34PPzByjtmdEtETgii61e5jn4Yn/ngbYajIP414FKeJ092Q/u4+SK8Kd
-         BmQrbrLjKz8MRYcWvQcpIn37Tieu/pZ78pJXZwMdQRL2NthBDQ7ai+xO/PKGrcmA+P
-         AAQvr/Kb8mWotWtrwMB5+2tKFc4JuxkX5zc9RYOdDdxfa9M9kOTbGxCKppBkopTVkZ
-         yNChzp/N5lsO9jbeCCbvJy3g=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Cc:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Subject: [PATCH] ocfs2: mount fails with buffer overflow in strlen
-Date:   Mon, 27 Sep 2021 17:44:59 +0200
-Message-Id: <20210927154459.15976-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
+        Mon, 27 Sep 2021 11:46:47 -0400
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9B99440264
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632757508;
+        bh=QblA15uiwZ7l+Ibk9gNFwOO+GmQVJrKRAtlqWocjIZ8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=N92Z5vyx4awUm1LnPpyRFAgETxSD2VepiMB0Va3uvTyDZZX2IzI+9um3kdby4ke+G
+         rEr34TsV5y5p2Eu1rusKVk4fPsoJbDAbFgYphNuKT5nVqznO4F8hN6mWvnhhxJdcwo
+         +xmL9DW4Xgdz1wa18rRGw3dKKfhV5YPpI5H1i6OYtb71RZwMozb3udL+SPHYlybhSF
+         lL+NbKXuJGl5YyFxDUgg7EAyzzJbtoMe4wcC4YVfdPLIV+pv4R3e8xvBWIOQecwphA
+         8eS2hsFktIwQ8sW7DoiD7TRqMyxLZ4CBNQeOUkiE5ICJu5LjCJmsuUNayV9aUjzdXs
+         f78PkfQwNWmrg==
+Received: by mail-pl1-f198.google.com with SMTP id v7-20020a1709029a0700b0013daaeaa33eso6150254plp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:45:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QblA15uiwZ7l+Ibk9gNFwOO+GmQVJrKRAtlqWocjIZ8=;
+        b=wsYlghnRfn5QOLcVPCRlcjeYbNc8gwoz7kmBJPsK/InPMSvqnRjIvaO9u7tKge7SWf
+         nZzbJEqgnrUYfwumjUjCtrZlYwNmzqCf889XbE2bYq+KqiZ5GeTxu2LU8ctaLdA07h9g
+         WQ7TkJLhDR/WF0DcQFX7gVsSV1xi0t91zc+apsskJ6oHVZtqZFm66GAiRclRbrTkpghi
+         OimacUrp5ceJadwntCQB9W2swxU4QveiGh0nyqAuAkh3eH98r14kBXVwCp5VIJa8l/D2
+         xnql/hnhOrppY/ijGaLSF1EIw/F35k4NIkQ+y1S2aXzHcc7GYIUHeEf/IbpzsN6uDBWn
+         Hh6w==
+X-Gm-Message-State: AOAM532xrfV7tAk6PCG3xMf2AAgAjgohu/V5okrcyYd6tu+hK6z5n6TB
+        Nchhj8CnfGSzAOa+qXKp9d2hrmOCc4yF8QjcyccrccueJpfHxTPt2AHfe6vR6fgcwmU5JoIDD1z
+        bs2mC2uRFvonuN4N1ohj5yXhZa5OVj+NMFal9K/dcUQ==
+X-Received: by 2002:a62:7e55:0:b0:441:c7a6:fcd2 with SMTP id z82-20020a627e55000000b00441c7a6fcd2mr383214pfc.6.1632757507045;
+        Mon, 27 Sep 2021 08:45:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIcXtn44DVJ7kkF5B6wBQHYvxY4BnpmGkvMYNq6WMkWLzHV8KuCCeAXC9apx+oB2TD0uA2Gw==
+X-Received: by 2002:a62:7e55:0:b0:441:c7a6:fcd2 with SMTP id z82-20020a627e55000000b00441c7a6fcd2mr383191pfc.6.1632757506705;
+        Mon, 27 Sep 2021 08:45:06 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id y2sm15987228pjl.6.2021.09.27.08.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 08:45:06 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     linux-fbdev@vger.kernel.org
+Cc:     tim.gardner@canonical.com, Antonino Daplas <adaplas@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] nvidiafb: Use strscpy() to prevent buffer overflow.
+Date:   Mon, 27 Sep 2021 09:45:02 -0600
+Message-Id: <20210927154502.21026-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with kernel v5.11 mouting an ocfs2 filesystem with either o2cb
-or pcmk cluster stack fails with the trace below. Problem seems to be
-that strings for cluster stack and cluster name are not guaranteed to be
-null terminated in the disk representation, while strlcpy assumes that
-the source string is always null terminated. This causes a read outside
-of the source string triggering the buffer overflow detection.
+Coverity complains of a possible buffer overflow. However,
+given the 'static' scope of nvidia_setup_i2c_bus() it looks
+like that can't happen after examiniing the call sites.
 
-detected buffer overflow in strlen
-------------[ cut here ]------------
-kernel BUG at lib/string.c:1149!
-invalid opcode: 0000 [#1] SMP PTI
-CPU: 1 PID: 910 Comm: mount.ocfs2 Not tainted 5.14.0-1-amd64 #1
-  Debian 5.14.6-2
-RIP: 0010:fortify_panic+0xf/0x11
-...
-Call Trace:
- ocfs2_initialize_super.isra.0.cold+0xc/0x18 [ocfs2]
- ocfs2_fill_super+0x359/0x19b0 [ocfs2]
- mount_bdev+0x185/0x1b0
- ? ocfs2_remount+0x440/0x440 [ocfs2]
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- path_mount+0x454/0xa20
- __x64_sys_mount+0x103/0x140
- do_syscall_64+0x3b/0xc0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+CID 19036 (#1 of 1): Copy into fixed size buffer (STRING_OVERFLOW)
+1. fixed_size_dest: You might overrun the 48-character fixed-size string
+  chan->adapter.name by copying name without checking the length.
+2. parameter_as_source: Note: This defect has an elevated risk because the
+  source argument is a parameter of the current function.
+ 89        strcpy(chan->adapter.name, name);
 
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Fix this warning by using strscpy() which will silence the warning and
+prevent any future buffer overflows should the names used to identify the
+channel become much longer.
+
+Cc: Antonino Daplas <adaplas@gmail.com>
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
 ---
- fs/ocfs2/super.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/video/fbdev/nvidia/nv_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index c86bd4e60e20..1dea535224df 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -2169,9 +2169,10 @@ static int ocfs2_initialize_super(struct super_block *sb,
- 	if (ocfs2_clusterinfo_valid(osb)) {
- 		osb->osb_stackflags =
- 			OCFS2_RAW_SB(di)->s_cluster_info.ci_stackflags;
--		strlcpy(osb->osb_cluster_stack,
-+		memcpy(osb->osb_cluster_stack,
- 		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
--		       OCFS2_STACK_LABEL_LEN + 1);
-+		       OCFS2_STACK_LABEL_LEN);
-+		osb->osb_cluster_stack[OCFS2_STACK_LABEL_LEN] = '\0';
- 		if (strlen(osb->osb_cluster_stack) != OCFS2_STACK_LABEL_LEN) {
- 			mlog(ML_ERROR,
- 			     "couldn't mount because of an invalid "
-@@ -2180,9 +2181,10 @@ static int ocfs2_initialize_super(struct super_block *sb,
- 			status = -EINVAL;
- 			goto bail;
- 		}
--		strlcpy(osb->osb_cluster_name,
-+		memcpy(osb->osb_cluster_name,
- 			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
--			OCFS2_CLUSTER_NAME_LEN + 1);
-+			OCFS2_CLUSTER_NAME_LEN);
-+		osb->osb_cluster_name[OCFS2_CLUSTER_NAME_LEN] = '\0';
- 	} else {
- 		/* The empty string is identical with classic tools that
- 		 * don't know about s_cluster_info. */
+diff --git a/drivers/video/fbdev/nvidia/nv_i2c.c b/drivers/video/fbdev/nvidia/nv_i2c.c
+index d7994a173245..0b48965a6420 100644
+--- a/drivers/video/fbdev/nvidia/nv_i2c.c
++++ b/drivers/video/fbdev/nvidia/nv_i2c.c
+@@ -86,7 +86,7 @@ static int nvidia_setup_i2c_bus(struct nvidia_i2c_chan *chan, const char *name,
+ {
+ 	int rc;
+ 
+-	strcpy(chan->adapter.name, name);
++	strscpy(chan->adapter.name, name, sizeof(chan->adapter.name));
+ 	chan->adapter.owner = THIS_MODULE;
+ 	chan->adapter.class = i2c_class;
+ 	chan->adapter.algo_data = &chan->algo;
 -- 
-2.30.2
+2.33.0
 
