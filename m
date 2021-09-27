@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D86419A81
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4466B419BE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235904AbhI0RJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
+        id S236343AbhI0RXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:23:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236178AbhI0RIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:08:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2D5611C7;
-        Mon, 27 Sep 2021 17:06:40 +0000 (UTC)
+        id S236043AbhI0RTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:19:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E61666134F;
+        Mon, 27 Sep 2021 17:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762401;
-        bh=ZNV9a8IFs+fmXNxvRAahcqLCfKTgexsnQXDH2qNUzq4=;
+        s=korg; t=1632762782;
+        bh=OqdgJlHVsssfnQqqHpKrNqiku44QOGpoNOBJS8fWfhQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwyT5Ee2/XqISDyqFVhY7pSun/Ks3aIMUwslMvw6rMWRQkpjQmHbDBjcFXtZpOnIC
-         lJu5KzxYs23cJQli/L7sbRz5kYJgOGMqsLH1u3XTJBO9rc9uBE3ze4jBOzgEMCd/QK
-         Xa1a7y3fsUmDZvXmendZcbNSk+hQfB/+O/qcePXw=
+        b=QI1u2dMaeh5GYL8OR/oPHeZjF+NHRrzYBg72KpNwgQaljRj7Mkk4rt3YUagb5CVHw
+         AqWHie5tKs6P8FSOvn4hYFPookaVYvmRvRj4n4VyFKyMlFgSV/r6uXnWIT8eRihbO5
+         YUoDTRVqu0ibiR/5N2u4gIYN53FKBmT8JGNxELfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.10 001/103] PCI: aardvark: Increase polling delay to 1.5s while waiting for PIO response
-Date:   Mon, 27 Sep 2021 19:01:33 +0200
-Message-Id: <20210927170225.752610525@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-afs@lists.infradead.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 048/162] afs: Fix page leak
+Date:   Mon, 27 Sep 2021 19:01:34 +0200
+Message-Id: <20210927170235.164647293@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,53 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: David Howells <dhowells@redhat.com>
 
-commit 2b58db229eb617d97d5746113b77045f1f884bcb upstream.
+[ Upstream commit 581b2027af0018944ba301d68e7af45c6d1128b5 ]
 
-Measurements in different conditions showed that aardvark hardware PIO
-response can take up to 1.44s. Increase wait timeout from 1ms to 1.5s to
-ensure that we do not miss responses from hardware. After 1.44s hardware
-returns errors (e.g. Completer abort).
+There's a loop in afs_extend_writeback() that adds extra pages to a write
+we want to make to improve the efficiency of the writeback by making it
+larger.  This loop stops, however, if we hit a page we can't write back
+from immediately, but it doesn't get rid of the page ref we speculatively
+acquired.
 
-The previous two patches fixed checking for PIO status, so now we can use
-it to also catch errors which are reported by hardware after 1.44s.
+This was caused by the removal of the cleanup loop when the code switched
+from using find_get_pages_contig() to xarray scanning as the latter only
+gets a single page at a time, not a batch.
 
-After applying this patch, kernel can detect and print PIO errors to dmesg:
+Fix this by putting the page on a ref on an early break from the loop.
+Unfortunately, we can't just add that page to the pagevec we're employing
+as we'll go through that and add those pages to the RPC call.
 
-    [    6.879999] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100004
-    [    6.896436] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100004
-    [    6.913049] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100010
-    [    6.929663] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100010
-    [    6.953558] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100014
-    [    6.970170] advk-pcie d0070000.pcie: Non-posted PIO Response Status: CA, 0xe00 @ 0x100014
-    [    6.994328] advk-pcie d0070000.pcie: Posted PIO Response Status: COMP_ERR, 0x804 @ 0x100004
+This was found by the generic/074 test.  It leaks ~4GiB of RAM each time it
+is run - which can be observed with "top".
 
-Without this patch kernel prints only a generic error to dmesg:
-
-    [    5.246847] advk-pcie d0070000.pcie: config read/write timed out
-
-Link: https://lore.kernel.org/r/20210722144041.12661-3-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org # 7fbcb5da811b ("PCI: aardvark: Don't rely on jiffies while holding spinlock")
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e87b03f5830e ("afs: Prepare for use of THPs")
+Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-and-tested-by: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/163111666635.283156.177701903478910460.stgit@warthog.procyon.org.uk/
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/afs/write.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -214,7 +214,7 @@
- 	(PCIE_CONF_BUS(bus) | PCIE_CONF_DEV(PCI_SLOT(devfn))	| \
- 	 PCIE_CONF_FUNC(PCI_FUNC(devfn)) | PCIE_CONF_REG(where))
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index c0534697268e..66b235266893 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -471,13 +471,18 @@ static void afs_extend_writeback(struct address_space *mapping,
+ 			}
  
--#define PIO_RETRY_CNT			500
-+#define PIO_RETRY_CNT			750000 /* 1.5 s */
- #define PIO_RETRY_DELAY			2 /* 2 us*/
+ 			/* Has the page moved or been split? */
+-			if (unlikely(page != xas_reload(&xas)))
++			if (unlikely(page != xas_reload(&xas))) {
++				put_page(page);
+ 				break;
++			}
  
- #define LINK_WAIT_MAX_RETRIES		10
+-			if (!trylock_page(page))
++			if (!trylock_page(page)) {
++				put_page(page);
+ 				break;
++			}
+ 			if (!PageDirty(page) || PageWriteback(page)) {
+ 				unlock_page(page);
++				put_page(page);
+ 				break;
+ 			}
+ 
+@@ -487,6 +492,7 @@ static void afs_extend_writeback(struct address_space *mapping,
+ 			t = afs_page_dirty_to(page, priv);
+ 			if (f != 0 && !new_content) {
+ 				unlock_page(page);
++				put_page(page);
+ 				break;
+ 			}
+ 
+-- 
+2.33.0
+
 
 
