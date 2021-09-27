@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3934A419FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312B8419FC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 22:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236757AbhI0UGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 16:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236726AbhI0UGa (ORCPT
+        id S236811AbhI0UJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 16:09:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39998 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236733AbhI0UJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:06:30 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B54CC061575;
-        Mon, 27 Sep 2021 13:04:52 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id ee50so74044843edb.13;
-        Mon, 27 Sep 2021 13:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7OX8yMzkk8iAoqm3EQC246sTeS8KMkAo8I3fGOIEk0o=;
-        b=jeaxrflHDslabpblAoWGyJ9CMxArRIOiQ6AgggHNG/E4JAzrSKTRDtxDKupBhU8Gnb
-         0EynIxCVGMXGy3RDx+gtNIuyGHfxNFZJMiistP250SzoxdgpfgtSJPxeEceuz+CDWJEc
-         CFx3lBQ0/esx6ft3FLZ2cIA9KpuAOAC/a0u178ZpC6XK0AD1HtB7mnoi+vxaNi0KpYnj
-         LLQ/AyIaUvj1u4j4Sl0/dtNoBiCRQ55wkJS/FZltVCVZ5dQmFU7n89ePggRQ2jnPvQQM
-         4xaMRaYLxapDhBG89Fudyd7F+FnbZMD7+5S/aNrTazb+TKbdUuZKILc39k9fD6f4CVqZ
-         i0qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7OX8yMzkk8iAoqm3EQC246sTeS8KMkAo8I3fGOIEk0o=;
-        b=IxFuuaAd83fNOMVIGytf+a1zP4TVkx8TQyF8FK6khlGe3wNsAcvf/SDMSfcJBaUnny
-         yoImbu7qvvtzQ2KQGsbDuiUTBx5Euo77Ls2jnyZzhnJxm279cefato8VdAoh9olb2i9R
-         wemqmUalV64nP4o85mThC/479q2CI1UW9xB30ciSYHIh0nG6H3uhb39NeGEm5pURqHhf
-         AJhHEdxSY3g0m0CuthHw89+RmlQm/skS+8Yjbf9VQ4+4ASKJ/4PJ9R0cZoLknL1SGgFU
-         OPyhDlCWXOPX4GCUNUkyh/JAq0MDGsv9kwhEwS/ndKTjuMWwypb27sJmODu11MwTl5iL
-         YTcA==
-X-Gm-Message-State: AOAM532iWGkeFIBvq06QNp6Q1QE/+KAZGYhXhNMKEQWvyoWCb2vAhUiN
-        qHxdD9e+r1rtXEz+ebdTMzveCaAjtO0Lg2vXRpU=
-X-Google-Smtp-Source: ABdhPJzuMhBwzbGpSC0BWzXQTXJ6xTuHcG+6DyWu4ypgvTPZ/5SFkk+EkuN8imBZmoAGRbFBIvfwepGqbgLbw0upOrQ=
-X-Received: by 2002:a17:906:318f:: with SMTP id 15mr2225309ejy.206.1632773090226;
- Mon, 27 Sep 2021 13:04:50 -0700 (PDT)
+        Mon, 27 Sep 2021 16:09:06 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AE35B1FF7C;
+        Mon, 27 Sep 2021 20:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632773245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxAIhH1YVtxRZIYXNVbyWMpsZD18tjPURBL8yhlODKY=;
+        b=rqCL/ZfaKLBBJ11Lvyjkmko7G0IT9x86WIcCx9OduTjm1NgsLZkg1W4/Fe1cCG/Qk9Yn8S
+        4UptkV/P2rPm+amFEtaKPN0FQNf0vfitqRtoMdyT/aUQpEjjB27ybGR9tRkeTK0IWi6EvT
+        6Aqpa+pvsMRplJz18xNNO1ZRkBSH1D8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632773245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxAIhH1YVtxRZIYXNVbyWMpsZD18tjPURBL8yhlODKY=;
+        b=QEbbg8qe4mXGT8/Upe6yCLvS822wAxZpuHOGT5K9AL53fjW4hFZgMNlgvVQ4RqvbLrzxR0
+        6bmSu51+HcRz6eCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id 389D425D42;
+        Mon, 27 Sep 2021 20:07:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 862D3DA799; Mon, 27 Sep 2021 22:07:08 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 22:07:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     David Howells <dhowells@redhat.com>
+Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
+        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+Message-ID: <20210927200708.GI9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, David Howells <dhowells@redhat.com>,
+        willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
+        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-References: <20210921192557.1610709-1-martin.blumenstingl@googlemail.com>
- <20210921192557.1610709-3-martin.blumenstingl@googlemail.com> <20210927161955.GA2837840@p14s>
-In-Reply-To: <20210927161955.GA2837840@p14s>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 27 Sep 2021 22:04:39 +0200
-Message-ID: <CAFBinCBBoCONAkT97nspipbbkwgLU2RjeQa5rz-MKiwyKoKAqA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
- AO ARC remote procesor
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, ohad@wizery.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+On Fri, Sep 24, 2021 at 06:17:52PM +0100, David Howells wrote:
+> 
+> Hi Willy, Trond, Christoph,
+> 
+> Here's v3 of a change to make reads and writes from the swapfile use async
+> DIO, adding a new ->swap_rw() address_space method, rather than readpage()
+> or direct_IO(), as requested by Willy.  This allows NFS to bypass the write
+> checks that prevent swapfiles from working, plus a bunch of other checks
+> that may or may not be necessary.
+> 
+> Whilst trying to make this work, I found that NFS's support for swapfiles
+> seems to have been non-functional since Aug 2019 (I think), so the first
+> patch fixes that.  Question is: do we actually *want* to keep this
+> functionality, given that it seems that no one's tested it with an upstream
+> kernel in the last couple of years?
+> 
+> There are additional patches to get rid of noop_direct_IO and replace it
+> with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use the
+> new ->swap_rw method and thence remove the direct BIO submission paths from
+> swap.
+> 
+> I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure if
+> that's necessary, but it seems accounting related.
+> 
+> The synchronous DIO I/O code on NFS, raw blockdev, ext4 swapfile and xfs
+> swapfile all seem to work fine.  Btrfs refuses to swapon because the file
+> might be CoW'd.  I've tried doing "chattr +C", but that didn't help.
 
-On Mon, Sep 27, 2021 at 6:20 PM Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
-[...]
-> > +#include <linux/bitfield.h>
-> > +#include <linux/bitops.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/property.h>
->
-> I moved this just above platform_device.h and applied this set.
-I missed that part - thanks for fixing this up and applying the other
-patch as well!
-
-
-Best regards,
-Martin
+There was probably some step missing. The file must not have holes, so
+either do 'dd' to the right size or use fallocate (which is recommended
+in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
+exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
+could try that without having to set up the swapfile manually.
