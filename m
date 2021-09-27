@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33488419B27
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0768419A3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236962AbhI0RPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
+        id S236248AbhI0RHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:07:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236914AbhI0RNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:13:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E20961207;
-        Mon, 27 Sep 2021 17:09:15 +0000 (UTC)
+        id S236085AbhI0RGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:06:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A765F61178;
+        Mon, 27 Sep 2021 17:05:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762556;
-        bh=2GYkAt9O173YpfmLkfPRMwMe6/y4lGTtCkxDYWyHzvg=;
+        s=korg; t=1632762317;
+        bh=A5CEHIsyIfqWQNoMi1xwrZ7ke7UFhHvp4MKZQM11BR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4O3OLNkpyJYG2uISz5ioGb2oDzGe2J2IDhxjk/jEleeHqLmGW6SMg0Fd3IZtADyu
-         y6hzrionh5jr9U61yEhHjj2ujHC9MpqnyPg06y3lZz2pFeCiCTJKx0uWN4uf/lfa4s
-         PeKdJsj7fHakUnX7bM3EDL3bU2MnIxgNf10GyYLw=
+        b=FhUv+YRhH1uXf8DDH0O0HOqYdTjCvE2Tx9b4nFF8OvX0FZAr9uTSaYk87RKtDfEyn
+         4bMvfZjkoftagl4i0KR7ESLB0M6vpFypuBhK1+PdAAPAoOYJT3aQ9WgqV/H/IJKILN
+         KdG5s6fH0BAIIjTjsGBxswj2kQyDKviuVbH47ZHE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 069/103] x86/asm: Add a missing __iomem annotation in enqcmds()
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 45/68] blktrace: Fix uaf in blk_trace access after removing by sysfs
 Date:   Mon, 27 Sep 2021 19:02:41 +0200
-Message-Id: <20210927170228.160144092@linuxfoundation.org>
+Message-Id: <20210927170221.522893587@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jiang <dave.jiang@intel.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 5c99720b28381bb400d4f546734c34ddaf608761 ]
+[ Upstream commit 5afedf670caf30a2b5a52da96eb7eac7dee6a9c9 ]
 
-Add a missing __iomem annotation to address a sparse warning. The caller
-is expected to pass an __iomem annotated pointer to this function. The
-current usages send a 64-bytes command descriptor to an MMIO location
-(portal) on a device for consumption.
+There is an use-after-free problem triggered by following process:
 
-Also, from the comment in movdir64b(), which also applies to enqcmds(),
-@__dst must be supplied as an lvalue because this tells the compiler
-what the object is (its size) the instruction accesses. I.e., not the
-pointers but what they point to, thus the deref'ing '*'."
+      P1(sda)				P2(sdb)
+			echo 0 > /sys/block/sdb/trace/enable
+			  blk_trace_remove_queue
+			    synchronize_rcu
+			    blk_trace_free
+			      relay_close
+rcu_read_lock
+__blk_add_trace
+  trace_note_tsk
+  (Iterate running_trace_list)
+			        relay_close_buf
+				  relay_destroy_buf
+				    kfree(buf)
+    trace_note(sdb's bt)
+      relay_reserve
+        buf->offset <- nullptr deference (use-after-free) !!!
+rcu_read_unlock
 
-The actual sparse warning is:
+[  502.714379] BUG: kernel NULL pointer dereference, address:
+0000000000000010
+[  502.715260] #PF: supervisor read access in kernel mode
+[  502.715903] #PF: error_code(0x0000) - not-present page
+[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
+[  502.717252] Oops: 0000 [#1] SMP
+[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
+[  502.732872] Call Trace:
+[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
+[  502.733734]  blk_add_trace_rq+0x7b/0xd0
+[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
+[  502.734755]  blk_mq_start_request+0xde/0x1b0
+[  502.735287]  scsi_queue_rq+0x528/0x1140
+...
+[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
+[  502.747501]  sg_ioctl+0x466/0x1100
 
-  drivers/dma/idxd/submit.c: note: in included file (through arch/x86/include/asm/processor.h, \
-	arch/x86/include/asm/timex.h, include/linux/timex.h, include/linux/time32.h, \
-	include/linux/time.h, include/linux/stat.h, ...):
-  ./arch/x86/include/asm/special_insns.h:289:41: warning: incorrect type in initializer (different address spaces)
-  ./arch/x86/include/asm/special_insns.h:289:41:    expected struct <noident> *__dst
-  ./arch/x86/include/asm/special_insns.h:289:41:    got void [noderef] __iomem *dst
+Reproduce method:
+  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sda, BLKTRACESTART)
+  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sdb, BLKTRACESTART)
 
- [ bp: Massage commit message. ]
+  echo 0 > /sys/block/sdb/trace/enable &
+  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
 
-Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Link: https://lkml.kernel.org/r/161003789741.4062451.14362269365703761223.stgit@djiang5-desk3.ch.intel.com
+  ioctl$SG_IO(/dev/sda, SG_IO, ...)
+  // Enters trace_note_tsk() after blk_trace_free() returned
+  // Use mdelay in rcu region rather than msleep(which may schedule out)
+
+Remove blk_trace from running_list before calling blk_trace_free() by
+sysfs if blk_trace is at Blktrace_running state.
+
+Fixes: c71a896154119f ("blktrace: add ftrace plugin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Link: https://lore.kernel.org/r/20210923134921.109194-1-chengzhihao1@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/special_insns.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/blktrace.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index cc177b4431ae..0cf19684dd20 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -286,7 +286,7 @@ static inline void movdir64b(void *dst, const void *src)
- static inline int enqcmds(void __iomem *dst, const void *src)
- {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } *__dst = dst;
-+	struct { char _[64]; } __iomem *__dst = dst;
- 	int zf;
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index 884333b9fc76..749b27851f45 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1656,6 +1656,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
+ 	if (bt == NULL)
+ 		return -EINVAL;
  
- 	/*
++	if (bt->trace_state == Blktrace_running) {
++		bt->trace_state = Blktrace_stopped;
++		spin_lock_irq(&running_trace_lock);
++		list_del_init(&bt->running_list);
++		spin_unlock_irq(&running_trace_lock);
++		relay_flush(bt->rchan);
++	}
++
+ 	put_probe_ref();
+ 	synchronize_rcu();
+ 	blk_trace_free(bt);
 -- 
 2.33.0
 
