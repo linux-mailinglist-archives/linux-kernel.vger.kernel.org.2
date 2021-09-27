@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5BA4191A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CB54191B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhI0JjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:39:07 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3878 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbhI0JjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:39:06 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HHyCf6wCdz67VF8;
-        Mon, 27 Sep 2021 17:34:54 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 11:37:26 +0200
-Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 27 Sep
- 2021 10:37:25 +0100
-Subject: Re: [PATCH v4 11/13] blk-mq: Refactor and rename
- blk_mq_free_map_and_{requests->rqs}()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "hare@suse.de" <hare@suse.de>
-References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
- <1632472110-244938-12-git-send-email-john.garry@huawei.com>
- <YU/Va9T+zcRNExUF@T590> <45c0c587-59a2-1761-e175-3920669d0bfb@huawei.com>
- <YVGMvlU5T8zaoEnM@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <cf6452cd-b148-553c-781d-5c888537ac28@huawei.com>
-Date:   Mon, 27 Sep 2021 10:40:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S233717AbhI0JnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233682AbhI0JnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 05:43:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79C2460F70;
+        Mon, 27 Sep 2021 09:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632735688;
+        bh=9hhtJVsGexG0XVk3k/pwBPZOJmTujKncE9iL0HXJp30=;
+        h=From:To:Cc:Subject:Date:From;
+        b=do7Grx6Q2G3z3JCOdoY72cgg/pNHi9Hw4uOyOAIVymjxJtguRuFrBjo+9Uc/xi6QH
+         bJG7HYtl+c5EFp2DGkIbb3dLU/HZHp/7hdFk3G674B5sgxMTKEJRZOHHAEWhp4UHqa
+         45pSzv4j8v3wGo1ookpJs9YjLnph54fHfZK14pI9JwhCItVPyG5WOf+A5mVxqxeMwb
+         HYPsFht2GVeWKjRPDo9AnotnrPrk2EfBviwluHIfbx3c2UHM55s6sFAI89uZtZrOxK
+         XjDiLaINnWPg70jpFsYcIGt+cnKNKw/6T61fCSBXAP1sDkP+6WtS6K9ueqZ7sl2dip
+         RGZyku3YMepOg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] vboxsf: fix old signature detection
+Date:   Mon, 27 Sep 2021 11:40:58 +0200
+Message-Id: <20210927094123.576521-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <YVGMvlU5T8zaoEnM@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.67]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2021 10:19, Ming Lei wrote:
->> However, apart from this, I can change __blk_mq_free_map_and_rqs() to
->> NULLify set->tags[i], as it is always passed set->tags[i].
->>
->> Do you have a preference?
-> I meant there are 5 following uses in your patch:
-> 
-> +                               blk_mq_free_map_and_rqs(set, set->tags[i], i);
-> +                               set->tags[i] = NULL;
-> 
-> and one new helper(blk_mq_free_set_map_and_rqs(set, i)?) can be added for just
-> doing that,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Ah, ok, but in the next patch we replace these blk_mq_free_map_and_rqs() 
-calls with __blk_mq_free_map_and_rqs(), and __blk_mq_free_map_and_rqs() 
-is always passed set->tags[i], so we do as you request there, i.e. 
-NULLify set->tags[i] in __blk_mq_free_map_and_rqs().
+The constant-out-of-range check in clang found an actual bug in
+vboxsf, which leads to the detection of old mount signatures always
+failing:
 
-Thanks,
-John
+fs/vboxsf/super.c:394:21: error: result of comparison of constant -3 with expression of type 'unsigned char' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+                       options[3] == VBSF_MOUNT_SIGNATURE_BYTE_3) {
+                       ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fs/vboxsf/super.c:393:21: error: result of comparison of constant -2 with expression of type 'unsigned char' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+                       options[2] == VBSF_MOUNT_SIGNATURE_BYTE_2 &&
+                       ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fs/vboxsf/super.c:392:21: error: result of comparison of constant -1 with expression of type 'unsigned char' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+                       options[1] == VBSF_MOUNT_SIGNATURE_BYTE_1 &&
+                       ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The problem is that the pointer is of type 'unsigned char' but the
+constant is a 'char'. My first idea was to change the type of the
+pointer to 'char *', but I noticed that this was the original code
+and it got changed after 'smatch' complained about this.
+
+I don't know if there is a bug in smatch here, but it sounds to me
+that clang's warning is correct. Forcing the constants to an unsigned
+type should make the code behave consistently and avoid the warning
+on both.
+
+Fixes: 9d682ea6bcc7 ("vboxsf: Fix the check for the old binary mount-arguments struct")
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/vboxsf/super.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+index 4f5e59f06284..84e2236021de 100644
+--- a/fs/vboxsf/super.c
++++ b/fs/vboxsf/super.c
+@@ -21,10 +21,10 @@
+ 
+ #define VBOXSF_SUPER_MAGIC 0x786f4256 /* 'VBox' little endian */
+ 
+-#define VBSF_MOUNT_SIGNATURE_BYTE_0 ('\000')
+-#define VBSF_MOUNT_SIGNATURE_BYTE_1 ('\377')
+-#define VBSF_MOUNT_SIGNATURE_BYTE_2 ('\376')
+-#define VBSF_MOUNT_SIGNATURE_BYTE_3 ('\375')
++#define VBSF_MOUNT_SIGNATURE_BYTE_0 (u8)('\000')
++#define VBSF_MOUNT_SIGNATURE_BYTE_1 (u8)('\377')
++#define VBSF_MOUNT_SIGNATURE_BYTE_2 (u8)('\376')
++#define VBSF_MOUNT_SIGNATURE_BYTE_3 (u8)('\375')
+ 
+ static int follow_symlinks;
+ module_param(follow_symlinks, int, 0444);
+-- 
+2.29.2
+
