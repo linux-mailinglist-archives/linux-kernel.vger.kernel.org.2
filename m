@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB962419D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B162B419D56
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbhI0Rsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:48:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57354 "EHLO mail.kernel.org"
+        id S237764AbhI0Rsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:48:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238199AbhI0Rs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:48:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5371A60FC2;
-        Mon, 27 Sep 2021 17:46:48 +0000 (UTC)
+        id S238213AbhI0Rsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:48:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3BA660F9B;
+        Mon, 27 Sep 2021 17:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632764809;
-        bh=Xv8E3XMv7rJdlIMJuXuej3bRuGoogKs0Slzg6FGG0JI=;
+        s=k20201202; t=1632764812;
+        bh=y7MVEonZhyoAS103sBSwF6KBKvSkyh11DLljvMwjBlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YsK5/9uavSQ5SsWVC7nSi90dnB44wefRa4BVpitO9Z+A182jp52gxj0eiI/ox7bFg
-         sM5uLSfQfjZ14vX5OyuK76XZ548cXn8fUU/HKcDSDjQPMHnyTTi3+MvESBOV60TmvN
-         dBpMCnoLr8LAe6kp1S9tL/T5kB20xYGrZOou20ttNTGIVdgcuJnJRSq5R52RfQOvfV
-         /T7f0LAqJ1l0m38X2gRYxs4SM/cWZ03AuXfpOPfa6edJ7hqIu7LvSUgifV7Xu6RupP
-         sdlQpvUuU7MrvW9lys9m93VSPOIGLIw7xaL1LKrrHdTDFFNjq+mqk8SO17wUI/mMEw
-         qgQHJr6X/coTA==
+        b=VaHB85phjyfNSC/aTep5QKSmJCgisA3HoVaGEVR967RXmAxbKNjoXBGmA7Fp6kjRy
+         txjHIhJYIIiJApigLTlI5wgGFqdzYSxq6BB9YRtNbf6R6mRwAQrUGK9TaxCpAq6isZ
+         9Pu1PrOyLKyJA4DvhPIiCaRQIZ41gaeTeA5mppFd63+WYYkhgSYxabUlI3IS0UAxG/
+         AVYIDbIk/ASDTmwiGF00fwI8W2PLrhBC7sM/BcSkA/ba85KW3d8H3XlUrYE/3uTJUx
+         GPF+h6a3Cz11mNnKh02/utgO/tB88qy739mtQl2Ug1r4zgn4XmKZPehJmQ07t3ku1+
+         vwC13SpnCdZEw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, rnayak@codeaurora.org,
-        linux-kernel@vger.kernel.org, skakit@codeaurora.org,
-        devicetree@vger.kernel.org, sboyd@kernel.org,
-        dianders@chromium.org, msavaliy@qti.qualcomm.com,
-        saiprakash.ranjan@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        mka@chromium.org
-Subject: Re: [RESEND PATCH V10] dt-bindings: spi: Add sc7280 support
-Date:   Mon, 27 Sep 2021 18:45:20 +0100
-Message-Id: <163276467078.29936.10417562338523817107.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Anand Moon <linux.amoon@gmail.com>,
+        linux-amlogic@lists.infradead.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCHv4] regulator: pwm-regulator: Make use of the helper function dev_err_probe()
+Date:   Mon, 27 Sep 2021 18:45:21 +0100
+Message-Id: <163276457918.18909.6526280333093875082.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1632725335-4570-1-git-send-email-rajpat@codeaurora.org>
-References: <1632725335-4570-1-git-send-email-rajpat@codeaurora.org>
+In-Reply-To: <20210925173413.1019-1-linux.amoon@gmail.com>
+References: <20210925173413.1019-1-linux.amoon@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,19 +43,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 12:18:55 +0530, Rajesh Patil wrote:
-> Add compatible for sc7280 SoC.
+On Sat, 25 Sep 2021 17:34:12 +0000, Anand Moon wrote:
+> devm_pwm_get() can return -EPROBE_DEFER if the pwm regulator is not
+> ready yet. Use dev_err_probe() for pwm regulator resources
+> to indicate the deferral reason when waiting for the
+> resource to come up.
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] dt-bindings: spi: Add sc7280 support
-      commit: eca17cbabd0cd52d32949b5ae27a4b3344e87781
+[1/1] regulator: pwm-regulator: Make use of the helper function dev_err_probe()
+      commit: e458d3f39d917770cef2ed78891349362ecd3e15
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
