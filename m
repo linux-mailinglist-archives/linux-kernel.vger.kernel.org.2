@@ -2,134 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE26419BE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F111419C09
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhI0RXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:23:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:39054 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236822AbhI0RTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:19:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8B3E6D;
-        Mon, 27 Sep 2021 10:18:16 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CA943F718;
-        Mon, 27 Sep 2021 10:18:14 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 18:18:12 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        will@kernel.org
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
- __entry_tramp_text_end
-Message-ID: <20210927171812.GB9201@C02TD0UTHF1T.local>
-References: <000000000000a3cf8605cb2a1ec0@google.com>
- <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
- <20210921165134.GE35846@C02TD0UTHF1T.local>
- <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
- <20210927170122.GA9201@C02TD0UTHF1T.local>
-MIME-Version: 1.0
+        id S237602AbhI0RZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:25:02 -0400
+Received: from mail-bn7nam10on2088.outbound.protection.outlook.com ([40.107.92.88]:31581
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236935AbhI0RVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:21:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FaWk5wURpccpOoeOf1Vqor+BHhGhdCC+oKu2V4qHTQ9VDslIL0K1y8CsDdKrfg8Lxw5xzSd3BcBYfXcByl6yxvFFhJx90wcA3EDgRz5h9OKdWVmKrNY4Nmy/r0sv1xz3LjKsPjDzrjhBFNvFb1ZGYJmONWWVjxZBmS866AYvDuPqADr4bkaqxCrOgekzMltZOxJNEwZu/i46ac9SvIYf1ajYG34+LA9duJ9EsSwghQSTlcME+JCAwacvqeM90ZdW5W7+2Yp+1x62AsppO3zmO8WOxhX64fD78kXddSMuqEbf64TlILfs3hSxR4QkiAxLKq1XDSkqkgGhWSol8esqqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=bAMUPDQfKbJMbldc7+ksQyPvmXokb2ax/0EphFC7XiM=;
+ b=ULyDEHbcd935JcOS2b8QYmkWdeBwcJ82Rapb6GqQpQaH8fPE5Dbc2Woe8Hycwvbr8w89nfQzvl4Q0t+8bL7ZfHU1FgnmEj0yxKOqU+s6Tne0rd0eOsY11nnkPqAGIJ5jAm+v5MVrIiJKw3gsPPl0quMzun0FM9xM4/lkJYLkF6CL7PToytJCSaKMbtdv5rNe3uelHwcQaK9X+ntBs7NTo25smceAKgHwH6HCLYjXAknp5+DPAYlNZG1SKgKGE+KKOQqq3S1EgbwxlTsoslDug7bZadZIkqi719iRVXs0uf1A2gTUbCJpnceocl+yR3Soa+XADTjiBDTrCzgGYuuT2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bAMUPDQfKbJMbldc7+ksQyPvmXokb2ax/0EphFC7XiM=;
+ b=MTyACgUwkfCwME6TvrTBzC5XhTo4+OsOsWKcposXowY6I2aPY+xF814F9KrA3a2/ar19rp2dgWB01a26apRbF+dviWL+vj6YcoJOgPF36PPP/1MAKMxdhZ/N6pzyuxBy+Wk1FktvgajFjj/ZgPz/H5TXye5YFT+fTpkeV7jlcRhxEz8DZW49JJrLh7cD6HIe0GUSjto1b9D5xFUrGMbuZgc+Sh5Y++AZ603+frIVeFYhz8IH3RbYbEuLAT4yqh7Uy4nCbOasM/JEZdVOdytngdjnaVrqDOUCe8ITnpIMxuWMduV+wII9aa0PthYNSMh/g+oAInc7jiQM7hHC4gl+TA==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5159.namprd12.prod.outlook.com (2603:10b6:208:318::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Mon, 27 Sep
+ 2021 17:20:08 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 17:20:08 +0000
+Date:   Mon, 27 Sep 2021 14:20:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 07/11] RDMA/nldev: Allow optional-counter
+ status configuration through RDMA netlink
+Message-ID: <20210927172006.GC1529966@nvidia.com>
+References: <cover.1631660727.git.leonro@nvidia.com>
+ <ed88592c676c5926195a6f89926146acaa466641.1631660727.git.leonro@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927170122.GA9201@C02TD0UTHF1T.local>
+In-Reply-To: <ed88592c676c5926195a6f89926146acaa466641.1631660727.git.leonro@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0124.namprd13.prod.outlook.com
+ (2603:10b6:208:2bb::9) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0124.namprd13.prod.outlook.com (2603:10b6:208:2bb::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.8 via Frontend Transport; Mon, 27 Sep 2021 17:20:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mUuIQ-006QkU-Hw; Mon, 27 Sep 2021 14:20:06 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc452157-6950-400c-5606-08d981db0da0
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5159:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB515960DAF05AB9771AABAFC4C2A79@BL1PR12MB5159.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xJxUjx1wmXqUXCYUNVLphC3PIszjgcItupTeA1VBP0zfIHFyZTnBmfLvUYQniV7Dkl7du/Xrq3PW85d/EvFctu/gvMhZRgSI15JiBbh/C8Sq/T5ek975DRZ7UusbiN9sZdQV77/aJxWaWXtbT2EXYEryC9A3mbtTeXLqyCJ9J79CnpRDeo3sBt0c1dbiDJxXmUiyBmLIVU5pU1Q17WxaYSXijJUtCy9QS6flsMm3jCwJn4Js/AUpppg0h1OSt2o5Vf/gZHHjqlHya3+v5eASzNl2GTvSM/HNeb7X9dhbTcU/r56xrxdIHdVSQnzhl0h9rgdwbyYFolcHe0WbPvZE9izM/DsHLfHIm78GHMV6lILKYz7GRvWN3IaG1gIJkJMsiKxSe5ICETtkCdRGhBog82vPZDY6gb+hhp6L4qIkt+SAa5H4RkGJ/EVu9Mk9hWtodpCjgMdPWd1v9kX4RaK6W4c91YH/1YlZa725R1mLUiIKlaglkss3jXMjuGMqPmzhhzJq53l0fqdzSN5WqcrCI+j0GNpQDf7EGZRJcFE5RbD0GA5CIroDcybVpGkWqs+nwor3WSahS1BCbJLE8hYb6ODha8WTM6NeNxuTdNVLoJnmBhPJz8DoyC83uJ07+A7XYq2c4uSrPBmSpEpGpqHbzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4744005)(2616005)(2906002)(316002)(6916009)(5660300002)(38100700002)(36756003)(7416002)(426003)(54906003)(66556008)(66476007)(66946007)(9746002)(9786002)(508600001)(83380400001)(8676002)(26005)(33656002)(186003)(8936002)(4326008)(1076003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rLK39boPqRRsCK8BPtvitsrTJQ5+h4sjlXxrQd/+z4DANjsZqJ7kcB4yLMQE?=
+ =?us-ascii?Q?mD9sl/Btnck1DVox5FCfJtvTUxkIxjTBCnu2s8lhLdLKXz9K7QJRLcc5hc37?=
+ =?us-ascii?Q?Whfoa22q0QaEqwpKB50WON4ejuYyTdw4sWQHJHUQhMM8jJJ9Mh7CeB2+y62H?=
+ =?us-ascii?Q?7OvoMFM7NNxR5XNVxlTnVG7WvXWaEX+K60YNOfPxT+mSCRB0/bqv7dl6/qxb?=
+ =?us-ascii?Q?fxnGXjA1ZXk5rz3dKcUccXhsWL0B3Y4hoDQlwb2IwHF6uLtPf2eFi6pLOsbY?=
+ =?us-ascii?Q?oogZ9Fh8rL7+zam4y4wxwofn3JqSbxt0NysinwZ6F40Z4t1RfaQtahbr2PUo?=
+ =?us-ascii?Q?EuDKm7HSLOpgjqBpVedtUWLVbQapo9JKZW3Qb24dumJESq5y3KzdPAy0laH1?=
+ =?us-ascii?Q?/7+knpYQNgV+W0t5Bm8X57YO2775POaC1OvesxZNhh9Awrf8VNM6FxrJYQPx?=
+ =?us-ascii?Q?8ob5h5UVcDijvl0UVS89iUxj456RxIuk/xIVMxR1ODy1W5ANmd6fxYgaAKCO?=
+ =?us-ascii?Q?zp4EugPfb5LDvq3DKtx1cgnp103xXWogeW9aC6qSzTfwM9Al+6OD3+jaiuax?=
+ =?us-ascii?Q?/Ew1YKDapOIvwKYqtH/AdNPU7vsA9XikaaDNtK8+sToOdc6TjhA7Mzw8I7Rg?=
+ =?us-ascii?Q?MM5AaZLPtJ4HW9XxWZal3qsbiDG2antadVdpG1GjBwG0tJJy9tLD3TMDkW0a?=
+ =?us-ascii?Q?wZYp3+w6vbws0fcf8ajruIyd+9nYAXVbexH9BOUVq0f+M7P7dVBbIxA7SCCY?=
+ =?us-ascii?Q?Lq2Gz706QPk8TnF3kbLusfu6AGBB2N2HdfiWWd6nL+7+P5yviSkr2Lr8Es66?=
+ =?us-ascii?Q?XdO7XxgtgBI2Oggc33OtfrsBnWki8RUCBh0MuNNVQoGsA31HUanQw825ohwl?=
+ =?us-ascii?Q?8+g2LF8B/S5vn5hBBP4wXL+Yje4vl8dk/wd7Z3ZumgAoeZY+ouJURBdUmAE5?=
+ =?us-ascii?Q?lSZAQt0FL3rhAYv2UTsPQTtrGaorlJpazQ3H4FCVsa2vxqmS8SkoHh0Uj9Ci?=
+ =?us-ascii?Q?jJ1718qYjqz8sf7P36b/E2txPQ0YpAlrMyVgYpTKHbKwRsvPJMRWF61ZUlV5?=
+ =?us-ascii?Q?jJBv0AYcpJd3oe9qUH2rBIm8XygS/V+r6vfGyrsparDx1JDXj+731iSq+UwG?=
+ =?us-ascii?Q?5Tnpn/Pn7OnGuyoGdIlxVMni955YRqfeez+tfyIAxqBwdRlKxavjnVP69UsG?=
+ =?us-ascii?Q?JfFJNft1dtqjPQw7csOJHQTtIw1FRqMS6ExvyG7tpDiqAu3RZd/4+qphVHK1?=
+ =?us-ascii?Q?RtXPgkKKl+953nQ8FCiBBgcR+st69bIFCSKG1LnB/6SMpjpve6mkYfA4a4z2?=
+ =?us-ascii?Q?6MBHyswTerjJdpLbkCzhPuKN?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc452157-6950-400c-5606-08d981db0da0
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 17:20:07.8308
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SSKMcRxp+BgND7Yr2JVQj1HPbxAkE+eQl/2ixHzyltjgInC3LTjNQoEx1klxRW+w
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 06:01:22PM +0100, Mark Rutland wrote:
-> On Mon, Sep 27, 2021 at 04:27:30PM +0200, Dmitry Vyukov wrote:
-> > On Tue, 21 Sept 2021 at 18:51, Mark Rutland <mark.rutland@arm.com> wrote:
-> > >
-> > > Hi Dmitry,
-> > >
-> > > The good news is that the bad unwind is a known issue, the bad news is
-> > > that we don't currently have a way to fix it (and I'm planning to talk
-> > > about this at the LPC "objtool on arm64" talk this Friday).
-> > >
-> > > More info below: the gist is we can produce spurious entries at an
-> > > exception boundary, but shouldn't miss a legitimate value, and there's a
-> > > plan to make it easier to spot when entries are not legitimate.
-> > >
-> > > On Fri, Sep 17, 2021 at 05:03:48PM +0200, Dmitry Vyukov wrote:
-> > > > > Call trace:
-> > > > >  dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
-> > > > >  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
-> > > > >  __dump_stack lib/dump_stack.c:88 [inline]
-> > > > >  dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
-> > > > >  print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
-> > > > >  __kasan_report mm/kasan/report.c:442 [inline]
-> > > > >  kasan_report+0x134/0x380 mm/kasan/report.c:459
-> > > > >  __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
-> > > > >  do_bad_area arch/arm64/mm/fault.c:466 [inline]
-> > > > >  do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
-> > > > >  do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
-> > > > >  el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
-> > > > >  el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
-> > > > >  el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
-> > > > >  __entry_tramp_text_end+0xdfc/0x3000
-> > > >
-> > > > /\/\/\/\/\/\/\
-> > > >
-> > > > This is broken unwind on arm64. d_lookup statically calls __d_lookup,
-> > > > not __entry_tramp_text_end (which is not even a function).
-> > > > See the following thread for some debugging details:
-> > > > https://lore.kernel.org/lkml/CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com/
-> 
-> Looking at this again (and as you point out below), my initial analysis
-> was wrong, and this isn't to do with the LR -- this value should be the
-> PC at the time the exception boundary.
+On Wed, Sep 15, 2021 at 02:07:26AM +0300, Leon Romanovsky wrote:
+> -		return -EINVAL;
+> +		need_enable = false;
+> +		disabled = test_bit(i, stats->is_disabled);
+> +		nla_for_each_nested(entry_attr,
+> +				    tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTERS], rem) {
+> +			index = nla_get_u32(entry_attr);
+> +			if (index >= stats->num_counters)
+> +				return -EINVAL;
+> +			if (i == index) {
+> +				need_enable = true;
+> +				break;
+> +			}
+> +		}
+>  
+> -	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
+> -	if (!rdma_is_port_valid(device, port)) {
+> -		ret = -EINVAL;
+> -		goto err;
+> +		if (disabled && need_enable)
+> +			ret = rdma_counter_modify(device, port, i, true);
+> +		else if (!disabled && !need_enable)
+> +			ret = rdma_counter_modify(device, port, i, false);
 
-Whoops, I accidentally nuked the more complete/accurate analysis I just
-wrote and sent the earlier version. Today is not a good day for me and
-computers. :(
+This disabled check looks racy, I would do the no-change optimization inside
+rdma_counter_modify()
 
-What's happened here is that __d_lookup() (via a few layers of inlining) called
-load_unaligned_zeropad(). The `LDR` at the start of the asm faulted (I suspect
-due to a tag check fault), and so the exception handler replaced the PC with
-the (anonymous) fixup function. This is akin to a tail or sibling call, and so
-the fixup function entirely replaces __d_lookup() in the trace.
+Also, this is a O(N^2) algorithm, why not do it in one pass with a
+small memory allocation for the target state bitmap?
 
-The fixup function itself has an `LDR` which faulted (because it's
-designed to fixup page alignment problems, not tag check faults), and
-that is what's reported here.
-
-As the fixup function is anonymous, and the nearest prior symbol in .text is
-__entry_tramp_text_end, it gets symbolized as an offset from that.
-
-We can make the unwinds a bit nicer by adding some markers (e.g. patch
-below), but actually fixing this case will require some more thought.
-
-Thanks,
-Mark.
-
----->8----
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 709d2c433c5e..127096a0faea 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -111,6 +111,11 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define FIXUP_TEXT                                     \
-+       __fixup_text_start = .;                         \
-+       *(.fixup);                                      \
-+       __fixup_text_end = .;
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -161,7 +166,7 @@ SECTIONS
-                        IDMAP_TEXT
-                        HIBERNATE_TEXT
-                        TRAMP_TEXT
--                       *(.fixup)
-+                       FIXUP_TEXT
-                        *(.gnu.warning)
-                . = ALIGN(16);
-                *(.got)                 /* Global offset table          */
+Jason
