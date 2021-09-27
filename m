@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3FA419C74
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0050419B4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238659AbhI0R3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:29:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41188 "EHLO mail.kernel.org"
+        id S236059AbhI0RRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:17:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237771AbhI0RZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:25:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 914B7611CE;
-        Mon, 27 Sep 2021 17:16:02 +0000 (UTC)
+        id S236956AbhI0RN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:13:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C9A61350;
+        Mon, 27 Sep 2021 17:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762963;
-        bh=E8d5tTlPPqGv8YBYCcMffToK+2DY0A45cC97piP+bAw=;
+        s=korg; t=1632762561;
+        bh=5PpxMosUvbaHxWTsZ4bA+bjUF2Cj80aRhhZh5tYbYn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iwXVcbSegJVv4Klao+dlB902kxWMl4DAoZy3MPb57IZ51I53sIkkuh6m0CGHWSglN
-         EZAtwA97vQZLdT45neWfdKZ1Ok5d7R4hb1VBXQnAYvQ373mAeVYOfyZRAAvCE3jbi3
-         PyFQuxKPbaJYG4ymVmXSuQ/OUvi+4Yd3r34NUP8M=
+        b=q6+wRRsApZkqpPa6CTH6pRShzd7jai8+bk8LHMjV76cONoHYvUzIVYljyGFNYrOsv
+         ImH9Y2utXrvqqhhqKiMmjcYfjrZCkFjfkIB8NJe8g80cH8AGA0c3TnLCoArWxwSr1A
+         EsxfwTmx3A/8/MB9v/oQ4KiRnGkr4ZPz/NbBBJqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 116/162] blktrace: Fix uaf in blk_trace access after removing by sysfs
-Date:   Mon, 27 Sep 2021 19:02:42 +0200
-Message-Id: <20210927170237.464657688@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 071/103] io_uring: put provided buffer meta data under memcg accounting
+Date:   Mon, 27 Sep 2021 19:02:43 +0200
+Message-Id: <20210927170228.223387332@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,91 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 5afedf670caf30a2b5a52da96eb7eac7dee6a9c9 ]
+[ Upstream commit 9990da93d2bf9892c2c14c958bef050d4e461a1a ]
 
-There is an use-after-free problem triggered by following process:
+For each provided buffer, we allocate a struct io_buffer to hold the
+data associated with it. As a large number of buffers can be provided,
+account that data with memcg.
 
-      P1(sda)				P2(sdb)
-			echo 0 > /sys/block/sdb/trace/enable
-			  blk_trace_remove_queue
-			    synchronize_rcu
-			    blk_trace_free
-			      relay_close
-rcu_read_lock
-__blk_add_trace
-  trace_note_tsk
-  (Iterate running_trace_list)
-			        relay_close_buf
-				  relay_destroy_buf
-				    kfree(buf)
-    trace_note(sdb's bt)
-      relay_reserve
-        buf->offset <- nullptr deference (use-after-free) !!!
-rcu_read_unlock
-
-[  502.714379] BUG: kernel NULL pointer dereference, address:
-0000000000000010
-[  502.715260] #PF: supervisor read access in kernel mode
-[  502.715903] #PF: error_code(0x0000) - not-present page
-[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
-[  502.717252] Oops: 0000 [#1] SMP
-[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
-[  502.732872] Call Trace:
-[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
-[  502.733734]  blk_add_trace_rq+0x7b/0xd0
-[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
-[  502.734755]  blk_mq_start_request+0xde/0x1b0
-[  502.735287]  scsi_queue_rq+0x528/0x1140
-...
-[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
-[  502.747501]  sg_ioctl+0x466/0x1100
-
-Reproduce method:
-  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sda, BLKTRACESTART)
-  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sdb, BLKTRACESTART)
-
-  echo 0 > /sys/block/sdb/trace/enable &
-  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
-
-  ioctl$SG_IO(/dev/sda, SG_IO, ...)
-  // Enters trace_note_tsk() after blk_trace_free() returned
-  // Use mdelay in rcu region rather than msleep(which may schedule out)
-
-Remove blk_trace from running_list before calling blk_trace_free() by
-sysfs if blk_trace is at Blktrace_running state.
-
-Fixes: c71a896154119f ("blktrace: add ftrace plugin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Link: https://lore.kernel.org/r/20210923134921.109194-1-chengzhihao1@huawei.com
+Fixes: ddf0322db79c ("io_uring: add IORING_OP_PROVIDE_BUFFERS")
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/io_uring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index c221e4c3f625..fa91f398f28b 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1605,6 +1605,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
- 	if (bt == NULL)
- 		return -EINVAL;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index a8d07273ddc0..26753d0cb431 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4041,7 +4041,7 @@ static int io_add_buffers(struct io_provide_buf *pbuf, struct io_buffer **head)
+ 	int i, bid = pbuf->bid;
  
-+	if (bt->trace_state == Blktrace_running) {
-+		bt->trace_state = Blktrace_stopped;
-+		spin_lock_irq(&running_trace_lock);
-+		list_del_init(&bt->running_list);
-+		spin_unlock_irq(&running_trace_lock);
-+		relay_flush(bt->rchan);
-+	}
-+
- 	put_probe_ref();
- 	synchronize_rcu();
- 	blk_trace_free(bt);
+ 	for (i = 0; i < pbuf->nbufs; i++) {
+-		buf = kmalloc(sizeof(*buf), GFP_KERNEL);
++		buf = kmalloc(sizeof(*buf), GFP_KERNEL_ACCOUNT);
+ 		if (!buf)
+ 			break;
+ 
 -- 
 2.33.0
 
