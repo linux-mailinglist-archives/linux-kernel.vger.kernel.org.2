@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ED2419D67
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14048419D68
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236382AbhI0RuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:50:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58980 "EHLO mail.kernel.org"
+        id S235854AbhI0RuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:50:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238039AbhI0Rtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:49:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2B9B60F44;
-        Mon, 27 Sep 2021 17:47:56 +0000 (UTC)
+        id S238046AbhI0Rti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:49:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5DDA60F9B;
+        Mon, 27 Sep 2021 17:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632764877;
-        bh=lo3kLlw5h5aHwdcYgQl4VN4lrcsP1+8zGxGcSHb/GQA=;
+        s=k20201202; t=1632764880;
+        bh=fo8UtX1qyDCUjoGqUbYWVlsvzl89Asms03FvPG0QBhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXRWUQj/b3t2srHXAW4Ed6kMTId/0B+ful0yK8Xd8IwtBOW3BKWxERiqMs76VweLq
-         1T/4JfH4U/6zpLj0/gIeDfIHJrSp6ZrQ+uLEXjohPQIDLDUb8+kcfOKpWeUl7H3xl2
-         BnpWsGnur/yQCfrq4Xm/q17Cw4z2SQUkP0f4z0lF1nQcHgA8mavLJGauD3lIBbig2A
-         UBGyI2yklOr1VqHbLsMvdA+vRHOROQHOm3eMcVMls7PJQxM5IBkw3kEf/LNuQJyT6R
-         Y4fbfaWx7YNkQsJZ6in8JrEBwsiTmZ5D3RZUCXFUAVRGZ3Hsl9QxtTK/kZvkYWjbkt
-         /+v5Vztz4Dukw==
+        b=QF8cOCMzsi2AMYyy+h5gbgELrmdrEf0RHShbnEusBbThEX2IOu4PYuVtSm/Rp4fyQ
+         I7JR5DYZYOy6std6liN79mx9+BsBqWrD5XyCI5Sy1nzCX6bxoe50pNrUR0TlVz2spo
+         bQ5A3z7AWXyVSY7bQHS94teMUmc5IGqu9FEjalN6217ut/mah6wo63f7AZd/lxtbr3
+         IZplnbwqLXzf2f+BJL8NS/RT1mLIG02hX0rMHfmNszaO0o0D0aaLMr385eTix1aBTB
+         XipA4KzyMbOiNkzwRk44kuY28OU0Epou96nbdPdrLK77rq3Jo+Qd6EkXaTfk8gmbaW
+         T+7m2jD9JYI7A==
 From:   Mark Brown <broonie@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Sameer Pujar <spujar@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>,
         Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: Constify static snd_soc_dai_ops structs
-Date:   Mon, 27 Sep 2021 18:45:44 +0100
-Message-Id: <163276442023.18200.4951268393685654520.b4-ty@kernel.org>
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: wcd9335: Use correct version to initialize Class H
+Date:   Mon, 27 Sep 2021 18:45:45 +0100
+Message-Id: <163276442024.18200.12102853821778377525.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
-References: <20210922205438.34519-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20210925022339.786296-1-y.oudjana@protonmail.com>
+References: <20210925022339.786296-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,10 +45,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 22:54:38 +0200, Rikard Falkeborn wrote:
-> The only usage of these is to assign their address to the ops field in
-> the snd_soc_dai_driver struct, which is a pointer to const. Make them
-> const to allow the compiler to put them in read-only memory.
+On Sat, 25 Sep 2021 02:24:19 +0000, Yassine Oudjana wrote:
+> The versioning scheme was changed in an earlier patch, which caused the version
+> being used to initialize WCD9335 to be interpreted as if it was WCD937X, which
+> changed code paths causing broken headphones output. Pass WCD9335 instead of
+> WCD9335_VERSION_2_0 to wcd_clsh_ctrl_alloc to fix it.
 > 
 > 
 
@@ -59,8 +59,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tegra: Constify static snd_soc_dai_ops structs
-      commit: 313fab4820f3b1040bc1bd27cd4c7f69572951e8
+[1/1] ASoC: wcd9335: Use correct version to initialize Class H
+      commit: a270bd9abdc3cd04ec194f1f3164823cbb5a905c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
