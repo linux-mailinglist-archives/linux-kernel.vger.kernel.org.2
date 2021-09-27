@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02349418EFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBA6418F01
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 08:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhI0GWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 02:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbhI0GWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 02:22:14 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A9EC061570;
-        Sun, 26 Sep 2021 23:20:36 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c1so14805376pfp.10;
-        Sun, 26 Sep 2021 23:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=sfSEj0rPTEPzDgHuDRfdjsrWWUd62H1Qho/VgRutNCc=;
-        b=ZVavvd5COvh92fVFt9Ny1h+tUDBlW+Hqf/R0vAWycANQYfEvbpdeJ2tOFvkfSjkb2h
-         4y0B9B4GeDozKDHAelVYN/IwEvVSbpcr3ggnn3TFD6C/n1wA6+0YSzg5FA8jTMWxMsGT
-         csSMpCUpdBRkkJRwRu5ENci4EjnThArA/nMxUu2lzUD/tJstxL30Ph7pi5Z+KEBcd3fM
-         hdbTQq8khCyAMe4pr9M5q8Hh8/Qo+FOIcrVNq6b1vC/+wAOa+24vvdPz4o4AMqjQ0W3a
-         /jzx7lQvn5RoS0lg6HnQJC4LO/hs7hhD9k96oi7tGHPwmNo0SVyL7/0wyCGgCd1IvL0G
-         suaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=sfSEj0rPTEPzDgHuDRfdjsrWWUd62H1Qho/VgRutNCc=;
-        b=NxjaaT+0TJIV0TklNkeI7qlA/W5X0vKR2C7jh7kX5m0VKwjKOEDZLp6Am/bsy5uTcY
-         FtCoQ17AZCsmfsNN2LkngWxf96tkiE1fbukKFbLw5IcIcoO3JdsMrSJipvaWfP94v83Z
-         cJ455o9blMwWDZe5RIxlxNiXKFm2GlJmS4pJIOAVK3KfGKxVCF/csDJ1O7w2vGmJ0feM
-         QIwb7DoJaxbZUyLtTbmAsTRch1boYFkP3wmOdXFFNKVNFhHpejc5dYuAZCymOuc2LnlQ
-         sEgj5wWlXFQyZzt7q/vkVefICC9JhRxnrJk3oiWQ7qfFSpH92RuqXX8zzlvFA0DAUAT7
-         /sUw==
-X-Gm-Message-State: AOAM530uQmU8KAeCD1oNV85IoDHNDhictx/Yn5qHVv+Io6ntsNw5AkOg
-        479FTxqWZsiVSog/1ucPAMKwkidWlz0tUQ==
-X-Google-Smtp-Source: ABdhPJxXOGWGzHfJnQT7RMuBoTczdFaJNEW/z+shmzXticZPPQ2NvrHWmrVitqCiFdJpoY7iBXzxpQ==
-X-Received: by 2002:a62:31c5:0:b0:447:cd37:61f8 with SMTP id x188-20020a6231c5000000b00447cd3761f8mr21940939pfx.29.1632723635903;
-        Sun, 26 Sep 2021 23:20:35 -0700 (PDT)
-Received: from [10.25.99.123] ([202.164.25.5])
-        by smtp.gmail.com with ESMTPSA id w6sm16639261pfj.179.2021.09.26.23.20.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Sep 2021 23:20:35 -0700 (PDT)
-Subject: Re: [RESEND PATCH 0/3] Few Tegra210 ADMA fixes
-To:     Sameer Pujar <spujar@nvidia.com>, vkoul@kernel.org,
-        jonathanh@nvidia.com, ldewangan@nvidia.com,
-        thierry.reding@gmail.com
-Cc:     dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1631722025-19873-1-git-send-email-spujar@nvidia.com>
-From:   Sameer Pujar <dev.spujar@gmail.com>
-Message-ID: <e4ad015e-464b-0445-07f5-1d77728b880c@gmail.com>
-Date:   Mon, 27 Sep 2021 11:50:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232975AbhI0GXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 02:23:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232122AbhI0GXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 02:23:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F296117A
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632723713;
+        bh=rAzqtdkzmasWhc6P96P3ZVcdsCjYL4o8Q3yuP5FVT1o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ck+zCHop7KYWO72g4tYIDnoyIYNnzOXpFNUESVgh3s8KuOQfu4G0mq2bk4dBJlnVb
+         4KpC03FlwRI2mrxTRcsjSVaw/sFCL70kzwseCMB0Zd1ptbDWMCLawuLMV+UUy6yFvz
+         fsYJ1lFcIOB6PY9QLpQTNV1Q86Llar11Qba2MEUJ4AeCC09dVfo1eg2dl4eCdW2Dby
+         6jfDZb0B2sQewTpl/NBNvyj5vLM53LVo+LgXpaJ5oUFhvQlqmBSGS095NUJBsoTJWL
+         3ieH97UFiEJ19M1syXl6p8OgZ28Qpy3pw594rMfmeZKBA58kiJBT/HwXKiNuzKLUpC
+         atMnqPL4/yGaQ==
+Received: by mail-lf1-f42.google.com with SMTP id m3so72752081lfu.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Sep 2021 23:21:53 -0700 (PDT)
+X-Gm-Message-State: AOAM531mrCNNzP3ddhzNagk1LYVB7aNxU5TbvdZhzt/0bZjsjO67eIUB
+        nuavU9TEZQQlmYTqM13y6dCxV7UViT1ZSraQayA=
+X-Google-Smtp-Source: ABdhPJw+qj+k7e3EfZQynDm+jWx3Ct+iTCG+gtpxuutNZ9U03OIH4gAlQHYX8iHJzILyRMa923fnBaCWifjoiUyaKTc=
+X-Received: by 2002:a2e:898c:: with SMTP id c12mr27784494lji.16.1632723712220;
+ Sun, 26 Sep 2021 23:21:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1631722025-19873-1-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+References: <20210924060821.1138281-1-guoren@kernel.org> <30c10b5f-1b26-e0a8-8185-6fa3296d68dc@arm.com>
+In-Reply-To: <30c10b5f-1b26-e0a8-8185-6fa3296d68dc@arm.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 27 Sep 2021 14:21:41 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRmvYBG5=NN4-53z2Gk-bC42LOHsEzHV6cnruoq1Xh0LA@mail.gmail.com>
+Message-ID: <CAJF2gTRmvYBG5=NN4-53z2Gk-bC42LOHsEzHV6cnruoq1Xh0LA@mail.gmail.com>
+Subject: Re: [PATCH V2] mm: debug_vm_pgtable: Don't use __P000 directly
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Got it, thanks!
 
-
-On 9/15/2021 9:37 PM, Sameer Pujar wrote:
-> Following are the fixes in the series:
->   - Couple of minor fixes (non functional fixes)
+On Mon, Sep 27, 2021 at 10:16 AM Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
 >
->   - ADMA FIFO size fix: The slave ADMAIF channels have different default
->     FIFO sizes (ADMAIF FIFO is actually a ring buffer and it is divided
->     amongst all available channels). As per HW recommendation the sizes
->     should match with the corresponding ADMA channels to which ADMAIF
->     channel is mapped to at runtime. Thus program ADMA channel FIFO sizes
->     accordingly. Otherwise FIFO corruption is observed.
 >
-> Sameer Pujar (3):
->    dmaengine: tegra210-adma: Re-order 'has_outstanding_reqs' member
->    dmaengine: tegra210-adma: Add description for 'adma_get_burst_config'
->    dmaengine: tegra210-adma: Override ADMA FIFO size
 >
->   drivers/dma/tegra210-adma.c | 55 +++++++++++++++++++++++++++++++--------------
->   1 file changed, 38 insertions(+), 17 deletions(-)
+> On 9/24/21 11:38 AM, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The __Pxxx/__Sxxx macros are only for protection_map[] init. All
+> > usage of them in linux should come from protection_map array.
+> >
+> > Because a lot of architectures would re-initilize protection_map[]
+> > array, eg: x86-mem_encrypt, m68k-motorola, mips, arm, sparc.
+> >
+> > Using __P000 is not rigorous.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+>
+> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>
+>
+> >
+> > ---
+> >
+> > Changes since V2:
+> >  - s/init protection_map[]/protection_map[] init/
+> >  - s/Becasue/Because/
+> >  - Remove unclear part
+> >  - Replace __P000 and __S000 with protection_map[0] and
+> >    protection_map[8]
+> > ---
+> >  mm/debug_vm_pgtable.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> > index 1403639302e4..228e3954b90c 100644
+> > --- a/mm/debug_vm_pgtable.c
+> > +++ b/mm/debug_vm_pgtable.c
+> > @@ -1104,13 +1104,14 @@ static int __init init_args(struct pgtable_debug_args *args)
+> >       /*
+> >        * Initialize the debugging data.
+> >        *
+> > -      * __P000 (or even __S000) will help create page table entries with
+> > -      * PROT_NONE permission as required for pxx_protnone_tests().
+> > +      * protection_map[0] (or even protection_map[8]) will help create
+> > +      * page table entries with PROT_NONE permission as required for
+> > +      * pxx_protnone_tests().
+> >        */
+> >       memset(args, 0, sizeof(*args));
+> >       args->vaddr              = get_random_vaddr();
+> >       args->page_prot          = vm_get_page_prot(VMFLAGS);
+> > -     args->page_prot_none     = __P000;
+> > +     args->page_prot_none     = protection_map[0];
+> >       args->is_contiguous_page = false;
+> >       args->pud_pfn            = ULONG_MAX;
+> >       args->pmd_pfn            = ULONG_MAX;
+> >
 
-Can you please pick up these changes?
 
 
-Thanks,
-Sameer.
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
