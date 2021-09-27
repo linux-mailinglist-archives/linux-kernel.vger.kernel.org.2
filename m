@@ -2,224 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3B7419F74
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445AD419F82
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 21:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236612AbhI0Twj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 15:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbhI0Twi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 15:52:38 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB78C061575;
-        Mon, 27 Sep 2021 12:51:00 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 71so666353ybe.6;
-        Mon, 27 Sep 2021 12:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ovXf/pOGKcRl52LKcn1jFZTwerMogvTdFyyLXMxLkhk=;
-        b=EvDp2IgwJXxUqio5ETwJiX8duNYbMtdqzMqV9bZE2Yo7+UOT1cgiBOjoP3lbc5JmPl
-         SlP1Dq7gRmoyTapqBtjzWblricKvHFgEijpahQu2uUAaJCwLpbUyUaspVTBzQJeqe/3I
-         CgrUSInj5vaP2YBO6RvwrjPgAlKGEvFsJrTirY3PpBrhzR5CM3L/oG31fkWXZK7q3UGR
-         FAEiW4qoVX9AA1/tBJ16isLwurcmhYa8JAbTeUf5WgYCMTL9oFzweBBiufXlozdqIZtA
-         AD7ScAx9MR/BQ2w0qaY4j4EX4cLhBS1Xsur95PASBORvOUDW+K5VF9ZyMhzbgqMZ98fI
-         eM7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ovXf/pOGKcRl52LKcn1jFZTwerMogvTdFyyLXMxLkhk=;
-        b=PDrBp0aUuSissecZarRpjgufXPL0PAuqhK9q14Yq+UreEVd5xRPdmM62tFLPz75vOw
-         /ScRggrHpL58wtOXvXh0SrZNbTj8EDn2QZyVy5NjCM2jOVIVJhMd9XQ8AK1bdzBaJ/3Q
-         lqVJzWqOCa9GrN1yUR5bigmP2DbqzVtSLfD1al1AtvQmTc/R1Xh/A/USjNlIw58vaFQC
-         GDq4Cc/xgYPCAn8BuwGRkyf47NNOZJuZUfw3Bw25LisHoQRwtJ829aKLdB24Fyvsxb4s
-         2Rf1Etz1+9znKvdpEoANQaUmTO7tqUilmn1iy+yOXz/G8k/UigljOo+d6rms+j/1lein
-         vV1Q==
-X-Gm-Message-State: AOAM530WV/xSUEsppLTL+dpfVcT0ia3DbTLo04gTIXkhEm9wnezjlnxh
-        cdnAGTJ+vs6vuGI2t5jhFmx+ASgfWAkdPnwmm0c=
-X-Google-Smtp-Source: ABdhPJwKSnpSpYnFqM16ioh0+pS5dVW5cdsLQK4LyJsR1J8DkpTFxyQ0P1+XHI9ymajZldnp5Zq6rHWuEm4blR76KoE=
-X-Received: by 2002:a25:880f:: with SMTP id c15mr1944996ybl.543.1632772259670;
- Mon, 27 Sep 2021 12:50:59 -0700 (PDT)
+        id S236671AbhI0Txl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 15:53:41 -0400
+Received: from mail-dm3nam07on2071.outbound.protection.outlook.com ([40.107.95.71]:10969
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236243AbhI0Txi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 15:53:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Us4++jc4Ifwsim/Q4D5/xq+x3o7Fanj5uP6gk4Cq4Jm8+EgQsL0NpYvd2cWt+waTbTQJ2T433nq5xrqX61EgfBbcJRsDe3JMYtw0r1X0HS2Ov8S0SRT2pbd8LSorO8cjCvQAz/2W3mLYDRf81KnSlGX3QZBmQiiAqYToDUHm8rDI9y+Y7HrmX/5KBvQ3p4ubGbRRgNnDvyFOiCmZV3WnOyNzifZLLHncsXqCpr2LVJOWu3RFB7mlIPfpJLpWUTCDBGzPqO3GXERbZ29RbAaptGXmG8GXmC0SMT+dyBI5ghQ/Dtchu5IAHuyBYvDGUG+iWGaLEhmDI/fDTD3lGUlU9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=A7N/TxRmFVY9xHud2DJXleMjbA2CLRIr6VQZBa+ZYEQ=;
+ b=QJUD39L3lgyN0Mp9XxQoeoKjgc0rHWC9A6gXmsUgz2tVJanxmTdt7/ENPYLkU0q0HTcBxgtMg1roohsFNqUuuq3tGDyHiQVV0vNTZVNyELtDW2bgCcCbDzxuMOkkwI2MREeAoPpC/YGKULLu6mXLScHVx5w66CvfFUeZ7eiqvDNkjCQ7o7rsLcU/Y3aL69aeh4kgF7ZngSNTMUQybCchkfJjawQK6h9A1Cov6HsG0W1rxyVwHy1EZKCN1W/7b7hAN6U8I8bW77ibG65LNVW9C7xGD8lT2E34NRp2QIFcaC2kKnfwH2/xHoP7K76+r0H0mLEGbH4/UAISBGNrp4D38Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A7N/TxRmFVY9xHud2DJXleMjbA2CLRIr6VQZBa+ZYEQ=;
+ b=wqm7ihL/a33+EdyVEKxZdn6B/x2pLW/Jc57rOBCpNhMYKfWBAz8nD77ANs3KoVYUkm25CI5Dccj4zCyHfHLVuoElpojSjqcyqnWkbgvXmwZSUrxycwHTbaNaAgVij+pmSkCQnSC44lo5P4Akvrzz/MAGeTt21w7cgcBX5+XQ+Q4=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
+ by BYAPR12MB3317.namprd12.prod.outlook.com (2603:10b6:a03:d8::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Mon, 27 Sep
+ 2021 19:51:58 +0000
+Received: from BYAPR12MB2869.namprd12.prod.outlook.com
+ ([fe80::fd4d:81ae:aa97:718b]) by BYAPR12MB2869.namprd12.prod.outlook.com
+ ([fe80::fd4d:81ae:aa97:718b%6]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 19:51:58 +0000
+Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated before
+ error simulation
+To:     Borislav Petkov <bp@alien8.de>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
+References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
+ <YU2Lm+11Pqg/RBK3@zn.tnic>
+From:   Smita Koralahalli Channabasappa <skoralah@amd.com>
+Message-ID: <60d4f6be-76f7-e4b6-6fb5-2af78b01d32d@amd.com>
+Date:   Mon, 27 Sep 2021 14:51:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
+In-Reply-To: <YU2Lm+11Pqg/RBK3@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: BY3PR10CA0005.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::10) To BYAPR12MB2869.namprd12.prod.outlook.com
+ (2603:10b6:a03:132::30)
 MIME-Version: 1.0
-References: <20210922091007.5516-1-wsa+renesas@sang-engineering.com>
- <CA+V-a8su7780XxmdL5qsM+YFoK_4+OJauQkyC9AaJMxFtxM=Cw@mail.gmail.com> <CAMuHMdVeKEqtsDZ2Tby7ZTDR6GEhs+Z1n5yCfhRJEjzmBbx0cg@mail.gmail.com>
-In-Reply-To: <CAMuHMdVeKEqtsDZ2Tby7ZTDR6GEhs+Z1n5yCfhRJEjzmBbx0cg@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 27 Sep 2021 20:50:33 +0100
-Message-ID: <CA+V-a8sKeFqaF_ufAE25hykRp1RigANDjJBj0EyEhSNgxUrbaQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] memory: renesas-rpc-if: Correct QSPI data transfer in
- Manual mode
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Duc Nguyen <duc.nguyen.ub@renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [IPv6:2601:647:5f00:2790:8356:8578:64cd:ec49] (2601:647:5f00:2790:8356:8578:64cd:ec49) by BY3PR10CA0005.namprd10.prod.outlook.com (2603:10b6:a03:255::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Mon, 27 Sep 2021 19:51:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a827c3ca-1022-4cb5-6fec-08d981f043d8
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3317:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR12MB3317F52C3C961D72FCF6104B90A79@BYAPR12MB3317.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /tCGpSl+wuFIQCENVVnGZdSYZsqnFtvFBHQgdnOdjYoIjTZoGdEJz4ba+rFLefrwC975Lbawg9VswxxdS8Gh3YQiHFBXs6M8tTu9pL1sK6uNvgzyyrD+GinWQfHyTpKOkRl1rBI7T2oY61NxsIL+sEDim/rOUNCmLOeS9OmG+QKLM5kfFOYYF9FS/22euo9esaZdA9Ae4uSady4Q2o+td4SZRqUY1vQNPlqVU+hinx0s3HSZMFNjjhmx5g+4npFWTSnfC/gmGiW7Th/95DgwmzFd2s5E2cW7jSxUcd/JM4kCmmhmxQ86auXiYQxWafFk5BtxrPOul7Astzn9gDL6XkMQ3zOD5JbKKf5emONAVfgWv5dVcM5WH1ozIl3+0hvaq+m0S2sTdMcIAu5TFUUjz5Im9HDWy4m3hQALFqWhUBpq/S3glOnddO0xiS8p6gSNDvlSNjAeCQOLhGyaDj7eQHNkXPWWgtk+MvzlsKqHBKLQxIUgy6oag8Yk5iQEgIEBxe5wHn9VNEjsnhH06YwoBzr7SQbMPiG3Myu643n54HQVxiLbG99H3cYiRteba0FRMAbs+rzSFIhHiunEioo9pgLqBKWzo29/S5DFmnVvjaJqdtw2EzPhcjwwiADT+IJUpyJmVZ2+dXqGQmQb48ywlm6yThJQG5HBkckhw7liEGrLLaS9KZRds6BpJnAgk1gw3cpzWuYXXFJ9xt9xAJjzD7R7mC7MQEo6CGJZjfDrKkfviNP9qj3swRCj6ml53prf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(2906002)(8936002)(110136005)(8676002)(15650500001)(6486002)(508600001)(316002)(38100700002)(31686004)(186003)(66556008)(36756003)(31696002)(66946007)(6636002)(52116002)(2616005)(4326008)(5660300002)(83380400001)(66476007)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXhaYldvN09ZZG5MUTVvM09RWk04elRQS3hXTmtPdWE5WFBrd1puQUVPVGJ5?=
+ =?utf-8?B?R1ZheTVuVUpJTFhEK3dINWFnRFo2U3ZLL2pMV0h2UllLSUpMWlcwL3hyVTlP?=
+ =?utf-8?B?bVFrTS9XZ09NSFZ5cnlUYmk4Z0I2RVU5YkNSK1VjY0lXSjhabmtTYStSY01z?=
+ =?utf-8?B?UkN2Y3ZrVGYwR1diT0ttMGxzQXZyNzJ4S2lQS0hpOGtEelZTUzVhK3hjdEtl?=
+ =?utf-8?B?S3l0NmdEaGxUVHZwakd3dlE0b3JVYURuQmlqK0RXd2VYRmxCOUJ6WTdONlVT?=
+ =?utf-8?B?OVZuNGRQYWVNc0VuUGdxbktQVmtvR1laN3BXK2hTb080eW1HbEs1Mi8za0kr?=
+ =?utf-8?B?eG9xWDM2THFlRXFxSkpKOXp0dG5KbC9YTWRaSlk1YlliOU5TM0Z4ME5EUERx?=
+ =?utf-8?B?ODZ2NVpTb2U5SjVoTG0vVFZLK0tkY2JBbm5BeHRiTlhBbHJtczFQdnRqVlVW?=
+ =?utf-8?B?K2svc0hxNEw1d1NTNy9wemdjZzlhcGM5cG9ETEZXVmwxYkh5aVRraG9xY3ZY?=
+ =?utf-8?B?eTJ3Ry9GVW1QeXBzbDkwdWlOS3hydi9Db1IraERNOEp3ZllzV2JaSUN2Wit4?=
+ =?utf-8?B?Slg1QXhSVTZWd2VEZ0I3WkRZaWcwRU52YUN1TytHZ3ZrNGpMQ0w0UkNKY1hi?=
+ =?utf-8?B?V1JVckptZXJKS002MUphUWk3VmpMWUUxWVlmelMxYVZzamdCbWhLSlNrM1Er?=
+ =?utf-8?B?Q1c5cWY2Mk5wZzF6ODhTZTJDSFFMajMzUUR6NUZVbXZkZ205WVZlSG5hUitP?=
+ =?utf-8?B?ejY3WUpnY3JzZHpOekJXblpvTFRYL1NGU1k3VzJUd1VyazAwN1VPZW9hVGJw?=
+ =?utf-8?B?WFQxN1ZpaEZEZnpBZFozaElJNGNGdWVCb01IQUhYeWI0L1FGSnBFdmJUMEVV?=
+ =?utf-8?B?V2xlanN1ZjRnb3gwaUJrTXVmQml6WWdyb25yL2dJcGFDWFh0LzdyT3d4MkRT?=
+ =?utf-8?B?TmVOdHUxU2hhUlNYa01BT3VzS3p1dVEzNHp6QmpxMkRhaE1UODRlN3Z3UDM3?=
+ =?utf-8?B?WFFCWFk3WDB5dkxyM2g1Tm4yVW5sMnpGM2FHVHViLzNNQXorRER1MzA2UG1y?=
+ =?utf-8?B?VExQbVVGRUhEby9IM2xoRkVYSFJ2NlRaYyttWlhVNVdWT1pYeE5vUFF4ejl3?=
+ =?utf-8?B?V0tIZU1XYnpNMUdLSmpsR2RXRk5SMFJ3MGZGL2RMank1TW9weDVWcFpVVTFz?=
+ =?utf-8?B?TFJwZkJ0NHlsancrcGZjYldlT05mNmtWejVBRU9RKzQ5dWdJNFNkLzZyRkR2?=
+ =?utf-8?B?OUo5TlNNeVpVMWVKNjZEajVDMncxMktwZkFxdTdhNHdCUnhlbVgwekgraVZO?=
+ =?utf-8?B?SEV5OUFSRUNsdEJuNURKbktQQlEvYkhtYVdlRlhHRFMxV003akd5QVJWOUlU?=
+ =?utf-8?B?Ry83c2VJOWZnbTlnWW1lZXJ6UjBWTU1uUFdKbHF5R1Nwc2p5TTRZSlc5aUsv?=
+ =?utf-8?B?VGpWdHhzY29Cb2dNQVlzZ1IzM1h4alV6cEpjVEJkbXpQaE96QkNhRWI2ckNk?=
+ =?utf-8?B?VWVpRTQ0eUU4M1poUlNoVFJrSzRzOTVEZ0t5T29Xb1NscmVyNGRHTGg5QmZK?=
+ =?utf-8?B?L2ZNUFpSL0pXR2VmYVBrdTFWWjk5UXhLVDJVMG42NGFUQ2JXaW52endsSlRB?=
+ =?utf-8?B?R05uNTVrcmxSSnJrZ0dUVGhzTkhGSWkzOGgyZHJWY0lleWIzYS9jMmFPWTZj?=
+ =?utf-8?B?NkV0d2xqZWRzQk9vNjdFM2FmSEpTcXE5QU5VSDlybm9wblJKaFRvZVJudGFW?=
+ =?utf-8?B?cVJwVG00SW9KbEQ0ak1nNStnREQ4TWJPbVl5OWxhMzQ3c1FGUnVmdlliNDIx?=
+ =?utf-8?B?S3ZCZCtsaWdiZER5dTJSb0xiZmxiSmlDSWNkRTR2OVVSL1Z3TTdNZk9wcVZs?=
+ =?utf-8?Q?bsrlfyrC9LCJF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a827c3ca-1022-4cb5-6fec-08d981f043d8
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 19:51:58.1337
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O7iXb6BNndzWvLO/CgKY6MZrKrNPfgA4tgEtoEsG2bj8KpD5W/gZHA/K1aP3UXyIvN6zz1FBnOkbNIy9/cQujQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3317
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Boris,
 
-On Mon, Sep 27, 2021 at 10:46 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Sep 27, 2021 at 10:52 AM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Wed, Sep 22, 2021 at 10:10 AM Wolfram Sang
-> > <wsa+renesas@sang-engineering.com> wrote:
-> > > This patch fixes 2 problems:
-> > > [1] The output warning logs and data loss when performing
-> > > mount/umount then remount the device with jffs2 format.
-> > > [2] The access width of SMWDR[0:1]/SMRDR[0:1] register is wrong.
-> > >
-> > > This is the sample warning logs when performing mount/umount then
-> > > remount the device with jffs2 format:
-> > > jffs2: jffs2_scan_inode_node(): CRC failed on node at 0x031c51d4:
-> > > Read 0x00034e00, calculated 0xadb272a7
-> > >
-> > > The reason for issue [1] is that the writing data seems to
-> > > get messed up.
-> > > Data is only completed when the number of bytes is divisible by 4.
-> > > If you only have 3 bytes of data left to write, 1 garbage byte
-> > > is inserted after the end of the write stream.
-> > > If you only have 2 bytes of data left to write, 2 bytes of '00'
-> > > are added into the write stream.
-> > > If you only have 1 byte of data left to write, 2 bytes of '00'
-> > > are added into the write stream. 1 garbage byte is inserted after
-> > > the end of the write stream.
-> > >
-> > > To solve problem [1], data must be written continuously in serial
-> > > and the write stream ends when data is out.
-> > >
-> > > Following HW manual 62.2.15, access to SMWDR0 register should be
-> > > in the same size as the transfer size specified in the SPIDE[3:0]
-> > > bits in the manual mode enable setting register (SMENR).
-> > > Be sure to access from address 0.
-> > >
-> > > So, in 16-bit transfer (SPIDE[3:0]=b'1100), SMWDR0 should be
-> > > accessed by 16-bit width.
-> > > Similar to SMWDR1, SMDDR0/1 registers.
-> > > In current code, SMWDR0 register is accessed by regmap_write()
-> > > that only set up to do 32-bit width.
-> > >
-> > > To solve problem [2], data must be written 16-bit or 8-bit when
-> > > transferring 1-byte or 2-byte.
-> > >
-> > > Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
-> > > [wsa: refactored to use regmap only via reg_read/reg_write]
-> > > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > > ---
-> > >
-> > > Hi,
-> > >
-> > > I could reproduce the issue by a simple:
-> > >
-> > >   $ echo "Hello" > /dev/mtd10
-> > >
-> > > The original BSP patch fixed the issue but mixed regmap-acces with
-> > > ioread/iowrite accesses. So, I refactored it to use custom regmap
-> > > accessors. This keeps the code more readable IMO. With this patch, my
-> > > custom test cases work as well as the JFFS2 remount mentioned in the
-> > > commit message. Tested on a Renesas Condor board (R-Car V3M) and a
-> > > Falcon board (R-Car V3U). I send this as RFC because this is my first
-> > > patch for the RPC code and hope for feedback. The BSP team has been
-> > > contacted as well for comments and testing. Nonetheless, this addresses
-> > > a serious issue which has caused broken boards because of writing to
-> > > unintended locations. So, I'd like to see this discussed and applied
-> > > soon if possible.
-> > >
-> > I hit the exact same issue on RZ/G2L where erase/write operation
-> > screwed some random sectors and made the board un-bootable. With the
-> > patch applied, read/write/erase worked as expected. Below are the logs
-> > on RZ/G2L SMARC EVK.
-> >
-> > root@smarc-rzg2l:~# sh -x ./flash.sh
-> > + cat /proc/mtd
-> > dev:    size   erasesize  name
-> > mtd0: 02000000 00001000 "boot"
-> > mtd1: 02000000 00001000 "user"
-> > + flashcp -v sample.bin /dev/mtd1
-> > Erasing blocks: 1024/1024 (100%)
-> > Writing data: 4096k/4096k (100%)
-> > Verifying data: 4096k/4096k (100%)
-> > + dd if=/dev/urandom of=/tmp/sample.bin bs=1024 count=4096
-> > 4096+0 records in
-> > 4096+0 records out
-> > 4194304 bytes (4.2 MB) copied, 0.0786743 s, 53.3 MB/s
-> > + flash_erase -j -q /dev/mtd1 0 0
-> > + mount -t jffs2 /dev/mtdblock1 /mnt
-> > + cp /tmp/sample.bin /mnt
-> > + ls -ltr /mnt
-> > total 4096
-> > -rw-r--r-- 1 root root 4194304 Sep 20 10:54 sample.bin
-> > + echo 'test write'
-> > + umount /mnt
-> > + mount -t jffs2 /dev/mtdblock1 /mnt
-> > + ls -ltr /mnt
-> > total 4097
-> > -rw-r--r-- 1 root root      11 Sep 20 10:54 write.txt
-> > -rw-r--r-- 1 root root 4194304 Sep 20 10:54 sample.bin
-> > + cat /mnt/write.txt
-> > test write
-> > + umount /mnt
-> >
-> > Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Might be a good idea to update the erase test to make a copy first,
-> and verify that only the wanted blocks have been affected by the erase.
->
-Right, I have updated my erase test. Below are logs for my erase test
-(from a give offset),
+On 9/24/21 3:26 AM, Borislav Petkov wrote:
 
-root@smarc-rzg2l:~# flashcp -v sample.bin /dev/mtd1
-Erasing blocks: 1024/1024 (100%)
-Writing data: 4096k/4096k (100%)
-Verifying data: 4096k/4096k (100%)
-root@smarc-rzg2l:~# flash_erase /dev/mtd1 4096 1
-Erasing 4 Kibyte @ 1000 -- 100 % complete
-root@smarc-rzg2l:~# hexdump -C /dev/mtd1 | less
-00000fd0  c0 2b 03 33 96 ff 87 5b  f7 96 b5 a9 de 57 eb 2f  |.+.3...[.....W./|
-00000fe0  11 70 11 f1 71 53 48 94  67 c8 0e 53 34 76 f4 f6  |.p..qSH.g..S4v..|
-00000ff0  a0 ec ed 8d 62 f3 f2 5a  d0 0a 66 74 95 a7 91 7b  |....b..Z..ft...{|
-00001000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-*
-00002000  ae d0 f4 f5 4b 66 b7 6f  2c 09 04 f1 10 58 40 b0  |....Kf.o,....X@.|
-00002010  e5 27 6a d7 1f 8e af 8f  ff 57 34 75 6d b7 7d 99  |.'j......W4um.}.|
-00002020  d8 e1 88 20 1a 83 37 e3  54 df 72 76 0a ec 1e 76  |... ..7.T.rv...v|
-00002030  84 5c 05 f2 88 61 72 cd  34 4a 71 62 68 b7 b0 f6  |.\...ar.4Jqbh...|
-00002040  2e eb a5 d6 79 d5 4d 1a  44 26 e9 77 0d 72 fb f3  |....y.M.D&.w.r..|
-00002050  36 64 5a a0 44 1a 35 14  79 69 94 78 78 34 f2 04  |6dZ.D.5.yi.xx4..|
-00002060  13 91 3a 5c 07 28 61 c8  a7 82 bc f6 7f 87 d4 da  |..:\.(a.........|
-00002070  b4 ec 27 b6 f2 7c 07 c8  b3 d3 8b 8e 1f 5e 75 97  |..'..|.......^u.|
-00002080  14 e7 ac b0 bd 3a 20 ce  ed 6a be 53 21 a3 7e 64  |.....: ..j.S!.~d|
-00002090  99 0b 61 f0 dd 4c f6 90  c0 aa f4 52 8c 67 05 d0  |..a..L.....R.g..|
-000020a0  b8 eb 0e 1e b8 40 09 52  ac 23 57 7f bd 94 3b 7a  |.....@.R.#W...;z|
-000020b0  8e 8b 10 7a db bc 9f f8  15 dd 41 ac 92 cc b6 3f  |...z......A....?|
-000020c0  67 57 dd d0 fc f1 6e 1e  27 d8 4f 62 98 71 74 ea  |gW....n.'.Ob.qt.|
-000020d0  8c 62 82 50 8d ed 5b f1  a6 f1 99 7c e9 f1 8e 08  |.b.P..[....|....|
-000020e0  48 c7 2d 73 83 03 96 78  f4 64 57 94 95 64 23 c2  |H.-s...x.dW..d#.|
-000020f0  6f 53 32 e7 43 1b 5e 25  a8 b0 34 17 1f 33 4d f4  |oS2.C.^%..4..3M.|
-00002100  30 95 91 4d f1 06 37 09  71 f3 ce 5d be f8 62 96  |0..M..7.q..]..b.|
-00002110  0f d4 26 cb eb 50 a3 4c  81 6f 1c 8a e6 a2 c6 d3  |..&..P.L.o......|
+> On Wed, Sep 15, 2021 at 06:27:35PM -0500, Smita Koralahalli wrote:
+>> The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
+>> (SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
+>> will read as zero and writes to it will be ignored. Check the value of
+>> this register before trying to simulate the error.
+>>
+>> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+>> ---
+>>   arch/x86/kernel/cpu/mce/inject.c | 18 ++++++++++++++++++
+>>   1 file changed, 18 insertions(+)
+>>
+>> diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
+>> index 0bfc14041bbb..51ac575c4605 100644
+>> --- a/arch/x86/kernel/cpu/mce/inject.c
+>> +++ b/arch/x86/kernel/cpu/mce/inject.c
+>> @@ -577,6 +577,24 @@ static int inj_bank_set(void *data, u64 val)
+>>   	}
+>>
+>> +	if (boot_cpu_has(X86_FEATURE_SMCA)) {
+> This whole thing belongs into inj_ipid_set() where you should verify
+> whether the bank is set when you try to set the IPID for that bank.
 
-Cheers,
-Prabhakar
+Can you please elaborate on this? I'm not sure if I understood this
+right. Should I read the ipid file to verify that the user has input
+proper ipid? If ipid file reads zero then do rdmsrl_on_cpu?
 
-> Gr{oetje,eeting}s,
+Thanks,
+Smita
+
 >
->                         Geert
+> +			if (!m->ipid) {
+> +				pr_err("Error simulation not possible: Bank %llu unpopulated\n",
+>> +
+>> +		/* Check for user provided IPID value. */
+>> +		if (!m->ipid) {
+>> +			rdmsrl_on_cpu(m->extcpu, MSR_AMD64_SMCA_MCx_IPID(val),
+>> +				      &m->ipid);
+> Oh well, one IPI per ipid write. We're doing injection so we can't be on
+> a production machine so who cares about IPIs there.
 >
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
