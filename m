@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E75D419B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38533419C5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236828AbhI0RRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:17:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
+        id S236052AbhI0R1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237376AbhI0ROf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:14:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFEF061361;
-        Mon, 27 Sep 2021 17:10:22 +0000 (UTC)
+        id S238016AbhI0RYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:24:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A71613D2;
+        Mon, 27 Sep 2021 17:15:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762623;
-        bh=Fg3r0Sa9za4VvlVWqNVgik2ceW728BMIdPknOBkgBnE=;
+        s=korg; t=1632762936;
+        bh=HZ5x3fIrvGxadaTV9AKo2DgWZM2t0XHEPBa18RK6BzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o9BhyvYY8EnVe7gs8ImWR8hwxZkmGSuaV8zGFktOlYJ3p1uvGraXOXu/aThkEaGI5
-         z9tfwKRW77MiANyYuHNEDK37vA8XCDVzjWBGr7PfiRYxzJacY2FIbnFiBJkskDpLnw
-         R4OXDCvUeRtSRqh3uUZrT99G+brJL3m+rd54VpCI=
+        b=J24R3VHJ1Uqa78T/1ve7djNoFfXYbvqXvd+05xK3FpXJ6it+2Td/iqq4TlLlqaVUd
+         IHx1C2nU/tr9y4UCRFCnP5OImaJskH4L1z9PJpHRR2XKU505PzrJR6dX4ewB2IGvTv
+         NO8HxVjyv7n3gXCYMG5Kxo31piAEd97qwFrMlpz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Eidelman <anton.eidelman@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 061/103] nvme: keep ctrl->namespaces ordered
+Subject: [PATCH 5.14 107/162] scsi: lpfc: Use correct scnprintf() limit
 Date:   Mon, 27 Sep 2021 19:02:33 +0200
-Message-Id: <20210927170227.889773417@linuxfoundation.org>
+Message-Id: <20210927170237.151132385@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
-References: <20210927170225.702078779@linuxfoundation.org>
+In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
+References: <20210927170233.453060397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,99 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 298ba0e3d4af539cc37f982d4c011a0f07fca48c ]
+[ Upstream commit 6dacc371b77f473770ec646e220303a84fe96c11 ]
 
-Various places in the nvme code that rely on ctrl->namespace to be
-ordered.  Ensure that the namespae is inserted into the list at the
-right position from the start instead of sorting it after the fact.
+The limit should be "PAGE_SIZE - len" instead of "PAGE_SIZE".  We're not
+going to hit the limit so this fix will not affect runtime.
 
-Fixes: 540c801c65eb ("NVMe: Implement namespace list scanning")
-Reported-by: Anton Eidelman <anton.eidelman@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Link: https://lore.kernel.org/r/20210916132331.GE25094@kili
+Fixes: 5b9e70b22cc5 ("scsi: lpfc: raise sg count for nvme to use available sg resources")
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+ drivers/scsi/lpfc/lpfc_attr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 9c97628519e0..bbc3efef5027 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -13,7 +13,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/backing-dev.h>
--#include <linux/list_sort.h>
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/pr.h>
-@@ -3801,15 +3800,6 @@ out_unlock:
- 	return ret;
- }
+diff --git a/drivers/scsi/lpfc/lpfc_attr.c b/drivers/scsi/lpfc/lpfc_attr.c
+index eb88aaaf36eb..c34a7f744601 100644
+--- a/drivers/scsi/lpfc/lpfc_attr.c
++++ b/drivers/scsi/lpfc/lpfc_attr.c
+@@ -6022,7 +6022,8 @@ lpfc_sg_seg_cnt_show(struct device *dev, struct device_attribute *attr,
+ 	len = scnprintf(buf, PAGE_SIZE, "SGL sz: %d  total SGEs: %d\n",
+ 		       phba->cfg_sg_dma_buf_size, phba->cfg_total_seg_cnt);
  
--static int ns_cmp(void *priv, const struct list_head *a,
--		const struct list_head *b)
--{
--	struct nvme_ns *nsa = container_of(a, struct nvme_ns, list);
--	struct nvme_ns *nsb = container_of(b, struct nvme_ns, list);
--
--	return nsa->head->ns_id - nsb->head->ns_id;
--}
--
- struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
- {
- 	struct nvme_ns *ns, *ret = NULL;
-@@ -3830,6 +3820,22 @@ struct nvme_ns *nvme_find_get_ns(struct nvme_ctrl *ctrl, unsigned nsid)
- }
- EXPORT_SYMBOL_NS_GPL(nvme_find_get_ns, NVME_TARGET_PASSTHRU);
- 
-+/*
-+ * Add the namespace to the controller list while keeping the list ordered.
-+ */
-+static void nvme_ns_add_to_ctrl_list(struct nvme_ns *ns)
-+{
-+	struct nvme_ns *tmp;
-+
-+	list_for_each_entry_reverse(tmp, &ns->ctrl->namespaces, list) {
-+		if (tmp->head->ns_id < ns->head->ns_id) {
-+			list_add(&ns->list, &tmp->list);
-+			return;
-+		}
-+	}
-+	list_add(&ns->list, &ns->ctrl->namespaces);
-+}
-+
- static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
- 		struct nvme_ns_ids *ids)
- {
-@@ -3889,9 +3895,8 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
- 	}
- 
- 	down_write(&ctrl->namespaces_rwsem);
--	list_add_tail(&ns->list, &ctrl->namespaces);
-+	nvme_ns_add_to_ctrl_list(ns);
- 	up_write(&ctrl->namespaces_rwsem);
--
- 	nvme_get_ctrl(ctrl);
- 
- 	device_add_disk(ctrl->device, ns->disk, nvme_ns_id_attr_groups);
-@@ -4160,10 +4165,6 @@ static void nvme_scan_work(struct work_struct *work)
- 	if (nvme_scan_ns_list(ctrl) != 0)
- 		nvme_scan_ns_sequential(ctrl);
- 	mutex_unlock(&ctrl->scan_lock);
--
--	down_write(&ctrl->namespaces_rwsem);
--	list_sort(NULL, &ctrl->namespaces, ns_cmp);
--	up_write(&ctrl->namespaces_rwsem);
- }
- 
- /*
+-	len += scnprintf(buf + len, PAGE_SIZE, "Cfg: %d  SCSI: %d  NVME: %d\n",
++	len += scnprintf(buf + len, PAGE_SIZE - len,
++			"Cfg: %d  SCSI: %d  NVME: %d\n",
+ 			phba->cfg_sg_seg_cnt, phba->cfg_scsi_seg_cnt,
+ 			phba->cfg_nvme_seg_cnt);
+ 	return len;
 -- 
 2.33.0
 
