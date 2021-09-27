@@ -2,166 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0B541918A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B5541918B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 11:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhI0Jcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 05:32:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233683AbhI0Jcg (ORCPT
+        id S233716AbhI0Jcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 05:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233699AbhI0Jcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 05:32:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632735058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K7NSp/vWgh0IQXSwoMraW7CkaYyKMLgroGH9C/clVag=;
-        b=KWtgXikx+M+yWLCBQOgGhRWsrpaNCGbtE/wczN+bVtilwx3Le3JBkCuccCC5TixydqqIql
-        iP0BaFR15SNMUrNYYBVdlS5KadEjHo7jgVU03YSWjez5Q9av7FYSusCuDnSoGK8xv1nDjp
-        AeOJozRgMP8aj5rgmSp2Fjg2L223Njw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-L6z1zNCwPnmzJCV3XmF6nQ-1; Mon, 27 Sep 2021 05:30:56 -0400
-X-MC-Unique: L6z1zNCwPnmzJCV3XmF6nQ-1
-Received: by mail-wr1-f69.google.com with SMTP id e1-20020adfa741000000b0015e424fdd01so13822125wrd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:30:55 -0700 (PDT)
+        Mon, 27 Sep 2021 05:32:43 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45726C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:31:06 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id g41so74426061lfv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 02:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tGZj9UfzMOvrlmJlZWhVCYko1Gj7jAZ5QKpn2O8GHnQ=;
+        b=fH7ElhPz/j0dkKN0IQlRwL6IKNF50qPdlSMdP3FrEeL1cT4duKYSrOaeKFQE5tK8MH
+         NKI948ew/JhYYQ+jjF5z0G1HI1dHwAWv2H4R4LPPB9e0kyWGUgdsuD0ZPeeKEnzbihqn
+         kd+XgcA0my6muCpI2/S1tm/wco+vpwCQvlNfb26uFYxFICWUZQaWLHxD//8pnErb+XHa
+         wX4XqByN7PkBbMUXlZidhCn5rssyvGK3qzWxHqaHJ5Hh10vwDQzFtD01sJCxUdUotmsR
+         ptOLfSNmuocRCfcbmwyvq3+nlmZ3ASxRX8qAkaNw2ZxHQUQIRevcyWlZYqXHR9ZTKBJH
+         xnJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=K7NSp/vWgh0IQXSwoMraW7CkaYyKMLgroGH9C/clVag=;
-        b=1Acxv3D68gOnKMASKd1ROof5VK/395GCmLLM694Qf/25TaijhcQ29wTUCOj+4feZ5D
-         wj5DemPKSRA+62iWM3cDME71hievAnRvuxexWbgkqv7ZHgnE1bzTvDDRZH4CpRIZcwYN
-         /KhQtVBcUxqC0rM7M6FYRy+QxFNQKuYXtnqSbYublLp92WSI/QfVkXh/MJAgZy9jOi03
-         maJsMQ56gWYOs/8xKlXDWRwRvHlk6NoE8lTn14GCNZKICqfCh/sTp1pvRX9xMXD8F5dx
-         BT2gLJDC4ajs4pD4abtgrwPGm1DuUJkEi3ByoKcDhrnI1GeJwKiyel6vDbtrqNY58Zan
-         NyNw==
-X-Gm-Message-State: AOAM533XQYO6QKZTIiabmtCC0kBTXK3HaDj0pDutdETDt5MNfP1HNvpD
-        1MhU0Eq49yZRILtMHt/VTnke+7bQa7Cn2bQqrmvq8/cEf6SBENsPqJ7kk13vJEI/nDmzxh9Kdh9
-        pUJnL0JDfYSDwLnOYccqqftzk
-X-Received: by 2002:a5d:58ec:: with SMTP id f12mr26326686wrd.24.1632735054900;
-        Mon, 27 Sep 2021 02:30:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6b8PsqrofWNdXOOdYGB7TMIOeoLXw6T/j3GuUxYOkzE46cemEL5lj+Ydtl2K8rifSKmavPg==
-X-Received: by 2002:a5d:58ec:: with SMTP id f12mr26326655wrd.24.1632735054634;
-        Mon, 27 Sep 2021 02:30:54 -0700 (PDT)
-Received: from ?IPv6:2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123? ([2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123])
-        by smtp.gmail.com with ESMTPSA id n186sm19979340wme.31.2021.09.27.02.30.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tGZj9UfzMOvrlmJlZWhVCYko1Gj7jAZ5QKpn2O8GHnQ=;
+        b=0IWrHQQBRU7zXxsHjPxzrNn86HBjkasmXMAFOnam6pDQPqf/CcGppqiJKwv/j7OWH8
+         oglTa0Pm0jVUp+C8gdxR9VHgN2P7Vbj2RxvbyZbNxdszPWFbyp/dpINAiYgUrmSuT4Qr
+         hriTckGIAd7QySWkAZoZbHG4cc7n/d0849vvez8Iu9dyHDusPzKMDHbeQeiE8rkw3/wj
+         QNOJrQZZIP7LcQk5o84Kih6Hb1NS72kSRYHYG/TaVSRGsHeUUdk+be4Y8rfwJfw6kNkV
+         /foIPaLZWtkGgPVwpDruaoP0B2vJAxFTX6nLutYzQmgr+R5tjK4WPeqdDcOq6jE6YRid
+         0pLQ==
+X-Gm-Message-State: AOAM532yNy73s/JyNd4dIbbP0LvAmJRXriAO9ZMwyxc7Wej8P487p8d9
+        PE+ymAUyErCUeqa5mymAUzuz7A==
+X-Google-Smtp-Source: ABdhPJyZTPI/P8FivbJz92AxtI5RRIDNYzf9SMmh9JOwXEWai1lvhn8xX3PqLTWDDMSVbdhS3dZcNA==
+X-Received: by 2002:a05:651c:21b:: with SMTP id y27mr27606230ljn.489.1632735064625;
+        Mon, 27 Sep 2021 02:31:04 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id u27sm1540438lfm.38.2021.09.27.02.31.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 02:30:54 -0700 (PDT)
-Message-ID: <8ee79b78c7f7f8fa18ec237494f09492ef60081f.camel@redhat.com>
-Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
- list drain support
-From:   nsaenzju@redhat.com
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, cl@linux.com,
-        juri.lelli@redhat.com, mingo@redhat.com, mtosatti@redhat.com,
-        nilal@redhat.com, mgorman@suse.de, ppandit@redhat.com,
-        williams@redhat.com, bigeasy@linutronix.de,
-        anna-maria@linutronix.de, linux-rt-users@vger.kernel.org
-Date:   Mon, 27 Sep 2021 11:30:53 +0200
-In-Reply-To: <87v92sgt3n.ffs@tglx>
-References: <20210921161323.607817-1-nsaenzju@redhat.com>
-         <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
-         <20210922112817.GO4323@worktop.programming.kicks-ass.net>
-         <87v92sgt3n.ffs@tglx>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Mon, 27 Sep 2021 02:31:04 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 625B510306C; Mon, 27 Sep 2021 12:31:03 +0300 (+03)
+Date:   Mon, 27 Sep 2021 12:31:03 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [RFC PATCH 4/8] mm/madvise: define madvise behavior in a struct
+Message-ID: <20210927093103.g3cszw75gfctwtzk@box.shutemov.name>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <20210926161259.238054-5-namit@vmware.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210926161259.238054-5-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-thanks for the in-depth review.
+On Sun, Sep 26, 2021 at 09:12:55AM -0700, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> The different behaviors of madvise are different in several ways, which
+> are distributed across several functions. Use the design pattern from
+> iouring in order to define the actions that are required for each
+> behavior.
+> 
+> The next patches will get rid of old helper functions that are modified
+> in this patch and the redundant use of array_index_nospec(). The next
+> patches will add more actions for each leaf into the new struct.
+> 
+> No functional change is intended.
+> 
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Colin Cross <ccross@google.com>
+> Cc: Suren Baghdasarya <surenb@google.com>
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> ---
+>  mm/madvise.c | 168 +++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 109 insertions(+), 59 deletions(-)
+> 
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 17e39c70704b..127507c71ba9 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/swapops.h>
+>  #include <linux/shmem_fs.h>
+>  #include <linux/mmu_notifier.h>
+> +#include <linux/nospec.h>
+>  
+>  #include <asm/tlb.h>
+>  
+> @@ -39,6 +40,101 @@ struct madvise_walk_private {
+>  	bool pageout;
+>  };
+>  
+> +struct madvise_info {
+> +	u8 behavior_valid: 1;
+> +	u8 process_behavior_valid: 1;
+> +	u8 need_mmap_read_only: 1;
+> +};
+> +
+> +static const struct madvise_info madvise_info[MADV_SOFT_OFFLINE+1] = {
 
-On Thu, 2021-09-23 at 00:09 +0200, Thomas Gleixner wrote:
-> On Wed, Sep 22 2021 at 13:28, Peter Zijlstra wrote:
-> > On Tue, Sep 21, 2021 at 07:59:51PM +0200, Vlastimil Babka wrote:
-> > 
-> > > These days the pcplist protection is done by local_lock, which solved
-> > > the RT concerns. Probably a stupid/infeasible idea, but maybe what you
-> > > want to achieve could be more generally solved at the local_lock level?
-> > > That on NOHZ_FULL CPUs, local_locks could have this mode where they
-> > > could synchronize with remote cpus?
-> > 
-> > local_lock and spinlock have different rules, local_lock for example can
-> > never cause an irq inversion, unlike a spinlock.
-> 
-> TBH, I really regret an attempt I made at some point in the RT
-> development to abuse local locks for this kind of cross CPU protections
-> because that led to yet another semantically ill defined construct.
-> 
-> local locks are as the name says strictly local. IOW, they do not exist
-> for remote access. Just look at the !RT mapping:
-> 
->   local_lock() 		-> preempt_disable()
->   local_lock_irq()	-> local_irq_disable()
->   ...
-> 
-> The only thing local_lock is addressing is the opaque nature of
-> preempt_disable(), local*_disable/save() protected critical sections,
-> which have per CPU BKL, i.e. undefined protection scope, semantics.
-> 
-> If you really want cross CPU protection then using a regular spinlock in
-> a per CPU data structure is the right way to go.
-> 
-> That makes it a bit akward vs. the code at hand which already introduced
-> local locks to replace the opaque preempt/local_irq disabled critical
-> sections with scoped local locks which in turn allows RT to substitute
-> them with strict CPU local spinlocks.
-> 
-> But for clarity sake we really have to look at two different cases now:
-> 
->    1) Strict per CPU local protection
-> 
->       That's what the code does today via local lock and this includes
->       RT where the locality is preserved via the local lock semantics
-> 
->       I.e. for the !RT case the spinlock overhead is avoided 
-> 
->    2) Global scoped per CPU protection
-> 
->       That's what Nicolas is trying to achieve to be able to update
->       data structures cross CPU for the sake of avoiding smp function
->       calls or queuing work on remote CPUs for the NOHZ_FULL isolation
->       use case.
-> 
-> That said, I completely understand Andrew's concerns versus these
-> distinctions and their test coverage.
-> 
-> In consequence the real interesting question here is whether any of
-> these use cases are sensible to the extra overhead of #2.
-> 
-> IOW, does it really matter whether the !RT and !NOHZ_FULL case take an
-> uncontended per CPU spinlock unconditionally instead of just disabling
-> preemption / interrupts?
-> 
-> The same question arises vs. the remote work queuing. Does it really
-> matter? I think that a proper investigation is due to figure out whether
-> delegated work is really superiour vs. doing the same work locked from a
-> remote CPU occasionally.
-> 
-> If you really think about it then the task which is initiating the work
-> is already in a slow path. So what's the tradeoff to make this path a
-> little bit slower due to remote access vs. scheduling work and thereby
-> disturbing the remote CPU which has a performance impact as well and in
-> the NOHZ_FULL case even a correctness impact? That's especially
-> questionable for situations where the initiator has to wait for
-> completion of the remote work.
-> 
-> The changelogs and the cover letter have a distinct void vs. that which
-> means this is just another example of 'scratch my itch' changes w/o
-> proper justification.
+MADV_SOFT_OFFLINE+1 smells bad.
 
-Point taken, I'll get to it.
+And I don't like the change in general. Given that MADV_SOFT_OFFLINE is
+101, the array will be mostly empty.
+
+I donno. I don't see any improvement with the patch. But maybe it's only me.
 
 -- 
-Nicolás Sáenz
-
+ Kirill A. Shutemov
