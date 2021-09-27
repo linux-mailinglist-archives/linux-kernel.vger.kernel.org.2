@@ -2,170 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73981419777
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12ED4196A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235046AbhI0POg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Sep 2021 11:14:36 -0400
-Received: from molly.corsac.net ([82.66.73.9]:38766 "EHLO mail.corsac.net"
+        id S234914AbhI0OtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235078AbhI0POd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:14:33 -0400
-X-Greylist: delayed 1297 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Sep 2021 11:14:33 EDT
-Received: from scapa.corsac.net (unknown [IPv6:2a01:e0a:2ff:c170:6af7:28ff:fe8d:2119])
-        by mail.corsac.net (Postfix) with ESMTPS id 3F667A0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 16:51:14 +0200 (CEST)
-Received: from corsac (uid 1000)
-        (envelope-from corsac@corsac.net)
-        id a01c9
-        by scapa.corsac.net (DragonFly Mail Agent v0.13);
-        Mon, 27 Sep 2021 16:51:13 +0200
-Message-ID: <eaccc3f66f4c616f3eecfc01c359ac03a5d92028.camel@corsac.net>
-Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-From:   Yves-Alexis Perez <corsac@corsac.net>
-To:     Sam Bingner <sam@bingner.com>, Oliver Neukum <oneukum@suse.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Martin Habets <mhabets@solarflare.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matti Vuorela <matti.vuorela@bitfactor.fi>,
-        Jakub Kicinski <kuba@kernel.org>
-Date:   Mon, 27 Sep 2021 16:51:13 +0200
-In-Reply-To: <79d05aaa5052408897aeb8039c6a1582@bingner.com>
-References: <370902e520c44890a44cb5dd0cb1595f@bingner.com>
-         <d61ad9565e29a07086e52bc984e8e629285ff8cf.camel@suse.com>
-         <79d05aaa5052408897aeb8039c6a1582@bingner.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.3-1 
+        id S234799AbhI0OtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 10:49:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA79960FC2;
+        Mon, 27 Sep 2021 14:47:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632754052;
+        bh=adeXHUS73Lj4zzzb/ETuBZ3Thy9j9oPRwZgoXcZ7QtI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KY8V7Rjf4MkCkhxYzzkzdHSNH6rbG3D5QDqXAOskiwC5yZMY4FFU1wVvw/NWMfupo
+         Td3hW8o6PB3ZF3RSOmcRMGMZfMfFQ51S2qZMNImcn1ZVuGLk7N71b4kDUGdk+ZL4nC
+         q6/n3a2kzGmzhNJFqCblYhdJosOHaR5/YazgacjJxShd+rwzfpB7bZIFLU2cZPYzjX
+         s69SWf2hO0wk1rgm7ouxc/WMdLYokIpimbREqJCQsR/cF2AnQICM7d5i20N/tJE8ZO
+         fiEUGoXvmFUNV/Y897l2weu/v3XP3YpmPnbboRRc7l1puXpcmu0FB3+4WBfk0lbADq
+         53WfbxZXnE09Q==
+Date:   Mon, 27 Sep 2021 09:51:31 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] writeback: prefer struct_size over open coded
+ arithmetic
+Message-ID: <20210927145131.GB168427@embeddedor>
+References: <20210925114308.11455-1-len.baker@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925114308.11455-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-22 at 20:11 +0000, Sam Bingner wrote:
-> Sorry I didn't have time to research this further to prove it was a
-> regression - but there is now somebody else who has done so and created a
-> patch.  I thought it might be good to give a link to it to you guys.  It
-> caused problems on all iOS versions AFAIK.  The patch and discussion is
-> available at:
+On Sat, Sep 25, 2021 at 01:43:08PM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> https://github.com/openwrt/openwrt/pull/4084
+> In this case these are not actually dynamic sizes: all the operands
+> involved in the calculation are constant values. However it is better to
+> refactor them anyway, just to keep the open-coded math idiom out of
+> code.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kzalloc() functions.
+> 
+> This code was detected with the help of Coccinelle and audited and fixed
+> manually.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Hi Sam, sorry for the delay.
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I've read the thread above and the patch. Unfortunately we don't have
-documentation on how the driver is supposed to work and how the iPhone part
-behave, everything was reverse engineered at the time and the people who did
-it seem long gone.
+Thanks
+--
+Gustavo
 
-As far as I understand it, when we experienced the “first” bug, it was noted
-that reducing the (TX) buffer size by 2 helped, and thus the patch changing
-IPHETH_BUF_SIZE to 1514 was committed, reducing both RX and TX buffer size.
-
-During my testings I never experienced the subsequent bug (the
-ipheth_rcvbulk_callback: urb status: -75) but maybe I never received 1500b
-packets (it's a bit strange but maybe).
-
-Maybe the right fix would be to split IPHETH_BUF_SIZE to
-IPHETH_{RX,TX}_BUF_SIZE? Something like:
-
-diff --git a/drivers/net/usb/ipheth.c b/drivers/net/usb/ipheth.c
-index 57d94b18ef33..005d2e31d97c 100644
---- a/drivers/net/usb/ipheth.c
-+++ b/drivers/net/usb/ipheth.c
-@@ -60,7 +60,9 @@
- #define IPHETH_USBINTF_PROTO    1
- 
- #define IPHETH_BUF_SIZE         1514
--#define IPHETH_IP_ALIGN		2	/* padding at front of URB */
-+#define IPHETH_IP_ALIGN		2	/* padding at front of URB on
-RX path */
-+#define IPHETH_TX_BUF_SIZE      IPHETH_BUF_SIZE
-+#define IPHETH_RX_BUF_SIZE      IPHETH_BUF_SIZE + IPHETH_IP_ALIGN
- #define IPHETH_TX_TIMEOUT       (5 * HZ)
- 
- #define IPHETH_INTFNUM          2
-@@ -116,12 +118,12 @@ static int ipheth_alloc_urbs(struct ipheth_device
-*iphone)
- 	if (rx_urb == NULL)
- 		goto free_tx_urb;
- 
--	tx_buf = usb_alloc_coherent(iphone->udev, IPHETH_BUF_SIZE,
-+	tx_buf = usb_alloc_coherent(iphone->udev, IPHETH_TX_BUF_SIZE,
- 				    GFP_KERNEL, &tx_urb->transfer_dma);
- 	if (tx_buf == NULL)
- 		goto free_rx_urb;
- 
--	rx_buf = usb_alloc_coherent(iphone->udev, IPHETH_BUF_SIZE,
-+	rx_buf = usb_alloc_coherent(iphone->udev, IPHETH_RX_BUF_SIZE,
- 				    GFP_KERNEL, &rx_urb->transfer_dma);
- 	if (rx_buf == NULL)
- 		goto free_tx_buf;
-@@ -134,7 +136,7 @@ static int ipheth_alloc_urbs(struct ipheth_device *iphone)
- 	return 0;
- 
- free_tx_buf:
--	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, tx_buf,
-+	usb_free_coherent(iphone->udev, IPHETH_TX_BUF_SIZE, tx_buf,
- 			  tx_urb->transfer_dma);
- free_rx_urb:
- 	usb_free_urb(rx_urb);
-@@ -146,9 +148,9 @@ static int ipheth_alloc_urbs(struct ipheth_device *iphone)
- 
- static void ipheth_free_urbs(struct ipheth_device *iphone)
- {
--	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, iphone->rx_buf,
-+	usb_free_coherent(iphone->udev, IPHETH_RX_BUF_SIZE, iphone->rx_buf,
- 			  iphone->rx_urb->transfer_dma);
--	usb_free_coherent(iphone->udev, IPHETH_BUF_SIZE, iphone->tx_buf,
-+	usb_free_coherent(iphone->udev, IPHETH_TX_BUF_SIZE, iphone->tx_buf,
- 			  iphone->tx_urb->transfer_dma);
- 	usb_free_urb(iphone->rx_urb);
- 	usb_free_urb(iphone->tx_urb);
-@@ -317,7 +319,7 @@ static int ipheth_rx_submit(struct ipheth_device *dev,
-gfp_t mem_flags)
- 
- 	usb_fill_bulk_urb(dev->rx_urb, udev,
- 			  usb_rcvbulkpipe(udev, dev->bulk_in),
--			  dev->rx_buf, IPHETH_BUF_SIZE,
-+			  dev->rx_buf, IPHETH_RX_BUF_SIZE,
- 			  ipheth_rcvbulk_callback,
- 			  dev);
- 	dev->rx_urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
-@@ -381,7 +383,7 @@ static netdev_tx_t ipheth_tx(struct sk_buff *skb, struct
-net_device *net)
- 	int retval;
- 
- 	/* Paranoid */
--	if (skb->len > IPHETH_BUF_SIZE) {
-+	if (skb->len > IPHETH_TX_BUF_SIZE) {
- 		WARN(1, "%s: skb too large: %d bytes\n", __func__, skb->len);
- 		dev->net->stats.tx_dropped++;
- 		dev_kfree_skb_any(skb);
-@@ -389,12 +391,12 @@ static netdev_tx_t ipheth_tx(struct sk_buff *skb, struct
-net_device *net)
- 	}
- 
- 	memcpy(dev->tx_buf, skb->data, skb->len);
--	if (skb->len < IPHETH_BUF_SIZE)
--		memset(dev->tx_buf + skb->len, 0, IPHETH_BUF_SIZE - skb-
->len);
-+	if (skb->len < IPHETH_TX_BUF_SIZE)
-+		memset(dev->tx_buf + skb->len, 0, IPHETH_TX_BUF_SIZE - skb-
->len);
- 
- 	usb_fill_bulk_urb(dev->tx_urb, udev,
- 			  usb_sndbulkpipe(udev, dev->bulk_out),
--			  dev->tx_buf, IPHETH_BUF_SIZE,
-+			  dev->tx_buf, IPHETH_TX_BUF_SIZE,
- 			  ipheth_sndbulk_callback,
- 			  dev);
- 	dev->tx_urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
-
--- 
-Yves-Alexis
+> ---
+> Changelog v1 -> v2
+> - Rebase against v5.15-rc2
+> - Refactor another instance in the same file (Gustavo A. R. Silva).
+> - Update the commit changelog to inform that this code was detected
+>   using a Coccinelle script (Gustavo A. R. Silva).
+> 
+>  fs/fs-writeback.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 81ec192ce067..5eb0ada7468c 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -566,7 +566,7 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+>  	if (atomic_read(&isw_nr_in_flight) > WB_FRN_MAX_IN_FLIGHT)
+>  		return;
+> 
+> -	isw = kzalloc(sizeof(*isw) + 2 * sizeof(struct inode *), GFP_ATOMIC);
+> +	isw = kzalloc(struct_size(isw, inodes, 2), GFP_ATOMIC);
+>  	if (!isw)
+>  		return;
+> 
+> @@ -624,8 +624,8 @@ bool cleanup_offline_cgwb(struct bdi_writeback *wb)
+>  	int nr;
+>  	bool restart = false;
+> 
+> -	isw = kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
+> -		      sizeof(struct inode *), GFP_KERNEL);
+> +	isw = kzalloc(struct_size(isw, inodes, WB_MAX_INODES_PER_ISW),
+> +		      GFP_KERNEL);
+>  	if (!isw)
+>  		return restart;
+> 
+> --
+> 2.25.1
+> 
