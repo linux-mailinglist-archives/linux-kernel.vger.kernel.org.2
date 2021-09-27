@@ -2,247 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B697B4194BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878524194C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhI0NBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:01:54 -0400
-Received: from mga04.intel.com ([192.55.52.120]:26156 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234528AbhI0NBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:01:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="222576725"
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; 
-   d="scan'208";a="222576725"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 06:00:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; 
-   d="scan'208";a="436801063"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga006.jf.intel.com with ESMTP; 27 Sep 2021 06:00:11 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 27 Sep 2021 06:00:10 -0700
-Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 27 Sep 2021 06:00:09 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Mon, 27 Sep 2021 06:00:09 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Mon, 27 Sep 2021 06:00:09 -0700
+        id S234485AbhI0NFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:05:11 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56286 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234398AbhI0NFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:05:10 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18RC82DZ015432;
+        Mon, 27 Sep 2021 13:03:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=2NMcWJZPstyjndwvvl7mB14+AMxNQuXEPGD/tFwn7cU=;
+ b=AxE4MQvhUZ8XdzowlnyosdJPXuubipjVfE/KLQS52UGact5e52ylVc38hJZsVjzwTahS
+ jD/btz+gKYWs9kcGCsAXHhgb/T3XWEDzs1tvos3Sph1iyHj5iJSAwj28uidq92Gr5Z1K
+ UcT5q7O3MRKmon3dA20UtAxdFsa4L30H8zbKcE8i/ebP60Eh4JlLhbdWj4QaXgkRZTlp
+ 1PiN/bShLO/vlHaz3B3QnHmI9LUyU/xAFzYisaJpm6zqxTllKdbzx04f3IHldYkZ2zzI
+ xtBgDO2ySL0RB1FUoaKEWmgL5KwfNO7KgM5vCQEFduxyl7xiLwFQV8aTnVzWKusWlINQ jg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bar0nc6hr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Sep 2021 13:03:21 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18RD0JY5063756;
+        Mon, 27 Sep 2021 13:03:20 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by userp3020.oracle.com with ESMTP id 3badhqxrvb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Sep 2021 13:03:20 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=byg65NEELqLldNWHncqkAQ6Q91+l5lyqUebzldXsXuSGpXYv2dG/fCrtiCodozY0+GO3PUeJ96Ip+xPJLphEaNoNF/bvxpaWrqN6htHxw33zwjs30oKD10TwAuQGnCLzM3mL9nSIZ4EASNUQqisVEXOL38z1zV/poXaCbCTZqYF+uDzEmMWUj2kYJ0vhRVbxeQ/39fPNccQxP7CuydbtimASM7ykxeXJP6njvow9QRN0eM7ZnA7Y2fJfNyjsv/NSMfaG+rkCRishv3+H6qMk9aRBkFgDNEKTeUHxqCocOCOsUeya/yJFzaL90emARPm39+WnZcN/Gmf71P6OvQMhkw==
+ b=c2pYaPUOQrxac1J/6FYFtltZvjTPdDNx2M3+O0XeTdCZyTDVszJZyQPJ190HDZuFXxYR3NTZ6fcms55U9zwDGuCZQXSmXUCXcuDxKkG+xekS9W6bsEjrYBP22LIPpJIMOK+ezqpVfsduGzD8HFyCz8d+Pk32Wm85133Md5Q+7Gn2fV9YAJmRQL8DC135gFUJ0autounM5q7DSPj6wMnqfWgEBBQtHPJRq9LiUYzzibC0dby4+qeGEbPSIuUH77S5jw1eLgel7e7ncCf4viGrnUs8DhJL9RQXovaEjd4TgCgui2DdQfGN7JytPfdvh3uk0A197dQmipQy9lqmWR8e4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=xGq1Hd7A668616g5OaMmSuJ/kuU7xlzaQHZIDrDMwyc=;
- b=fZOJ17qFZdBATKBRL56G3OZ2sacwnWnzqT05ANsT3dwBFJzBH9nhvnGIjVywXtXkSmi2zxiqWzNlSWmhsNJqkT4ojRH9YfDplFsycMrg0JjaDRDXzzPqkyhywqWvyLoG/xsI1qlKPQyWwXjPpwrS7plMfGFhkd2bzDrkl1xV6o072IfnJZMeJH+41bys5UuJuIaIIHuSBr+HxEJIi6IGLsnDI1e18bMljsUPtHgrFOxp3MUUDzH/vzM6Ep6Y04vLyGLR+LIDAGQQjMPzX8S9/yCrM7U76AaxuVTmsDdSCqdbct4+PO4gUhNVDrGS9xdqVhcrMYLn0pt32NVPtJDBpA==
+ bh=2NMcWJZPstyjndwvvl7mB14+AMxNQuXEPGD/tFwn7cU=;
+ b=BAKg05BaZ5VPkWlx7CdUrzSaxwvNALEhUDPP4kl+1nno/P4SQOS/hMVL5zKO568f7Q6rgEbl9SyDz8uL1+idaGQ9jocNoaWbEy9fwvmu3I/g2ljSNU9mvVVM1y6V9naOUq3B66i9KGVy1LHyhjNH8va7AZsFSdVdyhy0PysCIe0snjQb5d+MABLU2gT/7QUecyvu5cUkKjexNJaVT5ADVD7sMuYVgoTIvOT2zR/+GClJe1+uGdfwuTWglCJPAAHe1ws24fK5sPIS9a3DVxczKL4HpM1VvjZEnvPJ8PMIMc4vT7Wk+wjp3V9X/JFpQo60DzEkpDFpJT18hYqHp2SDEQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xGq1Hd7A668616g5OaMmSuJ/kuU7xlzaQHZIDrDMwyc=;
- b=DUdSjQwkYNmzzdSlU/lsCHSEu3QMUpW6vB5+oesQYsa8Da7ErSHL4Ib5LI0wi6HzVbRsHHdJ1odWJxYLQMI0xKX8mFNlgsiUm3vaqnqFvzDiUMILCirxhXNR2wLGpmWRX/PyC0JTh933qs8lSw8UOFDEWaFTAFxQeTmf5zAD2JU=
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
- by BN6PR1101MB2084.namprd11.prod.outlook.com (2603:10b6:405:50::14) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=2NMcWJZPstyjndwvvl7mB14+AMxNQuXEPGD/tFwn7cU=;
+ b=Y/jvKDkkt1EVzVwJ7PZ//WxNoSylXUloFw6K+aBYRCQAiPdDyEelfjmjl3BpboQvCbd2kbTVBdxENmsYbpZkk0GGYegXC+7TeSawPqtukXEP5QX85epU3vi3MaG7SX9GeZ4vNmsCMCbtd3tLm3Dvq8sA504VVL65yA2edFO+04M=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1246.namprd10.prod.outlook.com
+ (2603:10b6:301:5::21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Mon, 27 Sep
- 2021 13:00:08 +0000
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::ddb7:fa7f:2cc:45df%8]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
- 13:00:08 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: RE: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
- interfaces
-Thread-Topic: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
- interfaces
-Thread-Index: AQHXrSF9WDj+Z+DU+UqMJ7tQK2EdmauuvK2AgACKnbCAALw6gIAHYVYAgABthQCAABACQA==
-Date:   Mon, 27 Sep 2021 13:00:08 +0000
-Message-ID: <BN9PR11MB5433502FEF11940984774F278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-7-yi.l.liu@intel.com>
- <20210921170943.GS327412@nvidia.com>
- <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922123931.GI327412@nvidia.com>
- <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210927115342.GW964074@nvidia.com>
-In-Reply-To: <20210927115342.GW964074@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c7534eb1-78c4-4783-0331-08d981b6bb98
-x-ms-traffictypediagnostic: BN6PR1101MB2084:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR1101MB208458D23AAB36E635CBB6E58CA79@BN6PR1101MB2084.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WX1cEgKupLYnsu9wyDurICT+HSdW1dJNKduobjk9JInduA2W7oxnVQRZWyOfVAhr40oLT4v4Dq4377unj7rxEqP/lS4WhK2clOoK49foY+NwN0569Kr6+P5V7AQDT8hupdUkOZYX2dJHIGXXtAfMvMLCzCCHzI8d5leckUslBjJoOBhxVfzx+heTPmvRezKSFEO1I7HqbsMkw4T5TmA5g6qVwNftyRHRGu9guUVm4oVJomg76vDnm7fehxlZIEjjOlr5SxQGmJqvc9cPrvSl+lJaWwobj1GX8k+S1RlIgZO1CtCNrh/NG/Iuy+4BvAoE4JdiXlXOy6UFYZ2USaIm75y85wwcOX/SE5P6RLekVlxmp5lJjhDHLfxOIbfSZ45tVKBYvxhmPEksYbEN25vCGftVvhmtExL6F2Rw//HNDA8dtj5/u3UxALlg3ZsfcLL/nEid9MCBcs35Bn1ea6DgMADum0qFXZOrMwlubeEg8b06cHC9pP1YmDwbElT9XDV61SJqKaLbukqjcY/7kZ0m/o138rN319sKiE6VFjClGEQhlETzkagX4HiKGgergXnsmC30v06cd/FO7Gm1miV5mIv/+IJWvn/MSiJEhWukGORSBfUCn7ezBg32xwj/0wGc45ZiLF2u9Yke4dGFjNVyYOCahq9tWhpj/UauORXwRx6XapufNSrJ0DAy1wGpLavYJYx1TiHlw4lmG83a2OV7WA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(52536014)(4326008)(316002)(38100700002)(66946007)(508600001)(86362001)(122000001)(33656002)(2906002)(8936002)(66476007)(66556008)(6916009)(64756008)(66446008)(9686003)(186003)(55016002)(71200400001)(7696005)(6506007)(7416002)(26005)(5660300002)(38070700005)(8676002)(83380400001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?B7/1qKbc8b3nVfv66jVmVMluGjrN0dmMHJ2d3kUY1uA4BPxFG+ADxajdl6Ux?=
- =?us-ascii?Q?bzuSm+wTG8jFFGe2PM7bIala1lsQnFj1Z1FldXqmAeqZ1NhHhIieeBvMA5oz?=
- =?us-ascii?Q?eHfXFIZaYk8vj3OrU+x8YmUOmS7eXkun6jI9jQ3RyoDmzNq08HqDXB7m2iKV?=
- =?us-ascii?Q?TtjSzrXlC1zUlOPcI7Uk3UwriJqtvSUW+gOmPazENfcqPtte7y01GywmA6Jg?=
- =?us-ascii?Q?KKIZz01GejkClrLHN9RoIhy6B5DwInc3kqlFt4DnbQn6xf/ewFiA4O3NgRan?=
- =?us-ascii?Q?T32cMKREJwj3hxyjvDE1355ZI9cCN1gTVD963TeNpVOaTe8FsElzXtAkDBt/?=
- =?us-ascii?Q?cY+Qn9FgPTAJQ+9bd/RfA11gg6kb6scoOSUSL1M7RWM6z+IBjX4ilq2FXOod?=
- =?us-ascii?Q?cthA1tyi5EjCXixlWBNtn2U8rFZ2UznFp1YMAe2zPp6Oi9N+5LrNeoN2RO0e?=
- =?us-ascii?Q?evHdNHlSHsZ5uO5iGoMPWBoDAQ0AKx3u6wVMtu0HjjfC/4XUXtQoJWb/676V?=
- =?us-ascii?Q?KuxN4dHMVhtf8u3/JUoTb2rdJV6kDC+/no6fXjYEAgfBQNjlk0/MJmkkheZt?=
- =?us-ascii?Q?ZVDZ0fXpOjyngH1aBrK1tTYYqxW420OKG2srfk4gMmxGftaOiLUfNW2ofvnr?=
- =?us-ascii?Q?zjFyFLszYr49y1yGpwCcolujgI8tjiiOLVteYo4aG7XQT8b5lWlxyMC3Rc2M?=
- =?us-ascii?Q?FxewQAcdM/x/q3+yqi2sEy78EhRhdku88nQM7k6rcXtAQ9RoH2XNhbsfjfJD?=
- =?us-ascii?Q?0aSGzhSm6VHC+9QJHKw/mISJSyykxA2nstTlRoAT8Mc7fwQzOuj4CkNAsj4f?=
- =?us-ascii?Q?KLayVkjIj5nHZ3oiqvcuV3xOO3JuDNkrOBk1EWSdDFjV/byLZQ+yKprj+Wr1?=
- =?us-ascii?Q?3Ik0pDt0JRO88ole1sqLkeMV2tVEwU71tnHjCKY8TbUX5uxDoNaqm7jezXAL?=
- =?us-ascii?Q?6xAVdEdrijitEYvLDT3cZOMR7aZtnnJK2RMYTxrWiH6Hfs81aA0zYevEdiId?=
- =?us-ascii?Q?nVtqgNEsbNne6XHMPTkdfERqS5LKfgvMEmK0AOJFeZZHozmlUQueBEBFQ3Wi?=
- =?us-ascii?Q?HjzgjWWEqcUmR1JDoLgFGXL5yijwasEafGo8qHayoA7e3YSPATxzz5aloC8l?=
- =?us-ascii?Q?gE93v6IlQYqF+pcgOiciwMZ5GCSV6z2D2Jukx/01J19Bt8MO5dXNvUQ13syw?=
- =?us-ascii?Q?IYvMCpzT+kYrajjFgVe8LnX3aWQDVbFRK2LYA//1kGuYoNU5gecZLj8aRRWR?=
- =?us-ascii?Q?W/G1zIYf6RplqPI6/I2yqYGNnonr1BOd4rkNSDjxuV9K+oHQjJKBLxH+jTW8?=
- =?us-ascii?Q?X+b+PcWAmBXD4YI12PAI0Pft?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2021 13:03:17 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4544.021; Mon, 27 Sep 2021
+ 13:03:17 +0000
+Date:   Mon, 27 Sep 2021 16:02:53 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        linux-sparse@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] vboxsf: fix old signature detection
+Message-ID: <20210927130253.GH2083@kadam>
+References: <20210927094123.576521-1-arnd@kernel.org>
+ <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNXP275CA0022.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::34)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
+Received: from kadam (62.8.83.99) by JNXP275CA0022.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Mon, 27 Sep 2021 13:03:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 957f6063-5805-47d9-ec27-08d981b72c93
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1246:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB12463C2BF79ABFA2FF84ECC38EA79@MWHPR10MB1246.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8X6eW1F5nbQWOORzRJUKgqU8CS+EMyQOEJREzRnn5dqs+15wOMAemeRGsRhAnMCYNL9ZG96Nf3q5pWLcmlv4KNmkMQtq/AC7PslWTJ4X1nmjbehvEty8897DiJH5o6lWyilsVDao52h0ecw3JvJOzQ6tOM3XFWHGnPcy9Pk0oDzYtPIHqjyNdxe9KCZ18zHzcsGyTF1wH6AuoYV3HZSXF0D3ymb0dVvee0YGA/zdIqVdBXIG3BhpiU4agJ2qtJ0Lw8j4OeEcLgU++StjB2BlC02g5TrBdNKYgT9GTasMhV9GAD1xqG9JE4xDT6cu9C38MSJ3pWhN1wKo11pJu/uaFxbeaMcpLiBlfBaCYT45UAtTIaXDiXRMN9kQESJgI3fojxGC3eehkgqUaUT2IrYJVf9l+U0PIRuIdA20T+2CxL/sfvE7Z/iUgn7reHC3IXrUcBnf9UFYY0Ven2Wpja/0Bsf8QbHEnFuBD7gWi6vkWcd0ePiBwh+KXNjz/1DPjAAu909Ar6pduWykFUhw0pZRUOYX74YxekVKFumcgWa29Ufm9X2MvBcVKl0m24e0zQZBKXtehZGhO5x7nmJ+CnC+4IfzBVeHz1HJ0HdvxHj5QaJklMdGe0lMrEeHFhCkbuF6OMe5pCEPS+X3r+rXKD95S97kxL2DHwcXpJxRy3bOOV5lO9Dw1Vzh1R5ex9W5zZUVa2TCzPPEyThno/gpU5cBoqk4MiovdKxgFpbHm43FF0ojpcOQ7uDPm5wNUPPiVIou1jTllMsT2dAxhiRN74b36Ims0hrBhVADn++QohqDUYs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9686003)(52116002)(6496006)(1076003)(8676002)(186003)(5660300002)(26005)(33716001)(33656002)(6666004)(9576002)(508600001)(83380400001)(8936002)(316002)(44832011)(55016002)(110136005)(86362001)(53546011)(66556008)(66946007)(4326008)(956004)(66476007)(7416002)(2906002)(54906003)(966005)(38100700002)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?D0e04gkMfq4O+rNmMUeANG3av2BxCvCjCoJXXhQPTe/6zRidvvHmzNernLfN?=
+ =?us-ascii?Q?EUpC4z1o9P+IQEZb7ZIQSNG1eQXLOZ32WhCRq9pPK0bhwwuNTjDVDSRXfdYv?=
+ =?us-ascii?Q?tpyu7Wlx4ySQNqUt6hkguToRUP1eOKYFqlIiretTsU1clEIcowKCG2ycYNPo?=
+ =?us-ascii?Q?vq67gnbzzYTT/1nLOjqIYwCO7EA421FlSA9Jkua7/3nxaYRhZqPGroOTVsTT?=
+ =?us-ascii?Q?c3djZV/yPH1Y7DVLNZDhHpi4DEpTpW2urHaKQCjIcwCtXkrFdcgxe6OfwTOi?=
+ =?us-ascii?Q?/BViatfkozIVPtvJDxkZA8nP2/IFs4APR/tNzdUtWbY3yLAFS7onUaPZmuW7?=
+ =?us-ascii?Q?xhwGj8gWtWuDGf9dzzrZADHR4Lr7l8okvsOWEXb0b8m33XOKyu3+/4OrkOJ0?=
+ =?us-ascii?Q?crhuYD+aoM0P98a9vDt/pVlCeYnxqSR1F9iRFrU0bdgxvQs5i64m1HYQnw53?=
+ =?us-ascii?Q?DuYK2z7UJYcOtkDuyKwca5JjrPmvo/JlO1FU6jpR5s03QkOjrRS9GEtFoPyw?=
+ =?us-ascii?Q?J0dlS1b+j7oK1QfDHbDhFyfBZ6AEH4cc8wki7gsfyEKUYCbi9YBOGBDEZtJG?=
+ =?us-ascii?Q?ULKWlsySQGAWWwWrWV+0pBLu6W8i+rPvgpyZDu2wh6XGQwNXTsZa9Yx1zioB?=
+ =?us-ascii?Q?07MyL5Hps6l7Al47s7zu5x3FPNhhlqLmMlXymqII7Y0VgFWrkasWKs+o8OA1?=
+ =?us-ascii?Q?vq1b/Zl54ufXBBQEh4yM+a0LBpYi23Rm/iaGvNOfZc4+1ulJ9v0Qlzp4tvzF?=
+ =?us-ascii?Q?9tvxzJZ4uU/B+8+1PUu58KGUsCBQ1KJPh4oLFLEIaz2PWJ64YlYr6sj3JEJ5?=
+ =?us-ascii?Q?phSDyvLX+LLWtxt71FJM2sQsH2qK/XrPubxZ+9d52IPEdNqj5fKgq1yCdP26?=
+ =?us-ascii?Q?S6lnxcUBhu8Iutw1yDLAXy+4Vq3qWOJdN06c62anpI/6LrxHplWkC/2TlHIZ?=
+ =?us-ascii?Q?iz4Sneb9ri7gV6YI1VvxU0//zojH5VfeEo3SU5DoVuEyuza95GwNv4o9txRn?=
+ =?us-ascii?Q?Yk1fvMK2kbMnsfO72528M13HiFnVT15pu8svunTT4uQj3oRRgOrWsvGtshVQ?=
+ =?us-ascii?Q?+IRT0iaPXdQHN4sv5FD84Ua6UbpmHVA2RFM+ZMfMbhRNUMvkiDZzfIHPALSF?=
+ =?us-ascii?Q?cukIlK3dVTeCL1FVVBl1MGChAbTfrPeekbcga3iPxZGlP3Np7cx4wXtq4WB0?=
+ =?us-ascii?Q?L3EmfuUOTHbKoEa2xE5OeYZRR8MzJBAIlTqty2qyVimygTGFBf44UA17xf4h?=
+ =?us-ascii?Q?vjz9StPEA2kHU532NlbgeC9d2DvbaqNu+m4LqElzht7f1A+VSmRagNwiBm3R?=
+ =?us-ascii?Q?x1x728HJ+EMDpy36xOQvQ6PU?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 957f6063-5805-47d9-ec27-08d981b72c93
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7534eb1-78c4-4783-0331-08d981b6bb98
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2021 13:00:08.0311
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 13:03:17.8304
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: taExu+HyJHe0KQatxWih4F84vlv4gAv4W1ZW/BDs7ulO8sMI6PkH/vRD6rTj5ShOqVnf4C2irUJu9mQWx3bJuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2084
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E6KLcDBY6V0YuXklpY0fAwNWoqa/er8MxPsgBSM7kAwQ/J74HnV0NDOnEv1B6h1Y49ECz1lIxaAYJUk5L6QA3ShGXOhlSu1ycDlW3BRmZGI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1246
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10119 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ malwarescore=0 spamscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109270090
+X-Proofpoint-ORIG-GUID: toiYraUUfyGe8NP3ymQyLMsN6nwYjHXR
+X-Proofpoint-GUID: toiYraUUfyGe8NP3ymQyLMsN6nwYjHXR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Monday, September 27, 2021 7:54 PM
->=20
-> On Mon, Sep 27, 2021 at 09:42:58AM +0000, Tian, Kevin wrote:
-> > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > Sent: Wednesday, September 22, 2021 8:40 PM
-> > >
-> > > > > Ie the basic flow would see the driver core doing some:
-> > > >
-> > > > Just double confirm. Is there concern on having the driver core to
-> > > > call iommu functions?
-> > >
-> > > It is always an interesting question, but I'd say iommu is
-> > > foundantional to Linux and if it needs driver core help it shouldn't
-> > > be any different from PM, pinctl, or other subsystems that have
-> > > inserted themselves into the driver core.
-> > >
-> > > Something kind of like the below.
-> > >
-> > > If I recall, once it is done like this then the entire iommu notifier
-> > > infrastructure can be ripped out which is a lot of code.
-> >
-> > Currently vfio is the only user of this notifier mechanism. Now
-> > three events are handled in vfio_iommu_group_notifier():
-> >
-> > NOTIFY_ADD_DEVICE: this is basically for some sanity check. suppose
-> > not required once we handle it cleanly in the iommu/driver core.
-> >
-> > NOTIFY_BOUND_DRIVER: the BUG_ON() logic to be fixed by this change.
-> >
-> > NOTIFY_UNBOUND_DRIVER: still needs some thoughts. Based on
-> > the comments the group->unbound_list is used to avoid breaking
->=20
-> I have a patch series to delete the unbound_list, the scenario you
-> describe is handled by the device_lock()
+GCC handles it the same way as Clang.  '\377' is -1 but in Sparse it's
+255.  I've added the Sparse mailing list to the CC.
 
-that's great!
+regards,
+dan carpenter
 
->=20
-> > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > index 68ea1f9..826a651 100644
-> > +++ b/drivers/base/dd.c
-> > @@ -566,6 +566,10 @@ static int really_probe(struct device *dev, struct
-> device_driver *drv)
-> >  		goto done;
-> >  	}
-> >
-> > +	ret =3D iommu_device_set_dma_hint(dev, drv->dma_hint);
-> > +	if (ret)
-> > +		return ret;
->=20
-> I think for such a narrow usage you should not change the struct
-> device_driver. Just have pci_stub call a function to flip back to user
-> mode.
-
-Here we want to ensure that kernel dma should be blocked
-if the group is already marked for user-dma. If we just blindly
-do it for any driver at this point (as you commented earlier):
-
-+       ret =3D iommu_set_kernel_ownership(dev);
-+       if (ret)
-+               return ret;
-
-how would pci-stub reach its function to indicate that it doesn't=20
-do dma and flip back?
-
-Do you envision a simpler policy that no driver can be bound
-to the group if it's already set for user-dma? what about vfio-pci
-itself?
-
->=20
-> > +static int iommu_dev_viable(struct device *dev, void *data)
-> > +{
-> > +	enum dma_hint hint =3D *data;
-> > +	struct device_driver *drv =3D READ_ONCE(dev->driver);
->=20
-> Especially since this isn't locked properly or safe.
-
-I have the same worry when copying from vfio. Not sure how
-vfio gets safe with this approach...
-
-Thanks
-Kevin
+On Mon, Sep 27, 2021 at 12:09:01PM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 9/27/21 11:40 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > The constant-out-of-range check in clang found an actual bug in
+> > vboxsf, which leads to the detection of old mount signatures always
+> > failing:
+> > 
+> > fs/vboxsf/super.c:394:21: error: result of comparison of constant -3 with expression of type 'unsigned char' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+> >                        options[3] == VBSF_MOUNT_SIGNATURE_BYTE_3) {
+> >                        ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> This actually seems to be a clang bug though, or at least a weird
+> interpretation (and different from gcc) of the C spec.
+> 
+> VBSF_MOUNT_SIGNATURE_BYTE_3 is defined as:
+> 
+> #define VBSF_MOUNT_SIGNATURE_BYTE_3 ('\375')
+> 
+> The C-spec:
+> 
+> http://port70.net/~nsz/c/c11/n1570.html#6.4.4.4p5 
+> 
+> Says the following:
+> 
+> "The octal digits that follow the backslash in an octal escape sequence are taken to be part of the construction of a single character for an integer character constant or of a single wide character for a wide character constant. The numerical value of the octal integer so formed specifies the value of the desired character or wide character."
+> 
+> Character constants have a type of int, so 0375
+> clearly fits in the range of that.
+> 
+> I guess the problem is that gcc sees this as
+> 
+> const int VBSF_MOUNT_SIGNATURE_BYTE_3 = 0375;
+> 
+> Where as clang sees this as:
+> 
+> const int VBSF_MOUNT_SIGNATURE_BYTE_3 = (char)0375;
+> 
+> Which is a nice subtle incompatibility between the 2 :|
+> 
+> 
+> With that said, the patch is fine and I have no objections
+> against it:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Although maybe it is better to actually remove any
+> ambiguity and just replace the defines with:
+> 
+> static const u8 VBSF_MOUNT_SIGNATURE_BYTE_0 = 0000;
+> static const u8 VBSF_MOUNT_SIGNATURE_BYTE_1 = 0377;
+> static const u8 VBSF_MOUNT_SIGNATURE_BYTE_2 = 0376;
+> static const u8 VBSF_MOUNT_SIGNATURE_BYTE_3 = 0375;
+> 
+> ?
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> > fs/vboxsf/super.c:393:21: error: result of comparison of constant -2 with expression of type 'unsigned char' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+> >                        options[2] == VBSF_MOUNT_SIGNATURE_BYTE_2 &&
+> >                        ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > fs/vboxsf/super.c:392:21: error: result of comparison of constant -1 with expression of type 'unsigned char' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+> >                        options[1] == VBSF_MOUNT_SIGNATURE_BYTE_1 &&
+> >                        ~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > The problem is that the pointer is of type 'unsigned char' but the
+> > constant is a 'char'. My first idea was to change the type of the
+> > pointer to 'char *', but I noticed that this was the original code
+> > and it got changed after 'smatch' complained about this.
+> > 
+> > I don't know if there is a bug in smatch here, but it sounds to me
+> > that clang's warning is correct. Forcing the constants to an unsigned
+> > type should make the code behave consistently and avoid the warning
+> > on both.
+> > 
+> > Fixes: 9d682ea6bcc7 ("vboxsf: Fix the check for the old binary mount-arguments struct")
+> > Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  fs/vboxsf/super.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+> > index 4f5e59f06284..84e2236021de 100644
+> > --- a/fs/vboxsf/super.c
+> > +++ b/fs/vboxsf/super.c
+> > @@ -21,10 +21,10 @@
+> >  
+> >  #define VBOXSF_SUPER_MAGIC 0x786f4256 /* 'VBox' little endian */
+> >  
+> > -#define VBSF_MOUNT_SIGNATURE_BYTE_0 ('\000')
+> > -#define VBSF_MOUNT_SIGNATURE_BYTE_1 ('\377')
+> > -#define VBSF_MOUNT_SIGNATURE_BYTE_2 ('\376')
+> > -#define VBSF_MOUNT_SIGNATURE_BYTE_3 ('\375')
+> > +#define VBSF_MOUNT_SIGNATURE_BYTE_0 (u8)('\000')
+> > +#define VBSF_MOUNT_SIGNATURE_BYTE_1 (u8)('\377')
+> > +#define VBSF_MOUNT_SIGNATURE_BYTE_2 (u8)('\376')
+> > +#define VBSF_MOUNT_SIGNATURE_BYTE_3 (u8)('\375')
+> >  
+> >  static int follow_symlinks;
+> >  module_param(follow_symlinks, int, 0444);
+> > 
