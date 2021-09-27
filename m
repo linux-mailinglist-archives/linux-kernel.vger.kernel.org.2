@@ -2,95 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9238A418DE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 05:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA19418DE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 05:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhI0DMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Sep 2021 23:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbhI0DMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Sep 2021 23:12:09 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6897AC061570;
-        Sun, 26 Sep 2021 20:10:31 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HHnh51fFDz4xZx;
-        Mon, 27 Sep 2021 13:10:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632712229;
-        bh=h8rtu75to4NfxJjfxqNtLXqSKhwwbkwlH4NRoSzJTqU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rBc3QOv4+eJrQBcATWEoRblZgMcuJQAxxqtlN8Y0cW3bQSLKAmMTNC+pWllnbr4mE
-         2O5nX2Ox05vvR+iQVSbDfLCNByUgQdZ3L/iK1Nx/tCv7PlIL/gKBANJfJANG+EZr0G
-         4O3X4obb68rP4B/Ufr7YhkvNwJ/rlJ+H51bZZiiIUTUwj+cszfsLypnURdcizubBq0
-         bNq7Jli33GxQVmfpV4d+afY2BY+fNzdhw3c1Bl7tjgVIV89L03ndbn3cPe5lGOJcmz
-         JOrepUK2XSbsArU0J+3UA0WKq4uDs2mV//PakBwFuS0VfmC4m5ue8ew2BaK+xEUhXc
-         WJsLfi8RrFlmg==
-Date:   Mon, 27 Sep 2021 13:10:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the rtc tree
-Message-ID: <20210927131027.13113c97@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=H2XQVCft/=alhz.li_S68K";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S232526AbhI0DWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Sep 2021 23:22:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:41302 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230469AbhI0DWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Sep 2021 23:22:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2779FD6E;
+        Sun, 26 Sep 2021 20:20:58 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.73.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0DB483F7B4;
+        Sun, 26 Sep 2021 20:20:54 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/mmap: Define index macros for protection_map[]
+Date:   Mon, 27 Sep 2021 08:52:00 +0530
+Message-Id: <1632712920-8171-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=H2XQVCft/=alhz.li_S68K
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+protection_map[] maps the lower four bits from vm_flags into platform page
+protection mask. Default initialization (and possible re-initialization in
+the platform) does not make it clear that these indices are just derived
+from various vm_flags protections (VM_SHARED, VM_READ, VM_WRITE, VM_EXEC).
+This defines macros for protection_map[] indices which concatenate various
+vm_flag attributes, making it clear and explicit.
 
-Hi all,
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mips@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.15-rc3 after the following patch.
 
-After merging the rtc tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+https://lore.kernel.org/all/20210924060821.1138281-1-guoren@kernel.org/
 
-drivers/rtc/rtc-msc313.c: In function 'msc313_rtc_read_alarm':
-drivers/rtc/rtc-msc313.c:54:12: error: implicit declaration of function 're=
-adw' [-Werror=3Dimplicit-function-declaration]
-   54 |  seconds =3D readw(priv->rtc_base + REG_RTC_MATCH_VAL_L)
-      |            ^~~~~
-drivers/rtc/rtc-msc313.c: In function 'msc313_rtc_alarm_irq_enable':
-drivers/rtc/rtc-msc313.c:75:2: error: implicit declaration of function 'wri=
-tew' [-Werror=3Dimplicit-function-declaration]
-   75 |  writew(reg, priv->rtc_base + REG_RTC_CTRL);
-      |  ^~~~~~
+ arch/mips/mm/cache.c    | 34 +++++++++++++++++-----------------
+ arch/sparc/mm/init_64.c | 32 ++++++++++++++++----------------
+ include/linux/mm.h      | 31 +++++++++++++++++++++++++++++++
+ mm/debug_vm_pgtable.c   |  8 ++++----
+ mm/mmap.c               | 18 ++++++++++++++++--
+ 5 files changed, 84 insertions(+), 39 deletions(-)
 
-Caused by commit
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 830ab91e574f..d0197cc1fb5a 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -161,24 +161,24 @@ EXPORT_SYMBOL(_page_cachable_default);
+ 
+ static inline void setup_protection_map(void)
+ {
+-	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[4]  = PM(_PAGE_PRESENT);
+-	protection_map[5]  = PM(_PAGE_PRESENT);
+-	protection_map[6]  = PM(_PAGE_PRESENT);
+-	protection_map[7]  = PM(_PAGE_PRESENT);
+-
+-	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
++	protection_map[PROTMAP_IDX_XXXX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[PROTMAP_IDX_XRXX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[PROTMAP_IDX_XXWX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[PROTMAP_IDX_XRWX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[PROTMAP_IDX_XXXE] = PM(_PAGE_PRESENT);
++	protection_map[PROTMAP_IDX_XRXE] = PM(_PAGE_PRESENT);
++	protection_map[PROTMAP_IDX_XXWE] = PM(_PAGE_PRESENT);
++	protection_map[PROTMAP_IDX_XRWE] = PM(_PAGE_PRESENT);
++
++	protection_map[PROTMAP_IDX_SXXX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[PROTMAP_IDX_SRXX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[PROTMAP_IDX_SXWX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+ 				_PAGE_NO_READ);
+-	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+-	protection_map[12] = PM(_PAGE_PRESENT);
+-	protection_map[13] = PM(_PAGE_PRESENT);
+-	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+-	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
++	protection_map[PROTMAP_IDX_SRWX] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
++	protection_map[PROTMAP_IDX_SXXE] = PM(_PAGE_PRESENT);
++	protection_map[PROTMAP_IDX_SRXE] = PM(_PAGE_PRESENT);
++	protection_map[PROTMAP_IDX_SXWE] = PM(_PAGE_PRESENT | _PAGE_WRITE);
++	protection_map[PROTMAP_IDX_SRWE] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+ }
+ 
+ #undef PM
+diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+index 1b23639e2fcd..1a7fe97c8167 100644
+--- a/arch/sparc/mm/init_64.c
++++ b/arch/sparc/mm/init_64.c
+@@ -2642,22 +2642,22 @@ static void prot_init_common(unsigned long page_none,
+ 	PAGE_COPY = __pgprot(page_copy);
+ 	PAGE_SHARED = __pgprot(page_shared);
+ 
+-	protection_map[0x0] = __pgprot(page_none);
+-	protection_map[0x1] = __pgprot(page_readonly & ~page_exec_bit);
+-	protection_map[0x2] = __pgprot(page_copy & ~page_exec_bit);
+-	protection_map[0x3] = __pgprot(page_copy & ~page_exec_bit);
+-	protection_map[0x4] = __pgprot(page_readonly);
+-	protection_map[0x5] = __pgprot(page_readonly);
+-	protection_map[0x6] = __pgprot(page_copy);
+-	protection_map[0x7] = __pgprot(page_copy);
+-	protection_map[0x8] = __pgprot(page_none);
+-	protection_map[0x9] = __pgprot(page_readonly & ~page_exec_bit);
+-	protection_map[0xa] = __pgprot(page_shared & ~page_exec_bit);
+-	protection_map[0xb] = __pgprot(page_shared & ~page_exec_bit);
+-	protection_map[0xc] = __pgprot(page_readonly);
+-	protection_map[0xd] = __pgprot(page_readonly);
+-	protection_map[0xe] = __pgprot(page_shared);
+-	protection_map[0xf] = __pgprot(page_shared);
++	protection_map[PROTMAP_IDX_XXXX] = __pgprot(page_none);
++	protection_map[PROTMAP_IDX_XRXX] = __pgprot(page_readonly & ~page_exec_bit);
++	protection_map[PROTMAP_IDX_XXWX] = __pgprot(page_copy & ~page_exec_bit);
++	protection_map[PROTMAP_IDX_XRWX] = __pgprot(page_copy & ~page_exec_bit);
++	protection_map[PROTMAP_IDX_XXXE] = __pgprot(page_readonly);
++	protection_map[PROTMAP_IDX_XRXE] = __pgprot(page_readonly);
++	protection_map[PROTMAP_IDX_XXWE] = __pgprot(page_copy);
++	protection_map[PROTMAP_IDX_XRWE] = __pgprot(page_copy);
++	protection_map[PROTMAP_IDX_SXXX] = __pgprot(page_none);
++	protection_map[PROTMAP_IDX_SRXX] = __pgprot(page_readonly & ~page_exec_bit);
++	protection_map[PROTMAP_IDX_SXWX] = __pgprot(page_shared & ~page_exec_bit);
++	protection_map[PROTMAP_IDX_SRWX] = __pgprot(page_shared & ~page_exec_bit);
++	protection_map[PROTMAP_IDX_SXXE] = __pgprot(page_readonly);
++	protection_map[PROTMAP_IDX_SRXE] = __pgprot(page_readonly);
++	protection_map[PROTMAP_IDX_SXWE] = __pgprot(page_shared);
++	protection_map[PROTMAP_IDX_SRWE] = __pgprot(page_shared);
+ }
+ 
+ static void __init sun4u_pgprot_init(void)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 73a52aba448f..4f99a49749a5 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -431,9 +431,40 @@ extern unsigned int kobjsize(const void *objp);
+ /*
+  * mapping from the currently active vm_flags protection bits (the
+  * low four bits) to a page protection mask..
++ *
++ * VM_EXEC ---------------------|
++ *                              |
++ * VM_WRITE ---------------|    |
++ *                         |    |
++ * VM_READ -----------|    |    |
++ *                    |    |    |
++ * VM_SHARED ----|    |    |    |
++ *               |    |    |    |
++ *               v    v    v    v
++ * PROTMAP_IDX_(S|X)(R|X)(W|X)(E|X)
++ *
++ * X - The protection flag is absent
++ *
+  */
+ extern pgprot_t protection_map[16];
+ 
++#define PROTMAP_IDX_XXXX (VM_NONE)
++#define PROTMAP_IDX_XRXX (VM_READ)
++#define PROTMAP_IDX_XXWX (VM_WRITE)
++#define PROTMAP_IDX_XRWX (VM_READ | VM_WRITE)
++#define PROTMAP_IDX_XXXE (VM_EXEC)
++#define PROTMAP_IDX_XRXE (VM_READ | VM_EXEC)
++#define PROTMAP_IDX_XXWE (VM_WRITE | VM_EXEC)
++#define PROTMAP_IDX_XRWE (VM_READ | VM_WRITE | VM_EXEC)
++#define PROTMAP_IDX_SXXX (VM_SHARED | VM_NONE)
++#define PROTMAP_IDX_SRXX (VM_SHARED | VM_READ)
++#define PROTMAP_IDX_SXWX (VM_SHARED | VM_WRITE)
++#define PROTMAP_IDX_SRWX (VM_SHARED | VM_READ | VM_WRITE)
++#define PROTMAP_IDX_SXXE (VM_SHARED | VM_EXEC)
++#define PROTMAP_IDX_SRXE (VM_SHARED | VM_READ | VM_EXEC)
++#define PROTMAP_IDX_SXWE (VM_SHARED | VM_WRITE | VM_EXEC)
++#define PROTMAP_IDX_SRWE (VM_SHARED | VM_READ | VM_WRITE | VM_EXEC)
++
+ /**
+  * enum fault_flag - Fault flag definitions.
+  * @FAULT_FLAG_WRITE: Fault was a write fault.
+diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+index 228e3954b90c..2e01d0d395bb 100644
+--- a/mm/debug_vm_pgtable.c
++++ b/mm/debug_vm_pgtable.c
+@@ -1104,14 +1104,14 @@ static int __init init_args(struct pgtable_debug_args *args)
+ 	/*
+ 	 * Initialize the debugging data.
+ 	 *
+-	 * protection_map[0] (or even protection_map[8]) will help create
+-	 * page table entries with PROT_NONE permission as required for
+-	 * pxx_protnone_tests().
++	 * protection_map[PROTMAP_IDX_XXXX] (or even protection_map[PROTMAP_IDX_SXXX])
++	 * will help create page table entries with PROT_NONE permission as required
++	 * for pxx_protnone_tests().
+ 	 */
+ 	memset(args, 0, sizeof(*args));
+ 	args->vaddr              = get_random_vaddr();
+ 	args->page_prot          = vm_get_page_prot(VMFLAGS);
+-	args->page_prot_none     = protection_map[0];
++	args->page_prot_none     = protection_map[PROTMAP_IDX_XXXX];
+ 	args->is_contiguous_page = false;
+ 	args->pud_pfn            = ULONG_MAX;
+ 	args->pmd_pfn            = ULONG_MAX;
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 88dcc5c25225..d38bd4e305f9 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -101,8 +101,22 @@ static void unmap_region(struct mm_struct *mm,
+  *								x: (yes) yes
+  */
+ pgprot_t protection_map[16] __ro_after_init = {
+-	__P000, __P001, __P010, __P011, __P100, __P101, __P110, __P111,
+-	__S000, __S001, __S010, __S011, __S100, __S101, __S110, __S111
++	[PROTMAP_IDX_XXXX] = __P000,
++	[PROTMAP_IDX_XRXX] = __P001,
++	[PROTMAP_IDX_XXWX] = __P010,
++	[PROTMAP_IDX_XRWX] = __P011,
++	[PROTMAP_IDX_XXXE] = __P100,
++	[PROTMAP_IDX_XRXE] = __P101,
++	[PROTMAP_IDX_XXWE] = __P110,
++	[PROTMAP_IDX_XRWE] = __P111,
++	[PROTMAP_IDX_SXXX] = __S000,
++	[PROTMAP_IDX_SRXX] = __S001,
++	[PROTMAP_IDX_SXWX] = __S010,
++	[PROTMAP_IDX_SRWX] = __S011,
++	[PROTMAP_IDX_SXXE] = __S100,
++	[PROTMAP_IDX_SRXE] = __S101,
++	[PROTMAP_IDX_SXWE] = __S110,
++	[PROTMAP_IDX_SRWE] = __S111
+ };
+ 
+ #ifndef CONFIG_ARCH_HAS_FILTER_PGPROT
+-- 
+2.20.1
 
-  be7d9c9161b9 ("rtc: Add support for the MSTAR MSC313 RTC")
-
-I have used the rtc tree from next-20210924 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=H2XQVCft/=alhz.li_S68K
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFRNiMACgkQAVBC80lX
-0GzrfQf/chhBxjquC0qlcOWmdCMaq7SSflPcHltJ4xcZfdrLH+/y/ZQxX2wJIkri
-zE0RSqh40Y721QCF7kVlKXPtZYywVUYEQYnaybyBSGKbsq0OQ6otBSWFiA+0bJab
-XmOZi4IaRxLl5wseQ0AiCEDy7oHghpDqI+cTglYWCgKwT6G6HJvr5AMXQ7nL7ocf
-eBDNkHkZLmD4g9+K2S48C8ZnknEo8JRj6YIRgF6vWcTcykCQ+EMfXkXTa+XwhQjw
-uD84YjwV9k3atu8D9pD7Fg6PCr0hrDPLSvoY4coQHnNu5borMfzidpzDykRB+pOp
-VUsxoorEdVLqG3K70N9VeWWcLHs/lQ==
-=Dwgd
------END PGP SIGNATURE-----
-
---Sig_/=H2XQVCft/=alhz.li_S68K--
