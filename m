@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2224C419C6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F05419B6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238028AbhI0R23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
+        id S236683AbhI0RSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238065AbhI0RYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:24:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E829C613DA;
-        Mon, 27 Sep 2021 17:15:43 +0000 (UTC)
+        id S236271AbhI0ROh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:14:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6F06135F;
+        Mon, 27 Sep 2021 17:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762944;
-        bh=Qx0MPFDFhqyxQqXlrN3OtQBI4PSt8rNHrm1et6sC+34=;
+        s=korg; t=1632762630;
+        bh=4ixodGxqK1SbwWyKkREENjTlpCpbVyQ5HEqwOaO/UJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+PZOW5mMQUbKjghI291l3TOeDIjlhFHENz+EeOLFN79y1r4duEO0dm5dWBZc4821
-         6UDqHlaOYZG6oTp/ueVLXRMfdH64No6qkmMXP3taYHzuNTVmwLLkQAougjk9dpqemE
-         YuWIjObXAmKNaXDCrTC8aL0ICcWzboTsq+7iB94Q=
+        b=sENZCewVqeAOY36yHNviAghImV4yEk7OAd/2A+nz9z8BW2RhdSdp2zoszWk0PRA80
+         AHcw62Va+Q85A7YrZY9n16MXr90gTUEy2l0RjKswhHsoUMdhhmvx6dY2GFUL8H9hQ8
+         1z75lLKKJ9pFoM6VJjJFE4zy+Xzf6aPF14ivDnzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kaige Fu <kaige.fu@linux.alibaba.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 109/162] irqchip/gic-v3-its: Fix potential VPE leak on error
-Date:   Mon, 27 Sep 2021 19:02:35 +0200
-Message-Id: <20210927170237.228153850@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Dmitry Bogdanov <d.bogdanov@yadro.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 064/103] scsi: qla2xxx: Restore initiator in dual mode
+Date:   Mon, 27 Sep 2021 19:02:36 +0200
+Message-Id: <20210927170228.000762907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaige Fu <kaige.fu@linux.alibaba.com>
+From: Dmitry Bogdanov <d.bogdanov@yadro.com>
 
-[ Upstream commit 280bef512933b2dda01d681d8cbe499b98fc5bdd ]
+[ Upstream commit 5f8579038842d77e6ce05e1df6bf9dd493b0e3ef ]
 
-In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error,
-there is an off-by-one in the number of VPEs to be freed.
+In dual mode in case of disabling the target, the whole port goes offline
+and initiator is turned off too.
 
-Fix it by simply passing the number of VPEs allocated, which is the
-index of the loop iterating over the VPEs.
+Fix restoring initiator mode after disabling target in dual mode.
 
-Fixes: 7d75bbb4bc1a ("irqchip/gic-v3-its: Add VPE irq domain allocation/teardown")
-Signed-off-by: Kaige Fu <kaige.fu@linux.alibaba.com>
-[maz: fixed commit message]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/d9e36dee512e63670287ed9eff884a5d8d6d27f2.1631672311.git.kaige.fu@linux.alibaba.com
+Link: https://lore.kernel.org/r/20210915153239.8035-1-d.bogdanov@yadro.com
+Fixes: 0645cb8350cd ("scsi: qla2xxx: Add mode control for each physical port")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-gic-v3-its.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_init.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index ba39668c3e08..51584f4cccf4 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -4501,7 +4501,7 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
- 
- 	if (err) {
- 		if (i > 0)
--			its_vpe_irq_domain_free(domain, virq, i - 1);
-+			its_vpe_irq_domain_free(domain, virq, i);
- 
- 		its_lpi_free(bitmap, base, nr_ids);
- 		its_free_prop_table(vprop_page);
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 6faf34fa6220..b7aac3116f2d 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -6934,7 +6934,8 @@ qla2x00_abort_isp(scsi_qla_host_t *vha)
+ 				return 0;
+ 			break;
+ 		case QLA2XXX_INI_MODE_DUAL:
+-			if (!qla_dual_mode_enabled(vha))
++			if (!qla_dual_mode_enabled(vha) &&
++			    !qla_ini_mode_enabled(vha))
+ 				return 0;
+ 			break;
+ 		case QLA2XXX_INI_MODE_ENABLED:
 -- 
 2.33.0
 
