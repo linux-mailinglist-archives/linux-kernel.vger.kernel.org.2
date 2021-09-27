@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C674193D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65244193DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbhI0MIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234087AbhI0MI3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:08:29 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3B3C061575;
-        Mon, 27 Sep 2021 05:06:51 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f088a001ce91a9f1eb42005.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8a00:1ce9:1a9f:1eb4:2005])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4652F1EC034B;
-        Mon, 27 Sep 2021 14:06:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632744406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fnzIy7z5nELIJDftnAE2ClbndYkwUROx0yEZJD+4zwQ=;
-        b=D3aTcAETUPoOq5c3TFgiqcuq4KxHukT2QcueH57GbqCHU3+DrKErqTl/r074Ip8jvUkPM5
-        1GXZw72qAAaEYJoAKUhM/pnUr/+tsxm+Qcy4+n8PQfDoOOQ3MEHWHnsd+TNcCSWAaP4+rr
-        JSA0ZHh0PbjJY7ZNdn5KchDeMhk+Ufw=
-Date:   Mon, 27 Sep 2021 14:06:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Babu Moger <babu.moger@amd.com>, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tony.luck@intel.com, peterz@infradead.org,
-        kyung.min.park@intel.com, wei.huang2@amd.com, jgross@suse.com,
-        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Expose Predictive Store Forwarding Disable
-Message-ID: <YVGz0HXe+WNAXfdF@zn.tnic>
-References: <163244601049.30292.5855870305350227855.stgit@bmoger-ubuntu>
- <YVGkDPbQmdwSw6Ff@zn.tnic>
- <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
+        id S234181AbhI0MKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234073AbhI0MKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:10:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6F561052;
+        Mon, 27 Sep 2021 12:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632744555;
+        bh=AI4tpGzcq2lGaC64BREqAyh495k90SIEp0H15kiF3Ig=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=M75I0T5h7qGQRA7oKVHzhSchib2qNPBAVpYc2Ceez7NUOZwwArcsujxIxbHdQ/ATP
+         mZyro+adIQsI0CzYxVYVCUwNyW7RmytDcEQyNzmsPWBO8XPyA8pNOFyf98kCtQipmu
+         wK0eW/UR5tlcdU2KE+31I74YNjzesYeuU028eGrTNkWnI5E4aZCacqoAFwtKS17s7y
+         peuE+DPTWnM6avX5Zz4Mtoq31UjScXfMjtcWJySKMV5Mdne9EDY+Kuc9CKqbhpdmiW
+         NcnOg4XLG2BL2SaK4hvINsbMdWcnGDGqXJ4Rveg1c2ymjJrSZqbRfaNWHH7TulQELy
+         33km1m23UFHxw==
+Received: by mail-lf1-f52.google.com with SMTP id b15so75506283lfe.7;
+        Mon, 27 Sep 2021 05:09:15 -0700 (PDT)
+X-Gm-Message-State: AOAM5327zUbnZlFvr6ovJOzv6NOhYuccHVN+XqViSq7oTeC1W7Ta3Pev
+        DrgOnnymFXrj/kb2iFn8zl/9UnzMYV7FR6DSN/w=
+X-Google-Smtp-Source: ABdhPJyNtWcWUZ3v8mDL+/Yc7vrpAv9Q9vg2NiH5xMn0Ry1758YyoowOzWE7K/GfnYa5gYmuS7KzC2hpfEhruxVLhpg=
+X-Received: by 2002:a05:6512:3ba0:: with SMTP id g32mr24350829lfv.216.1632744553586;
+ Mon, 27 Sep 2021 05:09:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fcbbdf83-128a-2519-13e8-1c5d5735a0d2@redhat.com>
+References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 27 Sep 2021 20:09:02 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com>
+Message-ID: <CAJF2gTQ6J-ah8xqmBHLu7KWDB9Far2Lzpfu6fFM7EBXNCJFS7g@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 01:13:26PM +0200, Paolo Bonzini wrote:
-> Because the guest kernel needs to know which MSRs to write when you touch
-> the SSBD prctl, so that PSFD is properly disabled *inside the guest*.
+I didn't see the patch delete:
+#else /* !CONFIG_SPARSE_IRQ */
+struct irq_desc irq_desc[NR_IRQS] __cacheline_aligned_in_smp = {
+        [0 ... NR_IRQS-1] = {
+                .handle_irq     = handle_bad_irq,
+                .depth          = 1,
+                .lock           = __RAW_SPIN_LOCK_UNLOCKED(irq_desc->lock),
+        }
+};
+...
 
-It already knows which - the same one which disables SSB. PSF is
-disabled *together* with SSB, for now...
+Flat irq_desc[] is simple and easy for debugging. We do want to del it?
+
+On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
+> only sh and csky select it, but the could use SPARSE_IRQ too, let's
+> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
+>
+> Kefeng Wang (3):
+>   sh: Cleanup about SPARSE_IRQ
+>   csky: Use SPARSE_IRQ
+>   genirq: Cleanup Kconfig
+>
+>  arch/csky/Kconfig         |  2 +-
+>  arch/sh/Kconfig           |  1 -
+>  arch/sh/include/asm/irq.h |  9 -------
+>  kernel/irq/Kconfig        | 50 ++++++++++++++++-----------------------
+>  4 files changed, 21 insertions(+), 41 deletions(-)
+>
+> --
+> 2.26.2
+>
+
 
 -- 
-Regards/Gruss,
-    Boris.
+Best Regards
+ Guo Ren
 
-https://people.kernel.org/tglx/notes-about-netiquette
+ML: https://lore.kernel.org/linux-csky/
