@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAFF419302
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E7041930E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhI0LWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234049AbhI0LV7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:21:59 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AC3C061714;
-        Mon, 27 Sep 2021 04:20:21 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b15so74881375lfe.7;
-        Mon, 27 Sep 2021 04:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IM0udcg7Exs9Wnno0uDS6E62zPZhOJr/cycPpKfnVQk=;
-        b=L/8MgV0oyeUPafvMVbtVmDu6G4fF5NWkGlFnkakoW6A0bmCaZYF6m8mJPsAnlfgUv6
-         bQwfyboY2aMAG+yBz7WnKoQeJDIMKxTVOAPa7i0GHwMl66BG7AfTdcbJ8qLKYbOHoJOG
-         JGKcc591VuF3xRKTGo7wZZzjlImrv/NGMlYdsV++U6hGXd/WkWbO8M0EH/fTkFxoWIeG
-         xwRPGBWRaKip8p0kelTi2jtXzGrWo4O4N9ptR+eQ9Nz2gBTaF3liuj+pb6ExopGrKBeu
-         obY1Ref6pkgYjWXbQL1wPpA2kOhpOX3N+YD6wGpK+JrCpJziQoxAaPXw8C0rbXyiixhH
-         3NJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IM0udcg7Exs9Wnno0uDS6E62zPZhOJr/cycPpKfnVQk=;
-        b=2nh/H/XX2gAaZ9ah9L8t+DCqdAIN+DWWFmsyCGKb7F6IVEBP9vFbeSeQMiDmGFTZRc
-         6R0R/I5q5jtJs4nIfuyVeRzB6HBSuaJe2u2M6thwsq7Bjn7sRY+uBs4nKXiqFgurbVNX
-         LKyenTicTNsvm8ygG/JXT4fIQfz4RQAo4w6AP5gi/dBSIWqglkJVRh4+NswV9uW9BM02
-         qMhyAr5lV/RxLxLtTl10f8hJxiCHX7rS3+YqpBC7weq8l+wC6iNYhNy3UFlSihqJKu1s
-         qnNGHY43yoSZMGWrsIS5iayfah84tw1TT5n90FmGquiVJ0tvcVxiSwul/A+2gwwKsPuo
-         m4Ww==
-X-Gm-Message-State: AOAM53161W8e4MYfpdWZ4mZdeBBjth6iyRy8tMSnwhi0N//fsQrNlXg8
-        qEVAOBl6oWI1tLIL6C8JsgM=
-X-Google-Smtp-Source: ABdhPJxxCsdNzj//iPQCyzCjltNqYaesAyRbJIFqOu6djIN1chwsISnVFjpzf1PB0yJt89PxuZrJbg==
-X-Received: by 2002:a05:6512:3ba5:: with SMTP id g37mr23275112lfv.651.1632741619712;
-        Mon, 27 Sep 2021 04:20:19 -0700 (PDT)
-Received: from localhost.localdomain ([217.117.245.149])
-        by smtp.gmail.com with ESMTPSA id p8sm1387002lft.242.2021.09.27.04.20.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 04:20:18 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, buytenh@marvell.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Subject: [PATCH] phy: mdio: fix memory leak
-Date:   Mon, 27 Sep 2021 14:20:17 +0300
-Message-Id: <20210927112017.19108-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S234003AbhI0LZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:25:23 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55638 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233959AbhI0LZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 07:25:21 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mUojW-0004A4-Pj; Mon, 27 Sep 2021 19:23:42 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mUojW-0005r0-3W; Mon, 27 Sep 2021 19:23:42 +0800
+Date:   Mon, 27 Sep 2021 19:23:42 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Subject: [PATCH] crypto: api - Export crypto_boot_test_finished
+Message-ID: <20210927112341.GA22483@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927143229.543749f4@canb.auug.org.au>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
+Organization: Core
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in MDIO bus interface, the problem was in
-wrong state logic.
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> [-- text/plain, encoding quoted-printable, charset: US-ASCII, 18 lines --]
+> 
+> Hi all,
+> 
+> After merging the crypto tree, today's linux-next build (powerpc
+> ppc44x_defconfig) failed like this:
+> 
+> ERROR: modpost: "crypto_boot_test_finished" [crypto/crypto_algapi.ko] undefined!
+> 
+> Caused by commit
+> 
+>  adad556efcdd ("crypto: api - Fix built-in testing dependency failures")
+> 
+> I have reverted that commit for today.
 
-MDIOBUS_ALLOCATED indicates 2 states:
-	1. Bus is only allocated
-	2. Bus allocated and __mdiobus_register() fails, but
-	   device_register() was called
+Oops, does this patch fix the problem?
 
-In case of device_register() has been called we should call put_device()
-to correctly free the memory allocated for this device, but mdiobus_free()
-was just calling kfree(dev) in case of MDIOBUS_ALLOCATED state
+---8<---
+We need to export crypto_boot_test_finished in case api.c is
+built-in while algapi.c is built as a module.
 
-To avoid this behaviour we can add new intermediate state, which means,
-that we have called device_regiter(), but failed on any of the next steps.
-Clean up process for this state is the same as for MDIOBUS_UNREGISTERED,
-but MDIOBUS_UNREGISTERED name does not fit to the logic described above.
+Fixes: adad556efcdd ("crypto: api - Fix built-in testing dependency failures")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
-Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/phy/mdio_bus.c | 4 +++-
- include/linux/phy.h        | 1 +
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 53f034fc2ef7..ed764638b449 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -540,6 +540,8 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 		return -EINVAL;
- 	}
+diff --git a/crypto/api.c b/crypto/api.c
+index 1cf1f03347cc..ee5991fe11f8 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -32,6 +32,7 @@ BLOCKING_NOTIFIER_HEAD(crypto_chain);
+ EXPORT_SYMBOL_GPL(crypto_chain);
  
-+	bus->state = MDIOBUS_DEV_REGISTERED;
-+
- 	mutex_init(&bus->mdio_lock);
- 	mutex_init(&bus->shared_lock);
+ DEFINE_STATIC_KEY_FALSE(crypto_boot_test_finished);
++EXPORT_SYMBOL_GPL(crypto_boot_test_finished);
  
-@@ -647,7 +649,7 @@ void mdiobus_free(struct mii_bus *bus)
- 		return;
- 	}
+ static struct crypto_alg *crypto_larval_wait(struct crypto_alg *alg);
  
--	BUG_ON(bus->state != MDIOBUS_UNREGISTERED);
-+	BUG_ON(bus->state != MDIOBUS_UNREGISTERED && bus->state != MDIOBUS_DEV_REGISTERED);
- 	bus->state = MDIOBUS_RELEASED;
- 
- 	put_device(&bus->dev);
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 736e1d1a47c4..41d2ccdacd5e 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -343,6 +343,7 @@ struct mii_bus {
- 		MDIOBUS_REGISTERED,
- 		MDIOBUS_UNREGISTERED,
- 		MDIOBUS_RELEASED,
-+		MDIOBUS_DEV_REGISTERED,
- 	} state;
- 
- 	/** @dev: Kernel device representation */
 -- 
-2.33.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
