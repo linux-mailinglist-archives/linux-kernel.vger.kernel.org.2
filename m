@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9C14193F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5964193F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 14:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhI0MSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 08:18:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48216 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234280AbhI0MRz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 08:17:55 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 30DEA200E7;
-        Mon, 27 Sep 2021 12:16:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632744973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2JDyFY0B3V9u0p2eeZcWAu9t3CijjbBnbN1ws98VWnc=;
-        b=gjmUPk3C5xGi5oim5i9/JuTCCSv6JcT1ecg0vJtcmB+J8Og9bG/A2m7LIp3X5sBEr2OUWJ
-        NLH5mhxkp0X4oSVSxmRvW6I7LLkBJyYLSf09WH6YkMkLI7cy/UUqw0BIHBLaRKAectrMTH
-        lgGT7DTUWirra+wKWcFlP+x0QXY1JEc=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id A22EA25D3C;
-        Mon, 27 Sep 2021 12:16:12 +0000 (UTC)
-Date:   Mon, 27 Sep 2021 14:16:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 0/8] mm/madvise: support
- process_madvise(MADV_DONTNEED)
-Message-ID: <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
-References: <20210926161259.238054-1-namit@vmware.com>
- <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
- <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
- <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
- <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
+        id S234324AbhI0MSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 08:18:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234213AbhI0MSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 08:18:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4744A6103B;
+        Mon, 27 Sep 2021 12:16:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632745021;
+        bh=kg6cqnxzry6/+Av1WRHhc3o3FRqLV9iNvalhK8jK0I0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YAoQb5O0Qg44lcoRdQPW2cCt4aC4f4bBHW7tXweJWw/zQXN8VzDdk079kZk+uFOdH
+         XAgnN1r8aDLZvWeALDKcYNOHCM69BmN6/CjNtZMY4k+KG7AgIMxA/SsmL0RZQtrnkh
+         lroyVZssRyyVKZ80TfThBbfSBzKCIyR3FVSxtiM83wh67dL0OeJFJve2olbZjIrh8Q
+         r3MYmj1pFFbRtL54JNwKXov5YaBJVG14uvBr7Ax0y5q/LyGP9x30WBkcAlDJ9umDT6
+         cp69bOHg3eiZwJCMHI+Uum4JKDJ49sky3CpQKCDt8q/NJRl98wavT20M1sGtcVviwO
+         OH69STxaYIrZg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] mwifiex: avoid null-pointer-subtraction warning
+Date:   Mon, 27 Sep 2021 14:16:35 +0200
+Message-Id: <20210927121656.940304-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 27-09-21 05:00:11, Nadav Amit wrote:
-[...]
-> The manager is notified on memory regions that it should monitor
-> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these regions
-> using the remote-userfaultfd that you saw on the second thread. When it wants
-> to reclaim (anonymous) memory, it:
-> 
-> 1. Uses UFFD-WP to protect that memory (and for this matter I got a vectored
->    UFFD-WP to do so efficiently, a patch which I did not send yet).
-> 2. Calls process_vm_readv() to read that memory of that process.
-> 3. Write it back to “swap”.
-> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
+clang complains about some NULL pointer arithmetic in this driver:
 
-MADV_DONTNEED on a remote process has been proposed in the past several
-times and it has always been rejected because it is a free ticket to all
-sorts of hard to debug problems as it is just a free ticket for a remote
-memory corruption. An additional capability requirement might reduce the
-risk to some degree but I still do not think this is a good idea.
+drivers/net/wireless/marvell/mwifiex/sta_tx.c:65:59: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+        pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
+                                                                 ^
+drivers/net/wireless/marvell/mwifiex/uap_txrx.c:478:53: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+        pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
+
+Rework that expression to do the same thing using a uintptr_t.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/marvell/mwifiex/sta_tx.c   | 4 ++--
+ drivers/net/wireless/marvell/mwifiex/uap_txrx.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/sta_tx.c b/drivers/net/wireless/marvell/mwifiex/sta_tx.c
+index 241305377e20..a9b5eb992220 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sta_tx.c
++++ b/drivers/net/wireless/marvell/mwifiex/sta_tx.c
+@@ -62,8 +62,8 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
+ 
+ 	pkt_type = mwifiex_is_skb_mgmt_frame(skb) ? PKT_TYPE_MGMT : 0;
+ 
+-	pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
+-			 NULL) & (MWIFIEX_DMA_ALIGN_SZ - 1);
++	pad = ((uintptr_t)skb->data - (sizeof(*local_tx_pd) + hroom)) &
++	       (MWIFIEX_DMA_ALIGN_SZ - 1);
+ 	skb_push(skb, sizeof(*local_tx_pd) + pad);
+ 
+ 	local_tx_pd = (struct txpd *) skb->data;
+diff --git a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
+index 9bbdb8dfce62..245ff644f81e 100644
+--- a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
++++ b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
+@@ -475,8 +475,8 @@ void *mwifiex_process_uap_txpd(struct mwifiex_private *priv,
+ 
+ 	pkt_type = mwifiex_is_skb_mgmt_frame(skb) ? PKT_TYPE_MGMT : 0;
+ 
+-	pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
+-			(MWIFIEX_DMA_ALIGN_SZ - 1);
++	pad = ((uintptr_t)skb->data - (sizeof(*txpd) + hroom)) &
++	       (MWIFIEX_DMA_ALIGN_SZ - 1);
+ 
+ 	skb_push(skb, sizeof(*txpd) + pad);
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
