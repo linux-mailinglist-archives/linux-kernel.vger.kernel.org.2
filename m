@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA19941A16C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C6441A177
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 23:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237404AbhI0VhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 17:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237381AbhI0VhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 17:37:01 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529D8C061575;
-        Mon, 27 Sep 2021 14:35:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        id S237306AbhI0VsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 17:48:08 -0400
+Received: from ixit.cz ([94.230.151.217]:32994 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237009AbhI0VsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 17:48:07 -0400
+Received: from localhost.localdomain (78-80-24-171.customers.tmcz.cz [78.80.24.171])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJGBx1tvzz4xVP;
-        Tue, 28 Sep 2021 07:35:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632778521;
-        bh=ldpYx0cQdcPSDO4hGkNCyKF3aAUshCs7gIrXokMxBPM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=myXCiCb2OuHGDkuiMss9w1D7ckuBJdWmiOX3eqQZq4w7kNa9ota+jkFkWnB2uOTt5
-         teGfQRgLAUS7gPjZa3xZLS9UUK1ypJEcrBdUGZmwgR2izcCDYY34xHqq3GGJTGTlyZ
-         lWCGinhixq9tZwAsgxlzEQyoFkiH6nto8R0lnjpU5tmNW3z925+5pM7gfG0w7Lk2b4
-         GMHy8L2OyYMmYrYV7stbYNXXXjCsw2pwHP7unFDp0uZ4r4qZ+wzZ9vlAA2jIC4lPns
-         jeCTbpOO9iuhDKFY1Z/psocFmLl05j0ALQhr6SMbzjJxfWtIvGV5L1jckdGg7SyLtC
-         79bh3Xvxt6HQw==
-Date:   Tue, 28 Sep 2021 07:35:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the perf-current tree
-Message-ID: <20210928073519.34ec0811@canb.auug.org.au>
+        by ixit.cz (Postfix) with ESMTPSA id B972E23B26;
+        Mon, 27 Sep 2021 23:46:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1632779186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iS6TSh/x26e3Xty4xcu1zsYhQ7HEjDLQaU5989GXvhg=;
+        b=ws808cCAZxxCbuirgJxzA6SVsOTuqTk1ej8A0MaPNaH6TVeY9ZqB05dyhLJ4rlVmJFc2pi
+        7Ql4Rpy5hq5TYj6A7IK2Y6do1Qt5fKGesgtFd3Hkjnjn6Fqh+X3xhfnipsZ76bxrj4KsOC
+        vyjOPDilN1PFiTCqFqquuhdfeU+F100=
+From:   David Heidelberg <david@ixit.cz>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Subject: [PATCH] dt-bindings: display: simple: hardware can use ddc-i2c-bus
+Date:   Mon, 27 Sep 2021 23:45:03 +0200
+Message-Id: <20210927214503.36012-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6zcrSIpQc3Fl8vryzKBOQcU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6zcrSIpQc3Fl8vryzKBOQcU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Both hardware and driver can communicate DDC over i2c bus.
 
-Hi all,
+Fixes warnings as:
+arch/arm/boot/dts/tegra20-paz00.dt.yaml: panel: 'ddc-i2c-bus' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /home/runner/work/linux/linux/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
 
-In commit
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../devicetree/bindings/display/panel/panel-simple.yaml          | 1 +
+ 1 file changed, 1 insertion(+)
 
-  5c34aea341b1 ("perf test: Fix DWARF unwind for optimized builds.")
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 31f678636717..e4d93e0ddfc3 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -319,6 +319,7 @@ properties:
+       - yes-optoelectronics,ytc700tlag-05-201c
+ 
+   backlight: true
++  ddc-i2c-bus: true
+   enable-gpios: true
+   port: true
+   power-supply: true
+-- 
+2.33.0
 
-Fixes tag
-
-  Fixes: 9ae1e990f1ab ("perf tools: Remove broken __no_tail_call
-
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more then one line.  Also keep all
-the commit message tags together at the end fo the commit message.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6zcrSIpQc3Fl8vryzKBOQcU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFSORcACgkQAVBC80lX
-0GyAqAf8C9PqjTejRHOi482WNG9Qj1iiPaVd6i8mEMzIZydUU16SRIKx6zuWCfFR
-dA4QpYMId1kAYH48gD/1stfTZOZzjh6tKMj189lSYo8L7syyxCzcq44WY/RE94qp
-X1Q4IDsB1vnF/L0SAbxwhjIuHE7u2XbxRdN7lnsmn8UVFnFRUqGGaKSLFg/SJFda
-zUMCQMYj+yt97VeUasM1YvQsqZHoBU0KvnbyPbQSvY2bl38WcuPSGJWDruKAjRcW
-P5l8ykwQ+OOmf6xpGgbraHxcobtZVFtC+rHezp4c5uqgTc0B49hHAalEH9kJIyg8
-/jTAdIsFKorJ7qjnUKBrFU1fHGvEnw==
-=hPeu
------END PGP SIGNATURE-----
-
---Sig_/6zcrSIpQc3Fl8vryzKBOQcU--
