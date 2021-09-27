@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052B6419567
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B97419565
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234646AbhI0Nvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41826 "EHLO mail.kernel.org"
+        id S234641AbhI0Nvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234600AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234583AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Sep 2021 09:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E3061002;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E52360F39;
         Mon, 27 Sep 2021 13:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632750595;
-        bh=3FXA4AbMQLH4lWQwUmUJ+RG4GsZVOfi+yc3uPA1d0IQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jmUYX6phnM1nq9XWqNJwgdc1w/H/83d0XbGoKhQbr1FeN85ErJyatsF5lXr/U9Pwr
-         2iXUqAo/CzgBqBSZ606WL8uBTckQD/hRu36UvNZKhyief5S8H3rgzFfu+RAZHW0+ME
-         sHudVWq5TwaqrdPBDDctZswFMJBt1UFhCZwNWBWVASfzbYAdcvTLpEtJcAwxjfvP0N
-         7fitLURaoQ8yG/e70hgMfGCZUSGkQAxEvOOpP2drMEc1UAq4L0QjHZ9N476t3Uo3TB
-         QugK1jFgag664hloQltsoV47gDkDBh6B31w3k7eRt1b+JIFJUYysya1Cqv57pVYEry
-         Ui/2G/RABRd2A==
+        bh=/bOTaTmzGWeOrx1NvxdBUUcp7sjpew/tVp0sOd6hnug=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=C2sAeA6eryJvSq866rse+8FBL6cA6CkUy9+hm51NPBXQUtNU6PM2Yz8P+zjwG88iV
+         OjipCFk3ZisQEFdyW3/x/VT5xyu4/9m670olcer6izeYdSKnpD1R1JIRS+lkmQCXUC
+         wZapp0mWJJ60RDHDPV6BEH2eRpvRY4QyNMTOiZNh0Ikg8FtGimLO3c0T8aB3ttfCJm
+         OhXp1+vPQh571NkbJq9R7TmZLvy5tIagTvJNXVNpzr0Gz7s21f0j1C3aNDQmwOYwLY
+         ntUoF1AeCeB8/tPvEppPl7OCv2G305A2btJRKeC50Lpphvsh4yL1LlToYDha+3j/Kf
+         Im891uej+k0Yg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mUr0z-000AjR-Hy; Mon, 27 Sep 2021 15:49:53 +0200
+        id 1mUr0z-000AjU-JN; Mon, 27 Sep 2021 15:49:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 0/3] scripts: get_abi.pl: some additional fixes and doc update
-Date:   Mon, 27 Sep 2021 15:49:48 +0200
-Message-Id: <cover.1632750315.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] scripts: get_abi.pl: produce an error if the ref tree is broken
+Date:   Mon, 27 Sep 2021 15:49:49 +0200
+Message-Id: <e7dd4d70e206723455d50c851802c8bb6c34941d.1632750315.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1632750315.git.mchehab+huawei@kernel.org>
+References: <cover.1632750315.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -42,33 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+The logic under graph_add_file should create, for every entry, a
+__name name array for all entries of the tree. If this fails, the
+symlink parsing will break.
 
-This small series address a couple of issues I noticed while testing it
-on an arm64 board (HiKey970). Those are addressed on patches 1
-and 2.
+Add an error if this ever happens.
 
-Patch 2 is the real fix: it prevents creating aliases for nodes that
-are ignored (specially for /sys/firmware, where there's no documentation
-for the files created there under Documentation/ABI - nor it makes
-sense to have it).
+While here, improve the output of data dumper to be more
+compact and to avoid displaying things like $VAR1=.
 
-Patch 1 prevents similar cases, as it will produce an error if a
-symlink is pointing to an entry that was not added at the internal
-representation of the sysfs.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
 
-Patch 3 just update a few things at the documentation inside the
-script.
+See [PATCH 0/3] at: https://lore.kernel.org/all/cover.1632750315.git.mchehab+huawei@kernel.org/
 
-Mauro Carvalho Chehab (3):
-  scripts: get_abi.pl: produce an error if the ref tree is broken
-  scripts: get_abi.pl: fix parse logic for DT firmware
-  scripts: get_abi.pl: update its documentation
+ scripts/get_abi.pl | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
- scripts/get_abi.pl | 70 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 45 insertions(+), 25 deletions(-)
-
+diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
+index c191c024f052..26a3f8ff566a 100755
+--- a/scripts/get_abi.pl
++++ b/scripts/get_abi.pl
+@@ -27,6 +27,9 @@ my $dbg_what_open = 2;
+ my $dbg_dump_abi_structs = 4;
+ my $dbg_undefined = 8;
+ 
++$Data::Dumper::Indent = 1;
++$Data::Dumper::Terse = 1;
++
+ #
+ # If true, assumes that the description is formatted with ReST
+ #
+@@ -597,7 +600,6 @@ sub graph_add_link {
+ 
+ 	my @queue;
+ 	my %seen;
+-	my $base_name;
+ 	my $st;
+ 
+ 	push @queue, $file_ref;
+@@ -611,6 +613,12 @@ sub graph_add_link {
+ 			next if $seen{$$v{$c}};
+ 			next if ($c eq "__name");
+ 
++			if (!defined($$v{$c}{"__name"})) {
++				printf STDERR "Error: Couldn't find a non-empty name on a children of $file/.*: ";
++				print STDERR Dumper(%{$v});
++				exit;
++			}
++
+ 			# Add new name
+ 			my $name = @{$$v{$c}{"__name"}}[0];
+ 			if ($name =~ s#^$file/#$link/#) {
 -- 
 2.31.1
-
 
