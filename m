@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FE4419BE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C800419BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237449AbhI0RXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:23:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37506 "EHLO mail.kernel.org"
+        id S237498AbhI0RXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236326AbhI0RUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:20:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C66E613A1;
-        Mon, 27 Sep 2021 17:13:10 +0000 (UTC)
+        id S237004AbhI0RUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:20:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C507D61353;
+        Mon, 27 Sep 2021 17:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762790;
-        bh=V1XRCNnsokINEUhpOK8ajzGyWuEa2f0wXZ5FZ178hug=;
+        s=korg; t=1632762793;
+        bh=NZAdhYbzktd9+Nks2wFC4dKjzc6MPwQ4GMyA7d7CVyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xsR+phKAYtAhJ/NBEAeP/8nT3YmZVAq1E5udvLGe+MQNiVoFyoOg8bmk1lCIu9f/O
-         7iiI7f+EhcesZzMjJHHUhAwkENRVSw1Ul0ulrZkH3la1CNDxm6F+XF5rc6pzVLMEMg
-         4LaywavzQl90GUNykPUu0i71zGLE4TmkogZBVXJQ=
+        b=j9TeZPgjKZz8JNNcsSKK9QumYyDjgB0Yt11BSHhDdlnPRclacRsMqLTS+SBR/czln
+         CniUkgO2aiJ3Qm/lBHpW0n2++Jzt2ppaIy14wYjN3JLHh26ul7pdqiqDfd/j2KV3V7
+         PKOs6ZT47QZpUbtJdHHcg+cRJ7CM1mqagao+7xYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Suvanto <markus.suvanto@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 051/162] afs: Fix updating of i_blocks on file/dir extension
-Date:   Mon, 27 Sep 2021 19:01:37 +0200
-Message-Id: <20210927170235.260421911@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 052/162] platform/x86/intel: punit_ipc: Drop wrong use of ACPI_PTR()
+Date:   Mon, 27 Sep 2021 19:01:38 +0200
+Message-Id: <20210927170235.301017260@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
 References: <20210927170233.453060397@linuxfoundation.org>
@@ -41,115 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 9d37e1cab2a9d2cee2737973fa455e6f89eee46a ]
+[ Upstream commit 349bff48ae0f5f8aa2075d0bdc2091a30bd634f6 ]
 
-When an afs file or directory is modified locally such that the total file
-size is extended, i_blocks needs to be recalculated too.
+ACPI_PTR() is more harmful than helpful. For example, in this case
+if CONFIG_ACPI=n, the ID table left unused which is not what we want.
 
-Fix this by making afs_write_end() and afs_edit_dir_add() call
-afs_set_i_size() rather than setting inode->i_size directly as that also
-recalculates inode->i_blocks.
+Instead of adding ifdeffery here and there, drop ACPI_PTR()
+and unused acpi.h.
 
-This can be tested by creating and writing into directories and files and
-then examining them with du.  Without this change, directories show a 4
-blocks (they start out at 2048 bytes) and files show 0 blocks; with this
-change, they should show a number of blocks proportional to the file size
-rounded up to 1024.
-
-Fixes: 31143d5d515e ("AFS: implement basic file write support")
-Fixes: 63a4681ff39c ("afs: Locally edit directory data for mkdir/create/unlink/...")
-Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-Tested-by: Markus Suvanto <markus.suvanto@gmail.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/163113612442.352844.11162345591911691150.stgit@warthog.procyon.org.uk/
+Fixes: fdca4f16f57d ("platform:x86: add Intel P-Unit mailbox IPC driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210827145310.76239-1-andriy.shevchenko@linux.intel.com
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/dir_edit.c |  4 ++--
- fs/afs/inode.c    | 10 ----------
- fs/afs/internal.h | 10 ++++++++++
- fs/afs/write.c    |  2 +-
- 4 files changed, 13 insertions(+), 13 deletions(-)
+ drivers/platform/x86/intel_punit_ipc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
-index f4600c1353ad..540b9fc96824 100644
---- a/fs/afs/dir_edit.c
-+++ b/fs/afs/dir_edit.c
-@@ -263,7 +263,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
- 		if (b == nr_blocks) {
- 			_debug("init %u", b);
- 			afs_edit_init_block(meta, block, b);
--			i_size_write(&vnode->vfs_inode, (b + 1) * AFS_DIR_BLOCK_SIZE);
-+			afs_set_i_size(vnode, (b + 1) * AFS_DIR_BLOCK_SIZE);
- 		}
- 
- 		/* Only lower dir pages have a counter in the header. */
-@@ -296,7 +296,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
- new_directory:
- 	afs_edit_init_block(meta, meta, 0);
- 	i_size = AFS_DIR_BLOCK_SIZE;
--	i_size_write(&vnode->vfs_inode, i_size);
-+	afs_set_i_size(vnode, i_size);
- 	slot = AFS_DIR_RESV_BLOCKS0;
- 	page = page0;
- 	block = meta;
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 80b6c8d967d5..c18cbc69fa58 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -53,16 +53,6 @@ static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *paren
- 		dump_stack();
- }
- 
--/*
-- * Set the file size and block count.  Estimate the number of 512 bytes blocks
-- * used, rounded up to nearest 1K for consistency with other AFS clients.
-- */
--static void afs_set_i_size(struct afs_vnode *vnode, u64 size)
--{
--	i_size_write(&vnode->vfs_inode, size);
--	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
--}
--
- /*
-  * Initialise an inode from the vnode status.
+diff --git a/drivers/platform/x86/intel_punit_ipc.c b/drivers/platform/x86/intel_punit_ipc.c
+index f58b8543f6ac..66bb39fd0ef9 100644
+--- a/drivers/platform/x86/intel_punit_ipc.c
++++ b/drivers/platform/x86/intel_punit_ipc.c
+@@ -8,7 +8,6 @@
+  * which provide mailbox interface for power management usage.
   */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 928408888054..345494881f65 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1586,6 +1586,16 @@ static inline void afs_update_dentry_version(struct afs_operation *op,
- 			(void *)(unsigned long)dir_vp->scb.status.data_version;
- }
  
-+/*
-+ * Set the file size and block count.  Estimate the number of 512 bytes blocks
-+ * used, rounded up to nearest 1K for consistency with other AFS clients.
-+ */
-+static inline void afs_set_i_size(struct afs_vnode *vnode, u64 size)
-+{
-+	i_size_write(&vnode->vfs_inode, size);
-+	vnode->vfs_inode.i_blocks = ((size + 1023) >> 10) << 1;
-+}
-+
- /*
-  * Check for a conflicting operation on a directory that we just unlinked from.
-  * If someone managed to sneak a link or an unlink in on the file we just
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 66b235266893..e86f5a245514 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -137,7 +137,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 		write_seqlock(&vnode->cb_lock);
- 		i_size = i_size_read(&vnode->vfs_inode);
- 		if (maybe_i_size > i_size)
--			i_size_write(&vnode->vfs_inode, maybe_i_size);
-+			afs_set_i_size(vnode, maybe_i_size);
- 		write_sequnlock(&vnode->cb_lock);
- 	}
+-#include <linux/acpi.h>
+ #include <linux/bitops.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+@@ -319,7 +318,7 @@ static struct platform_driver intel_punit_ipc_driver = {
+ 	.remove = intel_punit_ipc_remove,
+ 	.driver = {
+ 		.name = "intel_punit_ipc",
+-		.acpi_match_table = ACPI_PTR(punit_ipc_acpi_ids),
++		.acpi_match_table = punit_ipc_acpi_ids,
+ 	},
+ };
  
 -- 
 2.33.0
