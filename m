@@ -2,128 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE874194DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211A34194E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbhI0NNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234421AbhI0NNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:13:45 -0400
-X-Greylist: delayed 18809 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Sep 2021 06:12:08 PDT
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02989C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 06:12:07 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJ3286WM8z4xZJ;
-        Mon, 27 Sep 2021 23:12:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1632748321;
-        bh=/6NGyTxf3yZzS/6VpTsWCSMws0EAQCWdVr1eBk3RItQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bCCOJ57PVuxKBr/+8rzursr0M58poo2U8UYU8FmOa4Ve+xeh2oVXaK/weC5cayqC8
-         0wfzCG3XkzUK6Cq3uln4S1u7XiI8Y5zls2oXnDdU8s8sTYlXG0ip+mYiZXMrDsr0Ms
-         rgvGcz2IfqStO+q38lKNaAq/EqUyLMic0uWxcIB0J9CzMKYaZF+8ecEHf3d0bQmkvS
-         aHG/dFXj/TlPCuEGMseSTg3CjjKQ3HmJ7K6YllqzxrwuI16j2tZXrTHkJAF1Jps4OY
-         umzjNyJWrNKJ+gqjI+Y3AiPuqS0/WkO+2lgBODADFgP+K/n+6PQi6QF0+aN0U1U7KW
-         vJ+X8XhJSUtPA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Subject: Re: [PATCH 1/3] mm: Make generic arch_is_kernel_initmem_freed() do
- what it says
-In-Reply-To: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
-References: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
-Date:   Mon, 27 Sep 2021 23:11:56 +1000
-Message-ID: <87h7e6kvs3.fsf@mpe.ellerman.id.au>
+        id S234543AbhI0NO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234421AbhI0NOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:14:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 788166113A;
+        Mon, 27 Sep 2021 13:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632748367;
+        bh=BbvgKOUZih7nOihlx2zt2uq5DrvyXDfq+MIjMucsX/k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cBaz4AVoEhH2ljsCp3F6K1F8qSEPoM1dsr09Abwn729rpxa7EaU0Qj2t5rZWv2HDw
+         ZF/TLfYSzM3a2HdPhtyA/5KB5NOVrFI+0bpKZJFvLnljrXUeWJuKI1TA8NwCdCU93d
+         N44upETYaGhmklOIvu9XWUKzFbcuURQCp/UtezlURlYlV7qHzY4mAf1WeKzoGvlEFQ
+         6CMdMZIg9XO4U3L28lGJm3rp7EBQvrIfOb9KfahMNzv67XSef/irBJbZnfq7rJH7vt
+         K+bqal6yLpJhf1A9nnum08kftNUKyoAmmvqoIyVv4bhhjeII5VYwln9nKvtSSc/IdF
+         YLzlNudVZAWgA==
+Received: by mail-wm1-f51.google.com with SMTP id f78-20020a1c1f51000000b0030cdb3d6079so427640wmf.3;
+        Mon, 27 Sep 2021 06:12:47 -0700 (PDT)
+X-Gm-Message-State: AOAM531UvhSAyKzXZYBStvdjX99kfm1AWK6JCTTnJrLUOn0LA2vOcylR
+        NgaGKJVsTERFkciwnPeA288HgKA6yBIWq5N5vks=
+X-Google-Smtp-Source: ABdhPJzTSRbiVPk+bvar9Y+L5k4f2AMm5Qvczr+xz/shSDHdnx3qacYRizrK/ymB2IlZH3eRiQX2VusXQa7XwY363js=
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr15989778wmc.98.1632748365942;
+ Mon, 27 Sep 2021 06:12:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210927101610.1669830-1-arnd@kernel.org> <YVGbU1lYp6/5HyRy@kroah.com>
+In-Reply-To: <YVGbU1lYp6/5HyRy@kroah.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 27 Sep 2021 15:12:29 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1-w-hd5OSyhP=Ja5nxrtRDjus-MkazbcWqaiv3q4vLjw@mail.gmail.com>
+Message-ID: <CAK8P3a1-w-hd5OSyhP=Ja5nxrtRDjus-MkazbcWqaiv3q4vLjw@mail.gmail.com>
+Subject: Re: [PATCH] led-class-flash: fix -Wrestrict warning
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Isaac Hazan <isaac.hazan@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-leds@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Commit 7a5da02de8d6 ("locking/lockdep: check for freed initmem in
-> static_obj()") added arch_is_kernel_initmem_freed() which is supposed
-> to report whether an object is part of already freed init memory.
+On Mon, Sep 27, 2021 at 12:22 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> For the time being, the generic version of arch_is_kernel_initmem_freed()
-> always reports 'false', allthough free_initmem() is generically called
-> on all architectures.
+> On Mon, Sep 27, 2021 at 12:15:59PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > drivers/leds/led-class-flash.c: In function 'flash_fault_show':
+> > drivers/leds/led-class-flash.c:210:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
+> >   210 |         return sprintf(buf, "%s\n", buf);
+> >       |                ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/leds/led-class-flash.c:187:54: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+> >   187 |                 struct device_attribute *attr, char *buf)
+> >       |                                                ~~~~~~^~~
+> > cc1: all warnings being treated as errors
+> > make[5]: *** [scripts/Makefile.build:277: drivers/leds/led-class-flash.o] Error 1
+> > make[5]: Target '__build' not remade because of errors.
+> > make[4]: *** [scripts/Makefile.build:540: drivers/leds] Error 2
+> > drivers/thunderbolt/xdomain.c: In function 'modalias_show':
+> > drivers/thunderbolt/xdomain.c:733:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
+> >   733 |         return sprintf(buf, "%s\n", buf);
+> >       |                ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/thunderbolt/xdomain.c:727:36: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+> >   727 |                              char *buf)
+> >
 >
-> Therefore, change the generic version of arch_is_kernel_initmem_freed()
-> to check whether free_initmem() has been called. If so, then check
-> if a given address falls into init memory.
->
-> In order to use function init_section_contains(), the fonction is
-> moved at the end of asm-generic/section.h
->
-> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  include/asm-generic/sections.h | 31 +++++++++++++++++--------------
->  1 file changed, 17 insertions(+), 14 deletions(-)
->
-> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
-> index d16302d3eb59..d1e5bb2c6b72 100644
-> --- a/include/asm-generic/sections.h
-> +++ b/include/asm-generic/sections.h
-> @@ -172,4 +158,21 @@ static inline bool is_kernel_rodata(unsigned long addr)
->  	       addr < (unsigned long)__end_rodata;
->  }
->  
-> +/*
-> + * Check if an address is part of freed initmem. This is needed on architectures
-> + * with virt == phys kernel mapping, for code that wants to check if an address
-> + * is part of a static object within [_stext, _end]. After initmem is freed,
-> + * memory can be allocated from it, and such allocations would then have
-> + * addresses within the range [_stext, _end].
-> + */
-> +#ifndef arch_is_kernel_initmem_freed
-> +static inline int arch_is_kernel_initmem_freed(unsigned long addr)
-> +{
-> +	if (system_state < SYSTEM_RUNNING)
-> +		return 0;
-> +
-> +	return init_section_contains((void *)addr, 1);
-> +}
-> +#endif
+> You also have a thunderbolt change in here as well :(
 
-This will return an incorrect result for a short period during boot
-won't it?
+Oh, and I forgot to explain the change, clearly this one was meant to go
+into the 'rework, then send' pile of my fixes.
 
-See init/main.c:
+v2 coming in a bit.
 
-static int __ref kernel_init(void *unused)
-{
-	...
-	free_initmem();			<- memory is freed here
-	mark_readonly();
-
-	/*
-	 * Kernel mappings are now finalized - update the userspace page-table
-	 * to finalize PTI.
-	 */
-	pti_finalize();
-
-	system_state = SYSTEM_RUNNING;
-
-
-After free_initmem() we have address ranges that are now freed initmem,
-but arch_is_kernel_initmem_freed() continues to return 0 (false) for all
-addresses, until we update system_state.
-
-Possibly that doesn't matter for any of the current callers, but it
-seems pretty dicey to me.
-
-cheers
+       Arnd
