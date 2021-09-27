@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF96C419E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD862419E60
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 20:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhI0Sfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 14:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        id S236283AbhI0Sgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 14:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236129AbhI0Sfc (ORCPT
+        with ESMTP id S236129AbhI0Sgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:35:32 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679F8C061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:33:53 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id i25so81930402lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:33:53 -0700 (PDT)
+        Mon, 27 Sep 2021 14:36:53 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E397C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:35:15 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u18so80068606lfd.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OkJDRTajjBYXZ9Lg7Znrw7BKNW4OCn6XI+sAVpYq6QI=;
-        b=qdXZo0VKKvGxILef7JmwcenBcQKasiE54pz+WtZ2c1nuNKo0FWwkU4SAgC8IVJn75f
-         mjCpRzf2uF1ul1E1lLRt6og0U0UE8lupicpoy8MsJhx87RW7ZRF2/IiAQk3X1EUkad/H
-         SVS+td1Hcckzl3bVIQ07SGPH73T8NApdeMk8LCcoF2OmE1LvJCngQws8nZxjbVLviqFi
-         MxSH0Z+tnuLGIuvHGzZCKU2j4H7he35g2cRq+JBRytRejIalREMLXhS8wizSW8YBtCx5
-         yBzTEMlPIXVM4MsxAAcqg2DzUqMznWk6dIwbo5IJOFQPk0OMFQy66/jsTIEPNfLt13Kq
-         kzEA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+jIsaeZxB9iIHx2Xlr4ffwG7DDOBE7KZeGUWD2K48eI=;
+        b=DGnGiVsWgNqibsS1Ab5nKqt7YSbGTS5Tcr0kHz7SyALq+hN2DJXB66SHS6HvDYU2RC
+         wX6Jz58IJLYRva+k9kqC0ZdmYbOQu/f6gkWyrVI5GZXHj+f/rVDt+ctTpvanz5gi9wji
+         /kiqtD3eiPtfH8Ab50k3VlieyRneSVxG+cw9U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OkJDRTajjBYXZ9Lg7Znrw7BKNW4OCn6XI+sAVpYq6QI=;
-        b=z+lpo0qd+EjUXlnVHwTiIQG5NExrU37Hy4tkK6ubcvS6rn3SB3yVlSh8qarU1SHXNU
-         T11CQxBkxYK6cl9urhswnGjU8Z/sq0GenjVEe6glvWno3CHStWURiMzC7bbZfyUj7jRH
-         RqtojvlLTPYG8dcBNbeQ6OKdCFvcJpUhJ+bGNC0bFbVi9AQ5JJkC6vpULgiFZb4+jcPs
-         tEvCP3n8wXyaqrSGzLRI8i0fd1QN4W7y/sgVLknGphBB1gg9Xqov9tT8EbXdd0yLzwg0
-         qsFZTK+VkZj8q9fAJZ+t+RwM/+4JRbP2Q++xEZwsR78FSIySeUiipYydowZcFcFEY2GD
-         AZwA==
-X-Gm-Message-State: AOAM533DiAYZx2yeOhwxiNrJ/N3LvrOeHRAqKY2wdsZ30ikTq/bphXxh
-        feK7p3u6iqn/vhuq3WlNED5IVA==
-X-Google-Smtp-Source: ABdhPJzWZh6daO8VsDoVks7ChKfKV/MwaTxKX73LmO60ysmNU0X0sNpEippMfCo/ilGu6AoJUJdENA==
-X-Received: by 2002:ac2:561c:: with SMTP id v28mr1153727lfd.457.1632767631753;
-        Mon, 27 Sep 2021 11:33:51 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id n9sm1672309lfu.88.2021.09.27.11.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 11:33:51 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id E89C5102FE0; Mon, 27 Sep 2021 21:33:50 +0300 (+03)
-Date:   Mon, 27 Sep 2021 21:33:50 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Matthew Wilcox <willy@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+jIsaeZxB9iIHx2Xlr4ffwG7DDOBE7KZeGUWD2K48eI=;
+        b=A/8L7q5Y4BHsIRFUKYPo9tyJaMzahESHUEk7S9ZFu/JKUMGPCzZz+EPEbcKd7B7v3K
+         rZVYQ+XDUkwa2i5wbyRZJlTModuazn4wZH+CXeE5CWH8ZfL0wMMFSQT/DSbTvAC2YQWK
+         H+Ys39jx1AlYMjmjilAiTAgimddPhpnHEFG4fJ7y8oCnonLZQwteNTE3vSBySe9WP0Uz
+         //7BxV56lrNI/kADGCUcGQccrPmRFQV7aB6YTowMEvv9ABtw096uLc1PT55O1ciQ3mXm
+         N5DyopiChprhYOeBQSP4FvS2biVTfU13hlDYq0Xds2icf6+WYBi0hBZeuQJLeiS0wOmN
+         PTzw==
+X-Gm-Message-State: AOAM531e6Ik5ESqf8fSx6JWnjRWcKZ1H/hnIV7l0xQJza0skFROfKCnA
+        VALS5tyGrsVlPTi/qT36whmczOddEm8qX/c1gbw=
+X-Google-Smtp-Source: ABdhPJxufNLwPMdAapbQcwW/G1OQ/NSd/Nd/MVRaKkEM9iWgur9lXfNBY5+PNPkNqgtxeQyXbsdRVA==
+X-Received: by 2002:a05:6512:3087:: with SMTP id z7mr1261631lfd.556.1632767713713;
+        Mon, 27 Sep 2021 11:35:13 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id m10sm1675252lfc.83.2021.09.27.11.35.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 11:35:12 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id i4so81250604lfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 11:35:11 -0700 (PDT)
+X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr1347010ljf.191.1632767710543;
+ Mon, 27 Sep 2021 11:35:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <YUvWm6G16+ib+Wnb@moria.home.lan> <bc22b4d0-ba63-4559-88d9-a510da233cad@suse.cz>
+ <YVIFNf/xZwlrWstK@moria.home.lan>
+In-Reply-To: <YVIFNf/xZwlrWstK@moria.home.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 27 Sep 2021 11:34:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjaL3xcv6LL=1+WdaicaDngvNOTCYU5c9UF_MTsibWBSw@mail.gmail.com>
+Message-ID: <CAHk-=wjaL3xcv6LL=1+WdaicaDngvNOTCYU5c9UF_MTsibWBSw@mail.gmail.com>
+Subject: Re: Struct page proposal
+To:     Kent Overstreet <kent.overstreet@gmail.com>
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Darrick J. Wong" <djwong@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
         David Howells <dhowells@redhat.com>
-Subject: Re: Struct page proposal
-Message-ID: <20210927183350.obd756wnsctukf63@box.shutemov.name>
-References: <YUvWm6G16+ib+Wnb@moria.home.lan>
- <bc22b4d0-ba63-4559-88d9-a510da233cad@suse.cz>
- <YVIH5j5xkPafvNds@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVIH5j5xkPafvNds@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 07:05:26PM +0100, Matthew Wilcox wrote:
-> On Mon, Sep 27, 2021 at 07:48:15PM +0200, Vlastimil Babka wrote:
-> > On 9/23/21 03:21, Kent Overstreet wrote:
-> > > So if we have this:
-> > > 
-> > > struct page {
-> > > 	unsigned long	allocator;
-> > > 	unsigned long	allocatee;
-> > > };
-> > > 
-> > > The allocator field would be used for either a pointer to slab/slub's state, if
-> > > it's a slab page, or if it's a buddy allocator page it'd encode the order of the
-> > > allocation - like compound order today, and probably whether or not the
-> > > (compound group of) pages is free.
-> > 
-> > The "free page in buddy allocator" case will be interesting to implement.
-> > What the buddy allocator uses today is:
-> > 
-> > - PageBuddy - determine if page is free; a page_type (part of mapcount
-> > field) today, could be a bit in "allocator" field that would have to be 0 in
-> > all other "page is allocated" contexts.
-> > - nid/zid - to prevent merging accross node/zone boundaries, now part of
-> > page flags
-> > - buddy order
-> > - a list_head (reusing the "lru") to hold the struct page on the appropriate
-> > free list, which has to be double-linked so page can be taken from the
-> > middle of the list instantly
-> > 
-> > Won't be easy to cram all that into two unsigned long's, or even a single
-> > one. We should avoid storing anything in the free page itself. Allocating
-> > some external structures to track free pages is going to have funny
-> > bootstrap problems. Probably a major redesign would be needed...
-> 
-> Wait, why do we want to avoid using the memory that we're allocating?
+On Mon, Sep 27, 2021 at 10:54 AM Kent Overstreet
+<kent.overstreet@gmail.com> wrote:
+>
+> That list_head is the problematic one. Why do we need to be able to take a page
+> from the middle of a freelist?
 
-Intel TDX and AMD-SEV have concept of unaccpeted memory. You cannot use
-the memory until it got "accepted". The acceptance is costly and I made a
-patchset[1] to pospone the accaptance until the first allocation. So pages
-are on free list, but page type indicate that it has to go though
-additional step on allocation.
+At least for the merging with the buddy page case.
 
-[1] https://lore.kernel.org/all/20210810062626.1012-1-kirill.shutemov@linux.intel.com/
-
--- 
- Kirill A. Shutemov
+          Linus
