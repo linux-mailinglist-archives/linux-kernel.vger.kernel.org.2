@@ -2,125 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B439F418FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90275418FF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 09:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhI0HZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 03:25:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34930 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233158AbhI0HZQ (ORCPT
+        id S233276AbhI0HZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 03:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233149AbhI0HZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:25:16 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18R4fxfu010455;
-        Mon, 27 Sep 2021 03:22:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CjOlcnT7iJv79IU4P9/oIQ5aIU66wolcKEh57i1aef0=;
- b=R9Zo6rOi5sEtPF/jz79SMF+QOw8ZsBwnEkicDXMKstc+js70xMLJ5i+agBbUekhLEqLR
- Riq52GuXS7BkoIeatHGqjMJqg6X+sq9GMbrECM5MmPAudfQzUfMLZXqA4WIYz2prPMQi
- NRGyhPAyQzpNenbkr3M8+DmiUtn43GFhQo9zhTdQTTw5exh9yWGEFAmNLDaUbtLpHAGO
- n7KDW8mljRv3Ky4xZfNkkQl1vlezSvjZZfVvB6t91dxhd2ElVmfb9DDcZWzPHA/W2hHr
- Hx+lJOpkpOeJ/VQZISfyjwGRA6TkmASGsdGqJV35YVE7h94QvR6r3uDbww4sDPKbhTIn kA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagvqcsrd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 03:22:59 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18R5o8Ah007641;
-        Mon, 27 Sep 2021 03:22:58 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bagvqcsqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 03:22:58 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18R7H9Q4001359;
-        Mon, 27 Sep 2021 07:22:55 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 3b9ud8rx63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 07:22:55 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18R7Mp6J42467650
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Sep 2021 07:22:51 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D3E95204F;
-        Mon, 27 Sep 2021 07:22:51 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.4.236])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id ABAD052051;
-        Mon, 27 Sep 2021 07:22:49 +0000 (GMT)
-Subject: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
- Halt-polling fixes, cleanups and a new stat)
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Jon Cargille <jcargill@google.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Janosch Frank <frankja@linux.ibm.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
-Date:   Mon, 27 Sep 2021 09:22:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 27 Sep 2021 03:25:41 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EFFC061570;
+        Mon, 27 Sep 2021 00:24:03 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so3131140pjb.1;
+        Mon, 27 Sep 2021 00:24:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=zRcqo9ZRM0x4X1qC1VhpLMYfBLcHfFC5rDADl7ze48U=;
+        b=bOT9MpcfrFqg+qIyclqxXB8nUB7bsphZ1S/xpNatC4515Qo0sU2pi7x/EqYfPeIecW
+         mlWgsxwLB5US417ZTRVOTKD08cp+ghdFf4H9oqoHaxWhlzirb3f2FWOuxybhJkvZ/+ja
+         qKOa4lVx0cxzVRr3tICl9/dqMwoYYiDuILPunoXKMJ988zvC3pkXz84SY02xR91xqMeK
+         Mhp2uzUyyW2uZ/0Nc8HRp7/1fexH3wr5WeeDqSNePU1G8UM800sMYpIUEBhhJ1q8EClr
+         3QGi9A8k5/PF2XUlSqn4bI8rhW3d22Oma7WyaTjuyEkKGu9oyDLD/vKogouMl84vHBQO
+         3QhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=zRcqo9ZRM0x4X1qC1VhpLMYfBLcHfFC5rDADl7ze48U=;
+        b=y8epyuEL5Y8AOU5pIp9WgsX+eXP1mdh8zJLJTIEloq39mccmRvGTTWapYCHIiYp1AA
+         LRQT92TDn33PygoHn4j9o91DM8QnfwdMHjRdVjU92Sd+VELa6UWIXyWnh97K2BK2jz5f
+         QqZB3eIokKMpHNe2tZOOHCLMPYt9qlcL4cah9YiNbkRrOFqfrwoLQvNaKI8aq3vDgQYn
+         jAgjx1QsLB3fv94n8kUBCm0j/LTRTJZfWnqpbik84OfyNwEKpUO4+hietG9TuWdJbyDn
+         o/qOW3fBhY1CjXULJnozwsOCHw5M4RlTfQnJxNg7GuQI1MJRJkrREddEQYYy/YFkEHBR
+         R77Q==
+X-Gm-Message-State: AOAM5320wmw7B5Xz3wm4EwfjucL2GuQ0baVKIdRIYSEN0kV45v4u/SKI
+        PAr0yzTmJu7IN+WLlDKeIzpsbmD50AzSjQ==
+X-Google-Smtp-Source: ABdhPJyM/wgKmx+FlPefYMinMxbqa/qTjV2GwDFj7rJrusdlBfsgZsLqa6sHI/ycfYifxKX04bR5Fg==
+X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr18015275pjr.9.1632727442789;
+        Mon, 27 Sep 2021 00:24:02 -0700 (PDT)
+Received: from [10.239.207.187] ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id q16sm14532927pfh.16.2021.09.27.00.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 00:24:02 -0700 (PDT)
+Message-ID: <e0fc4902-e8db-b507-651b-d930a74702ef@gmail.com>
+Date:   Mon, 27 Sep 2021 15:23:57 +0800
 MIME-Version: 1.0
-In-Reply-To: <20210925005528.1145584-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v3 1/6] badblocks: add more helper structure and routines
+ in badblocks.h
 Content-Language: en-US
+To:     Coly Li <colyli@suse.de>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
+        nvdimm@lists.linux.dev
+Cc:     antlists@youngman.org.uk, Dan Williams <dan.j.williams@intel.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        NeilBrown <neilb@suse.de>, Richard Fan <richard.fan@suse.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>
+References: <20210913163643.10233-1-colyli@suse.de>
+ <20210913163643.10233-2-colyli@suse.de>
+From:   Geliang Tang <geliangtang@gmail.com>
+In-Reply-To: <20210913163643.10233-2-colyli@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YhudcLNxmoRTm9--b5hlc8B3xu2hjRt_
-X-Proofpoint-GUID: AXC2xKJr4IU02TPnWWKjhfFDtMWQ5xNx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-27_01,2021-09-24_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=974
- lowpriorityscore=0 impostorscore=0 adultscore=0 clxscore=1015
- suspectscore=0 malwarescore=0 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2109270046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While looking into this series,
+Hi Coly,
 
-I realized that Davids patch
+On 9/14/21 00:36, Coly Li wrote:
+> This patch adds the following helper structure and routines into
+> badblocks.h,
+> - struct badblocks_context
+>    This structure is used in improved badblocks code for bad table
+>    iteration.
+> - BB_END()
+>    The macro to culculate end LBA of a bad range record from bad
+>    table.
+> - badblocks_full() and badblocks_empty()
+>    The inline routines to check whether bad table is full or empty.
+> - set_changed() and clear_changed()
+>    The inline routines to set and clear 'changed' tag from struct
+>    badblocks.
+> 
+> These new helper structure and routines can help to make the code more
+> clear, they will be used in the improved badblocks code in following
+> patches.
+> 
+> Signed-off-by: Coly Li <colyli@suse.de>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Hannes Reinecke <hare@suse.de>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: NeilBrown <neilb@suse.de>
+> Cc: Richard Fan <richard.fan@suse.com>
+> Cc: Vishal L Verma <vishal.l.verma@intel.com>
+> ---
+>   include/linux/badblocks.h | 32 ++++++++++++++++++++++++++++++++
+>   1 file changed, 32 insertions(+)
+> 
+> diff --git a/include/linux/badblocks.h b/include/linux/badblocks.h
+> index 2426276b9bd3..166161842d1f 100644
+> --- a/include/linux/badblocks.h
+> +++ b/include/linux/badblocks.h
+> @@ -15,6 +15,7 @@
+>   #define BB_OFFSET(x)	(((x) & BB_OFFSET_MASK) >> 9)
+>   #define BB_LEN(x)	(((x) & BB_LEN_MASK) + 1)
+>   #define BB_ACK(x)	(!!((x) & BB_ACK_MASK))
+> +#define BB_END(x)	(BB_OFFSET(x) + BB_LEN(x))
+>   #define BB_MAKE(a, l, ack) (((a)<<9) | ((l)-1) | ((u64)(!!(ack)) << 63))
+>   
+>   /* Bad block numbers are stored sorted in a single page.
+> @@ -41,6 +42,14 @@ struct badblocks {
+>   	sector_t size;		/* in sectors */
+>   };
+>   
+> +struct badblocks_context {
+> +	sector_t	start;
+> +	sector_t	len;
 
-commit acd05785e48c01edb2c4f4d014d28478b5f19fb5
-Author:     David Matlack <dmatlack@google.com>
-AuthorDate: Fri Apr 17 15:14:46 2020 -0700
-Commit:     Paolo Bonzini <pbonzini@redhat.com>
-CommitDate: Fri Apr 24 12:53:17 2020 -0400
+I think the type of 'len' should be 'int' instead of 'sector_t', since 
+we used 'int sectors' as one of the arguments of _badblocks_set().
 
-     kvm: add capability for halt polling
+> +	int		ack;
+> +	sector_t	orig_start;
+> +	sector_t	orig_len;
 
-broke the possibility for an admin to disable halt polling for already running KVM guests.
-In past times doing
-echo 0 > /sys/module/kvm/parameters/halt_poll_ns
+I think 'orig_start' and 'orig_len' can be dropped, see comments in patch 3.
 
-stopped polling system wide.
-Now all KVM guests will use the halt_poll_ns value that was active during startup - even those that do not use KVM_CAP_HALT_POLL.
+> +};
+> +
+>   int badblocks_check(struct badblocks *bb, sector_t s, int sectors,
+>   		   sector_t *first_bad, int *bad_sectors);
+>   int badblocks_set(struct badblocks *bb, sector_t s, int sectors,
+> @@ -63,4 +72,27 @@ static inline void devm_exit_badblocks(struct device *dev, struct badblocks *bb)
+>   	}
+>   	badblocks_exit(bb);
+>   }
+> +
+> +static inline int badblocks_full(struct badblocks *bb)
+> +{
+> +	return (bb->count >= MAX_BADBLOCKS);
+> +}
+> +
+> +static inline int badblocks_empty(struct badblocks *bb)
+> +{
+> +	return (bb->count == 0);
+> +}
+> +
+> +static inline void set_changed(struct badblocks *bb)
+> +{
+> +	if (bb->changed != 1)
+> +		bb->changed = 1;
+> +}
+> +
+> +static inline void clear_changed(struct badblocks *bb)
+> +{
+> +	if (bb->changed != 0)
+> +		bb->changed = 0;
+> +}
+> +
+>   #endif
+> 
 
-I guess this was not intended?
