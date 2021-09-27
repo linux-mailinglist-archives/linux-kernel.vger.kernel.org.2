@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423E4419625
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D567B419628
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 16:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbhI0OWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 10:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+        id S234758AbhI0OXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 10:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbhI0OW2 (ORCPT
+        with ESMTP id S234700AbhI0OXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:22:28 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6262DC061575;
-        Mon, 27 Sep 2021 07:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=eOvgrhpxN9OxQ688askyKJoBpK1KwuAfg2w4kS25LTE=;
-        t=1632752450; x=1633962050; b=yAeCSf0QyuInxUdse30wxb5qVa3dWzONJpzq54xaxEoU/8m
-        UxxPeD1e8WVAcmeR6hBG9eiGd8giJ+VAh2MJQSLlK4SpVspxx2i9lIhJNbYX8tjRmGVam+IpHb4GL
-        64C3d+VHIKNIOHPVpwzq8aTr0V54nKtjUL0AVmnhm/PTDpgKY+A46WOFbIoOTS6gkcYgyUdJ6Wh8Q
-        M7jIHKMfZpt+rseyKHkx1+SwA0MszKMlHFdLSmwhUVPzNww1Jj1Barlji7wC7oWybrBHDSSu5EVuD
-        hm4bDM3pDCWCuE+LosH8emZ7olsVg0oTlx9mL4/sqwaLPggodd3UX9Fnw2vvZL6A==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95-RC2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mUrUt-00CSGB-SC;
-        Mon, 27 Sep 2021 16:20:47 +0200
-Message-ID: <97300681a8e793b71ccedf8224010f1f64da6b5c.camel@sipsolutions.net>
-Subject: Re: [PATCH] leds: trigger: use RCU to protect the led_cdevs list
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Mon, 27 Sep 2021 16:20:47 +0200
-In-Reply-To: <20210927141619.GA18276@duo.ucw.cz>
-References: <20210915181601.99a68f5718be.I1a28b342d2d52cdeeeb81ecd6020c25cbf1dbfc0@changeid>
-         <20210927141619.GA18276@duo.ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 27 Sep 2021 10:23:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298F0C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:22:06 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632752524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+PSZfJve0wnAY2vXm0/Xmq1ijbXytVRHE5Dl+T37nbI=;
+        b=oxPBfFQ7m1lcUgahrGrit6DErtXaJaWR6H2bj14JFxNVNrqJZ8ta1qyaISgL5Wr4UQsEa0
+        jSL9rsctpOSzQbQrfamaMB8lulcxmG4yZR/mrNspxY6Nlg2Rx8fV5DHxNxS/xtN12FwLPk
+        dIN6hTOaYfH9O2x32sL00UUj3NgIMGyCx0kFUut41bFPLnQP1fMT7V+pGfWM2xYC3LbAKh
+        h9EDskcOJTJQb8nELs0d8NxGEE3JPHuu30O7SFsQYr+BRPSxLkcHX7+Hml2tWs7N3RCDjS
+        qeT6TsyTVAvgyYivVHqPBi+d5vxKspgJtGyoRrcx4KOkDeNHRfSH0+SC+GWWBw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632752524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+PSZfJve0wnAY2vXm0/Xmq1ijbXytVRHE5Dl+T37nbI=;
+        b=B0wGkm4IAZ3FVL9R8ITumzbWTAdEUAfqfJkVFglM8u6MXGOKM3G33IN011zmLm2ZJAoJiv
+        npe5ki8SBiAkjiCg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH printk v1] printk: use gnu_printf format attribute for printk_sprint()
+Date:   Mon, 27 Sep 2021 16:28:03 +0206
+Message-Id: <20210927142203.124730-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Fix the following W=1 kernel build warning:
 
-> > 
-> > Cc: stable@vger.kernel.org
-> 
-> I ... don't like idea of this going to stable.
+kernel/printk/printk.c: In function 'printk_sprint':
+kernel/printk/printk.c:1913:9: warning: function 'printk_sprint' might be
+a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
 
-OK, I guess that's fair. We've been running into the lockdep report for
-a while - ever since we made the spinlock in iwlwifi no longer disable
-IRQs all the time, which was meant to be a good thing ...
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-However, the scenario that could cause *real* deadlocks there is really
-unlikely and requires four CPUs all doing the exactly right thing,
-including a normally very rare *write lock* on the leddev_list_lock, so
-I don't think in practice it'll be much of an issue.
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 4d6dea5d7c1c..d617987f5785 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2066,6 +2066,7 @@ u16 printk_parse_prefix(const char *text, int *level,
+ 	return prefix_len;
+ }
+ 
++__printf(5, 0)
+ static u16 printk_sprint(char *text, u16 size, int facility,
+ 			 enum printk_info_flags *flags, const char *fmt,
+ 			 va_list args)
 
-johannes
-
-
+base-commit: 9980c4251f8ddfcf0617ed5724e4df5bd1f69c85
+-- 
+2.30.2
 
