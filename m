@@ -2,188 +2,643 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC744196E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09FF419704
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhI0PBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
+        id S235099AbhI0PC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 11:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbhI0PBc (ORCPT
+        with ESMTP id S234947AbhI0PCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:01:32 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44205C06176C
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:59:53 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id r2so18052276pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 07:59:53 -0700 (PDT)
+        Mon, 27 Sep 2021 11:02:11 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93106C06176E
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:00:25 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so24810319otx.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 08:00:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8d5KqXA5Mi92PwzZc0N/pdrf/YfLC80LCsk313TOlF8=;
-        b=m7Sxwd73+QIO2WuPaGefD2VV92Ixlana/rvgLp3fywdfnLLEysnYWnlbrJZMSHvky2
-         P+dNFDKl+i/DMSPcDLNPjzckqkQLgh9pdU/c3JQwnIagXzSzhgOa+ncEZvwMUJLQWG1m
-         fybm6n4GY1o2I/TIIMUtFfjJTQU9KFbL0J/XoEro7oVzMh1zw+XmI5tRZQQeuZDe42Dg
-         Tmmp6oePrkChYyER1Tnna/qEz55zzNMH1ZMLBsrMQL84AaEtkyNXBlm2Xx+ZucKX/mXL
-         yMhzhoMAfnJyECqCajIjTuZBzhOpC4zX9voYjWadeZj+T2l75O1okb7Y4J7XHlu7WdkY
-         kHUg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4WvB4Vg5806iIvqD8v9pToN52N27brRc9ZKPcKojdZM=;
+        b=gKhHSP6khAUs1dj4CGAeTQo15UmUm5M4Q1KMNyHanakPFqLipTK0ZySy0Q/UupGqPJ
+         MJVMZ2e1Nu834NhaoLuHz7hw9seWtLt8caaWWG1d02F821JVaRd/nZjgZuys2PYF62Hf
+         QtkcRgxY9Zx4RpE2b3IYw+7Fuc7IsxkZhms8epWPQPhtDAtau4u5Z3zAgPfEG8wwu19w
+         U5t2w+RIAF25ERirYg871CBj8TsCKSWfsF/DoIieck6Y5oP2v1thkLCiRBU9aSZE8xzg
+         7wrNmuRGXvLC7Myd5QbLfxmk5voCZVo2FINhyAR26qF7UBSW6Ibq0IwZzL3hsK62D64y
+         cr7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8d5KqXA5Mi92PwzZc0N/pdrf/YfLC80LCsk313TOlF8=;
-        b=wu+5C/b8ly+KMLJ9Mow4fDW//JjYjIK5MiSb+rPr2Eruq/U8NJO7VkaGXC02zSSWMA
-         rzOkRtR8ppOtLErC7NIeHgcpIbligPEKb+Sat5SVZvtxxVUZXM+PEvUSJvhc9NVkcWu9
-         ZX/qNB+EKxPoxv+9A+C5Y+mX6YckU7jZGpCQE/5fMn+nyBtknV6pzf0pik1Whrc84wjs
-         17+RNPXUlO0jmRk9PeKl9T2EbUNSnrINKsftYIxSK2qhOlqaMswjuxf8lGlJcP7e2VIZ
-         zlPuZkkhdg8RTClI3Bm4SAHHjfSHcT2EgnW3uKBXQzCLDGbS1joM9R/ZIttgwmeHO69s
-         pkOw==
-X-Gm-Message-State: AOAM531xA/vaq2WJSOf07/oQ+AvGBPqu64YLdQY0ERtK4Yy9qN9kBQOF
-        D0+Zj8eE3Az2kkx0OVbVvK1nuQ==
-X-Google-Smtp-Source: ABdhPJyg70ia4mflauFBTnYYkPuZeGu0PUo7u3KrQoV6hyYnlf5Ujo4gsfK+PdoDvaYqAOyRoeDCGg==
-X-Received: by 2002:a63:e057:: with SMTP id n23mr107748pgj.183.1632754792472;
-        Mon, 27 Sep 2021 07:59:52 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id n14sm19177569pgd.48.2021.09.27.07.59.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 07:59:51 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 14:59:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Jon Cargille <jcargill@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
- Halt-polling fixes, cleanups and a new stat)
-Message-ID: <YVHcY6y1GmvGJnMg@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4WvB4Vg5806iIvqD8v9pToN52N27brRc9ZKPcKojdZM=;
+        b=vHIRbliDlE76J8lo044eiGqJmYg4gbEfOv0/2vK/I1HT1je56eDj5dIQ7iyS+RQhOJ
+         CoEfzvtmRIR/jrRwY9qLiUfGCMATBVMbUfFH4mCDikY0e71+D5PXVTqEwtsFiQnyhURJ
+         C+oIa7zOD3j73AThKxAtxzOw5fHNXG5No2PJ9qAACA0DPBc5df/BnW01hehujvD9udkq
+         68idEVkJLfExISQxaXB3m+g15bKzkH1KO+jF3crdyzsuCmowV075cxMRguf6Qgv7sTCm
+         87iF7ehfnpwnjRM3krAltXgQKV9NbfupeFpkwZKGKvSMBVJOeTfi9Dyu8FnNeS84GgVB
+         g4Sg==
+X-Gm-Message-State: AOAM5315gaOO2H/YG5D3qstKvpRF4Vpd1kUR4JF28JNS1v3W72WW8504
+        T9XRdrbmBVjKNhcMDC/Q+YI/S3N3DgWeuMxFg9w=
+X-Google-Smtp-Source: ABdhPJzl2XWJGCddTixgzLXmCQzTzyoCp9y9eD1ChC3xnPB6yINdddhdbEeX4/eTwagUEtg5ES3v+c770GjWdluwmGQ=
+X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr401922oti.299.1632754824860;
+ Mon, 27 Sep 2021 08:00:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
+References: <YU8oVDFoeD5YYeDT@kroah.com> <CAO_48GG-ygn6ox0JUM89qEO9BG662pBU5KKjx2R+T2ftCs75_Q@mail.gmail.com>
+In-Reply-To: <CAO_48GG-ygn6ox0JUM89qEO9BG662pBU5KKjx2R+T2ftCs75_Q@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 27 Sep 2021 11:00:14 -0400
+Message-ID: <CADnq5_O1GNteyrrYfVHMN9CpRx5gt+Bvtr1uahR7DsSbw04TTQ@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module namespace
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021, Christian Borntraeger wrote:
-> While looking into this series,
-> 
-> I realized that Davids patch
-> 
-> commit acd05785e48c01edb2c4f4d014d28478b5f19fb5
-> Author:     David Matlack <dmatlack@google.com>
-> AuthorDate: Fri Apr 17 15:14:46 2020 -0700
-> Commit:     Paolo Bonzini <pbonzini@redhat.com>
-> CommitDate: Fri Apr 24 12:53:17 2020 -0400
-> 
->     kvm: add capability for halt polling
-> 
-> broke the possibility for an admin to disable halt polling for already running KVM guests.
-> In past times doing
-> echo 0 > /sys/module/kvm/parameters/halt_poll_ns
-> 
-> stopped polling system wide.
-> Now all KVM guests will use the halt_poll_ns value that was active during
-> startup - even those that do not use KVM_CAP_HALT_POLL.
-> 
-> I guess this was not intended?
+On Mon, Sep 27, 2021 at 7:15 AM Sumit Semwal <sumit.semwal@linaro.org> wrot=
+e:
+>
+> Hello Greg,
+>
+> Thanks for the patch!
+>
+> On Sat, 25 Sept 2021 at 19:17, Greg Kroah-Hartman <gregkh@linuxfoundation=
+.org> wrote:
+>>
+>> In order to better track where in the kernel the dma-buf code is used,
+>> put the symbols in the namespace DMA_BUF and modify all users of the
+>> symbols to properly import the namespace to not break the build at the
+>> same time.
+>>
+>> Now the output of modinfo shows the use of these symbols, making it
+>> easier to watch for users over time:
+>>
+>> $ modinfo drivers/misc/fastrpc.ko | grep import
+>> import_ns:      DMA_BUF
+>>
+>> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+>> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+>> Cc: David Airlie <airlied@linux.ie>
+>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>> Cc: Maxime Ripard <mripard@kernel.org>
+>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> Cc: dri-devel@lists.freedesktop.org
+>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+>
+> With the addition of the 2 misses found by Arnd, please feel free to add =
+my
+> Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
 
-Ouch.  I would go so far as to say that halt_poll_ns should be a hard limit on
-the capability.  What about having the per-VM variable track only the capability,
-and then use the module param to cap the max when doing adjustments?  E.g. add
-a variant of this early in the series?
+Same here.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 80f78daa6b8d..f50e4e31a0cf 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1078,8 +1078,6 @@ static struct kvm *kvm_create_vm(unsigned long type)
-                        goto out_err_no_arch_destroy_vm;
-        }
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 
--       kvm->max_halt_poll_ns = halt_poll_ns;
--
-        r = kvm_arch_init_vm(kvm, type);
-        if (r)
-                goto out_err_no_arch_destroy_vm;
-@@ -3136,7 +3134,8 @@ void kvm_sigset_deactivate(struct kvm_vcpu *vcpu)
-        sigemptyset(&current->real_blocked);
- }
-
--static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
-+static void grow_halt_poll_ns(struct kvm_vcpu *vcpu,
-+                             unsigned int max_halt_poll_ns)
- {
-        unsigned int old, val, grow, grow_start;
-
-@@ -3150,8 +3149,8 @@ static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
-        if (val < grow_start)
-                val = grow_start;
-
--       if (val > vcpu->kvm->max_halt_poll_ns)
--               val = vcpu->kvm->max_halt_poll_ns;
-+       if (val > max_halt_poll_ns)
-+               val = max_halt_poll_ns;
-
-        vcpu->halt_poll_ns = val;
- out:
-@@ -3261,6 +3260,7 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
- {
-        bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
-        bool do_halt_poll = halt_poll_allowed && vcpu->halt_poll_ns;
-+       unsigned int max_halt_poll_ns;
-        ktime_t start, cur, poll_end;
-        bool waited = false;
-        u64 halt_ns;
-@@ -3304,19 +3304,25 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-                update_halt_poll_stats(vcpu, start, poll_end, !waited);
-
-        if (halt_poll_allowed) {
-+               max_halt_poll_ns = vcpu->kvm->max_halt_poll_ns;
-+               if (max_halt_poll_ns)
-+                       max_halt_poll_ns = min(max_halt_poll_ns, halt_poll_ns);
-+               else
-+                       max_halt_poll_ns = halt_poll_ns;
-+
-                if (!vcpu_valid_wakeup(vcpu)) {
-                        shrink_halt_poll_ns(vcpu);
--               } else if (vcpu->kvm->max_halt_poll_ns) {
-+               } else if (max_halt_poll_ns) {
-                        if (halt_ns <= vcpu->halt_poll_ns)
-                                ;
-                        /* we had a long block, shrink polling */
-                        else if (vcpu->halt_poll_ns &&
--                                halt_ns > vcpu->kvm->max_halt_poll_ns)
-+                                halt_ns > max_halt_poll_ns)
-                                shrink_halt_poll_ns(vcpu);
-                        /* we had a short halt and our poll time is too small */
--                       else if (vcpu->halt_poll_ns < vcpu->kvm->max_halt_poll_ns &&
--                                halt_ns < vcpu->kvm->max_halt_poll_ns)
--                               grow_halt_poll_ns(vcpu);
-+                       else if (vcpu->halt_poll_ns < max_halt_poll_ns &&
-+                                halt_ns < max_halt_poll_ns)
-+                               grow_halt_poll_ns(vcpu, max_halt_poll_ns);
-                } else {
-                        vcpu->halt_poll_ns = 0;
-                }
+>>
+>> ---
+>>
+>> The topic of dma-buf came up in the Maintainer's summit yesterday, and
+>> one comment was to put the symbols in their own module namespace, to
+>> make it easier to notice and track who was using them.  This patch does
+>> so, and finds some "interesting" users of the api already in the tree.
+>>
+>> Only test-built on x86 allmodconfig, don't know what other arches will
+>> pick up, will let 0-day run on it for a bit...
+>>
+>> Comments?
+>>
+>>
+>>
+>>
+>>  drivers/dma-buf/dma-buf.c                     | 34 +++++++++----------
+>>  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       |  3 ++
+>>  drivers/gpu/drm/drm_gem_framebuffer_helper.c  |  3 ++
+>>  drivers/gpu/drm/drm_prime.c                   |  3 ++
+>>  drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c   |  3 ++
+>>  drivers/gpu/drm/exynos/exynos_drm_gem.c       |  3 ++
+>>  drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c    |  3 ++
+>>  drivers/gpu/drm/tegra/gem.c                   |  3 ++
+>>  drivers/gpu/drm/vmwgfx/ttm_object.c           |  3 ++
+>>  drivers/infiniband/core/umem_dmabuf.c         |  3 ++
+>>  .../media/common/videobuf2/videobuf2-core.c   |  1 +
+>>  .../common/videobuf2/videobuf2-dma-contig.c   |  1 +
+>>  .../media/common/videobuf2/videobuf2-dma-sg.c |  1 +
+>>  .../common/videobuf2/videobuf2-vmalloc.c      |  1 +
+>>  drivers/misc/fastrpc.c                        |  1 +
+>>  .../staging/media/tegra-vde/dmabuf-cache.c    |  3 ++
+>>  drivers/tee/tee_shm.c                         |  3 ++
+>>  drivers/virtio/virtio_dma_buf.c               |  1 +
+>>  drivers/xen/gntdev-dmabuf.c                   |  3 ++
+>>  samples/vfio-mdev/mbochs.c                    |  1 +
+>>  20 files changed, 60 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>> index 63d32261b63f..6c2b5ea828a6 100644
+>> --- a/drivers/dma-buf/dma-buf.c
+>> +++ b/drivers/dma-buf/dma-buf.c
+>> @@ -610,7 +610,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_=
+export_info *exp_info)
+>>         module_put(exp_info->owner);
+>>         return ERR_PTR(ret);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_export);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_export, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_fd - returns a file descriptor for the given struct dma_buf
+>> @@ -634,7 +634,7 @@ int dma_buf_fd(struct dma_buf *dmabuf, int flags)
+>>
+>>         return fd;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_fd);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_fd, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_get - returns the struct dma_buf related to an fd
+>> @@ -660,7 +660,7 @@ struct dma_buf *dma_buf_get(int fd)
+>>
+>>         return file->private_data;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_get);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_get, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_put - decreases refcount of the buffer
+>> @@ -679,7 +679,7 @@ void dma_buf_put(struct dma_buf *dmabuf)
+>>
+>>         fput(dmabuf->file);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_put);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_put, DMA_BUF);
+>>
+>>  static void mangle_sg_table(struct sg_table *sg_table)
+>>  {
+>> @@ -810,7 +810,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struc=
+t device *dev,
+>>         dma_buf_detach(dmabuf, attach);
+>>         return ERR_PTR(ret);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_dynamic_attach);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_dynamic_attach, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_attach - Wrapper for dma_buf_dynamic_attach
+>> @@ -825,7 +825,7 @@ struct dma_buf_attachment *dma_buf_attach(struct dma=
+_buf *dmabuf,
+>>  {
+>>         return dma_buf_dynamic_attach(dmabuf, dev, NULL, NULL);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_attach);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_attach, DMA_BUF);
+>>
+>>  static void __unmap_dma_buf(struct dma_buf_attachment *attach,
+>>                             struct sg_table *sg_table,
+>> @@ -871,7 +871,7 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct d=
+ma_buf_attachment *attach)
+>>
+>>         kfree(attach);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_detach);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_detach, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_pin - Lock down the DMA-buf
+>> @@ -901,7 +901,7 @@ int dma_buf_pin(struct dma_buf_attachment *attach)
+>>
+>>         return ret;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_pin);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_pin, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_unpin - Unpin a DMA-buf
+>> @@ -922,7 +922,7 @@ void dma_buf_unpin(struct dma_buf_attachment *attach=
+)
+>>         if (dmabuf->ops->unpin)
+>>                 dmabuf->ops->unpin(attach);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_unpin);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_unpin, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_map_attachment - Returns the scatterlist table of the attach=
+ment;
+>> @@ -1012,7 +1012,7 @@ struct sg_table *dma_buf_map_attachment(struct dma=
+_buf_attachment *attach,
+>>  #endif /* CONFIG_DMA_API_DEBUG */
+>>         return sg_table;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_map_attachment, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_unmap_attachment - unmaps and decreases usecount of the buff=
+er;might
+>> @@ -1048,7 +1048,7 @@ void dma_buf_unmap_attachment(struct dma_buf_attac=
+hment *attach,
+>>             !IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY))
+>>                 dma_buf_unpin(attach);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_unmap_attachment);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_move_notify - notify attachments that DMA-buf is moving
+>> @@ -1068,7 +1068,7 @@ void dma_buf_move_notify(struct dma_buf *dmabuf)
+>>                 if (attach->importer_ops)
+>>                         attach->importer_ops->move_notify(attach);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_move_notify);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_move_notify, DMA_BUF);
+>>
+>>  /**
+>>   * DOC: cpu access
+>> @@ -1212,7 +1212,7 @@ int dma_buf_begin_cpu_access(struct dma_buf *dmabu=
+f,
+>>
+>>         return ret;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_begin_cpu_access);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_begin_cpu_access, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_end_cpu_access - Must be called after accessing a dma_buf fr=
+om the
+>> @@ -1240,7 +1240,7 @@ int dma_buf_end_cpu_access(struct dma_buf *dmabuf,
+>>
+>>         return ret;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_end_cpu_access);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_end_cpu_access, DMA_BUF);
+>>
+>>
+>>  /**
+>> @@ -1282,7 +1282,7 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm=
+_area_struct *vma,
+>>
+>>         return dmabuf->ops->mmap(dmabuf, vma);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_mmap);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_mmap, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_vmap - Create virtual mapping for the buffer object into ker=
+nel
+>> @@ -1336,7 +1336,7 @@ int dma_buf_vmap(struct dma_buf *dmabuf, struct dm=
+a_buf_map *map)
+>>         mutex_unlock(&dmabuf->lock);
+>>         return ret;
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_vmap);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_vmap, DMA_BUF);
+>>
+>>  /**
+>>   * dma_buf_vunmap - Unmap a vmap obtained by dma_buf_vmap.
+>> @@ -1360,7 +1360,7 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct=
+ dma_buf_map *map)
+>>         }
+>>         mutex_unlock(&dmabuf->lock);
+>>  }
+>> -EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+>> +EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap, DMA_BUF);
+>>
+>>  #ifdef CONFIG_DEBUG_FS
+>>  static int dma_buf_debug_show(struct seq_file *s, void *unused)
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_ttm.c
+>> index 38dade421d46..38e144504649 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> @@ -41,6 +41,7 @@
+>>  #include <linux/swiotlb.h>
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/sizes.h>
+>> +#include <linux/module.h>
+>>
+>>  #include <drm/ttm/ttm_bo_api.h>
+>>  #include <drm/ttm/ttm_bo_driver.h>
+>> @@ -59,6 +60,8 @@
+>>  #include "amdgpu_res_cursor.h"
+>>  #include "bif/bif_4_1_d.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  #define AMDGPU_TTM_VRAM_MAX_DW_READ    (size_t)128
+>>
+>>  static int amdgpu_ttm_backend_bind(struct ttm_device *bdev,
+>> diff --git a/drivers/gpu/drm/drm_gem_framebuffer_helper.c b/drivers/gpu/=
+drm/drm_gem_framebuffer_helper.c
+>> index 3c75d79dbb65..746fd8c73845 100644
+>> --- a/drivers/gpu/drm/drm_gem_framebuffer_helper.c
+>> +++ b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
+>> @@ -6,6 +6,7 @@
+>>   */
+>>
+>>  #include <linux/slab.h>
+>> +#include <linux/module.h>
+>>
+>>  #include <drm/drm_damage_helper.h>
+>>  #include <drm/drm_fb_helper.h>
+>> @@ -17,6 +18,8 @@
+>>
+>>  #include "drm_internal.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  #define AFBC_HEADER_SIZE               16
+>>  #define AFBC_TH_LAYOUT_ALIGNMENT       8
+>>  #define AFBC_HDR_ALIGN                 64
+>> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+>> index deb23dbec8b5..d8ba95744410 100644
+>> --- a/drivers/gpu/drm/drm_prime.c
+>> +++ b/drivers/gpu/drm/drm_prime.c
+>> @@ -29,6 +29,7 @@
+>>  #include <linux/export.h>
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/rbtree.h>
+>> +#include <linux/module.h>
+>>
+>>  #include <drm/drm.h>
+>>  #include <drm/drm_drv.h>
+>> @@ -39,6 +40,8 @@
+>>
+>>  #include "drm_internal.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  /**
+>>   * DOC: overview and lifetime rules
+>>   *
+>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/d=
+rm/etnaviv/etnaviv_gem_prime.c
+>> index 6d8bed9c739d..6788ea8490d1 100644
+>> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+>> @@ -5,10 +5,13 @@
+>>
+>>  #include <drm/drm_prime.h>
+>>  #include <linux/dma-buf.h>
+>> +#include <linux/module.h>
+>>
+>>  #include "etnaviv_drv.h"
+>>  #include "etnaviv_gem.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  static struct lock_class_key etnaviv_prime_lock_class;
+>>
+>>  struct sg_table *etnaviv_gem_prime_get_sg_table(struct drm_gem_object *=
+obj)
+>> diff --git a/drivers/gpu/drm/exynos/exynos_drm_gem.c b/drivers/gpu/drm/e=
+xynos/exynos_drm_gem.c
+>> index 4396224227d1..0a0c042a3155 100644
+>> --- a/drivers/gpu/drm/exynos/exynos_drm_gem.c
+>> +++ b/drivers/gpu/drm/exynos/exynos_drm_gem.c
+>> @@ -9,6 +9,7 @@
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/pfn_t.h>
+>>  #include <linux/shmem_fs.h>
+>> +#include <linux/module.h>
+>>
+>>  #include <drm/drm_prime.h>
+>>  #include <drm/drm_vma_manager.h>
+>> @@ -17,6 +18,8 @@
+>>  #include "exynos_drm_drv.h"
+>>  #include "exynos_drm_gem.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  static int exynos_drm_alloc_buf(struct exynos_drm_gem *exynos_gem, bool=
+ kvmap)
+>>  {
+>>         struct drm_device *dev =3D exynos_gem->base.dev;
+>> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/dr=
+m/i915/gem/i915_gem_dmabuf.c
+>> index afa34111de02..abb854281347 100644
+>> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+>> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+>> @@ -7,11 +7,14 @@
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/highmem.h>
+>>  #include <linux/dma-resv.h>
+>> +#include <linux/module.h>
+>>
+>>  #include "i915_drv.h"
+>>  #include "i915_gem_object.h"
+>>  #include "i915_scatterlist.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  I915_SELFTEST_DECLARE(static bool force_different_devices;)
+>>
+>>  static struct drm_i915_gem_object *dma_buf_to_obj(struct dma_buf *buf)
+>> diff --git a/drivers/gpu/drm/tegra/gem.c b/drivers/gpu/drm/tegra/gem.c
+>> index 6ec598f5d5b3..d38fd7e12b57 100644
+>> --- a/drivers/gpu/drm/tegra/gem.c
+>> +++ b/drivers/gpu/drm/tegra/gem.c
+>> @@ -12,6 +12,7 @@
+>>
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/iommu.h>
+>> +#include <linux/module.h>
+>>
+>>  #include <drm/drm_drv.h>
+>>  #include <drm/drm_prime.h>
+>> @@ -20,6 +21,8 @@
+>>  #include "drm.h"
+>>  #include "gem.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  static void tegra_bo_put(struct host1x_bo *bo)
+>>  {
+>>         struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
+>> diff --git a/drivers/gpu/drm/vmwgfx/ttm_object.c b/drivers/gpu/drm/vmwgf=
+x/ttm_object.c
+>> index 04789b2bb2a2..899945f54dc7 100644
+>> --- a/drivers/gpu/drm/vmwgfx/ttm_object.c
+>> +++ b/drivers/gpu/drm/vmwgfx/ttm_object.c
+>> @@ -48,8 +48,11 @@
+>>  #include <linux/spinlock.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/atomic.h>
+>> +#include <linux/module.h>
+>>  #include "ttm_object.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  /**
+>>   * struct ttm_object_file
+>>   *
+>> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/=
+core/umem_dmabuf.c
+>> index e824baf4640d..2d14929543af 100644
+>> --- a/drivers/infiniband/core/umem_dmabuf.c
+>> +++ b/drivers/infiniband/core/umem_dmabuf.c
+>> @@ -6,9 +6,12 @@
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/dma-resv.h>
+>>  #include <linux/dma-mapping.h>
+>> +#include <linux/module.h>
+>>
+>>  #include "uverbs.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+>>  {
+>>         struct sg_table *sgt;
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/m=
+edia/common/videobuf2/videobuf2-core.c
+>> index 508ac295eb06..773c68dcd158 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>> @@ -2978,3 +2978,4 @@ EXPORT_SYMBOL_GPL(vb2_thread_stop);
+>>  MODULE_DESCRIPTION("Media buffer core framework");
+>>  MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>, Marek Szyprowski");
+>>  MODULE_LICENSE("GPL");
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/dri=
+vers/media/common/videobuf2/videobuf2-dma-contig.c
+>> index a7f61ba85440..9a1a9baca2e4 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+>> @@ -755,3 +755,4 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_set_max_seg_size);
+>>  MODULE_DESCRIPTION("DMA-contig memory handling routines for videobuf2")=
+;
+>>  MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
+>>  MODULE_LICENSE("GPL");
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers=
+/media/common/videobuf2/videobuf2-dma-sg.c
+>> index c5b06a509566..db90ebb8950f 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+>> @@ -666,3 +666,4 @@ EXPORT_SYMBOL_GPL(vb2_dma_sg_memops);
+>>  MODULE_DESCRIPTION("dma scatter/gather memory handling routines for vid=
+eobuf2");
+>>  MODULE_AUTHOR("Andrzej Pietrasiewicz");
+>>  MODULE_LICENSE("GPL");
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/driver=
+s/media/common/videobuf2/videobuf2-vmalloc.c
+>> index 83f95258ec8c..fa983897d0e9 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+>> @@ -444,3 +444,4 @@ EXPORT_SYMBOL_GPL(vb2_vmalloc_memops);
+>>  MODULE_DESCRIPTION("vmalloc memory handling routines for videobuf2");
+>>  MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
+>>  MODULE_LICENSE("GPL");
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+>> index beda610e6b30..fa5c067f1c1e 100644
+>> --- a/drivers/misc/fastrpc.c
+>> +++ b/drivers/misc/fastrpc.c
+>> @@ -1763,3 +1763,4 @@ static void fastrpc_exit(void)
+>>  module_exit(fastrpc_exit);
+>>
+>>  MODULE_LICENSE("GPL v2");
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> diff --git a/drivers/staging/media/tegra-vde/dmabuf-cache.c b/drivers/st=
+aging/media/tegra-vde/dmabuf-cache.c
+>> index a93b317885bf..a98d03419b8f 100644
+>> --- a/drivers/staging/media/tegra-vde/dmabuf-cache.c
+>> +++ b/drivers/staging/media/tegra-vde/dmabuf-cache.c
+>> @@ -12,9 +12,12 @@
+>>  #include <linux/sched.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/workqueue.h>
+>> +#include <linux/module.h>
+>>
+>>  #include "vde.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  struct tegra_vde_cache_entry {
+>>         enum dma_data_direction dma_dir;
+>>         struct dma_buf_attachment *a;
+>> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+>> index 8a9384a64f3e..8a8deb95e918 100644
+>> --- a/drivers/tee/tee_shm.c
+>> +++ b/drivers/tee/tee_shm.c
+>> @@ -10,8 +10,11 @@
+>>  #include <linux/slab.h>
+>>  #include <linux/tee_drv.h>
+>>  #include <linux/uio.h>
+>> +#include <linux/module.h>
+>>  #include "tee_private.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  static void release_registered_pages(struct tee_shm *shm)
+>>  {
+>>         if (shm->pages) {
+>> diff --git a/drivers/virtio/virtio_dma_buf.c b/drivers/virtio/virtio_dma=
+_buf.c
+>> index 5127a2f0c986..2521a75009c3 100644
+>> --- a/drivers/virtio/virtio_dma_buf.c
+>> +++ b/drivers/virtio/virtio_dma_buf.c
+>> @@ -86,3 +86,4 @@ int virtio_dma_buf_get_uuid(struct dma_buf *dma_buf,
+>>  EXPORT_SYMBOL(virtio_dma_buf_get_uuid);
+>>
+>>  MODULE_LICENSE("GPL");
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
+>> index 4c13cbc99896..12e380db7f55 100644
+>> --- a/drivers/xen/gntdev-dmabuf.c
+>> +++ b/drivers/xen/gntdev-dmabuf.c
+>> @@ -14,6 +14,7 @@
+>>  #include <linux/slab.h>
+>>  #include <linux/types.h>
+>>  #include <linux/uaccess.h>
+>> +#include <linux/module.h>
+>>
+>>  #include <xen/xen.h>
+>>  #include <xen/grant_table.h>
+>> @@ -21,6 +22,8 @@
+>>  #include "gntdev-common.h"
+>>  #include "gntdev-dmabuf.h"
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>> +
+>>  #ifndef GRANT_INVALID_REF
+>>  /*
+>>   * Note on usage of grant reference 0 as invalid grant reference:
+>> diff --git a/samples/vfio-mdev/mbochs.c b/samples/vfio-mdev/mbochs.c
+>> index c313ab4d1f4e..a83be6cd162f 100644
+>> --- a/samples/vfio-mdev/mbochs.c
+>> +++ b/samples/vfio-mdev/mbochs.c
+>> @@ -1493,5 +1493,6 @@ static void __exit mbochs_dev_exit(void)
+>>         mbochs_class =3D NULL;
+>>  }
+>>
+>> +MODULE_IMPORT_NS(DMA_BUF);
+>>  module_init(mbochs_dev_init)
+>>  module_exit(mbochs_dev_exit)
+>> --
+>> 2.33.0
+>>
+>
+> Best,
+> Sumit.
