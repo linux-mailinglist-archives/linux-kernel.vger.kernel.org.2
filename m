@@ -2,204 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9804192FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAFF419302
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhI0LVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:21:53 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51904 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234033AbhI0LVv (ORCPT
+        id S234033AbhI0LWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234049AbhI0LV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:21:51 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id C678E1F42393
-Subject: Re: [PATCH v5 05/10] media: uapi: Add VP9 stateless decoder controls
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Daniel Almeida <daniel.almeida@collabora.com>
-References: <20210922101146.13762-1-andrzej.p@collabora.com>
- <20210922101146.13762-6-andrzej.p@collabora.com> <YU37e90gldL7zHke@fedora>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <e7f228bc-d8d5-5857-a892-df1deee4be3e@collabora.com>
-Date:   Mon, 27 Sep 2021 13:20:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 27 Sep 2021 07:21:59 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AC3C061714;
+        Mon, 27 Sep 2021 04:20:21 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id b15so74881375lfe.7;
+        Mon, 27 Sep 2021 04:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IM0udcg7Exs9Wnno0uDS6E62zPZhOJr/cycPpKfnVQk=;
+        b=L/8MgV0oyeUPafvMVbtVmDu6G4fF5NWkGlFnkakoW6A0bmCaZYF6m8mJPsAnlfgUv6
+         bQwfyboY2aMAG+yBz7WnKoQeJDIMKxTVOAPa7i0GHwMl66BG7AfTdcbJ8qLKYbOHoJOG
+         JGKcc591VuF3xRKTGo7wZZzjlImrv/NGMlYdsV++U6hGXd/WkWbO8M0EH/fTkFxoWIeG
+         xwRPGBWRaKip8p0kelTi2jtXzGrWo4O4N9ptR+eQ9Nz2gBTaF3liuj+pb6ExopGrKBeu
+         obY1Ref6pkgYjWXbQL1wPpA2kOhpOX3N+YD6wGpK+JrCpJziQoxAaPXw8C0rbXyiixhH
+         3NJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IM0udcg7Exs9Wnno0uDS6E62zPZhOJr/cycPpKfnVQk=;
+        b=2nh/H/XX2gAaZ9ah9L8t+DCqdAIN+DWWFmsyCGKb7F6IVEBP9vFbeSeQMiDmGFTZRc
+         6R0R/I5q5jtJs4nIfuyVeRzB6HBSuaJe2u2M6thwsq7Bjn7sRY+uBs4nKXiqFgurbVNX
+         LKyenTicTNsvm8ygG/JXT4fIQfz4RQAo4w6AP5gi/dBSIWqglkJVRh4+NswV9uW9BM02
+         qMhyAr5lV/RxLxLtTl10f8hJxiCHX7rS3+YqpBC7weq8l+wC6iNYhNy3UFlSihqJKu1s
+         qnNGHY43yoSZMGWrsIS5iayfah84tw1TT5n90FmGquiVJ0tvcVxiSwul/A+2gwwKsPuo
+         m4Ww==
+X-Gm-Message-State: AOAM53161W8e4MYfpdWZ4mZdeBBjth6iyRy8tMSnwhi0N//fsQrNlXg8
+        qEVAOBl6oWI1tLIL6C8JsgM=
+X-Google-Smtp-Source: ABdhPJxxCsdNzj//iPQCyzCjltNqYaesAyRbJIFqOu6djIN1chwsISnVFjpzf1PB0yJt89PxuZrJbg==
+X-Received: by 2002:a05:6512:3ba5:: with SMTP id g37mr23275112lfv.651.1632741619712;
+        Mon, 27 Sep 2021 04:20:19 -0700 (PDT)
+Received: from localhost.localdomain ([217.117.245.149])
+        by smtp.gmail.com with ESMTPSA id p8sm1387002lft.242.2021.09.27.04.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 04:20:18 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, buytenh@marvell.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Subject: [PATCH] phy: mdio: fix memory leak
+Date:   Mon, 27 Sep 2021 14:20:17 +0300
+Message-Id: <20210927112017.19108-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <YU37e90gldL7zHke@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+Syzbot reported memory leak in MDIO bus interface, the problem was in
+wrong state logic.
 
-Thank you for looking into the patch.
+MDIOBUS_ALLOCATED indicates 2 states:
+	1. Bus is only allocated
+	2. Bus allocated and __mdiobus_register() fails, but
+	   device_register() was called
 
-W dniu 24.09.2021 o 18:23, Ezequiel Garcia pisze:
-> Hi Andrzej,
-> 
-> On Wed, Sep 22, 2021 at 12:11:41PM +0200, Andrzej Pietrasiewicz wrote:
->> Add the VP9 stateless decoder controls plus the documentation that goes
->> with it.
->>
->> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
->> Co-developed-by: Ezequiel Garcia <ezequiel@collabora.com>
->> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
->> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
->> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->> Co-developed-by: Daniel Almeida <daniel.almeida@collabora.com>
->> Signed-off-by: Daniel Almeida <daniel.almeida@collabora.com>
->> ---
-> [snip]
->> +
->> +#define V4L2_VP9_FRAME_FLAG_KEY_FRAME			0x001
->> +#define V4L2_VP9_FRAME_FLAG_SHOW_FRAME			0x002
->> +#define V4L2_VP9_FRAME_FLAG_ERROR_RESILIENT		0x004
->> +#define V4L2_VP9_FRAME_FLAG_INTRA_ONLY			0x008
->> +#define V4L2_VP9_FRAME_FLAG_ALLOW_HIGH_PREC_MV		0x010
->> +#define V4L2_VP9_FRAME_FLAG_REFRESH_FRAME_CTX		0x020
->> +#define V4L2_VP9_FRAME_FLAG_PARALLEL_DEC_MODE		0x040
->> +#define V4L2_VP9_FRAME_FLAG_X_SUBSAMPLING		0x080
->> +#define V4L2_VP9_FRAME_FLAG_Y_SUBSAMPLING		0x100
->> +#define V4L2_VP9_FRAME_FLAG_COLOR_RANGE_FULL_SWING	0x200
->> +
->> +#define V4L2_VP9_SIGN_BIAS_LAST				0x1
->> +#define V4L2_VP9_SIGN_BIAS_GOLDEN			0x2
->> +#define V4L2_VP9_SIGN_BIAS_ALT				0x4
->> +
->> +#define V4L2_VP9_RESET_FRAME_CTX_NONE			0
->> +#define V4L2_VP9_RESET_FRAME_CTX_SPEC			1
->> +#define V4L2_VP9_RESET_FRAME_CTX_ALL			2
->> +
->> +#define V4L2_VP9_INTERP_FILTER_EIGHTTAP			0
->> +#define V4L2_VP9_INTERP_FILTER_EIGHTTAP_SMOOTH		1
->> +#define V4L2_VP9_INTERP_FILTER_EIGHTTAP_SHARP		2
->> +#define V4L2_VP9_INTERP_FILTER_BILINEAR			3
->> +#define V4L2_VP9_INTERP_FILTER_SWITCHABLE		4
->> +
->> +#define V4L2_VP9_REFERENCE_MODE_SINGLE_REFERENCE	0
->> +#define V4L2_VP9_REFERENCE_MODE_COMPOUND_REFERENCE	1
->> +#define V4L2_VP9_REFERENCE_MODE_SELECT			2
->> +
->> +#define V4L2_VP9_PROFILE_MAX				3
->> +
->> +#define V4L2_CID_STATELESS_VP9_FRAME	(V4L2_CID_CODEC_STATELESS_BASE + 300)
->> +/**
->> + * struct v4l2_ctrl_vp9_frame - VP9 frame decoding control
->> + *
->> + * @lf: loop filter parameters. See &v4l2_vp9_loop_filter for more details
-> 
-> Seems these documentation is missing an ending period for many fields.
+In case of device_register() has been called we should call put_device()
+to correctly free the memory allocated for this device, but mdiobus_free()
+was just calling kfree(dev) in case of MDIOBUS_ALLOCATED state
 
-Thanks for catching punctuation mistakes :)
+To avoid this behaviour we can add new intermediate state, which means,
+that we have called device_regiter(), but failed on any of the next steps.
+Clean up process for this state is the same as for MDIOBUS_UNREGISTERED,
+but MDIOBUS_UNREGISTERED name does not fit to the logic described above.
 
-> 
->> + * @quant: quantization parameters. See &v4l2_vp9_quantization for more details
->> + * @seg: segmentation parameters. See &v4l2_vp9_segmentation for more details
->> + * @flags: combination of V4L2_VP9_FRAME_FLAG_* flags
->> + * @compressed_header_size: compressed header size in bytes
->> + * @uncompressed_header_size: uncompressed header size in bytes
->> + * @frame_width_minus_1: add 1 to it and you'll get the frame width expressed in pixels
->> + * @frame_height_minus_1: add 1 to it and you'll get the frame height expressed in pixels
->> + * @render_width_minus_1: add 1 to it and you'll get the expected render width expressed in
->> + *	pixels. This is not used during the decoding process but might be used by HW scalers
->> + *	to prepare a frame that's ready for scanout
->> + * @render_height_minus_1: add 1 to it and you'll get the expected render height expressed in
->> + *	pixels. This is not used during the decoding process but might be used by HW scalers
->> + *	to prepare a frame that's ready for scanout
->> + * @last_frame_ts: "last" reference buffer timestamp.
->> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
->> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
->> + * @golden_frame_ts: "golden" reference buffer timestamp.
->> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
->> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
->> + * @alt_frame_ts: "alt" reference buffer timestamp.
->> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
->> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
->> + * @ref_frame_sign_bias: a bitfield specifying whether the sign bias is set for a given
->> + *	reference frame. Either of V4L2_VP9_SIGN_BIAS_*.
->> + * @reset_frame_context: specifies whether the frame context should be reset to default values.
->> + *	Either of V4L2_VP9_RESET_FRAME_CTX_*.
->> + * @frame_context_idx: frame context that should be used/updated
->> + * @profile: VP9 profile. Can be 0, 1, 2 or 3
->> + * @bit_depth: bits per components. Can be 8, 10 or 12. Note that not all profiles support
->> + *	10 and/or 12 bits depths
->> + * @interpolation_filter: specifies the filter selection used for performing inter prediction.
->> + *	Either of V4L2_VP9_INTERP_FILTER_*
->> + * @tile_cols_log2: specifies the base 2 logarithm of the width of each tile (where the width
->> + *	is measured in units of 8x8 blocks). Shall be less than or equal to 6
->> + * @tile_rows_log2: specifies the base 2 logarithm of the height of each tile (where the height
->> + *	is measured in units of 8x8 blocks)
->> + * @reference_mode: specifies the type of inter prediction to be used. See
-> 
-> See what? :-)
-> 
->> + *	Either of V4L2_VP9_REFERENCE_MODE_*
-> 
-> Other controls use V4L2_VP9_REFERENCE_MODE_{}, {} instead of *.
-> The same applies to all the documentation.
+Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
+Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/phy/mdio_bus.c | 4 +++-
+ include/linux/phy.h        | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Will update in v6.
-
-> 
->> + * @reserved: padding field. Should be zeroed by applications.
->> + */
->> +struct v4l2_ctrl_vp9_frame {
->> +	struct v4l2_vp9_loop_filter lf;
->> +	struct v4l2_vp9_quantization quant;
->> +	struct v4l2_vp9_segmentation seg;
->> +	__u32 flags;
->> +	__u16 compressed_header_size;
->> +	__u16 uncompressed_header_size;
->> +	__u16 frame_width_minus_1;
->> +	__u16 frame_height_minus_1;
->> +	__u16 render_width_minus_1;
->> +	__u16 render_height_minus_1;
->> +	__u64 last_frame_ts;
->> +	__u64 golden_frame_ts;
->> +	__u64 alt_frame_ts;
->> +	__u8 ref_frame_sign_bias;
->> +	__u8 reset_frame_context;
->> +	__u8 frame_context_idx;
->> +	__u8 profile;
->> +	__u8 bit_depth;
->> +	__u8 interpolation_filter;
->> +	__u8 tile_cols_log2;
->> +	__u8 tile_rows_log2;
->> +	__u8 reference_mode;
->> +	__u8 reserved[7];
->> +};
->> +
-> 
-> Also, have you checked html and pdf docs and make sure
-> it looks as you expect?
-> 
-
-Yes I did and it looks as I expected.
-
-> Thanks,
-> Ezequiel
-> 
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 53f034fc2ef7..ed764638b449 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -540,6 +540,8 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 		return -EINVAL;
+ 	}
+ 
++	bus->state = MDIOBUS_DEV_REGISTERED;
++
+ 	mutex_init(&bus->mdio_lock);
+ 	mutex_init(&bus->shared_lock);
+ 
+@@ -647,7 +649,7 @@ void mdiobus_free(struct mii_bus *bus)
+ 		return;
+ 	}
+ 
+-	BUG_ON(bus->state != MDIOBUS_UNREGISTERED);
++	BUG_ON(bus->state != MDIOBUS_UNREGISTERED && bus->state != MDIOBUS_DEV_REGISTERED);
+ 	bus->state = MDIOBUS_RELEASED;
+ 
+ 	put_device(&bus->dev);
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index 736e1d1a47c4..41d2ccdacd5e 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -343,6 +343,7 @@ struct mii_bus {
+ 		MDIOBUS_REGISTERED,
+ 		MDIOBUS_UNREGISTERED,
+ 		MDIOBUS_RELEASED,
++		MDIOBUS_DEV_REGISTERED,
+ 	} state;
+ 
+ 	/** @dev: Kernel device representation */
+-- 
+2.33.0
 
