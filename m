@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E8441938C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60ED41938D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 13:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhI0Lrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 07:47:52 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51802 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234067AbhI0Lrv (ORCPT
+        id S234113AbhI0LsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 07:48:18 -0400
+Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:44651 "EHLO
+        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234146AbhI0LsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 07:47:51 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18RAcRWp015313;
-        Mon, 27 Sep 2021 13:45:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=JY/RZy696PhrTY1tk4j9/0LRz+75bBXuC1oBNKXvcTs=;
- b=RQ52hqg2BHAeLjSbXR4c7+zE72RzsmoE14XirXepeh7GalqqA6Qc23L8HfIoVJGAZlNA
- xr7J13ih6x6nCFdT4S5iYx0CxwJ4VFZytD4u4hdoC810TSiiRSOcPQ9rKskITBbJm4Pr
- YHeO1CmQLvzL4xIywpRp18k5Aw19L/p+v8n4ktx5KBIP4pytX6JnMPYteFFdFx6LDh7X
- QJxGPCrxXIgBKpnontKRjihTfQHjJZik7SbG7y2nYxXmYLUKWrit3JyCHrrG/lA/n8lH
- Xzjgb7yh8uwYPxYnKYocYxvthpipAjQRCeZ45EWQr74yIQUKI6E5aVG4LIEcMCgPgcEX Yw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bbau50w5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Sep 2021 13:45:57 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2FAB710002A;
-        Mon, 27 Sep 2021 13:45:55 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CCA32221784;
-        Mon, 27 Sep 2021 13:45:55 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 27 Sep 2021 13:45:55
- +0200
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marek Vasut <marex@denx.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>
-Subject: [PATCH 1/1] ARM: dts: stm32: fix AV96 board SAI2B pin muxing on stm32mp15
-Date:   Mon, 27 Sep 2021 13:45:53 +0200
-Message-ID: <20210927114553.21843-1-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 27 Sep 2021 07:48:16 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 3AD871B02
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 12:46:37 +0100 (IST)
+Received: (qmail 12512 invoked from network); 27 Sep 2021 11:46:36 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Sep 2021 11:46:36 -0000
+Date:   Mon, 27 Sep 2021 12:46:35 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mike Galbraith <efault@gmx.de>, Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] sched/fair: Null terminate buffer when updating
+ tunable_scaling
+Message-ID: <20210927114635.GH3959@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-27_04,2021-09-24_02,2020-04-07_01
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix SAI2B pin muxing for AV96 board on STM32MP15.
-The label "sai2a-4" is defined twice. Change redundant label to "sai2b-4".
+This patch null-terminates the temporary buffer in sched_scaling_write()
+so kstrtouint() does not return failure and checks the value is valid.
 
-Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 pins on stm32mp15")
+Before
+$ cat /sys/kernel/debug/sched/tunable_scaling
+1
+$ echo 0 > /sys/kernel/debug/sched/tunable_scaling
+-bash: echo: write error: Invalid argument
+$ cat /sys/kernel/debug/sched/tunable_scaling
+1
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+After
+$ cat /sys/kernel/debug/sched/tunable_scaling
+1
+$ echo 0 > /sys/kernel/debug/sched/tunable_scaling
+$ cat /sys/kernel/debug/sched/tunable_scaling
+0
+$ echo 3 > /sys/kernel/debug/sched/tunable_scaling
+-bash: echo: write error: Invalid argument
+
+Fixes: 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/debug.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 5b60ecbd718f..b9cc9e0dd4fc 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -1235,7 +1235,7 @@
- 		};
- 	};
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 49716228efb4..17a653b67006 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -173,16 +173,22 @@ static ssize_t sched_scaling_write(struct file *filp, const char __user *ubuf,
+ 				   size_t cnt, loff_t *ppos)
+ {
+ 	char buf[16];
++	unsigned int scaling;
  
--	sai2b_pins_c: sai2a-4 {
-+	sai2b_pins_c: sai2b-4 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
- 			bias-disable;
--- 
-2.17.1
-
+ 	if (cnt > 15)
+ 		cnt = 15;
+ 
+ 	if (copy_from_user(&buf, ubuf, cnt))
+ 		return -EFAULT;
++	buf[cnt] = '\0';
+ 
+-	if (kstrtouint(buf, 10, &sysctl_sched_tunable_scaling))
++	if (kstrtouint(buf, 10, &scaling))
+ 		return -EINVAL;
+ 
++	if (scaling >= SCHED_TUNABLESCALING_END)
++		return -EINVAL;
++
++	sysctl_sched_tunable_scaling = scaling;
+ 	if (sched_update_scaling())
+ 		return -EINVAL;
+ 
