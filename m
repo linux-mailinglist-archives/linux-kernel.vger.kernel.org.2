@@ -2,149 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D60419563
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861C841956A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbhI0Nvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:51:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
+        id S234621AbhI0Nwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:52:50 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:52289 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234585AbhI0Nvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90A0360F41;
-        Mon, 27 Sep 2021 13:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632750595;
-        bh=8xhgJ1VxubUEF7re8obYZLRRe6xW79b6UPbCJOr+N1U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XKg2Mvhj9NnmZarL2zGE5MA1ZOlXsHiNjUH272XMBQVCvWYLzwELRuI0VUqmFZ9lL
-         HHWHz43SkGgz9LtVQKjYsQ/MgRBglqjzUBEX5QYnSl/hwHmS0YhLcILh5SH2YTPY6p
-         QngucrUwQskbHIRALJanBUjlOH9Q/v/kuwmpMliYOpTlxid42oj99c/gWsmgcChWog
-         QYZw+0iZ1yf2L3WAesvTm7IXa/PqHBA3JMRQo0fp5jdQJM9efl/L7VbD45yUmnR3/G
-         g4D5+AoUyKKyGq0SyyUpfkZIGD1pppAc5ELIkRsXWHrd+SvjqRfnsW+eVvMP0HNap3
-         YKYbCjqSnK0eg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mUr0z-000Ajc-M8; Mon, 27 Sep 2021 15:49:53 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] scripts: get_abi.pl: update its documentation
-Date:   Mon, 27 Sep 2021 15:49:51 +0200
-Message-Id: <89fcd301e065ed86dfd8670725144b196266b6a4.1632750315.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632750315.git.mchehab+huawei@kernel.org>
-References: <cover.1632750315.git.mchehab+huawei@kernel.org>
+        id S234589AbhI0Nwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:52:49 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HJ3vL1zTlz9sXy;
+        Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UxKXWkRZpdci; Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HJ3vL0qqRz9sXw;
+        Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 074478B76E;
+        Mon, 27 Sep 2021 15:51:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id nsEoLaYG6VnV; Mon, 27 Sep 2021 15:51:09 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA6948B763;
+        Mon, 27 Sep 2021 15:51:09 +0200 (CEST)
+Subject: Re: [PATCH 1/3] mm: Make generic arch_is_kernel_initmem_freed() do
+ what it says
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+References: <0b55650058a5bf64f7d74781871a1ada2298c8b4.1632491308.git.christophe.leroy@csgroup.eu>
+ <87h7e6kvs3.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f206b856-f5a8-3e47-03cb-49aaa5c521f0@csgroup.eu>
+Date:   Mon, 27 Sep 2021 15:51:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <87h7e6kvs3.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current highlight schema is not working properly. So, use,
-instead, Pod::Text.
 
-While here, also update the copyright in order to reflect the latest
-changes and the e-mail I'm currently using.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+Le 27/09/2021 à 15:11, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> Commit 7a5da02de8d6 ("locking/lockdep: check for freed initmem in
+>> static_obj()") added arch_is_kernel_initmem_freed() which is supposed
+>> to report whether an object is part of already freed init memory.
+>>
+>> For the time being, the generic version of arch_is_kernel_initmem_freed()
+>> always reports 'false', allthough free_initmem() is generically called
+>> on all architectures.
+>>
+>> Therefore, change the generic version of arch_is_kernel_initmem_freed()
+>> to check whether free_initmem() has been called. If so, then check
+>> if a given address falls into init memory.
+>>
+>> In order to use function init_section_contains(), the fonction is
+>> moved at the end of asm-generic/section.h
+>>
+>> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   include/asm-generic/sections.h | 31 +++++++++++++++++--------------
+>>   1 file changed, 17 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+>> index d16302d3eb59..d1e5bb2c6b72 100644
+>> --- a/include/asm-generic/sections.h
+>> +++ b/include/asm-generic/sections.h
+>> @@ -172,4 +158,21 @@ static inline bool is_kernel_rodata(unsigned long addr)
+>>   	       addr < (unsigned long)__end_rodata;
+>>   }
+>>   
+>> +/*
+>> + * Check if an address is part of freed initmem. This is needed on architectures
+>> + * with virt == phys kernel mapping, for code that wants to check if an address
+>> + * is part of a static object within [_stext, _end]. After initmem is freed,
+>> + * memory can be allocated from it, and such allocations would then have
+>> + * addresses within the range [_stext, _end].
+>> + */
+>> +#ifndef arch_is_kernel_initmem_freed
+>> +static inline int arch_is_kernel_initmem_freed(unsigned long addr)
+>> +{
+>> +	if (system_state < SYSTEM_RUNNING)
+>> +		return 0;
+>> +
+>> +	return init_section_contains((void *)addr, 1);
+>> +}
+>> +#endif
+> 
+> This will return an incorrect result for a short period during boot
+> won't it?
+> 
+> See init/main.c:
+> 
+> static int __ref kernel_init(void *unused)
+> {
+> 	...
+> 	free_initmem();			<- memory is freed here
+> 	mark_readonly();
+> 
+> 	/*
+> 	 * Kernel mappings are now finalized - update the userspace page-table
+> 	 * to finalize PTI.
+> 	 */
+> 	pti_finalize();
+> 
+> 	system_state = SYSTEM_RUNNING;
+> 
+> 
+> After free_initmem() we have address ranges that are now freed initmem,
+> but arch_is_kernel_initmem_freed() continues to return 0 (false) for all
+> addresses, until we update system_state.
+> 
+> Possibly that doesn't matter for any of the current callers, but it
+> seems pretty dicey to me.
+> 
 
-See [PATCH 0/3] at: https://lore.kernel.org/all/cover.1632750315.git.mchehab+huawei@kernel.org/
+Yes I saw it but as function core_kernel_text() uses that criteria for 
+deciding whether a given init text address is valid or not, I thought it 
+was just ok.
 
- scripts/get_abi.pl | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+Should we add an intermediate state called for exemple 
+SYSTEM_FREEING_INIT just before SYSTEM_RUNNING ?
 
-diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index d14f5cfc3138..4978163f5b16 100755
---- a/scripts/get_abi.pl
-+++ b/scripts/get_abi.pl
-@@ -1,10 +1,12 @@
- #!/usr/bin/env perl
- # SPDX-License-Identifier: GPL-2.0
- 
-+BEGIN { $Pod::Usage::Formatter = 'Pod::Text::Termcap'; }
-+
- use strict;
- use warnings;
- use utf8;
--use Pod::Usage;
-+use Pod::Usage qw(pod2usage);
- use Getopt::Long;
- use File::Find;
- use Fcntl ':mode';
-@@ -47,7 +49,7 @@ GetOptions(
- ) or pod2usage(2);
- 
- pod2usage(1) if $help;
--pod2usage(-exitstatus => 0, -verbose => 2) if $man;
-+pod2usage(-exitstatus => 0, -noperldoc, -verbose => 2) if $man;
- 
- pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
- 
-@@ -923,18 +925,18 @@ B<abi_book.pl> [--debug <level>] [--enable-lineno] [--man] [--help]
- 	       [--search-string <regex>]
- 	       <COMAND> [<ARGUMENT>]
- 
--Where <COMMAND> can be:
-+Where B<COMMAND> can be:
- 
- =over 8
- 
--B<search> [SEARCH_REGEX] - search for [SEARCH_REGEX] inside ABI
-+B<search> I<SEARCH_REGEX> - search for I<SEARCH_REGEX> inside ABI
- 
--B<rest>                  - output the ABI in ReST markup language
-+B<rest>                   - output the ABI in ReST markup language
- 
--B<validate>              - validate the ABI contents
-+B<validate>               - validate the ABI contents
- 
--B<undefined>             - existing symbols at the system that aren't
--                           defined at Documentation/ABI
-+B<undefined>              - existing symbols at the system that aren't
-+                            defined at Documentation/ABI
- 
- =back
- 
-@@ -950,9 +952,9 @@ the Documentation/ABI directory.
- =item B<--rst-source> and B<--no-rst-source>
- 
- The input file may be using ReST syntax or not. Those two options allow
--selecting between a rst-compliant source ABI (--rst-source), or a
-+selecting between a rst-compliant source ABI (B<--rst-source>), or a
- plain text that may be violating ReST spec, so it requres some escaping
--logic (--no-rst-source).
-+logic (B<--no-rst-source>).
- 
- =item B<--enable-lineno>
- 
-@@ -972,7 +974,7 @@ following bitmask:
- Show hints about possible definitions for the missing ABI symbols.
- Used only when B<undefined>.
- 
--=item B<--search-string> [regex string]
-+=item B<--search-string> I<regex string>
- 
- Show only occurences that match a search string.
- Used only when B<undefined>.
-@@ -1021,11 +1023,11 @@ $ scripts/get_abi.pl rest --dir Documentation/ABI/obsolete
- 
- =head1 BUGS
- 
--Report bugs to Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-+Report bugs to Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
- 
- =head1 COPYRIGHT
- 
--Copyright (c) 2016-2019 by Mauro Carvalho Chehab <mchehab+samsung@kernel.org>.
-+Copyright (c) 2016-2021 by Mauro Carvalho Chehab <mchehab+huawei@kernel.org>.
- 
- License GPLv2: GNU GPL version 2 <http://gnu.org/licenses/gpl.html>.
- 
--- 
-2.31.1
-
+Christophe
