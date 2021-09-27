@@ -2,102 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAD64194C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FA24194C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 15:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhI0NI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 09:08:27 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:55091 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230089AbhI0NI0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 09:08:26 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id CCD4E3200BF9;
-        Mon, 27 Sep 2021 09:06:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 27 Sep 2021 09:06:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=/
-        GKVm9aT1QMpB/PByfoVomF5FC+99BMfJqPbdonFHp4=; b=YS1kiQTMUOFzQSTzT
-        Kfv2rv7W/w1qHoGhCyLgmR7ixr5gyB3NmITvwsC9YmAhiS3omMnq75e5+Z1Yw7rY
-        BkJ+aHrBO0RTxtFNaVHs4FN7vBKy18hd4BrIjnHz0Fl3lm7JQ0YRVrm4rvI44IaY
-        BK/HkB5FJgwkv9uNRchLwjpsyh0uWLbhbUCftEAK81sdtthaxmOyumNGwp1u4fek
-        l4yppv7tjT+Ep4PI8kShCuTD0A6IeM83o+x6+vFSF0Y0FNNRY5ygNH6mGAJUp6um
-        9p5TqXIxtBNCislqinmGEqqj0VoSaPXLHBpgChg4SE4TqyX4W7DYm2XMr7u0fvHL
-        2OpNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=/GKVm9aT1QMpB/PByfoVomF5FC+99BMfJqPbdonFH
-        p4=; b=K25pBMePdTG4j5ulgG0Vgs0SXd5RIo28O7/AK+XLgMlHWqVJSJrBK0J3a
-        Y+9sedgG2LQE+gTFTaNcapB31/3S2BOkXpw8UPeaLI+8BJpsrZXSsxg4FSrgrAsp
-        +nc4Pu1aDMaZjkMRb0zQ+q0GlxEDo6PhQbeZIGaELsTxhaAQ+vp+fCkaeYzb30lI
-        D2sNpCm4aVPH0dPjmKOQ08cVI9Ev7Df7p/udHMo+quw/AN1EhoHu6ozhokW++w39
-        em4dCu4wQECwdl6vPJEIqR0rtNct1k75LzdWU0ln5eR9VDJlxFkw7sGgzFC73FRk
-        C6pLrJ0/WT/nbhFLP77R2YyeWlZZQ==
-X-ME-Sender: <xms:58FRYax23m1wBEGwFvzO_19kjjp-mMoJ7UFnqSjLV4YoBSXQwaPi4w>
-    <xme:58FRYWQr3Xyjur_pRLpT7VnveLXUj4qL2pyCZBPGxGYQmCnpphXz9tiLAfr59wkZi
-    EB1SOp45AsFsuvY>
-X-ME-Received: <xmr:58FRYcWpt47LZa6xz3tXPUtXW5zdMilMwdBf6bf8YQvByAi9hhBieNLxVtCZ1uLtbVM1Z3xmfWwWzFTjPU3-k8BEWuPhSdQXEIQVM6J1hOfTlLgdkqUw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejkedgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
-    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
-    drfhhmqeenucggtffrrghtthgvrhhnpeduhfdvuefgieejueekjefhieeuffeigfdtvedu
-    ledutdejtdehueegfedugeduueenucffohhmrghinhepsggtrggthhgvfhhsrdhorhhgne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsggvrhhn
-    ugdrshgthhhusggvrhhtsehfrghsthhmrghilhdrfhhm
-X-ME-Proxy: <xmx:58FRYQizOWPCrsi2RmJN95TDBUzHhXcxqZorO0gBkLvPQVXeSp4VwQ>
-    <xmx:58FRYcAuDk58yfqeuG408CxWEfCt6dFJgvl5455BHEKGiF6pqHXLtw>
-    <xmx:58FRYRIE8RO5CFJhkk-1ijRBcRVTBqgSqDl11fAZgaqfq1H0m6uAJw>
-    <xmx:58FRYfNTaJ3w07NlPUFx2cP3KA6HWdjo_myz4onw1wVO6uaZ8hEc7A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Sep 2021 09:06:46 -0400 (EDT)
-Subject: Re: bcachefs - snapshots
-To:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <YVEjEwCiqje7yDyV@moria.home.lan>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-Message-ID: <dbe56ac2-22bd-74d5-ab5d-9f6673884212@fastmail.fm>
-Date:   Mon, 27 Sep 2021 15:06:45 +0200
+        id S234537AbhI0NJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 09:09:14 -0400
+Received: from mail-dm6nam11on2086.outbound.protection.outlook.com ([40.107.223.86]:43617
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230089AbhI0NJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 09:09:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gby/lClFveocsFh0mC1zDSwbjNGGqgTx6ms/opFNo7NX+2b1U1Oj06+Zh0KUoVvb14t5TJ6B1WnSapfwZnWbrcYUl2vkZBhbQt7Bf1sNTKmQExGgtMafj06CnFVar5eyZ6BbiiqxsqEpdAw7unITjv71YpJ8Ks/oPQnZusIAOC6t+LSZ42kE1Xt7cKxh0RVUZdSJistPXcZjC9U9T1TwmFdUIAhmaYLDqW2IGSaoXV+CxBSf6GA2py5mwYRCgOodki4DVIe0CNDdYnTmNkguKFwW4SePK3FcZ/kvKHPjhUiRqN1mnxmj0aXy7j/ZpcpFc/MmfBHOTqcwhJfkRSVk5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=0nqRpEKdCapp2xp/RdzWt9/l4dCp5s3/DqPy7uP18w4=;
+ b=kECpPVQ18nk5QGi8DyAkvrbXB57JREFJlgUc9TPBI2GdcCxXPhtjqQ9f/NAT2P3bGwyQ2FPNq5vDDMvkfxcfuFfLf4Li8BJGX1kxuPQrUlul3WzRXyx17vKASXzrZxFG3NbYNX57nsIqCKUgiyQ/VGOXNQXoIzJ/czYEMxkMADDTdp0K7krv6tpwGGucyXSLr2a9pCdcOgJ0/9FRkDtvxgsknuJN7nFe6K16e0tX8+eiMMW7mlvCulg1Pvf37rXi3dgtvRcDrwjNU/D9SBClMeQADNlN11v81mnuQGTKGWhhvHyD6ULxMpDVz2Vix7O63xPW0f2kBSbSGJVcnTn3ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0nqRpEKdCapp2xp/RdzWt9/l4dCp5s3/DqPy7uP18w4=;
+ b=nOf6J+4nkFozaOWiw17PVabIxu1hl3lofhBSJwS28GhlFsfsSwkp5r/v3/AH0rtNFAF+RZIc+qIImbX6vtpoOMvK4a/QlGxyjt/fWgBK3HXUW5PGYFfcFt03N+mQPS5BPDD0xs8DGaiwasytzSJ1DCaRRkUMKm1e4og0NpRHUcs=
+Authentication-Results: lists.linux.dev; dkim=none (message not signed)
+ header.d=none;lists.linux.dev; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14) by MWHPR12MB1214.namprd12.prod.outlook.com
+ (2603:10b6:300:e::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Mon, 27 Sep
+ 2021 13:07:23 +0000
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4544.021; Mon, 27 Sep
+ 2021 13:07:22 +0000
+Subject: Re: [PATCH] drm/amdgpu: fix warning for overflow check
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chunming Zhou <david1.zhou@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20210927125824.1583474-1-arnd@kernel.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <a27a9db3-1186-8fea-8952-fca4171bcee5@amd.com>
+Date:   Mon, 27 Sep 2021 15:07:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YVEjEwCiqje7yDyV@moria.home.lan>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210927125824.1583474-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM4P190CA0012.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:200:56::22) To MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14)
+MIME-Version: 1.0
+Received: from [192.168.178.21] (91.14.161.181) by AM4P190CA0012.EURP190.PROD.OUTLOOK.COM (2603:10a6:200:56::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Mon, 27 Sep 2021 13:07:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c614c8bf-630f-415c-daa3-08d981b7be0c
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1214:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1214CD92309C8CD285EE229283A79@MWHPR12MB1214.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4bqRG2u9bYM75OwNaDrRvD36tWlKFf1LjhSpns0QVucr3RBqwG+83VMJRdYefn1XE0HwK1Ja9LmQwCLGwCzoNQ2p6oDAqCfjm3Gz9U13kACPEEXUoln2YQhbBeZjTsMiL50tna2oOReGzcyoLtE+0Hh3UBpTFWg9QJZQjVC9VWobbp2MFVyPud/Od+dKE3kBHXvRbbjxvmoHVOSlAVHh9+T3O1J+iRr5nlw0GbCFPADSksnERouhBFt3LrXk6itHXRf2N3ayWB3KXA/fRa/UTVJB2zLl83GuUqbz+zjz0QdzNc7iVZM4sgCNsIitgDWIbdT0OR+JEJhEgYPd5EyZUqhm0ZAFS1S84avulzwx2fjIBHWRCoOrE/3R8W/IgvCpNtk+YmBS7X4koq+eTtQjgu9ddE1J991r5nGT5X9MJ2RZds0HoKFxNtU+YHX6R43HBO62pjYK5e/Bdqor4/0a+JJh3ErNYQe9q/zSLdseJjTG14HMqH1o+9wMuDvayxf41ToCN5L9D/7m6J26beAI1EJsM8BARvV1PMEd6a4MCJlkb5mOCSEaW8LfdTibCl3WsiyxMlBv35e1U1XfbV1LSKYM/gAF0sSFdaWQI87yXEmhpaD3Y06JJUi60DxVBpGC+KjlyOspgiXbFVG74+csNyyB/vI6mD7HLbQb5rw0SQPHIUa2YeAsCkTAQ5qofZU53Nd72z3mS4X6sluuuw36sDtlphNc1P5i6Q5cHOmoBI74YRXxyMqbomzTNzIMn0KA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(36756003)(6636002)(31696002)(86362001)(26005)(110136005)(316002)(31686004)(38100700002)(186003)(5660300002)(8676002)(16576012)(508600001)(6486002)(2906002)(83380400001)(7416002)(4326008)(66574015)(66556008)(66476007)(8936002)(2616005)(956004)(6666004)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cGdOTW5ISTJ6Q2lLcGhsdUg4R0loWTVCbTVVT1E4VjNCZ3J4aEgzek5VMDlh?=
+ =?utf-8?B?bzJZV1JQUmlyVlRwY3d2RW9tYXZQTDJDZUt1Tm5qSU85RkhEVU5mYlp0QzJk?=
+ =?utf-8?B?MHBGZEpRZmYyR01wQk5vaStFbDNibTVFZFhybjJGZ3oweHlnck1kc2swRnVL?=
+ =?utf-8?B?MHVKejhlMDVVd0szM0ZFSUlmUVNqUytHRFdPMlNvYmlDcEdUTExHMW4za0Mz?=
+ =?utf-8?B?RHBsTjdkb2FhcWRQcGs0Ukk4NElVRDE4UitRQ3E4d2RqbHpuVWZ2ekdXb2Zx?=
+ =?utf-8?B?L0NzZ29wdFBhdUpVZXpZaDVDb01EeE5rc3ljUGtrenpva0FyakRVLzNTcDdE?=
+ =?utf-8?B?Z0xOL2hxZXZoaW82WC81QjRqYzVoOHZpRXpGeDZCdWxXb2lIaXdqYjBLclhq?=
+ =?utf-8?B?ZU9jd0JZMG5yWHVqeGJYYWx5S2I5cExZQzZ3OVFmTmJ1OE8rYU95MDlWSnhQ?=
+ =?utf-8?B?bzBkMkVUV3Y2L2Q1VnRIS1FrQ2pWT282UE9mellkcU9sNzlPRUJlYVp2K0ZT?=
+ =?utf-8?B?a3cxUStHamcyUkp3amZFdFlsTVhQQi9XRXJIZCtRVTNZeGlmditYbXo2djVH?=
+ =?utf-8?B?Y3dmamw0a3dDR1gzUmp2OTBMM0p4TjJ1Ny9iWXFLUHlNYjV3UXNEbGpTUmxa?=
+ =?utf-8?B?S1A5R3Bxb2hwMnU3ZDRaUCsyZnNuZ0FXSGYvZERYSU93YXpKY3E5SklocXZ0?=
+ =?utf-8?B?WjRhWk1IeUNtbndib2YwQWFvQkx4dUhKM1JIUWE1bVVlNlZJeGxCd1FYblFY?=
+ =?utf-8?B?SEN6cTc1WFI3US83c2d2aXdoSXl4bXFJTFcyd0tVeFF1NTRLbEdySjAwaThE?=
+ =?utf-8?B?UHduSzBMWFpFSUp5NW9Wcm5OTktTdnpvSkhWTDQ0Y0VyYlFKbjdUZ0dEZWNs?=
+ =?utf-8?B?UDVhRS83M0tJOVVuTndsb1RaRHMzcXJkZzdaa3BDNmJIMWhtZ1czZ2ZhYm5v?=
+ =?utf-8?B?RlNXSTRJMFBJOXJKVTIwTlRSUjJ0K3I0aUFVSG1uYXcrWE5qeDMxSUo0bXNx?=
+ =?utf-8?B?V3R6YXZiVHZ6VmwxdHhzdmNDNDRFb2VWUDUrVWRtRDFRZzFzTldnd1dkVmFN?=
+ =?utf-8?B?ZDNCWDVlMVA5K3RmbXNFSzk0UEpGdDdWTzZjbXR1Ym4zeDdTWG0rNXZpTEJp?=
+ =?utf-8?B?MnY2QTUrbmR2d0ZudktmWE9USE9KVkRaV3YxODFiYUNoYlZ2TE1JTGMxbnRG?=
+ =?utf-8?B?TkgrNmtFTWdjOVV6N1EvRWhJemh1SHNORG1WMWI0dHdySkVqK3Y4cVdNelA1?=
+ =?utf-8?B?aUdxSGZaaEFabDRPUnBaaTVsR1EraTRrWjA3RFVqUytNaDZzUlVNUTlSNnNv?=
+ =?utf-8?B?NDZWQ3VQYWk0ai9uTkhncTVYMHN4NWtJdTVtN2hmdkFienpmeURpV3diTW5Z?=
+ =?utf-8?B?S3BQY3NWc3d1dTdYS3d4Nkk3TnBvVHI4MjY0TW8ramlQTWlCVkV6cC9YQW5U?=
+ =?utf-8?B?bktnbWRXaXI0b2Znc1lJOTQyMnhvdU1sSWtieW1URTNYT0o4bEROajFORXJt?=
+ =?utf-8?B?RzJydWxtb1cxaXNKc0JtY2VhZUdjY0JZdTFKZTZibWZLR2ZuaWZ3NHJQTWtX?=
+ =?utf-8?B?OEMvaDhxYlVXcURzSkRiN25BT2pFRFFCOVR3Y3d6TXROalh0RWszS3k2Wk16?=
+ =?utf-8?B?VVV2VFRpTk4wRDBrYjhuQ1pnVzd4bnQ4K3BlQXBFYW43T2FET3cvOTJDTm12?=
+ =?utf-8?B?SVU3OVVXRm9QWldwaWNoVnZhbzBpN2haeHpRR0tlVllRVWlNMWpaT3ZFWm92?=
+ =?utf-8?Q?fRscZfKJHczFmo4ASB6hiKwxHnnCwc++sRtvSLM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c614c8bf-630f-415c-daa3-08d981b7be0c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2021 13:07:22.1865
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 18j7vu7pt+Tg0B35T2AN+WfWf/ms0W05jvlvfR2SRHQYX0WYKBTPsFtgJFF50RZZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1214
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 27.09.21 um 14:58 schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The overflow check in amdgpu_bo_list_create() causes a warning with
+> clang-14 on 64-bit architectures, since the limit can never be
+> exceeded.
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of comparison of constant 256204778801521549 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>          if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
+>              ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> The check remains useful for 32-bit architectures, so just avoid the
+> warning by using size_t as the type for the count.
+>
+> Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the list")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-On 9/27/21 3:49 AM, Kent Overstreet wrote:
-> Snapshots have been merged! 9 months of work and 3k lines of new code, finally
-> released. Some highlights:
-> 
->  - btrfs style subvolumes & snapshots interface
->  - snapshots are writeable
->  - highly scalable: number of snapshots is limited only by your disk space
->  - highly space efficient: no internal fragmentation issues
-> 
-> Design doc here: https://bcachefs.org/Snapshots/
-> 
-> The core functionality is complete - snapshot creation and deletion works, fsck
-> changes are done (most of the complexity was in making fsck work without
-> O(number of snapshots) performance - tricky). Everything else is a todo item:
-> 
->  - still need to export different st_dev for files in different subvolumes
->    (we'll never allocate a new inode with an inode number that collides with an
->    inode inother subvolume - but snapshots will naturally result in colliding
->    inode numbers)
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+> index 15c45b2a3983..714178f1b6c6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+> @@ -61,7 +61,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
+>   
+>   int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file *filp,
+>   			  struct drm_amdgpu_bo_list_entry *info,
+> -			  unsigned num_entries, struct amdgpu_bo_list **result)
+> +			  size_t num_entries, struct amdgpu_bo_list **result)
+>   {
+>   	unsigned last_entry = 0, first_userptr = num_entries;
+>   	struct amdgpu_bo_list_entry *array;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+> index c905a4cfc173..044b41f0bfd9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+> @@ -61,7 +61,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdgpu_bo_list_in *in,
+>   int amdgpu_bo_list_create(struct amdgpu_device *adev,
+>   				 struct drm_file *filp,
+>   				 struct drm_amdgpu_bo_list_entry *info,
+> -				 unsigned num_entries,
+> +				 size_t num_entries,
+>   				 struct amdgpu_bo_list **list);
+>   
+>   static inline struct amdgpu_bo_list_entry *
 
-With my limited high level view on it - shouldn't you discuss with Neil
-about a solution and to avoid going the btrfs route for colliding inode
-numbers?
