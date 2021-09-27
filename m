@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B2041A2FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCA441A2FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 00:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237759AbhI0WdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 18:33:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53822 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237839AbhI0WdP (ORCPT
+        id S237788AbhI0WdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 18:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237759AbhI0WdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:33:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632781896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8uDCCFVi8WNzzV1qh+gVDfNhqWmM++aw0AxvKz46Bpw=;
-        b=RnVJ3UyvcE3FTnWLc7WqswOwI6WN0U+IBXcuRkDHEfqPDHtfjkPDcLUYVmkYVFn74+TP0Y
-        g/NFixnS6eGS9XxWFdalsqFA4D8yQe1Nm7ZvYVfhxiTKOQdi2Id6m9arROkoNSCb8ImMQd
-        UIZOKUvZbjdTIvcgJG6pdomJn/+OPJk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-zwWRKSraNVCZ7P2rCjPa3g-1; Mon, 27 Sep 2021 18:31:33 -0400
-X-MC-Unique: zwWRKSraNVCZ7P2rCjPa3g-1
-Received: by mail-wm1-f69.google.com with SMTP id j21-20020a05600c1c1500b0030ccce95837so481883wms.3
+        Mon, 27 Sep 2021 18:33:10 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AB4C061604
         for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:31:32 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id h129so24913922iof.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 15:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sX6r+VtFysjF4oYWhq8xiiNNA4lX1D1DfLKUJZfhu90=;
+        b=OGr73FRvt46870zXruqJzO3SP1Ff106DAwHYXUFkbZMroSt9xlbgYfx7Ha7zEr+0eQ
+         fFB+gzMSVZ08KIy7nyZNnCarwiShb9palyfj0dXtHLBmtY9QZen0dwLXBl4Rvl7CxcNn
+         SP7cAuUENfc4oxY/hNo+0A66ksQ9JUCs/MnzyXpskmihN/bESuVMBxAXmMC+yskn4ewF
+         cvNKll/Bip9zfqynoppKB6jf4oU5D9Xmqy9wGOf+8D4/xEcZSZdSXUHc0DgUlJw88XJd
+         dW6kqum5J6035JIytkWK80yNFYf+nDLSA6v4LNgfQDtCvMy5K9RF5zPvdixHvFODqSpb
+         uFOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8uDCCFVi8WNzzV1qh+gVDfNhqWmM++aw0AxvKz46Bpw=;
-        b=Vuo+/cUWleVThj+YAf4b9KjOWXX+HysXZzuUrrgbES4KCC/cDOlaHdOxGNBdK5y3K9
-         AD4cEjgGxYqTokhoOB7VRB7Ac/+GSa8xcaHF9V+n5zt2DK08/pkpatETcC7mkSOHDxAL
-         FRqmOc9RBq8oFDy9kMuVNrangTHfwg2sTtG9RXzlr0oy9Pcz48i6rMMBeQctMxtUcFH1
-         N6ubh4gi6pWPoDY7dgKmOh2JkN103eDvXfg7n4JNY69UwzlL2CMDkyMacMhDAKjP7QTC
-         GMVtYRf04b/VLsDU4eFdxTXP+Baa4MyNnMTkxQlSJAPyj6ler89/BTAdnw9Er9AbfEnL
-         xJxg==
-X-Gm-Message-State: AOAM530douLuNNGoy7vMIqzcpD8/KlSq2+JFjM/FzqRiY5o470jOgDyn
-        KHVSiRKUJWhpMIu0M8fSvp7rSnOMw1T2cKZcy1OOVXYCdzdLXf6fmXCYg0iZyO7NPmmgnh7WDTp
-        NH3lEhMcPEpL/lFrD7zeuC1Xo
-X-Received: by 2002:a05:600c:1c01:: with SMTP id j1mr1419704wms.1.1632781892023;
-        Mon, 27 Sep 2021 15:31:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwfSyhj78JUXtac1A3f8LrBeD8L5OeFaLuQwaUEgc+7sKWmBk/tbktT6UwAoT3zrRIIWB8dSg==
-X-Received: by 2002:a05:600c:1c01:: with SMTP id j1mr1419688wms.1.1632781891791;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sX6r+VtFysjF4oYWhq8xiiNNA4lX1D1DfLKUJZfhu90=;
+        b=emBv747tyLEzki9T5YI3pAGAmSTdK8Z2ot/h7D0fyhh8ZUv565qenVnC4zhVP5MsQR
+         3J0miRctXvu00EOx0UbKy64Ux9r0hpvV3rIq3GfhW10Zodcr69Nc1w7XzqZYuT/2auqY
+         i5EeQvGQ2NyBsyOYUWroZsPGgEi9FHwFo+TywzPfF5y6FnanYeF1wNmp9bHyYC+Yj+LH
+         kBifoAeh5mlG13rZsEl8S32yytbSvA+yy88jX1NjGcWoCgOYC02OxRcA2+BmXx37Wnyp
+         wpBSv0WvOrYhWzMqVKPNsxrWB8m3fVxg+QMt+v9gbs1jw9+gTF07W9o6S2NjB+vJA2Ht
+         yo1A==
+X-Gm-Message-State: AOAM530e8F/6h6QMlJkHPXr+78/laDpNw3ktEiEAzuNOgEIxXGUQceWs
+        W3scNAr/WX4BBDcYlrqWBoHYuQwS/9NI3g==
+X-Google-Smtp-Source: ABdhPJzP/D0Hpjy1B2sLyeFE8yokRGllLNT0YFxbbt65jzTeEocCKfwSycbAz2t49gx5XfwHzWMFZw==
+X-Received: by 2002:a05:6638:dcc:: with SMTP id m12mr1876527jaj.68.1632781891278;
         Mon, 27 Sep 2021 15:31:31 -0700 (PDT)
-Received: from redhat.com ([2.55.4.59])
-        by smtp.gmail.com with ESMTPSA id d7sm17884225wrh.13.2021.09.27.15.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 15:31:31 -0700 (PDT)
-Date:   Mon, 27 Sep 2021 18:31:28 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@arndb.de>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.15-rc3
-Message-ID: <20210927182647-mutt-send-email-mst@kernel.org>
-References: <CAHk-=wgoE8XBPVA6Mu4CygxX9TE0FgWaAsVUJOe8KQH-CzEcAA@mail.gmail.com>
- <20210927110548.GA771805@roeck-us.net>
- <CAHk-=wiuGKOBvgje56X-EdOp4mnoz4C2nM1ML6DqRFfsptai3w@mail.gmail.com>
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id t16sm9791519ilm.68.2021.09.27.15.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 15:31:30 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] block: fourth batch of add_disk() error handling
+ conversions
+To:     Luis Chamberlain <mcgrof@kernel.org>, bhelgaas@google.com,
+        liushixin2@huawei.com, thunder.leizhen@huawei.com,
+        lee.jones@linaro.org, geoff@infradead.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
+        haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        josh.h.morris@us.ibm.com, pjk1939@linux.ibm.com, tim@cyberelk.net,
+        richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com
+Cc:     linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210927220157.1069658-1-mcgrof@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <529d5e4a-82a4-2498-f63d-34c177ca4ab4@kernel.dk>
+Date:   Mon, 27 Sep 2021 16:31:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiuGKOBvgje56X-EdOp4mnoz4C2nM1ML6DqRFfsptai3w@mail.gmail.com>
+In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 11:55:52AM -0700, Linus Torvalds wrote:
-> On Mon, Sep 27, 2021 at 4:05 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On Sun, Sep 26, 2021 at 02:21:52PM -0700, Linus Torvalds wrote:
-> > > So after a somewhat rocky merge window and second rc, things are now
-> > > actually looking pretty normal for rc3. Knock wood.
-> > >
-> > > There are fixes all over, and the statistics look fairly regular, with
-> > > drivers dominating as they should (since they are most of the tree).
-> > > And outside of drivers, we have a fairly usual mix of changes -
-> > > architecture fixes, networking, filesystems, and tooling (the latter
-> > > being mostly kvm selftests).
-> > >
-> > > Shortlog appended, it's not too long and easy to scan through to get a
-> > > flavor for the details if you happen to care.
-> > >
-> > > Please do give it a whirl,
-> > >
-> >
-> > Build results:
-> >         total: 153 pass: 152 fail: 1
-> > Failed builds:
-> >         mips:allmodconfig
-> 
-> Gaah. I assume this is the
-> 
->    arch/mips/include/asm/sibyte/bcm1480_scd.h:261: error:
-> "M_SPC_CFG_CLEAR" redefined
-> 
-> thing still.
-> 
-> It's been pending too long in the mips tree, I'll just take the patch
-> directly and finally empty your queue of build failures.
-> 
-> > Qemu test results:
-> >         total: 480 pass: 479 fail: 1
-> > Failed tests:
-> >         sparc64:sun4u:nodebug:smp:virtio-pci:net,i82559er:hd
-> 
-> And going back to your -rc1 email, I see
-> 
->  "The qemu runtime failure bisects to commit 694a1116b405 ("virtio: Bind
->   virtio device to device-tree node"), and reverting that commit fixes the
->   problem.  With that patch applied, the virtio block device does not
->   instantiate on sparc64. This results in a crash since that is where the
->   test is trying to boot from"
-> 
-> That commit 694a1116b405 doesn't revert cleanly, but the conflict is
-> trivial (we've removed a "return 0" since then).
-> 
-> I've added the guilty parties to the participants list, but if this
-> test failure remains in rc4 I'll just do that revert at that point.
+On 9/27/21 4:01 PM, Luis Chamberlain wrote:
+> This is the fourth batch of add_disk() error handling driver
+> conversions. This set along with the entire 7 set of driver conversions
+> can be found on my 20210927-for-axboe-add-disk-error-handling branch
+> [0].
 
-Just sent a pull with a fix for that.
+Applied 1-2, 6, 8-9, thanks.
 
-> > Almost there ...
-> 
-> Almost.
-> 
->                Linus
+-- 
+Jens Axboe
 
