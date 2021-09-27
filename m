@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422E1419C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D76419A28
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236768AbhI0RZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35430 "EHLO mail.kernel.org"
+        id S236041AbhI0RHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:07:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237202AbhI0RWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:22:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88A5B61361;
-        Mon, 27 Sep 2021 17:14:14 +0000 (UTC)
+        id S236045AbhI0RGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:06:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA72C60F46;
+        Mon, 27 Sep 2021 17:04:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632762855;
-        bh=+jZ7aSyNV6UgR5/ROl9hSbhKi7LWNlFWkovG3mIiCZM=;
+        s=korg; t=1632762293;
+        bh=0bfjiDnLESLQVkxYvEfjNJpXlKTuywxREWJMFkHMcLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovh34zJLMJflJgCof8dKvBNmrMyOV1L+tGxVZ726xoEPpSbO7A50FM8H7iqWvWjvA
-         OvWoeY325uflIoOKCCvGz9xFs6uJQt9l8Bpr1KU6ehf+o7qBQ/3i1S/G5Z1qTDF8Lu
-         520j25PQMwC0zFvEbTJijQsE7JYj3kvhYTqDo5VI=
+        b=fv19cLGPJNoFWvLRwlTu8xrLDc7S2lNDF+oPncgYrZXtPJOIYPR0DJVtB1PJulzpc
+         a1EKOViYcrhGLVPAUkCkRKaAwYb4IV2W9fldyXjzfW1XI2v/4Bfjv/BmuaMV6GHhns
+         7lOajqhWFVO8OSi9Yl/QYukE/F3Wm9/1aGZGI1es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 076/162] kselftest/arm64: signal: Skip tests if required features are missing
-Date:   Mon, 27 Sep 2021 19:02:02 +0200
-Message-Id: <20210927170236.092184261@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 07/68] xen/x86: fix PV trap handling on secondary processors
+Date:   Mon, 27 Sep 2021 19:02:03 +0200
+Message-Id: <20210927170220.159930827@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170219.901812470@linuxfoundation.org>
+References: <20210927170219.901812470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +40,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Marussi <cristian.marussi@arm.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit 0e3dbf765fe22060acbcb8eb8c4d256e655a1247 ]
+commit 0594c58161b6e0f3da8efa9c6e3d4ba52b652717 upstream.
 
-During initialization of a signal testcase, features declared as required
-are properly checked against the running system but no action is then taken
-to effectively skip such a testcase.
+The initial observation was that in PV mode under Xen 32-bit user space
+didn't work anymore. Attempts of system calls ended in #GP(0x402). All
+of the sudden the vector 0x80 handler was not in place anymore. As it
+turns out up to 5.13 redundant initialization did occur: Once from
+cpu_initialize_context() (through its VCPUOP_initialise hypercall) and a
+2nd time while each CPU was brought fully up. This 2nd initialization is
+now gone, uncovering that the 1st one was flawed: Unlike for the
+set_trap_table hypercall, a full virtual IDT needs to be specified here;
+the "vector" fields of the individual entries are of no interest. With
+many (kernel) IDT entries still(?) (i.e. at that point at least) empty,
+the syscall vector 0x80 ended up in slot 0x20 of the virtual IDT, thus
+becoming the domain's handler for vector 0x20.
 
-Fix core signals test logic to abort initialization and report such a
-testcase as skipped to the KSelfTest framework.
+Make xen_convert_trap_info() fit for either purpose, leveraging the fact
+that on the xen_copy_trap_info() path the table starts out zero-filled.
+This includes moving out the writing of the sentinel, which would also
+have lead to a buffer overrun in the xen_copy_trap_info() case if all
+(kernel) IDT entries were populated. Convert the writing of the sentinel
+to clearing of the entire table entry rather than just the address
+field.
 
-Fixes: f96bf4340316 ("kselftest: arm64: mangle_pstate_invalid_compat_toggle and common utils")
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210920121228.35368-1-cristian.marussi@arm.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+(I didn't bother trying to identify the commit which uncovered the issue
+in 5.14; the commit named below is the one which actually introduced the
+bad code.)
+
+Fixes: f87e4cac4f4e ("xen: SMP guest support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/7a266932-092e-b68f-f2bb-1473b61adc6e@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/arm64/signal/test_signals_utils.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/x86/xen/enlighten_pv.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/arm64/signal/test_signals_utils.c b/tools/testing/selftests/arm64/signal/test_signals_utils.c
-index 6836510a522f..22722abc9dfa 100644
---- a/tools/testing/selftests/arm64/signal/test_signals_utils.c
-+++ b/tools/testing/selftests/arm64/signal/test_signals_utils.c
-@@ -266,16 +266,19 @@ int test_init(struct tdescr *td)
- 			td->feats_supported |= FEAT_SSBS;
- 		if (getauxval(AT_HWCAP) & HWCAP_SVE)
- 			td->feats_supported |= FEAT_SVE;
--		if (feats_ok(td))
-+		if (feats_ok(td)) {
- 			fprintf(stderr,
- 				"Required Features: [%s] supported\n",
- 				feats_to_string(td->feats_required &
- 						td->feats_supported));
--		else
-+		} else {
- 			fprintf(stderr,
- 				"Required Features: [%s] NOT supported\n",
- 				feats_to_string(td->feats_required &
- 						~td->feats_supported));
-+			td->result = KSFT_SKIP;
-+			return 0;
-+		}
- 	}
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -727,8 +727,8 @@ static void xen_write_idt_entry(gate_des
+ 	preempt_enable();
+ }
  
- 	/* Perform test specific additional initialization */
--- 
-2.33.0
-
+-static void xen_convert_trap_info(const struct desc_ptr *desc,
+-				  struct trap_info *traps)
++static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
++				      struct trap_info *traps, bool full)
+ {
+ 	unsigned in, out, count;
+ 
+@@ -738,17 +738,18 @@ static void xen_convert_trap_info(const
+ 	for (in = out = 0; in < count; in++) {
+ 		gate_desc *entry = (gate_desc *)(desc->address) + in;
+ 
+-		if (cvt_gate_to_trap(in, entry, &traps[out]))
++		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
+ 			out++;
+ 	}
+-	traps[out].address = 0;
++
++	return out;
+ }
+ 
+ void xen_copy_trap_info(struct trap_info *traps)
+ {
+ 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
+ 
+-	xen_convert_trap_info(desc, traps);
++	xen_convert_trap_info(desc, traps, true);
+ }
+ 
+ /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
+@@ -758,6 +759,7 @@ static void xen_load_idt(const struct de
+ {
+ 	static DEFINE_SPINLOCK(lock);
+ 	static struct trap_info traps[257];
++	unsigned out;
+ 
+ 	trace_xen_cpu_load_idt(desc);
+ 
+@@ -765,7 +767,8 @@ static void xen_load_idt(const struct de
+ 
+ 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
+ 
+-	xen_convert_trap_info(desc, traps);
++	out = xen_convert_trap_info(desc, traps, false);
++	memset(&traps[out], 0, sizeof(traps[0]));
+ 
+ 	xen_mc_flush();
+ 	if (HYPERVISOR_set_trap_table(traps))
 
 
