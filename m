@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B67418EB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 07:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF69418EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 07:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhI0Fll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 01:41:41 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:50645 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232910AbhI0Flk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 01:41:40 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2C4B2580BC7;
-        Mon, 27 Sep 2021 01:40:02 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Mon, 27 Sep 2021 01:40:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=ak1/NyNHcL+y89gvyMRS1SkX9a8U
-        UV2UncuVzD4o65U=; b=diT6Gng5AR5WB6gQReTE6zaaYmRzH7nxmiLpKVWe1q1z
-        E37yJJnMLNKLxhIU/1n3lW2p0uba4K5VSAe4J1UBG7dFoVRpwGbSMQGBtVMXzsRG
-        BNKUsr3ZjRRaBuSZfm5ZFq4FmN96YS+EmXAerY2Mo5Ih6yqx2BjhLklaaHxtK7sK
-        OuOvakC3Z5JSAN4K5OSKCNXBKNhnk99uRBC+ZWnJuEt3D621j0fKzN0YxeHg/OJP
-        VV8ncWeMKovAJF17uVAT3miGyPp135vr2BIAYg50BpHNnD4j5c6u2XXK6dCpcejG
-        vG9VyrupeYOfPZIdlomy1KHi0IZ9La6kZ8NOcvRT+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ak1/Ny
-        NHcL+y89gvyMRS1SkX9a8UUV2UncuVzD4o65U=; b=NleN4unVajTeBeEiak931q
-        iqRGvaXFdxAUMpgNeqQR+buTPw1HKWzfcgKTbnWWcTFWP5O+z4QcAzXB2csa1MKx
-        lAmFAyH7pffzQsdXUVlBGwd99yVio6vQA2fQZqU4jEZmLeIOMRayctKaocyIp34t
-        5MV8SVzWMmOdv4eXBbwpEAPud2qp8SGy2PNpVFFL1/EMEkWJ3VmdCRiSogfxQmdp
-        CpwuORA5pNkyGT6uQQDt5gtAQ0IrhZ+cva5xe1GVk9HuK9FKT98/FfkPvw8WF6Jr
-        S96sug6xMiK9dDajX1nyshkhpv6IWALpxZqMH6i4AxB6V0M0cY0/5rt5nr58mZ4w
-        ==
-X-ME-Sender: <xms:L1lRYReMadmShvwxJ7Yp1n5SQr2S6rmJMLuxf5TOgZdNDLSaZXn0Lw>
-    <xme:L1lRYfNr98SE5ZZz1cmmrjyeiVA090I-l56QJdaApXB-OWSPhIZUBtRMgA_kvhwtM
-    sLd8yNsct83jSCph2I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejjedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:L1lRYaiguV0BscYi_hIzrHWwI4YouVy_3RpEZfHsNKjOVpKFwd2rZQ>
-    <xmx:L1lRYa_DI75kAK1JgESQWyfeHcG6zDoHDCcTscUm3VFRjoUPoU3chQ>
-    <xmx:L1lRYdtPoXp-hnu0gyOmumQr-OWqFpazq-eqyNoIkWxQDEjzwT9wxg>
-    <xmx:MllRYW-jA2G63ae78zi9DHtJ_FjL6HEXcvBOXjGSSeG1WVGpOWel0g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7811E51C0060; Mon, 27 Sep 2021 01:39:59 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1303-gb2406efd75-fm-20210922.002-gb2406efd
-Mime-Version: 1.0
-Message-Id: <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
-In-Reply-To: <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
-References: <6487d099-e0d6-4ea3-d312-6adbd94589f4@xenosoft.de>
- <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
-Date:   Mon, 27 Sep 2021 07:39:39 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Christian Zigotzky" <chzigotzky@xenosoft.de>
-Cc:     "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        "Paul Mackerras" <paulus@samba.org>,
-        "Olof Johansson" <olof@lixom.net>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Hector Martin" <marcan@marcan.st>, mohamed.mediouni@caramail.com,
-        "Stan Skowronek" <stan@corellium.com>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        "Darren Stevens" <darren@stevens-zone.net>,
-        "Matthew Leaman" <matthew@a-eon.biz>,
-        "R.T.Dickinson" <rtd@a-eon.com>
-Subject: Re: Add Apple M1 support to PASemi i2c driver
-Content-Type: text/plain
+        id S232938AbhI0FoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 01:44:23 -0400
+Received: from mga12.intel.com ([192.55.52.136]:24946 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232594AbhI0FoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 01:44:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="203901322"
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="203901322"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 22:42:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,325,1624345200"; 
+   d="scan'208";a="437593922"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.84]) ([10.237.72.84])
+  by orsmga003.jf.intel.com with ESMTP; 26 Sep 2021 22:42:42 -0700
+Subject: Re: [PATCH] mmc: sdhci-pci-o2micro: Fix spelling mistake "unsupport"
+ -> "unsupported"
+To:     Colin King <colin.king@canonical.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210924225111.143112-1-colin.king@canonical.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <465f02b9-3fcf-b606-6dd9-67d133290578@intel.com>
+Date:   Mon, 27 Sep 2021 08:43:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20210924225111.143112-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On 25/09/21 1:51 am, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a pr_info message. Fix it. Also
+> put msi in capital letters.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Thanks already for volunteering to test this!
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-On Sun, Sep 26, 2021, at 22:27, Christian Zigotzky wrote:
-> Hi Sven,
->
-> I can't apply your patch 5 (i2c: pasemi: Split pci driver to its own 
-> file). [1]
+> ---
+>  drivers/mmc/host/sdhci-pci-o2micro.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
+> index 51d55a87aebe..f045c1ee4667 100644
+> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
+> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+> @@ -489,7 +489,7 @@ static void sdhci_pci_o2_enable_msi(struct sdhci_pci_chip *chip,
+>  
+>  	ret = pci_find_capability(chip->pdev, PCI_CAP_ID_MSI);
+>  	if (!ret) {
+> -		pr_info("%s: unsupport msi, use INTx irq\n",
+> +		pr_info("%s: unsupported MSI, use INTx irq\n",
+>  			mmc_hostname(host->mmc));
+>  		return;
+>  	}
+> 
 
-That's strange because it should apply cleanly. I'll double check
-after to work today to see if I messed up while sending this.
-
->
-> Error message:
->
-> patching file b/drivers/i2c/busses/i2c-pasemi-core.c (renamed from 
-> a/drivers/i2c/busses/i2c-pasemi.c)
-> Hunk #3 FAILED at 344.
-> 1 out of 3 hunks FAILED -- saving rejects to file 
-> b/drivers/i2c/busses/i2c-pasemi-core.c.rej
-> patching file b/drivers/i2c/busses/i2c-pasemi-core.h
-> patching file b/drivers/i2c/busses/i2c-pasemi-pci.c
->
-> Please post one patch with all your modifications.
->
-
-Sure, will do that later as well!
-
-
-Best,
-
-
-Sven
