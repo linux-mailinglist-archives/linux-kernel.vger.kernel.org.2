@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84054419CCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D82C419B88
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 19:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhI0RcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 13:32:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43622 "EHLO mail.kernel.org"
+        id S237012AbhI0RT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 13:19:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237608AbhI0R2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:28:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D27F61390;
-        Mon, 27 Sep 2021 17:17:04 +0000 (UTC)
+        id S236754AbhI0RP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 13:15:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 972116124B;
+        Mon, 27 Sep 2021 17:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632763025;
-        bh=s32NfFJRix6MICF7kmXyPErqs7c4U1JDiIXhV8BfKrQ=;
+        s=korg; t=1632762657;
+        bh=myyxd2V9y0Dfcs0g7zwvpgghRb1GZxgWn80eyErC/go=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XOcVVMZbSP8l5yAF+StaWAfR5Ngss+U0+E8UN2MJzycD6fsiAeaZ891OeCGX4fp8D
-         wg7KdG1a4WzDVMPzecvWJH0FZQediRoVRjwVtveGExGQ819X0OZIj9Yca27y+egrni
-         XCEMH1HbUnzosuLkt5k+3KVTyNES7NFsS/jGtkVo=
+        b=n0BmIb10rOj/cMDU2ZKXbc9qcoAl85bsrOdcpoa8bfaf2mmxaONhFKNh1dW+0ttf6
+         TRm5t1aawsJ4WqxcVge7zIkmY9o1r9Ft1WulhrVwBDD2Qvk5SSSGAzEh0ofwqHvDC6
+         g57dQ8oAHsmd8nIz94p7bp6gGxxcDVIht3PYd+Po=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Kuehling <Felix.Kuehling@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 140/162] drm/amdkfd: make needs_pcie_atomics FW-version dependent
-Date:   Mon, 27 Sep 2021 19:03:06 +0200
-Message-Id: <20210927170238.272739515@linuxfoundation.org>
+Subject: [PATCH 5.10 095/103] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
+Date:   Mon, 27 Sep 2021 19:03:07 +0200
+Message-Id: <20210927170229.049222382@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927170233.453060397@linuxfoundation.org>
-References: <20210927170233.453060397@linuxfoundation.org>
+In-Reply-To: <20210927170225.702078779@linuxfoundation.org>
+References: <20210927170225.702078779@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,164 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Kuehling <Felix.Kuehling@amd.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit fb932dfeb87411a8a01c995576198bfc302df339 ]
+[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
 
-On some GPUs the PCIe atomic requirement for KFD depends on the MEC
-firmware version. Add a firmware version check for this. The minimum
-firmware version that works without atomics can be updated in the
-device_info structure for each GPU type.
+Some drivers pass a pointer to volatile data to virt_to_bus() and
+virt_to_phys(), and that works fine.  One exception is alpha.  This
+results in a number of compile errors such as
 
-Move PCIe atomic detection from kgd2kfd_probe into kgd2kfd_device_init
-because the MEC firmware is not loaded yet at the probe stage.
+  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
+  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Reviewed-by: Guchun Chen <guchun.chen@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+  drivers/atm/ambassador.c: In function 'do_loader_command':
+  drivers/atm/ambassador.c:1747:58: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
+
+Declare the parameter of virt_to_phys and virt_to_bus as pointer to
+volatile to fix the problem.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 44 ++++++++++++++++---------
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h   |  1 +
- 2 files changed, 29 insertions(+), 16 deletions(-)
+ arch/alpha/include/asm/io.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index 9e52948d4992..5a872adcfdb9 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -447,6 +447,7 @@ static const struct kfd_device_info navi10_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 145,
- 	.num_sdma_engines = 2,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -465,6 +466,7 @@ static const struct kfd_device_info navi12_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 145,
- 	.num_sdma_engines = 2,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -483,6 +485,7 @@ static const struct kfd_device_info navi14_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 145,
- 	.num_sdma_engines = 2,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -501,6 +504,7 @@ static const struct kfd_device_info sienna_cichlid_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 92,
- 	.num_sdma_engines = 4,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -519,6 +523,7 @@ static const struct kfd_device_info navy_flounder_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 92,
- 	.num_sdma_engines = 2,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -536,7 +541,8 @@ static const struct kfd_device_info vangogh_device_info = {
- 	.mqd_size_aligned = MQD_SIZE_ALIGNED,
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
--	.needs_pci_atomics = false,
-+	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 92,
- 	.num_sdma_engines = 1,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 2,
-@@ -555,6 +561,7 @@ static const struct kfd_device_info dimgrey_cavefish_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 92,
- 	.num_sdma_engines = 2,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -573,6 +580,7 @@ static const struct kfd_device_info beige_goby_device_info = {
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
- 	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 92,
- 	.num_sdma_engines = 1,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 8,
-@@ -590,7 +598,8 @@ static const struct kfd_device_info yellow_carp_device_info = {
- 	.mqd_size_aligned = MQD_SIZE_ALIGNED,
- 	.needs_iommu_device = false,
- 	.supports_cwsr = true,
--	.needs_pci_atomics = false,
-+	.needs_pci_atomics = true,
-+	.no_atomic_fw_version = 92,
- 	.num_sdma_engines = 1,
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 2,
-@@ -659,20 +668,6 @@ struct kfd_dev *kgd2kfd_probe(struct kgd_dev *kgd,
- 	if (!kfd)
- 		return NULL;
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 1f6a909d1fa5..7bc2f444a89a 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -60,7 +60,7 @@ extern inline void set_hae(unsigned long new_hae)
+  * Change virtual addresses to physical addresses and vv.
+  */
+ #ifdef USE_48_BIT_KSEG
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+ 	return (unsigned long)address - IDENT_ADDR;
+ }
+@@ -70,7 +70,7 @@ static inline void * phys_to_virt(unsigned long address)
+ 	return (void *) (address + IDENT_ADDR);
+ }
+ #else
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+         unsigned long phys = (unsigned long)address;
  
--	/* Allow BIF to recode atomics to PCIe 3.0 AtomicOps.
--	 * 32 and 64-bit requests are possible and must be
--	 * supported.
--	 */
--	kfd->pci_atomic_requested = amdgpu_amdkfd_have_atomics_support(kgd);
--	if (device_info->needs_pci_atomics &&
--	    !kfd->pci_atomic_requested) {
--		dev_info(kfd_device,
--			 "skipped device %x:%x, PCI rejects atomics\n",
--			 pdev->vendor, pdev->device);
--		kfree(kfd);
--		return NULL;
--	}
--
- 	kfd->kgd = kgd;
- 	kfd->device_info = device_info;
- 	kfd->pdev = pdev;
-@@ -772,6 +767,23 @@ bool kgd2kfd_device_init(struct kfd_dev *kfd,
- 	kfd->vm_info.vmid_num_kfd = kfd->vm_info.last_vmid_kfd
- 			- kfd->vm_info.first_vmid_kfd + 1;
+@@ -106,7 +106,7 @@ static inline void * phys_to_virt(unsigned long address)
+ extern unsigned long __direct_map_base;
+ extern unsigned long __direct_map_size;
  
-+	/* Allow BIF to recode atomics to PCIe 3.0 AtomicOps.
-+	 * 32 and 64-bit requests are possible and must be
-+	 * supported.
-+	 */
-+	kfd->pci_atomic_requested = amdgpu_amdkfd_have_atomics_support(kfd->kgd);
-+	if (!kfd->pci_atomic_requested &&
-+	    kfd->device_info->needs_pci_atomics &&
-+	    (!kfd->device_info->no_atomic_fw_version ||
-+	     kfd->mec_fw_version < kfd->device_info->no_atomic_fw_version)) {
-+		dev_info(kfd_device,
-+			 "skipped device %x:%x, PCI rejects atomics %d<%d\n",
-+			 kfd->pdev->vendor, kfd->pdev->device,
-+			 kfd->mec_fw_version,
-+			 kfd->device_info->no_atomic_fw_version);
-+		return false;
-+	}
-+
- 	/* Verify module parameters regarding mapped process number*/
- 	if ((hws_max_conc_proc < 0)
- 			|| (hws_max_conc_proc > kfd->vm_info.vmid_num_kfd)) {
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-index 3426743ed228..b38a84a27438 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-@@ -206,6 +206,7 @@ struct kfd_device_info {
- 	bool supports_cwsr;
- 	bool needs_iommu_device;
- 	bool needs_pci_atomics;
-+	uint32_t no_atomic_fw_version;
- 	unsigned int num_sdma_engines;
- 	unsigned int num_xgmi_sdma_engines;
- 	unsigned int num_sdma_queues_per_engine;
+-static inline unsigned long __deprecated virt_to_bus(void *address)
++static inline unsigned long __deprecated virt_to_bus(volatile void *address)
+ {
+ 	unsigned long phys = virt_to_phys(address);
+ 	unsigned long bus = phys + __direct_map_base;
 -- 
 2.33.0
 
