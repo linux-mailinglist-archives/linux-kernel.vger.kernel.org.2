@@ -2,54 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652D44197DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C91C4197E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Sep 2021 17:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhI0P2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 11:28:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235215AbhI0P2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:28:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B8D60E9C;
-        Mon, 27 Sep 2021 15:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632756399;
-        bh=ViGwEkKfdlXHkYliW+p4slVaJG+wyeDSRms58u/4Ph4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GC5iClaw9BR6ARGpPAKjBXWnT4XQ70fknEwXPgjEVaqE/WdqIhs3nmUZs1pC/HjJK
-         h0E9Bl/t1UVttzTNLbNSX2qmvtWLMLprMSnG2fNFqr07Jg3N4bhAas49UBzp98kjHd
-         19Rm35xqu7dnFZJ/6WbUH/v7te+5V/12PGNG15vk=
-Date:   Mon, 27 Sep 2021 17:26:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] staging: vt6655: fix camelcase in ldBmThreshold
-Message-ID: <YVHirHixyOIgvqKB@kroah.com>
-References: <20210926162527.21462-1-tomm.merciai@gmail.com>
- <20210926162527.21462-3-tomm.merciai@gmail.com>
+        id S235117AbhI0P2u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Sep 2021 11:28:50 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3882 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235167AbhI0P2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 11:28:48 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HJ5yZ1zygz67y04;
+        Mon, 27 Sep 2021 23:24:06 +0800 (CST)
+Received: from lhreml711-chm.china.huawei.com (10.201.108.62) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 17:27:08 +0200
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ lhreml711-chm.china.huawei.com (10.201.108.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 27 Sep 2021 16:27:07 +0100
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2308.008; Mon, 27 Sep 2021 16:27:07 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>
+Subject: RE: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
+ migration
+Thread-Topic: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
+ migration
+Thread-Index: AQHXqhdQM13RiELH60aUjxjG41fnUKulAGMAgAAGK3CAAZpfgIARVJdwgAAGl4CAABbuYA==
+Date:   Mon, 27 Sep 2021 15:27:07 +0000
+Message-ID: <5570187c4a0a4da6969c0dba7aaaab5b@huawei.com>
+References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
+ <20210915095037.1149-7-shameerali.kolothum.thodi@huawei.com>
+ <20210915130742.GJ4065468@nvidia.com>
+ <fe5d6659e28244da82b7028b403e11ae@huawei.com>
+ <20210916135833.GB327412@nvidia.com>
+ <a440256250c14182b9eefc77d5d399b8@huawei.com>
+ <20210927150119.GB964074@nvidia.com>
+In-Reply-To: <20210927150119.GB964074@nvidia.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.80.194]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926162527.21462-3-tomm.merciai@gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 06:25:19PM +0200, Tommaso Merciai wrote:
-> Replace camel case variable ldBmThreshold with snake case
-> variable ld_bm_threshold.
 
-Same here, what exactly does this name mean and why did you pick it?
 
-thanks,
+> -----Original Message-----
+> From: Jason Gunthorpe [mailto:jgg@nvidia.com]
+> Sent: 27 September 2021 16:01
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>;
+> Leon Romanovsky <leonro@nvidia.com>
+> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
+> linux-crypto@vger.kernel.org; alex.williamson@redhat.com;
+> mgurtovoy@nvidia.com; liulongfang <liulongfang@huawei.com>; Zengtao (B)
+> <prime.zeng@hisilicon.com>; Jonathan Cameron
+> <jonathan.cameron@huawei.com>; Wangzhou (B) <wangzhou1@hisilicon.com>
+> Subject: Re: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
+> migration
+> 
+> On Mon, Sep 27, 2021 at 01:46:31PM +0000, Shameerali Kolothum Thodi
+> wrote:
+> 
+> > > > > Nope, this is locked wrong and has no lifetime management.
+> > > >
+> > > > Ok. Holding the device_lock() sufficient here?
+> > >
+> > > You can't hold a hisi_qm pointer with some kind of lifecycle
+> > > management of that pointer. device_lock/etc is necessary to call
+> > > pci_get_drvdata()
+> >
+> > Since this migration driver only supports VF devices and the PF
+> > driver will not be removed until all the VF devices gets removed,
+> > is the locking necessary here?
+> 
+> Oh.. That is really busted up. pci_sriov_disable() is called under the
+> device_lock(pf) and obtains the device_lock(vf).
+> 
+> This means a VF driver can never use the device_lock(pf), otherwise it
+> can deadlock itself if PF removal triggers VF removal.
 
-greg k-h
+Exactly. I can easily simulate that in this driver.
+
+> 
+> But you can't access these members without using the device_lock(), as
+> there really are no safety guarentees..
+
+Hmm.. I was hoping that we can avoid holding the lock since
+we are sure of the PF driver behavior. But right, there are no
+guarantee here.
+
+> The mlx5 patches have this same sketchy problem.
+> 
+> We may need a new special function 'pci_get_sriov_pf_devdata()' that
+> confirms the vf/pf relationship and explicitly interlocks with the
+> pci_sriov_enable/disable instead of using device_lock()
+> 
+> Leon, what do you think?
+> 
+
+Thanks,
+Shameer
