@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CDF41B33B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB7C41B348
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241666AbhI1Psp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241565AbhI1Pso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:48:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DA9C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=RLhInNF/UixHA5msC5kJ0h7T7fFnfbdQ3PuTDScQ7yQ=; b=PGTlv/HqmrtMPlCrC3ov+Y8nx0
-        hSuHDsn40aJKzrwUozP0+RkMFXLfgn5Wrxd3zjO5olAqHGRcUigcKLU0a0OJHwRrGfFD46ShRj3r6
-        8+Tyi4MDA5VAWtsR2ghNRJZgw70GdqimBo2GzRzj9BMx0w3PG+M74k0vHFZya28RBBjO6QGr6+CvK
-        xaNnt3W1xRphZtBLgBDvo9Fj/rlOzJuEqiUWijxj7kXzJwp3DCsk0+bc9tZZfEiYzwNbJYL2Xa1zk
-        PNwuRrTi3zETknPROM+tOJLyLepLnFirLjUjx1XCvkojs9EEENgdA6UrKDInA+yNFspZaczwR/BCx
-        vFsJV2gw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVFGn-00AzHa-0U; Tue, 28 Sep 2021 15:44:32 +0000
-Date:   Tue, 28 Sep 2021 16:43:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, shakeelb@google.com,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH resend] slub: Add back check for free nonslab objects
-Message-ID: <YVM4NJZWNyOhZIIP@casper.infradead.org>
-References: <20210927021538.155991-1-wangkefeng.wang@huawei.com>
- <566f2009-6acf-4fb9-f7c0-edc1d6ce6561@suse.cz>
- <73b662cc-ab1f-b3bf-468a-4cd744e92d71@huawei.com>
+        id S241565AbhI1Ptq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:49:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241695AbhI1Ptn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:49:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B18E760F44;
+        Tue, 28 Sep 2021 15:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632844083;
+        bh=wAnB2cYdIfBLAAsYpcQWeXRp9kCOB1bUVqBkeLSul8A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OLBoJCqqqNWC/WrowbiMoxzmU1kcuy8U/shXRmXWAZDemjinu9hH6vYYj9V7rZyLG
+         WSR+BlSczZZihyNGO/JNdFgsw1F1NXqNo9hWC10KEo3v9C9jbCEd8VorkLRSU4p7Cg
+         kxc/xbvmEnF5cHnmR2IXzio5bbgno/piFyMujIFrV+o8X3Rx08sFdnyQsFI7qGCcIz
+         +WW/ge4EeQsZSYzv68TWgCc+RrWJVwGqoMSYaZEnLpQbLt/27HTgOX64iRUbmgyev4
+         H4UTviU6zK7RA05xmalxvg0D1Fhky4dRRUzkdmBcBqY2UNsENdUyH4sQevXVlE5VG+
+         D35yJAnu4eGqQ==
+Received: by pali.im (Postfix)
+        id 5CFFB7E1; Tue, 28 Sep 2021 17:48:01 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 17:48:01 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3] arm64: dts: marvell: add Globalscale MOCHAbin
+Message-ID: <20210928154801.vkdt5qbsm4z7ox4y@pali>
+References: <20210923181830.3449602-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <73b662cc-ab1f-b3bf-468a-4cd744e92d71@huawei.com>
+In-Reply-To: <20210923181830.3449602-1-robert.marko@sartura.hr>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 03:53:47PM +0800, Kefeng Wang wrote:
-> On 2021/9/27 15:22, Vlastimil Babka wrote:
-> > On 9/27/21 04:15, Kefeng Wang wrote:
-> > > After commit ("f227f0faf63b slub: fix unreclaimable slab stat for bulk
-> > > free"), the check for free nonslab page is replaced by VM_BUG_ON_PAGE,
-> > > which only check with CONFIG_DEBUG_VM enabled, but this config may
-> > > impact performance, so it only for debug.
-> > > 
-> > > Commit ("0937502af7c9 slub: Add check for kfree() of non slab objects.")
-> > > add the ability, which should be needed in any configs to catch the
-> > > invalid free, they even could be potential issue, eg, memory corruption,
-> > > use after free and double-free, so replace VM_BUG_ON_PAGE to WARN_ON, and
-> > > add dump_page() to help use to debug the issue.
-> > There are other situations in SLUB (such as with smaller allocations that
-> > don't go directly to page allocator) where use after free and double-free
-> > are undetected in non-debug configs, and it's expected that anyone debugging
-> > them will enable slub_debug or even DEBUG_VM. Why should this special case
-> > with nonslab pages be different?
-> 
-> I want the check back in kfree, this one is used  widely in driver, and the
-> probability
-> 
-> of problem occurred is bigger in driver, especially in some out of tree
-> drivers.
+On Thursday 23 September 2021 20:18:30 Robert Marko wrote:
+> +/* SPI-NOR */
+> +&cp0_spi1{
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_spi1_pins>;
+> +
+> +	spi-flash@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +		spi-max-frequency = <20000000>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "u-boot";
+> +				reg = <0x0 0x3e0000>;
 
-Why would we want to improve life for out of tree drivers?  Drivers should
-be in-tree.  That's been the Linux Way for thirty years.
+For sure U-Boot cannot start at offset zero as this is 64-bit ARM board
+which uses at least TF-A firmware, which loads U-Boot.
 
-I remain sceptical that dump_page() is actually useful for debugging
-drivers anyway.  dump_stack(), I could see -- that'll tell you which
-driver called kfree() on a bogus pointer.  But how does dump_page() help?
+Also on these mvebu SoCs is executed prior TF-A firmware custom Marvell
+initialization code responsible for DDR training.
+
+So on offset zero you cannot flash U-Boot, otherwise board would not be
+bootable.
+
+So I would suggest to either define correct offset at which U-Boot
+starts or rename this whole partition to something generic, e.g. with
+label "firmware". To not expose that on zero offset is stored U-Boot.
+
+Due to how big is this partition I guess it contains concatenation of
+various firmware and bootloader parts.
+
+> +				read-only;
+> +			};
+> +
+> +			partition@3e0000 {
+> +				label = "hw-info";
+> +				reg = <0x3e0000 0x10000>;
+> +				read-only;
+> +			};
+> +
+> +			partition@3f0000 {
+> +				label = "u-boot-env";
+> +				reg = <0x3f0000 0x10000>;
+> +			};
+> +		};
+> +	};
+> +};
