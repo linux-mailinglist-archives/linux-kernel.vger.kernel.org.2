@@ -2,204 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B7241AF36
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DA041AF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240780AbhI1Mob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:44:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59586 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240759AbhI1Mo3 (ORCPT
+        id S240693AbhI1Mn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:43:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57145 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240637AbhI1Mn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:44:29 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SC9LvJ005896;
-        Tue, 28 Sep 2021 08:42:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=/IiP3OJn3/x2BE7U7GqNBNSQHO3LlVNZfJj+YeFRfp0=;
- b=dx1j8l2dKmtv4WpBoBkDYv+Kp0UI3/wBBRSTylQ/ecjVhbJps2Cgw5aZle8Ne8bwbcH8
- +qGZ//dE6530YRwHYloZHXE/7HUh0BvwmdiS249jD6QocnLCO2WySqxOiLHVEX/WCCb7
- 0JTYB1kE7oYQA/KXwO5q7CMqBeXyeH6f7Ik2XUYAH4k4fttTIlYC3iUFHsxcG8Eq7ITe
- gB9OlH1fUOoqLroXiY2H4x5dAxgTj1qsr5es2DVCufDnRwzhzNRRWlsBv8hjU2WWcgPm
- ushkSd2gv8bCrdl0o1KEDnR79Z+ZZWYtj/whmtpOnrAp9AaAk4q6uZjN7bPkXTkosq3V IA== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bc092c57f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 08:42:20 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SCXq9Q024042;
-        Tue, 28 Sep 2021 12:42:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 3b9ud9cdjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 12:42:17 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SCgBpc60817880
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Sep 2021 12:42:11 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B437A4055;
-        Tue, 28 Sep 2021 12:42:11 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DC458A407C;
-        Tue, 28 Sep 2021 12:42:05 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.50.245])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Sep 2021 12:42:05 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, dan.j.williams@intel.com,
-        ira.weiny@intel.com, vishal.l.verma@intel.com
-Cc:     maddy@linux.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com, kjain@linux.ibm.com
-Subject: [PATCH v5 0/4] Add perf interface to expose nvdimm
-Date:   Tue, 28 Sep 2021 18:11:56 +0530
-Message-Id: <20210928124200.146331-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: C4Xjjt1gIybISOgXYVSmu7hynCqz5I_C
-X-Proofpoint-GUID: C4Xjjt1gIybISOgXYVSmu7hynCqz5I_C
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 28 Sep 2021 08:43:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632832936; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bfvExRyMFxw1e6AjAzU9jgJ8KWmezb7Nm5djdW68m8w=;
+ b=InuM9IgItyRu7SUc3pOQURipWguInyyKsCMsOnMHYhASXsALjdEUDSEyH6aSxi6UU22mO6py
+ nC6IXMpdyzi+ICgJpy28/SpszH1GAEDuRFUq2DZZecDbBCeTZiS421P3GHcfXzgCSdbngryQ
+ 9PXTulM7QAP3ykeheL8jsnYq8zE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 61530da61abbf21d34cb3acf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 12:42:14
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 13BE9C4360D; Tue, 28 Sep 2021 12:42:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6EF74C4338F;
+        Tue, 28 Sep 2021 12:42:13 +0000 (UTC)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- mlxlogscore=999 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280071
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Sep 2021 18:12:13 +0530
+From:   skakit@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, mka@chromium.org,
+        Das Srinagesh <gurus@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] arm64: dts: qcom: sc7280: Add pm8008 regulators
+ support for sc7280-idp
+In-Reply-To: <CAE-0n53rto=_+9qtc0RL0tkDwBkd9HJL26TQV-m6Q8myiNSCVA@mail.gmail.com>
+References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
+ <1631875538-22473-5-git-send-email-skakit@codeaurora.org>
+ <CAE-0n53rto=_+9qtc0RL0tkDwBkd9HJL26TQV-m6Q8myiNSCVA@mail.gmail.com>
+Message-ID: <61eabd793256583c930c487b9a21c60b@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patchset adds performance stats reporting support for nvdimm.
-Added interface includes support for pmu register/unregister
-functions. A structure is added called nvdimm_pmu to be used for
-adding arch/platform specific data such as cpumask, nvdimm device
-pointer and pmu event functions like event_init/add/read/del.
-User could use the standard perf tool to access perf events
-exposed via pmu.
+On 2021-09-21 01:07, Stephen Boyd wrote:
+> Quoting Satya Priya (2021-09-17 03:45:38)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> index 52638e2..3b3af49 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> @@ -207,6 +207,97 @@
+>>         };
+>>  };
+>> 
+>> +&i2c1 {
+>> +       #address-cells = <1>;
+>> +       #size-cells = <0>;
+>> +       status = "okay";
+>> +
+>> +       pm8008_chip: pm8008@8 {
+>> +               compatible = "qcom,pm8008";
+>> +               reg = <0x8>;
+>> +               #address-cells = <1>;
+>> +               #size-cells = <0>;
+>> +
+>> +               pinctrl-names = "default";
+>> +               pinctrl-0 = <&pm8008_active>;
+>> +       };
+>> +
+>> +       pm8008_ldo: pm8008@9 {
+> [...]
+>> +
+>> +                       pm8008_l7: regulator@4600 {
+>> +                               reg = <0x4600>;
+>> +                               regulator-name = "pm8008_l7";
+>> +                               regulator-min-microvolt = <3000000>;
+>> +                               regulator-max-microvolt = <3544000>;
+>> +                               qcom,min-dropout-voltage = <96000>;
+> 
+> Is this headroom? Is it actually configurable or is it merely a 
+> property
+> of the hardware? If it's the latter then it should be in the driver and
+> not in the DTS.
+> 
 
-Interface also defines supported event list, config fields for the
-event attributes and their corresponding bit values which are exported
-via sysfs. Patch 3 exposes IBM pseries platform nmem* device
-performance stats using this interface.
+Yes this is a headroom and its configurable.
 
-Result from power9 pseries lpar with 2 nvdimm device:
+>> +                       };
+>> +               };
+>> +       };
+>> +};
+>> +
+>>  &qfprom {
+>>         vcc-supply = <&vreg_l1c_1p8>;
+>>  };
+>> @@ -313,6 +404,18 @@
+>> 
+>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>> 
+>> +&pm8350c_gpios {
+>> +       pm8008_reset {
+> 
+> Is this a pinctrl node?
+> 
 
-Ex: List all event by perf list
+No.
 
-command:# perf list nmem
+>> +               pm8008_active: pm8008_active {
+> 
+> Please use dashes in node names wherever an underscore goes.
+> 
 
-  nmem0/cache_rh_cnt/                                [Kernel PMU event]
-  nmem0/cache_wh_cnt/                                [Kernel PMU event]
-  nmem0/cri_res_util/                                [Kernel PMU event]
-  nmem0/ctl_res_cnt/                                 [Kernel PMU event]
-  nmem0/ctl_res_tm/                                  [Kernel PMU event]
-  nmem0/fast_w_cnt/                                  [Kernel PMU event]
-  nmem0/host_l_cnt/                                  [Kernel PMU event]
-  nmem0/host_l_dur/                                  [Kernel PMU event]
-  nmem0/host_s_cnt/                                  [Kernel PMU event]
-  nmem0/host_s_dur/                                  [Kernel PMU event]
-  nmem0/med_r_cnt/                                   [Kernel PMU event]
-  nmem0/med_r_dur/                                   [Kernel PMU event]
-  nmem0/med_w_cnt/                                   [Kernel PMU event]
-  nmem0/med_w_dur/                                   [Kernel PMU event]
-  nmem0/mem_life/                                    [Kernel PMU event]
-  nmem0/poweron_secs/                                [Kernel PMU event]
-  ...
-  nmem1/mem_life/                                    [Kernel PMU event]
-  nmem1/poweron_secs/                                [Kernel PMU event]
+Okay.
 
-Patch1:
-        Introduces the nvdimm_pmu structure
-Patch2:
-        Adds common interface to add arch/platform specific data
-        includes nvdimm device pointer, pmu data along with
-        pmu event functions. It also defines supported event list
-        and adds attribute groups for format, events and cpumask.
-        It also adds code for cpu hotplug support.
-Patch3:
-        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
-        nmem* pmu. It fills in the nvdimm_pmu structure with pmu name,
-        capabilities, cpumask and event functions and then registers
-        the pmu by adding callbacks to register_nvdimm_pmu.
-Patch4:
-        Sysfs documentation patch
-
-Changelog
----
-v4 -> v5:
-- Remove multiple variables defined in nvdimm_pmu structure include
-  name and pmu functions(event_int/add/del/read) as they are just
-  used to copy them again in pmu variable. Now we are directly doing
-  this step in arch specific code as suggested by Dan Williams.
-
-- Remove attribute group field from nvdimm pmu structure and
-  defined these attribute groups in common interface which
-  includes format, event list along with cpumask as suggested by
-  Dan Williams.
-  Since we added static defination for attrbute groups needed in
-  common interface, removes corresponding code from papr.
-
-- Add nvdimm pmu event list with event codes in the common interface.
-
-- Remove Acked-by/Reviewed-by/Tested-by tags as code is refactored
-  to handle review comments from Dan.
-
-- Make nvdimm_pmu_free_hotplug_memory function static as reported
-  by kernel test robot, also add corresponding Reported-by tag.
-
-- Link to the patchset v4: https://lkml.org/lkml/2021/9/3/45
-
-v3 -> v4
-- Rebase code on top of current papr_scm code without any logical
-  changes.
-
-- Added Acked-by tag from Peter Zijlstra and Reviewed by tag
-  from Madhavan Srinivasan.
-
-- Link to the patchset v3: https://lkml.org/lkml/2021/6/17/605
-
-v2 -> v3
-- Added Tested-by tag.
-
-- Fix nvdimm mailing list in the ABI Documentation.
-
-- Link to the patchset v2: https://lkml.org/lkml/2021/6/14/25
-
-v1 -> v2
-- Fix hotplug code by adding pmu migration call
-  incase current designated cpu got offline. As
-  pointed by Peter Zijlstra.
-
-- Removed the retun -1 part from cpu hotplug offline
-  function.
-
-- Link to the patchset v1: https://lkml.org/lkml/2021/6/8/500
-
-Kajol Jain (4):
-  drivers/nvdimm: Add nvdimm pmu structure
-  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
-  powerpc/papr_scm: Add perf interface support
-  docs: ABI: sysfs-bus-nvdimm: Document sysfs event format entries for
-    nvdimm pmu
-
- Documentation/ABI/testing/sysfs-bus-nvdimm |  35 +++
- arch/powerpc/include/asm/device.h          |   5 +
- arch/powerpc/platforms/pseries/papr_scm.c  | 225 ++++++++++++++
- drivers/nvdimm/Makefile                    |   1 +
- drivers/nvdimm/nd_perf.c                   | 328 +++++++++++++++++++++
- include/linux/nd.h                         |  41 +++
- 6 files changed, 635 insertions(+)
- create mode 100644 drivers/nvdimm/nd_perf.c
-
--- 
-2.26.2
-
+>> +                       pins = "gpio4";
+>> +                       function = "normal";
+>> +                       bias-disable;
+>> +                       output-high;
+>> +                       power-source = <0>;
+>> +               };
+>> +       };
+>> +};
