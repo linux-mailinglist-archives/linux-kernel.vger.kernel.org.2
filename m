@@ -2,96 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8836741A630
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927CD41A633
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238879AbhI1DsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 23:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
+        id S238869AbhI1DwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 23:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238849AbhI1DsT (ORCPT
+        with ESMTP id S238850AbhI1DwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 23:48:19 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92EEC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:46:40 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 203so17716246pfy.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:46:40 -0700 (PDT)
+        Mon, 27 Sep 2021 23:52:11 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE18BC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:50:31 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id g16so55485117wrb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z3bAoCya8Y7Dh6QkxEXxat/NHosu9KdF5sqakVDClzs=;
-        b=iXG2vit4ZhMA5CWRsWzZE095T5xH65GnTeu1OKkTXELLzVC3OS/Qwv0vuI546RGMOv
-         KjdQ6beOQZH881Hj17lcsBIHeVX9SrB4UgK5WANszpWjaQRnk6X0SbgHBV9FSrpVVKtQ
-         8O8msarkOX2cdb+YgQ4/rG0nA4w65Qxm4Z5Rs=
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GGTQElJtl5mpUB6QPkkm10aMhOfJ7ChPo3DKsQZG/IM=;
+        b=4aWrxSP5DQIFQrbo7iVY+qyKl54ratZ5R+7yXw+fPvYcfNqzMl3s23B/z5fi6lRMtd
+         vTolleMK8gGQ4xj/0he5l4aSkQ0H0ADrEYwH3H5NzAYGolhhk/aGH+rvA8+rpQ8PFpj8
+         8qM//UJieTlE4u4+M8R/VftCz66yydY211gYotIjtuYPlZs20/3sAuiIFRcSk26dfUon
+         KILFOsFkep1l5Traig1MFsXSR1KlCkQgHIFpyAFg2zbHKDzQdwtTju2/9Y2L/QafDH7D
+         199sh+G7yNaZO1CaDeQFs6+9ZxvXWvku/Fip17hsOiRlEuBaJ7N0+j8nRMs/yFGoKhao
+         dMtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z3bAoCya8Y7Dh6QkxEXxat/NHosu9KdF5sqakVDClzs=;
-        b=IAKPAOjPv4OXsqS2SW1AOI1Huteadev4ilLHC4otDBsuKpB3AKpWxggTlUodHWwbXb
-         g9AwdSfVd6wv7G3pzYVMKITvRi+zvzZeFBJIoxbd5qLf1n5J70jHkVqvSynuwXGuYIKW
-         vAjoBL67iQsF/Ky3hcRoEO06ccM05kXAlANmBOvlI/JS5x/Byecx0Y9FOfQVIZ+9ArfG
-         6Yg6kj3as/XJr8xw4G7UIhNcDMOUP2kxA6iG9oE5BVlgzdrJVABpEUfouqLqv5D9ZtWM
-         zhzyCsz5JKGnQTIktYlOXGSOggqnOBlsM7BmjrW5R2U32P12GmnJDEKlTgG4nHXKVEtK
-         3pmw==
-X-Gm-Message-State: AOAM531F9NxRshgnNt5u3ag4m+c8ldBls7JFb7rtB9rpDFMVQqrAc89c
-        3O9gZL+MagUL+Bvk2BmTuODo6A==
-X-Google-Smtp-Source: ABdhPJzvHwlXLhgEm4VzBgzXNJBgJ2neN0GBz2lKVasoXPDHMP+l4i6Q/cz4hAonJYbux9muKZV4/w==
-X-Received: by 2002:a62:dd94:0:b0:442:bb03:9663 with SMTP id w142-20020a62dd94000000b00442bb039663mr3197190pff.0.1632800800438;
-        Mon, 27 Sep 2021 20:46:40 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:481c:a10e:b908:28fe])
-        by smtp.gmail.com with ESMTPSA id f205sm19411980pfa.92.2021.09.27.20.46.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 20:46:40 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] media: videobuf2: always set buffer vb2 pointer
-Date:   Tue, 28 Sep 2021 12:46:34 +0900
-Message-Id: <20210928034634.333785-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GGTQElJtl5mpUB6QPkkm10aMhOfJ7ChPo3DKsQZG/IM=;
+        b=l6CuCbSHBYAc/mBd56MdBFF9bfc43FjHYPoOjsu6LGBRCH5Wmz1/8PfBqUknEmTJ/1
+         KHGOSK3DQO19VyjStsuIYmqig0Wjk1NMY1LExaULNFSPwhMMxBX0KDRCzYxU6mTAwhYN
+         eF0dW8/W61y5pjVqtuuV4Eak9H+cb7e6loUY6YzyXcW05q3K0BjOYM4zA5DP/h5LzRmc
+         icbOvflLcDFyJPPWt/rO4Hqm8HMMJjfaG3TwqhR++d7ddMA1yI/6e9peec4Exi3d+lKy
+         Ml9kuMtXH0Uu1ecbPbt6iboF326wBI7+nfPjuiVxNBp+JVG/3s1VGrxQlORLX3DbHdwm
+         WExg==
+X-Gm-Message-State: AOAM531y4lGOh3wr+sdmGbQ7xlprbjra/i8Fywxy/A+j9LWTMzbAtu89
+        FW3VGxOgxPM3LkV17Gr+4B1+SMQ+MKjfUlUvOha1hg==
+X-Google-Smtp-Source: ABdhPJwnzhJ7dz9dy7GqwipLDzQCfNNWTpOdzNdjAj6Zbro5+DmRqN7N0viMMGaHqBhkAtmFU5ZygFM7uTlEHTwVlUY=
+X-Received: by 2002:adf:e387:: with SMTP id e7mr3941847wrm.199.1632801029905;
+ Mon, 27 Sep 2021 20:50:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210923172107.1117604-1-guoren@kernel.org> <CAOnJCUJWnDB+uRxDh=YSbGW4bf5RQvke03iCTYMYHPsw3cwnHQ@mail.gmail.com>
+ <CAOnJCULrE595ex3gBTnu4GnPazO4mg8Tkrtbv6j8iLWe+sKJSA@mail.gmail.com> <0790abcfa1174e0e9b5e7b185f87ced9@mailhost.ics.forth.gr>
+In-Reply-To: <0790abcfa1174e0e9b5e7b185f87ced9@mailhost.ics.forth.gr>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 28 Sep 2021 09:20:18 +0530
+Message-ID: <CAAhSdy2-y4xpM9PCrS0vgCN9ngFiBygeDOWcbgsX6Myb4XjDQg@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] riscv: Add RISC-V svpbmt extension
+To:     Nick Kossifidis <mick@ics.forth.gr>
+Cc:     Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com,
+        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Gordan Markus <gordan.markus@canonical.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Greg Favor <gfavor@ventanamicro.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        Xinhaoqu <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to always link allocated vb2_dc_buf back to vb2_buffer because
-we dereference vb2 in prepare() and finish() callbacks.
+On Tue, Sep 28, 2021 at 6:32 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
+>
+> =CE=A3=CF=84=CE=B9=CF=82 2021-09-27 23:13, Atish Patra =CE=AD=CE=B3=CF=81=
+=CE=B1=CF=88=CE=B5:
+> >> We need to decide whether we should support the upstream kernel for
+> >> D1. Few things to consider.
+> >> =E2=80=93 Can it be considered as an errata ?
+>
+> It's one thing to follow the spec and have an error in the
+> implementation, and another to not follow the spec.
+>
+> >> =E2=80=93 Does it set a bad precedent and open can of worms in future =
+?
+>
+> IMHO yes, I'm thinking of Kendryte 210 devs for example coming up and
+> asking for MMU support, they 've also shipped many chips already. I can
+> also imagine other vendors in the future coming up with implementations
+> that violate the spec in which case handling the standard stuff will
+> become messy and complex, and hurt performance/security. We'll end up
+> filling the code with exceptions and tweaks all over the place. We need
+> to be strict about what is "riscv" and what's "draft riscv" or "riscv
+> inspired", and what we are willing to support upstream. I can understand
+> supporting vendor extensions upstream but they need to fit within the
+> standard spec, we can't have for example extensions that use encoding
+> space/csrs/fields etc reserved for standard use, they may only use
+> what's reserved for custom/vendor use. At least let's agree on that.
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- drivers/media/common/videobuf2/videobuf2-dma-contig.c | 3 +++
- 1 file changed, 3 insertions(+)
+Totally agree with Nick here. It's a slippery slope.
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index b052a4e36961..38767791955d 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -600,6 +600,7 @@ static void *vb2_dc_get_userptr(struct vb2_buffer *vb, struct device *dev,
- 
- 	buf->dev = dev;
- 	buf->dma_dir = vb->vb2_queue->dma_dir;
-+	buf->vb = vb;
- 
- 	offset = lower_32_bits(offset_in_page(vaddr));
- 	vec = vb2_create_framevec(vaddr, size);
-@@ -788,6 +789,8 @@ static void *vb2_dc_attach_dmabuf(struct vb2_buffer *vb, struct device *dev,
- 		return ERR_PTR(-ENOMEM);
- 
- 	buf->dev = dev;
-+	buf->vb = vb;
-+
- 	/* create attachment for the dmabuf with the user device */
- 	dba = dma_buf_attach(dbuf, buf->dev);
- 	if (IS_ERR(dba)) {
--- 
-2.33.0.685.g46640cef36-goog
+Including D1 PTE bits (or Kendryte K210 MMU) part of the Linux RISC-V
+means future hardware which intentionally violates specs will also have to
+be merged and the RISC-V patch acceptance policy will have no significance.
 
+>
+> >> =E2=80=93 Can we just ignore D1 given the mass volume ?
+> >>
+>
+> IMHO no, we need to find a way to support it upstream but I believe
+> there is another question to answer:
+>
+> Do we also guarantee "one image to rule them all" approach, required by
+> binary distros, for implementations that violate the spec ? Are we ok
+> for example to support Allwinner D1 upstream but require a custom
+> configuration/build instead of supporting it with the "generic" image ?
+> In one case we need to handle the violation at runtime and introduce
+> overhead for everyone (like looking up __riscv_svpbmt every time we set
+> a PTE in this case), in the other it's an #ifdef.
+
+At least, we should not have hardware violating specs as part of the
+unified kernel image instead have these intentional deviations/violations
+under separate kconfig which will not be enabled by default. This means
+vendors (of such hardware) and distros will have to explicitly enable
+support for such violations/deviations.
+
+Regards,
+Anup
