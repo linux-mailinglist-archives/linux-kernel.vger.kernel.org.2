@@ -2,246 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1C541A9F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C40241A9F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239469AbhI1HlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:41:24 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47853 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239363AbhI1HlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:41:11 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 355FE3200B7A;
-        Tue, 28 Sep 2021 03:39:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 28 Sep 2021 03:39:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=tsgrduVjDdssl
-        IuzVMotW+kMboVIt1vEZe888BN/7B4=; b=lTc++QtU6eHKmw741rky8pFk4REmp
-        htGWEfBGfft1GnlzaM5MT2TPD7VGQmJyaJQSIYnqFmZMWYRGPJIc6Xh7gOSvRXZw
-        3z1jeuZfDXpI5b0yQYblm6ZgRj/saTMI7DJjtXj1Dq4TsokvhgtSDkjgj/74+onx
-        XEIpQyR+prtxqPFxR0NcjPZNUxXjOHFsBMZ2v8naIByZO1OrxmiqjAqGPxfLPSKl
-        E9HlflwQdDFpy5SufKToWrgCE2ou5/jyKPgM2E0g2zyAIC/r5nrCs7RdhnLgeEnl
-        WFzECeMVziJSESaUNIrXsfL5FZd8mpFX7dBzmeA/yRh589d9Qn9cAp0cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=tsgrduVjDdsslIuzVMotW+kMboVIt1vEZe888BN/7B4=; b=aGzqDP0B
-        AUX55zr3hPib8R/OBcOt327Y7aHIxf2VPAqAvkIWQYZOfjm4ZH6O0M7QJc7b/JgB
-        Yc7SwVNxOQaCmq4iBMTtQN69CJmJ9RMveVAQ4tQFo1kAC91BL0nx3KmQxb2HQ9HR
-        cWbo5FQqOsDN5kLKEQ3GTodnMjJXwu3rsc1yeIXZe9Kaocso8DJoRV1ziliaR5h7
-        vP7bpK0Ca4FicLZ3TQtpu1mg3fwSAGpHe8fW8B9VNWsSTUZ5GkGdg7wPn0GO07Dh
-        C1PDCXNG7scC3P6jHm2PZRNg/AkmQ2nf6P00QL1e7ndg5wOti3PLgUz7ysXN+2D1
-        w6SHb9UYpdDLNA==
-X-ME-Sender: <xms:s8ZSYXZW75qrWuWtdEYwtx3RlyMch4rcmgQx15scxOfZn1wcLvReDA>
-    <xme:s8ZSYWbwU1AyVfCZVB5JgEAhOl-des11h1YJbAquqmtZ-1I2dULgIFRP0dcQJs9qk
-    -IvBaM3blgB5Z6xFA>
-X-ME-Received: <xmr:s8ZSYZ9XIafnhxnVzOz-SBVaxrhwOuIILNQJGyCDDrFu7SkcCsDTnqesdloAEcoXEr-an7GVNXzQyCYyR1rMn6hsOFAw0EzX2PuXrdHm2CXjCj4dNK0OJuBqj12ZyLn8-_7r_Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejledguddulecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheej
-    vdfgjeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:s8ZSYdqUYgtAY4YOwwkakWNNrKStMMrbbvGIDIg1GmgWO_uE3-KKUA>
-    <xmx:s8ZSYSoB8eueC5FUwGTpOPu2nRgNyxqJWDeIDly_yYEEHr1QMSxulA>
-    <xmx:s8ZSYTTXR_zaPVU5BR2-xE8Nhq0nKUz52ksF_oc7sgdv2YaF-MKARw>
-    <xmx:s8ZSYedl4T093Zm7mhS6EFibCcwzuDWe6EiDYETeFGTd2IVpjnaFdw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 03:39:31 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 4/4] clk: sunxi-ng: Allow the CCU core to be built as a module
-Date:   Tue, 28 Sep 2021 02:39:22 -0500
-Message-Id: <20210928073922.34264-5-samuel@sholland.org>
+        id S239407AbhI1Hlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:41:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239413AbhI1Hlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 03:41:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E384611CC;
+        Tue, 28 Sep 2021 07:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632814813;
+        bh=aYODkh8cK4PFOh3SK7n+CRjrZVA5pL0qjjkMR3jTLuc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fePAQtm+Pa35YcJrDcs2uDZun4sJ9s6bHm194FzNqFrWbcXdnKH1haV28w34ItDYx
+         S6ReBl3cfvyzAK4By3OdLJz0Us9+p49FS2D2xw0C8roilycBnNkuIKb2yIt8MV6VSb
+         QIqLC99VrLP/Kag0y+CJk9tHhH5JroaQ1eAEUXc1NaLNKsve7g0nkzhpjuASjVprcD
+         APUHe3cRkyEn7YvDkw1vUXqDpzfZoM++LFYrhyzFkXo0iJrbZUSfJ8tnLH57NnCysP
+         lSntc+wadB6UOu7XAVCBE9GUG6AiNUp/V924mscOKKYuAlfGaqLnd69LO9blT4obeV
+         oNQ0RHqTlvJcA==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mV7il-000RWx-KV; Tue, 28 Sep 2021 09:40:11 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Yu Chen <chenyu56@huawei.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH v5] dt-bindings: misc: add schema for USB hub on Kirin devices
+Date:   Tue, 28 Sep 2021 09:40:06 +0200
+Message-Id: <f955e7dba47e2e96ca6bfe761a1f998e9b5a4c50.1632814787.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210928073922.34264-1-samuel@sholland.org>
-References: <20210928073922.34264-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like the individual CCU drivers, it can be beneficial for memory
-consumption of cross-platform configurations to only load the CCU core
-on the relevant platform. For example, a generic arm64 kernel sees the
-following improvement when building the CCU core and drivers as modules:
+From: Yu Chen <chenyu56@huawei.com>
 
-  before:
-    text      data     bss     dec       hex      filename
-    13882360  5251670  360800  19494830  12977ae  vmlinux
+This patch adds binding documentation to support USB HUB and
+USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
 
-  after:
-    text      data     bss     dec       hex      filename
-    13734787  5086442  360800  19182029  124b1cd  vmlinux
-
-So the result is a 390KB total reduction in kernel image size.
-
-The one early clock provider (sun5i) requires the core to be built in.
-
-Now that loading the MMC driver will trigger loading the CCU core, the
-MMC timing mode functions do not need a compile-time fallback.
-
-Signed-off-by: Samuel Holland <samuel@sholland.org>
+[mchehab: updated OF schema and added HiKey970 example]
+Signed-off-by: Yu Chen <chenyu56@huawei.com>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/clk/Makefile              |  2 +-
- drivers/clk/sunxi-ng/Kconfig      |  3 ++-
- drivers/clk/sunxi-ng/Makefile     | 33 +++++++++++++++++--------------
- drivers/clk/sunxi-ng/ccu_common.c |  3 +++
- drivers/mmc/host/Kconfig          |  1 +
- include/linux/clk/sunxi-ng.h      | 15 --------------
- 6 files changed, 25 insertions(+), 32 deletions(-)
+ .../bindings/misc/hisilicon,hikey-usb.yaml    | 87 +++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
 
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index e42312121e51..6afe36bd2c0a 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -110,7 +110,7 @@ obj-$(CONFIG_PLAT_SPEAR)		+= spear/
- obj-y					+= sprd/
- obj-$(CONFIG_ARCH_STI)			+= st/
- obj-$(CONFIG_ARCH_SUNXI)		+= sunxi/
--obj-$(CONFIG_SUNXI_CCU)			+= sunxi-ng/
-+obj-y					+= sunxi-ng/
- obj-$(CONFIG_ARCH_TEGRA)		+= tegra/
- obj-y					+= ti/
- obj-$(CONFIG_CLK_UNIPHIER)		+= uniphier/
-diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
-index de88b6e0ec69..727ff755eca4 100644
---- a/drivers/clk/sunxi-ng/Kconfig
-+++ b/drivers/clk/sunxi-ng/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SUNXI_CCU
--	bool "Clock support for Allwinner SoCs"
-+	tristate "Clock support for Allwinner SoCs"
- 	depends on ARCH_SUNXI || COMPILE_TEST
- 	select RESET_CONTROLLER
- 	default ARCH_SUNXI
-@@ -52,6 +52,7 @@ config SUN5I_CCU
- 	bool "Support for the Allwinner sun5i family CCM"
- 	default MACH_SUN5I
- 	depends on MACH_SUN5I || COMPILE_TEST
-+	depends on SUNXI_CCU=y
- 
- config SUN6I_A31_CCU
- 	tristate "Support for the Allwinner A31/A31s CCU"
-diff --git a/drivers/clk/sunxi-ng/Makefile b/drivers/clk/sunxi-ng/Makefile
-index 1020ed49a588..659d55150c32 100644
---- a/drivers/clk/sunxi-ng/Makefile
-+++ b/drivers/clk/sunxi-ng/Makefile
-@@ -1,24 +1,27 @@
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+new file mode 100644
+index 000000000000..761ab686121a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2019 Linaro Ltd.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/misc/hisilicon,hikey-usb.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+obj-$(CONFIG_SUNXI_CCU)		+= sunxi-ccu.o
++title: HiKey960/970 onboard USB GPIO Hub
 +
- # Common objects
--obj-y				+= ccu_common.o
--obj-y				+= ccu_mmc_timing.o
--obj-y				+= ccu_reset.o
-+sunxi-ccu-y			+= ccu_common.o
-+sunxi-ccu-y			+= ccu_mmc_timing.o
-+sunxi-ccu-y			+= ccu_reset.o
- 
- # Base clock types
--obj-y				+= ccu_div.o
--obj-y				+= ccu_frac.o
--obj-y				+= ccu_gate.o
--obj-y				+= ccu_mux.o
--obj-y				+= ccu_mult.o
--obj-y				+= ccu_phase.o
--obj-y				+= ccu_sdm.o
-+sunxi-ccu-y			+= ccu_div.o
-+sunxi-ccu-y			+= ccu_frac.o
-+sunxi-ccu-y			+= ccu_gate.o
-+sunxi-ccu-y			+= ccu_mux.o
-+sunxi-ccu-y			+= ccu_mult.o
-+sunxi-ccu-y			+= ccu_phase.o
-+sunxi-ccu-y			+= ccu_sdm.o
- 
- # Multi-factor clocks
--obj-y				+= ccu_nk.o
--obj-y				+= ccu_nkm.o
--obj-y				+= ccu_nkmp.o
--obj-y				+= ccu_nm.o
--obj-y				+= ccu_mp.o
-+sunxi-ccu-y			+= ccu_nk.o
-+sunxi-ccu-y			+= ccu_nkm.o
-+sunxi-ccu-y			+= ccu_nkmp.o
-+sunxi-ccu-y			+= ccu_nm.o
-+sunxi-ccu-y			+= ccu_mp.o
- 
- # SoC support
- obj-$(CONFIG_SUNIV_F1C100S_CCU)	+= suniv-f1c100s-ccu.o
-diff --git a/drivers/clk/sunxi-ng/ccu_common.c b/drivers/clk/sunxi-ng/ccu_common.c
-index fe35336f6b87..81915500b0ee 100644
---- a/drivers/clk/sunxi-ng/ccu_common.c
-+++ b/drivers/clk/sunxi-ng/ccu_common.c
-@@ -9,6 +9,7 @@
- #include <linux/clk-provider.h>
- #include <linux/device.h>
- #include <linux/iopoll.h>
-+#include <linux/module.h>
- #include <linux/slab.h>
- 
- #include "ccu_common.h"
-@@ -213,3 +214,5 @@ void of_sunxi_ccu_probe(struct device_node *node, void __iomem *reg,
- 		kfree(ccu);
- 	}
- }
++maintainers:
++  - John Stultz <john.stultz@linaro.org>
 +
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 71313961cc54..1247c9455dea 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -964,6 +964,7 @@ config MMC_REALTEK_USB
- config MMC_SUNXI
- 	tristate "Allwinner sunxi SD/MMC Host Controller support"
- 	depends on ARCH_SUNXI || COMPILE_TEST
-+	depends on SUNXI_CCU
- 	help
- 	  This selects support for the SD/MMC Host Controller on
- 	  Allwinner sunxi SoCs.
-diff --git a/include/linux/clk/sunxi-ng.h b/include/linux/clk/sunxi-ng.h
-index 3cd14acde0a1..cf32123b39f5 100644
---- a/include/linux/clk/sunxi-ng.h
-+++ b/include/linux/clk/sunxi-ng.h
-@@ -6,22 +6,7 @@
- #ifndef _LINUX_CLK_SUNXI_NG_H_
- #define _LINUX_CLK_SUNXI_NG_H_
- 
--#include <linux/errno.h>
--
--#ifdef CONFIG_SUNXI_CCU
- int sunxi_ccu_set_mmc_timing_mode(struct clk *clk, bool new_mode);
- int sunxi_ccu_get_mmc_timing_mode(struct clk *clk);
--#else
--static inline int sunxi_ccu_set_mmc_timing_mode(struct clk *clk,
--						bool new_mode)
--{
--	return -ENOTSUPP;
--}
--
--static inline int sunxi_ccu_get_mmc_timing_mode(struct clk *clk)
--{
--	return -ENOTSUPP;
--}
--#endif
- 
- #endif
++description: |
++  Supports the onboard USB GPIO hubs found on HiKey960/970.
++  Such hubs require a power supply for the USB I/O. Depending on the
++  exact hub model, after USB I/O is powered up, a reset should be needed.
++
++  It also acts as a role-switch intermediary to detect the state of
++  the USB-C port, to switch the hub into dual-role USB-C or host mode,
++  which enables and powers up the onboard USB-A host ports.
++
++  Schematics about such hubs can be found here:
++    https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
++    https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/files/hikey970-schematics.pdf
++
++properties:
++  compatible:
++    enum:
++      - hisilicon,usbhub
++
++  typec-vbus-gpios:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: phandle to the typec-vbus gpio
++
++  otg-switch-gpios:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: phandle to the otg-switch gpio
++
++  hub-reset-en-gpios:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: phandle to the hub reset gpio
++
++  usb-role-switch:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: Support role switch.
++
++  hub-vdd-supply:
++    description: regulator for hub power
++
++  port:
++    description: |
++      describe hadware connections between USB endpoints.
++      Two ports are supported: the first being the endpoint that will
++      be notified by this driver, and the second being the endpoint
++      that notifies this driver of a role switch.
++
++required:
++  - compatible
++  - hub-vdd-supply
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    usb-hub {
++        compatible = "hisilicon,usbhub";
++        typec-vbus-gpios = <&gpio25 2 GPIO_ACTIVE_HIGH>;
++        otg-switch-gpios = <&gpio25 6 GPIO_ACTIVE_HIGH>;
++        hub-reset-en-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
++        hub-vdd-supply = <&usb_hub_vdd>;
++        usb-role-switch;
++        port {
++            #address-cells = <1>;
++            #size-cells = <0>;
++            usb_ep0: endpoint@0 {
++                reg = <0>;
++                remote-endpoint = <&dwc3_role_switch>;
++            };
++            usb_ep1: endpoint@1 {
++                reg = <1>;
++                remote-endpoint = <&rt1711h_ep>;
++            };
++        };
++    };
 -- 
 2.31.1
 
