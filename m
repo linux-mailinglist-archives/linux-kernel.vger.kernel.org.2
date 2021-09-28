@@ -2,286 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67C441B270
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A33D41B273
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241400AbhI1O6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S241420AbhI1O73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241176AbhI1O6n (ORCPT
+        with ESMTP id S241176AbhI1O72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:58:43 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C55C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:57:03 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id p4so41038009qki.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:57:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8VNpdtkEoliOS37FEyslZhSPnjXEDK9SRfQU3PFcQB0=;
-        b=JxpFtg04G6WsZ8CatyXdC/AEE9tDd/WhcEn1sxEoIfSD0ZBxynl28sdyZfFqlJ0kaZ
-         BWemzKpzqiShOgdmsVNP/Lc72WvkpORW2VWw0KXmlAaphr9Y23dRzuRyWn2mVxlyn1EV
-         aQrZ80hjVeCQC0e/dnQTFZ3f0MZrmA4Zv9ZxT+81qNZ9QzzKRLZ1TiwHCkKNXD4JxPJr
-         nzluZtPJ0J9cxQgErO9/zrUNreSkDBq02PV/auHW4Judbe3egL80gxUe0CUhpJ01S+UQ
-         Wos3tZ4V36yyq2gJ3jNcvC2wwG5sCa2+ABBQg2P8cj2NWu2luT2cRCl+zh0sXVTsqFJF
-         FozQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8VNpdtkEoliOS37FEyslZhSPnjXEDK9SRfQU3PFcQB0=;
-        b=Phl7cvgrdrH5mZi6HIGNNizSZv1Al1aEyeuqFpC6EQQ3sWD3bpUSoZC9GTuK/S4IbA
-         eKcCzEDZIEZs5DYmW7USq+CKcIjfvviCpZS7JQBUYfmncD6zA3oqUUBDPg8m6dk6bzvL
-         m0pVYz57sYUF7FCTJ7Q7+p3u9UQ5BAfjcMiy4A58DnTo6LZSgWGq3e8/5NwMNIiD3Fsl
-         VInnsFBxroMzXnFf8S481LBJPtBFPZqSHxhKjJ8kL6y9tHJGNTcLASxmfLeqW1VDfVRA
-         D0IlpxaT14M/rh+R6asDVCdrQqL4EzMSQovOcwBmBCd6Gl/nd+RiQg1D79aax7stOJ5O
-         OWGg==
-X-Gm-Message-State: AOAM533RKLRcAeoS9yov9cIaZSieAxj7eFQg1UlSzd80R8hmMlhhJq2v
-        KeVOFhczyLXCbhzoDvpUjv5hTfH74PPokVB1+C6eSR1kJoY=
-X-Google-Smtp-Source: ABdhPJzRIR3eUGDCn24vX/m9Evu6LSJjz+X5qiwmwDYnTBZPfiTgsjhcleKtjLSovmUT+88SmlfXrrklLkV2+AWEO4M=
-X-Received: by 2002:a37:a548:: with SMTP id o69mr404970qke.9.1632841023020;
- Tue, 28 Sep 2021 07:57:03 -0700 (PDT)
+        Tue, 28 Sep 2021 10:59:28 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC005C06161C;
+        Tue, 28 Sep 2021 07:57:48 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id C42C7701E; Tue, 28 Sep 2021 10:57:47 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org C42C7701E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1632841067;
+        bh=VV8iWrMyEn5Ds44I0VGMqI+X+W7JHc96OWu+qTBzoTY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ax/OmFJavGXbdY8TnzaodxZDJ7jjzD0gCRB7fKMdaL1c0bq5cAnt0vgrocnksF1oW
+         tBU2O+geCSK5yo61rgpXjXoBLX6nVc9W8pEsHKQ5/wxQEqY6kNna57hbqi4fzhWPWB
+         2iVoH/7tf7Ln7f0U34AEUdU0x47kUujUZXZoFnl4=
+Date:   Tue, 28 Sep 2021 10:57:47 -0400
+From:   "bfields@fieldses.org" <bfields@fieldses.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "neilb@suse.com" <neilb@suse.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "tyhicks@canonical.com" <tyhicks@canonical.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wanghai38@huawei.com" <wanghai38@huawei.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "dsahern@gmail.com" <dsahern@gmail.com>,
+        "timo@rothenpieler.org" <timo@rothenpieler.org>,
+        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
+        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
+        "kolga@netapp.com" <kolga@netapp.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
+Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
+ rpcsec_gss_exit_net when use-gss-proxy==1
+Message-ID: <20210928145747.GD25415@fieldses.org>
+References: <20210928031440.2222303-1-wanghai38@huawei.com>
+ <20210928031440.2222303-3-wanghai38@huawei.com>
+ <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
+ <20210928134952.GA25415@fieldses.org>
+ <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
+ <20210928141718.GC25415@fieldses.org>
+ <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
 MIME-Version: 1.0
-References: <cover.1631121222.git.greentime.hu@sifive.com> <0e65c165e3d54a38cbba01603f325dca727274de.1631121222.git.greentime.hu@sifive.com>
- <c81267bc-4c91-3978-8c1f-78925c46c78b@bluespec.com>
-In-Reply-To: <c81267bc-4c91-3978-8c1f-78925c46c78b@bluespec.com>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Tue, 28 Sep 2021 22:56:52 +0800
-Message-ID: <CAHCEehJ1uuSFqFWreS1kh+fR5GFfnEycdLMe+4FHXpFsHrRUvA@mail.gmail.com>
-Subject: Re: [RFC PATCH v8 09/21] riscv: Add task switch support for vector
-To:     Darius Rad <darius@bluespec.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Vincent Chen <vincent.chen@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Darius Rad <darius@bluespec.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=8813=E6=97=
-=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=888:21=E5=AF=AB=E9=81=93=EF=BC=9A
+On Tue, Sep 28, 2021 at 02:27:33PM +0000, Trond Myklebust wrote:
+> On Tue, 2021-09-28 at 10:17 -0400, bfields@fieldses.org wrote:
+> > On Tue, Sep 28, 2021 at 02:04:49PM +0000, Trond Myklebust wrote:
+> > > On Tue, 2021-09-28 at 09:49 -0400, bfields@fieldses.org wrote:
+> > > > On Tue, Sep 28, 2021 at 01:30:17PM +0000, Trond Myklebust wrote:
+> > > > > On Tue, 2021-09-28 at 11:14 +0800, Wang Hai wrote:
+> > > > > > When use-gss-proxy is set to 1, write_gssp() creates a rpc
+> > > > > > client
+> > > > > > in
+> > > > > > gssp_rpc_create(), this increases the netns refcount by 2,
+> > > > > > these
+> > > > > > refcounts are supposed to be released in
+> > > > > > rpcsec_gss_exit_net(),
+> > > > > > but
+> > > > > > it
+> > > > > > will never happen because rpcsec_gss_exit_net() is triggered
+> > > > > > only
+> > > > > > when
+> > > > > > the netns refcount gets to 0, specifically:
+> > > > > >     refcount=0 -> cleanup_net() -> ops_exit_list ->
+> > > > > > rpcsec_gss_exit_net
+> > > > > > It is a deadlock situation here, refcount will never get to 0
+> > > > > > unless
+> > > > > > rpcsec_gss_exit_net() is called. So, in this case, the netns
+> > > > > > refcount
+> > > > > > should not be increased.
+> > > > > > 
+> > > > > > In this case, xprt will take a netns refcount which is not
+> > > > > > supposed
+> > > > > > to be taken. Add a new flag to rpc_create_args called
+> > > > > > RPC_CLNT_CREATE_NO_NET_REF for not increasing the netns
+> > > > > > refcount.
+> > > > > > 
+> > > > > > It is safe not to hold the netns refcount, because when
+> > > > > > cleanup_net(), it
+> > > > > > will hold the gssp_lock and then shut down the rpc client
+> > > > > > synchronously.
+> > > > > > 
+> > > > > > 
+> > > > > I don't like this solution at all. Adding this kind of flag is
+> > > > > going to
+> > > > > lead to problems down the road.
+> > > > > 
+> > > > > Is there any reason whatsoever why we need this RPC client to
+> > > > > exist
+> > > > > when there is no active knfsd server? IOW: Is there any reason
+> > > > > why
+> > > > > we
+> > > > > shouldn't defer creating this RPC client for when knfsd starts
+> > > > > up
+> > > > > in
+> > > > > this net namespace, and why we can't shut it down when knfsd
+> > > > > shuts
+> > > > > down?
+> > > > 
+> > > > The rpc create is done in the context of the process that writes
+> > > > to
+> > > > /proc/net/rpc/use-gss-proxy to get the right namespaces.  I don't
+> > > > know
+> > > > how hard it would be capture that information for a later create.
+> > > > 
+> > > 
+> > > svcauth_gss_proxy_init() uses the net namespace SVC_NET(rqstp)
+> > > (i.e.
+> > > the knfsd namespace) in the call to
+> > > gssp_accept_sec_context_upcall().
+> > > 
+> > > IOW: the net namespace used in the call to find the RPC client is
+> > > the
+> > > one set up by knfsd, and so if use-gss-proxy was set in a different
+> > > namespace than the one used by knfsd, then it won't be found.
+> > 
+> > Right.  If you've got multiple containers, you don't want to find a
+> > gss-proxy from a different container.
+> > 
+> 
+> Exactly. So there is no namespace context to capture in the RPC client
+> other than what's already in knfsd.
 >
-> On 9/8/21 1:45 PM, Greentime Hu wrote:
-> > This patch adds task switch support for vector. It supports partial laz=
-y
-> > save and restore mechanism. It also supports all lengths of vlen.
-> >
-> > [guoren@linux.alibaba.com: First available porting to support vector
-> > context switching]
-> > [nick.knight@sifive.com: Rewrite vector.S to support dynamic vlen, xlen=
- and
-> > code refine]
-> > [vincent.chen@sifive.co: Fix the might_sleep issue in vstate_save,
-> > vstate_restore]
-> > Co-developed-by: Nick Knight <nick.knight@sifive.com>
-> > Signed-off-by: Nick Knight <nick.knight@sifive.com>
-> > Co-developed-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-> > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> > ---
-> >   arch/riscv/include/asm/switch_to.h | 66 +++++++++++++++++++++++
-> >   arch/riscv/kernel/Makefile         |  1 +
-> >   arch/riscv/kernel/process.c        | 38 ++++++++++++++
-> >   arch/riscv/kernel/vector.S         | 84 +++++++++++++++++++++++++++++=
-+
-> >   4 files changed, 189 insertions(+)
-> >   create mode 100644 arch/riscv/kernel/vector.S
-> >
-> > diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/as=
-m/switch_to.h
-> > index ec83770b3d98..de0573dad78f 100644
-> > --- a/arch/riscv/include/asm/switch_to.h
-> > +++ b/arch/riscv/include/asm/switch_to.h
-> > @@ -7,10 +7,12 @@
-> >   #define _ASM_RISCV_SWITCH_TO_H
-> >
-> >   #include <linux/jump_label.h>
-> > +#include <linux/slab.h>
-> >   #include <linux/sched/task_stack.h>
-> >   #include <asm/processor.h>
-> >   #include <asm/ptrace.h>
-> >   #include <asm/csr.h>
-> > +#include <asm/asm-offsets.h>
-> >
-> >   #ifdef CONFIG_FPU
-> >   extern void __fstate_save(struct task_struct *save_to);
-> > @@ -68,6 +70,68 @@ static __always_inline bool has_fpu(void) { return f=
-alse; }
-> >   #define __switch_to_fpu(__prev, __next) do { } while (0)
-> >   #endif
-> >
-> > +#ifdef CONFIG_VECTOR
-> > +extern bool has_vector;
-> > +extern unsigned long riscv_vsize;
-> > +extern void __vstate_save(struct __riscv_v_state *save_to, void *datap=
-);
-> > +extern void __vstate_restore(struct __riscv_v_state *restore_from, voi=
-d *datap);
-> > +
-> > +static inline void __vstate_clean(struct pt_regs *regs)
-> > +{
-> > +     regs->status =3D (regs->status & ~(SR_VS)) | SR_VS_CLEAN;
-> > +}
-> > +
-> > +static inline void vstate_off(struct task_struct *task,
-> > +                           struct pt_regs *regs)
-> > +{
-> > +     regs->status =3D (regs->status & ~SR_VS) | SR_VS_OFF;
-> > +}
-> > +
-> > +static inline void vstate_save(struct task_struct *task,
-> > +                            struct pt_regs *regs)
-> > +{
-> > +     if ((regs->status & SR_VS) =3D=3D SR_VS_DIRTY) {
-> > +             struct __riscv_v_state *vstate =3D &(task->thread.vstate)=
-;
-> > +
-> > +             __vstate_save(vstate, vstate->datap);
-> > +             __vstate_clean(regs);
-> > +     }
-> > +}
-> > +
-> > +static inline void vstate_restore(struct task_struct *task,
-> > +                               struct pt_regs *regs)
-> > +{
-> > +     if ((regs->status & SR_VS) !=3D SR_VS_OFF) {
-> > +             struct __riscv_v_state *vstate =3D &(task->thread.vstate)=
-;
-> > +
-> > +             /* Allocate space for vector registers. */
-> > +             if (!vstate->datap) {
-> > +                     vstate->datap =3D kzalloc(riscv_vsize, GFP_ATOMIC=
-);
-> > +                     vstate->size =3D riscv_vsize;
-> > +             }
-> > +             __vstate_restore(vstate, vstate->datap);
-> > +             __vstate_clean(regs);
-> > +     }
-> > +}
-> > +
-> > +static inline void __switch_to_vector(struct task_struct *prev,
-> > +                                struct task_struct *next)
-> > +{
-> > +     struct pt_regs *regs;
-> > +
-> > +     regs =3D task_pt_regs(prev);
-> > +     if (unlikely(regs->status & SR_SD))
-> > +             vstate_save(prev, regs);
-> > +     vstate_restore(next, task_pt_regs(next));
-> > +}
-> > +
-> > +#else
-> > +#define has_vector false
-> > +#define vstate_save(task, regs) do { } while (0)
-> > +#define vstate_restore(task, regs) do { } while (0)
-> > +#define __switch_to_vector(__prev, __next) do { } while (0)
-> > +#endif
-> > +
-> >   extern struct task_struct *__switch_to(struct task_struct *,
-> >                                      struct task_struct *);
-> >
-> > @@ -77,6 +141,8 @@ do {                                                =
-       \
-> >       struct task_struct *__next =3D (next);            \
-> >       if (has_fpu())                                  \
-> >               __switch_to_fpu(__prev, __next);        \
-> > +     if (has_vector)                                 \
-> > +             __switch_to_vector(__prev, __next);     \
-> >       ((last) =3D __switch_to(__prev, __next));         \
-> >   } while (0)
-> >
-> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> > index 3397ddac1a30..344078080839 100644
-> > --- a/arch/riscv/kernel/Makefile
-> > +++ b/arch/riscv/kernel/Makefile
-> > @@ -40,6 +40,7 @@ obj-$(CONFIG_MMU) +=3D vdso.o vdso/
-> >
-> >   obj-$(CONFIG_RISCV_M_MODE)  +=3D traps_misaligned.o
-> >   obj-$(CONFIG_FPU)           +=3D fpu.o
-> > +obj-$(CONFIG_VECTOR)         +=3D vector.o
-> >   obj-$(CONFIG_SMP)           +=3D smpboot.o
-> >   obj-$(CONFIG_SMP)           +=3D smp.o
-> >   obj-$(CONFIG_SMP)           +=3D cpu_ops.o
-> > diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-> > index 03ac3aa611f5..0b86e9e531c9 100644
-> > --- a/arch/riscv/kernel/process.c
-> > +++ b/arch/riscv/kernel/process.c
-> > @@ -95,6 +95,16 @@ void start_thread(struct pt_regs *regs, unsigned lon=
-g pc,
-> >                */
-> >               fstate_restore(current, regs);
-> >       }
-> > +
-> > +     if (has_vector) {
-> > +             regs->status |=3D SR_VS_INITIAL;
-> > +             /*
-> > +              * Restore the initial value to the vector register
-> > +              * before starting the user program.
-> > +              */
-> > +             vstate_restore(current, regs);
-> > +     }
-> > +
->
-> So this will unconditionally enable vector instructions, and allocate
-> memory for vector state, for all processes, regardless of whether vector
-> instructions are used?
->
+> The RPC client doesn't capture any other process context. It can cache
+> a user cred in order to capture the user namespace, but that
+> information appears to be unused by this gssd RPC client.
 
-Hi Darius,
+OK, that's good to know, thanks.
 
-Yes, it will enable vector if has_vector() is true. The reason that we
-choose to enable and allocate memory for user space program is because
-we also implement some common functions in the glibc such as memcpy
-vector version and it is called very often by every process. So that
-we assume if the user program is running in a CPU with vector ISA
-would like to use vector by default. If we disable it by default and
-make it trigger the illegal instruction, that might be a burden since
-almost every process will use vector glibc memcpy or something like
-that.
+It's doing a path lookup (it uses an AF_LOCAL socket), and I'm not
+assuming that will get the same result across containers.  Is there an
+easy way to do just that path lookup here and delay the res till knfsd
+startup?
 
-> Given the size of the vector state and potential power and performance
-> implications of enabling the vector engine, it seems like this should
-> treated similarly to Intel AMX on x86.  The full discussion of that is
-> here:
->
-> https://lore.kernel.org/lkml/CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG=
-8N+gtdQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org/
->
-> The cover letter for recent Intel AMX patches has a summary of the x86
-> implementation:
->
-> https://lore.kernel.org/lkml/20210825155413.19673-1-chang.seok.bae@intel.=
-com/
->
-> If RISC-V were to adopt a similar approach, I think the significant
-> points are:
->
->   1. A process (or thread) must specifically request the desire to use
-> vector extensions (perhaps with some new arch_prctl() API),
->
->   2. The kernel is free to deny permission, perhaps based on
-> administrative rules or for other reasons, and
->
->   3. If a process attempts to use vector extensions before doing the
-> above, the process will die due to an illegal instruction.
+--b.
 
-Thank you for sharing this, but I am not sure if we should treat
-vector like AMX on x86. IMHO, compiler might generate code with vector
-instructions automatically someday, maybe we should treat vector
-extensions like other extensions.
-If user knows the vector extension is supported in this CPU and he
-would like to use it, it seems we should let user use it directly just
-like other extensions.
-If user don't know it exists or not, user should use the library API
-transparently and let glibc or other library deal with it. The glibc
-ifunc feature or multi-lib should be able to choose the correct
-implementation.
+> 
+> So I'll repeat my question: Why can't we set this gssd RPC client up at
+> knfsd startup time, and tear it down when knfsd is shut down?
+> 
+> -- 
+> Trond Myklebust
+> Linux NFS client maintainer, Hammerspace
+> trond.myklebust@hammerspace.com
+> 
+> 
