@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513FB41B135
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA6441B148
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241072AbhI1Nyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:54:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241045AbhI1Nyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:54:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF84B6127C;
-        Tue, 28 Sep 2021 13:53:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632837189;
-        bh=jrbVenceAWLgQkHzrFIo4zTN1wFu086UNecp+tCchZ4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BJTpbVzxSlWP7bMXn78zpcAI8AzZBFum7ggL0nmew76COMAheV0+QtFCooIzVjSA+
-         8BTYrxda+iUt4es/uiEyCPAxXqJfu/6LLciq4r/IBalgwp0FbcCIjVx2qs2I5M8yyY
-         9MUZsUqJA8Wzkd560YijUKsvx54Y3nhT5/PNRqyjRt1rSNxgLMltgQPPPsanqi3v84
-         3pgfA/EtgGoCRNd75w4xMl3PrVxKHdDcAz/y9a2ZY2YZFj8NPQydK5G/tqtxxdEGT2
-         lRmWsIR4tF3IJIqtUlksoXB1ehXeu0YUl0qxeZms7xxpFa7nQqutq2pMNklY79Ncob
-         AMSiwHlYGRgtA==
-Received: by mail-oi1-f182.google.com with SMTP id z11so30082326oih.1;
-        Tue, 28 Sep 2021 06:53:09 -0700 (PDT)
-X-Gm-Message-State: AOAM531dVnBEuDH3ATIw4F2RoMjkS7VSJrKoPGGsilIDDLajKkC3b96q
-        Y/9cBT3iV1HvFLWZdWv2kVUZnNTbGa5zHzevTMI=
-X-Google-Smtp-Source: ABdhPJz9to8lWFr60Gpre4Od/46x6s4Nrtse/34SwP3rmoXnxlQkLzOc/1tmIX3U1LqO/1/3HTa84J5WaQo7iINmJLs=
-X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr3628695oiu.33.1632837188990;
- Tue, 28 Sep 2021 06:53:08 -0700 (PDT)
+        id S241000AbhI1N4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240939AbhI1N4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:56:45 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE028C06161C;
+        Tue, 28 Sep 2021 06:55:05 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id 66so18164908vsd.11;
+        Tue, 28 Sep 2021 06:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+jPaJ+GABZOzjw+GELhhDpnTZhDfIagt6CBewHxm7U0=;
+        b=LXhLEnd33jicskS6UcaZAb41CqL52E5Seq7OWWW2xxTpEjmgRRp7qzqfZzyh0FkToN
+         /6lOV24Z4KKQvP4KTes0E0nE9dudMLxKTRK6Xai3kopcp2OuUsAnxU+8YR8+tzn1Yono
+         JpkTh6pue7MALDZCKSE6UmBbn6HNbKTGoiB7hqdI4bzIcnXfTCOYqAK+6drqn6HeAd6D
+         exFQRnme/gawe1cGmfj80og7FQiG++j/ynBcfzf2iVE/W91FKp+rXhGAw616sUgzkdVx
+         auxWwiZTsBo4MIRR3ybAXgdWek2qknW3/7RY2kExwU5SmL/RkvX40NpF973OzH1LnXa8
+         YZ/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+jPaJ+GABZOzjw+GELhhDpnTZhDfIagt6CBewHxm7U0=;
+        b=3LUtNJsPiWtgSe02pa6SaLdP7Aq3S/OSN/jb6A+cXeAdRiuJz+tOGxDrWSBUaZevkh
+         HvrQEHhYSJCqy1iINj6tXVnKngQi5nUv6OVUUr7jRjQzHCZke0Dspe20d4XO0Oxs3s57
+         MnR9+GUrkqt1HBSrZ2Qh4VMuOb1+oe2e9nSouR6+a10nJfn2qCdoOtOY9tzzV6TAXFT4
+         QAX6htpq/oi++5C8lrX/RAiW8pofR9l0hS1Pp6ER23gsSBT9xZ32hjePNvjWb5ZO5QDQ
+         +Or+4wM4DfMnz+AxdYDV/HT3bboib8QB4PzXC4LLFrbGLo12HBSKrokwRJrOiDQIb4R4
+         Ii7w==
+X-Gm-Message-State: AOAM533CYr44caIbehngY3hXeQx/SMI9mc0Y3UGzw6KZtjL5/KZWY4sL
+        8ugYBrBx5Ago+BNY9w/qg85dKCi9Szh1YXOE2FSRA11BhAE=
+X-Google-Smtp-Source: ABdhPJzLh7Jb/wnh4RKZv0UR3iSofWX37Wa9vOXlE7qYmrFFAHxWv80ex6A3BathdkpubK9DhMaInQCPrECJuGRjLVw=
+X-Received: by 2002:a67:7247:: with SMTP id n68mr5305042vsc.56.1632837304987;
+ Tue, 28 Sep 2021 06:55:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-4-ardb@kernel.org>
-In-Reply-To: <20210914121036.3975026-4-ardb@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 28 Sep 2021 15:52:57 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGfPYBRKoj5eBefr61kHc=m336g0EbPUeDRy+GZVGw26w@mail.gmail.com>
-Message-ID: <CAMj1kXGfPYBRKoj5eBefr61kHc=m336g0EbPUeDRy+GZVGw26w@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/8] s390: add CPU field to struct thread_info
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
+References: <20210928123906.988813-1-colin.king@canonical.com> <CAFr9PXnMXPmuaUnfr-VwaZDX1hY8ZDtp1+UxOau6DKpUP9FdzQ@mail.gmail.com>
+In-Reply-To: <CAFr9PXnMXPmuaUnfr-VwaZDX1hY8ZDtp1+UxOau6DKpUP9FdzQ@mail.gmail.com>
+From:   Romain Perier <romain.perier@gmail.com>
+Date:   Tue, 28 Sep 2021 15:54:53 +0200
+Message-ID: <CABgxDoLPTcRbZZgAdJ9+=9OG+a=F59x9SQ9HvQkVvGmkDjO6-A@mail.gmail.com>
+Subject: Re: [PATCH][next] rtc: msc313: Fix unintentional sign extension issue
+ on left shift of a u16
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-rtc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> The CPU field will be moved back into thread_info even when
-> THREAD_INFO_IN_TASK is enabled, so add it back to s390's definition of
-> struct thread_info.
->
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/s390/include/asm/thread_info.h | 1 +
->  1 file changed, 1 insertion(+)
->
+Hi,
 
-Heiko, Christian, Vasily,
+Le mar. 28 sept. 2021 =C3=A0 15:31, Daniel Palmer <daniel@0x0f.com> a =C3=
+=A9crit :
+>
+> Hi Colin,
+>
+> On Tue, 28 Sept 2021 at 21:39, Colin King <colin.king@canonical.com> wrot=
+e:
+> >Shifting the u16 value returned by readw by 16 bits to the left
+> >will be promoted to a 32 bit signed int and then sign-extended
+> >to an unsigned long. If the top bit of the readw is set then
+> >the shifted value will be sign extended and the top 32 bits of
+> >the result will be set.
 
-Do you have any objections to this change? If you don't, could you
-please ack it so it can be taken through another tree (or if that is
-problematic for you, could you please propose another way of merging
-these changes?)
+Good catch !
+
+>
+> Ah,.. C is fun in all the wrong places. :)
+> These chips are full of 32bit registers that are split into two 16
+> registers 4 bytes apart when seen from the ARM CPU so we probably have
+> this same mistake in a few other places.
+>
+> A similar pattern is used a bit later on in the same file to read the cou=
+nter:
+>
+> seconds =3D readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
+> | (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 16);
+>
+> I guess it works at the moment because the top bit won't be set until 203=
+8.
+
+The crazy stuff being, I ran rtctest from selftests and rtc-range (1)
+that tests a variety
+of dates including 2038 and 2106 for example. Both tests passed :) (probabl=
+y
+because *this case* specifically did not happen while running the test)
+
+1. https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/rtc-tools.git/t=
+ree/rtc-range.c
 
 Thanks,
-Ard.
-
-> diff --git a/arch/s390/include/asm/thread_info.h b/arch/s390/include/asm/thread_info.h
-> index e6674796aa6f..b2ffcb4fe000 100644
-> --- a/arch/s390/include/asm/thread_info.h
-> +++ b/arch/s390/include/asm/thread_info.h
-> @@ -37,6 +37,7 @@
->  struct thread_info {
->         unsigned long           flags;          /* low level flags */
->         unsigned long           syscall_work;   /* SYSCALL_WORK_ flags */
-> +       unsigned int            cpu;            /* current CPU */
->  };
->
->  /*
-> --
-> 2.30.2
->
+Regards,
+Romain
