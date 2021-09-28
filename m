@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2122241B25C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF8F41B266
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241420AbhI1Ox3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241152AbhI1OxZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:53:25 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA79C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:51:43 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id b204-20020a1c80d5000000b0030cd967c674so2120337wmd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8k4vzjTEvvF0RcP+mluO0fPYoFQpr61i483WOpfKr1k=;
-        b=TpeYbEuJJ4BseQvOvsvFWNckRy2BTd89M8cj9jh37927UcZldckqMJlKOP/SF4KkEy
-         CQPdqeyZbTIxb2pF0lgUpKUsXhXVEptfWKthyBYpNh+pPjkN5Dg+olzMgwSoRNV7QloU
-         LCtYS+3x50jkmVUMP6mR8Ci5d16ZUIN7/WE5kvjc1EAuMKc17IrCPEYtlpOLNAq9PI5E
-         s/yeti1LAQlHBI8WhQzlOwD7Efhby2VXhPz+7tfA38omrJDQxjzjBu0IL8unvJ0RObNJ
-         jOYXqz0QVbZW7uv2HbaVJS8BYkjwQzj6noZiofXvlQiZ3V2YZtY1yASn77l6YQki/mEQ
-         nPpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=8k4vzjTEvvF0RcP+mluO0fPYoFQpr61i483WOpfKr1k=;
-        b=K7xJdT/KUJ70xf2DPgm8ffssYBOUANU6A6dUFVM33TN4bOGYTxscCQEA+L4guQnumb
-         mx2rws0uPBUhmidHRAnJoZyCPE2A/NY/XtGu6X5pXKaFsuIPylSFXyDzoWDHB05WxHpf
-         9LnmGYkvEq6GVsVxG9zY9Unl+obRJ0+gUw+ec9lrDTyWUdBLKbBuRV+fb8QzjOnrDfqN
-         /nrKeFohikMzgKnjQaWN/049hSWQQ+BRZhcn6Zbu+zV4s1vwmw5QQA7SsJ+3qsrhO/tj
-         jDXKr0I+o8bhTLtZ+4TIWgGwIobfnyC3Z3AG222PuvH0/euukKgrR4m+rs1yLVLLrNOV
-         hqYQ==
-X-Gm-Message-State: AOAM5339gGrwLAox/kvF5rjuZvoHPHCcdGRlBC6za+SueY225w5YiT8M
-        QI/ST+bPaWhdc3SmjG14pFN2gv4izq1lrA==
-X-Google-Smtp-Source: ABdhPJz2gMZyojYjj1eiZ6lXVK/hCRlmBB7ziEb6GpJ1kWQycNGC02kKJC0JGDUgmWJgxIeqecc3qA==
-X-Received: by 2002:a05:600c:22d6:: with SMTP id 22mr5266861wmg.17.1632840702114;
-        Tue, 28 Sep 2021 07:51:42 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:410:bb00:e0fd:c68f:ea32:2084? ([2a01:e0a:410:bb00:e0fd:c68f:ea32:2084])
-        by smtp.gmail.com with ESMTPSA id j19sm19877425wra.92.2021.09.28.07.51.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 07:51:41 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH net-next v5] net: openvswitch: IPv6: Add IPv6 extension
- header support
-To:     Cpp Code <cpp.code.lv@gmail.com>
-Cc:     netdev@vger.kernel.org, pshelar@ovn.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
-References: <20210920182038.1510501-1-cpp.code.lv@gmail.com>
- <0d70b112-dc7a-7083-db8d-183782b8ef8f@6wind.com>
- <CAASuNyUWoZ1wToEUYbdehux=yVnWQ=suKDyRkQfRD-72DOLziw@mail.gmail.com>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <e4bb09d1-8c8f-bfdf-1582-9dd8c560411b@6wind.com>
-Date:   Tue, 28 Sep 2021 16:51:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241394AbhI1Oy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241294AbhI1Oy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 10:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 295F960F24;
+        Tue, 28 Sep 2021 14:52:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632840768;
+        bh=EjAj38R6MzpC/IJoRNuUzACYBXlnF5xx5+AhIZAZq1I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n86tKqPDoTvDHsrfXJeU5CQbucGAePlnHYIembVwPk1okFJ6lPVbcmdIkBSwtutzL
+         mTrxFo+BOuWt8RYzCLQvF9mATxeuYoApZLEdCBJommD+5p9OUrE1trRDqizELQfo9e
+         JVIaT9Nq85hXIDNoQrSY4Mw85X9LWWDj3HTNCeIitLtjIpYM/CuHYWMTfozO0H9HBy
+         gUEJrveYqs9FC0vSMofirXWgZebHMdVPPgV4WVYadrX9R0JB81Ihp+9KJRyGzRd9sO
+         FcWcP1SBrrEOpZbE3b91ZWwN4kPvMUxAAdZU1n3dv1oKuBtxhlvIO6b+jE9BvQJdXs
+         pKX+sBB/wwpMg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: [PATCH] [SUBMITTED 20210721] fbdev: simplefb: fix Kconfig dependencies
+Date:   Tue, 28 Sep 2021 16:52:10 +0200
+Message-Id: <20210928145243.1098064-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAASuNyUWoZ1wToEUYbdehux=yVnWQ=suKDyRkQfRD-72DOLziw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 27/09/2021 à 21:12, Cpp Code a écrit :
-> To use this code there is a part of code in the userspace. We want to
-> keep compatibility when we only update userspace part code or only
-> kernel part code. This means we should have same values for constants
-> and we can only add new ones at the end of list.
-All attributes after OVS_KEY_ATTR_CT_STATE (ie 7 attributes) were added before
-OVS_KEY_ATTR_TUNNEL_INFO.
-Why is it not possible anymore?
+From: Arnd Bergmann <arnd@arndb.de>
 
+Configurations with both CONFIG_FB_SIMPLE=y and CONFIG_DRM_SIMPLEDRM=m
+are allowed by Kconfig because the 'depends on !DRM_SIMPLEDRM' dependency
+does not disallow FB_SIMPLE as long as SIMPLEDRM is not built-in. This
+can however result in a build failure when cfb_fillrect() etc are then
+also in loadable modules:
 
-Regards,
-Nicolas
+x86_64-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x1f8): undefined reference to `cfb_fillrect'
+x86_64-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x200): undefined reference to `cfb_copyarea'
+x86_64-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x208): undefined reference to `cfb_imageblit'
 
-> 
-> Best,
-> Tom
-> 
-> On Wed, Sep 22, 2021 at 11:02 PM Nicolas Dichtel
-> <nicolas.dichtel@6wind.com> wrote:
->>
->> Le 20/09/2021 à 20:20, Toms Atteka a écrit :
->>> This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
->>> packets can be filtered using ipv6_ext flag.
->>>
->>> Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
->>> ---
->>>  include/uapi/linux/openvswitch.h |  12 +++
->>>  net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++++
->>>  net/openvswitch/flow.h           |  14 ++++
->>>  net/openvswitch/flow_netlink.c   |  24 +++++-
->>>  4 files changed, 189 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/openvswitch.h
->>> index a87b44cd5590..dc6eb5f6399f 100644
->>> --- a/include/uapi/linux/openvswitch.h
->>> +++ b/include/uapi/linux/openvswitch.h
->>> @@ -346,6 +346,13 @@ enum ovs_key_attr {
->>>  #ifdef __KERNEL__
->>>       OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
->>>  #endif
->>> +
->>> +#ifndef __KERNEL__
->>> +     PADDING,  /* Padding so kernel and non kernel field count would match */
->>> +#endif
->>> +
->>> +     OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
->> Naive question, why not moving OVS_KEY_ATTR_IPV6_EXTHDRS above
->> OVS_KEY_ATTR_TUNNEL_INFO?
->>
->>
->>
->> Regards,
->> Nicolas
+To work around this, change FB_SIMPLE to be a 'tristate' symbol,
+which still allows both to be =m together, but not one of them to
+be =y if the other one is =m. If a distro kernel picks this
+configuration, it can be determined by local policy which of
+the two modules gets loaded. The 'of_chosen' export is needed
+as this is the first loadable module referencing it.
+
+Alternatively, the Kconfig dependency could be changed to
+'depends on DRM_SIMPLEDRM=n', which would forbid the configuration
+with both drivers.
+
+Fixes: 11e8f5fd223b ("drm: Add simpledrm driver")
+Acked-by: Rob Herring <robh@kernel.org> # for drivers/of/
+Link: https://lore.kernel.org/all/20210721151839.2484245-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/of/base.c           | 1 +
+ drivers/video/fbdev/Kconfig | 5 +++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index f720c0d246f2..0ac17256258d 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -36,6 +36,7 @@ LIST_HEAD(aliases_lookup);
+ struct device_node *of_root;
+ EXPORT_SYMBOL(of_root);
+ struct device_node *of_chosen;
++EXPORT_SYMBOL(of_chosen);
+ struct device_node *of_aliases;
+ struct device_node *of_stdout;
+ static const char *of_stdout_options;
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index b26b79dfcac9..6ed5e608dd04 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -2193,8 +2193,9 @@ config FB_HYPERV
+ 	  This framebuffer driver supports Microsoft Hyper-V Synthetic Video.
+ 
+ config FB_SIMPLE
+-	bool "Simple framebuffer support"
+-	depends on (FB = y) && !DRM_SIMPLEDRM
++	tristate "Simple framebuffer support"
++	depends on FB
++	depends on !DRM_SIMPLEDRM
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+ 	select FB_CFB_IMAGEBLIT
+-- 
+2.29.2
+
