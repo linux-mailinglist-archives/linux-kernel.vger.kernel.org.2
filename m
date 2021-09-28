@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C5B41ACA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B5441ACAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbhI1KNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:13:17 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:14269 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240056AbhI1KNQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:13:16 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210928101135euoutp027b3e9c026f244f4559c2a919aea52510~o9K6kQgpN1918519185euoutp02P
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:11:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210928101135euoutp027b3e9c026f244f4559c2a919aea52510~o9K6kQgpN1918519185euoutp02P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632823895;
-        bh=Uq7JRZfgtgIv8od+MEX1Yfq8ZJs11gdCeWJ7IvAJEEA=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=HjxN/tf7pdMxGuOY9ZboCv30dvt0rlPvMCjj74WHuW6wIU519w9hrRRXqq4+zBpdg
-         oIieXU7Aqez4eSTcQZFL6RF4cYdykaDU9DdY/rRWtfOEHBac2mqxIcH8VNmq/rPe2e
-         jCcXGKwKk29AzMSZ/I3uekDn5rovvlvd9zVBnlBA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210928101135eucas1p1bb9f8b528c94e8bfac0bdd9a60404e72~o9K55rkHy1386313863eucas1p1Z;
-        Tue, 28 Sep 2021 10:11:35 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id DB.67.56448.65AE2516; Tue, 28
-        Sep 2021 11:11:34 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210928101134eucas1p107ae33386004de51bdcc1d240b097980~o9K5kBEmR2078120781eucas1p1p;
-        Tue, 28 Sep 2021 10:11:34 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210928101134eusmtrp1fb43c49b5403cc6df32cbe8848fd4994~o9K5i38nM0481104811eusmtrp1_;
-        Tue, 28 Sep 2021 10:11:34 +0000 (GMT)
-X-AuditID: cbfec7f5-d3bff7000002dc80-27-6152ea56b9d1
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F2.FC.31287.65AE2516; Tue, 28
-        Sep 2021 11:11:34 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210928101134eusmtip219257f3df32cf3a26d2a67ad319979be~o9K49EOtN1684316843eusmtip2q;
-        Tue, 28 Sep 2021 10:11:34 +0000 (GMT)
-Subject: Re: [PATCH] iommu/dma: Tidy up Kconfig selects
-To:     Joerg Roedel <joro@8bytes.org>, Robin Murphy <robin.murphy@arm.com>
-Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        x86@kernel.org, linux-ia64@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <e88879bf-cd4e-1018-da50-6f0a1dda4784@samsung.com>
-Date:   Tue, 28 Sep 2021 12:11:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        id S240145AbhI1KNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240139AbhI1KNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2580611CE;
+        Tue, 28 Sep 2021 10:11:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632823915;
+        bh=Y7wSC7xrhvCDGxkQBLr8UtzzFVjfJNotICIdTFFi8Ok=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QPA9Ru63h3uBzj/aj83aKCrlH2Ho8nnjT4vdhNQFbKk6Co+Hn3FZjekL20EX1KpLI
+         FL50GDzBdXWbriiurg+DrVuvmonDBe+jhJPB9bTyL/d4bY6OWoPPP5YRIMnBp6zzTw
+         4n6A0yz8bTyAoop4B6nU7eiw7K8JyZLtCey1qr+Zb8wm4DVWjA55dTV6XKU1d3hS5V
+         ir2Y3SKmHjwXJxijmKqLnENDPWKtHFTMKYpsYZTuFbx5KaEp4r5gYEtI1TbD5/tjPI
+         owKYzZULoX5Q1ynW2wOZjGKXLrR2XIotIoIGmlVJriTxfHr33WKSUXvpwrW4d4sGeP
+         Xh83CeYtUYlgw==
+Received: by mail-wr1-f46.google.com with SMTP id d6so56891135wrc.11;
+        Tue, 28 Sep 2021 03:11:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532IOQtmih9UULB6XIIlS/KdGQV8bf+USQ1BdIa0YGxWt0UDBou7
+        davltlxNc2rvtBA0w+pkg4rhsoIKK6ZuU/Z6TBA=
+X-Google-Smtp-Source: ABdhPJzl6fwe7LMgMXeAMdLDt7NX7OTZg0SUJ6tJy/beE2gt+W2VZjPnxuFCXVxpHsdh8A8pu2A/KyaXdaX8tg+YXgM=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr5373570wro.411.1632823914100;
+ Tue, 28 Sep 2021 03:11:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YVLgw1nfEf7U13Mh@8bytes.org>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se2xLcRTH97v39vZu0bqqsmPYpIt6zDaLNW6MBhEqXssWFhKmqatEW9Ka
-        V0yWeu5i80pNN7XQPc3IwsyEaanGq15LNibxKtMyM5ttLBprr8f++57z+5zzPd/kR+GSEkEU
-        tc6wiTUa1DoZGUHU3vnhic/wp6knVYiZinMujCluSGFyCy8Kma/7vwiYZ/VFJOP46hUwu18q
-        mN6L7wQzKJXXYcNUVbYqpKqpzCVVx5rLkOra8xxS1VkTnUouj5i2mtWt28waE5WrItb2FtrR
-        xnPk1mvfnHgOyhNwKJwCOhlqbp8mOBRBSehyBO0HehFfdCGwd7WgICWhOxHUcaK/E5++nMJ5
-        qAyBq9X+Z6IDQevJZixIDaWnwJnaAiKopfRcsObXCYIQTp9FUFbXG4JIOgm4No4MahGthFuH
-        PCFN0GOg++7V0IHDaA1YfplxnhkCd096Q0vD6QnQUPE9pHE6Bq60FeG8joQX3tNY0AxoLwXX
-        ufx+iOovZsN7n5aPMBT87ktCXo+E+8cOEjy/C8Ebz3khXxxE8MxcgHgqBV56fpLBRTg9Hi7U
-        J/LtmcDdsAn5/WJobhvC3yCGo7UncL4tgv17JTwtB6u7+p+t4/FT/DCSWQcksw5IYx2Qxvrf
-        txgRlSiSzTLptaxpsoHdkmBS601ZBm2CZoO+BvX/pPsB9/c6VO7vSHAijEJOBBQuk4rSicVq
-        iWi1ett21rgh05ilY01ONIIiZJGi+stVmRJaq97ErmfZjazx7ytGhUflYOYnlcexvr57wkGd
-        9Z+v9zE7w9umx+/4qWuXxS5a0555ddTyxvQwKBjT0xllFjO5+mJLWvnrBQFVSbIv1fugpTTG
-        8qBjqsaPJVXKXZg35bi7o0s/TtPUl1EWZluwbOI7uXJXIM5z86MhTqd86GspGv9R1rP00YuA
-        v3vrK65k1JHC8tY9XPJMvz3mxLeGOcUXFmYv3Ocbnv+hCRMekBr9sY/lipaSOY7obNeS+HaF
-        /dErccHYPIt32srGaqonLtMy3ZfHbLdFxwZyzVLt7rh0m7ixdtlIjVIowlzO+WFOhWPGvEkr
-        spnS0tHPMxLl1U3Vc8Osb2cNVmQRn93N3VIZYVqrTpqAG03q35Dv+4O4AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsVy+t/xe7phr4ISDZZ2aFisXH2UyWLBfmuL
-        ztkb2C0+dLxjtbi8aw6bxcEPT1gtWu6YWvzY8JjVgcPjycF5TB5r5q1h9Ni0qpPNY/KN5Ywe
-        u282sHl83iQXwBalZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZ
-        llqkb5egl/Fj9hLGgtVsFbs/HWJuYOxj7WLk5JAQMJF4/W4ucxcjF4eQwFJGiZVzNrFBJGQk
-        Tk5rgCoSlvhzrYsNoug9o8SZtVPZQRLCAuYSi7bNYAGxRQTcJWb172AFKWIWWMwoceDIPSaI
-        jnOMEgv+ngEbxSZgKNH1tgtsBa+AncTh3nNgNouAqsS3kzvBakQFkiXevv7OBFEjKHFy5hOw
-        DZwCWhL7V34Fs5kFzCTmbX7IDGHLS2x/OwfKFpe49WQ+0wRGoVlI2mchaZmFpGUWkpYFjCyr
-        GEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAiNx27Gfm3cwznv1Ue8QIxMH4yFGCQ5mJRHeYBb/
-        RCHelMTKqtSi/Pii0pzU4kOMpkD/TGSWEk3OB6aCvJJ4QzMDU0MTM0sDU0szYyVx3q1z18QL
-        CaQnlqRmp6YWpBbB9DFxcEo1MOmelvZo3VO570BSSdqDZapf5vFpW3cpOn3wdZYvjMn/czpa
-        smoBr0XtxiLJw1am2WyTrJaf+TLvsM1x/ZWaZ+4Udfhkt6h/6LSJn3/4qQkvi9ilX8fu/nCS
-        PORy/6jOXY91Ln87o5PLHqSnnFJct1KDj0vjywbn14pv/2cvPr5nxa1Gv59KqfbtFVwNK50y
-        /W7tWfdmz8RFgWH7Tz8QiMhx9tzLc+XIx+AjZQKPdUqTkza82NK/SzMx6mGZU9CNM1kua/n8
-        dMrCmo+WVVn9dY8q3vgo+Hny842p30+Wrj9XeU64LCBMY69W4hfGW0LX8gpXHJJMcMn12LiX
-        vXztFH159U2uDvnHpr2bpr50qRJLcUaioRZzUXEiADLqOW5NAwAA
-X-CMS-MailID: 20210928101134eucas1p107ae33386004de51bdcc1d240b097980
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210928093051eucas1p2fc69dc7b8dff175901ac2b00be6c33c7
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210928093051eucas1p2fc69dc7b8dff175901ac2b00be6c33c7
-References: <9ba6f2e8568a3ff6a94fade66668d99705433c44.1631536879.git.robin.murphy@arm.com>
-        <CGME20210928093051eucas1p2fc69dc7b8dff175901ac2b00be6c33c7@eucas1p2.samsung.com>
-        <YVLgw1nfEf7U13Mh@8bytes.org>
+References: <20210927094123.576521-1-arnd@kernel.org> <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
+ <20210927130253.GH2083@kadam> <CAK8P3a3YFh4QTC6dk6onsaKcqCM3Nmb2JhMXK5QdZpHtffjyLg@mail.gmail.com>
+ <CAHk-=wheEHQxdSJgTkt7y4yFjzhWxMxE-p7dKLtQSBs4ceHLmw@mail.gmail.com> <70a77e44-c43a-f5ce-58d5-297ca2cfe5d9@redhat.com>
+In-Reply-To: <70a77e44-c43a-f5ce-58d5-297ca2cfe5d9@redhat.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 28 Sep 2021 12:11:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3sEy7NAhMHcV7XPpZxo5tHnQz1oCP43YTe_ZQuzOHgPA@mail.gmail.com>
+Message-ID: <CAK8P3a3sEy7NAhMHcV7XPpZxo5tHnQz1oCP43YTe_ZQuzOHgPA@mail.gmail.com>
+Subject: Re: [PATCH] vboxsf: fix old signature detection
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.2021 11:30, Joerg Roedel wrote:
-> On Mon, Sep 13, 2021 at 01:41:19PM +0100, Robin Murphy wrote:
->> Now that the dust has settled on converting all the x86 drivers to
->> iommu-dma, we can punt the Kconfig selection to arch code where it
->> was always intended to be.
-> Can we select IOMMU_DMA under IOMMU_SUPPORT instead? The only drivers
-> not using IOMMU_DMA are the arm32 ones, afaics.
->
-> If we could get rid of the arm32 exception, the IOMMU_DMA symbol could
-> also go away entirely and we handle it under IOMMU_SUPPORT instead. But
-> that is something for the future :)
+On Tue, Sep 28, 2021 at 11:40 AM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 9/27/21 8:33 PM, Linus Torvalds wrote:
+> > On Mon, Sep 27, 2021 at 6:22 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >>
+> >> More specifically, ' think '\377' may be either -1 or 255 depending on
+> >> the architecture.
+> >> On most architectures, 'char' is implicitly signed, but on some others
+> >> it is not.
+> >
+> > Yeah. That code is just broken.
+> >
+> > And Arnd, your patch may be "conceptually minimal", in that it keeps
+> > thed broken code and makes it work. But it just dials up the oddity to
+> > 11.
 
-Maybe it would be a good motivation to get back to 
-https://lore.kernel.org/linux-iommu/cover.1597931875.git.robin.murphy@arm.com/ 
-:)
+Thank you for addressing it. I usually try to avoid overthinking changes
+to "unusual" code like this, but your solution is clearly an improvement.
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+What really threw me off this time is that my first attempt to address
+the warning was an exact revert of 9d682ea6bcc7 ("vboxsf: Fix the
+check for the old binary mount-arguments struct"), which in turn
+came from a tool that is usually correct and and that both Dan
+and Al thought the original patch was correct when it looked like
+it turned a working (though unusual) implementation  into a broken
+one.
 
+> I agree that your suggestion is to be the best solution,
+> so how do we move forward with this, do I turn this into a
+> proper patch with you as the author and Arnd as Reported-by and
+> if yes may I add your Signed-off-by to the patch ?
+
+It's already upstream, see d5f6545934c4 ("qnx4: work around gcc
+false positive warning bug").
+
+      Arnd
