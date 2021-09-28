@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C8741ACC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FC041ACCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240177AbhI1KTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240169AbhI1KTK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:19:10 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F51C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:17:29 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id b26so32869288edt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:17:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qy/OhkG7/nBN/uH+Xm8mLuhr2toXlD8zRFmyBJAngNk=;
-        b=n4R/gO+WpLz/LARVBdI+rPe42jV5ePxKm7MKiEnEa2dA+0AuYCow8Hxg860n7OVWoi
-         78Hsl0SMnL5f1vjqdAz2mhEENPF5/usDuSZW+qoJ2dy9aQTIcI7ov4e211r/gyt4ZaZa
-         SaEyhxsCzQ8/nivCEy80UNOa2P40ovsbNCCp0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qy/OhkG7/nBN/uH+Xm8mLuhr2toXlD8zRFmyBJAngNk=;
-        b=xCsGlwk/ZJBO3OaO8DB6/PyID2Gr4giLKND1qcwZ9pTG4XEjsS9wByqHLhMn93uE8I
-         tFZB7G1xey6AdZSO/YXWhroGduzBbvRg17rkZgJT5abWRPyIydaoBrdlWwA3amOig/Pf
-         6LRTKbd7ldyLaPNM8iwjy4V9Ht39a1Bbyj7NMm3GDPG4eEZKlL/RKTfolS3rmCf1kjA3
-         KCBPZt4GSv8ufaCHL8kUN58FxZy20P0v4h2bhmGy1Zvn3rMfjC98sW7R7p9qg2iifSDe
-         cgbva57+ESKg8ZuzpJPUx9AfezHYxOqDko3PzDtykBCdCwT8m3x0N3u3JelfrVGZYqUG
-         4KAg==
-X-Gm-Message-State: AOAM530On6iBaVoKG2Cw5N69jC8vMpx6XPLVSGz/tILVAXCb/HYqDf4X
-        K7CGnOAOKcvzw7f9zm5lMEAV2Q==
-X-Google-Smtp-Source: ABdhPJy6NZ0BOuVQI1vFfC17Astd6UY/xUNYmy6YlAYEbVdMM3i5Z9Zhg0B+6qxSU9rwMZ9G3PtGCw==
-X-Received: by 2002:a50:bf07:: with SMTP id f7mr6555611edk.288.1632824247838;
-        Tue, 28 Sep 2021 03:17:27 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:6664])
-        by smtp.gmail.com with ESMTPSA id l18sm12788934edw.78.2021.09.28.03.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 03:17:27 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 11:17:26 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        YueHaibing <yuehaibing@huawei.com>, Jessica Yu <jeyu@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] [v2] printk: avoid -Wsometimes-uninitialized warning
-Message-ID: <YVLrttKajDU+1ZvX@chrisdown.name>
-References: <20210928093456.2438109-1-arnd@kernel.org>
+        id S240170AbhI1KVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:21:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:43064 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239952AbhI1KVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:21:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="224315857"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="224315857"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 03:19:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="553933229"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.42.0.236]) ([10.237.72.84])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Sep 2021 03:19:27 -0700
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210917172727.26834-1-huobean@gmail.com>
+ <20210917172727.26834-3-huobean@gmail.com>
+ <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+ <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+ <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
+ <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+ <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
+ <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
+ <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
+ <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <32b753ff-6702-fa51-2df2-32ff1d955a23@intel.com>
+Date:   Tue, 28 Sep 2021 13:18:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210928093456.2438109-1-arnd@kernel.org>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann writes:
->From: Arnd Bergmann <arnd@arndb.de>
->
->clang notices that the pi_get_entry() function would use
->uninitialized data if it was called with a non-NULL module
->pointer on a kernel that does not support modules:
->
->kernel/printk/index.c:32:6: error: variable 'nr_entries' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
->        if (!mod) {
->            ^~~~
->kernel/printk/index.c:38:13: note: uninitialized use occurs here
->        if (pos >= nr_entries)
->                   ^~~~~~~~~~
->kernel/printk/index.c:32:2: note: remove the 'if' if its condition is always true
->        if (!mod) {
->
->Rework the condition to make it clear to the compiler that we are always
->in the second case. Unfortunately the #ifdef is still required as the
->definition of 'struct module' is hidden when modules are disabled.
->
->Fixes: 337015573718 ("printk: Userspace format indexing support")
+On 25/09/2021 00:33, Bean Huo wrote:
+> On Fri, 2021-09-24 at 16:26 +0300, Adrian Hunter wrote:
+>> On 24/09/21 4:08 pm, Bean Huo wrote:
+>>> On Fri, 2021-09-24 at 15:17 +0300, Adrian Hunter wrote:
+>>>>>>>          sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
+>>>>>>> }
+>>>>>>> The driver has detected that the hardware timer cannot meet
+>>>>>>> the
+>>>>>>> timeout
+>>>>>>> requirements of the device, but we still use the hardware
+>>>>>>> timer,
+>>>>>>> which will
+>>>>>>> allow potential timeout issuea . Rather than allowing a
+>>>>>>> potential
+>>>>>>> problem to exist, why can’t software timing be used to
+>>>>>>> avoid
+>>>>>>> this
+>>>>>>> problem?
+>>>>>> Timeouts aren't that accurate.  The maximum is assumed still
+>>>>>> to
+>>>>>> work.
+>>>>>> mmc->max_busy_timeout is used to tell the core what the
+>>>>>> maximum
+>>>>>> is.
+>>>>> mmc->max_busy_timeout is still a representation of Host HW
+>>>>> timer
+>>>>> maximum timeout count, isn't it? 
+>>>>
+>>>> Not necessarily.  For SDHCI_QUIRK2_DISABLE_HW_TIMEOUT it would be
+>>>>
+>>>> set to zero to indicate no maximum.
+>>>
+>>> yes, this is the purpose of the patch, for the host controller
+>>> without
+>>> quirk SDHCI_QUIRK2_DISABLE_HW_TIMEOUT, if the timeout count
+>>> required by
+>>> device is beyond the HW timer max count, we choose SW timer to
+>>> avoid the HW timer timeout IRQ.
+>>>
+>>> I don't know if I get it correctly.
+>>
+>> Why can't drivers that want the behaviour just set the quirk?
+>>
+>> Drivers that do not work with the quirk, do not have to set it.
+> 
+> 
+> Adrian,
+> 
+> We cannot add this quirk to every host driver.
 
-This changelog should make it clear that this is theoretical and will never 
-actually happen, which is salient information for people who are considering 
-whether it should go in stable or similar.
+I was suggesting only the ones for which it works.
 
->Suggested-by: Steven Rostedt <rostedt@goodmis.org>
->Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->--
->v2: use a simpler trick of having an 'else' in the #ifdef
->    block, as Steven suggested.
->---
-> kernel/printk/index.c | 5 ++---
-> 1 file changed, 2 insertions(+), 3 deletions(-)
->
->diff --git a/kernel/printk/index.c b/kernel/printk/index.c
->index d3709408debe..43b45a916ff6 100644
->--- a/kernel/printk/index.c
->+++ b/kernel/printk/index.c
->@@ -26,10 +26,9 @@ static struct pi_entry *pi_get_entry(const struct module *mod, loff_t pos)
-> 	if (mod) {
-> 		entries = mod->printk_index_start;
-> 		nr_entries = mod->printk_index_size;
->-	}
->+	} else
-> #endif
->-
->-	if (!mod) {
->+	{
-> 		/* vmlinux, comes from linker symbols */
-> 		entries = __start_printk_index;
-> 		nr_entries = __stop_printk_index - __start_printk_index;
->-- 
->2.29.2
->
+>  This is the difference
+> on the device side.
+
+It is the host controller that has the problem, not the device.
+Hence the quirk.
+
+> In addition, I don't know what the maximum hardware
+> timer budget for each host is.
+
+mmc->max_busy_timeout is calculated by sdhci.c, or the driver can
+override the maximum count via ->get_max_timeout_count() or the driver
+can override mmc->max_busy_timeout.
+
+With the quirk, sdhci.c will usually set mmc->max_busy_timeout to zero.
+That allows timeouts greater than the hardware can support, and then,
+with the quirk, the driver will switch to a software timeout when needed.
+
+However, that won't work for every host controller, because some do not
+provide a completion interrupt after the timeout, even if the timeout
+interrupt is disabled.  That means they should set mmc->max_busy_timeout
+to the hardware value.  Hence the quirk is needed to tell the difference.
+
+> Even if you use the same SOC, the
+> maximum time budget on different platforms may be different.
+
+The mmc core calculates timeouts based on the relevant standards and
+values provided by the device itself.
+
+> Assume that the maximum timeout time supported by the hardware timer is
+> 100 milliseconds
+
+I realise it is an example, but 100 milliseconds is a bit low. Legacy
+host controllers have always had to deal with standard SD card and
+MMC card timeouts.  SD card write timeout of 500 milliseconds for instance.
+
+> but the maximum data transmission time required by
+> the device is 150 milliseconds. In most cases, data transfer will not
+> take so long. 150 is the maximum time under extreme conditions. This
+> means that the device just needs to complete a data transfer within
+>> 100ms and keep the data line busy. If we still use the HW timer, it
+> will trigger a DATA LINE timeout interrupt.
+> 
+> This patch does not affect scenarios where the hardware timer meets the
+> max data transmission time requirements of the device. It will still
+> use the hardware timer. Only when the device changes, will it switch to
+> using the SW timer.
+
+Which is what the quirk does.  So I am very confused why the quirk is
+no good?
