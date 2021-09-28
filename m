@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5438941B325
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465C641B326
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241724AbhI1Pnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:43:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60302 "EHLO mail.kernel.org"
+        id S241711AbhI1Pnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241711AbhI1Pnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:43:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 227646124B;
-        Tue, 28 Sep 2021 15:41:58 +0000 (UTC)
+        id S241652AbhI1Pnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:43:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39AAB6124A;
+        Tue, 28 Sep 2021 15:42:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632843720;
-        bh=PBKDwsYSta8SiZylGzSgzt3FGPPrz1SUUHK/m3YlIcY=;
+        s=k20201202; t=1632843722;
+        bh=ChBTgQnPISjb8SQT8vWLdwVriUt/cxd344Ze2iJ0p7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VlJxI+WirTf95k6HHPje/lbDdWzUmbhRWMY24e1RsE4qs9PbqBw4wfhITGQDEBYTa
-         EPVsDaJdx3VmsH4eCqJf714Dg8y/W4r6HgDdmrfFeTG9JURTAYbneoNAkSGtg0g8aU
-         TDiAVxUG7nJ1HjJj/E+cKJbmb2TOKhRsFYR/sn6DXJzf54WpBQ65sd3AzNX9NV95mq
-         LInC7GjAao9B1j6d7v3U7kqRf3jyzh41Nrt2QSpN0yyH8X+BypuVQcz1zgKhHi8YyH
-         63YfQEZSz/djmJKw1HUtsPdwXqf2UM6/YQh62F5Z6QapSlnoh5LRFUP5IwoEiTSj/I
-         Hy7bamlGPKwYw==
+        b=oNHfa5g3ugbxuSJXsdCVKKN4KoBMnKJ4s8mwhvIKTWsRj937WLHOkG4ks4dwPIt1V
+         nas4ZGB/oIlv2dSmA21whS129X4oalvkfH00iw1ZTCSm2JobngMJ3k7SuFjCOQurXl
+         iGdC+a5DwwMk0exGZd+pmCSvL0+kHBEK2ZzwsZHn+myS0M7Mhgy1wBNpxZ+lnKWCcN
+         Ujwag5g28nLObpQDE4swreLoALz6evy8c6kPi15g7R3f10Q2Cyoi4wbL6HtbJ7nt/D
+         mIm/gsuA4BttvHd+0nRVFjFU3qwg6rsjDm5YxeoMxwA4bDNVkc+Os5tLQCBYlWiNIX
+         Y5oGtyzEZc0Aw==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Russell King <linux@armlinux.org.uk>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         llvm@lists.linux.dev
-Subject: [PATCH 01/14] ARM: RiscPC needs older gcc version
-Date:   Tue, 28 Sep 2021 17:41:30 +0200
-Message-Id: <20210928154143.2106903-2-arnd@kernel.org>
+Subject: [PATCH 02/14] ARM: patch: fix BE32 compilation
+Date:   Tue, 28 Sep 2021 17:41:31 +0200
+Message-Id: <20210928154143.2106903-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210928154143.2106903-1-arnd@kernel.org>
 References: <20210928154143.2106903-1-arnd@kernel.org>
@@ -46,33 +46,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Attempting to build mach-rpc with gcc-9 or higher, or with any version
-of clang results in a build failure, like:
+On BE32 kernels, the __opcode_to_mem_thumb32() interface is intentionally
+not defined, but it is referenced whenever runtime patching is enabled
+for the kernel, which may be for ftrace, jump label, kprobes or kgdb:
 
-arm-linux-gnueabi-gcc-11.1.0: error: unrecognized -march target: armv3m
-arm-linux-gnueabi-gcc-11.1.0: note: valid arguments are: armv4 armv4t armv5t armv5te armv5tej armv6 armv6j armv6k armv6z armv6kz armv6zk armv6t2 armv6-m armv6s-m armv7 armv7-a armv7ve armv7-r armv7-m armv7e-m armv8-a armv8.1-a armv8.2-a armv8.3-a armv8.4-a armv8.5-a armv8.6-a armv8-m.base armv8-m.main armv8-r armv8.1-m.main iwmmxt iwmmxt2; did you mean 'armv4'?
+arch/arm/kernel/patch.c: In function '__patch_text_real':
+arch/arm/kernel/patch.c:94:32: error: implicit declaration of function '__opcode_to_mem_thumb32' [-Werror=implicit-function-declaration]
+   94 |                         insn = __opcode_to_mem_thumb32(insn);
+      |                                ^~~~~~~~~~~~~~~~~~~~~~~
 
-Handle this in Kconfig so we don't run into this with randconfig
-builds.
+Since BE32 kernels never run Thumb2 code, we never end up using the
+result of this call, so providing an extern declaration without
+a definition makes it build correctly.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/include/asm/opcodes.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fc196421b2ce..12a0bd4b315d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -431,7 +431,7 @@ config ARCH_PXA
- 
- config ARCH_RPC
- 	bool "RiscPC"
--	depends on MMU
-+	depends on !CC_IS_CLANG || GCC_VERSION < 90100
- 	select ARCH_ACORN
- 	select ARCH_MAY_HAVE_PC_FDC
- 	select ARCH_SPARSEMEM_ENABLE
+diff --git a/arch/arm/include/asm/opcodes.h b/arch/arm/include/asm/opcodes.h
+index 6bff94b2372b..38e3eabff5c3 100644
+--- a/arch/arm/include/asm/opcodes.h
++++ b/arch/arm/include/asm/opcodes.h
+@@ -110,12 +110,17 @@ extern asmlinkage unsigned int arm_check_condition(u32 opcode, u32 psr);
+ #define __opcode_to_mem_thumb16(x) ___opcode_identity16(x)
+ #define ___asm_opcode_to_mem_arm(x) ___asm_opcode_identity32(x)
+ #define ___asm_opcode_to_mem_thumb16(x) ___asm_opcode_identity16(x)
+-#ifndef CONFIG_CPU_ENDIAN_BE32
++#ifdef CONFIG_CPU_ENDIAN_BE32
++#ifndef __ASSEMBLY__
+ /*
+  * On BE32 systems, using 32-bit accesses to store Thumb instructions will not
+  * work in all cases, due to alignment constraints.  For now, a correct
+- * version is not provided for BE32.
++ * version is not provided for BE32, but the prototype needs to be there
++ * to compile patch.c.
+  */
++extern __u32 __opcode_to_mem_thumb32(__u32);
++#endif
++#else
+ #define __opcode_to_mem_thumb32(x) ___opcode_swahw32(x)
+ #define ___asm_opcode_to_mem_thumb32(x) ___asm_opcode_swahw32(x)
+ #endif
 -- 
 2.29.2
 
