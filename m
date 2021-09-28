@@ -2,111 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8DD41B517
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC7141B51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242067AbhI1R0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242054AbhI1R0K (ORCPT
+        id S242069AbhI1R1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:27:42 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:53587 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229869AbhI1R1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:26:10 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2B7C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:24:30 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so27794612ota.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:24:30 -0700 (PDT)
+        Tue, 28 Sep 2021 13:27:41 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 70A3C821A0;
+        Tue, 28 Sep 2021 20:26:00 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tz7rXxaL4F/0f9c2pv27juc+BGdU7ScDq2tqCmIv38Y=;
-        b=tR2pRCj/qKxjNExZrPW1JMusgHTkF217aDaxwmJWEm2fFtDA/r7cVLoE6t7EzHMG+j
-         4cnF8eefX32CXwbIWS6Fb2aNitjEQgYmhl/kiZWdzTtTEgr5BzM5bDrNr0xGoQcnHfo4
-         ukAyh1JNMGUrNsZ4ZRwG+Cz3NZM+zUpCggoPt4Asg9JC7DVN8QeAGxfMPgjNvvfvWI+o
-         VTDg52u12ACCsADmcqS7lLTm4+uCVoHSAG1DP1EAuiZkXe6vAFC8vMFuc33DT81Th2U9
-         zWszlzIR4HpkbUqmWejkpNV+2ZUU010wD19zv6P/NL6yj08YpU3BBQ76/wRQfklSWNK4
-         xWRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tz7rXxaL4F/0f9c2pv27juc+BGdU7ScDq2tqCmIv38Y=;
-        b=ObQJRwj1GQS2c51fkOzzpsz7rdFGJBtT0ZS/10MGGRS75Fov6o+JKY+MU1A5gj7sVI
-         AX7J+sTkbGQxZAtppaZSbhTkQBCKoX7/xzda/gBes0tfkhjyZV9fRdZloyIr9PKizRM+
-         DjlUGRSxgdrWJW4O7TwEjE61VBve8RGvvjq2rR1uZb9k2ZzHvckRNWVeCgtOt0cTP5Ab
-         YQ+/5UsvjgyaKZcH9A6zDW6XoFZNNXdwuXethIT6GGn9hlyJYtY7e5qjolmD6czU9tZT
-         tVTvKdmcBwD48gMTRLB3x4KlMJhWNi+tLisoMe08+if9KBvidZpolPtUpYhE8UTMp847
-         GWhA==
-X-Gm-Message-State: AOAM530g+zy2E2376mBF/ALzACFUaUuBzVInAOgNFwkD2avZcVXBG6Ey
-        c601K1X3JXVsUKYwkjetjiv9ag==
-X-Google-Smtp-Source: ABdhPJwIoTF2vk7NvGDYXmuN/1D5SS3NUp6rSCUQCZ5HX/Jvkr7HMFjXoFn7PWmdaYmAJBezNd8FNg==
-X-Received: by 2002:a05:6830:1d43:: with SMTP id p3mr5968746oth.80.1632849869862;
-        Tue, 28 Sep 2021 10:24:29 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z1sm5225337ooj.25.2021.09.28.10.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 10:24:29 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 12:24:27 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     linux-arm-msm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: qrtr: combine nameservice into main module
-Message-ID: <YVNPy+IAtLiKI19Q@builder.lan>
-References: <20210928171156.6353-1-luca@z3ntu.xyz>
+        d=paragon-software.com; s=mail; t=1632849960;
+        bh=qvcqL2FG70khkZ51nwyvBDfwfec88Co6gUQWcIUcQ84=;
+        h=Date:To:CC:From:Subject;
+        b=RocjXS3sXc9QhKnzyvnkqougWUjdqK0HBXA12+MtidnZ+5ZluG+suzly50YZMmXVa
+         uINnhryhIqCsN7nio8NiPJ0rvtx7/hL3jokl5Rki+iLcF8t/BAuHTOkfqxTQU145kp
+         yyVKCxoTSkxRZ7H3Gef23Kx4igxHQWQTOecfyqZk=
+Received: from [192.168.211.85] (192.168.211.85) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 28 Sep 2021 20:25:59 +0300
+Message-ID: <fad6f129-c53f-d751-be43-c403b1031449@paragon-software.com>
+Date:   Tue, 28 Sep 2021 20:25:58 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928171156.6353-1-luca@z3ntu.xyz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH] fs/ntfs3: Forbid FALLOC_FL_PUNCH_HOLE for normal files
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.85]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28 Sep 12:11 CDT 2021, Luca Weiss wrote:
+FALLOC_FL_PUNCH_HOLE isn't allowed with normal files.
+Fixes xfstest generic/016 021 022
 
-> Previously with CONFIG_QRTR=m a separate ns.ko would be built which
-> wasn't done on purpose and should be included in qrtr.ko.
-> 
-> Rename qrtr.c to af_qrtr.c so we can build a qrtr.ko with both af_qrtr.c
-> and ns.c.
-> 
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Nice, I don't think we ever intended to end up with "ns.ko" on its own.
+diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+index 5fb3508e5422..02ca665baa5f 100644
+--- a/fs/ntfs3/file.c
++++ b/fs/ntfs3/file.c
+@@ -587,8 +587,8 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+ 		truncate_pagecache(inode, vbo_down);
+ 
+ 		if (!is_sparsed(ni) && !is_compressed(ni)) {
+-			/* Normal file. */
+-			err = ntfs_zero_range(inode, vbo, end);
++			/* Normal file, can't make hole. */
++			err = -EOPNOTSUPP;
+ 			goto out;
+ 		}
+ 
+-- 
+2.33.0
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
->  net/qrtr/Makefile              | 3 ++-
->  net/qrtr/{qrtr.c => af_qrtr.c} | 0
->  2 files changed, 2 insertions(+), 1 deletion(-)
->  rename net/qrtr/{qrtr.c => af_qrtr.c} (100%)
-> 
-> diff --git a/net/qrtr/Makefile b/net/qrtr/Makefile
-> index 1b1411d158a7..8e0605f88a73 100644
-> --- a/net/qrtr/Makefile
-> +++ b/net/qrtr/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> -obj-$(CONFIG_QRTR) := qrtr.o ns.o
-> +obj-$(CONFIG_QRTR) += qrtr.o
-> +qrtr-y	:= af_qrtr.o ns.o
->  
->  obj-$(CONFIG_QRTR_SMD) += qrtr-smd.o
->  qrtr-smd-y	:= smd.o
-> diff --git a/net/qrtr/qrtr.c b/net/qrtr/af_qrtr.c
-> similarity index 100%
-> rename from net/qrtr/qrtr.c
-> rename to net/qrtr/af_qrtr.c
-> -- 
-> 2.33.0
-> 
