@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED81941B398
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857EB41B39C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241736AbhI1QPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241645AbhI1QPW (ORCPT
+        id S241753AbhI1QQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:16:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241645AbhI1QQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:15:22 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5C9C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:13:42 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id b15so23917423ils.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=v2zQz4XizfHwgNsfMM/95d+v9BN58F9SfAkKgr4nWbo=;
-        b=HCNd3PAb5VTA0Hj/uDS3qEqaivstHqwG5xndb95BxPTFJkpvoMisLEMufr5yfuKlp5
-         HTVL4MiqJcRnINa5nUgdphCKL/tY9ganf/5KVqVyksJSmXrkZnQHnNsRGRlPQZMmvG+C
-         o39/gJk3zvYKzgMWBo74gI5Psh7VnFl1jHNJHoBiWCf81AHyPGUPOP+abkmf3rkpZUa6
-         /cwoe++eZ95EIWrmbx3AAqajl72o+lGuKK61VDj4goKvwDXSGTva1OvdWdgS84a5u5uz
-         2E/jvsJbc+BtkT2MrJA0A+EJiOzXKbUgjVzL9QcKWFgHhMJ3psvEZQKaH8U7hrcoN06Q
-         EUqA==
+        Tue, 28 Sep 2021 12:16:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632845696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DUgmLSqFKViIH555qVnPTYAQOfzz0hrtyQXQkZ2GF0M=;
+        b=GEVdX1dhoSxo0A5HF6UaUMmgG+DrtXVpVrncJJl4QlFn7td0t1xw5DWrsBmmJBPDid6t6L
+        HDZSMiE/ZxIR/MfPGI1Hee9vzTujqu5gYQTX5h0KiAt1p6xhdQ7oZ/O/4YlnC429Ntn4Y2
+        q4t4MZFiVEVtorEMnMHCqMHZtOyAYAA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-oazHhE84Mu-Ydz33HQZjlQ-1; Tue, 28 Sep 2021 12:14:53 -0400
+X-MC-Unique: oazHhE84Mu-Ydz33HQZjlQ-1
+Received: by mail-ed1-f71.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so22349021edy.14
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:14:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=v2zQz4XizfHwgNsfMM/95d+v9BN58F9SfAkKgr4nWbo=;
-        b=qv5S6zRHZHkeGzrB2c2oHInJtg9V+LmPDf1v1yPQzC9nJsATY2xaamU74QRzAzJOSG
-         6FXsV7+u/PR4RVsSZJjUa5OcT/6Epj26HukwiTG+XAyD2c3aiPmOggBmu/Z3LFLY8/E7
-         v4d1jMVX2nHVpT3WgCrV1pkTD0nRJ3zUIeJyBCHZgvbqKRjMlKstaSZAB1HeQvc+xKyq
-         HBKjRAIPy2PBwqvTttdismw1TNKHVAnX/bTs9GyfV/6sBq1NU0GuT3d/7NJNiNbZy5MU
-         RFHM3nvjotGq99eJPHR4SXn9IhfGkCXBUqipcZpOvdXMqgojMiHEEljkJ5qoIOYrvSFG
-         O1iQ==
-X-Gm-Message-State: AOAM5332EuiBRKMGYs3Qa2G0GTLe/Qzv0MPVDrgnNWhbM9Xa/k1W25Cl
-        DA7oITV1MuXqln6iQs4ggd4JNfqWS6sgFMk6V0svzA==
-X-Google-Smtp-Source: ABdhPJzp8SM43R1E44WVwU8mJUjw3G0PTjGQFg+A/ShFORc/dbikzu4gAC9vpc8iqa0HhmQSmXfVld7ORrgwtPucs7M=
-X-Received: by 2002:a92:c5c9:: with SMTP id s9mr5056555ilt.56.1632845622062;
- Tue, 28 Sep 2021 09:13:42 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=DUgmLSqFKViIH555qVnPTYAQOfzz0hrtyQXQkZ2GF0M=;
+        b=1Af1oe9zSXor0b7MbJ/GNFc38AAHrB9QQ1ZX+EO8lZTrqFVsISFCPOz0KPRXsIhhxW
+         EbJNddlXmNWOR510z5vXrrEnmGd6pWzW+NZVzMrYDBQBHmbNJg/ODVm7C/q00sEMCsF/
+         xiiHTYDQoF4S/uVBsK3qMMhl9QJOjXA5n/5n+Hqccbhzr5f+1yoVRxbFbGObPzuD9cr4
+         +YDS9+A4GYW90Dngr02wyxltbquayRfXxIzoAnkFMhRLueYSbSXIYGC8kxSNAwd89un1
+         VtwfumqTXX8TLO3/qjzRYtxxep5/yjFmoErLnvkxDdc3m5mgr+m7dTeuaqchxEgIZTi+
+         1NlA==
+X-Gm-Message-State: AOAM531oPQqPjkGuzCemC9rW4sow6b0F0RJLdeI3TZhArhV4ypV45SAw
+        LHDiIw94A5aCfIV2fNxhA/j8oz5XKxNG4L2TCK9KI7TQh+Z/cFe/MP8yVQJCZ45U9YoY/N8j/Is
+        lgQmvbjF4ds8Z3mvzmJgYlGv9
+X-Received: by 2002:a17:906:3486:: with SMTP id g6mr7895995ejb.71.1632845691927;
+        Tue, 28 Sep 2021 09:14:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFe416aYG6LV8PAGm3jUviHG11Icl9C4GbfgLBpk6rj+OFZRzHIBuulvzceZ1Cy0qQforXRA==
+X-Received: by 2002:a17:906:3486:: with SMTP id g6mr7895969ejb.71.1632845691744;
+        Tue, 28 Sep 2021 09:14:51 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id e3sm10543342ejr.118.2021.09.28.09.14.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 09:14:51 -0700 (PDT)
+Message-ID: <05425bd8-46dc-f136-fbe0-52f42351aea1@redhat.com>
+Date:   Tue, 28 Sep 2021 18:14:49 +0200
 MIME-Version: 1.0
-References: <20210923181830.3449602-1-robert.marko@sartura.hr> <20210928154801.vkdt5qbsm4z7ox4y@pali>
-In-Reply-To: <20210928154801.vkdt5qbsm4z7ox4y@pali>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 28 Sep 2021 18:13:31 +0200
-Message-ID: <CA+HBbNEF5s23K6goPAco9n=OhNqg4zcmTP6WKdh3p6qb8XSG5w@mail.gmail.com>
-Subject: Re: [PATCH v3] arm64: dts: marvell: add Globalscale MOCHAbin
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH 1/2] nSVM: introduce struct vmcb_ctrl_area_cached
+Content-Language: en-US
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210917124956.2042052-1-eesposit@redhat.com>
+ <20210917124956.2042052-2-eesposit@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20210917124956.2042052-2-eesposit@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:48 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> On Thursday 23 September 2021 20:18:30 Robert Marko wrote:
-> > +/* SPI-NOR */
-> > +&cp0_spi1{
-> > +     status =3D "okay";
-> > +
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&cp0_spi1_pins>;
-> > +
-> > +     spi-flash@0 {
-> > +             #address-cells =3D <1>;
-> > +             #size-cells =3D <1>;
-> > +             compatible =3D "jedec,spi-nor";
-> > +             reg =3D <0>;
-> > +             spi-max-frequency =3D <20000000>;
-> > +
-> > +             partitions {
-> > +                     compatible =3D "fixed-partitions";
-> > +                     #address-cells =3D <1>;
-> > +                     #size-cells =3D <1>;
-> > +
-> > +                     partition@0 {
-> > +                             label =3D "u-boot";
-> > +                             reg =3D <0x0 0x3e0000>;
->
-> For sure U-Boot cannot start at offset zero as this is 64-bit ARM board
-> which uses at least TF-A firmware, which loads U-Boot.
->
-> Also on these mvebu SoCs is executed prior TF-A firmware custom Marvell
-> initialization code responsible for DDR training.
->
-> So on offset zero you cannot flash U-Boot, otherwise board would not be
-> bootable.
->
-> So I would suggest to either define correct offset at which U-Boot
-> starts or rename this whole partition to something generic, e.g. with
-> label "firmware". To not expose that on zero offset is stored U-Boot.
->
-> Due to how big is this partition I guess it contains concatenation of
-> various firmware and bootloader parts.
+On 17/09/21 14:49, Emanuele Giuseppe Esposito wrote:
+> +static inline bool vmcb_is_intercept_cached(struct vmcb_ctrl_area_cached *control, u32 bit)
+> +{
+> +	return vmcb_is_intercept((struct vmcb_control_area *) control,
+> +				 bit);
+> +}
+> +
 
-You are correct, its the mv-ddr + TF-A + U-boot in that partition, its just=
- a
-matter of habit calling it "u-boot".
-I will rename to "firmware" which is much more appropriate.
+This is quite dangerous, because it expects that the offset is the same 
+between vmcb_control_area and vmcb_ctrl_area_cached.  You can just 
+duplicate the implementation (which is essentially just a test_bit), and 
+call the function
 
-Regards,
-Robert
->
-> > +                             read-only;
-> > +                     };
-> > +
-> > +                     partition@3e0000 {
-> > +                             label =3D "hw-info";
-> > +                             reg =3D <0x3e0000 0x10000>;
-> > +                             read-only;
-> > +                     };
-> > +
-> > +                     partition@3f0000 {
-> > +                             label =3D "u-boot-env";
-> > +                             reg =3D <0x3f0000 0x10000>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
+static inline bool vmcb12_is_intercept(struct kvm_vcpu *vcpu, u32 bit)
 
+Likewise, nested_vmcb_check_controls can just take the vcpu since you 
+moved nested_load_control_from_vmcb12 earlier.
 
+Finally, copy_vmcb_control_area can be inlined, and its caller 
+nested_load_control_from_vmcb12 can stop copying the ASID.  There is 
+only one call to it since commit 4995a3685f1b ("KVM: SVM: Use a separate 
+vmcb for the nested L2 guest", 2021-03-15).
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+Thanks,
+
+Paolo
+
