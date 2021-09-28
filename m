@@ -2,95 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6AC41B36E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEF141B371
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241707AbhI1QDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:03:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241443AbhI1QDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:03:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63AB360FE3;
-        Tue, 28 Sep 2021 16:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632844931;
-        bh=qngNMSXFSnngkap5teJiBBWtOheXF8DQC5M/s8FhoRo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bGtz3M1MznAoom+A41wyp/PiCE3p05c8PUaXLKV7n66kWl9iFXbrDw207kvYHx81y
-         F4BLMB1RFH7DSnKF0XPws72UUDV5LYCFMMPNy3a29qqkSqrWwZgw1RqzobKg+4HWav
-         6bgrIsxx8yeOwGv1ITKDtg0k1fLyeoyOk8phuAPhTrqj8NxlOmNhEvJLyqLlmt2En5
-         K7p+Ya+75B0fWE7x26wHNHraGDaYBY61pLkPWEuE2gEXuTHncmQvUvzSPkl3SqbW4v
-         CnL6HG2+Sbcqsukgow0W438nguZGhOwP+vYhfLgOGr8G2adXHQxqtncnuhxwyA+Bq5
-         DJFwFMS/6TGiw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mVFYX-000Y11-Ec; Tue, 28 Sep 2021 18:02:09 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Borislav Petkov" <bp@alien8.de>, Andi Kleen <ak@linux.intel.com>,
-        Hidetoshi Seto <seto.hidetoshi@jp.fujitsu.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ABI: sys-mce: add 3 missing files
-Date:   Tue, 28 Sep 2021 18:02:03 +0200
-Message-Id: <e46325fc8151eba33924483413581cb3df47bf4b.1632844726.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632844726.git.mchehab+huawei@kernel.org>
-References: <cover.1632844726.git.mchehab+huawei@kernel.org>
+        id S241733AbhI1QEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241600AbhI1QEM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:04:12 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99CFC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:02:30 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id j15so2677689ila.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:02:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=U11ngjts53zxER0WZlZD0u0fXcv4N4xoFMWBCY+nI74=;
+        b=v2h0ZYn/VO6zo/w/bealWNmsGlFmtizUgT5qtdDc+QpdepDbt6p3XLGTle5waTQB5o
+         oPR49+r47pAj0u18GkTNolAcd2nkAoTAsO+zrjB9cwv+K3i4jKelkcNZUIOgxL8Msicr
+         HIjbHL5sqObSuB0fdQRjLjQstfHe3tAABUb2yR+FKJF/dnXZfv736ReME+YrZ6QFQ6uq
+         F1ZCBc2cu0gf5Ppztb7tg6C/+PuIcGtkNsY2/Fn5Z89rN8q3DnjxzAX9ybTiIfnQ6D/8
+         COSMsKgF1gje1q5FI3w1HRom/lxzUS3oJc3X8RLof/vMuwnhjrIqi9BU9pz1tjU9+iJs
+         ID6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=U11ngjts53zxER0WZlZD0u0fXcv4N4xoFMWBCY+nI74=;
+        b=Dntq5IV315ldYXbDf9gZ7wLu2HB6fJo4iOigDVYeYiwiD4OyJHf5FHcXJOA62f2GFX
+         cBcqQ+IwH67RIuWbsX8KriQ3t+uO/2wP4n/54XdTpBmSj16DuorqgMdtB2x0c+cQcxXr
+         s/2qWk0xe5HU6iAMejg4WehRINjnGlYn1eWTQd3QX+Xo/P9MtKwtLFUWqM/u63cBk8wX
+         buoPXwWeyVlx5vxLjzQou5XLZcogX3eUDvpqwVOg+cvBFOHcnWB+3mIBPfv0R0tHVA3P
+         TX5qjqC7H0afJqltq+INawmCNhHgBXXH4UwwF7qJQ6/MniWfGfCz4g9kPWE9MyZpTA1K
+         1NGQ==
+X-Gm-Message-State: AOAM532ggGlsUebgO2l7APCkW1Aic3g6uS2IZ4ni7GILDgdoTE9n+UGI
+        7Qvzy5L+7uGjtAbba/v1RvRD2ldwdR4aSH8JfuN2Hw==
+X-Google-Smtp-Source: ABdhPJwvfX9k9Egrt+99brWCm71BS5LjYmmE/V6OqeHxY29IrPTHnLyLf9UKaX8FzSQWUQR3RSpkZRIlmzqMMi/J85A=
+X-Received: by 2002:a05:6e02:1b0c:: with SMTP id i12mr4879867ilv.27.1632844949947;
+ Tue, 28 Sep 2021 09:02:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210927154159.2168500-1-robert.marko@sartura.hr>
+ <20210927154159.2168500-3-robert.marko@sartura.hr> <20210928153251.ogmtnpg3slhp4lb7@pali>
+In-Reply-To: <20210928153251.ogmtnpg3slhp4lb7@pali>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 28 Sep 2021 18:02:19 +0200
+Message-ID: <CA+HBbNEhfSo-sb28j3A7MOM6wDFurGaeoU+3mmVmZbducoQ-Eg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: dts: marvell: espressobin-ultra: add PHY and
+ switch reset pins
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 62fdac5913f7 ("x86, mce: Add boot options for corrected errors")
-added three more MCE files that are also exposed currently via
-sysfs.
+On Tue, Sep 28, 2021 at 5:32 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Monday 27 September 2021 17:41:58 Robert Marko wrote:
+> > Both the Topaz switch and 88E1512 PHY have their reset and interrupts
+> > connected to the SoC.
+> >
+> > So, define the Topaz and 88E1512 reset pins in the DTS.
+>
+> Are reset pins connected only on ultra variant? Or on all espressobin
+> variants? Because if they are on all variants then definitions should go
+> into common dtsi file.
+>
+> I see that "gpionb 2" is on v7 variant connected to LED2. So I'm not
+> sure if this one gpio is also shared or not.
 
-Document them.
+As far as I know only Ultra has the reset pins connected, on the v5 and v7 =
+Topaz
+reset is tied to the system reset so it's not controllable.
+I checked both the v5 and v7 schematics and it's like that.
+>
+> > Defining the interrupt pins wont work as both the 88E1512 and the
+> > Topaz switch uses active LOW IRQ signals but the A37xx GPIO controller
+> > only supports edge triggers.
+> > 88E1512 would require special setup anyway as its INT pin is shared wit=
+h
+> > the LED2 and you first need to configure it as INT.
+>
+> Do you plan to finish also this additional setup?
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+Yes as the MOCHAbin board that I have sent the DTS for also has it connecte=
+d
+so I can use it as Armada 7040 supports level triggers, unlike the A3720.
+It's in the queue but as a low priority, so I don't know when will I get to=
+ it.
 
-To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH 0/2] at: https://lore.kernel.org/all/cover.1632844726.git.mchehab+huawei@kernel.org/
+Regards,
+Robert
+>
+> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > ---
+> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.=
+dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > index 8a700afd0570..96855a10b4a0 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > @@ -118,12 +118,16 @@ &usb3 {
+> >  &mdio {
+> >       extphy: ethernet-phy@1 {
+> >               reg =3D <1>;
+> > +
+> > +             reset-gpios =3D <&gpionb 2 GPIO_ACTIVE_LOW>;
+> >       };
+> >  };
+> >
+> >  &switch0 {
+> >       reg =3D <3>;
+> >
+> > +     reset-gpios =3D <&gpiosb 23 GPIO_ACTIVE_LOW>;
+> > +
+> >       ports {
+> >               switch0port1: port@1 {
+> >                       reg =3D <1>;
+> > --
+> > 2.31.1
+> >
 
- Documentation/ABI/testing/sysfs-mce | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-mce b/Documentation/ABI/testing/sysfs-mce
-index d0f5095da08b..5461ca8cc5f0 100644
---- a/Documentation/ABI/testing/sysfs-mce
-+++ b/Documentation/ABI/testing/sysfs-mce
-@@ -105,3 +105,25 @@ Description:
- 
- 		Unit: us
- 
-+What:		/sys/devices/system/machinecheck/machinecheckX/ignore_ce
-+Contact:	Hidetoshi Seto <seto.hidetoshi@jp.fujitsu.com>
-+When:		Jun 2009
-+Description:
-+		Disables polling and CMCI for corrected errors.
-+		All corrected events are not cleared and kept in bank MSRs.
-+
-+What:		/sys/devices/system/machinecheck/machinecheckX/dont_log_ce
-+Contact:	Hidetoshi Seto <seto.hidetoshi@jp.fujitsu.com>
-+When:		Jun 2009
-+Description:
-+		Disables logging for corrected errors.
-+		All reported corrected errors will be cleared silently.
-+
-+		This option will be useful if you never care about corrected
-+		errors.
-+
-+What:		/sys/devices/system/machinecheck/machinecheckX/cmci_disabled
-+Contact:	Hidetoshi Seto <seto.hidetoshi@jp.fujitsu.com>
-+When:		Jun 2009
-+Description:
-+		Disables the CMCI feature.
--- 
-2.31.1
 
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
