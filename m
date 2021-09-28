@@ -2,348 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2500A41B1D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36D941B1E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241253AbhI1ORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241191AbhI1ORO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:17:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54DC2611CB;
-        Tue, 28 Sep 2021 14:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632838535;
-        bh=RePW3xfvUyaU3zA2Rj1Ae9YEiqElxuTFsF5LiqMkCHw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tGHMlMX3yt+6pC4yOvGEJoENWh/lolEkYGywFW0L8vSiSe/le1HG/MaxF+PGFVU/6
-         jExLdQjZFgh/UD9lzNjd2Kuc1bA56JKjYE04hTbQ12omJR4DYa+wgOOx4IZMXqqtH2
-         i+bc+J9oRF+MlM8Fgo9wK++M7BnTxyawbkbV8K8QJZfQYlQ/X9rNC+0Pq+nxaG45Ev
-         P/4qJYAE7107Zt4uO6DRlbQbccYKt4LJvb5ZUWcZC0Tcy6Aut/cZe5GQ4mAZShyiIa
-         9gXFjL/8wsPY0/sOKF2iM6x+vjPeKarta1n1Eqz/k8vKZmIyTienXmOO8cdUH4/sJy
-         UVUyMtPPhbRng==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jeroen de Borst <jeroendb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bailey Forrest <bcf@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Catherine Sullivan <csully@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        David Awogbemila <awogbemila@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] gve: DQO: avoid unused variable warnings
-Date:   Tue, 28 Sep 2021 16:15:13 +0200
-Message-Id: <20210928141530.256433-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S241267AbhI1ORe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:17:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22922 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241191AbhI1ORd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 10:17:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632838553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AWD5TlJk9nEWaPVGYxsFMEI0pK3OkzOISyOGy4sUKVk=;
+        b=U4MTJA1ip221059GlNadnLFluwpl1ZP+OnNPjv2t2oiaJIcpbRPaR3L0PoFRQXaJ2T2kNV
+        fr/JDwbYzo8Lj/K+TOfzaNGu5FFDwcvQzQPQfHFOP0JPLS8a3GOwsteAQmEiVljjydywQ2
+        hQfEAaK6qFsKGgol6DFHLN7e1ouFwcU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-Vod1PK04NwubKA0XeWnX-g-1; Tue, 28 Sep 2021 10:15:52 -0400
+X-MC-Unique: Vod1PK04NwubKA0XeWnX-g-1
+Received: by mail-ed1-f70.google.com with SMTP id h15-20020aa7de0f000000b003d02f9592d6so21899144edv.17
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:15:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AWD5TlJk9nEWaPVGYxsFMEI0pK3OkzOISyOGy4sUKVk=;
+        b=3FTh1cpNUpxDf4Sc2PvdNW74O5Omloo3Dq/tbgZLeffrjmZLHKi0xqJApOWL+gurqi
+         gMZMr07Gqm2NR5e1B33xcGEIjgjXZ3587FWm1Ee92edfUTRvAXV/91eeNOlCh2JOGLt1
+         O6U2PLE3r43eSc/VyGtU6Uz/aIXjx1JVga1QfvFHrukbRxsu/7gFmJAG0aEwqwC/v1MA
+         ixsjl2DJggoKtF2wR3/TWighunyLvUYcPymbQxtS4aqN7RyJk54ACvm5DsF9Xi3C8rHc
+         D6d87XWfipUpRa2XPrWDkYTzHm5MKoyBMOlCog6jCzLmd8Ogfo9h9qmeuscJ4lGau7gj
+         JQTA==
+X-Gm-Message-State: AOAM530UMUFVj5SB3def3EgfWd5tYrU8l5D01QgIb4a85saHp+4NwoH7
+        YY/Ghvbwnnvpu61UzNcCLDGY3MDTOgc9Ca2EpgpQzKTPZa/6HjDWIW0n2lPCb4uSDpG19bYtTZY
+        HNf/siBpcQdXIoBkiuxwKx6tUttM62xkpM0F9Mf4trp07Tux87i2WVerMUjxrONHk1EfMYs38da
+        Gt
+X-Received: by 2002:aa7:cd41:: with SMTP id v1mr7736201edw.393.1632838550554;
+        Tue, 28 Sep 2021 07:15:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfHnHmottUyITNFI3BM8y9fnS2kCoEoR02Q5lm5KG8/zwP0QPMUq5GonGE/k8IAfaEtgzmVw==
+X-Received: by 2002:aa7:cd41:: with SMTP id v1mr7736179edw.393.1632838550363;
+        Tue, 28 Sep 2021 07:15:50 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id k18sm12063530edv.41.2021.09.28.07.15.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 07:15:49 -0700 (PDT)
+Subject: Re: [PATCH v2] platform/x86: amd-pmc: Export Idlemask values based on
+ the APU
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Sanket Goswami <Sanket.Goswami@amd.com>
+Cc:     Shyam-sundar.S-k@amd.com, mgross@linux.intel.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210916124002.2529-1-Sanket.Goswami@amd.com>
+ <YUz2t+bdes2I+gMK@archlinux-ax161>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <09b3489b-3474-c626-d312-cde1cb023397@redhat.com>
+Date:   Tue, 28 Sep 2021 16:15:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YUz2t+bdes2I+gMK@archlinux-ax161>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-The use of dma_unmap_addr()/dma_unmap_len() in the driver causes
-multiple warnings when these macros are defined as empty, e.g.
-in an ARCH=i386 allmodconfig build:
+On 9/23/21 11:50 PM, Nathan Chancellor wrote:
+> On Thu, Sep 16, 2021 at 06:10:02PM +0530, Sanket Goswami wrote:
+>> IdleMask is the metric used by the PM firmware to know the status of each
+>> of the Hardware IP blocks monitored by the PM firmware.
+>>
+>> Knowing this value is key to get the information of s2idle suspend/resume
+>> status. This value is mapped to PMC scratch registers, retrieve them
+>> accordingly based on the CPU family and the underlying firmware support.
+>>
+>> Co-developed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+>> Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+>> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
+> 
+> This patch as commit f6045de1f532 ("platform/x86: amd-pmc: Export
+> Idlemask values based on the APU") in -next causes the following errors
+> when CONFIG_DEBUG_FS is disabled:
+> 
+> drivers/platform/x86/amd-pmc.c:424:2: error: implicit declaration of function 'amd_pmc_idlemask_read' [-Werror,-Wimplicit-function-declaration]
+>         amd_pmc_idlemask_read(pdev, dev, NULL);
+>         ^
+> drivers/platform/x86/amd-pmc.c:424:2: note: did you mean 'amd_pmc_reg_read'?
+> drivers/platform/x86/amd-pmc.c:131:19: note: 'amd_pmc_reg_read' declared here
+> static inline u32 amd_pmc_reg_read(struct amd_pmc_dev *dev, int reg_offset)
+>                   ^
+> drivers/platform/x86/amd-pmc.c:448:2: error: implicit declaration of function 'amd_pmc_idlemask_read' [-Werror,-Wimplicit-function-declaration]
+>         amd_pmc_idlemask_read(pdev, dev, NULL);
+>         ^
+> drivers/platform/x86/amd-pmc.c:536:2: error: implicit declaration of function 'amd_pmc_get_smu_version' [-Werror,-Wimplicit-function-declaration]
+>         amd_pmc_get_smu_version(dev);
+>         ^
+> 3 errors generated.
+> 
+> Should these functions be stubbed or should there be a different fix?
 
-drivers/net/ethernet/google/gve/gve_tx_dqo.c: In function 'gve_tx_add_skb_no_copy_dqo':
-drivers/net/ethernet/google/gve/gve_tx_dqo.c:494:40: error: unused variable 'buf' [-Werror=unused-variable]
-  494 |                 struct gve_tx_dma_buf *buf =
+Thank you for the bug report.
 
-This is not how the NEED_DMA_MAP_STATE macros are meant to work,
-as they rely on never using local variables or a temporary structure
-like gve_tx_dma_buf.
+Since these functions are also used outside of the debugfs show functions
+they simply need to be moved outside of the #ifdef CONFIG_DEBUG_FS
+block. I'll add a patch fixing this to pdx86/review-hans and include
+it in my next pdx86-fixes pull-req to Linus.
 
-Remote the gve_tx_dma_buf definition and open-code the contents
-in all places to avoid the warning. This causes some rather long
-lines but otherwise ends up making the driver slightly smaller.
+Regards,
 
-Fixes: a57e5de476be ("gve: DQO: Add TX path")
-Link: https://lore.kernel.org/netdev/20210723231957.1113800-1-bcf@google.com/
-Link: https://lore.kernel.org/netdev/20210721151100.2042139-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Changes in v2:
-- complete rewrite of v1
----
- drivers/net/ethernet/google/gve/gve.h        | 13 ++-
- drivers/net/ethernet/google/gve/gve_tx.c     | 23 +++---
- drivers/net/ethernet/google/gve/gve_tx_dqo.c | 84 +++++++++-----------
- 3 files changed, 54 insertions(+), 66 deletions(-)
-
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index 1d3188e8e3b3..85bf825606e8 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -224,11 +224,6 @@ struct gve_tx_iovec {
- 	u32 iov_padding; /* padding associated with this segment */
- };
- 
--struct gve_tx_dma_buf {
--	DEFINE_DMA_UNMAP_ADDR(dma);
--	DEFINE_DMA_UNMAP_LEN(len);
--};
--
- /* Tracks the memory in the fifo occupied by the skb. Mapped 1:1 to a desc
-  * ring entry but only used for a pkt_desc not a seg_desc
-  */
-@@ -236,7 +231,10 @@ struct gve_tx_buffer_state {
- 	struct sk_buff *skb; /* skb for this pkt */
- 	union {
- 		struct gve_tx_iovec iov[GVE_TX_MAX_IOVEC]; /* segments of this pkt */
--		struct gve_tx_dma_buf buf;
-+		struct {
-+			DEFINE_DMA_UNMAP_ADDR(dma);
-+			DEFINE_DMA_UNMAP_LEN(len);
-+		};
- 	};
- };
- 
-@@ -280,7 +278,8 @@ struct gve_tx_pending_packet_dqo {
- 	 * All others correspond to `skb`'s frags and should be unmapped with
- 	 * `dma_unmap_page`.
- 	 */
--	struct gve_tx_dma_buf bufs[MAX_SKB_FRAGS + 1];
-+	DEFINE_DMA_UNMAP_ADDR(dma[MAX_SKB_FRAGS + 1]);
-+	DEFINE_DMA_UNMAP_LEN(len[MAX_SKB_FRAGS + 1]);
- 	u16 num_bufs;
- 
- 	/* Linked list index to next element in the list, or -1 if none */
-diff --git a/drivers/net/ethernet/google/gve/gve_tx.c b/drivers/net/ethernet/google/gve/gve_tx.c
-index 665ac795a1ad..9922ce46a635 100644
---- a/drivers/net/ethernet/google/gve/gve_tx.c
-+++ b/drivers/net/ethernet/google/gve/gve_tx.c
-@@ -303,15 +303,15 @@ static inline int gve_skb_fifo_bytes_required(struct gve_tx_ring *tx,
- static void gve_tx_unmap_buf(struct device *dev, struct gve_tx_buffer_state *info)
- {
- 	if (info->skb) {
--		dma_unmap_single(dev, dma_unmap_addr(&info->buf, dma),
--				 dma_unmap_len(&info->buf, len),
-+		dma_unmap_single(dev, dma_unmap_addr(info, dma),
-+				 dma_unmap_len(info, len),
- 				 DMA_TO_DEVICE);
--		dma_unmap_len_set(&info->buf, len, 0);
-+		dma_unmap_len_set(info, len, 0);
- 	} else {
--		dma_unmap_page(dev, dma_unmap_addr(&info->buf, dma),
--			       dma_unmap_len(&info->buf, len),
-+		dma_unmap_page(dev, dma_unmap_addr(info, dma),
-+			       dma_unmap_len(info, len),
- 			       DMA_TO_DEVICE);
--		dma_unmap_len_set(&info->buf, len, 0);
-+		dma_unmap_len_set(info, len, 0);
- 	}
- }
- 
-@@ -491,7 +491,6 @@ static int gve_tx_add_skb_no_copy(struct gve_priv *priv, struct gve_tx_ring *tx,
- 	struct gve_tx_buffer_state *info;
- 	bool is_gso = skb_is_gso(skb);
- 	u32 idx = tx->req & tx->mask;
--	struct gve_tx_dma_buf *buf;
- 	u64 addr;
- 	u32 len;
- 	int i;
-@@ -515,9 +514,8 @@ static int gve_tx_add_skb_no_copy(struct gve_priv *priv, struct gve_tx_ring *tx,
- 		tx->dma_mapping_error++;
- 		goto drop;
- 	}
--	buf = &info->buf;
--	dma_unmap_len_set(buf, len, len);
--	dma_unmap_addr_set(buf, dma, addr);
-+	dma_unmap_len_set(info, len, len);
-+	dma_unmap_addr_set(info, dma, addr);
- 
- 	payload_nfrags = shinfo->nr_frags;
- 	if (hlen < len) {
-@@ -549,10 +547,9 @@ static int gve_tx_add_skb_no_copy(struct gve_priv *priv, struct gve_tx_ring *tx,
- 			tx->dma_mapping_error++;
- 			goto unmap_drop;
- 		}
--		buf = &tx->info[idx].buf;
- 		tx->info[idx].skb = NULL;
--		dma_unmap_len_set(buf, len, len);
--		dma_unmap_addr_set(buf, dma, addr);
-+		dma_unmap_len_set(&tx->info[idx], len, len);
-+		dma_unmap_addr_set(&tx->info[idx], dma, addr);
- 
- 		gve_tx_fill_seg_desc(seg_desc, skb, is_gso, len, addr);
- 	}
-diff --git a/drivers/net/ethernet/google/gve/gve_tx_dqo.c b/drivers/net/ethernet/google/gve/gve_tx_dqo.c
-index 05ddb6a75c38..ec394d991668 100644
---- a/drivers/net/ethernet/google/gve/gve_tx_dqo.c
-+++ b/drivers/net/ethernet/google/gve/gve_tx_dqo.c
-@@ -85,18 +85,16 @@ static void gve_tx_clean_pending_packets(struct gve_tx_ring *tx)
- 		int j;
- 
- 		for (j = 0; j < cur_state->num_bufs; j++) {
--			struct gve_tx_dma_buf *buf = &cur_state->bufs[j];
--
- 			if (j == 0) {
- 				dma_unmap_single(tx->dev,
--						 dma_unmap_addr(buf, dma),
--						 dma_unmap_len(buf, len),
--						 DMA_TO_DEVICE);
-+					dma_unmap_addr(cur_state, dma[j]),
-+					dma_unmap_len(cur_state, len[j]),
-+					DMA_TO_DEVICE);
- 			} else {
- 				dma_unmap_page(tx->dev,
--					       dma_unmap_addr(buf, dma),
--					       dma_unmap_len(buf, len),
--					       DMA_TO_DEVICE);
-+					dma_unmap_addr(cur_state, dma[j]),
-+					dma_unmap_len(cur_state, len[j]),
-+					DMA_TO_DEVICE);
- 			}
- 		}
- 		if (cur_state->skb) {
-@@ -457,15 +455,15 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
- 	const bool is_gso = skb_is_gso(skb);
- 	u32 desc_idx = tx->dqo_tx.tail;
- 
--	struct gve_tx_pending_packet_dqo *pending_packet;
-+	struct gve_tx_pending_packet_dqo *pkt;
- 	struct gve_tx_metadata_dqo metadata;
- 	s16 completion_tag;
- 	int i;
- 
--	pending_packet = gve_alloc_pending_packet(tx);
--	pending_packet->skb = skb;
--	pending_packet->num_bufs = 0;
--	completion_tag = pending_packet - tx->dqo.pending_packets;
-+	pkt = gve_alloc_pending_packet(tx);
-+	pkt->skb = skb;
-+	pkt->num_bufs = 0;
-+	completion_tag = pkt - tx->dqo.pending_packets;
- 
- 	gve_extract_tx_metadata_dqo(skb, &metadata);
- 	if (is_gso) {
-@@ -493,8 +491,6 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
- 
- 	/* Map the linear portion of skb */
- 	{
--		struct gve_tx_dma_buf *buf =
--			&pending_packet->bufs[pending_packet->num_bufs];
- 		u32 len = skb_headlen(skb);
- 		dma_addr_t addr;
- 
-@@ -502,9 +498,9 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
- 		if (unlikely(dma_mapping_error(tx->dev, addr)))
- 			goto err;
- 
--		dma_unmap_len_set(buf, len, len);
--		dma_unmap_addr_set(buf, dma, addr);
--		++pending_packet->num_bufs;
-+		dma_unmap_len_set(pkt, len[pkt->num_bufs], len);
-+		dma_unmap_addr_set(pkt, dma[pkt->num_bufs], addr);
-+		++pkt->num_bufs;
- 
- 		gve_tx_fill_pkt_desc_dqo(tx, &desc_idx, skb, len, addr,
- 					 completion_tag,
-@@ -512,8 +508,6 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
- 	}
- 
- 	for (i = 0; i < shinfo->nr_frags; i++) {
--		struct gve_tx_dma_buf *buf =
--			&pending_packet->bufs[pending_packet->num_bufs];
- 		const skb_frag_t *frag = &shinfo->frags[i];
- 		bool is_eop = i == (shinfo->nr_frags - 1);
- 		u32 len = skb_frag_size(frag);
-@@ -523,9 +517,9 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
- 		if (unlikely(dma_mapping_error(tx->dev, addr)))
- 			goto err;
- 
--		dma_unmap_len_set(buf, len, len);
--		dma_unmap_addr_set(buf, dma, addr);
--		++pending_packet->num_bufs;
-+		dma_unmap_len_set(pkt, len[pkt->num_bufs], len);
-+		dma_unmap_addr_set(pkt, dma[pkt->num_bufs], addr);
-+		++pkt->num_bufs;
- 
- 		gve_tx_fill_pkt_desc_dqo(tx, &desc_idx, skb, len, addr,
- 					 completion_tag, is_eop, is_gso);
-@@ -552,22 +546,23 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
- 	return 0;
- 
- err:
--	for (i = 0; i < pending_packet->num_bufs; i++) {
--		struct gve_tx_dma_buf *buf = &pending_packet->bufs[i];
--
-+	for (i = 0; i < pkt->num_bufs; i++) {
- 		if (i == 0) {
--			dma_unmap_single(tx->dev, dma_unmap_addr(buf, dma),
--					 dma_unmap_len(buf, len),
-+			dma_unmap_single(tx->dev,
-+					 dma_unmap_addr(pkt, dma[i]),
-+					 dma_unmap_len(pkt, len[i]),
- 					 DMA_TO_DEVICE);
- 		} else {
--			dma_unmap_page(tx->dev, dma_unmap_addr(buf, dma),
--				       dma_unmap_len(buf, len), DMA_TO_DEVICE);
-+			dma_unmap_page(tx->dev,
-+				       dma_unmap_addr(pkt, dma[i]),
-+				       dma_unmap_len(pkt, len[i]),
-+				       DMA_TO_DEVICE);
- 		}
- 	}
- 
--	pending_packet->skb = NULL;
--	pending_packet->num_bufs = 0;
--	gve_free_pending_packet(tx, pending_packet);
-+	pkt->skb = NULL;
-+	pkt->num_bufs = 0;
-+	gve_free_pending_packet(tx, pkt);
- 
- 	return -1;
- }
-@@ -725,12 +720,12 @@ static void add_to_list(struct gve_tx_ring *tx, struct gve_index_list *list,
- 
- static void remove_from_list(struct gve_tx_ring *tx,
- 			     struct gve_index_list *list,
--			     struct gve_tx_pending_packet_dqo *pending_packet)
-+			     struct gve_tx_pending_packet_dqo *pkt)
- {
- 	s16 prev_index, next_index;
- 
--	prev_index = pending_packet->prev;
--	next_index = pending_packet->next;
-+	prev_index = pkt->prev;
-+	next_index = pkt->next;
- 
- 	if (prev_index == -1) {
- 		/* Node is head */
-@@ -747,21 +742,18 @@ static void remove_from_list(struct gve_tx_ring *tx,
- }
- 
- static void gve_unmap_packet(struct device *dev,
--			     struct gve_tx_pending_packet_dqo *pending_packet)
-+			     struct gve_tx_pending_packet_dqo *pkt)
- {
--	struct gve_tx_dma_buf *buf;
- 	int i;
- 
- 	/* SKB linear portion is guaranteed to be mapped */
--	buf = &pending_packet->bufs[0];
--	dma_unmap_single(dev, dma_unmap_addr(buf, dma),
--			 dma_unmap_len(buf, len), DMA_TO_DEVICE);
--	for (i = 1; i < pending_packet->num_bufs; i++) {
--		buf = &pending_packet->bufs[i];
--		dma_unmap_page(dev, dma_unmap_addr(buf, dma),
--			       dma_unmap_len(buf, len), DMA_TO_DEVICE);
-+	dma_unmap_single(dev, dma_unmap_addr(pkt, dma[0]),
-+			 dma_unmap_len(pkt, len[0]), DMA_TO_DEVICE);
-+	for (i = 1; i < pkt->num_bufs; i++) {
-+		dma_unmap_page(dev, dma_unmap_addr(pkt, dma[i]),
-+			       dma_unmap_len(pkt, len[i]), DMA_TO_DEVICE);
- 	}
--	pending_packet->num_bufs = 0;
-+	pkt->num_bufs = 0;
- }
- 
- /* Completion types and expected behavior:
--- 
-2.29.2
+Hans
 
