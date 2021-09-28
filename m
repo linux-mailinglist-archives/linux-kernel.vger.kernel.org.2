@@ -2,29 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17D941BA29
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C12B41BA2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243072AbhI1WYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:24:42 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:49303 "EHLO
+        id S243098AbhI1WYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:24:44 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:52691 "EHLO
         relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243032AbhI1WYl (ORCPT
+        with ESMTP id S243040AbhI1WYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Sep 2021 18:24:41 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 1133F100004;
-        Tue, 28 Sep 2021 22:22:58 +0000 (UTC)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0C3DF100005;
+        Tue, 28 Sep 2021 22:22:59 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 0/9] Keep on-die ECC engines compatibility
-Date:   Wed, 29 Sep 2021 00:22:39 +0200
-Message-Id: <20210928222258.199726-1-miquel.raynal@bootlin.com>
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org
+Subject: [PATCH 1/9] mtd: rawnand: ams-delta: Keep the driver compatible with on-die ECC engines
+Date:   Wed, 29 Sep 2021 00:22:40 +0200
+Message-Id: <20210928222258.199726-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210928222258.199726-1-miquel.raynal@bootlin.com>
+References: <20210928222258.199726-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -32,41 +35,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent changes broke the possibility to set the desired ECC engine type
-from DT, this is of course an error and needed to be fixed. The fix
-applies to all drivers which already received a previous incomplete fix
-(about SW support). Hopefully this time we should be good. Sorry for the
-noise.
+Following the introduction of the generic ECC engine infrastructure, it
+was necessary to reorganize the code and move the ECC configuration in
+the ->attach_chip() hook. Failing to do that properly lead to a first
+series of fixes supposed to stabilize the situation. Unfortunately, this
+only fixed the use of software ECC engines, preventing any other kind of
+engine to be used, including on-die ones.
 
-Miquel Raynal (9):
-  mtd: rawnand: ams-delta: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: au1550nd: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: gpio: Keep the driver compatible with on-die ECC engines
-  mtd: rawnand: mpc5121: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: orion: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: pasemi: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: plat_nand: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: socrates: Keep the driver compatible with on-die ECC
-    engines
-  mtd: rawnand: xway: Keep the driver compatible with on-die ECC engines
+It is now time to (finally) fix the situation by ensuring that we still
+provide a default (eg. software ECC) but will still support different
+ECC engines such as on-die ECC engines if properly described in the
+device tree.
 
- drivers/mtd/nand/raw/ams-delta.c     | 12 +++++++++---
- drivers/mtd/nand/raw/au1550nd.c      | 12 +++++++++---
- drivers/mtd/nand/raw/gpio.c          | 12 +++++++++---
- drivers/mtd/nand/raw/mpc5121_nfc.c   | 12 +++++++++---
- drivers/mtd/nand/raw/orion_nand.c    | 12 +++++++++---
- drivers/mtd/nand/raw/pasemi_nand.c   | 12 +++++++++---
- drivers/mtd/nand/raw/plat_nand.c     | 12 +++++++++---
- drivers/mtd/nand/raw/socrates_nand.c | 12 +++++++++---
- drivers/mtd/nand/raw/xway_nand.c     | 12 +++++++++---
- 9 files changed, 81 insertions(+), 27 deletions(-)
+There are no changes needed on the core side in order to do this, but we
+just need to leverage the logic there which allows:
+1- a subsystem default (set to Host engines in the raw NAND world)
+2- a driver specific default (here set to software ECC engines)
+3- any type of engine requested by the user (ie. described in the DT)
 
+As the raw NAND subsystem has not yet been fully converted to the ECC
+engine infrastructure, in order to provide a default ECC engine for this
+driver we need to set chip->ecc.engine_type *before* calling
+nand_scan(). During the initialization step, the core will consider this
+entry as the default engine for this driver. This value may of course
+be overloaded by the user if the usual DT properties are provided.
+
+Fixes: 59d93473323a ("mtd: rawnand: ams-delta: Move the ECC initialization to ->attach_chip()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/ams-delta.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index ff1697f899ba..13de39aa3288 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -217,9 +217,8 @@ static int gpio_nand_setup_interface(struct nand_chip *this, int csline,
+ 
+ static int gpio_nand_attach_chip(struct nand_chip *chip)
+ {
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+-
+-	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
++	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+ 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+ 
+ 	return 0;
+@@ -370,6 +369,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	/* Release write protection */
+ 	gpiod_set_value(priv->gpiod_nwp, 0);
+ 
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(this, 1);
+ 	if (err)
 -- 
 2.27.0
 
