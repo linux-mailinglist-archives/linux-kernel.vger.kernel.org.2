@@ -2,186 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96A641B9E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A5241B9E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243022AbhI1WIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243003AbhI1WIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:08:34 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF415C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:06:54 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id z11so377000oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:06:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=effDV9d5OmNZrGxqUk8CTE8A/T/EuPuDDVYR8FNgEWs=;
-        b=GVgM+nTmQ6QV3mkHwerkjmCVPFjCuhYNJDSHq+HtUS/F6QXGGPzOwrllVC7bQhSahx
-         mRIuwE3gSs3CiI/LyuCtHzuAnDd7Z39xeQHCQSW1xXbqW0NoJ9z0nTHTS1DR773wEAac
-         rDy6JhftuOid5NmknNq+yoIYWCZVfISrsCeiKh70NYOK/sy48zfPumNfSHm7iZHPyVWI
-         JX2DxSDse7/L6J8LCp0jWWLJG5GmqodrD5iKY43djCy/T6ukXyB4+PBr3PQuCc+FJHrn
-         UCACOOdqqePDEln7m/T9oZRFzP9CVc3vsLFYGnRDlWy2GwD2gvrcXyvyFeCk0B76Buoj
-         mowg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=effDV9d5OmNZrGxqUk8CTE8A/T/EuPuDDVYR8FNgEWs=;
-        b=kXcaW5DAUbzGClkj7uY3P2PLL2/tT+6/ZlITUNOA8GtBle7FXSi5gkxApcRcqiBnWB
-         3HRsVLBv8Vks7BbPx51999NEGkOr3s7C0TNN4j5/JIh952igfEJDpiO5NHmi/9hZjFkE
-         9bPtWtc53t71dt/z/rYww3ojFT/NWLX07hqGDT9QYJK6UamltpykhaeFod3TpU/zDeKk
-         HhDL7R/+SAcZnI7oE9kz1y19heRorycAfV8B+s8fMxaF++HlM3YD9d3ZGMR1k8ZNV+3d
-         rQVsMlsNCYcxZOQZ4TCyvKDw/A2f5rEklPtmdJwGwJPaD7Qo/LDN6NdeOVnnCoUnFUcT
-         RHYA==
-X-Gm-Message-State: AOAM532MWUEeL8s0a/rW+Z+RIFL/8Iv5H33TdAvHhxlI4ShHjh4PJluY
-        y92rjivNWzrxeEANl6EVcUrjAw==
-X-Google-Smtp-Source: ABdhPJzdy8rmbIC41Eu3O5T5PBIiLcjLW+4W8uW3AewciBlIgGdKG2BGfC2z0QapA5TW34hFez55BA==
-X-Received: by 2002:aca:6283:: with SMTP id w125mr5509711oib.133.1632866813979;
-        Tue, 28 Sep 2021 15:06:53 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h5sm76192oti.58.2021.09.28.15.06.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 15:06:53 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 17:06:51 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Andy Gross <agross@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: soc: smem: Make indirection optional
-Message-ID: <YVOR+/xfdRUwGt5D@builder.lan>
-References: <20210928044546.4111223-1-bjorn.andersson@linaro.org>
- <YVLszZ7U7D91oIH2@gerhold.net>
- <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
- <YVNVj68WjBBXef3h@yoga>
- <CAL_Jsq+pLhWMeObzbq2xQVK3+vVLqd3L0BNGd=CCZmhVZM8dDw@mail.gmail.com>
+        id S242998AbhI1WJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:09:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242494AbhI1WJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:09:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DEAA61357;
+        Tue, 28 Sep 2021 22:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632866859;
+        bh=s29u+ndGckzyi3RdYvXQRzn9okKr6F7XeNAuFwFBAEI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mbRghuJx0LY9gMG60LB8EEezX9DZZfcdAXycn0LE760bC8X75ZWJ88gmHtK9y3joL
+         WZZW/27NzHzhj86qfoAp6Hd3COJaGwyCYyumJVY3O/4HBnE9o4TW9cM1tzpMB/+lPz
+         S4vLw6SrdHQmMRH+sxFfAzO16WhsDW3jop8n01/ljkU3u2SmUzOFQw4xeY4qhIuUth
+         iQc5Mswmk9zOYrnVajl6v2t0bQH3X5SW1y6GKYd60ioGlu3QpskSUbSka4wXk0MshI
+         6OnuiZJek+kVHIfXmoX7O5UEdilCq4IjZOms9vmwwHhAybBbCK+rnAgHLSBbZY55vZ
+         KtyZMPgO989CQ==
+Date:   Wed, 29 Sep 2021 00:07:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Carlos Bilbao <bilbao@vt.edu>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/17] ABI: sysfs-bus-pci: add a alternative What fields
+Message-ID: <20210929000734.77328446@coco.lan>
+In-Reply-To: <20210928183403.GA715406@bhelgaas>
+References: <15ba8c07f1b0fd7359106920c8e34a7b9af7aea6.1632750608.git.mchehab+huawei@kernel.org>
+        <20210928183403.GA715406@bhelgaas>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+pLhWMeObzbq2xQVK3+vVLqd3L0BNGd=CCZmhVZM8dDw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28 Sep 14:51 CDT 2021, Rob Herring wrote:
+Em Tue, 28 Sep 2021 13:34:03 -0500
+Bjorn Helgaas <helgaas@kernel.org> escreveu:
 
-> On Tue, Sep 28, 2021 at 12:49 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Tue 28 Sep 12:34 CDT 2021, Rob Herring wrote:
-> >
-> > > On Tue, Sep 28, 2021 at 5:22 AM Stephan Gerhold <stephan@gerhold.net> wrote:
-> > > >
-> > > > On Mon, Sep 27, 2021 at 09:45:44PM -0700, Bjorn Andersson wrote:
-> > > > > In the olden days the Qualcomm shared memory (SMEM) region consisted of
-> > > > > multiple chunks of memory, so SMEM was described as a standalone node
-> > > > > with references to its various memory regions.
-> > > > >
-> > > > > But practically all modern Qualcomm platforms has a single reserved memory
-> > > > > region used for SMEM. So rather than having to use two nodes to describe
-> > > > > the one SMEM region, update the binding to allow the reserved-memory
-> > > > > region alone to describe SMEM.
-> > > > >
-> > > > > The olden format is preserved as valid, as this is widely used already.
-> > > > >
-> > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > ---
-> > > > >  .../bindings/soc/qcom/qcom,smem.yaml          | 34 ++++++++++++++++---
-> > > > >  1 file changed, 30 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
-> > > > > index f7e17713b3d8..4149cf2b66be 100644
-> > > > > --- a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
-> > > > > [...]
-> > > > > @@ -43,6 +55,20 @@ examples:
-> > > > >          #size-cells = <1>;
-> > > > >          ranges;
-> > > > >
-> > > > > +        smem@fa00000 {
-> > > >
-> > > > I think this is a good opportunity to make a decision which node name
-> > > > should be used here. :)
-> > >
-> > > reserved-memory node names are kind of a mess, so I haven't tried for
-> > > any standard... It needs to be solved globally.
-> > >
-> >
-> > I'd be happy to paint the shed any color you decide :)
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > index 1eeac7f59672..16afe3f59cbd 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -1,4 +1,5 @@
+> >  What:		/sys/bus/pci/drivers/.../bind
+> > +What:		/sys/devices/pciX/.../bind  
 > 
-> I didn't ask for it to be painted. Unless it is for everyone, I don't
-> care unless there's some clear pattern used already.
+> Wasn't somebody just updating these wildcard-ish items in pathnames?
 > 
+> Ah, it was you :)
+> 
+>   https://lore.kernel.org/all/4ede4ec98e295f054f3e5a6f3f9393b5e3d5d2a7.1631782432.git.mchehab+huawei@kernel.org/
+> 
+> Changing "virtfnN" to "virtfn<N>".
+> 
+> Is that same sort of thing applicable here?  My system has
+> 
+>   /sys/devices/pci0000:00/...
 
-As Stephan indicated, I feel that I'll set precedence when I change
-"memory" -> "smem" in the last patch.
+Yes and no ;-)
 
-> > That said, the binding itself doesn't mandate any node name, so it's
-> > just the example here that would be "wrong" - and just as wrong as it
-> > currently is.
-> 
-> The example is right. The dts is wrong.
-> 
+See, there are lots of places under Documentation/ABI that already use
+X, Y and Z uppercase letters to identify wildcards. As there aren't any
+sysfs entries that have those uppercase letters, I opted to teach the 
+get_abi.pl script to threat such uppercase chars as wildcards. The same
+can't be done with N, because the USB subsystem (and a couple of other
+ABIs) use uppercase N as valid symbols like "bNum.*".
 
-But I can't both not paint the node and resolve the fact that the dts is
-wrong. So which one should I go with?
+Long term, one alternative would be to replace the What fields by a 
+regular expressions on ABI. That would avoid some magic inside 
+get_abi.pl. However, a change like that would require touching almost
+all files, and has a drawback to make them more obscure - even
+if we use named group regexes.
 
-Should we leave the node name as is until we've decided what to do with
-the reserved-memory children? Or should I start accepting patches that
-changes "memory" to a list of non-generic names?
-
-> Perhaps we need a schema for 'any node name that doesn't match already
-> defined ones'.
-> 
-> > > > You use smem@ here but mentioned before that you think using the generic
-> > > > memory@ would be better [1]. And you use memory@ in PATCH 3/3:
-> > > >
-> > > > -               smem_mem: memory@86000000 {
-> > > > +               memory@86000000 {
-> > > > +                       compatible = "qcom,smem";
-> > > >                         reg = <0x0 0x86000000 0 0x200000>;
-> > > >                         no-map;
-> > > > +                       hwlocks = <&tcsr_mutex 3>;
-> > > >                 };
-> > > >
-> > > > However, if you would use memory@ as example in this DT schema,
-> > > > Rob's bot would complain with the same error that I mentioned earlier [2]:
-> > > >
-> > > > soc/qcom/qcom,smem.example.dt.yaml: memory@fa00000: 'device_type' is a required property
-> > > >         From schema: dtschema/schemas/memory.yaml
-> > > >
-> > > > We should either fix the error when using memory@ or start using some
-> > > > different node name (Stephen Boyd suggested shared-memory@ for example).
-> > > > Otherwise we'll just keep introducing more and more dtbs_check errors
-> > > > for the Qualcomm device trees.
-> > >
-> > > A different node name. A node name should only have 1 meaning and
-> > > 'memory' is already defined.
-> > >
-> > > The main issue here is what to name nodes with only a size and no address.
-> > >
-> >
-> > This particular node has both address and size (as does all of the other
-> > reserved-memory regions we use upstream today)...
-> 
-> I'm not talking about *just* QCom. If we define something here, it's
-> got to cover everyone.
-> 
-> In summary, you can't use 'memory' or anything other established,
-> standard node name.
-> 
-
-I know that "memory" is wrong, but I'm not sure about what you're asking
-me to do.
-
-Regards,
-Bjorn
+Thanks,
+Mauro
