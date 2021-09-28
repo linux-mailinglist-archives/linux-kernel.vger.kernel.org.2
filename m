@@ -2,116 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB67C41B10B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4697841B10C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbhI1Npi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233878AbhI1Nph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:45:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E50B60FE8;
-        Tue, 28 Sep 2021 13:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632836637;
-        bh=cs5n98qHfQZYLy19Er8FYJReHQtg5Zp1lA6UsfoorMQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S20gXJdb+xfcew7LZYB2dAiUCXsLj60iH9XYu6a6GOb/kezOEd/+/VuQAn9zl6p6F
-         U5V7pX62IKg5uG+jCb1IfZhA3qo7BGnCVBJyanEjd4BSA6dueCjtSvfyzf6ink4Vtd
-         R+kblBnMJE/rf1W19/FnLbq4afzgfgdoph0bdsgHbALMiG6HHQtXal8s8NQnYn1Wfu
-         Wzop9l2ub9Db92hUTSR8FqnRphl6uqNY/tdIBilJzatJkxkFj2JFQeT7+m7ixdhn/2
-         AmRbvjA/Ss0xOxogeyPYSsRAnWQnB2AvszpUESuw+bjMW06cUQefULWU2LVqIicEzM
-         oICAm0DV0uKCQ==
-Date:   Tue, 28 Sep 2021 15:43:53 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/3] get_abi: improve message output and fix a
- regression
-Message-ID: <20210928154353.2e6656bb@coco.lan>
-In-Reply-To: <20210928142739.2ffe380b@coco.lan>
-References: <cover.1632823172.git.mchehab+huawei@kernel.org>
-        <YVL2trHQzxG59nXf@kroah.com>
-        <20210928142739.2ffe380b@coco.lan>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S240992AbhI1NqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhI1NqJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:46:09 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864BAC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:44:30 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id b68so1041284pfb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=7ja0XozVd7y80XE0uGQWN2OMm1bbwznxjzhfYayeoPM=;
+        b=a+NF+MOJvnw4LuEBXtGKXePfU5esmqV/hrbHqSrBCn7y6KL0rUY7kE+uPHrlrhUFl7
+         aBxSGGX87SK3RRygpVIo9Iz6p6xby9hFV7GKH64Y8K29usoN6qcUkfibyQa3VbyBTHYJ
+         0SZCNwgcONdgsFxShDv4akSF8sCWvh3sB2A+Ybfpvhba6HVV3E+x8jvKz/0k41+IGxRU
+         /pdA1emRhdAfKJCjLREBLKJbqBt80PcC71ZyB0iaIrPyCklCE2wRsmhmKt1RPsph5r9E
+         QWcsv9kmEXa+2cswqvVn5DIqObebJobIelC6iKBosVjnymFF/4Pps+eLoh19KwjpQWre
+         qUZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=7ja0XozVd7y80XE0uGQWN2OMm1bbwznxjzhfYayeoPM=;
+        b=lZ8T0BBmY3G4qm0F8VQhWK/359XyDc22jDGVFOf9AK9khLuVU+gQLkH6lpLi9IFedl
+         cQJ7EG8qnDawuDOMDh0ZOYrvDHF5XxkYsxM3zFieS3jr/WIk/BvwV6CrYyrMXKNqJ1ps
+         /w9ExBWbvCjf1Un4cSMEoHFruSz//sZYOtZ7MzrBjkCa1aPhanJv4Y+sIhP+Ot6CLLVh
+         53Oe73tQ7W4kO5onHwL38YK6ZA4h8KmY64AXnclwuePkXpc0nnxHYh9kJAZchyuYey6A
+         +afGiK/ZA0DJXzz8R13ixLVtvqQk0oWBll8+N6hQKdNCGauEM4y/DcEUkwH8JvIVwWvo
+         5x4A==
+X-Gm-Message-State: AOAM533MgAhTgF7g4z25B8dk+seAYdf0bwctRM4NwdV29Df5qSv2ZBtD
+        o2QamOgbaSVub8PX96kPToqJuwEnnsdMONp63NI=
+X-Google-Smtp-Source: ABdhPJy9fIiJwZ2mNo00akjGuTQT5MaGNevubfWO7LOSIpqZZL6NVBfxRFYlT5FsE2f9s5tTAZh88sFKWEpu7JlVcjs=
+X-Received: by 2002:a63:5956:: with SMTP id j22mr4689141pgm.58.1632836670148;
+ Tue, 28 Sep 2021 06:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:90a:1610:0:0:0:0 with HTTP; Tue, 28 Sep 2021 06:44:28
+ -0700 (PDT)
+Reply-To: lindabenson16abc@gmail.com
+From:   linda <lb423492@gmail.com>
+Date:   Tue, 28 Sep 2021 15:44:28 +0200
+Message-ID: <CACaFKJYB4Omhf9NyYbzrJpaXf-qFr1LHu7YGgetw-fqQtQKy3Q@mail.gmail.com>
+Subject: DEAR
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 28 Sep 2021 14:27:39 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Hello
+i am Linda and i am 17 years old orphan. i need your support and trust
+in the transfer of my inheritance left by my late father into a safe
+account in your country. i will give more details as soon as i get
+your response.
 
-> Em Tue, 28 Sep 2021 13:04:22 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> 
-> > On Tue, Sep 28, 2021 at 12:14:01PM +0200, Mauro Carvalho Chehab wrote:  
-> > > Hi Greg,
-> > > 
-> > > As promised on
-> > > 
-> > > 	https://lore.kernel.org/lkml/20210928120304.62319fba@coco.lan/T/#u
-> > > 
-> > > I'm adding progress info when  get_abi.pl is checking for undefined ABI symbols
-> > > on patches 1 and 2.
-> > > 
-> > > That will help not only to identify what is causing delays on the script, but also
-> > > to notify the user that processing it could take some time on some systems.
-> > > 
-> > > If you run it on your big server with:
-> > > 
-> > >   scripts/get_abi.pl undefined 2>logs
-> > > 
-> > > The "logs" file will contain timestamps relative to the time the script started to
-> > > do the regex matches for sysfs files. It should be printing one line every
-> > > time the progress completes 1% or one second after the last progress output.    
-> > 
-> > Adding more debugging and tweaking the script a bit to show the file it
-> > is about to check, not the one it finished checking,  
-> 
-> Feel free to modify the script and add such debug/tweaks if you find
-> it useful. 
-> 
-> > I got the following
-> > debug output that seems to pinpoint the problem file.
-> > 
-> > The sysfs file that is causing problems is:
-> > 	/sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap
-> > 
-> 
-> Btw, I just got an arm64 server with 128 CPUs for testing. I'm trying
-> to allocate also a big x86 server here, but I'm not sure if it is AMD or
-> Intel.
-
-Some tests on a Gigabyte R182-Z91-00 server, equipped with AMD EPYC 7352 
-24-Core Processors (total 96 threads):
-
-	$ find /sys |wc -l
-	233981
-
-	$ time ./scripts/get_abi.pl undefined >undefined 2>logs
-
-	real	0m38.917s
-	user	0m34.554s
-	sys	0m4.292s
-
-PS.: this machine doesn't have anything at /sys/class/iommu.
-
-On a Huawei TaiShan 200 (Model 2280) with 128 ARM cores:
-
-	$ find /sys |wc -l
-	99362
-	$ time ./scripts/get_abi.pl undefined >undefined 2>logs
-
-	real	0m29.311s
-	user	0m26.173s
-	sys	0m3.061s
-
-Both machines are using Perl 5.26.
-
-Thanks,
-Mauro
+Thanks
