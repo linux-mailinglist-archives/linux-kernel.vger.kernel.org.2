@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202A341B4C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4DD41B4CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241977AbhI1RPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241894AbhI1RPQ (ORCPT
+        id S241967AbhI1RSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:18:05 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:51360 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241935AbhI1RSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:15:16 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5323C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:13:31 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d8so20557171qtd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:13:31 -0700 (PDT)
+        Tue, 28 Sep 2021 13:18:04 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id D6C7F81FE6;
+        Tue, 28 Sep 2021 20:16:22 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3Xx8rNIZkvMliD68DmgFcYOoQ1tpCBrX2+RD4NaKqi4=;
-        b=LanYIHwLUugO1SYhA4R1tjx/4/Za+1W69P8OiSvyrQXmlYAdpbyB85E23JmtXfGDHt
-         wDUzXSyVeUosO2AwtC5ep6h56UygytauvIz8Qdi86oR2WYIgror7+r5XdKdNZJMXADW2
-         teFMQtLGF7zsP8hzV4AhfTM5awwdCuByO0G9yhkwWenLgruL7//YkdwrSbP1PqEhcnI1
-         xUu62EKpnImnUhUZbYkhDetuXiAugos4PsWbBV0yxXz9ylLSun90NzDflFzhWGUHiSz7
-         yZUUnYjocHsdZep+d5DWuEVLKnZME54O4Wvij6NNlm4cWTy92Y5NiAt/MEFNlvAFiMmx
-         Tqgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3Xx8rNIZkvMliD68DmgFcYOoQ1tpCBrX2+RD4NaKqi4=;
-        b=Z7ZINawFo4DqnlMHm9BEV0dThK+JPOxTbQuha0k3ZM+GTpErECn4F15MrVMb/wXwfJ
-         /rRCxMK7diPgxpbpJ53lwB9XYSfK0sLc8gRDxBRoDDSWF0uojbmz4jKWlcGu2S0iCWVz
-         0nig+97FOPCGIjn9SsaZ+J3auLbqfB5c4ZLe1OsnNzNcvG+Z9c4YEv8Gesg/BGRjWblf
-         J6X/rj/8vyrYN3tI+57IaBIp2FWExnyNT0Ou9Rh7XcipPraTf7gjfpjSIxH801CN+b+P
-         ZMm/u1P1a0MHKmVPjxdlgttvS74u0H/qLFuvGCZnjxzpsYKaArRv4gHoeerZZL5tNyZN
-         H2og==
-X-Gm-Message-State: AOAM530QryAHW/dljVuf7yMXVJ1nB9/pT4wHopiU8c15mcVpC3fmIPfJ
-        V4Z6y8an2t+GAQFh92xf5JoEFQ==
-X-Google-Smtp-Source: ABdhPJwySofKZpBkD7jy6Vdb6WsNA3yiKbulrnJQTRUb8BGGkmyWflBOTfaYOzfqm6nDJlcs8e0wag==
-X-Received: by 2002:a05:622a:178b:: with SMTP id s11mr7167370qtk.13.1632849210891;
-        Tue, 28 Sep 2021 10:13:30 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id p12sm14912297qkj.54.2021.09.28.10.13.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 10:13:30 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVGfZ-007Dzq-MQ; Tue, 28 Sep 2021 14:13:29 -0300
-Date:   Tue, 28 Sep 2021 14:13:29 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        christian.koenig@amd.com, daniel.vetter@ffwll.ch,
-        galpress@amazon.com, sleybo@amazon.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, dledford@redhat.com,
-        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
-        hch@lst.de, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v6 1/2] habanalabs: define uAPI to export FD for DMA-BUF
-Message-ID: <20210928171329.GF3544071@ziepe.ca>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <20210912165309.98695-2-ogabbay@kernel.org>
+        d=paragon-software.com; s=mail; t=1632849382;
+        bh=q9FQW1NyPX+/PEIXZoUtfUROqa82bC7XxrBaUVEa47g=;
+        h=Date:To:CC:From:Subject;
+        b=Jn1HIwncXV3i6cPUwtI4YlFT5xHagzc+ohiRu/AKMhvQcqH6j8xiU+xdW+x3xCZFv
+         7vn0Rgc/SsFBA19DWM1kcnpM5MGOQz+W5duFqUHtYDs77IW6exfr7C0CEXiFJy1vB5
+         OpOV6NnZinexR4bStw6PDfJ69+u47eD1/mK+wwvs=
+Received: from [192.168.211.85] (192.168.211.85) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 28 Sep 2021 20:16:22 +0300
+Message-ID: <a7c2e6d3-68a1-25f7-232e-935ae9e5f6c8@paragon-software.com>
+Date:   Tue, 28 Sep 2021 20:16:20 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210912165309.98695-2-ogabbay@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <kari.argillander@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v2 0/3] fs/ntfs3: Refactoring of super.c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.85]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 07:53:08PM +0300, Oded Gabbay wrote:
->  	/* HL_MEM_OP_* */
->  	__u32 op;
-> -	/* HL_MEM_* flags */
-> +	/* HL_MEM_* flags.
-> +	 * For the HL_MEM_OP_EXPORT_DMABUF_FD opcode, this field holds the
-> +	 * DMA-BUF file/FD flags.
-> +	 */
->  	__u32 flags;
->  	/* Context ID - Currently not in use */
->  	__u32 ctx_id;
-> @@ -1072,6 +1091,13 @@ struct hl_mem_out {
->  
->  			__u32 pad;
->  		};
-> +
-> +		/* Returned in HL_MEM_OP_EXPORT_DMABUF_FD. Represents the
-> +		 * DMA-BUF object that was created to describe a memory
-> +		 * allocation on the device's memory space. The FD should be
-> +		 * passed to the importer driver
-> +		 */
-> +		__u64 fd;
+Fix memory leak in ntfs_discard.
+Reject mount so we won't corrupt fs.
+Refactor ntfs_init_from_boot function.
 
-fd's should be a s32 type in a fixed width uapi.
+v2:
+  Fixed wrong patch 1/3.
+  Merged two changes to the same piece of code.
 
-I usually expect to see the uapi changes inside the commit that
-consumes them, splitting the patch like this seems strange but
-harmless.
+Konstantin Komarov (3):
+  fs/ntfs3: Fix memory leak if fill_super failed
+  fs/ntfs3: Reject mount if boot's cluster size < media sector size
+  fs/ntfs3: Refactoring of ntfs_init_from_boot
 
-Jason
+ fs/ntfs3/ntfs_fs.h |  2 --
+ fs/ntfs3/super.c   | 36 +++++++++++++++++++++++++-----------
+ 2 files changed, 25 insertions(+), 13 deletions(-)
+
+-- 
+2.33.0
+
