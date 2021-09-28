@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E52041AEE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE86341AEE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240595AbhI1MZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:25:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240426AbhI1MZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:25:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 387886101E;
-        Tue, 28 Sep 2021 12:23:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632831808;
-        bh=03/X04FU8UxgwY9Mo44SL71H8TSm+bohH5WJX8dDLIM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lXMQvuUeDrOCpRx58iDmKbIyMuSR7PFdyV6WSvhmNLnwTdy7J6qzqmgP4RhhKAr5W
-         UvM/K2ZUJQSrsnYxKBWDVFQXv+jcM6keKcw202J4p1+kx9uj2f1AXr2rkN/fD/8tcG
-         9wASBGQkch33emvuAHSyBCuLfbqtHGLPZO7F/7yDDG+XobvW7qWLQZc+il4FxSQLal
-         2vkqYtcLcJXtz76iKAbtzKEMDR6o/EbxRgzCfx4rivClk+fMLrCPHbm2w/Y2RCnA0N
-         jdvt7THT496W/bXzRQCDV9D0dWtaemplMu7moy4lnNGvAh0uGuUT1AxnJYQnWI8qGG
-         Ipw9xGp1yZ4jw==
-Received: by mail-wm1-f50.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so2103978wmq.1;
-        Tue, 28 Sep 2021 05:23:28 -0700 (PDT)
-X-Gm-Message-State: AOAM532gIumjb6EKUrOuRnRm77+S82ub144MPuwqFmcojd1rzjFj1nbG
-        RCNwfDyQ2FjNlWXYm1Q56A8GnixNvo+fEuQuTAo=
-X-Google-Smtp-Source: ABdhPJxYldORYw+hO1zWq/uLFvhSnh5cxNha2dBDAYRrpPQ4C27UAAvrZ0nnDHSRNRZxLVjpogTo9BmSECl/om/jbF0=
-X-Received: by 2002:a1c:7413:: with SMTP id p19mr4467363wmc.98.1632831795912;
- Tue, 28 Sep 2021 05:23:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928075216.4193128-1-arnd@kernel.org> <20210928115856.GK4199@sirena.org.uk>
-In-Reply-To: <20210928115856.GK4199@sirena.org.uk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 28 Sep 2021 14:22:59 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a05oRxgncJb04+niAKSO_2Adki03a04tnj8YuQT=Py54A@mail.gmail.com>
-Message-ID: <CAK8P3a05oRxgncJb04+niAKSO_2Adki03a04tnj8YuQT=Py54A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] firmware: include drivers/firmware/Kconfig unconditionally
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S240612AbhI1MZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240426AbhI1MZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:25:24 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BD8C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:23:45 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so2673269pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=4GeZ/5gk5iC0Am0p5VWsBHcc/TF1iKy05S6f2LF/3lk=;
+        b=Qi70LZqc9eZo81OU15I3zbLToEhnqCU/ZzYn3ocgSkEtpAd2KZ0FcM021XOaiwbMxE
+         jr/hWM/DvkdOD6K3lDfxi4s3NbomrFybjalsq0aMwSPa1NVUKofO4Hwunp9samcjguqt
+         VK9KudzoqITsQTZ1FhxEMC6FhjOKd5eL0dd2eChuYLXtWwl4kT7KrKwgdyjlmgHidi4N
+         9CQL7MFsmGVkLnHRAqfUO2g57iCZlZlvSnVBoCFUwdXBSov85VK+i6DbUipPbY/ybPX8
+         XyHQxef7c03no+HSUTweOPg/5Mr0IL5Bm++hc0LzRcrEUAlzTO7l9CArhsyaJ1c4wOzr
+         OXmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4GeZ/5gk5iC0Am0p5VWsBHcc/TF1iKy05S6f2LF/3lk=;
+        b=Mh+tBZxPCjNxdgdbUg4U0WPNlM0qH9w9dQ1H6rsLWA/wWn0K2NEPFf7OaJkxnYlk3t
+         Vr3kPQK8GfOav0MLJ6pyYAghWtAW/GGc7c/T96M0vAARcM2vzJ4A2XBBpZcOZ7cCCzDR
+         LuAsCabIxgA/YFtzlP9ohfF8GiVEo19Z4niePG25xaNHI+6IobSS1TPV9VxRcscJOnRY
+         UsPAZD9W8gLU/91v/TRq6zp4MlYwtc78qbDgmvYl3aGO6xwxyU0xJEA+9J3BgPhiTmxZ
+         FV3JhZMknc1mFcfNe/WD+a6Ul3lv7vm4L1eOEwuWktZkycYuYq0owXxTTcuzBfmudq5u
+         e1uQ==
+X-Gm-Message-State: AOAM5336rdbuueUuHeJ/cw9E+XyK5iVKx008jR1h5rW6Ieudw0cHsvUo
+        dhaJyyETdp4VLVPf2JIAYN8=
+X-Google-Smtp-Source: ABdhPJzS5wspBeT9oC9SmWiBIy1yKl+3CWyU7OrYZkOXgu6I7R88L8eFhORPmuw24fJDQhTS6VzHdg==
+X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr5169225pju.231.1632831824876;
+        Tue, 28 Sep 2021 05:23:44 -0700 (PDT)
+Received: from bj10083pcu01.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id z85sm8874518pfc.162.2021.09.28.05.23.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Sep 2021 05:23:44 -0700 (PDT)
+From:   Liangcai Fan <liangcaifan19@gmail.com>
+To:     liangcai.fan@unisoc.com, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        zhang.lyra@gmail.com, Liangcai Fan <liangcaifan19@gmail.com>
+Subject: [PATCH] mm: Set min_free_kbytes with user_min_free_kbytes when user_min_free_kbytes is preferred
+Date:   Tue, 28 Sep 2021 20:23:17 +0800
+Message-Id: <1632831797-32192-1-git-send-email-liangcaifan19@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 1:58 PM Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Sep 28, 2021 at 09:50:26AM +0200, Arnd Bergmann wrote:
->
-> > Not sure how we'd want to merge this patch, if two other things
-> > need it. I'd prefer to merge it along with the QCOM_SCM change
-> > through the soc tree, but that leaves the cirrus firmware broken
-> > unless we also merge it the same way (rather than through ASoC
-> > as it is now).
->
-> We could also merge a tag into both places.
+The 'min_free_kbytes' and 'user_min_free_kbytes' maybe inconsistent
+after a few times of memory hotplug.
+When 'new_min_free_kbytes' is not larger than 'user_min_free_kbytes',
+set 'min_free_kbytes' with 'user_min_free_kbytes' rather than leave
+it as the 'new_min_free_kbytes' calculated for the last time.
 
-I wonder if I should just take my two patches as bugfixes for 5.15,
-after all they do address real build failures. In that case, all  you need
-is a merge with 5.15-rc4 or higher.
+Signed-off-by: Liangcai Fan <liangcaifan19@gmail.com>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+---
+ mm/page_alloc.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-      Arnd
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c..ddf9dc1 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8467,6 +8467,12 @@ int __meminit init_per_zone_wmark_min(void)
+ 		if (min_free_kbytes > 262144)
+ 			min_free_kbytes = 262144;
+ 	} else {
++		/*
++		 * Set 'min_free_kbytes' with 'user_min_free_kbytes' rather than
++		 * leave it as the 'new_min_free_kbytes' calculated for the last
++		 * time.
++		 */
++		min_free_kbytes = user_min_free_kbytes;
+ 		pr_warn("min_free_kbytes is not updated to %d because user defined value %d is preferred\n",
+ 				new_min_free_kbytes, user_min_free_kbytes);
+ 	}
+-- 
+1.9.1
+
