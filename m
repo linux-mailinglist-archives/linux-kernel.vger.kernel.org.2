@@ -2,178 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1332B41A8E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC0C41A8B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239153AbhI1G0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:26:13 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:28087 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239039AbhI1GZt (ORCPT
+        id S238924AbhI1GWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhI1GWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:25:49 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210928062408epoutp04653c32f2b20d9c89fe3004d59da2e47d~o6EU61iH-1223712237epoutp04J
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:24:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210928062408epoutp04653c32f2b20d9c89fe3004d59da2e47d~o6EU61iH-1223712237epoutp04J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632810248;
-        bh=xeRq6f7aZZm1jUyxPNSRDZLM8XpZhSnU5SSvumzsHTA=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=MYZPm/ezVLuqENk9oYlkNApdMHDsVjqRRctg7BayB4OZpVQZvE/4jn1joRvmCS9x8
-         TJi2rOI1acW/BtbP7XYAAQkiNydvhkp6Gmmi6VXBZpWBMTUCvneFL2bNxDP8LOVK0W
-         0fkiS4Fxn35hkv2bAdTfEC7aY7O8Ml2rZor+g4Jw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20210928062408epcas5p3f95c3471bc20de5cc86c0a37b3448395~o6EUC3pda0623806238epcas5p3D;
-        Tue, 28 Sep 2021 06:24:08 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.183]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4HJTwj5y6Mz4x9Pv; Tue, 28 Sep
-        2021 06:23:49 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C1.E4.59762.FE4B2516; Tue, 28 Sep 2021 15:23:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210928061619epcas5p1c6dbb21eed928b95c31ba27d0940e049~o59fv6Bh00284802848epcas5p1H;
-        Tue, 28 Sep 2021 06:16:19 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210928061619epsmtrp17c2a21e8adbbe72c1fc28468b4f60007~o59fx08Nh2204022040epsmtrp1t;
-        Tue, 28 Sep 2021 06:16:19 +0000 (GMT)
-X-AuditID: b6c32a49-10fff7000000e972-88-6152b4ef4896
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        47.B1.09091.333B2516; Tue, 28 Sep 2021 15:16:19 +0900 (KST)
-Received: from alimakhtar03 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210928061617epsmtip1e42469523fccafecd39d509ec12de6c9~o59dewFYc2832328323epsmtip1p;
-        Tue, 28 Sep 2021 06:16:16 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        "'Kishon Vijay Abraham I'" <kishon@ti.com>,
-        "'Vinod Koul'" <vkoul@kernel.org>,
-        "'Avri Altman'" <avri.altman@wdc.com>,
-        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
-        "'Martin K. Petersen'" <martin.petersen@oracle.com>,
-        "'Marek Szyprowski'" <m.szyprowski@samsung.com>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>,
-        "'Chanho Park'" <chanho61.park@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>
-In-Reply-To: <20210924132658.109814-2-krzysztof.kozlowski@canonical.com>
-Subject: RE: [PATCH 2/2] scsi: ufs: exynos: unify naming
-Date:   Tue, 28 Sep 2021 11:46:15 +0530
-Message-ID: <001a01d7b430$5a0cd7e0$0e2687a0$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFtLCv5cHlar/5GPmzeVUgTJn39qgHxE3ZwAhOAiEusbeOaEA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmpu77LUGJBt1btC1e/rzKZnF5v7bF
-        ohvbmCxu/GpjtbjwtIfNYuPbH0wWmx5fY7W4vGsOm8WEVd9YLGac38dk0X19B5vF2iN32S2W
-        H//HZLHzzglmBz6PWQ29bB6bVnWyeUxYdIDRY/OSeo+PT2+xePRtWcXocfzGdiaPz5vkPNoP
-        dDMFcEZl22SkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYA
-        3a6kUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKTAp0CtOzC0uzUvXy0stsTI0MDAy
-        BSpMyM6Yu3Y2S8EqwYp5t7tZGhhv8XUxcnJICJhIbO7Yzt7FyMUhJLCbUWL5ni2MEM4nRokD
-        964zQTjfGCVmTGhmgmnpP3WVFSKxl1Hi4oQbbCAJIYGXjBKnbwuA2GwCuhI7FreBxUUE7rNI
-        XL0mDWJzCnhIdLR8ZO5i5OAQFrCQOPqdFSTMIqAqcXbxX2YQm1fAUuL9owusELagxMmZT1hA
-        bGYBeYntb+cwQ9ygIPHz6TJWiPFOEuennmeCqBGXeHn0CNg7EgI3OCSm3ZjPCNHgInH563Q2
-        CFtY4tXxLewQtpTEy/42dpB7JASyJXp2GUOEaySWzjvGAmHbSxy4MocFpIRZQFNi/S59iLCs
-        xNRT66DW8kn0/n4CDR5eiR3zYGxVieZ3V6HGSEtM7O5mhbA9JDZv62WewKg4C8mXs5B8OQvJ
-        N7MQNi9gZFnFKJlaUJybnlpsWmCYl1oOj+7k/NxNjOCEreW5g/Hugw96hxiZOBgPMUpwMCuJ
-        8Aaz+CcK8aYkVlalFuXHF5XmpBYfYjQFBv1EZinR5HxgzsgriTc0sTQwMTMzM7E0NjNUEuf9
-        +NoyUUggPbEkNTs1tSC1CKaPiYNTqoGpkf9ejf4rxQliH4NbZOb91S1uzWY51lPQ1WCvpXRy
-        qWBq0suVJStu/Hvp8/1l3erfdh1ZTpNOdbcsdz054a3TIo2t3xmdoh7/Vdh58dTHqWsnyNmI
-        vVBaz2HlLn/bPnydAYfB8a2OVpNYb9rHbQrwue683vLoBeUZxxyrqk7/uVudc9euwkO0dR2z
-        wKczh9Ummszv6TJ55/mUTeaCYEn73eM20156S3LfntgzX4GBTzfgd2dExFXXw2f+zTaNuih4
-        s6P1lNX0D5KyX/5NX/o4aH/p+Ro+4QMGdmH3nmfs2xQYdWWNzPb7Ogbtk/50CNYn3g7559gw
-        yejw+0S7nuuPqx6W7b608/apBdaXuGc0KrEUZyQaajEXFScCAH+Emp5hBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsWy7bCSnK7x5qBEgz93ZSxe/rzKZnF5v7bF
-        ohvbmCxu/GpjtbjwtIfNYuPbH0wWmx5fY7W4vGsOm8WEVd9YLGac38dk0X19B5vF2iN32S2W
-        H//HZLHzzglmBz6PWQ29bB6bVnWyeUxYdIDRY/OSeo+PT2+xePRtWcXocfzGdiaPz5vkPNoP
-        dDMFcEZx2aSk5mSWpRbp2yVwZcxdO5ulYJVgxbzb3SwNjLf4uhg5OSQETCT6T11l7WLk4hAS
-        2M0o0b/1GSNEQlri+sYJ7BC2sMTKf8/ZIYqeM0r0LmxmBUmwCehK7FjcxgZiiwi8ZJGY+0oB
-        ougqo8SEjl9gkzgFPCQ6Wj4ydzFycAgLWEgc/Q7WyyKgKnF28V9mEJtXwFLi/aMLrBC2oMTJ
-        mU9YQMqZBfQk2jaCTWEWkJfY/nYOM8Q9ChI/ny5jhVjrJHF+6nkmiBpxiZdHj7BPYBSahWTS
-        LIRJs5BMmoWkYwEjyypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k/NxNjODo1NLcwbh91Qe9
-        Q4xMHIyHGCU4mJVEeINZ/BOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpa
-        kFoEk2Xi4JRqYLIx9e5+8L+NXytrhXBklfuF1BIJ1av2C6VvlyxLnRy6zz9JuCZXfeZNju/7
-        UkwPKllJs7ktqutK9BeVj/PQ0+G5+FhnNXvesouzmKceS3zlYd53z/eJmsS6Wf7BfpPv2va/
-        rOB92jJlfiIH1+fXlf+P9HxR38hQlpaZqm12b+nmfKXGvS73eBOjj0Twbi5TON/bHPQxtP/2
-        eycrt0VWbTmB+X+zJe79VrynuHXDT6sn7Huj1T7dtVH3/TXfK2x5q9CyLTP2dto0W8XOWcO5
-        yp6x9p98DU9e4fE+Ud3ZLHZymyPfF2u97Y7zZ467sc7IXyjPMf+jneplnXdRLzmN10880jlx
-        a8kHQ+6aw7pKLMUZiYZazEXFiQC5+gWBPQMAAA==
-X-CMS-MailID: 20210928061619epcas5p1c6dbb21eed928b95c31ba27d0940e049
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210924132744epcas5p4d08879e6109c6c036510a3bf0b6ff06b
-References: <20210924132658.109814-1-krzysztof.kozlowski@canonical.com>
-        <CGME20210924132744epcas5p4d08879e6109c6c036510a3bf0b6ff06b@epcas5p4.samsung.com>
-        <20210924132658.109814-2-krzysztof.kozlowski@canonical.com>
+        Tue, 28 Sep 2021 02:22:19 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACDEC061575;
+        Mon, 27 Sep 2021 23:20:41 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so1931479pjb.4;
+        Mon, 27 Sep 2021 23:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=1NgwWizDvquhA1vHirCNXX1aD4SPaNDoUx3U2uDuBao=;
+        b=Y3WAGLAaZb0+mw36CzoCwxiMxlidxyfTXTNQwI0tTXqTNsvWSiow9P3RpacyvV9esE
+         pPMOJDUn8BDW4gRJPUs4o1m8LhSZQks8iQWzpGer1YXDrc3YoB3bxJCMu7uJQ/Q6FkbY
+         JaHsmZRqzGBrEClOf/WWyYge4ut3y9Oz0mVrYI7KXBO8oiyjaAw/2TudsLUenkgvACdz
+         36BQCFBwReqPAWS+MrdkhTKNGRRGXF/ie4JYlXQYCMPh0g1yC17JH9dsWsG6hoVnzbcV
+         aqqaJvcSSQsGcmRJxYBsSJtlIof2tzkd1aCZFGnJJrsDRjyl7qMuh9vfNH50anIdvtF6
+         rWRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1NgwWizDvquhA1vHirCNXX1aD4SPaNDoUx3U2uDuBao=;
+        b=f+879kZD9ZRBZtaO/aFP07bEY/vwhS2EIOQ5KzoFyKz1SJolOtGZRDpIJgoYIuxYif
+         6h3xI9Rj+hIdHS2PF9KadzjqT7SO8CaOs1DuP9YMsEoXLKw4WQiZ6toixZgaRj0gkP6U
+         0WIb9pKuAqb4BP4y9ANpslyFITiDnQO458frOvPLYI+1i/kcva9P25iZBMc3pla+xoFY
+         p4pK637emfar9rHnwMN7YsrLP1fPxphA6N4qWK8O6ezFeN3HK28s21lSejjVyJH4jPPL
+         D6JQFovg9Plqas0Je1HHxTSuYryP1kBr5v8L84sM6rxspsak/e1qFG9ELmeMYDlxplN/
+         LckQ==
+X-Gm-Message-State: AOAM5312YpcLShBdw7LfSYroQAXLSzuTcklAl49D9cyzs6IjzLE1kj+t
+        xLk4BzXaf7flK5lGhKQBqX3JkXODt0mLgGrg
+X-Google-Smtp-Source: ABdhPJzeJwb5L+mq3sUpv0Gb1D3eHgRjgwMGpKgGpwq8h4+NA8WaMpD6I225TRr2hdaCniPWf2qlhw==
+X-Received: by 2002:a17:90a:7892:: with SMTP id x18mr3431485pjk.95.1632810040531;
+        Mon, 27 Sep 2021 23:20:40 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id c9sm18923542pfi.212.2021.09.27.23.20.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Sep 2021 23:20:38 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: fix a possible ABBA deadlock dued to busy PA
+Date:   Tue, 28 Sep 2021 14:20:36 +0800
+Message-Id: <1632810036-18005-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+From: Chunguang Xu <brookxu@tencent.com>
 
->-----Original Message-----
->From: Krzysztof Kozlowski [mailto:krzysztof.kozlowski@canonical.com]
->Sent: Friday, September 24, 2021 6:57 PM
->To: Kishon Vijay Abraham I <kishon@ti.com>; Vinod Koul <vkoul@kernel.org>;
->Alim Akhtar <alim.akhtar@samsung.com>; Avri Altman <avri.altman@wdc.com>;
->James E.J. Bottomley <jejb@linux.ibm.com>; Martin K. Petersen
-><martin.petersen@oracle.com>; Krzysztof Kozlowski
-><krzysztof.kozlowski@canonical.com>; Marek Szyprowski
-><m.szyprowski@samsung.com>; Jaehoon Chung <jh80.chung@samsung.com>;
->linux-phy@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
->scsi@vger.kernel.org; Chanho Park <chanho61.park@samsung.com>; linux-arm-
->kernel@lists.infradead.org; linux-samsung-soc@vger.kernel.org
->Subject: [PATCH 2/2] scsi: ufs: exynos: unify naming
->
->We use everywhere "Samsung" and "Exynos", not the uppercase versions.
->
->Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->---
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+We found on older kernel (3.10) that in the scenario of insufficient
+disk space, system may trigger an ABBA deadlock problem, it seems that
+this problem still exists in latest kernel, try to fix it here. The
+main process triggered by this problem is that task A occupies the PA
+and waits for the jbd2 transaction finish, the jbd2 transaction waits
+for the completion of task B's IO (plug_list), but task B waits for
+the release of PA by task A to finish discard, which indirectly forms
+an ABBA deadlock. The related calltrace is as follows:
 
-> drivers/scsi/ufs/Kconfig | 10 +++++-----
-> 1 file changed, 5 insertions(+), 5 deletions(-)
->
->diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig index
->565e8aa6319d..af66cb3634a8 100644
->--- a/drivers/scsi/ufs/Kconfig
->+++ b/drivers/scsi/ufs/Kconfig
->@@ -165,14 +165,14 @@ config SCSI_UFS_BSG
-> 	  If unsure, say N.
->
-> config SCSI_UFS_EXYNOS
->-	tristate "EXYNOS specific hooks to UFS controller platform driver"
->+	tristate "Exynos specific hooks to UFS controller platform driver"
-> 	depends on SCSI_UFSHCD_PLATFORM && (ARCH_EXYNOS ||
->COMPILE_TEST)
-> 	help
->-	  This selects the EXYNOS specific additions to UFSHCD platform
-driver.
->-	  UFS host on EXYNOS includes HCI and UNIPRO layer, and associates
->with
->-	  UFS-PHY driver.
->+	  This selects the Samsung Exynos SoC specific additions to UFSHCD
->+	  platform driver.  UFS host on Samsung Exynos SoC includes HCI and
->+	  UNIPRO layer, and associates with UFS-PHY driver.
->
->-	  Select this if you have UFS host controller on EXYNOS chipset.
->+	  Select this if you have UFS host controller on Samsung Exynos SoC.
-> 	  If unsure, say N.
->
-> config SCSI_UFS_CRYPTO
->--
->2.30.2
+    Task A
+    vfs_write
+    ext4_mb_new_blocks()
+    ext4_mb_mark_diskspace_used()       JBD2
+    jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
+  ->schedule()                          filemap_fdatawait()
+ |                                              |
+ | Task B                                       |
+ | do_unlinkat()                                |
+ | ext4_evict_inode()                           |
+ | jbd2_journal_begin_ordered_truncate()        |
+ | filemap_fdatawrite_range()                   |
+ | ext4_mb_new_blocks()                         |
+  -ext4_mb_discard_group_preallocations() <-----
 
+Here, try to cancel ext4_mb_discard_group_preallocations() internal
+retry due to PA busy, and do a limited number of retries inside
+ext4_mb_discard_preallocations(), which can circumvent the above
+problems, but also has some advantages:
+
+1. Since the PA is in a busy state, if other groups have free PAs,
+   keeping the current PA may help to reduce fragmentation.
+2. Continue to traverse forward instead of waiting for the current
+   group PA to be released. In most scenarios, the PA discard time
+   can be reduced.
+
+However, in the case of smaller free space, if only a few groups have
+space, then due to multiple traversals of the group, it may increase
+CPU overhead. But in contrast, I feel that the overall benefit is
+better than the cost.
+
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ fs/ext4/mballoc.c | 33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 72bfac2..4ebcda6 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+  */
+ static noinline_for_stack int
+ ext4_mb_discard_group_preallocations(struct super_block *sb,
+-					ext4_group_t group, int needed)
++				     ext4_group_t group, int needed, int *busy)
+ {
+ 	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
+ 	struct buffer_head *bitmap_bh = NULL;
+@@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 	struct list_head list;
+ 	struct ext4_buddy e4b;
+ 	int err;
+-	int busy = 0;
+-	int free, free_total = 0;
++	int free = 0;
+ 
+ 	mb_debug(sb, "discard preallocation for group %u\n", group);
+ 	if (list_empty(&grp->bb_prealloc_list))
+@@ -4850,15 +4849,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
+ 
+ 	INIT_LIST_HEAD(&list);
+-repeat:
+-	free = 0;
+ 	ext4_lock_group(sb, group);
+ 	list_for_each_entry_safe(pa, tmp,
+ 				&grp->bb_prealloc_list, pa_group_list) {
+ 		spin_lock(&pa->pa_lock);
+ 		if (atomic_read(&pa->pa_count)) {
+ 			spin_unlock(&pa->pa_lock);
+-			busy = 1;
++			*busy = 1;
+ 			continue;
+ 		}
+ 		if (pa->pa_deleted) {
+@@ -4898,22 +4895,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
+ 	}
+ 
+-	free_total += free;
+-
+-	/* if we still need more blocks and some PAs were used, try again */
+-	if (free_total < needed && busy) {
+-		ext4_unlock_group(sb, group);
+-		cond_resched();
+-		busy = 0;
+-		goto repeat;
+-	}
+ 	ext4_unlock_group(sb, group);
+ 	ext4_mb_unload_buddy(&e4b);
+ 	put_bh(bitmap_bh);
+ out_dbg:
+ 	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
+-		 free_total, group, grp->bb_free);
+-	return free_total;
++		 free, group, grp->bb_free);
++	return free;
+ }
+ 
+ /*
+@@ -5455,15 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
+ {
+ 	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
+ 	int ret;
+-	int freed = 0;
++	int freed = 0, busy = 0;
++	int retry = 0;
+ 
+ 	trace_ext4_mb_discard_preallocations(sb, needed);
++ repeat:
++	retry++;
+ 	for (i = 0; i < ngroups && needed > 0; i++) {
+-		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
++		ret = ext4_mb_discard_group_preallocations(sb, i, needed, &busy);
+ 		freed += ret;
+ 		needed -= ret;
++		cond_resched();
+ 	}
+ 
++	if (needed > 0 && busy && retry < 3)
++		goto repeat;
++
+ 	return freed;
+ }
+ 
+-- 
+1.8.3.1
 
