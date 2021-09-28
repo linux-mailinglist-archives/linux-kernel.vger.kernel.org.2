@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628AB41AFF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2993F41B006
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240879AbhI1NYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:24:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240579AbhI1NYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:24:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6748C611BD;
-        Tue, 28 Sep 2021 13:22:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632835358;
-        bh=cWaVXKQuN3nkLq32pZ/eOvCZQPH57EVZSiGyda8i8F8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fdmWfrfsJwEAyZfjzOtPJp3ifg4fVak+YTq/bqBKF2AU6gNd5YQ3gptbMO7oKMMlX
-         +zhdSXFgW5semnuzJglE9aaVXFQpeXMIteMYpCU563Awd53cx2OVsn1n6wMhJsxhIG
-         z7Ln/jD38NA0dtq2J+TIZMrwvK6OJUma/FqMnx+Qo0JgUTaTWrjhU7YfvA7MqVPXTe
-         GbK3C/gcAI/XRwCfXsDOW7KcbWs8J5WQFH9mhwOxZJ4ax4mAFAvcy0MFfkUF64BnWa
-         WCt9WHd09g5ip5cVAtpJI3c/X/FlnO1M9tZ/iYat0e7R8C4l/0xyltK1HH/veNlyyK
-         en744RjDi3mMw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 10C9F410A1; Tue, 28 Sep 2021 10:22:36 -0300 (-03)
-Date:   Tue, 28 Sep 2021 10:22:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Like Xu <like.xu.linux@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
- arch_std_events
-Message-ID: <YVMXHM0F/y2ptX8C@kernel.org>
-References: <20210928102938.69681-1-likexu@tencent.com>
- <YVMB5kt8XG+OdJ1M@kernel.org>
- <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
- <YVMVwDt3QHBPfT/T@kernel.org>
+        id S240912AbhI1Na6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240786AbhI1Naz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:30:55 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC465C061604;
+        Tue, 28 Sep 2021 06:29:15 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id y35so32154218ede.3;
+        Tue, 28 Sep 2021 06:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O8PejLxm4SFdDXt81mt1kIwDT+MXJ6Y+DXlP8b+z5rc=;
+        b=X641APYUKRwyU7set0YbgqCRIk2FIV25LCF01ettUgoYDvPM8NgvB9NqzrcNrRk94f
+         7JQiA0D5Pxgs9RpLWIcIOcA/mci+hYYoJ2M/EGOcMEfuabbVmY5Zk1JgXYxw3k9sxiBm
+         4fVPDnZQ0kpfqfPQLbWXSmz9JNdXla/iHb6mvJfGp9JpaLaA5VBWY6q9EKnkozFuC3SO
+         HcmKkQH8g7PEzqPQ2RkSYbYoMDwKtunD0i0ztIAIAdq4Hfb4yn7FW7fwyU9agTzA7+EK
+         GlbdgADVsNBK6Tnk9F1NrHVGDD3XZbCyTpAkU17I3MBCZcUQdTrHRYFkt93Ciz0/kw9y
+         df+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O8PejLxm4SFdDXt81mt1kIwDT+MXJ6Y+DXlP8b+z5rc=;
+        b=j/bT4t3WOmoyAxhL+QRiNvbaTLywzwyAjyelWUp0AnIOEZpzkMYuOzZ6k1VOXGsTXY
+         Go27bDLQ3aPdEdLTHBVOF0CIL5qeMwXQ1r8MmjYHCn1G0KBwUIDQCDF1+jalST4cXZVD
+         +gjcz6crJBOaNxWsbSwq/HMgiyiAaXAJk3DviN1DhAK9f/WrBMMdo8OUHf/v79A0zwIa
+         ZiuptDUjgNEfXbBAIT9kOQPJpS1R1uacC7idVlKHkSB2zAPwO8qtqsoe/QvfCOztFaDw
+         F7TDWnz/fH3f4FfXw1LXSaN3hzf64rRphvyACoHGzH/P+K1rKQxdrXLRZ0HCwyEeKtgA
+         BYRg==
+X-Gm-Message-State: AOAM530h9YGe6IrwIE+cjNjEC9XwHtSvR4f9ulA+P3S7rJvjq9COQc5u
+        M6URyKmxygqZ2vvuofj9JijjQZmSBOM=
+X-Google-Smtp-Source: ABdhPJwIq1+NQtw9AG0XKYrFusdIXdlV0ewv2YzGPs+dHi1A/DL7/b4lpHfdXBhVDSNlcMi/ep1FbA==
+X-Received: by 2002:a17:906:7217:: with SMTP id m23mr6532121ejk.466.1632835748341;
+        Tue, 28 Sep 2021 06:29:08 -0700 (PDT)
+Received: from neptune.. ([188.27.128.17])
+        by smtp.gmail.com with ESMTPSA id cr9sm12970056edb.17.2021.09.28.06.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 06:29:07 -0700 (PDT)
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+X-Google-Original-From: Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>
+Subject: [PATCH] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg with no recipient
+Date:   Tue, 28 Sep 2021 16:29:02 +0300
+Message-Id: <20210928132902.1594277-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YVMVwDt3QHBPfT/T@kernel.org>
-X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 28, 2021 at 10:16:48AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Sep 28, 2021 at 01:49:20PM +0100, John Garry escreveu:
-> > On 28/09/2021 12:52, Arnaldo Carvalho de Melo wrote:
-> > > Em Tue, Sep 28, 2021 at 06:29:38PM +0800, Like Xu escreveu:
-> > > > From: Like Xu <likexu@tencent.com>
-> > > > 
-> > > > The compiler reports that free_sys_event_tables() is dead code. But
-> > > > according to the semantics, the "LIST_HEAD(arch_std_events)" should
-> > > > also be released, just like we do with 'arch_std_events' in the main().
-> > > 
-> > > Thanks, applied.
-> > > 
-> > > - Arnaldo
-> > > 
-> > 
-> > If not too late:
-> > Reviewed-by: John Garry <john.garry@huawei.com>
-> 
-> Not too late, collected.
->  
-> > I think that it could be a good idea to raise gcc warning level to detect
-> > unused static functions, like this was
-> 
-> Agreed, but we already have:
-> 
-> CORE_CFLAGS += -Wall
-> CORE_CFLAGS += -Wextra
-> 
-> We can se it for this specific case with:
-> 
-> $ make V=1 -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin | grep jevents
-> make -f /var/home/acme/git/perf/tools/build/Makefile.build dir=pmu-events obj=jevents
->   gcc -Wp,-MD,/tmp/build/perf/pmu-events/.jevents.o.d -Wp,-MT,/tmp/build/perf/pmu-events/jevents.o  -D"BUILD_STR(s)=#s" -I/var/home/acme/git/perf/tools/include  -c -o /tmp/build/perf/pmu-events/jevents.o pmu-events/jevents.c
->    ld -r -o /tmp/build/perf/pmu-events/jevents-in.o  /tmp/build/perf/pmu-events/json.o /tmp/build/perf/pmu-events/jsmn.o /tmp/build/perf/pmu-events/jevents.o
-> gcc /tmp/build/perf/pmu-events/jevents-in.o -o /tmp/build/perf/pmu-events/jevents
-> /tmp/build/perf/pmu-events/jevents x86 pmu-events/arch /tmp/build/perf/pmu-events/pmu-events.c 1
-> jevents: Processing mapfile pmu-events/arch/x86/mapfile.csv
-> 
-> Humm... no "-Wall -Wextra" there... lemme try to fix it
+From: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-With this:
+Even though it may be user-space's fault for this error (some application
+terminated or crashed without cleaning up it's endpoint), the rpmsg
+communication should not overflow the syslog with too many messages.
 
-⬢[acme@toolbox perf]$ git diff
-diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
-index a055dee6a46af77e..ea7107630bf4327f 100644
---- a/tools/perf/pmu-events/Build
-+++ b/tools/perf/pmu-events/Build
-@@ -1,7 +1,7 @@
- hostprogs := jevents
+A dev_warn_ratelimited() seems like a good alternative in case this can
+occur.
 
- jevents-y      += json.o jsmn.o jevents.o
--HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include
-+HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include -Wall -Wextra
- pmu-events-y   += pmu-events.o
- JDIR           =  pmu-events/arch/$(SRCARCH)
- JSON           =  $(shell [ -d $(JDIR) ] &&                            \
-⬢[acme@toolbox perf]$
+Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+---
+ drivers/rpmsg/virtio_rpmsg_bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I get this before applying Xu's patch:
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 8e49a3bacfc7..546f0fb66f1d 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -749,7 +749,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+ 		/* farewell, ept, we don't need you anymore */
+ 		kref_put(&ept->refcount, __ept_release);
+ 	} else
+-		dev_warn(dev, "msg received with no recipient\n");
++		dev_warn_ratelimited(dev, "msg received with no recipient\n");
+ 
+ 	/* publish the real size of the buffer */
+ 	rpmsg_sg_init(&sg, msg, vrp->buf_size);
+-- 
+2.31.1
 
-  LINK    /tmp/build/perf/libbpf.a
-pmu-events/jevents.c: In function ‘save_arch_std_events’:
-pmu-events/jevents.c:473:39: warning: unused parameter ‘data’ [-Wunused-parameter]
-  473 | static int save_arch_std_events(void *data, struct json_event *je)
-      |                                 ~~~~~~^~~~
-At top level:
-pmu-events/jevents.c:93:13: warning: ‘free_sys_event_tables’ defined but not used [-Wunused-function]
-   93 | static void free_sys_event_tables(void)
-      |             ^~~~~~~~~~~~~~~~~~~~~
-
-
--------------------------------------
-
-I'll add this to perf/core, as this isn't a strict fix, so can wait for
-v5.16.
-
-- Arnaldo
