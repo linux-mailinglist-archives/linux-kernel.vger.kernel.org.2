@@ -2,140 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F316541B299
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E0F41B29B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241400AbhI1PG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:06:56 -0400
-Received: from mail-mw2nam10on2056.outbound.protection.outlook.com ([40.107.94.56]:23044
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241387AbhI1PGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:06:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cSeFTTvvINxp02xhyXKyl2Pr9xZXPjKEmWmyvXa6ejwuMqbQFFZTm1QayJHynH9TGg5cLgcsXtmNtmVzFvvsAkY6YemjDhtwtpVXqU9lormCqNyb2UzmYqtPWulkiwqGH7PoGXaVlrK3lI5LrFp2onb7s63vq+qbDnJR7UCuf9IhpFQp0E0VDP50Dp0aRosVxRn1A+fAMnITG4Dy7ev+yb+P7O0VclM3LrPqLYkyyfdl0WexqH6vKCDIZDAJDO0lKFkuUbNmAZQB1kN/JsN0ZU7qQqaB20fyWcsb053YVqqNTuhSgDDw3OWFUpEO30ZeBq37oNi1jcEIjOzIQNiomQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=GjN19T+4kePjMQhWKkLkNUYNJ1s9bpmhIWXfMTmy37c=;
- b=dP9XGHdu/wz2elSTCAT3R0VcyhuZ/eiP3PQ6FCwcAVD5IoIC/Ma/PeBCWRyyS51rYaJogoKHmzGrOhVRRqL1F9c5MOOScGLVrQqXxYQwtAeEjZRQoW18Of/DiCA7a4jZBchFtfjku5gDbrzBh9ezIJWVIKgbe/471MG/6P/ofPp52AMK681N3qgAaDs6rxNfk85MJEAb1NfUYhrfLPtuaVeFYV90iW6vaRsiUWy0e228PFu5NqZg5A5T7zJZyM+7qUbvkbvQ4dcMQOu+0ocfEDl+wxxGBIh5vbVSzT7cTE1H9JueZmEG2qVDD0HTvWmjurYsvPrmDUfcoUjG4vPKlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GjN19T+4kePjMQhWKkLkNUYNJ1s9bpmhIWXfMTmy37c=;
- b=HKCRhQBbgpscuxPMTZOdq28ZQ4zN9JHs1EArhGHqaIbsTpUqhTJnmG3T5pbHDZxkFt8+epmAARMMGimbbnQVOp3zceA1pg052cE2u0up7vR+Wq7ySqWlg5pAm7U3q81F7oAgYIwct7LFsskXeEGhMwr8DG1TWxPnmAeIaHnOzpj2RTl+uC2a/qJmh3bP5Ttovfj/leOK9atk12zgixySep1NNy3hhwFL7Ak6jmYqw9wRD42A5WmbQXxlY7ufvtdmD9ugwp5GFoUX2zwMaFn2kGpB3fn9TPlq29oUM6dTo9fZHwWwcKDULLvADsMG4QDa+OKC7Ly+Z35whG19ZLTrLw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
- DM8PR12MB5415.namprd12.prod.outlook.com (2603:10b6:8:25::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.14; Tue, 28 Sep 2021 15:05:08 +0000
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::3817:44ce:52ad:3c0b]) by DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::3817:44ce:52ad:3c0b%5]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
- 15:05:08 +0000
-Date:   Tue, 28 Sep 2021 12:05:07 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Wang, Zhi A" <zhi.a.wang@intel.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Nikula, Jani" <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210928150507.GM964074@nvidia.com>
-References: <20210816173458.GA9183@lst.de>
- <20210817010851.GW13928@zhen-hp.sh.intel.com>
- <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <20210820141724.GA29034@lst.de>
- <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
- <20210826061219.GD9942@zhen-hp.sh.intel.com>
- <55c11f22-99e5-6109-3be3-a04b06b3336e@intel.com>
- <YVMgGKk1K4gO8ls6@bombadil.infradead.org>
- <af40291a-de36-b39f-9ded-aaf4ddba641f@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af40291a-de36-b39f-9ded-aaf4ddba641f@intel.com>
-X-ClientProxiedBy: MN2PR15CA0048.namprd15.prod.outlook.com
- (2603:10b6:208:237::17) To DM6PR12MB5520.namprd12.prod.outlook.com
- (2603:10b6:5:208::9)
+        id S241459AbhI1PHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:07:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35603 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241441AbhI1PHk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:07:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632841560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GTEeKi/UYmjYJkWNK0SGATQ/qYJFiOXPZZXq8sMSFeY=;
+        b=M8+Joa+r6ouQ2sfjRmyjodtn5gJZgRJmXTDdx9McHeexvxiE11mljtk1g8yfxYuAoTXDWT
+        4DWWf91s1hyueR9munn5FAM3wnK7FmxskmivrMAywxfwXZG1B23POIFG5Mh0LZO3DEufbJ
+        q2BM23kA7/PjnJoiug0nloIx8jtIH88=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-eUZr9hGYNiWceD5vLCMfYA-1; Tue, 28 Sep 2021 11:05:59 -0400
+X-MC-Unique: eUZr9hGYNiWceD5vLCMfYA-1
+Received: by mail-wr1-f71.google.com with SMTP id z15-20020adfec8f000000b001606a799300so1393416wrn.19
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:05:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GTEeKi/UYmjYJkWNK0SGATQ/qYJFiOXPZZXq8sMSFeY=;
+        b=gh4QmdV8/zu47u14jfoKfcv0cGxDbUdLO6uDt8VHsaFvdt2UKAZ70DduAWjREsuE+q
+         uyM2/0aaA4xSuMmmBfS48uHPIjcfJCHT5oSVn8ILf2Xy8F7pZQlONnPXpgVCZhtG3u7b
+         D8dTG1qDedH+N2udcForl8CC4gDeErT9Bdv4OxpAVMHZuXSm9e9jdKHgcf0/hTiDbBIF
+         syFibpZCJEOgUeZk+OmPE//RFSuU1JLb398Y3uLFXl/tp0JwMnhPNXMF6qGbXm5u+h8n
+         3cK95PZpPC8hrq+vKgsJgUlYPJNlsq+TvyUcp9Qj5IHiakHyS8oGwyEfZ+fTyjmlL0th
+         Chhw==
+X-Gm-Message-State: AOAM53144Xtyy0UB+ewHePEt3UaYrC1CIB/0vpsNysKtPsxw+WQqffHf
+        a2kQ4njt32rRXvbVUwFkWNYkidgquID25XLSG6CVL/DKNMnyMCWeiHrsqxRgnSLjP7+VZPH55mZ
+        J74SD/1vzxuc9vAtJ7sUIqjIcMh5rthfGHBvkLeuS
+X-Received: by 2002:a1c:192:: with SMTP id 140mr5194530wmb.186.1632841557825;
+        Tue, 28 Sep 2021 08:05:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz45bDVa7yHh7ZlDdOqmKGhDvsP9wWie0zsYCjSZRICnWeTnJ+JMvq9BqN1jrAgmwTyXD/iZRUEiGUwLJEUR9A=
+X-Received: by 2002:a1c:192:: with SMTP id 140mr5194517wmb.186.1632841557678;
+ Tue, 28 Sep 2021 08:05:57 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR15CA0048.namprd15.prod.outlook.com (2603:10b6:208:237::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 15:05:08 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVEfL-0071oy-0t; Tue, 28 Sep 2021 12:05:07 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d49200fc-e252-4986-b7d0-08d982915c60
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5415:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5415A7393A6679C7BFCA6585C2A89@DM8PR12MB5415.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2k0M8HQ2q+vM07BshbyJuZUUvpfo5+mr60MN6LyLYzFU+F9CVRsmSXBeMPJ0nm5OO0+J5BeMJuIKlU1IMSugQtL0L09U8N2ZEHzi4LcgUTRVPKwYnxTRZpHMVZfja+DNOepH84dLSwywajd9ssFU7uEv8r/EefyEL2MINtreYfx5NJxcTx6HPI8sJWONo7Iw2Ke7EpSYwbfz1rYrSwc9MRWQmzUcw9anjsjReAsl4zPAK4cE/Lvr/wywoM6AXw0JsdG1t9vRyd3QTaFsIOcIU7Yz9t6u+go4UBTWXIRLJSK7GKaIf6PN2vWtHr3+zxMlPYwG9qhCeb+DBK0X+6HiF7DC6ZY72dFYIHK5ohKe21NJW1+LaagtgT/920XONdghJqV1Cqq1+y+nG9hlQRL8xWwKJzVPVBzzaHr7QFLcJnd1eQLubHLDl0TSbaZkU1R7kLZEBgzJWiztVhv9sYpQpSfz0YUsJEFGHI687kpsuGIJ6PjhqejEh/trtGL1PSqLnfezEG9Pf7JuWXPunaBwfnzOFGOPrGAPRi5XPgmOmrkKQuwxaYPBx5LX11wxeAPbzeAMjd+fSwUV1sE7k1/adIi06xVUIUx/KdDo+d/i31rIGN3EmgqUrNRXkWny0RHxc1kxgpdkFL/zko1dod7quhk3ms8YfC+XrTvJw55ZB1yEhZ8oLiRF66B6A9czOnG1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(2616005)(86362001)(26005)(426003)(186003)(1076003)(9786002)(4744005)(9746002)(7416002)(4326008)(66946007)(66476007)(66556008)(5660300002)(36756003)(316002)(33656002)(54906003)(8936002)(2906002)(6916009)(8676002)(508600001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yuzw+awn1q5+Eb/oFeSRX33+Hmgt6GBGzBEctLEH7L48VO6LddEnDfnnPgP7?=
- =?us-ascii?Q?1LmGza6nA7YCea6NGAtjuIe8daCv+oggTxt+mgYR6bCpzfq0dL9M/YhwRjIG?=
- =?us-ascii?Q?P78Qd3WL9Uq+v6n/ULeY61btyCfianwZgaFZfj1xymUzwgr1Houf95xjZzG6?=
- =?us-ascii?Q?N0CzxJTI1Nn6Sqa7qNUdcC0zt0xPB02bfFFmkWEqp8VRvakktjAEFwjzBPVA?=
- =?us-ascii?Q?fuA2ZnKc74vAanUKdFFUr63KOb99erTop8oZRAgXg9pZ3zImRwN+rHIj4P7u?=
- =?us-ascii?Q?AHeNT54g6KoNpqffCOiYWkHFIlTAsoqlfSB9YELyYLhSn0nsIRGrQK/xRILC?=
- =?us-ascii?Q?0ZzH433jclUN4QBQInqZ9LZ87gtnVux4SpNYF5SZAMmhU7r2C39RapHekfzi?=
- =?us-ascii?Q?8HAip9b+3/2M1Wbrd8Ig7T3FVxB52OP3QGVB+qB+lEpMuAdWoMg9ccihIuZr?=
- =?us-ascii?Q?ICwUM9VuhouRXlczGhleEkvnV3kL6nVQnnPosagOVF/0Vi/ZfLB74IETNBsk?=
- =?us-ascii?Q?DAppQGziauLypvo2g3QD9qr0RhWFuatVFefvwTHQrLezOptt478fhrw0hv2A?=
- =?us-ascii?Q?h8VX+L04gNmNla/Eh186bODKzFgmDePu1SCIS+o2mY5nNbPR3G/qBiSkJhTA?=
- =?us-ascii?Q?7yZb/0FNeMhcWS3uBpBHkvgIGIjdylnrddo7PBm4Z+z+kozCdD1RCaP+Jtrz?=
- =?us-ascii?Q?xfOr+M7eP323JMTsh2NxggQkXMnWU32fYXm77hp0oshily586UqxR9aSE+AK?=
- =?us-ascii?Q?Sa6Ly7xH4wxx5K4bLwsUiyr7XfcvoPBj5Xh++0emLoPT2ve1SvY/YdP6MdnF?=
- =?us-ascii?Q?/gW+CYGahN/NFNn6Clzd8eOn04qoxUP0BSAkfpNrWMb2kAPMKKePq60TnDM+?=
- =?us-ascii?Q?0ZA+iC2iftaYe6GTcNO/uumbwKe7/23qYHid4xGiXC3Vsz7U65WcctX1Pi74?=
- =?us-ascii?Q?eEhf5rbOY228xj73Ev+nFj1XPRGoNGwEvefa8o+USmPj8qzoOkWp2/sf/eYd?=
- =?us-ascii?Q?xg/RLEmNd6TWpySGJSW7UdsjmqTKaYNDZwOsFG1qAkT8UpVTYdSLL1VDhuVu?=
- =?us-ascii?Q?ApQEuWjfpNTPMH1pGt1tmdo9MfzkIwBN1FBRJSis+pL1rXYs4ddwFaI+aVWo?=
- =?us-ascii?Q?Q30a5heiyC/4EbPRd6095IARDGByyVRDFA5HaTEq6aGcq8yt9bmgBkVS57pf?=
- =?us-ascii?Q?rdncRqDtfdR+eG067D9ZJzI2vUtgm8bm1k7OuGhFETD/JUp77cYidk9yuLXc?=
- =?us-ascii?Q?SpnyRHIYS4Y/bB+oO6sucp499X9C4qhBHiszPNSowWCPpLJiKCQ8Gs63YuZD?=
- =?us-ascii?Q?Qnoe6KPhQS4a9/RU3cu0jD16?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d49200fc-e252-4986-b7d0-08d982915c60
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 15:05:08.3437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z205BWTWngIAgLT+yFsAaat/MHLtMcS6kP2Rw/PRiOwMN0J5ulMp7hyJPEMIXLS0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5415
+References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-16-agruenba@redhat.com>
+ <YTnuDhNlSN1Ie1MJ@infradead.org>
+In-Reply-To: <YTnuDhNlSN1Ie1MJ@infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 28 Sep 2021 17:05:46 +0200
+Message-ID: <CAHc6FU4_3m-f2T360Vq-WF=nkqDq9Zc+dekRt+wrcjvbUR1oSQ@mail.gmail.com>
+Subject: Re: [PATCH v7 15/19] iomap: Support partial direct I/O on user copy failures
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:35:06PM +0000, Wang, Zhi A wrote:
+On Thu, Sep 9, 2021 at 1:22 PM Christoph Hellwig <hch@infradead.org> wrote:
+> On Fri, Aug 27, 2021 at 06:49:22PM +0200, Andreas Gruenbacher wrote:
+> > In iomap_dio_rw, when iomap_apply returns an -EFAULT error and the
+> > IOMAP_DIO_PARTIAL flag is set, complete the request synchronously and
+> > return a partial result.  This allows the caller to deal with the page
+> > fault and retry the remainder of the request.
+> >
+> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > ---
+> >  fs/iomap/direct-io.c  | 6 ++++++
+> >  include/linux/iomap.h | 7 +++++++
+> >  2 files changed, 13 insertions(+)
+> >
+> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > index 8054f5d6c273..ba88fe51b77a 100644
+> > --- a/fs/iomap/direct-io.c
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -561,6 +561,12 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+> >               ret = iomap_apply(inode, pos, count, iomap_flags, ops, dio,
+> >                               iomap_dio_actor);
+> >               if (ret <= 0) {
+> > +                     if (ret == -EFAULT && dio->size &&
+> > +                         (dio_flags & IOMAP_DIO_PARTIAL)) {
+> > +                             wait_for_completion = true;
+> > +                             ret = 0;
+>
+> Do we need a NOWAIT check here to skip the wait_for_completion
+> for that case?
 
-> Yes. I was thinking of the possibility of putting off some work later so 
-> that we don't need to make a lot of changes. GVT-g needs to take a 
-> snapshot of GPU registers as the initial virtual states for other vGPUs, 
-> which requires the initialization happens at a certain early time of 
-> initialization of i915. I was thinking maybe we can take other patches 
-> from Christoph like "de-virtualize*" except this one because currently 
-> we have to maintain a TEST-ONLY patch on our tree to prevent i915 built 
-> as kernel module.
+Hmm, you're probably right, yes. I'll add that.
 
-How about just capture these registers in the main module/device and
-not try so hard to isolate it to the gvt stuff?
+Thanks,
+Andreas
 
-Jason
