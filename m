@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4948441AF0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A8541AF0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240534AbhI1Mbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:31:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33524 "EHLO mail.kernel.org"
+        id S240744AbhI1Mbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:31:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240571AbhI1Mbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240710AbhI1Mbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Sep 2021 08:31:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 44232611F0;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 99D0A61215;
         Tue, 28 Sep 2021 12:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632832208;
-        bh=XNbhJ0Qs1GVCmMoLw+Q1yDMi3WDMwW1B9piNF+yvZJQ=;
+        bh=i4wgzOUu7apIAnF5yKSN8IPgeFVwu12j32BHaG+rktU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GPlIqGr857ucQ9Wty2ycb3h6ZEgGLsTdbaqlpWrdLNhb6LrmS6/J3JhmGtZVhH1HT
-         nnjiOocSqThHQ9eKpeZxTvaobNglzQcHDmV2pdENKYwvOuJADDMefvDhaDG18/dJIC
-         7aZP/9OgDFB6XUqs5aqVPRj43mZsXxz9yZws29B4rjaS0Afj8cD8skCbrv81UtKf2I
-         LrBb6m2DWIA0PZ8UdkfVTEkFoEVxrhewCAIO7I8MZupUVYAhEcS/6m3MwhpJMiaswc
-         2ziEu8WA0xN0Qd3ENb8X8ls02gUM4rrFPU4KXy960QbbNy2ZrejECcUr2lMVxeThpW
-         anONbL2DhYKdg==
+        b=nEDLNg1sO++I6pW78sVFA6Iyhk54vFwBVM59DP2rvfKMktBrdqblvNvXWRAhjoLCw
+         +XUmbpvdhJRw+kIHJp/kv0DR9WQHN/PPQRRbzJvm4nufgO56o+VTZLhjotPps+uPkc
+         BTKlh4o864M+un5WV2i/7DgGURoKRiF8GzjsCMcRJWfSRXW2kZnVQQOIbPA0xsgWzF
+         7Py7RnkpEvdoDAEShRSt3TLWX1NbPR+veGA3OQbbdsMDY+jUad7j5cMtEGHwcFv/SR
+         hZw+4uZ0k5a+7V6jJ+u4WzWa9IEyjcXXeocknDue2I85fTdcrxAvQNf7A1dP6E2ZeS
+         nU6EXlxHDHHEw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 384CA60A7E;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92E5960A69;
         Tue, 28 Sep 2021 12:30:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: mdio: mscc-miim: Fix the mdio controller
+Subject: Re: [PATCH] net/tls: support SM4 CCM algorithm
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163283220822.6805.11331370615132640445.git-patchwork-notify@kernel.org>
+Message-Id: <163283220859.6805.14594158516937512105.git-patchwork-notify@kernel.org>
 Date:   Tue, 28 Sep 2021 12:30:08 +0000
-References: <20210928071720.2084666-1-horatiu.vultur@microchip.com>
-In-Reply-To: <20210928071720.2084666-1-horatiu.vultur@microchip.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, caihuoqing@baidu.com,
+References: <20210928062843.75283-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20210928062843.75283-1-tianjia.zhang@linux.alibaba.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, borisp@nvidia.com,
+        john.fastabend@gmail.com, daniel@iogearbox.net,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,22 +45,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 28 Sep 2021 09:17:20 +0200 you wrote:
-> According to the documentation the second resource is optional. But the
-> blamed commit ignores that and if the resource is not there it just
-> fails.
+On Tue, 28 Sep 2021 14:28:43 +0800 you wrote:
+> The IV of CCM mode has special requirements, this patch supports CCM
+> mode of SM4 algorithm.
 > 
-> This patch reverts that to still allow the second resource to be
-> optional because other SoC have the some MDIO controller and doesn't
-> need to second resource.
-> 
-> [...]
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  include/net/tls.h |  3 ++-
+>  net/tls/tls_sw.c  | 20 ++++++++++++++++----
+>  2 files changed, 18 insertions(+), 5 deletions(-)
 
 Here is the summary with links:
-  - [net] net: mdio: mscc-miim: Fix the mdio controller
-    https://git.kernel.org/netdev/net/c/c6995117b60e
+  - net/tls: support SM4 CCM algorithm
+    https://git.kernel.org/netdev/net-next/c/128cfb882e23
 
 You are awesome, thank you!
 --
