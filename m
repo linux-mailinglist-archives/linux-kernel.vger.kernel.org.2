@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D09C41B52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C2A41B531
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242167AbhI1RgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:36:00 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:41359 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242104AbhI1Rfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:35:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Upy3nXM_1632850446;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0Upy3nXM_1632850446)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 29 Sep 2021 01:34:12 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Wen Yang <wenyang@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/fs-writeback.c: add a preemption point to move_expired_inodes
-Date:   Wed, 29 Sep 2021 01:34:04 +0800
-Message-Id: <20210928173404.10794-1-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
+        id S242179AbhI1Rga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:36:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242171AbhI1Rg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:36:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF0B60F21;
+        Tue, 28 Sep 2021 17:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632850489;
+        bh=Yfz08pV/gYDk+AOKJrmWrje1tFITZe7lHU+DG0nHe6Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J3CdxDwHAF/IOVbYE4xxqV7Vv8NFVxTUJP/d0ax6bFYiBdgoclg3VgLO2tz+ndDj6
+         +ALOO3Q4lykpwvkmwFGWwExz6DdJAFZ0iuB8bxFtyAKAThiJkG8mOrDBnUJsmwalX3
+         lwc0oIQ9bR4XG7u3OK4l5ZmFbHZyRmtQD4YS1e4O/5IXOwXJDzD9lfJETjT+fqIR2T
+         RjVotFLwDdAzOAsmhjNJm/i1OzlCBs1sihufF6ZcFyQ040TPXSWikvUK0ukHDMoa/L
+         1G/yoeUpb86zY55GZYMIPkWr4xJIJswTPqkUkzXPoBAd8Qy7KdRa6vO9DtPgDTTXZ5
+         kjEfswrDsJRPw==
+Received: by mail-ed1-f50.google.com with SMTP id v10so82125349edj.10;
+        Tue, 28 Sep 2021 10:34:49 -0700 (PDT)
+X-Gm-Message-State: AOAM530Gy5f1Yzs1H78rU29janvahhEtul0GGW4UGzprPIKUVg0ss8tM
+        S2NRq7SFZLPfMtiolM/WrNMtcoXMv3x45djf6A==
+X-Google-Smtp-Source: ABdhPJySpBpXBtvPlQzRJSJ2jWwV4frZtniA8zfrmtuNaT8B9QSxRnDPopvqhpf1lHPNNHh2uyKCZ4Xxc1GjniBCCA0=
+X-Received: by 2002:a17:906:7217:: with SMTP id m23mr7883864ejk.466.1632850487958;
+ Tue, 28 Sep 2021 10:34:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210928044546.4111223-1-bjorn.andersson@linaro.org> <YVLszZ7U7D91oIH2@gerhold.net>
+In-Reply-To: <YVLszZ7U7D91oIH2@gerhold.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 28 Sep 2021 12:34:35 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: soc: smem: Make indirection optional
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We encountered an unrecovered_softlockup issue on !PREEMPT
-kernel config with 4.9 based kernel.
+On Tue, Sep 28, 2021 at 5:22 AM Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Mon, Sep 27, 2021 at 09:45:44PM -0700, Bjorn Andersson wrote:
+> > In the olden days the Qualcomm shared memory (SMEM) region consisted of
+> > multiple chunks of memory, so SMEM was described as a standalone node
+> > with references to its various memory regions.
+> >
+> > But practically all modern Qualcomm platforms has a single reserved memory
+> > region used for SMEM. So rather than having to use two nodes to describe
+> > the one SMEM region, update the binding to allow the reserved-memory
+> > region alone to describe SMEM.
+> >
+> > The olden format is preserved as valid, as this is widely used already.
+> >
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >  .../bindings/soc/qcom/qcom,smem.yaml          | 34 ++++++++++++++++---
+> >  1 file changed, 30 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
+> > index f7e17713b3d8..4149cf2b66be 100644
+> > --- a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
+> > +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
+> > [...]
+> > @@ -43,6 +55,20 @@ examples:
+> >          #size-cells = <1>;
+> >          ranges;
+> >
+> > +        smem@fa00000 {
+>
+> I think this is a good opportunity to make a decision which node name
+> should be used here. :)
 
-PID: 185895  TASK: ffff880455dac280  CPU: 8   COMMAND: "kworker/u449:39"
- #0 [ffff883f7e803c08] machine_kexec at ffffffff81061578
- #1 [ffff883f7e803c68] __crash_kexec at ffffffff81127c19
- #2 [ffff883f7e803d30] panic at ffffffff811b2255
- #3 [ffff883f7e803db8] unrecovered_softlockup_detect at ffffffff811b2d57
- #4 [ffff883f7e803ee0] watchdog_timer_fn at ffffffff8115827e
- #5 [ffff883f7e803f18] __hrtimer_run_queues at ffffffff811085e3
- #6 [ffff883f7e803f70] hrtimer_interrupt at ffffffff81108d8a
- #7 [ffff883f7e803fc0] local_apic_timer_interrupt at ffffffff810580f8
- #8 [ffff883f7e803fd8] smp_apic_timer_interrupt at ffffffff81745405
- #9 [ffff883f7e803ff0] apic_timer_interrupt at ffffffff81743b90
- --- <IRQ stack> ---
- #10 [ffffc90086a93b88] apic_timer_interrupt at ffffffff81743b90
-    [exception RIP: __list_del_entry+44]
-    RIP: ffffffff813be22c  RSP: ffffc90086a93c30  RFLAGS: 00000202
-    RAX: ffff88522b8f8418  RBX: ffff88522b8f8418  RCX: dead000000000200
-    RDX: ffff8816fab00e68  RSI: ffffc90086a93c60  RDI: ffff8816fab01af8
-    RBP: ffffc90086a93c30   R8: ffff8816fab01af8   R9: 0000000100400018
-    R10: ffff885ae5ed8280  R11: 0000000000000000  R12: ffff8816fab01af8
-    R13: ffffc90086a93c60  R14: ffffc90086a93d08  R15: ffff883f631d2000
-    ORIG_RAX: ffffffffffffff10  CS: 0010  SS: 0000
- #11 [ffffc90086a93c38] move_expired_inodes at ffffffff8127c74c
- #12 [ffffc90086a93ca8] queue_io at ffffffff8127cde6
- #13 [ffffc90086a93cd8] wb_writeback at ffffffff8128121f
- #14 [ffffc90086a93d80] wb_workfn at ffffffff812819f4
- #15 [ffffc90086a93e18] process_one_work at ffffffff810a5dc9
- #16 [ffffc90086a93e60] worker_thread at ffffffff810a60ae
- #17 [ffffc90086a93ec0] kthread at ffffffff810ac696
- #18 [ffffc90086a93f50] ret_from_fork at ffffffff81741dd9
+reserved-memory node names are kind of a mess, so I haven't tried for
+any standard... It needs to be solved globally.
 
-crash> set
-    PID: 185895
-COMMAND: "kworker/u449:39"
-   TASK: ffff880455dac280  [THREAD_INFO: ffff880455dac280]
-    CPU: 8
-  STATE: TASK_RUNNING (PANIC)
+>
+> You use smem@ here but mentioned before that you think using the generic
+> memory@ would be better [1]. And you use memory@ in PATCH 3/3:
+>
+> -               smem_mem: memory@86000000 {
+> +               memory@86000000 {
+> +                       compatible = "qcom,smem";
+>                         reg = <0x0 0x86000000 0 0x200000>;
+>                         no-map;
+> +                       hwlocks = <&tcsr_mutex 3>;
+>                 };
+>
+> However, if you would use memory@ as example in this DT schema,
+> Rob's bot would complain with the same error that I mentioned earlier [2]:
+>
+> soc/qcom/qcom,smem.example.dt.yaml: memory@fa00000: 'device_type' is a required property
+>         From schema: dtschema/schemas/memory.yaml
+>
+> We should either fix the error when using memory@ or start using some
+> different node name (Stephen Boyd suggested shared-memory@ for example).
+> Otherwise we'll just keep introducing more and more dtbs_check errors
+> for the Qualcomm device trees.
 
-It has been running continuously for 53.052, as follows:
-crash> ps -m | grep 185895
-[  0 00:00:53.052] [RU]  PID: 185895  TASK: ffff880455dac280  CPU: 8
-COMMAND: "kworker/u449:39"
+A different node name. A node name should only have 1 meaning and
+'memory' is already defined.
 
-And the TIF_NEED_RESCHED flag has been set, as follows:
-crash> struct thread_info -x ffff880455dac280
-struct thread_info {
-  flags = 0x88,
-  status = 0x0
-}
+The main issue here is what to name nodes with only a size and no address.
 
-Let's just add cond_resched() within move_expired_inodes()'s list-moving loop in
-order to avoid the watchdog splats.
-
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- fs/fs-writeback.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 06d04a7..1546121 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -1404,6 +1404,7 @@ static int move_expired_inodes(struct list_head *delaying_queue,
- 		if (sb && sb != inode->i_sb)
- 			do_sb_sort = 1;
- 		sb = inode->i_sb;
-+		cond_resched();
- 	}
- 
- 	/* just one sb in list, splice to dispatch_queue and we're done */
-@@ -1420,6 +1421,7 @@ static int move_expired_inodes(struct list_head *delaying_queue,
- 			if (inode->i_sb == sb)
- 				list_move(&inode->i_io_list, dispatch_queue);
- 		}
-+		cond_resched();
- 	}
- out:
- 	return moved;
--- 
-1.8.3.1
-
+Rob
