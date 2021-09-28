@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BCB41AF18
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2096B41AF23
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240642AbhI1Mdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:33:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12265 "EHLO m43-7.mailgun.net"
+        id S240619AbhI1MjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240540AbhI1Mdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:33:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632832322; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lz0RQ3WTqzUYVr3sYY2bnFpPgLz9uXHvoHlxlgCwPwk=;
- b=OI13nQ1PUXRZs9ryxQH9iu6QfoXFGwNWnXWVssL4jShrwvYsf6OSOD98kd2MhUoM/kEz27Um
- MsrkoYeLE/DfRoKDgwj7bEc3j78AH6s6lN4BhUcKZj8iVHF8vOc8MnyotYMPzmhPU4QBKZcJ
- 8I0iFWUVWK6VR06zjE7XCG5QeC4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 61530b3e47d64efb6d3b6f68 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 12:31:58
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DB764C43616; Tue, 28 Sep 2021 12:31:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27A68C4338F;
-        Tue, 28 Sep 2021 12:31:56 +0000 (UTC)
+        id S240526AbhI1MjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:39:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C15DD611CA;
+        Tue, 28 Sep 2021 12:37:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632832658;
+        bh=+JnuFX92dT3ZwyWt5V3PBwayU1FCUtczCLj2D+OBQ94=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FMBwCVGacOSeRXSk4fi6xpxoRs5B4134685XDnqGZLoOINwl5h0EqgVaYT2E96zsu
+         Nh/SjzFYH4nxVNi1NRxDozq/ZcDkxNZ5dLIHl3RV0l8+D4wlN019vFy5Vxl5MNDgzc
+         uFHRmeqGUGUFaP6dmm3rCVbcccjBRXViYm78IfF6jKa4V1Q0bIvuDVZxG96TAJR4Vf
+         gN7VsDrteepV9ZBieAb9R80Y33nkLuX1IBpJbUhW4aT9m+VwbfMDDAan3V7y+iD1lI
+         yrKnAHv6i4qDLjGdHL5RR25+JLl9PHlFiNLGsRSUKEZUk/Y5TsBQZsev8BwCGD/2um
+         TRCppn9c9mysA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 24745410A1; Tue, 28 Sep 2021 09:37:36 -0300 (-03)
+Date:   Tue, 28 Sep 2021 09:37:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        John Garry <john.garry@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
+ arch_std_events
+Message-ID: <YVMMkIO+XNIk0xUj@kernel.org>
+References: <20210928102938.69681-1-likexu@tencent.com>
+ <YVMB5kt8XG+OdJ1M@kernel.org>
+ <7ff0a3bf-ebfc-2462-f6ed-d86a67bbd614@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 28 Sep 2021 18:01:56 +0530
-From:   skakit@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, mka@chromium.org,
-        Das Srinagesh <gurus@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
-In-Reply-To: <CAE-0n51Xrv54XVLJwz9ENTtOhtCKWG7WtQg2o2+SFEoru1M4VA@mail.gmail.com>
-References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
- <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
- <CAE-0n51Xrv54XVLJwz9ENTtOhtCKWG7WtQg2o2+SFEoru1M4VA@mail.gmail.com>
-Message-ID: <1524de68017cfd6c9de706441496b3e5@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ff0a3bf-ebfc-2462-f6ed-d86a67bbd614@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-21 01:02, Stephen Boyd wrote:
-> Quoting Satya Priya (2021-09-17 03:45:35)
->> Add pm8008-regulator node and example.
->> 
->> Signed-off-by: Satya Priya <skakit@codeaurora.org>
->> ---
->>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 
->> ++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->> 
->> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml 
->> b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
->> index ec3138c..de182f8 100644
->> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
->> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
->> @@ -45,6 +45,10 @@ properties:
->>      const: 0
->> 
->>  patternProperties:
->> +  "^pm8008[a-z]?-regulator$":
-> 
-> Shouldn't it be ^pm8008-regulator$ without the a-z optional letter?
-> 
+Em Tue, Sep 28, 2021 at 07:53:54PM +0800, Like Xu escreveu:
+> On 28/9/2021 7:52 pm, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Sep 28, 2021 at 06:29:38PM +0800, Like Xu escreveu:
+> > > From: Like Xu <likexu@tencent.com>
+> > > 
+> > > The compiler reports that free_sys_event_tables() is dead code. But
+> > > according to the semantics, the "LIST_HEAD(arch_std_events)" should
+> Sorry, s/arch_std_events/sys_event_tables/, please --amend.
 
-Some platforms use 2 PM8008 PMICS, in that case we need suffixing like 
-pm8008i pm8008j etc. So, I mentioned this way.
+sure
+ 
+> > > also be released, just like we do with 'arch_std_events' in the main().
+> > 
+> > Thanks, applied.
+> > 
+> > - Arnaldo
+> > 
+> > > Fixes: e9d32c1bf0cd7a98 ("perf vendor events: Add support for arch standard events")
+> > > Signed-off-by: Like Xu <likexu@tencent.com>
+> > > ---
+> > >   tools/perf/pmu-events/jevents.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> > > index 6731b3cf0c2f..7c887d37b893 100644
+> > > --- a/tools/perf/pmu-events/jevents.c
+> > > +++ b/tools/perf/pmu-events/jevents.c
+> > > @@ -1285,6 +1285,7 @@ int main(int argc, char *argv[])
+> > >   	}
+> > >   	free_arch_std_events();
+> > > +	free_sys_event_tables();
+> > >   	free(mapfile);
+> > >   	return 0;
+> > > @@ -1306,6 +1307,7 @@ int main(int argc, char *argv[])
+> > >   		create_empty_mapping(output_file);
+> > >   err_out:
+> > >   	free_arch_std_events();
+> > > +	free_sys_event_tables();
+> > >   	free(mapfile);
+> > >   	return ret;
+> > >   }
+> > > -- 
+> > > 2.32.0
+> > 
 
->> +    type: object
->> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
->> +
->>    "^gpio@[0-9a-f]+$":
->>      type: object
->> 
+-- 
+
+- Arnaldo
