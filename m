@@ -2,146 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2B941AFC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C16B41AFB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240817AbhI1NRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
+        id S240724AbhI1NRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240842AbhI1NRk (ORCPT
+        with ESMTP id S240609AbhI1NRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:17:40 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123CC061604
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:16:01 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so2781584pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:16:01 -0700 (PDT)
+        Tue, 28 Sep 2021 09:17:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7979C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:15:38 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so1717266pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SQUYxjDv8R+Qi1Gg/UMc76goHZCTJGQFEBZ8qsddbj4=;
-        b=DYNEZUd+mGyPYR4THMYTEjHKsnNoWQo7uS4c6ceIxnNshkuyxQZGM4zEchF+Q8HPPp
-         YreRepmi7YOL4FEDPiwJvA9pzoYJGLf8QT48wkd2muHVf6sFJ3um4X2++kWpTMx/UmMK
-         OMLjQHW3Oy0z726eRgvi6dTR9rpx5302Cw4Qra0y4XIepoteh5PcUycEg9HWhIcwg8PH
-         g5baJNsUSvXHgMHlsfXwIQWwznA1YZHDF6BO8AVb9rqBJKnX7nHhpmnqM+y7ZeA/ZnSn
-         KEDlrnGMrOdaSRh0q/5oiRAUG7gcUu2ylQic1FYzXMH0F3nAmwPadsSeU7qGKWT8idFn
-         OKig==
+         :cc;
+        bh=aolHsLxiI3WCUZmb1av0qGsyGus5Ej0uRV0XSkfqb7A=;
+        b=Ysr/3EQufajPzxdLCpIovF/FtHxpHpBi7gxq+8UjyKy3t3/iusmG1dCun4JapnPja6
+         3cv65wSt37oPBM5RX/f8drZDAAprZw23PQaOaXmVhXH9ykDA7k1UU6WD7ahExMBx9u3T
+         jxxda3D7YDx21nKGJbvtOgfApKEtDR9E/LnNcZ0o0l39M+O2atOp5kfsxtm9z+WIGNHA
+         RnarK292CXfO+9azckWgLxIpstTIftBcvj6Mg3tvQ1VZxCFcEG5yz39k5xZrgbadjLq+
+         epxAbwaxQbIvkvngrlpM3nTjuv6fsCmD7wLNP2IcSpGmxIbH5g986/dsZWlslBXCK3Mv
+         IW6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SQUYxjDv8R+Qi1Gg/UMc76goHZCTJGQFEBZ8qsddbj4=;
-        b=LOmAV210BcgV5WJjBr5UmBC7W5RlFNPeE5GP7nJktpQc1XHrVcgBdzZzjNezwtKpBs
-         iq8f+M4CvnNFvS58oj1ts2hiA9JZUzndzeCJkwI72nPJ++tqshXDFD814qKwsztAK86m
-         Vl8D9RhSGQQFds8FqLjC1eLRLMbadBC855ZSkAkF8jAZzEGmW9qbswKRgSUmjEGUo5F2
-         36SUbEm2JefSMNUr1rpk5CgGiUYmXeuy8uT4dtqMpGO5RXZyd5M+Poi5m0d8LJMW8MpP
-         42pYvKcdfVbkxojZSdb17P0AIvQ4rOjNSRoj/eJKaig1AmhgGep8OIdg6nz8mFuDevEb
-         tHpw==
-X-Gm-Message-State: AOAM533ASsO9bzUZJmx/WhVlKoCBGLcSvABBWRf8+UJz4imc5++XtVOY
-        SBay1B2dn+IakXoTb+dCSsQBzya0ZFbSUMbKuFo=
-X-Google-Smtp-Source: ABdhPJx/mZsctE2tHvQECw7udBIzXRCC3KJ8CVSbgZbONe+7hDW7IO2MX/qvS792MRTCf+1pJcxghmkWwah/fmYRFr8=
-X-Received: by 2002:a17:90b:3ec1:: with SMTP id rm1mr5631691pjb.179.1632834960929;
- Tue, 28 Sep 2021 06:16:00 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=aolHsLxiI3WCUZmb1av0qGsyGus5Ej0uRV0XSkfqb7A=;
+        b=vzj3VnymXZZFxi9R9eZsOFbTCvl7QXUI6ZQLboQfa1S6uKo6N8Z/GbleQgeOiaccm3
+         8fZOtlGwN765PheID9zKhO91BZXMWgwku7/Fn1DshulicPKT5tkRkWTuRUMw6V1AfTNn
+         JTPiYM98/Py2bz3l7pXF1NQfbE8jDI2hMhVLbcGx89SRX+8XZw0yIZy2FNo1rjIU8Ccf
+         HT05v6O/ddXMRwJYt2roQxlZ3c9LaDjTmSwK1GdPI7sQCtKr9od4V1R/cePQVxYOp6Ba
+         X03GFTi/f6ld5iBBkHesy9+4oV/rpGgG6bnXGkNVrKQEBvuRJ4l3BZqZ07hPIIPYg41/
+         CHcw==
+X-Gm-Message-State: AOAM532DCa8ITN+i/WfneeRqIDdl/r/MK+WvgjanFktziQLds8ZtnbeW
+        huX5LbsMa4zfYhvrpIy+y0xkxYWw5ldhi/hZk50=
+X-Google-Smtp-Source: ABdhPJzkSgNPblo0TDMbe+/cWcYqKjFUhRzj+hVARJEkJ4DR3QtSJIsJnCq1rTvo+Cjzd9rq6swp6nd9VuyiGar6T6Y=
+X-Received: by 2002:a17:902:e54f:b0:13c:a004:bc86 with SMTP id
+ n15-20020a170902e54f00b0013ca004bc86mr5021929plf.78.1632834938271; Tue, 28
+ Sep 2021 06:15:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928052657.20909-1-rdunlap@infradead.org>
-In-Reply-To: <20210928052657.20909-1-rdunlap@infradead.org>
-From:   Greentime Hu <green.hu@gmail.com>
-Date:   Tue, 28 Sep 2021 21:15:25 +0800
-Message-ID: <CAEbi=3cT_ifvDmn3WKHfuy=VyG8Y79X+HS9hNNuvNwTn_Ned_Q@mail.gmail.com>
-Subject: Re: [PATCH] NDS32: export __trace_hardirqs_on/_offf for entry/exit
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Alan Kao <alankao@andestech.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>, kclin@andestech.com
+References: <a0e1c245-8209-a173-18c4-d21433bf46bf@forissier.org>
+In-Reply-To: <a0e1c245-8209-a173-18c4-d21433bf46bf@forissier.org>
+From:   Volodymyr Babchuk <vlad.babchuk@gmail.com>
+Date:   Tue, 28 Sep 2021 16:15:27 +0300
+Message-ID: <CAOcqxo339CS63i5sMdweqx3MO7ME9TxFPJe-p-ESWME=vSzLwg@mail.gmail.com>
+Subject: Re: optee: regression with kernel v5.14 (virtualization)
+To:     Jerome Forissier <jerome@forissier.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> =E6=96=BC 2021=E5=B9=B49=E6=9C=8828=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=881:27=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Add exports for __trace_hardirqs_on/_off and use them in
-> kernel/ex-entry.S and kernel/ex-exit.S to fix build/linker errors.
->
-> nds32le-linux-ld: arch/nds32/kernel/ex-entry.o: in function `fucop_ctl_do=
-ne':
-> (.text+0x12a): undefined reference to `__trace_hardirqs_off'
-> (.text+0x12a): relocation truncated to fit: R_NDS32_25_PCREL_RELA against=
- undefined symbol `__trace_hardirqs_off'
-> nds32le-linux-ld: arch/nds32/kernel/ex-exit.o: in function `no_work_pendi=
-ng':
-> (.text+0xea): undefined reference to `__trace_hardirqs_off'
-> nds32le-linux-ld: (.text+0xee): undefined reference to `__trace_hardirqs_=
-off'
-> nds32le-linux-ld: (.text+0xf2): undefined reference to `__trace_hardirqs_=
-on'
-> nds32le-linux-ld: (.text+0xf6): undefined reference to `__trace_hardirqs_=
-on'
->
-> Fixes: 0cde56e0280d ("nds32: Fix a kernel panic issue because of wrong fr=
-ame pointer access.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Nick Hu <nickhu@andestech.com>
-> Cc: Greentime Hu <green.hu@gmail.com>
-> Cc: Vincent Chen <deanbo422@gmail.com>
-> ---
->  arch/nds32/include/asm/ftrace.h |    3 +++
->  arch/nds32/kernel/ex-entry.S    |    1 +
->  arch/nds32/kernel/ex-exit.S     |    2 +-
->  arch/nds32/kernel/ftrace.c      |    3 +++
->  4 files changed, 8 insertions(+), 1 deletion(-)
->
-> --- linux-next-20210917.orig/arch/nds32/kernel/ftrace.c
-> +++ linux-next-20210917/arch/nds32/kernel/ftrace.c
-> @@ -276,8 +276,11 @@ noinline void __trace_hardirqs_off(void)
->  {
->         trace_hardirqs_off();
->  }
-> +EXPORT_SYMBOL(__trace_hardirqs_off);
-> +
->  noinline void __trace_hardirqs_on(void)
->  {
->         trace_hardirqs_on();
->  }
-> +EXPORT_SYMBOL(__trace_hardirqs_on);
->  #endif /* CONFIG_TRACE_IRQFLAGS */
-> --- linux-next-20210917.orig/arch/nds32/include/asm/ftrace.h
-> +++ linux-next-20210917/arch/nds32/include/asm/ftrace.h
-> @@ -15,6 +15,9 @@
->
->  extern void _mcount(unsigned long parent_ip);
->
-> +extern void __trace_hardirqs_off(void);
-> +extern void __trace_hardirqs_on(void);
-> +
->  #ifdef CONFIG_DYNAMIC_FTRACE
->
->  #define FTRACE_ADDR ((unsigned long)_ftrace_caller)
-> --- linux-next-20210917.orig/arch/nds32/kernel/ex-entry.S
-> +++ linux-next-20210917/arch/nds32/kernel/ex-entry.S
-> @@ -8,6 +8,7 @@
->  #include <asm/asm-offsets.h>
->  #include <asm/page.h>
->  #include <asm/fpu.h>
-> +#include <asm/ftrace.h>
->
->  #ifdef CONFIG_HWZOL
->         .macro push_zol
-> --- linux-next-20210917.orig/arch/nds32/kernel/ex-exit.S
-> +++ linux-next-20210917/arch/nds32/kernel/ex-exit.S
-> @@ -9,7 +9,7 @@
->  #include <asm/thread_info.h>
->  #include <asm/current.h>
->  #include <asm/fpu.h>
-> -
-> +#include <asm/ftrace.h>
->
->
->  #ifdef CONFIG_HWZOL
+Hi Jerome,
 
-loop in Alan and KC.
+On Tue, 28 Sept 2021 at 16:08, Jerome Forissier <jerome@forissier.org> wrote:
+>
+> Hi,
+>
+> I met an issue when testing OP-TEE with the latest released kernel
+> (v5.14). The kernel won't boot when virtualization is enabled. More
+> precisely, the boot hangs as the optee driver is probed. The last line
+> on the console is:
+>
+> [xxx] optee: probing for conduit method.
+>
+> The issue can easily be reproduced in the QEMU OP-TEE environment as
+> documented in [1]:
+>
+> $ repo init -u https://github.com/OP-TEE/manifest.git -m qemu_v8.xml
+> $ repo sync -j10
+> $ cd linux
+> $ git fetch github --unshallow
+> $ git checkout v5.14
+> $ cd ../build
+> $ make -j2 toolchains
+> $ make -j10 XEN_BOOT=y run
+>
+> [Note, if you switch between XEN_BOOT=y and the default build, you need
+> to "make arm-tf-clean"]
+>
+> git bisect points at commit b5c10dd04b74 ("optee: Clear stale cache
+> entries during initialization") and reverting this commit on top of
+> v5.14 does resolve the issue.
+>
+> Any idea what's wrong?
+
+Yes, there was a small mistake in the mediator. My colleague already
+pushed the patch. It is at staging now:
+
+http://xenbits.xen.org/gitweb/?p=xen.git;a=commit;h=1c3ed9c908732d19660fbe83580674d585464d4c
+
+And will be backported to Xen 4.13+
+
+
+-- 
+WBR Volodymyr Babchuk aka lorc [+380976646013]
+mailto: vlad.babchuk@gmail.com
