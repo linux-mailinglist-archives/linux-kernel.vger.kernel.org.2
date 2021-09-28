@@ -2,195 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC1F41B5B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D8841B5BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242131AbhI1SNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:13:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242114AbhI1SNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:13:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7D360F4A;
-        Tue, 28 Sep 2021 18:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632852703;
-        bh=p8UVVsLGTFcrhWSVN3WOrGJH5fN2yQ8DvsN9WYeHJ6M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=FZodTexo1BIbdbMWb0oWhyUemW4Q8UTFT0hlCOl4ZO0LhJOMp0Qh4DpAzpsqCh3As
-         2zxLHYNp278zul3j6qzc5/72F4Ub7SHPevJsYQVwTvX2az4jIxmJGtsVrTauCWStli
-         +KMAqLIhgKlYmXfrQUGC0yNKLw5OLMVBFcxXzEir0njny4DUp7ov/Em28ldpYrA7VA
-         g/8wadhpJzcbCwZlsW8gIDvdvogOVQgJOR11R3TkkyF2L29hoxdJp5j9JtIymiApCK
-         eeYzkBSuOtZemm4GDbqOrF4UcIzvnXCXQheudYn5jD7h/KFBURe2RrHMuY3XdsC6xk
-         5ur3iHQrqqUAA==
-Date:   Tue, 28 Sep 2021 13:11:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Linas Vepstas <linasvepstas@gmail.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-pci@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>
-Subject: Re: [PATCH v2 4/4] s390/pci: implement minimal PCI error recovery
-Message-ID: <20210928181142.GA713475@bhelgaas>
+        id S242060AbhI1SOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:14:55 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:52338
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241551AbhI1SOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 14:14:53 -0400
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 49B4B41976
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 18:13:13 +0000 (UTC)
+Received: by mail-io1-f48.google.com with SMTP id p80so28503867iod.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:13:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533Js8mjXOr8eARidcRNZ+0KfTIPXDX2j9biNNHBWq2W9qT4Mf+T
+        Wm8KqGsB1JpJPmT4/Gd6WR7yCDXP/vW+LASpUVlczQ==
+X-Google-Smtp-Source: ABdhPJySlSvzybi+oPX1R+/TnCxNdawSlFrUQHATg0VfdBhxl7uvwmrn4QlgrE7bkNHqmMEQ2iO25PBoBAXSYD+E3t4=
+X-Received: by 2002:a6b:6806:: with SMTP id d6mr4999741ioc.96.1632852791965;
+ Tue, 28 Sep 2021 11:13:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916093336.2895602-5-schnelle@linux.ibm.com>
+References: <CAHrFyr4AYi_gad7LQ-cJ9Peg=Gt73Sded8k_ZHeRZz=faGzpQA@mail.gmail.com>
+ <87pmst4rhy.fsf@disp2133>
+In-Reply-To: <87pmst4rhy.fsf@disp2133>
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+Date:   Tue, 28 Sep 2021 20:12:00 +0200
+X-Gmail-Original-Message-ID: <CAHrFyr7z82u1QcOo+f72sPr7_L8qUxo1EAK=JeU8xuzAsO9REg@mail.gmail.com>
+Message-ID: <CAHrFyr7z82u1QcOo+f72sPr7_L8qUxo1EAK=JeU8xuzAsO9REg@mail.gmail.com>
+Subject: Re: [lpc-contact] Linux Plumbers Conference Last Day
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        contact@linuxplumbersconf.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:33:36AM +0200, Niklas Schnelle wrote:
-> When the platform detects an error on a PCI function or a service action
-> has been performed it is put in the error state and an error event
-> notification is provided to the OS.
-> 
-> Currently we treat all error event notifications the same and simply set
-> pdev->error_state = pci_channel_io_perm_failure requiring user
-> intervention such as use of the recover attribute to get the device
-> usable again. Despite requiring a manual step this also has the
-> disadvantage that the device is completely torn down and recreated
-> resulting in higher level devices such as a block or network device
-> being recreated. In case of a block device this also means that it may
-> need to be removed and added to a software raid even if that could
-> otherwise survive with a temporary degradation.
-> 
-> This is of course not ideal more so since an error notification with PEC
-> 0x3A indicates that the platform already performed error recovery
-> successfully or that the error state was caused by a service action that
-> is now finished.
-> 
-> At least in this case we can assume that the error state can be reset
-> and the function made usable again. So as not to have the disadvantage
-> of a full tear down and recreation we need to coordinate this recovery
-> with the driver. Thankfully there is already a well defined recovery
-> flow for this described in Documentation/PCI/pci-error-recovery.rst.
-> 
-> The implementation of this is somewhat straight forward and simplified
-> by the fact that our recovery flow is defined per PCI function. As
-> a reset we use the newly introduced zpci_hot_reset_device() which also
-> takes the PCI function out of the error state.
-> 
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
-> v1 -> v2:
-> - Dropped use of pci_dev_is_added(), pdev->driver check is enough
-> - Improved some comments and messages
-> 
->  arch/s390/include/asm/pci.h |   4 +-
->  arch/s390/pci/pci.c         |  49 ++++++++++
->  arch/s390/pci/pci_event.c   | 182 +++++++++++++++++++++++++++++++++++-
->  3 files changed, 233 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-> index 2a2ed165a270..558877aff2e5 100644
-> --- a/arch/s390/include/asm/pci.h
-> +++ b/arch/s390/include/asm/pci.h
-> @@ -294,8 +294,10 @@ void zpci_debug_exit(void);
->  void zpci_debug_init_device(struct zpci_dev *, const char *);
->  void zpci_debug_exit_device(struct zpci_dev *);
->  
-> -/* Error reporting */
-> +/* Error handling */
->  int zpci_report_error(struct pci_dev *, struct zpci_report_error_header *);
-> +int zpci_clear_error_state(struct zpci_dev *zdev);
-> +int zpci_reset_load_store_blocked(struct zpci_dev *zdev);
->  
->  #ifdef CONFIG_NUMA
->  
-> diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-> index dce60f16e94a..b987c9d76510 100644
-> --- a/arch/s390/pci/pci.c
-> +++ b/arch/s390/pci/pci.c
-> @@ -954,6 +954,55 @@ int zpci_report_error(struct pci_dev *pdev,
->  }
->  EXPORT_SYMBOL(zpci_report_error);
->  
-> +/**
-> + * zpci_clear_error_state() - Clears the zPCI error state of the device
-> + * @zdev: The zdev for which the zPCI error state should be reset
-> + *
-> + * Clear the zPCI error state of the device. If clearing the zPCI error state
-> + * fails the device is left in the error state. In this case it may make sense
-> + * to call zpci_io_perm_failure() on the associated pdev if it exists.
-> + *
-> + * Returns: 0 on success, -EIO otherwise
-> + */
-> +int zpci_clear_error_state(struct zpci_dev *zdev)
-> +{
-> +	u64 req = ZPCI_CREATE_REQ(zdev->fh, 0, ZPCI_MOD_FC_RESET_ERROR);
-> +	struct zpci_fib fib = {0};
-> +	u8 status;
-> +	int rc;
-> +
-> +	rc = zpci_mod_fc(req, &fib, &status);
-> +	if (rc)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * zpci_reset_load_store_blocked() - Re-enables L/S from error state
-> + * @zdev: The zdev for which to unblock load/store access
-> + *
-> + * R-eenables load/store access for a PCI function in the error state while
-> + * keeping DMA blocked. In this state drivers can poke MMIO space to determine
-> + * if error recovery is possible while catching any rogue DMA access from the
-> + * device.
-> + *
-> + * Returns: 0 on success, -EIO otherwise
-> + */
-> +int zpci_reset_load_store_blocked(struct zpci_dev *zdev)
-> +{
-> +	u64 req = ZPCI_CREATE_REQ(zdev->fh, 0, ZPCI_MOD_FC_RESET_BLOCK);
-> +	struct zpci_fib fib = {0};
-> +	u8 status;
-> +	int rc;
-> +
-> +	rc = zpci_mod_fc(req, &fib, &status);
-> +	if (rc)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
->  static int zpci_mem_init(void)
->  {
->  	BUILD_BUG_ON(!is_power_of_2(__alignof__(struct zpci_fmb)) ||
-> diff --git a/arch/s390/pci/pci_event.c b/arch/s390/pci/pci_event.c
-> index e868d996ec5b..73389e161872 100644
-> --- a/arch/s390/pci/pci_event.c
-> +++ b/arch/s390/pci/pci_event.c
-> @@ -47,15 +47,182 @@ struct zpci_ccdf_avail {
->  	u16 pec;			/* PCI event code */
->  } __packed;
->  
-> +static inline bool ers_result_indicates_abort(pci_ers_result_t ers_res)
-> +{
-> +	switch (ers_res) {
-> +	case PCI_ERS_RESULT_CAN_RECOVER:
-> +	case PCI_ERS_RESULT_RECOVERED:
-> +	case PCI_ERS_RESULT_NEED_RESET:
-> +		return false;
-> +	default:
-> +		return true;
-> +	}
-> +}
-> +
-> +static pci_ers_result_t zpci_event_notify_error_detected(struct pci_dev *pdev)
-> +{
-> +	pci_ers_result_t ers_res = PCI_ERS_RESULT_DISCONNECT;
-> +	struct pci_driver *driver = pdev->driver;
-> +
-> +	pr_debug("%s: asking driver to determine recoverability\n", pci_name(pdev));
-> +	ers_res = driver->err_handler->error_detected(pdev,  pdev->error_state);
-> +	if (ers_result_indicates_abort(ers_res))
-> +		pr_info("%s: driver can't recover\n", pci_name(pdev));
-> +	else if (ers_res == PCI_ERS_RESULT_NEED_RESET)
-> +		pr_debug("%s: driver needs reset to recover\n", pci_name(pdev));
+On Mon, Sep 27, 2021 at 04:51:05PM -0500, Eric W. Biederman wrote:
+> Christian Brauner <christian.brauner@ubuntu.com> writes:
+>
+> > I'm expanding the Cc on this since this has crossed a clear line now.
+>
+> What asking people to fix their bugs?
+>
+> Sitting out and not engaging because this situation is very frustrating
+> when people refuse to fix their bugs?
 
-Are you following a convention of using pr_info(), etc here?  I try to
-use the pci_info() family (wrappers around dev_info()) whenever I can.
+I clearly explained why this has crossed a line in the prior mail. Cutting that
+part off won't make it go away.
+
+>
+> > You have claimed on two occasions on the PR itself (cf. [1]) and in a
+> > completely unrelated thread on fsdevel (cf. [2]) that there exist bugs in the
+> > current implementation.
+> > On both occasions (cf. [3], [4]) we have responded and asked you to please
+> > disclose those bugs and provide reproducers. You have not responded on both
+> > occasions.
+>
+> You acknowledged the trivial bug in chown_common that affects security
+> modules and exists to this day.
+>
+> It is trivial to see all you have to do is look at the stomp of uid and
+> gid.
+>
+> The other bug I gave details of you and it the tracing was tricky and
+> you did not agree.  Last I looked it is also there.
+>
+> > I ask you to stop spreading demonstrably false information such as that we are
+> > refusing to fix bugs. The links clearly disprove your claims.
+> > We are more than happy to fix any bugs that exist. But we can't if we don't
+> > know what they are.
+>
+> Hog wash.
+
+Stop the handwaving and stop claiming things that aren't true. The links in the
+prior mail clearly disprove any of your claims. I did not acknowledge any bug.
+And I did not do so because you have not provided any proof that this leads to
+any issues. You claim that there are bugs. So the burden of proof is on you to
+spell them out clearly and provide reproducers where this actually leads to
+issues.
+
+>
+> A demonstration is a simple as observing that security_path_chown very
+> much gets a different uid and gid values than it used to.
+>
+> I have been able to dig in far enough to see that the idmapped mounts
+> code does not have issues when you are not using idmapped mounts, and I
+> am not using idmapped mounts.  So dealing with this has not been a
+> priority for me.
+>
+> All I have seen you do on this issue is get frustrated.  I am very
+> frustrated also.
+>
+> All I was intending to say was that if we could sit down in person at
+> LPC we could probably sort this all out quickly, and get past this our
+> frustrations with each other.  As it is, I don't know a quick way to
+> resolve our frustrations easily.
+
+If that really was your intention then again, you could have easily handed in a
+session to either one of the microconferences that I ran and presented in, you
+could've easily asked for a hackroom session. You could've written a normal
+mail addressing the issue. None of that happened. Your actions clearly speak
+against any intention of resolving this constructively so far.
+
+It is not our task to to chase after you in order to get you to tell us
+what your problem is. You need to find better, less passive-aggressive
+ways to deal with your frustrations.
+
+Here is my proposal to resolve this. The Linux Plumbers infrastructure is well
+alive and running and always there for on-demand meetings. I offer you a
+virtual meeting with camera and audio to clear the air both socially and
+technically. We will ask someone to be around as arbiter and to take notes
+during that meeting so we have a track-record.
+
+
+Christian
