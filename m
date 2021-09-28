@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0691041A620
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85BF41A622
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238879AbhI1DoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 23:44:01 -0400
-Received: from mail-eopbgr1320122.outbound.protection.outlook.com ([40.107.132.122]:29825
+        id S238884AbhI1DoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 23:44:16 -0400
+Received: from mail-eopbgr1320130.outbound.protection.outlook.com ([40.107.132.130]:52584
         "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238850AbhI1Dn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 23:43:59 -0400
+        id S238850AbhI1DoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 23:44:14 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lr05lbBuYvoTVlD1yTdV5dgeVcfosjvqtI0cprOXt/kWfM3t8qv3xpeTjMqKZVwDDqiGFa1lX8ZWPXjHYmsus8OTukh0AnmLcOTI3dMLW4xs5OpQnaRSdvOREnt429+MGhsObvrf6mT/Bd5otxUhov8j7v5AQLB77U6ULlJx/1SCCTqiSf5MNGHyx4uXJgtwhlBLyNf67q6WvqH89R2TSdBqBTwGLO0uZUfxmGDxIP8xLgM4LSIdoZQ8Jn5iWlKC0dWgnemaU+F1r80+0kz7Y/p6JVxZN+Bqdmm7F/DDPKYUubNFr8Zpl/O0wtudfK70hEP8geg5PgFCZVhKXb2q7A==
+ b=QBNunsSU9bYq/lzil4zHuJoFZ0+BB3MEoP5Hr+8cd+edqNitA4cztxJN1btcdlIJatqUU3NoED57/+z3c+B5dcvg1+wiQyu7Y73+ep7qgQYNmJ3Jc4YLb/cfhnh4ixB0WUyqI4tLG6B380Nhtu6SIAeMTDwAr4JPBoj5fed/kF0Rm6df6068OsdI5ZTYyVk/oLRMAgPo5+VGQhm/gLr9K3f1rNQd7+eNajw9kWg9igHzIq1Gg5wnVaPO98SBRuMlV/3q1Z/qlyoPV2TSKV/4VWtyHl7mBv5SZLPbyCXjkCenjHP0DDtR2L+1QblibTZNk4IyuD2fGBIT5SWl5ihiHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=BlXLUM/ert72C2DH1qhIy8zVsPTeVoE1568W5azf/uc=;
- b=nmmC1JTGosXceXYxvDjgHVG1k+gRMlB395DguiEd2Z715THXdqTrsX7Ys/8AbLPbwy3Eny+8TvfELNiMHx1gmiI5xyFyA/c0XNtLDsUCa5Ypy/UInZTqe79aEZxphOgXbZSpe/ILCCmrd4wDwHP+NCn12HWZRrqrSHueHLPPSYVqFSv8gGxhYv+zgaQJI/n3nrTnr3UHo0wunaZ1HdPA0mMn4dp3eOQqkLlcycxSMXeDebSe1Pu0y6mneFcVunpVPDLklWZSgLVZyTU7pmxm5bNoQV7szXfa5TLcTNDvdqRpiv514t904aNpjZ3u/SD2yeFMkDWuTOf8Gy/DF0GYsg==
+ bh=QHAHYoyTFlUZU9f8Oez/At/gP35zdRcz6kG8oTRwxOc=;
+ b=LBNl/cTcFFspY5bbhiKNJVnPpbVE9fQ+YWx5O1nSUo9qMJblYkYamECmULhN4ubyZS0JVKNbetBeqjj2eS4QxFHM3vcORHy8Pd4vlxIeQwngIQvqASoRw35rDp7C7CmbGZNF9bZL+Rd6BuCyfLWSFB+ISnE1YUj2uazlBllnj8UL8l0M+xBpizt71Qgoe8QRSzDmma6Ycv4n30lS8q0sMInTO+5PJbWNvHIkzWigtblM7HBJWaxD4lDBFpizdmv8tK0jgcY7L4CBrMUXWCV/68cMLLdyIXqR3iemFHVPxVRZq/CBvb5fCRMyGAa+TtbxAaj0RdVEqjz5cmN/6k3i5g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
  s=selector2-vivo0-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BlXLUM/ert72C2DH1qhIy8zVsPTeVoE1568W5azf/uc=;
- b=MrkERfYI9BKkxrKAuwClv5WtgaLzUJd2ifsFUbZTkhj+8sp7q1iEz3v1UVWJgDqqhWYf271T7I62W76Tf28DGx9JUVvMJvesPf1qff/hnkM8XvA5N0l3HFlwGxhWNi8MAC2iS8M43L1R1/tKyLwZ01mevh3HJrpPPVzQbkazpq8=
-Authentication-Results: broadcom.com; dkim=none (message not signed)
- header.d=none;broadcom.com; dmarc=none action=none header.from=vivo.com;
+ bh=QHAHYoyTFlUZU9f8Oez/At/gP35zdRcz6kG8oTRwxOc=;
+ b=KIE5M8I3GfzEOEO+mbHhkOvx8xt+ryvsmGDLumhr5nG9TfvDQDwS9QmB4ZKVOiSi9sdcZ0J5R7GQ0ClQvS+3QwOXyg0doRoQzoMKyIxXqYj5bwQpmRWd01J1BqlcbfgEIS+P1PEwLzv6NqCFWnknr7RwpaRW/lX5P0aFi/4yqZU=
+Authentication-Results: deltatee.com; dkim=none (message not signed)
+ header.d=none;deltatee.com; dmarc=none action=none header.from=vivo.com;
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17) with
+ by SL2PR06MB3401.apcprd06.prod.outlook.com (2603:1096:100:3b::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Tue, 28 Sep
- 2021 03:42:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 28 Sep
+ 2021 03:42:32 +0000
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
- 03:42:19 +0000
+ 03:42:32 +0000
 From:   Qing Wang <wangqing@vivo.com>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH V2] message: fusion: switch from 'pci_' to 'dma_' API
-Date:   Mon, 27 Sep 2021 20:42:11 -0700
-Message-Id: <1632800532-108476-1-git-send-email-wangqing@vivo.com>
+Subject: [PATCH V2] dma: plx_dma: switch from 'pci_' to 'dma_' API
+Date:   Mon, 27 Sep 2021 20:42:22 -0700
+Message-Id: <1632800542-108522-1-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-ClientProxiedBy: HKAPR03CA0019.apcprd03.prod.outlook.com
- (2603:1096:203:c9::6) To SL2PR06MB3082.apcprd06.prod.outlook.com
+X-ClientProxiedBy: HKAPR03CA0021.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::8) To SL2PR06MB3082.apcprd06.prod.outlook.com
  (2603:1096:100:37::17)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (103.220.76.181) by HKAPR03CA0019.apcprd03.prod.outlook.com (2603:1096:203:c9::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4566.8 via Frontend Transport; Tue, 28 Sep 2021 03:42:18 +0000
+Received: from ubuntu.localdomain (103.220.76.181) by HKAPR03CA0021.apcprd03.prod.outlook.com (2603:1096:203:c9::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4566.9 via Frontend Transport; Tue, 28 Sep 2021 03:42:31 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 629ff662-01d0-40d4-b6d9-08d98231f8f5
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3082:
+X-MS-Office365-Filtering-Correlation-Id: da037710-005f-4566-987a-08d9823200d2
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3401:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB30824ED8C1A615B1EDAC7C3FBDA89@SL2PR06MB3082.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-Microsoft-Antispam-PRVS: <SL2PR06MB3401CA2D313D41BBF24089E9BDA89@SL2PR06MB3401.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9DGZNrp+EAFFf1AcKW9eyW1lYuBVReN/hUE8PiMlVTMw6EXoXyBewEz7hIiyGDqEhxcDlKfOnqZaz03I5dzNXYUcz9Yp1lnfJfy63ZJIxLELsU8zTWOzFDA4kwqxUp6/RDzR5vfwx1WK1Y8xS2M+RF6IUKJmvPj7e20py6nr8ea4OPTgbpDUJkyoeHL9B6hXeZgC7SCASI/T7339A3bTJ3w4XPcntIQ3kk9B+QIdRn4g8r7xWrxkRzx7dGj7JTGScprYxu1K4r3HnrNAipkM9xbcaO1S/MrpsuAg9olQUSVVmNYP22oLEWydnEe8HvD+k9+TkGMzj1GWJFaK2tAU3mN+PPFBESykeCHO7InRYy00pZ97i1SYWRdIwkB/HI25K7yWmkPFnF+BmTTvW48oar00ypggbHDWmSO9/TpJlggd0jrD1thVtN+fjs5Dj3jlbwCkLm8wahePe/ir/PKVea5KDuQX0Msijr56dJ786Y01SpHZMq4UVRpfs1qRgURS6x8FJKJn685pFN8g3J83kp3UaLO078nHMeGKnaUYLF03js4f24ThNN4XGS4E69j8XOb+ZnNL3LZXXOZvO/yvstPyDDS6qJWL8RpjYbvQAzxj3w5FAGM8RDfaATIJw9fbSP0o/K1YCKs3Jn6G+9aAlYwhSqzNlQ6pm/uNG0bIf0OaBRxCZMjgIZGgMico9hfdFFMIuSW19GnmpsuBrutg7w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(26005)(4326008)(107886003)(5660300002)(316002)(508600001)(2616005)(956004)(38350700002)(38100700002)(86362001)(6666004)(15650500001)(66946007)(6506007)(36756003)(6512007)(2906002)(83380400001)(8936002)(186003)(52116002)(6486002)(8676002)(66476007)(66556008);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: FHrKXB//nOMPOvFdYstb91wmfbz4LKW5dduhnvCcGx9JcIZNubEwni4SESa5HKtoNRh8BNa/nj3a1QlFEU3iYD51jw9TUwhI80HYagTyQob6FTSPpOFZEanSXD+r6yNhWC49cI1eBdW3oqf0ZmUKrrzHU/Iwjh1n9/ChQZwu0RT1VdPrDqJOFy+jotZKDD+ug07Oocqz83C1yCGf2TKkHUdPHQUlcOCUlXfXg2QxBJKBAwC+iXtnVTzaiYIrxIxhvh8hCYeHEoHVe6Jf4YPSoV1gDpYsjhSBCIkhclI6+t//o6RjoAk7vczQel05qTG9KBtY/DXGRcwZqeVMmYJLgPbBs/6yEPHp+mK6hYbTBT3otB9QYvF61ezjhpJIER/c3HUwr0/c5Q284oWx3dRBBLxrlePag69fzDbUZzWOTloDngj8gr9hopD7U/hMsruBZyh6qgYAo7mcccY9a/QPPodcuZ7zBEsX9qrXwcNJiY+YH0gdFKXLkdy50w/mg5xYrh8XbavaLCrShjTnNVBCVE+lXu6/GHUse7EpWJ5bG/AuL5JA+ZNJ6Vy9vJH5CTewFcMmkJAWfU8ATd2HERoq+x2fpGEcAcOCAHxMNjGoPm+0h9FiDF+M2aDe4uZipFlu5wGkavoPyqfA8kxCa9aGIRh8TS2dn7cVB/cy5i8a7ktkJbdL/AHw/H0Qs2/QxQjIqNu3kg8MJlkpJj/cphk39g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(38350700002)(26005)(6666004)(66556008)(38100700002)(110136005)(2906002)(316002)(66476007)(66946007)(508600001)(6506007)(52116002)(36756003)(2616005)(4326008)(6486002)(5660300002)(186003)(8936002)(6512007)(107886003)(83380400001)(86362001)(956004);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a8vIo1RRNWuXK0c82aelscf6BAUW0RNDmhOLnrJxbC/jwtwBEglkqKxNHbf7?=
- =?us-ascii?Q?wo3KPcvNX0x0I+iCGvJIl6lvRY2Avl4utSSlNzKNHf9xdpfLT4LvjnklzRi6?=
- =?us-ascii?Q?99zoewU6tgumchrPUrrhOJ8FkAks7326TBOUFq6NyMBO8rmL1IKy2kM+ls6h?=
- =?us-ascii?Q?oY5B+Cl8dCsm0ltHv8+XHhwwXVG3WYY8Q8DW/aV56uJjL0zcyDhmySugKhBt?=
- =?us-ascii?Q?/r8HCfiR3TxRTkXEBW/5E5h2GTe79hCx/KLUOspTfEEVAoeKvMwY5/OjQyAi?=
- =?us-ascii?Q?fOzmYsNlTXBB6fosqgKnnl/78+Uz7JXrgKOrB6Ox/Adm85H8tNjQQ3N7YQTD?=
- =?us-ascii?Q?eOwiSpDGY7HstNd60SPikdG8KwuzNJ4Z0WnvqGb1cPCsrn6/Y0bfwkiYFHaT?=
- =?us-ascii?Q?5ivpfEfTsJsZ5b4kcKZxBh6nO9cjX4fZOTWoz3QCyGhqrVZWYPbsaHmHLv8Z?=
- =?us-ascii?Q?yQwRJbrhuHT/4KPLbwy9GjLBbia9WJF3cT2QvurlUW4UkDEfP8/0kt7Y3UxG?=
- =?us-ascii?Q?NqoLxDn41/1+cGk3X1kqSvx6TeOF+e995/vvcgtaVZMzVB5+QrgE1zRGzpAX?=
- =?us-ascii?Q?i5XUSOglqADkxdeXBYUJ1GeV3P6wfPkrLpB8cDyc4GwZF8JHpJJbI91anrYL?=
- =?us-ascii?Q?uygJXBTMLTfSS5p3LaHrxu3jYhe5URea9Lyo6e08HCWxSJ5a+nifWJVFfW7P?=
- =?us-ascii?Q?PX9KJfXXS1uKNQJ6rQ/0PYwBtHQwnxXTdPJG/Kk0oMdYKq3wjWSSSiubl7N5?=
- =?us-ascii?Q?YSLcX43O6wWrvGuRkpIj/6YUGwdP9NWnumIhX593O9GPKyLk8LVAvuYeiOlk?=
- =?us-ascii?Q?3lCs6gEFhDZcx28cLMWKrDcfUiKKAimUyhrVb6wD7yONVQWZ+/oSGT8p8gR0?=
- =?us-ascii?Q?NMEOl2Qzp934Tp3mXSBsmiTV9aIjQLJOHxgH8Kj+KYpqcQ6fOjDq3GDjbSnF?=
- =?us-ascii?Q?NeTt400E4wTSwnshfxlCzgUcepKRqg7XziogFTu/J6N/T4FuYHFitlhUhSCM?=
- =?us-ascii?Q?514n2WoF0ERI0z1WiloOf4QdmlEHZQjjw2THI8aokRpg6MzzZD3eKlA2hdfX?=
- =?us-ascii?Q?wKFlhR5i+iFfQXM+Ud/eQ+4tKPMDmhIfUGUCSVYTLrWpBh33Yzo/NM2lBVTx?=
- =?us-ascii?Q?RIIv+47kRKkenQIzXPVJiPE7reXzNuQ/+daFh98XV2iDWPe3Cbx+M9DPOH8c?=
- =?us-ascii?Q?Rh6xwcR9WFpdDZocUitlK5aRCJUOfVXeCnsmkSJsUPS2TF3ccfdlYzGq+4c/?=
- =?us-ascii?Q?ZQlK12e+q7jfxX2TOzQ4/FlScTF39X0xSynnvJNdDhmtMLwVTAlP0E2zf0Kr?=
- =?us-ascii?Q?oIbmrNT12cuSUBfAkVAlVhud?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fwQuvIktjZJ1aUOTmfoXdsjp4WoeaqNqdTFmRoqp6dN2xhOXy4IZniISPd7k?=
+ =?us-ascii?Q?2/ianpg6WsIAysgrd5QAYFHsCcTItiKqT5CHYbZHgV20fIG4Y431tjpeLNHo?=
+ =?us-ascii?Q?49na0r+cagpzQGLz7l5tVm2/b67DXu/OPyGznD3K0YFKQ+IUP8Vht/nLEFjx?=
+ =?us-ascii?Q?msJ4VNfZpCh0Kv10Z1M419kWVamJ0nYnOGZVosHRarYHxcPwvEGxGzBOEe6q?=
+ =?us-ascii?Q?9YoQ7+Yarvj8DjIGfH+/sOeMJ+39/Ze4jOCYxClvFIHoRPpvXmSTSFn/VWuO?=
+ =?us-ascii?Q?xlb1dPPXmskpHXlUtwkBbKKurttOGdaAVMpDe9Unklz0brQF+Uy1nPl5ypxy?=
+ =?us-ascii?Q?tkwVpuOqBD8TDZrGuG3+/U9IVm3dge4mz2KA9bVk+QGow4yvSfGwfVxOEAHx?=
+ =?us-ascii?Q?X0sgP3kNKnMX01j8sdyTU0lZaUUdLxY/lvPbapkhtj5znKhrdWtqBGEe/jmm?=
+ =?us-ascii?Q?HAFUjRwfBW7SbIkwwgRi0fSsh5Mw+dQHk7A56Fy2vI2JgCbKEkYS2nPHFN4b?=
+ =?us-ascii?Q?8wzWE2LBx+rJtZBJABRhusoaLfE71/rfrolXHgs8WcekwO2mLHelMHXEpDAy?=
+ =?us-ascii?Q?n6Vibclx2HyivNTIvJPBXvXLBwvSF2mVvvO9YYnjw/MfnZ4VTQhHdnUzBlVN?=
+ =?us-ascii?Q?Klslh3Z9n8lSk1c3TUDlC0BlShLgUiHaDwFE8y7+UL9rLcwK0jJ8ZrHjGJZQ?=
+ =?us-ascii?Q?WjsKAhfkxfbqci7+r04R6A3n6zOIEMOFwhyYbiws9JwYrdiwCgpNkloH5q85?=
+ =?us-ascii?Q?eF8FLTqkz4GBeYIz85X99xjQvEb7nmCk2URduCc9syqWAbab+2RGOkkEsvRs?=
+ =?us-ascii?Q?1pWm8yv6WYwYwNlgQaioWHlG709wuOFNj2Hlm5OQyybVaAdfbzqmLG8jE8VG?=
+ =?us-ascii?Q?6vh24xamQOtS0dLY2LTzIe3nIN2pJv1H7kpDFAG4COLf+3uXmgbNg0mKhW9K?=
+ =?us-ascii?Q?o+BAWN/UCcJeF7giPg5oBZBE5GRcFZ4Vj/tUkaDVSLcPlEOizRbg0Bg3OStQ?=
+ =?us-ascii?Q?T/1AWhByRwEtaTm9IQhJ3Qs8WD6xkWtPg+OiTvzjl5wze5qDozlVPm7hRwmp?=
+ =?us-ascii?Q?dFnZnEUXfEK+ZvoDxYfczYiL/FNRRQhlGN1DDaOufZRxIfKZ9KuGafwcc5pR?=
+ =?us-ascii?Q?JRU4e8cZlm809/ACEoaJdNkassQuziFkvuhNVPuZdj0iSNHg9pIBdbIoCgaE?=
+ =?us-ascii?Q?6PEqDtHOX1tYL73WdJa1KD0QTD9z2nmPqG2XCbeVSlZkswGB5p7WKJU3jTnr?=
+ =?us-ascii?Q?tjdFuaVMIqAcZiDN/m7kQCokfudkLEkzOniTxYPwUj5Hh6XGZ7W1XJUV6niq?=
+ =?us-ascii?Q?ViZcw9xdY//UI0Fk4yvTadJD?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 629ff662-01d0-40d4-b6d9-08d98231f8f5
+X-MS-Exchange-CrossTenant-Network-Message-Id: da037710-005f-4566-987a-08d9823200d2
 X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 03:42:19.2926
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 03:42:32.4662
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hqtMkid2Ce4g792nAINwG0Oipsvtx+5JRxoD9yqRkXzYHGsBY+DsxVyu4xB2CLiLWw8YK3MkcSDuYFJmcwN0Cg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3082
+X-MS-Exchange-CrossTenant-UserPrincipalName: rq6+xkO2693rsLCf/l4gXVYopq80HadtmZ+r3xJvEzMWpQNrgHrWw8ivm87j8z+zl0X8D1wL+AohZUbgHP3csQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3401
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -123,90 +120,32 @@ While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
 updated to a much less verbose 'dma_set_mask_and_coherent()'.
 
 Signed-off-by: Qing Wang <wangqing@vivo.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 ---
- drivers/message/fusion/mptbase.c | 31 +++++++++----------------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
+ drivers/dma/plx_dma.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-index 7f7abc9..c255d8a
---- a/drivers/message/fusion/mptbase.c
-+++ b/drivers/message/fusion/mptbase.c
-@@ -1666,16 +1666,12 @@ mpt_mapresources(MPT_ADAPTER *ioc)
- 		const uint64_t required_mask = dma_get_required_mask
- 		    (&pdev->dev);
- 		if (required_mask > DMA_BIT_MASK(32)
--			&& !pci_set_dma_mask(pdev, DMA_BIT_MASK(64))
--			&& !pci_set_consistent_dma_mask(pdev,
--						 DMA_BIT_MASK(64))) {
-+			&& dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64))) {
- 			ioc->dma_mask = DMA_BIT_MASK(64);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 64 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
- 				ioc->name));
--		} else if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32))
--			&& !pci_set_consistent_dma_mask(pdev,
--						DMA_BIT_MASK(32))) {
-+		} else if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
- 			ioc->dma_mask = DMA_BIT_MASK(32);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 32 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
-@@ -1686,9 +1682,7 @@ mpt_mapresources(MPT_ADAPTER *ioc)
- 			goto out_pci_release_region;
- 		}
- 	} else {
--		if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32))
--			&& !pci_set_consistent_dma_mask(pdev,
--						DMA_BIT_MASK(32))) {
-+		if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
- 			ioc->dma_mask = DMA_BIT_MASK(32);
- 			dinitprintk(ioc, printk(MYIOC_s_INFO_FMT
- 				": 32 BIT PCI BUS DMA ADDRESSING SUPPORTED\n",
-@@ -4452,9 +4446,7 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		 */
- 		if (ioc->pcidev->device == MPI_MANUFACTPAGE_DEVID_SAS1078 &&
- 		    ioc->dma_mask > DMA_BIT_MASK(35)) {
--			if (!pci_set_dma_mask(ioc->pcidev, DMA_BIT_MASK(32))
--			    && !pci_set_consistent_dma_mask(ioc->pcidev,
--			    DMA_BIT_MASK(32))) {
-+			if (!dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(32))) {
- 				dma_mask = DMA_BIT_MASK(35);
- 				d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 				    "setting 35 bit addressing for "
-@@ -4462,10 +4454,7 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 				    ioc->name));
- 			} else {
- 				/*Reseting DMA mask to 64 bit*/
--				pci_set_dma_mask(ioc->pcidev,
--					DMA_BIT_MASK(64));
--				pci_set_consistent_dma_mask(ioc->pcidev,
--					DMA_BIT_MASK(64));
-+				dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(64));
+diff --git a/drivers/dma/plx_dma.c b/drivers/dma/plx_dma.c
+index 1669345..1ffcb5c
+--- a/drivers/dma/plx_dma.c
++++ b/drivers/dma/plx_dma.c
+@@ -563,15 +563,9 @@ static int plx_dma_probe(struct pci_dev *pdev,
+ 	if (rc)
+ 		return rc;
  
- 				printk(MYIOC_s_ERR_FMT
- 				    "failed setting 35 bit addressing for "
-@@ -4600,9 +4589,8 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		alloc_dma += ioc->reply_sz;
- 	}
- 
--	if (dma_mask == DMA_BIT_MASK(35) && !pci_set_dma_mask(ioc->pcidev,
--	    ioc->dma_mask) && !pci_set_consistent_dma_mask(ioc->pcidev,
--	    ioc->dma_mask))
-+	if (dma_mask == DMA_BIT_MASK(35) &&
-+	    !dma_set_mask_and_coherent(&ioc->pcidev, ioc->dma_mask))
- 		d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 		    "restoring 64 bit addressing\n", ioc->name));
- 
-@@ -4625,9 +4613,8 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		ioc->sense_buf_pool = NULL;
- 	}
- 
--	if (dma_mask == DMA_BIT_MASK(35) && !pci_set_dma_mask(ioc->pcidev,
--	    DMA_BIT_MASK(64)) && !pci_set_consistent_dma_mask(ioc->pcidev,
--	    DMA_BIT_MASK(64)))
-+	if (dma_mask == DMA_BIT_MASK(35) &&
-+	    !dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(64)))
- 		d36memprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 		    "restoring 64 bit addressing\n", ioc->name));
+-	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
++	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
+ 	if (rc)
+-		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+-	if (rc)
+-		return rc;
+-
+-	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
+-	if (rc)
+-		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
++		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (rc)
+ 		return rc;
  
 -- 
 2.7.4
