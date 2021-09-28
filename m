@@ -2,173 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF97041B7DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A8341B7E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242601AbhI1UB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
+        id S242614AbhI1UCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242535AbhI1UB6 (ORCPT
+        with ESMTP id S242593AbhI1UCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:01:58 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90069C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:00:18 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id p80so104502iod.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tt9tt/F3IxLyQ34cK+9pj6tNPzMMJ1v10W8CXUTZIXc=;
-        b=N3sK4GpDM7NoausvCZ7uvCv2xW8y1o2GqpLxTtHdEz+qukAhK9GRVXI15tRB36rXkG
-         nIIXXm2zgad8mAZpCf5s5YQsjUW2aE4PBDSL5ia/k1Nt9Mo4BFgPQLAOAlIwoYQXGXuH
-         fmr97KMI5Q8zlbFdiIq/dYgMzPBdrUuYP8EE4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tt9tt/F3IxLyQ34cK+9pj6tNPzMMJ1v10W8CXUTZIXc=;
-        b=EUMCHqMSOPukuIYrexg8rgzda8ik8uOK2S8e/Xe6j4KnyTVyeLqqTzY1+v7Ge56ABf
-         vOOm3G46LBdRoY+ZP/9sVdCUjXnLnvScrlNqpiflZ6iSYfLrQyDOfSHHbCDzbKwZxLEc
-         pt4tI3ucJSB+Zrln+wnrwmv7xsmQmynD319MC0wtWYmDW3CU2Ipbt6GtdfjKJ7Vn1t39
-         upYAh9AHZGtfiY5m9JxiEpN5rLPM/TQHK0ccSo1jTKe1iBDh1gVSL9GyU1QFSJQSluFj
-         chhs1Uc5oLGSoGKm3fZnHxZ12R+5XuqOA8HmjgLKXLZDq38a/pDT1OcE6Lj9LSsYRMIl
-         0k2w==
-X-Gm-Message-State: AOAM530VOV8DIxLigqsszIhQBgk2QBzQMiq3acZ/HM1xDUTS3j7s1NuO
-        DWsZPINC+lMVYhrKiq5xDvUp/ME7Q7+ydA==
-X-Google-Smtp-Source: ABdhPJz46h5/SAf+ZB5e/6ZuYjDCAcSsf6UnmGCXQxrZiw4d6he07xc3cNEpGomGLTyzfeHR9UZOtQ==
-X-Received: by 2002:a05:6638:2183:: with SMTP id s3mr6231605jaj.11.1632859217392;
-        Tue, 28 Sep 2021 13:00:17 -0700 (PDT)
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com. [209.85.166.176])
-        by smtp.gmail.com with ESMTPSA id r7sm11392215ilm.5.2021.09.28.13.00.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 13:00:16 -0700 (PDT)
-Received: by mail-il1-f176.google.com with SMTP id y15so239446ilu.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:00:15 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1847:: with SMTP id b7mr5900911ilv.180.1632859215623;
- Tue, 28 Sep 2021 13:00:15 -0700 (PDT)
+        Tue, 28 Sep 2021 16:02:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FE0C06161C;
+        Tue, 28 Sep 2021 13:00:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632859241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D7e/QL1SpcLLIiSjaCP7hCUsjIQqSLXxLXSn+s1HLR0=;
+        b=qrrDYwtMqfYfSlrEZshrqamhhneYMkL5HOJWzOEINdVZw1wlzriW3L5BlMwVing1IagUSc
+        PVRuFzd99C8Bn1l/BCdqMvuDvoXR44K3j/QZ1LHsH4PeD+kyKmK/rROU4i7gENxfvmAsJx
+        exLpOHT60xcf/blr1WRv8ZI5UxBluQWgPsMBrvld5b+30oliqY07hUfMNz0oemFnn6Exon
+        SHuiLAAk2D4oqUV+otqe1rO3D2ZBYe4r0cXqGDXqOZ8zVyddfdA988Keq/kS1gM9QE5zrt
+        x4DRRijzgyWBwiWj2JxKw5Dxc7+k6zPsjXbBh0F06f+P7KK1PBgod9nt0Xc4LQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632859241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D7e/QL1SpcLLIiSjaCP7hCUsjIQqSLXxLXSn+s1HLR0=;
+        b=CTRXym9cjzJ0XEMNvPypvEgu1rtkDDIAWUy4WmrbCbAxq7L4ELtLOPRWKraRue8s4QA0NK
+        Gt/NYcgF80PVm+Aw==
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH 3/5 v0.6] sched/umcg: RFC: implement UMCG syscalls
+In-Reply-To: <CAFTs51V7QTt3pjfHJ8MSxCgdnTz_5J3Dp8VLt6aGpE0WeB09tA@mail.gmail.com>
+References: <20210917180323.278250-4-posk@google.com> <874ka5awdp.ffs@tglx>
+ <CAFTs51V7QTt3pjfHJ8MSxCgdnTz_5J3Dp8VLt6aGpE0WeB09tA@mail.gmail.com>
+Date:   Tue, 28 Sep 2021 22:00:40 +0200
+Message-ID: <87mtnwa2s7.ffs@tglx>
 MIME-Version: 1.0
-References: <20210927201206.682788-1-lyude@redhat.com> <20210927201206.682788-3-lyude@redhat.com>
-In-Reply-To: <20210927201206.682788-3-lyude@redhat.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 28 Sep 2021 13:00:04 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V00-z=zvh6oZVYt7Hw00o07zEYxCa4zMrCmgNKEzcBCw@mail.gmail.com>
-Message-ID: <CAD=FV=V00-z=zvh6oZVYt7Hw00o07zEYxCa4zMrCmgNKEzcBCw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] drm/dp, drm/i915: Add support for VESA backlights
- using PWM for brightness control
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        Satadru Pramanik <satadru@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Peter,
 
-On Mon, Sep 27, 2021 at 1:12 PM Lyude Paul <lyude@redhat.com> wrote:
+On Tue, Sep 28 2021 at 10:26, Peter Oskolkov wrote:
+> On Tue, Sep 28, 2021 at 2:21 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> On Fri, Sep 17 2021 at 11:03, Peter Oskolkov wrote:
+>>
+>> What's the rationale for that? Why is that needed and desired?
 >
-> @@ -3305,11 +3313,10 @@ EXPORT_SYMBOL(drm_edp_backlight_enable);
->   * @bl: Backlight capability info from drm_edp_backlight_init()
->   *
->   * This function handles disabling DPCD backlight controls on a panel over AUX. Note that some
-> - * panels have backlights that are enabled/disabled by other means, despite having their brightness
-> - * values controlled through DPCD. On such panels &drm_edp_backlight_info.aux_enable will be set to
-> - * %false, this function will become a no-op (and we will skip updating
-> - * %DP_EDP_DISPLAY_CONTROL_REGISTER), and the driver must take care to perform it's own
-> - * implementation specific step for disabling the backlight.
-> + * panels have backlights that are enabled/disabled via PWM. On such panels
-> + * &drm_edp_backlight_info.aux_enable will be set to %false, this function will become a no-op (and
-> + * we will skip updating %DP_EDP_DISPLAY_CONTROL_REGISTER), and the driver must handle disabling the
-> + * backlight via PWM.
+> In short, workqueue functions (sched_submit_work, sched_update_worker)
+> can be called with mm lock held, and so we cannot fixup pagefaults
+> inline; so we need to pin struct umcg_task pages temporarily. On the
+> wakeup path I elide this by setting TF_NOTIFY_RESUME flag and doing
+> everything later in return-to-usermode-loop in a sleepable context; on
+> the sched_submit_work (going to sleep) path, we need to access the
+> userspace to wake up the server, but this is a "nosleep" context, so
+> the pages have to be pinned.
 
-I'm not sure I understand the comment above. You say "enabled/disabled
-via PWM" and that doesn't make sense w/ my mental model. Normally I
-think of a PWM allowing you to adjust the brightness and there being a
-separate GPIO that's in charge of enable/disable. To some extent you
-could think of a PWM as being "disabled" when its duty cycle is 0%,
-but usually there's separate "enable" logic that really has nothing to
-do with the PWM itself.
+Fair enough. That's the kind of information which belongs into the
+change log. But this wants also be documented in the code, e.g. in the
+comment above umcg_pin_pages(). You'll be happy to have it there when
+you are forced to stare at that code 3 month after it got merged.
 
-In general, it seems like the options are:
+>> > diff --git a/kernel/exit.c b/kernel/exit.c
+>> > index fd1c04193e18..fdd4e923cca9 100644
+>> > --- a/kernel/exit.c
+>> > +++ b/kernel/exit.c
+>> > @@ -744,6 +744,8 @@ void __noreturn do_exit(long code)
+>> >       if (unlikely(!tsk->pid))
+>> >               panic("Attempted to kill the idle task!");
+>> >
+>> > +     umcg_handle_exit();
+>>
+>> Why is this invoked _before_ the oops fixup? How is that correct in the
+>> oops case?
+>
+> umcg_handle_exit() is just unpinning pinned pages, assigning NULL to a
+> couple of pointers, and clearing PF_UMCG_WORKER flag, so I assumed
+> doing it as early as possible is the best way to avoid unnecessarily
+> triggering workqueue callbacks. Is my logic wrong? (UMCG tasks should
+> unregister before exiting; if they do, umcg_handle_exit() is a NOOP;
+> but if they did not unregister, umcg_handle_exit() just makes sure no
+> pinned pages are left over).
 
-1. DPCD controls PWM and the "enable" logic.
+Look at the comment right below where you placed that call.
 
-2. DPCD controls PWM but requires an external "enable" GPIO.
+"Just unpinning" calls into a boatload of code in mm and you really want
+to do that _after_ all sanity checks and fixups and before exit_mm(). 
 
-3. We require an external PWM but DPCD controls the "enable" logic.
+It really does not matter much where exactly and I have no idea which
+workqueue callbacks you are worried about. The code after the fixup is
+fully preemptible (in theory).
 
-Maybe you need a second "capability" to describe whether the client of
-your code knows how to control an enable GPIO? ...or perhaps better
-you don't need a capability and you can just assume that if the client
-needs to set an "enable" GPIO that it will do so. That would match how
-things work today. AKA:
+>> > +
+>> > +     if (prev_state & UMCG_TF_LOCKED)
+>> > +             return;
+>> > +
+>> > +     if ((prev_state & UMCG_TASK_STATE_MASK) != UMCG_TASK_RUNNING)
+>> > +             return;  /* the worker is in umcg_wait */
+>>
+>> So if the worker is in umcg_wait() then why is it reaching this place at
+>> all? The current task surely knows that it comes here from umcg_wait(),
+>> right?
+>
+> This place is on the "worker goes to sleep" path (sched_submit_work).
+> umcg_wait() puts the worker to sleep, so this place is triggered. I
+> can remove PF_UMCG_WORKER in umcg_wait() to elide this if you think
+> this would be better. I'll try that in the next patchset version.
 
-a) Client calls the AUX backlight code to "enable"
+I was just wondering about that as it seemed strange to me that a task
+which invoked umcg_wait() has to inspect it's own user space state to
+figure out that it comes from umcg_wait(). There might be a reason for
+this, but if not then avoiding this pointless exercise completely is
+definitely not the worst idea.
 
-b) AUX backlight code will set the "enable" bit if supported.
+>> > +     /* The idle server's wait may timeout. */
+>> > +     /* TODO: make a smarter context switch below when available. */
+>>
+>> Neither those make any sense to me.
+>>
+>> > +     if (mark_server_running(server_tid, false))
+>> > +             umcg_ttwu(server_tid, WF_CURRENT_CPU);
+>>
+>> Well, after looking at both functions I can see why this wants to be
+>> smarter. Doing the vpid lookup twice instead of once is certainly not
+>> the smartest solution.
+>
+> I'll do some refactoring to avoid extra vpid lookups. The comment,
+> though, hints at a "smarter context switch" that is more than just
+> "ttwu the server and put the worker to sleep".
 
-c) Client will set the "enable" GPIO if it knows about one.
+These TODOs are not really helpful at the moment. Let's get the straight
+forward version to work first. Enhancing this is an orthogonal issue.
 
-Presumably only one of b) or c) will actually do something. If neither
-does something then this panel simply isn't compatible with this
-board.
+>> And if this is not called with preemption disabled then none of these
+>> misnomed _nosleep() accessors are needed and the code can be simplified.
+>
+> We still need to work with pinned pages, as described above - mm lock
+> can be held here. How would you prefer these accessors to be named
+> other than "_nosleep()"? Maybe "_nofixup()"?
 
+nofixup() would be weird because the actual access uses an exception
+fixup :)
 
-> +/**
-> + * drm_edp_backlight_supported() - Check an eDP DPCD for VESA backlight support
-> + * @aux: The AUX channel, only used for debug logging
-> + * @edp_dpcd: The DPCD to check
-> + * @caps: The backlight capabilities this driver supports
-> + *
-> + * Returns: %True if @edp_dpcd indicates that VESA backlight controls are supported, %false
-> + * otherwise
-> + */
-> +bool drm_edp_backlight_supported(struct drm_dp_aux *aux,
-> +                                const u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE],
-> +                                enum drm_edp_backlight_driver_caps caps)
-> +{
-> +       if (!(edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP))
-> +               return false;
-> +
-> +       if (!(caps & DRM_EDP_BACKLIGHT_DRIVER_CAP_PWM) &&
-> +           (!(edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP) ||
-> +            !(edp_dpcd[2] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP))) {
+If you look at mm/maccess.c you might notice that we already have such
+functions, e.g. copy_from_user_nofault(). Pretty obvious name that.
 
-Elsewhere you match DP_EDP_BACKLIGHT_AUX_ENABLE_CAP against
-edp_dpcd[1]. Here you match against [2]. Are you sure that's correct?
+I'll reply to that patch separately as the approach taken there needs
+more than a quick name change.
 
+>> > +static int umcg_ttwu(u32 next_tid, int wake_flags)
+>> > +{
+>> > +     struct task_struct *next;
+>> > +
+>> > +     rcu_read_lock();
+>> > +     next = find_task_by_vpid(next_tid);
+>> > +     if (!next || !(READ_ONCE(next->umcg_task))) {
+>> > +             rcu_read_unlock();
+>> > +             return -ESRCH;
+>> > +     }
+>> > +
+>> > +     /* Note: next does not necessarily share mm with current. */
+>>
+>> Which is irrelevant, but what's relevant is that there is absolutely no
+>> sanity check of next_tid. So this just wakes up what ever TID user space
+>> writes into the user space task memory. Anything copmeing from user
+>> space cannot be trusted and needs to be validated. find_task_by_vpid()
+>> is not sufficient for that.
+>
+> Well, next_tid must point to a task registered with UMCG, and this is
+> checked above. I'm not sure what other validation is appropriate here.
+> What kind of sanity checks are needed? The worst thing that can happen
+> is a spurious wakeup, which is supposedly something that can happen
+> anyway and is not a major concern?
 
->  /*
->   * DisplayPort AUX channel
->   */
-> @@ -2200,7 +2182,11 @@ drm_dp_has_quirk(const struct drm_dp_desc *desc, enum drm_dp_quirk quirk)
->   * @pwm_freq_pre_divider: The PWM frequency pre-divider value being used for this backlight, if any
->   * @max: The maximum backlight level that may be set
->   * @lsb_reg_used: Do we also write values to the DP_EDP_BACKLIGHT_BRIGHTNESS_LSB register?
-> - * @aux_enable: Does the panel support the AUX enable cap?
-> + * @aux_enable: Does the panel support the AUX enable cap? Always %false when the driver doesn't
-> + * support %DRM_EDP_BACKLIGHT_DRIVER_CAP_PWM
+A spurious wakeup which is caused by a race in the kernel is definitely
+not unexpected and inevitable.
 
-Why is aux_enable always false if it doesn't support
-DRM_EDP_BACKLIGHT_DRIVER_CAP_PWM? It doesn't seem like the code
-enforces this and I'm not sure why it would. Am I confused?
+User controlled targeted wakeups at random threads are not really the
+same category. There is a reason why you can't send signals to random
+processes/tasks. 
+
+Whether you like it or not, _any_ user supplied value which is used to
+cause a directed action of the kernel has to be considered malicious
+unless you can explain coherently why there is absolutely no risk.
+
+> Well, next_tid must point to a task registered with UMCG ...
+
+is not really sufficient. All it tells us is that it is a task which has
+a umcg pointer. Not more not less. It does not answer the following
+questions:
+
+ - Is it a task which is related to the same UMCG entity?
+ - Does it belong to the same user/group or whatever?
+ - ...
+
+You might want to talk to Kees Cook about that.
+
+>> > +     rcu_read_lock();
+>> > +     tsk = find_task_by_vpid(server_tid);
+>> > +     if (tsk)
+>> > +             ut_server = READ_ONCE(tsk->umcg_task);
+>> > +     rcu_read_unlock();
+>> > +
+>> > +     if (!ut_server)
+>> > +             return false;
+>> > +
+>> > +     if (READ_ONCE(current->mm) != READ_ONCE(tsk->mm))
+>> > +             return false;
+>>
+>> This is broken because it's outside the rcu read side critical section
+>> so @tsk can be gone already. Also this lacks a check whether @tsk is a
+>> kthread because kthreads can use a user mm temporarily.
+>
+> I don't think kthreads can have tsk->umcg_task set, so the function
+> will return earlier. I'll move the check under rcu.
+
+Indeed, you are right. This stuff is just hard to read.
+
+	rcu_read_lock();
+	tsk = find_task_by_vpid(server_tid);
+
+        /*
+         * Validate that the task is associated with UMCG and
+         * has the same mm because $RAISINS...
+         */
+        if (tsk && tsk->umcg_task && current->mm == tsk->mm) {
+            ...
+            do_stuff(tsk);
+	    ...
+        }
+        rcu_read_unlock();
+
+>> Also what's the purpose of these undocumented READ_ONCE() instances?
+>
+> While ttwu can be called cross-mm, anything more involved, such as
+> changing the server's UMCG state, requires the remote task to belong
+> to the same process, and this is what the check validates. I'll add
+> that comment to the code.
+
+But that has nothing to do with my question:
+
+  >> Also what's the purpose of these undocumented READ_ONCE() instances?
+
+READ_ONCE(current->mm) is pointless. current->mm cannot change while
+current is evaluating it. READ_ONCE(tsk->mm) does not provide any value
+either.
+
+READ_ONCE() is a clear indicator for dealing with concurrency and we
+expect a corresponding WRITE_ONCE() and a comment explaining what this
+is about.
+
+Sprinkling READ_ONCE() around the code is absolutely not helpful.
+
+If you are unsure about the usage of this, please ask your colleagues or
+on the mailing list upfront instead of letting reviewers scratch their
+heads.
+
+Btw, the same problems exist all over the place and there is quite some
+duplicated code which is wrong except for one instance. Can you please
+make that:
+
+find_umcg_task(tid)
+{
+	tsk = find_task_by_vpid(tid);
+
+        /*
+         * Validate that the task is associated with UMCG and
+         * has the same mm because $RAISINS...
+         */
+        if (tsk && tsk->umcg_task && current->mm == tsk->mm)
+        	return tsk;
+
+        return NULL:
+}
+
+and at the callsites:
+
+    rcu_read_lock();
+    tsk = find_umcg_task(tid);
+    if (tsk)
+       do_stuff(tsk);
+    rcu_read_unlock();
+
+Hmm? 
+
+Thanks,
+
+        tglx
