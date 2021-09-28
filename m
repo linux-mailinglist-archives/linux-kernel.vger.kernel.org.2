@@ -2,182 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802A441B9F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF88141B9F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242981AbhI1WND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
+        id S243033AbhI1WNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242494AbhI1WNA (ORCPT
+        with ESMTP id S243022AbhI1WNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:13:00 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DB0C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:11:20 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id m6-20020a05620a24c600b004338e8a5a3cso1154330qkn.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:11:20 -0700 (PDT)
+        Tue, 28 Sep 2021 18:13:07 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C108C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:11:26 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id ba1so822569edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:11:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=AA3FVIYg28Rh8YuKmqQIoWirPPhEH21EZnU/cofDuqI=;
-        b=kHQlxJCABAgZLXFar97YajNky4s9fdSksbKk3IrLXdMhmXQKeQTaGHcCt8JUjASeBk
-         TZSZaKsCTY1XQElJ6Q80Nc1n9u5mevlf7HerY8VViSoB9p63BvBE2fMC0HVhCYOj/HJ9
-         7brGfuHri3cnE4Dm5+JHftz/1x1feLOEKaFs25BotYF+bxh5lqkMeqXxf9OZQpEAWZg6
-         5z8Y3MGR0O3gWslyPknPniXJMiFTXEBNI6ONTbwdgwDh/mgy3g+ptY9g+5gqkmtD2h5N
-         XsSsqSKQiAFqffG+QLfeFPgYJUzHG1AXVzYi6T0ffpTX6hvupN5Oqi0itYiu/jl+yuCu
-         XdGQ==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=xpxr3RAhQnlxdqPs5z2YzYADDLX6tSSmdU82c8YOdl8=;
+        b=HJwRmoevoSoyVu5/9HqZ0Kqe6kfGDRd9JpIEKI94u50c0A29R9CwPhCLc3Guci3B4T
+         k2hT8mgzDV9xheA7tPao/OPFSzs1F2v39o+DIZyVsXwsS9ibN38eoDz8/lyyWjMC7lPb
+         06MTR/doGz6psPOLD0Ahetjlmdj/TBuifsev0M+ITxKN/42et8zX8L/8P6GZY9wRjIjA
+         CoMZHGv6ypB9y8sWKGesO+gStbYtvKmMy6jySWsJ6eXt0j0wyoj5TFb3hgntT9zHrieX
+         s+PwDgNG0fGIMrOM839A7ptkAJMDzrcMhq5Y1qlAXsamu5Na4FfXaLHdPWuGkFG5lKoU
+         tUZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=AA3FVIYg28Rh8YuKmqQIoWirPPhEH21EZnU/cofDuqI=;
-        b=V4UJPRcGWj0qi4iO08K02x6KDoRMZ7ibyeYjI1nNmxEaUT3GOWWZZhETzEqBsjMpQI
-         qDx4bWiexWSZP+Q9GaHEwazVWHXg8F4UE0/NdA6UbQi44nDF2n90D+M3y6h2Yf5pseOL
-         MokJZAh6vhrlCYESmtj0Q95lKNQj+huyDjdoGo1yVZgowWNUD83ILjjIvsMkErJcJZs0
-         eJUgz6It4njCP+0+guXOX5Nna1A7MzG+OG8z59WJPWSAVkJ2ry2lSTnSZTX8Rd8iVf25
-         AUwwLyqsqbMUEZhPQzOuVijrxky9yjiNxtWZvwUEl9WWiIgYnit0NoOjxHQKa3n6NSKN
-         9UdQ==
-X-Gm-Message-State: AOAM531KzxsvalYqMW72+w0HlRw//pYOO2ubzZOkUIwi6WT2/kOUf18c
-        +1bU2erbO4kGSdnDRNyXL/ab2kUCv14YWQ==
-X-Google-Smtp-Source: ABdhPJwSn2knIg8LG9EJni5ZYxD2VCNt282Jn8lBQxcDI3skZXcJT0MQX34+UqVF5VPkLWxfONcQC7SFWfNYhQ==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:981c:22f3:3855:9bb7])
- (user=dlatypov job=sendgmr) by 2002:a0c:aac2:: with SMTP id
- g2mr7953361qvb.41.1632867079508; Tue, 28 Sep 2021 15:11:19 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 15:11:11 -0700
-Message-Id: <20210928221111.1162779-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH] kunit: tool: misc fixes (unused vars, imports, leaked files)
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=xpxr3RAhQnlxdqPs5z2YzYADDLX6tSSmdU82c8YOdl8=;
+        b=550TfboembyIYVSygHxlhxZ9EHhiDW4FXdvMmki3awPysczXDbbs7gv1gpBiXF0jBv
+         AO+tj9sHHP4h1XlP6MlEbQ1bGfussCPGW8jWZ52X+yE7Vwu6yXNW37zGqg/mE6cnfjoh
+         s9DWC6GRC5+5IAR067zLU4JMyJWcObU5s7bZI17/f4X7Z6TAp/1aRsNFhs2Il0cr018s
+         6n81z+5u9XkcwqRfnr3Z3xUkFS7DmEKjaP4n8oCSDl/ltIeUywkn1iTXN4mAEg0jzEbO
+         Y99S70219219CW24iRfxIoWZlh/H3xgmsiT4ZFfVdySy2sNlKCIEBNc8Ayh7g6poMamy
+         8vPg==
+X-Gm-Message-State: AOAM533fE3REdgTWWzIorgWshe6VZaNqxqvoe7+Yf78bdUfvU3B5kgew
+        uAntj1iNjKUeLBU6klfcUyvL6+W55JJTXJAYnBnQCg==
+X-Google-Smtp-Source: ABdhPJxjhHEWSfAEH8e4e9l4H6wkl5+PC3y6ZtbJ/AlfC9hhDDvEIEin8x4ZDCx/DB9pZtYLF4VUEwtpmqWYr/XH4F4=
+X-Received: by 2002:a50:e10d:: with SMTP id h13mr10605739edl.77.1632867084648;
+ Tue, 28 Sep 2021 15:11:24 -0700 (PDT)
+MIME-Version: 1.0
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 29 Sep 2021 00:11:13 +0200
+Message-ID: <CACRpkdYa_patWBGC=gnVHkPQeo5BtvKrG2hzNKi3vZGvo5bKQA@mail.gmail.com>
+Subject: [GIT PULL] pin control fixes for v5.15
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop some variables in unit tests that were unused and/or add assertions
-based on them.
+Hi Linus,
 
-For ExitStack, it was imported, but the `es` variable wasn't used so it
-didn't do anything, and we were leaking the file objects.
-Refactor it to just use nested `with` statements to properly close them.
+here are some few pin control fixes for the v5.15 kernel cycle.
+The most critical is the AMD fixes.
 
-And drop the direct use of .close() on file objects in the kunit tool
-unit test, as these can be leaked if test assertions fail.
+Please pull it in!
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit.py           |  1 -
- tools/testing/kunit/kunit_kernel.py    | 12 ++++--------
- tools/testing/kunit/kunit_tool_test.py | 18 ++++++++----------
- 3 files changed, 12 insertions(+), 19 deletions(-)
+Yours,
+Linus Walleij
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 66f67af97971..1b2b7f06bb8c 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -18,7 +18,6 @@ from collections import namedtuple
- from enum import Enum, auto
- from typing import Iterable
- 
--import kunit_config
- import kunit_json
- import kunit_kernel
- import kunit_parser
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 2c6f916ccbaf..1870e75ff153 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -14,10 +14,6 @@ import shutil
- import signal
- from typing import Iterator, Optional, Tuple
- 
--from contextlib import ExitStack
--
--from collections import namedtuple
--
- import kunit_config
- import kunit_parser
- import qemu_config
-@@ -168,10 +164,10 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
- 		process.wait()
- 		kunit_parser.print_with_timestamp(
- 			'Disabling broken configs to run KUnit tests...')
--		with ExitStack() as es:
--			config = open(get_kconfig_path(build_dir), 'a')
--			disable = open(BROKEN_ALLCONFIG_PATH, 'r').read()
--			config.write(disable)
-+
-+		with open(get_kconfig_path(build_dir), 'a') as config:
-+			with open(BROKEN_ALLCONFIG_PATH, 'r') as disable:
-+				config.write(disable.read())
- 		kunit_parser.print_with_timestamp(
- 			'Starting Kernel with all configs takes a few minutes...')
- 
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 619c4554cbff..cad37a98e599 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -185,7 +185,7 @@ class KUnitParserTest(unittest.TestCase):
- 				kunit_parser.extract_tap_lines(file.readlines()))
- 		print_mock.assert_any_call(StrContains('could not parse test results!'))
- 		print_mock.stop()
--		file.close()
-+		self.assertEqual(0, len(result.suites))
- 
- 	def test_crashed_test(self):
- 		crashed_log = test_data_path('test_is_test_passed-crash.log')
-@@ -197,24 +197,22 @@ class KUnitParserTest(unittest.TestCase):
- 
- 	def test_skipped_test(self):
- 		skipped_log = test_data_path('test_skip_tests.log')
--		file = open(skipped_log)
--		result = kunit_parser.parse_run_tests(file.readlines())
-+		with open(skipped_log) as file:
-+			result = kunit_parser.parse_run_tests(file.readlines())
- 
- 		# A skipped test does not fail the whole suite.
- 		self.assertEqual(
- 			kunit_parser.TestStatus.SUCCESS,
- 			result.status)
--		file.close()
- 
- 	def test_skipped_all_tests(self):
- 		skipped_log = test_data_path('test_skip_all_tests.log')
--		file = open(skipped_log)
--		result = kunit_parser.parse_run_tests(file.readlines())
-+		with open(skipped_log) as file:
-+			result = kunit_parser.parse_run_tests(file.readlines())
- 
- 		self.assertEqual(
- 			kunit_parser.TestStatus.SKIPPED,
- 			result.status)
--		file.close()
- 
- 
- 	def test_ignores_prefix_printk_time(self):
-@@ -283,13 +281,13 @@ class LinuxSourceTreeTest(unittest.TestCase):
- 
- 	def test_valid_kunitconfig(self):
- 		with tempfile.NamedTemporaryFile('wt') as kunitconfig:
--			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
-+			kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
- 
- 	def test_dir_kunitconfig(self):
- 		with tempfile.TemporaryDirectory('') as dir:
--			with open(os.path.join(dir, '.kunitconfig'), 'w') as f:
-+			with open(os.path.join(dir, '.kunitconfig'), 'w'):
- 				pass
--			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
-+			kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
- 
- 	# TODO: add more test cases.
- 
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
--- 
-2.33.0.685.g46640cef36-goog
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.15-2
+
+for you to fetch changes up to 28406a21999152ff7faa30b194f734565bdd8e0d:
+
+  pinctrl: qcom: sc7280: Add PM suspend callbacks (2021-09-23 23:09:14 +0200)
+
+----------------------------------------------------------------
+Pin control fixes for v5.15:
+
+- Fix wakeup interrupts in the AMD driver affecting AMD laptops.
+
+- Fix parent irqspec translation in the Qualcomm SPMI GPIO driver.
+
+- Fix deferred probe handling in the Rockchip driver, this is a
+  stopgap solution while we look for something more elegant.
+
+- Add PM suspend callbacks to the Qualcomm SC7280 driver.
+
+- Some minor doc fix (should have come in earlier, sorry)
+
+----------------------------------------------------------------
+Basavaraj Natikar (2):
+      pinctrl: amd: Add irq field data
+      pinctrl: amd: Handle wake-up interrupt
+
+David Collins (1):
+      pinctrl: qcom: spmi-gpio: correct parent irqspec translation
+
+Heiko Stuebner (2):
+      pinctrl/rockchip: add a queue for deferred pin output settings on probe
+      gpio/rockchip: fetch deferred output settings on probe
+
+Michal Simek (1):
+      pinctrl: core: Remove duplicated word from devm_pinctrl_unregister()
+
+Rajendra Nayak (1):
+      pinctrl: qcom: sc7280: Add PM suspend callbacks
+
+ drivers/gpio/gpio-rockchip.c             | 22 +++++++++++
+ drivers/pinctrl/core.c                   |  2 +-
+ drivers/pinctrl/pinctrl-amd.c            | 19 ++++++---
+ drivers/pinctrl/pinctrl-amd.h            |  1 +
+ drivers/pinctrl/pinctrl-rockchip.c       | 67 ++++++++++++++++++++++++++++++++
+ drivers/pinctrl/pinctrl-rockchip.h       | 10 +++++
+ drivers/pinctrl/qcom/pinctrl-sc7280.c    |  1 +
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 37 ++++++++++++++++--
+ 8 files changed, 150 insertions(+), 9 deletions(-)
