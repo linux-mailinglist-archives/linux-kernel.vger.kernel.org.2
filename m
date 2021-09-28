@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDF241A668
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410E741A653
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238872AbhI1EVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 00:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhI1EVA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 00:21:00 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B524C061575;
-        Mon, 27 Sep 2021 21:19:21 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id s18so14342489ybc.0;
-        Mon, 27 Sep 2021 21:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=cTx3fpQiL2dVtZ9Kn53fvZNvPqKfwkkFPrZ5oYqTISk=;
-        b=HKdqE5pTn27yVrUWdtqGvHAld2cMSGD/XTZ3Wfo1askMLJOjMyrFWsKk69zxro4eR8
-         Zx5UgGcU8XY04pbGELHlwhKjJHCXLf/d30zvaTXvS7YDYhukZNeC2ampZDlwP07LY/+W
-         cI6A6KhX1ay+xJ/sO+kPYaSpUycsWmIKJMTGb9jsvWHWJChhZ2DAyyndD48/WOumwSm5
-         qZp/dEFNsmEAYEDLAPDz+71crn8os/u45wd/b4ySW1YQlRbidqZu1y8AVGZZY3iZItaE
-         YWrynC8Kq0Se0mhoqYMJUotRrtUFVDPerQYTSWLOauBO0U44YBl3vjDQu1VI/0Rhjg8P
-         soJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=cTx3fpQiL2dVtZ9Kn53fvZNvPqKfwkkFPrZ5oYqTISk=;
-        b=MIrgBLD1CIaGe2oPduZY6Lw2Olq+OeBjnl4hfD2QO6CcUdP9e5GZWRUSAx+SCVHVFG
-         TcdCm13b20yrvR2qnUKB5sOnZpapy0FSHJ4KuYPeOgwwDych9s7uq9KEO3E3hx7NouOp
-         ux7gGbMJuBTXXNeiMkqdwI1GWJr4eR40e6/XfuhFIMkOZkpas4Ao7gFIwaSs5V1CQheM
-         OUDHRePOLuPt2ILgqIFRAuVNO8IoFoBusSLcjIE47n3Kt6Kxw7cUemQeOXk/GxvXFvxa
-         Bh082wefXeiUYuuAY6yA5+qVm9HaoQxN+719NBzycY4+9NGmcKgGbAxviY1SP2M4FEeg
-         FfRg==
-X-Gm-Message-State: AOAM53071g6NQTvh4lD3M8W7KXbRxFeyh4mYIQVcRJ+NztPT6Uk8Pb9o
-        0lA2I1T6cAEobN+JYOmu3V8E0JMAA3fD1uBKAH3M67xQ5cg=
-X-Google-Smtp-Source: ABdhPJwh4Yq0LNEVrejcfInY0odQBcD9yrp7v+F3DI+Ce1c5cFwPZno/3sDrB3sDj85UWjgyE9yyDchnqNAvoVeoxUM=
-X-Received: by 2002:a25:d157:: with SMTP id i84mr3995507ybg.434.1632802760850;
- Mon, 27 Sep 2021 21:19:20 -0700 (PDT)
+        id S232438AbhI1EPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 00:15:15 -0400
+Received: from mga03.intel.com ([134.134.136.65]:12962 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhI1EPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 00:15:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="224682043"
+X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
+   d="scan'208";a="224682043"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 21:13:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
+   d="scan'208";a="476150855"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 27 Sep 2021 21:13:33 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id AD2B558073D;
+        Mon, 27 Sep 2021 21:13:31 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>, Jose Abreu <Jose.Abreu@synopsys.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Wong Vee Khee <veekhee@gmail.com>
+Subject: [PATCH net-next 1/2] net: pcs: xpcs: introduce xpcs_modify() helper function
+Date:   Tue, 28 Sep 2021 12:19:36 +0800
+Message-Id: <20210928041938.3936497-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 28 Sep 2021 06:19:17 +0200
-Message-ID: <CAKXUXMyhrjf0=0jaYG89zHULKGA-z+tgUZr=tQmBWZZUCCDuwQ@mail.gmail.com>
-Subject: No fs/cifs_common directory in kernel tree
-To:     Steve French <sfrench@samba.org>,
-        Steve French <stfrench@microsoft.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Steve, dear Namjae,
+In some cases we need to call mdiobus_modify() to avoid calling
+mdiobus_write() when it is not required.
 
-I am tracking consistency of the MAINTAINERS file and noticed:
+Introduce a xpcs_modify() helper function that allow us to call
+mdiobus_modify() in the pcs-xpcs module.
 
-Commit 332c404a55ef ("cifs: add cifs_common directory to MAINTAINERS
-file") and commit e9e3d5f9e34c ("MAINTAINERS: ksmbd: add cifs_common
-directory to ksmbd entry") add the file entry fs/cifs_common/ to the
-sections COMMON INTERNET FILE SYSTEM CLIENT (CIFS) and KERNEL SMB3
-SERVER (KSMBD).
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ drivers/net/pcs/pcs-xpcs.c | 9 +++++++++
+ drivers/net/pcs/pcs-xpcs.h | 1 +
+ 2 files changed, 10 insertions(+)
 
-However, as of now, there is no fs/cifs_common/ directory in the
-mainline tree or in the latest linux-next tree.
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index fb0a83dc09ac..da8c81d25edd 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -191,6 +191,15 @@ int xpcs_write(struct dw_xpcs *xpcs, int dev, u32 reg, u16 val)
+ 	return mdiobus_write(bus, addr, reg_addr, val);
+ }
+ 
++int xpcs_modify(struct dw_xpcs *xpcs, int dev, u32 reg, u16 mask, u16 set)
++{
++	u32 reg_addr = mdiobus_c45_addr(dev, reg);
++	struct mii_bus *bus = xpcs->mdiodev->bus;
++	int addr = xpcs->mdiodev->addr;
++
++	return mdiobus_modify(bus, addr, reg_addr, mask, set);
++}
++
+ static int xpcs_read_vendor(struct dw_xpcs *xpcs, int dev, u32 reg)
+ {
+ 	return xpcs_read(xpcs, dev, DW_VENDOR | reg);
+diff --git a/drivers/net/pcs/pcs-xpcs.h b/drivers/net/pcs/pcs-xpcs.h
+index 35651d32a224..fdb870333395 100644
+--- a/drivers/net/pcs/pcs-xpcs.h
++++ b/drivers/net/pcs/pcs-xpcs.h
+@@ -109,6 +109,7 @@
+ 
+ int xpcs_read(struct dw_xpcs *xpcs, int dev, u32 reg);
+ int xpcs_write(struct dw_xpcs *xpcs, int dev, u32 reg, u16 val);
++int xpcs_modify(struct dw_xpcs *xpcs, int dev, u32 reg, u16 mask, u16 set);
+ 
+ int nxp_sja1105_sgmii_pma_config(struct dw_xpcs *xpcs);
+ int nxp_sja1110_sgmii_pma_config(struct dw_xpcs *xpcs);
+-- 
+2.25.1
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-
-  warning: no file matches    F:    fs/cifs_common/
-
-Are there more commits to come that will add or move files to
-fs/cifs_common/, or did you decide against introducing fs/cifs_common/
-in the course of the development and these commits are left-over from
-a previous development?
-
-Best regards,
-
-Lukas
