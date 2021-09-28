@@ -2,252 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CB141B864
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE98141B867
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242748AbhI1UfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S242752AbhI1Uf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242016AbhI1UfG (ORCPT
+        with ESMTP id S242016AbhI1Uf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:35:06 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411E4C06161C;
-        Tue, 28 Sep 2021 13:33:26 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id g14so33078pfm.1;
-        Tue, 28 Sep 2021 13:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kySCmJwQTNBaLQ15HXjhSRvmbp4B7/SgTzjLTTphRIE=;
-        b=cG1uRxtTwyHB9fINlklztTvktw3SSGeRLBkU/arxqBqoMgHDRNInbC/2lU4DYZqNth
-         Lzz3WwQw0NUF2VJO+9ObEsx2hRo/3btLK48qaRO6cA9EaLYPS3NQUG+jysP5+cm+98e+
-         kN76/98poKMOYJ3vbDOh11bAqKtwNiqzM0FpD+N0fnBQuyBqStokwRBsI0sjAECBafqd
-         5yBZo8DR//r/aAtEij/hwZHsG6z/bVPS3blRaMW3aTAWglHJSIzbeWOo1mSovkBzhfhE
-         Z/G/THBvAGFmzOWhXuzy3rvUmiZr/Hr02ZB7pDyFrMt5ETDKsQvfOYwGE3RGE5weAL1A
-         k1Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kySCmJwQTNBaLQ15HXjhSRvmbp4B7/SgTzjLTTphRIE=;
-        b=D08BWJcpw9/jduO5gEN6Lb5ZZQhqXitJep/Oh5LA51OlG69XwqvbmQoqDq09K1xqBk
-         feRMzFks7lAlBqCG2+OP8uTj+4YSTrjMwfyiRrJAQCijEOC91ifwe0k4SC+97BVBKGYV
-         t7neYD6xOzmG5EWT75m+Cej90ZEQPnZKuaZyPDliixgcBNf9+qhhXIFhPWBh455aAbhF
-         L0ODTrng59W54bdyrofOpVx4XTbyAlaxKLvkc1AH1S6H0Kv8XqWOVupWSeQadeppLamr
-         QJnbqp8zJ3ryZ7mYaUNWhf9+r/PYga4Q2jYRGXwf8SU1nSDD8CNs/4NoDR/NA31lA76a
-         jEhA==
-X-Gm-Message-State: AOAM531VspGYQB2ONVTdhz9EfQLvRymFozDbmvN6q3V5WILhbHpj9vPP
-        1HIPJkgEs9esusbojIkjDePE5AnZKJU=
-X-Google-Smtp-Source: ABdhPJwfBTstu7AyqljQX5sdzlT1IzK+lHH9KEQ82jcPnTn6659Bw1diPGORFkvKzDeqI8NIJ/haMQ==
-X-Received: by 2002:a63:e613:: with SMTP id g19mr6426470pgh.12.1632861205261;
-        Tue, 28 Sep 2021 13:33:25 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e9sm18457pjl.41.2021.09.28.13.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 13:33:24 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: phy: bcm7xxx: Fixed indirect MMD operations
-Date:   Tue, 28 Sep 2021 13:32:33 -0700
-Message-Id: <20210928203234.772724-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 28 Sep 2021 16:35:28 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64476C06161C;
+        Tue, 28 Sep 2021 13:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=8Ggu/0OLgkwhv1XAK+iyNiUVWyqmgJl+lsAM3cYVagw=; b=dv2PA1MswNXBuvgB1DYG5SjjZx
+        95DjB255H8mpvboBlPZqGjvEpqUdZkW5Oob6IlyxrW+4jh+16blJ4sNSsp3zmfDrvRwM4/8Gk3Cxf
+        eU4VzCR7/xwBokCboPb+NEHwX27WQi0V/Ne5kDKQRGm1QrIr1VqeJWaVyHRp8iKPab6yT1lj80E3o
+        tquglhxYKbC6b93YCn8v9IRWzMdwio7pXEN07VxpBRt/AkF/y5EXteTXFzgjHZ6QFXWP942DbNGN6
+        ki65w90xR+sopLDpQveoftH6JTTie+rHdLNrXWLhLQ4quzoUAGEEzGtGON1cODpAD8mDpvIpPOg7O
+        Z6YCFp0Q==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVJnP-008m1d-W7; Tue, 28 Sep 2021 20:33:48 +0000
+Subject: Re: [PATCH] of: remove duplicate declaration of of_iomap()
+To:     trix@redhat.com, robh+dt@kernel.org, frowand.list@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210928201214.294737-1-trix@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e706d330-87ab-75e6-7118-e9b280039409@infradead.org>
+Date:   Tue, 28 Sep 2021 13:33:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210928201214.294737-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When EEE support was added to the 28nm EPHY it was assumed that it would
-be able to support the standard clause 45 over clause 22 register access
-method. It turns out that the PHY does not support that, which is the
-very reason for using the indirect shadow mode 2 bank 3 access method.
+On 9/28/21 1:12 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> A ranconfig produces this linker error
 
-Implement {read,write}_mmd to allow the standard PHY library routines
-pertaining to EEE querying and configuration to work correctly on these
-PHYs. This forces us to implement a __phy_set_clr_bits() function that
-does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
-functions are always called with that lock held.
+randconfig .. on what arch, please?
 
-Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/phy/bcm7xxx.c | 114 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 110 insertions(+), 4 deletions(-)
+> irq-al-fic.c:252: undefined reference to `of_iomap'
+> 
+> The declaration of of_iomap() is dependent on OF
+> The definition of of_iomap() is dependent on OF_ADDRESS
+> These should match.  There are duplicate declarations
+> of of_iomap(), remove of_iomap() and the
+> of_address_to_resource() duplicate.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>   include/linux/of_address.h | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
+> 
 
-diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
-index e79297a4bae8..27b6a3f507ae 100644
---- a/drivers/net/phy/bcm7xxx.c
-+++ b/drivers/net/phy/bcm7xxx.c
-@@ -27,7 +27,12 @@
- #define MII_BCM7XXX_SHD_2_ADDR_CTRL	0xe
- #define MII_BCM7XXX_SHD_2_CTRL_STAT	0xf
- #define MII_BCM7XXX_SHD_2_BIAS_TRIM	0x1a
-+#define MII_BCM7XXX_SHD_3_PCS_CTRL	0x0
-+#define MII_BCM7XXX_SHD_3_PCS_STATUS	0x1
-+#define MII_BCM7XXX_SHD_3_EEE_CAP	0x2
- #define MII_BCM7XXX_SHD_3_AN_EEE_ADV	0x3
-+#define MII_BCM7XXX_SHD_3_EEE_LP	0x4
-+#define MII_BCM7XXX_SHD_3_EEE_WK_ERR	0x5
- #define MII_BCM7XXX_SHD_3_PCS_CTRL_2	0x6
- #define  MII_BCM7XXX_PCS_CTRL_2_DEF	0x4400
- #define MII_BCM7XXX_SHD_3_AN_STAT	0xb
-@@ -216,25 +221,37 @@ static int bcm7xxx_28nm_resume(struct phy_device *phydev)
- 	return genphy_config_aneg(phydev);
- }
- 
--static int phy_set_clr_bits(struct phy_device *dev, int location,
--					int set_mask, int clr_mask)
-+static int __phy_set_clr_bits(struct phy_device *dev, int location,
-+			      int set_mask, int clr_mask)
- {
- 	int v, ret;
- 
--	v = phy_read(dev, location);
-+	v = __phy_read(dev, location);
- 	if (v < 0)
- 		return v;
- 
- 	v &= ~clr_mask;
- 	v |= set_mask;
- 
--	ret = phy_write(dev, location, v);
-+	ret = __phy_write(dev, location, v);
- 	if (ret < 0)
- 		return ret;
- 
- 	return v;
- }
- 
-+static int phy_set_clr_bits(struct phy_device *dev, int location,
-+			    int set_mask, int clr_mask)
-+{
-+	int ret;
-+
-+	mutex_lock(&dev->mdio.bus->mdio_lock);
-+	ret = __phy_set_clr_bits(dev, location, set_mask, clr_mask);
-+	mutex_unlock(&dev->mdio.bus->mdio_lock);
-+
-+	return ret;
-+}
-+
- static int bcm7xxx_28nm_ephy_01_afe_config_init(struct phy_device *phydev)
- {
- 	int ret;
-@@ -398,6 +415,93 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
- 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
- }
- 
-+#define MII_BCM7XXX_REG_INVALID	0xff
-+
-+static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
-+{
-+	switch (regnum) {
-+	case MDIO_CTRL1:
-+		return MII_BCM7XXX_SHD_3_PCS_CTRL;
-+	case MDIO_STAT1:
-+		return MII_BCM7XXX_SHD_3_PCS_STATUS;
-+	case MDIO_PCS_EEE_ABLE:
-+		return MII_BCM7XXX_SHD_3_EEE_CAP;
-+	case MDIO_AN_EEE_ADV:
-+		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
-+	case MDIO_AN_EEE_LPABLE:
-+		return MII_BCM7XXX_SHD_3_EEE_LP;
-+	case MDIO_PCS_EEE_WK_ERR:
-+		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
-+	default:
-+		return MII_BCM7XXX_REG_INVALID;
-+	}
-+}
-+
-+static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
-+{
-+	return devnum == MDIO_MMD_AN || devnum == MDIO_MMD_PCS;
-+}
-+
-+static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
-+				      int devnum, u16 regnum)
-+{
-+	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
-+	int ret;
-+
-+	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
-+	    shd == MII_BCM7XXX_REG_INVALID)
-+		return -EOPNOTSUPP;
-+
-+	/* set shadow mode 2 */
-+	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
-+				 MII_BCM7XXX_SHD_MODE_2, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Access the desired shadow register address */
-+	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
-+	if (ret < 0)
-+		goto reset_shadow_mode;
-+
-+	ret = __phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
-+
-+reset_shadow_mode:
-+	/* reset shadow mode 2 */
-+	__phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
-+			   MII_BCM7XXX_SHD_MODE_2);
-+	return ret;
-+}
-+
-+static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
-+				       int devnum, u16 regnum, u16 val)
-+{
-+	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
-+	int ret;
-+
-+	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
-+	    shd == MII_BCM7XXX_REG_INVALID)
-+		return -EOPNOTSUPP;
-+
-+	/* set shadow mode 2 */
-+	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
-+				 MII_BCM7XXX_SHD_MODE_2, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Access the desired shadow register address */
-+	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
-+	if (ret < 0)
-+		goto reset_shadow_mode;
-+
-+	/* Write the desired value in the shadow register */
-+	__phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
-+
-+reset_shadow_mode:
-+	/* reset shadow mode 2 */
-+	return __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
-+				  MII_BCM7XXX_SHD_MODE_2);
-+}
-+
- static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
- {
- 	int ret;
-@@ -595,6 +699,8 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
- 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
- 	.probe		= bcm7xxx_28nm_probe,				\
- 	.remove		= bcm7xxx_28nm_remove,				\
-+	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
-+	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
- }
- 
- #define BCM7XXX_40NM_EPHY(_oui, _name)					\
+
+thanks.
 -- 
-2.25.1
-
+~Randy
