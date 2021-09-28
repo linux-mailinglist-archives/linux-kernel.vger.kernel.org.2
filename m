@@ -2,124 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C8541AC97
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4870941AC99
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240124AbhI1KFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240127AbhI1KE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:04:56 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AE5C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:03:16 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id s24so2977254wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yz7OSxKrs5tDs3iPjdQ84SnbqujRTE3B+86PcByyECI=;
-        b=ccy5lOzpyBKsENGgU3HIS0chBhX6A/t8rSbAwK/u0Rx6pM6GJWJb+0Oubyy7wlqtpT
-         kR7Z4v5O/T/JAUPSWWCQmkMP0SKtpsgzbjmaA6fdvlzAQjzV4FWxgSyENfxXl4IcJD4p
-         509+WTfEDbHXYTADcotWB6cacZbX4m/gaLI5q83CDkKWNZcCa1VSpJZYKTYCXbiAnPzh
-         q378NkglDcDVIzPny7hgwXkw+pjtvygClmArk3YCWvKY0h9nvuQGElefYNrf93rL510u
-         Hc52apND0kR6oeHAy3EWI3QPQCLKEu9ThHJfOaDIQ/Y1YoQO8a5Z7QIlZbi5qX9sEPMi
-         v4AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yz7OSxKrs5tDs3iPjdQ84SnbqujRTE3B+86PcByyECI=;
-        b=ObY75kLrMq9WKC0+dz6PEMYlRO9U6RlVCH5ZwXV8J3ISospFzNTZFxmYIACetXuQg7
-         QtGOykYE+tJr3HSj4rnnPGvGWqGHciSt0vsXVv9lieTFO6v23y8LtRYRO7PP58UqxuL9
-         3gx/2QMqi/Tskd8vgSEQfaV/91Di8YDgv1azeo6MANPaMsI6Ggqy/1L4BaZvOyBw+1Oj
-         9gXCqG3W4ReGjJ720ExUHk3zeB6u82ChlIaIVg0DwBKGL0/H9J/dSEhI5LhPNtFFk4Pf
-         Gd7s6kZSBr7KZKc1HA9GQwbRZRP/PI96zG0o3gVbby+4wMjOMG34DBXH6J/UAIw8eSnl
-         EI6Q==
-X-Gm-Message-State: AOAM530jKLubQD2Otkp7q2ynlwosflBH4Ac0Vp3lv4TwaQ1C/zRZ4rEl
-        /Ahz3U8Z3pUauH/jivwnUA7sSw==
-X-Google-Smtp-Source: ABdhPJwdbB0131GO5e9RXgw7jZajpVoD+s7BqbYj4LRTMgnSJC90hHj+bS2xwaNZ7M3DVBRF0okusQ==
-X-Received: by 2002:a1c:22d5:: with SMTP id i204mr3680039wmi.145.1632823395493;
-        Tue, 28 Sep 2021 03:03:15 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id 8sm2139893wmj.18.2021.09.28.03.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 03:03:15 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 11:03:13 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>, bhelgaas@google.com,
-        andy.shevchenko@gmail.com, mgross@linux.intel.com,
-        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] MFD: intel_pmt: Support non-PMT capabilities
-Message-ID: <YVLoYZQ1fYLeEYXt@google.com>
-References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
- <20210922213007.2738388-3-david.e.box@linux.intel.com>
- <YVIBI6TQrD/rehli@kroah.com>
- <d540894d3d8c05722bd924c21bd9dd9c2b9def53.camel@linux.intel.com>
- <YVLKRSQx01vB4N77@google.com>
- <YVLb/GrePEKNDdtb@kroah.com>
+        id S240125AbhI1KFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:05:50 -0400
+Received: from mail.avm.de ([212.42.244.94]:33264 "EHLO mail.avm.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240075AbhI1KFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:05:50 -0400
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Tue, 28 Sep 2021 12:04:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+        t=1632823448; bh=xwk5aKeuA2SmiAZZesWO8p3LrHak6bCLbAoWOMLvJes=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OM9CneT5RaWM+p+70FjKkzYucbSl512yBMIB0BLlIJX9AJo2YE+iudAzE7zROvaCu
+         JXO1IZAGAXmToYa4l7jIFKBoKMOoUyE8Bvq5E2Jjc8FhFeJ+bSFDipCfmWeMvrBnmi
+         HlQrPw0rK+8ddzvChivdRl1HNBdVi4xH9TsqKG/8=
+Received: from deb-nschier.ads.avm.de (unknown [172.17.24.144])
+        by mail-auth.avm.de (Postfix) with ESMTPSA id 80539804BC;
+        Tue, 28 Sep 2021 12:04:08 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 12:04:07 +0200
+From:   Nicolas Schier <n.schier@avm.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kconfig: remove 'const' from the return type of
+ sym_escape_string()
+Message-ID: <YVLol5WyUCrKu7tY@deb-nschier.ads.avm.de>
+References: <20210927125944.819010-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YVLb/GrePEKNDdtb@kroah.com>
+In-Reply-To: <20210927125944.819010-1-masahiroy@kernel.org>
+X-purgate-ID: 149429::1632823448-000004DC-7AF8A00D/0/0
+X-purgate-type: clean
+X-purgate-size: 3640
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021, Greg KH wrote:
-
-> On Tue, Sep 28, 2021 at 08:54:45AM +0100, Lee Jones wrote:
-> > On Mon, 27 Sep 2021, David E. Box wrote:
-> > 
-> > > On Mon, 2021-09-27 at 19:36 +0200, Greg KH wrote:
-> > > > On Wed, Sep 22, 2021 at 02:30:04PM -0700, David E. Box wrote:
-> > > > > Intel Platform Monitoring Technology (PMT) support is indicated by presence
-> > > > > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
-> > > > > structures may also be used by Intel to indicate support for other
-> > > > > capabilities unrelated to PMT.  OOBMSM is a device that can have both PMT
-> > > > > and non-PMT capabilities. In order to support these capabilities it is
-> > > > > necessary to modify the intel_pmt driver to handle the creation of platform
-> > > > > devices more generically.
-> > > > 
-> > > > I said this on your other driver submission, but why are you turning a
-> > > > PCIe device into a set of platform devices and craming it into the MFD
-> > > > subsystem?
-> > > > 
-> > > > PCIe devices are NOT platform devices.
-> > > 
-> > > But they *are* used to create platform devices when the PCIe device is multi-functional, which is
-> > > what intel_pmt is.
-> > > 
-> > > > 
-> > > > Why not use the auxiliary bus for this thing if you have individual
-> > > > drivers that need to "bind" to the different attributes that this single
-> > > > PCIe device is exporting.
-> > > 
-> > > It wasn't clear in the beginning how this would evolve. MFD made sense for the PMT (platform
-> > > monitoring technology) driver. PMT has 3 related but individually enumerable devices on the same IP,
-> > > like lpss. But the same IP is now being used for other features too like SDSi. We could work on
-> > > converting this to the auxiliary bus and then covert the cell drivers.
-> > 
-> > I see this as subsequent work.  It should not affect this submission.
-> > 
-> > FWIW, I still plan to review this set for inclusion into MFD.
+On Mon, Sep 27, 2021 at 09:59:44PM +0900, Masahiro Yamada wrote:
+> sym_escape_string() returns a malloc'ed memory, so it must be freed
+> when it is done.
 > 
-> That's fine, but as the add-on submission that builds on top of this is
-> a broken mess (which is what caused me to have to review this series), I
-> can't recommend that be taken yet as it needs work to prevent systems
-> from doing bad things.
+> Currently, sym_escape_string() returns the malloc'ed memory as
+> (const char *), then it is casted to (void *) when it is passed to
+> free(). This is odd.
+> 
+> The return type of sym_escape_string() should be (char *).
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Understood.  Deferred.
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> ---
+> 
+>  scripts/kconfig/conf.c      | 10 +++++-----
+>  scripts/kconfig/confdata.c  |  8 ++++----
+>  scripts/kconfig/lkc_proto.h |  2 +-
+>  scripts/kconfig/symbol.c    |  3 ++-
+>  4 files changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
+> index a6dad4a2e7a2..d8e1994bfed0 100644
+> --- a/scripts/kconfig/conf.c
+> +++ b/scripts/kconfig/conf.c
+> @@ -647,15 +647,15 @@ static void check_conf(struct menu *menu)
+>  		switch (input_mode) {
+>  		case listnewconfig:
+>  			if (sym->name) {
+> -				const char *str;
+> -
+>  				if (sym->type == S_STRING) {
+> +					char *str;
+> +
+>  					str = sym_escape_string(sym);
+>  					printf("%s%s=%s\n", CONFIG_, sym->name, str);
+> -					free((void *)str);
+> +					free(str);
+>  				} else {
+> -					str = sym_get_string_value(sym);
+> -					printf("%s%s=%s\n", CONFIG_, sym->name, str);
+> +					printf("%s%s=%s\n", CONFIG_, sym->name,
+> +					       sym_get_string_value(sym));
+>  				}
+>  			}
+>  			break;
+> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> index 4e053f2477f9..f7eac4beb128 100644
+> --- a/scripts/kconfig/confdata.c
+> +++ b/scripts/kconfig/confdata.c
+> @@ -728,7 +728,7 @@ static struct conf_printer header_printer_cb =
+>  static void conf_write_symbol(FILE *fp, struct symbol *sym,
+>  			      struct conf_printer *printer, void *printer_arg)
+>  {
+> -	const char *str;
+> +	char *str;
+>  
+>  	switch (sym->type) {
+>  	case S_UNKNOWN:
+> @@ -736,11 +736,11 @@ static void conf_write_symbol(FILE *fp, struct symbol *sym,
+>  	case S_STRING:
+>  		str = sym_escape_string(sym);
+>  		printer->print_symbol(fp, sym, str, printer_arg);
+> -		free((void *)str);
+> +		free(str);
+>  		break;
+>  	default:
+> -		str = sym_get_string_value(sym);
+> -		printer->print_symbol(fp, sym, str, printer_arg);
+> +		printer->print_symbol(fp, sym, sym_get_string_value(sym),
+> +				      printer_arg);
+>  	}
+>  }
+>  
+> diff --git a/scripts/kconfig/lkc_proto.h b/scripts/kconfig/lkc_proto.h
+> index 035cc522808b..7ce4b666bba8 100644
+> --- a/scripts/kconfig/lkc_proto.h
+> +++ b/scripts/kconfig/lkc_proto.h
+> @@ -18,7 +18,7 @@ extern struct symbol * symbol_hash[SYMBOL_HASHSIZE];
+>  
+>  struct symbol * sym_lookup(const char *name, int flags);
+>  struct symbol * sym_find(const char *name);
+> -const char * sym_escape_string(struct symbol *sym);
+> +char *sym_escape_string(struct symbol *sym);
+>  struct symbol ** sym_re_search(const char *pattern);
+>  const char * sym_type_name(enum symbol_type type);
+>  void sym_calc_value(struct symbol *sym);
+> diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+> index 4a31bb943f79..57189a1ad797 100644
+> --- a/scripts/kconfig/symbol.c
+> +++ b/scripts/kconfig/symbol.c
+> @@ -871,7 +871,8 @@ struct symbol *sym_find(const char *name)
+>  	return symbol;
+>  }
+>  
+> -const char *sym_escape_string(struct symbol *sym)
+> +/* the returned pointer must be freed on the caller side */
+> +char *sym_escape_string(struct symbol *sym)
+>  {
+>  	const char *in, *p;
+>  	size_t reslen;
+> -- 
+> 2.30.2
+> 
+
