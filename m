@@ -2,171 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F0441B28B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C093D41B28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241492AbhI1PDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:03:45 -0400
-Received: from mail-bn8nam11on2064.outbound.protection.outlook.com ([40.107.236.64]:26689
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241400AbhI1PDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:03:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bi3+BEzfcAkxq01R/a2jTYze8nO6lR3TREu853RFGg+YzHjIPAf5zcFlCyQ9t9jytxK981pAODVOLBnU0Zoo4KeqAKimheE9C+mfYNFMQGPDCNBGzRanlW8QCU+SkkMJjfYMivZA3k8GOC52NxRO+w4d19XTW0VGQQUDE3JMTCPmvCPKNSdWHKUpwPDHv6GJvGbdd+zL1Or+F9XewpoSw/chn92RSuLgftatHZBNsI6C0lsy8cCbVYa/ND9wjhQ0N7i9Zdg0U1sIINQvC9siCFXx8DS73YnIPqYGfV8RY8BYJzM6NWXVm9sAFmzl+NBnGEXbd1l8m1QcYTd4KjuIbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=WI8MrPQWGI7rAbIIonR3452Qph1dPZtaq12b1WrLtIc=;
- b=bEftNudVYddx+CoIXHW9N2bGE0liec5kOsaXZyUyzlN4RMC0VJg4F5jEKGlHLZ7yBdVHBpQ/9ZsURl2PHzxvdXkeYi/tFx/nGzYqh0mr2zMugtApn+S7OiWk8Svq2c4H6GdtoCqg888Y4APTYqcO6Du77mATbiWehbGeEkaR3jJwY+DbN+cw3BERmDV9RWtzx7wZ6U+MbIlYiQp7MdaW9dFWw32NG5C9Mi0SbLo24sO6YnZhCCAOaTec2MD67ZgoDJ3k47u02eV/8gLDmC2cWcRTOJQHy9QCm5FCHRZyAvBJJKRgIxvIAIyqU/3UzKYdPlL/5GUpCvObbsY3Qe+FLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WI8MrPQWGI7rAbIIonR3452Qph1dPZtaq12b1WrLtIc=;
- b=ubbsEKVFsqKepGRuQv6ci4FxXpPcpdys1VKu+cBi4XxTEKujMfnnG6uZAx+k+4EtpAh3VSdBsv/tPdXPp4BvIlFXgAUFppmVZWTjTsG6+LCkpoh8n7qUkrm0pUsDuzDhqrMt458VxQckwH8HidOL9o6zT6XA4vcW+/0wcaqGUuX1imQPucRQTbHZWhBqZLdIXi5ybbca2ZnQy0Y+KExfqhunGwN//Rlkjf6SgxpP3Q8Hkz4y1SSZSKMyi7Vwka+ENbcydZsrl9ZB1yvRYWTKFN/pStYT+ERIPOoC9IQUeKNvhfa9NeATAVi2OxkAFdnnHIxgzAf0X3tl0PMl0KM8oA==
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
- by CH2PR12MB4263.namprd12.prod.outlook.com (2603:10b6:610:a6::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Tue, 28 Sep
- 2021 15:02:03 +0000
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::a46b:a8b7:59d:9142]) by CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::a46b:a8b7:59d:9142%5]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
- 15:02:03 +0000
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        David Thompson <davthompson@nvidia.com>
-Subject: RE: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
-Thread-Topic: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
-Thread-Index: AQHXsLi5/ezHFM2t80qMnoiP1wWjOauzEi0AgADJmACABBI7EIAAAriAgAACbtCAAAsjgIABjviQ
-Date:   Tue, 28 Sep 2021 15:02:02 +0000
-Message-ID: <CH2PR12MB389530F4A65840FE04DC8628D7A89@CH2PR12MB3895.namprd12.prod.outlook.com>
-References: <20210923202216.16091-1-asmaa@nvidia.com>
- <20210923202216.16091-2-asmaa@nvidia.com> <YU26lIUayYXU/x9l@lunn.ch>
- <CACRpkdbUJF6VUPk9kCMPBvjeL3frJAbHq+h0-z7P-a1pSU+fiw@mail.gmail.com>
- <CH2PR12MB38951F2326196AB5B573A73DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YVHQQcv2M6soJR6u@lunn.ch>
- <CH2PR12MB389585F7D5EFE5E2453593DBD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YVHbo/cJcHzxUk+d@lunn.ch>
-In-Reply-To: <YVHbo/cJcHzxUk+d@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c27ebbb1-85cf-4da1-ee0f-08d98290ee0f
-x-ms-traffictypediagnostic: CH2PR12MB4263:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR12MB42635D53D96EF1E1B9C56A0DD7A89@CH2PR12MB4263.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /GH/iNPdzKZ8ibhlPnENuKZeR3SRONuV5hYuX9hZ10Sd7ge6zATDP7tEyDTkznISm+h7rnAGA2YQrjUYSPj20crQGi2cn7/dS0CYcs9yPdDXvQcboI47RjkR1HjkCYQO34JK/uIv9IKdNAapFTNjbvY9vU9xUZ4RrG5r9liP0wSXz3DXfYhHynWF16ljdc8+lm7KC3pTdYyV4izhxZQiQqrtuEtmAnZ+3dTduCYOjUDidTIQW9hQT9XIH7SSuK6FSIJue3lQ4mw/IEU8MWGWAlxWEPQrS3fSsWaNwUl5YN58qSbw36VP8YIG6bDzAas7S+aunf1nVTyT7YNXi13yAyTTwiFCaOXqjMAVpDo8Z/xFvePtPveGYx0suYR6Wl+jZWzo6nSBhJMqkX6LsbIiIasU7MDle+MKdq32S0txZzERTYDnqhmBb/It7uQg6tppI6U7SKN6kFQ2amDi9c1XCq4qSdOcAldoElUbVYcK7Xk0/qOysMIGL6VCK1WVtlr34uO8wjdW6ZM9XKuMi28B8eahoNxH14mZ5LVoMAP16avUr7UxXJ2GXS1Qc4UQ2fCE4g3ZeJ6HhRv4eDdNyq474BoEeZ2HjnNGVj9KAAxYT342BWPAwTlHqMAjoZs7+yUGGY4r1NBzVvozeidA00BSJgHWNEJXFpQYQGfPmAPmESLJ6cymTjcP4FSZn2iz/XmtZJeXGjjzN39nasc1SWb0/A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(55016002)(186003)(52536014)(86362001)(76116006)(7416002)(38070700005)(71200400001)(54906003)(83380400001)(5660300002)(9686003)(2906002)(316002)(8676002)(6916009)(122000001)(7696005)(66446008)(64756008)(66476007)(66946007)(66556008)(508600001)(38100700002)(6506007)(107886003)(4326008)(26005)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+7PLm79hvOGPtGC3ThZExJR4LYiVed1Uxbv+PeNwforLJ7DDYbyCRjdNY3J0?=
- =?us-ascii?Q?TxWT5iS+uljVP6J5YL38VoXDY9rwW11F1FXCj4Y11JxFnJ0kM1+lh2qrPH8d?=
- =?us-ascii?Q?+taB8trdGllpNc6W3IxMKMe1pABgdKM6mea9iTg88g0fkhL7X3dpvYJP1Pfl?=
- =?us-ascii?Q?D3b4aXjARzAPCVjZI9x9xjxzWqs3xushBpBqZJTH+fsjYlzOLrI+RhL+Aif7?=
- =?us-ascii?Q?Fixmoue1lNgo85BTlJ73XOHDGkBdD+npnVJdrewTng2i011a/hv1B+QKzRRe?=
- =?us-ascii?Q?LZJLcmix+yk7VKvYr4rDKxCEJkhnLuHfwHAP63xbsP0CigBDyNKBE0IkIOSQ?=
- =?us-ascii?Q?5y4sA+Kp3I2Vqk1yrZqyrNUYVIoiZt37TJ1ICUHRRUcO0luhRmaF9cc+MBLq?=
- =?us-ascii?Q?ztYWM5KAMEc/NTKdIeM1HNQ3PGXM2cdbUawzJaa4wkO88VAqrFYrvmTFyR6J?=
- =?us-ascii?Q?QHfIoCrZqGtJAzzUWiLPTR7HQz12P8F7aaYrHmneEFJRacodPafeGo4kRnW0?=
- =?us-ascii?Q?OYxDKL1VCBFV0y/u/hMLxyEXEAkNTum+dUBDokUYlEVSu0fSrMnaDVDbOJfm?=
- =?us-ascii?Q?vvf2eablr9LNcBHavFSlOzTO9IwWLE24rdCSQE/j/KJzhuyrSBq82Qvp8SZO?=
- =?us-ascii?Q?TJbxJwGN+9xJaXh9Dn3fHDxjzK+iRehy+CXHWnFegGObtuvCKZStxtrfGlo/?=
- =?us-ascii?Q?9qts8P4S1q9xUxLcUEg5uPXF98fCoDWwHBXvp8A/k0TG3DUVsgLpnaa8z4xf?=
- =?us-ascii?Q?z3eDpEwuSb7kK4NOZ8/CQXRCvnohJFbA7hkH8SwOJrLSxa0VDN6mn6BT85dD?=
- =?us-ascii?Q?ixpsn+/gKhQxJsqwJkpT841GqNjM3UsDeBzzpPMTnGXtKP/oiE0Mj2CoPFEz?=
- =?us-ascii?Q?ppY1cEOpnLkqmz2jIV+I1pbLAIYHjXHi1nEIuHeRBQAxxncC30x+VTDCZ/zC?=
- =?us-ascii?Q?x4lqtmwMLz/pYoYN4m2dE95ekGuQg8j7VaTSpu8PFNRzyPxJOC+l4MoTmp98?=
- =?us-ascii?Q?paZDG5NnSq7nA3Wii/r5W9Za09xTU4c/5EGdfWdIKWY7tqgSY2k5kjvHlwNm?=
- =?us-ascii?Q?HP7hyX8uHk8WKspnkHYg12lRPLR13UQEZe1S2bahkwVHSO65J2GujvnkILou?=
- =?us-ascii?Q?x4j/UyMOgxYpzrMAWaADtRsWTuGpGSW+/q4dUhoic2XIZIYtrsi/hIp3hD7r?=
- =?us-ascii?Q?qm6veatCo0OPS8dnxcgJNhTzls5DdmKlLBrkxzm9K5dnKT2OrBkClDGXMBo/?=
- =?us-ascii?Q?DCCmT/qxJB2JPRxUZBc3AAUQMCkNGGTYaVPHSolrg8yg3ZBZ1X5SZK7kX2ec?=
- =?us-ascii?Q?I+pELnoIGPME0b70ZxbPKcZ0?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S241399AbhI1PEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:04:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39600 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241420AbhI1PEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:04:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632841380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4foXtDImKfjGxXCox0X2bLwV0yjwuNVoe4vpMdtwRRA=;
+        b=WS77/wmfQoTw+6AuudrX6RIidUZZyRHvdMLsKZWJuT+b1bq5uFWAekgFD6zdZE+OFCd9sI
+        kvlCPNv52ChK4ncW8wQhmddMMKmq66uhV3A+ijIOjQ0W/ZVoV1ERLy7EWJqmRbYHq0GUKp
+        xaIKgn6odD9wf88U3TIHpLIY3Iv+3c4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-ScOYou2AOViJJhXaOP5-yA-1; Tue, 28 Sep 2021 11:02:59 -0400
+X-MC-Unique: ScOYou2AOViJJhXaOP5-yA-1
+Received: by mail-wm1-f70.google.com with SMTP id b139-20020a1c8091000000b002fb33c467c8so2162304wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:02:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4foXtDImKfjGxXCox0X2bLwV0yjwuNVoe4vpMdtwRRA=;
+        b=zNK7rshlNr0cTYaN6QO0Bf0322hLs8ebO1hrbHqaSoJFHxc19Ol5Wf4H8WXGFPYdV7
+         wX9ZssM2W2h5LHRmcch4Sak1pfAGbgTDXY05htC9iMRFo20UnpRRWkaZWJXH9h6ox7U4
+         B6/nDzIoPd22xLuku6fDvQsg8sIsDY1zYUEPk3trR2sO7q6ZT/GD08tIIIdmRWDhCpRD
+         +MN5HFCNtOPjI5g6JLU8Ph4gGJnXc3blctofeto1bhYJItlGg95QxCruz9OKpgWfZFBr
+         AMD7DT/iIFQvooBr2FzDORlxKH30QBZvuWZo28g2F0w9v0VXnL5l3nkG85qomcUGKNv2
+         2hOA==
+X-Gm-Message-State: AOAM531FWFBaa9+BDiLtwAeaSQ8IzFac6HYOzAldX/HZgWxXkw4YY8Y8
+        ZI8GrlTs+rD7cRN10cAiBQuC+xP4CNX/iJrvMyF8003AmNdEihDA8Kik/GZkRm41lzQCiRaBT7A
+        eYtgdYW+1kk+4B9uJNGRv/i9ShCvNiAgkhkZfS/PG
+X-Received: by 2002:a5d:69cb:: with SMTP id s11mr630795wrw.228.1632841376077;
+        Tue, 28 Sep 2021 08:02:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQYpSzxFYG3WAstx1iOIzaQIJ7zca0+7/4IIkWQxoeGhjO9K6Mn179dAauiF9IbSi3ZlEXbGKOrezwz62P/0I=
+X-Received: by 2002:a5d:69cb:: with SMTP id s11mr630736wrw.228.1632841375654;
+ Tue, 28 Sep 2021 08:02:55 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c27ebbb1-85cf-4da1-ee0f-08d98290ee0f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 15:02:02.9829
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZY2qjAT4VsnQvHdto9uJ+146gLLfvoAY04MBDSpvg0fk76Via7nRcdu0WdyU6tUupuImR8uZ/gXyh/n6ixaFtg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4263
+References: <20210827164926.1726765-1-agruenba@redhat.com> <20210827164926.1726765-4-agruenba@redhat.com>
+ <CAL3q7H7PdBTuK28tN=3fGUyTP9wJU8Ydrq35YtNsfA_3xRQhzQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H7PdBTuK28tN=3fGUyTP9wJU8Ydrq35YtNsfA_3xRQhzQ@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 28 Sep 2021 17:02:43 +0200
+Message-ID: <CAHc6FU7rbdJxeuvoz0jov5y_GH_B4AtjkDnbNyOxeeNc1Zw5+A@mail.gmail.com>
+Subject: Re: [PATCH v7 03/19] gup: Turn fault_in_pages_{readable,writeable}
+ into fault_in_{readable,writeable}
+To:     fdmanana@gmail.com
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So the PHY is level based. The PHY is combing multiple interrupt sources=
-=20
-> into one external interrupt. If any of those internal interrupt sources a=
-re
-> active, the external interrupt is active. If there are > multiple active =
-sources
-> at once, the interrupt stays low, until they are all cleared. This means
-> there is not an edge per interrupt. There is one edge when the first inte=
-rnal
-> source occurs, and no more edges, > even if there are more internal inter=
-rupts.
+On Fri, Sep 3, 2021 at 4:57 PM Filipe Manana <fdmanana@gmail.com> wrote:
+> On Fri, Aug 27, 2021 at 5:52 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> >
+> > Turn fault_in_pages_{readable,writeable} into versions that return the
+> > number of bytes not faulted in (similar to copy_to_user) instead of
+> > returning a non-zero value when any of the requested pages couldn't be
+> > faulted in.  This supports the existing users that require all pages to
+> > be faulted in as well as new users that are happy if any pages can be
+> > faulted in at all.
+> >
+> > Neither of these functions is entirely trivial and it doesn't seem
+> > useful to inline them, so move them to mm/gup.c.
+> >
+> > Rename the functions to fault_in_{readable,writeable} to make sure that
+> > this change doesn't silently break things.
+> >
+> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > ---
+> >  arch/powerpc/kernel/kvm.c           |  3 +-
+> >  arch/powerpc/kernel/signal_32.c     |  4 +-
+> >  arch/powerpc/kernel/signal_64.c     |  2 +-
+> >  arch/x86/kernel/fpu/signal.c        |  7 ++-
+> >  drivers/gpu/drm/armada/armada_gem.c |  7 ++-
+> >  fs/btrfs/ioctl.c                    |  5 +-
+> >  include/linux/pagemap.h             | 57 ++---------------------
+> >  lib/iov_iter.c                      | 10 ++--
+> >  mm/filemap.c                        |  2 +-
+> >  mm/gup.c                            | 72 +++++++++++++++++++++++++++++
+> >  10 files changed, 93 insertions(+), 76 deletions(-)
+> >
+> > diff --git a/arch/powerpc/kernel/kvm.c b/arch/powerpc/kernel/kvm.c
+> > index d89cf802d9aa..6568823cf306 100644
+> > --- a/arch/powerpc/kernel/kvm.c
+> > +++ b/arch/powerpc/kernel/kvm.c
+> > @@ -669,7 +669,8 @@ static void __init kvm_use_magic_page(void)
+> >         on_each_cpu(kvm_map_magic_page, &features, 1);
+> >
+> >         /* Quick self-test to see if the mapping works */
+> > -       if (fault_in_pages_readable((const char *)KVM_MAGIC_PAGE, sizeof(u32))) {
+> > +       if (fault_in_readable((const char __user *)KVM_MAGIC_PAGE,
+> > +                             sizeof(u32))) {
+> >                 kvm_patching_worked = false;
+> >                 return;
+> >         }
+> > diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
+> > index 0608581967f0..38c3eae40c14 100644
+> > --- a/arch/powerpc/kernel/signal_32.c
+> > +++ b/arch/powerpc/kernel/signal_32.c
+> > @@ -1048,7 +1048,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
+> >         if (new_ctx == NULL)
+> >                 return 0;
+> >         if (!access_ok(new_ctx, ctx_size) ||
+> > -           fault_in_pages_readable((u8 __user *)new_ctx, ctx_size))
+> > +           fault_in_readable((char __user *)new_ctx, ctx_size))
+> >                 return -EFAULT;
+> >
+> >         /*
+> > @@ -1237,7 +1237,7 @@ SYSCALL_DEFINE3(debug_setcontext, struct ucontext __user *, ctx,
+> >  #endif
+> >
+> >         if (!access_ok(ctx, sizeof(*ctx)) ||
+> > -           fault_in_pages_readable((u8 __user *)ctx, sizeof(*ctx)))
+> > +           fault_in_readable((char __user *)ctx, sizeof(*ctx)))
+> >                 return -EFAULT;
+> >
+> >         /*
+> > diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
+> > index 1831bba0582e..9f471b4a11e3 100644
+> > --- a/arch/powerpc/kernel/signal_64.c
+> > +++ b/arch/powerpc/kernel/signal_64.c
+> > @@ -688,7 +688,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucontext __user *, old_ctx,
+> >         if (new_ctx == NULL)
+> >                 return 0;
+> >         if (!access_ok(new_ctx, ctx_size) ||
+> > -           fault_in_pages_readable((u8 __user *)new_ctx, ctx_size))
+> > +           fault_in_readable((char __user *)new_ctx, ctx_size))
+> >                 return -EFAULT;
+> >
+> >         /*
+> > diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+> > index 445c57c9c539..ba6bdec81603 100644
+> > --- a/arch/x86/kernel/fpu/signal.c
+> > +++ b/arch/x86/kernel/fpu/signal.c
+> > @@ -205,7 +205,7 @@ int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+> >         fpregs_unlock();
+> >
+> >         if (ret) {
+> > -               if (!fault_in_pages_writeable(buf_fx, fpu_user_xstate_size))
+> > +               if (!fault_in_writeable(buf_fx, fpu_user_xstate_size))
+> >                         goto retry;
+> >                 return -EFAULT;
+> >         }
+> > @@ -278,10 +278,9 @@ static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
+> >                 if (ret != -EFAULT)
+> >                         return -EINVAL;
+> >
+> > -               ret = fault_in_pages_readable(buf, size);
+> > -               if (!ret)
+> > +               if (!fault_in_readable(buf, size))
+> >                         goto retry;
+> > -               return ret;
+> > +               return -EFAULT;
+> >         }
+> >
+> >         /*
+> > diff --git a/drivers/gpu/drm/armada/armada_gem.c b/drivers/gpu/drm/armada/armada_gem.c
+> > index 21909642ee4c..8fbb25913327 100644
+> > --- a/drivers/gpu/drm/armada/armada_gem.c
+> > +++ b/drivers/gpu/drm/armada/armada_gem.c
+> > @@ -336,7 +336,7 @@ int armada_gem_pwrite_ioctl(struct drm_device *dev, void *data,
+> >         struct drm_armada_gem_pwrite *args = data;
+> >         struct armada_gem_object *dobj;
+> >         char __user *ptr;
+> > -       int ret;
+> > +       int ret = 0;
+> >
+> >         DRM_DEBUG_DRIVER("handle %u off %u size %u ptr 0x%llx\n",
+> >                 args->handle, args->offset, args->size, args->ptr);
+> > @@ -349,9 +349,8 @@ int armada_gem_pwrite_ioctl(struct drm_device *dev, void *data,
+> >         if (!access_ok(ptr, args->size))
+> >                 return -EFAULT;
+> >
+> > -       ret = fault_in_pages_readable(ptr, args->size);
+> > -       if (ret)
+> > -               return ret;
+> > +       if (fault_in_readable(ptr, args->size))
+> > +               return -EFAULT;
+> >
+> >         dobj = armada_gem_object_lookup(file, args->handle);
+> >         if (dobj == NULL)
+> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > index 0ba98e08a029..9233ecc31e2e 100644
+> > --- a/fs/btrfs/ioctl.c
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -2244,9 +2244,8 @@ static noinline int search_ioctl(struct inode *inode,
+> >         key.offset = sk->min_offset;
+> >
+> >         while (1) {
+> > -               ret = fault_in_pages_writeable(ubuf + sk_offset,
+> > -                                              *buf_size - sk_offset);
+> > -               if (ret)
+> > +               ret = -EFAULT;
+> > +               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+> >                         break;
+> >
+> >                 ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+> > diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> > index ed02aa522263..7c9edc9694d9 100644
+> > --- a/include/linux/pagemap.h
+> > +++ b/include/linux/pagemap.h
+> > @@ -734,61 +734,10 @@ int wait_on_page_private_2_killable(struct page *page);
+> >  extern void add_page_wait_queue(struct page *page, wait_queue_entry_t *waiter);
+> >
+> >  /*
+> > - * Fault everything in given userspace address range in.
+> > + * Fault in userspace address range.
+> >   */
+> > -static inline int fault_in_pages_writeable(char __user *uaddr, int size)
+> > -{
+> > -       char __user *end = uaddr + size - 1;
+> > -
+> > -       if (unlikely(size == 0))
+> > -               return 0;
+> > -
+> > -       if (unlikely(uaddr > end))
+> > -               return -EFAULT;
+> > -       /*
+> > -        * Writing zeroes into userspace here is OK, because we know that if
+> > -        * the zero gets there, we'll be overwriting it.
+> > -        */
+> > -       do {
+> > -               if (unlikely(__put_user(0, uaddr) != 0))
+> > -                       return -EFAULT;
+> > -               uaddr += PAGE_SIZE;
+> > -       } while (uaddr <= end);
+> > -
+> > -       /* Check whether the range spilled into the next page. */
+> > -       if (((unsigned long)uaddr & PAGE_MASK) ==
+> > -                       ((unsigned long)end & PAGE_MASK))
+> > -               return __put_user(0, end);
+> > -
+> > -       return 0;
+> > -}
+> > -
+> > -static inline int fault_in_pages_readable(const char __user *uaddr, int size)
+> > -{
+> > -       volatile char c;
+> > -       const char __user *end = uaddr + size - 1;
+> > -
+> > -       if (unlikely(size == 0))
+> > -               return 0;
+> > -
+> > -       if (unlikely(uaddr > end))
+> > -               return -EFAULT;
+> > -
+> > -       do {
+> > -               if (unlikely(__get_user(c, uaddr) != 0))
+> > -                       return -EFAULT;
+> > -               uaddr += PAGE_SIZE;
+> > -       } while (uaddr <= end);
+> > -
+> > -       /* Check whether the range spilled into the next page. */
+> > -       if (((unsigned long)uaddr & PAGE_MASK) ==
+> > -                       ((unsigned long)end & PAGE_MASK)) {
+> > -               return __get_user(c, end);
+> > -       }
+> > -
+> > -       (void)c;
+> > -       return 0;
+> > -}
+> > +size_t fault_in_writeable(char __user *uaddr, size_t size);
+> > +size_t fault_in_readable(const char __user *uaddr, size_t size);
+> >
+> >  int add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+> >                                 pgoff_t index, gfp_t gfp_mask);
+> > diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> > index 25dfc48536d7..069cedd9d7b4 100644
+> > --- a/lib/iov_iter.c
+> > +++ b/lib/iov_iter.c
+> > @@ -191,7 +191,7 @@ static size_t copy_page_to_iter_iovec(struct page *page, size_t offset, size_t b
+> >         buf = iov->iov_base + skip;
+> >         copy = min(bytes, iov->iov_len - skip);
+> >
+> > -       if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_pages_writeable(buf, copy)) {
+> > +       if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_writeable(buf, copy)) {
+> >                 kaddr = kmap_atomic(page);
+> >                 from = kaddr + offset;
+> >
+> > @@ -275,7 +275,7 @@ static size_t copy_page_from_iter_iovec(struct page *page, size_t offset, size_t
+> >         buf = iov->iov_base + skip;
+> >         copy = min(bytes, iov->iov_len - skip);
+> >
+> > -       if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_pages_readable(buf, copy)) {
+> > +       if (IS_ENABLED(CONFIG_HIGHMEM) && !fault_in_readable(buf, copy)) {
+> >                 kaddr = kmap_atomic(page);
+> >                 to = kaddr + offset;
+> >
+> > @@ -446,13 +446,11 @@ int iov_iter_fault_in_readable(const struct iov_iter *i, size_t bytes)
+> >                         bytes = i->count;
+> >                 for (p = i->iov, skip = i->iov_offset; bytes; p++, skip = 0) {
+> >                         size_t len = min(bytes, p->iov_len - skip);
+> > -                       int err;
+> >
+> >                         if (unlikely(!len))
+> >                                 continue;
+> > -                       err = fault_in_pages_readable(p->iov_base + skip, len);
+> > -                       if (unlikely(err))
+> > -                               return err;
+> > +                       if (fault_in_readable(p->iov_base + skip, len))
+> > +                               return -EFAULT;
+> >                         bytes -= len;
+> >                 }
+> >         }
+> > diff --git a/mm/filemap.c b/mm/filemap.c
+> > index d1458ecf2f51..4dec3bc7752e 100644
+> > --- a/mm/filemap.c
+> > +++ b/mm/filemap.c
+> > @@ -88,7 +88,7 @@
+> >   *    ->lock_page              (access_process_vm)
+> >   *
+> >   *  ->i_mutex                  (generic_perform_write)
+> > - *    ->mmap_lock              (fault_in_pages_readable->do_page_fault)
+> > + *    ->mmap_lock              (fault_in_readable->do_page_fault)
+> >   *
+> >   *  bdi->wb.list_lock
+> >   *    sb_lock                  (fs/fs-writeback.c)
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index b94717977d17..0cf47955e5a1 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -1672,6 +1672,78 @@ static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
+> >  }
+> >  #endif /* !CONFIG_MMU */
+> >
+> > +/**
+> > + * fault_in_writeable - fault in userspace address range for writing
+> > + * @uaddr: start of address range
+> > + * @size: size of address range
+> > + *
+> > + * Returns the number of bytes not faulted in (like copy_to_user() and
+> > + * copy_from_user()).
+> > + */
+> > +size_t fault_in_writeable(char __user *uaddr, size_t size)
+> > +{
+> > +       char __user *start = uaddr, *end;
+> > +
+> > +       if (unlikely(size == 0))
+> > +               return 0;
+> > +       if (!PAGE_ALIGNED(uaddr)) {
+> > +               if (unlikely(__put_user(0, uaddr) != 0))
+> > +                       return size;
+> > +               uaddr = (char __user *)PAGE_ALIGN((unsigned long)uaddr);
+> > +       }
+> > +       end = (char __user *)PAGE_ALIGN((unsigned long)start + size);
+> > +       if (unlikely(end < start))
+> > +               end = NULL;
+> > +       while (uaddr != end) {
+> > +               if (unlikely(__put_user(0, uaddr) != 0))
+> > +                       goto out;
+> > +               uaddr += PAGE_SIZE;
+>
+> Won't we loop endlessly or corrupt some unwanted page when 'end' was
+> set to NULL?
 
-> The general flow in the PHY interrupt handler is to read the interrupt st=
-atus
-> register, which tells you which internal interrupts have fired. You then
-> address these internal interrupts one by one.
+What do you mean? We set 'end' to NULL when start + size < start
+exactly so that the loop will stop when uaddr wraps around.
 
-In KSZ9031, Register MII_KSZPHY_INTCS=3D0x1B reports all interrupt events a=
-nd
-clear on read. So if there are 4 different interrupts, once it is read once=
-, all 4 clear at once.
-The micrel.c driver has defined ack_interrupt to read the above reg and is =
-called every time the
-interrupt handler phy_interrupt is called. So in this case, we should be go=
-od.
-The code flow in our case would look like this:
-- 2 interrupt sources (for example, link down followed by link up) set in M=
-II_KSZPHY_INTCS
-- interrupt handler (phy_interrupt) reads MII_KSZPHY_INT which automaticall=
-y clears both
-interrupts
-- another internal source triggers and sets the register.
-- The second edge will be caught accordingly by the GPIO.
+> > +       }
+> > +
+> > +out:
+> > +       if (size > uaddr - start)
+> > +               return size - (uaddr - start);
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL(fault_in_writeable);
+> > +
+> > +/**
+> > + * fault_in_readable - fault in userspace address range for reading
+> > + * @uaddr: start of user address range
+> > + * @size: size of user address range
+> > + *
+> > + * Returns the number of bytes not faulted in (like copy_to_user() and
+> > + * copy_from_user()).
+> > + */
+> > +size_t fault_in_readable(const char __user *uaddr, size_t size)
+> > +{
+> > +       const char __user *start = uaddr, *end;
+> > +       volatile char c;
+> > +
+> > +       if (unlikely(size == 0))
+> > +               return 0;
+> > +       if (!PAGE_ALIGNED(uaddr)) {
+> > +               if (unlikely(__get_user(c, uaddr) != 0))
+> > +                       return size;
+> > +               uaddr = (const char __user *)PAGE_ALIGN((unsigned long)uaddr);
+> > +       }
+> > +       end = (const char __user *)PAGE_ALIGN((unsigned long)start + size);
+> > +       if (unlikely(end < start))
+> > +               end = NULL;
+> > +       while (uaddr != end) {
+>
+> Same kind of issue here, when 'end' was set to NULL?
+>
+> Thanks.
+>
+> > +               if (unlikely(__get_user(c, uaddr) != 0))
+> > +                       goto out;
+> > +               uaddr += PAGE_SIZE;
+> > +       }
+> > +
+> > +out:
+> > +       (void)c;
+> > +       if (size > uaddr - start)
+> > +               return size - (uaddr - start);
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL(fault_in_readable);
+> > +
+> >  /**
+> >   * get_dump_page() - pin user page in memory while writing it to core dump
+> >   * @addr: user address
+> > --
+> > 2.26.3
+> >
 
-> This can take some time, MDIO is a slow bus etc. While handling these int=
-errupt sources,
-> it could be another internal interrupt source triggers. This new internal=
- interrupt source
-> keeps the external interrupt active. But there has not been an edge, sinc=
-e the interrupt=20
-> handler is still clearing the sources which caused the first interrupt. W=
-ith level interrupts,
-> this is not an issue. When the interrupt handler exits, the interrupt is =
-re-enabled. Since it
-> is still active, due to the unhandled internal interrupt sources, the lev=
-el interrupt
-> immediately fires again. the handler then sees this new interrupt and han=
-dles it.
-> At that point the level interrupt goes inactive.
+Thanks,
+Andreas
 
