@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587D541B1D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD0F41B1D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241227AbhI1OQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:16:15 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39392
+        id S241264AbhI1OQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:16:21 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39430
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241003AbhI1OQN (ORCPT
+        by vger.kernel.org with ESMTP id S241161AbhI1OQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:16:13 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        Tue, 28 Sep 2021 10:16:15 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C07A640300
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:14:33 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 530D540300
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632838473;
-        bh=kr/qddPqetj9p+Lio+2f6nDLzbZKDQizoD0Kdmeh6CY=;
+        s=20210705; t=1632838475;
+        bh=+u9e9bwlpa3QEn7ZpV3nxWHDHqijGY7KQgiYf/eMfqQ=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=SfTZSftnOc0+Pa7eAatezoT4B+ybY34N7959txZCg9tbT1ms4wvwE+lLhef7Ftx0/
-         B1DHvf9Ed7NjU/KnXnhsCguBQAJ+1nn5wkc4L8yQNQl0oInA+zd2JZu1kqyUauYjax
-         uUk6wvlu3WLCHdujusuBFDiTijZ8aLBaOibaigRP1FFe9gy6ZtJiJuIa1BRC4OP+bc
-         id5CrtO5NjWVvc+JBOhmQjJo5+NiLb2saivtFvAHYallOBFshzzy0C5AlP8C26U+GZ
-         SQoiCDVsfdRByYpKMqRO2ulvRCqR/EWOxSKwAhtL12weadHj50xHcNWht7DN92CFU8
-         lGgfeFlpCh+3Q==
-Received: by mail-lf1-f71.google.com with SMTP id x33-20020a0565123fa100b003fcfd99073dso1963213lfa.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:14:33 -0700 (PDT)
+        b=opvg4dejQao0ht7a2/d6cvt3dw4WUqVkskAD8AE5nahrdNdOVngBVqNGdyPBMzqBp
+         lqeeTBWV1xzdatX75ol5LdwvbnPH1Jv+vWxIpKdPg108g9tc/T58gTFfmuxUiT9QOJ
+         S1IWIq1WZ+QoWeuBEnA9w6g3trjgv/9wjWFi9Gwt+1pjSUR1WXUuB39G6pQ4s+dHrH
+         DZMpjIeNwz5YIof3MpSLOyS+grZccSDUvMB1tSa1uhOfyU6zCYP8vz628xr0YYCzK/
+         MZvnRoIK3nroCe/YueBLUUqWIg1K9yN7SBzCrog5DdPf/ViW0XIPyy6e59UrGjJzo1
+         WkbEEwA6UzBwA==
+Received: by mail-lf1-f72.google.com with SMTP id t187-20020a19c3c4000000b003fc1361fb20so19501792lff.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:14:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kr/qddPqetj9p+Lio+2f6nDLzbZKDQizoD0Kdmeh6CY=;
-        b=rE2xpriCfSityMSImc+t4+b0Z3JrElkfdJF1RGSaPwpkBhxysqt06/eGxqVytAVSxX
-         OGRmGmj2ovFwbYTNuxAWsksaTneR506pRAOJQUKkZ7sj0DbOm9L4kZ8+GMV4kmitqQ96
-         x8MV0LganDDBWB9NQrr8zrq6UJ3eAM3AoRISY8RRdFcCyFxVMlNZEWmCX3eQDkCyMRtK
-         FsPicB8P82i8TZOwGZ58i3FeuQo0GcSudonsMwxeT7jDfqznPNkQnDBZubGOk476L6vU
-         l8jJwypNzVpLXwythnV/6OQ71llXalMlS82vDOk32Uilwt2Uf6kY6XePsAElslJDc0zO
-         AKxg==
-X-Gm-Message-State: AOAM531cNKQfvF32G/CjGGgcelWqzVO93g1PRyz+LOb+OGWqUUD29zb4
-        Kk0C26kWyIBVXWXmWnDu+UppVYBXWpWQ7z8c5QKptmXPZoQsIq0/dEUhCW6bovb9r8rkczB4wf6
-        E5Ohk1JUTWNgN43/5LALj1S0+FOCoyCPp/wlXZ1YrjQ==
-X-Received: by 2002:ac2:5a10:: with SMTP id q16mr1671983lfn.337.1632838472988;
-        Tue, 28 Sep 2021 07:14:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpAzXRD5rjv0m8zWOTMT35Cly9f01wZkW3W32PUPwT65jqxMglzNw+JSm6Icd6u+4H/IwodQ==
-X-Received: by 2002:ac2:5a10:: with SMTP id q16mr1671959lfn.337.1632838472771;
-        Tue, 28 Sep 2021 07:14:32 -0700 (PDT)
+        bh=+u9e9bwlpa3QEn7ZpV3nxWHDHqijGY7KQgiYf/eMfqQ=;
+        b=JOjmveQBMQl4GbqKAwueicKYnbZYatMgGeWSXVu2trnbIL9IqNEx0ItNn/8wJVn5dX
+         8yaiCtL8hNJU9o+AfRx8gfMU4LyikowXVGP3OYJi6eOaf7GyvRsQ7jqaW/1/h+CItkJu
+         dt+5BVac6PEIuridb7y2Bym/K6GCZXj2T3Dm6mQbmunbi4Umv6oqju58v3uDZ+unJcRy
+         mVMbisA8fo0jXWGajBdAyE4AtjVF5onSNMtS9fbFq58EsZNyHX55fRLraSw1Xbza4ixU
+         hXG9wjbuA9ImQoxYZGDVQAjCfnIRgMbNg8YeMVw3/kTMeptINcs5TVJN2TJGhK127ax8
+         Kuug==
+X-Gm-Message-State: AOAM532/ULUx2nDUC6JXQjXDk64c4X8fZMaGYUd7fHULBEmom+jGHV8T
+        RhSicXed6S7pcpNF6NyLnA6wt56BL1loqmxAZS3N/5cqyGE2Wqgd1m8o/+3j9wjDKbwjU+Kmkz7
+        rls48DeHJvNduNAxZktcw2/eV+s7pzk0OJXWs6G26Vw==
+X-Received: by 2002:a2e:9b98:: with SMTP id z24mr169486lji.339.1632838474629;
+        Tue, 28 Sep 2021 07:14:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8qCBxFQ0ZmWvVx3GC1DXy3kNBYRZrME05hprWXzIZFzCVtG4bMX+nu3zFeqtYgSiSRE0EbQ==
+X-Received: by 2002:a2e:9b98:: with SMTP id z24mr169454lji.339.1632838474384;
+        Tue, 28 Sep 2021 07:14:34 -0700 (PDT)
 Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id w19sm2353241ljd.110.2021.09.28.07.14.31
+        by smtp.gmail.com with ESMTPSA id w19sm2353241ljd.110.2021.09.28.07.14.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 07:14:32 -0700 (PDT)
+        Tue, 28 Sep 2021 07:14:33 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
         Chanwoo Choi <cw00.choi@samsung.com>,
@@ -62,9 +62,9 @@ To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] regulator: dt-bindings: maxim,max77686: convert to dtschema
-Date:   Tue, 28 Sep 2021 16:13:52 +0200
-Message-Id: <20210928141353.112619-2-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/2] mfd: dt-bindings: maxim,max77686: convert to dtschema
+Date:   Tue, 28 Sep 2021 16:13:53 +0200
+Message-Id: <20210928141353.112619-3-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
 References: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
@@ -74,107 +74,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the regulators of Maxim MAX77686 PMIC to DT schema format.
+Convert the MFD part of Maxim MAX77686 PMIC to DT schema format.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../bindings/regulator/max77686.txt           | 71 --------------
- .../bindings/regulator/maxim,max77686.yaml    | 92 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 3 files changed, 93 insertions(+), 71 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+ .../devicetree/bindings/mfd/max77686.txt      |  26 ----
+ .../bindings/mfd/maxim,max77686.yaml          | 124 ++++++++++++++++++
+ MAINTAINERS                                   |   1 -
+ 3 files changed, 124 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mfd/max77686.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
 
-diff --git a/Documentation/devicetree/bindings/regulator/max77686.txt b/Documentation/devicetree/bindings/regulator/max77686.txt
+diff --git a/Documentation/devicetree/bindings/mfd/max77686.txt b/Documentation/devicetree/bindings/mfd/max77686.txt
 deleted file mode 100644
-index e9f7578ca09a..000000000000
---- a/Documentation/devicetree/bindings/regulator/max77686.txt
+index 42968b7144e0..000000000000
+--- a/Documentation/devicetree/bindings/mfd/max77686.txt
 +++ /dev/null
-@@ -1,71 +0,0 @@
--Binding for Maxim MAX77686 regulators
+@@ -1,26 +0,0 @@
+-Maxim MAX77686 multi-function device
 -
--This is a part of the device tree bindings of MAX77686 multi-function device.
--More information can be found in ../mfd/max77686.txt file.
+-MAX77686 is a Multifunction device with PMIC, RTC and Charger on chip. It is
+-interfaced to host controller using i2c interface. PMIC and Charger submodules
+-are addressed using same i2c slave address whereas RTC submodule uses
+-different i2c slave address,presently for which we are statically creating i2c
+-client while probing.This document describes the binding for mfd device and
+-PMIC submodule.
 -
--The MAX77686 PMIC has 9 high-efficiency Buck and 26 Low-DropOut (LDO)
--regulators that can be controlled over I2C.
+-Bindings for the built-in 32k clock generator block and
+-regulators are defined in ../clk/maxim,max77686.txt and
+-../regulator/max77686.txt respectively.
 -
--Following properties should be present in main device node of the MFD chip.
--
--Optional node:
--- voltage-regulators : The regulators of max77686 have to be instantiated
--  under subnode named "voltage-regulators" using the following format.
--
--	regulator_name {
--		regulator-compatible = LDOn/BUCKn
--		standard regulator constraints....
--	};
--	refer Documentation/devicetree/bindings/regulator/regulator.txt
--
--  The regulator node's name should be initialized with a string
--to get matched with their hardware counterparts as follow:
--
--	-LDOn 	:	for LDOs, where n can lie in range 1 to 26.
--			example: LDO1, LDO2, LDO26.
--	-BUCKn 	:	for BUCKs, where n can lie in range 1 to 9.
--			example: BUCK1, BUCK5, BUCK9.
--
--  Regulators which can be turned off during system suspend:
--	-LDOn	:	2, 6-8, 10-12, 14-16,
--	-BUCKn	:	1-4.
--  Use standard regulator bindings for it ('regulator-off-in-suspend').
--
--  LDO20, LDO21, LDO22, BUCK8 and BUCK9 can be configured to GPIO enable
--  control. To turn this feature on this property must be added to the regulator
--  sub-node:
--	- maxim,ena-gpios :	one GPIO specifier enable control (the gpio
--				flags are actually ignored and always
--				ACTIVE_HIGH is used)
+-Required properties:
+-- compatible : Must be "maxim,max77686";
+-- reg : Specifies the i2c slave address of PMIC block.
+-- interrupts : This i2c device has an IRQ line connected to the main SoC.
 -
 -Example:
 -
 -	max77686: pmic@9 {
 -		compatible = "maxim,max77686";
 -		interrupt-parent = <&wakeup_eint>;
--		interrupts = <26 IRQ_TYPE_NONE>;
+-		interrupts = <26 0>;
 -		reg = <0x09>;
--
--		voltage-regulators {
--			ldo11_reg: LDO11 {
--				regulator-name = "vdd_ldo11";
--				regulator-min-microvolt = <1900000>;
--				regulator-max-microvolt = <1900000>;
--				regulator-always-on;
--			};
--
--			buck1_reg: BUCK1 {
--				regulator-name = "vdd_mif";
--				regulator-min-microvolt = <950000>;
--				regulator-max-microvolt = <1300000>;
--				regulator-always-on;
--				regulator-boot-on;
--			};
--
--			buck9_reg: BUCK9 {
--				regulator-name = "CAM_ISP_CORE_1.2V";
--				regulator-min-microvolt = <1000000>;
--				regulator-max-microvolt = <1200000>;
--				maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
--			};
 -	};
-diff --git a/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml b/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77686.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
 new file mode 100644
-index 000000000000..33a80a8caf26
+index 000000000000..2296a16038b7
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
-@@ -0,0 +1,92 @@
++++ b/Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
+@@ -0,0 +1,124 @@
 +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/regulator/maxim,max77686.yaml#
++$id: http://devicetree.org/schemas/mfd/maxim,max77686.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Maxim MAX77686 Power Management IC regulators
++title: Maxim MAX77686 Power Management IC
 +
 +maintainers:
 +  - Chanwoo Choi <cw00.choi@samsung.com>
@@ -184,94 +139,126 @@ index 000000000000..33a80a8caf26
 +  This is a part of device tree bindings for Maxim MAX77686 Power Management
 +  Integrated Circuit (PMIC).
 +
-+  The Maxim MAX77686 provides high-efficiency Buck and 26 Low-DropOut (LDO)
-+  regulators.
++  The Maxim MAX77686 is a Power Management IC which includes voltage and
++  current regulators, RTC and clock outputs.
 +
-+  See also Documentation/devicetree/bindings/mfd/maxim,max77686.yaml for
-+  additional information and example.
++  The MAX77686 provides three 32.768khz clock outputs that can be controlled
++  (gated/ungated) over I2C.  The clock IDs are defined as preprocessor macros
++  in dt-bindings/clock/maxim,max77686.h.
 +
-+patternProperties:
-+  # 26 LDOs
-+  "^LDO([1-9]|1[0-9]|2[0-6])$":
-+    type: object
-+    $ref: regulator.yaml#
-+    description: |
-+      Properties for single LDO regulator.
-+      Regulators which can be turned off during system suspend:
-+        LDO2, LDO6-8, LDO10-12, LDO14-16
++properties:
++  compatible:
++    const: maxim,max77686
 +
-+    properties:
-+      regulator-name: true
++  '#clock-cells':
++    const: 1
 +
-+      maxim,ena-gpios:
-+        maxItems: 1
-+        description: |
-+          GPIO specifier to enable the GPIO control (on/off) for regulator.
++  interrupts:
++    maxItems: 1
 +
-+    required:
-+      - regulator-name
++  reg:
++    maxItems: 1
 +
-+    unevaluatedProperties: false
++  voltage-regulators:
++    $ref: ../regulator/maxim,max77686.yaml
++    description:
++      List of child nodes that specify the regulators.
 +
-+    allOf:
-+      - if:
-+          properties:
-+            $nodename:
-+              pattern: "^(LDO20|LDO21|LDO22|BUCK8|BUCK9)$"
-+        then:
-+          properties:
-+            maxim,ena-gpios: true
-+        else:
-+          properties:
-+            maxim,ena-gpios: false
++  wakeup-source: true
 +
-+  # 9 bucks
-+  "^BUCK[1-9]$":
-+    type: object
-+    $ref: regulator.yaml#
-+    description: |
-+      Properties for single BUCK regulator.
-+      Regulators which can be turned off during system suspend:
-+      BUCK[1-4]
-+
-+    properties:
-+      regulator-name: true
-+
-+      maxim,ena-gpios:
-+        maxItems: 1
-+        description: |
-+          GPIO specifier to enable the GPIO control (on/off) for regulator.
-+
-+    required:
-+      - regulator-name
-+
-+    unevaluatedProperties: false
-+
-+    allOf:
-+      - if:
-+          properties:
-+            $nodename:
-+              pattern: "^(LDO20|LDO21|LDO22|BUCK8|BUCK9)$"
-+        then:
-+          properties:
-+            maxim,ena-gpios: true
-+        else:
-+          properties:
-+            maxim,ena-gpios: false
++required:
++  - compatible
++  - '#clock-cells'
++  - reg
 +
 +additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        max77686: pmic@9 {
++            compatible = "maxim,max77686";
++            reg = <0x09>;
++
++            interrupt-parent = <&gpx0>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++            pinctrl-0 = <&max77686_irq>;
++            pinctrl-names = "default";
++            wakeup-source;
++            #clock-cells = <1>;
++
++            voltage-regulators {
++                LDO1 {
++                    regulator-name = "VALIVE_1.0V_AP";
++                    regulator-min-microvolt = <1000000>;
++                    regulator-max-microvolt = <1000000>;
++                    regulator-always-on;
++                };
++
++                LDO2 {
++                    regulator-name = "VM1M2_1.2V_AP";
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <1200000>;
++                    regulator-always-on;
++                    maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
++                    regulator-state-mem {
++                        regulator-on-in-suspend;
++                    };
++                };
++
++                // ...
++
++                BUCK1 {
++                    regulator-name = "VDD_MIF";
++                    regulator-min-microvolt = <850000>;
++                    regulator-max-microvolt = <1100000>;
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-state-mem {
++                        regulator-off-in-suspend;
++                    };
++                };
++
++                BUCK2 {
++                    regulator-name = "VDD_ARM";
++                    regulator-min-microvolt = <850000>;
++                    regulator-max-microvolt = <1500000>;
++                    regulator-always-on;
++                    regulator-boot-on;
++                    regulator-state-mem {
++                        regulator-on-in-suspend;
++                    };
++                };
++
++                // ...
++
++                BUCK9 {
++                    regulator-name = "CAM_ISP_CORE_1.2V";
++                    regulator-min-microvolt = <1000000>;
++                    regulator-max-microvolt = <1200000>;
++                    maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
++                };
++            };
++        };
++    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 39b4ef4b5a95..32b55f9ab76a 100644
+index 32b55f9ab76a..04e8554f4f5b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -11469,6 +11469,7 @@ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+@@ -11468,7 +11468,6 @@ M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
  L:	linux-kernel@vger.kernel.org
  S:	Supported
- F:	Documentation/devicetree/bindings/*/max77686.txt
-+F:	Documentation/devicetree/bindings/*/maxim,max77686.yaml
+-F:	Documentation/devicetree/bindings/*/max77686.txt
+ F:	Documentation/devicetree/bindings/*/maxim,max77686.yaml
  F:	Documentation/devicetree/bindings/clock/maxim,max77686.txt
  F:	Documentation/devicetree/bindings/mfd/max14577.txt
- F:	Documentation/devicetree/bindings/mfd/max77693.txt
 -- 
 2.30.2
 
