@@ -2,177 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9629941B942
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1B141B951
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242927AbhI1V2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241482AbhI1V16 (ORCPT
+        id S242915AbhI1VfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:35:04 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:13334 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232003AbhI1VfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:27:58 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3126C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:26:18 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so2649202pjc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L4Z1qtd59VARXTo8mTMZfhpyo/YJa2yppwRF4l1omg8=;
-        b=rSq0scJL/ha88RRlXKX42Isqbw/cwS5kVIP0Rz8OfVzzn6D5kKDMweVE0Q4ktQSiMJ
-         FhxFPNTbhY9xS2vAGEQ+qB5gV/IMUC6h9JD8Smhm2ssJbOQpHIqEJKUl6mN0qk2Gvwz4
-         iqKk5TZe73g8eJV+2vJnrwoJvPJ1P6NI4t92YcMxTQruO4ZgcMdMIYBXrSN2yeCfPbAN
-         tFQ4GxwssW84Y1vg4LGpetlrhcF6FFA2L4YDutUNKomAAwAsIirg3JkaUm6HVKTrF3V4
-         BHRGBPVxBUQcMzwQWA2PNjc4/b6DItbdmvXb7Ajmp33ZzPOIr2q8iG4+IHZG+ueXE4Hc
-         nmmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L4Z1qtd59VARXTo8mTMZfhpyo/YJa2yppwRF4l1omg8=;
-        b=uvusnU8izSpZGV9XklwqK8rLoMdy+cj7EXP3awuSkbmzINHwsZT5MSIeAxDLSbJ5jk
-         FDiksxo3fo7kOzIgmuXTbCe5p6s+wQlp/TX6ViY/CXzlquR9c7Wa4rEJICyorn+R6aSl
-         8JD3TzPOz2e2C4WqUhJTscrDOzaAnALz4QvFfA5JJBM2Yw/gCwsPHZY2pxOqqJDRaxUh
-         M17N4ea+87NZ9Ek2Ztn4BoBFhjMgflZnlXCoUUY+vz2AQHf6x2zs+czbr3XxJU4NG8CS
-         fyRrYLGfBhF1v+d8+uToObgaXRTh7mC7ulNEtLPrvuJ5apkaQ17ibgL7xPP8LIl5TOdK
-         Ytcw==
-X-Gm-Message-State: AOAM532Ui4mtYqFQK4bOr0FRI488fQjOVQJH4QNHklCqGY+I3OU2t+vL
-        hBmKr4W8sV5FtEaS9PrFBzW9Hg==
-X-Google-Smtp-Source: ABdhPJyiNQfJ0RYEvCNSbQfmhva0TWeah3nt33T8BlFeMgmCPfbY0etgFPJGRuPzGjsIEt8CokHbDg==
-X-Received: by 2002:a17:902:a3c2:b0:13d:be85:43ca with SMTP id q2-20020a170902a3c200b0013dbe8543camr7239171plb.0.1632864378224;
-        Tue, 28 Sep 2021 14:26:18 -0700 (PDT)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id j20sm109118pgb.2.2021.09.28.14.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 14:26:17 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 21:26:13 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 04/14] KVM: Reconcile discrepancies in halt-polling stats
-Message-ID: <YVOIdZhAe5Bqn4hc@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <20210925005528.1145584-5-seanjc@google.com>
+        Tue, 28 Sep 2021 17:35:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632864430;
+    s=strato-dkim-0002; d=aepfle.de;
+    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=FtDPVWexU4xJe/tAusBJYNUP4c4isrVjBItMQMHTHjE=;
+    b=Aq5hll2aoIvcbuzHXu4aPnciNtTYLsjKd9l9MdUrOzf/sAUhVNT+wqAQe7H4yhmJOD
+    OADOLdelhMMiUZ6aQbern/lOho7G34klQJ870XtkP4Ty+l+sse/A45KLT4I9uYBm7oDB
+    gzN/7M64mcr/fqsh/E5e8nmfk6y8l3ah3QVNbCrrC/WnCE2H+/q5Bk5P7dNuNFaAhuIV
+    YmYsCgsXx0c/i89ymiRay76XbDqOzylHqTnaJw5y9SgEK8fALFPpIV0c0UoPQTZt6VqL
+    VzBW5a0DWznAyaiLOZhnk2xA0e83QQchel8BAhByAoyLco+3BdO3A6Tv82ScGTwx3vKv
+    mErQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDX3y/OuD5rXVisEoBx6KYk3sDSS2ECuxRNydJqDgTcTmRadqe62a"
+X-RZG-CLASS-ID: mo00
+Received: from sender
+    by smtp.strato.de (RZmta 47.33.8 AUTH)
+    with ESMTPSA id j06d2fx8SLR9XXj
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 28 Sep 2021 23:27:09 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 23:27:02 +0200
+From:   Olaf Hering <olaf@aepfle.de>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
+        kys@microsoft.com, sthemmin@microsoft.com,
+        anbelski@linux.microsoft.com
+Subject: Re: [PATCH v3 08/19] drivers/hv: map and unmap guest memory
+Message-ID: <20210928232702.700ef605.olaf@aepfle.de>
+In-Reply-To: <1632853875-20261-9-git-send-email-nunodasneves@linux.microsoft.com>
+References: <1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com>
+        <1632853875-20261-9-git-send-email-nunodasneves@linux.microsoft.com>
+X-Mailer: Claws Mail 2021.09.26 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925005528.1145584-5-seanjc@google.com>
+Content-Type: multipart/signed; boundary="Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:55:18PM -0700, Sean Christopherson wrote:
-> Move the halt-polling "success" and histogram stats update into the
-> dedicated helper to fix a discrepancy where the success/fail "time" stats
-> consider polling successful so long as the wait is avoided, but the main
-> "success" and histogram stats consider polling successful if and only if
-> a wake event was detected by the halt-polling loop.
-> 
-> Move halt_attempted_poll to the helper as well so that all the stats are
-> updated in a single location.  While it's a bit odd to update the stat
-> well after the fact, practically speaking there's no meaningful advantage
-> to updating before polling.
-> 
-> Note, there is a functional change in addition to the success vs. fail
-> change.  The histogram updates previously called ktime_get() instead of
-> using "cur".  But that change is desirable as it means all the stats are
-> now updated with the same polling time, and avoids the extra ktime_get(),
-> which isn't expensive but isn't free either.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+--Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: David Matlack <dmatlack@google.com>
+Am Tue, 28 Sep 2021 11:31:04 -0700
+schrieb Nuno Das Neves <nunodasneves@linux.microsoft.com>:
 
-> ---
->  virt/kvm/kvm_main.c | 35 ++++++++++++++++-------------------
->  1 file changed, 16 insertions(+), 19 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 12fe91a0a4c8..2ba22b68af3b 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3202,12 +3202,23 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
->  static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
->  					  ktime_t end, bool success)
->  {
-> +	struct kvm_vcpu_stat_generic *stats = &vcpu->stat.generic;
->  	u64 poll_ns = ktime_to_ns(ktime_sub(end, start));
->  
-> -	if (success)
-> -		vcpu->stat.generic.halt_poll_success_ns += poll_ns;
-> -	else
-> -		vcpu->stat.generic.halt_poll_fail_ns += poll_ns;
-> +	++vcpu->stat.generic.halt_attempted_poll;
-> +
-> +	if (success) {
-> +		++vcpu->stat.generic.halt_successful_poll;
-> +
-> +		if (!vcpu_valid_wakeup(vcpu))
-> +			++vcpu->stat.generic.halt_poll_invalid;
-> +
-> +		stats->halt_poll_success_ns += poll_ns;
-> +		KVM_STATS_LOG_HIST_UPDATE(stats->halt_poll_success_hist, poll_ns);
-> +	} else {
-> +		stats->halt_poll_fail_ns += poll_ns;
-> +		KVM_STATS_LOG_HIST_UPDATE(stats->halt_poll_fail_hist, poll_ns);
-> +	}
->  }
->  
->  /*
-> @@ -3227,30 +3238,16 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  	if (do_halt_poll) {
->  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
->  
-> -		++vcpu->stat.generic.halt_attempted_poll;
->  		do {
->  			/*
->  			 * This sets KVM_REQ_UNHALT if an interrupt
->  			 * arrives.
->  			 */
-> -			if (kvm_vcpu_check_block(vcpu) < 0) {
-> -				++vcpu->stat.generic.halt_successful_poll;
-> -				if (!vcpu_valid_wakeup(vcpu))
-> -					++vcpu->stat.generic.halt_poll_invalid;
-> -
-> -				KVM_STATS_LOG_HIST_UPDATE(
-> -				      vcpu->stat.generic.halt_poll_success_hist,
-> -				      ktime_to_ns(ktime_get()) -
-> -				      ktime_to_ns(start));
-> +			if (kvm_vcpu_check_block(vcpu) < 0)
->  				goto out;
-> -			}
->  			cpu_relax();
->  			poll_end = cur = ktime_get();
->  		} while (kvm_vcpu_can_poll(cur, stop));
-> -
-> -		KVM_STATS_LOG_HIST_UPDATE(
-> -				vcpu->stat.generic.halt_poll_fail_hist,
-> -				ktime_to_ns(ktime_get()) - ktime_to_ns(start));
->  	}
->  
->  
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> -#define HV_HYP_PAGE_SHIFT      12
+> +#define HV_HYP_PAGE_SHIFT		12
+
+I think in case this change is really required, it should be in a separate =
+patch.
+
+
+Olaf
+
+--Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAmFTiKYACgkQ86SN7mm1
+DoCzPg/7BzqGmQge0FXBboVIFiF8AO30AipTW+49jct6hzfqEbECZxBGXnh21tVc
+yWlyPotEtV7FlldrW1DNvNuzMv/0/4H6KYvSt68YudzetG9KBHOJIF/JnIKPCRc2
+wcHTRWQe9r6FJGJF0dVwByvzdLD1BUvPPEM39STys69Y+Nq3z3cnk1q7qPBp4rSA
+QQaSwRCdle5CoHmHvg1Ipc7uqIA+L7ySqec0oq55v6QzbSwZKql5j79sCY/c/53U
+aONAs/pBDG6Q8FRBu+U1s5sBcDmWKVDQ0QHeCIH45X2bUgNa7EHwVDpnQN0UH9AO
+KHe3jEPQDTh41CE34Va47lz6X/OcBIrjmUt/r/Njxif86i4beBGGbrjzDLx61anY
+nnsvnd6z3olZLiSzoboyPoKTl/4WwdYZoXlnCxfCmaHujECFVNhc3A3PA58PLhh0
+xy4CCcmYJiuaQnVIbuQcmn4+1huWDkNdDPrrEVLK1BdjL/Ru/SP3PWDxm97tz0wv
+uPyW/tB3ErB3Edh7UyhNPaUTJLZy0rwcxx2P5DQ+S5Mv1utnPcQeModuuTKHdLLM
+TFLWRJOXPitCS3+eKxORrB6/QUDn10VvYxn1tt+iVrHrSvf0qncTAa17e4ZbCGEh
+s3Xp1BEegkzGWnOX5EV1I5msbm91AiSJoc/98TwyH0ViA+doYtM=
+=RRvk
+-----END PGP SIGNATURE-----
+
+--Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y--
