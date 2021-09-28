@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFB341B472
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C5E41B475
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241896AbhI1Qx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:53:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21067 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241871AbhI1Qx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:53:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632847907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K0U/aUim/4LHhbhUv9UEUbwD6KDK/YSTUb8tP/0dO0Y=;
-        b=aKJjB+ZemIaTE+lVG9Ekv3vuFZcQafL32p4kRc1sAA+JwK9S3gAwIclrYwbIjnVamyw96J
-        kGs00AXRqk7uufBQng6sxO3bvGJq72sFFn3Eg5C0/HuXQPpLr/wzQssHcbKr845IjI5unO
-        xXR8MZmuiUsSsNS11NPElx70dg8NZrs=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-sjSQlYcjOue9yRmMsceQrg-1; Tue, 28 Sep 2021 12:51:46 -0400
-X-MC-Unique: sjSQlYcjOue9yRmMsceQrg-1
-Received: by mail-ed1-f69.google.com with SMTP id b7-20020a50e787000000b003d59cb1a923so22509901edn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:51:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=K0U/aUim/4LHhbhUv9UEUbwD6KDK/YSTUb8tP/0dO0Y=;
-        b=JB70xdvDMKPvPNXj4wzBhnEisKl/hkp7mDxt6vnDsgwttsC0kgLKTLlpGGPPPHWZJa
-         tkFurHbFFtrT+XLOE+F9DYLmlBMp4oEpg7ZbMioFyvJ1hY8o6h8VzRZVqeNJnyIxVxBg
-         D4Qlm8MF8gSTLdfOr1dSxyF0ie+btb+c0qAiJak9hdwxa/iHVsIGrEeu1je/sAAgCSxb
-         mwn19CTjbjZvrAL0JbQ1HeJtBBifupUEoq1TIoh0IrllI0byHN9w218PRbPOcQd0Cv3g
-         DrJqcjoSQSDurKSpJRJVi2GWe10bZxfr3JYpvdvStGMJyd7C2GCtf0aymv5DbncldwMd
-         O2Qw==
-X-Gm-Message-State: AOAM532PU/2MXXFp5Lr1zW4Dt856MLxqn3bpdQLTT/1e1pLY7WHaq/yG
-        9ef1c+0sxYG5SFqPi5EYoROUKlYeDfJNnjAdRlBFD6rj7XPcxObn6EuSIwe03iExqQ/S/oRAFUp
-        juwHoxgmMEkG163+J8nN2KqI8
-X-Received: by 2002:a17:906:bfe7:: with SMTP id vr7mr7845981ejb.32.1632847904920;
-        Tue, 28 Sep 2021 09:51:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxrgO30G5UqckzSQL/S2GTFgTozWvqhmKmQoBR4II1OCTVmjMnRsHAH/sjMzvRkHvA+3JbhaQ==
-X-Received: by 2002:a17:906:bfe7:: with SMTP id vr7mr7845959ejb.32.1632847904757;
-        Tue, 28 Sep 2021 09:51:44 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u18sm5378579ejc.26.2021.09.28.09.51.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 09:51:43 -0700 (PDT)
-Message-ID: <46b08118-b5a2-ee9b-f0fa-49f830465243@redhat.com>
-Date:   Tue, 28 Sep 2021 18:51:42 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 2/4] nSVM: introduce smv->nested.save to cache save
- area fields
-Content-Language: en-US
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        id S241848AbhI1QyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:54:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241900AbhI1QyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:54:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3094E60F6B;
+        Tue, 28 Sep 2021 16:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632847956;
+        bh=DEqROobCKT5p9pSxxcEXxtlrsyu1eUWa3E++ibpuKA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SOPi8FtU5wpEgaz7n0q6Sm8ueKsENGnmVdrmTHXbiJVU3DKYC5GEITOkhz2b0ZKZF
+         sI/oZB7kVUuP6PxXhTvDdUuFf8J8hB2u90qakJbpboFH///IVBuRigS6/EdOviJa1V
+         4nEZoOzlxbyqY2KiQFmALxuPtJVezKyS+2ktQNiP4jHVeEk1XPW74n1TRNhyfztXvL
+         MPXRRTZA5LRy//Tp/n/QXLi/Y7qTfEWscJDNbwBKsqTOBoUpO7iNu7x27Xf8U+HyHa
+         rZ6kMfP/7a4ZWVmCfZ054Pcjx5bEGrt85FCOR34MZK3RLWRHMU60+jTqv53cRGUh8w
+         qpEPTOkHfDYmA==
+Received: by pali.im (Postfix)
+        id 019BB7E1; Tue, 28 Sep 2021 18:52:33 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 18:52:33 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210917120329.2013766-1-eesposit@redhat.com>
- <20210917120329.2013766-3-eesposit@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210917120329.2013766-3-eesposit@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 1/3] arm64: dts: marvell: espressobin-ultra: fix
+ SPI-NOR config
+Message-ID: <20210928165233.iu3lo3nq5hqtegy2@pali>
+References: <20210928162704.687513-1-robert.marko@sartura.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928162704.687513-1-robert.marko@sartura.hr>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/21 14:03, Emanuele Giuseppe Esposito wrote:
-> +static void copy_vmcb_save_area(struct vmcb_save_area_cached *dst,
-> +				struct vmcb_save_area *from)
-> +{
-> +	/*
-> +	 * Copy only necessary fields, as we need them
+On Tuesday 28 September 2021 18:27:02 Robert Marko wrote:
+> SPI config for the SPI-NOR is incorrect and completely breaking
+> reading/writing to the onboard SPI-NOR.
+> 
+> SPI-NOR is connected in the single(x1) IO mode and not in the quad
+> (x4) mode.
+> Also, there is no need to override the max frequency from the DTSI
+> as the mx25u3235f that is used supports 104Mhz.
+> 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 
-"Copy only fields that are validated" etc.
+Fixes: 3404fe15a60f ("arm64: dts: marvell: add DT for ESPRESSObin-Ultra")
 
-Paolo
-
-> +	 * to avoid TOC/TOU races.
-> +	 */
-
+> ---
+>  arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> index c5eb3604dd5b..610ff6f385c7 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> @@ -71,10 +71,6 @@ &sdhci1 {
+>  
+>  &spi0 {
+>  	flash@0 {
+> -		spi-max-frequency = <108000000>;
+> -		spi-rx-bus-width = <4>;
+> -		spi-tx-bus-width = <4>;
+> -
+>  		partitions {
+>  			compatible = "fixed-partitions";
+>  			#address-cells = <1>;
+> -- 
+> 2.31.1
+> 
