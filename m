@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E418841A6B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130D141A6B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238903AbhI1Eoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 00:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhI1Eox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 00:44:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889ACC061575;
-        Mon, 27 Sep 2021 21:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=QhqndkOgZUxmdSOkmVYTLDB3+1GBg21QeCq/Vol6ZYQ=; b=kSH464FMdMBHdCq0PrEWepJMkm
-        uRUp8GDw1x1dx7m1B52yQP25ZvFjt7hcTm/PXRy+130Da97dEruCddLTkXvvEBtPsT/ndukl52ylU
-        Ai3oIbjnTOpKtMNyyPkY+YK6r7Do3DsK8bab2k+M7dimqlMMUfhaw431/XV+2sxqy+7xWZmrlLsiU
-        0EhRqOW7moURELpaeJ8YnTK5iruqbwjHKKf2V6pL65dC6gGRheU9l3fl620aGIhoaAkln2LrhGDR7
-        xjWmDbTqwKa831LX6HJVawyfExGMqk9TLT8mZ9VEeff05SBMWOAqucMJvXtWk3G+eIeezcCEuWCP5
-        ODeh0VCw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mV4wR-00AUi0-1z; Tue, 28 Sep 2021 04:42:14 +0000
-Date:   Tue, 28 Sep 2021 05:42:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/mmap: Define index macros for protection_map[]
-Message-ID: <YVKdH4G5Alfwjkix@infradead.org>
-References: <1632712920-8171-1-git-send-email-anshuman.khandual@arm.com>
- <YVHcCZXmQ1yjINaf@infradead.org>
- <f224c661-f8f0-3c4a-bad8-095209412dd4@arm.com>
+        id S238871AbhI1En5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 00:43:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhI1En4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 00:43:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55DB660FC0;
+        Tue, 28 Sep 2021 04:42:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632804137;
+        bh=cxpkxAnjWZA3ynyBkwXT9RRNTLZt6ddR2ES23fzaBm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RNGouF6GqaIYJWI5vjzF4YpJFiuRcYKjOj04BdjhMBZD6afxlG94MxmBDNalrI3I0
+         Jty/noU6coZvtWpoxwVZNbYPsaZinUz65FIEKSedB9pUnDI9I9f5zhjEW4W8vxsIWK
+         iJLq/Ze0INxZXN3jqsxqye0/esV6rxqfyUEjRNKo=
+Date:   Tue, 28 Sep 2021 06:42:13 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] staging: vt6655: fix camelcase in ldBmThreshold
+Message-ID: <YVKdJdTxlNJ55zCy@kroah.com>
+References: <20210926162527.21462-1-tomm.merciai@gmail.com>
+ <20210926162527.21462-3-tomm.merciai@gmail.com>
+ <YVHirHixyOIgvqKB@kroah.com>
+ <20210927214624.GB6953@tom-desktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f224c661-f8f0-3c4a-bad8-095209412dd4@arm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210927214624.GB6953@tom-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:24:43AM +0530, Anshuman Khandual wrote:
-> > simple switch statement provided by each architecture.  See the below
-> > WIP which just works for x86 and without pagetable debugging for where I
-> > think we should be going.
-> 
-> Sure, this will work as well but all platforms need to be changed at once.
-> Is there any platform that would not subscribe ARCH_HAS_GET_PAGE_PROT and
-> export its own vm_get_page_prot() ? AFAICS all platforms are required to
-> export __PXXX and __SXXX elements currently.
-> 
-> This seems to be a better idea than the current proposal. Probably all the
-> vm_flags combinations, which will be used in those switch statements can be
-> converted into macros just to improve readability. Are you planning to send
-> this as a proper patch soon ?
+On Mon, Sep 27, 2021 at 11:46:24PM +0200, Tommaso Merciai wrote:
+> On Mon, Sep 27, 2021 at 05:26:36PM +0200, Greg Kroah-Hartman wrote:
+> > On Sun, Sep 26, 2021 at 06:25:19PM +0200, Tommaso Merciai wrote:
+> > > Replace camel case variable ldBmThreshold with snake case
+> > > variable ld_bm_threshold.
+> > 
+> > Same here, what exactly does this name mean and why did you pick it?
+> >
+>   You are right the same here. What do you think about "bm_threshold"?
 
-This was just a quіck WIP patch.  If you have some spare time to tackle
-it for real I'd sugget the following approach:
+What does "bm" stand for?
 
- 1) Remove the direct references to protection_map in debug_vm_pgtable.c
- 2) add the ARCH_HAS_GET_PAGE_PROT symbol that lets architectures
-    provide vm_get_page_prot itself and not define protection_map at all
-    in this case
- 3) convert all architectures that touch protection_map to provide
-    vm_get_page_prot themselves
- 4) mark protection_map static
- 5) convert all architectures that provide arch_filter_pgprot and/or
-    arch_vm_get_page_prot to provide vm_get_page_prot directly and
-    remove those hooks
- 6) remove the __S???/__P??? macros and the generic vm_get_page_prot
-    after providing an arch implementation for every architecture.
-    This can maybe simplified with a new generic version that directly
-    looks at PAGE_* macros, but that will need further investigation
-    first.
+thanks,
+
+greg k-h
