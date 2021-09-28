@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29B741AD10
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D495441AD11
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240190AbhI1Kha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:37:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:49672 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240161AbhI1Kh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:37:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0306B6D;
-        Tue, 28 Sep 2021 03:35:50 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.93])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5377D3F7B4;
-        Tue, 28 Sep 2021 03:35:47 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 11:35:43 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        will@kernel.org
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
- __entry_tramp_text_end
-Message-ID: <20210928103543.GF1924@C02TD0UTHF1T.local>
-References: <000000000000a3cf8605cb2a1ec0@google.com>
- <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
- <20210921165134.GE35846@C02TD0UTHF1T.local>
- <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
- <20210927170122.GA9201@C02TD0UTHF1T.local>
- <20210927171812.GB9201@C02TD0UTHF1T.local>
- <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
+        id S240213AbhI1Khe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240200AbhI1Khd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:37:33 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78DFC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:35:53 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id b192-20020a1c1bc9000000b0030cfaf18864so2357466wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=pU6YxNaw0GTgII4fD3nhe0fYGdqImBr40bZJ7n4xVVA=;
+        b=pZWIFbxnwPooY4cEem3tUYhych5LZKZmOLXmp6XPyimZGPpJVkAB74HA81pOiLVtk2
+         1BFlJvolqlcVDSRy82AB7Tuw54E7x15U4WNCt8Lq92TG+h5y2FZJz52HCFhlKhtRGQGL
+         q1eswahCLatuLMV1/t2OeAsc6FaXu1p8fd/bNXYYHF91OofVz/JfavJfl93joCmtpTeN
+         onpZGinY1jD/MuPIMwmt+5Qk5KZC7MLO1bFq2gOKF6rYjZ4wtzCucxbQQGkUxMC966px
+         I6pUQxGYNpE7ibGs3kY6DAH6svfV6vlZAMgWN8Y6WsxuoBK2q02+teFskATAjszzTL3N
+         U53A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pU6YxNaw0GTgII4fD3nhe0fYGdqImBr40bZJ7n4xVVA=;
+        b=l25I18j8SzYh9lrMFf/eXNmJ4LNIO2+ZtfHLc0PEvW7q6xbF+1HkouvV+M2tMb67wj
+         LFwvoqO+lKVgFaLnHY0yfMLSeMyEfhHqlOdaMSrR6VuaTydPgmoKv9Try9S+q5rXybGI
+         HeP5n/MxJLt+eedAeXWrRdl9fTV2Sjk8wsEbvhKpl5/QWXNIXle6GbcU3t8Cbmlb6qb6
+         6lXl8tD1Npi65VdHFMblTHPrDGeZl4J9sKtqQYoguUi34p/ahl9lF+y5zzhqRxxgt29E
+         fOLQmcCC+evPhFk5fzfJw3Q+DICGh7yVbEfgj6jZ7McNfcmdeZabgVd1m1TLqws0bq/I
+         if/g==
+X-Gm-Message-State: AOAM5319ucTUZxX8zYsdOXiwyfAvf86+pUdzlZOnTJPiITlZQ/Z/4apz
+        2lCqZDF48klvVjC6fVU3Iw9CBA==
+X-Google-Smtp-Source: ABdhPJz+iiEMsJPfR+CGi+VvP1ElzUauW+k60cDA6pUGjEEONzNEAOH6qHIW8B8WK9IHXA6lrF5z8g==
+X-Received: by 2002:a05:600c:ac1:: with SMTP id c1mr2407217wmr.99.1632825352411;
+        Tue, 28 Sep 2021 03:35:52 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:f026:b003:87f0:38a7])
+        by smtp.gmail.com with ESMTPSA id y18sm18791971wrq.6.2021.09.28.03.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 03:35:52 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH] sched/fair: removed useless update of p->recent_used_cpu
+Date:   Tue, 28 Sep 2021 12:35:44 +0200
+Message-Id: <20210928103544.27489-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 12:19:23PM +0200, Dmitry Vyukov wrote:
->  On Mon, 27 Sept 2021 at 19:18, Mark Rutland <mark.rutland@arm.com> wrote:
-> > What's happened here is that __d_lookup() (via a few layers of inlining) called
-> > load_unaligned_zeropad(). The `LDR` at the start of the asm faulted (I suspect
-> > due to a tag check fault), and so the exception handler replaced the PC with
-> > the (anonymous) fixup function. This is akin to a tail or sibling call, and so
-> > the fixup function entirely replaces __d_lookup() in the trace.
-> >
-> > The fixup function itself has an `LDR` which faulted (because it's
-> > designed to fixup page alignment problems, not tag check faults), and
-> > that is what's reported here.
-> >
-> > As the fixup function is anonymous, and the nearest prior symbol in .text is
-> > __entry_tramp_text_end, it gets symbolized as an offset from that.
-> >
-> > We can make the unwinds a bit nicer by adding some markers (e.g. patch
-> > below), but actually fixing this case will require some more thought.
-> >
-> > Thanks,
-> > Mark.
-> >
-> > ---->8----
-> > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> > index 709d2c433c5e..127096a0faea 100644
-> > --- a/arch/arm64/kernel/vmlinux.lds.S
-> > +++ b/arch/arm64/kernel/vmlinux.lds.S
-> > @@ -111,6 +111,11 @@ jiffies = jiffies_64;
-> >  #define TRAMP_TEXT
-> >  #endif
-> >
-> > +#define FIXUP_TEXT                                     \
-> > +       __fixup_text_start = .;                         \
-> > +       *(.fixup);                                      \
-> > +       __fixup_text_end = .;
-> > +
-> >  /*
-> >   * The size of the PE/COFF section that covers the kernel image, which
-> >   * runs from _stext to _edata, must be a round multiple of the PE/COFF
-> > @@ -161,7 +166,7 @@ SECTIONS
-> >                         IDMAP_TEXT
-> >                         HIBERNATE_TEXT
-> >                         TRAMP_TEXT
-> > -                       *(.fixup)
-> > +                       FIXUP_TEXT
-> >                         *(.gnu.warning)
-> >                 . = ALIGN(16);
-> >                 *(.got)                 /* Global offset table          */
-> 
-> 
-> Oh, good it's very local to the .fixup thing rather than a common
-> issue that affects all unwinds.
+Since commit 89aafd67f28c ("sched/fair: Use prev instead of new target as recent_used_cpu"),
+p->recent_used_cpu is unconditionnaly set with prev.
 
-Yes, though the other issue I mentioned *does* exist, and can occur
-separately, even if we're getting lucky and not hitting it often enough
-to notice.
 
-> In the other x86 thread Josh Poimboeuf suggested to use asm goto to a
-> cold part of the function instead of .fixup:
-> https://lore.kernel.org/lkml/20210927234543.6waods7rraxseind@treble/
-> This sounds like a more reliable solution that will cause less
-> maintenance burden. Would it work for arm64 as well?
+Fixes: 89aafd67f28c ("sched/fair: Use prev instead of new target as recent_used_cpu")
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ kernel/sched/fair.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Maybe we can use that when CC_HAS_ASM_GOTO_OUTPUT is avaiable, but in
-general we can't rely on asm goto supporting output arguments (and IIRC
-GCC doesn't support that at all), so we'd still have to support the
-current fixup scheme.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index e26d622762a9..bcb7617741c3 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6380,11 +6380,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
+ 	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
+ 	    asym_fits_capacity(task_util, recent_used_cpu)) {
+-		/*
+-		 * Replace recent_used_cpu with prev as it is a potential
+-		 * candidate for the next wake:
+-		 */
+-		p->recent_used_cpu = prev;
+ 		return recent_used_cpu;
+ 	}
+ 
+-- 
+2.17.1
 
-Thanks,
-Mark.
