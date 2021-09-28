@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A9441B0E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBED41B004
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240898AbhI1NgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:36:12 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:55285 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241463AbhI1NfW (ORCPT
+        id S240888AbhI1Nar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:30:47 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3884 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhI1Nap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:35:22 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 8EAE26001B;
-        Tue, 28 Sep 2021 13:33:40 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        bcousson@baylibre.com, Tony Lindgren <tony@atomide.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Ryan Barnett <ryan.barnett@collins.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jason Reeder <jreeder@ti.com>, <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4 48/48] ARM: dts: am437x-gp-evm: enable ADC1
-Date:   Tue, 28 Sep 2021 15:31:43 +0200
-Message-Id: <20210928133143.157329-49-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928133143.157329-1-miquel.raynal@bootlin.com>
-References: <20210928133143.157329-1-miquel.raynal@bootlin.com>
+        Tue, 28 Sep 2021 09:30:45 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HJgJR16hZz67kg2;
+        Tue, 28 Sep 2021 21:26:31 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 28 Sep 2021 15:29:04 +0200
+Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 28 Sep
+ 2021 14:29:03 +0100
+Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
+ arch_std_events
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Like Xu <like.xu.linux@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210928102938.69681-1-likexu@tencent.com>
+ <YVMB5kt8XG+OdJ1M@kernel.org>
+ <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
+ <YVMVwDt3QHBPfT/T@kernel.org> <YVMXHM0F/y2ptX8C@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <3949dfa2-d684-47af-ffa7-71b07141f64d@huawei.com>
+Date:   Tue, 28 Sep 2021 14:32:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YVMXHM0F/y2ptX8C@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.85.67]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADC0 and ADC1 pins are available on external connector J22.
+On 28/09/2021 14:22, Arnaldo Carvalho de Melo wrote:
+>   jevents-y      += json.o jsmn.o jevents.o
+> -HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include
+> +HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include -Wall -Wextra
+>   pmu-events-y   += pmu-events.o
+>   JDIR           =  pmu-events/arch/$(SRCARCH)
+>   JSON           =  $(shell [ -d $(JDIR) ] &&                            \
+> ⬢[acme@toolbox perf]$
+> 
+> I get this before applying Xu's patch:
+> 
+>    LINK    /tmp/build/perf/libbpf.a
+> pmu-events/jevents.c: In function ‘save_arch_std_events’:
+> pmu-events/jevents.c:473:39: warning: unused parameter ‘data’ [-Wunused-parameter]
+>    473 | static int save_arch_std_events(void *data, struct json_event *je)
+>        |                                 ~~~~~~^~~~
+> At top level:
+> pmu-events/jevents.c:93:13: warning: ‘free_sys_event_tables’ defined but not used [-Wunused-function]
+>     93 | static void free_sys_event_tables(void)
+>        |             ^~~~~~~~~~~~~~~~~~~~~
+> 
+> 
+> -------------------------------------
+> 
+> I'll add this to perf/core, as this isn't a strict fix, so can wait for
+> v5.16.
 
-Enable ADC1 which was missing.
+Hi Arnaldo,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- arch/arm/boot/dts/am437x-gp-evm.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+OK, would you also consider reusing CFLAGS:
 
-diff --git a/arch/arm/boot/dts/am437x-gp-evm.dts b/arch/arm/boot/dts/am437x-gp-evm.dts
-index c2e4896076e7..4416ddb559e4 100644
---- a/arch/arm/boot/dts/am437x-gp-evm.dts
-+++ b/arch/arm/boot/dts/am437x-gp-evm.dts
-@@ -775,6 +775,14 @@ adc {
- 	};
- };
- 
-+&magadc {
-+	status = "okay";
-+
-+	adc {
-+		ti,adc-channels = <0 1 2 3 4 5 6 7>;
-+	};
-+};
-+
- &ecap0 {
- 	status = "okay";
- 	pinctrl-names = "default";
--- 
-2.27.0
+--- a/tools/perf/pmu-events/Build
++++ b/tools/perf/pmu-events/Build
+@@ -9,10 +9,12 @@ JSON          =  $(shell [ -d $(JDIR) ] && 
+                \
+JDIR_TEST      =  pmu-events/arch/test
+JSON_TEST      =  $(shell [ -d $(JDIR_TEST) ] &&                       \
+                        find $(JDIR_TEST) -name '*.json')
+-
++HOSTCFLAGS_jevents += $(CFLAGS)
 
+I tried it, and there are more things to fix for jevents.o. Let me know 
+your preference and if any help required to fix any errors up.
+
+Thanks!
