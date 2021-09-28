@@ -2,222 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B87141AA86
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D5C41AA8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239556AbhI1IY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:24:56 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:49109 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239292AbhI1IYy (ORCPT
+        id S239564AbhI1IZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:25:32 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:47136
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239043AbhI1IZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:24:54 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 28 Sep 2021 01:23:15 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Sep 2021 01:23:13 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Sep 2021 13:52:57 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id AB7DC21DD5; Tue, 28 Sep 2021 13:52:56 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        mchehab@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v5] dt-bindings: media: venus: Add sc7280 dt schema
-Date:   Tue, 28 Sep 2021 13:52:53 +0530
-Message-Id: <1632817373-25755-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 28 Sep 2021 04:25:30 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0C80F4019A
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632817430;
+        bh=hCpkTZoM4n3uBZpcQB8z06X1QRNDpVNEm2rAShQKtzU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=qyiiJxtf66z1YC8O+On/5QDQ4Gk2qP4USH5COhl2yTdWREofPufPZ5Gt53hHWwMQz
+         twCQV2ucZDzDd5/aHyD0TEUJogTpWYwi/Zr1FYzPJG3PUwNHGOItPwrQuh+zY5dwnT
+         y3+GUh5LGd/4nBzlFGO8cltvp+4He3nYJsMCJoZqdY5Or+hap/OP5ff4TDCK24RLTD
+         D0M5SCOFLW61eR62BZMwyyVyhAEUnXh18sOrWwVNFjFOprgBiJOzZqMhEK6BaWZI9Y
+         S3TqewUOzuAEdXoR2kxkFZgSlm2brHckZizFQ6D9w2ZfqkcmDAODRCSSjoSLtTgZz8
+         fO6paGLBTaVDw==
+Received: by mail-lf1-f70.google.com with SMTP id x29-20020ac259dd000000b003f950c726e1so18522892lfn.14
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:23:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hCpkTZoM4n3uBZpcQB8z06X1QRNDpVNEm2rAShQKtzU=;
+        b=H9y+Gz8fR5YEG/GSBSBgK1+YXp+HXJUDEoOcVFiFOj8UbvrOT6zqANslOGtxH2RVjV
+         tZ51BEEDeIWh82lpsSGDccB+MJdrwI7/Z8NnO8zg5QCs4QA9JlB6f8hk/F68GST6v6bq
+         +IuRwOBOpZjmHma5ep9Wa/CKmrffZa3XfRehgDVQ2Da/ahydJDysEU0o8GvJoJZxYHps
+         8iuizJNm+582D2vXd2LeIPcyj7J6JVE5ix0S8OODzCkfPIZNVfdKCDFo88sFpe/m6IGg
+         4/Exb0tr8v6t+RPsN1/uJG57JY+tFMyTSO37/8AnNv+/wAUk0Rj6h4VQjh4FkncStVvg
+         Mh+w==
+X-Gm-Message-State: AOAM530WAVy5iisytyLdY0sdOOcfeZleG3tSGowO+03pcOfIyZAKOnJv
+        vvzbrXc7ActiCknlfvoCp1NM/jHjC5LZ7x8ZmwWtShkk6BUITzgPK/UL6j5yiO5Y+qsEAyohVcw
+        GfKEN0ABFUMqE65wr33L7+JBCxVZef5h8X1W/c7Lk2g==
+X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr4623525lfd.496.1632817429477;
+        Tue, 28 Sep 2021 01:23:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0kiQhvPEnXkPPjDKvzDmgWIBkyJznAjn8DmsrfGeFcE9vto/pgYlvsJ9re4+/35+AKYMcPQ==
+X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr4623518lfd.496.1632817429338;
+        Tue, 28 Sep 2021 01:23:49 -0700 (PDT)
+Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id y5sm1491271ljc.56.2021.09.28.01.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 01:23:48 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH] dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells dependency
+Date:   Tue, 28 Sep 2021 10:23:46 +0200
+Message-Id: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a schema description for the venus video encoder/decoder on the sc7280.
+The meta-schema already defines dependency between clock-cells and
+clock-output-names.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
-changes since v4:
-    fixed missing dependencies.
+ Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 4 ----
+ 1 file changed, 4 deletions(-)
 
- .../bindings/media/qcom,sc7280-venus.yaml          | 162 +++++++++++++++++++++
- 1 file changed, 162 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-
-diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-new file mode 100644
-index 0000000..fa54c56
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-@@ -0,0 +1,162 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Qualcomm Venus video encode and decode accelerators
-+
-+maintainers:
-+  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
-+
-+description: |
-+  The Venus Iris2 IP is a video encode and decode accelerator present
-+  on Qualcomm platforms
-+
-+properties:
-+  compatible:
-+    const: qcom,sc7280-venus
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  power-domains:
-+    minItems: 2
-+    maxItems: 3
-+
-+  power-domain-names:
-+    minItems: 2
-+    maxItems: 3
-+    items:
-+      - const: venus
-+      - const: vcodec0
-+      - const: cx
-+
-+  clocks:
-+    maxItems: 5
-+
-+  clock-names:
-+    items:
-+      - const: core
-+      - const: bus
-+      - const: iface
-+      - const: vcodec_core
-+      - const: vcodec_bus
-+
-+  iommus:
-+    maxItems: 2
-+
-+  memory-region:
-+    maxItems: 1
-+
-+  interconnects:
-+    maxItems: 2
-+
-+  interconnect-names:
-+    items:
-+      - const: cpu-cfg
-+      - const: video-mem
-+
-+  video-decoder:
-+    type: object
-+
-+    properties:
-+      compatible:
-+        const: venus-decoder
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+  video-encoder:
-+    type: object
-+
-+    properties:
-+      compatible:
-+        const: venus-encoder
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+  video-firmware:
-+    type: object
-+
-+    description: |
-+      Firmware subnode is needed when the platform does not
-+      have TrustZone.
-+
-+    properties:
-+      iommus:
-+        maxItems: 1
-+
-+    required:
-+      - iommus
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - power-domains
-+  - power-domain-names
-+  - clocks
-+  - clock-names
-+  - iommus
-+  - memory-region
-+  - video-decoder
-+  - video-encoder
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+        #include <dt-bindings/interrupt-controller/arm-gic.h>
-+        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
-+        #include <dt-bindings/interconnect/qcom,sc7280.h>
-+        #include <dt-bindings/power/qcom-rpmpd.h>
-+
-+        venus: video-codec@aa00000 {
-+                compatible = "qcom,sc7280-venus";
-+                reg = <0x0aa00000 0xd0600>;
-+                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-+                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-+                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-+                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-+                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-+                clock-names = "core", "bus", "iface",
-+                              "vcodec_core", "vcodec_bus";
-+
-+                power-domains = <&videocc MVSC_GDSC>,
-+                                <&videocc MVS0_GDSC>,
-+                                <&rpmhpd SC7280_CX>;
-+                power-domain-names = "venus", "vcodec0", "cx";
-+
-+                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
-+                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-+                interconnect-names = "cpu-cfg", "video-mem";
-+
-+                iommus = <&apps_smmu 0x2180 0x20>,
-+                         <&apps_smmu 0x2184 0x20>;
-+
-+                memory-region = <&video_mem>;
-+
-+                video-decoder {
-+                        compatible = "venus-decoder";
-+                };
-+
-+                video-encoder {
-+                        compatible = "venus-encoder";
-+                };
-+
-+                video-firmware {
-+                        iommus = <&apps_smmu 0x21a2 0x0>;
-+                };
-+        };
+diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+index 23abb7e8b9d8..dd70431df0b7 100644
+--- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
++++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+@@ -158,10 +158,6 @@ properties:
+     description:
+       The MIO bank number in which the command and data lines are configured.
+ 
+-dependencies:
+-  clock-output-names: [ '#clock-cells' ]
+-  '#clock-cells': [ clock-output-names ]
+-
+ required:
+   - compatible
+   - reg
 -- 
-2.7.4
+2.30.2
 
