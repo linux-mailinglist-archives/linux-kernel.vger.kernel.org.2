@@ -2,267 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32BC41AD39
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765FE41AD3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240239AbhI1Kqk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 06:46:40 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:44540 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234543AbhI1Kqj (ORCPT
+        id S240238AbhI1Krk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234543AbhI1Kri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:46:39 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 7A38ACECD9;
-        Tue, 28 Sep 2021 12:44:58 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v4 1/4] Bluetooth: aosp: Support AOSP Bluetooth Quality
- Report
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210926150657.v4.1.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
-Date:   Tue, 28 Sep 2021 12:44:58 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Joseph Hwang <josephsih@google.com>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <4A480983-CAF2-46B7-B462-9BC84E1783CC@holtmann.org>
-References: <20210926150657.v4.1.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
-To:     Joseph Hwang <josephsih@chromium.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Tue, 28 Sep 2021 06:47:38 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3ACC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:45:59 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id v127so3085954wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pMkBoBL/2u2hxj5OV4tpOntSstW0kYsraUoSIB/HZzM=;
+        b=mbVshFaEww29h7aEmVf9HpLxzvNaZp8olijYpB6eBQhNUqD6W2WouWSzZkFvbHIhu8
+         lOqvFHF93aQ7gVEwhMK66slUwrjFHvKlm84BBDg87CKbAfRowUVfSXMDoXAqUWi42i5q
+         NU7awEQdq4PHqqQZkXtnektMYFh53uN0eWBbC/5hdGwp0w4L5bL0U+YCJbjQc1UlG1L6
+         4CqrZuYDGlxUnNlCPhPB0E7/ur23XYgj42JSOGCpYRprfTUZIJwZ5n8OWRhdUhPsBtp2
+         rj6haqHIYp2kNIZAvIrKk374JQIL4tpamA6wmKk7xq5NwNNbxUPCzr7aTavI4I+5P/GO
+         vlAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=pMkBoBL/2u2hxj5OV4tpOntSstW0kYsraUoSIB/HZzM=;
+        b=MjMgI9bRee7tS9Rnn09Wzj4pyHgT78vkRiPOw94asR/cPPa4uGUBW89ivwJXHnfCpf
+         aW6IL5sS6eZ1Ag0cN9hJ21qWO4UR4SpQ4f+poz7iI0e/qNv+ZofwJPc+dRzOUcaNq0kq
+         S4KQqUUjvk1mie6YLqs5jh7A5CyhkfyJbQ6gYlxmSnOte2sFbBhN7qmN/lH5shOLYwWX
+         YMtAr6RSuQODvyd5966VVYrIbWOfzQhmd33RVqfScGz0/yloe4eTBbhhVuHwyWAEtSTl
+         uPhCPtaGQvP4Cy28mYemwbG56Jbb4LGa++K2e7rEPPljul+rtAdWLYlN4SdwyUhnC1j1
+         hvlQ==
+X-Gm-Message-State: AOAM530QSmxCpzk2OIxuv4iUeXVnVpnhg7jz1eTvwvOPx+UIFAs7XL41
+        28gfueB3FUoncIj1kXiBDbu7Vw==
+X-Google-Smtp-Source: ABdhPJxCiCIrJ4P2i364s2mImazMHWq9MdtaswRYwBJ7Zsj9nHMmrkzH/a9pwLFblIWArlO2+gvOHA==
+X-Received: by 2002:a05:600c:2206:: with SMTP id z6mr3911093wml.133.1632825957432;
+        Tue, 28 Sep 2021 03:45:57 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id z17sm19327249wrr.49.2021.09.28.03.45.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 03:45:56 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 11:45:55 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>, maz@kernel.org,
+        tglx@linutronix.de, jbrunet@baylibre.com, khilman@baylibre.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
+ as a module
+Message-ID: <YVLyY7ETBlhexv+9@google.com>
+References: <20210902134914.176986-1-narmstrong@baylibre.com>
+ <20210902134914.176986-2-narmstrong@baylibre.com>
+ <CAGETcx9KYWmmSYjXGPW6awmVYcKr6sdmxhc_tP=hf149=8Pm6A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGETcx9KYWmmSYjXGPW6awmVYcKr6sdmxhc_tP=hf149=8Pm6A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joseph,
+On Thu, 02 Sep 2021, Saravana Kannan wrote:
 
-> This patch adds the support of the AOSP Bluetooth Quality Report
-> (BQR) events.
+> On Thu, Sep 2, 2021 at 6:49 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+> >
+> > In order to reduce the kernel Image size on multi-platform distributions,
+> > make it possible to build the Amlogic GPIO IRQ controller as a module
+> > by switching it to a platform driver.
+> >
+> > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> > ---
+> >  drivers/irqchip/Kconfig          |  5 +++--
+> >  drivers/irqchip/irq-meson-gpio.c | 15 +++++++++------
+> >  2 files changed, 12 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> > index 4d5924e9f766..2aba485025fd 100644
+> > --- a/drivers/irqchip/Kconfig
+> > +++ b/drivers/irqchip/Kconfig
+> > @@ -400,8 +400,9 @@ config IRQ_UNIPHIER_AIDET
+> >           Support for the UniPhier AIDET (ARM Interrupt Detector).
+> >
+> >  config MESON_IRQ_GPIO
+> > -       bool "Meson GPIO Interrupt Multiplexer"
+> > -       depends on ARCH_MESON
+> > +       tristate "Meson GPIO Interrupt Multiplexer"
+> > +       depends on ARCH_MESON || COMPILE_TEST
+> > +       default ARCH_MESON
+> >         select IRQ_DOMAIN_HIERARCHY
+> >         help
+> >           Support Meson SoC Family GPIO Interrupt Multiplexer
+> > diff --git a/drivers/irqchip/irq-meson-gpio.c b/drivers/irqchip/irq-meson-gpio.c
+> > index e50676ce2ec8..d90ff0b92480 100644
+> > --- a/drivers/irqchip/irq-meson-gpio.c
+> > +++ b/drivers/irqchip/irq-meson-gpio.c
+> > @@ -436,8 +436,7 @@ static const struct irq_domain_ops meson_gpio_irq_domain_ops = {
+> >         .translate      = meson_gpio_irq_domain_translate,
+> >  };
+> >
+> > -static int __init meson_gpio_irq_parse_dt(struct device_node *node,
+> > -                                         struct meson_gpio_irq_controller *ctl)
+> > +static int meson_gpio_irq_parse_dt(struct device_node *node, struct meson_gpio_irq_controller *ctl)
+> >  {
+> >         const struct of_device_id *match;
+> >         int ret;
+> > @@ -463,8 +462,7 @@ static int __init meson_gpio_irq_parse_dt(struct device_node *node,
+> >         return 0;
+> >  }
+> >
+> > -static int __init meson_gpio_irq_of_init(struct device_node *node,
+> > -                                        struct device_node *parent)
+> > +static int meson_gpio_irq_of_init(struct device_node *node, struct device_node *parent)
+> >  {
+> >         struct irq_domain *domain, *parent_domain;
+> >         struct meson_gpio_irq_controller *ctl;
+> > @@ -521,5 +519,10 @@ static int __init meson_gpio_irq_of_init(struct device_node *node,
+> >         return ret;
+> >  }
+> >
+> > -IRQCHIP_DECLARE(meson_gpio_intc, "amlogic,meson-gpio-intc",
+> > -               meson_gpio_irq_of_init);
+> > +IRQCHIP_PLATFORM_DRIVER_BEGIN(meson_gpio_intc)
+> > +IRQCHIP_MATCH("amlogic,meson-gpio-intc", meson_gpio_irq_of_init)
+> > +IRQCHIP_PLATFORM_DRIVER_END(meson_gpio_intc)
+> > +
+> > +MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+> > +MODULE_LICENSE("GPL v2");
+> > +MODULE_ALIAS("platform:meson-gpio-intc");
+> > --
 > 
-> Multiple vendors have supported the AOSP Bluetooth Quality Report.
-> When a Bluetooth controller supports the capability, it can enable
-> the capability through hci_set_aosp_capable. Then hci_core will
-> set up the hdev->set_quality_report callback accordingly.
+> Acked-by: Saravana Kannan <saravanak@google.com>
 > 
-> Note that Intel also supports a distinct telemetry quality report
-> specification. Intel sets up the hdev->set_quality_report callback
-> in the btusb driver module.
-> 
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> 
-> ---
-> 
-> Changes in v4:
-> - Move the AOSP BQR support from the driver level to net/bluetooth/aosp.
-> - Fix the drivers to use hci_set_aosp_capable to enable aosp.
-> - Add Mediatek to support the capability too.
-> 
-> Changes in v3:
-> - Fix the auto build test ERROR
->  "undefined symbol: btandroid_set_quality_report" that occurred
->  with some kernel configs.
-> - Note that the mgmt-tester "Read Exp Feature - Success" failed.
->  But on my test device, the same test passed. Please kindly let me
->  know what may be going wrong. These patches do not actually
->  modify read/set experimental features.
-> - As to CheckPatch failed. No need to modify the MAINTAINERS file.
->  Thanks.
-> 
-> Changes in v2:
-> - Fix the titles of patches 2/3 and 3/3 and reduce their lengths.
-> 
-> net/bluetooth/aosp.c     | 79 ++++++++++++++++++++++++++++++++++++++++
-> net/bluetooth/aosp.h     |  7 ++++
-> net/bluetooth/hci_core.c | 17 +++++++++
-> 3 files changed, 103 insertions(+)
-> 
-> diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
-> index a1b7762335a5..c2b22bc83fb2 100644
-> --- a/net/bluetooth/aosp.c
-> +++ b/net/bluetooth/aosp.c
-> @@ -33,3 +33,82 @@ void aosp_do_close(struct hci_dev *hdev)
-> 
-> 	bt_dev_dbg(hdev, "Cleanup of AOSP extension");
-> }
-> +
-> +/* BQR command */
-> +#define BQR_OPCODE			hci_opcode_pack(0x3f, 0x015e)
-> +
-> +/* BQR report action */
-> +#define REPORT_ACTION_ADD		0x00
-> +#define REPORT_ACTION_DELETE		0x01
-> +#define REPORT_ACTION_CLEAR		0x02
-> +
-> +/* BQR event masks */
-> +#define QUALITY_MONITORING		BIT(0)
-> +#define APPRAOCHING_LSTO		BIT(1)
-> +#define A2DP_AUDIO_CHOPPY		BIT(2)
-> +#define SCO_VOICE_CHOPPY		BIT(3)
-> +
-> +#define DEFAULT_BQR_EVENT_MASK	(QUALITY_MONITORING | APPRAOCHING_LSTO | \
-> +				 A2DP_AUDIO_CHOPPY | SCO_VOICE_CHOPPY)
-> +
-> +/* Reporting at milliseconds so as not to stress the controller too much.
-> + * Range: 0 ~ 65535 ms
-> + */
-> +#define DEFALUT_REPORT_INTERVAL_MS	5000
-> +
-> +struct aosp_bqr_cp {
-> +	__u8	report_action;
-> +	__u32	event_mask;
-> +	__u16	min_report_interval;
-> +} __packed;
-> +
-> +static int enable_quality_report(struct hci_dev *hdev)
-> +{
-> +	struct sk_buff *skb;
-> +	struct aosp_bqr_cp cp;
-> +
-> +	cp.report_action = REPORT_ACTION_ADD;
-> +	cp.event_mask = DEFAULT_BQR_EVENT_MASK;
-> +	cp.min_report_interval = DEFALUT_REPORT_INTERVAL_MS;
-> +
-> +	skb = __hci_cmd_sync(hdev, BQR_OPCODE, sizeof(cp), &cp,
-> +			     HCI_CMD_TIMEOUT);
-> +	if (IS_ERR(skb)) {
-> +		bt_dev_err(hdev, "Enabling Android BQR failed (%ld)",
-> +			   PTR_ERR(skb));
-> +		return PTR_ERR(skb);
-> +	}
-> +
-> +	kfree_skb(skb);
-> +	return 0;
-> +}
-> +
-> +static int disable_quality_report(struct hci_dev *hdev)
-> +{
-> +	struct sk_buff *skb;
-> +	struct aosp_bqr_cp cp = { 0 };
-> +
-> +	cp.report_action = REPORT_ACTION_CLEAR;
-> +
-> +	skb = __hci_cmd_sync(hdev, BQR_OPCODE, sizeof(cp), &cp,
-> +			     HCI_CMD_TIMEOUT);
-> +	if (IS_ERR(skb)) {
-> +		bt_dev_err(hdev, "Disabling Android BQR failed (%ld)",
-> +			   PTR_ERR(skb));
-> +		return PTR_ERR(skb);
-> +	}
-> +
-> +	kfree_skb(skb);
-> +	return 0;
-> +}
-> +
-> +int aosp_set_quality_report(struct hci_dev *hdev, bool enable)
-> +{
-> +	bt_dev_info(hdev, "quality report enable %d", enable);
-> +
-> +	/* Enable or disable the quality report feature. */
-> +	if (enable)
-> +		return enable_quality_report(hdev);
-> +	else
-> +		return disable_quality_report(hdev);
-> +}
-> diff --git a/net/bluetooth/aosp.h b/net/bluetooth/aosp.h
-> index 328fc6d39f70..384e111c1260 100644
-> --- a/net/bluetooth/aosp.h
-> +++ b/net/bluetooth/aosp.h
-> @@ -8,9 +8,16 @@
-> void aosp_do_open(struct hci_dev *hdev);
-> void aosp_do_close(struct hci_dev *hdev);
-> 
-> +int aosp_set_quality_report(struct hci_dev *hdev, bool enable);
-> +
-> #else
-> 
-> static inline void aosp_do_open(struct hci_dev *hdev) {}
-> static inline void aosp_do_close(struct hci_dev *hdev) {}
-> 
-> +static inline int aosp_set_quality_report(struct hci_dev *hdev, bool enable)
-> +{
-> +	return false;
-> +}
-> +
-> #endif
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index aeec5a3031a6..a2c22a4921d4 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -1315,6 +1315,21 @@ static void hci_dev_get_bd_addr_from_property(struct hci_dev *hdev)
-> 	bacpy(&hdev->public_addr, &ba);
-> }
-> 
-> +static void hci_set_quality_report(struct hci_dev *hdev)
-> +{
-> +#ifdef CONFIG_BT_AOSPEXT
-> +	if (hdev->aosp_capable) {
-> +		/* The hdev->set_quality_report callback is setup here for
-> +		 * the vendors that support AOSP quality report specification.
-> +		 * Note that Intel, while supporting a distinct telemetry
-> +		 * quality report specification, sets up the
-> +		 * hdev->set_quality_report callback in the btusb module.
-> +		 */
-> +		hdev->set_quality_report = aosp_set_quality_report;
-> +	}
-> +#endif
-> +}
-> +
+> Marc, my mdio-mux patches have landed.
 
-I think that I wasn’t super clear in my review on how I wanted this feature. So hdev->set_quality_report should really only ever set by a transport driver. The core stack should never touch it.
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
 
-So I wanted something like this:
-
-	if (hdev->set_quality_report)
-		err = hdev->set_quality_report(hdev, val);
-	else
-		err = aosp_set_quality_report(hdev, val);
-
-I send a RFC showing you how I think this should be done.
-
-An extra important step of course is to check if the Android extension actually supports the quality report feature in the first place.
-
-And while writing that patch, I realized that your initial support has a mistake. I send a patch for fixing it. The mgmt document is pretty clear on how experimental flags are defined.
-
-Read Experimental Features Information Command
-==============================================
-
-	Command Code:		0x0049
-	Controller Index:	<controller id> or <non-controller>
-	Command Parameters:
-	Return Parameters:	Feature_Count (2 Octets)
-				Feature1 {
-					UUID (16 Octets)
-					Flags (4 Octets)
-				}
-				Feature2 {  }
-				...
-
-	This command is used to retrieve the supported experimental features
-	by the host stack.
-
-	The UUID values are not defined here. They can change over time and
-	are on purpose not stable. Features that mature will be removed at
-	some point. The mapping of feature UUID to the actual functionality
-	of a given feature is out of scope here.
-
-	The following bits are defined for the Flags parameter:
-
-		0	Feature active
-		1	Causes change in supported settings
-
-So please don’t just make up things and exp UUID should only be present if they are supported. If they are not supported because the hardware is lacking support, they should not be reported.
-
-Regards
-
-Marcel
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
