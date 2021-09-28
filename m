@@ -2,113 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589A941B377
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B705B41B378
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241768AbhI1QEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241749AbhI1QEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:04:45 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C9BC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:03:05 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id k13so8607987ilo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HH09lUa+7qN1sYezPxRWaJBxZPYFuimbbtUWFtN4us8=;
-        b=K6hclX3gk+EEFG3tbRp+TEhpJaNfPLHUT5zMP/me4eBptchCIlH9ZzqnibDvZvkDka
-         4z7rg6Kjb47gDXQBygug8cvjpju2Ppuu4cFmVOo//9EsBP/+Ei+tozcD0N7nWzEKXII1
-         1bcmcl9I1MUDZdiAiBb15ld/Z5kSyxJdVQTz+l10tW5BgpnwFzVaNod5AKQqVtBzRTfp
-         d7zm1vafM9IMYIhHarxQdIL6khvQY1JKxgIpS1KDv1r5pgkhEGGc1C/7QQm2xCfkFY4B
-         mJwzzD8l2KheXSy+CvEt6B0l3Qix7Hbr7GhLdwnWvHRBgCNjnXP8+NF253EQ+l7o0y72
-         jFXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HH09lUa+7qN1sYezPxRWaJBxZPYFuimbbtUWFtN4us8=;
-        b=MDV03OGvIrkgkB3OXt3MxNqwuP35bMNOHs33p+3qkXwo1BI13Dije3toEDX7BvfMVF
-         OVYidxUffxhInJM5p/mqSq6nc1JOhu/WRJvQOyL9b6VnLKYH4p6f59cOOC3hffwZvzDo
-         6I6vplxM2I1Cw4V4W/1ANETkF/epS2sCQ/jCOHyidoki4FdQMvX5U2WaKkfgJ2bQlitH
-         wDkccQZW7NzUwMUzdvQIWpwgkXN2RURHNZ39cyooSrhAZXJlu8OXDlcMSJpuZ2XqWNiv
-         g8U/cdJ59a5TWbej+RTtbZdrW+VKVfzH0NbaHdaP4I3fTBWU0yDbn8IEMXz0uI0JJ3bW
-         Q7GQ==
-X-Gm-Message-State: AOAM531skQIfnj/tvnoTItjBSM1xrH9Gjc18WY392EwkLOahTcWI4j86
-        nGr2b7N9msjbioUsFQqVPzcFyj8iJVC2IECo3w5vUg==
-X-Google-Smtp-Source: ABdhPJyH8hUx2p+EEf65T6N6lduFBQ4l8PLfDZKFT1VhuWe2kzjudCVA+TsEZRvuVTlF4gpRQwMQ2G4/F/fqX9YNXdw=
-X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr4927872ili.40.1632844984977;
- Tue, 28 Sep 2021 09:03:04 -0700 (PDT)
+        id S241775AbhI1QFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241749AbhI1QFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:05:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71FBF61246;
+        Tue, 28 Sep 2021 16:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632845011;
+        bh=qYrKrBfr8T/2j0JCiK/Uk789YYa1zr6c30wSL9bTRE8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CAj0x9ZNGz5+Gh6ByVNOz2OUeMXT19vPrBaIgcejp3rN1sWb5E0561uS3s5ggDGCf
+         eKmZ3rXV8eAJSqeJhWYd9yUkGbiUe85x2rDLQbmR/gEtzMjQXEEocDvC2sLp9Twiup
+         fDvMScWmNfc66NhzafTaVLnn6DD97tyu99qDv/20mSmWieHbVx3GnGyXj0W6u5XBol
+         Q7rMUnfBNshb5UOub1LQci6PTW85JQMCiMLhX0wYIPR3fWgTK7G3ytBR3o5BrHXRe+
+         BhwvI479QaOJYPa1ZPMZ+WgEMkyNpCaSJT+V6Wru0cbx5vbmep3bRaHVZl974E8tUQ
+         V6hvIQUIVngXA==
+Date:   Tue, 28 Sep 2021 21:33:15 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 2/3] mtd: rawnand: qcom: Add sg list to handle status
+ pipe request
+Message-ID: <20210928160315.GC12183@thinkpad>
+References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
+ <1631699851-12172-3-git-send-email-mdalam@codeaurora.org>
 MIME-Version: 1.0
-References: <20210927154159.2168500-1-robert.marko@sartura.hr>
- <20210927154159.2168500-4-robert.marko@sartura.hr> <20210928153731.7we6p7mclil2e5j2@pali>
-In-Reply-To: <20210928153731.7we6p7mclil2e5j2@pali>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 28 Sep 2021 18:02:54 +0200
-Message-ID: <CA+HBbNH61aAQ=ad3cRVHBvDqdTa2p85Lc62SLjOELRK3BJRnsw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm64: dts: marvell: espressobin-ultra: enable front
- USB3 port
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631699851-12172-3-git-send-email-mdalam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:37 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> On Monday 27 September 2021 17:41:59 Robert Marko wrote:
-> > Espressobin Ultra has a front panel USB3.0 Type-A port which works
-> > just fine so enable it.
-> > I dont see a reason why it was disabled in the first place anyway.
->
-> If USB 3.0 port is was tested and is working fine, then what about
-> adding Fixes: tag into commit message?
+On Wed, Sep 15, 2021 at 03:27:30PM +0530, Md Sadre Alam wrote:
+> From QPIC V2.0 onwards there is separate pipe to read status
+> for each code word while reading in enhanced mode. page scope
+> read and multi page read.
+> 
+> This sgl list will be use to handle the request via status pipe
+> during page scope and multi page read.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index 42c6291..07448c4 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -213,6 +213,7 @@ nandc_set_reg(chip, reg,			\
+>  #define QPIC_PER_CW_CMD_ELEMENTS	32
+>  #define QPIC_PER_CW_CMD_SGL		32
+>  #define QPIC_PER_CW_DATA_SGL		8
+> +#define	QPIC_PER_CW_STS_SGL		8
 
-Sure, gotta send a v4 anyway dropping the first patch.
+Use space after #define
 
-Regards,
-Robert
->
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.=
-dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> > index 96855a10b4a0..aada43fa236c 100644
-> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> > @@ -112,7 +112,6 @@ rtc@51 {
-> >
-> >  &usb3 {
-> >       usb-phy =3D <&usb3_phy>;
-> > -     status =3D "disabled";
-> >  };
-> >
-> >  &mdio {
-> > --
-> > 2.31.1
-> >
+>  
+>  #define QPIC_NAND_COMPLETION_TIMEOUT	msecs_to_jiffies(2000)
+>  
+> @@ -258,6 +259,7 @@ struct bam_transaction {
+>  	struct bam_cmd_element *bam_ce;
+>  	struct scatterlist *cmd_sgl;
+>  	struct scatterlist *data_sgl;
+> +	struct scatterlist *sts_sgl;
+>  	u32 bam_ce_pos;
+>  	u32 bam_ce_start;
+>  	u32 cmd_sgl_pos;
+> @@ -266,6 +268,8 @@ struct bam_transaction {
+>  	u32 tx_sgl_start;
+>  	u32 rx_sgl_pos;
+>  	u32 rx_sgl_start;
+> +	u32 sts_sgl_pos;
+> +	u32 sts_sgl_start;
+>  	bool wait_second_completion;
+>  	struct completion txn_done;
+>  	struct dma_async_tx_descriptor *last_data_desc;
+> @@ -508,6 +512,8 @@ alloc_bam_transaction(struct qcom_nand_controller *nandc)
+>  		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
+>  		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
+>  		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
+> +	if (nandc->props->qpic_v2)
+> +		bam_txn_size += (sizeof(*bam_txn->sts_sgl) * QPIC_PER_CW_STS_SGL);
+>  
+>  	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
+>  	if (!bam_txn_buf)
+> @@ -526,6 +532,12 @@ alloc_bam_transaction(struct qcom_nand_controller *nandc)
+>  
+>  	bam_txn->data_sgl = bam_txn_buf;
+>  
+> +	if (nandc->props->qpic_v2) {
+> +		bam_txn_buf +=
+> +			sizeof(*bam_txn->sts_sgl) * QPIC_PER_CW_STS_SGL * num_cw;
+> +		bam_txn->sts_sgl = bam_txn_buf;
+> +	}
+> +
+>  	init_completion(&bam_txn->txn_done);
+>  
+>  	return bam_txn;
+> @@ -554,6 +566,12 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
+>  		      QPIC_PER_CW_CMD_SGL);
+>  	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
+>  		      QPIC_PER_CW_DATA_SGL);
+> +	if (nandc->props->qpic_v2) {
+> +		bam_txn->sts_sgl_pos = 0;
+> +		bam_txn->sts_sgl_start = 0;
+> +		sg_init_table(bam_txn->sts_sgl, nandc->max_cwperpage *
+> +				QPIC_PER_CW_STS_SGL);
+> +	}
+>  
+>  	reinit_completion(&bam_txn->txn_done);
+>  }
+> @@ -808,6 +826,12 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
+>  		bam_txn->tx_sgl_start = bam_txn->tx_sgl_pos;
+>  		dir_eng = DMA_MEM_TO_DEV;
+>  		desc->dir = DMA_TO_DEVICE;
+> +	} else if (nandc->props->qpic_v2 && chan == nandc->sts_chan) {
 
+These two are mutually inclusive, so why can't you simply check for the
+existence of "nanc->sts_chan"?
 
+> +		sgl = &bam_txn->sts_sgl[bam_txn->sts_sgl_start];
+> +		sgl_cnt = bam_txn->sts_sgl_pos - bam_txn->sts_sgl_start;
+> +		bam_txn->sts_sgl_start = bam_txn->sts_sgl_pos;
+> +		dir_eng = DMA_DEV_TO_MEM;
+> +		desc->dir = DMA_FROM_DEVICE;
+>  	} else {
+>  		sgl = &bam_txn->data_sgl[bam_txn->rx_sgl_start];
+>  		sgl_cnt = bam_txn->rx_sgl_pos - bam_txn->rx_sgl_start;
+> @@ -1394,6 +1418,14 @@ static int submit_descs(struct qcom_nand_controller *nandc)
+>  			if (r)
+>  				return r;
+>  		}
+> +
+> +		if (nandc->props->qpic_v2) {
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+I feel like you should just check for "nandc->sts_chan" instead of qpic_v2. This
+will make the driver work with future revisions of the IP as well.
+
+> +			if (bam_txn->sts_sgl_pos > bam_txn->sts_sgl_start) {
+> +				r = prepare_bam_async_desc(nandc, nandc->sts_chan, 0);
+> +				if (r)
+> +					return r;
+> +			}
+> +		}
+>  	}
+>  
+>  	list_for_each_entry(desc, &nandc->desc_list, node)
+> @@ -1411,6 +1443,8 @@ static int submit_descs(struct qcom_nand_controller *nandc)
+>  		dma_async_issue_pending(nandc->tx_chan);
+>  		dma_async_issue_pending(nandc->rx_chan);
+>  		dma_async_issue_pending(nandc->cmd_chan);
+> +		if (nandc->props->qpic_v2)
+> +			dma_async_issue_pending(nandc->sts_chan);
+
+Same here.
+
+Thanks,
+Mani
+
+>  
+>  		if (!wait_for_completion_timeout(&bam_txn->txn_done,
+>  						 QPIC_NAND_COMPLETION_TIMEOUT))
+> -- 
+> 2.7.4
+> 
