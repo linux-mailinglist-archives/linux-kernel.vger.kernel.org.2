@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD85341ADA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA40941ADAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240210AbhI1LQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:16:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46587 "EHLO
+        id S240270AbhI1LSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:18:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30231 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239068AbhI1LQX (ORCPT
+        by vger.kernel.org with ESMTP id S240258AbhI1LSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:16:23 -0400
+        Tue, 28 Sep 2021 07:18:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632827683;
+        s=mimecast20190719; t=1632827802;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZU+KVR0y2VTh3ZrdA51D/L+4k30fXIYJ6SUmvuXTBtU=;
-        b=FcaykwPZNo92lJaeTP35evk3+6CY2OWeLx9VgdynD2AtD02wBD0bUUoBS04RUL5NF/yVj7
-        3tkwCFGF4m1kHFCQ5r0QI2wxMySb7N6ZN+bOlZUDVKBS3RZhFiCHaKR57sq+iEYmyXyY73
-        W5qcMIG4wtzQbjVGEzPs49ZOmZ/C7KU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-aBfOszqWPgKOPSVN4waDGw-1; Tue, 28 Sep 2021 07:14:42 -0400
-X-MC-Unique: aBfOszqWPgKOPSVN4waDGw-1
-Received: by mail-wm1-f72.google.com with SMTP id j82-20020a1c2355000000b0030cec9c9a66so1848835wmj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:14:42 -0700 (PDT)
+        bh=g9Fw/+zsA3lSTpQmibIL0kcuxCZFnG650L+/dDhTSd0=;
+        b=ZchqFIc+bpoVITiukVf7YizxlGt+PY4l7wuUguSQrN72OGMw7W3hglhvwqKua9Wh3rjmRH
+        n5IisvnUjevzM7c5ysBB+R57WefaMcU3DLu1FiORqe2P+UWGchicTwCK1eyyhuW9Q7bh4K
+        +OIrGFC64+D+k9B/F9SkhrwljNlQSB8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-UCCkfeotPA-jmBZwy7RyNQ-1; Tue, 28 Sep 2021 07:16:41 -0400
+X-MC-Unique: UCCkfeotPA-jmBZwy7RyNQ-1
+Received: by mail-wm1-f71.google.com with SMTP id j21-20020a05600c1c1500b00300f1679e4dso972320wms.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:16:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZU+KVR0y2VTh3ZrdA51D/L+4k30fXIYJ6SUmvuXTBtU=;
-        b=4axxNTdElP1uTq7kQNPBcTJWbS0U6DfH25WKXObSExsttPVmrgSW0JYIimhugpJi2Z
-         OO4E6/+Swa9W485FMuzOcGEnqeQdCqDsSsRGhYHwsdZrox+0HmnmyowcQzTEyRHmeVaj
-         ceNQFvxrkRajiOF0FkXOzZgQgQYzzEPH5cDKougTDJRlmMlfKBXGIcvgAOgPU24KhnQ0
-         1P6q3AMmp1D9PKyLlDqeik6T1eWf2nyzFKTbSlyuYHoMdXqNGhxSf7ehGP7h0lLTJ514
-         sUPXs0kq1YoIjo31wterHUMyTRGZgcntWmEl7UguBklnX0ytAMZPszBjwK2+ArQGCR7d
-         ZDTg==
-X-Gm-Message-State: AOAM531bgc8W5axwGm92rdxAUuVs6mwZdU6Xvq+2bW4nKnsSuWBPop4+
-        aVuO7jcyzYaqfrOJc7PaubAPCHeLfPlyQBrznZXU/doN20bDT+YaO1RgX7r4J9juHY3CX1YfUsp
-        EyHts5o43ccIzx7zgH+tplZMnmxY8oErQoKvKrm01
-X-Received: by 2002:a7b:c1d6:: with SMTP id a22mr4054953wmj.146.1632827681479;
-        Tue, 28 Sep 2021 04:14:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmyS/k9wYJiX+xvA60Ee54wMfLNQLygQJU7Coe9SlPvQKuE0bZ2nADyYTfZL/XxVTwdXQwLWEQNDjqQrl73Dg=
-X-Received: by 2002:a7b:c1d6:: with SMTP id a22mr4054944wmj.146.1632827681334;
- Tue, 28 Sep 2021 04:14:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=g9Fw/+zsA3lSTpQmibIL0kcuxCZFnG650L+/dDhTSd0=;
+        b=yEq3hjOjWfQigxEp0McM4ko4W8VjLSBTBHqm2ek/nvXAHJI80sQ2y/E2RkA3NqDAuO
+         P6CZQA8PcEl8qJ8gWxCS4X4Ix8ESpoDZF9oI0EJCp6bHe36o5AIH/WDkxgl7T7jtJ6KR
+         ZhcMYVr4X0pukhesdNbP+gMt5KYRVSYJ7oHNOL2buTC3QnQumIA1HDd5T+RnhxIuvUvw
+         CylkwdNbrkxtQzSJP0x8zzMfk1En3y1rWXh/V4VBn2MnfZ7V81J27a2jxFP9sIDwLbGe
+         13yELLIEg4VKJv/RvuzIk+xoTXvWO99LGN8NnSIcKOGtSMMAGhSYRY+XL+OWSlinGXVH
+         RMyQ==
+X-Gm-Message-State: AOAM531N623bON9PWR8sQ9GDJ3v47gSaJUSG7dkjUvNsyvV7IIMccWWo
+        d5ip3yHYO7fduwr515Lt30f/EHrb6Y83PD5ALJ/dd/RMiYc8se9z78v4A1RvwdDngGfq2d/dANI
+        UquEVlToTvmu+DNdFF+tI52/F
+X-Received: by 2002:a1c:7e10:: with SMTP id z16mr4045381wmc.141.1632827799984;
+        Tue, 28 Sep 2021 04:16:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypdRCaBXjp3Oo8Frl+bwCBde3/2kGEgoQygCIPajaTje2x49VvX1uag/OSEf1dohFvvrJGgA==
+X-Received: by 2002:a1c:7e10:: with SMTP id z16mr4045364wmc.141.1632827799748;
+        Tue, 28 Sep 2021 04:16:39 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23aaf.dip0.t-ipconnect.de. [79.242.58.175])
+        by smtp.gmail.com with ESMTPSA id x5sm2991943wmk.32.2021.09.28.04.16.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 04:16:39 -0700 (PDT)
+Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
+ <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
+ <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+Date:   Tue, 28 Sep 2021 13:16:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210821021106.27010-1-luo.penghao@zte.com.cn>
-In-Reply-To: <20210821021106.27010-1-luo.penghao@zte.com.cn>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Tue, 28 Sep 2021 13:14:30 +0200
-Message-ID: <CACO55tv5PoPL122+XSwS8Fyq9bbRNzqBghy7CPX1uTCKea9eUA@mail.gmail.com>
-Subject: Re: [PATCH linux-next] drm/nouveau/mmu: drop unneeded assignment in
- the nvkm_uvmm_mthd_page()
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
+On 28.09.21 12:53, Faiyaz Mohammed wrote:
+> 
+> 
+> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
+>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
+>>> For INITRD and initmem memory is reserved through "memblock_reserve"
+>>> during boot up but it is free via "free_reserved_area" instead
+>>> of "memblock_free".
+>>> For example:
+>>> [    0.294848] Freeing initrd memory: 12K.
+>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>
+>>> To get the start and end address of the above freed memory and to account
+>>> proper memblock added memblock_dbg log in "free_reserved_area".
+>>> After adding log:
+>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
+>>> free_initrd_mem+0x20/0x28
+>>> [    0.294848] Freeing initrd memory: 12K.
+>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
+>>> free_initmem+0x70/0xc8
+>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>
+>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>>> ---
+>>>    mm/page_alloc.c | 5 +++++
+>>>    1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index b37435c..f85c3b2 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start,
+>>> void *end, int poison, const char
+>>>            pr_info("Freeing %s memory: %ldK\n",
+>>>                s, pages << (PAGE_SHIFT - 10));
+>>>    +#ifdef CONFIG_HAVE_MEMBLOCK
+>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
+>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>>> +#endif
+>>
+>> IMHO, the "memblock_free" part is misleading. Something was allocated
+>> early via memblock, then we transitioned to the buddy, now we're freeing
+>> that early allocation via the buddy.
+>> Yes, we're freeing the early allocation via buddy, but for proper
+> memblock accounting we need this debug print.
+> 
 
-On Sat, Aug 21, 2021 at 10:46 AM CGEL <cgel.zte@gmail.com> wrote:
->
-> From: Luo penghao <luo.penghao@zte.com.cn>
->
-> In order to keep the code style consistency of the whole file,
-> the 'ret' assignments should be deleted.
->
-> The clang_analyzer complains as follows:
->
-> drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c:317:8:warning:
-> Although the value storedto 'ret' is used in the enclosing expression,
-> the value is never actually read from 'ret'.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c
-> index c43b824..d9f8e11 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c
-> @@ -314,7 +314,7 @@ nvkm_uvmm_mthd_page(struct nvkm_uvmm *uvmm, void *argv, u32 argc)
->         page = uvmm->vmm->func->page;
->         for (nr = 0; page[nr].shift; nr++);
->
-> -       if (!(ret = nvif_unpack(ret, &argv, &argc, args->v0, 0, 0, false))) {
-> +       if (!(nvif_unpack(ret, &argv, &argc, args->v0, 0, 0, false))) {
->                 if ((index = args->v0.index) >= nr)
->                         return -EINVAL;
->                 type = page[index].type;
-> --
-> 2.15.2
->
->
+What do you mean with "accounting" ? These are debug statements.
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
