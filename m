@@ -2,203 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E22F41BAF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88E41BAFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243233AbhI1XYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:24:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhI1XYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:24:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B8A60F9D;
-        Tue, 28 Sep 2021 23:22:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632871373;
-        bh=RUvdqkjcjCLXJYTVx4LwzKIXoyGzG4G49JxCo/hG9UE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b0bvSnon4ygCWaCcre1ogN9xOp1YEiNIsifUIP7BAAuuzy5J6HCY4rlzq8282LJfY
-         xmNug5p1CA5Q0m6GFMJYQWwIndUChPgCKtAwvowZXxzgJi98Kw4V90NLkubJJY1ivT
-         Ds2FbrWuGWtidacUDHrFKa5ecqb5xuMIqdmLxgMd0hnRE7i1X9u0BxHzbnXJdVY1OK
-         +jkYVZ6GObvz4o+F6gIloMgs0jU978l7/88dek5DKCx92WjubEoNXOez+dVNRAVMzJ
-         yb0XClVr+d2v9NdCfKkvjKyyLDcGwR2lAEHOJeYs7Ijg5TUw1V4b79tUr0Pf7sDUNb
-         eKuRJeQP3fa4A==
-Date:   Tue, 28 Sep 2021 18:26:55 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: Replace callers of BPF_CAST_CALL
- with proper function typedef
-Message-ID: <20210928232655.GA297501@embeddedor>
-References: <20210928230946.4062144-1-keescook@chromium.org>
- <20210928230946.4062144-3-keescook@chromium.org>
+        id S243249AbhI1X3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243181AbhI1X3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 19:29:24 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61337C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:27:44 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id x4so215325pln.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EhcU8Kjwg9ut3Xb/ULqWAtFmuiERKbM2e3Paikz24PM=;
+        b=nCBwjJ8wk+eIIztcdWohvrAoPS9xE411Mk0+osyihr2YQCUeGX0gh9UMreKbvuCfCQ
+         Mf9HWw/kEzftTvW+em1VMKWn01o/uu820IpoBiAlkseaOsar779zc8yyoAgwM4JDKi+f
+         KkuJiv9wze5HfP0ZZiPfJZeqBY+5uUsTaBubiEhmeLJ26WbSXy5qxQ4q3AcfTGdQTeI9
+         IkdMu/Qyl0m+a3odOSa7UbeJ4fDidepVwH4MeKi8XCnLRA7oOCPDvfaEez3tN886ju3h
+         aDp+OFLJ3x0Pe/lFNNAFDRQcF1aLZGnj0NA7NoWIrqhE9+JgVfHu4msus8UIYtt94Y3w
+         IX5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EhcU8Kjwg9ut3Xb/ULqWAtFmuiERKbM2e3Paikz24PM=;
+        b=MPl747EGthGmz0GlGlM2PkNbnTvT+2On31JBYVBT+HwKXRhx+MzdywKg1NjpdtWKJb
+         MC8+zvge1P+NlUU6LOS1zI/KqUyzreMgxL/aua28pk0tfyxtdfe5F3egHIpMG+ZiFj2Q
+         FOm1F6jJZhb5ozNj+jmzfC/KZKvKy/UIbmDIN9+k0vf6MudnZigYrTTnWYmL1V04QrCO
+         aNdcWaWqEzZihktlea/+FFOYTdyQv0bwqkmvwG92yhdaOZLYe27xwTNhEz00y2GYuz8U
+         tC6oRZ8rxaHE+x7I1RSLPjIIPgcRyuMB9PeN4JRURU8BO5P+tT0vV5p5WacZJ2NJk9rB
+         k0NA==
+X-Gm-Message-State: AOAM532PF2LyelgOm8lqmhvoZ/SQDgoP4FSK6oYDmsMO+vaP2fk0Jtfz
+        yYJWopGb/iqlvm/h1pO1f+6mvILE6KjppA==
+X-Google-Smtp-Source: ABdhPJwAWvHmSQDULEyAN8bGPHlrdsyt6zkLtTY6gHMHgQlJIEht1JMpZbQ76VX+lMCX9P5doqCUWA==
+X-Received: by 2002:a17:902:a70e:b0:13e:1274:c352 with SMTP id w14-20020a170902a70e00b0013e1274c352mr7331772plq.58.1632871663648;
+        Tue, 28 Sep 2021 16:27:43 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id z23sm121863pgv.45.2021.09.28.16.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 16:27:42 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 23:27:39 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com
+Subject: Re: [PATCH v3 00/31] KVM: x86: pass arguments on the page fault path
+ via struct kvm_page_fault
+Message-ID: <YVOk6zw2b1bI+Qk7@google.com>
+References: <20210924163152.289027-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928230946.4062144-3-keescook@chromium.org>
+In-Reply-To: <20210924163152.289027-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 04:09:46PM -0700, Kees Cook wrote:
-> In order to keep ahead of cases in the kernel where Control Flow
-> Integrity (CFI) may trip over function call casts, enabling
-> -Wcast-function-type is helpful. To that end, BPF_CAST_CALL causes
-> various warnings and is one of the last places in the kernel
-> triggering this warning.
+On Fri, Sep 24, 2021 at 12:31:21PM -0400, Paolo Bonzini wrote:
+> The current kvm page fault handlers passes around many arguments to the
+> functions.  To simplify those arguments and local variables, introduce
+> a data structure, struct kvm_page_fault, to hold those arguments and
+> variables.  struct kvm_page_fault is allocated on stack on the caller
+> of kvm fault handler, kvm_mmu_do_page_fault(), and passed around.
 > 
-> For actual function calls, replace BPF_CAST_CALL() with a typedef, which
-> captures the same details about the given function pointers.
+> Later in the series, my patches are interleaved with David's work to
+> add the memory slot to the struct and avoid repeated lookups.  Along the
+> way you will find some cleanups of functions with a ludicrous number of
+> arguments, so that they use struct kvm_page_fault as much as possible
+> or at least receive related information from a single argument.  make_spte
+> in particular goes from 11 to 10 arguments (yeah I know) despite gaining
+> two for kvm_mmu_page and kvm_memory_slot.
 > 
-> This change results in no object code difference.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Link: https://github.com/KSPP/linux/issues/20
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Link: https://lore.kernel.org/lkml/CAEf4Bzb46=-J5Fxc3mMZ8JQPtK1uoE0q6+g6WPz53Cvx=CBEhw@mail.gmail.com
+> This can be sometimes a bit debatable (for example struct kvm_mmu_page
+> is used a little more on the TDP MMU paths), but overall I think the
+> result is an improvement.  For example the SET_SPTE_* constants go
+> away, and they absolutely didn't belong in the TDP MMU.  But if you
+> disagree with some of the changes, please speak up loudly!
 
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Thanks for getting this cleaned up and sent out. The series looks good
+overall. I had 2 small comments but otherwise:
 
-Thanks
---
-Gustavo
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-> ---
->  include/linux/bpf.h    | 4 +++-
->  include/linux/filter.h | 5 -----
->  kernel/bpf/arraymap.c  | 7 +++----
->  kernel/bpf/hashtab.c   | 7 +++----
->  kernel/bpf/helpers.c   | 5 ++---
->  5 files changed, 11 insertions(+), 17 deletions(-)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index b6c45a6cbbba..19735d59230a 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -48,6 +48,7 @@ extern struct idr btf_idr;
->  extern spinlock_t btf_idr_lock;
->  extern struct kobject *btf_kobj;
->  
-> +typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
->  typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
->  					struct bpf_iter_aux_info *aux);
->  typedef void (*bpf_iter_fini_seq_priv_t)(void *private_data);
-> @@ -142,7 +143,8 @@ struct bpf_map_ops {
->  	int (*map_set_for_each_callback_args)(struct bpf_verifier_env *env,
->  					      struct bpf_func_state *caller,
->  					      struct bpf_func_state *callee);
-> -	int (*map_for_each_callback)(struct bpf_map *map, void *callback_fn,
-> +	int (*map_for_each_callback)(struct bpf_map *map,
-> +				     bpf_callback_t callback_fn,
->  				     void *callback_ctx, u64 flags);
->  
->  	/* BTF name and id of struct allocated by map_alloc */
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 6c247663d4ce..47f80adbe744 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -360,11 +360,6 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
->  		.off   = 0,					\
->  		.imm   = TGT })
->  
-> -/* Function call */
-> -
-> -#define BPF_CAST_CALL(x)					\
-> -		((u64 (*)(u64, u64, u64, u64, u64))(x))
-> -
->  /* Convert function address to BPF immediate */
->  
->  #define BPF_CALL_IMM(x)	((void *)(x) - (void *)__bpf_call_base)
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index cebd4fb06d19..5e1ccfae916b 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -645,7 +645,7 @@ static const struct bpf_iter_seq_info iter_seq_info = {
->  	.seq_priv_size		= sizeof(struct bpf_iter_seq_array_map_info),
->  };
->  
-> -static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
-> +static int bpf_for_each_array_elem(struct bpf_map *map, bpf_callback_t callback_fn,
->  				   void *callback_ctx, u64 flags)
->  {
->  	u32 i, key, num_elems = 0;
-> @@ -668,9 +668,8 @@ static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
->  			val = array->value + array->elem_size * i;
->  		num_elems++;
->  		key = i;
-> -		ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
-> -					(u64)(long)&key, (u64)(long)val,
-> -					(u64)(long)callback_ctx, 0);
-> +		ret = callback_fn((u64)(long)map, (u64)(long)&key,
-> +				  (u64)(long)val, (u64)(long)callback_ctx, 0);
->  		/* return value: 0 - continue, 1 - stop and return */
->  		if (ret)
->  			break;
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 3d8f9d6997d5..d29af9988f37 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -2049,7 +2049,7 @@ static const struct bpf_iter_seq_info iter_seq_info = {
->  	.seq_priv_size		= sizeof(struct bpf_iter_seq_hash_map_info),
->  };
->  
-> -static int bpf_for_each_hash_elem(struct bpf_map *map, void *callback_fn,
-> +static int bpf_for_each_hash_elem(struct bpf_map *map, bpf_callback_t callback_fn,
->  				  void *callback_ctx, u64 flags)
->  {
->  	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> @@ -2089,9 +2089,8 @@ static int bpf_for_each_hash_elem(struct bpf_map *map, void *callback_fn,
->  				val = elem->key + roundup_key_size;
->  			}
->  			num_elems++;
-> -			ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
-> -					(u64)(long)key, (u64)(long)val,
-> -					(u64)(long)callback_ctx, 0);
-> +			ret = callback_fn((u64)(long)map, (u64)(long)key,
-> +					  (u64)(long)val, (u64)(long)callback_ctx, 0);
->  			/* return value: 0 - continue, 1 - stop and return */
->  			if (ret) {
->  				rcu_read_unlock();
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 2c604ff8c7fb..1ffd469c217f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1056,7 +1056,7 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
->  	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
->  	struct bpf_map *map = t->map;
->  	void *value = t->value;
-> -	void *callback_fn;
-> +	bpf_callback_t callback_fn;
->  	void *key;
->  	u32 idx;
->  
-> @@ -1081,8 +1081,7 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
->  		key = value - round_up(map->key_size, 8);
->  	}
->  
-> -	BPF_CAST_CALL(callback_fn)((u64)(long)map, (u64)(long)key,
-> -				   (u64)(long)value, 0, 0);
-> +	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
->  	/* The verifier checked that return value is zero. */
->  
->  	this_cpu_write(hrtimer_running, NULL);
+> Testing: survives kvm-unit-tests on Intel with all of ept=0, ept=1
+> tdp_mmu=0, ept=1.  Will do more before committing to it in kvm/next of
+> course.
+> 
+> Paolo
+> 
+> David Matlack (5):
+>   KVM: x86/mmu: Fold rmap_recycle into rmap_add
+>   KVM: x86/mmu: Pass the memslot around via struct kvm_page_fault
+>   KVM: x86/mmu: Avoid memslot lookup in page_fault_handle_page_track
+>   KVM: x86/mmu: Avoid memslot lookup in rmap_add
+>   KVM: x86/mmu: Avoid memslot lookup in make_spte and
+>     mmu_try_to_unsync_pages
+> 
+> Paolo Bonzini (25):
+>   KVM: MMU: pass unadulterated gpa to direct_page_fault
+>   KVM: MMU: Introduce struct kvm_page_fault
+>   KVM: MMU: change mmu->page_fault() arguments to kvm_page_fault
+>   KVM: MMU: change direct_page_fault() arguments to kvm_page_fault
+>   KVM: MMU: change page_fault_handle_page_track() arguments to
+>     kvm_page_fault
+>   KVM: MMU: change kvm_faultin_pfn() arguments to kvm_page_fault
+>   KVM: MMU: change handle_abnormal_pfn() arguments to kvm_page_fault
+>   KVM: MMU: change __direct_map() arguments to kvm_page_fault
+>   KVM: MMU: change FNAME(fetch)() arguments to kvm_page_fault
+>   KVM: MMU: change kvm_tdp_mmu_map() arguments to kvm_page_fault
+>   KVM: MMU: change tdp_mmu_map_handle_target_level() arguments to
+>     kvm_page_fault
+>   KVM: MMU: change fast_page_fault() arguments to kvm_page_fault
+>   KVM: MMU: change kvm_mmu_hugepage_adjust() arguments to kvm_page_fault
+>   KVM: MMU: change disallowed_hugepage_adjust() arguments to
+>     kvm_page_fault
+>   KVM: MMU: change tracepoints arguments to kvm_page_fault
+>   KVM: MMU: mark page dirty in make_spte
+>   KVM: MMU: unify tdp_mmu_map_set_spte_atomic and
+>     tdp_mmu_set_spte_atomic_no_dirty_log
+>   KVM: MMU: inline set_spte in mmu_set_spte
+>   KVM: MMU: inline set_spte in FNAME(sync_page)
+>   KVM: MMU: clean up make_spte return value
+>   KVM: MMU: remove unnecessary argument to mmu_set_spte
+>   KVM: MMU: set ad_disabled in TDP MMU role
+>   KVM: MMU: pass kvm_mmu_page struct to make_spte
+>   KVM: MMU: pass struct kvm_page_fault to mmu_set_spte
+>   KVM: MMU: make spte an in-out argument in make_spte
+> 
+> Sean Christopherson (1):
+>   KVM: x86/mmu: Verify shadow walk doesn't terminate early in page
+>     faults
+> 
+>  arch/x86/include/asm/kvm_host.h       |   4 +-
+>  arch/x86/include/asm/kvm_page_track.h |   4 +-
+>  arch/x86/kvm/mmu.h                    |  84 +++++-
+>  arch/x86/kvm/mmu/mmu.c                | 408 +++++++++++---------------
+>  arch/x86/kvm/mmu/mmu_internal.h       |  22 +-
+>  arch/x86/kvm/mmu/mmutrace.h           |  18 +-
+>  arch/x86/kvm/mmu/page_track.c         |   6 +-
+>  arch/x86/kvm/mmu/paging_tmpl.h        | 137 +++++----
+>  arch/x86/kvm/mmu/spte.c               |  29 +-
+>  arch/x86/kvm/mmu/spte.h               |  14 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c            | 123 +++-----
+>  arch/x86/kvm/mmu/tdp_mmu.h            |   4 +-
+>  12 files changed, 390 insertions(+), 463 deletions(-)
+> 
 > -- 
-> 2.30.2
+> 2.27.0
 > 
