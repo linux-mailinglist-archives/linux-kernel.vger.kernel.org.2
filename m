@@ -2,198 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC0C41A8B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A095741A8BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238924AbhI1GWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhI1GWT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:22:19 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACDEC061575;
-        Mon, 27 Sep 2021 23:20:41 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so1931479pjb.4;
-        Mon, 27 Sep 2021 23:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=1NgwWizDvquhA1vHirCNXX1aD4SPaNDoUx3U2uDuBao=;
-        b=Y3WAGLAaZb0+mw36CzoCwxiMxlidxyfTXTNQwI0tTXqTNsvWSiow9P3RpacyvV9esE
-         pPMOJDUn8BDW4gRJPUs4o1m8LhSZQks8iQWzpGer1YXDrc3YoB3bxJCMu7uJQ/Q6FkbY
-         JaHsmZRqzGBrEClOf/WWyYge4ut3y9Oz0mVrYI7KXBO8oiyjaAw/2TudsLUenkgvACdz
-         36BQCFBwReqPAWS+MrdkhTKNGRRGXF/ie4JYlXQYCMPh0g1yC17JH9dsWsG6hoVnzbcV
-         aqqaJvcSSQsGcmRJxYBsSJtlIof2tzkd1aCZFGnJJrsDRjyl7qMuh9vfNH50anIdvtF6
-         rWRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1NgwWizDvquhA1vHirCNXX1aD4SPaNDoUx3U2uDuBao=;
-        b=f+879kZD9ZRBZtaO/aFP07bEY/vwhS2EIOQ5KzoFyKz1SJolOtGZRDpIJgoYIuxYif
-         6h3xI9Rj+hIdHS2PF9KadzjqT7SO8CaOs1DuP9YMsEoXLKw4WQiZ6toixZgaRj0gkP6U
-         0WIb9pKuAqb4BP4y9ANpslyFITiDnQO458frOvPLYI+1i/kcva9P25iZBMc3pla+xoFY
-         p4pK637emfar9rHnwMN7YsrLP1fPxphA6N4qWK8O6ezFeN3HK28s21lSejjVyJH4jPPL
-         D6JQFovg9Plqas0Je1HHxTSuYryP1kBr5v8L84sM6rxspsak/e1qFG9ELmeMYDlxplN/
-         LckQ==
-X-Gm-Message-State: AOAM5312YpcLShBdw7LfSYroQAXLSzuTcklAl49D9cyzs6IjzLE1kj+t
-        xLk4BzXaf7flK5lGhKQBqX3JkXODt0mLgGrg
-X-Google-Smtp-Source: ABdhPJzeJwb5L+mq3sUpv0Gb1D3eHgRjgwMGpKgGpwq8h4+NA8WaMpD6I225TRr2hdaCniPWf2qlhw==
-X-Received: by 2002:a17:90a:7892:: with SMTP id x18mr3431485pjk.95.1632810040531;
-        Mon, 27 Sep 2021 23:20:40 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id c9sm18923542pfi.212.2021.09.27.23.20.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Sep 2021 23:20:38 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: fix a possible ABBA deadlock dued to busy PA
-Date:   Tue, 28 Sep 2021 14:20:36 +0800
-Message-Id: <1632810036-18005-1-git-send-email-brookxu.cn@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S238955AbhI1GXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:23:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234207AbhI1GXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:23:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C24336113E;
+        Tue, 28 Sep 2021 06:22:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632810128;
+        bh=AMLm/4tUn9CETUOijozi+fIMLnd5VIlwNyrW/zmpnZU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sJ5D8lYOcyR8XkQ3XWE75T2CMzxcrtyyKrFxVSHB9GDgchWMKvVoagXfCKMR77t4T
+         tNZaP15z3PZPZmZFq+3GJ5B666w32wSS4amzH8FmWHk9wed/YMpW84aGIjKqihHAQm
+         qen+u0Elu7nMuyyb7132HMqy8nDL9Llziia5MIrLyfJWPYSi6jjYL4KRfHpJksfZhd
+         oqLiZoy0uqOf+JKoCIm8XANT2vigPSv9BBi0fhHUKHHNm1wbys35ca6XTdVwPl3IkR
+         4DzOtMZC6MyAUJ5GF3iueMgyBeVvaD/p7MF4X9Y2//IxGZnaroaeE/J0FiPIb6A1TI
+         GXBH8lOUK2bCA==
+Date:   Mon, 27 Sep 2021 23:22:07 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Boris Burkov <boris@bur.io>
+Subject: [GIT PULL] fsverity fix for 5.15-rc4
+Message-ID: <YVK0jzJ/lt97xowQ@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-We found on older kernel (3.10) that in the scenario of insufficient
-disk space, system may trigger an ABBA deadlock problem, it seems that
-this problem still exists in latest kernel, try to fix it here. The
-main process triggered by this problem is that task A occupies the PA
-and waits for the jbd2 transaction finish, the jbd2 transaction waits
-for the completion of task B's IO (plug_list), but task B waits for
-the release of PA by task A to finish discard, which indirectly forms
-an ABBA deadlock. The related calltrace is as follows:
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-    Task A
-    vfs_write
-    ext4_mb_new_blocks()
-    ext4_mb_mark_diskspace_used()       JBD2
-    jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
-  ->schedule()                          filemap_fdatawait()
- |                                              |
- | Task B                                       |
- | do_unlinkat()                                |
- | ext4_evict_inode()                           |
- | jbd2_journal_begin_ordered_truncate()        |
- | filemap_fdatawrite_range()                   |
- | ext4_mb_new_blocks()                         |
-  -ext4_mb_discard_group_preallocations() <-----
+are available in the Git repository at:
 
-Here, try to cancel ext4_mb_discard_group_preallocations() internal
-retry due to PA busy, and do a limited number of retries inside
-ext4_mb_discard_preallocations(), which can circumvent the above
-problems, but also has some advantages:
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
 
-1. Since the PA is in a busy state, if other groups have free PAs,
-   keeping the current PA may help to reduce fragmentation.
-2. Continue to traverse forward instead of waiting for the current
-   group PA to be released. In most scenarios, the PA discard time
-   can be reduced.
+for you to fetch changes up to 80f6e3080bfcf865062a926817b3ca6c4a137a57:
 
-However, in the case of smaller free space, if only a few groups have
-space, then due to multiple traversals of the group, it may increase
-CPU overhead. But in contrast, I feel that the overall benefit is
-better than the cost.
+  fs-verity: fix signed integer overflow with i_size near S64_MAX (2021-09-22 10:56:34 -0700)
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- fs/ext4/mballoc.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+----------------------------------------------------------------
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 72bfac2..4ebcda6 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
-  */
- static noinline_for_stack int
- ext4_mb_discard_group_preallocations(struct super_block *sb,
--					ext4_group_t group, int needed)
-+				     ext4_group_t group, int needed, int *busy)
- {
- 	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
- 	struct buffer_head *bitmap_bh = NULL;
-@@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 	struct list_head list;
- 	struct ext4_buddy e4b;
- 	int err;
--	int busy = 0;
--	int free, free_total = 0;
-+	int free = 0;
- 
- 	mb_debug(sb, "discard preallocation for group %u\n", group);
- 	if (list_empty(&grp->bb_prealloc_list))
-@@ -4850,15 +4849,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
- 
- 	INIT_LIST_HEAD(&list);
--repeat:
--	free = 0;
- 	ext4_lock_group(sb, group);
- 	list_for_each_entry_safe(pa, tmp,
- 				&grp->bb_prealloc_list, pa_group_list) {
- 		spin_lock(&pa->pa_lock);
- 		if (atomic_read(&pa->pa_count)) {
- 			spin_unlock(&pa->pa_lock);
--			busy = 1;
-+			*busy = 1;
- 			continue;
- 		}
- 		if (pa->pa_deleted) {
-@@ -4898,22 +4895,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
- 	}
- 
--	free_total += free;
--
--	/* if we still need more blocks and some PAs were used, try again */
--	if (free_total < needed && busy) {
--		ext4_unlock_group(sb, group);
--		cond_resched();
--		busy = 0;
--		goto repeat;
--	}
- 	ext4_unlock_group(sb, group);
- 	ext4_mb_unload_buddy(&e4b);
- 	put_bh(bitmap_bh);
- out_dbg:
- 	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
--		 free_total, group, grp->bb_free);
--	return free_total;
-+		 free, group, grp->bb_free);
-+	return free;
- }
- 
- /*
-@@ -5455,15 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
- {
- 	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
- 	int ret;
--	int freed = 0;
-+	int freed = 0, busy = 0;
-+	int retry = 0;
- 
- 	trace_ext4_mb_discard_preallocations(sb, needed);
-+ repeat:
-+	retry++;
- 	for (i = 0; i < ngroups && needed > 0; i++) {
--		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
-+		ret = ext4_mb_discard_group_preallocations(sb, i, needed, &busy);
- 		freed += ret;
- 		needed -= ret;
-+		cond_resched();
- 	}
- 
-+	if (needed > 0 && busy && retry < 3)
-+		goto repeat;
-+
- 	return freed;
- }
- 
--- 
-1.8.3.1
+Fix an integer overflow when computing the Merkle tree layout of
+extremely large files, exposed by btrfs adding support for fs-verity.
 
+----------------------------------------------------------------
+Eric Biggers (1):
+      fs-verity: fix signed integer overflow with i_size near S64_MAX
+
+ fs/verity/enable.c | 2 +-
+ fs/verity/open.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
