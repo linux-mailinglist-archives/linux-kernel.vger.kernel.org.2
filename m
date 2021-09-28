@@ -2,93 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C2041AC76
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5329541AC7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240106AbhI1J56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240060AbhI1J5z (ORCPT
+        id S240079AbhI1J6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:58:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240060AbhI1J6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:57:55 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BF6C061740
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:56:15 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id u18so88773091lfd.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sU/LhEZ8q3BeQ6P/PiHIYla/ZdlSW3YiCmnYV8PIXuI=;
-        b=VZb+3cpQfdzvddM3ZSwyo95tO1IwqURM2VUyschymPHl9RVL+g8ruFk5g23boV7dhD
-         nI0uXn9W2EmbAY9wgbbOZoGKTUdapoQYzHW5BdSyxvA7ygd+xNKNK5TilO2yE8708XAo
-         7IWDjKg5fWb3I6i4p631kDaURnh4cIsZuiaHE=
+        Tue, 28 Sep 2021 05:58:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632823002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Ac1KzapFbm3DrLpJhS8RPsZYRZpeFigmvf6S+kYg10=;
+        b=eJ5y8nRaNyADvgFwx4dt07Jh58Dij5voS6ZYdygh+PZAwfMYZzEWk1ZfLKfkOu7tlx7Siu
+        Tsn8S4r4VQkbaKodcAnDyDVw3b0yCXVqTwruCmevIHm/wqzHgLYGn+oE+XB1LQXE5M6PjP
+        o2mKSFUakaUsAAXekX3QnFmLGJJ5TVM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-9kgC0SCiOiCHZSXBuoeWDw-1; Tue, 28 Sep 2021 05:56:40 -0400
+X-MC-Unique: 9kgC0SCiOiCHZSXBuoeWDw-1
+Received: by mail-wr1-f72.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso14859339wrb.20
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:56:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sU/LhEZ8q3BeQ6P/PiHIYla/ZdlSW3YiCmnYV8PIXuI=;
-        b=N13N+wehyNL7nR7sHa53fWu9aMwtriiwH1Yeh8/ei6bv7KtwhuAarSBH2dOdYRimDo
-         Y5midN1QPB7b59c8LGI7SQciyG7SlQOt0MCGYq1OGUQedCux8n2Jr28vluBgsrHYKwSN
-         bhxA31ANI9UFlpGCwzsLlS4wRh+I/KcHO/sQDWp8T4Ar9sl2+Itiu7ELyfYHJpRS8hgK
-         amwp9BccObO6ReiGxZ0LHv+ZJvFSe95cScrvIH7Cm9SFORszBKiqpT6uWVEcK02+H8VA
-         RZ4BBMNhNmqP+rQBx9AA3NteFyrn+UcGEx7k0cPaC+tVZTfD6fszUx2uyHMURC2jwQhX
-         cw6w==
-X-Gm-Message-State: AOAM532FUlCtRDY6Keu8FNcxVjVlO1dpTVBKRvzqEKAMwrnmyppu4XLx
-        R6i2wErYCiMBocF4x6bN4o7BCA==
-X-Google-Smtp-Source: ABdhPJxjuKx366aHmjXKCPqMcpTQrMD3DfYUL7mY6FrOib4BAVfQ6jz5zRT6TMz0E0yCtzNZ314LdA==
-X-Received: by 2002:a2e:974b:: with SMTP id f11mr4842574ljj.385.1632822973596;
-        Tue, 28 Sep 2021 02:56:13 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id y20sm2304960ljn.88.2021.09.28.02.56.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 02:56:13 -0700 (PDT)
-Subject: Re: [PATCH] vboxsf: fix old signature detection
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-sparse@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20210927094123.576521-1-arnd@kernel.org>
- <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
- <20210927130253.GH2083@kadam>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <78f6d6cc-2be5-c69b-bd17-7da135448438@rasmusvillemoes.dk>
-Date:   Tue, 28 Sep 2021 11:56:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1Ac1KzapFbm3DrLpJhS8RPsZYRZpeFigmvf6S+kYg10=;
+        b=I1MSHRfo5sCwZWwz8+kCxyXvOcyWY0rioCA8FFydhakVmXqxDzxATnX1JPPA0ZV1+u
+         +aNnmoI4k15VSj6V8DzkNgc7p9FrSg9ANgbowip7BV9h/FavaCQsYUZUyKV8SOzJokVM
+         q8/x8AQoj/qDXDLSlDeL5hDImHCb32Xq3igLSxuelJNcYomcliUMNIsoCP95Om/mF1ci
+         7MKYi7Yq3yLm9VdwNRMaIPK4ZPJ7jaP/kllbQqXjr4PqSPGf3IF4eIGo6nQ6PBJ+u2bt
+         v+1lKoaH0Y74vKvftBE++Ge31esG1a3cyOGtogJr3uv7aev4AMsG3WIP/xtFtCv2o0qu
+         xkVg==
+X-Gm-Message-State: AOAM532ffXkp/7OgVN5Ku2j7MGkau8htFh+ONU2V7E2YYwJNJa4DhNAf
+        8uHzvtRhmeGFr4MFO79TtjVG1I3jvE7hpuzOja5t9BzbhD93vD8CxZrD2TOjHCqGroK39IIZMad
+        PChtu+pFCueNfWc+9GzEOAlas
+X-Received: by 2002:a5d:6343:: with SMTP id b3mr5205741wrw.124.1632822999510;
+        Tue, 28 Sep 2021 02:56:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLOJkdLvKu+9MFHMG+herne+2M1V/vkdbPksCq7GDCqPbAQQGDN7120pkvAGNUeduom1Kn2w==
+X-Received: by 2002:a5d:6343:: with SMTP id b3mr5205710wrw.124.1632822999284;
+        Tue, 28 Sep 2021 02:56:39 -0700 (PDT)
+Received: from work-vm (cpc109025-salf6-2-0-cust480.10-2.cable.virginm.net. [82.30.61.225])
+        by smtp.gmail.com with ESMTPSA id l11sm2420077wms.45.2021.09.28.02.56.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 02:56:38 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 10:56:35 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 37/45] KVM: SVM: Add support to handle MSR based
+ Page State Change VMGEXIT
+Message-ID: <YVLm0/8F8CDLEPXe@work-vm>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-38-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210927130253.GH2083@kadam>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820155918.7518-38-brijesh.singh@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2021 15.02, Dan Carpenter wrote:
-> GCC handles it the same way as Clang.  '\377' is -1 but in Sparse it's
-> 255.  I've added the Sparse mailing list to the CC.
+* Brijesh Singh (brijesh.singh@amd.com) wrote:
+> SEV-SNP VMs can ask the hypervisor to change the page state in the RMP
+> table to be private or shared using the Page State Change MSR protocol
+> as defined in the GHCB specification.
+> 
+> Before changing the page state in the RMP entry, lookup the page in the
+> NPT to make sure that there is a valid mapping for it. If the mapping
+> exist then try to find a workable page level between the NPT and RMP for
+> the page. If the page is not mapped in the NPT, then create a fault such
+> that it gets mapped before we change the page state in the RMP entry.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/sev-common.h |   9 ++
+>  arch/x86/kvm/svm/sev.c            | 197 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/trace.h              |  34 ++++++
+>  arch/x86/kvm/x86.c                |   1 +
+>  4 files changed, 241 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 91089967ab09..4980f77aa1d5 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -89,6 +89,10 @@ enum psc_op {
+>  };
+>  
+>  #define GHCB_MSR_PSC_REQ		0x014
+> +#define GHCB_MSR_PSC_GFN_POS		12
+> +#define GHCB_MSR_PSC_GFN_MASK		GENMASK_ULL(39, 0)
+> +#define GHCB_MSR_PSC_OP_POS		52
+> +#define GHCB_MSR_PSC_OP_MASK		0xf
+>  #define GHCB_MSR_PSC_REQ_GFN(gfn, op)			\
+>  	/* GHCBData[55:52] */				\
+>  	(((u64)((op) & 0xf) << 52) |			\
+> @@ -98,6 +102,11 @@ enum psc_op {
+>  	GHCB_MSR_PSC_REQ)
+>  
+>  #define GHCB_MSR_PSC_RESP		0x015
+> +#define GHCB_MSR_PSC_ERROR_POS		32
+> +#define GHCB_MSR_PSC_ERROR_MASK		GENMASK_ULL(31, 0)
+> +#define GHCB_MSR_PSC_ERROR		GENMASK_ULL(31, 0)
+> +#define GHCB_MSR_PSC_RSVD_POS		12
+> +#define GHCB_MSR_PSC_RSVD_MASK		GENMASK_ULL(19, 0)
+>  #define GHCB_MSR_PSC_RESP_VAL(val)			\
+>  	/* GHCBData[63:32] */				\
+>  	(((u64)(val) & GENMASK_ULL(63, 32)) >> 32)
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 991b8c996fc1..6d9483ec91ab 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -31,6 +31,7 @@
+>  #include "svm_ops.h"
+>  #include "cpuid.h"
+>  #include "trace.h"
+> +#include "mmu.h"
+>  
+>  #define __ex(x) __kvm_handle_fault_on_reboot(x)
+>  
+> @@ -2905,6 +2906,181 @@ static void set_ghcb_msr(struct vcpu_svm *svm, u64 value)
+>  	svm->vmcb->control.ghcb_gpa = value;
+>  }
+>  
+> +static int snp_rmptable_psmash(struct kvm *kvm, kvm_pfn_t pfn)
+> +{
+> +	pfn = pfn & ~(KVM_PAGES_PER_HPAGE(PG_LEVEL_2M) - 1);
+> +
+> +	return psmash(pfn);
+> +}
+> +
+> +static int snp_make_page_shared(struct kvm *kvm, gpa_t gpa, kvm_pfn_t pfn, int level)
 
-FTR, while examples are not normative, this:
+....
 
-EXAMPLE 2 Consider implementations that use two's complement
-representation for integers and eight bits for objects that have type
-char. In an implementation in which type char has the same range of
-values as signed char, the integer character constant '\xFF' has the
-value -1; if type char has the same range of values as unsigned char,
-the character constant '\xFF' has the value +255.
+> +
+> +			/*
+> +			 * Mark the userspace range unmerable before adding the pages
 
-doesn't leave any ambiguity or (implementation|un)-definednes, and
-sparse interpreting '\377' as 255 independent of its
-target->unsigned_char is a plain bug in sparse.
+                                                    ^^^^^^^^^ typo
 
-Rasmus
+> +			 * in the RMP table.
+> +			 */
+> +			mmap_write_lock(kvm->mm);
+> +			rc = snp_mark_unmergable(kvm, hva, page_level_size(level));
+> +			mmap_write_unlock(kvm->mm);
+> +			if (rc)
+> +				return -EINVAL;
+> +		}
+> +
+> +		write_lock(&kvm->mmu_lock);
+> +
+> +		rc = kvm_mmu_get_tdp_walk(vcpu, gpa, &pfn, &npt_level);
+> +		if (!rc) {
+> +			/*
+> +			 * This may happen if another vCPU unmapped the page
+> +			 * before we acquire the lock. Retry the PSC.
+> +			 */
+> +			write_unlock(&kvm->mmu_lock);
+> +			return 0;
+> +		}
+> +
+> +		/*
+> +		 * Adjust the level so that we don't go higher than the backing
+> +		 * page level.
+> +		 */
+> +		level = min_t(size_t, level, npt_level);
+> +
+> +		trace_kvm_snp_psc(vcpu->vcpu_id, pfn, gpa, op, level);
+> +
+> +		switch (op) {
+> +		case SNP_PAGE_STATE_SHARED:
+> +			rc = snp_make_page_shared(kvm, gpa, pfn, level);
+> +			break;
+> +		case SNP_PAGE_STATE_PRIVATE:
+> +			rc = rmp_make_private(pfn, gpa, level, sev->asid, false);
+
+Minor nit; it seems a shame that snp_make_page_shared and
+rmp_make_private  both take gpa, pfn, level - in different orders.
+
+Dave
+
+> +			break;
+> +		default:
+> +			rc = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		write_unlock(&kvm->mmu_lock);
+> +
+> +		if (rc) {
+> +			pr_err_ratelimited("Error op %d gpa %llx pfn %llx level %d rc %d\n",
+> +					   op, gpa, pfn, level, rc);
+> +			return rc;
+> +		}
+> +
+> +		gpa = gpa + page_level_size(level);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  {
+>  	struct vmcb_control_area *control = &svm->vmcb->control;
+> @@ -3005,6 +3181,27 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  				  GHCB_MSR_INFO_POS);
+>  		break;
+>  	}
+> +	case GHCB_MSR_PSC_REQ: {
+> +		gfn_t gfn;
+> +		int ret;
+> +		enum psc_op op;
+> +
+> +		gfn = get_ghcb_msr_bits(svm, GHCB_MSR_PSC_GFN_MASK, GHCB_MSR_PSC_GFN_POS);
+> +		op = get_ghcb_msr_bits(svm, GHCB_MSR_PSC_OP_MASK, GHCB_MSR_PSC_OP_POS);
+> +
+> +		ret = __snp_handle_page_state_change(vcpu, op, gfn_to_gpa(gfn), PG_LEVEL_4K);
+> +
+> +		if (ret)
+> +			set_ghcb_msr_bits(svm, GHCB_MSR_PSC_ERROR,
+> +					  GHCB_MSR_PSC_ERROR_MASK, GHCB_MSR_PSC_ERROR_POS);
+> +		else
+> +			set_ghcb_msr_bits(svm, 0,
+> +					  GHCB_MSR_PSC_ERROR_MASK, GHCB_MSR_PSC_ERROR_POS);
+> +
+> +		set_ghcb_msr_bits(svm, 0, GHCB_MSR_PSC_RSVD_MASK, GHCB_MSR_PSC_RSVD_POS);
+> +		set_ghcb_msr_bits(svm, GHCB_MSR_PSC_RESP, GHCB_MSR_INFO_MASK, GHCB_MSR_INFO_POS);
+> +		break;
+> +	}
+>  	case GHCB_MSR_TERM_REQ: {
+>  		u64 reason_set, reason_code;
+>  
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index 1c360e07856f..35ca1cf8440a 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -7,6 +7,7 @@
+>  #include <asm/svm.h>
+>  #include <asm/clocksource.h>
+>  #include <asm/pvclock-abi.h>
+> +#include <asm/sev-common.h>
+>  
+>  #undef TRACE_SYSTEM
+>  #define TRACE_SYSTEM kvm
+> @@ -1711,6 +1712,39 @@ TRACE_EVENT(kvm_vmgexit_msr_protocol_exit,
+>  		  __entry->vcpu_id, __entry->ghcb_gpa, __entry->result)
+>  );
+>  
+> +/*
+> + * Tracepoint for the SEV-SNP page state change processing
+> + */
+> +#define psc_operation					\
+> +	{SNP_PAGE_STATE_PRIVATE, "private"},		\
+> +	{SNP_PAGE_STATE_SHARED,  "shared"}		\
+> +
+> +TRACE_EVENT(kvm_snp_psc,
+> +	TP_PROTO(unsigned int vcpu_id, u64 pfn, u64 gpa, u8 op, int level),
+> +	TP_ARGS(vcpu_id, pfn, gpa, op, level),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(int, vcpu_id)
+> +		__field(u64, pfn)
+> +		__field(u64, gpa)
+> +		__field(u8, op)
+> +		__field(int, level)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->vcpu_id = vcpu_id;
+> +		__entry->pfn = pfn;
+> +		__entry->gpa = gpa;
+> +		__entry->op = op;
+> +		__entry->level = level;
+> +	),
+> +
+> +	TP_printk("vcpu %u, pfn %llx, gpa %llx, op %s, level %d",
+> +		  __entry->vcpu_id, __entry->pfn, __entry->gpa,
+> +		  __print_symbolic(__entry->op, psc_operation),
+> +		  __entry->level)
+> +);
+> +
+>  #endif /* _TRACE_KVM_H */
+>  
+>  #undef TRACE_INCLUDE_PATH
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e5d5c5ed7dd4..afcdc75a99f2 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -12371,3 +12371,4 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_enter);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_exit);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_msr_protocol_enter);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_msr_protocol_exit);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_snp_psc);
+> -- 
+> 2.17.1
+> 
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
