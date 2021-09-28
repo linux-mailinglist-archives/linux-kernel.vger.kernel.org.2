@@ -2,206 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE8F41A88B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2857841A899
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239415AbhI1GGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:06:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239141AbhI1GFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:05:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECC17611F0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:03:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632809018;
-        bh=vjVfKXJy2xx64ITHbCITCyC+acx70L3tyY38fPQ7Dl4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BQlnqrMapEqzveec14mb/O6Sn/bQPcYWXjE8IUOUXyUVUO3b0pXepgH2c2mnnUXgM
-         C8z1jjnpLJkklKHqh6YZmCSLSSHhNW1ObqmVw+e0XDGVVKwu6Qmwq775ZRrpZjGY4H
-         UvsFZQsHaEr/40GnKVPhxbl0v0d0eq5u9oDJuXzUsVhbaVc4C4yMCulD5rT7FqHnwr
-         7Zoo3Bj6K1rtUtNdlGDXncEpsagdK1EE6nyGOsTMVMB5XUKGs68jPHtTIMkaFePZta
-         PDyHJMYSsONlbZ9VSyTJmDb6Hl3pZ+BlQZCDysTT7a5wh/82poqwRs7bI8g1RgOe1M
-         iEcUbbc6QdUww==
-Received: by mail-vs1-f48.google.com with SMTP id q66so20857975vsa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 23:03:37 -0700 (PDT)
-X-Gm-Message-State: AOAM532pwNhXzn5iYJBfmaQMnlv7xKEd9W3OirNa8kFmcbt7u49X65uz
-        vs94CUpPUzyY9kIhCVPD7HPWIxddUscCcVRnmqw=
-X-Google-Smtp-Source: ABdhPJxXsGz/5A0ua6jddc3SvcqVj+i4dfTq8E463AgvrxLuZGOteWmC0ebDC4j5ubWscKRWo/TBkVPE1uCasriKomw=
-X-Received: by 2002:a67:f9da:: with SMTP id c26mr3643460vsq.50.1632809017047;
- Mon, 27 Sep 2021 23:03:37 -0700 (PDT)
+        id S239243AbhI1GHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:07:16 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:56595 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239683AbhI1GGB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:06:01 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210928060421epoutp0266dfebe4b66f8cf6439e144497c6d1cc~o5zCrOZef2429724297epoutp02N
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:04:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210928060421epoutp0266dfebe4b66f8cf6439e144497c6d1cc~o5zCrOZef2429724297epoutp02N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632809061;
+        bh=8sweX3DIsALuKLz+wzpzAeQefZMloVVd1YMoHWSAA8Y=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=fBL3jYiO7vESXFereg+QX0cweivPPROXJhMJcn/yG7WIYDoLZXUG5KVvWUvSqqcMF
+         Gyd78xGe9x2oRz3WHiPmiJSr+u1O93Ghr9c0IHG17ZNSA7aZ16IcJyq9op+79yBCj7
+         XYcBdha15P5f64z009ag4Xsk1iGpbSKInT539FSQ=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20210928060420epcas5p4d953816bbbf6290317681d222b63bd12~o5zB-D7FF3135731357epcas5p4I;
+        Tue, 28 Sep 2021 06:04:20 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.175]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HJTV81cpvz4x9Q2; Tue, 28 Sep
+        2021 06:04:16 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9C.40.10367.D50B2516; Tue, 28 Sep 2021 15:04:13 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210928060357epcas5p22ff1cce62e551d446377dd6443bc316f~o5ysQMunA1416714167epcas5p26;
+        Tue, 28 Sep 2021 06:03:57 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210928060357epsmtrp10068b6bdbc4e1720793fed78b6f4f67b~o5ysPP3ie1504215042epsmtrp1I;
+        Tue, 28 Sep 2021 06:03:57 +0000 (GMT)
+X-AuditID: b6c32a4a-b2dff7000000287f-dd-6152b05d71b2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C1.E4.08750.C40B2516; Tue, 28 Sep 2021 15:03:56 +0900 (KST)
+Received: from alimakhtar03 (unknown [107.122.12.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210928060355epsmtip26014d70cf40fa59c43f4a4193a9ec5fb~o5yqbA3nW0054400544epsmtip2j;
+        Tue, 28 Sep 2021 06:03:54 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Bao D. Nguyen'" <nguyenb@codeaurora.org>, <cang@codeaurora.org>,
+        <asutoshd@codeaurora.org>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+Cc:     <linux-arm-msm@vger.kernel.org>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'Avri Altman'" <avri.altman@wdc.com>,
+        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
+        "'open list'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <94cda1143d3332c3284a09b88139e358eab5a233.1632171047.git.nguyenb@codeaurora.org>
+Subject: RE: [PATCH v1 2/2] scsi: ufs-qcom: enter and exit hibern8 during
+ clock scaling
+Date:   Tue, 28 Sep 2021 11:33:53 +0530
+Message-ID: <000801d7b42e$9f69df10$de3d9d30$@samsung.com>
 MIME-Version: 1.0
-References: <20210923172107.1117604-1-guoren@kernel.org> <CAOnJCUJWnDB+uRxDh=YSbGW4bf5RQvke03iCTYMYHPsw3cwnHQ@mail.gmail.com>
- <CAOnJCULrE595ex3gBTnu4GnPazO4mg8Tkrtbv6j8iLWe+sKJSA@mail.gmail.com>
- <0790abcfa1174e0e9b5e7b185f87ced9@mailhost.ics.forth.gr> <CAAhSdy2-y4xpM9PCrS0vgCN9ngFiBygeDOWcbgsX6Myb4XjDQg@mail.gmail.com>
- <CAOnJCULg36kNiDV6ymTSRff8yYZvFKpxm5uh=cAicQT44OcLYw@mail.gmail.com>
-In-Reply-To: <CAOnJCULg36kNiDV6ymTSRff8yYZvFKpxm5uh=cAicQT44OcLYw@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 28 Sep 2021 14:03:25 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQSvKxekXqNQ6ttra5nVTV02ZKu+x0ThFYvSQermVbNgQ@mail.gmail.com>
-Message-ID: <CAJF2gTQSvKxekXqNQ6ttra5nVTV02ZKu+x0ThFYvSQermVbNgQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] riscv: Add RISC-V svpbmt extension
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com,
-        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Gordan Markus <gordan.markus@canonical.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Greg Favor <gfavor@ventanamicro.com>,
-        Andrea Mondelli <andrea.mondelli@huawei.com>,
-        Jonathan Behrens <behrensj@mit.edu>,
-        Xinhaoqu <xinhaoqu@huawei.com>,
-        Bill Huffman <huffman@cadence.com>,
-        Allen Baum <allen.baum@esperantotech.com>,
-        Josh Scheid <jscheid@ventanamicro.com>,
-        Richard Trauben <rtrauben@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFSrXMYWf6xZll5STjad3GlX/AECgF7MZHvAVJql3KsrJU7oA==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJJsWRmVeSWpSXmKPExsWy7bCmum7shqBEg1sPeC3OPf7NYrG37QS7
+        xcufV9ksTu9/x2Lxaf0yVotFN7YxWUzcf5bd4vKuOWwW3dd3sFksP/6PyeJj12xGB26Py329
+        TB6bVnWyedy5tofNY8KiA4weH5/eYvH4vEnOo/1AN1MAe1S2TUZqYkpqkUJqXnJ+SmZeuq2S
+        d3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QkUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM
+        /OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IwN9/uYC7qEK859UWxgfMrfxcjJ
+        ISFgIvFlyke2LkYuDiGB3YwSF2Y9YYFwPjFKfLrVxA7hfGaUaLgzix2mpXN5JytEYhejxMZp
+        K5hAEkICLxkljrwSALHZBHQldixuA5srIrCAUaLzwjmwDmaBZiaJV8c+gY3iFIiVeDv9EguI
+        LSwQKfH73nawOIuAqsSiHf+YQWxeAUuJ+dt+skLYghInZz4Bq2cWkJfY/nYOM8RJChI/ny4D
+        qxERcJLYN+cAVI24xMujR8B+kBA4wSExfcoLqAYXiUOHp7JA2MISr45vgfpNSuJlfxuQzQFk
+        Z0v07DKGCNdILJ13DKrcXuLAlTksICXMApoS63fpQ4RlJaaeWscEsZZPovf3EyaIOK/Ejnkw
+        tqpE87urUGOkJSZ2d7NOYFSaheSzWUg+m4Xkg1kI2xYwsqxilEwtKM5NTy02LTDKSy2HR3hy
+        fu4mRnAa1vLawfjwwQe9Q4xMHIyHGCU4mJVEeINZ/BOFeFMSK6tSi/Lji0pzUosPMZoCg3si
+        s5Rocj4wE+SVxBuaWBqYmJmZmVgamxkqifN+fG2ZKCSQnliSmp2aWpBaBNPHxMEp1cDEkmSx
+        tZ9x27zI7I+2swV3qCx91VLWPverzv/umZ77jcR/CskmnuSecNh1YvuKl3F2/T2Hn3xp+iG1
+        a89Wc58pyzkEn/4RPbnp2rM57Lc+PVh2Tco/5SerXFVknvPfHefWpz9MW9/97o7H0r5NacXR
+        /+vKTt/6x24i6vrurfDDXf+2fcv643o4KTTqssqO40mF3+euOGuZtdHjwCVbRiXBKcunGc7w
+        SdwcZ35jk2FA4cro2hkmL22eP7bK/nM7Y3uPBO/M+V9uHPq4U/SBcd8Wx+u+fc4Ti/aJZG6/
+        qZF0isnu/KayBVu/OE09mvvbgvvdMoH9k7TXvtMx5jI1XuAwYbp1qMAxxvsTbYsuaG2T1lZi
+        Kc5INNRiLipOBADBwVfkTAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSvK7PhqBEg81tZhbnHv9msdjbdoLd
+        4uXPq2wWp/e/Y7H4tH4Zq8WiG9uYLCbuP8tucXnXHDaL7us72CyWH//HZPGxazajA7fH5b5e
+        Jo9NqzrZPO5c28PmMWHRAUaPj09vsXh83iTn0X6gmymAPYrLJiU1J7MstUjfLoErY8P9PuaC
+        LuGKc18UGxif8ncxcnJICJhIdC7vZO1i5OIQEtjBKHH33DpGiIS0xPWNE9ghbGGJlf+es0MU
+        PWeUWPnmEDNIgk1AV2LH4jY2kISIwBJGiUfrLzOBOMwC7UwSvXeeMkG03GGUeDyjGWwWp0Cs
+        xNvpl1hAbGGBcImG+VPB9rEIqEos2vEPbCyvgKXE/G0/WSFsQYmTM58A1XMATdWTaNsIVs4s
+        IC+x/e0cZojzFCR+Pl0GVi4i4CSxb84BFogacYmXR4+wT2AUnoVk0iyESbOQTJqFpGMBI8sq
+        RsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgWNTS2sG4Z9UHvUOMTByMhxglOJiVRHiD
+        WfwThXhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamDK9/rc
+        vcyHY+PcR/tmyqz0M/a9Zemc1Ba+6MqEfRvf5ur8PKE7py8/eO1eCfeuQ584vcQXPrfqvbGX
+        javuTtqjXW1hR3ZWq9xe0Rq8Myms68TZ4P0R8iHbLXZOL/7R0r/kjvJ7zrNHxKtz7HcvlQu0
+        mr/i6pfynBrWORM27g3Y2P75CevjT1l54d/frr430+3u/+tmyxhrbrXMv/Hw0B3n9MPyqnKs
+        55ztHrJ2mMm/mVDqW5O22CDeduPZuUtXVM9iYf6ysTfL50Xbx/7ITRI9v7526D/9HSRUy9wl
+        HbPT9PKqyGstW654XnJ2397tI8H9OsbsHs90gZW5T3MUT+Tc/KV+x9xc7nTsDM5zew53KbEU
+        ZyQaajEXFScCAPCL7b80AwAA
+X-CMS-MailID: 20210928060357epcas5p22ff1cce62e551d446377dd6443bc316f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210920210821epcas5p233e0025318135ae97b5f87eb83391b4a
+References: <cover.1632171047.git.nguyenb@codeaurora.org>
+        <CGME20210920210821epcas5p233e0025318135ae97b5f87eb83391b4a@epcas5p2.samsung.com>
+        <94cda1143d3332c3284a09b88139e358eab5a233.1632171047.git.nguyenb@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 12:26 PM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Mon, Sep 27, 2021 at 8:50 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Tue, Sep 28, 2021 at 6:32 AM Nick Kossifidis <mick@ics.forth.gr> wro=
-te:
-> > >
-> > > =CE=A3=CF=84=CE=B9=CF=82 2021-09-27 23:13, Atish Patra =CE=AD=CE=B3=
-=CF=81=CE=B1=CF=88=CE=B5:
-> > > >> We need to decide whether we should support the upstream kernel fo=
-r
-> > > >> D1. Few things to consider.
-> > > >> =E2=80=93 Can it be considered as an errata ?
-> > >
-> > > It's one thing to follow the spec and have an error in the
-> > > implementation, and another to not follow the spec.
-> > >
-> > > >> =E2=80=93 Does it set a bad precedent and open can of worms in fut=
-ure ?
-> > >
-> > > IMHO yes, I'm thinking of Kendryte 210 devs for example coming up and
-> > > asking for MMU support, they 've also shipped many chips already. I c=
-an
-> > > also imagine other vendors in the future coming up with implementatio=
-ns
-> > > that violate the spec in which case handling the standard stuff will
-> > > become messy and complex, and hurt performance/security. We'll end up
-> > > filling the code with exceptions and tweaks all over the place. We ne=
-ed
-> > > to be strict about what is "riscv" and what's "draft riscv" or "riscv
-> > > inspired", and what we are willing to support upstream. I can underst=
-and
-> > > supporting vendor extensions upstream but they need to fit within the
-> > > standard spec, we can't have for example extensions that use encoding
-> > > space/csrs/fields etc reserved for standard use, they may only use
-> > > what's reserved for custom/vendor use. At least let's agree on that.
-> >
-> > Totally agree with Nick here. It's a slippery slope.
-> >
-> > Including D1 PTE bits (or Kendryte K210 MMU) part of the Linux RISC-V
-> > means future hardware which intentionally violates specs will also have=
- to
-> > be merged and the RISC-V patch acceptance policy will have no significa=
-nce.
-> >
-> > >
-> > > >> =E2=80=93 Can we just ignore D1 given the mass volume ?
-> > > >>
-> > >
-> > > IMHO no, we need to find a way to support it upstream but I believe
-> > > there is another question to answer:
-> > >
-> > > Do we also guarantee "one image to rule them all" approach, required =
-by
-> > > binary distros, for implementations that violate the spec ? Are we ok
-> > > for example to support Allwinner D1 upstream but require a custom
-> > > configuration/build instead of supporting it with the "generic" image=
- ?
-> > > In one case we need to handle the violation at runtime and introduce
-> > > overhead for everyone (like looking up __riscv_svpbmt every time we s=
-et
-> > > a PTE in this case), in the other it's an #ifdef.
-> >
-> > At least, we should not have hardware violating specs as part of the
-> > unified kernel image instead have these intentional deviations/violatio=
-ns
-> > under separate kconfig which will not be enabled by default. This means
-> > vendors (of such hardware) and distros will have to explicitly enable
-> > support for such violations/deviations.
-> >
->
-> If we merge the code and are not enabled by default, it would be a
-> maintenance nightmare in future.
-> These part of the kernel will not be regularly tested but we have to
-> carry the changes for a long time.
-> Similar changes will only grow over time causing a lot of custom
-> configs that are not enabled by default.
-D1 could still use generic Image. The reason why I send the standard
-implementation of svpbmt is that when we introduce svpbmt, we actually
-introduce the page attribute frameworks for different platforms(svpbmt
-& non-svpbmt). Then, "custom svpbmt" can also modify "protect_mapp []"
-and svpbmt [] "in errata by limited codes from vendor.
-If we support standard svpbmt first, then let "generic Image" support
-D1 would be very little modification and all could be kept in errata.
+Hello,
 
-Another patch [1] cleans up the wrong usage of "protect_map []" so
-that the entire Linux user state page attributes come from it. The
-design principle of Linux is to allow the platform to init
-"protect_map []" flexibly.
-[1]: https://lore.kernel.org/all/20210927064340.2411397-1-guoren@kernel.org=
-/
+>-----Original Message-----
+>From: nguyenb=codeaurora.org@mg.codeaurora.org
+>[mailto:nguyenb=codeaurora.org@mg.codeaurora.org] On Behalf Of Bao D.
+>Nguyen
+>Sent: Tuesday, September 21, 2021 2:38 AM
+>To: cang@codeaurora.org; asutoshd@codeaurora.org;
+>martin.petersen@oracle.com; linux-scsi@vger.kernel.org
+>Cc: linux-arm-msm@vger.kernel.org; Bao D . Nguyen
+><nguyenb@codeaurora.org>; Andy Gross <agross@kernel.org>; Bjorn Andersson
+><bjorn.andersson@linaro.org>; Alim Akhtar <alim.akhtar@samsung.com>; Avri
+>Altman <avri.altman@wdc.com>; James E.J. Bottomley <jejb@linux.ibm.com>;
+>open list <linux-kernel@vger.kernel.org>
+>Subject: [PATCH v1 2/2] scsi: ufs-qcom: enter and exit hibern8 during clock
+scaling
+>
+>From: Asutosh Das <asutoshd@codeaurora.org>
+>
+>Qualcomm controller needs to be in hibern8 before scaling clocks.
+>This change puts the controller in hibern8 state before scaling and brings
+it out
+>after scaling of clocks.
+>
+>Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+>---
 
->
-> IMHO, if we want to support this board in upstream, we should just
-> clearly state that it is one time special exception
-> for this board only because of the following reasons
->
-> 1. The board design predates the patch acceptance policy.
-D1 is designed at 2019.
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-> 2. We don't have enough affordable Linux compatible platforms today.
-D1 only  $65.
-
-> 3. Allowing running an upstream kernel on D1 helps the RISC-V software
-> ecosystem to grow.
-Yes
-
+> drivers/scsi/ufs/ufs-qcom.c | 12 +++++++++++-
+> 1 file changed, 11 insertions(+), 1 deletion(-)
 >
-> No more exceptions will be allowed in future for such hardware that
-> violates the spec. Period.
+>diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index
+>92d4c61..92f5bb4 100644
+>--- a/drivers/scsi/ufs/ufs-qcom.c
+>+++ b/drivers/scsi/ufs/ufs-qcom.c
+>@@ -1212,24 +1212,34 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba
+>*hba,
+> 	int err = 0;
 >
-> > Regards,
-> > Anup
+> 	if (status == PRE_CHANGE) {
+>+		err = ufshcd_uic_hibern8_enter(hba);
+>+		if (err)
+>+			return err;
+> 		if (scale_up)
+> 			err = ufs_qcom_clk_scale_up_pre_change(hba);
+> 		else
+> 			err = ufs_qcom_clk_scale_down_pre_change(hba);
+>+		if (err)
+>+			ufshcd_uic_hibern8_exit(hba);
+>+
+> 	} else {
+> 		if (scale_up)
+> 			err = ufs_qcom_clk_scale_up_post_change(hba);
+> 		else
+> 			err = ufs_qcom_clk_scale_down_post_change(hba);
 >
+>-		if (err || !dev_req_params)
+>+
+>+		if (err || !dev_req_params) {
+>+			ufshcd_uic_hibern8_exit(hba);
+> 			goto out;
+>+		}
 >
+> 		ufs_qcom_cfg_timers(hba,
+> 				    dev_req_params->gear_rx,
+> 				    dev_req_params->pwr_rx,
+> 				    dev_req_params->hs_rate,
+> 				    false);
+>+		ufshcd_uic_hibern8_exit(hba);
+> 	}
 >
-> --
-> Regards,
-> Atish
+> out:
+>--
+>The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a
+>Linux Foundation Collaborative Project
 
 
-
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
