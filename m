@@ -2,166 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D8041B394
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED81941B398
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241712AbhI1QO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:14:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241523AbhI1QO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:14:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0FA611C3;
-        Tue, 28 Sep 2021 16:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632845568;
-        bh=DFUNqDy3Ot4Tq/eu+piBAz26Q4OJcSk95Ec7Bn5i6Dg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dac+fqiHI1x2PWBuvFfxKNJDpFWhm/YXuGKyIH0a3CYgDU/rJjao/sCWx0YisD96a
-         fYoWfKjze8RtTP7gJnFx4BxwiDzBTL5eRZzL16tVn5hxZjPcTT/WhLUAWcMURXtPFd
-         YUyCR52j/GFh34N4oHXz+4AkaPYW3JBkyfLqKqtqqDE7MXxXoSbFtSBrCj+1hffvDA
-         v/m2efbsgzH/ZaSrMRNmXGKxBvIPzFiYhQXewvMzCZPeo02x7zK7zzqIXvSfC0oyid
-         sVsL/Fz3ZwH7JcrPn4s59UyUMXeeNlST4Ru2/mDlDO+qHRWXAwmxYSohpy1Nc95TxR
-         07tmeWhZ0/rIA==
-Date:   Tue, 28 Sep 2021 21:42:19 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Md Sadre Alam <mdalam@codeaurora.org>
-Cc:     miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 3/3] mtd: rawnand: qcom: Add support for page scope read
-Message-ID: <20210928161219.GD12183@thinkpad>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
- <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
+        id S241736AbhI1QPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241645AbhI1QPW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:15:22 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5C9C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:13:42 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id b15so23917423ils.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=v2zQz4XizfHwgNsfMM/95d+v9BN58F9SfAkKgr4nWbo=;
+        b=HCNd3PAb5VTA0Hj/uDS3qEqaivstHqwG5xndb95BxPTFJkpvoMisLEMufr5yfuKlp5
+         HTVL4MiqJcRnINa5nUgdphCKL/tY9ganf/5KVqVyksJSmXrkZnQHnNsRGRlPQZMmvG+C
+         o39/gJk3zvYKzgMWBo74gI5Psh7VnFl1jHNJHoBiWCf81AHyPGUPOP+abkmf3rkpZUa6
+         /cwoe++eZ95EIWrmbx3AAqajl72o+lGuKK61VDj4goKvwDXSGTva1OvdWdgS84a5u5uz
+         2E/jvsJbc+BtkT2MrJA0A+EJiOzXKbUgjVzL9QcKWFgHhMJ3psvEZQKaH8U7hrcoN06Q
+         EUqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=v2zQz4XizfHwgNsfMM/95d+v9BN58F9SfAkKgr4nWbo=;
+        b=qv5S6zRHZHkeGzrB2c2oHInJtg9V+LmPDf1v1yPQzC9nJsATY2xaamU74QRzAzJOSG
+         6FXsV7+u/PR4RVsSZJjUa5OcT/6Epj26HukwiTG+XAyD2c3aiPmOggBmu/Z3LFLY8/E7
+         v4d1jMVX2nHVpT3WgCrV1pkTD0nRJ3zUIeJyBCHZgvbqKRjMlKstaSZAB1HeQvc+xKyq
+         HBKjRAIPy2PBwqvTttdismw1TNKHVAnX/bTs9GyfV/6sBq1NU0GuT3d/7NJNiNbZy5MU
+         RFHM3nvjotGq99eJPHR4SXn9IhfGkCXBUqipcZpOvdXMqgojMiHEEljkJ5qoIOYrvSFG
+         O1iQ==
+X-Gm-Message-State: AOAM5332EuiBRKMGYs3Qa2G0GTLe/Qzv0MPVDrgnNWhbM9Xa/k1W25Cl
+        DA7oITV1MuXqln6iQs4ggd4JNfqWS6sgFMk6V0svzA==
+X-Google-Smtp-Source: ABdhPJzp8SM43R1E44WVwU8mJUjw3G0PTjGQFg+A/ShFORc/dbikzu4gAC9vpc8iqa0HhmQSmXfVld7ORrgwtPucs7M=
+X-Received: by 2002:a92:c5c9:: with SMTP id s9mr5056555ilt.56.1632845622062;
+ Tue, 28 Sep 2021 09:13:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
+References: <20210923181830.3449602-1-robert.marko@sartura.hr> <20210928154801.vkdt5qbsm4z7ox4y@pali>
+In-Reply-To: <20210928154801.vkdt5qbsm4z7ox4y@pali>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 28 Sep 2021 18:13:31 +0200
+Message-ID: <CA+HBbNEF5s23K6goPAco9n=OhNqg4zcmTP6WKdh3p6qb8XSG5w@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: marvell: add Globalscale MOCHAbin
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:27:31PM +0530, Md Sadre Alam wrote:
-> QPIC V2.0 onwards QPIC controller support enhanced read mode
-> like page scope read and multi page read.
-> 
+On Tue, Sep 28, 2021 at 5:48 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Thursday 23 September 2021 20:18:30 Robert Marko wrote:
+> > +/* SPI-NOR */
+> > +&cp0_spi1{
+> > +     status =3D "okay";
+> > +
+> > +     pinctrl-names =3D "default";
+> > +     pinctrl-0 =3D <&cp0_spi1_pins>;
+> > +
+> > +     spi-flash@0 {
+> > +             #address-cells =3D <1>;
+> > +             #size-cells =3D <1>;
+> > +             compatible =3D "jedec,spi-nor";
+> > +             reg =3D <0>;
+> > +             spi-max-frequency =3D <20000000>;
+> > +
+> > +             partitions {
+> > +                     compatible =3D "fixed-partitions";
+> > +                     #address-cells =3D <1>;
+> > +                     #size-cells =3D <1>;
+> > +
+> > +                     partition@0 {
+> > +                             label =3D "u-boot";
+> > +                             reg =3D <0x0 0x3e0000>;
+>
+> For sure U-Boot cannot start at offset zero as this is 64-bit ARM board
+> which uses at least TF-A firmware, which loads U-Boot.
+>
+> Also on these mvebu SoCs is executed prior TF-A firmware custom Marvell
+> initialization code responsible for DDR training.
+>
+> So on offset zero you cannot flash U-Boot, otherwise board would not be
+> bootable.
+>
+> So I would suggest to either define correct offset at which U-Boot
+> starts or rename this whole partition to something generic, e.g. with
+> label "firmware". To not expose that on zero offset is stored U-Boot.
+>
+> Due to how big is this partition I guess it contains concatenation of
+> various firmware and bootloader parts.
 
-Define page scope read.
+You are correct, its the mv-ddr + TF-A + U-boot in that partition, its just=
+ a
+matter of habit calling it "u-boot".
+I will rename to "firmware" which is much more appropriate.
 
-> In QPIC V1, SW is needed to write EXEC_CMD register for each
-> Code word and collect any Status related to that CW before
-> issueing EXEC_CMD for next CW.
-> 
-> Page scope command is truly a page mode command where SW is
-> required to issue EXEC_CMD only once for a page. Controller
-> HW takes care of Codeword specific details and automatically
-> returns status associated with each CW to BAM pipe, dedicated
-> for status deposition.
-> 
-> With this command, SW now can issue one read command for a page
-> and upon receiving completion interrupt, can process status,
-> that have already been deposited in memory through status BAM pipe.
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 77 ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 71 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 07448c4..257dec7e 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -157,6 +157,10 @@
->  #define	OP_FETCH_ID			0xb
->  #define	OP_RESET_DEVICE			0xd
->  
-> +/* Auto status val and mask */
-> +#define	AUTO_STS_VAL			0x000B000B
+Regards,
+Robert
+>
+> > +                             read-only;
+> > +                     };
+> > +
+> > +                     partition@3e0000 {
+> > +                             label =3D "hw-info";
+> > +                             reg =3D <0x3e0000 0x10000>;
+> > +                             read-only;
+> > +                     };
+> > +
+> > +                     partition@3f0000 {
+> > +                             label =3D "u-boot-env";
+> > +                             reg =3D <0x3f0000 0x10000>;
+> > +                     };
+> > +             };
+> > +     };
+> > +};
 
-Use non-cap hex.
 
-> +#define PAGE_SCOPE_READ			BIT(23)
-> +
->  /* Default Value for NAND_DEV_CMD_VLD */
->  #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
->  					 ERASE_START_VLD | SEQ_READ_START_VLD)
-> @@ -336,6 +340,8 @@ struct nandc_regs {
->  
->  	__le32 erased_cw_detect_cfg_clr;
->  	__le32 erased_cw_detect_cfg_set;
-> +
-> +	__le32 auto_sts_en;
->  };
->  
->  /*
-> @@ -421,6 +427,9 @@ struct qcom_nand_controller {
->  
->  	u32 cmd1, vld;
->  	const struct qcom_nandc_props *props;
-> +
-> +	__le32 *status_buf;
-> +	int sts_buf_size;
 
-Add kdoc for these two members.
-
->  };
->  
->  /*
-> @@ -487,6 +496,7 @@ struct qcom_nandc_props {
->  	bool is_bam;
->  	bool is_qpic;
->  	bool qpic_v2;
-> +	bool page_scope;
->  	u32 dev_cmd_reg_start;
->  };
->  
-> @@ -656,6 +666,8 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
->  		return &regs->cfg1;
->  	case NAND_DEV0_ECC_CFG:
->  		return &regs->ecc_bch_cfg;
-> +	case NAND_AUTO_STATUS_EN:
-> +		return &regs->auto_sts_en;
->  	case NAND_READ_STATUS:
->  		return &regs->clrreadstatus;
->  	case NAND_DEV_CMD1:
-> @@ -756,10 +768,13 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->  
->  	if (read) {
-> -		if (host->use_ecc)
-> +		if (host->use_ecc) {
->  			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
-> -		else
-> +			if (nandc->props->qpic_v2 && nandc->props->page_scope)
-
-Again, why you are checking for both conditions? Using "page_scope" is
-sufficient enough.
-
-> +				cmd |= PAGE_SCOPE_READ;
-> +		} else {
->  			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
-> +		}
->  	} else {
->  		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
->  	}
-
-[...]
-
->  	if (use_ecc) {
-> -		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> -		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> -			     NAND_BAM_NEXT_SGL);
-> +		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +			if (qcom_nandc_is_last_cw(ecc, cw))
-> +				write_reg_dma(nandc, NAND_EXEC_CMD, 1,
-> +					      NAND_BAM_NEXT_SGL);
-> +		} else {
-> +			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> +			read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> +			read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> +				     NAND_BAM_NEXT_SGL);
-> +		}
-
-You need to add a comment for this.
-
-Thanks,
-Mani
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
