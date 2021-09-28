@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DFD41B116
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD5941B119
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241011AbhI1Nsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:48:40 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:45458
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241007AbhI1Nsf (ORCPT
+        id S241030AbhI1NtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhI1NtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:48:35 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 19D29405E4;
-        Tue, 28 Sep 2021 13:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632836815;
-        bh=CVPzKw2Lf6fMiEtRUXtIUtsODqt2nAe+y+A62+2Z9IY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=DSXRZ0wptf2RiwWyAD0QPn2zdUgT89tEBpTwHBqCgEPUx48yTDEulxBLFXUCgpICR
-         tyZJKsR+RUsxjSTytHcs6u/Vg7q9b75ycMuuVTICwi9Attq658OoC8bak2feTQFX9c
-         h7GVZiR8+MJuFNvP9m/PJ6j91YF+/3jMw208n/QuA2IGg1BGwN/36KitkUzRiR3Vqm
-         8SCigiokb9y+ZWIigeBfQg9BVCLRH2ye4cQ0TyowvL1rmppSPFZakhmcDDpKg5tXz9
-         pJCKf1pDSRGOu38clY9lxfOjMHNOtxBMRWBXHzG33GvCBkw2B5VO7l1xvsIGMR4xGz
-         TbazDNZNjvcaA==
-From:   Colin King <colin.king@canonical.com>
-To:     Daniel Palmer <daniel@thingy.jp>,
-        Romain Perier <romain.perier@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next][V2] rtc: msc313: Fix unintentional sign extension issues with left shift of a u16
-Date:   Tue, 28 Sep 2021 14:46:54 +0100
-Message-Id: <20210928134654.991923-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 28 Sep 2021 09:49:07 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDF7C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:47:27 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id b20so93349750lfv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zwVENlJtRAi6Ax59HxxFqFtBJgRbm8ce1Id+5WhoWL8=;
+        b=XQFP1mUhXKlHXI+xEmvDrSXbeLGnD4CLmXjgYseEqEruv9KrCC6FSc8Y5Ho4LjbDOX
+         zC6snsJNUUz1wZImn8MwvqtBxmMBxpHhjrx+sD7movv4TlZPXtvtAREC+/yRiKmX0pue
+         ++eKN5f+0dJcVxMLuJppLKf8ZQF/8jTKUtiroQPAE26FNLy3qV5NuZ4Mfmn9YaCTMPq7
+         nzwGakmqi86S8+l5vHWVzyPlqaDPjAMTD04P50HoQaOwSxjmCvIFwGP8TkCDq/Iqin0z
+         nosD+DseVrciB0VXscUsdG8/7r83wCXEdGV3qDxxotWcJfScS76Tqa9v285icJA3aBNN
+         Ec1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zwVENlJtRAi6Ax59HxxFqFtBJgRbm8ce1Id+5WhoWL8=;
+        b=aIvI8BLRX0njmpWfQ9V90K655g56tK6jvBdD6tdUYqqSgwPyg0uN0OH9AWHTS8nnag
+         y4EJRlBJgq+8ehKXe46MKIPWxsfru0hpXo8kk8jgU3lCQyTnaq+IgumMlx0sIIpKdQij
+         joDTCRRHCGARfRl80yKUibTJZYOhpRzqhql2oXEtD8qNVWikrHXcOjbr5Yi/hkmIsCNz
+         BC09k7mN5DkVgnkGl0nCc/PlLEnrqY/pnCeIx0ctMu7PjH5tfJtPTVtgJF8gDpUzu93h
+         eLo2F14b7Hkz0eBbphSBOg2Q9xMjPmWDdH05aIWqFs/O5Mar0VzRJLKWkxfKWsxcXes1
+         peTA==
+X-Gm-Message-State: AOAM532f9sVmxy971rBVrbDq7I0kcOs5rOrqtV9c79+GagW22xm2ylQn
+        OAaSY5rHPHh7sLqLz2PI+7rN3QhBu6iJgM5CARyADg==
+X-Google-Smtp-Source: ABdhPJw2Fb4WlAdBMN6qf/ANOW7XfaZ4dwR3+5V+TQbap6YMXmbnt1TkRoKkuxS6/KOggTQZ6bWvGaBx1mJ0aeF2U9k=
+X-Received: by 2002:a19:f249:: with SMTP id d9mr5834936lfk.229.1632836846030;
+ Tue, 28 Sep 2021 06:47:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210928013621.1245-1-caihuoqing@baidu.com>
+In-Reply-To: <20210928013621.1245-1-caihuoqing@baidu.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 28 Sep 2021 15:47:14 +0200
+Message-ID: <CACRpkdZX6JkBOFX9yd-gsrzD5ObXR1VKmVNFLNbAv2Q0w1w5FQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] iio: adc: ab8500-gpadc: Make use of the helper
+ function dev_err_probe()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Sep 28, 2021 at 3:36 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-Shifting the u16 value returned by readw by 16 bits to the left
-will be promoted to a 32 bit signed int and then sign-extended
-to an unsigned long. If the top bit of the readw is set then
-the shifted value will be sign extended and the top 32 bits of
-the result will be set.
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+> v1->v2: Remove the separate line of PTR_ERR().
 
-Fixes: be7d9c9161b9 ("rtc: Add support for the MSTAR MSC313 RTC")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
-V2: Fix identical issue in msc313_rtc_read_time too. Thanks to Daniel Palmer
-    for noticing this ommission.
----
- drivers/rtc/rtc-msc313.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/rtc/rtc-msc313.c b/drivers/rtc/rtc-msc313.c
-index 5f178d29cfd8..f3fde013c4b8 100644
---- a/drivers/rtc/rtc-msc313.c
-+++ b/drivers/rtc/rtc-msc313.c
-@@ -53,7 +53,7 @@ static int msc313_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- 	unsigned long seconds;
- 
- 	seconds = readw(priv->rtc_base + REG_RTC_MATCH_VAL_L)
--			| (readw(priv->rtc_base + REG_RTC_MATCH_VAL_H) << 16);
-+			| ((unsigned long)readw(priv->rtc_base + REG_RTC_MATCH_VAL_H) << 16);
- 
- 	rtc_time64_to_tm(seconds, &alarm->time);
- 
-@@ -122,7 +122,7 @@ static int msc313_rtc_read_time(struct device *dev, struct rtc_time *tm)
- 		udelay(1);
- 
- 	seconds = readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
--			| (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 16);
-+			| ((unsigned long)readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 16);
- 
- 	rtc_time64_to_tm(seconds, tm);
- 
--- 
-2.32.0
-
+Yours,
+Linus Walleij
