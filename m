@@ -2,123 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4689741B7CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABC741B7D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242586AbhI1Tyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:54:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242529AbhI1Tyh (ORCPT
+        id S242547AbhI1T5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242470AbhI1T5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:54:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632858777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=b5Pr+HGo0VsJRt4BRSo/Ay3yDNn7rHBhRVyf1dECUj4=;
-        b=fg9zJGECiRrDF9Qne7VET7uNcebb+MusuhWsZwx8iBoyGjsubmoNp6F4h9uXOZ1XpY3nAO
-        fsG1Q6I77tTGDyRZNbolOESGSoBHHI7uno0OX+9G78LyAnI/F+hmfOC0ttoHC8z7OZi83U
-        eqpFvEwx+t9Gt6cQLw1VGd7az8I32rY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-AZwxMExiOiqGiHDDwIy9Jw-1; Tue, 28 Sep 2021 15:52:56 -0400
-X-MC-Unique: AZwxMExiOiqGiHDDwIy9Jw-1
-Received: by mail-ed1-f72.google.com with SMTP id e21-20020a50a695000000b003daa0f84db2so529970edc.23
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:52:55 -0700 (PDT)
+        Tue, 28 Sep 2021 15:57:01 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60358C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:55:21 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id s20so124679ioa.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1dkOoEowsVEai15whHpEaoKklD3em5dZIMAiSQ/NBXA=;
+        b=ZeD06VESIVwTz1xeRXSBHGWRRwsuqhJZqQwA7cS8w7S36OQJ9M42GPOt60GoPm4LLN
+         EhyE/ygXrJFIONCKDGKyPvXji5TLlEPtth9nQsRZuy/IeYGcjbWWP7tWPdZ/g49vlVEV
+         D4ziTYxHr8njp8La9hvWgYGQygcfX8fs0pN+lyR+t1RqdyHwC/7j9ctRh39DBoSxrCAF
+         W7fZNVt8JY3zn5Gg4p3VkhBgFht+DBRN4Umj8cH8EE9Lo3YE6taSK+G2eOxlcDNL8a69
+         u/eiBSoiyJw8GFFxy3BA4RXuA7thqLvfHkJROM11lKZey1rvl8Ml9UFTDNyZ2L/Vl66Z
+         9YzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b5Pr+HGo0VsJRt4BRSo/Ay3yDNn7rHBhRVyf1dECUj4=;
-        b=R42anhzeMsWy5G/pmyoTaectTXP7Q7vZ9wIFfBasYLxEcjymj2T6TwZ37/G8rpNHID
-         zmKUHQlSM3WO+1G92IglhcgdSlLAIxDO6l5uPQFrmZX15JGxgbBs3+hTzhc7+RK1EFqL
-         b+gpkNVySWqT9sYTWYCGGUENvwigmeesE/B8aBOJD7e+IhSy4wAsjpWGGWSwOLd+HTIE
-         +CdXMssTAMyO+6pbOinUqf2Ure3BuRW1unBKJe5eS34T8qRzUhZToApGpjbjlCie5ibX
-         evuOjpLAx5Di0K6Dr53UKHp7gDbhc06Vdlo69LUZ0g5B29Qaqwot4iX5j4sCwl7SWmGE
-         yK7A==
-X-Gm-Message-State: AOAM532zlmiFUb4JxvEYb1yIBvqMKvmkDWnXErfwAwUoHgbdfuQzbfMJ
-        Ct5VeDWW6c3Kf396ehYMnlBI/1Cubze+INXFIschj8GbyYWYQ1PA4edS2bMomwmOecXVto04vCP
-        00UWh/sDtTFYWHWdiJYGLT0lS
-X-Received: by 2002:a50:e004:: with SMTP id e4mr9787451edl.246.1632858774918;
-        Tue, 28 Sep 2021 12:52:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHmN/IaKKY1y6HHuNeHi6O+hxb9oUUc4ARbmAi39L5zYMJRrfpZIoddpfzhH47CeZ1iL0zLg==
-X-Received: by 2002:a50:e004:: with SMTP id e4mr9787434edl.246.1632858774710;
-        Tue, 28 Sep 2021 12:52:54 -0700 (PDT)
-Received: from krava.cust.in.nbox.cz ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id i4sm31036edt.29.2021.09.28.12.52.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1dkOoEowsVEai15whHpEaoKklD3em5dZIMAiSQ/NBXA=;
+        b=zb4W0lj7xGkEcGcgNH9wRiyi14EnCRv9M8O88K/QmPF0UVdvDICU0k+rm0lCTqhL55
+         OHmMwTy30wLvbNqRZBgD4iRtzaTy1fc9kSVfiS9K8I80Bvg+k0kqmF1VB0e9HiwBM5fF
+         HH9knuIugGkDFnIqZJzZxItOFxYTwia97Rk0ldkyYQLlj7xzNdCwZIjwG1wOVc875BeJ
+         b+TYd+5uk0JyKmaZSoQZyjuLm29qqkzw+zSvfrasDQUnyyVGMMhalgmEV9WuTvJF+XI5
+         av6KZhrB9TSGl4ika/UCth2MpEG1eWvweNR2r6ZkpmX3dt2Abjag8p3PKCt+qDXMUm6N
+         9u9A==
+X-Gm-Message-State: AOAM531iO6e7fmsCSRs2U5VSJfNuiDGjLHdBXgYry5nWAwDmoq5oF/jS
+        3ysLE/DAuzE9fXo2rrdYG7+npQ==
+X-Google-Smtp-Source: ABdhPJxDG+imIW+LC31md8sJ9W5FJ6CYFuQFlJipqlnxhkrntzvi5fuKARgO5VrFwZOn9a7R7YqD3w==
+X-Received: by 2002:a5e:c018:: with SMTP id u24mr5346781iol.129.1632858920781;
+        Tue, 28 Sep 2021 12:55:20 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id r20sm30511ioh.19.2021.09.28.12.55.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:52:54 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Mark Wielaard <mjw@redhat.com>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH] perf tools: Fix compilation on powerpc
-Date:   Tue, 28 Sep 2021 21:52:53 +0200
-Message-Id: <20210928195253.1267023-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 28 Sep 2021 12:55:20 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVJCA-007Gjs-VN; Tue, 28 Sep 2021 16:55:18 -0300
+Date:   Tue, 28 Sep 2021 16:55:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
+Message-ID: <20210928195518.GV3544071@ziepe.ca>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-20-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916234100.122368-20-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Got following build fail on powerpc:
+On Thu, Sep 16, 2021 at 05:40:59PM -0600, Logan Gunthorpe wrote:
+> +int pci_mmap_p2pmem(struct pci_dev *pdev, struct vm_area_struct *vma)
+> +{
+> +	struct pci_p2pdma_map *pmap;
+> +	struct pci_p2pdma *p2pdma;
+> +	int ret;
+> +
+> +	/* prevent private mappings from being established */
+> +	if ((vma->vm_flags & VM_MAYSHARE) != VM_MAYSHARE) {
+> +		pci_info_ratelimited(pdev,
+> +				     "%s: fail, attempted private mapping\n",
+> +				     current->comm);
+> +		return -EINVAL;
+> +	}
+> +
+> +	pmap = pci_p2pdma_map_alloc(pdev, vma->vm_end - vma->vm_start);
+> +	if (!pmap)
+> +		return -ENOMEM;
+> +
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	if (!p2pdma) {
+> +		ret = -ENODEV;
+> +		goto out;
+> +	}
+> +
+> +	ret = simple_pin_fs(&pci_p2pdma_fs_type, &pci_p2pdma_fs_mnt,
+> +			    &pci_p2pdma_fs_cnt);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ihold(p2pdma->inode);
+> +	pmap->inode = p2pdma->inode;
+> +	rcu_read_unlock();
+> +
+> +	vma->vm_flags |= VM_MIXEDMAP;
 
-    CC      arch/powerpc/util/skip-callchain-idx.o
-  In function ‘check_return_reg’,
-      inlined from ‘check_return_addr’ at arch/powerpc/util/skip-callchain-idx.c:213:7,
-      inlined from ‘arch_skip_callchain_idx’ at arch/powerpc/util/skip-callchain-idx.c:265:7:
-  arch/powerpc/util/skip-callchain-idx.c:54:18: error: ‘dwarf_frame_register’ accessing 96 bytes \
-  in a region of size 64 [-Werror=stringop-overflow=]
-     54 |         result = dwarf_frame_register(frame, ra_regno, ops_mem, &ops, &nops);
-        |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  arch/powerpc/util/skip-callchain-idx.c: In function ‘arch_skip_callchain_idx’:
-  arch/powerpc/util/skip-callchain-idx.c:54:18: note: referencing argument 3 of type ‘Dwarf_Op *’
-  In file included from /usr/include/elfutils/libdwfl.h:32,
-                   from arch/powerpc/util/skip-callchain-idx.c:10:
-  /usr/include/elfutils/libdw.h:1069:12: note: in a call to function ‘dwarf_frame_register’
-   1069 | extern int dwarf_frame_register (Dwarf_Frame *frame, int regno,
-        |            ^~~~~~~~~~~~~~~~~~~~
-  cc1: all warnings being treated as errors
+Why is this a VM_MIXEDMAP? Everything fault sticks in here has a
+struct page, right?
 
-The dwarf_frame_register args changed with [1],
-Updating ops_mem accordingly.
-
-[1] https://sourceware.org/git/?p=elfutils.git;a=commit;h=5621fe5443da23112170235dd5cac161e5c75e65
-
-Cc: Mark Wielaard <mjw@redhat.com>
-Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Signed-off-by: Jiri Olsa <jolsa@redhat.com>
----
- tools/perf/arch/powerpc/util/skip-callchain-idx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/arch/powerpc/util/skip-callchain-idx.c b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
-index 3018a054526a..20cd6244863b 100644
---- a/tools/perf/arch/powerpc/util/skip-callchain-idx.c
-+++ b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
-@@ -45,7 +45,7 @@ static const Dwfl_Callbacks offline_callbacks = {
-  */
- static int check_return_reg(int ra_regno, Dwarf_Frame *frame)
- {
--	Dwarf_Op ops_mem[2];
-+	Dwarf_Op ops_mem[3];
- 	Dwarf_Op dummy;
- 	Dwarf_Op *ops = &dummy;
- 	size_t nops;
--- 
-2.31.1
-
+Jason
