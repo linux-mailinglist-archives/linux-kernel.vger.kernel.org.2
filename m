@@ -2,62 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F8D41BB05
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC14741BB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243279AbhI1XaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243273AbhI1XaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:30:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB70761368;
-        Tue, 28 Sep 2021 23:28:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632871705;
-        bh=Aj0F5LPnVcUuzJUSV8yvbiS/m7CuZnciB2S9wM6oAZc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EUNbeeGpLdIaiqtvxWR9rGTEdh3mG9fPw/efsCNs7w80S50R4767T57C+aLN3Mo+1
-         4wT96+eP+DIUZWGRX8so7Y+H7WxBL7eWBEopao1HLx+RsWJKS60k3z0em5vFg/keLP
-         gbGjeQVZYyWmAeGo/PN+multiD+4dOdccby883Z9dKWOSjLg2JDagKIT+N7/Hb7UZO
-         36Gr0e7gHa5dH4AMIPYRngDBEmYTJQUsao6QzTVLwz8jOi2TBYwqtOCQKmmefGjeWx
-         8Zp9KvPUxpj8oootVAkj9KmlXqMeLAHlCO2BxdgPqpEJYH5Z4Jpy9LECU18T72q1tx
-         zEz2mM68ooVKw==
-Date:   Tue, 28 Sep 2021 18:28:23 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ferry Toth <fntoth@gmail.com>
-Subject: Re: [PATCH v2 0/7] PCI: ACPI: Get rid of struct pci_platform_pm_ops
- and clean up code
-Message-ID: <20210928232823.GA748352@bhelgaas>
+        id S243287AbhI1XaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhI1XaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 19:30:21 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A293C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:28:41 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id k24so702565pgh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=jylB27FUomRkCrHM+xh4mTWUasmip1Xiajoin8oWp3E=;
+        b=NWI1NX9eXWWmTOdjr4JvOxg5hBa2b6biLsvMuVhM9/LH54tjnkMLfoIOpUJobF2WX0
+         Mfq+CIrRzMeHKoAxmY7NEESaIiIklXuc6ljmL29v6ly8KTVfV8ZzfkaDuzzF0dukruGe
+         noZM/vXdYq+7irLpNxPr38xcxvga0XwzXGgn1JLDgq1twB1HgQtiUp9x0vAY367S6kgi
+         eXTWGckzJg3rWOQ/Qr62TmNqE9h9A+CCb81FbVVJbhGbboYJGduvXwuI8ACdVg30IF4R
+         BL6UG0McdNzd293D++LAyudbR3rLQdlBl7bVn0eqf6SXIpwB8JF9+E0MBjW1bvBAJhUr
+         ideQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=jylB27FUomRkCrHM+xh4mTWUasmip1Xiajoin8oWp3E=;
+        b=LSOs8dX4adHDRBWLHtD1wH9i9qX5Rf7aGyNR/rXzvOj0C8dBLLJahGjw1074OTJht1
+         aXCmjP/jHfPJA4coQVVIIH23ANyA1u6q+2eYG6pmaG6rU+VnjxXyOh2pmbAZ3MTI/QN/
+         6oqc5gnez2rfdif7B/ffB+X3tKJL6Gn4bI3dRwUlPlLXWJnhpHjfqedtmDWydpv8KDnv
+         WwBx8DiuJPvQ1o/enbXow2eUMmoG5JWh7tJYw6Ewn+7bgBI2qWeE6pRCURTe+yvM81OZ
+         GiM/K3k0umiVIPX732TU9w6nL5du6dQfOI+Zzbo6+FCxv+r3qBLYTqShN0tC9jSO9aoL
+         Rf/A==
+X-Gm-Message-State: AOAM530t7np6cLFIkv1DGgws4AKO5xpUeYmeLCY+xL/al55ZAhH3t0vY
+        f1Lkickl2UKpQgJi7Ep4FTCiDg==
+X-Google-Smtp-Source: ABdhPJx3CC/hEXextag5g33mpfB4YE/n0s44Oe9bHD5FM9ieQDbPdiWuDkY26XEkwA4jCTk7j7kb5g==
+X-Received: by 2002:a63:334c:: with SMTP id z73mr7050802pgz.160.1632871720693;
+        Tue, 28 Sep 2021 16:28:40 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id h15sm211829pfo.54.2021.09.28.16.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 16:28:40 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>, maz@kernel.org,
+        tglx@linutronix.de, jbrunet@baylibre.com
+Cc:     lee.jones@linaro.org, saravanak@google.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 2/2] arm64: meson: remove MESON_IRQ_GPIO selection
+In-Reply-To: <20210902134914.176986-3-narmstrong@baylibre.com>
+References: <20210902134914.176986-1-narmstrong@baylibre.com>
+ <20210902134914.176986-3-narmstrong@baylibre.com>
+Date:   Tue, 28 Sep 2021 16:28:39 -0700
+Message-ID: <7hmtnw9t5k.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1800633.tdWV9SEqCh@kreacher>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Ferry]
+Neil Armstrong <narmstrong@baylibre.com> writes:
 
-On Mon, Sep 20, 2021 at 08:52:19PM +0200, Rafael J. Wysocki wrote:
-> Hi All,
-> 
-> As explained in the changelog of patch [2/7], using struct pci_platform_pm_ops
-> for ACPI is not particularly beneficial, so it is better to get rid of it and
-> call the functions pointed to by it directly from the PCI core.
-> 
-> However, struct pci_platform_pm_ops is also used by the Intel MID support code,
-> but it is actually better to call the MID PM function directly from the PCI
-> core either, which is done in patch [1/7].
-> 
-> After these changes, patch [3/7] removes struct pci_platform_pm_ops and the
-> rest is just cleanups and some code consolidation on top of that.
+> Selecting MESON_IRQ_GPIO forces it as built-in, but we may need to build it
+> as a module, thus remove it here and let the "default ARCH_MESON" build as
+> built-in by default with the option to switch it to module.
+>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 
-I like these a lot.  Not sure exactly where everything is after the
-conversation with Ferry.  Let me know if I should be doing anything.
+Reviewed-by: Kevin Hilman <khilman@baylibre.com>
