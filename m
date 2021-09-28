@@ -2,117 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10D941B3AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D43941B3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241773AbhI1QWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:22:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241759AbhI1QWH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241769AbhI1QWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 28 Sep 2021 12:22:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632846027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z9uMJK26P60RAhxwk6AHTnSttWiM8SyG1M4QvAkMsAA=;
-        b=Qi+m8VFWk/Ifxf2o+9G/U2ode0QSkmpzlsQ5YCoKzKrFf5PiTayJSPrMRB8S0temgX2BAv
-        5mCDVaeSxC8T2Jc5JlShXJOi6WWzuecZzyRpw13eyedgShEVw85X/09bx0Pz3FaTR22u+S
-        HltV5+cqYeslp+ewiKhvv9Sq5M6tbf8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-oJECCGQ9P3mo4qnmWvkQFQ-1; Tue, 28 Sep 2021 12:20:26 -0400
-X-MC-Unique: oJECCGQ9P3mo4qnmWvkQFQ-1
-Received: by mail-ed1-f70.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso22449573edx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:20:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Z9uMJK26P60RAhxwk6AHTnSttWiM8SyG1M4QvAkMsAA=;
-        b=ReuUJGfrrnZnm9O1k/sWMF2id3SVu2Uyt3XgUxnClS3A4/+X3M1tPgB7rCjKvPhB1d
-         BBtha2xHeKPGej4J6gJ3jalukFllZ5qTfQfL+AVQ6APKzy2u8pndYcvBHAARFMjc9veV
-         2GbWt3p54BXYCCq4iWbOAsdJpiDSSKdm55v8CtY64kgaNjRckTSKBa7VYrQQ4khN4ang
-         oAtJWLa3ZrPMVWAmyzAywvgKYool0WKHgMTSBq/kUpFzUAq9rpLKNeu8FXlA50djY3D4
-         +8dKFVIXMFtrgd30Jba4JjxMi3GyOSXNnK+XS4CrXZS1TJO32+1uOC0ZBKJ2s5T8rzug
-         L/4Q==
-X-Gm-Message-State: AOAM530eye+518tp+v8+WEXoh/kszNkBTe9najPuzkrhYdRC4+JbHQPP
-        q3K/Ew3AN5qXUTUe27QY32xDY2WETdzuuGfz8p2A25q8JHjOf+ltPriL7WzQjY/IZNoF3tZjX1E
-        7PW8cJPYW/JJAw+syZBAcySJX
-X-Received: by 2002:a17:906:5d6:: with SMTP id t22mr7639881ejt.98.1632846024792;
-        Tue, 28 Sep 2021 09:20:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyio9n7XU3Vkcgm5WLJWy0FSGCW2mQFmeonM9ZvIwP7eL35roJUNMyb5wbTQhpjehr95KRmfA==
-X-Received: by 2002:a17:906:5d6:: with SMTP id t22mr7639858ejt.98.1632846024607;
-        Tue, 28 Sep 2021 09:20:24 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 21sm10523657ejv.54.2021.09.28.09.20.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 09:20:24 -0700 (PDT)
-Message-ID: <82acae8f-6b27-928f-0c00-1df8fc9d26b8@redhat.com>
-Date:   Tue, 28 Sep 2021 18:20:17 +0200
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:59398 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241755AbhI1QWF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:22:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UpxbQ2i_1632846023;
+Received: from 30.30.67.189(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UpxbQ2i_1632846023)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 29 Sep 2021 00:20:24 +0800
+Content-Type: multipart/mixed; boundary="------------gsvJybHFweo94iGjbSJjNOSO"
+Message-ID: <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
+Date:   Wed, 29 Sep 2021 00:20:22 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH 2/3] nSVM: introduce smv->nested.save to cache save
- area fields
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
+ Gecko/20100101 Thunderbird/93.0
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
+ cache
 Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20210903102039.55422-1-eesposit@redhat.com>
- <20210903102039.55422-3-eesposit@redhat.com>
- <fbb40bb8c12715c0aa9d6a113784f8a21603e2b3.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <fbb40bb8c12715c0aa9d6a113784f8a21603e2b3.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     Song Liu <song@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20210922070645.47345-2-rongwei.wang@linux.alibaba.com>
+ <YUsVcEDcQ2vEzjGg@casper.infradead.org>
+ <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
+ <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
+ <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/21 12:39, Maxim Levitsky wrote:
-> On Fri, 2021-09-03 at 12:20 +0200, Emanuele Giuseppe Esposito wrote:
->> This is useful in next patch, to avoid having temporary
->> copies of vmcb12 registers and passing them manually.
+This is a multi-part message in MIME format.
+--------------gsvJybHFweo94iGjbSJjNOSO
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+
+
+On 9/28/21 6:24 AM, Song Liu wrote:
+> On Fri, Sep 24, 2021 at 12:12 AM Rongwei Wang
+> <rongwei.wang@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> On 9/24/21 10:43 AM, Andrew Morton wrote:
+>>> On Thu, 23 Sep 2021 01:04:54 +0800 Rongwei Wang <rongwei.wang@linux.alibaba.com> wrote:
+>>>
+>>>>
+>>>>
+>>>>> On Sep 22, 2021, at 7:37 PM, Matthew Wilcox <willy@infradead.org> wrote:
+>>>>>
+>>>>> On Wed, Sep 22, 2021 at 03:06:44PM +0800, Rongwei Wang wrote:
+>>>>>> Transparent huge page has supported read-only non-shmem files. The file-
+>>>>>> backed THP is collapsed by khugepaged and truncated when written (for
+>>>>>> shared libraries).
+>>>>>>
+>>>>>> However, there is race in two possible places.
+>>>>>>
+>>>>>> 1) multiple writers truncate the same page cache concurrently;
+>>>>>> 2) collapse_file rolls back when writer truncates the page cache;
+>>>>>
+>>>>> As I've said before, the bug here is that somehow there is a writable fd
+>>>>> to a file with THPs.  That's what we need to track down and fix.
+>>>> Hi, Matthew
+>>>> I am not sure get your means. We know “mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs"
+>>>> Introduced file-backed THPs for DSO. It is possible {very rarely} for DSO to be opened in writeable way.
+>>>>
+>>>> ...
+>>>>
+>>>>> https://lore.kernel.org/linux-mm/YUdL3lFLFHzC80Wt@casper.infradead.org/
+>>>> All in all, what you mean is that we should solve this race at the source?
+>>>
+>>> Matthew is being pretty clear here: we shouldn't be permitting
+>>> userspace to get a writeable fd for a thp-backed file.
+>>>
+>>> Why are we permitting the DSO to be opened writeably?  If there's a
+>>> legitimate case for doing this then presumably "mm, thp: relax the
+>> There is a use case to stress file-backed THP within attachment.
+>> I test this case in a system which has enabled CONFIG_READ_ONLY_THP_FOR_FS:
+>>
+>> $ gcc -Wall -g -o stress_madvise_dso stress_madvise_dso.c
+>> $ ulimit -s unlimited
+>> $ ./stress_madvise_dso 10000 <libtest.so>
+>>
+>> the meaning of above parameters:
+>> 10000: the max test time;
+>> <libtest.so>: the DSO that will been mapped into file-backed THP by
+>> madvise. It recommended that the text segment of DSO to be tested is
+>> greater than 2M.
+>>
+>> The crash will been triggered at once in the latest kernel. And this
+>> case also can used to trigger the bug that mentioned in our another patch.
 > 
-> This is NOT what I had in mind, but I do like that idea very much,
-> IMHO this is much better than what I had in mind!
+> Hmm.. I am not able to use the repro program to crash the system. Not
+> sure what I did wrong.
 > 
-> The only thing that I would change is that I woudn't reuse 'struct vmcb_save_area'
-> for the copy, as this both wastes space (minor issue),
-> and introduces a chance of someone later using non copied
-> fields from it (can cause a bug later on).
+Hi
+I have tried to check my test case again. Can you make sure the DSO that 
+you test have THP mapping?
+
+If you are willing to try again, I can send my libtest.c which is used 
+to test by myself (actually, it shouldn't be target DSO problem).
+
+Thanks very much!
+> OTOH, does it make sense to block writes within khugepaged, like:
 > 
-> I would just define a new struct for that (but keep same names
-> for readability)
+> diff --git i/mm/khugepaged.c w/mm/khugepaged.c
+> index 045cc579f724e..ad7c41ec15027 100644
+> --- i/mm/khugepaged.c
+> +++ w/mm/khugepaged.c
+> @@ -51,6 +51,7 @@ enum scan_result {
+>          SCAN_CGROUP_CHARGE_FAIL,
+>          SCAN_TRUNCATED,
+>          SCAN_PAGE_HAS_PRIVATE,
+> +       SCAN_BUSY_WRITE,
+>   };
 > 
-> Maybe something like 'struct vmcb_save_area_cached'?
+>   #define CREATE_TRACE_POINTS
+> @@ -1652,6 +1653,11 @@ static void collapse_file(struct mm_struct *mm,
+>          /* Only allocate from the target node */
+>          gfp = alloc_hugepage_khugepaged_gfpmask() | __GFP_THISNODE;
+> 
+> +       if (deny_write_access(file)) {
+> +               result = SCAN_BUSY_WRITE;
+> +               return;
+> +       }
+> +
+This can indeed avoid some possible races from source.
 
-I agree, I like this too.  However, it needs a comment that this new 
-struct is not kept up-to-date, and is only valid until enter_svm_guest_mode.
+But, I am thinking about whether this will lead to DDoS attack?
+I remember the reason of DSO has ignored MAP_DENYWRITE in kernel
+is that DDoS attack. In addition, 'deny_write_access' will change
+the behavior, such as user will get 'Text file busy' during 
+collapse_file. I am not sure whether the behavior changing is acceptable 
+in user space.
 
-I might even propose a
+If it is acceptable, I am very willing to fix the races like your way.
 
-#ifdef CONFIG_DEBUG_KERNEL
-	memset(&svm->nested.save, 0xaf, sizeof(svm->nested.save));
-#endif
+Thanks!
+>          new_page = khugepaged_alloc_page(hpage, gfp, node);
+>          if (!new_page) {
+>                  result = SCAN_ALLOC_HUGE_PAGE_FAIL;
+> @@ -1863,19 +1869,6 @@ static void collapse_file(struct mm_struct *mm,
+>          else {
+>                  __mod_lruvec_page_state(new_page, NR_FILE_THPS, nr);
+>                  filemap_nr_thps_inc(mapping);
+> -               /*
+> -                * Paired with smp_mb() in do_dentry_open() to ensure
+> -                * i_writecount is up to date and the update to nr_thps is
+> -                * visible. Ensures the page cache will be truncated if the
+> -                * file is opened writable.
+> -                */
+> -               smp_mb();
+> -               if (inode_is_open_for_write(mapping->host)) {
+> -                       result = SCAN_FAIL;
+> -                       __mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
+> -                       filemap_nr_thps_dec(mapping);
+> -                       goto xa_locked;
+> -               }
+>          }
+> 
+>          if (nr_none) {
+> @@ -1976,6 +1969,7 @@ static void collapse_file(struct mm_struct *mm,
+>          VM_BUG_ON(!list_empty(&pagelist));
+>          if (!IS_ERR_OR_NULL(*hpage))
+>                  mem_cgroup_uncharge(*hpage);
+> +       allow_write_access(file);
+>          /* TODO: tracepoints */
+>   }
+> 
+--------------gsvJybHFweo94iGjbSJjNOSO
+Content-Type: text/plain; charset=UTF-8; name="libtest.c"
+Content-Disposition: attachment; filename="libtest.c"
+Content-Transfer-Encoding: base64
 
-but there are no uses of CONFIG_DEBUG_KERNEL in all of Linux so it's 
-probably not the way one should use that symbol.  Can anybody think of a 
-similar alternative?  Or should the memset simply be unconditional?
-
-Paolo
+I2lmbmRlZiBfREVGQVVMVF9TT1VSQ0UKI2RlZmluZSBfREVGQVVMVF9TT1VSQ0UKI2VuZGlm
+CgojaW5jbHVkZSA8ZmNudGwuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRs
+aWIuaD4KI2luY2x1ZGUgPHN0cmluZy5oPgojaW5jbHVkZSA8c3lzL21tYW4uaD4KI2luY2x1
+ZGUgPHVuaXN0ZC5oPgoKLyogInZvbGF0aWxlIiB0byBmb3JiaWQgY29tcGlsZXIgb3B0aW1p
+emF0aW9uICovCnZvbGF0aWxlIHN0YXRpYyBpbnQgeDsKCiNkZWZpbmUgRE9fMCArK3g7CiNk
+ZWZpbmUgRE9fMSB7RE9fMDsgRE9fMDsgRE9fMDsgRE9fMDsgRE9fMDsgRE9fMDsgRE9fMDsg
+RE9fMDsgRE9fMH0KI2RlZmluZSBET18yIHtET18xOyBET18xOyBET18xOyBET18xOyBET18x
+OyBET18xOyBET18xOyBET18xOyBET18xfQojZGVmaW5lIERPXzMge0RPXzI7IERPXzI7IERP
+XzI7IERPXzI7IERPXzI7IERPXzI7IERPXzI7IERPXzI7IERPXzJ9CiNkZWZpbmUgRE9fNCB7
+RE9fMzsgRE9fMzsgRE9fMzsgRE9fMzsgRE9fMzsgRE9fMzsgRE9fMzsgRE9fMzsgRE9fM30K
+I2RlZmluZSBET181IHtET180OyBET180OyBET180OyBET180OyBET180OyBET180OyBET180
+OyBET180OyBET180fQojZGVmaW5lIERPXzYge0RPXzU7IERPXzU7IERPXzU7IERPXzU7IERP
+XzU7IERPXzU7IERPXzU7IERPXzU7IERPXzV9CiNkZWZpbmUgRE9fNyB7RE9fNjsgRE9fNjsg
+RE9fNjsgRE9fNjsgRE9fNjsgRE9fNjsgRE9fNjsgRE9fNjsgRE9fNn0KCnZvaWQgbGlidGVz
+dF93b3JrMSh2b2lkKQp7CglwcmludGYoIndvcmsgMVxuIik7CglET18wOwp9Cgp2b2lkIGxp
+YnRlc3Rfd29yazIodm9pZCkKewoJcHJpbnRmKCJ3b3JrIDJcbiIpOwoJRE9fMjsKfQoKdm9p
+ZCBsaWJ0ZXN0X3dvcmszKHZvaWQpCnsKCXByaW50Zigid29yayAzXG4iKTsKCURPXzQ7Cn0K
+CnZvaWQgbGlidGVzdF93b3JrNCh2b2lkKQp7CglwcmludGYoIndvcmsgNFxuIik7CglET182
+Owp9Cg==
+--------------gsvJybHFweo94iGjbSJjNOSO--
 
