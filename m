@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106B541B7CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4689741B7CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242583AbhI1Txq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242559AbhI1Txp (ORCPT
+        id S242586AbhI1Tyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:54:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242529AbhI1Tyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:53:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D448C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=nCp0Yz6+43NcQCPSO/yhFy3yK/O2S77aIJzE0JnpptE=; b=NYL7YHpCdUXLjSmdKsIbe/BQdy
-        Sh8Vpcc5CEXi7r4WM0/4xxfwvl31kS8cBkOeXMzW3HnKyl7tCjw/qvLMdNAmy1qBFD0HULW2d1Khu
-        dRRUEctDqPd1HiyfOWEQ/wBUkwXWF9bFJFX55QDua47bgD5/RE1ehbGh9cTZPHGoUGgTlIlUCsvTg
-        8BJ2eX1F6/rq96xigBHVpL6DsTGVlp4YHEIkUX9TNZSFTi7Luq3W/rkXlDhSOevL81VlQbsJ7wZbm
-        +DwNrXnjc7DOzmbzjE9ys0jXnA8rTfnGfjl5lEV5zLHCZ748jCMoCYnnAfeY1hRBUlAIqPnLfrh8m
-        x7j8LgCg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVJ91-008hwr-Ve; Tue, 28 Sep 2021 19:52:04 +0000
-Subject: Re: [PATCH v2] HSI: cmt_speech: unmark comments as kernel-doc
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>
-References: <20210928183536.30645-1-rdunlap@infradead.org>
- <20210928185727.GA10433@duo.ucw.cz>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <85f5c28b-3b70-8e31-47a0-7317ebdc216f@infradead.org>
-Date:   Tue, 28 Sep 2021 12:52:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 28 Sep 2021 15:54:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632858777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=b5Pr+HGo0VsJRt4BRSo/Ay3yDNn7rHBhRVyf1dECUj4=;
+        b=fg9zJGECiRrDF9Qne7VET7uNcebb+MusuhWsZwx8iBoyGjsubmoNp6F4h9uXOZ1XpY3nAO
+        fsG1Q6I77tTGDyRZNbolOESGSoBHHI7uno0OX+9G78LyAnI/F+hmfOC0ttoHC8z7OZi83U
+        eqpFvEwx+t9Gt6cQLw1VGd7az8I32rY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-AZwxMExiOiqGiHDDwIy9Jw-1; Tue, 28 Sep 2021 15:52:56 -0400
+X-MC-Unique: AZwxMExiOiqGiHDDwIy9Jw-1
+Received: by mail-ed1-f72.google.com with SMTP id e21-20020a50a695000000b003daa0f84db2so529970edc.23
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:52:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b5Pr+HGo0VsJRt4BRSo/Ay3yDNn7rHBhRVyf1dECUj4=;
+        b=R42anhzeMsWy5G/pmyoTaectTXP7Q7vZ9wIFfBasYLxEcjymj2T6TwZ37/G8rpNHID
+         zmKUHQlSM3WO+1G92IglhcgdSlLAIxDO6l5uPQFrmZX15JGxgbBs3+hTzhc7+RK1EFqL
+         b+gpkNVySWqT9sYTWYCGGUENvwigmeesE/B8aBOJD7e+IhSy4wAsjpWGGWSwOLd+HTIE
+         +CdXMssTAMyO+6pbOinUqf2Ure3BuRW1unBKJe5eS34T8qRzUhZToApGpjbjlCie5ibX
+         evuOjpLAx5Di0K6Dr53UKHp7gDbhc06Vdlo69LUZ0g5B29Qaqwot4iX5j4sCwl7SWmGE
+         yK7A==
+X-Gm-Message-State: AOAM532zlmiFUb4JxvEYb1yIBvqMKvmkDWnXErfwAwUoHgbdfuQzbfMJ
+        Ct5VeDWW6c3Kf396ehYMnlBI/1Cubze+INXFIschj8GbyYWYQ1PA4edS2bMomwmOecXVto04vCP
+        00UWh/sDtTFYWHWdiJYGLT0lS
+X-Received: by 2002:a50:e004:: with SMTP id e4mr9787451edl.246.1632858774918;
+        Tue, 28 Sep 2021 12:52:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHmN/IaKKY1y6HHuNeHi6O+hxb9oUUc4ARbmAi39L5zYMJRrfpZIoddpfzhH47CeZ1iL0zLg==
+X-Received: by 2002:a50:e004:: with SMTP id e4mr9787434edl.246.1632858774710;
+        Tue, 28 Sep 2021 12:52:54 -0700 (PDT)
+Received: from krava.cust.in.nbox.cz ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id i4sm31036edt.29.2021.09.28.12.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 12:52:54 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Mark Wielaard <mjw@redhat.com>,
+        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH] perf tools: Fix compilation on powerpc
+Date:   Tue, 28 Sep 2021 21:52:53 +0200
+Message-Id: <20210928195253.1267023-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210928185727.GA10433@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 11:57 AM, Pavel Machek wrote:
-> Hi!
-> 
->> Fix build warnings from the kernel test robot:
->>
->> drivers/hsi/clients/cmt_speech.c:831: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->>      * Block until pending data transfers have completed.
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Sebastian Reichel <sre@kernel.org>
->> Cc: Aditya Srivastava <yashsri421@gmail.com>
->> Acked-by: Pavel Machek <pavel@ucw.cz>
-> 
-> If noone applies it, you may want to send it to akpm, he's  often
-> helpful in pushing similar patches.
+Got following build fail on powerpc:
 
-Yes, good idea. Thanks.
+    CC      arch/powerpc/util/skip-callchain-idx.o
+  In function ‘check_return_reg’,
+      inlined from ‘check_return_addr’ at arch/powerpc/util/skip-callchain-idx.c:213:7,
+      inlined from ‘arch_skip_callchain_idx’ at arch/powerpc/util/skip-callchain-idx.c:265:7:
+  arch/powerpc/util/skip-callchain-idx.c:54:18: error: ‘dwarf_frame_register’ accessing 96 bytes \
+  in a region of size 64 [-Werror=stringop-overflow=]
+     54 |         result = dwarf_frame_register(frame, ra_regno, ops_mem, &ops, &nops);
+        |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  arch/powerpc/util/skip-callchain-idx.c: In function ‘arch_skip_callchain_idx’:
+  arch/powerpc/util/skip-callchain-idx.c:54:18: note: referencing argument 3 of type ‘Dwarf_Op *’
+  In file included from /usr/include/elfutils/libdwfl.h:32,
+                   from arch/powerpc/util/skip-callchain-idx.c:10:
+  /usr/include/elfutils/libdw.h:1069:12: note: in a call to function ‘dwarf_frame_register’
+   1069 | extern int dwarf_frame_register (Dwarf_Frame *frame, int regno,
+        |            ^~~~~~~~~~~~~~~~~~~~
+  cc1: all warnings being treated as errors
 
+The dwarf_frame_register args changed with [1],
+Updating ops_mem accordingly.
+
+[1] https://sourceware.org/git/?p=elfutils.git;a=commit;h=5621fe5443da23112170235dd5cac161e5c75e65
+
+Cc: Mark Wielaard <mjw@redhat.com>
+Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+---
+ tools/perf/arch/powerpc/util/skip-callchain-idx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/arch/powerpc/util/skip-callchain-idx.c b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
+index 3018a054526a..20cd6244863b 100644
+--- a/tools/perf/arch/powerpc/util/skip-callchain-idx.c
++++ b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
+@@ -45,7 +45,7 @@ static const Dwfl_Callbacks offline_callbacks = {
+  */
+ static int check_return_reg(int ra_regno, Dwarf_Frame *frame)
+ {
+-	Dwarf_Op ops_mem[2];
++	Dwarf_Op ops_mem[3];
+ 	Dwarf_Op dummy;
+ 	Dwarf_Op *ops = &dummy;
+ 	size_t nops;
 -- 
-~Randy
+2.31.1
+
