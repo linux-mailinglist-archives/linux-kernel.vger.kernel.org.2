@@ -2,176 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E3D41B9B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1B541B9B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243010AbhI1V4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:56:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242953AbhI1V4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:56:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C37E361361;
-        Tue, 28 Sep 2021 21:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632866068;
-        bh=5DC628JTfQgAdUOV20xA7AYdGWA68TDRdk2X9voYma8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TB91dGpae+2oXhyXtRjt4A/AnKDSZeaXqF/4nC/GuwWNcBeXU2xgPv+aMyqqnWhpQ
-         R8hRAFfta3yO3WW9M76wiJqw6ODyBncufTbJ+umXyxMQ5+t06scVlpgQrBz4khL5uL
-         BQrq7J2g4CXvO6qL5E8U0Qqs1xXtCV9JLC84N2xMqJ+wfoTI2Jksi7t9Ygyn4LLLNv
-         HklrdNY5cvq5ZFwsrpJGTYtrAavSGtAbeg+nNTnS3zJD629U94HoLP1u+a3bMnlBsG
-         xes10S4H6jPKqEweMzWOZZ+9SyJxszj/o3hZ2mkeBRUwi+wKzZSTJzhF5V8xUdR3Js
-         qeI7Y3CCeHRlQ==
-Date:   Tue, 28 Sep 2021 23:54:25 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/3] get_abi: improve message output and fix a
- regression
-Message-ID: <20210928235425.02ffa1a4@coco.lan>
-In-Reply-To: <YVNOZ3GKcpRxPXzv@kroah.com>
-References: <cover.1632823172.git.mchehab+huawei@kernel.org>
-        <YVL2trHQzxG59nXf@kroah.com>
-        <20210928142739.2ffe380b@coco.lan>
-        <YVNOZ3GKcpRxPXzv@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S242917AbhI1WAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:00:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38366 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241482AbhI1WAE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:00:04 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632866303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XR+T+4Yz7vkyWVX7zGt6efMFvlpokGhPisZF/3hhTbs=;
+        b=0X9eMmEL8b2e7Q0egDdfX+psnLY1wdt5LR2yJPPo5OtUnDYUHSsCV0HDjuCWh6/wvsPZrC
+        iGJKf47i+P0dd9x/OzAnnLRLiI9i6/zMW5FNi4qzpH7Q5DYO//LUhO7CVtGsItKHCQAbNS
+        RhI6+AQTjJ63GscJchjsn9ZcO+vV8MVxQbfU7l3u75VlbukEPBNkCMZNAq+a7KixU9tKdD
+        L8gTWKgoBPJAukhj6BpO9xDirbVGGiP9B7yXrmS5ogCevyVSvkwLPVKyP6Z1URHMULs5b/
+        xd5T1LHGRvMc+XOpIQCxom1D0E1/ueSFu7jarQzr1fhw2QkgG0/gdJYGsors/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632866303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XR+T+4Yz7vkyWVX7zGt6efMFvlpokGhPisZF/3hhTbs=;
+        b=BUMSEcsCZcgPUpZ8rPOVtXlYqrcbr7K15XgcQPCvyHw0jA7unvoMIQzrmiiA8hrwCqqh+j
+        QgdVh/ABQHREPKCQ==
+To:     Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/5 v0.6] sched/umcg: RFC: add userspace atomic helpers
+In-Reply-To: <20210917180323.278250-3-posk@google.com>
+References: <20210917180323.278250-1-posk@google.com>
+ <20210917180323.278250-3-posk@google.com>
+Date:   Tue, 28 Sep 2021 23:58:23 +0200
+Message-ID: <87ilyk9xc0.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 28 Sep 2021 19:18:31 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+Peter,
 
-> On Tue, Sep 28, 2021 at 02:27:39PM +0200, Mauro Carvalho Chehab wrote:
-> > Em Tue, 28 Sep 2021 13:04:22 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> >   
-> > > On Tue, Sep 28, 2021 at 12:14:01PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Hi Greg,
-> > > > 
-> > > > As promised on
-> > > > 
-> > > > 	https://lore.kernel.org/lkml/20210928120304.62319fba@coco.lan/T/#u
-> > > > 
-> > > > I'm adding progress info when  get_abi.pl is checking for undefined ABI symbols
-> > > > on patches 1 and 2.
-> > > > 
-> > > > That will help not only to identify what is causing delays on the script, but also
-> > > > to notify the user that processing it could take some time on some systems.
-> > > > 
-> > > > If you run it on your big server with:
-> > > > 
-> > > >   scripts/get_abi.pl undefined 2>logs
-> > > > 
-> > > > The "logs" file will contain timestamps relative to the time the script started to
-> > > > do the regex matches for sysfs files. It should be printing one line every
-> > > > time the progress completes 1% or one second after the last progress output.    
-> > > 
-> > > Adding more debugging and tweaking the script a bit to show the file it
-> > > is about to check, not the one it finished checking,  
-> > 
-> > Feel free to modify the script and add such debug/tweaks if you find
-> > it useful. 
-> >   
-> > > I got the following
-> > > debug output that seems to pinpoint the problem file.
-> > > 
-> > > The sysfs file that is causing problems is:
-> > > 	/sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap
-> > > 
-> > > and here's some debugging output for the regex it needs to search for
-> > > this:
-> > > 
-> > > /sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:07.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:07.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:07.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
-> > > /sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:02/device:7a/physical_node/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
-> > > /sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:02/device:7a/physical_node/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
-> > > /sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:02/device:7a/physical_node/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.0/0000:4b:0a.0/0000:50:00.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.0/0000:4b:0a.0/0000:50:00.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
-> > > /sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.0/0000:4b:0a.0/0000:50:00.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/  
-> > 
-> > Hmm... interesting. Perhaps the problem is on regexes like this:
-> > 
-> > 	/^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
-> > 
-> > Which actually represents this What:
-> > 	/sys/devices/pciXXXX:XX/0000:XX:XX.X/dma/dma<n>chan<n>/quickdata/cap
-> > 
-> > The script could have done a better job escaping "." character on
-> > it (but that is not too trivial) and grouping altogether ".*" 
-> > repetitions, although, in this specific case, probably the best
-> > regex would be, instead:
-> > 
-> > 	/sys/devices/pci[\da-f:\.]+/dma/dma\d+chan\d+/quickdata/cap
-> > 
-> > One possible long-term solution would be to directly use regexes 
-> > directly on "What" fields inside Documentation/ABI, but on some parts
-> > this would require some changes, like, for instance:
-> > 
-> > 	/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/kone/roccatkone<minor>/weight
-> > 
-> > Ok, we could likely use capture groups like:
-> > 
-> > 	(?<NAME>pattern)
-> > 
-> > but IMO that would make it a lot harder to be understood by humans.
-> > 
-> >   
-> > > And sometimes this thing finishes in 20 seconds, and others, many many
-> > > minutes.  It's not deterministic at all, which is odd.  Is the sysfs
-> > > tree being sorted so that this should always have the same search order?  
-> > 
-> > No, because it uses a lot of hashes in order to speed it up. Yet,
-> > it shouldn't be hard - nor it would significantly affect the processing
-> > time - to make it more deterministic. See the enclosed path.  
-> 
-> That patch solved everything.
-> 
-> It now only takes 10 seconds.  Every time.  Without the patch, it feels
-> hung for some reason.
+On Fri, Sep 17 2021 at 11:03, Peter Oskolkov wrote:
 
-The explanation is simple  - still weird :-) - basically, when an ABI
-symbol is found, the regex test loop stops.
+> Add helper functions to work atomically with userspace 32/64 bit values -
+> there are some .*futex.* named helpers, but they are not exactly
+> what is needed for UMCG; I haven't found what else I could use, so I
+> rolled these.
+>
+> At the moment only X86_64 is supported.
+>
+> Note: the helpers should probably go into arch/ somewhere; I have
+> them in kernel/sched/umcg_uaccess.h temporarily for convenience. Please
+> let me know where I should put them.
 
-Sorting the regexes probably placed the slowest regex to happen
-*after* the one that matched the ABI symbol.
+Again: This does not qualify as a changelog, really.
 
-> Care to turn that into a patch that I can take?
+That aside, you already noticed that there are futex helpers. Your
+reasoning that they can't be reused is only partially correct.
 
-Sure. Just sent it.
+What you named __try_cmpxchg_user_32() is pretty much a verbatim copy of
+X86 futex_atomic_cmpxchg_inatomic(). The only difference is that you placed
+the uaccess_begin()/end() into the inline.
 
-> 
-> > > Anyway, I've applied this series as well, this helps in finding the
-> > > problems :)  
-> > 
-> > Thanks!
-> >   
-> > > Note, I can provide an off-list tarball of /sys/ if that would help in
-> > > debugging anything on your end.  
-> > 
-> > Yeah, that can help. Feel free to send it to me.
-> > 
-> > Btw, I just got an arm64 server with 128 CPUs for testing. I'm trying
-> > to allocate also a big x86 server here, but I'm not sure if it is AMD or
-> > Intel.  
-> 
-> This is on perl 5.34 here.
-> 
-> thanks,
-> 
-> greg k-h
+Not going anywhere. You have the bad luck to have the second use case
+for such an infrastucture and therefore you have the honours of mopping
+it up by making it a generic facility which replaces the futex specific
+variant.
 
+Also some of the other instances are just a remix of the futex_op()
+mechanics so your argument is even more weak.
 
+> +static inline int fix_pagefault(unsigned long uaddr, bool write_fault, int bytes)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	int ret;
+> +
+> +	/* Validate proper alignment. */
+> +	if (uaddr % bytes)
+> +		return -EINVAL;
+
+Why do you want to make this check _after_ the page fault? Checks
+on user supplied pointers have to be done _before_ trying to access
+them.
+
+> +
+> +	if (mmap_read_lock_killable(mm))
+> +		return -EINTR;
+> +	ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
+> +			NULL);
+> +	mmap_read_unlock(mm);
+> +
+> +	return ret < 0 ? ret : 0;
+> +}
+
+There is no point in making this inline. Fault handling is not a hotpath
+by any means.
+
+Aside of that it's pretty much what futex.c::fault_in_user_writeable()
+does. So it's pretty obvious to factor this out in the first step into
+mm/gup.c or whatever place the mm people fancy and make the futex code
+use it.
+
+> +/**
+> + * cmpxchg_32_user_nosleep - compare_exchange 32-bit values
+> + *
+> + * Return:
+> + * 0 - OK
+> + * -EFAULT: memory access error
+> + * -EAGAIN: @expected did not match; consult @prev
+> + */
+> +static inline int cmpxchg_user_32_nosleep(u32 __user *uaddr, u32 *old, u32 new)
+> +{
+> +	int ret = -EFAULT;
+> +	u32 __old = *old;
+> +
+> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +
+> +	__uaccess_begin_nospec();
+
+Why exactly do you need _nospec() here? Just to make sure that this code
+is x86 only or just because you happened to copy a x86 implementation
+which uses these nospec() variants?
+
+Again, 90% of this is generic and not at all x86 specific and this
+nospec() thing is very well hidden in the architecture code for a good
+reason while
+
+       if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
+		return -EFAULT;
+
+	pagefault_disable();
+        ret = user_op(.....);
+	pagefault_enable();
+        
+is completely generic and does not have any x86 or other architecture
+dependency in it.
+
+> +	ret = __try_cmpxchg_user_32(old, uaddr, __old, new);
+> +	user_access_end();
+> +
+> +	if (!ret)
+> +		ret =  *old == __old ? 0 : -EAGAIN;
+> +
+> +	pagefault_enable();
+> +	return ret;
+> +}
+
+Aside of that this should go into mm/maccess.c or some other reasonable
+place where people can find it along with other properly named
+_nofault() helpers.
+
+Nothing except the ASM wrappers is architecture specific here. So 90% of
+this can be made generic infrastructure as out of line library code.
+
+And yes, I mean out of line library code unless you can come up with a
+compelling reason backed by actual numbers why this has to be inlined.
+
+May I recommend to read this for inspiration:
+
+  https://lore.kernel.org/lkml/alpine.LFD.2.00.1001251002430.3574@localhost.localdomain/
 
 Thanks,
-Mauro
+
+        tglx
