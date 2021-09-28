@@ -2,174 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E486841B3ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C56B41B3F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhI1QcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:32:21 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:13488 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241800AbhI1QcS (ORCPT
+        id S241781AbhI1Qfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241766AbhI1Qfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:32:18 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SFpceK024408;
-        Tue, 28 Sep 2021 11:30:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=lDsgfNRJKnCcRztCgiTQv34/875GpVZYZarRaSv+m9g=;
- b=Bo78CuA8FPaKv+v++tT13xG3buhkANqIVlc6gkBvHzf2TS7tXsjU8jAb5rOslC3o6GZm
- Yez1pfRQPlH/sJe0b3969bhAMZvSRbB+s4skBArtkidmcdSMDOM8XmmlCjO7Lexe6XnC
- ctriCIYNUCt+FqGXn8ipVYwjASbJLYma3/5IfTNuSV7WmbRy63YIJG0IOMw2tKlMOXu9
- VzwSflTeKbttElo0atyiq7Cw4IjyMjn6c1dH296F8e1MM2vGCYRyTesU421Sx23ITDPx
- YrGEBPcpC1dTEhEyu23+/pKhLCq2/sutoVAY1RBfWk6AIQLS5aTkF5zfSPd2wV7Fy7yJ zQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3bc62dg1y8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Sep 2021 11:30:36 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 28 Sep
- 2021 17:30:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Tue, 28 Sep 2021 17:30:35 +0100
-Received: from algalon.ad.cirrus.com (unknown [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1BEA0B0E;
-        Tue, 28 Sep 2021 16:30:35 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <lee.jones@linaro.org>
-CC:     <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: [PATCH v2] mfd: arizona: Split of_match table into I2C and SPI versions
-Date:   Tue, 28 Sep 2021 17:30:35 +0100
-Message-ID: <20210928163035.23960-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+        Tue, 28 Sep 2021 12:35:33 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57214C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:33:54 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id x12so7897249qkf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=VtwzV2efLkjsFNIGItsdV2UmMmN4tPD6hnSWw71kvwxcmtyhtlrcpp9SwlZrZBhl59
+         ycaJyBkKOWmnjxOnqlVcMh7moIyujpNqH8KFSeghUV8Yf3W6wXTBocCfoAQzGU1UNnnT
+         EHNa70bTs08sqEHAgA4GuzoH4VhyeGSXTm750QkIdhqGR7+TmsFxXNCRIMfkn5if2btF
+         LUATuJ+3Bta0mAhoCvpJmquJcHxKmLGGgH1joQVdYL120JBqgIwgP5iido3JOBgVty5H
+         /ROxZqRCc4qO/LuHGokrFuhxSxy6m58xeyd3AGUk4zwos+HawqXb0Z3wMAJnJhHLKbfy
+         xjsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=eS8dzWoWsQ5OnHNa7o/jY/80ZTDH10rqKpmb0xh894eNX9/7lQatxSapT9QuKVabWI
+         bPdALqvEVZuUscDnwAXlXw3vdLMcCcEdZotPVKJGraEfmteSV5jkZH8a0bFKPwQCYgBS
+         JlG98m4nfuM7tTtG9xhfgTxg7+1+pAoFfpukUi4rNIBAQ8dl2czxS8PwhXpnuH9f8Hmo
+         hTp4sJigC4ycvDP9YzvgbmcAt5PFLzjAaSoqWqWbugOrcHcAXEh54lWMYXXj1ZC9mwAg
+         icZ1q2kczhZMHZqitu4bAllppkR0K6grWa5E9x8zt4OYxYlysj5btgj4uqjxCvB3a3wj
+         7fqQ==
+X-Gm-Message-State: AOAM532La7FT7h02CaKsYNBzOv+q+joorSw1uIxQK/gdpJbmfH9Nid2n
+        gscx3UhF/N3f59XO58BhfAyVIuP6otOoAj4WepVsm5E+VQw=
+X-Google-Smtp-Source: ABdhPJwM471SQzIA1CTQ1jfMAWn8xCpEyNb23avmeKunj78lHBJpbrHuUDx9nisLd0dwRJLaSDaWJlasW8GcHmwv8Jo=
+X-Received: by 2002:ae9:ddc7:: with SMTP id r190mr878003qkf.362.1632846833363;
+ Tue, 28 Sep 2021 09:33:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: _EYJtK_3Y-EHqdoDcUYL_DQOfjCo58yS
-X-Proofpoint-ORIG-GUID: _EYJtK_3Y-EHqdoDcUYL_DQOfjCo58yS
-X-Proofpoint-Spam-Reason: safe
+Received: by 2002:ad4:5fc5:0:0:0:0:0 with HTTP; Tue, 28 Sep 2021 09:33:52
+ -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi344@gmail.com>
+Date:   Tue, 28 Sep 2021 09:33:52 -0700
+Message-ID: <CADgtnOMkiTMfSc-KxMCEXCmbwhK2VwwSh1tMPy41t4HfmeU7uA@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Arizona driver has both some devices which only have an I2C
-interface and some which only have a SPI interface. Currently both of
-these share an of_match table, but this means inapproriate compatibles
-are available for each interface. Tidy this up by creating a table for
-each interface listing only the appropriate compatibles.
+Dear Friend,
 
-Reported-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-Changes since v1:
- - Drop inappropriate fixes tag
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-Thanks,
-Charles
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
 
- drivers/mfd/arizona-core.c | 13 -------------
- drivers/mfd/arizona-i2c.c  | 14 +++++++++++++-
- drivers/mfd/arizona-spi.c  | 13 ++++++++++++-
- drivers/mfd/arizona.h      |  2 --
- 4 files changed, 25 insertions(+), 17 deletions(-)
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 9323b1e3a69ef..cbf1dd90b70d5 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -845,19 +845,6 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 
- 	return 0;
- }
--
--const struct of_device_id arizona_of_match[] = {
--	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
--	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
--	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
--	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
--	{ .compatible = "wlf,wm8998", .data = (void *)WM8998 },
--	{ .compatible = "wlf,wm1814", .data = (void *)WM1814 },
--	{ .compatible = "wlf,wm1831", .data = (void *)WM1831 },
--	{ .compatible = "cirrus,cs47l24", .data = (void *)CS47L24 },
--	{},
--};
--EXPORT_SYMBOL_GPL(arizona_of_match);
- #else
- static inline int arizona_of_get_core_pdata(struct arizona *arizona)
- {
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 5e83b730c4ced..3ed810e81f631 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -104,11 +104,23 @@ static const struct i2c_device_id arizona_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, arizona_i2c_id);
- 
-+#ifdef CONFIG_OF
-+const struct of_device_id arizona_i2c_of_match[] = {
-+	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
-+	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
-+	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
-+	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
-+	{ .compatible = "wlf,wm8998", .data = (void *)WM8998 },
-+	{ .compatible = "wlf,wm1814", .data = (void *)WM1814 },
-+	{},
-+};
-+#endif
-+
- static struct i2c_driver arizona_i2c_driver = {
- 	.driver = {
- 		.name	= "arizona",
- 		.pm	= &arizona_pm_ops,
--		.of_match_table	= of_match_ptr(arizona_of_match),
-+		.of_match_table	= of_match_ptr(arizona_i2c_of_match),
- 	},
- 	.probe		= arizona_i2c_probe,
- 	.remove		= arizona_i2c_remove,
-diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-index aa1d6f94ae532..9fe06dda37829 100644
---- a/drivers/mfd/arizona-spi.c
-+++ b/drivers/mfd/arizona-spi.c
-@@ -225,11 +225,22 @@ static const struct spi_device_id arizona_spi_ids[] = {
- };
- MODULE_DEVICE_TABLE(spi, arizona_spi_ids);
- 
-+#ifdef CONFIG_OF
-+const struct of_device_id arizona_spi_of_match[] = {
-+	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
-+	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
-+	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
-+	{ .compatible = "wlf,wm1831", .data = (void *)WM1831 },
-+	{ .compatible = "cirrus,cs47l24", .data = (void *)CS47L24 },
-+	{},
-+};
-+#endif
-+
- static struct spi_driver arizona_spi_driver = {
- 	.driver = {
- 		.name	= "arizona",
- 		.pm	= &arizona_pm_ops,
--		.of_match_table	= of_match_ptr(arizona_of_match),
-+		.of_match_table	= of_match_ptr(arizona_spi_of_match),
- 		.acpi_match_table = ACPI_PTR(arizona_acpi_match),
- 	},
- 	.probe		= arizona_spi_probe,
-diff --git a/drivers/mfd/arizona.h b/drivers/mfd/arizona.h
-index 801cbbcd71cb5..66d6092d08515 100644
---- a/drivers/mfd/arizona.h
-+++ b/drivers/mfd/arizona.h
-@@ -28,8 +28,6 @@ extern const struct regmap_config wm8998_i2c_regmap;
- 
- extern const struct dev_pm_ops arizona_pm_ops;
- 
--extern const struct of_device_id arizona_of_match[];
--
- extern const struct regmap_irq_chip wm5102_aod;
- extern const struct regmap_irq_chip wm5102_irq;
- 
--- 
-2.11.0
+Your Urgent Reply Will Be Appreciated
 
+Best Regards
+Mrs Aisha Al-Qaddafi
