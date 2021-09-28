@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FF441A421
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2F141A42F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238322AbhI1AXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 20:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238277AbhI1AXO (ORCPT
+        id S238326AbhI1AZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 20:25:30 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:20409 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238286AbhI1AZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 20:23:14 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F605C061575;
-        Mon, 27 Sep 2021 17:21:36 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t4so13016946plo.0;
-        Mon, 27 Sep 2021 17:21:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rXOyN7cYCqXSX6iikjn82iMAk6UNThUEEXx7lGzOOt4=;
-        b=J9KhDMLtVd5tT704X9aixuqITekkPkwRti5OjR8DcJSr+LTxrPZbORu3dQg6BSo5gL
-         EGwMMyw6516Texb/atKCACgde3F+p+wnqDchLMi6bpxiLrU9K7qZO4Oahx0+IanSxaGD
-         yxovs7s4/xWgYQKG/+/BuI21oQpXuSJ2QryT1OdUY2+vtjCBAhrhVNcK7tbyYurTWVjf
-         zN1ykmCfadZb59q34g3MySnqibs5WfMjhmDY6P5G8GlbqhKSvHSbSHvTlTdH+Vet4aKd
-         olj39wNQb5wk4yoOV2OUBen/tNQnJYM9ir71KnwnkmcC1vpS9caa0s6CJCL1/zW8NCMk
-         waBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rXOyN7cYCqXSX6iikjn82iMAk6UNThUEEXx7lGzOOt4=;
-        b=YbvuzfqBZiv6w36/UZ89CpoIW/gFvtilzfi0cBoT3JWRg0SDXrQpueOYHIMiWj6183
-         E293HgbysyFrc+dKlw14zDPmRI2lvtP0SgoWmmr7Uf3/7cR4ig043yA/3zma3CAqqmBh
-         AZJNdZ+lgDaDWfTgAneztuBbNOS3rP4fTX/DZGn/nDIdNJeFEKjvkd44UNHvl7xcQmKh
-         Rid385PDuO/Ck1OrjEAfuFLwpJJONs8oZq1sqbBUc59UuP8t1Pe1hfrwx61R4HnYxu8e
-         MvOCaSIpqy9srUSC5I9k6scHOl1pstIyLqIzI9F8fMfRgFLtu2YgE+XtIfaGo6qj2l9b
-         gxgQ==
-X-Gm-Message-State: AOAM532Gu8+3tvOEgpqfrw2/JZWxnQl8C7+0T/FJKbXHoBLdJLaA8l4m
-        BfGhwlwmf+v4Abby4MoQ1LA=
-X-Google-Smtp-Source: ABdhPJzfyG+PLLZ1NxOQUYogdGiadh+1ePkj9Sr+jegfcTFCzKP/FpyWzcTKx3eKBLXzQzZG4SvRSQ==
-X-Received: by 2002:a17:90a:4983:: with SMTP id d3mr2095484pjh.53.1632788495597;
-        Mon, 27 Sep 2021 17:21:35 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id n205sm18771916pfd.38.2021.09.27.17.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 17:21:35 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] rcu: in_irq() cleanup
-Date:   Tue, 28 Sep 2021 08:21:28 +0800
-Message-Id: <20210928002128.4501-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 27 Sep 2021 20:25:29 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 18S0Nk73077350
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:23:47 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1632788621; x=1635380621;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=H4H4eHZ/VB5yQHB7IzcqAr0zdp0RwBZizZ+dsLp428E=;
+        b=sNfQG71BU+m15ZBqpIM20Jl0Adajon9dQxJtOmnZNBc/pj49T1vSXigQGzlxXnK+
+        6dhAR78y55ml3vSJA9jXWRRlkn5ihVg+cWnaleeLXETlDLh89P4wJAnAROQN2feL
+        BNwxcZ7rjSNV8Lls2mmLxXk0h7fCOOh3nKJVSquCuGhJwRNXcbKk+6HrUNYxiw71
+        lbAUj5UzMvMhkugELcfTVRPBBuUCCR1AOHlzuFEzJdw2l7nptigs2esUy22FKwIV
+        +zVs+/TxmAbx0+NU6CuQm6Ti9AfSXtBLkkVLCJz+XPa3jBkRg+32N5VpZZfAP9lL
+        nsleE/GIT3o24n+554MhOQ==;
+X-AuditID: 8b5b014d-b84f570000005d46-96-6152608d7b89
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 92.5D.23878.D8062516; Tue, 28 Sep 2021 03:23:41 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Tue, 28 Sep 2021 03:23:37 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Greg Favor <gfavor@ventanamicro.com>
+Cc:     Atish Patra <atishp@atishpatra.org>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?Q?Wei_Wu_=28=E5=90=B4=E4=BC=9F=29?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        Xinhaoqu <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>
+Subject: Re: [PATCH V2 1/2] riscv: Add RISC-V svpbmt extension
+Organization: FORTH
+In-Reply-To: <CA+Qh7T=kud8AM-6JjuWNwJY0r_gkmnP6SmzVXqeE2VYxViLUoQ@mail.gmail.com>
+References: <20210923172107.1117604-1-guoren@kernel.org>
+ <CAOnJCUJWnDB+uRxDh=YSbGW4bf5RQvke03iCTYMYHPsw3cwnHQ@mail.gmail.com>
+ <CAOnJCULrE595ex3gBTnu4GnPazO4mg8Tkrtbv6j8iLWe+sKJSA@mail.gmail.com>
+ <CA+Qh7T=kud8AM-6JjuWNwJY0r_gkmnP6SmzVXqeE2VYxViLUoQ@mail.gmail.com>
+Message-ID: <ce3bb9f5c72f0feb1cf9a0d67edaedf6@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOKsWRmVeSWpSXmKPExsXSHT1dWbc3ISjRYF6DvsWTQ+1sFtMOHGK3
+        aJ2wm8XiyYeJbBZ/Jx1jt1i04juLRcc5N4slO6Ut9rzaw25xobmH0eLeimXsFrv757BYbD//
+        nc3ixd5GFovjj3axWKxcfZTJ4kLjTXaLy6vnM1k8P3WMzeLSl2ssFpd3zWGz2Pa5hc1i5bpj
+        zBYzfvxjtGh+d47d4uXlHmaLrRvXMVp0r6y2OLnhAKPFmqVTGS1a9k9hsfh56DyTxcLX89gd
+        FD1etT1j8vj9axKjx7WOjSwe734vY/RY0/mayWNWQy+bx51z59k8Njxazerx5uVLFo//h1ay
+        eOycdZfdY8GmUo+WI29ZPR5uusTksWlVJ5vHzoeWAZJRXDYpqTmZZalF+nYJXBkz33QwF1zl
+        qGjeNo2lgfEbWxcjJ4eEgInE0u7HrF2MXBxCAkcZJebv/8AEkTCVmL23kxHE5hUQlDg58wkL
+        iM0sYCEx9cp+RghbXqJ562xmEJtFQFVi5a4dYDabgKbE/EsHwepFBDQkTn7bxw6ygFlgF6fE
+        lcONYI6EwEQmiV9XpoJNEhawk1g+byvYZn4BYYlPdy8CncTBwSkQKHFtcxrEdb1MEr9bn7BB
+        XOQisendZFaIS1UkPvx+wA5SLwpkb56rNIFRaBaSu2chuXsWkrsXMDKvYhRILDPWy0wu1kvL
+        LyrJ0Esv2sQITjuMvjsYb29+q3eIkYmD8RCjBAezkghvMIt/ohBvSmJlVWpRfnxRaU5q8SFG
+        aQ4WJXFeXr0J8UIC6YklqdmpqQWpRTBZJg5OqQamJWsNI8MrhTznWWta7u5dcyNoY7Rdxcpn
+        Jk5VN39zWctHPm/MNTvw/5zDrcurjhhHKZh/vSl45NiD+2c6ZFP4V8Uf2+9vm/2Z1UjawmRP
+        9M9bf9w1tMMiVxWpr7/0pfqjAovWtYXPVCJXzto4N2th9BWBlTnX455n3M07kn6+abuCe1nV
+        PldWrrMzmNbcbRGI/rRfMHT3fb6aFS7iHCelOrfdP9/F7cjO/dapeOWB2b7p03nYLJ52C70p
+        1Egx/3ckZlG1GmO293Nh8dPp92e3Hj8m/OqTWd6EC3LSNhc04758rfxX+mv6xJf3g+ZqHNgo
+        97e5fH9A9PVX1pECQuH/z1/ftrejJGl65u7Vrzt5lFiKMxINtZiLihMBau+qEaoDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the obsolete and ambiguos macro in_irq() with new
-macro in_hardirq().
+Hello Greg,
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- include/linux/rcutiny.h  | 2 +-
- kernel/rcu/tree.c        | 2 +-
- kernel/rcu/tree_plugin.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Στις 2021-09-27 23:53, Greg Favor έγραψε:
+> With the big caveat that I haven't been in the middle of this 
+> discussion, it seems like Allwinner D1's changes represent a custom 
+> (and nonconforming) extension.  Isn't this just a matter of the patch 
+> needing to be treated as for a RISC-V custom extension per the recently 
+> clarified policy for handling upstreaming/etc. of custom extensions?  
+> (Philipp can speak to this clarified policy.)  Or what am I missing?
+> 
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 9be015305f9f..858f4d429946 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -85,7 +85,7 @@ static inline void rcu_irq_enter_irqson(void) { }
- static inline void rcu_irq_exit(void) { }
- static inline void rcu_irq_exit_check_preempt(void) { }
- #define rcu_is_idle_cpu(cpu) \
--	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
-+	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
- static inline void exit_rcu(void) { }
- static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
- {
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index bce848e50512..b53dd00975ab 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1471,7 +1471,7 @@ static void rcu_gp_kthread_wake(void)
- {
- 	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
- 
--	if ((current == t && !in_irq() && !in_serving_softirq()) ||
-+	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
- 	    !READ_ONCE(rcu_state.gp_flags) || !t)
- 		return;
- 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index d070059163d7..727bf14c9a63 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -642,7 +642,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
- 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
- 			    t->rcu_blocked_node);
- 		// Need to defer quiescent state until everything is enabled.
--		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
-+		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
- 			// Using softirq, safe to awaken, and either the
- 			// wakeup is free or there is either an expedited
- 			// GP in flight or a potential need to deboost.
--- 
-2.32.0
+The Priv. Spec. defines sv39/48 without allowing custom use of reserved 
+pte bits by implementations, Allwinner D1 claims to be sv39 but it does 
+use reserved PTE bits. When vendors want to do custom stuff on PTEs, the 
+standard says they may use values 14-15 on satp.mode for that and define 
+their own MMU basically. Messing up with the implementation of sv39 is 
+not an extension, is violation of sv39. Even worse this implementation 
+can't work if we ignore the customization since without setting the 
+required bits on PTEs dma (and I believe SMP as well) doesn't work.
 
+Regards,
+Nick
