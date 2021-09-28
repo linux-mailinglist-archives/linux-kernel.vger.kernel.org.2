@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD5E41BB70
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141C241BB7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243550AbhI1X7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S243556AbhI1X7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243490AbhI1X7A (ORCPT
+        with ESMTP id S243605AbhI1X7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:59:00 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB85C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:57:15 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id h3-20020a170902704300b0013dbfc88e14so104822plt.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:57:15 -0700 (PDT)
+        Tue, 28 Sep 2021 19:59:12 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74665C06176F
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:57:17 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id h9-20020a17090a470900b001791c0352aaso292490pjg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=8a+pGr99SbxPPuDqxhZs4f7LER8gsJNgSzQRfQMX/ng=;
-        b=cDq5EHjkB+BlLQ77eVTRDNuITFRj28ahb032+NylHFG6C5BUaYWmmJ4RDXzqb46L4a
-         gxWX8hWE6q3yQByjEzaxt/goL0Lx8+Wj8NPtkLpHvmYERF4Ml8Z6IBJHSxR5VRtcAy/5
-         lGew9v8HMhlLKBREGnbOZPWoThQVPNisaI7K4kEfXkLFqGjlhZMPECrQk4zR9L32cins
-         H4dUXJ7RYsQs4O+2jKithABkGhQ1oLBxiPQs0tjU20W472hPN364yVfG4YM/ymDXuIPF
-         6rx1621Da0O1VzynkZtiOc0QBJLgvnh1dU4ZfLesXMjwIp3Ya+Xy73FAN3w7owNkH43p
-         RrfQ==
+        bh=ixpCREpropOCGCRbCNTt+ILPYTGJK7YTyRDE4hs8Q3U=;
+        b=TsgdlJd06yMGzkDYI5YTtAleRwmiUdX8LJDX+oB2En6Uwcaj/G8FgoXqLYqf/WvkoP
+         SB55oZLt98evS2kyJBBsT9PAH4/+ZKx3m1L0ppa3KKdu0Cstd5wV6LY6EwabpqF8Ekmy
+         KiG6I5Nhx5SXyIyADyBC2PB2BDs3qDmypwhG8lJkf2YhkkB8XHOHIoL5dDTP8We7DiHM
+         I0CPrUmV4v7SBtolQ3bmlYO3h/Ar1qWbt01GI7w6Ky+w+MbX42RaG5K1KJQRFVILOh0S
+         lQ0M6v2EqTOwU6eiStZ0lDufQN0xMYnMkbxq4N+Jq3CAI0VIe7qRAOZcQScyljKJzJB8
+         a/rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=8a+pGr99SbxPPuDqxhZs4f7LER8gsJNgSzQRfQMX/ng=;
-        b=xGHKTuBkvvDLBo4FrGS63LfxKXQOmpH9IfBz9AodV0wHGULOAfq86dNh0u7PBvQFKz
-         zAXnDqbQtjpH7UBsm9qjzypvc5IV53M3snv+s+Ixj6iQk1TsjlBaL2Lft1GVCEAf6WCe
-         kU7VKSJ7dQe+uehOHE4SKHujtbgc7aMlD2ucO+kdjt1aTapH5ZL+5K7OVIyuM4JaincL
-         MSMzlnaoA2naQhGh1WdlXfvzu9U/mpfTLjknJH3MtZBVINyeE6faALyBg1wAQGgMEGLe
-         GNhlDOjGIbhgn/I19UpN/RCPLxg+qGyvQq5Q6PJhxfmkKzHczksyUHfOEW/WiHKk/szA
-         R3+Q==
-X-Gm-Message-State: AOAM531eHGKKBcTsY9A7f7PUC+mL5lP4wP0XRyLy538Lq2R33LMr/2ny
-        gNLE/QPjREdW4BKx5PCrN0Pv7HifxRG3rV7dyBY=
-X-Google-Smtp-Source: ABdhPJxwcUuJteV50bGQEoklWqMpHmLg3VDiAYG2hThPHuW4JGrF3F5rgRl8xIKiaEkUVnIZuEE/iKxS8oQm/Sm4z0o=
+        bh=ixpCREpropOCGCRbCNTt+ILPYTGJK7YTyRDE4hs8Q3U=;
+        b=cDxLlkn4Q74Rk77Pm1BcUrkVqvFalVjMneugJw5daLr2PBw0Cwk1RttJelvEpv74Gd
+         0fUBc7yzMu8tYuCj0I6k9eXWgc+RQI/nYKDRlu8MtT3KNFlWqfB93ztSFxKjTaN/87Df
+         5yVyFKdJ/vskTcDXPu/e4y57BS1PXqRk9RDekKJbKE0QveOnLtA91VDazQwK/SSWnkCJ
+         MVeVIs/Oichgd87hnHOoHv6trVIZI9vaSc+9xf2B1Ortw5CAAtmEFeaYRJHfw4kX0JWR
+         VccLFhkELck1ypHNHiVz48aQZUdnVwdXjm+AHpwOQTNgWwIy9byIN7aWuc2WSc9PBghS
+         NGHQ==
+X-Gm-Message-State: AOAM533SGleg1IJ9h3ivy+ESQy2YjPIt2sPwgHcm/Yh0hIV5xlYXN4sO
+        g4cfx/x8AtfevgT+s6pNL4/Ag8dEb9nfY36bKA0=
+X-Google-Smtp-Source: ABdhPJydPTfhvEcIZ2rCgH9PDFfwCp4cgW7lTL1eXYIXByXNU/KAKSzrz+hFAOGr6G3aLwmq27iWLkEqkVEY8LO1tRk=
 X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:a17:90a:8b8d:: with SMTP id
- z13mr237355pjn.0.1632873434545; Tue, 28 Sep 2021 16:57:14 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 23:56:27 +0000
+ (user=willmcvicker job=sendgmr) by 2002:a05:6a00:2309:b0:444:6be1:c499 with
+ SMTP id h9-20020a056a00230900b004446be1c499mr458802pfh.62.1632873436877; Tue,
+ 28 Sep 2021 16:57:16 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 23:56:28 +0000
 In-Reply-To: <20210928235635.1348330-1-willmcvicker@google.com>
-Message-Id: <20210928235635.1348330-11-willmcvicker@google.com>
+Message-Id: <20210928235635.1348330-12-willmcvicker@google.com>
 Mime-Version: 1.0
 References: <20210928235635.1348330-1-willmcvicker@google.com>
 X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH v2 10/12] soc: samsung: pmu: modularize the Exynos ARMv8 PMU driver
+Subject: [PATCH v2 11/12] soc: samsung: pm_domains: modularize EXYNOS_PM_DOMAINS
 From:   Will McVicker <willmcvicker@google.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -80,164 +81,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to only modularize the Exynos ARMv8 PMU driver, we have to
-split it up from the ARM PMU driver. So make the following Kconfig
-changes:
-  * EXYNOS_PMU -> EXYNOS_PMU_ARM64
-  * EXYNOS_PMU_ARM_DRIVERS -> EXYNOS_PMU_ARM
-
-This patch also includes the necessary modularization changes.
-
-Lastly, have EXYNOS_PMU_ARM64 use "default y if ARCH_EXYNOS && ARM64"
-instead of having ARCH_EXYNOS select it directly.
+Convert the Exynos PM Domains driver into a module. This includes
+setting EXYNOS_PM_DOMAINS as tristate and removing it from being
+auto-selected by ARCH_EXYNOS. Instead, the config will use
+"default y if ARCH_EXYNOS" which allows us to set it to a module via the
+defconfig now.
 
 Signed-off-by: Will McVicker <willmcvicker@google.com>
 ---
- arch/arm/mach-exynos/Kconfig           |  2 +-
- arch/arm64/Kconfig.platforms           |  1 -
- drivers/soc/samsung/Kconfig            | 15 +++++++++------
- drivers/soc/samsung/Makefile           |  8 +++++---
- drivers/soc/samsung/exynos-pmu.c       | 13 +++++++------
- drivers/soc/samsung/exynos-pmu.h       |  2 +-
- include/linux/soc/samsung/exynos-pmu.h |  2 +-
- 7 files changed, 24 insertions(+), 19 deletions(-)
+ arch/arm/mach-exynos/Kconfig     |  1 -
+ arch/arm64/Kconfig.platforms     |  1 -
+ drivers/soc/samsung/Kconfig      |  3 ++-
+ drivers/soc/samsung/pm_domains.c | 12 +++++++-----
+ 4 files changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
-index afc8cd062605..e97e1d8f7b00 100644
+index e97e1d8f7b00..2ad19a08bf06 100644
 --- a/arch/arm/mach-exynos/Kconfig
 +++ b/arch/arm/mach-exynos/Kconfig
-@@ -13,7 +13,7 @@ menuconfig ARCH_EXYNOS
- 	select ARM_GIC
- 	select EXYNOS_IRQ_COMBINER
+@@ -15,7 +15,6 @@ menuconfig ARCH_EXYNOS
  	select EXYNOS_THERMAL
--	select EXYNOS_PMU
-+	select EXYNOS_PMU_ARM
+ 	select EXYNOS_PMU_ARM
  	select EXYNOS_SROM
- 	select EXYNOS_PM_DOMAINS if PM_GENERIC_DOMAINS
+-	select EXYNOS_PM_DOMAINS if PM_GENERIC_DOMAINS
  	select GPIOLIB
+ 	select HAVE_ARM_ARCH_TIMER if ARCH_EXYNOS5
+ 	select HAVE_ARM_SCU if SMP
 diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 67f60cc3c723..e5e4b9b2fb97 100644
+index e5e4b9b2fb97..e44d5e9f5058 100644
 --- a/arch/arm64/Kconfig.platforms
 +++ b/arch/arm64/Kconfig.platforms
-@@ -92,7 +92,6 @@ config ARCH_BRCMSTB
+@@ -91,7 +91,6 @@ config ARCH_BRCMSTB
+ 
  config ARCH_EXYNOS
  	bool "ARMv8 based Samsung Exynos SoC family"
- 	select EXYNOS_PM_DOMAINS if PM_GENERIC_DOMAINS
--	select EXYNOS_PMU
+-	select EXYNOS_PM_DOMAINS if PM_GENERIC_DOMAINS
  	select HAVE_S3C_RTC if RTC_CLASS
  	select PINCTRL
  	select PM_GENERIC_DOMAINS if PM
 diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
-index d3746415be72..fdf1162ec98b 100644
+index fdf1162ec98b..e4743c29f73c 100644
 --- a/drivers/soc/samsung/Kconfig
 +++ b/drivers/soc/samsung/Kconfig
-@@ -23,15 +23,18 @@ config EXYNOS_CHIPID
- 	  Support for Samsung Exynos SoC ChipID and Adaptive Supply Voltage.
- 	  This driver can also be built as module (exynos_chipid).
- 
--config EXYNOS_PMU
--	bool "Exynos PMU controller driver" if COMPILE_TEST
--	depends on ARCH_EXYNOS || ((ARM || ARM64) && COMPILE_TEST)
--	select EXYNOS_PMU_ARM_DRIVERS if ARM && ARCH_EXYNOS
-+config EXYNOS_PMU_ARM64
-+	tristate "Exynos PMU controller driver"
-+	depends on ARCH_EXYNOS || (ARM64 && COMPILE_TEST)
-+	default y if (ARCH_EXYNOS && ARM64)
-+	help
-+	  Support for Samsung Exynos ARMv8 PMU controller. This driver can be
-+	  built-in or as a module (exynos-pmu).
- 
- # There is no need to enable these drivers for ARMv8
--config EXYNOS_PMU_ARM_DRIVERS
-+config EXYNOS_PMU_ARM
- 	bool "Exynos PMU ARMv7-specific driver extensions" if COMPILE_TEST
--	depends on EXYNOS_PMU
-+	depends on ARCH_EXYNOS || (ARM && COMPILE_TEST)
+@@ -37,8 +37,9 @@ config EXYNOS_PMU_ARM
+ 	depends on ARCH_EXYNOS || (ARM && COMPILE_TEST)
  
  config EXYNOS_PM_DOMAINS
- 	bool "Exynos PM domains" if COMPILE_TEST
-diff --git a/drivers/soc/samsung/Makefile b/drivers/soc/samsung/Makefile
-index 2ae4bea804cf..cd55c72a052d 100644
---- a/drivers/soc/samsung/Makefile
-+++ b/drivers/soc/samsung/Makefile
-@@ -4,10 +4,12 @@ obj-$(CONFIG_EXYNOS_ASV_ARM)	+= exynos5422-asv.o
- obj-$(CONFIG_EXYNOS_CHIPID)	+= exynos_chipid.o
- exynos_chipid-y			+= exynos-chipid.o exynos-asv.o
+-	bool "Exynos PM domains" if COMPILE_TEST
++	tristate "Exynos PM domains"
+ 	depends on (ARCH_EXYNOS && PM_GENERIC_DOMAINS) || COMPILE_TEST
++	default y if ARCH_EXYNOS
  
--obj-$(CONFIG_EXYNOS_PMU)	+= exynos-pmu.o
-+obj-$(CONFIG_EXYNOS_PMU_ARM64)	+= exynos-pmu.o
-+
-+obj-$(CONFIG_EXYNOS_PMU_ARM)	+= exynos-pmu32.o
-+exynos-pmu32-y			+= exynos-pmu.o exynos3250-pmu.o \
-+			exynos4-pmu.o exynos5250-pmu.o exynos5420-pmu.o
- 
--obj-$(CONFIG_EXYNOS_PMU_ARM_DRIVERS)	+= exynos3250-pmu.o exynos4-pmu.o \
--					exynos5250-pmu.o exynos5420-pmu.o
- obj-$(CONFIG_EXYNOS_PM_DOMAINS) += pm_domains.o
- obj-$(CONFIG_EXYNOS_REGULATOR_COUPLER) += exynos-regulator-coupler.o
- 
-diff --git a/drivers/soc/samsung/exynos-pmu.c b/drivers/soc/samsung/exynos-pmu.c
-index a18c93a4646c..3dd0219c908c 100644
---- a/drivers/soc/samsung/exynos-pmu.c
-+++ b/drivers/soc/samsung/exynos-pmu.c
-@@ -8,6 +8,7 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
+ config SAMSUNG_PM_DEBUG
+ 	bool "Samsung PM Suspend debug"
+diff --git a/drivers/soc/samsung/pm_domains.c b/drivers/soc/samsung/pm_domains.c
+index 5ec0c13f0aaf..6144733fa3c2 100644
+--- a/drivers/soc/samsung/pm_domains.c
++++ b/drivers/soc/samsung/pm_domains.c
+@@ -14,6 +14,7 @@
+ #include <linux/slab.h>
+ #include <linux/pm_domain.h>
+ #include <linux/delay.h>
 +#include <linux/module.h>
- #include <linux/mfd/core.h>
- #include <linux/mfd/syscon.h>
- #include <linux/platform_device.h>
-@@ -63,7 +64,7 @@ void exynos_sys_powerdown_conf(enum sys_powerdown mode)
-  * Split the data between ARM architectures because it is relatively big
-  * and useless on other arch.
-  */
--#ifdef CONFIG_EXYNOS_PMU_ARM_DRIVERS
-+#ifdef CONFIG_EXYNOS_PMU_ARM
- #define exynos_pmu_data_arm_ptr(data)	(&data)
- #else
- #define exynos_pmu_data_arm_ptr(data)	NULL
-@@ -154,9 +155,9 @@ static struct platform_driver exynos_pmu_driver = {
- 	.probe = exynos_pmu_probe,
+ #include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ #include <linux/pm_runtime.h>
+@@ -160,8 +161,9 @@ static struct platform_driver exynos_pd_driver = {
+ 	}
  };
  
--static int __init exynos_pmu_init(void)
+-static __init int exynos4_pm_init_power_domain(void)
 -{
--	return platform_driver_register(&exynos_pmu_driver);
-+module_platform_driver(exynos_pmu_driver);
- 
+-	return platform_driver_register(&exynos_pd_driver);
 -}
--postcore_initcall(exynos_pmu_init);
-+MODULE_DESCRIPTION("Exynos PMU controller driver");
+-core_initcall(exynos4_pm_init_power_domain);
++module_platform_driver(exynos_pd_driver);
++
++MODULE_DESCRIPTION("Exynos PM domains driver");
 +MODULE_AUTHOR("Marek Szyprowski <m.szyprowski@samsung.com>");
 +MODULE_AUTHOR("Krzysztof Kozlowski <krzk@kernel.org>");
 +MODULE_LICENSE("GPL v2");
-diff --git a/drivers/soc/samsung/exynos-pmu.h b/drivers/soc/samsung/exynos-pmu.h
-index 5e851f32307e..4a7f03c79dd0 100644
---- a/drivers/soc/samsung/exynos-pmu.h
-+++ b/drivers/soc/samsung/exynos-pmu.h
-@@ -28,7 +28,7 @@ struct exynos_pmu_data {
- 
- extern void __iomem *pmu_base_addr;
- 
--#ifdef CONFIG_EXYNOS_PMU_ARM_DRIVERS
-+#ifdef CONFIG_EXYNOS_PMU_ARM
- /* list of all exported SoC specific data */
- extern const struct exynos_pmu_data exynos3250_pmu_data;
- extern const struct exynos_pmu_data exynos4210_pmu_data;
-diff --git a/include/linux/soc/samsung/exynos-pmu.h b/include/linux/soc/samsung/exynos-pmu.h
-index a4f5516cc956..d7317e0902b8 100644
---- a/include/linux/soc/samsung/exynos-pmu.h
-+++ b/include/linux/soc/samsung/exynos-pmu.h
-@@ -19,7 +19,7 @@ enum sys_powerdown {
- };
- 
- extern void exynos_sys_powerdown_conf(enum sys_powerdown mode);
--#ifdef CONFIG_EXYNOS_PMU
-+#if IS_ENABLED(CONFIG_EXYNOS_PMU_ARM64) || IS_ENABLED(CONFIG_EXYNOS_PMU_ARM)
- extern struct regmap *exynos_get_pmu_regmap(void);
- #else
- static inline struct regmap *exynos_get_pmu_regmap(void)
 -- 
 2.33.0.685.g46640cef36-goog
 
