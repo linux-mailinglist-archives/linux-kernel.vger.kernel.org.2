@@ -2,298 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D6F41B660
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EB541B662
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242390AbhI1Ses (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:34:48 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50876 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242237AbhI1SdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:33:02 -0400
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 754DF20B4848;
-        Tue, 28 Sep 2021 11:31:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 754DF20B4848
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1632853882;
-        bh=zKovBa81qifiHRYZF45MAPlI611FkkRyiRt+nL6hV3E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H9XbynYM2kznb8STnpBFEggWLXJ3NMEO3xeqT5hQi2vI+erQjrZ/3OA1UCbsiAgEF
-         PGiNn+xIWK4BusWVFtMdGrC3WpBoO+PqYExzWzunE3AGwGYxVVTCLTfE3yl971xLf9
-         9L2eLI4qq67vPlgtAWmAW4dq/sjd6/JxAwPxvjWM=
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
-        kys@microsoft.com, sthemmin@microsoft.com,
-        anbelski@linux.microsoft.com
-Subject: [PATCH v3 19/19] drivers/hv: Translate GVA to GPA
-Date:   Tue, 28 Sep 2021 11:31:15 -0700
-Message-Id: <1632853875-20261-20-git-send-email-nunodasneves@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com>
-References: <1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com>
+        id S242416AbhI1Sex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:34:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232723AbhI1SeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 14:34:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26B8A6137D
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 18:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632853944;
+        bh=2Cj4UNam1DG/TfnGcPZjXfeZcarvPrxFJFfENW16COM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c8vbNT1bkHV+TQ5VOlKOa9e/ZAIcGImKnfw1tcmr8ToDLZEnD/E75J4DbFrCrfbyq
+         YR1AsYOFD8+X+absvEesJKUW4ncKI2jQ3ixy7r2Jg58tlZ5svSHuPl5pI4OqfJhYpU
+         VOysgQWo+o3F/pgJDc9pgz1ds0AocRKtColKM73AzFQfV7tLWOhsB97nnwxClbr6PT
+         jMagx1rZbYuGrepZjJpJtkLvwX0Apm3g5o6NN34XEoDJxxs9Fl2+GxlJ6Abm1oYLS4
+         hyHOdrJz0KN66oale8aRrIGDuqsIom7cjKvciNxnff+NYYglNoI3OY7L3lg7IWftSD
+         x4pOjC2DfaiNw==
+Received: by mail-wm1-f52.google.com with SMTP id b192-20020a1c1bc9000000b0030cfaf18864so3441171wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:32:24 -0700 (PDT)
+X-Gm-Message-State: AOAM532nNwndALSGEPkdu9towKDSwEzwGvwvJ8vipCjwAu/L4wqUnDqp
+        BUrHo/IxqYgwAooGBPK5lPKp6AFJS8LsrKgCEqY=
+X-Google-Smtp-Source: ABdhPJz5lXy16llMMIxh4I9yEJ3Nc4i+amXIzKy8vDqbZxLLeY1Q7PxyhFCr40sDfwHjtg+ieWuoDrHvhyA9PGSC1Oc=
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr6359970wmc.98.1632853942677;
+ Tue, 28 Sep 2021 11:32:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-14-arnd@kernel.org>
+ <CAKwvOd=U1PpmHk0emq23FhQyAv5YyOr9SOMkQ8d-q=uL=uebhg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=U1PpmHk0emq23FhQyAv5YyOr9SOMkQ8d-q=uL=uebhg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 28 Sep 2021 20:32:06 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2LezhdCczGsgWrrkShvowXMYSSdhfPJqSHwHEBRv4PvQ@mail.gmail.com>
+Message-ID: <CAK8P3a2LezhdCczGsgWrrkShvowXMYSSdhfPJqSHwHEBRv4PvQ@mail.gmail.com>
+Subject: Re: [PATCH 13/14] ARM: use .arch directives instead of assembler
+ command line flags
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Liu <wei.liu@kernel.org>
+On Tue, Sep 28, 2021 at 7:10 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Sep 28, 2021 at 8:42 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> > Similar to commit a6c30873ee4a ("ARM: 8989/1: use .fpu assembler
+> > directives instead of assembler arguments").
+> >
+> > GCC and GNU binutils support setting the "sub arch" via -march=,
+> > -Wa,-march, target function attribute, and .arch assembler directive.
+> >
+> > Clang's integrated assembler does not support -Wa,-march (and the logic
+> > to overrule one when multiple of the above are used), and this can
+> > cause annoying warnings such as:
+> >
+> > clang: warning: argument unused during compilation: '-march=armv6k' [-Wunused-command-line-argument]
+> > clang: warning: argument unused during compilation: '-march=armv6k' [-Wunused-command-line-argument]
+> > clang: warning: argument unused during compilation: '-march=armv6k' [-Wunused-command-line-argument]
+>
+> Note, the above lack of support was fixed in clang-13. That said, both
+> Clang and GCC defer to -Wa,-march when -march is also present, so
+> clang is still correct that -march is ignored.  Thanks for resending;
+> this is still helpful for earlier releases of clang that we still
+> support.
 
-Introduce ioctl for translating Guest Virtual Address (GVA) to Guest
-Physical Address (GPA)
+The -Wunused-command-line-argument warning also caused a build
+failure for me when building with 'make W=1', and I think there are
+cases where the flags from the command line are contradictory.
 
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Signed-off-by: Anatol Belski <anbelski@linux.microsoft.com>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
----
- drivers/hv/hv_call.c                   | 44 ++++++++++++++++++++++++++
- drivers/hv/mshv.h                      |  7 ++++
- drivers/hv/mshv_main.c                 | 34 ++++++++++++++++++++
- include/asm-generic/hyperv-tlfs.h      | 14 ++++++++
- include/uapi/asm-generic/hyperv-tlfs.h | 43 +++++++++++++++++++++++++
- include/uapi/linux/mshv.h              |  8 +++++
- 6 files changed, 150 insertions(+)
+Isn't the patch also needed for LTO? All I know is that with this
+applied it all builds, but without it I run into link failures. I can dig
+more into the specific failures, but overall I think this is the right
+thing to do anyway.
 
-diff --git a/drivers/hv/hv_call.c b/drivers/hv/hv_call.c
-index 776095de9679..0900e7377826 100644
---- a/drivers/hv/hv_call.c
-+++ b/drivers/hv/hv_call.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/mm.h>
-+#include <linux/hyperv.h>
- #include <asm/mshyperv.h>
- 
- #include "mshv.h"
-@@ -696,3 +697,46 @@ int hv_call_set_partition_property(
- 
- 	return hv_status_to_errno(status);
- }
-+
-+int hv_call_translate_virtual_address(
-+		u32 vp_index,
-+		u64 partition_id,
-+		u64 flags,
-+		u64 gva,
-+		u64 *gpa,
-+		union hv_translate_gva_result *result)
-+{
-+	u64 status;
-+	unsigned long irq_flags;
-+	struct hv_translate_virtual_address_in *input;
-+	struct hv_translate_virtual_address_out *output;
-+
-+	local_irq_save(irq_flags);
-+
-+	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-+	output = *this_cpu_ptr(hyperv_pcpu_output_arg);
-+
-+	memset(input, 0, sizeof(*input));
-+	memset(output, 0, sizeof(*output));
-+
-+	input->partition_id = partition_id;
-+	input->vp_index = vp_index;
-+	input->control_flags = flags;
-+	input->gva_page = gva >> HV_HYP_PAGE_SHIFT;
-+
-+	status = hv_do_hypercall(HVCALL_TRANSLATE_VIRTUAL_ADDRESS, input, output);
-+
-+	if (!hv_result_success(status)) {
-+		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
-+		goto out;
-+	}
-+
-+	*result = output->translation_result;
-+	*gpa = (output->gpa_page << HV_HYP_PAGE_SHIFT) + offset_in_hvpage(gva);
-+
-+out:
-+	local_irq_restore(irq_flags);
-+
-+	return hv_status_to_errno(status);
-+}
-+
-diff --git a/drivers/hv/mshv.h b/drivers/hv/mshv.h
-index 8230368b4257..1a8c94edb9c5 100644
---- a/drivers/hv/mshv.h
-+++ b/drivers/hv/mshv.h
-@@ -109,5 +109,12 @@ int hv_call_set_partition_property(
- 		u64 partition_id,
- 		u64 property_code,
- 		u64 property_value);
-+int hv_call_translate_virtual_address(
-+		u32 vp_index,
-+		u64 partition_id,
-+		u64 flags,
-+		u64 gva,
-+		u64 *gpa,
-+		union hv_translate_gva_result *result);
- 
- #endif /* _MSHV_H */
-diff --git a/drivers/hv/mshv_main.c b/drivers/hv/mshv_main.c
-index 766ba7d5d168..26426d03d521 100644
---- a/drivers/hv/mshv_main.c
-+++ b/drivers/hv/mshv_main.c
-@@ -411,6 +411,37 @@ mshv_vp_ioctl_get_set_state(struct mshv_vp *vp, void __user *user_args, bool is_
- 	return 0;
- }
- 
-+static long
-+mshv_vp_ioctl_translate_gva(struct mshv_vp *vp, void __user *user_args)
-+{
-+	long ret;
-+	struct mshv_translate_gva args;
-+	u64 gpa;
-+	union hv_translate_gva_result result;
-+
-+	if (copy_from_user(&args, user_args, sizeof(args)))
-+		return -EFAULT;
-+
-+	ret = hv_call_translate_virtual_address(
-+			vp->index,
-+			vp->partition->id,
-+			args.flags,
-+			args.gva,
-+			&gpa,
-+			&result);
-+
-+	if (ret)
-+		return ret;
-+
-+	if (copy_to_user(args.result, &result, sizeof(*args.result)))
-+		return -EFAULT;
-+
-+	if (copy_to_user(args.gpa, &gpa, sizeof(*args.gpa)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
- static long
- mshv_vp_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
- {
-@@ -436,6 +467,9 @@ mshv_vp_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
- 	case MSHV_SET_VP_STATE:
- 		r = mshv_vp_ioctl_get_set_state(vp, (void __user *)arg, true);
- 		break;
-+	case MSHV_TRANSLATE_GVA:
-+		r = mshv_vp_ioctl_translate_gva(vp, (void __user *)arg);
-+		break;
- 	default:
- 		r = -ENOTTY;
- 		break;
-diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-index 2c0dfd0b8763..2e520e7d765d 100644
---- a/include/asm-generic/hyperv-tlfs.h
-+++ b/include/asm-generic/hyperv-tlfs.h
-@@ -158,6 +158,7 @@ struct ms_hyperv_tsc_page {
- #define HVCALL_CREATE_VP			0x004e
- #define HVCALL_GET_VP_REGISTERS			0x0050
- #define HVCALL_SET_VP_REGISTERS			0x0051
-+#define HVCALL_TRANSLATE_VIRTUAL_ADDRESS	0x0052
- #define HVCALL_POST_MESSAGE			0x005c
- #define HVCALL_SIGNAL_EVENT			0x005d
- #define HVCALL_POST_DEBUG_DATA			0x0069
-@@ -901,4 +902,17 @@ struct hv_set_partition_property {
- 	u64 property_value;
- } __packed;
- 
-+struct hv_translate_virtual_address_in {
-+	u64 partition_id;
-+	u32 vp_index;
-+	u32 padding;
-+	u64 control_flags;
-+	u64 gva_page;
-+} __packed;
-+
-+struct hv_translate_virtual_address_out {
-+	union hv_translate_gva_result translation_result;
-+	u64 gpa_page;
-+} __packed;
-+
- #endif
-diff --git a/include/uapi/asm-generic/hyperv-tlfs.h b/include/uapi/asm-generic/hyperv-tlfs.h
-index 5d8d5e89f432..95020e3a67ba 100644
---- a/include/uapi/asm-generic/hyperv-tlfs.h
-+++ b/include/uapi/asm-generic/hyperv-tlfs.h
-@@ -196,4 +196,47 @@ enum hv_partition_property_code {
- 	HV_PARTITION_PROPERTY_PROCESSOR_VIRTUALIZATION_FEATURES		= 0x00080000,
- };
- 
-+enum hv_translate_gva_result_code {
-+	HV_TRANSLATE_GVA_SUCCESS			= 0,
-+
-+	/* Translation failures. */
-+	HV_TRANSLATE_GVA_PAGE_NOT_PRESENT		= 1,
-+	HV_TRANSLATE_GVA_PRIVILEGE_VIOLATION		= 2,
-+	HV_TRANSLATE_GVA_INVALIDE_PAGE_TABLE_FLAGS	= 3,
-+
-+	/* GPA access failures. */
-+	HV_TRANSLATE_GVA_GPA_UNMAPPED			= 4,
-+	HV_TRANSLATE_GVA_GPA_NO_READ_ACCESS		= 5,
-+	HV_TRANSLATE_GVA_GPA_NO_WRITE_ACCESS		= 6,
-+	HV_TRANSLATE_GVA_GPA_ILLEGAL_OVERLAY_ACCESS	= 7,
-+
-+	/*
-+	 * Intercept for memory access by either
-+	 *  - a higher VTL
-+	 *  - a nested hypervisor (due to a violation of the nested page table)
-+	 */
-+	HV_TRANSLATE_GVA_INTERCEPT			= 8,
-+
-+	HV_TRANSLATE_GVA_GPA_UNACCEPTED			= 9,
-+};
-+
-+union hv_translate_gva_result {
-+	__u64 as_uint64;
-+	struct {
-+		__u32 result_code; /* enum hv_translate_hva_result_code */
-+		__u32 cache_type : 8;
-+		__u32 overlay_page : 1;
-+		__u32 reserved : 23;
-+	} __packed;
-+};
-+
-+/* hv_translage_gva flags */
-+#define HV_TRANSLATE_GVA_VALIDATE_READ		0x0001
-+#define HV_TRANSLATE_GVA_VALIDATE_WRITE		0x0002
-+#define HV_TRANSLATE_GVA_VALIDATE_EXECUTE	0x0004
-+#define HV_TRANSLATE_GVA_PRIVILEGE_EXCEMP	0x0008
-+#define HV_TRANSLATE_GVA_SET_PAGE_TABLE_BITS	0x0010
-+#define HV_TRANSLATE_GVA_TLB_FLUSH_INHIBIT	0x0020
-+#define HV_TRANSLATE_GVA_CONTROL_MASK		0x003f
-+
- #endif
-diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
-index ec8281712430..0c46ce77cbb3 100644
---- a/include/uapi/linux/mshv.h
-+++ b/include/uapi/linux/mshv.h
-@@ -72,6 +72,13 @@ struct mshv_partition_property {
- 	__u64 property_value;
- };
- 
-+struct mshv_translate_gva {
-+	__u64 gva;
-+	__u64 flags;
-+	union hv_translate_gva_result *result;
-+	__u64 *gpa;
-+};
-+
- #define MSHV_IOCTL 0xB8
- 
- /* mshv device */
-@@ -95,6 +102,7 @@ struct mshv_partition_property {
- #define MSHV_RUN_VP		_IOR(MSHV_IOCTL, 0x07, struct hv_message)
- #define MSHV_GET_VP_STATE	_IOWR(MSHV_IOCTL, 0x0A, struct mshv_vp_state)
- #define MSHV_SET_VP_STATE	_IOWR(MSHV_IOCTL, 0x0B, struct mshv_vp_state)
-+#define MSHV_TRANSLATE_GVA	_IOWR(MSHV_IOCTL, 0x0E, struct mshv_translate_gva)
- 
- /* register page mapping example:
-  * struct hv_vp_register_page *regs = mmap(NULL,
--- 
-2.23.4
-
+       Arnd
