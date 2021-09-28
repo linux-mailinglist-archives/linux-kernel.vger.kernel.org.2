@@ -2,109 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4337B41B8AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA9F41B8B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242807AbhI1Uw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        id S242734AbhI1Uyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242604AbhI1Uwu (ORCPT
+        with ESMTP id S242604AbhI1Uyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:52:50 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84417C06161C;
-        Tue, 28 Sep 2021 13:51:10 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 11so146184qvd.11;
-        Tue, 28 Sep 2021 13:51:10 -0700 (PDT)
+        Tue, 28 Sep 2021 16:54:31 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF29FC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:52:51 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 24so184875oix.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=We+Hncm1dVQvjyDtLz/UlNXZ+UBYHqbLW/DDtyJJi3c=;
-        b=PDoIdU8lxTm5ThnEPRbDJKoLBfGo/tgseca8fgFCeYDws8WWtddgGyjWdb0aXJde0p
-         tjZ6JAvy18kJC9+srq37Q1/CvCwIMz07FNG+CyT8EImfvQHw/q5qxVrd557eMp3svXPD
-         fn0sv5b3Sm3M9sn0wUxAZ6qTLw0BiwMaYRtFOUtJ58web4yUdd9ZN+dDguFvdCNQhbME
-         /n3VuuJQvtDEL6lf8+IpAaqNVxm+jSrHahsjxq6KqIE9N1ieQPzBixqxxBJge+MAQcSF
-         kuHdv7AeWHKfPSyw6WIA4OSx8CxwQA4NdrLWjfZra3J37mMjmpzuT5WO7HdaxepX8mk9
-         yAnA==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=3Jv+h2WbR0xCnK/aZ32tsYZMhSsRXzBhaqTpIfuiDho=;
+        b=YRDxoPYUP1th3n3DNQ1RQ12iybGeum6noi5WCEfmCk+EY0hBDcTA/jcKyJoNU8eKVI
+         yaLflsaZZ+5PCH3EcO9qozTaKr8Wnmm7bViTahh/TyeI43ujxzn42jvm+InPjx7V8/Wk
+         /SfoCHzhCAnle+v6RfETXS76dLAJBDsMOlDP0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=We+Hncm1dVQvjyDtLz/UlNXZ+UBYHqbLW/DDtyJJi3c=;
-        b=QbPSqZy3R3UhXbzBAtH90JSIqXeP9W3ga29CFKu5H2aCPrJZjKw8aSF0BdIJaRDBGi
-         jN/hq2IvMQAMaSbgVtnbwFmWD7fH/pZImVAgleqzbGBngE7ypGKlVt76l+Md3IMQKIPK
-         D6pner9S59tZqqyhTwT7qwgWRYDmY+uPIkZGF7MghidZw6R+sUVnhF6Ab2rhOcyquPnm
-         U2JW3ce6086ppOjPA4qIDoM5o2x/B9yTUMWZtRMnasimdX4i/gc4jete5pPD09W1UplN
-         EswAQxU2C6FAcXq5Lc2GL2hc1xEuFU3eOBPtRDelU2Kvsn7Q+bT1BYeh8T9zSzNDn02r
-         Bwfg==
-X-Gm-Message-State: AOAM531DHvXm8j57etA7qMxBW4qkidYp2ybMOcKNgngT79vrYPqkTHUI
-        nXfPpcT1uTifATwZz/+VaLI=
-X-Google-Smtp-Source: ABdhPJxHQF+glZA3UMYut+VTtrVbz09lGVld5XtgNBlf+IJHDS4Uukl4RY568e/zwxLPwSkwIpD3Uw==
-X-Received: by 2002:a0c:e4c8:: with SMTP id g8mr8150201qvm.24.1632862269646;
-        Tue, 28 Sep 2021 13:51:09 -0700 (PDT)
-Received: from fstone04p1.aus.stglabs.ibm.com ([129.41.86.7])
-        by smtp.gmail.com with ESMTPSA id x3sm173004qkl.107.2021.09.28.13.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 13:51:09 -0700 (PDT)
-From:   Brandon Wyman <bjwyman@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
-Cc:     Brandon Wyman <bjwyman@gmail.com>
-Subject: [PATCH v2] hwmon: (pmbus/ibm-cffps) max_power_out swap changes
-Date:   Tue, 28 Sep 2021 20:50:51 +0000
-Message-Id: <20210928205051.1222815-1-bjwyman@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=3Jv+h2WbR0xCnK/aZ32tsYZMhSsRXzBhaqTpIfuiDho=;
+        b=3FXgHdYDvSrAp0ERmgzp4unLZCIx5HMYtyBgborW7V+VbV5zdwZRolTSIq/gtehgGn
+         po8h+SjUdk8YikvI9iSWAKewfM7oizMaKjJ6YlGjgdiAQSCQHDvg+v7hafszFivATsEK
+         YKob1grSIXBCMCdVDUXBtGOFHjH92eH6Tr3WA8lFSn/TDKDN0Bat/wooNrLsHqyfAXfA
+         fYRxF2KX92f7uM5HtRh/kiSHY9EH5tD+CG5p5Eaexx/DgRAXEO53FPJHyEXWvdSWfEPu
+         fZi7dQZLyplEL6GYwVgGXYXXWI6kRaOY3cgV3wmVHwDV/J6pDC/zJizpQxi4eIfgKs6I
+         PKTg==
+X-Gm-Message-State: AOAM530osmDAG2uhZhdT4FIt4sZeuSgO9RWSSpbrNzjPAr9hNdG1FhiN
+        S/7uwa+YqJPRnU3Se4cktth2tLPZ0xE1rgJt7ZHS+w==
+X-Google-Smtp-Source: ABdhPJw0mMipeCAS7vVd22Q11fDnciZcgmzICC4Qg/PuJcOVUzmex18kXMFcEj0EBIRqzYJUisWuVlWD/dVbuj8WBjM=
+X-Received: by 2002:a05:6808:f8f:: with SMTP id o15mr5176358oiw.164.1632862371131;
+ Tue, 28 Sep 2021 13:52:51 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 28 Sep 2021 13:52:50 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1632837350-12100-4-git-send-email-pmaliset@codeaurora.org>
+References: <1632837350-12100-1-git-send-email-pmaliset@codeaurora.org> <1632837350-12100-4-git-send-email-pmaliset@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 28 Sep 2021 13:52:50 -0700
+Message-ID: <CAE-0n52G7=PFrPGr5Zwq43q55CWBSkaEm7HpC+C4r2+Gjv3JQg@mail.gmail.com>
+Subject: Re: [PATCH v9 3/4] arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bytes for max_power_out from the ibm-cffps devices differ in byte
-order for some power supplies.
+Quoting Prasad Malisetty (2021-09-28 06:55:49)
+> Enable PCIe controller and PHY for sc7280 IDP board.
+> Add specific NVMe GPIO entries for SKU1 and SKU2 support.
+>
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts  |  9 ++++++
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 54 ++++++++++++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 ++++++
+>  3 files changed, 72 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 64fc22a..1562386 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -61,6 +61,15 @@
+>         modem-init;
+>  };
+>
+> +&nvme_pwren_pin {
+> +       pins = "gpio19";
+> +};
 
-The Witherspoon power supply returns the bytes in MSB/LSB order.
+This should move to the bottom in the "pinctrl" section.
 
-The Rainier power supply returns the bytes in LSB/MSB order.
+> +
+> +&nvme_3v3_regulators {
+> +       gpio = <&tlmm 19 GPIO_ACTIVE_HIGH>;
+> +       enable-active-high;
 
-The Witherspoon power supply uses version cffps1. The Rainier power
-supply should use version cffps2. If version is cffps1, swap the bytes
-before output to max_power_out.
+The enable-active-high can be in the idp.dtsi file? That doesn't seem to
+change.
 
-Tested:
-    Witherspoon before: 3148. Witherspoon after: 3148.
-    Rainier before: 53255. Rainier after: 2000.
+> +};
+> +
+>  &pmk8350_vadc {
+>         pmr735a_die_temp {
+>                 reg = <PMR735A_ADC7_DIE_TEMP>;
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> index def22ff..5b5505f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> @@ -31,6 +31,17 @@
+>                         linux,can-disable;
+>                 };
+>         };
+> +
+> +       nvme_3v3_regulators: nvme-3v3-regulators {
 
-Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
----
- drivers/hwmon/pmbus/ibm-cffps.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Why plural? Isn't it a single regulator?
 
-diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-index df712ce4b164..79bfcd2749a6 100644
---- a/drivers/hwmon/pmbus/ibm-cffps.c
-+++ b/drivers/hwmon/pmbus/ibm-cffps.c
-@@ -171,8 +171,14 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
- 		cmd = CFFPS_SN_CMD;
- 		break;
- 	case CFFPS_DEBUGFS_MAX_POWER_OUT:
--		rc = i2c_smbus_read_word_swapped(psu->client,
--						 CFFPS_MAX_POWER_OUT_CMD);
-+		if (cffps1 == psu->version) {
-+			rc = i2c_smbus_read_word_swapped(psu->client,
-+					CFFPS_MAX_POWER_OUT_CMD);
-+		} else {
-+			rc = i2c_smbus_read_word_data(psu->client,
-+					CFFPS_MAX_POWER_OUT_CMD);
-+		}
-+
- 		if (rc < 0)
- 			return rc;
- 
--- 
-2.25.1
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "VLDO_3V3";
+> +
+> +               regulator-min-microvolt = <3300000>;
+> +               regulator-max-microvolt = <3300000>;
+> +
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&nvme_pwren_pin>;
+> +       };
+>  };
+>
+>  &apps_rsc {
+> @@ -220,6 +231,42 @@
+>         modem-init;
+>  };
+>
+> +&pcie1 {
+> +       status = "okay";
+> +       perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
+> +
+> +       vddpe-3v3-supply = <&nvme_3v3_regulators>;
+> +
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pcie1_default_state>;
+> +};
+> +
+> +&pcie1_phy {
+> +       status = "okay";
+> +
+> +       vdda-phy-supply = <&vreg_l10c_0p8>;
+> +       vdda-pll-supply = <&vreg_l6b_1p2>;
+> +};
+> +
+> +&pcie1_default_state {
 
+I thought the node would be split into a reset config node and a wake
+config node. Is that not being done for some reason? The pinctrl-0 would
+look like
+
+	pinctrl-0 = <&pcie1_default_state>, <&pcie1_reset_n>, <&pcie1_wake_n>;
+
+> +       reset-n {
+> +               pins = "gpio2";
+> +               function = "gpio";
+> +
+> +               drive-strength = <16>;
+> +               output-low;
+> +               bias-disable;
+> +       };
+> +
+> +       wake-n {
+> +               pins = "gpio3";
+> +               function = "gpio";
+> +
+> +               drive-strength = <2>;
+> +               bias-pull-up;
+> +       };
+> +};
+> +
+>  &pmk8350_vadc {
+>         pmk8350_die_temp {
+>                 reg = <PMK8350_ADC7_DIE_TEMP>;
+> @@ -489,3 +536,10 @@
+>                 bias-pull-up;
+>         };
+>  };
+> +
+> +&tlmm {
+> +       nvme_pwren_pin: nvme-pwren-pin {
+> +               function = "gpio";
+> +               bias-pull-up;
+> +       };
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> index 1fc2add..0548cb6 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> @@ -21,3 +21,12 @@
+>                 stdout-path = "serial0:115200n8";
+>         };
+>  };
+> +
+> +&nvme_pwren_pin {
+> +       pins = "gpio51";
+> +};
+
+The pin config can go to a pinctrl section at the bottom of this file?
+
+> +
+> +&nvme_3v3_regulators {
+> +       gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
+> +       enable-active-high;
+> +};
