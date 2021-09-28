@@ -2,124 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D8841B5BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDE241B5BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242060AbhI1SOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:14:55 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:52338
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241551AbhI1SOx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:14:53 -0400
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 49B4B41976
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 18:13:13 +0000 (UTC)
-Received: by mail-io1-f48.google.com with SMTP id p80so28503867iod.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:13:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533Js8mjXOr8eARidcRNZ+0KfTIPXDX2j9biNNHBWq2W9qT4Mf+T
-        Wm8KqGsB1JpJPmT4/Gd6WR7yCDXP/vW+LASpUVlczQ==
-X-Google-Smtp-Source: ABdhPJySlSvzybi+oPX1R+/TnCxNdawSlFrUQHATg0VfdBhxl7uvwmrn4QlgrE7bkNHqmMEQ2iO25PBoBAXSYD+E3t4=
-X-Received: by 2002:a6b:6806:: with SMTP id d6mr4999741ioc.96.1632852791965;
- Tue, 28 Sep 2021 11:13:11 -0700 (PDT)
+        id S242117AbhI1SPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:15:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241551AbhI1SPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 14:15:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFB36128E;
+        Tue, 28 Sep 2021 18:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632852812;
+        bh=TpFw+ccqPdi0hdqbzs0ZOAz96eff47qPLwoYAUSctAs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PduSo8gAlxjISGzq8tyHLm7eTOKM5oILWJ3AG9Or0R3ne/S3dFTItialdhHVw15tn
+         T13MeYy35RrL7uymYyC6MLFf/+Mx4yIAmalJRyVyqALVqOfVjd1U+afjL5k+nghPFf
+         +NzEbCw2+bsIjhyOExcA0cXC6c9V5wWTqh8bjx8lQMTUxOC+843w1T8V22dW9eEkwN
+         DAtK6+6juBxM9Pxv2xK0OGQElL/1Z7gXbpZaezfVJ7dFt5r6sGTeP99OLHFV7mYsDd
+         +YqkYuW3CYeeWtpB5kJGe9nd/x+f9Z3pdYBGGDig4R0pHrOGZunN9zQYWxqGJaTHZj
+         hpLEcrcjh1jMg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6AC2E5C0815; Tue, 28 Sep 2021 11:13:32 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 11:13:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        urezki@gmail.com, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        joel@joelfernandes.org
+Subject: Re: [PATCH 0/4] rcu: Unify a bit [non-]PREEMPT expedited quiescent
+ state report
+Message-ID: <20210928181332.GA2598698@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210916121048.36623-1-frederic@kernel.org>
 MIME-Version: 1.0
-References: <CAHrFyr4AYi_gad7LQ-cJ9Peg=Gt73Sded8k_ZHeRZz=faGzpQA@mail.gmail.com>
- <87pmst4rhy.fsf@disp2133>
-In-Reply-To: <87pmst4rhy.fsf@disp2133>
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-Date:   Tue, 28 Sep 2021 20:12:00 +0200
-X-Gmail-Original-Message-ID: <CAHrFyr7z82u1QcOo+f72sPr7_L8qUxo1EAK=JeU8xuzAsO9REg@mail.gmail.com>
-Message-ID: <CAHrFyr7z82u1QcOo+f72sPr7_L8qUxo1EAK=JeU8xuzAsO9REg@mail.gmail.com>
-Subject: Re: [lpc-contact] Linux Plumbers Conference Last Day
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        contact@linuxplumbersconf.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916121048.36623-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:51:05PM -0500, Eric W. Biederman wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> writes:
->
-> > I'm expanding the Cc on this since this has crossed a clear line now.
->
-> What asking people to fix their bugs?
->
-> Sitting out and not engaging because this situation is very frustrating
-> when people refuse to fix their bugs?
+On Thu, Sep 16, 2021 at 02:10:44PM +0200, Frederic Weisbecker wrote:
+> This eventually removes rcu_data.exp_deferred_qs to use
+> rcu_data.cpu no_qs.b.exp instead.
+> 
+> For those like me who need a headlamp to walk there: https://ibb.co/3d06r0V
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	rcu/dev
+> 
+> HEAD: 7d9d8a0c6141f95cbac4367b12e755bfabb383ee
 
-I clearly explained why this has crossed a line in the prior mail. Cutting that
-part off won't make it go away.
+Applied and pushed with some additional marking and commit-log editing.
+The marking is needed because rcu_qs() can be invoked with interrupts
+enabled, which can result in a low-probability data race with the
+expedited IPI handler rcu_exp_handler().  There was another access in
+sync_sched_exp_online_cleanup() than needed marking, so I am queuing a
+separate commit for that one.
 
->
-> > You have claimed on two occasions on the PR itself (cf. [1]) and in a
-> > completely unrelated thread on fsdevel (cf. [2]) that there exist bugs in the
-> > current implementation.
-> > On both occasions (cf. [3], [4]) we have responded and asked you to please
-> > disclose those bugs and provide reproducers. You have not responded on both
-> > occasions.
->
-> You acknowledged the trivial bug in chown_common that affects security
-> modules and exists to this day.
->
-> It is trivial to see all you have to do is look at the stomp of uid and
-> gid.
->
-> The other bug I gave details of you and it the tracing was tricky and
-> you did not agree.  Last I looked it is also there.
->
-> > I ask you to stop spreading demonstrably false information such as that we are
-> > refusing to fix bugs. The links clearly disprove your claims.
-> > We are more than happy to fix any bugs that exist. But we can't if we don't
-> > know what they are.
->
-> Hog wash.
+I suspect that this problem predated your series.  This is a low
+probability data race, so KCSAN might be hard-pressed to spot it.
 
-Stop the handwaving and stop claiming things that aren't true. The links in the
-prior mail clearly disprove any of your claims. I did not acknowledge any bug.
-And I did not do so because you have not provided any proof that this leads to
-any issues. You claim that there are bugs. So the burden of proof is on you to
-spell them out clearly and provide reproducers where this actually leads to
-issues.
+Anyway, the result in much much nicer with the converged use of the
+->cpu_no_qs.b.exp field, so thank you!!!
 
->
-> A demonstration is a simple as observing that security_path_chown very
-> much gets a different uid and gid values than it used to.
->
-> I have been able to dig in far enough to see that the idmapped mounts
-> code does not have issues when you are not using idmapped mounts, and I
-> am not using idmapped mounts.  So dealing with this has not been a
-> priority for me.
->
-> All I have seen you do on this issue is get frustrated.  I am very
-> frustrated also.
->
-> All I was intending to say was that if we could sit down in person at
-> LPC we could probably sort this all out quickly, and get past this our
-> frustrations with each other.  As it is, I don't know a quick way to
-> resolve our frustrations easily.
+Might simplify a few of your future headlamp diagrams as well?  ;-)
 
-If that really was your intention then again, you could have easily handed in a
-session to either one of the microconferences that I ran and presented in, you
-could've easily asked for a hackroom session. You could've written a normal
-mail addressing the issue. None of that happened. Your actions clearly speak
-against any intention of resolving this constructively so far.
+						Thanx, Paul
 
-It is not our task to to chase after you in order to get you to tell us
-what your problem is. You need to find better, less passive-aggressive
-ways to deal with your frustrations.
-
-Here is my proposal to resolve this. The Linux Plumbers infrastructure is well
-alive and running and always there for on-demand meetings. I offer you a
-virtual meeting with camera and audio to clear the air both socially and
-technically. We will ask someone to be around as arbiter and to take notes
-during that meeting so we have a track-record.
-
-
-Christian
+> Thanks,
+> 	Frederic
+> ---
+> 
+> Frederic Weisbecker (4):
+>       rcu: Ignore rdp.cpu_no_qs.b.exp on premptible RCU's rcu_qs()
+>       rcu: Remove useless WRITE_ONCE() on rcu_data.exp_deferred_qs
+>       rcu: Move rcu_data.cpu_no_qs.b.exp reset to rcu_export_exp_rdp()
+>       rcu: Remove rcu_data.exp_deferred_qs and convert to rcu_data.cpu no_qs.b.exp
+> 
+> 
+>  kernel/rcu/tree.h        |  1 -
+>  kernel/rcu/tree_exp.h    |  6 +++---
+>  kernel/rcu/tree_plugin.h | 24 +++++++++++++-----------
+>  3 files changed, 16 insertions(+), 15 deletions(-)
