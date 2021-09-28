@@ -2,99 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D57541B5A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06B141B5A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241601AbhI1SHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:07:51 -0400
-Received: from esa4.mentor.iphmx.com ([68.232.137.252]:59192 "EHLO
-        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241488AbhI1SHt (ORCPT
+        id S242162AbhI1SE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242140AbhI1SEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:07:49 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 14:07:49 EDT
-IronPort-SDR: mePWzU6XxdoUSOMA2/Jg70TZhHST4d58hbeNtM052Zs8/Jw3VDqV1RpfE8gQ92f+Bw/9qK/+uf
- xgByXnAzwfEnKvbJKli8N6A7PtNafcxfoAWMdbpzfIhc9F1sKaKUYquBoZfsS2rFF2l0PEx0Cg
- Mr2trBbNvzh/BDjAvLtW0Yrj+eHNJVl1w5yoqGT4Skm/232M4xXpZEjyu5KXOowDeXd63+17SN
- +cyrA9YlpjKPKUj1gQsA6Wlv5xmbhDOST91Aig515viFdB8UeILbdF6Bu8ksA2cuugPZU8RnQS
- o/7QX06ek+wnJmaC/bvPzxy0
-X-IronPort-AV: E=Sophos;i="5.85,330,1624348800"; 
-   d="scan'208";a="66580246"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa4.mentor.iphmx.com with ESMTP; 28 Sep 2021 09:58:58 -0800
-IronPort-SDR: Rj6wklur1DFVClW8MWEh16FKp27QeSbB/4UgZyZ13z3yEGPvxTkDUw8KEymMjqaBAHaQ4ZD2+i
- 6NZkJLRYanpjMoSxT/k4PEsmy6z2Tbd6SrSEQmHJFAT+HRdnWxcNKLK+VH5Zn5LIjz3YR3+KF/
- gyqoFb22du8NW3uEPAeI/1z/vbe79/It4PomUlhtkGFwVe9EsegR0M5rfl1Ym3MmtcWyHWFxXi
- 4OzrzUJQzoZiCjIy6mlsFBS3UZElKVyHIT/rr17GhDGtIYWbgOf0iDw0znZM4snXyoiGsKQPZa
- ses=
-Date:   Tue, 28 Sep 2021 13:58:54 -0400
-From:   "George G. Davis" <george_davis@mentor.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "George G. Davis" <davis.george@siemens.com>
-Subject: Re: [RFC][PATCH] selftests/vm/transhuge-stress: fix ram size thinko
-Message-ID: <20210928175854.GA7313@mam-gdavis-dt>
-References: <20210825135843.29052-1-george_davis@mentor.com>
+        Tue, 28 Sep 2021 14:04:24 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3539C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:02:44 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id z184so8145758iof.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iml/VgaExryQoFlabzYCAD3repwu8THYP0LEUo7RDw8=;
+        b=ismr0qLIdlmhPy1VIB+ST7MXgGg5DQQWHEuIIKqi+mr0AVnVFJN8xOIDmgC+re0qNz
+         lYZHi/ekOZ7ThK81qsIVWwnH0w6QYYGos//Knny6xi4yn4Al04WGtc1fYfwKNLYlSEVK
+         mRNTGXRpta0XEtahbNknTx6LXkf0bfyTl47hP2/fftTWpfZw78XH/Q6WSmQT50aj0BC7
+         GD9pKi7aYGcqv3fCZAWUTyOBnuisag5v+xQzL1NBAIGs2jk95o13AnygZ/SOyx99htBL
+         DKAeuQlDk3VTKY9j+qWiUEFF6Fl6VlEitBT+OZviPMtWHatLtlAfRDq5tPllRuiexvTW
+         3IxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iml/VgaExryQoFlabzYCAD3repwu8THYP0LEUo7RDw8=;
+        b=CQCcM/JtAUG7UQxFj1RvOk27Zx7YepXGKiIuk2E9c4Z+2QGBn6aTGG3bYRnjgntIEL
+         QaFvnkcKavUXPuDo4SVbQFrFI3HCpkpuhFj56BOM5L5gdAzR/CQFl+8TZD57bSd/nJvE
+         m7JIqQSI2JMIubvnUXgupaedJ3ozVo896SK6z/D+ABALQkrykbBycWjIrXfLOjjkq6Wm
+         Jwp+JZPcWgW8Qyw5PvrqpoFRIfchtH4mIQsfw0TVGvWQ/WtXy7KsVC9a7FzgA12AeSAo
+         k/4ely6Y8PNu7wPjnsNKhiTp8EsLJyNrNhFIEXqb9nga+eqS7/H4izIjw13gtRLqg8SG
+         6c9g==
+X-Gm-Message-State: AOAM530htyKBmlyxQLAqYTmc9vAGW99ggcwSIV0MWd4iSMTEXSDK5iVE
+        ax5uDeCCn5ZWOYuBpGa5w+mRwhYr+pt5rXpLhlf/RQ==
+X-Google-Smtp-Source: ABdhPJyIyz7HHcZ3wmbeY4d6vV9kn924GY9hfQmHZ07E9f42u2rOSKuyAquC7V6Go+MV0xcQZo1FXD9/xFrGOtXcDYA=
+X-Received: by 2002:a6b:8f47:: with SMTP id r68mr4812581iod.18.1632852163595;
+ Tue, 28 Sep 2021 11:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210825135843.29052-1-george_davis@mentor.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: svr-orw-mbx-04.mgc.mentorg.com (147.34.90.204) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+References: <1631795665-240946-1-git-send-email-john.garry@huawei.com> <1631795665-240946-4-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1631795665-240946-4-git-send-email-john.garry@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 28 Sep 2021 11:02:29 -0700
+Message-ID: <CAP-5=fVDmEmwwV=-THt6ppDGmGoBy9AYVMDT_eob=GW0saepJQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] perf test: Verify more event members in pmu-events test
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, zhangshaokun@hisilicon.com,
+        liuqi115@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 09:58:43AM -0400, George G. Davis wrote:
-> From: "George G. Davis" <davis.george@siemens.com>
-> 
-> When executing transhuge-stress with an argument to specify the virtual
-> memory size for testing, the ram size is reported as 0, e.g.
-> 
-> transhuge-stress 384
-> thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 0 MiB of ram
-> thp-mmap: 0.184 s/loop, 0.957 ms/page,   2090.265 MiB/s  192 succeed,    0 failed
-> 
-> This appears to be due to a thinko in commit 0085d61fe05e
-> ("selftests/vm/transhuge-stress: stress test for memory compaction"),
-> where, at a guess, the intent was to base "xyz MiB of ram" on `ram`
-> size. Here are results after using `ram` size:
-> 
-> thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 14 MiB of ram
-> 
-> Fixes: 0085d61fe05e ("selftests/vm/transhuge-stress: stress test for memory compaction")
-> Signed-off-by: George G. Davis <davis.george@siemens.com>
+On Thu, Sep 16, 2021 at 5:39 AM John Garry <john.garry@huawei.com> wrote:
+>
+> Function compare_pmu_events() does not compare all struct pmu-events
+> members, so add tests for missing members "name", "event", "aggr_mod",
+> "event", "metric_constraint", and "metric_group", and re-order the tests
+> to match current struct pmu-events member ordering.
+>
+> Also fix uncore_hisi_l3c_rd_hit_cpipe.event member, now that we're actually
+> testing it.
+>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+
+Acked-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
 > ---
->  tools/testing/selftests/vm/transhuge-stress.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
-> index fd7f1b4a96f9..5e4c036f6ad3 100644
-> --- a/tools/testing/selftests/vm/transhuge-stress.c
-> +++ b/tools/testing/selftests/vm/transhuge-stress.c
-> @@ -79,7 +79,7 @@ int main(int argc, char **argv)
->  
->  	warnx("allocate %zd transhuge pages, using %zd MiB virtual memory"
->  	      " and %zd MiB of ram", len >> HPAGE_SHIFT, len >> 20,
-> -	      len >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
-> +	      ram >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
-
-Ping, any comments on this?
-
-For the record, as noted, the value reported for "ram size" appears to
-use the wrong variable, `len`, where `ram` should be used instead.
-
->  
->  	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
->  	if (pagemap_fd < 0)
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards,
-George
+>  tools/perf/tests/pmu-events.c | 50 ++++++++++++++++++++++++++++-------
+>  1 file changed, 40 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index 8c5a6ba1cb14..adfc17f51c7b 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -146,7 +146,7 @@ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
+>  static const struct perf_pmu_test_event uncore_hisi_l3c_rd_hit_cpipe = {
+>         .event = {
+>                 .name = "uncore_hisi_l3c.rd_hit_cpipe",
+> -               .event = "event=0x2",
+> +               .event = "event=0x7",
+>                 .desc = "Total read hits. Unit: hisi_sccl,l3c ",
+>                 .topic = "uncore",
+>                 .long_desc = "Total read hits",
+> @@ -255,6 +255,24 @@ static struct pmu_event *__test_pmu_get_sys_events_table(void)
+>
+>  static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
+>  {
+> +       if (!is_same(e1->name, e2->name)) {
+> +               pr_debug2("testing event e1 %s: mismatched name string, %s vs %s\n",
+> +                         e1->name, e1->name, e2->name);
+> +               return -1;
+> +       }
+> +
+> +       if (!is_same(e1->compat, e2->compat)) {
+> +               pr_debug2("testing event e1 %s: mismatched compat string, %s vs %s\n",
+> +                         e1->name, e1->compat, e2->compat);
+> +               return -1;
+> +       }
+> +
+> +       if (!is_same(e1->event, e2->event)) {
+> +               pr_debug2("testing event e1 %s: mismatched event, %s vs %s\n",
+> +                         e1->name, e1->event, e2->event);
+> +               return -1;
+> +       }
+> +
+>         if (!is_same(e1->desc, e2->desc)) {
+>                 pr_debug2("testing event e1 %s: mismatched desc, %s vs %s\n",
+>                           e1->name, e1->desc, e2->desc);
+> @@ -273,6 +291,12 @@ static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
+>                 return -1;
+>         }
+>
+> +       if (!is_same(e1->pmu, e2->pmu)) {
+> +               pr_debug2("testing event e1 %s: mismatched pmu string, %s vs %s\n",
+> +                         e1->name, e1->pmu, e2->pmu);
+> +               return -1;
+> +       }
+> +
+>         if (!is_same(e1->unit, e2->unit)) {
+>                 pr_debug2("testing event e1 %s: mismatched unit, %s vs %s\n",
+>                           e1->name, e1->unit, e2->unit);
+> @@ -285,6 +309,12 @@ static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
+>                 return -1;
+>         }
+>
+> +       if (!is_same(e1->aggr_mode, e2->aggr_mode)) {
+> +               pr_debug2("testing event e1 %s: mismatched aggr_mode, %s vs %s\n",
+> +                         e1->name, e1->aggr_mode, e2->aggr_mode);
+> +               return -1;
+> +       }
+> +
+>         if (!is_same(e1->metric_expr, e2->metric_expr)) {
+>                 pr_debug2("testing event e1 %s: mismatched metric_expr, %s vs %s\n",
+>                           e1->name, e1->metric_expr, e2->metric_expr);
+> @@ -297,21 +327,21 @@ static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
+>                 return -1;
+>         }
+>
+> -       if (!is_same(e1->deprecated, e2->deprecated)) {
+> -               pr_debug2("testing event e1 %s: mismatched deprecated, %s vs %s\n",
+> -                         e1->name, e1->deprecated, e2->deprecated);
+> +       if (!is_same(e1->metric_group, e2->metric_group)) {
+> +               pr_debug2("testing event e1 %s: mismatched metric_group, %s vs %s\n",
+> +                         e1->name, e1->metric_group, e2->metric_group);
+>                 return -1;
+>         }
+>
+> -       if (!is_same(e1->pmu, e2->pmu)) {
+> -               pr_debug2("testing event e1 %s: mismatched pmu string, %s vs %s\n",
+> -                         e1->name, e1->pmu, e2->pmu);
+> +       if (!is_same(e1->deprecated, e2->deprecated)) {
+> +               pr_debug2("testing event e1 %s: mismatched deprecated, %s vs %s\n",
+> +                         e1->name, e1->deprecated, e2->deprecated);
+>                 return -1;
+>         }
+>
+> -       if (!is_same(e1->compat, e2->compat)) {
+> -               pr_debug2("testing event e1 %s: mismatched compat string, %s vs %s\n",
+> -                         e1->name, e1->compat, e2->compat);
+> +       if (!is_same(e1->metric_constraint, e2->metric_constraint)) {
+> +               pr_debug2("testing event e1 %s: mismatched metric_constant, %s vs %s\n",
+> +                         e1->name, e1->metric_constraint, e2->metric_constraint);
+>                 return -1;
+>         }
+>
+> --
+> 2.26.2
+>
