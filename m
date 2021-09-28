@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D573641B0ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407F741B0F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241491AbhI1Ngv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:36:51 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44766
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241533AbhI1Ngd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:36:33 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 16CDC40CEE;
-        Tue, 28 Sep 2021 13:34:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632836090;
-        bh=LthWjnlRqwPVsS/SaAlB15xuPGLGuLfciTawY1djQSY=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=rjtC0iVxro3HDDb+ajvexNya1mRfJj0n7ePicasiTxDHVlsEnB+eJxugdJFHJDdN+
-         wnayh9SkmpmSOHAHlK9tGX3iuAXOuVW+gQBIstMINUfwtPDbUyit+fwaWW9pB9SWXS
-         LZDOhyQLvKd2ktLsY2b6AzyhOQeBNzr5/BL+UFulSWWoDiZM8ANJRuhNEyKkbKs39G
-         my6YrA3JXSXCCdIlOqs9OwlN+NplKaKBYKDuhgTbhSW3QXeIJ0J8NMfqqCGlGasvB8
-         5LYmkXNN5uhiaD0brBhx28+jbhc/mQM7yUuQay+6Q0H0A0TIEiiFWewPmAkqTotz/X
-         aJisN56dq9mWw==
-Subject: Re: [PATCH][next] rtc: msc313: Fix unintentional sign extension issue
- on left shift of a u16
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Daniel Palmer <daniel@thingy.jp>,
-        Romain Perier <romain.perier@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-rtc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210928123906.988813-1-colin.king@canonical.com>
- <CAFr9PXnMXPmuaUnfr-VwaZDX1hY8ZDtp1+UxOau6DKpUP9FdzQ@mail.gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <8f21ec82-201d-efee-d1db-382a7885d38f@canonical.com>
-Date:   Tue, 28 Sep 2021 14:34:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240962AbhI1Nhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:37:32 -0400
+Received: from mga04.intel.com ([192.55.52.120]:37605 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240971AbhI1NhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:37:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="222803124"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="222803124"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 06:35:14 -0700
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="553993941"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.203]) ([10.254.212.203])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 06:35:08 -0700
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-7-yi.l.liu@intel.com>
+ <20210921170943.GS327412@nvidia.com>
+ <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922123931.GI327412@nvidia.com>
+ <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210927150928.GA1517957@nvidia.com>
+ <BN9PR11MB54337B7F65B98C2335B806938CA89@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210928115751.GK964074@nvidia.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
+ interfaces
+Message-ID: <9a314095-3db9-30fc-2ed9-4e46d385036d@linux.intel.com>
+Date:   Tue, 28 Sep 2021 21:35:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CAFr9PXnMXPmuaUnfr-VwaZDX1hY8ZDtp1+UxOau6DKpUP9FdzQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210928115751.GK964074@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2021 14:31, Daniel Palmer wrote:
-> Hi Colin,
-> 
-> On Tue, 28 Sept 2021 at 21:39, Colin King <colin.king@canonical.com> wrote:
->> Shifting the u16 value returned by readw by 16 bits to the left
->> will be promoted to a 32 bit signed int and then sign-extended
->> to an unsigned long. If the top bit of the readw is set then
->> the shifted value will be sign extended and the top 32 bits of
->> the result will be set.
-> 
-> Ah,.. C is fun in all the wrong places. :)
-> These chips are full of 32bit registers that are split into two 16
-> registers 4 bytes apart when seen from the ARM CPU so we probably have
-> this same mistake in a few other places.
-> 
-> A similar pattern is used a bit later on in the same file to read the counter:
-> 
-> seconds = readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
-> | (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 16);
+Hi Jason,
 
-Ah, I missed that one! I'll send a V2.
-
+On 2021/9/28 19:57, Jason Gunthorpe wrote:
+> On Tue, Sep 28, 2021 at 07:30:41AM +0000, Tian, Kevin wrote:
 > 
-> I guess it works at the moment because the top bit won't be set until 2038.
-
-I hope to be retired by then, but I guess fixing it up before 2038 is a
-good idea ;-)
-
+>>> Also, don't call it "hint", there is nothing hinty about this, it has
+>>> definitive functional impacts.
+>>
+>> possibly dma_mode (too broad?) or dma_usage
 > 
-> Thanks,
+> You just need a flag to specify if the driver manages DMA ownership
+> itself, or if it requires the driver core to setup kernel ownership
 > 
-> Daniel
+> DMA_OWNER_KERNEL
+> DMA_OWNER_DRIVER_CONTROLLED
 > 
+> ?
+> 
+> There is a bool 'suprress_bind_attrs' already so it could be done like
+> this:
+> 
+>   bool suppress_bind_attrs:1;
+> 
+>   /* If set the driver must call iommu_XX as the first action in probe() */
+>   bool suppress_dma_owner:1;
+> 
+> Which is pretty low cost.
 
+Yes. Pretty low cost to fix the BUG_ON() issue. Any kernel-DMA driver
+binding is blocked if the device's iommu group has been put into user-
+dma mode.
+
+Another issue is, when putting a device into user-dma mode, all devices
+belonging to the same iommu group shouldn't be bound with a kernel-dma
+driver. Kevin's prototype checks this by READ_ONCE(dev->driver). This is
+not lock safe as discussed below,
+
+https://lore.kernel.org/linux-iommu/20210927130935.GZ964074@nvidia.com/
+
+Any guidance on this?
+
+Best regards,
+baolu
