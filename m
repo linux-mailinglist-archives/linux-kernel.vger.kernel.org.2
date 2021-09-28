@@ -2,259 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD6541B170
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8400C41B175
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241119AbhI1OAr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 10:00:47 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:53677 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240898AbhI1OAn (ORCPT
+        id S241040AbhI1OCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240898AbhI1OCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:00:43 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 48A271C0008;
-        Tue, 28 Sep 2021 13:59:01 +0000 (UTC)
-Date:   Tue, 28 Sep 2021 15:58:59 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: add MEMREAD ioctl
-Message-ID: <20210928155859.433844cb@xps13>
-In-Reply-To: <20210920070221.10173-1-kernel@kempniu.pl>
-References: <20210920070221.10173-1-kernel@kempniu.pl>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 28 Sep 2021 10:02:04 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C11C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:00:24 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:9d6a:ba71:99b4:9160])
+        by albert.telenet-ops.be with bizsmtp
+        id zS0M250034bPoua06S0MA4; Tue, 28 Sep 2021 16:00:21 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mVDef-000LNP-3P; Tue, 28 Sep 2021 16:00:21 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mVDee-00AFEY-Jf; Tue, 28 Sep 2021 16:00:20 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v5.15 (take three)
+Date:   Tue, 28 Sep 2021 16:00:18 +0200
+Message-Id: <20210928140018.2441795-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michał,
+	Hi Linus,
 
-+ Boris just in case you have anything obvious that pops up in your
-  head when reading the description, otherwise no need to thoroughfully
-  review this ;)
+The following changes since commit a7b68ed15d1fd72c1e451d5eb6edebee2a624b90:
 
-kernel@kempniu.pl wrote on Mon, 20 Sep 2021 09:02:21 +0200:
+  m68k: mvme: Remove overdue #warnings in RTC handling (2021-09-13 11:19:05 +0200)
 
-> User-space applications making use of MTD devices via /dev/mtd*
-> character devices currently have limited capabilities for reading data:
-> 
->   - only deprecated methods of accessing OOB layout information exist,
-> 
->   - there is no way to explicitly specify MTD operation mode to use; it
->     is auto-selected based on the MTD file mode (MTD_FILE_MODE_*) set
->     for the character device; in particular, this prevents using
->     MTD_OPS_AUTO_OOB for reads,
-> 
->   - all existing user-space interfaces which cause mtd_read() or
->     mtd_read_oob() to be called (via mtdchar_read() and
->     mtdchar_read_oob(), respectively) return success even when those
->     functions return -EUCLEAN or -EBADMSG; this renders user-space
->     applications using these interfaces unaware of any corrected
->     bitflips or uncorrectable ECC errors detected during reads.
-> 
-> Note that the existing MEMWRITE ioctl allows the MTD operation mode to
-> be explicitly set, allowing user-space applications to write page data
-> and OOB data without requiring them to know anything about the OOB
-> layout of the MTD device they are writing to (MTD_OPS_AUTO_OOB).  Also,
-> the MEMWRITE ioctl does not mangle the return value of mtd_write_oob().
-> 
-> Add a new ioctl, MEMREAD, which addresses the above issues.  It is
-> intended to be a read-side counterpart of the existing MEMWRITE ioctl.
-> 
-> Update include/uapi/mtd/mtd-abi.h accordingly.
+are available in the Git repository at:
 
-I have to admit I am generally scared whenever something touches this
-file. While I am really open to anything internally I know we need to be
-careful with these additions, hence I will only merge this patch with
-all other MTD maintainers acks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag3
 
-On my side I am fine with the approach though.
+for you to fetch changes up to 9fde0348640252c79d462c4d29a09a14e8741f5c:
 
-Thanks,
-Miquèl
+  m68k: Remove set_fs() (2021-09-24 13:35:07 +0200)
 
-> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
-> ---
-> This patch is a shameless calque^W^W^Wheavily inspired by MEMWRITE code,
-> so quite a lot of copy-pasting happened.  I guess it is somewhat
-> expected when adding a read-side counterpart of existing code which
-> takes care of writes, but please excuse me if I went too far.
-> 
-> Note that "scripts/checkpatch.pl --strict" returns two alignment
-> warnings for this patch.  Given that existing code triggers the same
-> warnings, I assumed that local consistency trumps checkpatch.pl's
-> complaints.
-> 
->  drivers/mtd/mtdchar.c      | 60 ++++++++++++++++++++++++++++++++++++++
->  include/uapi/mtd/mtd-abi.h | 43 +++++++++++++++++++++++----
->  2 files changed, 98 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index 155e991d9d75..92e0024bdcf7 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -621,6 +621,58 @@ static int mtdchar_write_ioctl(struct mtd_info *mtd,
->  	return ret;
->  }
->  
-> +static int mtdchar_read_ioctl(struct mtd_info *mtd,
-> +		struct mtd_read_req __user *argp)
-> +{
-> +	struct mtd_info *master = mtd_get_master(mtd);
-> +	struct mtd_read_req req;
-> +	struct mtd_oob_ops ops = {};
-> +	void __user *usr_data, *usr_oob;
-> +	int ret;
-> +
-> +	if (copy_from_user(&req, argp, sizeof(req)))
-> +		return -EFAULT;
-> +
-> +	usr_data = (void __user *)(uintptr_t)req.usr_data;
-> +	usr_oob = (void __user *)(uintptr_t)req.usr_oob;
-> +
-> +	if (!master->_read_oob)
-> +		return -EOPNOTSUPP;
-> +	ops.mode = req.mode;
-> +	ops.len = (size_t)req.len;
-> +	ops.ooblen = (size_t)req.ooblen;
-> +	ops.ooboffs = 0;
-> +
-> +	if (usr_data) {
-> +		ops.datbuf = kmalloc(ops.len, GFP_KERNEL);
-> +		if (IS_ERR(ops.datbuf))
-> +			return PTR_ERR(ops.datbuf);
-> +	} else {
-> +		ops.datbuf = NULL;
-> +	}
-> +
-> +	if (usr_oob) {
-> +		ops.oobbuf = kmalloc(ops.ooblen, GFP_KERNEL);
-> +		if (IS_ERR(ops.oobbuf)) {
-> +			kfree(ops.datbuf);
-> +			return PTR_ERR(ops.oobbuf);
-> +		}
-> +	} else {
-> +		ops.oobbuf = NULL;
-> +	}
-> +
-> +	ret = mtd_read_oob(mtd, (loff_t)req.start, &ops);
-> +
-> +	if (copy_to_user(usr_data, ops.datbuf, ops.retlen) ||
-> +	    copy_to_user(usr_oob, ops.oobbuf, ops.oobretlen))
-> +		ret = -EFAULT;
-> +
-> +	kfree(ops.datbuf);
-> +	kfree(ops.oobbuf);
-> +
-> +	return ret;
-> +}
-> +
->  static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  {
->  	struct mtd_file_info *mfi = file->private_data;
-> @@ -643,6 +695,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  	case MEMGETINFO:
->  	case MEMREADOOB:
->  	case MEMREADOOB64:
-> +	case MEMREAD:
->  	case MEMISLOCKED:
->  	case MEMGETOOBSEL:
->  	case MEMGETBADBLOCK:
-> @@ -817,6 +870,13 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  		break;
->  	}
->  
-> +	case MEMREAD:
-> +	{
-> +		ret = mtdchar_read_ioctl(mtd,
-> +		      (struct mtd_read_req __user *)arg);
-> +		break;
-> +	}
-> +
->  	case MEMLOCK:
->  	{
->  		struct erase_info_user einfo;
-> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-> index b869990c2db2..337e6e597fad 100644
-> --- a/include/uapi/mtd/mtd-abi.h
-> +++ b/include/uapi/mtd/mtd-abi.h
-> @@ -55,9 +55,9 @@ struct mtd_oob_buf64 {
->   * @MTD_OPS_RAW:	data are transferred as-is, with no error correction;
->   *			this mode implies %MTD_OPS_PLACE_OOB
->   *
-> - * These modes can be passed to ioctl(MEMWRITE) and are also used internally.
-> - * See notes on "MTD file modes" for discussion on %MTD_OPS_RAW vs.
-> - * %MTD_FILE_MODE_RAW.
-> + * These modes can be passed to ioctl(MEMWRITE) and ioctl(MEMREAD); they are
-> + * also used internally. See notes on "MTD file modes" for discussion on
-> + * %MTD_OPS_RAW vs. %MTD_FILE_MODE_RAW.
->   */
->  enum {
->  	MTD_OPS_PLACE_OOB = 0,
-> @@ -91,6 +91,32 @@ struct mtd_write_req {
->  	__u8 padding[7];
->  };
->  
-> +/**
-> + * struct mtd_read_req - data structure for requesting a read operation
-> + *
-> + * @start:	start address
-> + * @len:	length of data buffer
-> + * @ooblen:	length of OOB buffer
-> + * @usr_data:	user-provided data buffer
-> + * @usr_oob:	user-provided OOB buffer
-> + * @mode:	MTD mode (see "MTD operation modes")
-> + * @padding:	reserved, must be set to 0
-> + *
-> + * This structure supports ioctl(MEMREAD) operations, allowing data and/or OOB
-> + * reads in various modes. To read from OOB-only, set @usr_data == NULL, and to
-> + * read data-only, set @usr_oob == NULL. However, setting both @usr_data and
-> + * @usr_oob to NULL is not allowed.
-> + */
-> +struct mtd_read_req {
-> +	__u64 start;
-> +	__u64 len;
-> +	__u64 ooblen;
-> +	__u64 usr_data;
-> +	__u64 usr_oob;
-> +	__u8 mode;
-> +	__u8 padding[7];
-> +};
-> +
->  #define MTD_ABSENT		0
->  #define MTD_RAM			1
->  #define MTD_ROM			2
-> @@ -207,6 +233,12 @@ struct otp_info {
->  #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
->  /* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
->  #define OTPERASE		_IOW('M', 25, struct otp_info)
-> +/*
-> + * Most generic read interface; can read in-band and/or out-of-band in various
-> + * modes (see "struct mtd_read_req"). This ioctl is not supported for flashes
-> + * without OOB, e.g., NOR flash.
-> + */
-> +#define MEMREAD			_IOWR('M', 26, struct mtd_read_req)
->  
->  /*
->   * Obsolete legacy interface. Keep it in order not to break userspace
-> @@ -270,8 +302,9 @@ struct mtd_ecc_stats {
->   * Note: %MTD_FILE_MODE_RAW provides the same functionality as %MTD_OPS_RAW -
->   * raw access to the flash, without error correction or autoplacement schemes.
->   * Wherever possible, the MTD_OPS_* mode will override the MTD_FILE_MODE_* mode
-> - * (e.g., when using ioctl(MEMWRITE)), but in some cases, the MTD_FILE_MODE is
-> - * used out of necessity (e.g., `write()', ioctl(MEMWRITEOOB64)).
-> + * (e.g., when using ioctl(MEMWRITE) or ioctl(MEMREAD)), but in some cases, the
-> + * MTD_FILE_MODE is used out of necessity (e.g., `write()',
-> + * ioctl(MEMWRITEOOB64)).
->   */
->  enum mtd_file_modes {
->  	MTD_FILE_MODE_NORMAL = MTD_OTP_OFF,
+----------------------------------------------------------------
+m68k updates for v5.15 (take three)
 
+  - Signal handling fixes,
+  - Removal of set_fs().
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Al Viro (3):
+      m68k: Handle arrivals of multiple signals correctly
+      m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
+      m68k: Leave stack mangling to asm wrapper of sigreturn()
+
+Christoph Hellwig (6):
+      m68k: Document that access_ok is broken for !CONFIG_CPU_HAS_ADDRESS_SPACES
+      m68k: Remove the 030 case in virt_to_phys_slow
+      m68k: Use BUILD_BUG for passing invalid sizes to get_user/put_user
+      m68k: Factor the 8-byte lowlevel {get,put}_user code into helpers
+      m68k: Provide __{get,put}_kernel_nofault
+      m68k: Remove set_fs()
+
+ arch/m68k/68000/entry.S             |   4 -
+ arch/m68k/Kconfig                   |   1 -
+ arch/m68k/coldfire/entry.S          |   4 -
+ arch/m68k/include/asm/processor.h   |  31 +++++-
+ arch/m68k/include/asm/segment.h     |  59 ----------
+ arch/m68k/include/asm/thread_info.h |   3 -
+ arch/m68k/include/asm/tlbflush.h    |  11 +-
+ arch/m68k/include/asm/traps.h       |   4 +
+ arch/m68k/include/asm/uaccess.h     | 215 +++++++++++++++++++++++-------------
+ arch/m68k/kernel/asm-offsets.c      |   2 +-
+ arch/m68k/kernel/entry.S            |  58 +++++-----
+ arch/m68k/kernel/process.c          |   4 +-
+ arch/m68k/kernel/signal.c           | 199 ++++++++++++++-------------------
+ arch/m68k/kernel/traps.c            |  13 +--
+ arch/m68k/mac/misc.c                |   1 -
+ arch/m68k/mm/cache.c                |  25 +----
+ arch/m68k/mm/init.c                 |   6 -
+ arch/m68k/mm/kmap.c                 |   1 -
+ arch/m68k/mm/memory.c               |   1 -
+ arch/m68k/mm/motorola.c             |   2 +-
+ arch/m68k/sun3/config.c             |   3 +-
+ arch/m68k/sun3/mmu_emu.c            |   6 +-
+ arch/m68k/sun3/sun3ints.c           |   1 -
+ arch/m68k/sun3x/prom.c              |   1 -
+ 24 files changed, 301 insertions(+), 354 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/segment.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
