@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B5441ACAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E2741ACAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240145AbhI1KNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:13:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38712 "EHLO mail.kernel.org"
+        id S240116AbhI1KNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:13:31 -0400
+Received: from phobos.denx.de ([85.214.62.61]:42888 "EHLO phobos.denx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240139AbhI1KNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:13:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2580611CE;
-        Tue, 28 Sep 2021 10:11:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632823915;
-        bh=Y7wSC7xrhvCDGxkQBLr8UtzzFVjfJNotICIdTFFi8Ok=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QPA9Ru63h3uBzj/aj83aKCrlH2Ho8nnjT4vdhNQFbKk6Co+Hn3FZjekL20EX1KpLI
-         FL50GDzBdXWbriiurg+DrVuvmonDBe+jhJPB9bTyL/d4bY6OWoPPP5YRIMnBp6zzTw
-         4n6A0yz8bTyAoop4B6nU7eiw7K8JyZLtCey1qr+Zb8wm4DVWjA55dTV6XKU1d3hS5V
-         ir2Y3SKmHjwXJxijmKqLnENDPWKtHFTMKYpsYZTuFbx5KaEp4r5gYEtI1TbD5/tjPI
-         owKYzZULoX5Q1ynW2wOZjGKXLrR2XIotIoIGmlVJriTxfHr33WKSUXvpwrW4d4sGeP
-         Xh83CeYtUYlgw==
-Received: by mail-wr1-f46.google.com with SMTP id d6so56891135wrc.11;
-        Tue, 28 Sep 2021 03:11:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532IOQtmih9UULB6XIIlS/KdGQV8bf+USQ1BdIa0YGxWt0UDBou7
-        davltlxNc2rvtBA0w+pkg4rhsoIKK6ZuU/Z6TBA=
-X-Google-Smtp-Source: ABdhPJzl6fwe7LMgMXeAMdLDt7NX7OTZg0SUJ6tJy/beE2gt+W2VZjPnxuFCXVxpHsdh8A8pu2A/KyaXdaX8tg+YXgM=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr5373570wro.411.1632823914100;
- Tue, 28 Sep 2021 03:11:54 -0700 (PDT)
+        id S239952AbhI1KN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:13:29 -0400
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 0045D82EE0;
+        Tue, 28 Sep 2021 12:11:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1632823908;
+        bh=1gm+yBwSErE6FWepgFfoEKRGOP1Aqja96WsJs8n3Kfk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jvWr/TPom7aGUWl+KtLdSBBJ7nY1DfLQaEzCVaoaTOSE56JtEgOhRwfiW7o2gjOKT
+         UaYcbQWPp0K3YJFJtJ4IUNR9EAN6A3rLcCuv9PWbCw9W4jk1sshOW8qZeFPJV5m+H9
+         vUMCzd/tYnCsuSpGkw34E+K6S1+g/8vOmJ578K4iUbWhV33/oNB0d+6idXc9TIHEx9
+         HWw6FFWr8auLkX0zJoMjcDYeLxCwFApjWzbngSlZxUINLLRKt8FNhDrtjQlAIuG0P8
+         CDIMS99VQjkvEvJBGVpo0PDleOVHv7BKm2I0pCwiupWXbPn5RdiIoXnXfRdgMmFCMX
+         5g00qzOtbgfYQ==
+Subject: Re: [PATCH] drm: mxsfb: Set proper default bus format when using a
+ bridge
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>
+Cc:     Stefan Agner <stefan@agner.ch>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <YVLYh/SgBritG/RJ@qwark.sigxcpu.org>
+ <1fda3b80-7df2-2ce3-b049-6773e849e9dc@denx.de>
+ <YVLeMlQWd/lBNjsX@qwark.sigxcpu.org>
+ <3ebcbc4dba56011ddf4761dc47513dbb66fe656d.camel@pengutronix.de>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <d9760c02-1b73-5703-7964-a2918e16af94@denx.de>
+Date:   Tue, 28 Sep 2021 12:11:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210927094123.576521-1-arnd@kernel.org> <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
- <20210927130253.GH2083@kadam> <CAK8P3a3YFh4QTC6dk6onsaKcqCM3Nmb2JhMXK5QdZpHtffjyLg@mail.gmail.com>
- <CAHk-=wheEHQxdSJgTkt7y4yFjzhWxMxE-p7dKLtQSBs4ceHLmw@mail.gmail.com> <70a77e44-c43a-f5ce-58d5-297ca2cfe5d9@redhat.com>
-In-Reply-To: <70a77e44-c43a-f5ce-58d5-297ca2cfe5d9@redhat.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 28 Sep 2021 12:11:38 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3sEy7NAhMHcV7XPpZxo5tHnQz1oCP43YTe_ZQuzOHgPA@mail.gmail.com>
-Message-ID: <CAK8P3a3sEy7NAhMHcV7XPpZxo5tHnQz1oCP43YTe_ZQuzOHgPA@mail.gmail.com>
-Subject: Re: [PATCH] vboxsf: fix old signature detection
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3ebcbc4dba56011ddf4761dc47513dbb66fe656d.camel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 11:40 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 9/27/21 8:33 PM, Linus Torvalds wrote:
-> > On Mon, Sep 27, 2021 at 6:22 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >>
-> >> More specifically, ' think '\377' may be either -1 or 255 depending on
-> >> the architecture.
-> >> On most architectures, 'char' is implicitly signed, but on some others
-> >> it is not.
-> >
-> > Yeah. That code is just broken.
-> >
-> > And Arnd, your patch may be "conceptually minimal", in that it keeps
-> > thed broken code and makes it work. But it just dials up the oddity to
-> > 11.
+On 9/28/21 11:27 AM, Lucas Stach wrote:
+> Am Dienstag, dem 28.09.2021 um 11:19 +0200 schrieb Guido Günther:
+>> Hi,
+>> On Tue, Sep 28, 2021 at 11:08:58AM +0200, Marek Vasut wrote:
+>>> On 9/28/21 10:55 AM, Guido Günther wrote:
+>>>> If a bridge doesn't do any bus format handling MEDIA_BUS_FMT_FIXED is
+>>>> returned. Fallback to a reasonable default (MEDIA_BUS_FMT_RGB888_1X24) in
+>>>> that case.
+>>>>
+>>>> This unbreaks e.g. using mxsfb with the nwl bridge and mipi panels.
+>>>>
+>>>> Fixes: b776b0f00f24 ("drm: mxsfb: Use bus_format from the nearest bridge if present")
+>>>>
+>>>> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+>>>> ---
+>>>>
+>>>> I'll look at what needs to be done in nwl separately but this also
+>>>> unbreaks other bridge seupts that don't to format negotiation yet.
+>>>>
+>>>>    drivers/gpu/drm/mxsfb/mxsfb_kms.c | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>>>> index af6c620adf6e..4ef94cf686b0 100644
+>>>> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>>>> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>>>> @@ -369,6 +369,8 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
+>>>>    			drm_atomic_get_new_bridge_state(state,
+>>>>    							mxsfb->bridge);
+>>>>    		bus_format = bridge_state->input_bus_cfg.format;
+>>>> +		if (bus_format == MEDIA_BUS_FMT_FIXED)
+>>>> +			bus_format = MEDIA_BUS_FMT_RGB888_1X24;
+>>>
+>>> Shouldn't the NWL bridge return the correct format ?
+>>
+>> Yes it should and I'll send a separate patch for that but we currently
+>> don't do anything meaningful at all if the bridge doesn't do format
+>> negotiation and then fail setup in mxsfb_set_formats().
+>>
+>> I think we should at least preserve the status quo (as we do with the
+>> non bridge case in b776b0f00f24 too).
+>>
+>> We could have a warning to spot drivers that don't do that yet and hence
+>> the generic code returns MEDIA_BUS_FMT_FIXED.
+>>
+> That sounds sensible. Using a default format if we don't know what to
+> do is going to be a unpleasant surprise for those with a display
+> pipeline that doesn't work with the default format. So please add a
+> dev_warn when we are doing this fallback.
+> 
+> Also I would argue that the NWL fix is the patch that should go in the
+> stable tree. This one should only be a additional safety net, so I
+> would drop the Fixes tag.
 
-Thank you for addressing it. I usually try to avoid overthinking changes
-to "unusual" code like this, but your solution is clearly an improvement.
-
-What really threw me off this time is that my first attempt to address
-the warning was an exact revert of 9d682ea6bcc7 ("vboxsf: Fix the
-check for the old binary mount-arguments struct"), which in turn
-came from a tool that is usually correct and and that both Dan
-and Al thought the original patch was correct when it looked like
-it turned a working (though unusual) implementation  into a broken
-one.
-
-> I agree that your suggestion is to be the best solution,
-> so how do we move forward with this, do I turn this into a
-> proper patch with you as the author and Arnd as Reported-by and
-> if yes may I add your Signed-off-by to the patch ?
-
-It's already upstream, see d5f6545934c4 ("qnx4: work around gcc
-false positive warning bug").
-
-      Arnd
+Indeed
