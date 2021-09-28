@@ -2,186 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7BB41A420
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FF441A421
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbhI1AWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 20:22:22 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59028 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238277AbhI1AWV (ORCPT
+        id S238322AbhI1AXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 20:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238277AbhI1AXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 20:22:21 -0400
-Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18S0Jl6P039939;
-        Tue, 28 Sep 2021 09:19:47 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
- Tue, 28 Sep 2021 09:19:47 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18S0JlmW039936
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 28 Sep 2021 09:19:47 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2 1/2] block: make __register_blkdev() return an error
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, hch@lst.de,
-        efremov@linux.com, song@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, hare@suse.de,
-        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org
-References: <20210927220332.1074647-1-mcgrof@kernel.org>
- <20210927220332.1074647-2-mcgrof@kernel.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <11a884b0-53f2-5174-fcb2-6247cece7104@i-love.sakura.ne.jp>
-Date:   Tue, 28 Sep 2021 09:19:47 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 27 Sep 2021 20:23:14 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F605C061575;
+        Mon, 27 Sep 2021 17:21:36 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t4so13016946plo.0;
+        Mon, 27 Sep 2021 17:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rXOyN7cYCqXSX6iikjn82iMAk6UNThUEEXx7lGzOOt4=;
+        b=J9KhDMLtVd5tT704X9aixuqITekkPkwRti5OjR8DcJSr+LTxrPZbORu3dQg6BSo5gL
+         EGwMMyw6516Texb/atKCACgde3F+p+wnqDchLMi6bpxiLrU9K7qZO4Oahx0+IanSxaGD
+         yxovs7s4/xWgYQKG/+/BuI21oQpXuSJ2QryT1OdUY2+vtjCBAhrhVNcK7tbyYurTWVjf
+         zN1ykmCfadZb59q34g3MySnqibs5WfMjhmDY6P5G8GlbqhKSvHSbSHvTlTdH+Vet4aKd
+         olj39wNQb5wk4yoOV2OUBen/tNQnJYM9ir71KnwnkmcC1vpS9caa0s6CJCL1/zW8NCMk
+         waBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rXOyN7cYCqXSX6iikjn82iMAk6UNThUEEXx7lGzOOt4=;
+        b=YbvuzfqBZiv6w36/UZ89CpoIW/gFvtilzfi0cBoT3JWRg0SDXrQpueOYHIMiWj6183
+         E293HgbysyFrc+dKlw14zDPmRI2lvtP0SgoWmmr7Uf3/7cR4ig043yA/3zma3CAqqmBh
+         AZJNdZ+lgDaDWfTgAneztuBbNOS3rP4fTX/DZGn/nDIdNJeFEKjvkd44UNHvl7xcQmKh
+         Rid385PDuO/Ck1OrjEAfuFLwpJJONs8oZq1sqbBUc59UuP8t1Pe1hfrwx61R4HnYxu8e
+         MvOCaSIpqy9srUSC5I9k6scHOl1pstIyLqIzI9F8fMfRgFLtu2YgE+XtIfaGo6qj2l9b
+         gxgQ==
+X-Gm-Message-State: AOAM532Gu8+3tvOEgpqfrw2/JZWxnQl8C7+0T/FJKbXHoBLdJLaA8l4m
+        BfGhwlwmf+v4Abby4MoQ1LA=
+X-Google-Smtp-Source: ABdhPJzfyG+PLLZ1NxOQUYogdGiadh+1ePkj9Sr+jegfcTFCzKP/FpyWzcTKx3eKBLXzQzZG4SvRSQ==
+X-Received: by 2002:a17:90a:4983:: with SMTP id d3mr2095484pjh.53.1632788495597;
+        Mon, 27 Sep 2021 17:21:35 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id n205sm18771916pfd.38.2021.09.27.17.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 17:21:35 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] rcu: in_irq() cleanup
+Date:   Tue, 28 Sep 2021 08:21:28 +0800
+Message-Id: <20210928002128.4501-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210927220332.1074647-2-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/28 7:03, Luis Chamberlain wrote:
-> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-> index 5dc9b3d32415..be0627345b21 100644
-> --- a/drivers/block/ataflop.c
-> +++ b/drivers/block/ataflop.c
-> @@ -1989,24 +1989,34 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
->  
->  static DEFINE_MUTEX(ataflop_probe_lock);
->  
-> -static void ataflop_probe(dev_t dev)
-> +static int ataflop_probe(dev_t dev)
->  {
->  	int drive = MINOR(dev) & 3;
->  	int type  = MINOR(dev) >> 2;
-> +	int err = 0;
->  
->  	if (type)
->  		type--;
->  
-> -	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
-> -		return;
-> +	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS) {
-> +		err = -EINVAL;
-> +		goto out;
-> +	}
-> +
->  	mutex_lock(&ataflop_probe_lock);
->  	if (!unit[drive].disk[type]) {
-> -		if (ataflop_alloc_disk(drive, type) == 0) {
-> -			add_disk(unit[drive].disk[type]);
-> +		err = ataflop_alloc_disk(drive, type);
-> +		if (err == 0) {
-> +			err = add_disk(unit[drive].disk[type]);
-> +			if (err)
-> +				blk_cleanup_disk(unit[drive].disk[type]);
->  			unit[drive].registered[type] = true;
+Replace the obsolete and ambiguos macro in_irq() with new
+macro in_hardirq().
 
-Why setting registered to true despite add_disk() failed?
-del_gendisk() without successful add_disk() sounds wrong.
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ include/linux/rcutiny.h  | 2 +-
+ kernel/rcu/tree.c        | 2 +-
+ kernel/rcu/tree_plugin.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Don't we need to undo ataflop_alloc_disk() because it sets
-unit[drive].disk[type] to non-NULL ?
-
->  		}
->  	}
->  	mutex_unlock(&ataflop_probe_lock);
-> +
-> +out:
-> +	return err;
->  }
->  
->  static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
-
-
-
-> diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-> index c2bf4946f4e3..82a93044de95 100644
-> --- a/drivers/block/brd.c
-> +++ b/drivers/block/brd.c
-> @@ -426,10 +426,11 @@ static int brd_alloc(int i)
->  	return err;
->  }
->  
-> -static void brd_probe(dev_t dev)
-> +static int brd_probe(dev_t dev)
->  {
->  	int i = MINOR(dev) / max_part;
->  	struct brd_device *brd;
-> +	int err = 0;
->  
->  	mutex_lock(&brd_devices_mutex);
->  	list_for_each_entry(brd, &brd_devices, brd_list) {
-> @@ -437,9 +438,11 @@ static void brd_probe(dev_t dev)
->  			goto out_unlock;
->  	}
->  
-> -	brd_alloc(i);
-> +	err = brd_alloc(i);
->  out_unlock:
->  	mutex_unlock(&brd_devices_mutex);
-> +
-> +	return err;
->  }
->  
->  static void brd_del_one(struct brd_device *brd)
-
-https://lkml.kernel.org/r/e205f13d-18ff-a49c-0988-7de6ea5ff823@i-love.sakura.ne.jp
-will require this part to be updated.
-
-
-> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-> index 0434f28742e7..95a1c8ef62f7 100644
-> --- a/drivers/block/floppy.c
-> +++ b/drivers/block/floppy.c
-> @@ -4517,21 +4517,27 @@ static int floppy_alloc_disk(unsigned int drive, unsigned int type)
->  
->  static DEFINE_MUTEX(floppy_probe_lock);
->  
-> -static void floppy_probe(dev_t dev)
-> +static int floppy_probe(dev_t dev)
->  {
->  	unsigned int drive = (MINOR(dev) & 3) | ((MINOR(dev) & 0x80) >> 5);
->  	unsigned int type = (MINOR(dev) >> 2) & 0x1f;
-> +	int err = 0;
->  
->  	if (drive >= N_DRIVE || !floppy_available(drive) ||
->  	    type >= ARRAY_SIZE(floppy_type))
-> -		return;
-> +		return -EINVAL;
->  
->  	mutex_lock(&floppy_probe_lock);
->  	if (!disks[drive][type]) {
-> -		if (floppy_alloc_disk(drive, type) == 0)
-> -			add_disk(disks[drive][type]);
-> +		if (floppy_alloc_disk(drive, type) == 0) {
-> +			err = add_disk(disks[drive][type]);
-> +			if (err)
-> +				blk_cleanup_disk(disks[drive][type]);
-
-This makes future floppy_probe() no-op once add_disk() failed (or maybe a bad
-thing happens somewhere else), for disks[drive][type] was set to non-NULL by
-floppy_alloc_disk() but blk_cleanup_disk() does not reset it to NULL.
-
-According to floppy_module_exit() which tries to cleanup it, implementing
-undo might be complicated...
-
-> +		}
->  	}
->  	mutex_unlock(&floppy_probe_lock);
-> +
-> +	return err;
->  }
->  
->  static int __init do_floppy_init(void)
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 9be015305f9f..858f4d429946 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -85,7 +85,7 @@ static inline void rcu_irq_enter_irqson(void) { }
+ static inline void rcu_irq_exit(void) { }
+ static inline void rcu_irq_exit_check_preempt(void) { }
+ #define rcu_is_idle_cpu(cpu) \
+-	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
++	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
+ static inline void exit_rcu(void) { }
+ static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ {
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bce848e50512..b53dd00975ab 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1471,7 +1471,7 @@ static void rcu_gp_kthread_wake(void)
+ {
+ 	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+ 
+-	if ((current == t && !in_irq() && !in_serving_softirq()) ||
++	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+ 	    !READ_ONCE(rcu_state.gp_flags) || !t)
+ 		return;
+ 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index d070059163d7..727bf14c9a63 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -642,7 +642,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+ 			    t->rcu_blocked_node);
+ 		// Need to defer quiescent state until everything is enabled.
+-		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
++		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
+ 			// Using softirq, safe to awaken, and either the
+ 			// wakeup is free or there is either an expedited
+ 			// GP in flight or a potential need to deboost.
+-- 
+2.32.0
 
