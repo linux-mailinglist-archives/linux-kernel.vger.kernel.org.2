@@ -2,146 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9622F41B31B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93BF41B320
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241656AbhI1PlM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 11:41:12 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:35657 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241652AbhI1PlL (ORCPT
+        id S241671AbhI1Pmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241080AbhI1Pmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:41:11 -0400
-Received: by mail-ua1-f43.google.com with SMTP id k32so6959919uae.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:39:31 -0700 (PDT)
+        Tue, 28 Sep 2021 11:42:35 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E16C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:40:55 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id v10so80769753edj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z5Xay87n/QyLfotSPr1LQisyjv+dzD7GSD9ECz4iYBA=;
+        b=hxHeWzeGcxiwcpHRnzvDoh0BgAH+u/n8tFAOU1yTUlK2GeS5gtml39JCJEQxemZoyk
+         HlkZJdd+4LgGJsC7cic4RNnAL9e3IvotliGcyTYey1IyNU8OgtJKQxmwd8Ku+IMdx+iH
+         LPMp624WOgq+xtTNfv1EKaUgzsy+tg34C2y9VfGOK9Es9j0P52U1o7BgdI87tVinB7FB
+         h8o8DJ8xrJztrqCnahjGV4kqvlAcKo+uVkxhhZ0GtUc0CfWKlicSUsrm/sndGo8f17AE
+         sVG2QHTf5Ozbaa8dLdEdJs7iGaMhDeNwTS74ryIk4zzxmn9g5FKexZusEDMYeUuXZ1ef
+         G/Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gX+TS4GAKxw9FHIAudZ0sNH9j5UvtzjLYDH0hT4o1bI=;
-        b=PMc0mbYw0ZqLjT5kNMY/SxXFQ+bFVBfIULLiYgx6h9G6mVrI/DNvDvwhN7L4FQXnxq
-         1HnWp4tzIpvNAIc1cokiZA80k0cDXduLgfzlmC3giQMgl+zeO1Q9l+LwFJ+kkujnQY0M
-         pSinXffZGnn/rSVH+v65dNDNa9Dr/1z1ufRh8kKrc8SIt6fj4inJ/GyIEkAO+VPAs59f
-         FJB45/RuHjhsT5GnW4ewkEPQkMMrBfN9v8WbzK4ZW8t6eWOBjG5cR1X7XhqU5lN5cRXl
-         CKEYJeRoHcu2wgoxuAUdyOcJykplt/Deg55TDNujRVqpTLxzsaYBLDZhjfhu+pjbtx2X
-         ukdQ==
-X-Gm-Message-State: AOAM532Pc5MbmHwaZznToBlvwd2RYjJmlSV35R2Hjy1ORXp9FpRbfT3X
-        ZrwTB0cSGWX/t9owEA47fO3i4HYuWN9JkHD+3xpZmAS7
-X-Google-Smtp-Source: ABdhPJz9vtijXmfKPXlevaJC6cL8JOlijswhLjqG4VkhGCM078ujehKFzbrajWLdzK4Zh92O6UAysLiNRRTvf/eTOVM=
-X-Received: by 2002:ab0:58c1:: with SMTP id r1mr4411792uac.89.1632843571125;
- Tue, 28 Sep 2021 08:39:31 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Z5Xay87n/QyLfotSPr1LQisyjv+dzD7GSD9ECz4iYBA=;
+        b=rbXEc9wKPChcjNGiCaH1RedlLuYLo3GJMt7m7CUzaiHUSjbIZa1spZeXzC4rg38sTr
+         ZcVFwFohvQWbxHG8kPdhRQ/lOgSMZ6+ANCFGq3x1RrHLXr/c7gJzRlCB6DfwQAz64XMT
+         /21D/f1rr0Z2JNHf4wYh1MTD9btIG30VQddpyQanVNuSzTnvjzU2YgbE540svACyk5n4
+         szsOkxPyATP60853B4JXHuE3q4mqfZTBNhUWstJaeXQzNfAXgkufoYMVRPPbCKOyXaJb
+         n5gOS/waqMIvVhc0Y6SbdLvGzAlL8GflCykOk00LcWLq+vufgDlUAkmZpC9a6w7y6Hy4
+         iMPg==
+X-Gm-Message-State: AOAM531o69vJ6tLOjvc5yWyT61MFZKnno5lERaYrC9AhKwD1teLQkwCT
+        VxqL8zTDIsTAGzU1QSyk0EoWwNE90dfP5PArWLY=
+X-Google-Smtp-Source: ABdhPJy6hq0n8r/mT3RIgVAGg34y1V6mj2gKAxEILfuKRuh1ALaipiYo4by6+pi/1OaFpvOOXYxWVVCPUQRxqPBTX64=
+X-Received: by 2002:a50:e006:: with SMTP id e6mr8093970edl.302.1632843621608;
+ Tue, 28 Sep 2021 08:40:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <202109282205.VsHhj6PP-lkp@intel.com>
-In-Reply-To: <202109282205.VsHhj6PP-lkp@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 28 Sep 2021 17:39:19 +0200
-Message-ID: <CAMuHMdX0Zm_hMheZ0e1Xu991jnUr=aY_cDBHHGFvQ1sKqM1b9A@mail.gmail.com>
-Subject: Re: drivers/gpu/drm/kmb/kmb_dsi.c:812:2: warning: unused function 'set_test_mode_src_osc_freq_target_low_bits'
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <35d0ddc1-41cd-16fb-41ea-5529d19c04d2@gmail.com>
+ <0000000000005252e105ccee8e1b@google.com> <CAD-N9QUJWifqhNt09xDcu=w0K0o+wYUxpZyqkTs4q5eMp_kVgw@mail.gmail.com>
+ <cfec2c6f-34a9-d95e-5f07-c69e74b06450@gmail.com>
+In-Reply-To: <cfec2c6f-34a9-d95e-5f07-c69e74b06450@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 28 Sep 2021 23:39:55 +0800
+Message-ID: <CAD-N9QXBPjURa5hRU3NNYzps-QSEDp4dPQYCcZN=k6T_crrShw@mail.gmail.com>
+Subject: Re: [syzbot] memory leak in __mdiobus_register
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     syzbot <syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, rafael@kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:09 PM kernel test robot <lkp@intel.com> wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   0513e464f9007b70b96740271a948ca5ab6e7dd7
-> commit: ade896460e4a62f5e4a892a98d254937f6f5b64c drm: DRM_KMB_DISPLAY should depend on ARCH_KEEMBAY
-> date:   11 months ago
-> config: mips-randconfig-r013-20210928 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install mips cross compiling tool for clang build
->         # apt-get install binutils-mips-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ade896460e4a62f5e4a892a98d254937f6f5b64c
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout ade896460e4a62f5e4a892a98d254937f6f5b64c
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash drivers/gpu/drm/kmb/ drivers/net/ethernet/mellanox/mlxsw/ mm/
+On Tue, Sep 28, 2021 at 4:15 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> On 9/28/21 10:42, Dongliang Mu wrote:
+> > On Mon, Sep 27, 2021 at 7:44 AM syzbot
+> > <syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com> wrote:
+> >>
+> >> Hello,
+> >>
+> >> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> >>
+> >> Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+> >>
+> >> Tested on:
+> >>
+> >> commit:         5816b3e6 Linux 5.15-rc3
+> >> git tree:       upstream
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=41799858eb55f380
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=398e7dc692ddbbb4cfec
+> >> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> >> patch:          https://syzkaller.appspot.com/x/patch.diff?x=1147b840b00000
+> >>
+> >> Note: testing is done by a robot and is best-effort only.
+> >
+> > Hi Pavel,
+> >
+> > Confirm the patch you posted [1] is the real fix of this bug report.
+> >
+> > I tested the patch from Yanfei Xu [2] in my local workspace, and the
+> > memory leak is still triggered. In addition, I have pushed a patch
+> > request for that patch. The result would prove that patch is not
+> > working for this bug.
+> >
+> > BTW, there occur incorrect fix commits on the syzbot dashboard
+> > sometimes. Maybe it should be cleaned in the future.
+> >
 >
-> All warnings (new ones prefixed by >>):
 >
-> >> drivers/gpu/drm/kmb/kmb_dsi.c:812:2: warning: unused function 'set_test_mode_src_osc_freq_target_low_bits'
->    set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi
->    ^
-> >> drivers/gpu/drm/kmb/kmb_dsi.c:824:2: warning: unused function 'set_test_mode_src_osc_freq_target_hi_bits'
->    set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi
+> Hi, Dongliang,
+>
+> thank you for confirmation. As I said in reply to [1] Yanfei's patch is
+> also correct, but it solves other memory leak in same function.
+>
 
-These two functions are "static inline", so there should not be such
-warning. Toolchain issue?
+It's fine as I was debugging this case locally.
 
->    ^
->    fatal error: error in backend: Nested variants found in inline asm string: '.if ( 0x00 ) != -1)) 0x00 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/barrier.h", .line = 16, $); 0x00 ) != -1)) : $))) ) && ( (1 << 0) ); .set push; .set mips64r2; .rept 1; sync 0x00; .endr; .set pop; .else; ; .endif'
->    clang-14: error: clang frontend command failed with exit code 70 (use -v to see invocation)
->    clang version 14.0.0 (git://gitmirror/llvm_project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
->    Target: mipsel-unknown-linux
->    Thread model: posix
->    InstalledDir: /opt/cross/clang-dc6e8dfdfe/bin
->    clang-14: note: diagnostic msg:
->    Makefile arch drivers fs include kernel mm net nr_bisected scripts source usr
+> AFAIU, if my patch will be applied too there will be 2 fix patches on
+> syzkaller bug report page, so no need to remove Yanfei's patch from bug
+> report page :)
+
+I don't understand why Dan in other threads said Yanfei's patch is
+also working in the bug report. The patch testing request already
+shows the same memory leak still triggers. Really confused.
+
 >
 >
-> vim +/set_test_mode_src_osc_freq_target_low_bits +812 drivers/gpu/drm/kmb/kmb_dsi.c
+> > [1] https://lkml.org/lkml/2021/9/27/289
+> > [2] https://www.spinics.net/lists/kernel/msg4089781.html
+> >
 >
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  810
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  811  static inline void
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04 @812      set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi *kmb_dsi,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  813                                                 u32 dphy_no,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  814                                                 u32 freq)
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  815  {
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  816      /* Typical rise/fall time=166, refer Table 1207 databook,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  817       * sr_osc_freq_target[7:0]
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  818       */
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  819      test_mode_send(kmb_dsi, dphy_no, TEST_CODE_SLEW_RATE_DDL_CYCLES,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  820                     (freq & 0x7f));
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  821  }
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  822
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  823  static inline void
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04 @824      set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi *kmb_dsi,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  825                                                u32 dphy_no,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  826                                                u32 freq)
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  827  {
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  828      u32 data;
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  829
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  830      /* Flag this as high nibble */
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  831      data = ((freq >> 6) & 0x1f) | (1 << 7);
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  832
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  833      /* Typical rise/fall time=166, refer Table 1207 databook,
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  834       * sr_osc_freq_target[11:7]
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  835       */
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  836      test_mode_send(kmb_dsi, dphy_no, TEST_CODE_SLEW_RATE_DDL_CYCLES, data);
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  837  }
-> 98521f4d4b4cb26 Anitha Chrisanthus 2020-11-04  838
 >
-> :::::: The code at line 812 was first introduced by commit
-> :::::: 98521f4d4b4cb265374a4b1e13b41287a1960243 drm/kmb: Mipi DSI part of the display driver
->
-> :::::: TO: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
-> :::::: CC: Sam Ravnborg <sam@ravnborg.org>
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> With regards,
+> Pavel Skripkin
