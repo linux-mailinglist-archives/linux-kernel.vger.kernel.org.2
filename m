@@ -2,147 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D4A41A444
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5162C41A446
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238374AbhI1Aon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 20:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238236AbhI1Aom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 20:44:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 667726120D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632789783;
-        bh=ZF8e/FM0+eopT+Y8KRCcbREFQBdAT4gmwboao8jTDsM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j5X9Mo/9sZRA8a5d+Ol0b+nU24yJqJL1tPQhFoPdaLsNKvGILqdDqvK57Zsm9Jge3
-         URoJ7ENq50jVWgzEuLKEtk2D7XLrfzEghOkWxQ3h6sFIKJX2REBkmKhigyigF9i7hm
-         MSd/je4oKSfnQCa34J+P5CW+wVzo0w/Lgv9xnW67+wvghktKpoyz6p8pPGw+AZXApI
-         4X92egnLM89E1NFMv58bxNCdj2G2OzOcai9doXYdkHEcZRzusH6NGwLzvQg6PiZGRp
-         FoLLCfhC+bLSb2GJnUAX36+ZW8AGmc5v6mCzXb9cbsKe2Vytv9caVdCXRYLLClaP7+
-         LlJEPvEpkiWkA==
-Received: by mail-vk1-f171.google.com with SMTP id b67so7738839vkb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 17:43:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531Th1RY90A0fjD21vevs7QdiJWmEibpMmmPtBnzcHRkdLnK9HnU
-        6JC2w0pIXlvdSZZ1H5dos+xPjzcCRK711AIRQi8=
-X-Google-Smtp-Source: ABdhPJy8GldO52SnlP7VBZDhPaFIid6a1O3zfroXvQOKN+eNASjt8B0G5rE5CZs5QPVvEAUKwfO1ScPfpxWhUjXz2BI=
-X-Received: by 2002:a1f:1844:: with SMTP id 65mr2903239vky.3.1632789782389;
- Mon, 27 Sep 2021 17:43:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923172107.1117604-1-guoren@kernel.org> <20210923172107.1117604-2-guoren@kernel.org>
- <CAOnJCU+6hUSdviwCM6uwCQr=OV3xQP=RF-BmdJFY8Tzgd_L51Q@mail.gmail.com>
-In-Reply-To: <CAOnJCU+6hUSdviwCM6uwCQr=OV3xQP=RF-BmdJFY8Tzgd_L51Q@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 28 Sep 2021 08:42:51 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSbPbVRYkhD5zaFT=UWKiRjj1-pxjfCVxL3AWgAiASp5A@mail.gmail.com>
-Message-ID: <CAJF2gTSbPbVRYkhD5zaFT=UWKiRjj1-pxjfCVxL3AWgAiASp5A@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] dt-bindings: riscv: Add svpbmt in cpu mmu-type property
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        id S238385AbhI1Ap0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 20:45:26 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:42817 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238236AbhI1ApY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 20:45:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJLNG3n5Yz4xVP;
+        Tue, 28 Sep 2021 10:43:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632789822;
+        bh=RNP7cGHoZcEQnkXOoIeMMadb5dCDhtDBdSSRUGAbJHU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PtzWOQvOa1COM4YUCCwxPNM6aafFRy4qG6RwKE8NueC2j4rWUG3Vd+DtWn/qmE6v7
+         XVzwk7hYuI2B4ext9FiqkcUyY34edxuxHCBeycunORFGcQ6u+iDinEyBcZFB/kCBse
+         VeomdPYAwlBSg71vCj1TVLSnvkc9j5HlwV/Fkc/Mfu89pe5vi0yBYAjydZ1EiUV+Tp
+         yUuBiDl8dSNZbaLXjWKh4o3bB6f84g6dyyFMAGiAHmIPATg9K1pPWfV7PjsY5uinT3
+         mvMKvV2CB9y3xmRvOs4g8D0FDNU7Mxg2oMdAi3Bnjt+wLyzYWZmwF3MvqOdj2uiSKC
+         tB1/UefQZLVpw==
+Date:   Tue, 28 Sep 2021 10:43:41 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the rpmsg tree
+Message-ID: <20210928104341.31521fb0@canb.auug.org.au>
+In-Reply-To: <YVJXpBwfdMYKaE0R@ripper>
+References: <20210928084011.3f2318fc@canb.auug.org.au>
+        <YVJXpBwfdMYKaE0R@ripper>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/z8byQECu=.D4FCKxbhwRBs7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 3:32 AM Atish Patra <atishp@atishpatra.org> wrote:
->
->
->
-> On Thu, Sep 23, 2021 at 10:22 AM <guoren@kernel.org> wrote:
->>
->> From: Guo Ren <guoren@linux.alibaba.com>
->>
->> Previous patch has added svpbmt in arch/riscv and changed the
->> DT mmu-type. Update dt-bindings related property here.
->>
->
-> This is the first of many small ISA extensions to be added to RISC-V.
-> Should we think about a generic DT property and parsing framework for all hart related ISA extensions now instead of adding
-> to the existing mmu-type.
-Change existing mmu-type will cause a compatible problem. If we still
-keep current solution, I think it's still okay. eg:
-mmu-type = "riscv,sv39,svpbmt,svnapot,svinval";
+--Sig_/z8byQECu=.D4FCKxbhwRBs7
+Content-Type: multipart/mixed; boundary="MP_/3Q.ocK.EKlr006rTlhpFs7X"
 
-Or, if we still want to change, how:
-mmu-type = "riscv,sv39";
-mmu-type-ext = "svpbmt,svnapot,svinval"
+--MP_/3Q.ocK.EKlr006rTlhpFs7X
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Still keep mmu-type like before.
+Hi Bjorn,
 
+On Mon, 27 Sep 2021 16:45:40 -0700 Bjorn Andersson <bjorn.andersson@linaro.=
+org> wrote:
 >
-> We will soon need to add the CMO extensions as well.
->
->>
->> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->> Cc: Anup Patel <anup@brainfault.org>
->> Cc: Palmer Dabbelt <palmer@dabbelt.com>
->> Cc: Rob Herring <robh+dt@kernel.org>
->> ---
->>  Documentation/devicetree/bindings/riscv/cpus.yaml | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> index e534f6a7cfa1..5eea9b47dfc6 100644
->> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
->> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> @@ -48,15 +48,18 @@ properties:
->>
->>    mmu-type:
->>      description:
->> -      Identifies the MMU address translation mode used on this
->> -      hart.  These values originate from the RISC-V Privileged
->> -      Specification document, available from
->> +      Identifies the MMU address translation mode and page based
->> +      memory type used on used on this hart.  These values originate
->> +      from the RISC-V Privileged Specification document, available
->> +      from
->>        https://riscv.org/specifications/
->>      $ref: "/schemas/types.yaml#/definitions/string"
->>      enum:
->>        - riscv,sv32
->>        - riscv,sv39
->> +      - riscv,sv39,svpbmt
->>        - riscv,sv48
->> +      - riscv,sv48,svpbmt
->>        - riscv,none
->>
->>    riscv,isa:
->> --
->> 2.25.1
->>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->
->
->
-> --
-> Regards,
-> Atish
+> On Mon 27 Sep 15:40 PDT 2021, Stephen Rothwell wrote:
+> May I ask what tool you use to detect this? Given that checkpatch
+> doesn't care about the committer (afaict)...
 
+After I fetch each tree, I give the new commit range to the attached
+script (check_commits) which calls the other script as well
+(check_fixes).
+--=20
+Cheers,
+Stephen Rothwell
 
+--MP_/3Q.ocK.EKlr006rTlhpFs7X
+Content-Type: application/x-shellscript
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename=check_commits
 
--- 
-Best Regards
- Guo Ren
+#!/bin/bash
 
-ML: https://lore.kernel.org/linux-csky/
+if [ "$#" -lt 1 ]; then
+	printf 'Usage: %s <commit range>\n' "$0" 1>&2
+	exit 1
+fi
+
+commits=3D$(git rev-list --no-merges "$@")
+if [ -z "$commits" ]; then
+	printf 'No commits\n'
+	exit 0
+fi
+
+"$(realpath "$(dirname "$0")")/check_fixes" "$@"
+
+declare -a author_missing committer_missing
+
+print_commits()
+{
+	if [ "$#" -eq 1 ]; then
+		return
+	fi
+
+	local t=3D"$1"
+
+	shift
+
+	s=3D
+	is=3D'is'
+	its=3D'its'
+	if [ "$#" -gt 1 ]; then
+		s=3D's'
+		is=3D'are'
+		its=3D'their'
+	fi
+	printf 'Commit%s\n\n' "$s"
+	git log --no-walk --pretty=3D'format:  %h ("%s")' "$@"
+	printf '\n%s missing a Signed-off-by from %s %s%s.\n\n' \
+		"$is" "$its" "$t" "$s"
+}
+
+check_unexpected_files()
+{
+	local files
+
+	readarray files < <(git diff-tree -r --diff-filter=3DA --name-only --no-co=
+mmit-id "$1" '*.rej' '*.orig')
+	if [ "${#files[@]}" -eq 0 ]; then
+		return
+	fi
+
+	s=3D
+	this=3D'this'
+	if [ "${#files[@]}" -gt 1 ]; then
+		s=3D's'
+		this=3D'these'
+	fi
+
+	printf 'Commit\n\n'
+	git log --no-walk --pretty=3D'format:  %h ("%s")' "$1"
+	printf '\nadded %s unexpected file%s:\n\n' "$this" "$s"
+	printf '  %s\n' "${files[@]}"
+}
+
+for c in $commits; do
+	ae=3D$(git log -1 --format=3D'<%ae>%n<%aE>%n %an %n %aN ' "$c" | sort -u)
+	ce=3D$(git log -1 --format=3D'<%ce>%n<%cE>%n %cn %n %cN ' "$c" | sort -u)
+	sob=3D$(git log -1 --format=3D'%b' "$c" |
+		sed -En 's/^\s*Signed-off-by:?\s*/ /ip')
+
+	if ! grep -i -F -q "$ae" <<<"$sob"; then
+		author_missing+=3D("$c")
+	fi
+	if ! grep -i -F -q "$ce" <<<"$sob"; then
+		committer_missing+=3D("$c")
+	fi
+
+	check_unexpected_files "$c"
+done
+
+print_commits 'author' "${author_missing[@]}"
+print_commits 'committer' "${committer_missing[@]}"
+
+exec gitk "$@"
+
+--MP_/3Q.ocK.EKlr006rTlhpFs7X
+Content-Type: application/x-shellscript
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename=check_fixes
+
+#!/bin/bash
+
+shopt -s extglob
+
+if [ "$#" -lt 1 ]; then
+        printf 'Usage: %s <commit range>\n', "$0" 1>&2
+        exit 1
+fi
+
+commits=3D$(git rev-list --no-merges -i --grep=3D'^[[:space:]]*Fixes:' "$@")
+if [ -z "$commits" ]; then
+        exit 0
+fi
+
+# This should be a git tree that contains *only* Linus' tree
+Linus_tree=3D"${HOME}/kernels/linus.git"
+
+split_re=3D'^([Cc][Oo][Mm][Mm][Ii][Tt])?[[:space:]]*([[:xdigit:]]{5,})([[:s=
+pace:]]*)(.*)$'
+nl=3D$'\n'
+tab=3D$'\t'
+
+# Strip the leading and training spaces from a string
+strip_spaces()
+{
+	local str=3D"${1##*([[:space:]])}"
+	str=3D"${str%%*([[:space:]])}"
+	echo "$str"
+}
+
+for c in $commits; do
+
+	printf -v commit_msg 'In commit\n\n  %s\n\n' \
+		"$(git log -1 --format=3D'%h ("%s")' "$c")"
+
+	readarray -t fixes_lines < <(git log -1 --format=3D'%B' "$c" |
+					grep -i '^[[:space:]]*Fixes:')
+	fixes_lines=3D( "${fixes_lines[@]##*([[:space:]])}" )
+	fixes_lines=3D( "${fixes_lines[@]%%*([[:space:]])}" )
+
+	for fline in "${fixes_lines[@]}"; do
+		f=3D"${fline##[Ff][Ii][Xx][Ee][Ss]:*([[:space:]])}"
+		printf -v fixes_msg 'Fixes tag\n\n  %s\n\nhas these problem(s):\n\n' "$fl=
+ine"
+		sha=3D
+		subject=3D
+		msg=3D
+		if [[ "$f" =3D~ $split_re ]]; then
+			first=3D"${BASH_REMATCH[1]}"
+			sha=3D"${BASH_REMATCH[2]}"
+			spaces=3D"${BASH_REMATCH[3]}"
+			subject=3D"${BASH_REMATCH[4]}"
+			if [ "$first" ]; then
+				msg=3D"${msg:+${msg}${nl}}  - leading word '$first' unexpected"
+			fi
+			if [ -z "$subject" ]; then
+				msg=3D"${msg:+${msg}${nl}}  - missing subject"
+			elif [ -z "$spaces" ]; then
+				msg=3D"${msg:+${msg}${nl}}  - missing space between the SHA1 and the su=
+bject"
+			fi
+		else
+			printf '%s%s  - %s\n' "$commit_msg" "$fixes_msg" 'No SHA1 recognised'
+			commit_msg=3D''
+			continue
+		fi
+		if ! git rev-parse -q --verify "$sha" >/dev/null; then
+			printf '%s%s  - %s\n' "$commit_msg" "$fixes_msg" 'Target SHA1 does not e=
+xist'
+			commit_msg=3D''
+			continue
+		fi
+
+		if [ "${#sha}" -lt 12 ]; then
+			msg=3D"${msg:+${msg}${nl}}  - SHA1 should be at least 12 digits long${nl=
+}    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11$=
+{nl}    or later) just making sure it is not set (or set to \"auto\")."
+		fi
+		# reduce the subject to the part between () if there
+		if [[ "$subject" =3D~ ^\((.*)\) ]]; then
+			subject=3D"${BASH_REMATCH[1]}"
+		elif [[ "$subject" =3D~ ^\((.*) ]]; then
+			subject=3D"${BASH_REMATCH[1]}"
+			msg=3D"${msg:+${msg}${nl}}  - Subject has leading but no trailing parent=
+heses"
+		fi
+
+		# strip matching quotes at the start and end of the subject
+		# the unicode characters in the classes are
+		# U+201C LEFT DOUBLE QUOTATION MARK
+		# U+201D RIGHT DOUBLE QUOTATION MARK
+		# U+2018 LEFT SINGLE QUOTATION MARK
+		# U+2019 RIGHT SINGLE QUOTATION MARK
+		re1=3D$'^[\"\u201C](.*)[\"\u201D]$'
+		re2=3D$'^[\'\u2018](.*)[\'\u2019]$'
+		re3=3D$'^[\"\'\u201C\u2018](.*)$'
+		if [[ "$subject" =3D~ $re1 ]]; then
+			subject=3D"${BASH_REMATCH[1]}"
+		elif [[ "$subject" =3D~ $re2 ]]; then
+			subject=3D"${BASH_REMATCH[1]}"
+		elif [[ "$subject" =3D~ $re3 ]]; then
+			subject=3D"${BASH_REMATCH[1]}"
+			msg=3D"${msg:+${msg}${nl}}  - Subject has leading but no trailing quotes"
+		fi
+
+		subject=3D$(strip_spaces "$subject")
+
+		target_subject=3D$(git log -1 --format=3D'%s' "$sha")
+		target_subject=3D$(strip_spaces "$target_subject")
+
+		# match with ellipses
+		case "$subject" in
+		*...)	subject=3D"${subject%...}"
+			target_subject=3D"${target_subject:0:${#subject}}"
+			;;
+		...*)	subject=3D"${subject#...}"
+			target_subject=3D"${target_subject: -${#subject}}"
+			;;
+		*\ ...\ *)
+			s1=3D"${subject% ... *}"
+			s2=3D"${subject#* ... }"
+			subject=3D"$s1 $s2"
+			t1=3D"${target_subject:0:${#s1}}"
+			t2=3D"${target_subject: -${#s2}}"
+			target_subject=3D"$t1 $t2"
+			;;
+		esac
+		subject=3D$(strip_spaces "$subject")
+		target_subject=3D$(strip_spaces "$target_subject")
+
+		if [ "$subject" !=3D "${target_subject:0:${#subject}}" ]; then
+			msg=3D"${msg:+${msg}${nl}}  - Subject does not match target commit subje=
+ct${nl}    Just use${nl}${tab}git log -1 --format=3D'Fixes: %h (\"%s\")'"
+		fi
+		lsha=3D$(cd "$Linus_tree" && git rev-parse -q --verify "$sha")
+		if [ -z "$lsha" ]; then
+			count=3D$(git rev-list --count "$sha".."$c")
+			if [ "$count" -eq 0 ]; then
+				msg=3D"${msg:+${msg}${nl}}  - Target is not an ancestor of this commit"
+			fi
+		fi
+		if [ "$msg" ]; then
+			printf '%s%s%s\n' "$commit_msg" "$fixes_msg" "$msg"
+			commit_msg=3D''
+		fi
+	done
+done
+
+exit 0
+
+--MP_/3Q.ocK.EKlr006rTlhpFs7X--
+
+--Sig_/z8byQECu=.D4FCKxbhwRBs7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFSZT0ACgkQAVBC80lX
+0GxJqAf/eJv4D2mbOXUT5QCPGjocJq71P5WYkrJmi8Z+X6ue8YhWf5CUN6PLhFNc
+LDN+h+JerG5vmlzQW5WL51nGEbp8GvtXjwtDHJB5juiWq+lAZ6tTE2KhYg7rqGjx
+DyLP+O9KVQKMad1bs8SOpzAKvRnXTqQVVY4N8Yn1owaBNQdYStfQm2jmILztLWvq
+fDcwVg/LrOLsZ/s6BTKOz6X9gHUzbRBaivTCnjhBKnik3hV5dhzW4LUUMXByUjNe
+/FiWifT0fEYLIydAD+/f6IMV+uAwIPxauyPp1rt70iwF4h94TVLm+fDrxc99KQef
+0BYEuff0iQeS/wQ/yHtuG8drfPdsUA==
+=vOg8
+-----END PGP SIGNATURE-----
+
+--Sig_/z8byQECu=.D4FCKxbhwRBs7--
