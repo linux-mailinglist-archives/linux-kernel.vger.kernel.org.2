@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2FA41B1E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5053841B1EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241161AbhI1OS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240488AbhI1OS6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:18:58 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6665C06161C;
-        Tue, 28 Sep 2021 07:17:18 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 4509125FE; Tue, 28 Sep 2021 10:17:18 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 4509125FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1632838638;
-        bh=V1v25WDPu4S65BGeMIG9F3Uek6zupyB1HkMjnsUWjjY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BkT+hA8zMLrUfTIYhc0zv215cClyhWm3iXoQZNNGIYsf0mIpYGE6uzhPwrA2mkjvb
-         8VKXVmuP/J1NWFZAd7CmIEmmkgbbvRNe8Bs/fLZ3CeNB8jlsCmSBEmlH30Tse+jx+m
-         6x7Lg665vUxRR2jRpTa/NQFB3lVTFK2ursVK3fN0=
-Date:   Tue, 28 Sep 2021 10:17:18 -0400
-From:   "bfields@fieldses.org" <bfields@fieldses.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "neilb@suse.com" <neilb@suse.com>,
-        "kolga@netapp.com" <kolga@netapp.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "tyhicks@canonical.com" <tyhicks@canonical.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wanghai38@huawei.com" <wanghai38@huawei.com>,
-        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
-        "timo@rothenpieler.org" <timo@rothenpieler.org>,
-        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
-        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "tom@talpey.com" <tom@talpey.com>
-Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
- rpcsec_gss_exit_net when use-gss-proxy==1
-Message-ID: <20210928141718.GC25415@fieldses.org>
-References: <20210928031440.2222303-1-wanghai38@huawei.com>
- <20210928031440.2222303-3-wanghai38@huawei.com>
- <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
- <20210928134952.GA25415@fieldses.org>
- <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
+        id S241054AbhI1OVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:21:51 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:48346 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233878AbhI1OVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 10:21:50 -0400
+Received: from BJHW-Mail-Ex08.internal.baidu.com (unknown [10.127.64.18])
+        by Forcepoint Email with ESMTPS id 0CEA2FD94BFD96959CDC;
+        Tue, 28 Sep 2021 22:20:06 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex08.internal.baidu.com (10.127.64.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 28 Sep 2021 22:20:05 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 28 Sep 2021 22:20:04 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+Subject: [PATCH v3 1/9] iio: adc: ab8500-gpadc: Make use of the helper function dev_err_probe()
+Date:   Tue, 28 Sep 2021 22:19:47 +0800
+Message-ID: <20210928141956.2148-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex08_2021-09-28 22:20:06:085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:04:49PM +0000, Trond Myklebust wrote:
-> On Tue, 2021-09-28 at 09:49 -0400, bfields@fieldses.org wrote:
-> > On Tue, Sep 28, 2021 at 01:30:17PM +0000, Trond Myklebust wrote:
-> > > On Tue, 2021-09-28 at 11:14 +0800, Wang Hai wrote:
-> > > > When use-gss-proxy is set to 1, write_gssp() creates a rpc client
-> > > > in
-> > > > gssp_rpc_create(), this increases the netns refcount by 2, these
-> > > > refcounts are supposed to be released in rpcsec_gss_exit_net(),
-> > > > but
-> > > > it
-> > > > will never happen because rpcsec_gss_exit_net() is triggered only
-> > > > when
-> > > > the netns refcount gets to 0, specifically:
-> > > >     refcount=0 -> cleanup_net() -> ops_exit_list ->
-> > > > rpcsec_gss_exit_net
-> > > > It is a deadlock situation here, refcount will never get to 0
-> > > > unless
-> > > > rpcsec_gss_exit_net() is called. So, in this case, the netns
-> > > > refcount
-> > > > should not be increased.
-> > > > 
-> > > > In this case, xprt will take a netns refcount which is not
-> > > > supposed
-> > > > to be taken. Add a new flag to rpc_create_args called
-> > > > RPC_CLNT_CREATE_NO_NET_REF for not increasing the netns refcount.
-> > > > 
-> > > > It is safe not to hold the netns refcount, because when
-> > > > cleanup_net(), it
-> > > > will hold the gssp_lock and then shut down the rpc client
-> > > > synchronously.
-> > > > 
-> > > > 
-> > > I don't like this solution at all. Adding this kind of flag is
-> > > going to
-> > > lead to problems down the road.
-> > > 
-> > > Is there any reason whatsoever why we need this RPC client to exist
-> > > when there is no active knfsd server? IOW: Is there any reason why
-> > > we
-> > > shouldn't defer creating this RPC client for when knfsd starts up
-> > > in
-> > > this net namespace, and why we can't shut it down when knfsd shuts
-> > > down?
-> > 
-> > The rpc create is done in the context of the process that writes to
-> > /proc/net/rpc/use-gss-proxy to get the right namespaces.  I don't
-> > know
-> > how hard it would be capture that information for a later create.
-> > 
-> 
-> svcauth_gss_proxy_init() uses the net namespace SVC_NET(rqstp) (i.e.
-> the knfsd namespace) in the call to gssp_accept_sec_context_upcall().
-> 
-> IOW: the net namespace used in the call to find the RPC client is the
-> one set up by knfsd, and so if use-gss-proxy was set in a different
-> namespace than the one used by knfsd, then it won't be found.
+When possible use dev_err_probe help to properly deal with the
+PROBE_DEFER error, the benefit is that DEFER issue will be logged
+in the devices_deferred debugfs file.
+Using dev_err_probe() can reduce code size, and the error value
+gets printed.
 
-Right.  If you've got multiple containers, you don't want to find a
-gss-proxy from a different container.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+v1->v2: Remove the separate line of PTR_ERR().
 
---b.
+ drivers/iio/adc/ab8500-gpadc.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/iio/adc/ab8500-gpadc.c b/drivers/iio/adc/ab8500-gpadc.c
+index 7b5212ba5501..c58d0e2ae538 100644
+--- a/drivers/iio/adc/ab8500-gpadc.c
++++ b/drivers/iio/adc/ab8500-gpadc.c
+@@ -1146,11 +1146,9 @@ static int ab8500_gpadc_probe(struct platform_device *pdev)
+ 
+ 	/* The VTVout LDO used to power the AB8500 GPADC */
+ 	gpadc->vddadc = devm_regulator_get(dev, "vddadc");
+-	if (IS_ERR(gpadc->vddadc)) {
+-		ret = PTR_ERR(gpadc->vddadc);
+-		dev_err(dev, "failed to get vddadc\n");
+-		return ret;
+-	}
++	if (IS_ERR(gpadc->vddadc))
++		return dev_err_probe(dev, PTR_ERR(gpadc->vddadc),
++				     "failed to get vddadc\n");
+ 
+ 	ret = regulator_enable(gpadc->vddadc);
+ 	if (ret) {
+-- 
+2.25.1
+
