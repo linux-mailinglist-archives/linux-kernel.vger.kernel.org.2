@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407F741B0F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8CD41B0F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240962AbhI1Nhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:37:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:37605 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240971AbhI1NhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:37:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="222803124"
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="222803124"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 06:35:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="553993941"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.203]) ([10.254.212.203])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 06:35:08 -0700
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-7-yi.l.liu@intel.com>
- <20210921170943.GS327412@nvidia.com>
- <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922123931.GI327412@nvidia.com>
- <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210927150928.GA1517957@nvidia.com>
- <BN9PR11MB54337B7F65B98C2335B806938CA89@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210928115751.GK964074@nvidia.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
- interfaces
-Message-ID: <9a314095-3db9-30fc-2ed9-4e46d385036d@linux.intel.com>
-Date:   Tue, 28 Sep 2021 21:35:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S241028AbhI1Ni2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241265AbhI1NiX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:38:23 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A03C061775
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:35:52 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id z2so3523510wmc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=forissier-org.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+HKRLx1qfRAGEaEJ+dH+2Jga7eTetiBWo1FhI8Xv+L0=;
+        b=dbG1rUMlJAjo9116A7poZnsvFtd+EEbkBeztu6vNU5OqO/LsBMOWAbQXI9hazHLZD1
+         AGIR2k55ld9daL7Pd7grb9cH9H2GZDLYkx+QYMkU19bJUE8r2BVcBchVORb8VOD8XeoM
+         juTSSlEkEch8GXZscE5vEdnfUuyUlF3Dp0+qBjxkWxWg3dcQZFKK8fT9j7Ba5SH72Cqh
+         JHUxNEbFMDzGMQZ1Q0PDzz//v0x38+Jt/BVXTWvqUpxZUQkU0kwdz6nFG6wjsIPfrjx4
+         fzxfWTo4XtwxDz1Mc2kSH84Jh7GmP/FXbMDKglHSqI3cdjwHVS9aqyLhdGx0S15gkVN1
+         d8xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+HKRLx1qfRAGEaEJ+dH+2Jga7eTetiBWo1FhI8Xv+L0=;
+        b=mstJ/AUw3ZSD0h6vUpKZLLMBPQPAQU6wmybVkBY+a8k9YibwAI4MNUwrxWCoFw7CCA
+         aM12C2KjWy54AfAzcIMHQiDTVbbZ6jXlyzVGfBIts7VeVtOXcDitulJgp+CvGRyXk4mn
+         Q7sM4WEeSGAI6HWxsy3Kk5q11gjwLzwn762mVClebwV6PEyL3tLS/JrkoNeCLBDvm37a
+         LmSXYylfmc2gwUWbgjacinAHRMDWFxj5v0DcAhzDJt0AUoTrsu03+DO3oC+kOY7LuwhJ
+         vtAnELr9HFXAOhavlijQJA32t/hVeAP1k3NRA+O86oPBBiM5o8gSBGyvz7zT4txMf16F
+         8QdA==
+X-Gm-Message-State: AOAM533hKd5QA+FZbTNJ2psoe2sTaARkjQpb8iL8dI4bbrMm4z/r194D
+        7dbmOXD4rQAY8aL5Ky140wCumA==
+X-Google-Smtp-Source: ABdhPJwIUi8c1xv/o+nz3AByLJ3UUbR7IsdiH7YsKeP5cp8/f2SmECSlZv/3bF14eANJTl0fKUTivg==
+X-Received: by 2002:a05:600c:1d05:: with SMTP id l5mr4783590wms.119.1632836132151;
+        Tue, 28 Sep 2021 06:35:32 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:269:e210:8445:bcf4:c79d:3156? ([2a01:e0a:269:e210:8445:bcf4:c79d:3156])
+        by smtp.gmail.com with ESMTPSA id r2sm3077677wmq.28.2021.09.28.06.35.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 06:35:31 -0700 (PDT)
+Subject: Re: optee: regression with kernel v5.14 (virtualization)
+To:     Volodymyr Babchuk <vlad.babchuk@gmail.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+References: <a0e1c245-8209-a173-18c4-d21433bf46bf@forissier.org>
+ <CAOcqxo339CS63i5sMdweqx3MO7ME9TxFPJe-p-ESWME=vSzLwg@mail.gmail.com>
+From:   Jerome Forissier <jerome@forissier.org>
+Message-ID: <cbcae077-3ebe-42b0-cbfe-cf5491f9ee0e@forissier.org>
+Date:   Tue, 28 Sep 2021 15:35:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210928115751.GK964074@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAOcqxo339CS63i5sMdweqx3MO7ME9TxFPJe-p-ESWME=vSzLwg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-On 2021/9/28 19:57, Jason Gunthorpe wrote:
-> On Tue, Sep 28, 2021 at 07:30:41AM +0000, Tian, Kevin wrote:
+
+On 9/28/21 3:15 PM, Volodymyr Babchuk wrote:
+> Hi Jerome,
 > 
->>> Also, don't call it "hint", there is nothing hinty about this, it has
->>> definitive functional impacts.
+> On Tue, 28 Sept 2021 at 16:08, Jerome Forissier <jerome@forissier.org> wrote:
 >>
->> possibly dma_mode (too broad?) or dma_usage
+>> Hi,
+>>
+>> I met an issue when testing OP-TEE with the latest released kernel
+>> (v5.14). The kernel won't boot when virtualization is enabled. More
+>> precisely, the boot hangs as the optee driver is probed. The last line
+>> on the console is:
+>>
+>> [xxx] optee: probing for conduit method.
+>>
+>> The issue can easily be reproduced in the QEMU OP-TEE environment as
+>> documented in [1]:
+>>
+>> $ repo init -u https://github.com/OP-TEE/manifest.git -m qemu_v8.xml
+>> $ repo sync -j10
+>> $ cd linux
+>> $ git fetch github --unshallow
+>> $ git checkout v5.14
+>> $ cd ../build
+>> $ make -j2 toolchains
+>> $ make -j10 XEN_BOOT=y run
+>>
+>> [Note, if you switch between XEN_BOOT=y and the default build, you need
+>> to "make arm-tf-clean"]
+>>
+>> git bisect points at commit b5c10dd04b74 ("optee: Clear stale cache
+>> entries during initialization") and reverting this commit on top of
+>> v5.14 does resolve the issue.
+>>
+>> Any idea what's wrong?
 > 
-> You just need a flag to specify if the driver manages DMA ownership
-> itself, or if it requires the driver core to setup kernel ownership
+> Yes, there was a small mistake in the mediator. My colleague already
+> pushed the patch. It is at staging now:
 > 
-> DMA_OWNER_KERNEL
-> DMA_OWNER_DRIVER_CONTROLLED
+> http://xenbits.xen.org/gitweb/?p=xen.git;a=commit;h=1c3ed9c908732d19660fbe83580674d585464d4c
 > 
-> ?
-> 
-> There is a bool 'suprress_bind_attrs' already so it could be done like
-> this:
-> 
->   bool suppress_bind_attrs:1;
-> 
->   /* If set the driver must call iommu_XX as the first action in probe() */
->   bool suppress_dma_owner:1;
-> 
-> Which is pretty low cost.
+> And will be backported to Xen 4.13+
 
-Yes. Pretty low cost to fix the BUG_ON() issue. Any kernel-DMA driver
-binding is blocked if the device's iommu group has been put into user-
-dma mode.
+Awesome :) Thanks Vlad!
 
-Another issue is, when putting a device into user-dma mode, all devices
-belonging to the same iommu group shouldn't be bound with a kernel-dma
-driver. Kevin's prototype checks this by READ_ONCE(dev->driver). This is
-not lock safe as discussed below,
-
-https://lore.kernel.org/linux-iommu/20210927130935.GZ964074@nvidia.com/
-
-Any guidance on this?
-
-Best regards,
-baolu
+-- 
+Jerome
