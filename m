@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA2941B336
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CDF41B33B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241826AbhI1Pou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        id S241666AbhI1Psp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241864AbhI1Pol (ORCPT
+        with ESMTP id S241565AbhI1Pso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:44:41 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3080C06161C;
-        Tue, 28 Sep 2021 08:43:01 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 6068225FE; Tue, 28 Sep 2021 11:43:00 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 6068225FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1632843780;
-        bh=gTR5ytspq89tfP6T8cGfKa28njUTuOm91rs2x7KmzCk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q6saCbNzZITMJepjYAjLPPFxD2ESF52Dlp519e7TLxf1u1JV6LZpBF6Y22rqNl7Kv
-         tX8XsiYtuQ0hNYuAo25gLRGBhY904oUMcV6sW6B5A2BaP75kGSVnGa3M9Ml4k9M5vD
-         GRGue3vaIqLBg/Zjk112LrAh4hYbZOc/gPyrXCeU=
-Date:   Tue, 28 Sep 2021 11:43:00 -0400
-From:   "bfields@fieldses.org" <bfields@fieldses.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "neilb@suse.com" <neilb@suse.com>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "tyhicks@canonical.com" <tyhicks@canonical.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wanghai38@huawei.com" <wanghai38@huawei.com>,
-        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "tom@talpey.com" <tom@talpey.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "timo@rothenpieler.org" <timo@rothenpieler.org>,
-        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
-        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
-        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
-        "kolga@netapp.com" <kolga@netapp.com>
-Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
- rpcsec_gss_exit_net when use-gss-proxy==1
-Message-ID: <20210928154300.GE25415@fieldses.org>
-References: <20210928031440.2222303-1-wanghai38@huawei.com>
- <20210928031440.2222303-3-wanghai38@huawei.com>
- <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
- <20210928134952.GA25415@fieldses.org>
- <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
- <20210928141718.GC25415@fieldses.org>
- <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
- <20210928145747.GD25415@fieldses.org>
- <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
+        Tue, 28 Sep 2021 11:48:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DA9C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:47:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=RLhInNF/UixHA5msC5kJ0h7T7fFnfbdQ3PuTDScQ7yQ=; b=PGTlv/HqmrtMPlCrC3ov+Y8nx0
+        hSuHDsn40aJKzrwUozP0+RkMFXLfgn5Wrxd3zjO5olAqHGRcUigcKLU0a0OJHwRrGfFD46ShRj3r6
+        8+Tyi4MDA5VAWtsR2ghNRJZgw70GdqimBo2GzRzj9BMx0w3PG+M74k0vHFZya28RBBjO6QGr6+CvK
+        xaNnt3W1xRphZtBLgBDvo9Fj/rlOzJuEqiUWijxj7kXzJwp3DCsk0+bc9tZZfEiYzwNbJYL2Xa1zk
+        PNwuRrTi3zETknPROM+tOJLyLepLnFirLjUjx1XCvkojs9EEENgdA6UrKDInA+yNFspZaczwR/BCx
+        vFsJV2gw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVFGn-00AzHa-0U; Tue, 28 Sep 2021 15:44:32 +0000
+Date:   Tue, 28 Sep 2021 16:43:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, shakeelb@google.com,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH resend] slub: Add back check for free nonslab objects
+Message-ID: <YVM4NJZWNyOhZIIP@casper.infradead.org>
+References: <20210927021538.155991-1-wangkefeng.wang@huawei.com>
+ <566f2009-6acf-4fb9-f7c0-edc1d6ce6561@suse.cz>
+ <73b662cc-ab1f-b3bf-468a-4cd744e92d71@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <73b662cc-ab1f-b3bf-468a-4cd744e92d71@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 03:36:58PM +0000, Trond Myklebust wrote:
-> What is the use case here? Starting the gssd daemon or knfsd in
-> separate chrooted environments? We already know that they have to be
-> started in the same net namespace, which pretty much ensures it has to
-> be the same container.
+On Mon, Sep 27, 2021 at 03:53:47PM +0800, Kefeng Wang wrote:
+> On 2021/9/27 15:22, Vlastimil Babka wrote:
+> > On 9/27/21 04:15, Kefeng Wang wrote:
+> > > After commit ("f227f0faf63b slub: fix unreclaimable slab stat for bulk
+> > > free"), the check for free nonslab page is replaced by VM_BUG_ON_PAGE,
+> > > which only check with CONFIG_DEBUG_VM enabled, but this config may
+> > > impact performance, so it only for debug.
+> > > 
+> > > Commit ("0937502af7c9 slub: Add check for kfree() of non slab objects.")
+> > > add the ability, which should be needed in any configs to catch the
+> > > invalid free, they even could be potential issue, eg, memory corruption,
+> > > use after free and double-free, so replace VM_BUG_ON_PAGE to WARN_ON, and
+> > > add dump_page() to help use to debug the issue.
+> > There are other situations in SLUB (such as with smaller allocations that
+> > don't go directly to page allocator) where use after free and double-free
+> > are undetected in non-debug configs, and it's expected that anyone debugging
+> > them will enable slub_debug or even DEBUG_VM. Why should this special case
+> > with nonslab pages be different?
+> 
+> I want the check back in kfree, this one is used  widely in driver, and the
+> probability
+> 
+> of problem occurred is bigger in driver, especially in some out of tree
+> drivers.
 
-Somehow I forgot that knfsd startup is happening in some real process's
-context too (not just a kthread).
+Why would we want to improve life for out of tree drivers?  Drivers should
+be in-tree.  That's been the Linux Way for thirty years.
 
-OK, great, I agree, that sounds like it should work.
-
---b.
+I remain sceptical that dump_page() is actually useful for debugging
+drivers anyway.  dump_stack(), I could see -- that'll tell you which
+driver called kfree() on a bogus pointer.  But how does dump_page() help?
