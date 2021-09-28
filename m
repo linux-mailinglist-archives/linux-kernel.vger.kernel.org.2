@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF39C41B333
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA2941B336
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241675AbhI1PoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241778AbhI1PoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:44:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11AB061354;
-        Tue, 28 Sep 2021 15:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632843748;
-        bh=Kjod7Dg1Idecfo4RpcY/AygTGl3Rik7I7C/y/vFeIAI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TnEhddhDpbfT/qGh4mtxDa35mWR0KNstAx/Tk7QCXEL3tXbJ5M6tj3cCGu7g4qU2b
-         t218VqoaMedlmVE49FLfg0Wd/f59Jyc7RF2zYT2kw0er+0btGRV8r5LsQqLHGKgd4X
-         iUDIAo3muUgv2mnHi/hG8bGek5du5hZF0UjuIgvSQQnFB6bC9/TDGcDBVIW4B+7XgH
-         8EMSrKFsC9GpSqLsSCv6/I2Cc1zk3EDC0KCZYXxWT+fKulgSioc5jtgLyiKUsfikjg
-         eVf6Bt5LcduS1IGmb0bcdkpPN3DSXhiI234za3TutW2EfApV99fvH/U03+G0LqWSwC
-         DTI5FVY5du/8g==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: [PATCH 14/14] [RFC] ARM: forbid ftrace with clang and thumb2_kernel
-Date:   Tue, 28 Sep 2021 17:41:43 +0200
-Message-Id: <20210928154143.2106903-15-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210928154143.2106903-1-arnd@kernel.org>
-References: <20210928154143.2106903-1-arnd@kernel.org>
+        id S241826AbhI1Pou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241864AbhI1Pol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:44:41 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3080C06161C;
+        Tue, 28 Sep 2021 08:43:01 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 6068225FE; Tue, 28 Sep 2021 11:43:00 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 6068225FE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1632843780;
+        bh=gTR5ytspq89tfP6T8cGfKa28njUTuOm91rs2x7KmzCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q6saCbNzZITMJepjYAjLPPFxD2ESF52Dlp519e7TLxf1u1JV6LZpBF6Y22rqNl7Kv
+         tX8XsiYtuQ0hNYuAo25gLRGBhY904oUMcV6sW6B5A2BaP75kGSVnGa3M9Ml4k9M5vD
+         GRGue3vaIqLBg/Zjk112LrAh4hYbZOc/gPyrXCeU=
+Date:   Tue, 28 Sep 2021 11:43:00 -0400
+From:   "bfields@fieldses.org" <bfields@fieldses.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "neilb@suse.com" <neilb@suse.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "tyhicks@canonical.com" <tyhicks@canonical.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wanghai38@huawei.com" <wanghai38@huawei.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "dsahern@gmail.com" <dsahern@gmail.com>,
+        "timo@rothenpieler.org" <timo@rothenpieler.org>,
+        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
+        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
+        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
+        "kolga@netapp.com" <kolga@netapp.com>
+Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
+ rpcsec_gss_exit_net when use-gss-proxy==1
+Message-ID: <20210928154300.GE25415@fieldses.org>
+References: <20210928031440.2222303-1-wanghai38@huawei.com>
+ <20210928031440.2222303-3-wanghai38@huawei.com>
+ <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
+ <20210928134952.GA25415@fieldses.org>
+ <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
+ <20210928141718.GC25415@fieldses.org>
+ <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
+ <20210928145747.GD25415@fieldses.org>
+ <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Sep 28, 2021 at 03:36:58PM +0000, Trond Myklebust wrote:
+> What is the use case here? Starting the gssd daemon or knfsd in
+> separate chrooted environments? We already know that they have to be
+> started in the same net namespace, which pretty much ensures it has to
+> be the same container.
 
-clang fails to build kernels with THUMB2 and FUNCTION_TRACER
-enabled when there is any inline asm statement containing
-the frame pointer register r7:
+Somehow I forgot that knfsd startup is happening in some real process's
+context too (not just a kthread).
 
-arch/arm/mach-versatile/dcscb.c:95:2: error: inline asm clobber list contains reserved registers: R7 [-Werror,-Winline-asm]
-arch/arm/mach-exynos/mcpm-exynos.c:154:2: error: inline asm clobber list contains reserved registers: R7 [-Werror,-Winline-asm]
-arch/arm/probes/kprobes/actions-thumb.c:449:3: error: inline asm clobber list contains reserved registers: R7 [-Werror,-Winline-asm]
+OK, great, I agree, that sounds like it should work.
 
-Apparently gcc should also have warned about this, and the
-configuration is actually invalid, though there is some
-disagreement on the bug trackers about this.
-
-Link: https://bugs.llvm.org/show_bug.cgi?id=45826
-Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94986
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 0d4f3e2d50ad..7ea95bb40004 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -91,7 +91,7 @@ config ARM
- 	select HAVE_FAST_GUP if ARM_LPAE
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
--	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
-+	select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !(THUMB2_KERNEL && CC_IS_CLANG)
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
- 	select HAVE_IRQ_TIME_ACCOUNTING
--- 
-2.29.2
-
+--b.
