@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA2441BA26
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB5F41BA18
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242929AbhI1WXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52668 "EHLO mail.kernel.org"
+        id S242626AbhI1WUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:20:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243073AbhI1WW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:22:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F9D6613A5;
-        Tue, 28 Sep 2021 22:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632867677;
-        bh=GbLld7FAg2taHDUAb/Jj//RLLzXibDSgRos/aDK5sSo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hnF/r2lvT4sNBb1FyCrA91j9fnOSo+GbWwFkuf7hholPz37lXws2Psk3Oi2pqKWEk
-         XZ7k9PJ2fBL/qj30nMPbGt+Q5XNthvv4n+lvq+O/HfXoBuk0XqAVW1mZLj5C5yBpAc
-         zRpoY3T+t+D2n4rqvoGtqkUrkdvKffX2L932jIgA=
-Date:   Tue, 28 Sep 2021 15:21:16 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chen Jingwen <chenjingwen6@huawei.com>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrei Vagin <avagin@openvz.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] elf: don't use MAP_FIXED_NOREPLACE for elf interpreter
- mappings
-Message-Id: <20210928152116.347d5f0020e3cbb0192ebbff@linux-foundation.org>
-In-Reply-To: <20210928125657.153293-1-chenjingwen6@huawei.com>
-References: <20210928125657.153293-1-chenjingwen6@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S242981AbhI1WUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:20:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3652A6134F;
+        Tue, 28 Sep 2021 22:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632867506;
+        bh=5J0hY9xgoHquzGvQlOV+Av63MmjnlOGF9TMY09r5wos=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jSwtgiY9ALwoZuiz/OECPEXHzc3u6igBwRmJzenKUw1kaa1Ghok+oOPeCejks9fQ0
+         6nGlXJeQAFn9u8GBzntySvne7RNmGNi1/2kJbUK3++P2QTE6f7qWlVur/j/xFnSMLW
+         WsABrnrouI3JaFKfJxgywqFsf0indPGsf97gis4e+0k6zkhUPgt6Ztc7o6bl4p9EEg
+         k/cZWSKsQFZetYLscriMHKS4t2K820opsTd8dQMCEsh7klKZF5tfFqx7bwKVDosRI8
+         YWJ2x6kxWxSkJXqPpth/4xuuUt4uZ5OzQGYTvtUcrK97JlJ93cUo3UDgpr6rumRvma
+         vz+2QVCq8esHg==
+Date:   Tue, 28 Sep 2021 17:22:29 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] iommu/dma: Use kvcalloc() instead of kvzalloc()
+Message-ID: <20210928222229.GA280355@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc Linus)
+Use 2-factor argument form kvcalloc() instead of kvzalloc().
 
-On Tue, 28 Sep 2021 20:56:57 +0800 Chen Jingwen <chenjingwen6@huawei.com> wrote:
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/iommu/dma-iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> In commit b212921b13bd ("elf: don't use MAP_FIXED_NOREPLACE for elf executable mappings")
-> we still leave MAP_FIXED_NOREPLACE in place for load_elf_interp.
-> Unfortunately, this will cause kernel to fail to start with
-> 
-> [    2.384321] 1 (init): Uhuuh, elf segment at 00003ffff7ffd000 requested but the memory is mapped already
-> [    2.386240] Failed to execute /init (error -17)
-> 
-> The reason is that the elf interpreter (ld.so) has overlapping segments.
-> 
-> readelf -l ld-2.31.so
-> Program Headers:
->   Type           Offset             VirtAddr           PhysAddr
->                  FileSiz            MemSiz              Flags  Align
->   LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
->                  0x000000000002c94c 0x000000000002c94c  R E    0x10000
->   LOAD           0x000000000002dae0 0x000000000003dae0 0x000000000003dae0
->                  0x00000000000021e8 0x0000000000002320  RW     0x10000
->   LOAD           0x000000000002fe00 0x000000000003fe00 0x000000000003fe00
->                  0x00000000000011ac 0x0000000000001328  RW     0x10000
-> 
-> The reason for this problem is the same as described in
-> commit ad55eac74f20 ("elf: enforce MAP_FIXED on overlaying elf segments").
-> Not only executable binaries, elf interpreters (e.g. ld.so) can have
-> overlapping elf segments, so we better drop MAP_FIXED_NOREPLACE and go
-> back to MAP_FIXED in load_elf_interp.
-> 
-> Fixes: 4ed28639519c ("fs, elf: drop MAP_FIXED usage from elf_map")
-> Cc: <stable@vger.kernel.org> # v4.19
-> Signed-off-by: Chen Jingwen <chenjingwen6@huawei.com>
-> ---
->  fs/binfmt_elf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 69d900a8473d..a813b70f594e 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -630,7 +630,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
->  
->  			vaddr = eppnt->p_vaddr;
->  			if (interp_elf_ex->e_type == ET_EXEC || load_addr_set)
-> -				elf_type |= MAP_FIXED_NOREPLACE;
-> +				elf_type |= MAP_FIXED;
->  			else if (no_base && interp_elf_ex->e_type == ET_DYN)
->  				load_addr = -vaddr;
->  
-> -- 
-> 2.12.3
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 896bea04c347..18c6edbe5fbf 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -616,7 +616,7 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
+ 	if (!order_mask)
+ 		return NULL;
+ 
+-	pages = kvzalloc(count * sizeof(*pages), GFP_KERNEL);
++	pages = kvcalloc(count, sizeof(*pages), GFP_KERNEL);
+ 	if (!pages)
+ 		return NULL;
+ 
+-- 
+2.27.0
+
