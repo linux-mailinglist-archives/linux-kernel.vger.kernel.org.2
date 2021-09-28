@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B337741AE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB9341AE91
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240598AbhI1MSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:18:20 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:46348 "EHLO honk.sigxcpu.org"
+        id S240619AbhI1MSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:18:21 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:46384 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240496AbhI1MSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:18:11 -0400
+        id S240513AbhI1MSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:18:13 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 3CBA4FB03;
-        Tue, 28 Sep 2021 14:16:26 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 785A6FB06;
+        Tue, 28 Sep 2021 14:16:27 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1mhmRqoTju2K; Tue, 28 Sep 2021 14:16:24 +0200 (CEST)
+        with ESMTP id oubM4zC7mO74; Tue, 28 Sep 2021 14:16:25 +0200 (CEST)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -39,9 +39,9 @@ To:     Andrzej Hajda <a.hajda@samsung.com>,
         Lucas Stach <l.stach@pengutronix.de>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v1 4/5] drm/panel: mantix: Add media bus format
-Date:   Tue, 28 Sep 2021 14:16:11 +0200
-Message-Id: <91f413a0fa8d0a3b1805cc1fa27b46ede49545d7.1632828477.git.agx@sigxcpu.org>
+Subject: [PATCH v1 5/5] drm/panel: st7703: Add media bus format
+Date:   Tue, 28 Sep 2021 14:16:12 +0200
+Message-Id: <75ee71d779e698e374b4b7c9963d58d852afe17f.1632828477.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1632828477.git.agx@sigxcpu.org>
 References: <cover.1632828477.git.agx@sigxcpu.org>
@@ -57,33 +57,25 @@ We currently only support MEDIA_BUS_FMT_RGB888_1X24.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
 ---
- drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-index f0e9bce23c41..d6bcf1045255 100644
---- a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-+++ b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-@@ -8,6 +8,7 @@
- #include <linux/backlight.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
-@@ -232,6 +233,10 @@ static const struct drm_display_mode default_mode_ys = {
- 	.height_mm   = 130,
- };
+diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+index a2c303e5732c..73f69c929a75 100644
+--- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
++++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+@@ -453,6 +453,10 @@ static int st7703_prepare(struct drm_panel *panel)
+ 	return ret;
+ }
  
 +static const u32 mantix_bus_formats[] = {
 +	MEDIA_BUS_FMT_RGB888_1X24,
 +};
 +
- static int mantix_get_modes(struct drm_panel *panel,
+ static int st7703_get_modes(struct drm_panel *panel,
  			    struct drm_connector *connector)
  {
-@@ -253,6 +258,10 @@ static int mantix_get_modes(struct drm_panel *panel,
+@@ -474,6 +478,10 @@ static int st7703_get_modes(struct drm_panel *panel,
  	connector->display_info.height_mm = mode->height_mm;
  	drm_mode_probed_add(connector, mode);
  
