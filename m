@@ -2,162 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424BA41B384
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B2741B381
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241828AbhI1QGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:06:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47508 "EHLO mail.kernel.org"
+        id S241662AbhI1QGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:06:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241825AbhI1QGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:06:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 405076128E;
-        Tue, 28 Sep 2021 16:04:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632845070;
-        bh=01wz6erCakbXSf2MOUj5I3H7r0o1qQPsOzBsFvpd0uE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EUS18fCmOq0in3hvpKrWA84T6wNO8t+f/UE0xjgCEvVLjrKHlWgErtSDuy2KfxaDA
-         NW1orpik6JsIDvaVl98XKp9f9h1xIIBOWb306jthQ4CApK2w9oP0EX2KocJ/N/jblf
-         e1PHvA5xK1L1N56FP5yPD00kGe/Uit8cz81u+Bs2H85F7SeLQwBhC/3FYV20cgzA+k
-         NrnzUZGDXcMNNIq2yhJSwexYGgDImo6UuSrqKejKEYwWwCr89SNbPkiFBkab73NJut
-         XFX5gTAaFdXvnoUuaJcLRZUwytAhcwK4i88NeHs7K7DAqzg2iQUbBkaZ3Okk+dL5a+
-         0O8pWobAkHeGA==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     michal.simek@xilinx.com
-Cc:     dinguyen@kernel.org, bp@alien8.de, mchehab@kernel.org,
-        tony.luck@intel.com, james.morse@arm.com, rric@kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org
-Subject: [PATCHv3 2/3] EDAC/synopsys: add support for version 3 of the Synopsys EDAC DDR
-Date:   Tue, 28 Sep 2021 11:04:22 -0500
-Message-Id: <20210928160423.271187-2-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210928160423.271187-1-dinguyen@kernel.org>
-References: <20210928160423.271187-1-dinguyen@kernel.org>
+        id S241568AbhI1QGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:06:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2824661213;
+        Tue, 28 Sep 2021 16:04:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632845064;
+        bh=J8bFtSzTPHaRP/w8oi0vQlkr/QaRHZmeo8GXZahHSbk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=He9qUGzYllosNeEAs8t1CTwdoeA7T1MSIsNyRYUserRpGTvnpD4VZs9kHNVWnERDm
+         pv8rHG8VE2FxQfD6OVwlb6m1fy7ohQoOZsvoo/AZlYvMiaAOpl2d7cCEeGEnp+QJOp
+         JQqIqZXNWZ8UJnXgX9i/1ps47uvxa8fUHptJog9E=
+Date:   Tue, 28 Sep 2021 18:04:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] platform/x86: thinkpad_acpi: Switch to common use of
+ attributes
+Message-ID: <YVM9BhHcMRVnEder@kroah.com>
+References: <20210926111908.6950-1-len.baker@gmx.com>
+ <YVBaQAFVX1CeQUPE@kroah.com>
+ <50135c0e-e291-509f-2286-a1e443fdf4f3@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50135c0e-e291-509f-2286-a1e443fdf4f3@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for version 3.80a of the Synopsys DDR controller with EDAC. This
-version of the controller has the following differences:
+On Tue, Sep 28, 2021 at 04:55:25PM +0200, Hans de Goede wrote:
+> Hi All,
+> 
+> On 9/26/21 1:32 PM, Greg Kroah-Hartman wrote:
+> > On Sun, Sep 26, 2021 at 01:19:08PM +0200, Len Baker wrote:
+> >> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> >> and Conventions" documentation [1], size calculations (especially
+> >> multiplication) should not be performed in memory allocator (or similar)
+> >> function arguments due to the risk of them overflowing. This could lead
+> >> to values wrapping around and a smaller allocation being made than the
+> >> caller was expecting. Using those allocations could lead to linear
+> >> overflows of heap memory and other misbehaviors.
+> >>
+> >> So, to avoid open-coded arithmetic in the kzalloc() call inside the
+> >> create_attr_set() function the code must be refactored. Using the
+> >> struct_size() helper is the fast solution but it is better to switch
+> >> this code to common use of attributes.
+> >>
+> >> Then, remove all the custom code to manage hotkey attributes and use the
+> >> attribute_group structure instead, refactoring the code accordingly.
+> >> Also, to manage the optional hotkey attributes (hotkey_tablet_mode and
+> >> hotkey_radio_sw) use the is_visible callback from the same structure.
+> >>
+> >> Moreover, now the hotkey_init_tablet_mode() function never returns a
+> >> negative number. So, the check after the call can be safely removed.
+> >>
+> >> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> >>
+> >> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >> Signed-off-by: Len Baker <len.baker@gmx.com>
+> >> ---
+> >> Hi,
+> >>
+> >> Following the suggestions made by Greg I have switch the code to common
+> >> use of attributes. However this code is untested. If someone could test
+> >> it would be great.
+> > 
+> > Much better, thanks.
+> 
+> This indeed is much better and a great cleanup, thanks.
+> 
+> > 
+> > But, I have a few questions here:
+> > 
+> >> @@ -3161,9 +3106,7 @@ static void hotkey_exit(void)
+> >>  	hotkey_poll_stop_sync();
+> >>  	mutex_unlock(&hotkey_mutex);
+> >>  #endif
+> >> -
+> >> -	if (hotkey_dev_attributes)
+> >> -		delete_attr_set(hotkey_dev_attributes, &tpacpi_pdev->dev.kobj);
+> >> +	sysfs_remove_group(&tpacpi_pdev->dev.kobj, &hotkey_attr_group);
+> > 
+> > Why do you have to manually add/remove these groups still?
+> > 
+> > A huge hint that something is going wrong is when you have to call a
+> > sysfs_*() call from within a driver.  There should be proper driver_*()
+> > calls for you instead to get the job done.
+> > 
+> > As this is a platform device, why not set the dev_groups variable in the
+> > platform_driver field so that these attribute groups get added and
+> > removed automatically?
+> 
+> The thinkpad_acpi code talks to the ACPI object representing the
+> ThinkPad embedded-controller and that has a lot of different sub-functionalities
+> which may or may not be present depending on the model laptop as well
+> as on the hw-configuration of the model.
+> 
+> The code is organized around all the different sub-functions with there
+> being a separate init + exit function for each sub-function, including
+> with first detecting in the init function if the functionality is present
+> (e.g. don't register SW_TABLETMODE_SW evdev reporting when the device
+> is not convertible / don register a WWAN rfkill if there is no WWAN modem).
+> 
+> Many (but not all) of the sub-functions come with a few sysfs-attributes
+> under /sys/bus/platform/devices/thinkpad_acpi/ many of the separate
+> function_init functions therefor call sysfs_create_group() for their own
+> set of sysfs-attributes, if the function is present on the machine.
+> 
+> > An example commit to look at that shows how this was converted for one
+> > driver is 5bd08a4ae3d0 ("platform: x86: hp-wmi: convert platform driver
+> > to use dev_groups").  See if that helps here as well.
+> 
+> Right, that results in a very nice cleanup. But there all the attributes
+> were always registered before the patch so throwing them together in a
+> ATTRIBUTE_GROUPS(hp_wmi) makes a ton of sense.
+> 
+> Here however we have all the separate function_init() blocks each
+> conditionally adding their own attributes if the function is present,
+> so that is different.
+> 
+> Currently there already are 8 separate sysfs_create_group() calls in
+> the thinkpad_acpi code, so even if we want to refactor this (I'm not
+> sure that we do) then doing so would fall outside of the scope of this
+> patch.
+> 
+> Greg, since this resolves / defers your remark and since this otherwise
+> is a nice cleanup I'm going to merge this version of this patch now.
 
-- UE/CE are auto cleared
-- Interrupts are supported by default
+Ok, but having this all in one big list of attributes does work.  You
+can have multiple attribute groups listed together (that's why it's a
+list of attribute groups, not just one attribute group that the driver
+core is expecting.)
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
-v3: Address comments from Michal Simek
-    use bit macro
-    removed extra "cleared" word from comment section about v3.0
-v2: remove "This patch" from commit message
----
- drivers/edac/synopsys_edac.c | 49 ++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 7 deletions(-)
+You just put the logic of "is this group needed or not?" in the
+is_visible() callback for that group.  You then don't need the
+function_init() blocks to do anything with sysfs except maybe set a
+device variable of "I have type foo" for the is_visible() callback to
+check.
 
-diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index bf237fccb444..66ee37ea0acc 100644
---- a/drivers/edac/synopsys_edac.c
-+++ b/drivers/edac/synopsys_edac.c
-@@ -101,6 +101,7 @@
- /* DDR ECC Quirks */
- #define DDR_ECC_INTR_SUPPORT		BIT(0)
- #define DDR_ECC_DATA_POISON_SUPPORT	BIT(1)
-+#define DDR_ECC_INTR_SELF_CLEAR		BIT(2)
- 
- /* ZynqMP Enhanced DDR memory controller registers that are relevant to ECC */
- /* ECC Configuration Registers */
-@@ -171,6 +172,10 @@
- #define DDR_QOS_IRQ_EN_OFST		0x20208
- #define DDR_QOS_IRQ_DB_OFST		0x2020C
- 
-+/* DDR QOS Interrupt register definitions */
-+#define DDR_UE_MASK			BIT(9)
-+#define DDR_CE_MASK			BIT(8)
-+
- /* ECC Corrected Error Register Mask and Shifts*/
- #define ECC_CEADDR0_RW_MASK		0x3FFFF
- #define ECC_CEADDR0_RNK_MASK		BIT(24)
-@@ -533,10 +538,16 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
- 	priv = mci->pvt_info;
- 	p_data = priv->p_data;
- 
--	regval = readl(priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
--	regval &= (DDR_QOSCE_MASK | DDR_QOSUE_MASK);
--	if (!(regval & ECC_CE_UE_INTR_MASK))
--		return IRQ_NONE;
-+	/*
-+	 * v3.0 of the controller has the ce/ue bits cleared automatically,
-+	 * so this condition does not apply.
-+	 */
-+	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)) {
-+		regval = readl(priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
-+		regval &= (DDR_QOSCE_MASK | DDR_QOSUE_MASK);
-+		if (!(regval & ECC_CE_UE_INTR_MASK))
-+			return IRQ_NONE;
-+	}
- 
- 	status = p_data->get_error_info(priv);
- 	if (status)
-@@ -548,7 +559,9 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
- 
- 	edac_dbg(3, "Total error count CE %d UE %d\n",
- 		 priv->ce_cnt, priv->ue_cnt);
--	writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
-+	/* v3.0 of the controller does not have this register */
-+	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR))
-+		writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
- 	return IRQ_HANDLED;
- }
- 
-@@ -834,8 +847,13 @@ static void mc_init(struct mem_ctl_info *mci, struct platform_device *pdev)
- static void enable_intr(struct synps_edac_priv *priv)
- {
- 	/* Enable UE/CE Interrupts */
--	writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
--			priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
-+	if (priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)
-+		writel(DDR_UE_MASK | DDR_CE_MASK,
-+		       priv->baseaddr + ECC_CLR_OFST);
-+	else
-+		writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
-+		       priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
-+
- }
- 
- static void disable_intr(struct synps_edac_priv *priv)
-@@ -890,6 +908,19 @@ static const struct synps_platform_data zynqmp_edac_def = {
- 			  ),
- };
- 
-+static const struct synps_platform_data synopsys_edac_def = {
-+	.get_error_info	= zynqmp_get_error_info,
-+	.get_mtype	= zynqmp_get_mtype,
-+	.get_dtype	= zynqmp_get_dtype,
-+	.get_ecc_state	= zynqmp_get_ecc_state,
-+	.quirks         = (DDR_ECC_INTR_SUPPORT | DDR_ECC_INTR_SELF_CLEAR
-+#ifdef CONFIG_EDAC_DEBUG
-+			  | DDR_ECC_DATA_POISON_SUPPORT
-+#endif
-+			  ),
-+};
-+
-+
- static const struct of_device_id synps_edac_match[] = {
- 	{
- 		.compatible = "xlnx,zynq-ddrc-a05",
-@@ -899,6 +930,10 @@ static const struct of_device_id synps_edac_match[] = {
- 		.compatible = "xlnx,zynqmp-ddrc-2.40a",
- 		.data = (void *)&zynqmp_edac_def
- 	},
-+	{
-+		.compatible = "snps,ddrc-3.80a",
-+		.data = (void *)&synopsys_edac_def
-+	},
- 	{
- 		/* end of table */
- 	}
--- 
-2.25.1
+Yes, it's not obvious, but should clean up a lot of code in the end.
 
+thanks,
+
+greg k-h
