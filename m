@@ -2,123 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F15D41AB87
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B8D41AB8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239858AbhI1JLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239795AbhI1JLQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:11:16 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF8DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:09:36 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so21215987otv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:09:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=lubeOMe06ElGBawefRYKAXVTA24IW08hr7PtPpVm+i4=;
-        b=Pn0osy597Xd/0Cl1POHrl7nDv2YMTz672fqfrqUCAEKGWqjRIFwmTxquIsO+IhSeIK
-         Fk1Ozkeg1Jo480pHe6/HSmBeXifcWhbt6iwGNlChjgAKHVuitO9pZJt7sRb1KVTonGOU
-         avxm3NjGD2W+qLDGtNAlohpiFFyI9oPor+Bv1eQO7qgr9WGWqjae8TtCIcqaP9J7alwl
-         A5GN0jKFsnl7KQWX4XwKOc/1yzHRZIOSjMxtyQRvS4iqFt2Df29XCbbmkFF0QPrOlQRX
-         3kwvNCySvYBeZziQBjQVzD/VFuh+a1mbBsR2eN6R0AeC4DZxJUC2MnlcLdm4JNBjS89H
-         +2rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=lubeOMe06ElGBawefRYKAXVTA24IW08hr7PtPpVm+i4=;
-        b=MqxH8WdNU5T9ckVwiBpDlZ4QWVC/BoF0+rtWCR2ryhC00a7ZvR4q+EN6eQo9XGsKuc
-         6rnWyWRgGbjEwVbX/3uv6QgsTTIee8UKQdtowMqmMJyr8WWc2HqsRvp9m2qE4w/fCeX9
-         N83m+uG1gu65/bRBmPDzg1yXONR/y/ZdAYv/G1O4EbtJP8ZtiD6sYiJCaCo7xIiJ4Nfu
-         SmJYMkoZbv4KvUB4/gGL4LVAkIGL0si3et19g/0v8evj3fGTfcO0wPuCFC9qAygicnkg
-         jODQD+l8dKIHcuxJMSH031c6nyRNOXthjOFlNoIFlRNeFcHLEgfRW1lxUc+wavs8ZqyU
-         xABw==
-X-Gm-Message-State: AOAM530jsfQTiJm3jL7Eztx2kTu6MZB43/MojMfrAGM7CmgnMUVNRJKz
-        w2qHPZqTt2Xao2QYpNriPVfRAlFBc4UWKoQHtVJXww==
-X-Google-Smtp-Source: ABdhPJwiMChGhBVboJWynOdTMaByjMEhRfdx2lrzuDtyfOuxQnAuxXB3FNqbm6wwWhlyGL7hcU85KP1voKb8Wcd4TZU=
-X-Received: by 2002:a9d:2f28:: with SMTP id h37mr4112755otb.196.1632820175845;
- Tue, 28 Sep 2021 02:09:35 -0700 (PDT)
+        id S239840AbhI1JMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:12:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239694AbhI1JMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:12:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D77460F44;
+        Tue, 28 Sep 2021 09:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632820222;
+        bh=nNUQ2Cbdi2wqZSMi5rvMuU/y79v+XzSHTSCiCh87I6Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hY8T7xysw2mQ+OnEHAdCVU7YyS+exjH7oqrCv8gxeBVL3jpcKKaFuhDxLwJBXk+NB
+         gkuPg8isIOQ/Zf2fyuSxyrCoqT/OoybjwdqXgBRUhYMD9pEEJuVypu1d+vYMp/MOp/
+         mKbIun/KpaLJN3Z2tZE6Pyv8WZjxWumR5lwTHB8c=
+Date:   Tue, 28 Sep 2021 11:10:20 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>, bhelgaas@google.com,
+        andy.shevchenko@gmail.com, mgross@linux.intel.com,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] MFD: intel_pmt: Support non-PMT capabilities
+Message-ID: <YVLb/GrePEKNDdtb@kroah.com>
+References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
+ <20210922213007.2738388-3-david.e.box@linux.intel.com>
+ <YVIBI6TQrD/rehli@kroah.com>
+ <d540894d3d8c05722bd924c21bd9dd9c2b9def53.camel@linux.intel.com>
+ <YVLKRSQx01vB4N77@google.com>
 MIME-Version: 1.0
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 28 Sep 2021 11:09:24 +0200
-Message-ID: <CACT4Y+bgzorbDgYw=cguZ4WuZeLbqsdyKUeGiyQq3Vo9jyjs6Q@mail.gmail.com>
-Subject: rseq with syscall as the last instruction
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVLKRSQx01vB4N77@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi rseq maintainers,
+On Tue, Sep 28, 2021 at 08:54:45AM +0100, Lee Jones wrote:
+> On Mon, 27 Sep 2021, David E. Box wrote:
+> 
+> > On Mon, 2021-09-27 at 19:36 +0200, Greg KH wrote:
+> > > On Wed, Sep 22, 2021 at 02:30:04PM -0700, David E. Box wrote:
+> > > > Intel Platform Monitoring Technology (PMT) support is indicated by presence
+> > > > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
+> > > > structures may also be used by Intel to indicate support for other
+> > > > capabilities unrelated to PMT.  OOBMSM is a device that can have both PMT
+> > > > and non-PMT capabilities. In order to support these capabilities it is
+> > > > necessary to modify the intel_pmt driver to handle the creation of platform
+> > > > devices more generically.
+> > > 
+> > > I said this on your other driver submission, but why are you turning a
+> > > PCIe device into a set of platform devices and craming it into the MFD
+> > > subsystem?
+> > > 
+> > > PCIe devices are NOT platform devices.
+> > 
+> > But they *are* used to create platform devices when the PCIe device is multi-functional, which is
+> > what intel_pmt is.
+> > 
+> > > 
+> > > Why not use the auxiliary bus for this thing if you have individual
+> > > drivers that need to "bind" to the different attributes that this single
+> > > PCIe device is exporting.
+> > 
+> > It wasn't clear in the beginning how this would evolve. MFD made sense for the PMT (platform
+> > monitoring technology) driver. PMT has 3 related but individually enumerable devices on the same IP,
+> > like lpss. But the same IP is now being used for other features too like SDSi. We could work on
+> > converting this to the auxiliary bus and then covert the cell drivers.
+> 
+> I see this as subsequent work.  It should not affect this submission.
+> 
+> FWIW, I still plan to review this set for inclusion into MFD.
 
-I wonder if rseq can be used in the following scenario (or extended to be used).
-I want to pass extra arguments to syscalls using a kind of
-side-channel, for example, to say "do fault injection for the next
-system call", or "trace the next system call". But what is "next"
-system call should be atomic with respect to signals.
-Let's say there is shared per-task memory location known to the kernel
-where these arguments can be stored:
+That's fine, but as the add-on submission that builds on top of this is
+a broken mess (which is what caused me to have to review this series), I
+can't recommend that be taken yet as it needs work to prevent systems
+from doing bad things.
 
-__thread struct trace_descriptor desk;
-prctl(REGISTER_PER_TASK_TRACE_DESCRIPTOR, &desk);
+thanks,
 
-then before a system call I can setup the descriptor to enable tracing:
-
-desk = ...
-SYSCALL;
-
-The problem is that if a signal arrives in between we setup desk and
-SYSCALL instruction, we will actually trace some unrelated syscall in
-the signal handler.
-Potentially the kernel could switch/restore 'desk' around syscall
-delivery, but it becomes tricky/impossible for signal handlers that do
-longjmp or mess with PC in other ways; and also would require
-extending ucontext to include the desc information (not sure if it's
-feasible).
-
-So instead the idea is to protect this sequence with rseq that will be
-restarted on signal delivery:
-
-enter rseq critical section with end right after SYSCALL instruction;
-desk = ...
-SYSCALL;
-
-Then, the kernel can simply clear 'desc', on syscall delivery.
-
-rseq docs seem to suggest that this can work:
-
-https://lwn.net/Articles/774098/
-+Restartable sequences are atomic with respect to preemption (making it
-+atomic with respect to other threads running on the same CPU), as well
-+as signal delivery (user-space execution contexts nested over the same
-+thread). They either complete atomically with respect to preemption on
-+the current CPU and signal delivery, or they are aborted.
-
-But the doc also says that the sequence must not do syscalls:
-
-+Restartable sequences must not perform system calls. Doing so may result
-+in termination of the process by a segmentation fault.
-
-The question is:
-Can this restriction be weakened to allow syscalls as the last instruction?
-For flags in this case we would pass
-RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT and
-RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE, but no
-RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL.
-
-I don't see any fundamental reasons why this couldn't work b/c if we
-restart only on signals, then once we reach the syscall, rseq critical
-section is committed, right?
-
-Do you have any feeling of how hard it would be to support or if there
-can be some implementation issues?
-
-Thank you
+greg k-h
