@@ -2,170 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7B341AFB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB5341AFB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhI1NNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:13:34 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:60074 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S240668AbhI1NNb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:13:31 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SAr5oR012181;
-        Tue, 28 Sep 2021 08:11:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=4ONsj1ie3VzkD7DHWFPS+8lMW+tNGxJ1MoudMZkmxu0=;
- b=pFO70DMsKmXlgVyjvw0qKaUR5KZAOiCrDlqskOQQHOC3Ed5IusiXsy0FXG2sN/TIxUQi
- 4Jm+MDXcXc+3UFIex7UlA5/pkklPoeM3VPbHiWKv4a2nfIN8/fleJV4pfKVOGtq/+OXu
- uXyX2UrNpE/pePJxuPQJkQ7Azp+s7FHE5zortmzITLjiuEeneyCS4yLobUbe5s8+3Qw0
- oHVu+qYrkeYAvA7bw+baW8pZ3wwp4RhVGTiQ6RWhrquMabMwGj8jwQzyTbRsK327EXxa
- dHFHViweAGFC1RKP9hPu6q7PnhFJNHaz5EE1Eq7x+fIRHqFyo35JR+yeBIU460qj2ikY dg== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3bbgmyh5sw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Sep 2021 08:11:47 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 28 Sep
- 2021 14:11:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Tue, 28 Sep 2021 14:11:45 +0100
-Received: from algalon.ad.cirrus.com (unknown [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 32BBBB12;
-        Tue, 28 Sep 2021 13:11:45 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <lee.jones@linaro.org>
-CC:     <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: [PATCH] mfd: arizona: Split of_match table into I2C and SPI versions
-Date:   Tue, 28 Sep 2021 14:11:45 +0100
-Message-ID: <20210928131145.17159-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+        id S240669AbhI1NP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240536AbhI1NPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:15:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10B3861139;
+        Tue, 28 Sep 2021 13:14:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632834855;
+        bh=q8zsXDb8jefHli+qDKUzmSjk7zAuU+saUYu7K6QdqE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N0U7/zXODYsKJDxLjahmdZ954zrv9PA3YEZQeoXhvt/SzU6GQvP0aefkogDLP2sDs
+         hsgklLbVKazetYod/gsmxFkzL7tlr1vGJK9GH5H6vAYLCxWzVbTbi5LCo1DwfkopP8
+         9L4Wj/JCV27mquH6aGVqCereex319oSSY9PX0mUsd1W8yRg6JTurBzBOuGZWn8BWEg
+         8q7vv3EdLs3Y95uv9gfS0Oj90rKIu1ZMQ20PfBmKCa6zHQoPS9ZDWkeOvhppOZhZnv
+         WhIe7tXLXXAqjRSngZSvz3x5HWDL4/iskdepUkyZIJWVFwELV2sHWMi7hoi06rzj7U
+         DjHV20Tysu5zg==
+Date:   Tue, 28 Sep 2021 14:13:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH] mfd: arizona: Split of_match table into I2C and SPI
+ versions
+Message-ID: <20210928131326.GL4199@sirena.org.uk>
+References: <20210928131145.17159-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: rBC4xzd3tjelC80ATwGlC5a2ax3A0fPJ
-X-Proofpoint-GUID: rBC4xzd3tjelC80ATwGlC5a2ax3A0fPJ
-X-Proofpoint-Spam-Reason: safe
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yQDbd2FCF2Yhw41T"
+Content-Disposition: inline
+In-Reply-To: <20210928131145.17159-1-ckeepax@opensource.cirrus.com>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Arizona driver has both some devices which only have an I2C
-interface and some which only have a SPI interface. Currently both
-of these share an of_match table, but this means inapproriate
-compatibles are available for each interface. Apart from being
-rather untidy, after recent changes this will also cause a warning
-on boot for the SPI subsystem. Tidy this up by creating a table
-for each interface listing only the appropriate compatibles.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Reported-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/mfd/arizona-core.c | 13 -------------
- drivers/mfd/arizona-i2c.c  | 14 +++++++++++++-
- drivers/mfd/arizona-spi.c  | 13 ++++++++++++-
- drivers/mfd/arizona.h      |  2 --
- 4 files changed, 25 insertions(+), 17 deletions(-)
+--yQDbd2FCF2Yhw41T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 9323b1e3a69ef..cbf1dd90b70d5 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -845,19 +845,6 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 
- 	return 0;
- }
--
--const struct of_device_id arizona_of_match[] = {
--	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
--	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
--	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
--	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
--	{ .compatible = "wlf,wm8998", .data = (void *)WM8998 },
--	{ .compatible = "wlf,wm1814", .data = (void *)WM1814 },
--	{ .compatible = "wlf,wm1831", .data = (void *)WM1831 },
--	{ .compatible = "cirrus,cs47l24", .data = (void *)CS47L24 },
--	{},
--};
--EXPORT_SYMBOL_GPL(arizona_of_match);
- #else
- static inline int arizona_of_get_core_pdata(struct arizona *arizona)
- {
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 5e83b730c4ced..3ed810e81f631 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -104,11 +104,23 @@ static const struct i2c_device_id arizona_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, arizona_i2c_id);
- 
-+#ifdef CONFIG_OF
-+const struct of_device_id arizona_i2c_of_match[] = {
-+	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
-+	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
-+	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
-+	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
-+	{ .compatible = "wlf,wm8998", .data = (void *)WM8998 },
-+	{ .compatible = "wlf,wm1814", .data = (void *)WM1814 },
-+	{},
-+};
-+#endif
-+
- static struct i2c_driver arizona_i2c_driver = {
- 	.driver = {
- 		.name	= "arizona",
- 		.pm	= &arizona_pm_ops,
--		.of_match_table	= of_match_ptr(arizona_of_match),
-+		.of_match_table	= of_match_ptr(arizona_i2c_of_match),
- 	},
- 	.probe		= arizona_i2c_probe,
- 	.remove		= arizona_i2c_remove,
-diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-index aa1d6f94ae532..9fe06dda37829 100644
---- a/drivers/mfd/arizona-spi.c
-+++ b/drivers/mfd/arizona-spi.c
-@@ -225,11 +225,22 @@ static const struct spi_device_id arizona_spi_ids[] = {
- };
- MODULE_DEVICE_TABLE(spi, arizona_spi_ids);
- 
-+#ifdef CONFIG_OF
-+const struct of_device_id arizona_spi_of_match[] = {
-+	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
-+	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
-+	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
-+	{ .compatible = "wlf,wm1831", .data = (void *)WM1831 },
-+	{ .compatible = "cirrus,cs47l24", .data = (void *)CS47L24 },
-+	{},
-+};
-+#endif
-+
- static struct spi_driver arizona_spi_driver = {
- 	.driver = {
- 		.name	= "arizona",
- 		.pm	= &arizona_pm_ops,
--		.of_match_table	= of_match_ptr(arizona_of_match),
-+		.of_match_table	= of_match_ptr(arizona_spi_of_match),
- 		.acpi_match_table = ACPI_PTR(arizona_acpi_match),
- 	},
- 	.probe		= arizona_spi_probe,
-diff --git a/drivers/mfd/arizona.h b/drivers/mfd/arizona.h
-index 801cbbcd71cb5..66d6092d08515 100644
---- a/drivers/mfd/arizona.h
-+++ b/drivers/mfd/arizona.h
-@@ -28,8 +28,6 @@ extern const struct regmap_config wm8998_i2c_regmap;
- 
- extern const struct dev_pm_ops arizona_pm_ops;
- 
--extern const struct of_device_id arizona_of_match[];
--
- extern const struct regmap_irq_chip wm5102_aod;
- extern const struct regmap_irq_chip wm5102_irq;
- 
--- 
-2.11.0
+On Tue, Sep 28, 2021 at 02:11:45PM +0100, Charles Keepax wrote:
 
+> rather untidy, after recent changes this will also cause a warning
+> on boot for the SPI subsystem. Tidy this up by creating a table
+> for each interface listing only the appropriate compatibles.
+
+> Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+
+This has been an issue for a long time regardless of what the SPI core
+does, and if you're trying to identify the patch that introduced the
+warning that's not it.
+
+--yQDbd2FCF2Yhw41T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFTFPUACgkQJNaLcl1U
+h9A2SQf9FZE292TyTQb37BkmDlCJ7OAAtuILmSpw07tppLHhtR7Es+ZE07QLejWG
+Kv8NKRQsN5JbKBY5LAST2MqzFAmUrgKreaKqN5zbrMKW8fXajNMJF1iDtfHdGz+F
+NkLtSawX8tlz+IDnZFkbqOxPHGeE8wDL/Om4U2/Lr8bIoTfFn0AsczA5LuML9e8g
+XLlBFqzrWl0f8O4fdo7qnhgJS2iJmRId3vPD7+Dg9G/pwBdnnQ6vfQEW88F5CL1P
+h4UT2wb0AFPurhCWwdR9P11ECegqUkoNRFOcBeUL71xesPssKamcpR53aFedDeD7
++RaRsNjOlls1nPy5DnjKBPK2qu4vJA==
+=gd3C
+-----END PGP SIGNATURE-----
+
+--yQDbd2FCF2Yhw41T--
