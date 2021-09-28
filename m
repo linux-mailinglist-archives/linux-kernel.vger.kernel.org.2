@@ -2,367 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C28E41BEE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 07:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609CF41BF2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244311AbhI2GAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:00:32 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:30248 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243585AbhI2GAb (ORCPT
+        id S244393AbhI2Ga0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:30:26 -0400
+Received: from ssh248.corpemail.net ([210.51.61.248]:20135 "EHLO
+        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244321AbhI2GaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:00:31 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T2tajB008783;
-        Tue, 28 Sep 2021 22:58:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=yZkeQpWzS0pGWE2OLfVJrv90Q4vPo8p9vEdcBaY0Wkw=;
- b=Crth8jrT9O0TD4yhFF4ngwX8btpv314fRiG6zYm4J5UV1W56nXrkyzRS8LurJW4wqSYX
- lB+DBhMzevoB0kzdeUnqaur2yU60yTsP0hW7xX3J2GSLlhI6AjjFQai/SVlAL4quEUwT
- 8wWK/DCD4u8/IrEzoNFlmweJO0d0ah5zQR1mspDOiSnZMXEUc7ZXzJE/D2BqZok8lMYu
- jSMCWT/qjyRjRtOFE3yb1jyjnwcXrC0Pn/Iw9VCS+WVtvN8G2w3CDDWvXR7GNy0Ky6x5
- 0RAc/o5HQzovU88s9VYSWX/HBwabA/WpBPYkJ8smlNB9gOzv3AiJgai/339sanKNBdQI yA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3bc7eyjedn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 22:58:49 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 28 Sep
- 2021 22:58:47 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 28 Sep 2021 22:58:47 -0700
-Received: from localhost.localdomain (unknown [10.28.34.15])
-        by maili.marvell.com (Postfix) with ESMTP id 67E7B3F7068;
-        Tue, 28 Sep 2021 22:58:43 -0700 (PDT)
-From:   <kirankumark@marvell.com>
-To:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <hkelam@marvell.com>,
-        <sbhatta@marvell.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Kiran Kumar K <kirankumark@marvell.com>
-Subject: [net-next PATCH] octeontx2-af: Adjust LA pointer for cpt parse header
-Date:   Wed, 29 Sep 2021 11:28:31 +0530
-Message-ID: <20210929055831.991726-1-kirankumark@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 29 Sep 2021 02:30:24 -0400
+Received: from ([60.208.111.195])
+        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id WFF00035;
+        Wed, 29 Sep 2021 14:28:35 +0800
+Received: from localhost.localdomain (10.72.201.241) by
+ jtjnmail201604.home.langchao.com (10.100.2.4) with Microsoft SMTP Server id
+ 15.1.2308.14; Wed, 29 Sep 2021 14:28:36 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, Kai Song <songkai01@inspur.com>
+Subject: [PATCH] drm/nouveau:Fix gcc '-Wunused-but-set-variable' warnings:
+Date:   Wed, 29 Sep 2021 03:34:53 +0800
+Message-ID: <20210928193453.60253-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: O2r3x0mbhgXroCnj19mpijB32dJWnSq6
-X-Proofpoint-ORIG-GUID: O2r3x0mbhgXroCnj19mpijB32dJWnSq6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-29_01,2021-09-28_01,2020-04-07_01
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.72.201.241]
+tUid:   202192914283514c2a61f3762b548d99b739c325297b0
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kiran Kumar K <kirankumark@marvell.com>
+drivers/gpu/drm/nouveau/nouveau_bo.c: In function 'nouveau_ttm_tt_populate':
+drivers/gpu/drm/nouveau/nouveau_bo.c:1251:17: warning: variable 'dev' set but not used [-Wunused-but-set-variable]
+drivers/gpu/drm/nouveau/nouveau_bo.c: In function 'nouveau_ttm_tt_unpopulate':
+drivers/gpu/drm/nouveau/nouveau_bo.c:1274:17: warning: variable 'dev' set but not used [-Wunused-but-set-variable]
 
-In case of ltype NPC_LT_LA_CPT_HDR, LA pointer is pointing to the
-start of cpt parse header. Since cpt parse header has veriable
-length padding, this will be a problem for DMAC extraction. Adding
-KPU profile changes to adjust the LA pointer to start at ether header
-in case of cpt parse header by
-   - Adding ptr advance in pkind 58 to a fixed value 40
-   - Adding variable length offset 7 and mask 7 (pad len in
-     CPT_PARSE_HDR).
-Also added the missing static declaration for npc_set_var_len_offset_pkind
-function.
-
-Signed-off-by: Kiran Kumar K <kirankumark@marvell.com>
+Signed-off-by: Kai Song <songkai01@inspur.com>
 ---
- .../marvell/octeontx2/af/npc_profile.h        | 173 ++++++++----------
- .../ethernet/marvell/octeontx2/af/rvu_npc.c   |   2 +-
- 2 files changed, 80 insertions(+), 95 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-index 65280a8c4ac3..1a8c5376297c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
-@@ -187,6 +187,8 @@ enum npc_kpu_parser_state {
- 	NPC_S_KPU2_PREHEADER,
- 	NPC_S_KPU2_EXDSA,
- 	NPC_S_KPU2_NGIO,
-+	NPC_S_KPU2_CPT_CTAG,
-+	NPC_S_KPU2_CPT_QINQ,
- 	NPC_S_KPU3_CTAG,
- 	NPC_S_KPU3_STAG,
- 	NPC_S_KPU3_QINQ,
-@@ -1004,11 +1006,11 @@ static struct npc_kpu_profile_action ikpu_action_entries[] = {
- 	},
- 	{
- 		NPC_ERRLEV_RE, NPC_EC_NOERR,
--		40, 54, 58, 0, 0,
--		NPC_S_KPU1_CPT_HDR, 0, 0,
-+		12, 16, 20, 0, 0,
-+		NPC_S_KPU1_CPT_HDR, 40, 0,
- 		NPC_LID_LA, NPC_LT_NA,
- 		0,
--		0, 0, 0, 0,
-+		7, 7, 0, 0,
- 
- 	},
- 	{
-@@ -1846,80 +1848,35 @@ static struct npc_kpu_profile_cam kpu1_cam_entries[] = {
- 	},
- 	{
- 		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
- 		NPC_ETYPE_IP,
- 		0xffff,
- 		0x0000,
- 		0x0000,
--	},
--	{
--		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
--		NPC_ETYPE_IP6,
--		0xffff,
- 		0x0000,
- 		0x0000,
- 	},
- 	{
- 		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
--		NPC_ETYPE_CTAG,
--		0xffff,
--		0x0000,
--		0x0000,
--	},
--	{
--		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
--		NPC_ETYPE_QINQ,
-+		NPC_ETYPE_IP6,
- 		0xffff,
- 		0x0000,
- 		0x0000,
--	},
--	{
--		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
- 		0x0000,
- 		0x0000,
--		NPC_ETYPE_IP,
--		0xffff,
- 	},
- 	{
- 		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
-+		NPC_ETYPE_CTAG,
- 		0xffff,
- 		0x0000,
- 		0x0000,
--		NPC_ETYPE_IP6,
--		0xffff,
--	},
--	{
--		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
- 		0x0000,
- 		0x0000,
--		NPC_ETYPE_CTAG,
--		0xffff,
- 	},
- 	{
- 		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0xffff,
--		0x0000,
--		0x0000,
- 		NPC_ETYPE_QINQ,
- 		0xffff,
--	},
--	{
--		NPC_S_KPU1_CPT_HDR, 0xff,
--		0x0000,
--		0x0000,
- 		0x0000,
- 		0x0000,
- 		0x0000,
-@@ -2929,6 +2886,42 @@ static struct npc_kpu_profile_cam kpu2_cam_entries[] = {
- 		0x0000,
- 		0x0000,
- 	},
-+	{
-+		NPC_S_KPU2_CPT_CTAG, 0xff,
-+		NPC_ETYPE_IP,
-+		0xffff,
-+		0x0000,
-+		0x0000,
-+		0x0000,
-+		0x0000,
-+	},
-+	{
-+		NPC_S_KPU2_CPT_CTAG, 0xff,
-+		NPC_ETYPE_IP6,
-+		0xffff,
-+		0x0000,
-+		0x0000,
-+		0x0000,
-+		0x0000,
-+	},
-+	{
-+		NPC_S_KPU2_CPT_QINQ, 0xff,
-+		NPC_ETYPE_CTAG,
-+		0xffff,
-+		NPC_ETYPE_IP,
-+		0xffff,
-+		0x0000,
-+		0x0000,
-+	},
-+	{
-+		NPC_S_KPU2_CPT_QINQ, 0xff,
-+		NPC_ETYPE_CTAG,
-+		0xffff,
-+		NPC_ETYPE_IP6,
-+		0xffff,
-+		0x0000,
-+		0x0000,
-+	},
- 	{
- 		NPC_S_NA, 0X00,
- 		0x0000,
-@@ -9167,39 +9160,7 @@ static struct npc_kpu_profile_action kpu1_action_entries[] = {
- 	{
- 		NPC_ERRLEV_RE, NPC_EC_NOERR,
- 		8, 0, 6, 3, 0,
--		NPC_S_KPU5_CPT_IP, 56, 1,
--		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
--		0,
--		0, 0, 0, 0,
--	},
--	{
--		NPC_ERRLEV_RE, NPC_EC_NOERR,
--		6, 0, 0, 3, 0,
--		NPC_S_KPU5_CPT_IP6, 56, 1,
--		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
--		0,
--		0, 0, 0, 0,
--	},
--	{
--		NPC_ERRLEV_RE, NPC_EC_NOERR,
--		4, 8, 0, 0, 0,
--		NPC_S_KPU2_CTAG, 54, 1,
--		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
--		NPC_F_LA_U_HAS_TAG | NPC_F_LA_L_WITH_VLAN,
--		0, 0, 0, 0,
--	},
--	{
--		NPC_ERRLEV_RE, NPC_EC_NOERR,
--		4, 8, 0, 0, 0,
--		NPC_S_KPU2_QINQ, 54, 1,
--		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
--		NPC_F_LA_U_HAS_TAG | NPC_F_LA_L_WITH_VLAN,
--		0, 0, 0, 0,
--	},
--	{
--		NPC_ERRLEV_RE, NPC_EC_NOERR,
--		8, 0, 6, 3, 0,
--		NPC_S_KPU5_CPT_IP, 60, 1,
-+		NPC_S_KPU5_CPT_IP, 14, 1,
- 		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
- 		0,
- 		0, 0, 0, 0,
-@@ -9207,7 +9168,7 @@ static struct npc_kpu_profile_action kpu1_action_entries[] = {
- 	{
- 		NPC_ERRLEV_RE, NPC_EC_NOERR,
- 		6, 0, 0, 3, 0,
--		NPC_S_KPU5_CPT_IP6, 60, 1,
-+		NPC_S_KPU5_CPT_IP6, 14, 1,
- 		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
- 		0,
- 		0, 0, 0, 0,
-@@ -9215,7 +9176,7 @@ static struct npc_kpu_profile_action kpu1_action_entries[] = {
- 	{
- 		NPC_ERRLEV_RE, NPC_EC_NOERR,
- 		4, 8, 0, 0, 0,
--		NPC_S_KPU2_CTAG, 58, 1,
-+		NPC_S_KPU2_CPT_CTAG, 12, 1,
- 		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
- 		NPC_F_LA_U_HAS_TAG | NPC_F_LA_L_WITH_VLAN,
- 		0, 0, 0, 0,
-@@ -9223,19 +9184,11 @@ static struct npc_kpu_profile_action kpu1_action_entries[] = {
- 	{
- 		NPC_ERRLEV_RE, NPC_EC_NOERR,
- 		4, 8, 0, 0, 0,
--		NPC_S_KPU2_QINQ, 58, 1,
-+		NPC_S_KPU2_CPT_QINQ, 12, 1,
- 		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
- 		NPC_F_LA_U_HAS_TAG | NPC_F_LA_L_WITH_VLAN,
- 		0, 0, 0, 0,
- 	},
--	{
--		NPC_ERRLEV_RE, NPC_EC_NOERR,
--		0, 0, 0, 0, 1,
--		NPC_S_NA, 0, 1,
--		NPC_LID_LA, NPC_LT_LA_CPT_HDR,
--		NPC_F_LA_L_UNK_ETYPE,
--		0, 0, 0, 0,
--	},
- 	{
- 		NPC_ERRLEV_RE, NPC_EC_NOERR,
- 		12, 0, 0, 1, 0,
-@@ -10129,6 +10082,38 @@ static struct npc_kpu_profile_action kpu2_action_entries[] = {
- 		0,
- 		0, 0, 0, 0,
- 	},
-+	{
-+		NPC_ERRLEV_RE, NPC_EC_NOERR,
-+		8, 0, 6, 2, 0,
-+		NPC_S_KPU5_CPT_IP, 6, 1,
-+		NPC_LID_LB, NPC_LT_LB_CTAG,
-+		0,
-+		0, 0, 0, 0,
-+	},
-+	{
-+		NPC_ERRLEV_RE, NPC_EC_NOERR,
-+		6, 0, 0, 2, 0,
-+		NPC_S_KPU5_CPT_IP6, 6, 1,
-+		NPC_LID_LB, NPC_LT_LB_CTAG,
-+		0,
-+		0, 0, 0, 0,
-+	},
-+	{
-+		NPC_ERRLEV_RE, NPC_EC_NOERR,
-+		8, 0, 6, 2, 0,
-+		NPC_S_KPU5_CPT_IP, 10, 1,
-+		NPC_LID_LB, NPC_LT_LB_STAG_QINQ,
-+		NPC_F_LB_U_MORE_TAG | NPC_F_LB_L_WITH_CTAG,
-+		0, 0, 0, 0,
-+	},
-+	{
-+		NPC_ERRLEV_RE, NPC_EC_NOERR,
-+		6, 0, 0, 2, 0,
-+		NPC_S_KPU5_CPT_IP6, 10, 1,
-+		NPC_LID_LB, NPC_LT_LB_STAG_QINQ,
-+		NPC_F_LB_U_MORE_TAG | NPC_F_LB_L_WITH_CTAG,
-+		0, 0, 0, 0,
-+	},
- 	{
- 		NPC_ERRLEV_LB, NPC_EC_L2_K3,
- 		0, 0, 0, 0, 1,
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 2881ccc56b28..bb6b42bbefa4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -3167,7 +3167,7 @@ int rvu_mbox_handler_npc_get_kex_cfg(struct rvu *rvu, struct msg_req *req,
- 	return 0;
- }
- 
--int
-+static int
- npc_set_var_len_offset_pkind(struct rvu *rvu, u16 pcifunc, u64 pkind,
- 			     u8 var_len_off, u8 var_len_off_mask, u8 shift_dir)
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+index d3b21d318b42..7f5a3a8eec9e 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bo.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+@@ -1249,7 +1249,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
  {
+ 	struct ttm_tt *ttm_dma = (void *)ttm;
+ 	struct nouveau_drm *drm;
+-	struct device *dev;
+ 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+ 
+ 	if (ttm_tt_is_populated(ttm))
+@@ -1262,7 +1261,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+ 	}
+ 
+ 	drm = nouveau_bdev(bdev);
+-	dev = drm->dev->dev;
+ 
+ 	return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
+ }
+@@ -1272,7 +1270,6 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev,
+ 			  struct ttm_tt *ttm)
+ {
+ 	struct nouveau_drm *drm;
+-	struct device *dev;
+ 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+ 
+ 	if (slave)
+@@ -1281,7 +1278,6 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev,
+ 	nouveau_ttm_tt_unbind(bdev, ttm);
+ 
+ 	drm = nouveau_bdev(bdev);
+-	dev = drm->dev->dev;
+ 
+ 	return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
+ }
 -- 
-2.25.1
+2.27.0
 
