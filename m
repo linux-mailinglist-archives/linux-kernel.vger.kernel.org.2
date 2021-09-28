@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1B141B951
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F56B41B947
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242915AbhI1VfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:35:04 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:13334 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhI1VfC (ORCPT
+        id S242888AbhI1V3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242846AbhI1V3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:35:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632864430;
-    s=strato-dkim-0002; d=aepfle.de;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=FtDPVWexU4xJe/tAusBJYNUP4c4isrVjBItMQMHTHjE=;
-    b=Aq5hll2aoIvcbuzHXu4aPnciNtTYLsjKd9l9MdUrOzf/sAUhVNT+wqAQe7H4yhmJOD
-    OADOLdelhMMiUZ6aQbern/lOho7G34klQJ870XtkP4Ty+l+sse/A45KLT4I9uYBm7oDB
-    gzN/7M64mcr/fqsh/E5e8nmfk6y8l3ah3QVNbCrrC/WnCE2H+/q5Bk5P7dNuNFaAhuIV
-    YmYsCgsXx0c/i89ymiRay76XbDqOzylHqTnaJw5y9SgEK8fALFPpIV0c0UoPQTZt6VqL
-    VzBW5a0DWznAyaiLOZhnk2xA0e83QQchel8BAhByAoyLco+3BdO3A6Tv82ScGTwx3vKv
-    mErQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDX3y/OuD5rXVisEoBx6KYk3sDSS2ECuxRNydJqDgTcTmRadqe62a"
-X-RZG-CLASS-ID: mo00
-Received: from sender
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id j06d2fx8SLR9XXj
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 28 Sep 2021 23:27:09 +0200 (CEST)
-Date:   Tue, 28 Sep 2021 23:27:02 +0200
-From:   Olaf Hering <olaf@aepfle.de>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
-        kys@microsoft.com, sthemmin@microsoft.com,
-        anbelski@linux.microsoft.com
-Subject: Re: [PATCH v3 08/19] drivers/hv: map and unmap guest memory
-Message-ID: <20210928232702.700ef605.olaf@aepfle.de>
-In-Reply-To: <1632853875-20261-9-git-send-email-nunodasneves@linux.microsoft.com>
-References: <1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com>
-        <1632853875-20261-9-git-send-email-nunodasneves@linux.microsoft.com>
-X-Mailer: Claws Mail 2021.09.26 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        Tue, 28 Sep 2021 17:29:22 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631ABC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:27:42 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s75so445315pgs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=br290Tj/mSC90lE7ySVxFB9stZwop7hbq88H7crcvgg=;
+        b=e5HTGsZJi6fWGBM6AcacATHhN8c7bLc2anp+Y4oDB6okK2n79Hix9DKEYuNb4lOwxT
+         Mstp/i2VVgVatfhTy8j7w/goxqiZvwPb7O5XciG371Guj9ch9f5u7V2V3TmlFelcJGhD
+         S4TFG31sulRIwSfhxR9X3+dHIjcjHAYdpuwB23m37i+7rJYrfsfkWBb+V6dojiDvgp70
+         itfhwHrLZGK3lHc4JMu3sU69gwCRj4t+35XzanzngwDIZMJwsocXi5L8XsJH7ALEjtE0
+         Zz07wCM3dpQI8mPMvhL4gZdf0HeU5TGueulmypJBFrAKLBWa9f2M8AqdcPAzVfOHQ5By
+         GCFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=br290Tj/mSC90lE7ySVxFB9stZwop7hbq88H7crcvgg=;
+        b=besJ3T+l+z+Yq1OvSRL/p/nW11Zu8hfFpLZ7SlcL1N20dUPeDMrZsLeZyCsadPLmmJ
+         U9z2YNtqYwRua8bgMT4NOL9iiFdjNQWjjgKEdmJcPJG+snaWSRLjvSMvxhGr2EZMGufT
+         FzWppddKm1Kx//RpTOZo6Z91LThco4U3I9vszG9G4U/4XVhnbl3ln/rMv/pkowFXkrPI
+         jBwH7YI1NJWQsFCrOKD9SVlRo4A0lHmVJNpmOYlJkZ3sy9XbzsP4H1NwMRHFsatOJaOu
+         2vep7bMonoxpd+mtM1Bfg4WwX5YSVKANxLCR5M+R+8JjizHI6XNZXMFC3iOiU7k6mOAc
+         5xvQ==
+X-Gm-Message-State: AOAM530VBWe3dEFIv3n49qREfN/c5dAYKdXYsnkHVYgNibsX/D+x/xOG
+        hFB/pCnJ9a0kdPA/daGDsxGofw73YD53ZK/t2kyH7FYK2Bs=
+X-Google-Smtp-Source: ABdhPJxHoUUGD6Zt1BOyA5p0v05lqpOjQkL2Ew5z+83KrKSa2vasHq17v12TTddQEdUMYE6JPJW/TBHPHITq8xq/qhg=
+X-Received: by 2002:a63:1550:: with SMTP id 16mr6551694pgv.442.1632864461688;
+ Tue, 28 Sep 2021 14:27:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1631172276-82914-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1631172276-82914-1-git-send-email-xiyuyang19@fudan.edu.cn>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 28 Sep 2021 14:27:30 -0700
+Message-ID: <CAFd5g45mgi-bnTEiHshpyxnah74toncgCgmcQcHq=kP3L3r+Vw@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: fix reference count leak in kfree_at_end
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        Xin Tan <tanxin.ctf@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 9, 2021 at 12:26 AM Xiyu Yang <xiyuyang19@fudan.edu.cn> wrote:
+>
+> The reference counting issue happens in the normal path of
+> kfree_at_end(). When kunit_alloc_and_get_resource() is invoked, the
+> function forgets to handle the returned resource object, whose refcount
+> increased inside, causing a refcount leak.
+>
+> Fix this issue by calling kunit_alloc_resource() instead of
+> kunit_alloc_and_get_resource().
+>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Am Tue, 28 Sep 2021 11:31:04 -0700
-schrieb Nuno Das Neves <nunodasneves@linux.microsoft.com>:
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 
-> +++ b/include/asm-generic/hyperv-tlfs.h
-> -#define HV_HYP_PAGE_SHIFT      12
-> +#define HV_HYP_PAGE_SHIFT		12
-
-I think in case this change is really required, it should be in a separate =
-patch.
-
-
-Olaf
-
---Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAmFTiKYACgkQ86SN7mm1
-DoCzPg/7BzqGmQge0FXBboVIFiF8AO30AipTW+49jct6hzfqEbECZxBGXnh21tVc
-yWlyPotEtV7FlldrW1DNvNuzMv/0/4H6KYvSt68YudzetG9KBHOJIF/JnIKPCRc2
-wcHTRWQe9r6FJGJF0dVwByvzdLD1BUvPPEM39STys69Y+Nq3z3cnk1q7qPBp4rSA
-QQaSwRCdle5CoHmHvg1Ipc7uqIA+L7ySqec0oq55v6QzbSwZKql5j79sCY/c/53U
-aONAs/pBDG6Q8FRBu+U1s5sBcDmWKVDQ0QHeCIH45X2bUgNa7EHwVDpnQN0UH9AO
-KHe3jEPQDTh41CE34Va47lz6X/OcBIrjmUt/r/Njxif86i4beBGGbrjzDLx61anY
-nnsvnd6z3olZLiSzoboyPoKTl/4WwdYZoXlnCxfCmaHujECFVNhc3A3PA58PLhh0
-xy4CCcmYJiuaQnVIbuQcmn4+1huWDkNdDPrrEVLK1BdjL/Ru/SP3PWDxm97tz0wv
-uPyW/tB3ErB3Edh7UyhNPaUTJLZy0rwcxx2P5DQ+S5Mv1utnPcQeModuuTKHdLLM
-TFLWRJOXPitCS3+eKxORrB6/QUDn10VvYxn1tt+iVrHrSvf0qncTAa17e4ZbCGEh
-s3Xp1BEegkzGWnOX5EV1I5msbm91AiSJoc/98TwyH0ViA+doYtM=
-=RRvk
------END PGP SIGNATURE-----
-
---Sig_/0hx3rtBWUJeEmmJ0OWqZ=2y--
+Thanks!
