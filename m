@@ -2,84 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0AF41A41A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7BB41A420
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 02:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238294AbhI1AVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 20:21:09 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:33799 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236941AbhI1AVI (ORCPT
+        id S238314AbhI1AWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 20:22:22 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59028 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238277AbhI1AWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 20:21:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJKrJ5M3zz4xLs;
-        Tue, 28 Sep 2021 10:19:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1632788368;
-        bh=mIwKTL/6vQf6UwYRTbvOgxIEqEcbaxe7nzUDzD7ufKk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WY0WSjfKEYV81l5c4MWdMF3j3Y/k5/zK/IffwOYcBARS5Iupu3Connde/bNmIDjee
-         MTscRq5RVYLAcr/uJOiXlIp5qEsHZSHFqpeNoy1cF5oO1kN38XiCMbvMLOxEaDT4oZ
-         kPH8eGG38SPEZ8l8fLYVT7d4UcWTtvYVOJv1pXtUa/FEOQrSEP+NSDpo2JsoVkz9fm
-         TyVoxuMM5nwXiFJnr7yOW2JGsNgGvrFbTtQVnxGyQ2hLTdb+y4EMLmGe2n78StUyB2
-         gp91MY21/yF1KPXSFDUoPj4q5lVPlkkiqOzTZqPm/lepPlkkEvL9ts+9H9R6fhcDBX
-         B6ILLbR+5x6kg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        cp <carlojpisani@gmail.com>
-Subject: Re: [PATCH] powerpc/40x: Map 32Mbytes of memory at startup
-In-Reply-To: <e2b142ad4a44535d5aa81b0c00c5f05f312f9097.1632738876.git.christophe.leroy@csgroup.eu>
-References: <e2b142ad4a44535d5aa81b0c00c5f05f312f9097.1632738876.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 28 Sep 2021 10:19:28 +1000
-Message-ID: <87mtnx1rhr.fsf@mpe.ellerman.id.au>
+        Mon, 27 Sep 2021 20:22:21 -0400
+Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18S0Jl6P039939;
+        Tue, 28 Sep 2021 09:19:47 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
+ Tue, 28 Sep 2021 09:19:47 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18S0JlmW039936
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 28 Sep 2021 09:19:47 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v2 1/2] block: make __register_blkdev() return an error
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, hch@lst.de,
+        efremov@linux.com, song@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, hare@suse.de,
+        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org
+References: <20210927220332.1074647-1-mcgrof@kernel.org>
+ <20210927220332.1074647-2-mcgrof@kernel.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <11a884b0-53f2-5174-fcb2-6247cece7104@i-love.sakura.ne.jp>
+Date:   Tue, 28 Sep 2021 09:19:47 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210927220332.1074647-2-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> As reported by Carlo, 16Mbytes is not enough with modern kernels
-> that tend to be a bit big, so map another 16M page at boot.
-
-I guess we're not expecting systems with less than 32MB, so making it
-unconditional is OK?
-
-cheers
-
-> diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
-> index 7d72ee5ab387..5fce4680d2d3 100644
-> --- a/arch/powerpc/kernel/head_40x.S
-> +++ b/arch/powerpc/kernel/head_40x.S
-> @@ -650,7 +650,7 @@ start_here:
->  	b	.		/* prevent prefetch past rfi */
+On 2021/09/28 7:03, Luis Chamberlain wrote:
+> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+> index 5dc9b3d32415..be0627345b21 100644
+> --- a/drivers/block/ataflop.c
+> +++ b/drivers/block/ataflop.c
+> @@ -1989,24 +1989,34 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
 >  
->  /* Set up the initial MMU state so we can do the first level of
-> - * kernel initialization.  This maps the first 16 MBytes of memory 1:1
-> + * kernel initialization.  This maps the first 32 MBytes of memory 1:1
->   * virtual to physical and more importantly sets the cache mode.
->   */
->  initial_mmu:
-> @@ -687,6 +687,12 @@ initial_mmu:
->  	tlbwe	r4,r0,TLB_DATA		/* Load the data portion of the entry */
->  	tlbwe	r3,r0,TLB_TAG		/* Load the tag portion of the entry */
+>  static DEFINE_MUTEX(ataflop_probe_lock);
 >  
-> +	li	r0,62			/* TLB slot 62 */
-> +	addis	r4,r4,SZ_16M
-> +	addis	r3,r3,SZ_16M
-> +	tlbwe	r4,r0,TLB_DATA		/* Load the data portion of the entry */
-> +	tlbwe	r3,r0,TLB_TAG		/* Load the tag portion of the entry */
+> -static void ataflop_probe(dev_t dev)
+> +static int ataflop_probe(dev_t dev)
+>  {
+>  	int drive = MINOR(dev) & 3;
+>  	int type  = MINOR(dev) >> 2;
+> +	int err = 0;
+>  
+>  	if (type)
+>  		type--;
+>  
+> -	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
+> -		return;
+> +	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS) {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
 > +
->  	isync
+>  	mutex_lock(&ataflop_probe_lock);
+>  	if (!unit[drive].disk[type]) {
+> -		if (ataflop_alloc_disk(drive, type) == 0) {
+> -			add_disk(unit[drive].disk[type]);
+> +		err = ataflop_alloc_disk(drive, type);
+> +		if (err == 0) {
+> +			err = add_disk(unit[drive].disk[type]);
+> +			if (err)
+> +				blk_cleanup_disk(unit[drive].disk[type]);
+>  			unit[drive].registered[type] = true;
+
+Why setting registered to true despite add_disk() failed?
+del_gendisk() without successful add_disk() sounds wrong.
+
+Don't we need to undo ataflop_alloc_disk() because it sets
+unit[drive].disk[type] to non-NULL ?
+
+>  		}
+>  	}
+>  	mutex_unlock(&ataflop_probe_lock);
+> +
+> +out:
+> +	return err;
+>  }
 >  
->  	/* Establish the exception vector base
-> -- 
-> 2.31.1
+>  static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
+
+
+
+> diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+> index c2bf4946f4e3..82a93044de95 100644
+> --- a/drivers/block/brd.c
+> +++ b/drivers/block/brd.c
+> @@ -426,10 +426,11 @@ static int brd_alloc(int i)
+>  	return err;
+>  }
+>  
+> -static void brd_probe(dev_t dev)
+> +static int brd_probe(dev_t dev)
+>  {
+>  	int i = MINOR(dev) / max_part;
+>  	struct brd_device *brd;
+> +	int err = 0;
+>  
+>  	mutex_lock(&brd_devices_mutex);
+>  	list_for_each_entry(brd, &brd_devices, brd_list) {
+> @@ -437,9 +438,11 @@ static void brd_probe(dev_t dev)
+>  			goto out_unlock;
+>  	}
+>  
+> -	brd_alloc(i);
+> +	err = brd_alloc(i);
+>  out_unlock:
+>  	mutex_unlock(&brd_devices_mutex);
+> +
+> +	return err;
+>  }
+>  
+>  static void brd_del_one(struct brd_device *brd)
+
+https://lkml.kernel.org/r/e205f13d-18ff-a49c-0988-7de6ea5ff823@i-love.sakura.ne.jp
+will require this part to be updated.
+
+
+> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+> index 0434f28742e7..95a1c8ef62f7 100644
+> --- a/drivers/block/floppy.c
+> +++ b/drivers/block/floppy.c
+> @@ -4517,21 +4517,27 @@ static int floppy_alloc_disk(unsigned int drive, unsigned int type)
+>  
+>  static DEFINE_MUTEX(floppy_probe_lock);
+>  
+> -static void floppy_probe(dev_t dev)
+> +static int floppy_probe(dev_t dev)
+>  {
+>  	unsigned int drive = (MINOR(dev) & 3) | ((MINOR(dev) & 0x80) >> 5);
+>  	unsigned int type = (MINOR(dev) >> 2) & 0x1f;
+> +	int err = 0;
+>  
+>  	if (drive >= N_DRIVE || !floppy_available(drive) ||
+>  	    type >= ARRAY_SIZE(floppy_type))
+> -		return;
+> +		return -EINVAL;
+>  
+>  	mutex_lock(&floppy_probe_lock);
+>  	if (!disks[drive][type]) {
+> -		if (floppy_alloc_disk(drive, type) == 0)
+> -			add_disk(disks[drive][type]);
+> +		if (floppy_alloc_disk(drive, type) == 0) {
+> +			err = add_disk(disks[drive][type]);
+> +			if (err)
+> +				blk_cleanup_disk(disks[drive][type]);
+
+This makes future floppy_probe() no-op once add_disk() failed (or maybe a bad
+thing happens somewhere else), for disks[drive][type] was set to non-NULL by
+floppy_alloc_disk() but blk_cleanup_disk() does not reset it to NULL.
+
+According to floppy_module_exit() which tries to cleanup it, implementing
+undo might be complicated...
+
+> +		}
+>  	}
+>  	mutex_unlock(&floppy_probe_lock);
+> +
+> +	return err;
+>  }
+>  
+>  static int __init do_floppy_init(void)
+
