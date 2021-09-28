@@ -2,102 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBED41B004
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF87141B0A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240888AbhI1Nar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:30:47 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3884 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhI1Nap (ORCPT
+        id S241366AbhI1NfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241322AbhI1Nep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:30:45 -0400
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HJgJR16hZz67kg2;
-        Tue, 28 Sep 2021 21:26:31 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 15:29:04 +0200
-Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 28 Sep
- 2021 14:29:03 +0100
-Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
- arch_std_events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Like Xu <like.xu.linux@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210928102938.69681-1-likexu@tencent.com>
- <YVMB5kt8XG+OdJ1M@kernel.org>
- <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
- <YVMVwDt3QHBPfT/T@kernel.org> <YVMXHM0F/y2ptX8C@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <3949dfa2-d684-47af-ffa7-71b07141f64d@huawei.com>
-Date:   Tue, 28 Sep 2021 14:32:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 28 Sep 2021 09:34:45 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DD2C061740
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:32:53 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id v10so29888453oic.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Jcc5M/hJ5TsSBGODGo+tSdpC3uu3e95alermn/eX+cE=;
+        b=ttsUSvGiy+Sz+McjQcrSvBU/iW7H3OKy2+BNkAB/tmt1Ekc1bNH2So1j/W1mS1rFzZ
+         Ys8UnyxU/mO5ZJdqqkZjY/mHqwVNv2V7CAUxQoybsuzIIrZyTAy6Lt9Kiy5lbytu1ddo
+         1Jh0lAd2X5PlxVIrIpSMmE2HzR3IGtGeTfgF9y/PknHGU9DnDicEGwTDhViAPSyQL3Yc
+         VYY5r18YRU19ej/SCJXUZgOuJXP7inE9yx8viX6P+Jyrl6eYpI1z/YJZ551OGPhhXSX5
+         rpqiQdyBGlZKW6OI7BxE2Mm/92Aib/YoR7ePZCHXpvWpY/iQ6MJGuGbuXadGZrXii838
+         gMQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Jcc5M/hJ5TsSBGODGo+tSdpC3uu3e95alermn/eX+cE=;
+        b=PCoO41EpUP9HpHx3ihKR+pefb9bQHjUSOdmDnTUy0JNBEKSxgYn4Mixe0qKzwk08ix
+         LHCsB3NhYSqlbNE5pLGsxfH8eYDTMxsU6iEXB6U9v0OypdjBDNmTz8zCSZ3PDExn1Ds2
+         UXJ0gLaJ9jKINjclz/UwVY0Uxqkw4HvNObSgzclO/Af+Ix7KDRoo8Eqwk4Mc3gkbRqMd
+         VTNJoy0Ta8yaYedOAcTYiMTMrHBjkLJjs1/RWy0ndNbSxPTMCuNmG39s8uWNUXkpGmt9
+         rvlC5pINybVFhggsEhc3lw3J9PTDaSn7/SkmjNmWH+7YeHhNTR6kY5VzkcmV7pFwK2XI
+         p1zQ==
+X-Gm-Message-State: AOAM530kAPI3g9Rjxxxnh2s/I7KsZP7ae7vIONJr1C9ljgmbBuQHR2S5
+        EA41q0dgWG1zvXL1o8YHHFzvxQPlNMaVR+IlXotBzw==
+X-Google-Smtp-Source: ABdhPJxE36zmpkHYgPauHC2HF8joTXL0zFUeXQyKhBylKNEX5mr6Mc2H1hlyYS4rtjTRnQ9qVVBNgAYc2lcIX4uB1F4=
+X-Received: by 2002:a05:6808:1a11:: with SMTP id bk17mr3724804oib.0.1632835972990;
+ Tue, 28 Sep 2021 06:32:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YVMXHM0F/y2ptX8C@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.85.67]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210928071739.782455217@linuxfoundation.org>
+In-Reply-To: <20210928071739.782455217@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Sep 2021 19:02:40 +0530
+Message-ID: <CA+G9fYsqQgHuk4ymnDj6bFzPd7aHGHpw1FAKTOH38MhapKO_Bw@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/161] 5.14.9-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2021 14:22, Arnaldo Carvalho de Melo wrote:
->   jevents-y      += json.o jsmn.o jevents.o
-> -HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include
-> +HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include -Wall -Wextra
->   pmu-events-y   += pmu-events.o
->   JDIR           =  pmu-events/arch/$(SRCARCH)
->   JSON           =  $(shell [ -d $(JDIR) ] &&                            \
-> ⬢[acme@toolbox perf]$
-> 
-> I get this before applying Xu's patch:
-> 
->    LINK    /tmp/build/perf/libbpf.a
-> pmu-events/jevents.c: In function ‘save_arch_std_events’:
-> pmu-events/jevents.c:473:39: warning: unused parameter ‘data’ [-Wunused-parameter]
->    473 | static int save_arch_std_events(void *data, struct json_event *je)
->        |                                 ~~~~~~^~~~
-> At top level:
-> pmu-events/jevents.c:93:13: warning: ‘free_sys_event_tables’ defined but not used [-Wunused-function]
->     93 | static void free_sys_event_tables(void)
->        |             ^~~~~~~~~~~~~~~~~~~~~
-> 
-> 
-> -------------------------------------
-> 
-> I'll add this to perf/core, as this isn't a strict fix, so can wait for
-> v5.16.
+On Tue, 28 Sept 2021 at 12:49, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.9 release.
+> There are 161 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 30 Sep 2021 07:17:13 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.9-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi Arnaldo,
+The stable-rc 5.14.9-rc2 report,
 
-OK, would you also consider reusing CFLAGS:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
---- a/tools/perf/pmu-events/Build
-+++ b/tools/perf/pmu-events/Build
-@@ -9,10 +9,12 @@ JSON          =  $(shell [ -d $(JDIR) ] && 
-                \
-JDIR_TEST      =  pmu-events/arch/test
-JSON_TEST      =  $(shell [ -d $(JDIR_TEST) ] &&                       \
-                        find $(JDIR_TEST) -name '*.json')
--
-+HOSTCFLAGS_jevents += $(CFLAGS)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I tried it, and there are more things to fix for jevents.o. Let me know 
-your preference and if any help required to fix any errors up.
+## Build
+* kernel: 5.14.9-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.14.y
+* git commit: 6ee566ecf2389b44c84362709162382d166f80c2
+* git describe: v5.14.8-162-g6ee566ecf238
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.8-162-g6ee566ecf238
 
-Thanks!
+## No regressions (compared to v5.14.8-161-g60e33b5829b2)
+
+## No fixes (compared to v5.14.8-161-g60e33b5829b2)
+
+## Test result summary
+total: 83664, pass: 69666, fail: 1071, skip: 12143, xfail: 784
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 277 passed, 12 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 35 passed, 1 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 23 passed, 1 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
