@@ -2,206 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6AB41B8EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8218841B900
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242855AbhI1VGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:06:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242860AbhI1VGB (ORCPT
+        id S242851AbhI1VMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242818AbhI1VMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:06:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632863060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wr4pGocdlgbpHNQZjncQtWMxPCsDg6ua30ksGUh8IrE=;
-        b=Y5HWwrnJlWwaljSOoMizYdmljd8U6Mp5va7v70tbd5Z+9Vfs7ESyjx6DmNC6mLzYi9LqQl
-        W2WKvO0mChR83dXnfWQB8zS4B+K7tc7Wx45NI1IXV96AToxw7WtFyokyLe0xfcNV/77KOQ
-        oSt94QPQCgLH7Rq3h6Bczp6nHOT05XQ=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-DBzkPHxSN0GywpT3pvEzRg-1; Tue, 28 Sep 2021 17:04:19 -0400
-X-MC-Unique: DBzkPHxSN0GywpT3pvEzRg-1
-Received: by mail-qv1-f71.google.com with SMTP id l18-20020a056214039200b0037e4da8b408so405575qvy.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:04:19 -0700 (PDT)
+        Tue, 28 Sep 2021 17:12:16 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C990C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:10:36 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id t8so666681wri.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:10:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F/527VUTmqAtENSVUrdjYi+zZpuZQaH+ikhSUSsw/8Q=;
+        b=MzPIro6oqNDdndENu3R4jscUAO/SKKNMg4D1rGBPEu8LXDZUdysA3mBVYXq+dYOR/8
+         IS5wSgRkNhV2TXto/USKdCqVT1yiorCh+gX/McGVqmuM3aWUmowyJUcDuoyG2aKluIoZ
+         euFL4oudON9uquaNTcV39xFyYiowHl8wR65OA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=wr4pGocdlgbpHNQZjncQtWMxPCsDg6ua30ksGUh8IrE=;
-        b=ERvRm3R2fTXkEMdfOk0J9HBM/X0SKZsiVShLwtBzl5e6spEF6Ork4zP+wCcGoLrw35
-         7Kv3vBEPyjLns9hQ7BD38lDyCMZcK/sqsoUum4sgVC4oQ9hcLbWK+/D2+GgRtVnmV1Xq
-         YJIkQmAoNrcfhfV9ICc/Wyn+a3cwrHYH6xbddHgoOtrKO5ZjMeKDXy+7xaluW9rs+5Nx
-         W7WAh+4WyJquAxN2QUr43eBvKBh0p7ZRs85s35Zn41QK8cPtaO1i8/D5mu9pDSWsJmL6
-         nK/ZNI3L0K+MfkjkVJPwZb6JBfGnL9XUSkatdw5Y4lYF2ZAkuLtsq2fsnh9c4wmYpQcE
-         hGbA==
-X-Gm-Message-State: AOAM533O5VrfsIQMejR0+V/vYPcWJfJk1llSPGJIfY2S8R95wzwy2BCm
-        Or3tYVWbdNN0n2UQcrkGrINhJWPZ0uQirqL8M+x1Um9XUwsLIoGeb9sm8kbsP9E+88W06hFmfd9
-        /HsynjQDaNqeWwHTSEvGdz4cH
-X-Received: by 2002:a05:622a:164b:: with SMTP id y11mr8017224qtj.310.1632863058903;
-        Tue, 28 Sep 2021 14:04:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMqugv0AWsDrgkfAZii9ACpGK/1bgFIpz4wc6OcxKr+tsd/H/yJ7Xr/NdDBAdDi11PjOcp9w==
-X-Received: by 2002:a05:622a:164b:: with SMTP id y11mr8017205qtj.310.1632863058670;
-        Tue, 28 Sep 2021 14:04:18 -0700 (PDT)
-Received: from [192.168.8.206] (pool-96-230-249-157.bstnma.fios.verizon.net. [96.230.249.157])
-        by smtp.gmail.com with ESMTPSA id d24sm223902qka.7.2021.09.28.14.04.17
+        bh=F/527VUTmqAtENSVUrdjYi+zZpuZQaH+ikhSUSsw/8Q=;
+        b=bFlBHZBoGcNKFh3kmg1OkyVYaQTX+3JtvKyFk/fPuw+P652s4ea6d7mAcO78RehR9P
+         BX4tRkdvENaEsKCu33t+EcTwiPTuROYIzWnTtPwZJnv/Qprmrbmf/EaEhCy8/fJXp0w2
+         KY4+DyR9OQC87S3pk6VAqZi6Phuzy4wiyiv0hCBaCwmYiqksHQjIIZQb6wLIehuR92LQ
+         NT+GYR4pzBaEmesHiSwpNSphk/tU5dT1DTE9yDPw+/Ye+qI9KqP+DtqRlujzQ4EvJxd5
+         78v7XIZcH2gb4YDxLYsLJfNstk4pEth5w2ayeCrhDhvQGisg7dLN7AW6AD9DSAF3jfhS
+         AMcg==
+X-Gm-Message-State: AOAM532ueQ/zxDSW66h3SwZbSgO9CbfXMNZsSYbNjbINeCondHBnujAt
+        sxVgbrN4fJwS4IqLvhAXPuqV1Q==
+X-Google-Smtp-Source: ABdhPJygIeEq0XQcTZszD/f8Pw8GadQI9iAu+pSbE76cR1fnWH7aX8MMtOjlkXMCzIf9H/9udEKMAA==
+X-Received: by 2002:adf:e485:: with SMTP id i5mr2662750wrm.22.1632863434832;
+        Tue, 28 Sep 2021 14:10:34 -0700 (PDT)
+Received: from beni.c.googlers.com.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id n68sm3885773wmn.13.2021.09.28.14.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 14:04:18 -0700 (PDT)
-Message-ID: <dd2578c87323918e316cd7429b36b329542fd13f.camel@redhat.com>
-Subject: Re: [PATCH 2/3] drm/dp, drm/i915: Add support for VESA backlights
- using PWM for brightness control
-From:   Lyude Paul <lyude@redhat.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        Satadru Pramanik <satadru@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>, Sean Paul <seanpaul@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>
-Date:   Tue, 28 Sep 2021 17:04:16 -0400
-In-Reply-To: <CAD=FV=V00-z=zvh6oZVYt7Hw00o07zEYxCa4zMrCmgNKEzcBCw@mail.gmail.com>
-References: <20210927201206.682788-1-lyude@redhat.com>
-         <20210927201206.682788-3-lyude@redhat.com>
-         <CAD=FV=V00-z=zvh6oZVYt7Hw00o07zEYxCa4zMrCmgNKEzcBCw@mail.gmail.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Tue, 28 Sep 2021 14:10:34 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH 0/7] media: ipu3 i2c: Fix v4l2-compliance issues
+Date:   Tue, 28 Sep 2021 21:10:26 +0000
+Message-Id: <20210928211033.2415162-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-28 at 13:00 -0700, Doug Anderson wrote:
-> Hi,
-> 
-> 
-> I'm not sure I understand the comment above. You say "enabled/disabled
-> via PWM" and that doesn't make sense w/ my mental model. Normally I
-> think of a PWM allowing you to adjust the brightness and there being a
-> separate GPIO that's in charge of enable/disable. To some extent you
+Fix some issues found with v4l2-compliance. Tested in Soraka which also
+has some subdevices that had some issues with v4l2-compliance.
 
-Oops - you're completely right, it is a GPIO pin and I got myself
-confused since in i915 I'm the chipset-specific callbacks for turning
-the panel on are intertwined with the PWM callbacks.
+Ricardo Ribalda (7):
+  media: ipu3-cio2: Check num_planes and sizes in queue_setup
+  media: ipu3-cio2: Set valid initial format
+  media: ipu3-cio2: imgu_fmt: Handle properly try
+  media: ipu3-cio2: VIDIOC_QUERYCAP: Fix bus_info
+  media: dw9714: Add implementation for events
+  media: ov13858: Add implementation for events
+  media: ov5670: Add implementation for events
 
-> could think of a PWM as being "disabled" when its duty cycle is 0%,
-> but usually there's separate "enable" logic that really has nothing to
-> do with the PWM itself.
-> 
-> In general, it seems like the options are:
-> 
-> 1. DPCD controls PWM and the "enable" logic.
-> 
-> 2. DPCD controls PWM but requires an external "enable" GPIO.
-> 
-> 3. We require an external PWM but DPCD controls the "enable" logic.
-> 
-> Maybe you need a second "capability" to describe whether the client of
-> your code knows how to control an enable GPIO? ...or perhaps better
-> you don't need a capability and you can just assume that if the client
-> needs to set an "enable" GPIO that it will do so. That would match how
-> things work today. AKA:
-> 
-> a) Client calls the AUX backlight code to "enable"
-> 
-> b) AUX backlight code will set the "enable" bit if supported.
-> 
-> c) Client will set the "enable" GPIO if it knows about one.
-> 
-> Presumably only one of b) or c) will actually do something. If neither
-> does something then this panel simply isn't compatible with this
-> board.
-
-I will definitely take note from this explanation and rewrite some of
-the helper docs I'm updating to reflect this, thank you!
-
-Being that I think panel drivers are basically the only other user of
-this driver, if you think this is the way to go I'm OK with this. My
-original reasoning for having a cap for this was worrying about the ARM
-drivers handling this, along with potentially changing backlight
-behavior in nouveau. I'm realizing now though that those are probably
-problems for nouveau and not the helper, and I could probably avoid
-hitting any issues by just adding some additional DPCD checks for GPIO
-enabling/PWM passthrough in nouveau itself.
-
-So I'll drop the cap in the next respin of this
-> 
-> 
-> > +/**
-> > + * drm_edp_backlight_supported() - Check an eDP DPCD for VESA backlight
-> > support
-> > + * @aux: The AUX channel, only used for debug logging
-> > + * @edp_dpcd: The DPCD to check
-> > + * @caps: The backlight capabilities this driver supports
-> > + *
-> > + * Returns: %True if @edp_dpcd indicates that VESA backlight controls are
-> > supported, %false
-> > + * otherwise
-> > + */
-> > +bool drm_edp_backlight_supported(struct drm_dp_aux *aux,
-> > +                                const u8
-> > edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE],
-> > +                                enum drm_edp_backlight_driver_caps caps)
-> > +{
-> > +       if (!(edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP))
-> > +               return false;
-> > +
-> > +       if (!(caps & DRM_EDP_BACKLIGHT_DRIVER_CAP_PWM) &&
-> > +           (!(edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP) ||
-> > +            !(edp_dpcd[2] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP))) {
-> 
-> Elsewhere you match DP_EDP_BACKLIGHT_AUX_ENABLE_CAP against
-> edp_dpcd[1]. Here you match against [2]. Are you sure that's correct?
-
-absolutely not! thank you for catching this
-
-> 
-> 
-> >  /*
-> >   * DisplayPort AUX channel
-> >   */
-> > @@ -2200,7 +2182,11 @@ drm_dp_has_quirk(const struct drm_dp_desc *desc,
-> > enum drm_dp_quirk quirk)
-> >   * @pwm_freq_pre_divider: The PWM frequency pre-divider value being used
-> > for this backlight, if any
-> >   * @max: The maximum backlight level that may be set
-> >   * @lsb_reg_used: Do we also write values to the
-> > DP_EDP_BACKLIGHT_BRIGHTNESS_LSB register?
-> > - * @aux_enable: Does the panel support the AUX enable cap?
-> > + * @aux_enable: Does the panel support the AUX enable cap? Always %false
-> > when the driver doesn't
-> > + * support %DRM_EDP_BACKLIGHT_DRIVER_CAP_PWM
-> 
-> Why is aux_enable always false if it doesn't support
-> DRM_EDP_BACKLIGHT_DRIVER_CAP_PWM? It doesn't seem like the code
-> enforces this and I'm not sure why it would. Am I confused?
-
-This was mainly just to keep the behavior identical for drivers that
-didn't support controlling backlights like this, but re: the response I
-wrote up above I think we can just totally drop the caps.
-
-> 
+ drivers/media/i2c/dw9714.c                    | 14 ++++++++++++--
+ drivers/media/i2c/ov13858.c                   | 11 ++++++++++-
+ drivers/media/i2c/ov5670.c                    | 11 ++++++++++-
+ drivers/media/pci/intel/ipu3/ipu3-cio2-main.c |  8 ++++++--
+ drivers/staging/media/ipu3/ipu3-v4l2.c        |  9 +++++----
+ 5 files changed, 43 insertions(+), 10 deletions(-)
 
 -- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+2.33.0.685.g46640cef36-goog
 
