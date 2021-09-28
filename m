@@ -2,130 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A46D41ACC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E30F41ACC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240136AbhI1KSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240054AbhI1KSc (ORCPT
+        id S240166AbhI1KSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:18:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40787 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240149AbhI1KSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:18:32 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433ADC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:16:53 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id s24so26762322oij.8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O+Hd389s4zwlrEfU0RxVwCS/ivAyltT+4eJme/lzcYg=;
-        b=h8iVziDK5Y0iZjNZU21rA1jfXk8ZyVhrg2BxwrB5EQ+rfU3UBQ0VSrnlgN657y1eC2
-         5cy91fTmnghKaGNFrQRT88sNoLzO08tkF3pZQfoS6dYfkmE3Frr9tOhJvZyn1MX3kXwk
-         Rr2k28aP6ZGBmxfpd+wFjjIKR2NyA5bUuGl5C3F4rYx/1TaxwWtPlXOoQQ1a8cG1pEJQ
-         KOe2DkCsrhcWFL0OxM7kdV1/o9g2bNf09SmvoiqgvmVoZc06IYtTeGYMB1mYKwXD+TmJ
-         oLsVSrPRnNhWV8rmFWhTltSC2nz4C4GJQLF1uGg2yMnscsC//xYkuFsd2IZGeI65mOMl
-         Akhg==
+        Tue, 28 Sep 2021 06:18:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632824233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u5uEz0zMzLI3u5SmcZkNM4/r8rAoFXUcwaUNur87ZOg=;
+        b=LkoG9XukneGodjIKelr5XPdaThNAXzYB79P61YrXtUv2ecs1biUbcfYp6rfbpL9SnHpoQM
+        Z8PbbmKpA09GxPoPJNYoIDvmqpfzRKWtLd2wNH0DgZTiZJ4Rh5kh25o0+eooASkMD1zsrS
+        eLgsl1chEjG+MddqIxL99YSnLqMwVaU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-Pr0ObpeeMXeHeTSmS_Ak3w-1; Tue, 28 Sep 2021 06:17:12 -0400
+X-MC-Unique: Pr0ObpeeMXeHeTSmS_Ak3w-1
+Received: by mail-wm1-f72.google.com with SMTP id a137-20020a1c7f8f000000b0030cda9c0feeso1780206wmd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:17:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O+Hd389s4zwlrEfU0RxVwCS/ivAyltT+4eJme/lzcYg=;
-        b=D4n5FpxqZ3Mqr/CMm+QPNJtp2BSTWRXfAoL7zAhfqcE8Z7u5kvWKzU9p6ZhlrovdHB
-         CXjdvZtx+I5gDtJx/j6mU75a60HeGDWTHjN5gwQApuKH580818O08q79Mb2WN/8q8+cR
-         SI24h/cxUAErGWMOk5srvx4IPGC730VeEdk2MDoVg6EfWgRMNsdbq3xAFdrPdkWVLUdt
-         SbWcQDmEq45Uq31fuV441v4xcEDEfwtp6G8KSUHXKHd92Irr3bbTq4SH8wo8HnNFpBTy
-         S2RCgHee1HQ8vT7ON2+tShaGxmyUhwFuvKXr43qLmFXgLj3CHXScfOvlYfPIk1IZBFAZ
-         1zlg==
-X-Gm-Message-State: AOAM531gBijkZsPH/cLfBOlNRJs+o2w5Hsox+EWD26WgcBtftYj+ffQi
-        eNZWF3sos4V+QY2OIs15poMvrMrFajm++iV1xiPhZQ==
-X-Google-Smtp-Source: ABdhPJyu/CGI5VgCk70sPwQBfKmIuNTUZxtWzIdQClj3dSFa0I6f4kM3g/8YHuYxRaUGVYpZrqyl4HWNuT4300RGk+E=
-X-Received: by 2002:aca:f189:: with SMTP id p131mr3052297oih.128.1632824212352;
- Tue, 28 Sep 2021 03:16:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u5uEz0zMzLI3u5SmcZkNM4/r8rAoFXUcwaUNur87ZOg=;
+        b=1rZRQbx4KxjX/fAQcutECFm1nlz8IxK0xqMvarQD7dgRi7f02pJv0HB4IgOxqW5pDx
+         P3l78rdylSm8rAa+DS41JmjTCk8x+PC/3IMGFT8RUdrUkExD80Ie/PJiHs9fSXVW8FE/
+         mPfMu72hfotWAWLc6t3k9xNlfbvqRMluE03FolN1L3wT2qPeLFo9oTexa22QcdL3cTBk
+         9Z2G4inulqqWQn4amWZNKTka50rKilctPkf5utbQCyGsy9cBwbXAGPpqYolVbPhetO4w
+         ayRXqLEOfRuA+K/Q/RHQj3mr8KEt0q/Q6BBuQWudkCkIFcGIK77FiWkH6iV4htLIvMnj
+         7R/g==
+X-Gm-Message-State: AOAM533z+2GXgHNvrxxlu5yMVfwQBnojF/KQhLWvgA3GihOR1kl5K8Rm
+        sft2Dfma5Qxyd5+TTztfjHro2kHn9M2KzrsN29zuf8ebl86xR+v22arQuxx/i/oCHRNNI46v6d/
+        8sZs1YmdhsaliV+TxbS0tF22l
+X-Received: by 2002:adf:a31a:: with SMTP id c26mr5544753wrb.307.1632824230964;
+        Tue, 28 Sep 2021 03:17:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4oa2QFDFT6mx4r+tUchUFwttcM/2HMYFvdFMw6kKwLAjsy87wwmmIvXC04Mrykyg6n6P2kg==
+X-Received: by 2002:adf:a31a:: with SMTP id c26mr5544717wrb.307.1632824230752;
+        Tue, 28 Sep 2021 03:17:10 -0700 (PDT)
+Received: from work-vm (cpc109025-salf6-2-0-cust480.10-2.cable.virginm.net. [82.30.61.225])
+        by smtp.gmail.com with ESMTPSA id v17sm9829732wro.34.2021.09.28.03.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 03:17:09 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 11:17:07 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 38/45] KVM: SVM: Add support to handle Page
+ State Change VMGEXIT
+Message-ID: <YVLro9lWPguN7Wkv@work-vm>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-39-brijesh.singh@amd.com>
 MIME-Version: 1.0
-References: <000000000000d6b66705cb2fffd4@google.com> <CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com>
- <CANpmjNMq=2zjDYJgGvHcsjnPNOpR=nj-gQ43hk2mJga0ES+wzQ@mail.gmail.com>
- <CACT4Y+Y1c-kRk83M-qiFY40its+bP3=oOJwsbSrip5AB4vBnYA@mail.gmail.com>
- <YUpr8Vu8xqCDwkE8@google.com> <CACT4Y+YuX3sVQ5eHYzDJOtenHhYQqRsQZWJ9nR0sgq3s64R=DA@mail.gmail.com>
- <YVHsV+o7Ez/+arUp@google.com> <20210927234543.6waods7rraxseind@treble>
-In-Reply-To: <20210927234543.6waods7rraxseind@treble>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 28 Sep 2021 12:16:41 +0200
-Message-ID: <CACT4Y+aqBKqJFa-6TuXWHSh0DEYYM9kbyZZohO3Gi_EujafmVA@mail.gmail.com>
-Subject: Re: [syzbot] upstream test error: KFENCE: use-after-free in kvm_fastop_exception
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marco Elver <elver@google.com>,
-        syzbot <syzbot+d08efd12a2905a344291@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820155918.7518-39-brijesh.singh@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 01:45, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Mon, Sep 27, 2021 at 04:07:51PM +0000, Sean Christopherson wrote:
-> > I was asking about the exact location to confirm that the explosion is indeed
-> > from exception fixup, which is the "unwinder scenario get confused" I was thinking
-> > of.  Based on the disassembly from syzbot, that does indeed appear to be the case
-> > here, i.e. this
-> >
-> >   2a:   4c 8b 21                mov    (%rcx),%r12
-> >
-> > is from exception fixup from somewhere in __d_lookup (can't tell exactly what
-> > it's from, maybe KASAN?).
-> >
-> > > Is there more info on this "the unwinder gets confused"? Bug filed
-> > > somewhere or an email thread? Is it on anybody's radar?
-> >
-> > I don't know if there's a bug report or if this is on anyone's radar.  The issue
-> > I've encountered in the past, and what I'm pretty sure is being hit here, is that
-> > the ORC unwinder doesn't play nice with out-of-line fixup code, presumably because
-> > there are no tables for the fixup.  I believe kvm_fastop_exception() gets blamed
-> > because it's the first label that's found when searching back through the tables.
->
-> The ORC unwinder actually knows about .fixup, and unwinding through the
-> .fixup code worked here, as evidenced by the entire stacktrace getting
-> printed.  Otherwise there would have been a bunch of question marks in
-> the stack trace.
->
-> The problem reported here -- falsely printing kvm_fastop_exception -- is
-> actually in the arch-independent printing of symbol names, done by
-> __sprint_symbol().  Most .fixup code fragments are anonymous, in the
-> sense that they don't have symbols associated with them.  For x86, here
-> are the only defined symbols in .fixup:
->
->   ffffffff81e02408 T kvm_fastop_exception
->   ffffffff81e02728 t .E_read_words
->   ffffffff81e0272b t .E_leading_bytes
->   ffffffff81e0272d t .E_trailing_bytes
->   ffffffff81e02734 t .E_write_words
->   ffffffff81e02740 t .E_copy
->
-> There's a lot of anonymous .fixup code which happens to be placed in the
-> gap between "kvm_fastop_exception" and ".E_read_words".  The kernel
-> symbol printing code will go backwards from the given address and will
-> print the first symbol it finds.  So any anonymous code in that gap will
-> falsely be reported as kvm_fastop_exception().
->
-> I'm thinking the ideal way to fix this would be getting rid of the
-> .fixup section altogether, and instead place a function's corresponding
-> fixup code in a cold part of the original function, with the help of
-> asm_goto and cold label attributes.
->
-> That way, the original faulting function would be printed instead of an
-> obscure reference to an anonymous .fixup code fragment.  It would have
-> other benefits as well.  For example, not breaking livepatch...
->
-> I'll try to play around with it.
+* Brijesh Singh (brijesh.singh@amd.com) wrote:
+> SEV-SNP VMs can ask the hypervisor to change the page state in the RMP
+> table to be private or shared using the Page State Change NAE event
+> as defined in the GHCB specification version 2.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/sev-common.h |  7 +++
+>  arch/x86/kvm/svm/sev.c            | 82 +++++++++++++++++++++++++++++--
+>  2 files changed, 84 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 4980f77aa1d5..5ee30bb2cdb8 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -126,6 +126,13 @@ enum psc_op {
+>  /* SNP Page State Change NAE event */
+>  #define VMGEXIT_PSC_MAX_ENTRY		253
+>  
+> +/* The page state change hdr structure in not valid */
+> +#define PSC_INVALID_HDR			1
+> +/* The hdr.cur_entry or hdr.end_entry is not valid */
+> +#define PSC_INVALID_ENTRY		2
+> +/* Page state change encountered undefined error */
+> +#define PSC_UNDEF_ERR			3
+> +
+>  struct psc_hdr {
+>  	u16 cur_entry;
+>  	u16 end_entry;
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 6d9483ec91ab..0de85ed63e9b 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2731,6 +2731,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm, u64 *exit_code)
+>  	case SVM_VMGEXIT_AP_JUMP_TABLE:
+>  	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
+>  	case SVM_VMGEXIT_HV_FEATURES:
+> +	case SVM_VMGEXIT_PSC:
+>  		break;
+>  	default:
+>  		goto vmgexit_err;
+> @@ -3004,13 +3005,13 @@ static int __snp_handle_page_state_change(struct kvm_vcpu *vcpu, enum psc_op op,
+>  		 */
+>  		rc = snp_check_and_build_npt(vcpu, gpa, level);
+>  		if (rc)
+> -			return -EINVAL;
+> +			return PSC_UNDEF_ERR;
+>  
+>  		if (op == SNP_PAGE_STATE_PRIVATE) {
+>  			hva_t hva;
+>  
+>  			if (snp_gpa_to_hva(kvm, gpa, &hva))
+> -				return -EINVAL;
+> +				return PSC_UNDEF_ERR;
+>  
+>  			/*
+>  			 * Verify that the hva range is registered. This enforcement is
+> @@ -3022,7 +3023,7 @@ static int __snp_handle_page_state_change(struct kvm_vcpu *vcpu, enum psc_op op,
+>  			rc = is_hva_registered(kvm, hva, page_level_size(level));
+>  			mutex_unlock(&kvm->lock);
+>  			if (!rc)
+> -				return -EINVAL;
+> +				return PSC_UNDEF_ERR;
+>  
+>  			/*
+>  			 * Mark the userspace range unmerable before adding the pages
+> @@ -3032,7 +3033,7 @@ static int __snp_handle_page_state_change(struct kvm_vcpu *vcpu, enum psc_op op,
+>  			rc = snp_mark_unmergable(kvm, hva, page_level_size(level));
+>  			mmap_write_unlock(kvm->mm);
+>  			if (rc)
+> -				return -EINVAL;
+> +				return PSC_UNDEF_ERR;
+>  		}
+>  
+>  		write_lock(&kvm->mmu_lock);
+> @@ -3062,8 +3063,11 @@ static int __snp_handle_page_state_change(struct kvm_vcpu *vcpu, enum psc_op op,
+>  		case SNP_PAGE_STATE_PRIVATE:
+>  			rc = rmp_make_private(pfn, gpa, level, sev->asid, false);
+>  			break;
+> +		case SNP_PAGE_STATE_PSMASH:
+> +		case SNP_PAGE_STATE_UNSMASH:
+> +			/* TODO: Add support to handle it */
+>  		default:
+> -			rc = -EINVAL;
+> +			rc = PSC_INVALID_ENTRY;
+>  			break;
+>  		}
+>  
+> @@ -3081,6 +3085,65 @@ static int __snp_handle_page_state_change(struct kvm_vcpu *vcpu, enum psc_op op,
+>  	return 0;
+>  }
+>  
+> +static inline unsigned long map_to_psc_vmgexit_code(int rc)
+> +{
+> +	switch (rc) {
+> +	case PSC_INVALID_HDR:
+> +		return ((1ul << 32) | 1);
+> +	case PSC_INVALID_ENTRY:
+> +		return ((1ul << 32) | 2);
+> +	case RMPUPDATE_FAIL_OVERLAP:
+> +		return ((3ul << 32) | 2);
+> +	default: return (4ul << 32);
+> +	}
 
-Thanks for debugging this, Josh.
-I think your solution can also help arm64 as it has the same issue.
+Are these the values defined in 56421 section 4.1.6 ?
+If so, that says:
+  SW_EXITINFO2[63:32] == 0x00000100
+      The hypervisor encountered some other error situation and was not able to complete the
+      request identified by page_state_change_header.cur_entry. It is left to the guest to decide how
+      to proceed in this situation.
+
+so it looks like the default should be 0x100 rather than 4?
+
+(It's a shame they're all magical constants, it would be nice if the
+standard have them names)
+
+Dave
+
+
+> +}
+> +
+> +static unsigned long snp_handle_page_state_change(struct vcpu_svm *svm)
+> +{
+> +	struct kvm_vcpu *vcpu = &svm->vcpu;
+> +	int level, op, rc = PSC_UNDEF_ERR;
+> +	struct snp_psc_desc *info;
+> +	struct psc_entry *entry;
+> +	u16 cur, end;
+> +	gpa_t gpa;
+> +
+> +	if (!sev_snp_guest(vcpu->kvm))
+> +		return PSC_INVALID_HDR;
+> +
+> +	if (!setup_vmgexit_scratch(svm, true, sizeof(*info))) {
+> +		pr_err("vmgexit: scratch area is not setup.\n");
+> +		return PSC_INVALID_HDR;
+> +	}
+> +
+> +	info = (struct snp_psc_desc *)svm->ghcb_sa;
+> +	cur = info->hdr.cur_entry;
+> +	end = info->hdr.end_entry;
+> +
+> +	if (cur >= VMGEXIT_PSC_MAX_ENTRY ||
+> +	    end >= VMGEXIT_PSC_MAX_ENTRY || cur > end)
+> +		return PSC_INVALID_ENTRY;
+> +
+> +	for (; cur <= end; cur++) {
+> +		entry = &info->entries[cur];
+> +		gpa = gfn_to_gpa(entry->gfn);
+> +		level = RMP_TO_X86_PG_LEVEL(entry->pagesize);
+> +		op = entry->operation;
+> +
+> +		if (!IS_ALIGNED(gpa, page_level_size(level))) {
+> +			rc = PSC_INVALID_ENTRY;
+> +			goto out;
+> +		}
+> +
+> +		rc = __snp_handle_page_state_change(vcpu, op, gpa, level);
+> +		if (rc)
+> +			goto out;
+> +	}
+> +
+> +out:
+> +	info->hdr.cur_entry = cur;
+> +	return rc ? map_to_psc_vmgexit_code(rc) : 0;
+> +}
+> +
+>  static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  {
+>  	struct vmcb_control_area *control = &svm->vmcb->control;
+> @@ -3315,6 +3378,15 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
+>  		ret = 1;
+>  		break;
+>  	}
+> +	case SVM_VMGEXIT_PSC: {
+> +		unsigned long rc;
+> +
+> +		ret = 1;
+> +
+> +		rc = snp_handle_page_state_change(svm);
+> +		svm_set_ghcb_sw_exit_info_2(vcpu, rc);
+> +		break;
+> +	}
+>  	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
+>  		vcpu_unimpl(vcpu,
+>  			    "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
+> -- 
+> 2.17.1
+> 
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
