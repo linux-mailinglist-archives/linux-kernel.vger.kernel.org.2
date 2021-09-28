@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9EB41AF07
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A0941AF0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240702AbhI1Mb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:31:29 -0400
-Received: from www62.your-server.de ([213.133.104.62]:45144 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240571AbhI1Mb2 (ORCPT
+        id S240724AbhI1Mbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240526AbhI1Mbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:31:28 -0400
-Received: from [78.46.152.42] (helo=sslproxy04.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mVCEx-000Gn4-TZ; Tue, 28 Sep 2021 14:29:43 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mVCEx-000W89-La; Tue, 28 Sep 2021 14:29:43 +0200
-Subject: Re: [PATCH] bpf: Fix integer overflow in
- prealloc_elems_and_freelist()
-To:     Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210925053106.1031798-1-th.yasumatsu@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
-Date:   Tue, 28 Sep 2021 14:29:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 28 Sep 2021 08:31:47 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BE5C061575;
+        Tue, 28 Sep 2021 05:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yF1lWcH2qjndVjno9oL2GGiLBEO3Zc/VEOg/LYKD2Zw=; b=pZ1FyoI9SmTcmf2eZPSWQ3fJk4
+        1+u2M1qKaoebPofrBylcAMGuLhkJDQMwn6KxxRQTmq4UnrtBzY9nhdD1J4tU3Va+nfTCmHULJWFA8
+        x1xzp0CQubwEDl0UQYsaEhvENaTFyJqLxLHV7PgQfnCGN6BeMcKhkbCGnveCHh81Urls4vT+Z4R8J
+        94ytDvUot3QCjQDlJHsRC6CuMFTvXnB7HtfTUpOP3c/Ne/KqAfw6p8e4Ks9EHn8Coiu0uL8l97ZOW
+        7H48RAShYAU0uP8oMAb1r4SSGKc5zt+kAVlHQUd8yAaueUmPeAXjNMi1E/GRklyR5Nj4+kHsD1CQr
+        8YXbGVrw==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1mVCFG-0004La-Ms; Tue, 28 Sep 2021 15:30:02 +0300
+Subject: Re: [PATCH -next v2] memory: tegra186-emc: Fix error return code in
+ tegra186_emc_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     krzysztof.kozlowski@canonical.com, mperttunen@nvidia.com
+References: <20210928021545.3774677-1-yangyingliang@huawei.com>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <9080ad2f-e01b-5c7a-333e-6039a8824ae5@kapsi.fi>
+Date:   Tue, 28 Sep 2021 15:30:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210925053106.1031798-1-th.yasumatsu@gmail.com>
+In-Reply-To: <20210928021545.3774677-1-yangyingliang@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26306/Tue Sep 28 11:05:37 2021)
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/21 7:31 AM, Tatsuhiko Yasumatsu wrote:
-> In prealloc_elems_and_freelist(), the multiplication to calculate the
-> size passed to bpf_map_area_alloc() could lead to an integer overflow.
-> As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-> as reported by KASAN:
+On 9/28/21 5:15 AM, Yang Yingliang wrote:
+> Return the error code when command fails.
 > 
-> [...]
-> [   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-> [   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-> [   16.970038]
-> [   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-> [   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> [   16.972026] Call Trace:
-> [   16.972306]  dump_stack_lvl+0x34/0x44
-> [   16.972687]  print_address_description.constprop.0+0x21/0x140
-> [   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-> [   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-> [   16.974257]  kasan_report.cold+0x7f/0x11b
-> [   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-> [   16.975190]  pcpu_freelist_populate+0xd9/0x100
-> [   16.975669]  stack_map_alloc+0x209/0x2a0
-> [   16.976106]  __sys_bpf+0xd83/0x2ce0
-> [...]
-> 
-> The possibility of this overflow was originally discussed in [0], but
-> was overlooked.
-> 
-> Fix the integer overflow by casting one operand to u64.
-> 
-> [0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
-> 
-> Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
-> Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+> Fixes: 13324edbe926 ("memory: tegra186-emc: Handle errors in BPMP response")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->   kernel/bpf/stackmap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/memory/tegra/tegra186-emc.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 09a3fd97d329..8941dc83a769 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -66,7 +66,7 @@ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
->   	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
-
-Thanks a lot for the fix, Tatsuhiko! Could we just change the above elem_size to u64 instead?
-
->   	int err;
->   
-> -	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
-> +	smap->elems = bpf_map_area_alloc((u64)elem_size * smap->map.max_entries,
->   					 smap->map.numa_node);
->   	if (!smap->elems)
->   		return -ENOMEM;
+> diff --git a/drivers/memory/tegra/tegra186-emc.c b/drivers/memory/tegra/tegra186-emc.c
+> index abc0c2eeaab7..746c4ef2c0af 100644
+> --- a/drivers/memory/tegra/tegra186-emc.c
+> +++ b/drivers/memory/tegra/tegra186-emc.c
+> @@ -198,6 +198,7 @@ static int tegra186_emc_probe(struct platform_device *pdev)
+>   		goto put_bpmp;
+>   	}
+>   	if (msg.rx.ret < 0) {
+> +		err = -EINVAL;
+>   		dev_err(&pdev->dev, "EMC DVFS MRQ failed: %d (BPMP error code)\n", msg.rx.ret);
+>   		goto put_bpmp;
+>   	}
 > 
 
-Best,
-Daniel
+Reviewed-by: Mikko Perttunen <mperttunen@nvidia.com>
