@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AE041AE5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CFD41AE5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240529AbhI1MCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:02:14 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35794 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240514AbhI1MCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:02:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=THuN358noEt3fQeP4VpcOCHPfZXYMNW8DrJloNvgVT4=; b=VY
-        a6LHE1sW7G1eFvRUjwZiG3qkChUCGCFYwOzGXtr7i7sYHT4ckwvfKnHl48Det0NXQOBID8RvSGZUv
-        We/3H8RYUkLjXRizmD04E5uQtCc/k636NYVscmrFtj0A3dP+gswxmw2hUJ95wG0BIPwAynXDWidwg
-        htw5iTtEOOIG/Js=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mVBmO-008b4G-MV; Tue, 28 Sep 2021 14:00:12 +0200
-Date:   Tue, 28 Sep 2021 14:00:12 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: mdio: mscc-miim: Fix the mdio controller
-Message-ID: <YVMDzAcQSjuiqoud@lunn.ch>
-References: <20210928071720.2084666-1-horatiu.vultur@microchip.com>
- <20210928085414.GA1723@LAPTOP-UKSR4ENP.internal.baidu.com>
+        id S240510AbhI1MCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240488AbhI1MCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:02:07 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C392CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:00:27 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:a9b1:8dc9:da2c:b028])
+        by xavier.telenet-ops.be with bizsmtp
+        id zQ0Q250023Yhtpx01Q0QgN; Tue, 28 Sep 2021 14:00:24 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mVBmZ-000JpQ-Kl; Tue, 28 Sep 2021 14:00:23 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mVBmZ-009dEZ-94; Tue, 28 Sep 2021 14:00:23 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] power: supply: core: Move psy_has_property() to fix build
+Date:   Tue, 28 Sep 2021 14:00:19 +0200
+Message-Id: <7b35a74f2c2ad19c8dc1ca60c59e48a14288677f.1632830348.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210928085414.GA1723@LAPTOP-UKSR4ENP.internal.baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 04:54:14PM +0800, Cai Huoqing wrote:
-> On 28 9月 21 09:17:20, Horatiu Vultur wrote:
-> Hi Horatiu,
-> 
-> Thank for your feedback.
-> 
-> I'm sorry for this commit, my mistake.
-> 
-> After I have checked my recent submission history
-> 
-> the commit-
-> commit fa14d03e014a130839f9dc1b97ea61fe598d873d
-> drivers/net/mdio/mdio-ipq4019.c 225 line
-> 
-> has the same issue, an optional phy-regs
-> Are you willing to fix it at the same time:)
+If CONFIG_THERMAL=n:
 
-Hi
+    drivers/power/supply/power_supply_core.c: In function ‘__power_supply_register’:
+    drivers/power/supply/power_supply_core.c:1137:6: error: implicit declaration of function ‘psy_has_property’ [-Werror=implicit-function-declaration]
+     1137 |  if (psy_has_property(desc, POWER_SUPPLY_PROP_USB_TYPE) &&
+	  |      ^~~~~~~~~~~~~~~~
 
-Since it was a separate patch which broken it, it should be a separate
-patch which fixes it.  Please send a fix.
+Fix this by moving psy_has_property() outside the section protected by
+CONFIG_THERMAL.
 
-You can also give a Reviewed-by: to Horatiu patch, if you think it is
-correct.
+Fixes: 9ba533eb99bb2acf ("power: supply: core: Add psy_has_property()")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/power/supply/power_supply_core.c | 32 ++++++++++++------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Andrew
+diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
+index 75575ea45f21ddc7..fc12a4f407f431a6 100644
+--- a/drivers/power/supply/power_supply_core.c
++++ b/drivers/power/supply/power_supply_core.c
+@@ -951,6 +951,22 @@ void power_supply_unreg_notifier(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(power_supply_unreg_notifier);
+ 
++static bool psy_has_property(const struct power_supply_desc *psy_desc,
++			     enum power_supply_property psp)
++{
++	bool found = false;
++	int i;
++
++	for (i = 0; i < psy_desc->num_properties; i++) {
++		if (psy_desc->properties[i] == psp) {
++			found = true;
++			break;
++		}
++	}
++
++	return found;
++}
++
+ #ifdef CONFIG_THERMAL
+ static int power_supply_read_temp(struct thermal_zone_device *tzd,
+ 		int *temp)
+@@ -975,22 +991,6 @@ static struct thermal_zone_device_ops psy_tzd_ops = {
+ 	.get_temp = power_supply_read_temp,
+ };
+ 
+-static bool psy_has_property(const struct power_supply_desc *psy_desc,
+-			     enum power_supply_property psp)
+-{
+-	bool found = false;
+-	int i;
+-
+-	for (i = 0; i < psy_desc->num_properties; i++) {
+-		if (psy_desc->properties[i] == psp) {
+-			found = true;
+-			break;
+-		}
+-	}
+-
+-	return found;
+-}
+-
+ static int psy_register_thermal(struct power_supply *psy)
+ {
+ 	int ret;
+-- 
+2.25.1
+
