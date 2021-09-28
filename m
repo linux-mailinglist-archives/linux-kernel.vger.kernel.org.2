@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8BA41B90E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BBF41B909
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242883AbhI1VMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
+        id S242910AbhI1VM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242859AbhI1VMT (ORCPT
+        with ESMTP id S242867AbhI1VMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Sep 2021 17:12:19 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2788FC061745
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC45C061746
         for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:10:39 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x20so600662wrg.10
+Received: by mail-wr1-x429.google.com with SMTP id t8so644609wrq.4
         for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BshZZVKwdBlyyHBI8IqWe63R5Yq6DUQYXsV56Yu2uuo=;
-        b=IZvfT3BfhcGs94bf3v3Da6bFccLoKIv9+bHRb30GpVaH+wYkDwVdqbe0YRyHsnb3mB
-         DHOE2ju3CsckBASRSNzXZiXFTgp2moIS3Ur2zc+F1Oma9jQPSmC3RdZx8cYZISsrFU7k
-         hhW/9qLcJYtH/fRUTeOQBprDyJtWcjmXGEqms=
+        bh=txrAIBvpCXZ1iuooBuJc6Z8viJhLKOLZBl7FhoSuzw0=;
+        b=DOHFStVFq1T8mtaWbf08Y27w9p7/zHpW9l0ksVKx27RWWLmsHtRKN9s0sTDtSYlgEL
+         MKoMv1xrCHXAFuATyXEScLZuUFzJpOVJb7RwbDSqQA4vhaJK3a+1Hv7990sdh15DvdE2
+         dUepn2kVQX5C7kgGFgNIksB8bZUKUBF3S9/UI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BshZZVKwdBlyyHBI8IqWe63R5Yq6DUQYXsV56Yu2uuo=;
-        b=c4ZtnW2LKTKtQyrGLuAJPBFFLfrXcYw5zDizyxTkbDMvYmD/7lU3nRZWaKKCmZnkx7
-         919NpjVn13rOGOX6vpow4qrF7KSwmSb/KNoi2chO4wNmtqZaeK41tIw9qjWVoPYiKtkl
-         o6ptmlKXmF/jHhmeyVlzLvalTccSYSSV4Dse66UWG4LnbN+8q3t5b1yD9rRYjbWsEeEw
-         jar2b66DmAhjrk5umYuue8HgQk/2+yJRx9wwlL//Te+MWBbhYTg9EfLnIGtxwdnwUVna
-         fKYPVAkcpFsY8zSykqj/37Avo5EhgmJHJhG35s6Y8qauJHplKPGwexTDbubvLQl5W0sq
-         TQLw==
-X-Gm-Message-State: AOAM530+LLl1dN++s0Hfy71TDJwZJ0ziDYGBVTqPe9RvemGWGar/HBv0
-        6/sv4GhLcJZoG1iGvGzf/yQSgw==
-X-Google-Smtp-Source: ABdhPJxcTAzxA8tDEC7we03mbt7Mf+/GqBwkhRQ5cM9jkRW7UdSzOjFqXTkEvhjGxPW0mM0hONW9PA==
-X-Received: by 2002:adf:f8cc:: with SMTP id f12mr2513838wrq.195.1632863437817;
-        Tue, 28 Sep 2021 14:10:37 -0700 (PDT)
+        bh=txrAIBvpCXZ1iuooBuJc6Z8viJhLKOLZBl7FhoSuzw0=;
+        b=RLo/Zrp30j5gpwJKU9jA3nFrM4IyvBIVHzY/yzia16cSyrF9sMz8i8Od2FwyrIdYCC
+         9Gz/GIRpefCv1iVAQGOex0VgYo1155wRr6Vqn07S2fEaPU8UJ6Iz/mkpLELAFedSUoLn
+         JJUYWkmMkeDxeTbSgZVIgJCr9gemtxJ2fg5/b0ZfClBWiYi1KwzUJTQAty8+jSsy2pn5
+         alJA07KaHvyCp3YRwvPW2uaKiLSVlOG9tkXEeooCSlf3PhmsF++A8hrhkrP8har2qljo
+         VEcoHpaZzVRCjS68Pwqo3Q2JTgkSGejmFdlQCT2HZU/fsome3EGJ/ju3CYhhly7uJJQv
+         K2ng==
+X-Gm-Message-State: AOAM5338GtnYuUyfAdlNZD9NyhELF6mRHqAN985i3L6CoGS6vjH8/JlX
+        Gx8kqOKfe0gKBjIuPwXbQsNfcA==
+X-Google-Smtp-Source: ABdhPJwJmyMLBt6im1bZIJQQ4MCTiMcCul9tpTCz4yKivfnMOcHUeBVT0bS2Bw0aH1ogicgDDAJvHQ==
+X-Received: by 2002:a5d:69ce:: with SMTP id s14mr2729398wrw.236.1632863438195;
+        Tue, 28 Sep 2021 14:10:38 -0700 (PDT)
 Received: from beni.c.googlers.com.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id n68sm3885773wmn.13.2021.09.28.14.10.36
+        by smtp.gmail.com with ESMTPSA id n68sm3885773wmn.13.2021.09.28.14.10.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 28 Sep 2021 14:10:37 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
@@ -53,9 +53,9 @@ To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
         linux-kernel@vger.kernel.org,
         Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 4/7] media: ipu3-cio2: VIDIOC_QUERYCAP: Fix bus_info
-Date:   Tue, 28 Sep 2021 21:10:30 +0000
-Message-Id: <20210928211033.2415162-5-ribalda@chromium.org>
+Subject: [PATCH 5/7] media: dw9714: Add implementation for events
+Date:   Tue, 28 Sep 2021 21:10:31 +0000
+Message-Id: <20210928211033.2415162-6-ribalda@chromium.org>
 X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 In-Reply-To: <20210928211033.2415162-1-ribalda@chromium.org>
 References: <20210928211033.2415162-1-ribalda@chromium.org>
@@ -65,38 +65,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bus_info field had a different value for the media entity and the video
-device.
+Use v4l2 control API helpers to support the events.
 
 Fixes v4l2-compliance:
 
-v4l2-compliance.cpp(637): media bus_info 'PCI:0000:00:05.0' differs from
-			  V4L2 bus_info 'PCI:viewfinder'
+test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: FAIL
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/staging/media/ipu3/ipu3-v4l2.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/i2c/dw9714.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-index 66995c6f15808..2594ac4eb0763 100644
---- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-+++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-@@ -592,11 +592,12 @@ static const struct imgu_fmt *find_format(struct v4l2_format *f, u32 type)
- static int imgu_vidioc_querycap(struct file *file, void *fh,
- 				struct v4l2_capability *cap)
+diff --git a/drivers/media/i2c/dw9714.c b/drivers/media/i2c/dw9714.c
+index c8b4292512dca..3863dfeb82934 100644
+--- a/drivers/media/i2c/dw9714.c
++++ b/drivers/media/i2c/dw9714.c
+@@ -7,6 +7,7 @@
+ #include <linux/pm_runtime.h>
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-device.h>
++#include <media/v4l2-event.h>
+ 
+ #define DW9714_NAME		"dw9714"
+ #define DW9714_MAX_FOCUS_POS	1023
+@@ -100,7 +101,15 @@ static const struct v4l2_subdev_internal_ops dw9714_int_ops = {
+ 	.close = dw9714_close,
+ };
+ 
+-static const struct v4l2_subdev_ops dw9714_ops = { };
++static const struct v4l2_subdev_core_ops dw9714_core_ops = {
++	.log_status = v4l2_ctrl_subdev_log_status,
++	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
++	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
++};
++
++static const struct v4l2_subdev_ops dw9714_ops = {
++	.core = &dw9714_core_ops,
++};
+ 
+ static void dw9714_subdev_cleanup(struct dw9714_device *dw9714_dev)
  {
--	struct imgu_video_device *node = file_to_intel_imgu_node(file);
-+	struct imgu_device *imgu = video_drvdata(file);
+@@ -137,7 +146,8 @@ static int dw9714_probe(struct i2c_client *client)
+ 		return -ENOMEM;
  
- 	strscpy(cap->driver, IMGU_NAME, sizeof(cap->driver));
- 	strscpy(cap->card, IMGU_NAME, sizeof(cap->card));
--	snprintf(cap->bus_info, sizeof(cap->bus_info), "PCI:%s", node->name);
-+	snprintf(cap->bus_info, sizeof(cap->bus_info), "PCI:%s",
-+		 pci_name(imgu->pci_dev));
+ 	v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
+-	dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
++	dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
++				V4L2_SUBDEV_FL_HAS_EVENTS;
+ 	dw9714_dev->sd.internal_ops = &dw9714_int_ops;
  
- 	return 0;
- }
+ 	rval = dw9714_init_controls(dw9714_dev);
 -- 
 2.33.0.685.g46640cef36-goog
 
