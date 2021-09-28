@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4550F41B603
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E9F41B60C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242225AbhI1SYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242230AbhI1SY0 (ORCPT
+        id S242332AbhI1SZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:25:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242368AbhI1SZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:24:26 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3D0C06174E;
-        Tue, 28 Sep 2021 11:22:44 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id bb10so14807836plb.2;
-        Tue, 28 Sep 2021 11:22:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T26BgQWn/9mqdmIjsWawB6f+e1Yr/GOlus2xPhKaou0=;
-        b=RhuXW/WrvdSvfA58ICAu0BTKmIcI5wLVZB6iD8y8Wx+S1F5LwMRHCB0mieSVudR9U2
-         Hmdwdxke9QyW/2z9Amt1BKbC1E9JjfSKObvhoH2+eVGxShWx0iIb/gz0rE1NDsqMBxSO
-         ufsONr358HP5fTCK2y1RQcSt33qerPulnSWUZBCcbibXBu/SHvEB9Tz2T6J0vHsmF8eO
-         0Te7SJIzgXGLLMz6PTIrTctBdVPmruGQ8WiZZJc+S6WGZ2LdxEFrVqJwhMFLRslqAWAR
-         7UbfA4eq9eECcKJ08qSwzxncTpug2P3x5HX4JE+nkK//p7fvNBHXazTfBNxK8v5OoVZj
-         0GSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T26BgQWn/9mqdmIjsWawB6f+e1Yr/GOlus2xPhKaou0=;
-        b=CUu0coJXG6DCNF7cvvBSK03iUrQioNpXy5X5rMa+hfK4QiLbJRuMLMUHy/jSNFjnSE
-         +RflmStQipksT5XYI8r6Fo3Se5lt8tXMNrGGcjvsxldROddZV9Bmc0/jrxqI6c4zCqgS
-         TMEoZI0H22KnYCLugbRVcHfUo4aoVIQKL/HbniT+2UlNZNz/XQJTvOSbHJsJ2qMwHfcE
-         CepS5MEX+o/NnR23X9uOxY42ftykGUngYofWtC5fjEcF6Xu0s1AWliNoK/YhXRx+Z+xm
-         E+xH3/Qxn/HgPpzEjtmlvyJqc7y/vpMoL4Fz0fOa+MM+B9ERVh2GVaUILlvN5jSE+avg
-         na/Q==
-X-Gm-Message-State: AOAM531DniQyLiAUtSZTj2PmGRq/NTmXSFwmqTrPTFiXPo+O2Mwzlvem
-        Hd5SjAAw4HMPKSV63/TIcL9jced+4+4=
-X-Google-Smtp-Source: ABdhPJyOgDfKEUX2wbPsA3GK0AJrY9DGZLrVCNUZ2532DUtclW4D9RAcuPdX7AkDmsWUn3PocI0sCA==
-X-Received: by 2002:a17:902:c3c5:b0:13d:efe4:c10a with SMTP id j5-20020a170902c3c500b0013defe4c10amr6402436plj.54.1632853363287;
-        Tue, 28 Sep 2021 11:22:43 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x19sm20855288pfn.105.2021.09.28.11.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 11:22:42 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
+        Tue, 28 Sep 2021 14:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632853400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8/a5gkIL9yAofs88ckFRESPQGSjIdBv52g14ib29Qfw=;
+        b=fSH7GZ1PtF8GFEluGZIH5MaHzfZmrJ0fCrzXSiBry14JbWeXeaLeHDjwI3SeP8eg4r3kwj
+        BfKmdxL2T6eZ3KZ4kd5P45j/Ggg0I/y7dCDGsEUBun/Fw18Wiyx0Txn8ONFh3itKTxdEgg
+        i9JFgvNmB6zvROnf0Y5t2mMXK+yFigQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-iyZcQTaONDm3MWfcKShKpA-1; Tue, 28 Sep 2021 14:23:19 -0400
+X-MC-Unique: iyZcQTaONDm3MWfcKShKpA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 810A51023F50;
+        Tue, 28 Sep 2021 18:23:16 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0433660877;
+        Tue, 28 Sep 2021 18:22:59 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
-        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM
-        SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE)
-Subject: [PATCH v3 14/14] irqchip: Fix kernel-doc parameter typo for IRQCHIP_DECLARE
-Date:   Tue, 28 Sep 2021 11:21:39 -0700
-Message-Id: <20210928182139.652896-15-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210928182139.652896-1-f.fainelli@gmail.com>
-References: <20210928182139.652896-1-f.fainelli@gmail.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        virtualization@lists.linux-foundation.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v1 0/8] proc/vmcore: sanitize access to virtio-mem memory
+Date:   Tue, 28 Sep 2021 20:22:50 +0200
+Message-Id: <20210928182258.12451-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation refers to "compstr" when we have the argument named
-"compat", fix the typo.
+As so often with virtio-mem changes that mess with common MM
+infrastructure, this might be a good candiate to go via Andrew's tree.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- include/linux/irqchip.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--
 
-diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
-index 67351aac65ef..ccf32758ea85 100644
---- a/include/linux/irqchip.h
-+++ b/include/linux/irqchip.h
-@@ -23,7 +23,7 @@
-  *
-  * @name: name that must be unique across all IRQCHIP_DECLARE of the
-  * same file.
-- * @compstr: compatible string of the irqchip driver
-+ * @compat: compatible string of the irqchip driver
-  * @fn: initialization function
-  */
- #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
+After removing /dev/kmem, sanitizing /proc/kcore and handling /dev/mem,
+this series tackles the last sane way how a VM could accidentially access
+logically unplugged memory managed by a virtio-mem device: /proc/vmcore
+
+When dumping memory via "makedumpfile", PG_offline pages, used by
+virtio-mem to flag logically unplugged memory, are already properly
+excluded; however, especially when accessing/copying /proc/vmcore "the
+usual way", we can still end up reading logically unplugged memory part of
+a virtio-mem device.
+
+Patch #1-#3 are cleanups. Patch #4 extends the existing oldmem_pfn_is_ram
+mechanism. Patch #5-#7 are virtio-mem refactorings for patch #8, which
+implements the virtio-mem logic to query the state of device blocks.
+
+Patch #8:
+
+"
+Although virtio-mem currently supports reading unplugged memory in the
+hypervisor, this will change in the future, indicated to the device via
+a new feature flag. We similarly sanitized /proc/kcore access recently.
+[...]
+Distributions that support virtio-mem+kdump have to make sure that the
+virtio_mem module will be part of the kdump kernel or the kdump initrd;
+dracut was recently [2] extended to include virtio-mem in the generated
+initrd. As long as no special kdump kernels are used, this will
+automatically make sure that virtio-mem will be around in the kdump initrd
+and sanitize /proc/vmcore access -- with dracut.
+"
+
+This is the last remaining bit to support
+VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE [3] in the Linux implementation of
+virtio-mem.
+
+Note: this is best-effort. We'll never be able to control what runs inside
+the second kernel, really, but we also don't have to care: we only care
+about sane setups where we don't want our VM getting zapped once we
+touch the wrong memory location while dumping. While we usually expect sane
+setups to use "makedumfile", nothing really speaks against just copying
+/proc/vmcore, especially in environments where HWpoisioning isn't typically
+expected. Also, we really don't want to put all our trust completely on the
+memmap, so sanitizing also makes sense when just using "makedumpfile".
+
+[1] https://lkml.kernel.org/r/20210526093041.8800-1-david@redhat.com
+[2] https://github.com/dracutdevs/dracut/pull/1157
+[3] https://lists.oasis-open.org/archives/virtio-comment/202109/msg00021.html
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: x86@kernel.org
+Cc: xen-devel@lists.xenproject.org
+Cc: virtualization@lists.linux-foundation.org
+Cc: kexec@lists.infradead.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
+David Hildenbrand (8):
+  x86/xen: update xen_oldmem_pfn_is_ram() documentation
+  x86/xen: simplify xen_oldmem_pfn_is_ram()
+  proc/vmcore: let pfn_is_ram() return a bool
+  proc/vmcore: convert oldmem_pfn_is_ram callback to more generic vmcore
+    callbacks
+  virtio-mem: factor out hotplug specifics from virtio_mem_init() into
+    virtio_mem_init_hotplug()
+  virtio-mem: factor out hotplug specifics from virtio_mem_probe() into
+    virtio_mem_init_hotplug()
+  virtio-mem: factor out hotplug specifics from virtio_mem_remove() into
+    virtio_mem_deinit_hotplug()
+  virtio-mem: kdump mode to sanitize /proc/vmcore access
+
+ arch/x86/kernel/aperture_64.c |  13 +-
+ arch/x86/xen/mmu_hvm.c        |  31 ++--
+ drivers/virtio/virtio_mem.c   | 297 ++++++++++++++++++++++++----------
+ fs/proc/vmcore.c              | 105 ++++++++----
+ include/linux/crash_dump.h    |  26 ++-
+ 5 files changed, 332 insertions(+), 140 deletions(-)
+
+
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
 -- 
-2.25.1
+2.31.1
 
