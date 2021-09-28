@@ -2,249 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B3F41AE33
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE6441AE31
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240500AbhI1Lx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:53:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2614 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240440AbhI1LxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:53:19 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SAF2l4026529;
-        Tue, 28 Sep 2021 07:51:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=+5dr6xlj8qoY79+JHA0sHze00da8FJpvRmaJ5NEFTms=;
- b=BD72vPloAVscujrAxd91mbGQIItaT8m1CilLIpKjXFG37I1rTcos+BhrWGZUGO9DohOA
- hTle0g8rmuBzJ1PJeqj9ebkhhKb9HcV93sXnnfRTyIzcfq/BO27OHLnlgEmAYy1Szsrt
- cc+9O1kRwU9BQkEpZjgrikhACs4QOM7YmjtbFJ3N9wNj8gA5UUlo7It8beHfNcI2VkUd
- pOiXFkapbLsFhvKGYjwb2kNQ/SU8n9TqoioXmNM9mn0mTrPNMBQFxjVtNRxS5o7rSLDz
- lSDs7yRaouwpPtVWnvQIjbZavzdhLW/RJHT2Go8zrvJBHTc7JW+iuYMtb20UrRYx8a2X hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbxq7d0ta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 07:51:24 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18SBDlVU034986;
-        Tue, 28 Sep 2021 07:51:24 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbxq7d0sn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 07:51:24 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SBhKI8021670;
-        Tue, 28 Sep 2021 11:51:21 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3b9ud9na6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 11:51:21 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SBpHlB40829314
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Sep 2021 11:51:17 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BC68E11C04A;
-        Tue, 28 Sep 2021 11:51:17 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A7BF211C054;
-        Tue, 28 Sep 2021 11:51:13 +0000 (GMT)
-Received: from pratiks-thinkpad.ibm.com (unknown [9.43.58.127])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Sep 2021 11:51:13 +0000 (GMT)
-From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        shuah@kernel.org, farosas@linux.ibm.com, kjain@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        psampat@linux.ibm.com, pratik.r.sampat@gmail.com
-Subject: [PATCH v8 2/2] selftest/powerpc: Add PAPR sysfs attributes sniff test
-Date:   Tue, 28 Sep 2021 17:21:02 +0530
-Message-Id: <20210928115102.57117-3-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210928115102.57117-1-psampat@linux.ibm.com>
-References: <20210928115102.57117-1-psampat@linux.ibm.com>
+        id S240488AbhI1Lx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:53:26 -0400
+Received: from mail-bn8nam11on2084.outbound.protection.outlook.com ([40.107.236.84]:50848
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240349AbhI1LxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 07:53:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hFXIIrsBvXYR9elrqRtCoyLy8+WmXSiwFgxEkISgx1mGbbz2xJ69XUbDflF2x7sPLyl/E2oSH1+RvQQrsSCGCYX6bYwyLSGeXKBGhV5xxgI53o+Swl4ZhXtmsY2puSJnoSGjZFQJnGAPDEu5JAj1d1Fj1IUR3DxaeJUeeziMFYuJ2ciCkfJb0SR44nJyGq2dqwjaHZ1OivcRlmx33e92azATCauoHyHVX+/44nm64LKwPwTKJ35rokEhxBsUMSD2CJ2NtdYtikRLjRVLw7vvvrgMBK4rBAT1boWuqDh3PkBGWagptcyDNBWaQT3UIdnBpzSkjxj7E+tNaOA4btVi9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ADiYFjMc+8SIrCARwKHolwgIjsbnASIdOt2M1AV/d/I=;
+ b=NvBogdL+q3ZdAHnIveuzjw529W0DyT3f0Io7CrW+cWVi1D60HXFXxz1ZOLk7OdgKc7FrZLo7f0LiQDUIegYkI1zsf+3C2MyaeqjWH+76joXlrqe0WzbBJbvLKqd/uDyPDMp/eUSFoQd/SzIZuDKvB63RDqD0OMnjEmZoRZFGnCWTnL5Bt+UYkxrUi95P/LtS2vHTTv0XAEjdjOP+W4knwMmSIvwaT7SbzrQC4Z7N2CfpWObVbSsUeRuKjVbc4VC6j0pM0Og9Tw/+RJb+fkw7o2MXkMvQWXA5tjuL7kLyfszwV3YxtFHc9EoXRDyHxeGWBlQsH4g97SatTZC3Y4Idxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ADiYFjMc+8SIrCARwKHolwgIjsbnASIdOt2M1AV/d/I=;
+ b=QFJCMhHvCcWUcsmRQKMufIsxWxzP/k90Ll+qdx16UWSjoKTQA4S80l1AHP5Gl4rbqe8C1kFufnv/2PnhEdYM96NLANnsP3CZpSQRd+Vz6AYkpkZR00kw4qbpO5xtQIgZULfuqddFrn/y5atgjMi3c3TzBbaiip+h+9I8sjDyL6sKYgomoq6SmsPP5CuJgBHXgxnJC7a++UqNuHeo1wwvT9yZnj8cxAobHQj/1W3s0pAwf3k7xjpPOEtuweWhyMI3vrNTgxCxJQsNnMwYUHno4+hJ3JyZcBLLBOoJOd74m71GIalSkLRT7zdb5rFcTSOGGHub3stSGmd+552928rD3Q==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5507.namprd12.prod.outlook.com (2603:10b6:208:1c4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 28 Sep
+ 2021 11:51:36 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
+ 11:51:36 +0000
+Date:   Tue, 28 Sep 2021 08:51:35 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 05/11] RDMA/counter: Add optional counter
+ support
+Message-ID: <20210928115135.GG964074@nvidia.com>
+References: <cover.1631660727.git.leonro@nvidia.com>
+ <04bd7354c6a375e684712d79915f7eb816efee92.1631660727.git.leonro@nvidia.com>
+ <20210927170318.GB1529966@nvidia.com>
+ <d9cd401a-b5fe-65ea-21c4-6d4c037fd641@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9cd401a-b5fe-65ea-21c4-6d4c037fd641@nvidia.com>
+X-ClientProxiedBy: MN2PR20CA0062.namprd20.prod.outlook.com
+ (2603:10b6:208:235::31) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _iqWDJ0KI134p2VWX7lrRNns_6aIVbRL
-X-Proofpoint-GUID: ayVoehO3e9g6cw3yyVAlfzIEaWY7AFgN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 bulkscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280065
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR20CA0062.namprd20.prod.outlook.com (2603:10b6:208:235::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Tue, 28 Sep 2021 11:51:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVBe3-006wtR-Eb; Tue, 28 Sep 2021 08:51:35 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ca8d6d16-7858-4dc1-bc99-08d98276533f
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5507:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB55078423D8FC42E8DDAF1F2FC2A89@BL0PR12MB5507.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wLLp5CFSD5U0eHFseZ2EN2CqFAjGUFvA/qR4s+efCeJElkXbI9cZvpbyMzZEc/JyJN879s0cc3XXkz0m2QTUipksCEGAs3rMEvgXKpl7yYjF0+gpKNDgR/zLlAAqK01J/Au+Kh+DIzJSfzQbRwT+KDuj9FlQGj+mi0/ECGn7sZPxms+PtvMQTgQIuT5G8ArVkfdINUM4MJ2iQ6glHjtCJO9lgnj+lQI3jSO03Qwmy2poVjZITReflUNTkAyJxG4KnFvAJw0q97ZbdwcRF+QtxIjh/dnjVlwMJetlT78NTI9dSyJE1+6/mMkIWIbMWOa7uFah/VW6xJ3Rw7BK7WtqdPYi5wsc306tRHZ219S4LUsDR4p1aK0tD9kC11odFic/3kJvbTL2aSb0HfuTCf1/ifvXpx60NMLKwb+0EPY0t4bchrvXYFSdnYrrSeq08Vqg3WCybv57n2BchtimloiCBQSHL5wgOqjZUVBOzMhx8fGd6Pwrr43DhNyMDSb4TUvfBC0Yt/ZEw3mXRoxA7rHbgOhDKCyY+8IRlIWsNyfY4G7I5MvEzpdDiwl8W4ZXvF3dfnC2SpKQuPZKL3qPSWmQPuPPfR66m0jWYAYQYqtOi3gpiM0OQLGjeQ40JAQ/+m12IVWOa1QieNDbF6zZE2aixvJAqYKz4gx0/VuQw+9xw0MXewzN6C64tJleg5vhIZQ/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(4326008)(9746002)(8936002)(9786002)(38100700002)(54906003)(86362001)(83380400001)(186003)(26005)(426003)(6862004)(53546011)(8676002)(37006003)(5660300002)(2906002)(7416002)(66946007)(316002)(508600001)(2616005)(36756003)(66476007)(66556008)(6636002)(33656002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E5XXczwjvIU9WM2iRVEK8v9maIrGDhKSZToYpW6sLANcYEWAC1P1LOoT5kia?=
+ =?us-ascii?Q?A4Ua1P1uBRj5/2MCXk10TMt/5Sr4BoK8ZZ/HLIYnfga0JM8vKZMCqE+bwRzu?=
+ =?us-ascii?Q?nl9JqV4vfkV9V8zhRlTr4ArknrMiWub3Hy64S5lD2LYx9Mzkj8yyb/EvvsWJ?=
+ =?us-ascii?Q?QxpxADtSiM7++XC611XEymPcv/lmzpPyRTvcDH7ef/MOHgr3yfY+s9ge7j3s?=
+ =?us-ascii?Q?KU3G8Nl0q8DvG0Pg6+49W4Zl5b3sjy5GRARQ1H2ZHlnK6e0eOaiVwLLGo0kz?=
+ =?us-ascii?Q?Vacy0qKfQZhS0el4KdmDZmwKdf3whEGzLpUyXV+K8b3cytxhetll9ylwKjTo?=
+ =?us-ascii?Q?Crt8kMCpXH40gKMF+xE7c8gerFgmyDCg7/EZd9qOpkWXz5V/qrCjmCu33HOc?=
+ =?us-ascii?Q?hObl4ResRG3j+Pt3Yi8oWPX5m7+ucJgWHu0n9o53D+Q6qD2vIqoLtThnLdbx?=
+ =?us-ascii?Q?b2lW4FrbCY/nqCklbJEh7zzH6tTvUlgVDQB6XxxKmq7HtJpX52Hc68oANU5T?=
+ =?us-ascii?Q?je544CmgQNCjyGaDeVyA/EHl5g4CLd2d/jR4Qlr00GJStbhQY7nEL5867KHN?=
+ =?us-ascii?Q?xrg8X4bt0Fx7E4BmTomHar1NeQ1EBG0aP1zVyAnKvbIOtVwBZeUDqvtYN/0R?=
+ =?us-ascii?Q?95UMB51sWFvmSwz/GvCbleMKtJ52YqhsnB6Asw6+Uj2tpxq92rNXP9kMN6XW?=
+ =?us-ascii?Q?UDt1WmJucEPk82WKi9fp4ZefD1Vdp/eUiiTawKenwjhwvQzZy6J0b8+OI5NN?=
+ =?us-ascii?Q?kn1OMFnDV2IiB715ql0HrlSKT1GrtBgJlfaB9qYVaUyw8cbepgCTXsFZRzWG?=
+ =?us-ascii?Q?52Sq3JEsRPHBogs82eQJDcXWgJZNURuloBhu2YlaxV0vdxJsDcoujokqf8j2?=
+ =?us-ascii?Q?FbzwO2I4fB1r0Kusy11v4bhRmpGB4V3tLEqAkz5a8ql7S+3JxfTBm+IOjPfh?=
+ =?us-ascii?Q?0o9nXF0np+1yJaqNpuY33l88Nf9P3Oka/ELxXPCbMF71cri1QobrCmaAwCy9?=
+ =?us-ascii?Q?MaZ1Z9/dIXtFN1C7Q+moFrNF77n4ITzZDL2pSJuc7a7W4U6JUvgEh/URxo/J?=
+ =?us-ascii?Q?pzsQDVhY7RtA8wcm6Ef8LOlWyD2hwdvE45V04CgjUJPo/WlvSCPDD+R7qbK5?=
+ =?us-ascii?Q?/LTdbclNFEBKez9ci3t4VTsX5p/Bo1LQrsJWKhH69DIRk0rDyuPlKTiHaqUh?=
+ =?us-ascii?Q?3ACQxcmE/7azE/WLfpZkL8zSAVIkR8qcwKJKrRkNDnuAPygmOhgUUfV8Tt1/?=
+ =?us-ascii?Q?lasm84pqeNJZ0piV/hwJgEgMEdhL1GVyxVWmH+E0ALCqxcE9GWaUmRiBD4Ea?=
+ =?us-ascii?Q?sxsqQXzpfUt++EsKBUz6tnbU?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca8d6d16-7858-4dc1-bc99-08d98276533f
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 11:51:36.7757
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7VYQu6YLj0tD7a4tLORAjOn42lXtxDeeSLQ8l8wSZDfJ0KLxjgcJ9kZpipn6J35x
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5507
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include a testcase to check if the sysfs files for energy and frequency
-related have its related attribute files exist and populated
+On Tue, Sep 28, 2021 at 05:03:24PM +0800, Mark Zhang wrote:
+> On 9/28/2021 1:03 AM, Jason Gunthorpe wrote:
+> > On Wed, Sep 15, 2021 at 02:07:24AM +0300, Leon Romanovsky wrote:
+> > > +int rdma_counter_modify(struct ib_device *dev, u32 port, int index, bool enable)
+> > > +{
+> > > +	struct rdma_hw_stats *stats;
+> > > +	int ret;
+> > > +
+> > > +	if (!dev->ops.modify_hw_stat)
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > > +	stats = ib_get_hw_stats_port(dev, port);
+> > > +	if (!stats)
+> > > +		return -EINVAL;
+> > > +
+> > > +	mutex_lock(&stats->lock);
+> > > +	ret = dev->ops.modify_hw_stat(dev, port, index, enable);
+> > > +	if (!ret)
+> > > +		enable ? clear_bit(index, stats->is_disabled) :
+> > > +			set_bit(index, stats->is_disabled);
+> > 
+> > This is not a kernel coding style write out the if, use success
+> > oriented flow
+> > 
+> > Also, shouldn't this logic protect the driver from being called on
+> > non-optional counters?
+> 
+> We leave it to driver, driver would return failure if modify is not
+> supported. Is it good?
 
-Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
----
- tools/testing/selftests/powerpc/Makefile      |   1 +
- .../powerpc/papr_attributes/.gitignore        |   2 +
- .../powerpc/papr_attributes/Makefile          |   7 ++
- .../powerpc/papr_attributes/attr_test.c       | 107 ++++++++++++++++++
- 4 files changed, 117 insertions(+)
- create mode 100644 tools/testing/selftests/powerpc/papr_attributes/.gitignore
- create mode 100644 tools/testing/selftests/powerpc/papr_attributes/Makefile
- create mode 100644 tools/testing/selftests/powerpc/papr_attributes/attr_test.c
+I think the core code should do it
 
-diff --git a/tools/testing/selftests/powerpc/Makefile b/tools/testing/selftests/powerpc/Makefile
-index 0830e63818c1..c68c872efb23 100644
---- a/tools/testing/selftests/powerpc/Makefile
-+++ b/tools/testing/selftests/powerpc/Makefile
-@@ -30,6 +30,7 @@ SUB_DIRS = alignment		\
- 	   eeh			\
- 	   vphn         \
- 	   math		\
-+	   papr_attributes	\
- 	   ptrace	\
- 	   security
- 
-diff --git a/tools/testing/selftests/powerpc/papr_attributes/.gitignore b/tools/testing/selftests/powerpc/papr_attributes/.gitignore
-new file mode 100644
-index 000000000000..9c8cb54c8b28
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/papr_attributes/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+attr_test
-\ No newline at end of file
-diff --git a/tools/testing/selftests/powerpc/papr_attributes/Makefile b/tools/testing/selftests/powerpc/papr_attributes/Makefile
-new file mode 100644
-index 000000000000..135886f200ad
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/papr_attributes/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+TEST_GEN_PROGS := attr_test
-+
-+top_srcdir = ../../../../..
-+include ../../lib.mk
-+
-+$(TEST_GEN_PROGS): ../harness.c ../utils.c
-diff --git a/tools/testing/selftests/powerpc/papr_attributes/attr_test.c b/tools/testing/selftests/powerpc/papr_attributes/attr_test.c
-new file mode 100644
-index 000000000000..905e2cbb3863
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/papr_attributes/attr_test.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * PAPR Energy attributes sniff test
-+ * This checks if the papr folders and contents are populated relating to
-+ * the energy and frequency attributes
-+ *
-+ * Copyright 2021, Pratik Rajesh Sampat, IBM Corp.
-+ */
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <dirent.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+
-+#include "utils.h"
-+
-+enum energy_freq_attrs {
-+	POWER_PERFORMANCE_MODE = 1,
-+	IDLE_POWER_SAVER_STATUS = 2,
-+	MIN_FREQ = 3,
-+	STAT_FREQ = 4,
-+	MAX_FREQ = 6,
-+	PROC_FOLDING_STATUS = 8
-+};
-+
-+enum type {
-+	INVALID,
-+	STR_VAL,
-+	NUM_VAL
-+};
-+
-+int value_type(int id)
-+{
-+	int val_type;
-+
-+	switch(id) {
-+	case POWER_PERFORMANCE_MODE:
-+	case IDLE_POWER_SAVER_STATUS:
-+		val_type = STR_VAL;
-+		break;
-+	case MIN_FREQ:
-+	case STAT_FREQ:
-+	case MAX_FREQ:
-+	case PROC_FOLDING_STATUS:
-+		val_type = NUM_VAL;
-+		break;
-+	default:
-+		val_type = INVALID;
-+	}
-+
-+	return val_type;
-+}
-+
-+int verify_energy_info()
-+{
-+	const char *path = "/sys/firmware/papr/energy_scale_info";
-+	struct dirent *entry;
-+	struct stat s;
-+	DIR *dirp;
-+
-+	if (stat(path, &s) || !S_ISDIR(s.st_mode))
-+		return -1;
-+	dirp = opendir(path);
-+
-+	while ((entry = readdir(dirp)) != NULL) {
-+		char file_name[64];
-+		int id, attr_type;
-+		FILE *f;
-+
-+		if (strcmp(entry->d_name,".") == 0 ||
-+		    strcmp(entry->d_name,"..") == 0)
-+			continue;
-+
-+		id = atoi(entry->d_name);
-+		attr_type = value_type(id);
-+		if (attr_type == INVALID)
-+			return -1;
-+
-+		/* Check if the files exist and have data in them */
-+		sprintf(file_name, "%s/%d/desc", path, id);
-+		f = fopen(file_name, "r");
-+		if (!f || fgetc(f) == EOF)
-+			return -1;
-+
-+		sprintf(file_name, "%s/%d/value", path, id);
-+		f = fopen(file_name, "r");
-+		if (!f || fgetc(f) == EOF)
-+			return -1;
-+
-+		if (attr_type == STR_VAL) {
-+			sprintf(file_name, "%s/%d/value_desc", path, id);
-+			f = fopen(file_name, "r");
-+			if (!f || fgetc(f) == EOF)
-+				return -1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int main(void)
-+{
-+	return test_harness(verify_energy_info, "papr_attributes");
-+}
--- 
-2.31.1
+> > >   	for (i = 0; i < data->stats->num_counters; i++) {
+> > > -		attr = &data->attrs[i];
+> > > +		if (data->stats->descs[i].flags & IB_STAT_FLAG_OPTIONAL)
+> > > +			continue;
+> > > +		attr = &data->attrs[pos];
+> > >   		sysfs_attr_init(&attr->attr.attr);
+> > >   		attr->attr.attr.name = data->stats->descs[i].name;
+> > >   		attr->attr.attr.mode = 0444;
+> > >   		attr->attr.show = hw_stat_device_show;
+> > >   		attr->show = show_hw_stats;
+> > > -		data->group.attrs[i] = &attr->attr.attr;
+> > > +		data->group.attrs[pos] = &attr->attr.attr;
+> > > +		pos++;
+> > >   	}
+> > 
+> > This isn't OK, the hw_stat_device_show() computes the stat index like
+> > this:
+> > 
+> > 	return stat_attr->show(ibdev, ibdev->hw_stats_data->stats,
+> > 			       stat_attr - ibdev->hw_stats_data->attrs, 0, buf);
+> > 
+> > Which assumes the stats are packed contiguously. This only works
+> > because mlx5 is always putting the optional stats at the end.
+> 
+> Yes you are right, thanks. Maybe we can add an "index" field in struct
+> hw_stats_device/port_attribute, then set it in setup and use it in show.
 
+You could just add a WARN_ON check that optional stats are at the end
+I suppose
+
+Jason
