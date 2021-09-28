@@ -2,125 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787F041B7AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A790641B7B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242415AbhI1Th6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:37:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242535AbhI1Th5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:37:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3FA61131;
-        Tue, 28 Sep 2021 19:36:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632857777;
-        bh=/hPKLMPJTNrhU1SP0bMA34z2EYxtK4mD++/ujAwU6A4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h6eGGH0fk6/SkY3p+QaFpdTDka6h9KtK4CpJIjQVf8LiUKr8o+llRxPFcV7LkqV8M
-         Z3+hSITUMhBWOBM2/ITWO0IyxyiKGeDl607P7bOazNx5NQbndOq4lieEc+Wyw12tN8
-         JOgzDoGxiFUZDjfFNrLZI/af0nt8o+C8qPTkKeGO7Vy4ezfLCYV83GcDdeGAZvFLJD
-         nsaEh2q2AhB3eyn708Mfk0UpJq3UzrhLpjTcz80BwIrbgPIoogknndzNBguE5Y/kqL
-         e1nweHR9yTNeX6ZXkne0h52alGpPBYgo8VDGfJ/BdTfu8ejPsguJBhAbS/yE4lX/RY
-         N20xF3Twn9VIw==
-Received: by mail-ed1-f45.google.com with SMTP id r18so11548545edv.12;
-        Tue, 28 Sep 2021 12:36:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532jdaDAcW49axkMVF+rx0kVtRbH+NvDM/6yM0rictaltYDnVGZU
-        V4E+64ttQcMKGd548XNSvnVCVdsFOOIIdB+SaA==
-X-Google-Smtp-Source: ABdhPJxkN1rAEe0u7at9IuCHUo7sUflpWJWdcsHHnqh3vlDJJdBMkZRw+1OPM2MmSyluZXfETP88gy0YMvDpRaQqOk4=
-X-Received: by 2002:a17:906:fa8a:: with SMTP id lt10mr8741415ejb.320.1632857776271;
- Tue, 28 Sep 2021 12:36:16 -0700 (PDT)
+        id S242505AbhI1Tkz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 15:40:55 -0400
+Received: from mail1.shanghaitech.edu.cn ([119.78.254.90]:46269 "EHLO
+        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S241529AbhI1Tkw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:40:52 -0400
+Received: from [10.15.44.215] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 456895720416615;
+        Wed, 29 Sep 2021 03:38:59 +0800 (CST)
+Received: from DESKTOP-FOJ6ELG.localdomain (10.15.44.220) by
+ smtp.shanghaitech.edu.cn (10.15.44.215) with Microsoft SMTP Server (TLS) id
+ 14.3.399.0; Wed, 29 Sep 2021 03:38:57 +0800
+From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Subject: [PATCH -next] drivers/base/component.c: remove superfluous header files from component.c
+Date:   Wed, 29 Sep 2021 03:38:49 +0800
+Message-ID: <20210928193849.28717-1-liumh1@shanghaitech.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210928182139.652896-1-f.fainelli@gmail.com> <20210928182139.652896-10-f.fainelli@gmail.com>
-In-Reply-To: <20210928182139.652896-10-f.fainelli@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 28 Sep 2021 14:36:04 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+Hcpj6CCM6hYFC5hpNfm9fcqZXDuyxR4vKn9hzRK-QiA@mail.gmail.com>
-Message-ID: <CAL_Jsq+Hcpj6CCM6hYFC5hpNfm9fcqZXDuyxR4vKn9hzRK-QiA@mail.gmail.com>
-Subject: Re: [PATCH v3 09/14] irqchip: Provide platform_device to of_irq_init_cb_t
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM SUB-ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.15.44.220]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 1:22 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> Provide the platform device mapping to the interrupt controller node to
-> the of_irq_init_cb_t callback such that drivers can make use of it.
->
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/irqchip/irqchip.c | 2 +-
->  drivers/of/irq.c          | 2 +-
->  include/linux/of_irq.h    | 5 ++++-
->  3 files changed, 6 insertions(+), 3 deletions(-)
+component.c hasn't use any macro or function declared in linux/kref.h.
+Thus, these files can be removed from component.c safely without
+affecting the compilation of the drivers/base/ module
 
-Less invasive than I thought as we lose any function typing. Maybe at
-least the one platform driver, drivers/irqchip/qcom-pdc.c, should have
-its function parameters updated.
+Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ drivers/base/component.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->
-> diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
-> index 3570f0a588c4..289784eefd00 100644
-> --- a/drivers/irqchip/irqchip.c
-> +++ b/drivers/irqchip/irqchip.c
-> @@ -55,6 +55,6 @@ int platform_irqchip_probe(struct platform_device *pdev)
->         if (par_np && !irq_find_matching_host(par_np, DOMAIN_BUS_ANY))
->                 return -EPROBE_DEFER;
->
-> -       return irq_init_cb(np, par_np);
-> +       return irq_init_cb(np, par_np, pdev);
->  }
->  EXPORT_SYMBOL_GPL(platform_irqchip_probe);
-> diff --git a/drivers/of/irq.c b/drivers/of/irq.c
-> index 352e14b007e7..18f3f5c00c87 100644
-> --- a/drivers/of/irq.c
-> +++ b/drivers/of/irq.c
-> @@ -538,7 +538,7 @@ void __init of_irq_init(const struct of_device_id *matches)
->                                  desc->dev,
->                                  desc->dev, desc->interrupt_parent);
->                         ret = desc->irq_init_cb(desc->dev,
-> -                                               desc->interrupt_parent);
-> +                                               desc->interrupt_parent, NULL);
->                         if (ret) {
->                                 of_node_clear_flag(desc->dev, OF_POPULATED);
->                                 kfree(desc);
-> diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
-> index aaf219bd0354..89acc8b089f0 100644
-> --- a/include/linux/of_irq.h
-> +++ b/include/linux/of_irq.h
-> @@ -9,7 +9,10 @@
->  #include <linux/ioport.h>
->  #include <linux/of.h>
->
-> -typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *);
-> +struct platform_device;
-> +
-> +typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *,
-> +                               struct platform_device *);
->
->  /*
->   * Workarounds only applied to 32bit powermac machines
-> --
-> 2.25.1
->
+diff --git a/drivers/base/component.c b/drivers/base/component.c
+index 5e79299f6..6dc309913 100644
+--- a/drivers/base/component.c
++++ b/drivers/base/component.c
+@@ -9,7 +9,6 @@
+  */
+ #include <linux/component.h>
+ #include <linux/device.h>
+-#include <linux/kref.h>
+ #include <linux/list.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
+-- 
+2.25.1
+
+
