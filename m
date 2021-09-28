@@ -2,85 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B9141ABD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B0E41ABEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239818AbhI1Jb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:31:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:45338 "EHLO foss.arm.com"
+        id S240056AbhI1Jcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:32:43 -0400
+Received: from 8bytes.org ([81.169.241.247]:39764 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239724AbhI1Jby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:31:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 901546D;
-        Tue, 28 Sep 2021 02:30:15 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E3DC3F7B4;
-        Tue, 28 Sep 2021 02:30:14 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 10:30:09 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>, kishon@ti.com
-Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Subject: Re: [PATCH v2 0/4] PCI: dwc: pci-dra7xx: miscellaneous improvements
-Message-ID: <20210928093009.GA11323@lpieralisi>
-References: <20210531085934.2662457-1-luca@lucaceresoli.net>
- <20210621144109.GC27516@lpieralisi>
- <20210813155328.GC15515@lpieralisi>
- <46422460-ae9b-3c04-1f59-54bb6631317e@lucaceresoli.net>
+        id S239958AbhI1JcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:32:25 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 1841B2FF; Tue, 28 Sep 2021 11:30:45 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 11:30:43 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>, x86@kernel.org,
+        linux-ia64@vger.kernel.org
+Subject: Re: [PATCH] iommu/dma: Tidy up Kconfig selects
+Message-ID: <YVLgw1nfEf7U13Mh@8bytes.org>
+References: <9ba6f2e8568a3ff6a94fade66668d99705433c44.1631536879.git.robin.murphy@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46422460-ae9b-3c04-1f59-54bb6631317e@lucaceresoli.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <9ba6f2e8568a3ff6a94fade66668d99705433c44.1631536879.git.robin.murphy@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 11:03:00PM +0200, Luca Ceresoli wrote:
-> Hi Lorenzo, Kishon,
-> 
-> On 13/08/21 17:53, Lorenzo Pieralisi wrote:
-> > On Mon, Jun 21, 2021 at 03:41:09PM +0100, Lorenzo Pieralisi wrote:
-> >> On Mon, May 31, 2021 at 10:59:30AM +0200, Luca Ceresoli wrote:
-> >>> This is an series of mixed improvements to the DRA7 PCI controller driver:
-> >>> allow building as a loadabel module, allow to get and enable a clock and a
-> >>> small cleanup.
-> >>>
-> >>> Luca
-> >>>
-> >>> Luca Ceresoli (4):
-> >>>   PCI: dwc: Export more symbols to allow modular drivers
-> >>>   PCI: dra7xx: Make it a kernel module
-> >>>   PCI: dra7xx: Remove unused include
-> >>>   PCI: dra7xx: Get an optional clock
-> >>>
-> >>>  drivers/pci/controller/dwc/Kconfig            |  6 ++---
-> >>>  drivers/pci/controller/dwc/pci-dra7xx.c       | 22 +++++++++++++++++--
-> >>>  .../pci/controller/dwc/pcie-designware-ep.c   |  1 +
-> >>>  drivers/pci/controller/dwc/pcie-designware.c  |  1 +
-> >>>  4 files changed, 25 insertions(+), 5 deletions(-)
-> >>
-> >> Hi Kishon,
-> >>
-> >> I'd need your ACK to proceed with this series that looks like it
-> >> is ready to go, please let me know.
-> > 
-> > Still need it - please let me know.
-> > 
-> > Lorenzo
-> 
-> Should I resend the series?
-> 
-> BTW it still applies cleanly on both the pci next branch and on mainline
-> master.
+On Mon, Sep 13, 2021 at 01:41:19PM +0100, Robin Murphy wrote:
+> Now that the dust has settled on converting all the x86 drivers to
+> iommu-dma, we can punt the Kconfig selection to arch code where it
+> was always intended to be.
 
-Kishon, please consider ACKing or otherwise comment on this series
-to make some progress.
+Can we select IOMMU_DMA under IOMMU_SUPPORT instead? The only drivers
+not using IOMMU_DMA are the arm32 ones, afaics.
 
-Thanks,
-Lorenzo
+If we could get rid of the arm32 exception, the IOMMU_DMA symbol could
+also go away entirely and we handle it under IOMMU_SUPPORT instead. But
+that is something for the future :)
+
+Regards,
+
+	Joerg
+
