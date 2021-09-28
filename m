@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E4B41B32E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E402D41B32F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241805AbhI1PoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60806 "EHLO mail.kernel.org"
+        id S241830AbhI1PoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241758AbhI1Pn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:43:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58BBC611BD;
-        Tue, 28 Sep 2021 15:42:16 +0000 (UTC)
+        id S241740AbhI1Pn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:43:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DD9961206;
+        Tue, 28 Sep 2021 15:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632843738;
-        bh=20HrPlguOHn0M8K+69hCaAI8qSZhXcrez8gQx1tVSes=;
+        s=k20201202; t=1632843740;
+        bh=6j5W3PeNhaqrb1ag47WKtjEaOZNAEDFZKRywAiERVWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htL2BmgtLyCDQTTZaByWG4uMFHLESfUkX1tZvQz5DcFypt6AqFvXoU8mCbpJKVMID
-         xaTHblViyswWVy9ObHuDXohCW45EbfIs+5Ex9fv7J4vi/clNJV8GuEX+Iscs3+Vr3l
-         z+OalgA8Wzvf9O/4LD8mFfv60Y1rzrFJOWYNNU34r2MtLbYgA3UqkNCg62f42OzbrR
-         6jNHkPniTkogd6+HW5sz+dGQ3n/J70iZbDUyXBa8SdovsaUwhRNe7q8Hd4qHaGjh04
-         muUcS97Vh2ULralF87vZdj/IwqWgUmyfhyb/PwX2hO0UgoY10YsIat6c4s/9eKSbp6
-         aNyPB1FogGhmQ==
+        b=JcpQRLmIY7uju3UPPtngKNiNR+OwKrbSdXhuV/mwt/GdB8lePBrEv+T9RS+/oe8WU
+         IdVQMCxmuWhb1QowpZJzHLVKIsNtvnb3rR0pTJEotJ7CHv79XJAKkk9dcTm4uKAp9o
+         cbgHXTmB+UgL1nXExUGz3sRMfvs0fTCNpC5dGdVgAz3VKdUTV3vuP28B88AV7qSfwE
+         UaqVthh4Su5blhV+Hs09PHIIk4TJTz1Dvn0eiMcr4w4LOe/YSxwCloqsaV2r02N1uK
+         WPC9xKpvlFc/LD/2UdO7NtbmJy4pecL8yQd1OnDE+NzleGZg93FEylePMnOTsXLBUQ
+         ujW2c5sEGoNeA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Russell King <linux@armlinux.org.uk>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         llvm@lists.linux.dev
-Subject: [PATCH 09/14] ARM: allow compile-testing without machine record
-Date:   Tue, 28 Sep 2021 17:41:38 +0200
-Message-Id: <20210928154143.2106903-10-arnd@kernel.org>
+Subject: [PATCH 10/14] ARM: only warn about XIP address when not compile testing
+Date:   Tue, 28 Sep 2021 17:41:39 +0200
+Message-Id: <20210928154143.2106903-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210928154143.2106903-1-arnd@kernel.org>
 References: <20210928154143.2106903-1-arnd@kernel.org>
@@ -46,51 +46,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-A lot of randconfig builds end up not selecting any machine type at
-all. This is generally fine for the purpose of compile testing, but
-of course it means that the kernel is not usable on actual hardware,
-and it causes a warning about this fact.
+In randconfig builds, we sometimes come across this warning:
 
-As most of the build bots now force-enable CONFIG_COMPILE_TEST for
-randconfig builds, use that as a guard to control whether we warn
-on this type of broken configuration.
+arm-linux-gnueabi-ld: XIP start address may cause MPU programming issues
 
-We could do the same for the missing-cpu-type warning, but those
-configurations fail to build much earlier.
+While this is helpful for actual systems to figure out why it
+fails, the warning does not provide any benefit for build testing,
+so guard it in a check for CONFIG_COMPILE_TEST, which is usually
+set on randconfig builds.
 
+Fixes: 216218308cfb ("ARM: 8713/1: NOMMU: Support MPU in XIP configuration")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/kernel/vmlinux-xip.lds.S | 2 ++
- arch/arm/kernel/vmlinux.lds.S     | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/arm/kernel/vmlinux-xip.lds.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
-index e0c00986487f..bf16fadb6a00 100644
+index bf16fadb6a00..76678732c60d 100644
 --- a/arch/arm/kernel/vmlinux-xip.lds.S
 +++ b/arch/arm/kernel/vmlinux-xip.lds.S
-@@ -166,7 +166,9 @@ SECTIONS
-  * binutils is too old (for other reasons as well)
-  */
- ASSERT((__proc_info_end - __proc_info_begin), "missing CPU support")
-+#ifndef CONFIG_COMPILE_TEST
- ASSERT((__arch_info_end - __arch_info_begin), "no machine record defined")
-+#endif
+@@ -178,7 +178,7 @@ ASSERT((__arch_info_end - __arch_info_begin), "no machine record defined")
+ ASSERT((_end - __bss_start) >= 12288, ".bss too small for CONFIG_XIP_DEFLATED_DATA")
+ #endif
  
- #ifdef CONFIG_XIP_DEFLATED_DATA
+-#ifdef CONFIG_ARM_MPU
++#if defined(CONFIG_ARM_MPU) && !defined(CONFIG_COMPILE_TEST)
  /*
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index 20c4f6d20c7a..f02d617e3359 100644
---- a/arch/arm/kernel/vmlinux.lds.S
-+++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -174,6 +174,8 @@ __start_rodata_section_aligned = ALIGN(__start_rodata, 1 << SECTION_SHIFT);
-  * binutils is too old (for other reasons as well)
-  */
- ASSERT((__proc_info_end - __proc_info_begin), "missing CPU support")
-+#ifndef CONFIG_COMPILE_TEST
- ASSERT((__arch_info_end - __arch_info_begin), "no machine record defined")
-+#endif
- 
- #endif /* CONFIG_XIP_KERNEL */
+  * Due to PMSAv7 restriction on base address and size we have to
+  * enforce minimal alignment restrictions. It was seen that weaker
 -- 
 2.29.2
 
