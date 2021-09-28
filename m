@@ -2,70 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EDF41B238
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096B941B23C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241317AbhI1Oj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241152AbhI1Oj4 (ORCPT
+        id S241340AbhI1Okj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:40:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17972 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231733AbhI1Oki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:39:56 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4AFC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:38:17 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id k11-20020a4abd8b000000b002b5c622a4ddso1896556oop.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=P6hcjUDgNRVWoQlF2WjLd9MJ396DFb3R2r9u5EtGSlM=;
-        b=Lcd9Oa/yqGso0KN3S7AMeLjUNZUK8ujHG6MjIdn2PZB3cFLyB1HYoIUZZ5XWIphTrg
-         s2PcTNOHTZ0uE4WbgDPWGsE9JZxGLnj2UfOATua1SKGr8oYdg37SePv1xLohb+NGiseu
-         VMFpfOsQiw9Zjak7ULaCq6MiBzqt1R1hUNLHZu3AFOEdf7K5QGGoIjG+3Ds/mRsmFZWR
-         wKqX+u2PWBcYoQPxXwu/QRe/c7Q6hJ9HumQOM5ASQT+WPW7kEqC3xxKBPJgkeD7gBTra
-         UkV3jvsgPaqFMAxWx59Nzq8KkAuY2cWx7hfnYio+vlMtRoilKHI4otSWRD8DXHjf8aoM
-         uJag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=P6hcjUDgNRVWoQlF2WjLd9MJ396DFb3R2r9u5EtGSlM=;
-        b=KHdVTjmgfZNDYoH6kk3AeK+t7opVS8FBec2776pNnVetaoLYqS7ym3LVHhjPpaA4qi
-         kNCWIFhHOe4CI7DFBO+0OMeKcN3ZjbahWAPAEgG0iXvEql2UiEWzX7G6GAutTdUDhwZ/
-         kUrdizYNSrpmeqBVtUx0oNI34HBbvBI5/G8kF7NL5edMqFomv8WLwuga7iEYN3vAimX0
-         5wiSnwzBoXAPR6jz4aRwyLcyiaAL12VGDAWlBjVYEUh+6Y/hUFgehX4SDp5tmBfvqzPM
-         3VurSYdKHE4/jKV6dSnExZonpCvgfqXc2AaikzyA9oH4oV4280E/ZIRA471C3CB0iVw7
-         HteQ==
-X-Gm-Message-State: AOAM532QUl7IJtXT0PZDoTmKF4Q5HLObkfrxWwfbn3hnYwmRTZGbmIex
-        hkSpMf1EUuaUMjog4ktZX/kjwNUH+uiAtDVeO5A=
-X-Google-Smtp-Source: ABdhPJxXo9/1xdEglrECGEs/g/7RnfhCFn2NF4DyihnN+gFJGm2s+QEQUI5qVz/ELnSQDWRWbr2j1Fs0uNsoQIV8MvU=
-X-Received: by 2002:a4a:9510:: with SMTP id m16mr5236732ooi.14.1632839896511;
- Tue, 28 Sep 2021 07:38:16 -0700 (PDT)
+        Tue, 28 Sep 2021 10:40:38 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SEGsFH032654;
+        Tue, 28 Sep 2021 10:38:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=X8RyxjDx5WUc1f1p9TAy/o0IqlcNUgf87xHZvEzvKH4=;
+ b=rnxvHfsRitw7twQnFmTPAP1HW6LYrzrJVQEO8a/ELVyqgwj1Z1NLpqoQAXHyhvuio+d0
+ x6AeVWmm9KSWPgUT++TGFVwCq63A1QcoHETjf5HXEtN70DCteNXZ6FlPOr/4eYoMz8Sa
+ Ut5ByFYe/Nj5SPFAxVmgxrQOpseWJjkV/AbF+1tvkRRwlL5QYK5tPFMzW1dy/8fcFovK
+ Xo9DbdlKsKOyDDNly8rqMqla4aNHhI6PiO1fBunyz8TnRUEIKolDBDNXgqy8cKkZlj8j
+ bw2nIM4Q8CBwDo5Ec1mVCma6busK15FO1WqfEUXDw1tzHea+HiMJziW6/P1yfmvw3OXP KA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbktqvw9m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Sep 2021 10:38:56 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18SEWq0A023922;
+        Tue, 28 Sep 2021 10:38:56 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbktqvw8v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Sep 2021 10:38:56 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SEXGno032456;
+        Tue, 28 Sep 2021 14:38:53 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3b9u1jf331-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Sep 2021 14:38:53 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SEciHP57410014
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 14:38:44 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D939942041;
+        Tue, 28 Sep 2021 14:38:43 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 47BBC42047;
+        Tue, 28 Sep 2021 14:38:43 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.4.56])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Sep 2021 14:38:43 +0000 (GMT)
+Date:   Tue, 28 Sep 2021 16:38:41 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Subject: Re: [PATCH resend RFC 0/9] s390: fixes, cleanups and optimizations
+ for page table walkers
+Message-ID: <20210928163841.18344eb5@p-imbrenda>
+In-Reply-To: <98061eff-f856-fc1d-9f04-a31ac5fcd790@de.ibm.com>
+References: <20210909162248.14969-1-david@redhat.com>
+        <YVL1iwSicgWg1qx+@osiris>
+        <98061eff-f856-fc1d-9f04-a31ac5fcd790@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a8a:98c:0:0:0:0:0 with HTTP; Tue, 28 Sep 2021 07:38:15 -0700 (PDT)
-Reply-To: asameraa950@gmail.com
-From:   Samera Ali <jeminaali147@gmail.com>
-Date:   Tue, 28 Sep 2021 07:38:15 -0700
-Message-ID: <CAG2sCxzKeMFz3eb-=jx4zS3QpOwk=Tk+ozU5DQNh=-O+yfz7kA@mail.gmail.com>
-Subject: =?UTF-8?B?0JfQtNGA0LDQstC10Lkg0YHQutGK0L/QsA==?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Fk5omedd_Eb4aYGUMmyVBNNHTOsJIl03
+X-Proofpoint-GUID: Mpx8QKBbenop1SEVmhUixRGw85NCSgbp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 impostorscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109280083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JfQtNGA0LDQstC10Lkg0YHQutGK0L/QsA0KDQrQn9GA0LjRj9GC0L3QviDQvNC4INC1LCBBbSBN
-aXNzIHNhbWVyYSDQndCw0LzQtdGA0LjRhSDQuNC80LXQudC70LAg0LLQuCDRgtGD0Log0LIg0YLR
-itGA0YHQtdC90LXRgtC+INGBDQpHb29nbGUg0Lgg0LjQt9Cx0YDQsNGFINC40L3RgtC10YDQtdGB
-INC00LAg0YHQtSDRgdCy0YrRgNC20LAg0YEg0LLQsNGBLiDQmNC80LDQvCDQvdC10YnQviDQvNC9
-0L7Qs9C+INCy0LDQttC90L4sDQrQutC+0LXRgtC+INCx0LjRhSDQuNGB0LrQsNC7INC00LAg0L7Q
-sdGB0YrQtNGPINGBINCy0LDRgSDQuCDRidC1INGB0YrQvCDQsdC70LDQs9C+0LTQsNGA0LXQvSwg
-0LDQutC+INC80Lgg0L7RgtCz0L7QstC+0YDQuNGC0LUNCtGH0YDQtdC3INC80L7RjyDQuNC80LXQ
-udC7INCw0LTRgNC10YEsINC30LAg0LTQsCDQstC4INGA0LDQt9C60LDQttCwINC/0L7QstC10YfQ
-tSDQt9CwINC80LXQvSDRgSDQvNC+0LjRgtC1INGB0L3QuNC80LrQuCwNCtC80L7RjyDQu9C40YfQ
-tdC9INC40LzQtdC50Lsg0LrQsNGC0L4g0LrQvtC70LXQs9C4ID8/IFthc2FtZXJhYTk1MEBnbWFp
-bC5jb21dDQoNCtCe0YIsIHNhbWVyYSBhbGkNCg==
+On Tue, 28 Sep 2021 13:06:26 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+
+> Am 28.09.21 um 12:59 schrieb Heiko Carstens:
+> > On Thu, Sep 09, 2021 at 06:22:39PM +0200, David Hildenbrand wrote:  
+> >> Resend because I missed ccing people on the actual patches ...
+> >>
+> >> RFC because the patches are essentially untested and I did not actually
+> >> try to trigger any of the things these patches are supposed to fix. It
+> >> merely matches my current understanding (and what other code does :) ). I
+> >> did compile-test as far as possible.
+> >>
+> >> After learning more about the wonderful world of page tables and their
+> >> interaction with the mmap_sem and VMAs, I spotted some issues in our
+> >> page table walkers that allow user space to trigger nasty behavior when
+> >> playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
+> >> should be hard to trigger, others are fairly easy because we provide
+> >> conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
+> >>
+> >> Future work:
+> >> - Don't use get_locked_pte() when it's not required to actually allocate
+> >>    page tables -- similar to how storage keys are now handled. Examples are
+> >>    get_pgste() and __gmap_zap.
+> >> - Don't use get_locked_pte() and instead let page fault logic allocate page
+> >>    tables when we actually do need page tables -- also, similar to how
+> >>    storage keys are now handled. Examples are set_pgste_bits() and
+> >>    pgste_perform_essa().
+> >> - Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
+> >>    __gmap_zap() that's very easy.
+> >>
+> >> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> >> Cc: Janosch Frank <frankja@linux.ibm.com>
+> >> Cc: Cornelia Huck <cohuck@redhat.com>
+> >> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> >> Cc: Heiko Carstens <hca@linux.ibm.com>
+> >> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> >> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> >> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> >> Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>  
+> > 
+> > For the whole series:
+> > Acked-by: Heiko Carstens <hca@linux.ibm.com>
+> > 
+> > Christian, given that this is mostly about KVM I'd assume this should
+> > go via the KVM tree. Patch 6 (pci_mmio) is already upstream.  
+> 
+> Right, I think I will queue this even without testing for now.
+> Claudio, is patch 7 ok for you with the explanation from David?
+
+yes
