@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABC741B7D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C66741B7D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242547AbhI1T5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        id S242573AbhI1T6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242470AbhI1T5B (ORCPT
+        with ESMTP id S242525AbhI1T6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:57:01 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60358C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:55:21 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id s20so124679ioa.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1dkOoEowsVEai15whHpEaoKklD3em5dZIMAiSQ/NBXA=;
-        b=ZeD06VESIVwTz1xeRXSBHGWRRwsuqhJZqQwA7cS8w7S36OQJ9M42GPOt60GoPm4LLN
-         EhyE/ygXrJFIONCKDGKyPvXji5TLlEPtth9nQsRZuy/IeYGcjbWWP7tWPdZ/g49vlVEV
-         D4ziTYxHr8njp8La9hvWgYGQygcfX8fs0pN+lyR+t1RqdyHwC/7j9ctRh39DBoSxrCAF
-         W7fZNVt8JY3zn5Gg4p3VkhBgFht+DBRN4Umj8cH8EE9Lo3YE6taSK+G2eOxlcDNL8a69
-         u/eiBSoiyJw8GFFxy3BA4RXuA7thqLvfHkJROM11lKZey1rvl8Ml9UFTDNyZ2L/Vl66Z
-         9YzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1dkOoEowsVEai15whHpEaoKklD3em5dZIMAiSQ/NBXA=;
-        b=zb4W0lj7xGkEcGcgNH9wRiyi14EnCRv9M8O88K/QmPF0UVdvDICU0k+rm0lCTqhL55
-         OHmMwTy30wLvbNqRZBgD4iRtzaTy1fc9kSVfiS9K8I80Bvg+k0kqmF1VB0e9HiwBM5fF
-         HH9knuIugGkDFnIqZJzZxItOFxYTwia97Rk0ldkyYQLlj7xzNdCwZIjwG1wOVc875BeJ
-         b+TYd+5uk0JyKmaZSoQZyjuLm29qqkzw+zSvfrasDQUnyyVGMMhalgmEV9WuTvJF+XI5
-         av6KZhrB9TSGl4ika/UCth2MpEG1eWvweNR2r6ZkpmX3dt2Abjag8p3PKCt+qDXMUm6N
-         9u9A==
-X-Gm-Message-State: AOAM531iO6e7fmsCSRs2U5VSJfNuiDGjLHdBXgYry5nWAwDmoq5oF/jS
-        3ysLE/DAuzE9fXo2rrdYG7+npQ==
-X-Google-Smtp-Source: ABdhPJxDG+imIW+LC31md8sJ9W5FJ6CYFuQFlJipqlnxhkrntzvi5fuKARgO5VrFwZOn9a7R7YqD3w==
-X-Received: by 2002:a5e:c018:: with SMTP id u24mr5346781iol.129.1632858920781;
-        Tue, 28 Sep 2021 12:55:20 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r20sm30511ioh.19.2021.09.28.12.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:55:20 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVJCA-007Gjs-VN; Tue, 28 Sep 2021 16:55:18 -0300
-Date:   Tue, 28 Sep 2021 16:55:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20210928195518.GV3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-20-logang@deltatee.com>
+        Tue, 28 Sep 2021 15:58:40 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5EEC06161C;
+        Tue, 28 Sep 2021 12:57:00 -0700 (PDT)
+Received: from groot.intra.skream.org (mobile-user-2e84bb-13.dhcp.inet.fi [46.132.187.13])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pekka.korpinen)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 5DCBA1B001C6;
+        Tue, 28 Sep 2021 22:56:54 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1632859014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0Pv7C2sMIx0ey5J4LhX0/v7PZ370uBe7XXywiIOBNGQ=;
+        b=N5cdWZo5f0iZhZCl48laTsYsGQUaLOkwDmp3HcAa/N4DvnvHcscGWgyQlQeomkLKmsRLSB
+        vrz3pG6UDEg91gLwLy3ePX8TgrqV51xQMKnOht5+XqAefMiNY+AjFxFMZGKgxqR+itNbCH
+        7fAAYdYjsFtxfBGWNCcbxseH8P/bcaZLgxV5YCe/8RocwILET9EGZcRINystQ0zYAOhrV0
+        7ZC8MtVo0mRmxYgf7qZeSjdtrQ5LZMCcrSqQ7gDibWfDooFGn5+h6U1Jklano/bEWN2REM
+        OzK8O096WVUwIE7L9+hMuz055Ue+JQt8fUZ9yIC7nAGY2XD8eK5HzPphNRp8YQ==
+From:   Pekka Korpinen <pekka.korpinen@iki.fi>
+Cc:     Pekka Korpinen <pekka.korpinen@iki.fi>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: dac: ad5446: Fix ad5622_write() return value
+Date:   Tue, 28 Sep 2021 22:55:48 +0300
+Message-Id: <20210928195548.17846-1-pekka.korpinen@iki.fi>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916234100.122368-20-logang@deltatee.com>
+Content-Transfer-Encoding: 8bit
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1632859014; a=rsa-sha256;
+        cv=none;
+        b=leupTbo/KG6HZyN/d+683TfdU7qJ6HyyJl/bz6ptXNZt1niXAvQcwv3LsfKWXoWG+ZHeTs
+        01wZuHBQHClSSCR0QZBcpiCQzb3J7aDSOysENtao0cZKRLNnZqLumN1Rf6KaWii8QjiWUu
+        VhFja23DQJx+LVE9H21+4d7pofc3jEhKduh/tcae2dl2C8Ht4I1j+dOPzxmpIgWe49W3ji
+        xUMV0fe4HhH5qo2i8L6ofcSkOazENSQcfbThf4XcFZIRnO/0LGTV1iktEzv4YpDNFoLEUZ
+        kYa658LvYpma3zA2fv6BXdOTO5IiDRJrr2N5S3ZhdXb8vQrwl2N1cvmQZFM2iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1632859014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0Pv7C2sMIx0ey5J4LhX0/v7PZ370uBe7XXywiIOBNGQ=;
+        b=KQOImEur8j3QAA7RgVuLK2oXMbojnO7ErjPgEJC13ZhMm1rKnlkEzFxGBigIwSyyyfcRCv
+        wWUoxu2PvFcXb2woQGzYfPb5mg1+JQZyCMI9i5JyDaEXgUugFk8SnOGJ+P2jsfpKlcCdRU
+        iF+F+ZFNPvvBH1Nzy9yN41N3SjEjtwRGTZgtKw9lthBqs3qWilUSsWwSBBVZ9FpC31rEd+
+        aK14cwS9ZqNUXDOC3X9Ucc4POOwY3KDck9euCoUAvGA21EOYKyAKIgONNRYkk97FRWpl9z
+        lBpsCdLgq/44u7J1/BX7FUuC3FOOigKISYw7QtJ7onboUspujj5GUBUOV40Kmg==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=pekka.korpinen smtp.mailfrom=pekka.korpinen@iki.fi
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:40:59PM -0600, Logan Gunthorpe wrote:
-> +int pci_mmap_p2pmem(struct pci_dev *pdev, struct vm_area_struct *vma)
-> +{
-> +	struct pci_p2pdma_map *pmap;
-> +	struct pci_p2pdma *p2pdma;
-> +	int ret;
-> +
-> +	/* prevent private mappings from being established */
-> +	if ((vma->vm_flags & VM_MAYSHARE) != VM_MAYSHARE) {
-> +		pci_info_ratelimited(pdev,
-> +				     "%s: fail, attempted private mapping\n",
-> +				     current->comm);
-> +		return -EINVAL;
-> +	}
-> +
-> +	pmap = pci_p2pdma_map_alloc(pdev, vma->vm_end - vma->vm_start);
-> +	if (!pmap)
-> +		return -ENOMEM;
-> +
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (!p2pdma) {
-> +		ret = -ENODEV;
-> +		goto out;
-> +	}
-> +
-> +	ret = simple_pin_fs(&pci_p2pdma_fs_type, &pci_p2pdma_fs_mnt,
-> +			    &pci_p2pdma_fs_cnt);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ihold(p2pdma->inode);
-> +	pmap->inode = p2pdma->inode;
-> +	rcu_read_unlock();
-> +
-> +	vma->vm_flags |= VM_MIXEDMAP;
+On success i2c_master_send() returns the number of bytes written. The
+call from iio_write_channel_info(), however, expects the return value to
+be zero on success.
 
-Why is this a VM_MIXEDMAP? Everything fault sticks in here has a
-struct page, right?
+Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+---
+This bug causes incorrect consumption of the sysfs buffer in
+iio_write_channel_info(). When writing more than two characters to
+out_voltage0_raw, the ad5446 write handler is called multiple times
+causing unexpected behavior.
 
-Jason
+A similar fix was applied for ad5064.c in 2015 - commit 03fe472ef33b
+("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
+
+ drivers/iio/dac/ad5446.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+index 488ec69967d6..dfd541bbde5b 100644
+--- a/drivers/iio/dac/ad5446.c
++++ b/drivers/iio/dac/ad5446.c
+@@ -531,8 +531,13 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
+ {
+ 	struct i2c_client *client = to_i2c_client(st->dev);
+ 	__be16 data = cpu_to_be16(val);
++	int ret;
++
++	ret = i2c_master_send(client, (char *)&data, sizeof(data));
++	if (ret < 0)
++		return ret;
+ 
+-	return i2c_master_send(client, (char *)&data, sizeof(data));
++	return 0;
+ }
+ 
+ /*
+-- 
+2.33.0
+
