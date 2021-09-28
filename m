@@ -2,67 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A8841A73B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06E141A74E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237745AbhI1FpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 01:45:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:26922 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235647AbhI1Fo7 (ORCPT
+        id S238118AbhI1Fyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 01:54:33 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:55385 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhI1Fyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:44:59 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HJSx14wHkzbmQH;
-        Tue, 28 Sep 2021 13:39:01 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 13:43:17 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 13:43:17 +0800
-Message-ID: <3cd69b8f-c1af-baaa-31aa-f2e61e4c84b6@huawei.com>
-Date:   Tue, 28 Sep 2021 13:43:16 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
-Content-Language: en-US
-To:     Guo Ren <guoren@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
+        Tue, 28 Sep 2021 01:54:31 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJTDw74v1z4xVP;
+        Tue, 28 Sep 2021 15:52:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632808371;
+        bh=5K3Ay4lGUcLpwFXYDQYZ8YpeFnow4v5TO+RVmzcqTys=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dfawKkmNBVSNq/KK9JcPZnfv1ohfToQriS3s3gBPYOlYwQZSBasV2JxTiAsXSs5Dt
+         qdb0Vvc29gSiYjr/q0+5gLV68ljYUScAxApIZL5JHdnLp03kdJcQscDyIa47+s5FgV
+         PnvHUIQNtNRpGm9fMCLF8zdyh0bJ9vzWUvaWkK6f4sJcO153nwxBqFiqlqtkBGmEg0
+         uOu4xoRMJhMlst0MyTqig1+WSy821tEcVF2B+NaqGp89hEEOg4+LviTkzhICsNZTD6
+         qK99pM6cRbnkY2y7VKKLo01kG240b6ccKz7uqBYOxB/T6DAk6pN2nzUZHzoTRMd6Jq
+         tmKKaRn7ZnFVA==
+Date:   Tue, 28 Sep 2021 15:52:47 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Gary Guo <gary@garyguo.net>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Yuki Okushi <jtitor@2k36.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-csky@vger.kernel.org>
-References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
- <CAJF2gTRoXWqcMTkuu=L6gkF2cL79GonN6XBj86BMMptJnmz3zw@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <CAJF2gTRoXWqcMTkuu=L6gkF2cL79GonN6XBj86BMMptJnmz3zw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rust tree
+Message-ID: <20210928155247.5220932c@canb.auug.org.au>
+In-Reply-To: <20210928051849.00000e99@garyguo.net>
+References: <20210928140932.41432dff@canb.auug.org.au>
+        <20210928051849.00000e99@garyguo.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/kFkiue_cfI5n1cGJLam1XMq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/kFkiue_cfI5n1cGJLam1XMq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/9/28 13:08, Guo Ren wrote:
-> On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
->> only sh and csky select it, but the could use SPARSE_IRQ too, let's
->> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
-> Can you elaborate the reason on why we need to kill MAY_HAVE_SPARSE_IRQ?
-> What are the benefits after the patch? (As you know we couldn't drop
-> "!SPARSE_IRQ".)
+Hi Gary,
 
-If csky want to keep MAY_HAVE_SPARSE_IRQ, then I won't kill it, or no 
-one use it,
+On Tue, 28 Sep 2021 05:18:49 +0100 Gary Guo <gary@garyguo.net> wrote:
+>
+> On Tue, 28 Sep 2021 14:09:32 +1000
+> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>=20
+> > Hi all,
+> >=20
+> > After merging the rust tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >=20
+> > scripts/kconfig/confdata.c: In function 'rustc_cfg_print_symbol':
+> > scripts/kconfig/confdata.c:669:9: warning: implicit declaration of
+> > function 'sym_escape_string_value'; did you mean
+> > 'sym_set_string_value'? [-Wimplicit-function-declaration] 669 |   str
+> > =3D sym_escape_string_value(value); |         ^~~~~~~~~~~~~~~~~~~~~~~ |
+> >         sym_set_string_value scripts/kconfig/confdata.c:669:7:
+> > warning: assignment to 'const char *' from 'int' makes pointer from
+> > integer without a cast [-Wint-conversion] 669 |   str =3D
+> > sym_escape_string_value(value); |       ^ /usr/bin/ld:
+> > scripts/kconfig/confdata.o: in function `rustc_cfg_print_symbol':
+> > confdata.c:(.text+0x738): undefined reference to
+> > `sym_escape_string_value'
+> >=20
+> > Caused by commit
+> >=20
+> >   dc08d49444e9 ("Kbuild: add Rust support")
+> >=20
+> > interacting with commit
+> >=20
+> >   420a2bdbead2 ("kconfig: Refactor sym_escape_string_value")
+> >=20
+> > from the kbuild tree.
+> >=20
+> > I applied the following patch, but it doesn't seem quite right. =20
+>=20
+> That's indeed incorrect, if we have `CONFIG_FOO=3Dbar` then sym here is
+> `FOO` and value is `bar`. I think to resolve the conflict, 420a2bdbead2
+> would have to be reverted.
 
-then cleanup it.
+OK, I have done that for today.  (I needed to revert
+16f3610168218ed5e2eafa6978bb7f10c175c7a9 as well).
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/kFkiue_cfI5n1cGJLam1XMq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFSra8ACgkQAVBC80lX
+0Gw2OQf/VtTxqKiROH5hgvyCs+z0Q4g6dsJyIJ3YKB0W03Pln3VxhWUHKODjPSx0
+LlGpLm0wlHtYye9nEsao6e5bD/zzGg9N5K/vxnapX6pttAd0nnRjvKrctUieXMPS
+37ecruyp/88C8kIcxUZyDvHR29UhDvxk8mFshR0zWMNiR5FgneMfu1i9fuNf5qyh
+nBww8AvSvomBLpyrDgPqKETP1EBX/QrPS4i3yxk7z8Ah5BwOL7JvvPP6Hiqbx8cg
+0LShsvqPrdtBsYuFBGJNJ0lvDLS1zoU2gu4ZOtmEv97VsI9u6/UA/iUX5rL1iSOH
+lYmVTfymLl27Xpg9zjN/0J4KSv0OHQ==
+=XwcE
+-----END PGP SIGNATURE-----
+
+--Sig_/kFkiue_cfI5n1cGJLam1XMq--
