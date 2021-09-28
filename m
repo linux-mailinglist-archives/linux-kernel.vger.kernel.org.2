@@ -2,130 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F4A41B3C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2810941B3EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241841AbhI1Q0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        id S241783AbhI1QcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241702AbhI1Q0E (ORCPT
+        with ESMTP id S230251AbhI1QcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:26:04 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2279C061746;
-        Tue, 28 Sep 2021 09:24:23 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id x8so11714582plv.8;
-        Tue, 28 Sep 2021 09:24:23 -0700 (PDT)
+        Tue, 28 Sep 2021 12:32:15 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A55C06161C;
+        Tue, 28 Sep 2021 09:30:35 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id k23-20020a17090a591700b001976d2db364so3262823pji.2;
+        Tue, 28 Sep 2021 09:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FHlhAnJc71taZr/+BkaaA8wu8hR4fcgSNUCat/tWerI=;
-        b=daUOaWa3DRPTu4mbZ1dBxI6Jqoe5tBfdeHvSmVmieVSsPj2tzkn1WUfOOG0takYkdZ
-         xWFd1ua+TFmGjqcMBx9AWSxn5C3jzjzwzkRnFdlK1VBl51Xgeol6oyj5TvRpzBnLRC/o
-         qv7c1/QCbV+rKwAA6lQbfPDcmJJb9Z1FCkt+D8fLlbLWbOkC4PyVw5TryjBMOyUlv7p2
-         KvwczCZy2wRBzVDRNKtNe4x9ZSJcfHW91XErR09/yG9TAe09rGRmqknEPxuL7DL3etvA
-         gcLRSGoyqfZcx0DL2NAZ7pPCZE7fCrzE+IyyRunakQmtKgaW9hV688+pG/agoW84Kc16
-         VdIA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pf7A/zPJOzJAdofq5BEHkXRKW+JfDq2B/Lw5Xi7ZWR8=;
+        b=I4n1mLS6yyfK2Pml5cOKdjeIkbSwIYZLV1kxNVZE/n460OJwUf+RbDmq6TgahzaoBI
+         q6zhekv/AaAaRbObftJBKV3n2MSjsX+Hr7FRxK3nLLv8jivdiDRc4zBjjaAsbOEosNll
+         Hw/imLKtAgakirL7A+XpUhqV5ijyJ+6EP9pc/OWqLDyRhE6KujUutSg0vADaC19ieR5g
+         ML4Pli5vowDdD8C58JRCEJ5iPysIT+JjLcrt4l1U743c3uviaV8Z778KCX2wApagZF9Q
+         AscWkFUer3XyzPPXXU1b+59jGjY4TtKQ2mJC15gVlHgC+idM5W7bi/xe44MQaTCgLPS+
+         5Ulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FHlhAnJc71taZr/+BkaaA8wu8hR4fcgSNUCat/tWerI=;
-        b=kXgkJZsIyGRcnA7avJMoK9AZR8ELQNVj9T3zf3mFztXEjc+P4/E70DrlAw9sj/ZKku
-         m5ilOvkXG/SQ6o+JjrdoBqbziZBd3T9DU1JtfZqlxCC4QwT+wbHymEYO7V2vNz+BKoQq
-         tezU5qNLWu6kp+bBOEOKKENnsevCi8LUI1TOCj4loZnbFCbYpmAnWH31eGIn6yVBDQUr
-         Eg17L/DjruaQdg0kxTibOZy2aSlGuZoIX9TsnKotvU1OlL+1bIXI4nKolEYrH4ZLubmm
-         OewLxT7/e1dflnAsK94c007jkIunM5jO7s4i0v2QqYivebjgkfvJ4JCWEY57/GSnJ2/N
-         G2sg==
-X-Gm-Message-State: AOAM531dnA8tInc1HK6TLOC9RikLoKVOgSyi9Ydz3IikNfrDlGYNCJ0l
-        IQTxFP0IgiMeyYKxCzS3dlS+khTTLM0=
-X-Google-Smtp-Source: ABdhPJxRoIfwR6j3nkdfKPAphyQ2MJbzLyba1v5zHwK/OM3EMGR2rXvXK833SIEOuAE3eVmE9y8roA==
-X-Received: by 2002:a17:90a:514e:: with SMTP id k14mr918232pjm.154.1632846263013;
-        Tue, 28 Sep 2021 09:24:23 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id c7sm20537216pfd.75.2021.09.28.09.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 09:24:21 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/dpu: Remove some nonsense
-Date:   Tue, 28 Sep 2021 09:28:59 -0700
-Message-Id: <20210928162903.1104847-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        bh=pf7A/zPJOzJAdofq5BEHkXRKW+JfDq2B/Lw5Xi7ZWR8=;
+        b=cauHUuBBVQJF6NJYIVC3QLbMVBwAOQLTB+aqV64d9GuUmj1K89rYGwmgldLxBfyJb1
+         JJWOE53RRDWFA6cXGadPIyr7WLie2FfA1SQIlDrsDgbTmFlaNNDbG02z9aWhSeUBYtWU
+         cfYSzbZAnXumHYXTBH+2Jxi0w1S/BzfzNpfwymEa0D0bVlUYtxOoUf8iojzHw/SeAdp1
+         6+mrufJyJR3m3TICJc94aEWXz28A6y6THNBnjXTdmQwhRxN+BViprGZS5u4D3X/EX1+T
+         9E/ykAAgYZQ3AllwYZBOWUXAnGT+mfxkpfFo+i39aIQLswDr4XmOvRnTK5RnL9qX4RZ1
+         tDvw==
+X-Gm-Message-State: AOAM531C4Bs10QcGhYSzkekMoiaaimsAD4NRKEg8HOnmnMg+0/7a81+N
+        wOu4KrINRmP/MdqD/bUlv3xgczcTf3g=
+X-Google-Smtp-Source: ABdhPJxraXf/1lgwJVd1Vhv/3FcnTg8Dk/MhQmlABdVIrIJz8K/OqIBjWXnSd9qBc+GMVUwcBHmbtA==
+X-Received: by 2002:a17:90a:a585:: with SMTP id b5mr899537pjq.201.1632846634657;
+        Tue, 28 Sep 2021 09:30:34 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id e6sm2479799pgp.85.2021.09.28.09.30.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 09:30:34 -0700 (PDT)
+Subject: Re: [PATCH v2 01/12] arch: Export cpu_logical_map to modules
+To:     Christoph Hellwig <hch@infradead.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+References: <20210928022715.369160-1-f.fainelli@gmail.com>
+ <20210928022715.369160-2-f.fainelli@gmail.com>
+ <YVKjYxf5bzJzWJDb@infradead.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d585d000-17c2-8641-2a6c-664dbea69ce9@gmail.com>
+Date:   Tue, 28 Sep 2021 09:30:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVKjYxf5bzJzWJDb@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On 9/27/21 10:08 PM, Christoph Hellwig wrote:
+> On Mon, Sep 27, 2021 at 07:27:04PM -0700, Florian Fainelli wrote:
+>> In order to allow drivers/irqchip/irq-bcm7038-l1.c to be built as a
+>> module and usable in GKI, export cpu_logical_map or __cpu_logical_map
+>> towards the modules. This follows what MIPS has been doing since
+>> 2dc2ae344e0e ("MIPS: Export __cpu_number_map and __cpu_logical_map.")
+> 
+> This seems like a pretty bad idea.  For one you should export an
+> accessor instead of the data structure.  And this probably should be an
+> EXPORT_SYMBOL_GPL.
 
-These aren't used.  And if we add use for them later, we should probably
-do something a bit more structured than string parsing.
+In hindsight, we should not need that change, and the use of
+cpu_logical_map[] within drivers/irqchip/irq-bcm7038-l1.c should be
+restricted to a MIPS build where the driver is a level 1 interrupt
+controller and there are multiple per-cpu register copies.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 6 ------
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 8 --------
- 2 files changed, 14 deletions(-)
+In an ARM/ARM64 configuration that driver is always used as a second
+level interrupt controller whereby it is hanging off the ARM GIC
+interrupt controller, and the intc->cpus[] array will only be 1 element.
+Fortunately since you cannot re-parent a L2 interrupt controller's
+interrupt handler to a different CPU, "it just happens to work".
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index b131fd376192..e32dbb06aad1 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -958,12 +958,6 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
- 	.min_core_ib = 2400000,
- 	.min_llcc_ib = 800000,
- 	.min_dram_ib = 800000,
--	.core_ib_ff = "6.0",
--	.core_clk_ff = "1.0",
--	.comp_ratio_rt =
--	"NV12/5/1/1.23 AB24/5/1/1.23 XB24/5/1/1.23",
--	.comp_ratio_nrt =
--	"NV12/5/1/1.25 AB24/5/1/1.25 XB24/5/1/1.25",
- 	.undersized_prefill_lines = 2,
- 	.xtra_prefill_lines = 2,
- 	.dest_scale_prefill_lines = 3,
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-index d2a945a27cfa..4ade44bbd37e 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-@@ -676,10 +676,6 @@ struct dpu_perf_cdp_cfg {
-  * @min_core_ib        minimum mnoc ib vote in kbps
-  * @min_llcc_ib        minimum llcc ib vote in kbps
-  * @min_dram_ib        minimum dram ib vote in kbps
-- * @core_ib_ff         core instantaneous bandwidth fudge factor
-- * @core_clk_ff        core clock fudge factor
-- * @comp_ratio_rt      string of 0 or more of <fourcc>/<ven>/<mod>/<comp ratio>
-- * @comp_ratio_nrt     string of 0 or more of <fourcc>/<ven>/<mod>/<comp ratio>
-  * @undersized_prefill_lines   undersized prefill in lines
-  * @xtra_prefill_lines         extra prefill latency in lines
-  * @dest_scale_prefill_lines   destination scaler latency in lines
-@@ -702,10 +698,6 @@ struct dpu_perf_cfg {
- 	u32 min_core_ib;
- 	u32 min_llcc_ib;
- 	u32 min_dram_ib;
--	const char *core_ib_ff;
--	const char *core_clk_ff;
--	const char *comp_ratio_rt;
--	const char *comp_ratio_nrt;
- 	u32 undersized_prefill_lines;
- 	u32 xtra_prefill_lines;
- 	u32 dest_scale_prefill_lines;
+Thanks!
 -- 
-2.31.1
-
+Florian
