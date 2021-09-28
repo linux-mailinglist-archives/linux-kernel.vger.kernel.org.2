@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEC641AD82
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFB341AD85
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240299AbhI1LFV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 07:05:21 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59007 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239306AbhI1LFQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:05:16 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 072DDCECD9;
-        Tue, 28 Sep 2021 13:03:35 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v11] Bluetooth: btusb: Add support using different nvm for
-  variant WCN6855 controller
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <25d13858fced474d0d71faed2d829032@codeaurora.org>
-Date:   Tue, 28 Sep 2021 13:03:35 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C8C7AC2D-7A0C-4FCB-8D60-5705D86BC50B@holtmann.org>
-References: <25d13858fced474d0d71faed2d829032@codeaurora.org>
-To:     tjiang@codeaurora.org
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S240315AbhI1LGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239306AbhI1LGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 07:06:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CEC160F9D;
+        Tue, 28 Sep 2021 11:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632827064;
+        bh=CuyVtVWN5y7u72S4IqpRbRMpbZfiFf1u3LqsMG4w/cQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TaZ4OQmc5a24cUhfgG8iThEd9ZuvmI469h3XpG67sklVXYQH/8F7xVtXdXwu9EE3n
+         D640okFRTIxye46vModAQv5TBZmOOJbS7nYCNx++J+fFSoDFb9MJ4hsqEo6vqqQPh6
+         NjbHeYJn0qSPIuydUogy7FWkEn3n9tBNmv1ftLrs=
+Date:   Tue, 28 Sep 2021 13:04:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 0/3] get_abi: improve message output and fix a regression
+Message-ID: <YVL2trHQzxG59nXf@kroah.com>
+References: <cover.1632823172.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1632823172.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim,
-
-> the RF performance of wcn6855 soc chip from different foundries will be
-> difference, so we should use different nvm to configure them.
+On Tue, Sep 28, 2021 at 12:14:01PM +0200, Mauro Carvalho Chehab wrote:
+> Hi Greg,
 > 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
-> drivers/bluetooth/btusb.c | 49 ++++++++++++++++++++++++++++++++++-------------
-> 1 file changed, 36 insertions(+), 13 deletions(-)
+> As promised on
+> 
+> 	https://lore.kernel.org/lkml/20210928120304.62319fba@coco.lan/T/#u
+> 
+> I'm adding progress info when  get_abi.pl is checking for undefined ABI symbols
+> on patches 1 and 2.
+> 
+> That will help not only to identify what is causing delays on the script, but also
+> to notify the user that processing it could take some time on some systems.
+> 
+> If you run it on your big server with:
+> 
+>   scripts/get_abi.pl undefined 2>logs
+> 
+> The "logs" file will contain timestamps relative to the time the script started to
+> do the regex matches for sysfs files. It should be printing one line every
+> time the progress completes 1% or one second after the last progress output.
 
-I am done reviewing this patch and frankly I don’t care how urgent this is for your new chip; and how many times you ping me privately about it. So please find someone else to write and send patches. This is not acceptable behavior here.
+Adding more debugging and tweaking the script a bit to show the file it
+is about to check, not the one it finished checking, I got the following
+debug output that seems to pinpoint the problem file.
 
-If you are blindly ignoring the review comments from Matthias, then I have no idea what to do. This is such a simple patch and it takes 12 revision to get this done.
+The sysfs file that is causing problems is:
+	/sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap
 
-static void btusb_generate_qca_nvm_name(char *fwname, size_t max_size, const struct qca_version *ver)
-{
-	u32 rom_version = le32_to_cpu(ver->rom_version);
+and here's some debugging output for the regex it needs to search for
+this:
 
-	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-		u16 board_id = le16_to_cpu(ver->board_id);
-		const char *variant;
+/sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
+/sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
+/sys/devices/pci0000:40/0000:40:00.2/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
+/sys/devices/pci0000:40/0000:40:07.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
+/sys/devices/pci0000:40/0000:40:07.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
+/sys/devices/pci0000:40/0000:40:07.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
+/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:02/device:7a/physical_node/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
+/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:02/device:7a/physical_node/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
+/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:02/device:7a/physical_node/iommu/ivhd1/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
+/sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.0/0000:4b:0a.0/0000:50:00.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/amd\-iommu/cap$)$/
+/sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.0/0000:4b:0a.0/0000:50:00.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/class/iommu/.*/intel\-iommu/cap$)$/
+/sys/devices/pci0000:40/0000:40:01.3/0000:4a:00.0/0000:4b:0a.0/0000:50:00.0/iommu/amd-iommu/cap =~ /^(?^:^/sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap$)$/
 
-		switch (le32_to_cpu(ver->ram_version)) {
-		case WCN6855_2_0_RAM_VERSION_GF:
-		case WCN6855_2_1_RAM_VERSION_GF:
-			variant = “_gf”;
-			break;
-		default:
-			variant = “”;
-			break;
-		}
 
-		/* if boardid equal 0, use default nvm without suffix */
-		if (board_id == 0x0)
-			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin”,
-				 rom_version, variant);
-		else
-			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin”,
-				 rom_version, variant, board_id);
-	} else {
-		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin”, rom_version);
-	}
-}
+And sometimes this thing finishes in 20 seconds, and others, many many
+minutes.  It's not deterministic at all, which is odd.  Is the sysfs
+tree being sorted so that this should always have the same search order?
 
-Regards
+Anyway, I've applied this series as well, this helps in finding the
+problems :)
 
-Marcel
+Note, I can provide an off-list tarball of /sys/ if that would help in
+debugging anything on your end.
 
+thanks,
+
+greg k-h
