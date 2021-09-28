@@ -2,168 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772CB41B437
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2F741B400
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241860AbhI1QqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:46:14 -0400
-Received: from mga05.intel.com ([192.55.52.43]:51778 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhI1QqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:46:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="310300300"
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="310300300"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 09:36:30 -0700
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="554132908"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 09:36:30 -0700
-Date:   Tue, 28 Sep 2021 16:36:25 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
-Message-ID: <YVNEiUMUTQezzH6f@otcwcpicx3.sc.intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-6-fenghua.yu@intel.com>
- <87y27nfjel.ffs@tglx>
- <YUyuEjlrcOeCp4qQ@agluck-desk2.amr.corp.intel.com>
- <87o88jfajo.ffs@tglx>
- <87k0j6dsdn.ffs@tglx>
- <YU34+1J4v0cn9ZRs@otcwcpicx3.sc.intel.com>
- <87mto0ckpd.ffs@tglx>
+        id S241814AbhI1Qj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhI1Qj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:39:27 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0279CC06161C;
+        Tue, 28 Sep 2021 09:37:48 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s17so66732543edd.8;
+        Tue, 28 Sep 2021 09:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jrcpzz4dtYaFlPbqYodpFsWNyFSc5+StVlE5y5OqwxM=;
+        b=k5ebFqrnBLaLFSno78OpVJG5cLS0Jevk+XVX+K57MW1HGDkaNy0LzwbRiUatPwHPIC
+         nqafbskkxODgUlEJSTNq+ZChz2FITbXr1JMVk00bczeaXwafIyrrmLwFTmyq+RYXiKF8
+         7nAJEYU8CL135keNqGc7C22BfSkAdVjT5xNHIifeSFteOkGNcTvsIZdEaBMg7+C1bW1N
+         LyW1YyjAw6/6FEnlMs1tceIJvtYz5pzTuzlx8F1yHUsudRA6Kj36UEkAigN/6RAjvEnB
+         fczwwPjw+OVtyYfQri0TkusvY12RU5oZP+Zs23nVW2n1eV96z5XBECMdk0/DY487o1MC
+         W58Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jrcpzz4dtYaFlPbqYodpFsWNyFSc5+StVlE5y5OqwxM=;
+        b=4uG9bNCh2oLiEJ2BMUhJP6820kszRR0a8eEjyM6If2R37EuR4wpMYfcBNrjstzix75
+         8pEVY7+mf1eJ/b8ojyNzGNDx8sQdlI4E7tsj5RfpgriEqtiyfACEPKf1ObC6GfeeVGFI
+         LXED14Q5/PgWZkU5gHUvN1ulg2IKKZLyXDxovAxzORbhDTVcHxwBQ6ht7lLdw/2bSTpe
+         EG8cHsUoLfUsBpyDqCKi6bk4hwVjGitLpg9iP8NYD/Tt6z2mEVC8eJavcUHQn+yh5Z3H
+         hpCJbURJYkwKsqRB5ezZaAMgOT/yeBHU+GsZ4BsbmqGFZ3VNpWHoqQqtFB/o5N6AP01P
+         ypiw==
+X-Gm-Message-State: AOAM531LEGvDxptjBh8k+j+JVPkbvKPKSx4yQe4xhtoOHBsD9azqWR52
+        uS2tleCU1G9wlNUmK9IUeSvuNRw6FzSgSg==
+X-Google-Smtp-Source: ABdhPJx0IjUpgp+y/ta+eDfb+DgVaWhzMy0duDs4Sk4ZhwrKZ3FpocIZVGLBHxbFgQDHdt2M1yrubQ==
+X-Received: by 2002:a17:906:7053:: with SMTP id r19mr7672281ejj.476.1632847065213;
+        Tue, 28 Sep 2021 09:37:45 -0700 (PDT)
+Received: from anparri.mshome.net (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
+        by smtp.gmail.com with ESMTPSA id u4sm10737848ejc.19.2021.09.28.09.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 09:37:44 -0700 (PDT)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited incoming packets
+Date:   Tue, 28 Sep 2021 18:37:32 +0200
+Message-Id: <20210928163732.5908-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mto0ckpd.ffs@tglx>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas,
+The validation on the length of incoming packets performed in
+storvsc_on_channel_callback() does not apply to "unsolicited"
+packets with ID of 0 sent by Hyper-V.  Adjust the validation
+by handling such unsolicited packets separately.
 
-On Sun, Sep 26, 2021 at 01:13:50AM +0200, Thomas Gleixner wrote:
-> Fenghua,
-> 
-> On Fri, Sep 24 2021 at 16:12, Fenghua Yu wrote:
-> > On Fri, Sep 24, 2021 at 03:18:12PM +0200, Thomas Gleixner wrote:
-> >> But OTOH why do you need a per task reference count on the PASID at all?
-> >> 
-> >> The PASID is fundamentaly tied to the mm and the mm can't go away before
-> >> the threads have gone away unless this magically changed after I checked
-> >> that ~20 years ago.
-> >
-> > There are up to 1M PASIDs because PASID is 20-bit. I think there are a few ways
-> > to allocate and free PASID:
-> >
-> > 1. Statically allocate a PASID once a mm is created and free it in mm
-> >    exit. No PASID allocation/free during the mm's lifetime. Then
-> >    up to 1M processes can be created due to 1M PASIDs limitation.
-> >    We don't want this method because the 1M processes limitation.
-> 
-> I'm not so worried about the 1M limitation, but it obviously makes sense
-> to avoid that because allocating stuff which is not used is pointless in
-> general.
-> 
-> > 2. A PASID is allocated to the mm in open(dev)->bind(dev, mm). There
-> >    are three ways to free it:
-> >    (a) Actively free it in close(fd)->unbind(dev, mm) by sending
-> >        IPIs to tell all tasks using the PASID to clear the IA32_PASID
-> >        MSR. This has locking issues similar to the actively loading
-> >        IA32_PASID MSR which was force disabled in upstream. So won't work.
-> 
-> Exactly.
-> 
-> >    (b) Passively free the PASID in destroy_context(mm) in mm exit. Once
-> >        the PASID is allocated, it stays with the process for the lifetime. It's
-> >        better than #1 because the PASID is allocated only on demand.
-> 
-> Which is simple and makes a lot of sense. See below.
-> 
-> >    (c) Passively free the PASID in deactive_mm(mm) or unbind() whenever there
-> >        is no usage as implemented in this series. Tracking the PASID usage
-> >        per task provides a chance to free the PASID on task exit. The
-> >        PASID has a better chance to be freed earlier than mm exit in #(b).
-> >
-> > This series uses #2 and #(c) to allocate and free the PASID for a better
-> > chance to ease the 1M PASIDs limitation pressure. For example, a thread
-> > doing open(dev)->ENQCMD->close(fd)->exit(2) will not occupy a PASID while
-> > its sibling threads are still running.
-> 
-> I'm not seeing that as a realistic problem. Applications which use this
-> kind of devices are unlikely to behave exactly that way.
-> 
-> 2^20 PASIDs are really plenty and just adding code for the theoretical
-> case of PASID pressure is a pointless exercise IMO. It just adds
-> complexity for no reason.
-> 
-> IMO reality will be that either you have long lived processes with tons
-> of threads which use such devices over and over or short lived forked
-> processes which open the device, do the job, close and exit. Both
-> scenarios are fine with allocate on first use and drop on process exit.
-> 
-> I think with your approach you create overhead for applications which
-> use thread pools where the threads get work thrown at them and do open()
-> -> do_stuff() -> close() and then go back to wait for the next job which
-> will do exactly the same thing. So you add the overhead of refcounts in
-> general and in the worst case if the refcount drops to zero then the
-> next worker has to allocate a new PASID instead of just moving on.
-> 
-> So unless you have a really compelling real world usecase argument, I'm
-> arguing that the PASID pressure problem is a purely academic exercise.
-> 
-> I think you are conflating two things here:
-> 
->   1) PASID lifetime
->   2) PASID MSR overhead
-> 
-> Which is not correct: You still can and have to optimize the per thread
-> behaviour vs. the PASID MSR: Track per thread whether it ever needed the
-> PASID and act upon that.
-> 
-> If the thread just does EMQCMD once in it's lifetime, then so be
-> it. That's not a realistic use case, really.
-> 
-> And if someone does this then this does not mean we have to optimize for
-> that. Optimizing for possible stupid implementations is the wrong
-> approach. There is no technial measure against stupidity. If that would
-> exist the world would be a much better place.
-> 
-> You really have to think about the problem space you are working
-> on. There are problems which need a 'get it right at the first shot'
-> solution because they create user space ABI or otheer hard to fix
-> dependencies.
-> 
-> That's absolutely not the case here.
-> 
-> Get the basic simple support correct and work from there. Trying to
-> solve all possible theoretical problems upfront is simply not possible
-> and a guarantee for not making progress.
-> 
-> "Keep it simple" and "correctness first" are still the best working
-> engineering principles.
-> 
-> They do not prevent us from revisiting this _if_ there is a real world
-> problem which makes enough sense to implement a finer grained solution.
+Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()")
+Reported-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+---
+The (new) bound, VSTOR_MIN_UNSOL_PKT_SIZE, was "empirically
+derived" based on testing and code auditing.  This explains
+the RFC tag...
 
-Sure. Will free the PASID in destroy_context() on mm exit and won't track
-the PASID usage per task. The code will be simpler and clearer.
+ drivers/scsi/storvsc_drv.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-Thank you very much for your insight!
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index ebbbc1299c625..a9bbcbbfb54ee 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -292,6 +292,9 @@ struct vmstorage_protocol_version {
+ #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
+ #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
+ 
++/* Lower bound on the size of unsolicited packets with ID of 0 */
++#define VSTOR_MIN_UNSOL_PKT_SIZE		48
++
+ struct vstor_packet {
+ 	/* Requested operation type */
+ 	enum vstor_packet_operation operation;
+@@ -1285,11 +1288,13 @@ static void storvsc_on_channel_callback(void *context)
+ 	foreach_vmbus_pkt(desc, channel) {
+ 		struct vstor_packet *packet = hv_pkt_data(desc);
+ 		struct storvsc_cmd_request *request = NULL;
++		u32 pktlen = hv_pkt_datalen(desc);
+ 		u64 rqst_id = desc->trans_id;
+ 
+-		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
++		/* Unsolicited packets with ID of 0 are validated separately below */
++		if (rqst_id != 0 && pktlen < sizeof(struct vstor_packet) -
+ 				stor_device->vmscsi_size_delta) {
+-			dev_err(&device->device, "Invalid packet len\n");
++			dev_err(&device->device, "Invalid packet: length=%u\n", pktlen);
+ 			continue;
+ 		}
+ 
+@@ -1298,8 +1303,14 @@ static void storvsc_on_channel_callback(void *context)
+ 		} else if (rqst_id == VMBUS_RQST_RESET) {
+ 			request = &stor_device->reset_request;
+ 		} else {
+-			/* Hyper-V can send an unsolicited message with ID of 0 */
+ 			if (rqst_id == 0) {
++				if (pktlen < VSTOR_MIN_UNSOL_PKT_SIZE) {
++					dev_err(&device->device,
++						"Invalid packet with ID of 0: length=%u\n",
++						pktlen);
++					continue;
++				}
++
+ 				/*
+ 				 * storvsc_on_receive() looks at the vstor_packet in the message
+ 				 * from the ring buffer.  If the operation in the vstor_packet is
+-- 
+2.25.1
 
--Fenghua
