@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897A141B35B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C076A41B35C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241764AbhI1P5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:57:10 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:58429 "EHLO
+        id S241743AbhI1P5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:57:15 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:45441 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241729AbhI1P5F (ORCPT
+        by vger.kernel.org with ESMTP id S241514AbhI1P5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:57:05 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9D8FC580C23;
-        Tue, 28 Sep 2021 11:55:25 -0400 (EDT)
+        Tue, 28 Sep 2021 11:57:07 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id AB5F2580C26;
+        Tue, 28 Sep 2021 11:55:27 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 28 Sep 2021 11:55:25 -0400
+  by compute4.internal (MEProxy); Tue, 28 Sep 2021 11:55:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=l7l2ToDgnvybd
-        Ml4obXc3cfMQHrVz6bhWaTvDSMxSUA=; b=Pdm5zUeMOXG2d//6NoexJqLVpWWZ7
-        UEx+yCZcGbXJeiFPAvdH+mLUcas6ME/Y/fiDGm+dENyqBhzvbm7kvqmy77lY+Oag
-        bktIPzzaoJcbUkBQBUqS03DESeWRMmdCBaUFLS1zaeoR4sYl59aDZ+3KkoP/Ubtz
-        vig+RIGAkMz6AlFRP+gMOqW9J260CCuPB5WUThXehqDLRjG+raMp5qm+t7vr++wk
-        c9ep3dSzHB6YuLvJwNd7o2t3jgLjulOPVgG2JRxBx7uhxYq3dQfkdAq0ncplmJNt
-        OtgIalpC7hkMf0wo1GbMnvdNJBCZ5MTL2RkAJP+QnFZ9dmM94yBZYf6Ug==
+        :mime-version:content-transfer-encoding; s=fm2; bh=IueQwOh9v4zKy
+        b6Va+q1/CEW/hQ9FLWn6vvvFuy7EE0=; b=ebZd8gjz6YD9apnchz3CRR3bs9UCQ
+        UQ5x4YIq7wrg1ia+QTtnO6DNTqRxVQKX8hZ+K0T7RWXDdhhyqEButukKflbK4vS4
+        LhMUkZbm/ncsnSpDvQxv5vDF6N670xVaqllb+6fBh95xqGGpUO/dqh54tIyxUUnr
+        ssEFnNxAghQqsjmxLKvpjAs3kBrS7pxPApYELq/weh1k26LwrFJe+VLenlvSncGm
+        FEhUvz3SFcGfMzxlkMzwAk08DWWKlqin3KxS1+ww9pn0shekuGP2jjkhyuy5gEwa
+        BV3IZGJxBZAvFZqS3gGMe7rUzXkmq2B67uvR/QTH02vtMyvLlB2MU5X6A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=l7l2ToDgnvybdMl4obXc3cfMQHrVz6bhWaTvDSMxSUA=; b=NJZFzXVy
-        lmpJBSH1b3ou1HW2vjXZ+6AgQTV2nOf85QihyEAYsWbg5gUlTC+P1jWVPScjp1tt
-        aTwYiXBo+VVplF5fsaYvFsMr80ZiG/ez/1ewf58Tp8TXiRV+FcnBZM8fcruDvvAt
-        eOz+g8LCQTusP4IZoxTFv+MbEkSWPNpiByF7LcQc+KC6erwz1VwAwwLFVXgKB3YT
-        cfiMLEaXaJPLlpYK9r/1eEf3fnReopNA81g/K4d/bD0+C3eQhmlTrMBep5H53jFa
-        CFnBhj/sMyoTUlGEIeFp0Apff4GMyj6I7Fb+PbmtxgHMra6JSmN072k+YmlVci5R
-        8WusdL+ZP3j04g==
-X-ME-Sender: <xms:7TpTYYj4xytI-x4in-Kgd0tPFc1dz6KzccL1g9Y6hyjzkeHmJlPdMw>
-    <xme:7TpTYRAexaLTuGa_FRMZc_bEIUy7ldv_Z28m2RufhXIZ4cpXVcW6e_r3UpiSnjNbK
-    vPrn_kjSPWCKkX4R4U>
-X-ME-Received: <xmr:7TpTYQGFEPWPCKvAD8p_A6xkEsHV_6iesQcW6vKcdaAMUf_N0Fjw_P9J7UELTR3-0o8hp5x6KYREx0gh_CVaEtMT3Wc5BGr9i0c000RdtPWBH_zOIUVPxF0>
+        fm3; bh=IueQwOh9v4zKyb6Va+q1/CEW/hQ9FLWn6vvvFuy7EE0=; b=F1O/wjIT
+        /lCwBkl97tOPOYfCzdzpOvxqQWMEkhOf0Xj37NRyHIaa7dgW09t9o/lTXFT5XMe8
+        zvusRt/qWbqMyY772YeQNzxleOnWSWGbDx39S1cHiT6bZ90ZXaFBX/Fa6wfbZqRU
+        NDmfXTetQZvGq3yDhhcvpdjGuNFoNs2qu9BY0rrpEn46I5tEzA3QhzcOFji38ubJ
+        se1rAcq8RFlSaUxCsFOCi/GQa+780OQBIoeAIVk2rPaLu0vrV9YuK3rmSqC9M1H3
+        v6855QMEwNM94y2K/jK9sDLL0AZBRzZVtVHlJk3qbYBWXZuX12PLTHquR6biX6JR
+        X/bJIq3QcV6msw==
+X-ME-Sender: <xms:7zpTYU93dYJe59sW_nsJIasK6aTaF_Th9e_JH8zTMaLI54rD26ghKg>
+    <xme:7zpTYcvi_ttNaVY1mapFeOzS1-SzavEMn7EqJfdAQCOsPh16WusQOW0Zi2mO9uXsa
+    Zw_ZfcDdKRzu7MLMvA>
+X-ME-Received: <xmr:7zpTYaBKzb_HLigD1ySgjTbb3tZ0ylPyGDMo-H_q1vU45DFpXtcj-vf_jE6k_UIupOh_3lNlnZceiEGsRd2dH6jULf4qcwZbEKwR9XUmJlXttSLHxvOXSYs>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudektddgledtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcu
     rfgvthgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvg
     hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
+    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
     hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:7TpTYZTzVu9_fYG0Rn9xjsFwCNQGb4fnchQmKKi9lUqK9Zbg4AzM0A>
-    <xmx:7TpTYVxykCf_mC5uWEThys_oJ_6cyz2qnPG0b-PBcGAkhxKFNH7eFA>
-    <xmx:7TpTYX719VT_1u72joW5mK_W2ajVibFPMy8qFGVEnKazV34A2lB-eQ>
-    <xmx:7TpTYb5jDDpXwsf8bEPycTSAs-Y30qzxaMmZmN-f6emAogR0DD9qww>
+X-ME-Proxy: <xmx:7zpTYUfy1-sY6PxjjFxd19boservUcUmhMWjBB6xGNJpDs5EXaUWaA>
+    <xmx:7zpTYZO2VZaeWqHQMCuuzqrEULBXWAI3w_yZsUn9arCrkOe6AeU3Zg>
+    <xmx:7zpTYelq8U7rqqwWuEW6-FANt2BHTBQbZe4BrQBpSwQ3OrTLb6kNJA>
+    <xmx:7zpTYekJTP6LXBYzbRku6H24HNa4H36ztL1htuJIkrl3Ul10iZ8eqQ>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 11:55:23 -0400 (EDT)
+ 28 Sep 2021 11:55:25 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Cc:     Sven Peter <sven@svenpeter.dev>,
@@ -68,9 +68,9 @@ Cc:     Sven Peter <sven@svenpeter.dev>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
         Alexander Graf <graf@amazon.com>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [PATCH v3 3/6] usb: typec: tipd: Add short-circuit for no irqs
-Date:   Tue, 28 Sep 2021 17:54:59 +0200
-Message-Id: <20210928155502.71372-4-sven@svenpeter.dev>
+Subject: [PATCH v3 4/6] usb: typec: tipd: Add support for Apple CD321X
+Date:   Tue, 28 Sep 2021 17:55:00 +0200
+Message-Id: <20210928155502.71372-5-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <20210928155502.71372-1-sven@svenpeter.dev>
 References: <20210928155502.71372-1-sven@svenpeter.dev>
@@ -80,48 +80,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If no interrupts are set in IntEventX directly skip to the end of the
-interrupt handler and return IRQ_NONE instead of IRQ_HANDLED.
-This possibly allows to detect spurious interrupts if the i2c bus is fast
-enough.
+Apple CD321x chips are a variant of the TI TPS 6598x chips.
+The major differences are the changed interrupt numbers and
+the concurrent connection to the SMC which we must not disturb.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Sven Peter <sven@svenpeter.dev>
 ---
-no changes since v2
+changes since v2:
+  - switched from of_device_get_match_data to of_device_is_compatible
+    as suggested by Heikki
+  - replace "int ret = 0" with "int ret" in cd321x_interrupt since ret
+    doesn't need to be initialized
 
 changes since v1:
-  - added Heikki's r-b
-  - s/event/(event1 | event2)/
+  - new commit since Heikki suggested to just add a separate irq handler
 
- drivers/usb/typec/tipd/core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/usb/typec/tipd/core.c     | 63 ++++++++++++++++++++++++++++++-
+ drivers/usb/typec/tipd/tps6598x.h |  6 +++
+ drivers/usb/typec/tipd/trace.h    | 23 +++++++++++
+ 3 files changed, 91 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 172715c6c238..e785e4aa2d4b 100644
+index e785e4aa2d4b..cc4a154eabcb 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -479,6 +479,9 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
+@@ -9,6 +9,7 @@
+ #include <linux/i2c.h>
+ #include <linux/acpi.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/power_supply.h>
+ #include <linux/regmap.h>
+ #include <linux/interrupt.h>
+@@ -461,6 +462,51 @@ static void tps6598x_handle_plug_event(struct tps6598x *tps, u32 status)
  	}
- 	trace_tps6598x_irq(event1, event2);
- 
-+	if (!(event1 | event2))
-+		goto err_unlock;
-+
- 	if (!tps6598x_read_status(tps, &status))
- 		goto err_clear_ints;
- 
-@@ -501,7 +504,9 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- err_unlock:
- 	mutex_unlock(&tps->lock);
- 
--	return IRQ_HANDLED;
-+	if (event1 | event2)
-+		return IRQ_HANDLED;
-+	return IRQ_NONE;
  }
  
- static int tps6598x_check_mode(struct tps6598x *tps)
++static irqreturn_t cd321x_interrupt(int irq, void *data)
++{
++	struct tps6598x *tps = data;
++	u64 event;
++	u32 status;
++	int ret;
++
++	mutex_lock(&tps->lock);
++
++	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event);
++	if (ret) {
++		dev_err(tps->dev, "%s: failed to read events\n", __func__);
++		goto err_unlock;
++	}
++	trace_cd321x_irq(event);
++
++	if (!event)
++		goto err_unlock;
++
++	if (!tps6598x_read_status(tps, &status))
++		goto err_clear_ints;
++
++	if (event & APPLE_CD_REG_INT_POWER_STATUS_UPDATE)
++		if (!tps6598x_read_power_status(tps))
++			goto err_clear_ints;
++
++	if (event & APPLE_CD_REG_INT_DATA_STATUS_UPDATE)
++		if (!tps6598x_read_data_status(tps))
++			goto err_clear_ints;
++
++	/* Handle plug insert or removal */
++	if (event & APPLE_CD_REG_INT_PLUG_EVENT)
++		tps6598x_handle_plug_event(tps, status);
++
++err_clear_ints:
++	tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event);
++
++err_unlock:
++	mutex_unlock(&tps->lock);
++
++	if (event)
++		return IRQ_HANDLED;
++	return IRQ_NONE;
++}
++
+ static irqreturn_t tps6598x_interrupt(int irq, void *data)
+ {
+ 	struct tps6598x *tps = data;
+@@ -620,6 +666,8 @@ static int devm_tps6598_psy_register(struct tps6598x *tps)
+ 
+ static int tps6598x_probe(struct i2c_client *client)
+ {
++	irq_handler_t irq_handler = tps6598x_interrupt;
++	struct device_node *np = client->dev.of_node;
+ 	struct typec_capability typec_cap = { };
+ 	struct tps6598x *tps;
+ 	struct fwnode_handle *fwnode;
+@@ -658,6 +706,18 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	if (ret)
+ 		return ret;
+ 
++	if (np && of_device_is_compatible(np, "apple,cd321x")) {
++		/* CD321X chips have all interrupts masked initially */
++		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
++					APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
++					APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
++					APPLE_CD_REG_INT_PLUG_EVENT);
++		if (ret)
++			return ret;
++
++		irq_handler = cd321x_interrupt;
++	}
++
+ 	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
+ 	if (ret < 0)
+ 		return ret;
+@@ -739,7 +799,7 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	}
+ 
+ 	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+-					tps6598x_interrupt,
++					irq_handler,
+ 					IRQF_SHARED | IRQF_ONESHOT,
+ 					dev_name(&client->dev), tps);
+ 	if (ret) {
+@@ -773,6 +833,7 @@ static int tps6598x_remove(struct i2c_client *client)
+ 
+ static const struct of_device_id tps6598x_of_match[] = {
+ 	{ .compatible = "ti,tps6598x", },
++	{ .compatible = "apple,cd321x", },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, tps6598x_of_match);
+diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
+index 003a577be216..e13b16419843 100644
+--- a/drivers/usb/typec/tipd/tps6598x.h
++++ b/drivers/usb/typec/tipd/tps6598x.h
+@@ -129,6 +129,12 @@
+ #define TPS_REG_INT_HARD_RESET				BIT(1)
+ #define TPS_REG_INT_PD_SOFT_RESET			BIT(0)
+ 
++/* Apple-specific TPS_REG_INT_* bits */
++#define APPLE_CD_REG_INT_DATA_STATUS_UPDATE		BIT(10)
++#define APPLE_CD_REG_INT_POWER_STATUS_UPDATE		BIT(9)
++#define APPLE_CD_REG_INT_STATUS_UPDATE			BIT(8)
++#define APPLE_CD_REG_INT_PLUG_EVENT			BIT(1)
++
+ /* TPS_REG_POWER_STATUS bits */
+ #define TPS_POWER_STATUS_CONNECTION(x)  TPS_FIELD_GET(BIT(0), (x))
+ #define TPS_POWER_STATUS_SOURCESINK(x)	TPS_FIELD_GET(BIT(1), (x))
+diff --git a/drivers/usb/typec/tipd/trace.h b/drivers/usb/typec/tipd/trace.h
+index 5d09d6f78930..12cad1bde7cc 100644
+--- a/drivers/usb/typec/tipd/trace.h
++++ b/drivers/usb/typec/tipd/trace.h
+@@ -67,6 +67,13 @@
+ 		{ TPS_REG_INT_USER_VID_ALT_MODE_ATTN_VDM,	"USER_VID_ALT_MODE_ATTN_VDM" }, \
+ 		{ TPS_REG_INT_USER_VID_ALT_MODE_OTHER_VDM,	"USER_VID_ALT_MODE_OTHER_VDM" })
+ 
++#define show_cd321x_irq_flags(flags) \
++	__print_flags_u64(flags, "|", \
++		{ APPLE_CD_REG_INT_PLUG_EVENT,			"PLUG_EVENT" }, \
++		{ APPLE_CD_REG_INT_POWER_STATUS_UPDATE,		"POWER_STATUS_UPDATE" }, \
++		{ APPLE_CD_REG_INT_DATA_STATUS_UPDATE,		"DATA_STATUS_UPDATE" }, \
++		{ APPLE_CD_REG_INT_STATUS_UPDATE,		"STATUS_UPDATE" })
++
+ #define TPS6598X_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_STATUS_CONN_STATE_MASK | \
+ 						      TPS_STATUS_PP_5V0_SWITCH_MASK | \
+ 						      TPS_STATUS_PP_HV_SWITCH_MASK | \
+@@ -207,6 +214,22 @@ TRACE_EVENT(tps6598x_irq,
+ 		      show_irq_flags(__entry->event2))
+ );
+ 
++TRACE_EVENT(cd321x_irq,
++	    TP_PROTO(u64 event),
++	    TP_ARGS(event),
++
++	    TP_STRUCT__entry(
++			     __field(u64, event)
++			     ),
++
++	    TP_fast_assign(
++			   __entry->event = event;
++			   ),
++
++	    TP_printk("event=%s",
++		      show_cd321x_irq_flags(__entry->event))
++);
++
+ TRACE_EVENT(tps6598x_status,
+ 	    TP_PROTO(u32 status),
+ 	    TP_ARGS(status),
 -- 
 2.25.1
 
