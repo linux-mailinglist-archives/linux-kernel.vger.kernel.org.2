@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D132641A48D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 03:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1136F41A48F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 03:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238428AbhI1BXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 21:23:23 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44214 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234467AbhI1BXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 21:23:22 -0400
-X-UUID: 0472ea340c5f4a6cafb182f94f6d8091-20210928
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BLlymuonkhKMUQNrGodsUw+v+u1VEea3dRqmgRuo/6A=;
-        b=hX0CKKRGGXvxUqmTKxm69Qff3MSfxXB+BDGIXBGCPgyNsgAkiJT+aVwClbYTf2LH8MOYfhmdNk3NJ2xzSd9TTOk00EEXpZ4TynemgAwx34GXJ4ullZ9Olx/ndzpmlmBrnJTvnuII0CGaK0JPEy/w7CfQ4HXpkVlFG3pdjJso4qY=;
-X-UUID: 0472ea340c5f4a6cafb182f94f6d8091-20210928
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1292667397; Tue, 28 Sep 2021 09:21:40 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 28 Sep 2021 09:21:39 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 28 Sep 2021 09:21:38 +0800
-Message-ID: <d7db3e4c3c4a40843d60fe92666d7f9e90df8801.camel@mediatek.com>
-Subject: Re: [PATCH] iommu/mediatek: fix out-of-range warning with clang
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Arnd Bergmann <arnd@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        <iommu@lists.linux-foundation.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>
-Date:   Tue, 28 Sep 2021 09:21:41 +0800
-In-Reply-To: <20210927121857.941160-1-arnd@kernel.org>
-References: <20210927121857.941160-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S238438AbhI1BXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 21:23:42 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46983 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238420AbhI1BXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 21:23:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="310145645"
+X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
+   d="scan'208";a="310145645"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 18:22:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
+   d="scan'208";a="553706932"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 18:21:58 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH -V2] mm/migrate: fix CPUHP state to update node demotion
+ order
+References: <20210927081100.475075-1-ying.huang@intel.com>
+        <20210927174722.6ca9bc6a63bb50da7754bdaf@linux-foundation.org>
+Date:   Tue, 28 Sep 2021 09:21:56 +0800
+In-Reply-To: <20210927174722.6ca9bc6a63bb50da7754bdaf@linux-foundation.org>
+        (Andrew Morton's message of "Mon, 27 Sep 2021 17:47:22 -0700")
+Message-ID: <871r59v6iz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA5LTI3IGF0IDE0OjE4ICswMjAwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0K
-PiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gY2xhbmctMTQgbm90
-aWNlcyB0aGF0IGEgY29tcGFyaXNvbiBpcyBuZXZlciB0cnVlIHdoZW4NCj4gQ09ORklHX1BIWVNf
-QUREUl9UXzY0QklUIGlzIGRpc2FibGVkOg0KPiANCj4gZHJpdmVycy9pb21tdS9tdGtfaW9tbXUu
-Yzo1NTM6MzQ6IGVycm9yOiByZXN1bHQgb2YgY29tcGFyaXNvbiBvZg0KPiBjb25zdGFudCA1MzY4
-NzA5MTIwIHdpdGggZXhwcmVzc2lvbiBvZiB0eXBlICdwaHlzX2FkZHJfdCcgKGFrYQ0KPiAndW5z
-aWduZWQgaW50JykgaXMgYWx3YXlzIGZhbHNlIFstV2Vycm9yLC1XdGF1dG9sb2dpY2FsLWNvbnN0
-YW50LW91dC0NCj4gb2YtcmFuZ2UtY29tcGFyZV0NCj4gICAgICAgICBpZiAoZG9tLT5kYXRhLT5l
-bmFibGVfNEdCICYmIHBhID49DQo+IE1US19JT01NVV80R0JfTU9ERV9SRU1BUF9CQVNFKQ0KPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfn4NCj4gXiAgfn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn4NCj4gDQo+IEFkZCBhbiBleHBsaWNpdCBjaGVjayBmb3IgdGhlIHR5
-cGUgb2YgdGhlIHZhcmlhYmxlIHRvIHNraXAgdGhlIGNoZWNrDQo+IGFuZCB0aGUgd2FybmluZyBp
-biB0aGF0IGNhc2UuDQo+IA0KPiBGaXhlczogYjRkYWQ0MGU0ZjM1ICgiaW9tbXUvbWVkaWF0ZWs6
-IEFkanVzdCB0aGUgUEEgZm9yIHRoZSA0R0INCj4gTW9kZSIpDQo+IFNpZ25lZC1vZmYtYnk6IEFy
-bmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+DQoNClJldmlld2VkLWJ5OiBZb25nIFd1IDx5b25n
-Lnd1QG1lZGlhdGVrLmNvbT4NCg0KVGhhbmtzLg0K
+Andrew Morton <akpm@linux-foundation.org> writes:
 
+> On Mon, 27 Sep 2021 16:11:00 +0800 Huang Ying <ying.huang@intel.com> wrote:
+>
+>> The node demotion order needs to be updated during CPU hotplug.
+>> Because whether a NUMA node has CPU may influence the demotion order.
+>> The update function should be called during CPU online/offline after
+>> the node_states[N_CPU] has been updated.  That is done in
+>> CPUHP_AP_ONLINE_DYN during CPU online and in CPUHP_MM_VMSTAT_DEAD
+>> during CPU offline.  But in commit 884a6e5d1f93 ("mm/migrate: update
+>> node demotion order on hotplug events"), the function to update node
+>> demotion order is called in CPUHP_AP_ONLINE_DYN during CPU
+>> online/offline.  This doesn't satisfy the order requirement.
+>
+> What are the user-visible runtime effects of this error?
+
+For example, there are 4 CPUs (P0, P1, P2, P3) in 2 sockets (P0, P1 in
+S0 and P2, P3 in S1), the demotion order is
+
+- S0 -> NUMA_NO_NODE
+- S1 -> NUMA_NO_NODE
+
+After P2 and P3 is offlined, because S1 has no CPU now, the demotion
+order should have been changed to
+
+- S0 -> S1
+- S1 -> NO_NODE
+
+but it isn't changed, because the order updating callback for CPU
+hotplug doesn't see the new nodemask.  Now, if P1 is offlined, the
+demotion order is changed to the expected order as above.
+
+I will update the patch description after adding the above description.
+
+Best Regards,
+Huang, Ying
+
+>>  So in
+>> this patch, we added CPUHP_AP_MM_DEMOTION_ONLINE and
+>> CPUHP_MM_DEMOTION_DEAD to be called after CPUHP_AP_ONLINE_DYN and
+>> CPUHP_MM_VMSTAT_DEAD during CPU online and offline, and register the
+>> update function on them.
+>> 
+>> Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug events")
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Yang Shi <shy828301@gmail.com>
+>> Cc: Zi Yan <ziy@nvidia.com>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Wei Xu <weixugc@google.com>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: David Rientjes <rientjes@google.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Greg Thelen <gthelen@google.com>
+>> Cc: Keith Busch <kbusch@kernel.org>
+>> 
