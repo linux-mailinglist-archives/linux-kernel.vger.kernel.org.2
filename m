@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F8241A98F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1418141A994
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239236AbhI1HTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239057AbhI1HTO (ORCPT
+        id S239215AbhI1HTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:19:51 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:59393 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239083AbhI1HTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:19:14 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13928C061604
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:17:35 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id f18so21029046vsp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5VZceE/dQmU6bLvl6P5d+DLar0Sw2Dsq3q/ylCWAUVI=;
-        b=DIATSXRBLGAqa+xswEPNBQnleXtV60+haTfFNrEmgJvJaoAll70jM44RaWWm8u0qYt
-         82EyP2C1R1uHBrniA+rW8Rbfsf5K2erg6ezXvTLWSqE0CEqXv+12jhh+0+1EeEL8pjIh
-         OTL3Ixk0I9sDGkcH3RFolHamWqvWcV3ocipko=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5VZceE/dQmU6bLvl6P5d+DLar0Sw2Dsq3q/ylCWAUVI=;
-        b=Bz2Rg3uPBq/2o1DtOHn2BZxGqBPbB9cOjjqkgZPQHRmLV8r2uoRneJmS+mwXPv91v+
-         p8keJizZlbvoYn2JC4D6y7yCCYriE5lVQx0XlO33qn+gxbpahcrP7jXAjV+GwzeY+hDo
-         y3mB/ZlKqPbMsxsH4BXY5onQ0tPhSJT3Jp86aALmerm+OQx81rXkVKNmsYdPyEqL7aPk
-         OUHaWnu+ArbLPhB5vLDDnociXLzNDYm7/OUbO+uyi1MVxkETDB752PYJICmAuvqwCIKd
-         wFQ+JViOUU/fACW2PMVnSszgJkKL9p3qK19inSDIpx8iZAt9gOONX9OWpOzpf2L0koMn
-         ii2Q==
-X-Gm-Message-State: AOAM533dxW+TfIKIxBlPr8TrJtmZw/4vpoqZFGOZ7JFUNyAK2V65RdV+
-        Rtk/eYbYdniWRBkiYpQ2O9q+7F1C62TxO1qpiqQ8Qg==
-X-Google-Smtp-Source: ABdhPJztRVRW3/QmckVYl4Qyku7NmhVkrLWgQRHozwyB7+hutqJ0fbJjiOdFJW0pTwJfle0znxSG5gl3KIkHsykSZyo=
-X-Received: by 2002:a05:6102:3c3:: with SMTP id n3mr3785865vsq.19.1632813454116;
- Tue, 28 Sep 2021 00:17:34 -0700 (PDT)
+        Tue, 28 Sep 2021 03:19:48 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MyNoa-1mlRND1gc8-00yhK3; Tue, 28 Sep 2021 09:18:07 +0200
+Received: by mail-wr1-f54.google.com with SMTP id w29so56085755wra.8;
+        Tue, 28 Sep 2021 00:18:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530hKKhVA/tUVe6BfSf/I0uoUQXTPasURDjeA5ux0bh0Ctqt0E9k
+        g8lLE7rW3U3Zf/8WP+vWirjDNa/v8El2UBTbRm8=
+X-Google-Smtp-Source: ABdhPJxaHorzD2S3T2sCWmmw/0OZKgyFTdDkETJW1DWJXS7gwWsZGV1er7XbCQjLdku7lzqd5KcZP1G40aMdlFjeqmM=
+X-Received: by 2002:a5d:6a08:: with SMTP id m8mr4558493wru.336.1632813487077;
+ Tue, 28 Sep 2021 00:18:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
- <20210922072326.3538-1-huangjianan@oppo.com> <e42a183f-274c-425f-2012-3ff0003e1fcb@139.com>
- <919e929d-6af7-b729-9fd2-954cd1e52999@oppo.com> <314324e7-02d7-dc43-b270-fb8117953549@139.com>
- <CAJfpegs_T5BQ+e79T=1fqTScjfaOyAftykmzK6=hdS=WhVvWsg@mail.gmail.com>
- <YVGRMoRTH4oJpxWZ@miu.piliscsaba.redhat.com> <97977a2c-28d5-1324-fb1e-3e23ab4b1340@oppo.com>
-In-Reply-To: <97977a2c-28d5-1324-fb1e-3e23ab4b1340@oppo.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 28 Sep 2021 09:17:23 +0200
-Message-ID: <CAJfpegsim-qtM4yaYdWo9P+QOP4UD_NrFTKADQky-HwOR=SPyQ@mail.gmail.com>
-Subject: Re: [PATCH v3] ovl: fix null pointer when filesystemdoesn'tsupportdirect
- IO
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     Chengguang Xu <cgxu519@139.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
-        guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
-        guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Chengguang Xu <cgxu519@mykernel.net>
+References: <20210928153508.101208f8@canb.auug.org.au>
+In-Reply-To: <20210928153508.101208f8@canb.auug.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 28 Sep 2021 09:17:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a12rEbupWakQ8DxWDU4JW0sKVgTa0GXFZ6jNE+7gtT5cw@mail.gmail.com>
+Message-ID: <CAK8P3a12rEbupWakQ8DxWDU4JW0sKVgTa0GXFZ6jNE+7gtT5cw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the sound-asoc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:N4V4lzVYq8SPQ1GPyucLbN8J/MFtl0YvKOakDz+70KmYgxMDks0
+ +vCT7gIGakj+nw25L1pN3xxArsAWujYDbdnBgokKp4TR46KU7elAwYU0jDnDndh9R4nYCmU
+ VWdAkYiRcZdbnRvSBk63S/p49dkss8ABkk/Kf7U1eML93Jb5dyDNk2jRfDTCtffwl9caYGg
+ ZzN5NV4g86sQWtQVQ8oeA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aMRoY2FUPfo=:qCfKOsOlpT8V0ZxkZ9lFS3
+ 1EhjZKfpbonAv+MXEXJzI34jZVBzvLk+VrZhdBkQ85lI5HMI1cJx/agMMRrMd+ALjMFQpE6RY
+ wqILMULt5/xbEOIAzggY2Imvgj9gUzdU5uulK+c2oBLdNML9JfjZ6UZ2c/AhekHLDiheyu5N8
+ Pfg8QKHCbEH8GuDKvKXZa7+mnZQrEV/fL1VRUV1PHcPDj5ThO2x0e0K1kWZFc9eBNczTT583y
+ CH5MYszKQGyMiuPe5AIFSioN7CS64/nUBFX0H+sGNgFII81x1jj/LTif6+VRiyz/Y+4D4BJWG
+ WxUkpo5VmVr+1Pd/43/pWBWRBlDaO6ViTnB2RDyi34qLqnAOfn5kwBRPXh132gaPWKBl0Zi6f
+ SXZn+3fkvT7Nz98KyJ+HBvc39MFFnWeMS5E5rXx7Pnb+8NwyHD8Fly3jWW8RzXvmL/NZ7H4vj
+ jIpmN3kUuFkHBqQDSFsnYdJSAI5BB1n9LvPRhSPMkjZH3ePioNQe8N3OjAaJISLXasdpmVPhN
+ 0Uxu5hWBqx/oS/tAfbnuz0Wiby0m6opSmCkY7KD4X4gjD2syXF7ljbFG1fq/FQOVnRkY62QRV
+ fiNmQ4jfTqZJPMjnqn28zijgAFSSreTqqi8OQ+sk/Ir9v4phafdwZ/Djsd6qk5t3IgF7lBYow
+ m5usat1cID7jDbdw3lVN1qefoDqcH1ClEvEIEnKevqFAAaftQScZXh4TSwMDOmefctTrIEfgQ
+ dI+3jmqq/HUqvO4g+hK1mNJ7VyBQgv3qsmk8bQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 09:01, Huang Jianan <huangjianan@oppo.com> wrote:
+On Tue, Sep 28, 2021 at 7:35 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> =E5=9C=A8 2021/9/27 17:38, Miklos Szeredi =E5=86=99=E9=81=93:
-> > On Wed, Sep 22, 2021 at 04:00:47PM +0200, Miklos Szeredi wrote:
-> >
-> >> First let's fix the oops: ovl_read_iter()/ovl_write_iter() must check
-> >> real file's ->direct_IO if IOCB_DIRECT is set in iocb->ki_flags and
-> >> return -EINVAL if not.
-> > And here's that fix.  Please test.
+> Hi all,
 >
-> This patch can fix the oops.
+> After merging the sound-asoc tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
 >
-> Tested-by: Huang Jianan <huangjianan@oppo.com>
+> ld: sound/soc/codecs/wm_adsp.o: in function `.wm_coeff_put':
+> wm_adsp.c:(.text.wm_coeff_put+0x54): undefined reference to `.cs_dsp_coeff_write_ctrl'
+> ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_write_ctl':
+> (.text.wm_adsp_write_ctl+0x60): undefined reference to `.cs_dsp_get_ctl'
+> ld: (.text.wm_adsp_write_ctl+0xb4): undefined reference to `.cs_dsp_coeff_write_ctrl'
+> ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_read_ctl':
+> (.text.wm_adsp_read_ctl+0x50): undefined reference to `.cs_dsp_get_ctl'
 
-Thanks for testing!
+To spare everyone the search, the problem is in this bit:
 
-Miklos
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -298,6 +298,7 @@ config TURRIS_MOX_RWTM
+
+ source "drivers/firmware/arm_ffa/Kconfig"
+ source "drivers/firmware/broadcom/Kconfig"
++source "drivers/firmware/cirrus/Kconfig"
+ source "drivers/firmware/google/Kconfig"
+ source "drivers/firmware/efi/Kconfig"
+ source "drivers/firmware/imx/Kconfig"
+
+drivers/firmware/Kconfig is only included from arch/*/Kconfig for
+certain architectures, rather than from drivers/Kconfig as most
+other subdirectories are. This means the CONFIG_CS_DSP
+symbol is not in the namespace of Kconfig and never gets
+selected.
+
+We just discussed this problem on IRC the other day as I
+had the same issue. I think we should move all the
+"source" statements for driver Kconfig files from architecture
+specific inclusions to drivers/Kconfig.
+
+      Arnd
