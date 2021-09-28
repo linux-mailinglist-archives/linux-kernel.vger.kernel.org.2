@@ -2,228 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA5B41B890
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07BB41B891
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242759AbhI1Uo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:44:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14828 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242821AbhI1UoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:44:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="222909664"
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="222909664"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 13:42:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="478889411"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Sep 2021 13:42:44 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 28 Sep 2021 13:42:44 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 28 Sep 2021 13:42:44 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 28 Sep 2021 13:42:44 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 28 Sep 2021 13:42:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gVwR1y0PLHrMai6o8m1xc3XNf2dXLOxHKvvSl0lYO16yeMK4kSotXJBPjTKyUqOccIk89obaKF46TPd5HwgIVH7ZiYMAOIuK1wPVnr7GyA0+FIOVraSkWvNlrd/WNjw+tM6DHqow1cr4/o8t0OcaqFxHnDPTt4vJXyqvxIzqP1dWRmigggs9uJ/5tfCklIkU4XbnoGd1n4vkp9BopizCQ5SoWf9JnsxWhUXShVqREMJHa8dECkcrOOv/o4A5jyVAoGqxiX6Sf/tM+i8LPtgGMwb+LGObgNf3v1pAScP0aBGpM9GMzifKW2luz8tFLjrJCmlJSdVBKT/2Xx1RJaFOJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=g15VE20IWDM+JC4uLN7VBP9zpKR3CZCcznL4HzOqIVM=;
- b=LC62k8DKZXiqVqMljm9vIKt4EK7oFHR8fZIHYCqUAXQpJ48OeXTPlJBpU8zONmZRl7VN/GQY29xELpDTUolOn0FNjolsAv2tTgQYoN0foPK7JMQroJ/j9qoqXWbbM3TIqMDdCQ6R0X33LlKg0XjfF1NH1LpShf+u8dAQeVoyRKyttL3k4Ae4TO0HT0pQ9Ui1Adzy5CWP41j84jY3fbXBaa5/ZvK4nWH3fF4vhXcEONI7vqCxj2L+kIG09qMscCn/OklN5Ca3OgXFr+SwKdLFZ63m9wW7gwZuYbCM633MypWHEJyGAWeaCFPmKN6Ji4wbAY+MWlIimdAzd4OBQBT69Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g15VE20IWDM+JC4uLN7VBP9zpKR3CZCcznL4HzOqIVM=;
- b=Zul5NHga5ljJB0jgraZI+nuzyoagfEs09MCTAJpGNOVWfCyLdekfkTXK4tHwbKNVHiQWKtEiM0LhU5nm++82Ta7SQ/QR0yuPtwqMRYTahsvmQ1WUgGUcyHkoHVDWgmOPudhRAWGPLDJGO7JB5ZnaCGwNBMQJ6o1p+mg+W8oRMRc=
-Received: from BY5PR11MB4182.namprd11.prod.outlook.com (2603:10b6:a03:183::10)
- by BYAPR11MB3254.namprd11.prod.outlook.com (2603:10b6:a03:7c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.20; Tue, 28 Sep
- 2021 20:42:37 +0000
-Received: from BY5PR11MB4182.namprd11.prod.outlook.com
- ([fe80::e189:6f03:9fde:2062]) by BY5PR11MB4182.namprd11.prod.outlook.com
- ([fe80::e189:6f03:9fde:2062%5]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
- 20:42:37 +0000
-From:   "Chrisanthus, Anitha" <anitha.chrisanthus@intel.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        "Dea, Edmund J" <edmund.j.dea@intel.com>
-CC:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>, lkp <lkp@intel.com>
-Subject: RE: [PATCH] drm/kmb: Remove
- set_test_mode_src_osc_freq_target_{hi,low}_bits()
-Thread-Topic: [PATCH] drm/kmb: Remove
- set_test_mode_src_osc_freq_target_{hi,low}_bits()
-Thread-Index: AQHXtJ5sxognB5Xrs0e6qUBrFVe0/6u56Rzg
-Date:   Tue, 28 Sep 2021 20:42:37 +0000
-Message-ID: <BY5PR11MB4182633C57DF92E3793BF2978CA89@BY5PR11MB4182.namprd11.prod.outlook.com>
-References: <20210928192338.1987872-1-nathan@kernel.org>
-In-Reply-To: <20210928192338.1987872-1-nathan@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.200.16
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5ee72240-973b-43d6-ea5b-08d982c08228
-x-ms-traffictypediagnostic: BYAPR11MB3254:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB3254BCB82E4EA956B49309908CA89@BYAPR11MB3254.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:597;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XkICzjUmTKYWVijBN10MGtoiOhLkxLxfgEO8Nj2hETxGf/GldpGg6trONfKAowHddWArpJUjxleUyHOU6qI2v5hfmSz8lIJHiBlRgUXyKfpo3wBWyUNJPFdyb6aV3uM2egLXZieaGsP4FwZxB6SRLvpRyTZQ4b4KiAIGWEyGo1nqTSVeTM17N8NgUu9CcwEw9U/PVvp94Fmbgc4QW0sFUh6X6VMau7Yk55azedY9rHfJnI982md5iHFE7vdCFyYt8i34o+vwF+9lfJuYjBHD11kgnRyTJAncGB5+Uy466rftvB0KeqFXcbuwtFYrkGLsotEirQfXMu2WxBNhHQC9cMInyc3sdzDT3qptnqoJG/ynViIoPZ1czwh388erNN1ikflYKTAJCJzsTM5G/wU02OLo5kCYqbnvfDlchfq42nFR5eiXgMZ4+XQMlVBAmX9VbmOvIK3pDXrMGEdceA0TiLUlMLBfJGJB5U+f4rS1uHJp3UGGz7nQgs7Ftk9t3nJgShDQ8s1IIWzcnvOvfRazSa5H++jluFmQnVRRsyp9TqrhvljHPkR2oAV47LXwd14N/pDGFjAgp1z99ffl5UXyFfrw4TIRnL2RuH0OrETatMZmRwbUFe7P77KU6iTIQ0GI/SszF+8gGkIUyf9HAakdfjDNuiouSmiUZ9/HrvAGCkWhmLIJpEbBUXaKnpv5LUDJwu8CU0xL9KnyVd6GHNIUOg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4182.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(5660300002)(38100700002)(8676002)(8936002)(55016002)(6636002)(54906003)(122000001)(71200400001)(33656002)(110136005)(316002)(26005)(83380400001)(9686003)(508600001)(64756008)(66556008)(66476007)(86362001)(76116006)(66446008)(52536014)(53546011)(4326008)(107886003)(38070700005)(7696005)(66946007)(2906002)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WJCvf+VgXV8coestw5MWSGH0mIe5B53zcQr/TT6YKprVvPBdlGVOaLX5f8dA?=
- =?us-ascii?Q?DfVYzTCP/Uvdp/Y/7xfPehK/YMJeIZSGQukmPGAX2A0phMISLK4G29PMWYcI?=
- =?us-ascii?Q?rFJIHZIdeiRPSOzoIXSNBY51qfpzR4Gm7FAJs+V+fhIyML5PjqDEpuQtzKj/?=
- =?us-ascii?Q?VQYipBAcwhXJCc+QGHuuRuMH49FHMhP0qT0PZCLJeYV6/Scpuy/jnhuzMgV6?=
- =?us-ascii?Q?OHs0wMIxa4yDjrsWQH4in5F3zAYr3uNQ+ANkkmL0IkoMIXfVtliFsZ/CO1w1?=
- =?us-ascii?Q?HUXwBd44DK/OOXQ825RLFfsIcCwekczjjbTCIK+l78ochFWPXwrFCamEJymk?=
- =?us-ascii?Q?l8Ht/sG218Gcuh76M5ApxK9FboY4OpLg0KR3Tkf/L22Wl69hQLGHwcdKNsbr?=
- =?us-ascii?Q?R/QdVbQ41nzOyXX38imgzhdo+e/TctgskYMJ4o7f+ucgJ4RIuGcOgTNyTxJM?=
- =?us-ascii?Q?T9XhQ5rcIZimRuSD8kYFjZuv8ghirFIVnnRy51qXJPmoyhlnmumY7oFyAktW?=
- =?us-ascii?Q?pmlwUzOg1M0wG3vPIzSzdzAyOQSmkdkRYijWlqe1hO7ZC9d0+aOeqRZmPNDB?=
- =?us-ascii?Q?wporFHzDV+0D9YhFGaJ0kVfan0AuuxloPL8n9ocsnoqFzVZkCHCbpJHshn+n?=
- =?us-ascii?Q?pxmu9ZLHmxgzz9PhkjFOQasnETRxsr0U0/uet33aI32+QnuwpmBl8mtJn/7V?=
- =?us-ascii?Q?EaKdFsStMCFcCKIxsadgC0f9305NX4c9rgGDY5xWKBcAwFgvF7plgc+wYDhT?=
- =?us-ascii?Q?WZtyP7jsK1eyrr29saAyw8X3KSiAqzQTJITwEjD2rWPxPTzTzsmaIjmSZuni?=
- =?us-ascii?Q?5L2AjI0YPTknw4hcKIs8arZQvNntBANPOqtPN4m3rA2SygmnEBfmeZH7lwWR?=
- =?us-ascii?Q?/GESldMpY1mUkG5v8FjTMNHy3QvUbh4aYOc5SwW4QkhEqm5qrAZlHUB9uFMp?=
- =?us-ascii?Q?2rh6Sbu6RzRvXuguw/nGWNP8IHa3SgYLt76ENmgfklMtziBdAMzbT9ewX6tv?=
- =?us-ascii?Q?GQnN1kkDZYDCA8CzafgY5qqMbVLtlsk2bNTj0oMQCitOVY6i0yLbm16lclio?=
- =?us-ascii?Q?nJvPZd4KiAYKuJkDDhxibV/qRL4zwD4n58yILO95xNOomhsejvzo7S4sa/+t?=
- =?us-ascii?Q?tc3Y/jHzt/cbvRBTQMVTqWnGCZaaXbqqCRdhu/vgQ6njWUPEMNE7s2aTpptQ?=
- =?us-ascii?Q?4cvhqcAuRaYfl5ox6Z1gKhof7t3LCZ1seG4/SjsjbnhfuO7c/wxpJmdY1W1L?=
- =?us-ascii?Q?vRA0XJrxkL6ffo46h0GXkIjfMnwzoqskPk6Ip+mYENZ3Kw2KvCcfYyut/vcb?=
- =?us-ascii?Q?WQg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S242825AbhI1Uoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:44:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21246 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242818AbhI1Uo0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:44:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632861766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q/j8lu7tFVONNif5bHLiSAgHNxKsf9udcHGujsFhPw0=;
+        b=Kl6HE9gvaIFKOzAuZMFEg366fqhmNoH0bdj6GvzOoRRQ8bchad6K60H+wrm6xTnDpEfMFg
+        LCPW32kImaZ5qawxD6SsMygset9GajSLbfqdcpSZWCfwdH5VqjPlCcqUS7BoIRdWQa5gQh
+        b++0SCM/U6mFlgj7Ru9LhZY9yYax+Lo=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-2vm290QkOFqE8sa30m2DpA-1; Tue, 28 Sep 2021 16:42:45 -0400
+X-MC-Unique: 2vm290QkOFqE8sa30m2DpA-1
+Received: by mail-oo1-f71.google.com with SMTP id 68-20020a4a0d47000000b0028fe7302d04so159400oob.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:42:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=q/j8lu7tFVONNif5bHLiSAgHNxKsf9udcHGujsFhPw0=;
+        b=D2b/S9rnX8HoMjN6eSyMldlDlgLxilkiG+TC9mCPE/A4o37Lu9IxmW3Lr3ZYrYdMQn
+         sTGx21TunQXbynXrlVMwzQqj4DK/BImElyqIjFlECj5MjLNdvlBjG8qd+tsuIGfJiV6Q
+         pwX3j3S/NXETIYvNSuT4+p5548YkJ7iZMmCQNChnWBVlBr+cpj4K2NAttbb8qaRXt9J1
+         TOxr9j7S4wzxK/fPLK6KOgwIHPd/v4cmysJEQqj56i+DvbqCD8sICnWBorKJy/cnBlo1
+         ggxhqWYUmlqgRdHCM4K5SxyP/CWOZe65tXtlMOpwtVVrBG+kF0xNjRhEzz91Pgs5URgh
+         da5w==
+X-Gm-Message-State: AOAM532WVBwX3ST5WfJqrgZGpoHEELT+cm2W6uth757I8c5RQGLJeIyh
+        ieTJ/+SjYhb3fFI7wgOjU/PfWF1odoTqQJPdQh3ArGHSLtgnLhlEWvfcwj3ygN+487Eibb/V5dk
+        n6o/4bKQyuAWgdID8VqD6MRPCR8Sj6u33dyXu3J0OBhYC2W4NVqmWzv4G5FDfB2+kNeHm0QU=
+X-Received: by 2002:a05:6808:287:: with SMTP id z7mr5155503oic.8.1632861764290;
+        Tue, 28 Sep 2021 13:42:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwLFJvr/Tu92X62J2GJbZgkOlFxzve+GFpDXa35TsS80V/B6TDgkF0Ov4pbMtPZ4zTEjDCkg==
+X-Received: by 2002:a05:6808:287:: with SMTP id z7mr5155486oic.8.1632861764052;
+        Tue, 28 Sep 2021 13:42:44 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u12sm36724otq.20.2021.09.28.13.42.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 13:42:43 -0700 (PDT)
+Subject: Re: [PATCH] of: remove duplicate declaration of of_iomap()
+To:     Randy Dunlap <rdunlap@infradead.org>, robh+dt@kernel.org,
+        frowand.list@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210928201214.294737-1-trix@redhat.com>
+ <e706d330-87ab-75e6-7118-e9b280039409@infradead.org>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <da68bba8-bb38-cb11-df5e-e69fc4848e98@redhat.com>
+Date:   Tue, 28 Sep 2021 13:42:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4182.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ee72240-973b-43d6-ea5b-08d982c08228
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 20:42:37.7777
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gTpUdD0fePBK+OGWiJivzmiSw21aPDpbBIn4k8KDco/9CTc/NIeveZMpcfai4Ayl0uCZ16RLnC9xmTyKdP10MwCXPqxz8892SYlJd1SK2hE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3254
-X-OriginatorOrg: intel.com
+In-Reply-To: <e706d330-87ab-75e6-7118-e9b280039409@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the patch. Looks good.
-Acked-by: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
 
-> -----Original Message-----
-> From: Nathan Chancellor <nathan@kernel.org>
-> Sent: Tuesday, September 28, 2021 12:24 PM
-> To: Chrisanthus, Anitha <anitha.chrisanthus@intel.com>; Dea, Edmund J
-> <edmund.j.dea@intel.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>; Nick Desaulniers
-> <ndesaulniers@google.com>; dri-devel@lists.freedesktop.org; linux-
-> kernel@vger.kernel.org; llvm@lists.linux.dev; Nathan Chancellor
-> <nathan@kernel.org>; lkp <lkp@intel.com>
-> Subject: [PATCH] drm/kmb: Remove
-> set_test_mode_src_osc_freq_target_{hi,low}_bits()
->=20
-> clang with W=3D1 warns:
->=20
-> drivers/gpu/drm/kmb/kmb_dsi.c:812:2: error: unused function
-> 'set_test_mode_src_osc_freq_target_low_bits' [-Werror,-Wunused-function]
->         set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi *kmb_ds=
-i,
->         ^
-> drivers/gpu/drm/kmb/kmb_dsi.c:824:2: error: unused function
-> 'set_test_mode_src_osc_freq_target_hi_bits' [-Werror,-Wunused-function]
->         set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi *kmb_dsi=
-,
->         ^
-> 2 errors generated.
->=20
-> Remove them, as they have been unused since the driver's introduction in
-> commit 98521f4d4b4c ("drm/kmb: Mipi DSI part of the display driver").
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  drivers/gpu/drm/kmb/kmb_dsi.c | 28 ----------------------------
->  1 file changed, 28 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c
-> b/drivers/gpu/drm/kmb/kmb_dsi.c
-> index 1793cd31b117..ae24c5fc35a5 100644
-> --- a/drivers/gpu/drm/kmb/kmb_dsi.c
-> +++ b/drivers/gpu/drm/kmb/kmb_dsi.c
-> @@ -808,34 +808,6 @@ static void test_mode_send(struct kmb_dsi
-> *kmb_dsi, u32 dphy_no,
->  	}
->  }
->=20
-> -static inline void
-> -	set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi
-> *kmb_dsi,
-> -						   u32 dphy_no,
-> -						   u32 freq)
-> -{
-> -	/* Typical rise/fall time=3D166, refer Table 1207 databook,
-> -	 * sr_osc_freq_target[7:0]
-> -	 */
-> -	test_mode_send(kmb_dsi, dphy_no,
-> TEST_CODE_SLEW_RATE_DDL_CYCLES,
-> -		       (freq & 0x7f));
-> -}
-> -
-> -static inline void
-> -	set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi *kmb_dsi,
-> -						  u32 dphy_no,
-> -						  u32 freq)
-> -{
-> -	u32 data;
-> -
-> -	/* Flag this as high nibble */
-> -	data =3D ((freq >> 6) & 0x1f) | (1 << 7);
-> -
-> -	/* Typical rise/fall time=3D166, refer Table 1207 databook,
-> -	 * sr_osc_freq_target[11:7]
-> -	 */
-> -	test_mode_send(kmb_dsi, dphy_no,
-> TEST_CODE_SLEW_RATE_DDL_CYCLES, data);
-> -}
-> -
->  static void mipi_tx_get_vco_params(struct vco_params *vco)
->  {
->  	int i;
->=20
-> base-commit: 93ee1a2c0f08345ab17c51198f725d4c95984f4c
-> --
-> 2.33.0.591.gddb1055343
+On 9/28/21 1:33 PM, Randy Dunlap wrote:
+> On 9/28/21 1:12 PM, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> A ranconfig produces this linker error
+>
+> randconfig .. on what arch, please?
+s390
+>
+>> irq-al-fic.c:252: undefined reference to `of_iomap'
+>>
+>> The declaration of of_iomap() is dependent on OF
+>> The definition of of_iomap() is dependent on OF_ADDRESS
+>> These should match.  There are duplicate declarations
+>> of of_iomap(), remove of_iomap() and the
+>> of_address_to_resource() duplicate.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   include/linux/of_address.h | 8 +-------
+>>   1 file changed, 1 insertion(+), 7 deletions(-)
+>>
+>
+>
+> thanks.
 
