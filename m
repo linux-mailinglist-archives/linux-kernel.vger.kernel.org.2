@@ -2,86 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE7B41BAE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7826B41BAEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243184AbhI1XUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:20:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26786 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230349AbhI1XU2 (ORCPT
+        id S243217AbhI1XW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240444AbhI1XW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:20:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632871128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/J9uXh/NpiD0hENFRRaixgk3dGd3d67B8zszzrfj9Pw=;
-        b=XL9/IeHBbU0CapeSE3a6xWkQJGbrfKPcciAmo2LCrxehI32qtTaRdiCp9Wbv87ZLE75kj3
-        AL+SFf2ufDyQB7FWYtn5McaE02gcNONUhHqmlWmf4IQyu3By5MZvrIFLAnRA7pbK5WBS7u
-        0wMU84baiQg8DDa93FfgmmZgC7MIUOg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-ip4cVZG-MQaan0I56xYIig-1; Tue, 28 Sep 2021 19:18:46 -0400
-X-MC-Unique: ip4cVZG-MQaan0I56xYIig-1
-Received: by mail-wm1-f71.google.com with SMTP id 200-20020a1c00d1000000b0030b3dce20e1so1843774wma.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:18:46 -0700 (PDT)
+        Tue, 28 Sep 2021 19:22:27 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD89C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:20:47 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id k24so685699pgh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:20:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UGqfj0Lu1yqe3ICg5RET+tLswWsdfuZHNoCTUNF/Uzs=;
+        b=ktTYgxEt+/Ampbz8uSBrRMPIAz/idvs23twHZPW49NiFLYNx0UrJMlpO/qSoV1Bomk
+         YUWDBgxRXfTYt7mqIz3yM9k71Qvwk4LZ93E1desyrK5VVDybtiUv7ubdJ28LEP39esq2
+         uuU+6ErIQAyonGVV+s3AGb+o+NsKYw4ovGye57m5ERw++PUxSv8C4TsCL3OI25AWuUOE
+         7Z8i+9ip2VS5JhpqoDKTXp2iRr8YB30Wu9BIkMy+IJRHdMzGHsVaU5A7AuZZSycPBXwG
+         7sYcqsMqaIJ6N2Lj6sNFSQbrsOFxC4yNvRAnFOYjalbNGjadVQZsO68TeLq3cAJuUHZx
+         qA5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/J9uXh/NpiD0hENFRRaixgk3dGd3d67B8zszzrfj9Pw=;
-        b=Kdc1icfAU7pOJb2ElY5o5WOt/afsz/HZkfrvoMHmSQvPdJXJNefYw+rcStxeGJwgwq
-         rgdbxf8DxafyVv7QyLSSTpWP9SX/2kfKJGkcyxFLZm6cBU9MA/QhoG7cuWR0Hrh8beHd
-         IxINhbAjd13nYVvzi5fOW+dp7ZbKchLdNDgycWoTmX3xgnjAD7IzRG+S7lFaQ+hgdo7C
-         J580VXiOcy0yLtmj80f5dtSaTmF4FxWB9dPFhTz++W60e9YBLEwSxY0TacpCpjt+kyPh
-         uRKdp+hAVNZbz7sbwPImrf8OMa5/7ioSC88+rGjMRHe3kBtRqqjYXHMWEDr/8I3dNOY5
-         bO4w==
-X-Gm-Message-State: AOAM531Ci0QNKFVR9/crpkV2PdUltDFJB9Xud5MyHNfOh2KNd8Fun8iZ
-        g/ORfLj8b73xGyhVVR95I9yt4i3NmvrMXhUGDMsBFS9+xNudiwe6Yi9N7hvOGnRTIcwiw3ljbv3
-        GAMKdHbT8T9+EzFxKWzjQREuF
-X-Received: by 2002:a7b:cd0f:: with SMTP id f15mr7095918wmj.173.1632871125500;
-        Tue, 28 Sep 2021 16:18:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwz2pejIQePBmmgXCTt1XcJxswV5FS7A1YZhpMN6QJ6KrvvPKhD8QAM4eLrCzDP/Vxa0Zq6bA==
-X-Received: by 2002:a7b:cd0f:: with SMTP id f15mr7095905wmj.173.1632871125362;
-        Tue, 28 Sep 2021 16:18:45 -0700 (PDT)
-Received: from redhat.com ([2.55.4.59])
-        by smtp.gmail.com with ESMTPSA id d7sm456977wrh.13.2021.09.28.16.18.43
+        bh=UGqfj0Lu1yqe3ICg5RET+tLswWsdfuZHNoCTUNF/Uzs=;
+        b=M7jnvl1aUF67Dt/3ORSfzNqNsa9+NnWAc0uuMep6WfgdWoJp3dTNCnxzPvxoPRdp2V
+         si4Omgknub6vXx/afvJRMkSmE7S05jVnx6B4adCbUEtlI5HW89nTGzj/RaujdH7hEp5N
+         t0MHrnuv+93msZwVvjgPvylgnRDEFhGDdOdEn9aU0CSaZXdSoLIs2WCB2M1knhuvPEs3
+         QcPEkGctpgMRgWf+DeOkH/nc6Nkow3o9EssMi5TBy1qhcrE40j9Dy1sQoNQB7Nq4DcwH
+         8IjXw9IPlLwh4+bReubmqqzf2Sv+vcOYTd+iGveXPusjIhJfEAdGqAps1LNT8aCfGX5+
+         hY6Q==
+X-Gm-Message-State: AOAM530Kb6RBSe7on9HYHAfVN101YoY6fJibDyWbbApjJoew1+FmrBaX
+        p5FWlqf90lnVROpBnQbqUoPPPA==
+X-Google-Smtp-Source: ABdhPJwTa/py5geL3XY+CzwyaLKtYNqkjvb1RpNaBnglEbbxxOrFPI04Wm0x7FME079K+YbBCuZQ0Q==
+X-Received: by 2002:a63:a65:: with SMTP id z37mr7028095pgk.192.1632871246302;
+        Tue, 28 Sep 2021 16:20:46 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id z17sm190349pfj.185.2021.09.28.16.20.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 16:18:44 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 19:18:41 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.15-rc1
-Message-ID: <20210928191714-mutt-send-email-mst@kernel.org>
-References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
- <20210913035750.GA1196001@roeck-us.net>
+        Tue, 28 Sep 2021 16:20:45 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 23:20:41 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com
+Subject: Re: [PATCH v3 31/31] KVM: MMU: make spte an in-out argument in
+ make_spte
+Message-ID: <YVOjSSahzJ/tf28g@google.com>
+References: <20210924163152.289027-1-pbonzini@redhat.com>
+ <20210924163152.289027-32-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913035750.GA1196001@roeck-us.net>
+In-Reply-To: <20210924163152.289027-32-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 08:57:50PM -0700, Guenter Roeck wrote:
-> The qemu runtime failure bisects to commit 694a1116b405 ("virtio: Bind
-> virtio device to device-tree node"), and reverting that commit fixes the
-> problem.  With that patch applied, the virtio block device does not
-> instantiate on sparc64. This results in a crash since that is where the
-> test is trying to boot from.
+On Fri, Sep 24, 2021 at 12:31:52PM -0400, Paolo Bonzini wrote:
+> Pass the old SPTE in the same variable that receives the new SPTE.  This
+> reduces the number of arguments from 11 to 10.
 > 
-> Good news is that I don't see any new runtime warnings.
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c         | 18 ++++++++----------
+>  arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
+>  arch/x86/kvm/mmu/spte.c        |  7 ++++---
+>  arch/x86/kvm/mmu/spte.h        |  2 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c     |  9 +++++----
+>  5 files changed, 19 insertions(+), 19 deletions(-)
 > 
-> Guenter
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 91292009780a..b363433bcd2c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2682,8 +2682,8 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+>  	int was_rmapped = 0;
+>  	int ret = RET_PF_FIXED;
+>  	bool flush = false;
+> +	u64 spte = *sptep;
+>  	bool wrprot;
+> -	u64 spte;
+>  
+>  	/* Prefetching always gets a writable pfn.  */
+>  	bool host_writable = !fault || fault->map_writable;
+> @@ -2691,35 +2691,33 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+>  	bool write_fault = fault && fault->write;
+>  
+>  	pgprintk("%s: spte %llx write_fault %d gfn %llx\n", __func__,
+> -		 *sptep, write_fault, gfn);
+> +		 spte, write_fault, gfn);
+>  
+>  	if (unlikely(is_noslot_pfn(pfn))) {
+>  		mark_mmio_spte(vcpu, sptep, gfn, pte_access);
+>  		return RET_PF_EMULATE;
+>  	}
+>  
+> -	if (is_shadow_present_pte(*sptep)) {
+> +	if (is_shadow_present_pte(spte)) {
+>  		/*
+>  		 * If we overwrite a PTE page pointer with a 2MB PMD, unlink
+>  		 * the parent of the now unreachable PTE.
+>  		 */
+> -		if (level > PG_LEVEL_4K && !is_large_pte(*sptep)) {
+> +		if (level > PG_LEVEL_4K && !is_large_pte(spte)) {
+>  			struct kvm_mmu_page *child;
+> -			u64 pte = *sptep;
+> -
+> -			child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
+> +			child = to_shadow_page(spte & PT64_BASE_ADDR_MASK);
+>  			drop_parent_pte(child, sptep);
+>  			flush = true;
+> -		} else if (pfn != spte_to_pfn(*sptep)) {
+> +		} else if (pfn != spte_to_pfn(spte)) {
+>  			pgprintk("hfn old %llx new %llx\n",
+> -				 spte_to_pfn(*sptep), pfn);
+> +				 spte_to_pfn(spte), pfn);
+>  			drop_spte(vcpu->kvm, sptep);
+>  			flush = true;
+>  		} else
+>  			was_rmapped = 1;
+>  	}
+>  
+> -	wrprot = make_spte(vcpu, sp, slot, pte_access, gfn, pfn, *sptep, speculative,
+> +	wrprot = make_spte(vcpu, sp, slot, pte_access, gfn, pfn, speculative,
+>  			   true, host_writable, &spte);
+>  
+>  	if (*sptep == spte) {
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index d8889e02c4b7..88551cfd06c6 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -1130,7 +1130,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+>  		host_writable = spte & shadow_host_writable_mask;
+>  		slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+>  		make_spte(vcpu, sp, slot, pte_access, gfn,
+> -			  spte_to_pfn(spte), spte, true, false,
+> +			  spte_to_pfn(spte), true, false,
+>  			  host_writable, &spte);
+>  
+>  		flush |= mmu_spte_update(sptep, spte);
+> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+> index 871f6114b0fa..91525388032e 100644
+> --- a/arch/x86/kvm/mmu/spte.c
+> +++ b/arch/x86/kvm/mmu/spte.c
+> @@ -92,10 +92,11 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
+>  bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+>  	       struct kvm_memory_slot *slot,
+>  	       unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
+> -	       u64 old_spte, bool speculative, bool can_unsync,
+> -	       bool host_writable, u64 *new_spte)
+> +	       bool speculative, bool can_unsync,
+> +	       bool host_writable, u64 *sptep)
 
-I think the fix is now merged by Linus - could you please try it out and
-confirm that it's ok?
+I'd prefer a different name since `sptep` has specific meaning
+throughout the mmu code. (It's the address of the spte in the page
+table.)
 
-Thanks a lot for the testing!
+Case in point, I was going to suggest we can get rid of struct
+kvm_mmu_page since it can be derived from the sptep and then realized
+how wrong that was :).
 
--- 
-MST
+Instead of receiving the new spte as a parameter what do you think about
+changing make_spte to return the new spte? I think that would make the
+code more readable (but won't reduce the number of arguments because
+you'd have to add wrprot).
 
+>  {
+>  	int level = sp->role.level;
+> +	u64 old_spte = *sptep;
+>  	u64 spte = SPTE_MMU_PRESENT_MASK;
+>  	bool wrprot = false;
+>  
+> @@ -187,7 +188,7 @@ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+>  		mark_page_dirty_in_slot(vcpu->kvm, slot, gfn);
+>  	}
+>  
+> -	*new_spte = spte;
+> +	*sptep = spte;
+>  	return wrprot;
+>  }
+>  
+> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+> index 7c0b09461349..231531c6015a 100644
+> --- a/arch/x86/kvm/mmu/spte.h
+> +++ b/arch/x86/kvm/mmu/spte.h
+> @@ -337,7 +337,7 @@ static inline u64 get_mmio_spte_generation(u64 spte)
+>  bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+>  	       struct kvm_memory_slot *slot,
+>  	       unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
+> -	       u64 old_spte, bool speculative, bool can_unsync,
+> +	       bool speculative, bool can_unsync,
+>  	       bool host_writable, u64 *new_spte);
+>  u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled);
+>  u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access);
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 953f24ded6bc..29b739c7bba4 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -903,13 +903,14 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+>  	bool wrprot = false;
+>  
+>  	WARN_ON(sp->role.level != fault->goal_level);
+> -	if (unlikely(!fault->slot))
+> +	if (unlikely(!fault->slot)) {
+>  		new_spte = make_mmio_spte(vcpu, iter->gfn, ACC_ALL);
+> -	else
+> +	} else {
+> +		new_spte = iter->old_spte;
+>  		wrprot = make_spte(vcpu, sp, fault->slot, ACC_ALL, iter->gfn,
+> -					 fault->pfn, iter->old_spte, fault->prefault, true,
+> +					 fault->pfn, fault->prefault, true,
+>  					 fault->map_writable, &new_spte);
+> -
+> +	}
+>  	if (new_spte == iter->old_spte)
+>  		ret = RET_PF_SPURIOUS;
+>  	else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
+> -- 
+> 2.27.0
+> 
