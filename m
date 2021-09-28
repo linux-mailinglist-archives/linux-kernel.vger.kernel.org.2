@@ -2,208 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF4341AD36
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32BC41AD39
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240189AbhI1KpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:45:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234543AbhI1KpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:45:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4842610FC;
-        Tue, 28 Sep 2021 10:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632825822;
-        bh=fkAve8tKE0y/DXgMCdT+P095PTJ4abta0bz1NSD8BBM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kUExyV2pfYCt4LLFGN4K7GmTM/FjjXtmxeOViCwHeos+zdYqMakULok5AyM1gzNKT
-         uR4fXQYuxB9bzOqg9gbsx5giKwF7vvOmEKwtiHvgTd2mY+qSqgDHmYC8rEXIfAsxlN
-         3IHJoOPN4ALWOCkkE5KAq856sPGBvlu+9h+sZPMc=
-Date:   Tue, 28 Sep 2021 12:43:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/8] (REBASED) get_abi.pl undefined: improve precision
- and performance
-Message-ID: <YVLx3KP1BeDkqV2o@kroah.com>
-References: <YUyICHTRdfL8Ul7X@kroah.com>
- <cover.1632411447.git.mchehab+huawei@kernel.org>
- <YUy1oPjdLTh9rEfq@kroah.com>
- <20210927105553.105f22c5@coco.lan>
- <YVGNiPXNbWWy3CSj@kroah.com>
- <20210927153942.75bbb9cf@coco.lan>
- <YVHntS2e3FTWIjds@kroah.com>
- <20210928120304.62319fba@coco.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210928120304.62319fba@coco.lan>
+        id S240239AbhI1Kqk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 06:46:40 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:44540 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234543AbhI1Kqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:46:39 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 7A38ACECD9;
+        Tue, 28 Sep 2021 12:44:58 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v4 1/4] Bluetooth: aosp: Support AOSP Bluetooth Quality
+ Report
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210926150657.v4.1.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
+Date:   Tue, 28 Sep 2021 12:44:58 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Joseph Hwang <josephsih@google.com>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <4A480983-CAF2-46B7-B462-9BC84E1783CC@holtmann.org>
+References: <20210926150657.v4.1.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
+To:     Joseph Hwang <josephsih@chromium.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 12:03:04PM +0200, Mauro Carvalho Chehab wrote:
-> Em Mon, 27 Sep 2021 17:48:05 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> 
-> > On Mon, Sep 27, 2021 at 03:39:42PM +0200, Mauro Carvalho Chehab wrote:
-> > > Em Mon, 27 Sep 2021 11:23:20 +0200
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > >   
-> > > > On Mon, Sep 27, 2021 at 10:55:53AM +0200, Mauro Carvalho Chehab wrote:  
-> > > > > Em Thu, 23 Sep 2021 19:13:04 +0200
-> > > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > > >     
-> > > > > > On Thu, Sep 23, 2021 at 05:41:11PM +0200, Mauro Carvalho Chehab wrote:    
-> > > > > > > Hi Greg,
-> > > > > > > 
-> > > > > > > As requested, this is exactly the same changes, rebased on the top of
-> > > > > > > driver-core/driver-core-next.
-> > > > > > > 
-> > > > > > > -
-> > > > > > > 
-> > > > > > > It follows a series of improvements for get_abi.pl. it is on the top of driver-core/driver-core-next.
-> > > > > > > 
-> > > > > > > With such changes, on my development tree, the script is taking 6 seconds to run 
-> > > > > > > on my desktop:
-> > > > > > > 
-> > > > > > > 	$ !1076
-> > > > > > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined_after && cat undefined_after| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined_after undefined_symbols
-> > > > > > > 
-> > > > > > > 	real	0m6,292s
-> > > > > > > 	user	0m5,640s
-> > > > > > > 	sys	0m0,634s
-> > > > > > > 	  6838 undefined_after
-> > > > > > > 	   808 undefined_symbols
-> > > > > > > 	  7646 total
-> > > > > > > 
-> > > > > > > And 7 seconds on a Dell Precision 5820:
-> > > > > > > 
-> > > > > > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
-> > > > > > > 
-> > > > > > > 	real	0m7.162s
-> > > > > > > 	user	0m5.836s
-> > > > > > > 	sys	0m1.329s
-> > > > > > > 	6548 undefined
-> > > > > > > 	772 undefined_symbols
-> > > > > > > 
-> > > > > > > Both tests were done against this tree (based on today's linux-next):
-> > > > > > > 
-> > > > > > > 	$ https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_abi_undefined-latest
-> > > > > > > 
-> > > > > > > It should be noticed that, as my tree has several ABI fixes,  the time to run the
-> > > > > > > script is likely less than if you run on your tree, as there will be less symbols to
-> > > > > > > be reported, and the algorithm is optimized to reduce the number of regexes
-> > > > > > > when a symbol is found.
-> > > > > > > 
-> > > > > > > Besides optimizing and improving the seek logic, this series also change the
-> > > > > > > debug logic. It how receives a bitmap, where "8" means to print the regexes
-> > > > > > > that will be used by "undefined" command:
-> > > > > > > 
-> > > > > > > 	$ time ./scripts/get_abi.pl undefined --debug 8 >foo
-> > > > > > > 	real	0m17,189s
-> > > > > > > 	user	0m13,940s
-> > > > > > > 	sys	0m2,404s
-> > > > > > > 
-> > > > > > > 	$wc -l foo
-> > > > > > > 	18421939 foo
-> > > > > > > 
-> > > > > > > 	$ cat foo
-> > > > > > > 	...
-> > > > > > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_voltage.*_scale_available$)$/
-> > > > > > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_voltage.*_scale_available$)$/
-> > > > > > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/out_altvoltage.*_scale_available$)$/
-> > > > > > > 	/sys/kernel/kexec_crash_loaded =~ /^(?^:^/sys/.*/iio\:device.*/in_pressure.*_scale_available$)$/
-> > > > > > > 	...
-> > > > > > > 
-> > > > > > > On other words, on my desktop, the /sys match is performing >18M regular 
-> > > > > > > expression searches, which takes 6,2 seconds (or 17,2 seconds, if debug is 
-> > > > > > > enabled and sent to an area on my nvme storage).      
-> > > > > > 
-> > > > > > Better, it's down to 10 minutes on my machine now:
-> > > > > > 
-> > > > > > 	real	10m39.218s
-> > > > > > 	user	10m37.742s
-> > > > > > 	sys	0m0.775s    
-> > > > > 
-> > > > > A lot better, but not clear why it is still taking ~40x more than here...
-> > > > > It could well be due to the other ABI changes yet to be applied
-> > > > > (I'll submit it probably later today), but it could also be related to
-> > > > > something else. Could this be due to disk writes?    
-> > > > 
-> > > > Disk writes to where for what?  This is a very fast disk (nvme raid
-> > > > array)  It's also a very "big" system, with lots of sysfs files:
-> > > > 
-> > > > 	$ find /sys/devices/ -type f | wc -l
-> > > > 	44334  
-> > > 
-> > > Ok. Maybe that partially explains why it is taking so long, as the
-> > > number of regex to compare will increase (not linearly).  
-> > 
-> > No idea.  I just ran it on my laptop and it took only 5 seconds.
-> 
-> Ok, 5 seconds is similar to what I got here on the machines I
-> tested so far. I'm waiting for a (shared) big machine to be available
-> in order to be able to do some tests on it.
-> 
-> > Hm, you aren't reading the values of the sysfs files, right?
-> 
-> No. Just retrieving the directory contents. That part is actually
-> fast: it takes less than 2 seconds here to read all ABI + traverse
-> sysfs directories. Also, from your past logs, the time is spent
-> later on, when it is handling the regex. On that time, there are
-> just the regex parsing and printing the results. 
-> 
-> > Anything I can do to run to help figure out where the script is taking
-> > so long?
-> 
-> Not sure if it is worth the efforts. I mean, the relationship
-> between the number of processed sysfs nodes and the number of regex
-> to be tested (using big-oh and big-omega notation) should be between
-> Ω(n . log(n)) and O(n^2 . log(n)). There's not much space left for
-> optimizing it, I guess.
-> 
-> So, I would expect that a big server would take a log more time to
-> process, it, due to the larger number of sysfs entries.
-> 
-> Also, if one wants to speedup on a big machine, it could either
-> exclude some pattern, like:
-> 
-> 	# Won't parse any PCI devices
-> 	$time ./scripts/get_abi.pl undefined --search-string '^(?!.*pci)' |wc -l
-> 	8438
-> 
-> 	real	0m3,494s
-> 	user	0m2,829s
-> 	sys	0m0,658s
+Hi Joseph,
 
-That only takes 8 seconds on this box:
-	$ time ./scripts/get_abi.pl undefined  --search-string '^(?!.*pci)' |wc -l
-	18872
-
-	real	0m8.026s
-	user	0m7.300s
-	sys	0m0.726s
-
-> or (more likely) just search for an specific part of the ABI:
+> This patch adds the support of the AOSP Bluetooth Quality Report
+> (BQR) events.
 > 
-> 	# Seek ABI only for PCI devices
->  	$ ./scripts/get_abi.pl undefined --search-string pci
-
-This takes much longer, I didn't want to wait the 10 minutes :)
-
+> Multiple vendors have supported the AOSP Bluetooth Quality Report.
+> When a Bluetooth controller supports the capability, it can enable
+> the capability through hci_set_aosp_capable. Then hci_core will
+> set up the hdev->set_quality_report callback accordingly.
+> 
+> Note that Intel also supports a distinct telemetry quality report
+> specification. Intel sets up the hdev->set_quality_report callback
+> in the btusb driver module.
+> 
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> 
 > ---
 > 
-> After sleeping on it, I opted to implement some progress information.
+> Changes in v4:
+> - Move the AOSP BQR support from the driver level to net/bluetooth/aosp.
+> - Fix the drivers to use hci_set_aosp_capable to enable aosp.
+> - Add Mediatek to support the capability too.
 > 
-> That will help to identify any issues that might be causing the
-> script to take so long to finish.
+> Changes in v3:
+> - Fix the auto build test ERROR
+>  "undefined symbol: btandroid_set_quality_report" that occurred
+>  with some kernel configs.
+> - Note that the mgmt-tester "Read Exp Feature - Success" failed.
+>  But on my test device, the same test passed. Please kindly let me
+>  know what may be going wrong. These patches do not actually
+>  modify read/set experimental features.
+> - As to CheckPatch failed. No need to modify the MAINTAINERS file.
+>  Thanks.
 > 
-> I'll send the patches on a new series.
+> Changes in v2:
+> - Fix the titles of patches 2/3 and 3/3 and reduce their lengths.
+> 
+> net/bluetooth/aosp.c     | 79 ++++++++++++++++++++++++++++++++++++++++
+> net/bluetooth/aosp.h     |  7 ++++
+> net/bluetooth/hci_core.c | 17 +++++++++
+> 3 files changed, 103 insertions(+)
+> 
+> diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
+> index a1b7762335a5..c2b22bc83fb2 100644
+> --- a/net/bluetooth/aosp.c
+> +++ b/net/bluetooth/aosp.c
+> @@ -33,3 +33,82 @@ void aosp_do_close(struct hci_dev *hdev)
+> 
+> 	bt_dev_dbg(hdev, "Cleanup of AOSP extension");
+> }
+> +
+> +/* BQR command */
+> +#define BQR_OPCODE			hci_opcode_pack(0x3f, 0x015e)
+> +
+> +/* BQR report action */
+> +#define REPORT_ACTION_ADD		0x00
+> +#define REPORT_ACTION_DELETE		0x01
+> +#define REPORT_ACTION_CLEAR		0x02
+> +
+> +/* BQR event masks */
+> +#define QUALITY_MONITORING		BIT(0)
+> +#define APPRAOCHING_LSTO		BIT(1)
+> +#define A2DP_AUDIO_CHOPPY		BIT(2)
+> +#define SCO_VOICE_CHOPPY		BIT(3)
+> +
+> +#define DEFAULT_BQR_EVENT_MASK	(QUALITY_MONITORING | APPRAOCHING_LSTO | \
+> +				 A2DP_AUDIO_CHOPPY | SCO_VOICE_CHOPPY)
+> +
+> +/* Reporting at milliseconds so as not to stress the controller too much.
+> + * Range: 0 ~ 65535 ms
+> + */
+> +#define DEFALUT_REPORT_INTERVAL_MS	5000
+> +
+> +struct aosp_bqr_cp {
+> +	__u8	report_action;
+> +	__u32	event_mask;
+> +	__u16	min_report_interval;
+> +} __packed;
+> +
+> +static int enable_quality_report(struct hci_dev *hdev)
+> +{
+> +	struct sk_buff *skb;
+> +	struct aosp_bqr_cp cp;
+> +
+> +	cp.report_action = REPORT_ACTION_ADD;
+> +	cp.event_mask = DEFAULT_BQR_EVENT_MASK;
+> +	cp.min_report_interval = DEFALUT_REPORT_INTERVAL_MS;
+> +
+> +	skb = __hci_cmd_sync(hdev, BQR_OPCODE, sizeof(cp), &cp,
+> +			     HCI_CMD_TIMEOUT);
+> +	if (IS_ERR(skb)) {
+> +		bt_dev_err(hdev, "Enabling Android BQR failed (%ld)",
+> +			   PTR_ERR(skb));
+> +		return PTR_ERR(skb);
+> +	}
+> +
+> +	kfree_skb(skb);
+> +	return 0;
+> +}
+> +
+> +static int disable_quality_report(struct hci_dev *hdev)
+> +{
+> +	struct sk_buff *skb;
+> +	struct aosp_bqr_cp cp = { 0 };
+> +
+> +	cp.report_action = REPORT_ACTION_CLEAR;
+> +
+> +	skb = __hci_cmd_sync(hdev, BQR_OPCODE, sizeof(cp), &cp,
+> +			     HCI_CMD_TIMEOUT);
+> +	if (IS_ERR(skb)) {
+> +		bt_dev_err(hdev, "Disabling Android BQR failed (%ld)",
+> +			   PTR_ERR(skb));
+> +		return PTR_ERR(skb);
+> +	}
+> +
+> +	kfree_skb(skb);
+> +	return 0;
+> +}
+> +
+> +int aosp_set_quality_report(struct hci_dev *hdev, bool enable)
+> +{
+> +	bt_dev_info(hdev, "quality report enable %d", enable);
+> +
+> +	/* Enable or disable the quality report feature. */
+> +	if (enable)
+> +		return enable_quality_report(hdev);
+> +	else
+> +		return disable_quality_report(hdev);
+> +}
+> diff --git a/net/bluetooth/aosp.h b/net/bluetooth/aosp.h
+> index 328fc6d39f70..384e111c1260 100644
+> --- a/net/bluetooth/aosp.h
+> +++ b/net/bluetooth/aosp.h
+> @@ -8,9 +8,16 @@
+> void aosp_do_open(struct hci_dev *hdev);
+> void aosp_do_close(struct hci_dev *hdev);
+> 
+> +int aosp_set_quality_report(struct hci_dev *hdev, bool enable);
+> +
+> #else
+> 
+> static inline void aosp_do_open(struct hci_dev *hdev) {}
+> static inline void aosp_do_close(struct hci_dev *hdev) {}
+> 
+> +static inline int aosp_set_quality_report(struct hci_dev *hdev, bool enable)
+> +{
+> +	return false;
+> +}
+> +
+> #endif
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index aeec5a3031a6..a2c22a4921d4 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -1315,6 +1315,21 @@ static void hci_dev_get_bd_addr_from_property(struct hci_dev *hdev)
+> 	bacpy(&hdev->public_addr, &ba);
+> }
+> 
+> +static void hci_set_quality_report(struct hci_dev *hdev)
+> +{
+> +#ifdef CONFIG_BT_AOSPEXT
+> +	if (hdev->aosp_capable) {
+> +		/* The hdev->set_quality_report callback is setup here for
+> +		 * the vendors that support AOSP quality report specification.
+> +		 * Note that Intel, while supporting a distinct telemetry
+> +		 * quality report specification, sets up the
+> +		 * hdev->set_quality_report callback in the btusb module.
+> +		 */
+> +		hdev->set_quality_report = aosp_set_quality_report;
+> +	}
+> +#endif
+> +}
+> +
 
-Thanks, I'll go try those now...
+I think that I wasn’t super clear in my review on how I wanted this feature. So hdev->set_quality_report should really only ever set by a transport driver. The core stack should never touch it.
 
-greg k-h
+So I wanted something like this:
+
+	if (hdev->set_quality_report)
+		err = hdev->set_quality_report(hdev, val);
+	else
+		err = aosp_set_quality_report(hdev, val);
+
+I send a RFC showing you how I think this should be done.
+
+An extra important step of course is to check if the Android extension actually supports the quality report feature in the first place.
+
+And while writing that patch, I realized that your initial support has a mistake. I send a patch for fixing it. The mgmt document is pretty clear on how experimental flags are defined.
+
+Read Experimental Features Information Command
+==============================================
+
+	Command Code:		0x0049
+	Controller Index:	<controller id> or <non-controller>
+	Command Parameters:
+	Return Parameters:	Feature_Count (2 Octets)
+				Feature1 {
+					UUID (16 Octets)
+					Flags (4 Octets)
+				}
+				Feature2 {  }
+				...
+
+	This command is used to retrieve the supported experimental features
+	by the host stack.
+
+	The UUID values are not defined here. They can change over time and
+	are on purpose not stable. Features that mature will be removed at
+	some point. The mapping of feature UUID to the actual functionality
+	of a given feature is out of scope here.
+
+	The following bits are defined for the Flags parameter:
+
+		0	Feature active
+		1	Causes change in supported settings
+
+So please don’t just make up things and exp UUID should only be present if they are supported. If they are not supported because the hardware is lacking support, they should not be reported.
+
+Regards
+
+Marcel
+
