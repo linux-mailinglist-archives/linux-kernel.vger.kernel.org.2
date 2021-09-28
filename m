@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153E041B9D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914D641B9D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242899AbhI1WGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242929AbhI1WGe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:06:34 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD685C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:04:52 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id j15so88071plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s8TgaTkuAOfttq5Ji23XuWmZEPg/t1pbW45rjrv+GjY=;
-        b=LOKBGSSThTGJmZr52wMlTVIXy7gN0kcixsV7n11azJM+wFcpy4hdoZIRhH6FjCUukF
-         R3ek08fGm45mGkuiA0+Kxm49I86GkQOabdwCzh/L7J8ZtTUESfVtBd1ViQEJJ5vZmB0j
-         gVM3+sKMqY01a6pRSxMH/JV7N2k8jZaoTStvXT/CW+6ekMegbYoSEeVNZm/knJC1H2Iz
-         JpHolIs35AjaAocSgJu4Q8l0875P6gOMqZFX8yYi8BLrJDNQk0tBeB5SUgTVoQJk7Bxc
-         TaQ1FhIIJDiukqtBzIRTPyLdyC5LfChFTqz2xnOAHZ/G/Ty6/PTiLDypDINxMIzqkG+p
-         MNEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s8TgaTkuAOfttq5Ji23XuWmZEPg/t1pbW45rjrv+GjY=;
-        b=NnO9UtUVRtEZn8CLoh3x1Z8c13jIPfhVEu6gqzuvzsZFvJ7IMqjjEousoprCh1D/E1
-         u7oZGbfY0z1htzLCOH0zhgP4SQxbz9xta00gQy8ZaL0Z9wckOmE45HGoDMjG11+sB31M
-         JN7gVU0bhjsTfkVH1xpm5mJycPgyw+RDbmIYBreR3AcekD77X4Sb2DkfVXpP4cZXVMeZ
-         /A8g2932GMRZ3tsnof4T4R+qGWCTFlwWJtyABypM2EKACzo+JcE5GRMhjMdQxbncX0GS
-         xgWNzg9tcrA624HxOo2iIUgF8ntPgKVxQJK5AW4J4mTw+lAKgWi5T8CEHSjjnfEk+r79
-         8rPw==
-X-Gm-Message-State: AOAM532yGVcU+r6VIA7ak6vk01fq3WSY0hPDf1pk2xDwo8qcMacTqAON
-        0kSYsqnn+c1ylhbKKLNBZzpXgw==
-X-Google-Smtp-Source: ABdhPJyZYZhKpQUljc7RVXwKUERY34mYmQfs2NuJ723fR6n2a6r5wthdOfaTSfpkU7ajTH5d6X1x0g==
-X-Received: by 2002:a17:90a:c982:: with SMTP id w2mr2466336pjt.30.1632866692006;
-        Tue, 28 Sep 2021 15:04:52 -0700 (PDT)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id v26sm124276pfm.175.2021.09.28.15.04.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 15:04:51 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 22:04:47 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 11/14] KVM: stats: Add stat to detect if vcpu is
- currently blocking
-Message-ID: <YVORf599tkw3MdGZ@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <20210925005528.1145584-12-seanjc@google.com>
-MIME-Version: 1.0
+        id S243029AbhI1WGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:06:46 -0400
+Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:63904
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242929AbhI1WGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:06:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WRUzzhdefmJ6h3g6TIr7vSBu3tgHVLduDzIpiSGOzHan9q6/GBGZ+RKLVLLkp+qhj6D8E5h0dIBNFdpf3Jm0EqwWPCAmfyO4Et/Zi2cYefkReCQLIqfMS1fCZXgNQpWVRdIj3Rbw4p+6wG7wR8OYsq822G9xIb6oYsB/y66201hU3c7vCg87sZ65b2BecbRP9dxWU/4LTpD0fl9vDQyHdWCsLaJxqg2+PIM8QTugN8wt5CvV7joH7xuGv1vGTkcswnf2Mfw42httFtwgcP69Q5aj+l77TT06ofJGWAzbmThzhwpKw5XuWKnN2WHYTW+hkrjUz+Myb5Ii0II1NRBiaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=Qe5kxN0ddAG7mPItxuJHjsxxxyi+e/yvMrh0jCYFVH0=;
+ b=mq8SV5SwxizebaiuKKDLEeP8XekjDCKr5/VbnQcTyQZoSV+rSL+KJGE/Uj/SBZntl9aI84z936/XL1IX0ucXY4aAaQFoocvmI58Ewp4zkAvYZboj3pI9vkMMo3l2mt4xwK3VDQNL8a9Aah8A8DPKFXPQhjLZg5hBh706IzvXkk3vpyYbvuDnxrFckGuquwOK6QQYZV5IeOmZZ/Rb9zSBG5d5ABBBKUtNeyZaymnEfxMzSL06U/le4cUdD9qbvOrUr7sRiGvhmCv19wX9B+NMuX7ZAgq78BcREFTbOEYp8rr9HkTZtT8WTKuVfqF27kTZN9PqzEedKcIsBgC868p9Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qe5kxN0ddAG7mPItxuJHjsxxxyi+e/yvMrh0jCYFVH0=;
+ b=Pxlsptf+DlMyCcU6pvK6KDdace9IB2bgH53hk5FHMLMQxFKfyglGMjqlkZOLQ4mSNtKNDjpYCId45G3Dbq89iPIxKGzr4ARhTcqIJYhGLwuzg/eiFK7f2dewZAS/07Moa2g9MXaHKkW0z0rDNRW7IPLGLT+QAuJeP0h8C7olmnrjF92S2XcNes5FMjMfm8ORP97OCmWs1Q+s1dk6UrT8iKy7OScqWg5bhCsTykKhrpLHMmQ6K2n26xnsp2/Lg6PTPwZw2kQ7xgd/D2kMcofxgTeA+NGXd1N1ppcYjsQSrdyhPT/Na0Jr0UhdWmFVs58I5pLb2n2NL0D6n+grt+JOWA==
+Authentication-Results: deltatee.com; dkim=none (message not signed)
+ header.d=none;deltatee.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
+ DM6PR12MB5550.namprd12.prod.outlook.com (2603:10b6:5:1b6::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4566.14; Tue, 28 Sep 2021 22:05:03 +0000
+Received: from DM6PR12MB5520.namprd12.prod.outlook.com
+ ([fe80::3817:44ce:52ad:3c0b]) by DM6PR12MB5520.namprd12.prod.outlook.com
+ ([fe80::3817:44ce:52ad:3c0b%5]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
+ 22:05:03 +0000
+Date:   Tue, 28 Sep 2021 19:05:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 4/20] PCI/P2PDMA: introduce helpers for dma_map_sg
+ implementations
+Message-ID: <20210928220502.GA1738588@nvidia.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-5-logang@deltatee.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210925005528.1145584-12-seanjc@google.com>
+In-Reply-To: <20210916234100.122368-5-logang@deltatee.com>
+X-ClientProxiedBy: CH2PR12CA0007.namprd12.prod.outlook.com
+ (2603:10b6:610:57::17) To DM6PR12MB5520.namprd12.prod.outlook.com
+ (2603:10b6:5:208::9)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR12CA0007.namprd12.prod.outlook.com (2603:10b6:610:57::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Tue, 28 Sep 2021 22:05:03 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVLDi-007Ice-4B; Tue, 28 Sep 2021 19:05:02 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d1431c98-a1fb-40f7-c25b-08d982cc05ba
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5550:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB555067D3D9625CE21F528D0DC2A89@DM6PR12MB5550.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z/+59L6XbL1hKX79x54TMl+VW5TtLSP0rhJlfYGz9uibMTqstalowo3f7tJL7X7cHzTY9GsTKbOiQWdF8HvueBRAULoBkww4NNuwxogzgSBQwl22aCqKdgL5YXeQnu5dh0pdtpcpA3F68EqDtlKVHNb/Haz+nUwvGXeMEme+AEFBwnfrsHpKs91R8a2/zduf8Vgq4YxCjhhQTO548VEUGf08XfgrK0KpV3pt53kdr04SHhvxI7kANemBsLY4+p9yimGD7DUfzOPD6CBkO2YWi/6bD1qtxAtTKML6062AdENpGMiRPwCE33LN//UAjHDTu0I8W3DFozFQ+qVv0xU+Tg9Jve8mjET3x8w6U5sHV+Tkf0pw6IakhbY2mGQKIu2zmkwEglxYPR+9CytQ3/ArdwSQ8/3RLs07A4noOxk2PJ29YYS7WtTrXcG7epfGHVhGtoGxDhTDYTsJlxMqEzuhyDojP+rDrxcD73WPDZMdqaZKhpgjYwTJoGDdz7EGDBL2cWOXtftLV4NJE1szabmxbt9z6c7zfy/dYuxWvl8IhBuSch0OvOaoNIb90SfiVb2sHefdZHUjbP+AUW4TmAlw71tfVnqTsB/WP2/C/secvr5hBeKs/LQbfIlgmAFxVR9YhfKChu2lboDrgommteqY9Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(316002)(2906002)(7416002)(1076003)(83380400001)(9786002)(26005)(66556008)(66476007)(54906003)(36756003)(6916009)(186003)(33656002)(8936002)(9746002)(66946007)(426003)(508600001)(38100700002)(4326008)(2616005)(8676002)(86362001)(4744005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MbeOzvmyZtyGuYqIg8gFYQZVCLgxMhHjTbX6Cnf1P9tfwz7Suor1pImP8JPj?=
+ =?us-ascii?Q?caO8q1PgVCOahQCCszk+zupX80XmzidTgq5okzLL73ltgtcSFMy5vAa4CEVn?=
+ =?us-ascii?Q?TOQ4M5oEnT4EYh+gy5MQriwS/vct5rvCGogsj4kWW8zIh5puafcFPu+6pAB9?=
+ =?us-ascii?Q?V7OllzpJtrWh8hp2HgHpNVhci6xk0OiPGuPtA0oNGgr0++xtZtBtrmNunmLO?=
+ =?us-ascii?Q?MucA9WuPEaFD/hw7cpAfzMbkpw7eYQE97keo9C5hiewxKvPwkUtW0DIg3c68?=
+ =?us-ascii?Q?iOzevMIgS2nCLU6KDhvgZ55iR09fqDN3kwYevBqbsPS2h2VD3aKA1i0SaagF?=
+ =?us-ascii?Q?SrIwjD7XKqdtiiLN4B/9msRh/JYdOTTFVoft0g+D2ufyo+Gg7EWShXnJlQB0?=
+ =?us-ascii?Q?3sJb1n/DBr3th7oz2cKMW85m6j2mDCWGPptgzmltkW02madh4fmGoJm9DBiA?=
+ =?us-ascii?Q?sWAQrv942SbRP3h6RdameJXH6vUaHg48/S1twHJzMpuhD2z6gl/unIVx9yXu?=
+ =?us-ascii?Q?sBVVSkjcD2NkVmzwBRgXkk+GV2OnenDZgwOv/JFLhioHDbrXxzOjcsM0wmgz?=
+ =?us-ascii?Q?NEmRcIqZ2P0Ng/Ryp2MBUVbmj40rJC1SQbTPyDLjqO2GHTgeqk926by5iLdT?=
+ =?us-ascii?Q?slZdR+entC+eQs/umXo3i/pFV9n0zgr6syMQ0M8s0f0jhympu3tZNU+F3YJ7?=
+ =?us-ascii?Q?Zu1S7YDpNMVmUbPj4clJcnnPL733cw0OG+ptUj88XFX/fHY3Q15O7HNh4mG5?=
+ =?us-ascii?Q?2wSTo+5XqDG9QRxxlGE/ypIcw1Kk4D1komdsBV4DMtFMxMl706iHRd/UAPKS?=
+ =?us-ascii?Q?/TH0F2SbPzNo+6sVYd2NXBZ8XafDICmctv9X1gfHLpcFOkNVh+CROMVREZEx?=
+ =?us-ascii?Q?mgRij3Tf9d4wuU11eV3jPowrANntpnds0fj4WCe0Bf6Y+rMADOngMmBLZwkZ?=
+ =?us-ascii?Q?43hjPmt8O3zVgKw/hGidiRfpjqKAfHsaKB77sksgx6WTzI7fHRpYd04j0nmp?=
+ =?us-ascii?Q?KucamxJj8AEGbCuVwOou9r/zEwMhZS1rb9GDOYlVjZY9eCFvZHF9Llx4YRTP?=
+ =?us-ascii?Q?sCTnAgrS8OUlTT0uTHZ/Ek/mM6r/XBnrBAusOskl0wjtoR6WpLOxt6CcaZTV?=
+ =?us-ascii?Q?IsHvuMXf2vt3vy6RUO9pqhcnvZzw0qKwK35sUyXFdjzruV3E+cEG2Jcph/I5?=
+ =?us-ascii?Q?UoZElAKOQacaP7S27rdxv0zkVOUKY4d08rJN8Y5V7LCJhRyTVEAvNtg1EFzO?=
+ =?us-ascii?Q?YUi4BnlgpAxnLnWHRPWXag72kSxRKl1A+EVY+WVvZu86jG2MRTepe+gD9Cto?=
+ =?us-ascii?Q?PfCZfhJoc6EB1bM8xJaBiMbP?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1431c98-a1fb-40f7-c25b-08d982cc05ba
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 22:05:03.4026
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uzyvAr62RCkiS3PB4f9w7ovyyuBGQUV5TbN1p4rjkcrxQooUFwxjGG3tU9k4b3o9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5550
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:55:25PM -0700, Sean Christopherson wrote:
-> From: Jing Zhang <jingzhangos@google.com>
-> 
-> Add a "blocking" stat that userspace can use to detect the case where a
-> vCPU is not being run because of a vCPU/guest action, e.g. HLT or WFS on
-> x86, WFI on arm64, etc...  Current guest/host/halt stats don't show this
-> well, e.g. if a guest halts for a long period of time then the vCPU could
-> appear pathologically blocked due to a host condition, when in reality the
-> vCPU has been put into a not-runnable state by the guest.
-> 
-> Originally-by: Cannon Matthews <cannonmatthews@google.com>
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Jing Zhang <jingzhangos@google.com>
-> [sean: renamed stat to "blocking", massaged changelog]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Thu, Sep 16, 2021 at 05:40:44PM -0600, Logan Gunthorpe wrote:
 
-Reviewed-by: David Matlack <dmatlack@google.com>
-> ---
->  include/linux/kvm_host.h  | 3 ++-
->  include/linux/kvm_types.h | 1 +
->  virt/kvm/kvm_main.c       | 2 ++
->  3 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 655c2b24db2d..9bb1972e396a 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1453,7 +1453,8 @@ struct _kvm_stats_desc {
->  	STATS_DESC_LOGHIST_TIME_NSEC(VCPU_GENERIC, halt_poll_fail_hist,	       \
->  			HALT_POLL_HIST_COUNT),				       \
->  	STATS_DESC_LOGHIST_TIME_NSEC(VCPU_GENERIC, halt_wait_hist,	       \
-> -			HALT_POLL_HIST_COUNT)
-> +			HALT_POLL_HIST_COUNT),				       \
-> +	STATS_DESC_ICOUNTER(VCPU_GENERIC, blocking)
->  
->  extern struct dentry *kvm_debugfs_dir;
->  
-> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
-> index 2237abb93ccd..c4f9257bf32d 100644
-> --- a/include/linux/kvm_types.h
-> +++ b/include/linux/kvm_types.h
-> @@ -94,6 +94,7 @@ struct kvm_vcpu_stat_generic {
->  	u64 halt_poll_success_hist[HALT_POLL_HIST_COUNT];
->  	u64 halt_poll_fail_hist[HALT_POLL_HIST_COUNT];
->  	u64 halt_wait_hist[HALT_POLL_HIST_COUNT];
-> +	u64 blocking;
->  };
->  
->  #define KVM_STATS_NAME_SIZE	48
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index fe34457530c2..2980d2b88559 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3208,6 +3208,7 @@ bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  {
->  	bool waited = false;
->  
-> +	vcpu->stat.generic.blocking = 1;
->  	kvm_arch_vcpu_blocking(vcpu);
->  
->  	prepare_to_rcuwait(&vcpu->wait);
-> @@ -3223,6 +3224,7 @@ bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  	finish_rcuwait(&vcpu->wait);
->  
->  	kvm_arch_vcpu_unblocking(vcpu);
-> +	vcpu->stat.generic.blocking = 0;
->  
->  	return waited;
->  }
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+> +enum pci_p2pdma_map_type
+> +pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state, struct device *dev,
+> +		       struct scatterlist *sg)
+> +{
+> +	if (state->pgmap != sg_page(sg)->pgmap) {
+> +		state->pgmap = sg_page(sg)->pgmap;
+
+This has built into it an assumption that every page in the sg element
+has the same pgmap, but AFAIK nothing enforces this rule? There is no
+requirement that the HW has pfn gaps between the pgmaps linux decides
+to create over it.
+
+At least sg_alloc_append_table_from_pages() and probably something in
+the block world should be updated to not combine struct pages with
+different pgmaps, and this should be documented in scatterlist.*
+someplace.
+
+Jason
