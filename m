@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C359F41AF31
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984C941AF3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240755AbhI1MoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240746AbhI1MoO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:44:14 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76719C061604
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:42:35 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id e7so21094400pgk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KrkBhOCAHDLrXlCJGYdW7dNSKw0SJG9MSoAFEH4IRhM=;
-        b=V3HnIKh9EBOuvvF6mNGhT0Ru4vFPSZOsbxmvLe24EqZnjfggFqYa95coyrVbCFyWai
-         PhFyRqaL6GLJMN1ez7Xdl/zu1/9PzfWXBereA7KvMCWcnvhQbZKiDu3AIdo+Bp+pEDwG
-         oYusH6ow2v/Qzt58vQOlhRpbXrWWkKsahCFxo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KrkBhOCAHDLrXlCJGYdW7dNSKw0SJG9MSoAFEH4IRhM=;
-        b=53HJl3JnAGCq52z1XhYZwqMFvoH5sB85pije8HCybIlXeJ4ThuH65AV0L6S0LAIMMb
-         xH3G9xN6+RUjBcyFhfiWeA48++IM3yxgXCLuU/RFxQt8OO3/QzFwqT59K6YmNPORX4pX
-         0wrVbokEyDXd8Ys1FeLi3AZN0hW87Zees+XtlYvuRDdxSwGL6cyXa2bOP3i9qLR1YqTC
-         H3d4rhriKAtTI+eJKKnd5SnGwPJ6GLHYWDpSUQ23UihXRxFfjoSjArJtBt4z8lxOn6+k
-         zUdV/ElYf0H6EXf8Pdb3jlMML4Fn/7NCIFGFt+2PZKdV1RtWGQM8MFOIzZj6gJYGkZ25
-         o5dw==
-X-Gm-Message-State: AOAM5312ATFzctlmV0akKK6Sph13wocixrW/coUeWukN5Ndw+QnuslPJ
-        16cGcAvhd5DRttSMkEBA9ONuEQ==
-X-Google-Smtp-Source: ABdhPJztuO9y0JJxQl3fjPtbES/ZsYEsZ3QZBTftThZwr9boSo2ZHAwM94JQ3QFpg9M9db83/rbZYg==
-X-Received: by 2002:a63:534f:: with SMTP id t15mr4468932pgl.392.1632832954904;
-        Tue, 28 Sep 2021 05:42:34 -0700 (PDT)
-Received: from 235a98196aae (194-193-55-226.tpgi.com.au. [194.193.55.226])
-        by smtp.gmail.com with ESMTPSA id t9sm2597559pjq.20.2021.09.28.05.42.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Sep 2021 05:42:34 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 22:42:27 +1000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/161] 5.14.9-rc2 review
-Message-ID: <20210928124222.GA7@235a98196aae>
-References: <20210928071739.782455217@linuxfoundation.org>
+        id S240817AbhI1Mo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:44:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:41027 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240809AbhI1Mo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:44:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632832998; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JbjyQjUEF+2p6JDdH0AfBffAgxEQOr6+/L+pNG7q4l0=;
+ b=FR81Rw4eE8im5l4Xz5lQJIJ+MfnsIQ1Xhz7Tk/RhjugXrKfoJyLkh8BoyOd+IIJnA+/nqVCt
+ lKGjAeJMt30lt/lw3D5N8lx9x3BC2s4YFShgRL0Em9I5n3hrSXblpFHBU3lVs+/mcvpWoOia
+ Hj76qZPNHxMiGseqocwAsmEo11c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 61530de49ffb41314940fd1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 12:43:16
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1ED5DC43638; Tue, 28 Sep 2021 12:43:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC8F3C4361C;
+        Tue, 28 Sep 2021 12:43:12 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928071739.782455217@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Sep 2021 18:13:12 +0530
+From:   skakit@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, mka@chromium.org,
+        swboyd@chromium.org, Das Srinagesh <gurus@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
+In-Reply-To: <YUjxxnz9BFS7/WDK@robh.at.kernel.org>
+References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
+ <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+ <YUjxxnz9BFS7/WDK@robh.at.kernel.org>
+Message-ID: <90420204e2a0628adffc9ab542d275a7@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 09:19:04AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.9 release.
-> There are 161 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2021-09-21 02:10, Rob Herring wrote:
+> On Fri, Sep 17, 2021 at 04:15:35PM +0530, Satya Priya wrote:
+>> Add pm8008-regulator node and example.
+>> 
+>> Signed-off-by: Satya Priya <skakit@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 
+>> ++++++++++++++++++++++
+>>  1 file changed, 24 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml 
+>> b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+>> index ec3138c..de182f8 100644
+>> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+>> @@ -45,6 +45,10 @@ properties:
+>>      const: 0
+>> 
+>>  patternProperties:
+>> +  "^pm8008[a-z]?-regulator$":
 > 
-> Responses should be made by Thu, 30 Sep 2021 07:17:13 +0000.
-> Anything received after that time might be too late.
+> Is more than 1 node possible for a given PMIC? If not use 'regulators'
+> for the node name.
+> 
 
-Hi Greg,
+Not possible, will change the node name.
 
-the following patch causes IGC not to build as PTP_1588_CLOCK_OPTIONAL
-is not included in the 5.14.9-rc2 patch.
-
-igc: fix build errors for PTP
-[ Upstream commit 87758511075ec961486fe78d7548dd709b524433 ]
-
-the config is only found in 5.15rc on this commit:
-https://github.com/torvalds/linux/commit/e5f31552674e88bff3a4e3ca3e5357668b5f2973
-
-diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
-index 82744a7501c7..c11d974a62d8 100644
---- a/drivers/net/ethernet/intel/Kconfig
-+++ b/drivers/net/ethernet/intel/Kconfig
-@@ -335,6 +335,7 @@ config IGC
- 	tristate "Intel(R) Ethernet Controller I225-LM/I225-V support"
- 	default n
- 	depends on PCI
-+	depends on PTP_1588_CLOCK_OPTIONAL
- 	help
- 	  This driver supports Intel(R) Ethernet Controller I225-LM/I225-V
- 	  family of adapters.
+>> +    type: object
+>> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
+>> +
+>>    "^gpio@[0-9a-f]+$":
+>>      type: object
+>> 
+>> @@ -122,6 +126,26 @@ examples:
+>>            interrupt-controller;
+>>            #interrupt-cells = <2>;
+>>          };
+>> +
+>> +        pm8008-regulator {
+>> +          compatible = "qcom,pm8008-regulator";
+>> +          #address-cells = <1>;
+>> +          #size-cells = <0>;
+>> +
+>> +          vdd_l1_l2-supply = <&vreg_s8b_1p2>;
+>> +          vdd_l3_l4-supply = <&vreg_s1b_1p8>;
+>> +          vdd_l5-supply = <&vreg_bob>;
+>> +          vdd_l6-supply = <&vreg_bob>;
+>> +          vdd_l7-supply = <&vreg_bob>;
+>> +
+>> +          pm8008_l1: regulator@4000 {
+>> +            reg = <0x4000>;
+>> +            regulator-name = "pm8008_l1";
+>> +            regulator-min-microvolt = <950000>;
+>> +            regulator-max-microvolt = <1300000>;
+>> +            qcom,min-dropout-voltage = <96000>;
+>> +          };
+>> +        };
+>>        };
+>>      };
+>> 
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
+>> 
