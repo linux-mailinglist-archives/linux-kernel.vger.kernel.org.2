@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8339741AF7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AECA41AF82
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240860AbhI1M5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:57:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:34584 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240848AbhI1M5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:57:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="222796674"
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="222796674"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 05:56:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="553982639"
-Received: from oogunmoy-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.221.219])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 05:56:03 -0700
-Subject: Re: [PATCH v6 04/11] x86/tdx: Add protected guest support for TDX
- guest
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210903172812.1097643-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YVMAgFpGvKgBfx0P@8bytes.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <20fc6806-0c46-15d6-930b-6b4e90dfee6d@linux.intel.com>
-Date:   Tue, 28 Sep 2021 05:56:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S240729AbhI1M64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:58:56 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:12770 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240488AbhI1M6z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:58:55 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HJfd81S3QzVpvy;
+        Tue, 28 Sep 2021 20:55:56 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 28 Sep 2021 20:57:14 +0800
+Received: from linux-suspe12sp5.huawei.com (10.67.133.83) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 28 Sep 2021 20:57:07 +0800
+From:   Chen Jingwen <chenjingwen6@huawei.com>
+To:     Chen Jingwen <chenjingwen6@huawei.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrei Vagin <avagin@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] elf: don't use MAP_FIXED_NOREPLACE for elf interpreter mappings
+Date:   Tue, 28 Sep 2021 20:56:57 +0800
+Message-ID: <20210928125657.153293-1-chenjingwen6@huawei.com>
+X-Mailer: git-send-email 2.12.3
 MIME-Version: 1.0
-In-Reply-To: <YVMAgFpGvKgBfx0P@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.133.83]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In commit b212921b13bd ("elf: don't use MAP_FIXED_NOREPLACE for elf executable mappings")
+we still leave MAP_FIXED_NOREPLACE in place for load_elf_interp.
+Unfortunately, this will cause kernel to fail to start with
 
+[    2.384321] 1 (init): Uhuuh, elf segment at 00003ffff7ffd000 requested but the memory is mapped already
+[    2.386240] Failed to execute /init (error -17)
 
-On 9/28/21 4:46 AM, Joerg Roedel wrote:
-> On Fri, Sep 03, 2021 at 10:28:05AM -0700, Kuppuswamy Sathyanarayanan wrote:
->>   static inline bool prot_guest_has(unsigned int attr)
->>   {
->>   	if (sme_me_mask)
->>   		return amd_prot_guest_has(attr);
->> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
->> +		return intel_prot_guest_has(attr);
-> 
-> This causes a function call on every Intel machine this code runs. is
-> there an easier to check whether TDX is enabled, like the sme_me_mask
-> check on AMD?
+The reason is that the elf interpreter (ld.so) has overlapping segments.
 
-This will only be called when CONFIG_ARCH_HAS_CC_PLATFORM is set by a platform.
-So it won't be called for all platforms.
+readelf -l ld-2.31.so
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x000000000002c94c 0x000000000002c94c  R E    0x10000
+  LOAD           0x000000000002dae0 0x000000000003dae0 0x000000000003dae0
+                 0x00000000000021e8 0x0000000000002320  RW     0x10000
+  LOAD           0x000000000002fe00 0x000000000003fe00 0x000000000003fe00
+                 0x00000000000011ac 0x0000000000001328  RW     0x10000
 
-Also, intel_prot_guest_has() is a generic Intel platform branch call (so we can't
-directly check for TDX here).
+The reason for this problem is the same as described in
+commit ad55eac74f20 ("elf: enforce MAP_FIXED on overlaying elf segments").
+Not only executable binaries, elf interpreters (e.g. ld.so) can have
+overlapping elf segments, so we better drop MAP_FIXED_NOREPLACE and go
+back to MAP_FIXED in load_elf_interp.
 
-> 
+Fixes: 4ed28639519c ("fs, elf: drop MAP_FIXED usage from elf_map")
+Cc: <stable@vger.kernel.org> # v4.19
+Signed-off-by: Chen Jingwen <chenjingwen6@huawei.com>
+---
+ fs/binfmt_elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 69d900a8473d..a813b70f594e 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -630,7 +630,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
+ 
+ 			vaddr = eppnt->p_vaddr;
+ 			if (interp_elf_ex->e_type == ET_EXEC || load_addr_set)
+-				elf_type |= MAP_FIXED_NOREPLACE;
++				elf_type |= MAP_FIXED;
+ 			else if (no_base && interp_elf_ex->e_type == ET_DYN)
+ 				load_addr = -vaddr;
+ 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.12.3
+
