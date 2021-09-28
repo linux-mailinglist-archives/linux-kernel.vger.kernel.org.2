@@ -2,120 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A90A41B75E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87E141B762
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242456AbhI1TTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242315AbhI1TTX (ORCPT
+        id S242475AbhI1TTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:19:42 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:36852 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242253AbhI1TTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:19:23 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDA5C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:17:43 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id c20so2580qtb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7f1QZiONeDrfm8AhTnbc53U7HhkzQ840mRRtmUewnCI=;
-        b=jv2OU4dRonKtBmDWObStEgucOWtPlJyqGW207XvuQpqOpfcn92InOEODzxDn3983J8
-         NWUMSihLuwJkDTW1ES/IWD1pW4f1IgZWhUtRjvhMkDyUbQyYUzTcg2auWALiBpPMh6T5
-         o6Y/op/SaG0z9lus3Le6nGPTcAsbC0wYw1OmeasBeOOIc0Unh8ixnfIYVGFTDQvdWUf7
-         ejnTvxk5F1g8wMgxUrGGmpVnriP2WtOERNRAu+rKxEr8b83QkHsd4GVA2mxfZkrmQHOF
-         YHUBTillHF8tNjol2rYAKfciv/4RCk/9bFro7e8E17vrA8nf9zNDkX9XT7E2zrdw+Kvq
-         T7bw==
+        Tue, 28 Sep 2021 15:19:41 -0400
+Received: by mail-ot1-f41.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so30317522otx.3;
+        Tue, 28 Sep 2021 12:18:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7f1QZiONeDrfm8AhTnbc53U7HhkzQ840mRRtmUewnCI=;
-        b=BaPb+a3bA3S5cR15BORzXGy8m4GajFfzjQQ9LnN8dPt6Y/cGLwlUlo6I+kR0oQjTDd
-         k3D8EUyKxfqc2u4i4joWs/ZCa/yeKRPuqskI9ltq+s0qzqD+ejxLo7HSIH0nE9Zk5sFI
-         Pq8/2iRoG7v9pugDtoudkVH+Loi/Pb6j0qLKWsXTEHdq1Z22ZOkPxv/DIJKskKQDlQR+
-         +QCf3WZAla5d7ktEJkC8/AeRbwu+MfvSxOi9IlPTwa0WHmeLjTIuvDiZqZ2RTu4rXjna
-         q56cq0t+P5hFa5a/UQClZD5c2PHxUOwSIa+L8BS+j/4wwM4PMJHr3/qwt0rPqN5YTKFw
-         eQww==
-X-Gm-Message-State: AOAM531Eojn/Mfm5VK0viPxCg+BJiaNlklVWGp45G4m1ptkKEbU5kdeF
-        HoZJjifMVQ+fM0daZ2zo3xeZPg==
-X-Google-Smtp-Source: ABdhPJzuCBFM9bapdOvbnZSM2ycmiyqPK8ZUR9G41TIe6DE91xtbhVAs4nO11mNSn8qAAkRHmlWp7A==
-X-Received: by 2002:ac8:7d4b:: with SMTP id h11mr7542407qtb.333.1632856663191;
-        Tue, 28 Sep 2021 12:17:43 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id c6sm5387224qtx.72.2021.09.28.12.17.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FGfb3wNIfOCvmVvUEtza99Pxtm2G7AAUDFzuVFG1vBY=;
+        b=teMUyRBbjm6biy5OolopaigsRtSO1NXkFIpsikkdj3Ik45b1K36SYwGiWrBNqHNQvC
+         96dkZ34TR5O0GKQ9GPNDIl9CQkiFaNrz2Rb+C0h7RrwW1X2cytLClXrY5JrMMcrnEpnN
+         VgrvDPoCwakcAaB7fkVlHpqiCVCGJ1EJVg+Rk+O2Z0dLL+k3DsHJhi2ljUjnA+6U+YKt
+         5L2stbAw2C/EDn/ZeWUof82Lz46qA5j6lxyA4cjSF6fEMeGoVtStBwpuf1p9LccQNCc2
+         /+ptirztuKRZlduXb5c4d1tqXCdDK2hVYwswZOwZAw3hfRyzpRDwSPwESl20DETs0uMV
+         bRAg==
+X-Gm-Message-State: AOAM5333wJN9sxtoWdYsLy4rqEEXUSo0kMm/QeiRpMRVDjzgfELxMHqg
+        uTHctsFqQ29WdC2zGJj3hQ==
+X-Google-Smtp-Source: ABdhPJwZ2qdHFmb9xziUfmKxbd0kH8eT14FkHX3cqv8C02YFKKr5DDEzH5oC2S++RPwV5NbkgX7Mjg==
+X-Received: by 2002:a9d:3e09:: with SMTP id a9mr6709268otd.22.1632856681405;
+        Tue, 28 Sep 2021 12:18:01 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id e2sm4980582ooh.40.2021.09.28.12.18.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:17:42 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVIbl-007G4o-JW; Tue, 28 Sep 2021 16:17:41 -0300
-Date:   Tue, 28 Sep 2021 16:17:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 11/20] RDMA/core: introduce
- ib_dma_pci_p2p_dma_supported()
-Message-ID: <20210928191741.GQ3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-12-logang@deltatee.com>
+        Tue, 28 Sep 2021 12:18:00 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: gemini: Consolidate PCI interrupt-map properties
+Date:   Tue, 28 Sep 2021 14:17:59 -0500
+Message-Id: <20210928191759.1835325-1-robh@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916234100.122368-12-logang@deltatee.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:40:51PM -0600, Logan Gunthorpe wrote:
-> Introduce the helper function ib_dma_pci_p2p_dma_supported() to check
-> if a given ib_device can be used in P2PDMA transfers. This ensures
-> the ib_device is not using virt_dma and also that the underlying
-> dma_device supports P2PDMA.
-> 
-> Use the new helper in nvme-rdma to replace the existing check for
-> ib_uses_virt_dma(). Adding the dma_pci_p2pdma_supported() check allows
-> switching away from pci_p2pdma_[un]map_sg().
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> ---
->  drivers/nvme/target/rdma.c |  2 +-
->  include/rdma/ib_verbs.h    | 11 +++++++++++
->  2 files changed, 12 insertions(+), 1 deletion(-)
+The Gemini PCI 'interrupt-map' does not vary by board, so let's move
+the definition to a common location. This avoids having incomplete
+interrupt properties (i.e. #interrupt-cells without interrupt-map).
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/arm/boot/dts/gemini-dlink-dir-685.dts | 18 ------------------
+ arch/arm/boot/dts/gemini-sl93512r.dts      | 18 ------------------
+ arch/arm/boot/dts/gemini-sq201.dts         | 18 ------------------
+ arch/arm/boot/dts/gemini-wbd111.dts        | 18 ------------------
+ arch/arm/boot/dts/gemini-wbd222.dts        | 18 ------------------
+ arch/arm/boot/dts/gemini.dtsi              | 21 ++++++++++++++++++++-
+ 6 files changed, 20 insertions(+), 91 deletions(-)
 
-> +/*
-> + * Check if a IB device's underlying DMA mapping supports P2PDMA transfers.
-> + */
-> +static inline bool ib_dma_pci_p2p_dma_supported(struct ib_device *dev)
-> +{
-> +	if (ib_uses_virt_dma(dev))
-> +		return false;
+diff --git a/arch/arm/boot/dts/gemini-dlink-dir-685.dts b/arch/arm/boot/dts/gemini-dlink-dir-685.dts
+index c79a2a02dd6b..396149664297 100644
+--- a/arch/arm/boot/dts/gemini-dlink-dir-685.dts
++++ b/arch/arm/boot/dts/gemini-dlink-dir-685.dts
+@@ -439,24 +439,6 @@ gpio1: gpio@4e000000 {
+ 
+ 		pci@50000000 {
+ 			status = "okay";
+-			interrupt-map-mask = <0xf800 0 0 7>;
+-			interrupt-map =
+-				<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+-				<0x4800 0 0 2 &pci_intc 1>,
+-				<0x4800 0 0 3 &pci_intc 2>,
+-				<0x4800 0 0 4 &pci_intc 3>,
+-				<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+-				<0x5000 0 0 2 &pci_intc 2>,
+-				<0x5000 0 0 3 &pci_intc 3>,
+-				<0x5000 0 0 4 &pci_intc 0>,
+-				<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+-				<0x5800 0 0 2 &pci_intc 3>,
+-				<0x5800 0 0 3 &pci_intc 0>,
+-				<0x5800 0 0 4 &pci_intc 1>,
+-				<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+-				<0x6000 0 0 2 &pci_intc 0>,
+-				<0x6000 0 0 3 &pci_intc 1>,
+-				<0x6000 0 0 4 &pci_intc 2>;
+ 		};
+ 
+ 		ethernet@60000000 {
+diff --git a/arch/arm/boot/dts/gemini-sl93512r.dts b/arch/arm/boot/dts/gemini-sl93512r.dts
+index c78e55fd2562..91c19e8ebfe8 100644
+--- a/arch/arm/boot/dts/gemini-sl93512r.dts
++++ b/arch/arm/boot/dts/gemini-sl93512r.dts
+@@ -256,24 +256,6 @@ gpio1: gpio@4e000000 {
+ 
+ 		pci@50000000 {
+ 			status = "okay";
+-			interrupt-map-mask = <0xf800 0 0 7>;
+-			interrupt-map =
+-				<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+-				<0x4800 0 0 2 &pci_intc 1>,
+-				<0x4800 0 0 3 &pci_intc 2>,
+-				<0x4800 0 0 4 &pci_intc 3>,
+-				<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+-				<0x5000 0 0 2 &pci_intc 2>,
+-				<0x5000 0 0 3 &pci_intc 3>,
+-				<0x5000 0 0 4 &pci_intc 0>,
+-				<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+-				<0x5800 0 0 2 &pci_intc 3>,
+-				<0x5800 0 0 3 &pci_intc 0>,
+-				<0x5800 0 0 4 &pci_intc 1>,
+-				<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+-				<0x6000 0 0 2 &pci_intc 0>,
+-				<0x6000 0 0 3 &pci_intc 1>,
+-				<0x6000 0 0 4 &pci_intc 2>;
+ 		};
+ 
+ 		ethernet@60000000 {
+diff --git a/arch/arm/boot/dts/gemini-sq201.dts b/arch/arm/boot/dts/gemini-sq201.dts
+index 1b64cc80b55a..d0efd76695da 100644
+--- a/arch/arm/boot/dts/gemini-sq201.dts
++++ b/arch/arm/boot/dts/gemini-sq201.dts
+@@ -252,24 +252,6 @@ gpio1: gpio@4e000000 {
+ 
+ 		pci@50000000 {
+ 			status = "okay";
+-			interrupt-map-mask = <0xf800 0 0 7>;
+-			interrupt-map =
+-				<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+-				<0x4800 0 0 2 &pci_intc 1>,
+-				<0x4800 0 0 3 &pci_intc 2>,
+-				<0x4800 0 0 4 &pci_intc 3>,
+-				<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+-				<0x5000 0 0 2 &pci_intc 2>,
+-				<0x5000 0 0 3 &pci_intc 3>,
+-				<0x5000 0 0 4 &pci_intc 0>,
+-				<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+-				<0x5800 0 0 2 &pci_intc 3>,
+-				<0x5800 0 0 3 &pci_intc 0>,
+-				<0x5800 0 0 4 &pci_intc 1>,
+-				<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+-				<0x6000 0 0 2 &pci_intc 0>,
+-				<0x6000 0 0 3 &pci_intc 1>,
+-				<0x6000 0 0 4 &pci_intc 2>;
+ 		};
+ 
+ 		ethernet@60000000 {
+diff --git a/arch/arm/boot/dts/gemini-wbd111.dts b/arch/arm/boot/dts/gemini-wbd111.dts
+index 5602ba8f30f2..de3c4416b0fb 100644
+--- a/arch/arm/boot/dts/gemini-wbd111.dts
++++ b/arch/arm/boot/dts/gemini-wbd111.dts
+@@ -140,24 +140,6 @@ gpio0: gpio@4d000000 {
+ 
+ 		pci@50000000 {
+ 			status = "okay";
+-			interrupt-map-mask = <0xf800 0 0 7>;
+-			interrupt-map =
+-				<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+-				<0x4800 0 0 2 &pci_intc 1>,
+-				<0x4800 0 0 3 &pci_intc 2>,
+-				<0x4800 0 0 4 &pci_intc 3>,
+-				<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+-				<0x5000 0 0 2 &pci_intc 2>,
+-				<0x5000 0 0 3 &pci_intc 3>,
+-				<0x5000 0 0 4 &pci_intc 0>,
+-				<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+-				<0x5800 0 0 2 &pci_intc 3>,
+-				<0x5800 0 0 3 &pci_intc 0>,
+-				<0x5800 0 0 4 &pci_intc 1>,
+-				<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+-				<0x6000 0 0 2 &pci_intc 0>,
+-				<0x6000 0 0 3 &pci_intc 1>,
+-				<0x6000 0 0 4 &pci_intc 2>;
+ 		};
+ 
+ 		ethernet@60000000 {
+diff --git a/arch/arm/boot/dts/gemini-wbd222.dts b/arch/arm/boot/dts/gemini-wbd222.dts
+index a4a260c36d75..e5ceaadbcc1a 100644
+--- a/arch/arm/boot/dts/gemini-wbd222.dts
++++ b/arch/arm/boot/dts/gemini-wbd222.dts
+@@ -151,24 +151,6 @@ gpio0: gpio@4d000000 {
+ 
+ 		pci@50000000 {
+ 			status = "okay";
+-			interrupt-map-mask = <0xf800 0 0 7>;
+-			interrupt-map =
+-				<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+-				<0x4800 0 0 2 &pci_intc 1>,
+-				<0x4800 0 0 3 &pci_intc 2>,
+-				<0x4800 0 0 4 &pci_intc 3>,
+-				<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+-				<0x5000 0 0 2 &pci_intc 2>,
+-				<0x5000 0 0 3 &pci_intc 3>,
+-				<0x5000 0 0 4 &pci_intc 0>,
+-				<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+-				<0x5800 0 0 2 &pci_intc 3>,
+-				<0x5800 0 0 3 &pci_intc 0>,
+-				<0x5800 0 0 4 &pci_intc 1>,
+-				<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+-				<0x6000 0 0 2 &pci_intc 0>,
+-				<0x6000 0 0 3 &pci_intc 1>,
+-				<0x6000 0 0 4 &pci_intc 2>;
+ 		};
+ 
+ 		ethernet@60000000 {
+diff --git a/arch/arm/boot/dts/gemini.dtsi b/arch/arm/boot/dts/gemini.dtsi
+index cc053af3c347..03623ef6474e 100644
+--- a/arch/arm/boot/dts/gemini.dtsi
++++ b/arch/arm/boot/dts/gemini.dtsi
+@@ -289,9 +289,28 @@ pci@50000000 {
+ 			device_type = "pci";
+ 			#address-cells = <3>;
+ 			#size-cells = <2>;
+-			#interrupt-cells = <1>;
+ 			status = "disabled";
+ 
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
++			interrupt-map =
++				<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
++				<0x4800 0 0 2 &pci_intc 1>,
++				<0x4800 0 0 3 &pci_intc 2>,
++				<0x4800 0 0 4 &pci_intc 3>,
++				<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
++				<0x5000 0 0 2 &pci_intc 2>,
++				<0x5000 0 0 3 &pci_intc 3>,
++				<0x5000 0 0 4 &pci_intc 0>,
++				<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
++				<0x5800 0 0 2 &pci_intc 3>,
++				<0x5800 0 0 3 &pci_intc 0>,
++				<0x5800 0 0 4 &pci_intc 1>,
++				<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
++				<0x6000 0 0 2 &pci_intc 0>,
++				<0x6000 0 0 3 &pci_intc 1>,
++				<0x6000 0 0 4 &pci_intc 2>;
++
+ 			bus-range = <0x00 0xff>;
+ 			/* PCI ranges mappings */
+ 			ranges =
+-- 
+2.30.2
 
-If someone wants to make rxe/hfi/qib use this stuff then they will
-have to teach the the driver to do all the p2p checks and add some
-struct ib_device flag
-
-Jason
