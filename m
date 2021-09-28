@@ -2,151 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625B141BAC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BB041BAC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243204AbhI1XKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        id S243191AbhI1XLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243191AbhI1XKi (ORCPT
+        with ESMTP id S243145AbhI1XLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:10:38 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EC1C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:08:58 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id n18so635495pgm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:08:58 -0700 (PDT)
+        Tue, 28 Sep 2021 19:11:31 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247FCC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:09:51 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 66so252134pgc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VAVjy8HcaFqaIzDnTlnGPoodVICGjX7cWhESEeYfADg=;
-        b=oS9uweXO3FrPncRchHQEfxqL1veKPLliIy5Xe0MgjcruuM1JKRfGB5avSRn6VzVDYO
-         HgHHKd0oa1DhfeUZbkCgAAo2H3nCvK1bfcnUs4bzu64kowqxKpgxGfbfxudBdL23iGpT
-         lGY4k6Suz3YUqw8MjgjmTZRp05OIiD3pzKpHY=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/6KqR1HyZHs/R3gjdGugqMMEZtEkHxmK50cLp03cmZc=;
+        b=kRO6KOHPYlqrlE2PyqcrEImb73jrEqu7Tt2ZQLvLPj5LIDl6bZe8AhSBg+pEiC30E2
+         ZqpLfFQoKgebHvSoK4O6w2XRWBQD51z/B5M2fUopuV8sjGFSYpFDqWg3VMWQDsGbG34C
+         1utgs1CmB1i0kSnTGHGQCRZZ2QjoSGSN+M7f4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VAVjy8HcaFqaIzDnTlnGPoodVICGjX7cWhESEeYfADg=;
-        b=QkfizIywIWNwcqE7Q+J1R5uatDF4yDbbGgF3jOtPWhbt1uUFROe9mYkUfUdbIX5yBG
-         Yt1V2N+6W/jjnkWCuTBMmHycj/+gatP79Haidl5Afyg7l0gRyEivXxaRwKAX0/WFNXw8
-         cFFGxYONL3kX2yQr2eOgsqAefxKZwZuTh1DqXxhNJRPpdwp79lZubcvBQ5SBay++xZqg
-         ywXGanh4PzyAjGkY+Qqf1mKdYms+LBs63vIbge6ZFsf1ATAnr3oVcKugqLCMwtcUxKuF
-         6qZ6yICPOnArx/pC+EJ19x0zifhGR3kB2iCwrUaeKROR1FU/661kRdrFDp8vqauIlAws
-         cxAw==
-X-Gm-Message-State: AOAM531Ru5OBbkmXMBbJHmhCDdEqiXK/2GBNq43w1jINtnOCVO+6k/+T
-        MmPTx77wpIq7Q5j/oqbc+n8K/w==
-X-Google-Smtp-Source: ABdhPJxb62wKoZWvOkb8tbvGIK8WyPo5F0hAn5W/Yvg4gHdhGsQHmdypvxWY5LBDB9Zi0TpfNuvcVQ==
-X-Received: by 2002:a62:8f93:0:b0:447:baea:b5a7 with SMTP id n141-20020a628f93000000b00447baeab5a7mr288096pfd.68.1632870537575;
-        Tue, 28 Sep 2021 16:08:57 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:d7ca:580:94ab:8af8])
-        by smtp.gmail.com with ESMTPSA id b2sm190693pfr.58.2021.09.28.16.08.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/6KqR1HyZHs/R3gjdGugqMMEZtEkHxmK50cLp03cmZc=;
+        b=j+IkMTam+F6TAOoW8o63eHwNXhqYMfseHh/OlqzwJkujEtCWqukgspCXpRtpOKXTA+
+         497eylx6JDAgyOpLegsSm8H4v17KuTTq8ZXS2R5jlcYWWep3cWkD75jB5TthNWm6FCVQ
+         DvsfgHJpufNx5Xi7SuQDtsqZncEEDb/Dj36bfVpQMyv7J1V/G6qF808i7n1Xfpr9VJKP
+         XB7Lxps8Q9wq1AkUCp0WT7gDpJA5bMBJu6Teyts3rXAyG1YbHRmi+Fl9bIK2CckS+eQm
+         PpTO85j0bDBydIpW/XUekPCqOFbr8riMipdMkrZ/Zb5okQ4hKed2Fliyjemq9/YK/GF1
+         TNDA==
+X-Gm-Message-State: AOAM530RYaO+7SmcgLRh06odiQtG8OJiY/P09gozR3tLlNdG5PEh++Nq
+        wCp1dK80C7a8pU2K6KaDKXJG1A==
+X-Google-Smtp-Source: ABdhPJzjOPXCus6KVQTOys3SwHLSXornHg81Jm/QOi9V2kIBq4MHlrR22KKBZHzNMRroNSc8R7dbWg==
+X-Received: by 2002:a63:4506:: with SMTP id s6mr6965849pga.211.1632870590744;
+        Tue, 28 Sep 2021 16:09:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id az15sm2918227pjb.42.2021.09.28.16.09.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 16:08:57 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 16:08:54 -0700
-From:   Brian Norris <briannorris@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>
-Subject: Re: [PATCH v8 2/6] usb: host: xhci: plat: Add suspend quirk for dwc3
- controller
-Message-ID: <YVOghtE9VkHGpItZ@google.com>
-References: <1624882097-23265-1-git-send-email-sanm@codeaurora.org>
- <1624882097-23265-3-git-send-email-sanm@codeaurora.org>
+        Tue, 28 Sep 2021 16:09:50 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/2] bpf: Build with -Wcast-function-type
+Date:   Tue, 28 Sep 2021 16:09:44 -0700
+Message-Id: <20210928230946.4062144-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624882097-23265-3-git-send-email-sanm@codeaurora.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=968; h=from:subject; bh=ruWBDY5ph5ypLUMFlAuaEw+/4pRmXpvNFEGWsS8ZW24=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhU6C5r16ay+0bVIuOnFm/IqmDsKJw4IWZdSfe93Zr TNSrAy6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYVOguQAKCRCJcvTf3G3AJl65D/ 9NDRawYFT0O5y1MYz0nxGo/IV9NHv4ciHCLzGjYxyMe2Uccqa6kfTu7VFPh6tVoKCrngtN8vvDzsfe xIOl/lUtINlaHhyWz9g1Y7SC2Da8Yob/xRz7GLNdgT8jZlYUwetxl/SkFO8ZV+PsL14AB9xlkMyHAr TxyjFi84+ZgXiSux8DUlASZcBmNEGaNbAg0dUjhV+9MNGsaXEf1gUnma8XtQ6LSQnhaTiKfTXujmtj aJffjvIpgUPs0CFc6uKaVa5MT2fuziz3SIIraEKZ4SN0aHRcd0iZYtqllm2QpDm5bLjjOtMqp/cRIr JjJGC8l1YQfriNmLj2grYaa5akAfcrpZyIsIAUW/NPWDS05HT888UifloXA6x8YZV95+rR6QyGP5K4 l7Co3b+WBVHIopAEIwcoKxG+Obmd03gfUOcEVcpkAnG/vf8mUPQhfaSQHYVLgC5VDtCH6qVN4/tfpT 4Qf9W+qdJAx81I1sU8CEsvuReEO+HPy4my16328VkFZPDzRt/ECvp/otBdYdBWdSW+LZl5n0s8kygX cDC7kVsJRAJyDg4Qyu5Ue6+uOOAdRD0tRaJJGLgrgJIban5LYRluQnq0ovXfry6vHRK61/9T+FPksF x1zmSmr1JKzvsM1qFlJ/Hq/KIQRhaKj8Vjny0HohI2AYvGQ4fhE7PNhu5hiA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Mon, Jun 28, 2021 at 05:38:13PM +0530, Sandeep Maheswaram wrote:
-> During suspend read the status of all port and make sure the PHYs
-> are in the correct mode based on current speed.
-> Phy interrupt masks are set based on this mode. Keep track of the mode
-> of the HS PHY to be able to configure wakeup properly.
-> 
-> Also check during suspend if any wakeup capable devices are
-> connected to the controller (directly or through hubs), if there
-> are none set a flag to indicate that the PHY should be powered
-> down during suspend.
+In order to keep ahead of cases in the kernel where Control Flow Integrity
+(CFI) may trip over function call casts, enabling -Wcast-function-type
+is helpful. To that end, replace BPF_CAST_CALL() as it triggers warnings
+with this option and is now one of the last places in the kernel in need
+of fixing.
 
-...
+Thanks,
 
-> --- a/drivers/usb/host/xhci-plat.c
-> +++ b/drivers/usb/host/xhci-plat.c
+-Kees
 
-> @@ -430,6 +431,39 @@ static int xhci_plat_remove(struct platform_device *dev)
->  
->  	return 0;
->  }
-> +static void xhci_dwc3_suspend_quirk(struct usb_hcd *hcd)
+v2:
+- rebase to bpf-next
+- add acks
+v1: https://lore.kernel.org/lkml/20210927182700.2980499-1-keescook@chromium.org
 
-nit: you need a blank line above this (in between functions).
+Kees Cook (2):
+  bpf: Replace "want address" users of BPF_CAST_CALL with BPF_CALL_IMM
+  bpf: Replace callers of BPF_CAST_CALL with proper function typedef
 
-> +{
-> +	int i, num_ports;
-> +	u32 reg;
-> +	unsigned int ss_phy_mode = 0;
-> +	struct dwc3 *dwc = dev_get_drvdata(hcd->self.controller->parent);
-> +	struct xhci_hcd	*xhci_hcd = hcd_to_xhci(hcd);
-> +
-> +	dwc->hs_phy_mode = 0;
-> +
-> +	reg = readl(&xhci_hcd->cap_regs->hcs_params1);
-> +	num_ports = HCS_MAX_PORTS(reg);
-> +
-> +	for (i = 0; i < num_ports; i++) {
-> +		reg = readl(&xhci_hcd->op_regs->port_status_base + i * 0x04);
-> +		if (reg & PORT_PE) {
-> +			if (DEV_HIGHSPEED(reg) || DEV_FULLSPEED(reg))
-> +				dwc->hs_phy_mode |= PHY_MODE_USB_HOST_HS;
-> +			else if (DEV_LOWSPEED(reg))
-> +				dwc->hs_phy_mode |= PHY_MODE_USB_HOST_LS;
-> +
-> +			if (DEV_SUPERSPEED(reg))
-> +				ss_phy_mode |= PHY_MODE_USB_HOST_SS;
-> +		}
-> +	}
-> +	phy_set_mode(dwc->usb2_generic_phy, dwc->hs_phy_mode);
-> +	phy_set_mode(dwc->usb3_generic_phy, ss_phy_mode);
-> +
-> +	if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
-> +		dwc->phy_power_off = false;
-> +	else
-> +		dwc->phy_power_off = true;
-> +}
+ include/linux/bpf.h    |  4 +++-
+ include/linux/filter.h |  7 +++----
+ kernel/bpf/arraymap.c  |  7 +++----
+ kernel/bpf/hashtab.c   | 13 ++++++-------
+ kernel/bpf/helpers.c   |  5 ++---
+ kernel/bpf/verifier.c  | 26 +++++++++-----------------
+ lib/test_bpf.c         |  2 +-
+ 7 files changed, 27 insertions(+), 37 deletions(-)
 
-This series breaks USB across S3 suspend/resume on Rockchip RK3399 Gru
-platforms. Those platforms do not support USB wake (they power off many
-of the relevant IP blocks in S3), and they *require* reconfiguring the
-PHY on resume, but usb_wakeup_enabled_descendants() is returning
-non-zero. If I revert patch 3, things work again.
+-- 
+2.30.2
 
-Perhaps that's a Rockchip bug (should such platforms be disabling all PM
-wakeup capabilities for their child hubs/devices?), but I'd much
-appreciate resolving that before merging such a regression.
-
-This also may be a sign that usb_wakeup_enabled_descendants() isn't
-really the precise condition you should be using, if other platforms
-aren't accurately reflecting feature support status in here.
-
-Brian
-
-P.S. In case it matters, I'm noticing this because earlier versions of
-your patches (which have the same problem) are merged in our downstream
-Chromium kernel tree.
