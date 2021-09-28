@@ -2,458 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9915B41AE78
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BE641AE79
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240539AbhI1MKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:10:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240458AbhI1MKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:10:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF717611CA;
-        Tue, 28 Sep 2021 12:08:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632830913;
-        bh=GuHoaThe7NuL3NX8na212WAQm4jkyWPq9tMCWE/W50s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tRvRPu74JoKK6gjRArcHEIvJfdQ4TnpraGQgC5mBGTUcUBBgBTU0xOHMNZ7xfWjEX
-         jOVDVo5OOcJDATt9saH0h5eJtYP5VUEgmulXH9YynwMTwNjMeqfQ9TagJozRXbzzL5
-         4VKJFs40nrzZ10lrctlLLaIkO01mOaz6paYD248I=
-Date:   Tue, 28 Sep 2021 14:08:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        shuah@kernel.org, farosas@linux.ibm.com, kjain@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pratik.r.sampat@gmail.com
-Subject: Re: [PATCH v8 1/2] powerpc/pseries: Interface to represent PAPR
- firmware attributes
-Message-ID: <YVMFvyGwfH+rxYPz@kroah.com>
-References: <20210928115102.57117-1-psampat@linux.ibm.com>
- <20210928115102.57117-2-psampat@linux.ibm.com>
+        id S240560AbhI1MKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:10:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39508 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240458AbhI1MKQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:10:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632830916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X/Lc3rR4l11GPbjW1XnUBBSJ1grXPqqIBxR/0GSoPfM=;
+        b=gL12dtxRbXHmyNV7IT0HbPrZtycVetske01ZqotdhSAWoVwfZPpZAKmgT8iSJufZwU5JrS
+        0ulutj17eddV+CyPyKrL4nh29L3Vojxbi/4XoDrn2XS9V4cQxxoer8fYN1fLd/JEht8rrY
+        5ypszUVMYyUPkuY7lep5Mc7Zl/oOAiA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-fXMYAXj7PEajoN1um67zAQ-1; Tue, 28 Sep 2021 08:08:35 -0400
+X-MC-Unique: fXMYAXj7PEajoN1um67zAQ-1
+Received: by mail-ed1-f69.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so21499610edy.14
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:08:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X/Lc3rR4l11GPbjW1XnUBBSJ1grXPqqIBxR/0GSoPfM=;
+        b=2GpXizHh8f4biO5kCbZ8nDT4B8eglZd+C6sR0Ri6Bn8Wq1LAjCSq7We284BITf4vz3
+         6jOSAfI3wmQOdG4pniKfdOoVnmEUh18iy7BWnrSYZ51oAz1qYWcTiLobYo20vN6yA4nC
+         sSvWOHs1llHhyJULng85UtmpvndIXMtyHA7f7z5zu4hOj8pP6xRbcgzokIYJmg65TTwo
+         y91JI0iw4NOI4CR7PS5+1fpvGvVj63zVQJujUk8wR0iHK9f13/cTDwAiUDmb3OCHFLyx
+         SbDPLrM9QonRPvlU7BgLIMRRD05GfAJ9eu6GYoc3D2bw4G7Xf56z7YWz3+6ow2zlDd5n
+         dTfQ==
+X-Gm-Message-State: AOAM530s854ZymkYhF4u/EwEcdOvQXKleb8lIPoTE7V43iX1FV1PkX9i
+        5A9gYw7udsYXdA/UpxMxpiNTZ2OAin7/dr3nMLFzfCWNlRLd4FuKv303T05v/jhDPeBbME6D8ke
+        0NfFmeYCTFnYQ8wbUImnCKv8VITT2Ce/RyvQ1R5lOYy3Uglq1ykgJ8M5y6rti2XAU8fn1lIuuCH
+        wM
+X-Received: by 2002:a17:906:1b58:: with SMTP id p24mr6377881ejg.534.1632830913161;
+        Tue, 28 Sep 2021 05:08:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUX1QyxsYStX/6gb3Uk7MgrjzzPBt1j1XaISvDLocJaMgZfG0V1OALe6fnOPHcRGTDS9HRaQ==
+X-Received: by 2002:a17:906:1b58:: with SMTP id p24mr6377857ejg.534.1632830912898;
+        Tue, 28 Sep 2021 05:08:32 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id u10sm12601839eds.83.2021.09.28.05.08.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 05:08:32 -0700 (PDT)
+Subject: Re: [PATCH] update email addresses. Change all email addresses for
+ Mark Gross to use markgross@kernel.org.
+To:     markgross@kernel.org, linux-kernel@vger.kernel.org
+References: <20210921135358.85143-1-markgross@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e74afe6e-38b2-54b8-9d52-4177b8e63e10@redhat.com>
+Date:   Tue, 28 Sep 2021 14:08:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928115102.57117-2-psampat@linux.ibm.com>
+In-Reply-To: <20210921135358.85143-1-markgross@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 05:21:01PM +0530, Pratik R. Sampat wrote:
-> Adds a generic interface to represent the energy and frequency related
-> PAPR attributes on the system using the new H_CALL
-> "H_GET_ENERGY_SCALE_INFO".
+Hi Mark,
+
+On 9/21/21 3:53 PM, markgross@kernel.org wrote:
+> From: Mark Gross <markgross@kernel.org>
 > 
-> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
-> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
-> will be deprecated P10 onwards.
-> 
-> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
-> hcall(
->   uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
->   uint64 flags,           // Per the flag request
->   uint64 firstAttributeId,// The attribute id
->   uint64 bufferAddress,   // Guest physical address of the output buffer
->   uint64 bufferSize       // The size in bytes of the output buffer
-> );
-> 
-> This H_CALL can query either all the attributes at once with
-> firstAttributeId = 0, flags = 0 as well as query only one attribute
-> at a time with firstAttributeId = id, flags = 1.
-> 
-> The output buffer consists of the following
-> 1. number of attributes              - 8 bytes
-> 2. array offset to the data location - 8 bytes
-> 3. version info                      - 1 byte
-> 4. A data array of size num attributes, which contains the following:
->   a. attribute ID              - 8 bytes
->   b. attribute value in number - 8 bytes
->   c. attribute name in string  - 64 bytes
->   d. attribute value in string - 64 bytes
-> 
-> The new H_CALL exports information in direct string value format, hence
-> a new interface has been introduced in
-> /sys/firmware/papr/energy_scale_info to export this information to
-> userspace in an extensible pass-through format.
-> 
-> The H_CALL returns the name, numeric value and string value (if exists)
-> 
-> The format of exposing the sysfs information is as follows:
-> /sys/firmware/papr/energy_scale_info/
->    |-- <id>/
->      |-- desc
->      |-- value
->      |-- value_desc (if exists)
->    |-- <id>/
->      |-- desc
->      |-- value
->      |-- value_desc (if exists)
-> ...
-> 
-> The energy information that is exported is useful for userspace tools
-> such as powerpc-utils. Currently these tools infer the
-> "power_mode_data" value in the lparcfg, which in turn is obtained from
-> the to be deprecated H_GET_EM_PARMS H_CALL.
-> On future platforms, such userspace utilities will have to look at the
-> data returned from the new H_CALL being populated in this new sysfs
-> interface and report this information directly without the need of
-> interpretation.
-> 
-> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-> Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
-> Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
+> Signed-off-by: Mark Gross<markgross@kernel.org>
+
+Since most (but not all) of the affected entries are
+under the pdx86 subsystem I've merged this now:
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
 > ---
->  .../sysfs-firmware-papr-energy-scale-info     |  26 ++
->  arch/powerpc/include/asm/hvcall.h             |  24 +-
->  arch/powerpc/kvm/trace_hv.h                   |   1 +
->  arch/powerpc/platforms/pseries/Makefile       |   3 +-
->  .../pseries/papr_platform_attributes.c        | 312 ++++++++++++++++++
->  5 files changed, 364 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
->  create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
+>  MAINTAINERS | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> new file mode 100644
-> index 000000000000..139a576c7c9d
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> @@ -0,0 +1,26 @@
-> +What:		/sys/firmware/papr/energy_scale_info
-> +Date:		June 2021
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Description:	Directory hosting a set of platform attributes like
-> +		energy/frequency on Linux running as a PAPR guest.
-> +
-> +		Each file in a directory contains a platform
-> +		attribute hierarchy pertaining to performance/
-> +		energy-savings mode and processor frequency.
-> +
-> +What:		/sys/firmware/papr/energy_scale_info/<id>
-> +		/sys/firmware/papr/energy_scale_info/<id>/desc
-> +		/sys/firmware/papr/energy_scale_info/<id>/value
-> +		/sys/firmware/papr/energy_scale_info/<id>/value_desc
-> +Date:		June 2021
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Description:	Energy, frequency attributes directory for POWERVM servers
-> +
-> +		This directory provides energy, frequency, folding information. It
-> +		contains below sysfs attributes:
-> +
-> +		- desc: String description of the attribute <id>
-> +
-> +		- value: Numeric value of attribute <id>
-> +
-> +		- value_desc: String value of attribute <id>
-
-Can you just make 4 different entries in this file, making it easier to
-parse and extend over time?
-
-
-> diff --git a/arch/powerpc/include/asm/hvcall.h b/arch/powerpc/include/asm/hvcall.h
-> index 9bcf345cb208..38980fef7a3d 100644
-> --- a/arch/powerpc/include/asm/hvcall.h
-> +++ b/arch/powerpc/include/asm/hvcall.h
-> @@ -323,7 +323,8 @@
->  #define H_SCM_PERFORMANCE_STATS 0x418
->  #define H_RPT_INVALIDATE	0x448
->  #define H_SCM_FLUSH		0x44C
-> -#define MAX_HCALL_OPCODE	H_SCM_FLUSH
-> +#define H_GET_ENERGY_SCALE_INFO	0x450
-> +#define MAX_HCALL_OPCODE	H_GET_ENERGY_SCALE_INFO
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ca6d6fde85cf..9d9800f79b97 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6683,7 +6683,7 @@ S:	Supported
+>  F:	drivers/edac/dmc520_edac.c
 >  
->  /* Scope args for H_SCM_UNBIND_ALL */
->  #define H_UNBIND_SCOPE_ALL (0x1)
-> @@ -641,6 +642,27 @@ struct hv_gpci_request_buffer {
->  	uint8_t bytes[HGPCI_MAX_DATA_BYTES];
->  } __packed;
+>  EDAC-E752X
+> -M:	Mark Gross <mark.gross@intel.com>
+> +M:	Mark Gross <markgross@kernel.org>
+>  L:	linux-edac@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/edac/e752x_edac.c
+> @@ -11979,7 +11979,7 @@ F:	drivers/net/ethernet/mellanox/mlxfw/
 >  
-> +#define ESI_VERSION	0x1
-> +#define MAX_ESI_ATTRS	10
-> +#define MAX_BUF_SZ	(sizeof(struct h_energy_scale_info_hdr) + \
-> +			(sizeof(struct energy_scale_attribute) * MAX_ESI_ATTRS))
-> +
-> +struct energy_scale_attribute {
-> +	__be64 id;
-> +	__be64 value;
-> +	unsigned char desc[64];
-> +	unsigned char value_desc[64];
-> +} __packed;
-> +
-> +struct h_energy_scale_info_hdr {
-> +	__be64 num_attrs;
-> +	__be64 array_offset;
-> +	__u8 data_header_version;
-> +} __packed;
-> +
-> +/* /sys/firmware/papr */
-> +extern struct kobject *papr_kobj;
-> +
->  #endif /* __ASSEMBLY__ */
->  #endif /* __KERNEL__ */
->  #endif /* _ASM_POWERPC_HVCALL_H */
-> diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
-> index 830a126e095d..38cd0ed0a617 100644
-> --- a/arch/powerpc/kvm/trace_hv.h
-> +++ b/arch/powerpc/kvm/trace_hv.h
-> @@ -115,6 +115,7 @@
->  	{H_VASI_STATE,			"H_VASI_STATE"}, \
->  	{H_ENABLE_CRQ,			"H_ENABLE_CRQ"}, \
->  	{H_GET_EM_PARMS,		"H_GET_EM_PARMS"}, \
-> +	{H_GET_ENERGY_SCALE_INFO,	"H_GET_ENERGY_SCALE_INFO"}, \
->  	{H_SET_MPP,			"H_SET_MPP"}, \
->  	{H_GET_MPP,			"H_GET_MPP"}, \
->  	{H_HOME_NODE_ASSOCIATIVITY,	"H_HOME_NODE_ASSOCIATIVITY"}, \
-> diff --git a/arch/powerpc/platforms/pseries/Makefile b/arch/powerpc/platforms/pseries/Makefile
-> index 4cda0ef87be0..c4c19f6a5975 100644
-> --- a/arch/powerpc/platforms/pseries/Makefile
-> +++ b/arch/powerpc/platforms/pseries/Makefile
-> @@ -6,7 +6,8 @@ obj-y			:= lpar.o hvCall.o nvram.o reconfig.o \
->  			   of_helpers.o \
->  			   setup.o iommu.o event_sources.o ras.o \
->  			   firmware.o power.o dlpar.o mobility.o rng.o \
-> -			   pci.o pci_dlpar.o eeh_pseries.o msi.o
-> +			   pci.o pci_dlpar.o eeh_pseries.o msi.o \
-> +			   papr_platform_attributes.o
->  obj-$(CONFIG_SMP)	+= smp.o
->  obj-$(CONFIG_SCANLOG)	+= scanlog.o
->  obj-$(CONFIG_KEXEC_CORE)	+= kexec.o
-> diff --git a/arch/powerpc/platforms/pseries/papr_platform_attributes.c b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> new file mode 100644
-> index 000000000000..84ddce52e519
-> --- /dev/null
-> +++ b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> @@ -0,0 +1,312 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Platform energy and frequency attributes driver
-> + *
-> + * This driver creates a sys file at /sys/firmware/papr/ which encapsulates a
-> + * directory structure containing files in keyword - value pairs that specify
-> + * energy and frequency configuration of the system.
-> + *
-> + * The format of exposing the sysfs information is as follows:
-> + * /sys/firmware/papr/energy_scale_info/
-> + *  |-- <id>/
-> + *    |-- desc
-> + *    |-- value
-> + *    |-- value_desc (if exists)
-> + *  |-- <id>/
-> + *    |-- desc
-> + *    |-- value
-> + *    |-- value_desc (if exists)
-> + *
-> + * Copyright 2021 IBM Corp.
-> + */
-> +
-> +#include <asm/hvcall.h>
-> +#include <asm/machdep.h>
-> +
-> +#include "pseries.h"
-> +
-> +/*
-> + * Flag attributes to fetch either all or one attribute from the HCALL
-> + * flag = BE(0) => fetch all attributes with firstAttributeId = 0
-> + * flag = BE(1) => fetch a single attribute with firstAttributeId = id
-> + */
-> +#define ESI_FLAGS_ALL		0
-> +#define ESI_FLAGS_SINGLE	PPC_BIT(0)
-> +
-> +#define MAX_ATTRS		3
-> +
-> +struct papr_attr {
-> +	u64 id;
-> +	struct kobj_attribute kobj_attr;
+>  MELLANOX HARDWARE PLATFORM SUPPORT
+>  M:	Hans de Goede <hdegoede@redhat.com>
+> -M:	Mark Gross <mgross@linux.intel.com>
+> +M:	Mark Gross <markgross@kernel.org>
+>  M:	Vadim Pasternak <vadimp@nvidia.com>
+>  L:	platform-driver-x86@vger.kernel.org
+>  S:	Supported
+> @@ -12431,7 +12431,7 @@ F:	drivers/platform/surface/surface_gpe.c
+>  
+>  MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT
+>  M:	Hans de Goede <hdegoede@redhat.com>
+> -M:	Mark Gross <mgross@linux.intel.com>
+> +M:	Mark Gross <markgross@kernel.org>
+>  M:	Maximilian Luz <luzmaximilian@gmail.com>
+>  L:	platform-driver-x86@vger.kernel.org
+>  S:	Maintained
+> @@ -18460,7 +18460,7 @@ S:	Supported
+>  F:	drivers/net/ethernet/tehuti/*
+>  
+>  TELECOM CLOCK DRIVER FOR MCPL0010
+> -M:	Mark Gross <mark.gross@intel.com>
+> +M:	Mark Gross <markgross@kernel.org>
+>  S:	Supported
+>  F:	drivers/char/tlclk.c
+>  
+> @@ -20376,7 +20376,7 @@ F:	arch/x86/mm/
+>  
+>  X86 PLATFORM DRIVERS
+>  M:	Hans de Goede <hdegoede@redhat.com>
+> -M:	Mark Gross <mgross@linux.intel.com>
+> +M:	Mark Gross <markgross@kernel.org>
+>  L:	platform-driver-x86@vger.kernel.org
+>  S:	Maintained
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+> 
 
-Why does an attribute have to be part of this structure?
-
-> +};
-> +struct papr_group {
-> +	struct attribute_group pg;
-> +	struct papr_attr pgattrs[MAX_ATTRS];
-> +} *pgs;
-> +
-> +/* /sys/firmware/papr */
-> +struct kobject *papr_kobj;
-> +/* /sys/firmware/papr/energy_scale_info */
-> +struct kobject *esi_kobj;
-> +
-> +/*
-> + * Extract and export the description of the energy scale attributes
-> + */
-> +static ssize_t papr_show_desc(struct kobject *kobj,
-> +			       struct kobj_attribute *kobj_attr,
-> +			       char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	char *t_buf;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = snprintf(buf, sizeof(t_esi->desc), "%s\n", t_esi->desc);
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Extract and export the numeric value of the energy scale attributes
-> + */
-> +static ssize_t papr_show_value(struct kobject *kobj,
-> +				struct kobj_attribute *kobj_attr,
-> +				char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	char *t_buf;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = snprintf(buf, sizeof(t_esi->value), "%llu\n",
-> +		       be64_to_cpu(t_esi->value));
-
-sysfs_emit() for when writing out to a sysfs file please.  Same
-elsewhere in this file.
-
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Extract and export the value description in string format of the energy
-> + * scale attributes
-> + */
-> +static ssize_t papr_show_value_desc(struct kobject *kobj,
-> +				     struct kobj_attribute *kobj_attr,
-> +				     char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	char *t_buf;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = snprintf(buf, sizeof(t_esi->value_desc), "%s\n",
-> +		       t_esi->value_desc);
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct papr_ops_info {
-> +	const char *attr_name;
-> +	ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *kobj_attr,
-> +			char *buf);
-> +} ops_info[MAX_ATTRS] = {
-> +	{ "desc", papr_show_desc },
-> +	{ "value", papr_show_value },
-> +	{ "value_desc", papr_show_value_desc },
-
-What is wrong with just using the __ATTR_RO() macro and then having an
-array of attributes in a single group?  That should be a lot simpler
-overall, right?
-
-> +};
-> +
-> +static void add_attr(u64 id, int index, struct papr_attr *attr)
-> +{
-> +	attr->id = id;
-> +	sysfs_attr_init(&attr->kobj_attr.attr);
-> +	attr->kobj_attr.attr.name = ops_info[index].attr_name;
-> +	attr->kobj_attr.attr.mode = 0444;
-> +	attr->kobj_attr.show = ops_info[index].show;
-
-If you do the above, no need for this function at all.
-
-> +}
-> +
-> +static int add_attr_group(u64 id, struct papr_group *pg, bool show_val_desc)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < MAX_ATTRS; i++) {
-> +		if (!strcmp(ops_info[i].attr_name, "value_desc") &&
-> +		    !show_val_desc) {
-> +			continue;
-> +		}
-> +		add_attr(id, i, &pg->pgattrs[i]);
-> +		pg->pg.attrs[i] = &pg->pgattrs[i].kobj_attr.attr;
-> +	}
-> +
-> +	return sysfs_create_group(esi_kobj, &pg->pg);
-
-Again, if you just have a list of attributes, there's no need for this
-function either.
-
-I think this can be a lot simpler than you are currently making it.
-
-thanks,
-
-greg k-h
