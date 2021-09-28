@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F334C41B4A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5A341B4A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241929AbhI1RB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:01:29 -0400
-Received: from mga02.intel.com ([134.134.136.20]:9953 "EHLO mga02.intel.com"
+        id S240713AbhI1RBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:01:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240713AbhI1RB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:01:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="212007146"
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="212007146"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 09:59:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="554145890"
-Received: from oogunmoy-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.221.219])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 09:59:35 -0700
-Subject: Re: [PATCH v6 06/11] x86/traps: Add #VE support for TDX guest
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210903172812.1097643-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <e2c7ac4d-61c8-396d-43a1-cb2243aa7ce6@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <c8bb99dd-187c-385c-f4cc-36bb9cf279b8@linux.intel.com>
-Date:   Tue, 28 Sep 2021 09:59:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S241907AbhI1RBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:01:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DC361352
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632848402;
+        bh=LG73icpSNBU/h5t34vTPoYSK6Cz2xz8oCZHbpUZyobE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mrm3kuuRt9rTs8NzBZWKzW9esRU3J2gFAarVZlpdoVicveeRdIEpnxnHjVjpc3MLd
+         qE2lRrMsL6807RAQbe8tCWwp/k+47coKlK874eHIHxpofe3f11ZbPR4VkEkRHd6/ME
+         RRu0NJFkri4xR39TJd2LtSpOoNJrDZzSAIeOp2LrhoUMQzcepDayORyoU04TDBScv/
+         9X1kk02S95m0EotJLtdfer0+O7aN3k9CUmZ4zlKu4q/f2JMsRlQC0jzZNdcxxO7s2l
+         0kZkmoah/UHYPpBPI/23fqgxsy27QnWQVoToOiYvlXmepnwDAn4NvsE3yXFk+SZdQh
+         X+muqectLw59Q==
+Received: by mail-lf1-f42.google.com with SMTP id y28so94583271lfb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:00:02 -0700 (PDT)
+X-Gm-Message-State: AOAM530uO5iCxeRbmMU5h7GPf44tPnRhJD4kXyY/BXgtBNXeYTC6GBwB
+        IB/HzyBopZZkzUXLKbkoV9lTYFPfMGDUGdCowRE=
+X-Google-Smtp-Source: ABdhPJxY+7EIdyIqAHPL7HS8zvTNn2gElYimnSM6iaXJpYTEkKGO3fCLONhSZe9SIqGhVwfZnGJja/w17Fp28QsN9eU=
+X-Received: by 2002:a2e:7503:: with SMTP id q3mr1068082ljc.48.1632848400893;
+ Tue, 28 Sep 2021 10:00:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e2c7ac4d-61c8-396d-43a1-cb2243aa7ce6@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20210922070645.47345-2-rongwei.wang@linux.alibaba.com> <YUsVcEDcQ2vEzjGg@casper.infradead.org>
+ <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com> <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com> <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <YVMFT+hrePumXlDU@casper.infradead.org>
+In-Reply-To: <YVMFT+hrePumXlDU@casper.infradead.org>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 28 Sep 2021 09:59:49 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4833=8MnSeF7N8WUwubp4YQ+WXM8AdZkaiDgymXnkAkg@mail.gmail.com>
+Message-ID: <CAPhsuW4833=8MnSeF7N8WUwubp4YQ+WXM8AdZkaiDgymXnkAkg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page cache
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 28, 2021 at 5:07 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Sep 27, 2021 at 03:24:47PM -0700, Song Liu wrote:
+> > OTOH, does it make sense to block writes within khugepaged, like:
+> > @@ -1652,6 +1653,11 @@ static void collapse_file(struct mm_struct *mm,
+> >         /* Only allocate from the target node */
+> >         gfp = alloc_hugepage_khugepaged_gfpmask() | __GFP_THISNODE;
+> >
+> > +       if (deny_write_access(file)) {
+> > +               result = SCAN_BUSY_WRITE;
+> > +               return;
+> > +       }
+>
+> The problem is that it denies, rather than blocking.  That means that the
+> writer gets ETXTBSY instead of waiting until khugepaged is done.
+>
 
+Yes, I was thinking about the same problem last night and this morning.
+Unfortunately, I haven't got a good solution yet. Do you have some
+suggestions on this?
 
-On 9/28/21 8:23 AM, Dave Hansen wrote:
-> We've gone over this at least half a dozen times.  Sathya, please add
-> this to your cover letter and also to the TDX documentation if it's not
-> there already:
-
-Sure. I will add it in next submission.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Thanks,
+Song
