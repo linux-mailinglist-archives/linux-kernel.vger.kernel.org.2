@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4B741B7C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106B541B7CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242553AbhI1TxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        id S242583AbhI1Txq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242390AbhI1TxS (ORCPT
+        with ESMTP id S242559AbhI1Txp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:53:18 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75DAC061749
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:51:38 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id x7so72765746edd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=bIEnocFRtneXYJ0fHHwX1J2ddQaMD/rrUCnpD/BupmA=;
-        b=nuE9fNgZ7qFoihKhXYrtr72Y47rfzcsMuyGXk8hzSd8ZN1alhXva9+NFCk7scuX1fQ
-         HvhKH6hK9WmyB9bpTTbHAz6M9sD2DEpxYhBTLBnOnw7FN2o0+5kdepde/CxyG43E5zJ/
-         2IwBCwPPBPITcNHWNQJjHIFGBGY2FD5VOL7xjzOKJpTkiBOWR1KOVqy0HuLC8jjSI2It
-         UExszG+BcUfEAaMaRnZeX2G1ccSHXWLCtZe3aWg+YByezBJEeVvyp1OWqEQcJJN635oH
-         q5JtCxYZEoy4egrSxbKiFJ1AtEbU66rN7uujsnCud8rAkrv4WH1beOvGptFLYv/GF+uu
-         XnQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=bIEnocFRtneXYJ0fHHwX1J2ddQaMD/rrUCnpD/BupmA=;
-        b=QB9i3MDzQJdSoj2t/DiR5RcfwHH6mo+OlB4THkgmzYFOjpY77DSz6lCVsD1wLgPg+1
-         3NA7k4TyR50IAjJ0YuIe29ezKmqYcH3w4h7eE0iQ7HfqgnJqXfNY67j53Axv7059yX9r
-         7KjtGzG8h01mY9QsbXqpivbi2cw+UnncFbfQUDhwfMPwkmT7766BXvO24dhraHU3lBId
-         XOelDYN5mBIBtwbAFz1gCbXDIOzJNj0FZGLxJyPYp7SSgsQC5mNMUxJ4Q+iHub5SphXn
-         c6Ltmiy1qVa6Ud4RyGF7s11wsf4TgqFlrt1JDy+oqyzdWJz0Dw/6lnq+qRf7JjbCsSeD
-         KOUw==
-X-Gm-Message-State: AOAM533ZqjFs/QaU1JhGox3Tv3x7hNv5djWLhk6hBulUJYur7GwB3+lK
-        7N2m3q5o9itiKg4MNFLUVk8isPWz4dz73GQw3P8=
-X-Google-Smtp-Source: ABdhPJzJCyk6DGHiVw7H19hgduOwAThXvxCVwom6DykPON842GuyHAbw8wnc52Y+DWmBmIveRzUI11xX9MCnzHQAHFk=
-X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr8847643ejd.268.1632858697345;
- Tue, 28 Sep 2021 12:51:37 -0700 (PDT)
+        Tue, 28 Sep 2021 15:53:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D448C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=nCp0Yz6+43NcQCPSO/yhFy3yK/O2S77aIJzE0JnpptE=; b=NYL7YHpCdUXLjSmdKsIbe/BQdy
+        Sh8Vpcc5CEXi7r4WM0/4xxfwvl31kS8cBkOeXMzW3HnKyl7tCjw/qvLMdNAmy1qBFD0HULW2d1Khu
+        dRRUEctDqPd1HiyfOWEQ/wBUkwXWF9bFJFX55QDua47bgD5/RE1ehbGh9cTZPHGoUGgTlIlUCsvTg
+        8BJ2eX1F6/rq96xigBHVpL6DsTGVlp4YHEIkUX9TNZSFTi7Luq3W/rkXlDhSOevL81VlQbsJ7wZbm
+        +DwNrXnjc7DOzmbzjE9ys0jXnA8rTfnGfjl5lEV5zLHCZ748jCMoCYnnAfeY1hRBUlAIqPnLfrh8m
+        x7j8LgCg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVJ91-008hwr-Ve; Tue, 28 Sep 2021 19:52:04 +0000
+Subject: Re: [PATCH v2] HSI: cmt_speech: unmark comments as kernel-doc
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Aditya Srivastava <yashsri421@gmail.com>
+References: <20210928183536.30645-1-rdunlap@infradead.org>
+ <20210928185727.GA10433@duo.ucw.cz>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <85f5c28b-3b70-8e31-47a0-7317ebdc216f@infradead.org>
+Date:   Tue, 28 Sep 2021 12:52:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:9607:0:0:0:0 with HTTP; Tue, 28 Sep 2021 12:51:36
- -0700 (PDT)
-Reply-To: wwwheadofficet@gmail.com
-In-Reply-To: <CACRybBZ3ev8a6juUkdUJsXVAepAvbRYrG2FhZVcAuiiLVZsguw@mail.gmail.com>
-References: <CACRybBbL7R7Ro83QcWZM6a5K9iA1TFVZep=JU6-M-MBsNhwyKw@mail.gmail.com>
- <CACRybBZ3ev8a6juUkdUJsXVAepAvbRYrG2FhZVcAuiiLVZsguw@mail.gmail.com>
-From:   "wwwheadofficet@gmail.com" <infowunion2@gmail.com>
-Date:   Tue, 28 Sep 2021 19:51:36 +0000
-Message-ID: <CACRybBbDCef4X9G6ay=VNkfLu3hamGaB6XsWafVBWz1+9qL-Pg@mail.gmail.com>
-Subject: Bnk
-To:     infowunion2@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210928185727.GA10433@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Our office contact, 2554 Road Of Kpalime Face Pharmacy Bet, Lome, Gulf.
+On 9/28/21 11:57 AM, Pavel Machek wrote:
+> Hi!
+> 
+>> Fix build warnings from the kernel test robot:
+>>
+>> drivers/hsi/clients/cmt_speech.c:831: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>>      * Block until pending data transfers have completed.
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Sebastian Reichel <sre@kernel.org>
+>> Cc: Aditya Srivastava <yashsri421@gmail.com>
+>> Acked-by: Pavel Machek <pavel@ucw.cz>
+> 
+> If noone applies it, you may want to send it to akpm, he's  often
+> helpful in pushing similar patches.
 
-This is WU bank director bring notice for you that  International
-monetary fund (IMF) who compensation you sum of $850,000.00 because
-they found your email address in the list of scam victim . Do you
-willing to get this fund or not?
+Yes, good idea. Thanks.
 
-We look forward to hear from you urgently.
-
-Yours faithfully
- Tony  Albert
- BANK DIRECTOR
-Whatsapp, +22870077685
+-- 
+~Randy
