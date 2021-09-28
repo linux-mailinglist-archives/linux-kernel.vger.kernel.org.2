@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C6741AFB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2B941AFC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240755AbhI1NQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
+        id S240817AbhI1NRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240870AbhI1NQi (ORCPT
+        with ESMTP id S240842AbhI1NRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:16:38 -0400
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE6AC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:14:57 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 83C607082; Tue, 28 Sep 2021 15:14:50 +0200 (CEST)
+        Tue, 28 Sep 2021 09:17:40 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123CC061604
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:16:01 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so2781584pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1632834890;
-        bh=E/0LxL09bBY2fiszU3Kyogy3/Dubx8Z6W0IGTU1w+wU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s5WVQ6kuWAvSpaL2j7nRovvJjUUAG6BtaXClM7Dn58/9sS17Raii0mbl338r98UMe
-         KJBIqsYPGQPqXrqEUBUNH7SFAcBQZyYZ+xxCcVtI2SzOgUrui85z2pHVCYGLD/PvN1
-         7BDq+EtqtyILmlaG3AX52CHgB9Onm9FWAuxZsDr+4hbnwrge5HUQIUgbCaskDs2J7B
-         E6dcM9BEr6AyAESk7+GSaUtdSOUF2KAOz9CEfdgj4QqDihptMQzSuC5CxInz3V3sLi
-         0drRQr+0ZoolPwxXP/HCdYCZmUFgZML1eur4GDqCMpRK0CRMSERlPA9lwb2VWfnWYF
-         C49QZGFqREGsXR6/NiX4EfBF1RqayWuptYY4D1jVcMCiagxFB+A7F556JE9xKdU6CY
-         MbO+WHEWV9c6q59rbMMoa+YYDAw8ATZCBw/F8+9jZuusKuJq3UueSqz65jYP1jLfHJ
-         73r7//uaIO70C0hCC9cmD+oe40RZkdsJb32AuMuMhjXHsteLUTQfa199ERsLSAUxXv
-         JEF9WwLy7xkmTOn3/dixDe4aiPPD/FIbSf1Ad4tFBmVyWQOzGdQSblpriUSwn9Kls3
-         iZTtJAMvGlUFR/j39/sUPnPi3FV7sLfMfeeCBPeVAwCFtMpjdvBubEPOcS2qhw5qNf
-         gzmsuoaWKPKIzU/ARq6kxgNE=
-Date:   Tue, 28 Sep 2021 15:14:50 +0200
-From:   Valentin =?utf-8?B?VmlkacSH?= <vvidic@valentin-vidic.from.hr>
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ocfs2: mount fails with buffer overflow in strlen
-Message-ID: <20210928131450.GM28341@valentin-vidic.from.hr>
-References: <20210927154459.15976-1-vvidic@valentin-vidic.from.hr>
- <00850aed-2027-a0ab-e801-c6498a5a49f8@linux.alibaba.com>
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SQUYxjDv8R+Qi1Gg/UMc76goHZCTJGQFEBZ8qsddbj4=;
+        b=DYNEZUd+mGyPYR4THMYTEjHKsnNoWQo7uS4c6ceIxnNshkuyxQZGM4zEchF+Q8HPPp
+         YreRepmi7YOL4FEDPiwJvA9pzoYJGLf8QT48wkd2muHVf6sFJ3um4X2++kWpTMx/UmMK
+         OMLjQHW3Oy0z726eRgvi6dTR9rpx5302Cw4Qra0y4XIepoteh5PcUycEg9HWhIcwg8PH
+         g5baJNsUSvXHgMHlsfXwIQWwznA1YZHDF6BO8AVb9rqBJKnX7nHhpmnqM+y7ZeA/ZnSn
+         KEDlrnGMrOdaSRh0q/5oiRAUG7gcUu2ylQic1FYzXMH0F3nAmwPadsSeU7qGKWT8idFn
+         OKig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SQUYxjDv8R+Qi1Gg/UMc76goHZCTJGQFEBZ8qsddbj4=;
+        b=LOmAV210BcgV5WJjBr5UmBC7W5RlFNPeE5GP7nJktpQc1XHrVcgBdzZzjNezwtKpBs
+         iq8f+M4CvnNFvS58oj1ts2hiA9JZUzndzeCJkwI72nPJ++tqshXDFD814qKwsztAK86m
+         Vl8D9RhSGQQFds8FqLjC1eLRLMbadBC855ZSkAkF8jAZzEGmW9qbswKRgSUmjEGUo5F2
+         36SUbEm2JefSMNUr1rpk5CgGiUYmXeuy8uT4dtqMpGO5RXZyd5M+Poi5m0d8LJMW8MpP
+         42pYvKcdfVbkxojZSdb17P0AIvQ4rOjNSRoj/eJKaig1AmhgGep8OIdg6nz8mFuDevEb
+         tHpw==
+X-Gm-Message-State: AOAM533ASsO9bzUZJmx/WhVlKoCBGLcSvABBWRf8+UJz4imc5++XtVOY
+        SBay1B2dn+IakXoTb+dCSsQBzya0ZFbSUMbKuFo=
+X-Google-Smtp-Source: ABdhPJx/mZsctE2tHvQECw7udBIzXRCC3KJ8CVSbgZbONe+7hDW7IO2MX/qvS792MRTCf+1pJcxghmkWwah/fmYRFr8=
+X-Received: by 2002:a17:90b:3ec1:: with SMTP id rm1mr5631691pjb.179.1632834960929;
+ Tue, 28 Sep 2021 06:16:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00850aed-2027-a0ab-e801-c6498a5a49f8@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210928052657.20909-1-rdunlap@infradead.org>
+In-Reply-To: <20210928052657.20909-1-rdunlap@infradead.org>
+From:   Greentime Hu <green.hu@gmail.com>
+Date:   Tue, 28 Sep 2021 21:15:25 +0800
+Message-ID: <CAEbi=3cT_ifvDmn3WKHfuy=VyG8Y79X+HS9hNNuvNwTn_Ned_Q@mail.gmail.com>
+Subject: Re: [PATCH] NDS32: export __trace_hardirqs_on/_offf for entry/exit
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Alan Kao <alankao@andestech.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <deanbo422@gmail.com>, kclin@andestech.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:05:22PM +0800, Joseph Qi wrote:
-> strlcpy in ocfs2_initialize_super() is introduced 8 years ago, so I
-> don't understand why you've mentioned that the issues starts from
-> v5.11.
+Randy Dunlap <rdunlap@infradead.org> =E6=96=BC 2021=E5=B9=B49=E6=9C=8828=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=881:27=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Add exports for __trace_hardirqs_on/_off and use them in
+> kernel/ex-entry.S and kernel/ex-exit.S to fix build/linker errors.
+>
+> nds32le-linux-ld: arch/nds32/kernel/ex-entry.o: in function `fucop_ctl_do=
+ne':
+> (.text+0x12a): undefined reference to `__trace_hardirqs_off'
+> (.text+0x12a): relocation truncated to fit: R_NDS32_25_PCREL_RELA against=
+ undefined symbol `__trace_hardirqs_off'
+> nds32le-linux-ld: arch/nds32/kernel/ex-exit.o: in function `no_work_pendi=
+ng':
+> (.text+0xea): undefined reference to `__trace_hardirqs_off'
+> nds32le-linux-ld: (.text+0xee): undefined reference to `__trace_hardirqs_=
+off'
+> nds32le-linux-ld: (.text+0xf2): undefined reference to `__trace_hardirqs_=
+on'
+> nds32le-linux-ld: (.text+0xf6): undefined reference to `__trace_hardirqs_=
+on'
+>
+> Fixes: 0cde56e0280d ("nds32: Fix a kernel panic issue because of wrong fr=
+ame pointer access.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Nick Hu <nickhu@andestech.com>
+> Cc: Greentime Hu <green.hu@gmail.com>
+> Cc: Vincent Chen <deanbo422@gmail.com>
+> ---
+>  arch/nds32/include/asm/ftrace.h |    3 +++
+>  arch/nds32/kernel/ex-entry.S    |    1 +
+>  arch/nds32/kernel/ex-exit.S     |    2 +-
+>  arch/nds32/kernel/ftrace.c      |    3 +++
+>  4 files changed, 8 insertions(+), 1 deletion(-)
+>
+> --- linux-next-20210917.orig/arch/nds32/kernel/ftrace.c
+> +++ linux-next-20210917/arch/nds32/kernel/ftrace.c
+> @@ -276,8 +276,11 @@ noinline void __trace_hardirqs_off(void)
+>  {
+>         trace_hardirqs_off();
+>  }
+> +EXPORT_SYMBOL(__trace_hardirqs_off);
+> +
+>  noinline void __trace_hardirqs_on(void)
+>  {
+>         trace_hardirqs_on();
+>  }
+> +EXPORT_SYMBOL(__trace_hardirqs_on);
+>  #endif /* CONFIG_TRACE_IRQFLAGS */
+> --- linux-next-20210917.orig/arch/nds32/include/asm/ftrace.h
+> +++ linux-next-20210917/arch/nds32/include/asm/ftrace.h
+> @@ -15,6 +15,9 @@
+>
+>  extern void _mcount(unsigned long parent_ip);
+>
+> +extern void __trace_hardirqs_off(void);
+> +extern void __trace_hardirqs_on(void);
+> +
+>  #ifdef CONFIG_DYNAMIC_FTRACE
+>
+>  #define FTRACE_ADDR ((unsigned long)_ftrace_caller)
+> --- linux-next-20210917.orig/arch/nds32/kernel/ex-entry.S
+> +++ linux-next-20210917/arch/nds32/kernel/ex-entry.S
+> @@ -8,6 +8,7 @@
+>  #include <asm/asm-offsets.h>
+>  #include <asm/page.h>
+>  #include <asm/fpu.h>
+> +#include <asm/ftrace.h>
+>
+>  #ifdef CONFIG_HWZOL
+>         .macro push_zol
+> --- linux-next-20210917.orig/arch/nds32/kernel/ex-exit.S
+> +++ linux-next-20210917/arch/nds32/kernel/ex-exit.S
+> @@ -9,7 +9,7 @@
+>  #include <asm/thread_info.h>
+>  #include <asm/current.h>
+>  #include <asm/fpu.h>
+> -
+> +#include <asm/ftrace.h>
+>
+>
+>  #ifdef CONFIG_HWZOL
 
-v5.11 introduced the overflow checks to string functions so that is
-when the mount started to fail.
-
-> osb->osb_cluster_stack and osb->osb_cluster_name is always larger by
-> 1 than which in ocfs2_cluster_info, and the input size of strlcpy does
-> the same, so I don't see how it overflows.
-
-strlcpy internally calls strlen on the source argument, in this case
-that is ci_stack array with size of 4. That array stores the value
-"o2cb" so the strlen continues reading into the union until it reaches
-a zero byte somewhere. The same would happen with ci_cluster if the
-cluster name is long enough.
-
-struct ocfs2_cluster_info {
-/*00*/	__u8   ci_stack[OCFS2_STACK_LABEL_LEN];
-	union {
-		__le32 ci_reserved;
-		struct {
-			__u8 ci_stackflags;
-			__u8 ci_reserved1;
-			__u8 ci_reserved2;
-			__u8 ci_reserved3;
-		};
-	};
-/*08*/	__u8   ci_cluster[OCFS2_CLUSTER_NAME_LEN];
-/*18*/
-};
-
--- 
-Valentin
+loop in Alan and KC.
