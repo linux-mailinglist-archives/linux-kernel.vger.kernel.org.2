@@ -2,166 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D8C41B6D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43D341B6D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242324AbhI1TDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:03:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242169AbhI1TDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:03:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799A061206;
-        Tue, 28 Sep 2021 19:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632855696;
-        bh=kWo6GjDcKnx4SR5tqwzZLP9HAeHoQ7wEpvqH8w9P95I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fczym+eSAuNcaVhTqu8RU9pNq4icfsfFJDmElXtO8xo+Dtx66p0Pf8Fcl+UwAY0gZ
-         xHRFqcBNlF+5xsGfU4kpYa1oww2jt3euDprL5Mwc8SjfgPheqcloRZlhXilaHbSG7v
-         Y905P0XnQjYctTNWVU+RNTBhkX0N/MEWZbIYaBTkRwXNals/HecyoJW3MUMCRqL4hu
-         Z2mNtOjP5Y7OGY1h5U+y3KALA5x154fbe5L+uKTMxJe2cXKYD71HmNg1Bur30QYTRs
-         Yj8S4EUNZmFrHeQ6yrsqrFudh+qBp/nYdfgQoa+/rcSFhGPawmaZdII5llZSpVgLRf
-         qWMGaijBRHCUw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 26CD9410A1; Tue, 28 Sep 2021 16:01:34 -0300 (-03)
-Date:   Tue, 28 Sep 2021 16:01:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>, eranian@google.com
-Subject: Re: [PATCH v3 1/4] perf: Enable libtracefs dynamic linking
-Message-ID: <YVNmjszo792cSutx@kernel.org>
-References: <20210923001024.550263-1-irogers@google.com>
+        id S242377AbhI1TDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242333AbhI1TDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:03:22 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6EAC061749
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:01:42 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y5so12406106pll.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:01:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xt0gEcyOTVXB3cbfAORCeU0aPfpfHLNMXNfI9X69CVQ=;
+        b=P2WbyomAz9CC+YDhARNtEQPob4jnZ2g2oykK3Tx9s3ZzF3kIhs4M8u5I6nL6TYVoGq
+         rrOLmGGUE/wsUTWlv/vaHIT0qruIxiC5Hconls6bpVJIAswiiw3izm0NUdKLNEX/vTj1
+         hNuCFj8rB/KJEKNYPyTIjrwmUxsuMdqXz/A3MzGuI1a3Kwyq70MOLXcjCuAwjRmB7Dhb
+         kf47CJCAyIoWzJus9Q6TAK/lSg8ZsxvgmyTdZgT9A2DiUE772alKYF35OPb474XMP0BJ
+         1g92CPbM5JIG9MA0Bz7RxJUC/t1T7o89IaaifLPvH7z+3t2ti9exdaFi/jE6y9Sz0Jjp
+         UImg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xt0gEcyOTVXB3cbfAORCeU0aPfpfHLNMXNfI9X69CVQ=;
+        b=OCY1ykDn7enM58m8I6/miw7QIZAJRRQYcVOc/XUxcPw90YN3q0iA1b+k2p2FFTVpPT
+         vNSAM8XtpxHh58EFQGMVXzTdJsDkmqAe7w0ESY7vAuXZEYnoBVXIdsEZ0Gr2xeQJtK3D
+         nR97SznWWf2MO5hPog/ZcRrXQ2qdHRqLGkYKbA6ODH3VSzoWVxP71e927hw3aryq89V7
+         bcPGnDhHIWpoYn9eyRzutj/CVldyBts5BfB+lMtV4AaYd1EQUp3fgZ1XshLvCIjvOUtE
+         jHYT+2e6/Xhme9qJxFZGhBVSVBLJLm7ytzOTTpjdap1xJB+nNY2xDe2tDv7/yTMOTXXr
+         Sjww==
+X-Gm-Message-State: AOAM533wAXNS0GDhgnIomPnulZng9EHmH8f/QLgSKPVMu4uGyYshaYqh
+        XzDNJ62GWDdWdS9DvBEvoqTi4w==
+X-Google-Smtp-Source: ABdhPJwN22eVEV+ILvTVZFxrClU0H39RaKFVj+LTEdtXecOP9yW45Z7Ldv9r7U41GdYk3WWGVE+ldw==
+X-Received: by 2002:a17:902:b909:b0:13a:2d8e:12bc with SMTP id bf9-20020a170902b90900b0013a2d8e12bcmr6453208plb.6.1632855701799;
+        Tue, 28 Sep 2021 12:01:41 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id j24sm20993011pfh.65.2021.09.28.12.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 12:01:41 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 19:01:38 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 03/14] KVM: Refactor and document halt-polling stats
+ update helper
+Message-ID: <YVNmkuaUYwYvlbaY@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-4-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210923001024.550263-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210925005528.1145584-4-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 22, 2021 at 05:10:21PM -0700, Ian Rogers escreveu:
-> Currently libtracefs isn't used by perf, but there are potential
-> improvements by using it as identified Steven Rostedt's e-mail:
-> https://lore.kernel.org/lkml/20210610154759.1ef958f0@oasis.local.home/
+On Fri, Sep 24, 2021 at 05:55:17PM -0700, Sean Christopherson wrote:
+> Add a comment to document that halt-polling is considered successful even
+> if the polling loop itself didn't detect a wake event, i.e. if a wake
+> event was detect in the final kvm_vcpu_check_block().  Invert the param
+> to the update helper so that the helper is a dumb function that is "told"
+> whether or not polling was successful, as opposed to having it determinine
+> success/failure based on blocking behavior.
 > 
-> This change is modelled on the dynamic libtraceevent patch by Michael
-> Petlan:
-> https://lore.kernel.org/linux-perf-users/20210428092023.4009-1-mpetlan@redhat.com/
+> Opportunistically tweak the params to the update helper to reduce the
+> line length for the call site so that it fits on a single line, and so
+> that the prototype conforms to the more traditional kernel style.
 > 
-> v3. Adds file missed in v1 and v2 spotted by Jiri Olsa.
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Thanks, applied.
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-- Arnaldo
-
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  tools/build/Makefile.feature          |  1 +
->  tools/build/feature/Makefile          |  4 ++++
->  tools/build/feature/test-libtracefs.c | 10 ++++++++++
->  tools/perf/Makefile.config            |  9 +++++++++
->  tools/perf/Makefile.perf              |  2 ++
->  5 files changed, 26 insertions(+)
->  create mode 100644 tools/build/feature/test-libtracefs.c
+>  virt/kvm/kvm_main.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
 > 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 3dd2f68366f9..45a9a59828c3 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -52,6 +52,7 @@ FEATURE_TESTS_BASIC :=                  \
->          libslang                        \
->          libslang-include-subdir         \
->          libtraceevent                   \
-> +        libtracefs                      \
->          libcrypto                       \
->          libunwind                       \
->          pthread-attr-setaffinity-np     \
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index eff55d287db1..d024b5204ba0 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -36,6 +36,7 @@ FILES=                                          \
->           test-libslang.bin                      \
->           test-libslang-include-subdir.bin       \
->           test-libtraceevent.bin                 \
-> +         test-libtracefs.bin                    \
->           test-libcrypto.bin                     \
->           test-libunwind.bin                     \
->           test-libunwind-debug-frame.bin         \
-> @@ -199,6 +200,9 @@ $(OUTPUT)test-libslang-include-subdir.bin:
->  $(OUTPUT)test-libtraceevent.bin:
->  	$(BUILD) -ltraceevent
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 8b33f5045b4d..12fe91a0a4c8 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3199,13 +3199,15 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
+>  	return ret;
+>  }
 >  
-> +$(OUTPUT)test-libtracefs.bin:
-> +	$(BUILD) -ltracefs
+> -static inline void
+> -update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
+> +static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+> +					  ktime_t end, bool success)
+>  {
+> -	if (waited)
+> -		vcpu->stat.generic.halt_poll_fail_ns += poll_ns;
+> -	else
+> +	u64 poll_ns = ktime_to_ns(ktime_sub(end, start));
 > +
->  $(OUTPUT)test-libcrypto.bin:
->  	$(BUILD) -lcrypto
+> +	if (success)
+>  		vcpu->stat.generic.halt_poll_success_ns += poll_ns;
+> +	else
+> +		vcpu->stat.generic.halt_poll_fail_ns += poll_ns;
+>  }
 >  
-> diff --git a/tools/build/feature/test-libtracefs.c b/tools/build/feature/test-libtracefs.c
-> new file mode 100644
-> index 000000000000..8eff16c0c10b
-> --- /dev/null
-> +++ b/tools/build/feature/test-libtracefs.c
-> @@ -0,0 +1,10 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <tracefs/tracefs.h>
-> +
-> +int main(void)
-> +{
-> +	struct tracefs_instance *inst = tracefs_instance_create("dummy");
-> +
-> +	tracefs_instance_destroy(inst);
-> +	return 0;
-> +}
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 446180401e26..00ec900ddbca 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -1098,6 +1098,15 @@ ifdef LIBTRACEEVENT_DYNAMIC
->    endif
->  endif
+>  /*
+> @@ -3274,9 +3276,13 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>  	kvm_arch_vcpu_unblocking(vcpu);
+>  	block_ns = ktime_to_ns(cur) - ktime_to_ns(start);
 >  
-> +ifdef LIBTRACEFS_DYNAMIC
-> +  $(call feature_check,libtracefs)
-> +  ifeq ($(feature-libtracefs), 1)
-> +    EXTLIBS += -ltracefs
-> +  else
-> +    dummy := $(error Error: No libtracefs devel library found, please install libtracefs-dev);
-> +  endif
-> +endif
-> +
->  # Among the variables below, these:
->  #   perfexecdir
->  #   perf_include_dir
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index e04313c4d840..7df13e74450c 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -130,6 +130,8 @@ include ../scripts/utilities.mak
->  #
->  # Define LIBTRACEEVENT_DYNAMIC to enable libtraceevent dynamic linking
->  #
-> +# Define LIBTRACEFS_DYNAMIC to enable libtracefs dynamic linking
-> +#
+> +	/*
+> +	 * Note, halt-polling is considered successful so long as the vCPU was
+> +	 * never actually scheduled out, i.e. even if the wake event arrived
+> +	 * after of the halt-polling loop itself, but before the full wait.
+> +	 */
+>  	if (do_halt_poll)
+> -		update_halt_poll_stats(
+> -			vcpu, ktime_to_ns(ktime_sub(poll_end, start)), waited);
+> +		update_halt_poll_stats(vcpu, start, poll_end, !waited);
 >  
->  # As per kernel Makefile, avoid funny character set dependencies
->  unexport LC_ALL
+>  	if (halt_poll_allowed) {
+>  		if (!vcpu_valid_wakeup(vcpu)) {
 > -- 
-> 2.33.0.464.g1972c5931b-goog
-
--- 
-
-- Arnaldo
+> 2.33.0.685.g46640cef36-goog
+> 
