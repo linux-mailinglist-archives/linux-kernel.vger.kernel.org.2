@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B84641B2E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2984641B2EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241080AbhI1PZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:25:02 -0400
-Received: from mga12.intel.com ([192.55.52.136]:8948 "EHLO mga12.intel.com"
+        id S241652AbhI1P3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:29:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:23239 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241615AbhI1PZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:25:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="204220261"
+        id S241535AbhI1P3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:29:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224768151"
 X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="204220261"
+   d="scan'208";a="224768151"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 08:23:20 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 08:25:30 -0700
 X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="554048077"
+   d="scan'208";a="554048939"
 Received: from gpfry-mobl1.amr.corp.intel.com (HELO [10.251.22.193]) ([10.251.22.193])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 08:23:19 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 08:25:27 -0700
 Subject: Re: [PATCH v6 06/11] x86/traps: Add #VE support for TDX guest
-To:     Kuppuswamy Sathyanarayanan 
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -31,8 +32,8 @@ To:     Kuppuswamy Sathyanarayanan
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Kirill Shutemov <kirill.shutemov@linux.intel.com>,
@@ -41,6 +42,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
         linux-kernel@vger.kernel.org
 References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
  <20210903172812.1097643-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YVMHmt/cf63w93A+@8bytes.org>
+ <63e59789-ce23-6b2b-5ef4-3782e7ddffd6@intel.com>
+ <YVMzOsrAHOONG2Ki@8bytes.org>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -85,71 +89,32 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <e2c7ac4d-61c8-396d-43a1-cb2243aa7ce6@intel.com>
-Date:   Tue, 28 Sep 2021 08:23:17 -0700
+Message-ID: <00d97a18-0400-7785-5e62-92a968b52f75@intel.com>
+Date:   Tue, 28 Sep 2021 08:25:27 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210903172812.1097643-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <YVMzOsrAHOONG2Ki@8bytes.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 10:28 AM, Kuppuswamy Sathyanarayanan wrote:
-> Virtualization Exceptions (#VE) are delivered to TDX guests due to
-> specific guest actions which may happen in either user space or the kernel:
-> 
->  * Specific instructions (WBINVD, for example)
->  * Specific MSR accesses
->  * Specific CPUID leaf accesses
->  * Access to TD-shared memory, which includes MMIO
-> 
-> In the settings that Linux will run in, virtual exceptions are never
+On 9/28/21 8:22 AM, Joerg Roedel wrote:
+> On Tue, Sep 28, 2021 at 07:05:40AM -0700, Dave Hansen wrote:
+>> "Shared" pages can cause #VE's.  The guest must be careful not to touch
+>> them in the syscall entry path, for example.  But, shared pages are
+>> untrusted so they're not use for stacks.
+>>
+>> "Private" pages can cause #VE's.  But, only *some* of them.  Before a
+>> page is accepted, it is in the SEPT_PENDING and a reference would cause
+>> a #VE.  But, after acceptance, page references either succeed or a TD
+>> Exit and the hypervisor gets to handle the situation.
+> Okay, and there is no way for the VMM to replace an already accepted
+> page with a page in SEPT_PENDING state?
 
-					    ^ virtualization
+I hope not.
 
-> generated on accesses to normal, TD-private memory that has been
-> accepted.
-
-We've gone over this at least half a dozen times.  Sathya, please add
-this to your cover letter and also to the TDX documentation if it's not
-there already:
-
-In the settings that Linux will run in, virtualization exceptions are
-never generated on accesses to normal kernel memory (see #VE on Memory
-Access below).
-
-...
-
-== #VE on Memory Accesses ==
-
-A TD guest is in control of whether its memory accesses are treated as
-private or shared.  It selects the behavior with a bit in its page table
-entries.
-
-=== #VE on Shared Pages ===
-
-Accesses to shared mappings can cause #VE's.  The hypervisor is in
-control of when a #VE might occur, so the guest must be careful to only
-reference shared pages when it is in a context that can safely handle a #VE.
-
-However, shared mapping content can not be trusted since shared page
-content is writable by the hypervisor.  This means that shared mappings
-are never used for sensitive memory contents like stacks or kernel text.
- This means that the shared mapping property of inducing #VEs requires
-essentially no special kernel handling in sensitive contexts like
-syscall entry or NMIs.
-
-=== #VE on Private Pages ===
-
-Some accesses to private mappings may cause #VEs.  Before a mapping is
-accepted (aka. in the SEPT_PENDING state), a reference would cause
-a #VE.  But, after acceptance, references typically succeed.
-
-The hypervisor can cause a private page reference to fail if it chooses
-to move an accepted page to a "blocked" state.  However, if it does
-this, a page access will not generate a #VE.  It will, instead, cause a
-"TD Exit" where the hypervisor is required to handle the exception.
+There would be lots of other problems if that were permitted.
