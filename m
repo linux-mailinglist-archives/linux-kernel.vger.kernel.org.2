@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC91D41AF8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A5441AF90
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240830AbhI1NA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240754AbhI1NAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:00:55 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068CBC061604
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:59:16 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id bd28so21509260edb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9zsXVooMH58kf0AvksPhazTyUL0hupc4ZNncbmatfd4=;
-        b=oE1iKS5kxXY1TO/TlqzncIc1X0d4/JBTuJIREcPN9Z1zaAMzN4hqRcJk2qJfdfVGU4
-         A7aC26zHN0RG8wY42w10R6XpKX20J+nRNiE/d5hsBIdBEzE5d3Cbk32KeWDoAacDOcLK
-         5ihLgqowDC3FTNWkhQWbC2DC8LWPjbkP3ai02gLEyilvdjIYkjdj26MrkbABHv1Arp24
-         rmdYX0vdKQkgMHANDIVebEozP7ZANz3cBIfM2kRDHzSXpVu7DC9LcqJIaRv5tc856V+K
-         N1sNOxjE6IM+z2pffup5b2zlcf9c2jFO9v4rHJhrVSMo5Cba1iy450Tq2C8Ri2tW8eY8
-         jD0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9zsXVooMH58kf0AvksPhazTyUL0hupc4ZNncbmatfd4=;
-        b=AVLEoUIS5LavuX/rsiTtw1rC8AR4hL/eOf3BBGUY16Jryce4BvvPh5wQyNkhDUByD4
-         MH6Rr3jDNR6l87J0exu21OBLhcm52lWi7QRPB16z7rDbzrpZeAtos+O1+LvwG8TXads/
-         jgN37iGS4UJKsTM1W3h0Zuh6MApWQDsVR0xfWs2xWyjvdycLcBPsePJ3PbbSCRKVJqv9
-         B94dfOZ4NFmcS0RU7Jo+iLv4+kwdBtkxiE+2Py+5Mdl1SU12azi9yKL4ZnbR7AUhaqYG
-         Nqr74TT9VK6Xteka9nLVLdx0xGqjW63ShOW9En98UsoDTxzcl/sObGAZlECxoQ05wT34
-         TfkA==
-X-Gm-Message-State: AOAM530E77mXHizgU1/7fs9Vhb3BWpXo2T3qoZq/ZEaA6WKORV11SqmQ
-        JDMrEyRkQjfhYMEZ2SJcUqdmRQ==
-X-Google-Smtp-Source: ABdhPJy3q0GG8AXVr+PdLMLUPpcBOevstdfTEANRTnjTLwcir2OIscClskNGAUxs79U1WmYHHublxg==
-X-Received: by 2002:a05:6402:452:: with SMTP id p18mr7472135edw.34.1632833954638;
-        Tue, 28 Sep 2021 05:59:14 -0700 (PDT)
-Received: from [192.168.1.15] (hst-221-89.medicom.bg. [84.238.221.89])
-        by smtp.googlemail.com with ESMTPSA id f4sm2822077ejq.125.2021.09.28.05.59.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 05:59:14 -0700 (PDT)
-Subject: Re: [V3] venus: vdec: decoded picture buffer handling during reconfig
- sequence
-To:     mansur@codeaurora.org,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, vgarodia@codeaurora.org,
-        dikshita@codeaurora.org
-References: <20210825110841.12815-1-mansur@codeaurora.org>
- <78dec463-5e75-18d7-b74e-154f00b8a7b2@linaro.org>
- <4db580aea0ddfc6092fd86b51e67802f@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <cf3158dd-b379-0e03-2bdd-187dc268b0b4@linaro.org>
-Date:   Tue, 28 Sep 2021 15:59:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240841AbhI1NBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240669AbhI1NBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:01:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5FA8961266;
+        Tue, 28 Sep 2021 13:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632834008;
+        bh=KLqbuPZ3awNNYmQUgRZ2qZO8U8LeOPmjZWD6mYgN4Go=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VztWJL/RZqUW5yb4RAKLeJJ51WszqYwLK+Y1Pxm6uBHlUZLIXlBTBq5cF24xXbpgz
+         z8v0ODZh+dys3UgF3nJdC/pdNFf4VKtpj3ABZqndrJcPV82qNnwoqgWieg5yshCLAS
+         LWIgQQYihgaxzyfjo2LQFKOS2bzvINl0qEte/8AOJSNQYzIZMyGRRAySNoRxdOcmnR
+         ezy3myEKpZ5LVnI47L27t7x2XQJbOnvgP2U47Gd96FyQBdTp78T6IIzWmCpE7N2BC2
+         E45ySBtoYmilKYMvcTp808D0YsBUHDDkhXuYsnPd4AQ6n/tKlCWQkeezOf74dkyH9s
+         gETRoL2DLXtig==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 52BEC60A69;
+        Tue, 28 Sep 2021 13:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <4db580aea0ddfc6092fd86b51e67802f@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next PATCH 0/4] Externel ptp clock support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163283400833.20418.1869935426050637692.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Sep 2021 13:00:08 +0000
+References: <20210928113101.16580-1-hkelam@marvell.com>
+In-Reply-To: <20210928113101.16580-1-hkelam@marvell.com>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        sbhatta@marvell.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
->>>
->>> +static DEFINE_IDA(dpb_out_tag_ida);
->>
->> No global static variables please. Make it part of venus_inst structure.
-> As per my understanding it is not just static global variable.
-> We are defining the ida structure and assign to name when pass as param
-> as follows
-> struct ida {
->              struct idr        idr;
->              struct ida_bitmap    *free_bitmap;
-> };
-> #define IDA_INIT(name)        { .idr = IDR_INIT((name).idr),
-> .free_bitmap = NULL, }
-> #define DEFINE_IDA(name)    struct ida name = IDA_INIT(name)
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 28 Sep 2021 17:00:57 +0530 you wrote:
+> Externel ptp support is required in a scenario like connecting
+> a external timing device to the chip for time synchronization.
+> This series of patches adds support to ptp driver to use external
+> clock and enables PTP config in CN10K MAC block (RPM). Currently
+> PTP configuration is left unchanged in FLR handler these patches
+> addresses the same.
 > 
-> Any ida related API's expect pointer to this structure.
-> If we move the variable then it might be bit difficult use ida_xxx()
-> API'same
-Add a struct ida dpb_ids in venus_inst or venus_core structures
-depending on what you need (ID allocations per session or for all
-sessions) and use ida_init(&dpb_ids).
+> [...]
 
--- 
--- 
-regards,
-Stan
+Here is the summary with links:
+  - [net-next,1/4] octeontx2-af: Reset PTP config in FLR handler
+    https://git.kernel.org/netdev/net-next/c/e37e08fffc37
+  - [net-next,2/4] octeontx2-af: cn10k: RPM hardware timestamp configuration
+    https://git.kernel.org/netdev/net-next/c/d1489208681d
+  - [net-next,3/4] octeontx2-af: Use ptp input clock info from firmware data
+    https://git.kernel.org/netdev/net-next/c/e266f6639396
+  - [net-next,4/4] octeontx2-af: Add external ptp input clock
+    https://git.kernel.org/netdev/net-next/c/99bbc4ae69b9
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
