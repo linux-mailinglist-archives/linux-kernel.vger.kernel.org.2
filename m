@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D7C41AD7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEC641AD82
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240329AbhI1LDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:03:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240238AbhI1LDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:03:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE476108F;
-        Tue, 28 Sep 2021 11:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632826903;
-        bh=4elokg0o9FH5+5sHoV+DUogyPycs4wXHfkpt86cNSUc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s5UfLHldW5pMxfvjMDqb2cc03GF+hikMXPc9WstlfWt2CclOBSFd9Clp61OC/kE8M
-         IfrCo8rmlIfWZBc37ND0v4pKb3+1H6+9quC6YUU8p1EmIBv1R4lqw3IbUBORvs3f5T
-         WZm746V0PdiAyaB3GO49VNjXOELsRsvulnchZwvP6K7H7IY52woWEhiIJKsOBIW5mF
-         x2Gx7CWToHGAuNZGIGhjFxgcoAtoyyKiL7FD6HUPqbHQZFrcDY+kgZEnMAXzyAf1Pc
-         wAWtt7yldFIBXqLdCDYSA66KV3chOYX4jzWutV7aiXF+yW+6qEnjvhVgKrNjvEIomy
-         Wq2PL66XVz6lg==
-Date:   Tue, 28 Sep 2021 13:01:37 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] module: fix clang CFI with MODULE_UNLOAD=n
-Message-ID: <YVL2EXeCKA3Leng+@p200300cbcf144d003adeadfffec0265a.dip0.t-ipconnect.de>
-References: <20210927121541.939745-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210927121541.939745-1-arnd@kernel.org>
-X-OS:   Linux p200300cbcf144d003adeadfffec0265a.dip0.t-ipconnect.de
- 5.13.8-1-default x86_64
+        id S240299AbhI1LFV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 07:05:21 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:59007 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239306AbhI1LFQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 07:05:16 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 072DDCECD9;
+        Tue, 28 Sep 2021 13:03:35 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v11] Bluetooth: btusb: Add support using different nvm for
+  variant WCN6855 controller
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <25d13858fced474d0d71faed2d829032@codeaurora.org>
+Date:   Tue, 28 Sep 2021 13:03:35 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <C8C7AC2D-7A0C-4FCB-8D60-5705D86BC50B@holtmann.org>
+References: <25d13858fced474d0d71faed2d829032@codeaurora.org>
+To:     tjiang@codeaurora.org
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Arnd Bergmann [27/09/21 14:15 +0200]:
->From: Arnd Bergmann <arnd@arndb.de>
->
->When CONFIG_MODULE_UNLOAD is disabled, the module->exit member
->is not defined, causing a build failure:
->
->kernel/module.c:4493:8: error: no member named 'exit' in 'struct module'
->                mod->exit = *exit;
->
->add an #ifdef block around this.
->
->Fixes: cf68fffb66d6 ("add support for Clang CFI")
->Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Tim,
 
-Applied, thanks everyone!
+> the RF performance of wcn6855 soc chip from different foundries will be
+> difference, so we should use different nvm to configure them.
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+> drivers/bluetooth/btusb.c | 49 ++++++++++++++++++++++++++++++++++-------------
+> 1 file changed, 36 insertions(+), 13 deletions(-)
 
-Jessica
+I am done reviewing this patch and frankly I don’t care how urgent this is for your new chip; and how many times you ping me privately about it. So please find someone else to write and send patches. This is not acceptable behavior here.
+
+If you are blindly ignoring the review comments from Matthias, then I have no idea what to do. This is such a simple patch and it takes 12 revision to get this done.
+
+static void btusb_generate_qca_nvm_name(char *fwname, size_t max_size, const struct qca_version *ver)
+{
+	u32 rom_version = le32_to_cpu(ver->rom_version);
+
+	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+		u16 board_id = le16_to_cpu(ver->board_id);
+		const char *variant;
+
+		switch (le32_to_cpu(ver->ram_version)) {
+		case WCN6855_2_0_RAM_VERSION_GF:
+		case WCN6855_2_1_RAM_VERSION_GF:
+			variant = “_gf”;
+			break;
+		default:
+			variant = “”;
+			break;
+		}
+
+		/* if boardid equal 0, use default nvm without suffix */
+		if (board_id == 0x0)
+			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin”,
+				 rom_version, variant);
+		else
+			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin”,
+				 rom_version, variant, board_id);
+	} else {
+		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin”, rom_version);
+	}
+}
+
+Regards
+
+Marcel
+
