@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EADA41BA10
+	by mail.lfdr.de (Postfix) with ESMTP id 5752A41BA11
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243171AbhI1WR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:17:26 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:51879 "EHLO
+        id S243184AbhI1WR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:17:28 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:48779 "EHLO
         relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243088AbhI1WQ5 (ORCPT
+        with ESMTP id S243086AbhI1WQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:16:57 -0400
+        Tue, 28 Sep 2021 18:16:58 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 87DA21C000A;
-        Tue, 28 Sep 2021 22:15:15 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 65CFE1C000D;
+        Tue, 28 Sep 2021 22:15:16 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -23,9 +23,9 @@ Cc:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Vladimir Zapolskiy <vz@mleia.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 7/8] Revert "mtd: rawnand: lpc32xx_slc: Fix external use of SW Hamming ECC helper"
-Date:   Wed, 29 Sep 2021 00:15:06 +0200
-Message-Id: <20210928221507.199198-8-miquel.raynal@bootlin.com>
+Subject: [PATCH 8/8] Revert "mtd: rawnand: cs553x: Fix external use of SW Hamming ECC helper"
+Date:   Wed, 29 Sep 2021 00:15:07 +0200
+Message-Id: <20210928221507.199198-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210928221507.199198-1-miquel.raynal@bootlin.com>
 References: <20210928221507.199198-1-miquel.raynal@bootlin.com>
@@ -36,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c4b7d7c480d607e4f52d310d9d16b194868d0917.
+This reverts commit 56a8d3fd1f342d10ee7b27e9ac0f4d00b5fbb91c.
 
 Before the introduction of the ECC framework infrastructure, many
 drivers used the ->calculate/correct() Hamming helpers directly. The
@@ -73,49 +73,46 @@ helper, thus this fix from [2] can now be safely reverted.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/lpc32xx_slc.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+ drivers/mtd/nand/raw/cs553x_nand.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index d7dfc6fd85ca..6b7269cfb7d8 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -27,7 +27,6 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/mtd/lpc32xx_slc.h>
+diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
+index df40927e5678..6edf78c16fc8 100644
+--- a/drivers/mtd/nand/raw/cs553x_nand.c
++++ b/drivers/mtd/nand/raw/cs553x_nand.c
+@@ -18,7 +18,6 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
 -#include <linux/mtd/nand-ecc-sw-hamming.h>
- 
- #define LPC32XX_MODNAME		"lpc32xx-nand"
- 
-@@ -345,18 +344,6 @@ static int lpc32xx_nand_ecc_calculate(struct nand_chip *chip,
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/iopoll.h>
+@@ -241,15 +240,6 @@ static int cs_calculate_ecc(struct nand_chip *this, const u_char *dat,
  	return 0;
  }
  
--/*
-- * Corrects the data
-- */
--static int lpc32xx_nand_ecc_correct(struct nand_chip *chip,
--				    unsigned char *buf,
--				    unsigned char *read_ecc,
--				    unsigned char *calc_ecc)
+-static int cs553x_ecc_correct(struct nand_chip *chip,
+-			      unsigned char *buf,
+-			      unsigned char *read_ecc,
+-			      unsigned char *calc_ecc)
 -{
 -	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
 -				      chip->ecc.size, false);
 -}
 -
- /*
-  * Read a single byte from NAND device
-  */
-@@ -815,7 +802,7 @@ static int lpc32xx_nand_attach_chip(struct nand_chip *chip)
- 	chip->ecc.write_oob = lpc32xx_nand_write_oob_syndrome;
- 	chip->ecc.read_oob = lpc32xx_nand_read_oob_syndrome;
- 	chip->ecc.calculate = lpc32xx_nand_ecc_calculate;
--	chip->ecc.correct = lpc32xx_nand_ecc_correct;
-+	chip->ecc.correct = rawnand_sw_hamming_correct;
- 	chip->ecc.hwctl = lpc32xx_nand_ecc_enable;
+ static struct cs553x_nand_controller *controllers[4];
  
- 	/*
+ static int cs553x_attach_chip(struct nand_chip *chip)
+@@ -261,7 +251,7 @@ static int cs553x_attach_chip(struct nand_chip *chip)
+ 	chip->ecc.bytes = 3;
+ 	chip->ecc.hwctl  = cs_enable_hwecc;
+ 	chip->ecc.calculate = cs_calculate_ecc;
+-	chip->ecc.correct  = cs553x_ecc_correct;
++	chip->ecc.correct  = rawnand_sw_hamming_correct;
+ 	chip->ecc.strength = 1;
+ 
+ 	return 0;
 -- 
 2.27.0
 
