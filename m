@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3D041AB4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A3341AB49
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239782AbhI1JAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239716AbhI1JAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239694AbhI1JAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 28 Sep 2021 05:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 688006113E;
-        Tue, 28 Sep 2021 08:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632819511;
-        bh=/LGa6ol03F+gR8eOJlhzdRh431oy2qqGn62TyLrNt4o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XmMzcsw8b72SmPUyhRK65YCZ/97MG+nocrjNEEgf/A3gRa+cNudoDirffGR1pjuX4
-         O+ufgxoA+7fe9PtZMGhr1KTOr7b00jc+F45hgM4lfGtgsJ1h3NXYrjHHi5P5BjOsLH
-         wPNqSVKqaXpO5+PTRC+IbBjfjjgI1eOk6tqh8xybZpCu7suJFQD8o1a1noqWee89yu
-         ogEXhgxxBqe5HWGi3YznACbZutfvp2CDAgyEKejH3Hxc+tjXjBAGbGXcbKxiLi9yeN
-         LyG1OBYCaO9X3prvvKC0NK4Xhles1YcJST4gFf9hIiVfIjXJQqQB2G5pJuiXVYIf4B
-         m5u6DWYHpbS1w==
-Received: by mail-wm1-f50.google.com with SMTP id r83-20020a1c4456000000b0030cfc00ca5fso1550109wma.2;
-        Tue, 28 Sep 2021 01:58:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533Y5m5d0mT20QAlJWeUuKGB24yAFqROwnC71P0DkWctuiPxe4/f
-        sDwDoRWeW8Ofp0cEiSRBrbTTMKLcHfkPCNRVYd8=
-X-Google-Smtp-Source: ABdhPJwHL7ma7ruvWe4f8FDLT+xzDkJx2IKDXRF4dh9UuUVKdUU7m0I+UeX6VB0SdiIH8EQ1osGeh6QBupnZtyRQS7Q=
-X-Received: by 2002:a1c:4b0c:: with SMTP id y12mr3483320wma.35.1632819509973;
- Tue, 28 Sep 2021 01:58:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927095006.868305-1-arnd@kernel.org> <bd4871e4-62e6-2cb2-26be-34bda8dcb7dd@huawei.com>
-In-Reply-To: <bd4871e4-62e6-2cb2-26be-34bda8dcb7dd@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 28 Sep 2021 10:58:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a22NhkuWLvFh2+UYEcvzVOf_9m_GdLREqfCCK-+=Q9tug@mail.gmail.com>
-Message-ID: <CAK8P3a22NhkuWLvFh2+UYEcvzVOf_9m_GdLREqfCCK-+=Q9tug@mail.gmail.com>
-Subject: Re: [PATCH] net: hns3: fix hclge_dbg_dump_tm_pg() stack usage
-To:     "huangguangbin (A)" <huangguangbin2@huawei.com>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        Jian Shen <shenjian15@huawei.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from smtp-out1.suse.de ([195.135.220.28]:54798 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239631AbhI1JAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:00:08 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7C24922103;
+        Tue, 28 Sep 2021 08:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632819508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JsyfURuFjNsumK4n2djwc/yAX5JOSafSOAiNmTR3xaY=;
+        b=QMEc64ey4DyE0EEZSZR0RgGMbnvTvR9yn2bC4YEppTiOFUKW5MFkTEHtCe5fXjR4h4CMET
+        ArTpFvagZRADuxLwt0NvY0kch1exvb8OH9xA40Gw1rfjYHKf6j25UfrTx1gpJkJkv8bz4e
+        7joD9OKaIzuuUzNFJwtg02jk6ChrJPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632819508;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JsyfURuFjNsumK4n2djwc/yAX5JOSafSOAiNmTR3xaY=;
+        b=4WM07OBKH7KWukXIAWkVjVjC4re1CwV8X9PMsTUCFPKrZcoXB4RmN4xXtk+1JEXFUG56Jf
+        HU7HR5lzi3hOZpDA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay1.suse.de (Postfix) with ESMTP id 67E0125D4D;
+        Tue, 28 Sep 2021 08:58:28 +0000 (UTC)
+Date:   Tue, 28 Sep 2021 10:58:28 +0200
+Message-ID: <s5ho88dnkjv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [patch 04/11] ALSA: pcsp: Make hrtimer forwarding more robust
+In-Reply-To: <20210923153339.623208460@linutronix.de>
+References: <20210923153311.225307347@linutronix.de>
+        <20210923153339.623208460@linutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:34 AM huangguangbin (A)
-<huangguangbin2@huawei.com> wrote:
-> On 2021/9/27 17:49, Arnd Bergmann wrote: From: Arnd Bergmann <arnd@arndb.de>
+On Thu, 23 Sep 2021 18:04:25 +0200,
+Thomas Gleixner wrote:
+> 
+> The hrtimer callback pcsp_do_timer() prepares rearming of the timer with
+> hrtimer_forward(). hrtimer_forward() is intended to provide a mechanism to
+> forward the expiry time of the hrtimer by a multiple of the period argument
+> so that the expiry time greater than the time provided in the 'now'
+> argument.
+> 
+> pcsp_do_timer() invokes hrtimer_forward() with the current timer expiry
+> time as 'now' argument. That's providing a periodic timer expiry, but is
+> not really robust when the timer callback is delayed so that the resulting
+> new expiry time is already in the past which causes the callback to be
+> invoked immediately again. If the timer is delayed then the back to back
+> invocation is not really making it better than skipping the missed
+> periods. Sound is distorted in any case.
+> 
+> Use hrtimer_forward_now() which ensures that the next expiry is in the
+> future. This prevents hogging the CPU in the timer expiry code and allows
+> later on to remove hrtimer_forward() from the public interfaces.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: alsa-devel@alsa-project.org
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Jaroslav Kysela <perex@perex.cz>
 
-> > +static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
-> > +{
-> > +     int ret;
-> > +     char *data_str = kcalloc(ARRAY_SIZE(tm_pg_items),
-> > +                              HCLGE_DBG_DATA_STR_LEN, GFP_KERNEL);
-> > +
-> Hi Arnd, thanks your modification, according to linux code style, should the code be written as follow?
->
->         char *data_str;
->         int ret;
->
->         data_str = kcalloc(ARRAY_SIZE(tm_pg_items),
->                            HCLGE_DBG_DATA_STR_LEN, GFP_KERNEL);
+Thanks, applied now to sound git tree.
 
-That's actually one of the versions I tried, but I didn't really like
-any of them, so
-I went with the shorter version.
 
-Sending a v2 now with that changed black.
-
-        Arnd
+Takashi
