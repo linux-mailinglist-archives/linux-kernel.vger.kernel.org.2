@@ -2,113 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926B841ABEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D36C41ABF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240038AbhI1JdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240041AbhI1Jcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:32:54 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD9AC061774
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:31:14 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id s21so16816739wra.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qOQcHnRA4OzmDMrO4dM1TAmtC+v9d8Z05czXaJ/Qyps=;
-        b=j5i1ZfzTSkWC0KpfTPAm/d98mJ95ltf3LgMoqfjaiA9utXdmH1QA0a8v416ZV5yVsj
-         jmrW70W41xqy93PI0cMh95LsGCbEf1Ve2mqgcAEnOKlxhSvZv5Tok7fiyIbRjj1G5b/y
-         mR2T6ue+VFHxt9gk5aloFDAeBtrrCwW/KDazY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qOQcHnRA4OzmDMrO4dM1TAmtC+v9d8Z05czXaJ/Qyps=;
-        b=D6UENclaBZGWqZh4xnGNSywMclv5Of0PRYVLrxTK0e4w45HASiSz1OCaoG84pl7H4m
-         HAxe4QWVidbtnuwJvoakkRIHa2D7UaQhaF3OaqfjhciZ63zW1AsjHh1F2llF+3ZaEwFY
-         rKDTqJ8WqqczpnSpu8asMBaPoBK7pxCPPtgWS6Wsrd/c7dG1k5M2llN8KGMUPNXuRnP7
-         rmOeYFqeHWruXAQyo4t7PVFCgotJNETb1DWEv1b2HCOh0Pt0o2u2L9jLa+jRzo3hhn+N
-         AcSQrbyDEj9hIWAz09QZbmVWFqJ14LIVhgOXBSIKZzzqN2I92Fp/I67rsdwxMD7zwjv6
-         JcZA==
-X-Gm-Message-State: AOAM532rZ84xf2AZN/zzqX0Ltc4121+MAPmilaesJ0NOz5ry1bnPoRSB
-        LSYpuuU1FCZYNi40JKqWnHf5dg==
-X-Google-Smtp-Source: ABdhPJy2hW+MI4TO2xRyKlBg3FCAUNVxkc/LlMhgUA1ST4mFFFWUVCwLNNK41Meu19K4TI9a6Cf0aA==
-X-Received: by 2002:a5d:4eca:: with SMTP id s10mr5240117wrv.255.1632821473526;
-        Tue, 28 Sep 2021 02:31:13 -0700 (PDT)
-Received: from antares.. (7.2.8.5.7.4.1.5.9.1.3.d.e.b.3.5.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:53be:d319:5147:5827])
-        by smtp.gmail.com with ESMTPSA id h15sm18716206wrc.19.2021.09.28.02.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 02:31:13 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     bjorn@kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: do not invoke the XDP dispatcher for PROG_RUN with single repeat
-Date:   Tue, 28 Sep 2021 10:30:59 +0100
-Message-Id: <20210928093100.27124-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
+        id S239844AbhI1JeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:34:19 -0400
+Received: from mga07.intel.com ([134.134.136.100]:29357 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239724AbhI1JeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:34:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="288319708"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="288319708"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 02:32:39 -0700
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="476227861"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 02:32:35 -0700
+Received: by lahna (sSMTP sendmail emulation); Tue, 28 Sep 2021 12:32:32 +0300
+Date:   Tue, 28 Sep 2021 12:32:32 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Isaac Hazan <isaac.hazan@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thunderbolt: fix -Wrestrict warning
+Message-ID: <YVLhMNdk0TkURA89@lahna>
+References: <20210927131620.1587294-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927131620.1587294-1-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a unit test that invokes an XDP program with 1m different
-inputs, aka 1m BPF_PROG_RUN syscalls. We run this test concurrently
-with slight variations in how we generated the input.
+On Mon, Sep 27, 2021 at 03:16:11PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc-11 warns when building with W=1:
+> 
+> drivers/thunderbolt/xdomain.c: In function 'modalias_show':
+> drivers/thunderbolt/xdomain.c:733:16: error: 'sprintf' argument 3 overlaps destination object 'buf' [-Werror=restrict]
+>   733 |         return sprintf(buf, "%s\n", buf);
+>       |                ^~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/thunderbolt/xdomain.c:727:36: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+>   727 |                              char *buf)
+>       |                              ~~~~~~^~~
+> 
+> There is no need for the sprintf() here when a strcat() does
+> the same thing.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Since commit f23c4b3924d2 ("bpf: Start using the BPF dispatcher in BPF_TEST_RUN")
-the unit test has slowed down significantly. Digging deeper reveals that
-the concurrent tests are serialised in the kernel on the XDP dispatcher.
-This is a global resource that is protected by a mutex, on which we contend.
-
-Fix this by not calling into the XDP dispatcher if we only want to perform
-a single run of the BPF program.
-
-See: https://lore.kernel.org/bpf/CACAyw9_y4QumOW35qpgTbLsJ532uGq-kVW-VESJzGyiZkypnvw@mail.gmail.com/
-
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- net/bpf/test_run.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index fcb2f493f710..6593a71dba5f 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -803,7 +803,8 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	if (ret)
- 		goto free_data;
- 
--	bpf_prog_change_xdp(NULL, prog);
-+	if (repeat > 1)
-+		bpf_prog_change_xdp(NULL, prog);
- 	ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, true);
- 	/* We convert the xdp_buff back to an xdp_md before checking the return
- 	 * code so the reference count of any held netdevice will be decremented
-@@ -824,7 +825,8 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 				     sizeof(struct xdp_md));
- 
- out:
--	bpf_prog_change_xdp(prog, NULL);
-+	if (repeat > 1)
-+		bpf_prog_change_xdp(prog, NULL);
- free_data:
- 	kfree(data);
- free_ctx:
--- 
-2.30.2
-
+Applied, thanks!
