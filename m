@@ -2,133 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A8C41B776
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058A441B778
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242488AbhI1TWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240589AbhI1TWm (ORCPT
+        id S242503AbhI1TXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:23:06 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:44939 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240589AbhI1TXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:22:42 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EA2C06161C;
-        Tue, 28 Sep 2021 12:21:02 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id g41so614916lfv.1;
-        Tue, 28 Sep 2021 12:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hrytyxRe9DwUMknTOVWT9f+PrwKpSWleT8xzoaaG15A=;
-        b=QXAFboF2T7KDAsGlEFjAqqwk6js0gA61y0u4ZfD8NbxH5IdJWOXI9RjLkvLtVNIhLq
-         KFz1NwUCWa9Spco9sCNdI885MTL9sRDsGo4qOo6S8qJQKC6jUQiNKcOOMXy2lfQAJOL7
-         3TxwDOohw3+n/0HDs3Up96dRMuMnsck2Hevlj1Gg1dILuSN+7LFA8a4VJmbQ+ZG7m+IX
-         ct7sqHsZRfjRHtu13jN3lB5z3EVCkLbBlMZQs50rseqY+7nZxVPE+iaBzDYc0TtRf2qD
-         Gs1nePtdZbxifSDBbZdGBXLweT6JoJg0v9VcXR09h1/R70MnaGaBc1rNyEagh9bv71gZ
-         oknQ==
+        Tue, 28 Sep 2021 15:23:05 -0400
+Received: by mail-oo1-f48.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so966270oos.11;
+        Tue, 28 Sep 2021 12:21:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hrytyxRe9DwUMknTOVWT9f+PrwKpSWleT8xzoaaG15A=;
-        b=atSFnwa28m8QjFClVt+/kqZFotED1jK9ArCgqvQyNc3K+q1YkIrS3icwuOLvbiHXcx
-         OIX9VFMESfFuLgBkoB2hXkmXeR4a1boCGYqw9voGh1HF3OhfJU1SOhPgOQP55CdIjiA/
-         dEfz4yUY1Flp4vLhh04hus9M5bHd68vkKN+L+SGxabsT0To0fHOXfKbFTPCyrOitIHuB
-         RlFwobXRdVXncHEODRQI0+IkJRt183Pv78Lev4oe/RgftWMApEVzfDQaaD7rwmE8a2lu
-         x+aiKdW9rSKjjAOrKI6VuNpsmUN+JJRyv2NPUnQX6cgkhzdr77LLXKWb6l6RbDcCqnQd
-         5WVg==
-X-Gm-Message-State: AOAM531/R2qNvLJwn67qENgFwPPOj9i3T94Q30FdXRLaon89G6wR1S5s
-        a92au63o9KivXL74O+a0806R4GzHpmhkZ1SuFdw=
-X-Google-Smtp-Source: ABdhPJy4+Sj2gVWZ0CHahAVU8A1TXqvlXixGplrli2Pj9ksgaBr5ZSIENM/oJpsamazt65WuctjkowFlu6rw6v+1aPY=
-X-Received: by 2002:ac2:5f71:: with SMTP id c17mr7220696lfc.555.1632856860809;
- Tue, 28 Sep 2021 12:21:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Asy4VBtwoQjm7KWp2ea2JXZi3+cF+fkgyojD8dhlf4w=;
+        b=uXp3j3fg1LjL/D6U/b0ia4JEROpGkbxkXvOGrH1Ua6DpkkoXpTcVy1Wp8yXDjMCwlf
+         8LnvbX3Xf0xDi+Aq4/qAQxhcVfbBfDJVA+aE7hVI2RjhZ/skvmaZtoKGuhkLwKiDVZG2
+         MeoUTbKq/307jeS+khuiEXs1sUTSiH5m/vffnO0muiBr77ZJx0I6vYPyYpZVr9AVXm3k
+         fRNoggOPaCyQu7yaIO1asdSFOVL2+Ew0Vb0UVRy4n09KNJ5j0Y0BAeJ9dKgM0suFAImh
+         KgDvlqVpucXSKoebDNds72PyGFI5klV+S4Q7pk0BUTMevc6UQVEshaS9X2dEErxXX4kE
+         /GtQ==
+X-Gm-Message-State: AOAM532Sch6xrvkbaDKWgJ/HpsMcsPrvz9i1UwqYk9bo/x7PMlgfvglo
+        yKa9kslCkhOxsQ/3cAsyd2hKAc66yQ==
+X-Google-Smtp-Source: ABdhPJxAOo9C7PjGi4X6abzDTZ2bycTY1ZxVrnPvLGJTBsxzEFTG4jo8q5HX05EZy89Ps1NPmMjzig==
+X-Received: by 2002:a4a:9784:: with SMTP id w4mr6446941ooi.90.1632856885153;
+        Tue, 28 Sep 2021 12:21:25 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id n4sm4818394otr.59.2021.09.28.12.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 12:21:24 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: ixp4xx: Group PCI interrupt properties together
+Date:   Tue, 28 Sep 2021 14:21:22 -0500
+Message-Id: <20210928192123.1840842-1-robh@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210920182038.1510501-1-cpp.code.lv@gmail.com>
- <0d70b112-dc7a-7083-db8d-183782b8ef8f@6wind.com> <CAASuNyUWoZ1wToEUYbdehux=yVnWQ=suKDyRkQfRD-72DOLziw@mail.gmail.com>
- <e4bb09d1-8c8f-bfdf-1582-9dd8c560411b@6wind.com>
-In-Reply-To: <e4bb09d1-8c8f-bfdf-1582-9dd8c560411b@6wind.com>
-From:   Cpp Code <cpp.code.lv@gmail.com>
-Date:   Tue, 28 Sep 2021 12:20:49 -0700
-Message-ID: <CAASuNyUv-dZmws77dDurgaE-VQ=pmXm7YZAnQwig8rGE8d5w5Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] net: openvswitch: IPv6: Add IPv6 extension
- header support
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     netdev@vger.kernel.org, pshelar@ovn.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 7:51 AM Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
->
-> Le 27/09/2021 =C3=A0 21:12, Cpp Code a =C3=A9crit :
-> > To use this code there is a part of code in the userspace. We want to
-> > keep compatibility when we only update userspace part code or only
-> > kernel part code. This means we should have same values for constants
-> > and we can only add new ones at the end of list.
-> All attributes after OVS_KEY_ATTR_CT_STATE (ie 7 attributes) were added b=
-efore
-> OVS_KEY_ATTR_TUNNEL_INFO.
-> Why is it not possible anymore?
->
->
-> Regards,
-> Nicolas
->
-> >
-> > Best,
-> > Tom
-> >
-> > On Wed, Sep 22, 2021 at 11:02 PM Nicolas Dichtel
-> > <nicolas.dichtel@6wind.com> wrote:
-> >>
-> >> Le 20/09/2021 =C3=A0 20:20, Toms Atteka a =C3=A9crit :
-> >>> This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
-> >>> packets can be filtered using ipv6_ext flag.
-> >>>
-> >>> Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
-> >>> ---
-> >>>  include/uapi/linux/openvswitch.h |  12 +++
-> >>>  net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++=
-++
-> >>>  net/openvswitch/flow.h           |  14 ++++
-> >>>  net/openvswitch/flow_netlink.c   |  24 +++++-
-> >>>  4 files changed, 189 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/op=
-envswitch.h
-> >>> index a87b44cd5590..dc6eb5f6399f 100644
-> >>> --- a/include/uapi/linux/openvswitch.h
-> >>> +++ b/include/uapi/linux/openvswitch.h
-> >>> @@ -346,6 +346,13 @@ enum ovs_key_attr {
-> >>>  #ifdef __KERNEL__
-> >>>       OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
-> >>>  #endif
-> >>> +
-> >>> +#ifndef __KERNEL__
-> >>> +     PADDING,  /* Padding so kernel and non kernel field count would=
- match */
-> >>> +#endif
-> >>> +
-> >>> +     OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
-> >> Naive question, why not moving OVS_KEY_ATTR_IPV6_EXTHDRS above
-> >> OVS_KEY_ATTR_TUNNEL_INFO?
-> >>
-> >>
-> >>
-> >> Regards,
-> >> Nicolas
+Move the PCI 'interrupt-map-mask' and '#interrupt-cells' properties
+alongside the 'interrupt-map' property in each board dts. This avoids
+having incomplete set of interrupt properties which may fail validation.
 
-These 3 commits does not support compatibility for scenarios when only
-kernel gets updated. I assume at that point this requirement wasn't
-required.
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/arm/boot/dts/intel-ixp42x-adi-coyote.dts        | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-arcom-vulcan.dts      | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-dlink-dsm-g600.dts    | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-freecom-fsg-3.dts     | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-gateworks-gw2348.dts  | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-iomega-nas100d.dts    | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-ixdpg425.dts          | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-linksys-nslu2.dts     | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-linksys-wrv54g.dts    | 2 ++
+ arch/arm/boot/dts/intel-ixp42x-netgear-wg302v2.dts   | 2 ++
+ arch/arm/boot/dts/intel-ixp43x-gateworks-gw2358.dts  | 2 ++
+ arch/arm/boot/dts/intel-ixp4xx-reference-design.dtsi | 2 ++
+ arch/arm/boot/dts/intel-ixp4xx.dtsi                  | 2 --
+ 13 files changed, 24 insertions(+), 2 deletions(-)
 
-Best,
-Tom
+diff --git a/arch/arm/boot/dts/intel-ixp42x-adi-coyote.dts b/arch/arm/boot/dts/intel-ixp42x-adi-coyote.dts
+index 44c017b78008..bd4230d7dac9 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-adi-coyote.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-adi-coyote.dts
+@@ -63,6 +63,8 @@ pci@c0000000 {
+ 			 * We have slots (IDSEL) 1 and 2 with one assigned IRQ
+ 			 * each handling all IRQs.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 6 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 6 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-arcom-vulcan.dts b/arch/arm/boot/dts/intel-ixp42x-arcom-vulcan.dts
+index 7200126cb3b5..92b987bc3f99 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-arcom-vulcan.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-arcom-vulcan.dts
+@@ -120,6 +120,8 @@ pci@c0000000 {
+ 			 * We have 2 slots (IDSEL) 1 and 2 with one dedicated interrupt
+ 			 * per slot. This interrupt is shared (OR:ed) by all four pins.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 2 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 2 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-dlink-dsm-g600.dts b/arch/arm/boot/dts/intel-ixp42x-dlink-dsm-g600.dts
+index 8b32e9f22d81..5ab09fb10dae 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-dlink-dsm-g600.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-dlink-dsm-g600.dts
+@@ -129,6 +129,8 @@ pci@c0000000 {
+ 			 * We have slots (IDSEL) 1, 2, 3, 4 and pins 1, 2 and 3.
+ 			 * Only slot 3 have three IRQs.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 7  IRQ_TYPE_LEVEL_LOW>, /* INT E on slot 1 is irq 7 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-freecom-fsg-3.dts b/arch/arm/boot/dts/intel-ixp42x-freecom-fsg-3.dts
+index 77e78c6dc2cd..598586fc0862 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-freecom-fsg-3.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-freecom-fsg-3.dts
+@@ -106,6 +106,8 @@ pci@c0000000 {
+ 			 * Written based on the FSG-3 PCI boardfile.
+ 			 * We have slots 12, 13 & 14 (IDSEL) with one IRQ each.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 12 */
+ 			<0x6000 0 0 1 &gpio0 5 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 12 is irq 5 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-gateworks-gw2348.dts b/arch/arm/boot/dts/intel-ixp42x-gateworks-gw2348.dts
+index a20277ff0420..a5943f51e8c2 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-gateworks-gw2348.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-gateworks-gw2348.dts
+@@ -115,6 +115,8 @@ pci@c0000000 {
+ 			 *
+ 			 * We have up to 4 slots (IDSEL) with 4 swizzled IRQs.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 11 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 11 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-iomega-nas100d.dts b/arch/arm/boot/dts/intel-ixp42x-iomega-nas100d.dts
+index 8c18d802c849..cbc87b344f6a 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-iomega-nas100d.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-iomega-nas100d.dts
+@@ -115,6 +115,8 @@ pci@c0000000 {
+ 			 * Taken from NAS 100D PCI boardfile (nas100d-pci.c)
+ 			 * We have slots (IDSEL) 1, 2 and 3 and pins 1, 2 and 3.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 11 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 11 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-ixdpg425.dts b/arch/arm/boot/dts/intel-ixp42x-ixdpg425.dts
+index 002a8705abc9..f17cab12a64b 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-ixdpg425.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-ixdpg425.dts
+@@ -68,6 +68,8 @@ pci@c0000000 {
+ 			 * We have slots (IDSEL) 12, 13 and 14 with one assigned IRQ
+ 			 * for 12 & 13 and one for 14.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 12 */
+ 			<0x6000 0 0 1 &gpio0 7 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 12 is irq 7 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-linksys-nslu2.dts b/arch/arm/boot/dts/intel-ixp42x-linksys-nslu2.dts
+index e3a32b08d167..0edc5928e00b 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-linksys-nslu2.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-linksys-nslu2.dts
+@@ -122,6 +122,8 @@ pci@c0000000 {
+ 			 * Taken from NSLU2 PCI boardfile, INT A, B, C swizzled D constant
+ 			 * We have slots (IDSEL) 1, 2 and 3.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 11 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 11 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-linksys-wrv54g.dts b/arch/arm/boot/dts/intel-ixp42x-linksys-wrv54g.dts
+index 6b28dda747fd..5e7e31b74b04 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-linksys-wrv54g.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-linksys-wrv54g.dts
+@@ -123,6 +123,8 @@ pci@c0000000 {
+ 			 * We have up to 2 slots (IDSEL) with 2 swizzled IRQs.
+ 			 * Derived from the GTWX5715 PCI boardfile.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 0 */
+ 			<0x0000 0 0 1 &gpio0 10 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 0 is irq 10 */
+diff --git a/arch/arm/boot/dts/intel-ixp42x-netgear-wg302v2.dts b/arch/arm/boot/dts/intel-ixp42x-netgear-wg302v2.dts
+index 04a0f7138967..a57009436ed8 100644
+--- a/arch/arm/boot/dts/intel-ixp42x-netgear-wg302v2.dts
++++ b/arch/arm/boot/dts/intel-ixp42x-netgear-wg302v2.dts
+@@ -62,6 +62,8 @@ pci@c0000000 {
+ 			 * We have slots (IDSEL) 1 and 2 with one assigned IRQ
+ 			 * each handling all IRQs.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 8 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 8 */
+diff --git a/arch/arm/boot/dts/intel-ixp43x-gateworks-gw2358.dts b/arch/arm/boot/dts/intel-ixp43x-gateworks-gw2358.dts
+index 84e6aec8e665..cf4010d60187 100644
+--- a/arch/arm/boot/dts/intel-ixp43x-gateworks-gw2358.dts
++++ b/arch/arm/boot/dts/intel-ixp43x-gateworks-gw2358.dts
+@@ -131,6 +131,8 @@ pci@c0000000 {
+ 			 * have instead assumed that they are rotated (swizzled) like
+ 			 * this with 11, 10, 9, 8 for the 4 pins on IDSEL 1 etc.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 11 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 11 */
+diff --git a/arch/arm/boot/dts/intel-ixp4xx-reference-design.dtsi b/arch/arm/boot/dts/intel-ixp4xx-reference-design.dtsi
+index c1d9c49982b3..146352ba848b 100644
+--- a/arch/arm/boot/dts/intel-ixp4xx-reference-design.dtsi
++++ b/arch/arm/boot/dts/intel-ixp4xx-reference-design.dtsi
+@@ -106,6 +106,8 @@ pci@c0000000 {
+ 			 * PCI slots on the BIXMB425BD base card.
+ 			 * We have up to 4 slots (IDSEL) with 4 swizzled IRQs.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 11 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 11 */
+diff --git a/arch/arm/boot/dts/intel-ixp4xx.dtsi b/arch/arm/boot/dts/intel-ixp4xx.dtsi
+index e5af2d463074..46fede021476 100644
+--- a/arch/arm/boot/dts/intel-ixp4xx.dtsi
++++ b/arch/arm/boot/dts/intel-ixp4xx.dtsi
+@@ -78,8 +78,6 @@ pci@c0000000 {
+ 			dma-ranges =
+ 			<0x02000000 0 0x00000000 0x00000000 0 0x04000000>;
+ 
+-			#interrupt-cells = <1>;
+-			interrupt-map-mask = <0xf800 0 0 7>;
+ 			/* Each unique DTS using PCI must specify the swizzling */
+ 		};
+ 
+-- 
+2.30.2
+
