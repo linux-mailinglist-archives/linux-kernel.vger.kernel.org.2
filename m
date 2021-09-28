@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5030D41B242
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368C241B248
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241370AbhI1Omv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241270AbhI1Omt (ORCPT
+        id S241343AbhI1Oox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:44:53 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:17727 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241281AbhI1Oow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:42:49 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703C4C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:41:10 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id r75so27680899iod.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1ZhaZG/tQlxzocEQfHY1+FVhcMM4RpIdjkL8eV4PXdU=;
-        b=EaaYZoLQyJe7lvJ2ke7VRkgD6vuBZuvRMzI/kJLnPozn8pxop5b/6uoLDitG3KpJBJ
-         vVxcIFJNQ4sbxvuv+djjfhyGk6yYoBm7LPKgkxxuNRvAbbZtpFWkK1/bjYd9xgDY4u2i
-         xu0THGW7dpad+h27yHcQGfBvgxrHy3peFhgPx6oKDYV3Zn6ag83EIzJCgSB4vWvEjtNP
-         Wk4omfWxlvjbwvoWDu+w1w8qvTo1CFAYzq+iwellg7sll8fm10PtJ+5/S+xv64b0mNmL
-         WR21XV2jLhsOynlPRI4/USfxDlwfJAPD8GuE9OgECejqMc97A18Uy6LGX7ccS6pTAtGK
-         hY0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1ZhaZG/tQlxzocEQfHY1+FVhcMM4RpIdjkL8eV4PXdU=;
-        b=aYxCb0Relp7+hri+GUY8bKkbCwPssg3E1AsVNWL7padq2/HtuEB6CKwMj7wNMebTnA
-         ZG7mGrLkjkpbT+s3ogVKOLojdgM//CLf7pM1E/NJjwS7ppZD1qy428DM3xGTsAKFE0at
-         qdcglOe+k70bEIcv4yME4qu/3b6XWDdeeSpS1nDKGJ7XeCxkOI0HjKv9X4e7jmK9eHBZ
-         tjjEot3RihsaJy0R53OrbsdI0n9bKhsk1xX6qUlHGvCCM0W4FPRfU64S3bOLS9zFWgQo
-         ulUvjXsRoQCgubXuqm6eeJXq60CX98EOJXMDm0MQtzt7FtjJYj+Pki7GoJ2nsXsivFjK
-         Uvmg==
-X-Gm-Message-State: AOAM530aA8N9Q95OrXll5aJoDdt8Bq3lKIEHx5lMoiMKc5JUo/nJ2Kkm
-        Z9AiIHLpVCc0EvuuAOaw7YP+4w==
-X-Google-Smtp-Source: ABdhPJzzqH3iPkshxUx6/WFfh3BcxwrV5dAebi1fz4A563SllOxpOSqNgPD19EjcESLy3iq9PXXgeA==
-X-Received: by 2002:a02:5d45:: with SMTP id w66mr4952789jaa.82.1632840069746;
-        Tue, 28 Sep 2021 07:41:09 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id 67sm10855624iou.4.2021.09.28.07.41.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 07:41:09 -0700 (PDT)
-Subject: Re: sched: Remove pointless preemption disable in sched_submit_work()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Peter Oskolkov <posk@posk.io>,
-        Tejun Heo <tj@kernel.org>
-References: <87sfxoai2l.ffs@tglx>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <87d7b153-11a6-2f47-a5ed-abe10a294df3@kernel.dk>
-Date:   Tue, 28 Sep 2021 08:41:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Sep 2021 10:44:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632840192; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=1dZzT/O2EuqvWRhXR4fqGlJ/ncH11bxKPNZw5IankD8=;
+ b=w7JHfJRZTWzRX1Iq1HivCDsNsLH9gKKiU5mYZNtsawUHE17f9ZKoRRH+PJCmgx+smv1njkX9
+ 8BHBtYIRSirEccTClUlZ+Mt/jIUo3yJF9wbj2VSXvm5K5VSSSb6gSewM+oDFId4DfODue8X+
+ 1V27sJPb4AwMGtEkFyOSPbiuyY4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 615329e0713d5d6f966a0198 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 14:42:40
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8FE35C4361A; Tue, 28 Sep 2021 14:42:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9294AC4338F;
+        Tue, 28 Sep 2021 14:42:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9294AC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <87sfxoai2l.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mwifiex: avoid null-pointer-subtraction warning
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210927121656.940304-1-arnd@kernel.org>
+References: <20210927121656.940304-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210928144239.8FE35C4361A@smtp.codeaurora.org>
+Date:   Tue, 28 Sep 2021 14:42:39 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 8:30 AM, Thomas Gleixner wrote:
-> Neither wq_worker_sleeping() nor io_wq_worker_sleeping() require to be invoked
-> with preemption disabled:
-> 
->   - The worker flag checks operations only need to be serialized against
->     the worker thread itself.
-> 
->   - The accounting and worker pool operations are serialized with locks.
-> 
-> which means that disabling preemption has neither a reason nor a
-> value. Remove it.
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> clang complains about some NULL pointer arithmetic in this driver:
+> 
+> drivers/net/wireless/marvell/mwifiex/sta_tx.c:65:59: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+>         pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
+>                                                                  ^
+> drivers/net/wireless/marvell/mwifiex/uap_txrx.c:478:53: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+>         pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
+> 
+> Rework that expression to do the same thing using a uintptr_t.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Patch applied to wireless-drivers.git, thanks.
+
+603a1621caa0 mwifiex: avoid null-pointer-subtraction warning
 
 -- 
-Jens Axboe
+https://patchwork.kernel.org/project/linux-wireless/patch/20210927121656.940304-1-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
