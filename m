@@ -2,263 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD0F41B1D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2500A41B1D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241264AbhI1OQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:16:21 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39430
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241161AbhI1OQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:16:15 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 530D540300
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632838475;
-        bh=+u9e9bwlpa3QEn7ZpV3nxWHDHqijGY7KQgiYf/eMfqQ=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=opvg4dejQao0ht7a2/d6cvt3dw4WUqVkskAD8AE5nahrdNdOVngBVqNGdyPBMzqBp
-         lqeeTBWV1xzdatX75ol5LdwvbnPH1Jv+vWxIpKdPg108g9tc/T58gTFfmuxUiT9QOJ
-         S1IWIq1WZ+QoWeuBEnA9w6g3trjgv/9wjWFi9Gwt+1pjSUR1WXUuB39G6pQ4s+dHrH
-         DZMpjIeNwz5YIof3MpSLOyS+grZccSDUvMB1tSa1uhOfyU6zCYP8vz628xr0YYCzK/
-         MZvnRoIK3nroCe/YueBLUUqWIg1K9yN7SBzCrog5DdPf/ViW0XIPyy6e59UrGjJzo1
-         WkbEEwA6UzBwA==
-Received: by mail-lf1-f72.google.com with SMTP id t187-20020a19c3c4000000b003fc1361fb20so19501792lff.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:14:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+u9e9bwlpa3QEn7ZpV3nxWHDHqijGY7KQgiYf/eMfqQ=;
-        b=JOjmveQBMQl4GbqKAwueicKYnbZYatMgGeWSXVu2trnbIL9IqNEx0ItNn/8wJVn5dX
-         8yaiCtL8hNJU9o+AfRx8gfMU4LyikowXVGP3OYJi6eOaf7GyvRsQ7jqaW/1/h+CItkJu
-         dt+5BVac6PEIuridb7y2Bym/K6GCZXj2T3Dm6mQbmunbi4Umv6oqju58v3uDZ+unJcRy
-         mVMbisA8fo0jXWGajBdAyE4AtjVF5onSNMtS9fbFq58EsZNyHX55fRLraSw1Xbza4ixU
-         hXG9wjbuA9ImQoxYZGDVQAjCfnIRgMbNg8YeMVw3/kTMeptINcs5TVJN2TJGhK127ax8
-         Kuug==
-X-Gm-Message-State: AOAM532/ULUx2nDUC6JXQjXDk64c4X8fZMaGYUd7fHULBEmom+jGHV8T
-        RhSicXed6S7pcpNF6NyLnA6wt56BL1loqmxAZS3N/5cqyGE2Wqgd1m8o/+3j9wjDKbwjU+Kmkz7
-        rls48DeHJvNduNAxZktcw2/eV+s7pzk0OJXWs6G26Vw==
-X-Received: by 2002:a2e:9b98:: with SMTP id z24mr169486lji.339.1632838474629;
-        Tue, 28 Sep 2021 07:14:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8qCBxFQ0ZmWvVx3GC1DXy3kNBYRZrME05hprWXzIZFzCVtG4bMX+nu3zFeqtYgSiSRE0EbQ==
-X-Received: by 2002:a2e:9b98:: with SMTP id z24mr169454lji.339.1632838474384;
-        Tue, 28 Sep 2021 07:14:34 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id w19sm2353241ljd.110.2021.09.28.07.14.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 07:14:33 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mfd: dt-bindings: maxim,max77686: convert to dtschema
-Date:   Tue, 28 Sep 2021 16:13:53 +0200
-Message-Id: <20210928141353.112619-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
-References: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
+        id S241253AbhI1ORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:17:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241191AbhI1ORO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 10:17:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54DC2611CB;
+        Tue, 28 Sep 2021 14:15:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632838535;
+        bh=RePW3xfvUyaU3zA2Rj1Ae9YEiqElxuTFsF5LiqMkCHw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tGHMlMX3yt+6pC4yOvGEJoENWh/lolEkYGywFW0L8vSiSe/le1HG/MaxF+PGFVU/6
+         jExLdQjZFgh/UD9lzNjd2Kuc1bA56JKjYE04hTbQ12omJR4DYa+wgOOx4IZMXqqtH2
+         i+bc+J9oRF+MlM8Fgo9wK++M7BnTxyawbkbV8K8QJZfQYlQ/X9rNC+0Pq+nxaG45Ev
+         P/4qJYAE7107Zt4uO6DRlbQbccYKt4LJvb5ZUWcZC0Tcy6Aut/cZe5GQ4mAZShyiIa
+         9gXFjL/8wsPY0/sOKF2iM6x+vjPeKarta1n1Eqz/k8vKZmIyTienXmOO8cdUH4/sJy
+         UVUyMtPPhbRng==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jeroen de Borst <jeroendb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bailey Forrest <bcf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Catherine Sullivan <csully@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        David Awogbemila <awogbemila@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] gve: DQO: avoid unused variable warnings
+Date:   Tue, 28 Sep 2021 16:15:13 +0200
+Message-Id: <20210928141530.256433-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the MFD part of Maxim MAX77686 PMIC to DT schema format.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+The use of dma_unmap_addr()/dma_unmap_len() in the driver causes
+multiple warnings when these macros are defined as empty, e.g.
+in an ARCH=i386 allmodconfig build:
+
+drivers/net/ethernet/google/gve/gve_tx_dqo.c: In function 'gve_tx_add_skb_no_copy_dqo':
+drivers/net/ethernet/google/gve/gve_tx_dqo.c:494:40: error: unused variable 'buf' [-Werror=unused-variable]
+  494 |                 struct gve_tx_dma_buf *buf =
+
+This is not how the NEED_DMA_MAP_STATE macros are meant to work,
+as they rely on never using local variables or a temporary structure
+like gve_tx_dma_buf.
+
+Remote the gve_tx_dma_buf definition and open-code the contents
+in all places to avoid the warning. This causes some rather long
+lines but otherwise ends up making the driver slightly smaller.
+
+Fixes: a57e5de476be ("gve: DQO: Add TX path")
+Link: https://lore.kernel.org/netdev/20210723231957.1113800-1-bcf@google.com/
+Link: https://lore.kernel.org/netdev/20210721151100.2042139-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../devicetree/bindings/mfd/max77686.txt      |  26 ----
- .../bindings/mfd/maxim,max77686.yaml          | 124 ++++++++++++++++++
- MAINTAINERS                                   |   1 -
- 3 files changed, 124 insertions(+), 27 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mfd/max77686.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
+Changes in v2:
+- complete rewrite of v1
+---
+ drivers/net/ethernet/google/gve/gve.h        | 13 ++-
+ drivers/net/ethernet/google/gve/gve_tx.c     | 23 +++---
+ drivers/net/ethernet/google/gve/gve_tx_dqo.c | 84 +++++++++-----------
+ 3 files changed, 54 insertions(+), 66 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/max77686.txt b/Documentation/devicetree/bindings/mfd/max77686.txt
-deleted file mode 100644
-index 42968b7144e0..000000000000
---- a/Documentation/devicetree/bindings/mfd/max77686.txt
-+++ /dev/null
-@@ -1,26 +0,0 @@
--Maxim MAX77686 multi-function device
+diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
+index 1d3188e8e3b3..85bf825606e8 100644
+--- a/drivers/net/ethernet/google/gve/gve.h
++++ b/drivers/net/ethernet/google/gve/gve.h
+@@ -224,11 +224,6 @@ struct gve_tx_iovec {
+ 	u32 iov_padding; /* padding associated with this segment */
+ };
+ 
+-struct gve_tx_dma_buf {
+-	DEFINE_DMA_UNMAP_ADDR(dma);
+-	DEFINE_DMA_UNMAP_LEN(len);
+-};
 -
--MAX77686 is a Multifunction device with PMIC, RTC and Charger on chip. It is
--interfaced to host controller using i2c interface. PMIC and Charger submodules
--are addressed using same i2c slave address whereas RTC submodule uses
--different i2c slave address,presently for which we are statically creating i2c
--client while probing.This document describes the binding for mfd device and
--PMIC submodule.
+ /* Tracks the memory in the fifo occupied by the skb. Mapped 1:1 to a desc
+  * ring entry but only used for a pkt_desc not a seg_desc
+  */
+@@ -236,7 +231,10 @@ struct gve_tx_buffer_state {
+ 	struct sk_buff *skb; /* skb for this pkt */
+ 	union {
+ 		struct gve_tx_iovec iov[GVE_TX_MAX_IOVEC]; /* segments of this pkt */
+-		struct gve_tx_dma_buf buf;
++		struct {
++			DEFINE_DMA_UNMAP_ADDR(dma);
++			DEFINE_DMA_UNMAP_LEN(len);
++		};
+ 	};
+ };
+ 
+@@ -280,7 +278,8 @@ struct gve_tx_pending_packet_dqo {
+ 	 * All others correspond to `skb`'s frags and should be unmapped with
+ 	 * `dma_unmap_page`.
+ 	 */
+-	struct gve_tx_dma_buf bufs[MAX_SKB_FRAGS + 1];
++	DEFINE_DMA_UNMAP_ADDR(dma[MAX_SKB_FRAGS + 1]);
++	DEFINE_DMA_UNMAP_LEN(len[MAX_SKB_FRAGS + 1]);
+ 	u16 num_bufs;
+ 
+ 	/* Linked list index to next element in the list, or -1 if none */
+diff --git a/drivers/net/ethernet/google/gve/gve_tx.c b/drivers/net/ethernet/google/gve/gve_tx.c
+index 665ac795a1ad..9922ce46a635 100644
+--- a/drivers/net/ethernet/google/gve/gve_tx.c
++++ b/drivers/net/ethernet/google/gve/gve_tx.c
+@@ -303,15 +303,15 @@ static inline int gve_skb_fifo_bytes_required(struct gve_tx_ring *tx,
+ static void gve_tx_unmap_buf(struct device *dev, struct gve_tx_buffer_state *info)
+ {
+ 	if (info->skb) {
+-		dma_unmap_single(dev, dma_unmap_addr(&info->buf, dma),
+-				 dma_unmap_len(&info->buf, len),
++		dma_unmap_single(dev, dma_unmap_addr(info, dma),
++				 dma_unmap_len(info, len),
+ 				 DMA_TO_DEVICE);
+-		dma_unmap_len_set(&info->buf, len, 0);
++		dma_unmap_len_set(info, len, 0);
+ 	} else {
+-		dma_unmap_page(dev, dma_unmap_addr(&info->buf, dma),
+-			       dma_unmap_len(&info->buf, len),
++		dma_unmap_page(dev, dma_unmap_addr(info, dma),
++			       dma_unmap_len(info, len),
+ 			       DMA_TO_DEVICE);
+-		dma_unmap_len_set(&info->buf, len, 0);
++		dma_unmap_len_set(info, len, 0);
+ 	}
+ }
+ 
+@@ -491,7 +491,6 @@ static int gve_tx_add_skb_no_copy(struct gve_priv *priv, struct gve_tx_ring *tx,
+ 	struct gve_tx_buffer_state *info;
+ 	bool is_gso = skb_is_gso(skb);
+ 	u32 idx = tx->req & tx->mask;
+-	struct gve_tx_dma_buf *buf;
+ 	u64 addr;
+ 	u32 len;
+ 	int i;
+@@ -515,9 +514,8 @@ static int gve_tx_add_skb_no_copy(struct gve_priv *priv, struct gve_tx_ring *tx,
+ 		tx->dma_mapping_error++;
+ 		goto drop;
+ 	}
+-	buf = &info->buf;
+-	dma_unmap_len_set(buf, len, len);
+-	dma_unmap_addr_set(buf, dma, addr);
++	dma_unmap_len_set(info, len, len);
++	dma_unmap_addr_set(info, dma, addr);
+ 
+ 	payload_nfrags = shinfo->nr_frags;
+ 	if (hlen < len) {
+@@ -549,10 +547,9 @@ static int gve_tx_add_skb_no_copy(struct gve_priv *priv, struct gve_tx_ring *tx,
+ 			tx->dma_mapping_error++;
+ 			goto unmap_drop;
+ 		}
+-		buf = &tx->info[idx].buf;
+ 		tx->info[idx].skb = NULL;
+-		dma_unmap_len_set(buf, len, len);
+-		dma_unmap_addr_set(buf, dma, addr);
++		dma_unmap_len_set(&tx->info[idx], len, len);
++		dma_unmap_addr_set(&tx->info[idx], dma, addr);
+ 
+ 		gve_tx_fill_seg_desc(seg_desc, skb, is_gso, len, addr);
+ 	}
+diff --git a/drivers/net/ethernet/google/gve/gve_tx_dqo.c b/drivers/net/ethernet/google/gve/gve_tx_dqo.c
+index 05ddb6a75c38..ec394d991668 100644
+--- a/drivers/net/ethernet/google/gve/gve_tx_dqo.c
++++ b/drivers/net/ethernet/google/gve/gve_tx_dqo.c
+@@ -85,18 +85,16 @@ static void gve_tx_clean_pending_packets(struct gve_tx_ring *tx)
+ 		int j;
+ 
+ 		for (j = 0; j < cur_state->num_bufs; j++) {
+-			struct gve_tx_dma_buf *buf = &cur_state->bufs[j];
 -
--Bindings for the built-in 32k clock generator block and
--regulators are defined in ../clk/maxim,max77686.txt and
--../regulator/max77686.txt respectively.
+ 			if (j == 0) {
+ 				dma_unmap_single(tx->dev,
+-						 dma_unmap_addr(buf, dma),
+-						 dma_unmap_len(buf, len),
+-						 DMA_TO_DEVICE);
++					dma_unmap_addr(cur_state, dma[j]),
++					dma_unmap_len(cur_state, len[j]),
++					DMA_TO_DEVICE);
+ 			} else {
+ 				dma_unmap_page(tx->dev,
+-					       dma_unmap_addr(buf, dma),
+-					       dma_unmap_len(buf, len),
+-					       DMA_TO_DEVICE);
++					dma_unmap_addr(cur_state, dma[j]),
++					dma_unmap_len(cur_state, len[j]),
++					DMA_TO_DEVICE);
+ 			}
+ 		}
+ 		if (cur_state->skb) {
+@@ -457,15 +455,15 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
+ 	const bool is_gso = skb_is_gso(skb);
+ 	u32 desc_idx = tx->dqo_tx.tail;
+ 
+-	struct gve_tx_pending_packet_dqo *pending_packet;
++	struct gve_tx_pending_packet_dqo *pkt;
+ 	struct gve_tx_metadata_dqo metadata;
+ 	s16 completion_tag;
+ 	int i;
+ 
+-	pending_packet = gve_alloc_pending_packet(tx);
+-	pending_packet->skb = skb;
+-	pending_packet->num_bufs = 0;
+-	completion_tag = pending_packet - tx->dqo.pending_packets;
++	pkt = gve_alloc_pending_packet(tx);
++	pkt->skb = skb;
++	pkt->num_bufs = 0;
++	completion_tag = pkt - tx->dqo.pending_packets;
+ 
+ 	gve_extract_tx_metadata_dqo(skb, &metadata);
+ 	if (is_gso) {
+@@ -493,8 +491,6 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
+ 
+ 	/* Map the linear portion of skb */
+ 	{
+-		struct gve_tx_dma_buf *buf =
+-			&pending_packet->bufs[pending_packet->num_bufs];
+ 		u32 len = skb_headlen(skb);
+ 		dma_addr_t addr;
+ 
+@@ -502,9 +498,9 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
+ 		if (unlikely(dma_mapping_error(tx->dev, addr)))
+ 			goto err;
+ 
+-		dma_unmap_len_set(buf, len, len);
+-		dma_unmap_addr_set(buf, dma, addr);
+-		++pending_packet->num_bufs;
++		dma_unmap_len_set(pkt, len[pkt->num_bufs], len);
++		dma_unmap_addr_set(pkt, dma[pkt->num_bufs], addr);
++		++pkt->num_bufs;
+ 
+ 		gve_tx_fill_pkt_desc_dqo(tx, &desc_idx, skb, len, addr,
+ 					 completion_tag,
+@@ -512,8 +508,6 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
+ 	}
+ 
+ 	for (i = 0; i < shinfo->nr_frags; i++) {
+-		struct gve_tx_dma_buf *buf =
+-			&pending_packet->bufs[pending_packet->num_bufs];
+ 		const skb_frag_t *frag = &shinfo->frags[i];
+ 		bool is_eop = i == (shinfo->nr_frags - 1);
+ 		u32 len = skb_frag_size(frag);
+@@ -523,9 +517,9 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
+ 		if (unlikely(dma_mapping_error(tx->dev, addr)))
+ 			goto err;
+ 
+-		dma_unmap_len_set(buf, len, len);
+-		dma_unmap_addr_set(buf, dma, addr);
+-		++pending_packet->num_bufs;
++		dma_unmap_len_set(pkt, len[pkt->num_bufs], len);
++		dma_unmap_addr_set(pkt, dma[pkt->num_bufs], addr);
++		++pkt->num_bufs;
+ 
+ 		gve_tx_fill_pkt_desc_dqo(tx, &desc_idx, skb, len, addr,
+ 					 completion_tag, is_eop, is_gso);
+@@ -552,22 +546,23 @@ static int gve_tx_add_skb_no_copy_dqo(struct gve_tx_ring *tx,
+ 	return 0;
+ 
+ err:
+-	for (i = 0; i < pending_packet->num_bufs; i++) {
+-		struct gve_tx_dma_buf *buf = &pending_packet->bufs[i];
 -
--Required properties:
--- compatible : Must be "maxim,max77686";
--- reg : Specifies the i2c slave address of PMIC block.
--- interrupts : This i2c device has an IRQ line connected to the main SoC.
--
--Example:
--
--	max77686: pmic@9 {
--		compatible = "maxim,max77686";
--		interrupt-parent = <&wakeup_eint>;
--		interrupts = <26 0>;
--		reg = <0x09>;
--	};
-diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77686.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
-new file mode 100644
-index 000000000000..2296a16038b7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
-@@ -0,0 +1,124 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/maxim,max77686.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Maxim MAX77686 Power Management IC
-+
-+maintainers:
-+  - Chanwoo Choi <cw00.choi@samsung.com>
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+
-+description: |
-+  This is a part of device tree bindings for Maxim MAX77686 Power Management
-+  Integrated Circuit (PMIC).
-+
-+  The Maxim MAX77686 is a Power Management IC which includes voltage and
-+  current regulators, RTC and clock outputs.
-+
-+  The MAX77686 provides three 32.768khz clock outputs that can be controlled
-+  (gated/ungated) over I2C.  The clock IDs are defined as preprocessor macros
-+  in dt-bindings/clock/maxim,max77686.h.
-+
-+properties:
-+  compatible:
-+    const: maxim,max77686
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+  voltage-regulators:
-+    $ref: ../regulator/maxim,max77686.yaml
-+    description:
-+      List of child nodes that specify the regulators.
-+
-+  wakeup-source: true
-+
-+required:
-+  - compatible
-+  - '#clock-cells'
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        max77686: pmic@9 {
-+            compatible = "maxim,max77686";
-+            reg = <0x09>;
-+
-+            interrupt-parent = <&gpx0>;
-+            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+            pinctrl-0 = <&max77686_irq>;
-+            pinctrl-names = "default";
-+            wakeup-source;
-+            #clock-cells = <1>;
-+
-+            voltage-regulators {
-+                LDO1 {
-+                    regulator-name = "VALIVE_1.0V_AP";
-+                    regulator-min-microvolt = <1000000>;
-+                    regulator-max-microvolt = <1000000>;
-+                    regulator-always-on;
-+                };
-+
-+                LDO2 {
-+                    regulator-name = "VM1M2_1.2V_AP";
-+                    regulator-min-microvolt = <1200000>;
-+                    regulator-max-microvolt = <1200000>;
-+                    regulator-always-on;
-+                    maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
-+                    regulator-state-mem {
-+                        regulator-on-in-suspend;
-+                    };
-+                };
-+
-+                // ...
-+
-+                BUCK1 {
-+                    regulator-name = "VDD_MIF";
-+                    regulator-min-microvolt = <850000>;
-+                    regulator-max-microvolt = <1100000>;
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-state-mem {
-+                        regulator-off-in-suspend;
-+                    };
-+                };
-+
-+                BUCK2 {
-+                    regulator-name = "VDD_ARM";
-+                    regulator-min-microvolt = <850000>;
-+                    regulator-max-microvolt = <1500000>;
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                    regulator-state-mem {
-+                        regulator-on-in-suspend;
-+                    };
-+                };
-+
-+                // ...
-+
-+                BUCK9 {
-+                    regulator-name = "CAM_ISP_CORE_1.2V";
-+                    regulator-min-microvolt = <1000000>;
-+                    regulator-max-microvolt = <1200000>;
-+                    maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
-+                };
-+            };
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 32b55f9ab76a..04e8554f4f5b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11468,7 +11468,6 @@ M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
- M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
- L:	linux-kernel@vger.kernel.org
- S:	Supported
--F:	Documentation/devicetree/bindings/*/max77686.txt
- F:	Documentation/devicetree/bindings/*/maxim,max77686.yaml
- F:	Documentation/devicetree/bindings/clock/maxim,max77686.txt
- F:	Documentation/devicetree/bindings/mfd/max14577.txt
++	for (i = 0; i < pkt->num_bufs; i++) {
+ 		if (i == 0) {
+-			dma_unmap_single(tx->dev, dma_unmap_addr(buf, dma),
+-					 dma_unmap_len(buf, len),
++			dma_unmap_single(tx->dev,
++					 dma_unmap_addr(pkt, dma[i]),
++					 dma_unmap_len(pkt, len[i]),
+ 					 DMA_TO_DEVICE);
+ 		} else {
+-			dma_unmap_page(tx->dev, dma_unmap_addr(buf, dma),
+-				       dma_unmap_len(buf, len), DMA_TO_DEVICE);
++			dma_unmap_page(tx->dev,
++				       dma_unmap_addr(pkt, dma[i]),
++				       dma_unmap_len(pkt, len[i]),
++				       DMA_TO_DEVICE);
+ 		}
+ 	}
+ 
+-	pending_packet->skb = NULL;
+-	pending_packet->num_bufs = 0;
+-	gve_free_pending_packet(tx, pending_packet);
++	pkt->skb = NULL;
++	pkt->num_bufs = 0;
++	gve_free_pending_packet(tx, pkt);
+ 
+ 	return -1;
+ }
+@@ -725,12 +720,12 @@ static void add_to_list(struct gve_tx_ring *tx, struct gve_index_list *list,
+ 
+ static void remove_from_list(struct gve_tx_ring *tx,
+ 			     struct gve_index_list *list,
+-			     struct gve_tx_pending_packet_dqo *pending_packet)
++			     struct gve_tx_pending_packet_dqo *pkt)
+ {
+ 	s16 prev_index, next_index;
+ 
+-	prev_index = pending_packet->prev;
+-	next_index = pending_packet->next;
++	prev_index = pkt->prev;
++	next_index = pkt->next;
+ 
+ 	if (prev_index == -1) {
+ 		/* Node is head */
+@@ -747,21 +742,18 @@ static void remove_from_list(struct gve_tx_ring *tx,
+ }
+ 
+ static void gve_unmap_packet(struct device *dev,
+-			     struct gve_tx_pending_packet_dqo *pending_packet)
++			     struct gve_tx_pending_packet_dqo *pkt)
+ {
+-	struct gve_tx_dma_buf *buf;
+ 	int i;
+ 
+ 	/* SKB linear portion is guaranteed to be mapped */
+-	buf = &pending_packet->bufs[0];
+-	dma_unmap_single(dev, dma_unmap_addr(buf, dma),
+-			 dma_unmap_len(buf, len), DMA_TO_DEVICE);
+-	for (i = 1; i < pending_packet->num_bufs; i++) {
+-		buf = &pending_packet->bufs[i];
+-		dma_unmap_page(dev, dma_unmap_addr(buf, dma),
+-			       dma_unmap_len(buf, len), DMA_TO_DEVICE);
++	dma_unmap_single(dev, dma_unmap_addr(pkt, dma[0]),
++			 dma_unmap_len(pkt, len[0]), DMA_TO_DEVICE);
++	for (i = 1; i < pkt->num_bufs; i++) {
++		dma_unmap_page(dev, dma_unmap_addr(pkt, dma[i]),
++			       dma_unmap_len(pkt, len[i]), DMA_TO_DEVICE);
+ 	}
+-	pending_packet->num_bufs = 0;
++	pkt->num_bufs = 0;
+ }
+ 
+ /* Completion types and expected behavior:
 -- 
-2.30.2
+2.29.2
 
