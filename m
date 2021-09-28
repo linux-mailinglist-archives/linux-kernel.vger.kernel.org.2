@@ -2,146 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9AE41AAA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42E541AAAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239618AbhI1Igb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:36:31 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:58991 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235918AbhI1Iga (ORCPT
+        id S239626AbhI1Ihc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235918AbhI1Iha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:36:30 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 3B1513201CC5;
-        Tue, 28 Sep 2021 04:34:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 28 Sep 2021 04:34:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=8
-        Ndt5mR9lDoSu8oa1clA56MdgUfnF9KzG9Uod91RcnU=; b=KZVLBBU9tsRVCpQVU
-        H9FxCaX5369ZyOsqGNsP3qYIksV05riSj+RoC/l+jaRLOkfaZ/WbCaS7ZO2QxRhn
-        lCpxawnGZEokifQJg0pv4mALe53EAhMJNM6txASv43J5Zb8mgWTLiycBqWUzTTG6
-        /L3fWcoeZucoFEclJ/ipR1shPqpVYm4bdi2+NHJRS2xUFYddS0w924/WrW8qS4wi
-        D9WupVeTsq1EE8azv+TB4K3y292ASGhtp+zRJT5oFA/ZebiZRPQn7jK+WgonC094
-        vAE4KpH0rwUjN5DYn3k2Nx7fIBG+H99HpzsoMG/ifujaDXUqG/3jTXRSP7o+gnh+
-        j8mGw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=8Ndt5mR9lDoSu8oa1clA56MdgUfnF9KzG9Uod91Rc
-        nU=; b=Sg2RWt/Yens/ISPIedhUpJgADepthjpuYd0DEt0w8Olv+N2mY75iZtVC1
-        2ETBlChDYl/ZIX5G5smSd+qaCGFW4/92xgbAhXUm2CG7NFshsqGtF/hyAIT7YMLh
-        pHRA/bCdMF9RullNm10pAkT8xLOAD9cyPtOBcOdoDmqKX23EC0qZHD9J5Sn7xJJ7
-        9TgjStmtzYA2JsyP7/10DNUPRTouSz2PmtrwvgbQ/+ZpN1nTQKSVWAdQDI7dEauf
-        F5sI2NpqDL2BXuS8xdGhll9QeBWCJ1qWCpZ2qfJUrzmAzDJ4HFepvcDLKFPnpMPc
-        5xmUAnzDsK+m9PRCCyiQaZbcMqFGg==
-X-ME-Sender: <xms:qNNSYdofR0s493s_Qoi0cHuKFXMO7qpg7rb30134BvIq11pSbKOiXw>
-    <xme:qNNSYfqH1KSnffOoT4pIdB5KZlM8JxRQqYWCfXhD1Xoc87w3m632wqshtNQ9UlZXD
-    lsBKXSirP570c68TCI>
-X-ME-Received: <xmr:qNNSYaPZgD7SrpAVN0ba6dCWQG8TSyrLk7g-Do82vaPBNS2UIPKtbyk2_wYsJ235EqyQRXJRj72TvvTnWnUp48TImtFiEd9yAyyXv6dK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudektddgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:qdNSYY6IjKFZojSQJzAv9CPPgZ7Qb4FBkO5_NkyvE1IFLchU1_Vxsg>
-    <xmx:qdNSYc58sU4zKkYu_4p9QKaDaJi91ON-dGhF9QflmXgl4M2tJfB5TQ>
-    <xmx:qdNSYQjUgSqyCHbqZsFt-EVN63OzWuPea0HlYBd1G5f25GB3XA2yoA>
-    <xmx:qdNSYZsvhIXXCSNFO-tF1UamMpmFXyY6vYe4uB5ox1TKu1cbGav7bA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 04:34:48 -0400 (EDT)
-Date:   Tue, 28 Sep 2021 10:34:46 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Regression with mainline kernel on rpi4
-Message-ID: <20210928083446.cfji7hmndt6a5nop@gilmour>
-References: <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
- <20210922095725.dk4vk42zb3kh7y6s@gilmour>
- <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
- <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com>
- <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
- <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
- <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
- <CAHk-=whASMriPYRdH8kxC_UwObBtwHbPvf7rb58sUEZZyaFxJg@mail.gmail.com>
- <20210924133022.waqgtr5xjjxigong@gilmour>
- <CAKMK7uFxO-ss86k483VJQJiHwcAYxNwD06xSEZStn+fWiRJ6iw@mail.gmail.com>
+        Tue, 28 Sep 2021 04:37:30 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718F2C061575;
+        Tue, 28 Sep 2021 01:35:51 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id b82so29223157ybg.1;
+        Tue, 28 Sep 2021 01:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VkqOXfHINA+UZ7ncjJqcgVt9KM5mqN2AU4qxmIR04Ww=;
+        b=KwmceUcpNHtIhwmgml8dRJAWZBkf3N1tz0837q7wOglPnhgZbiBiaHveMoI+GKCkaO
+         9fSRAuTZqHX/B2+Wz8yq6JlVanohWSYcMGNt+k1n05jAdqgZVPrRT+q6KDUuxVf5+FYe
+         nUan9ZSqN603cNiZhtD/zIZRjqAVEHmZGGg2OKd3/Wr11Bm24G8bPnxYR2w/WoqDSdrA
+         L8k7ZZ/aGoP0gaWuL8/ZtoS+022b4ofGF0gNoW65h9ztD2mU15MFNH+IDWPYzSjf49Wy
+         0XYrqkD/YsDSyoLqg29hVIv8S7m5BhPfbCjggfCMtKtfj88B9uj8VSK5/SbIukv3josw
+         97Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VkqOXfHINA+UZ7ncjJqcgVt9KM5mqN2AU4qxmIR04Ww=;
+        b=3m6aAKhJmWbVv5DYz499ERg8rGFSc7A5n2PTWbAIpBAGvqWUjDRQm1a6qK2bJcsqoJ
+         0hIFEcsX2sSKJsBySKhuR9bEJdFNK+mYTFWtkOg3NNPXaonSW2uoLYHyvBHfadnZ9CkA
+         2bdWHNKAQdf+QW9hqdFfLz5o35il9i9CAexELXssavMgO4JEfRmamDlsjjEYckDDKuoH
+         1un0zBdi24QQVaDM6BQtVrGe9rTxrtzlJJKqxzLXW9L9soIlzBG6I40LX6igMGMIvPrM
+         kn7Ck1TxlzUew3Q3XeHWpiNrE5Qgh2U5M82QyZSVUAsR0EFImTTWmVEjj0Ymp1UCq3xT
+         LLxg==
+X-Gm-Message-State: AOAM533dXooNO5bSQwzC1LuYWQjKMzN7oFvpFEhGt3JrJupOJElCwfh9
+        jRzZlyEf75WvZtMWgEl+sxVNhEhqZhng+CBA638=
+X-Google-Smtp-Source: ABdhPJx+N772rkFl8TgYYnPHITbDZML6nU9VQF7XwiTvq7xfQ2qVjaojJfNShYL3RWazPhIqaTSyhA+wWnbzc+FrEBQ=
+X-Received: by 2002:a25:cc8:: with SMTP id 191mr5207905ybm.63.1632818150581;
+ Tue, 28 Sep 2021 01:35:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAKMK7uFxO-ss86k483VJQJiHwcAYxNwD06xSEZStn+fWiRJ6iw@mail.gmail.com>
+References: <CAFcO6XOvGQrRTaTkaJ0p3zR7y7nrAWD79r48=L_BbOyrK9X-vA@mail.gmail.com>
+ <CAK8P3a0kG_gdpaOoLb5H2qeq-T7orQ+2n19NNWQaRKgVNotDkw@mail.gmail.com> <CAFcO6XOgtizsTQbeWcD14yiMAaRp82QomNhSehCJ4t=d2CRx+g@mail.gmail.com>
+In-Reply-To: <CAFcO6XOgtizsTQbeWcD14yiMAaRp82QomNhSehCJ4t=d2CRx+g@mail.gmail.com>
+From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Date:   Tue, 28 Sep 2021 16:35:39 +0800
+Message-ID: <CAFcO6XN+N-O3hSd+HK+Zn76B1tKpeFueTkbdV0vycwGpJq4PtA@mail.gmail.com>
+Subject: Re: There is an array-index-out-bounds bug in detach_capi_ctr in drivers/isdn/capi/kcapi.c
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Karsten Keil <isdn@linux-pingi.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Content-Type: multipart/mixed; boundary="000000000000dac7b105cd0a1934"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+--000000000000dac7b105cd0a1934
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Sep 25, 2021 at 12:50:17AM +0200, Daniel Vetter wrote:
-> On Fri, Sep 24, 2021 at 3:30 PM Maxime Ripard <maxime@cerno.tech> wrote:
+Hi, I make a patch for this issue.
+
+Regards,
+ butt3rflyh4ck.
+
+
+On Fri, Sep 24, 2021 at 6:02 PM butt3rflyh4ck
+<butterflyhuangxx@gmail.com> wrote:
+>
+> > When I last touched the capi code, I tried to remove it all, but we then
+> > left it in the kernel because the bluetooth cmtp code can still theoretically
+> > use it.
 > >
-> > On Wed, Sep 22, 2021 at 01:25:21PM -0700, Linus Torvalds wrote:
-> > > On Wed, Sep 22, 2021 at 1:19 PM Sudip Mukherjee
-> > > <sudipm.mukherjee@gmail.com> wrote:
-> > > >
-> > > > I added some debugs to print the addresses, and I am getting:
-> > > > [   38.813809] sudip crtc 0000000000000000
-> > > >
-> > > > This is from struct drm_crtc *crtc =3D connector->state->crtc;
-> > >
-> > > Yeah, that was my personal suspicion, because while the line number
-> > > implied "crtc->state" being NULL, the drm data structure documentation
-> > > and other drivers both imply that "crtc" was the more likely one.
-> > >
-> > > I suspect a simple
-> > >
-> > >         if (!crtc)
-> > >                 return;
-> > >
-> > > in vc4_hdmi_set_n_cts() is at least part of the fix for this all, but
-> > > I didn't check if there is possibly something else that needs to be
-> > > done too.
+> > May I ask how you managed to run into this? Did you find the bug through
+> > inspection first and then produce it using cmtp, or did you actually use
+> > cmtp?
+>
+> I fuzz the bluez system and find a crash to analyze it and reproduce it.
+>
+> > If the only purpose of cmtp is now to be a target for exploits, then I
+> > would suggest we consider removing both cmtp and capi for
+> > good after backporting your fix to stable kernels. Obviously
+> > if it turns out that someone actually uses cmtp and/or capi, we
+> > should not remove it.
 > >
-> > Thanks for the decode_stacktrace.sh and the follow-up
-> >
-> > Yeah, it looks like we have several things wrong here:
-> >
-> >   * we only check that connector->state is set, and not
-> >     connector->state->crtc indeed.
-> >
-> >   * We also check only in startup(), so at open() and not later on when
-> >     the sound streaming actually start. This has been there for a while,
-> >     so I guess it's never really been causing a practical issue before.
->=20
-> You also have no locking
+> Yes, I think this should be feasible.
+>
+> Regards
+>   butt3rflyh4ck.
+>
+>
+> --
+> Active Defense Lab of Venustech
 
-Indeed. Do we just need locking to prevent a concurrent audio setup and
-modeset, or do you have another corner case in mind?
 
-Also, generally, what locks should we make sure we have locked when
-accessing the connector and CRTC state? drm_mode_config.connection_mutex
-and drm_mode_config.mutex, respectively?
 
-> plus looking at ->state objects outside of atomic commit machinery
-> makes no sense because you're not actually in sync with the hw state.
-> Relevant bits need to be copied over at commit time, protected by some
-> spinlock (and that spinlock also needs to be held over whatever other
-> stuff you're setting to make sure we don't get a funny out-of-sync
-> state anywhere).
+-- 
+Active Defense Lab of Venustech
 
-If we already have a lock protecting against having both an ASoC and KMS
-function running, it's not clear to me what the spinlock would prevent
-here?
+--000000000000dac7b105cd0a1934
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-isdn-cpai-check-ctr-cnr-to-avoid-array-index-out-of-.patch"
+Content-Disposition: attachment; 
+	filename="0001-isdn-cpai-check-ctr-cnr-to-avoid-array-index-out-of-.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ku3tr7kr0>
+X-Attachment-Id: f_ku3tr7kr0
 
-Maxime
+RnJvbSAxNTQ0OWJiNWFhYzFmODI4ZGM4MjA1NDY1MWZlOGY0ZGNhMzdiZWY3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBYaWFvbG9uZyBIdWFuZyA8YnV0dGVyZmx5aHVhbmd4eEBnbWFp
+bC5jb20+CkRhdGU6IFR1ZSwgMjggU2VwIDIwMjEgMTM6MDM6NDEgKzA4MDAKU3ViamVjdDogW1BB
+VENIXSBpc2RuOiBjcGFpOiBjaGVjayBjdHItPmNuciB0byBhdm9pZCBhcnJheSBpbmRleCBvdXQg
+b2YgYm91bmQKClRoZSBjbXRwX2FkZF9jb25uZWN0aW9uKCkgd291bGQgYWRkIGEgY210cCBzZXNz
+aW9uIHRvIGEgY29udHJvbGxlciBhbmQgcnVuIGEga2VybmVsCnRocmVhZCB0byBwcm9jZXNzIGNt
+dHAuCgoJX19tb2R1bGVfZ2V0KFRISVNfTU9EVUxFKTsKCXNlc3Npb24tPnRhc2sgPSBrdGhyZWFk
+X3J1bihjbXRwX3Nlc3Npb24sIHNlc3Npb24sICJrY210cGRfY3RyXyVkIiwKCQkJCQkJCQlzZXNz
+aW9uLT5udW0pOwoKRHVyaW5nIHRoaXMgcHJvY2VzcywgdGhlIGtlcm5lbCB0aHJlYWQgd291bGQg
+Y2FsbCBkZXRhY2hfY2FwaV9jdHIoKQp0byBkZXRhY2ggYSByZWdpc3RlciBjb250cm9sbGVyLiBp
+ZiB0aGUgY29udHJvbGxlciB3YXMgbm90IGF0dGFjaGVkIHlldCwgZGV0YWNoX2NhcGlfY3RyKCkK
+d291bGQgdHJpZ2dlciBhbiBhcnJheS1pbmRleC1vdXQtYm91bmRzIGJ1Zy4KClsgICA0Ni44NjYw
+NjldWyBUNjQ3OV0gVUJTQU46IGFycmF5LWluZGV4LW91dC1vZi1ib3VuZHMgaW4KZHJpdmVycy9p
+c2RuL2NhcGkva2NhcGkuYzo0ODM6MjEKWyAgIDQ2Ljg2NzE5Nl1bIFQ2NDc5XSBpbmRleCAtMSBp
+cyBvdXQgb2YgcmFuZ2UgZm9yIHR5cGUgJ2NhcGlfY3RyICpbMzJdJwpbICAgNDYuODY3OTgyXVsg
+VDY0NzldIENQVTogMSBQSUQ6IDY0NzkgQ29tbToga2NtdHBkX2N0cl8wIE5vdCB0YWludGVkCjUu
+MTUuMC1yYzIrICM4ClsgICA0Ni44NjkwMDJdWyBUNjQ3OV0gSGFyZHdhcmUgbmFtZTogUUVNVSBT
+dGFuZGFyZCBQQyAoaTQ0MEZYICsgUElJWCwKMTk5NiksIEJJT1MgMS4xNC4wLTIgMDQvMDEvMjAx
+NApbICAgNDYuODcwMTA3XVsgVDY0NzldIENhbGwgVHJhY2U6ClsgICA0Ni44NzA0NzNdWyBUNjQ3
+OV0gIGR1bXBfc3RhY2tfbHZsKzB4NTcvMHg3ZApbICAgNDYuODcwOTc0XVsgVDY0NzldICB1YnNh
+bl9lcGlsb2d1ZSsweDUvMHg0MApbICAgNDYuODcxNDU4XVsgVDY0NzldICBfX3Vic2FuX2hhbmRs
+ZV9vdXRfb2ZfYm91bmRzLmNvbGQrMHg0My8weDQ4ClsgICA0Ni44NzIxMzVdWyBUNjQ3OV0gIGRl
+dGFjaF9jYXBpX2N0cisweDY0LzB4YzAKWyAgIDQ2Ljg3MjYzOV1bIFQ2NDc5XSAgY210cF9zZXNz
+aW9uKzB4NWM4LzB4NWQwClsgICA0Ni44NzMxMzFdWyBUNjQ3OV0gID8gX19pbml0X3dhaXRxdWV1
+ZV9oZWFkKzB4NjAvMHg2MApbICAgNDYuODczNzEyXVsgVDY0NzldICA/IGNtdHBfYWRkX21zZ3Bh
+cnQrMHgxMjAvMHgxMjAKWyAgIDQ2Ljg3NDI1Nl1bIFQ2NDc5XSAga3RocmVhZCsweDE0Ny8weDE3
+MApbICAgNDYuODc0NzA5XVsgVDY0NzldICA/IHNldF9rdGhyZWFkX3N0cnVjdCsweDQwLzB4NDAK
+WyAgIDQ2Ljg3NTI0OF1bIFQ2NDc5XSAgcmV0X2Zyb21fZm9yaysweDFmLzB4MzAKWyAgIDQ2Ljg3
+NTc3M11bIFQ2NDc5XQoKU2lnbmVkLW9mZi1ieTogWGlhb2xvbmcgSHVhbmcgPGJ1dHRlcmZseWh1
+YW5neHhAZ21haWwuY29tPgotLS0KIGRyaXZlcnMvaXNkbi9jYXBpL2tjYXBpLmMgfCA1ICsrKysr
+CiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9p
+c2RuL2NhcGkva2NhcGkuYyBiL2RyaXZlcnMvaXNkbi9jYXBpL2tjYXBpLmMKaW5kZXggY2IwYWZl
+ODk3MTYyLi43MzEzNDU0ZTQwM2EgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvaXNkbi9jYXBpL2tjYXBp
+LmMKKysrIGIvZHJpdmVycy9pc2RuL2NhcGkva2NhcGkuYwpAQCAtNDgwLDYgKzQ4MCwxMSBAQCBp
+bnQgZGV0YWNoX2NhcGlfY3RyKHN0cnVjdCBjYXBpX2N0ciAqY3RyKQogCiAJY3RyX2Rvd24oY3Ry
+LCBDQVBJX0NUUl9ERVRBQ0hFRCk7CiAKKwlpZiAoY3RyLT5jbnIgPCAxIHx8IGN0ci0+Y25yIC0g
+MSA+PSBDQVBJX01BWENPTlRSKSB7CisJCWVyciA9IC1FSU5WQUw7CisJCWdvdG8gdW5sb2NrX291
+dDsKKwl9CisKIAlpZiAoY2FwaV9jb250cm9sbGVyW2N0ci0+Y25yIC0gMV0gIT0gY3RyKSB7CiAJ
+CWVyciA9IC1FSU5WQUw7CiAJCWdvdG8gdW5sb2NrX291dDsKLS0gCjIuMjUuMQoK
+--000000000000dac7b105cd0a1934--
