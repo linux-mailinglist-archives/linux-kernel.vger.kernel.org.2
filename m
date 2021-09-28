@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D849E41AD93
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FC541AD9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240382AbhI1LIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:08:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28539 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240346AbhI1LIr (ORCPT
+        id S240234AbhI1LKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239068AbhI1LKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632827227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WR6VXnQsyOwoBA0NqYwQwAM8amF8J8DkhanQviHV1Bg=;
-        b=Wz1ipQHn4MoRLzldiMuO5AwmuXTfmv8F/8nPl5w8qbvpdHAkpkDITgIC3GsxorDpM2pc+f
-        rSg3Ifn8GhypYD2d2k5ZShFkOOJJsO+YgJXTFLxlledNAaJwfoAr5UthjxUaIC6S/Bax/S
-        FKwhop1xJbEApqxpVSYw4oSwg13taRw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-R4Fo0HdNMuGcJNqByjFD7w-1; Tue, 28 Sep 2021 07:07:06 -0400
-X-MC-Unique: R4Fo0HdNMuGcJNqByjFD7w-1
-Received: by mail-wm1-f72.google.com with SMTP id p63-20020a1c2942000000b0030ccf0767baso954644wmp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:07:05 -0700 (PDT)
+        Tue, 28 Sep 2021 07:10:48 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B96C061575;
+        Tue, 28 Sep 2021 04:09:09 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id e15so91137263lfr.10;
+        Tue, 28 Sep 2021 04:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=x0TF30fHxd3gegxcCEondgQDh02mpuK7Cfxm1pxNpfI=;
+        b=MuseAtczwhFGOVWkDGFVGrYjjwJAYVJM8tkQm6DO8DnESfEEGCpCF9aLV7+nCUX6c9
+         aA19RILBgcCnxWQonMx38mrrEwhIFDIfi74YelSGzv87n6lB0HiyhNRg+U3fjBwvtJIx
+         tKSmTwGAZiTwDKRWEgRw/9xupa02F+Vb8F8/LUrVi0gp9atVQ9/8e0BfoTRqyU/+FPQP
+         Mgd7X6w4zpGDIZQ4X35oHNIg0go8cK0M/IU+r1oNpnLUWi6CxUUF3sum3XxMai34hfBw
+         l3tknnjPgZp69FgZwOsi3LVo3Xd4TOXsiCCqxl0hGoH82p3d9oRDTXWyQ2A8yvDJsEiI
+         NRhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WR6VXnQsyOwoBA0NqYwQwAM8amF8J8DkhanQviHV1Bg=;
-        b=DorZSqLm1pZblE9h1s5GBZuAJDBJBsIS3QRc3r1TdijgU5PTCmsyByx1i+taYtFuGP
-         wksyePog2sJnRXtisepHewV9cnxtYnLfMNYXgYRRDzWoDZ/d+QdpLxzk/yrGs+xnQobk
-         5/RF/dm6KY3GwW3EJDHPqTdZLp/V7zl4uY/y2TSY1gu/EX8Dn8qU6aK0WNQoSTl2lanc
-         HPz6zg+LIkwSAAGx6pN8kbUcVezcYCC292fFH1/+Q7k7SNDkp7M6kAmkX6HQokmTlOHJ
-         J3IevBm8zyrseIOG3wwUFxw+UlZAsx0OPbVBOTN90y9ooG0uhPaOZd1XKZpGHrRsZOZc
-         l0BA==
-X-Gm-Message-State: AOAM530ijd8FFXol2/RK482DoObmUuHGX8s8LFU0Vs2w+NpuCPpVzVLo
-        jXhPZ+THfGGC30qQFGa0yV0aCehDyJHwtcvDFnnivpWgTO7evyxMGAeRHrU70uifpd8d9XTOi7i
-        /eyn62oRy/ky2bq7+7deAZK5qysrFZDsa629qHdsv
-X-Received: by 2002:a7b:c5c9:: with SMTP id n9mr4036163wmk.141.1632827224641;
-        Tue, 28 Sep 2021 04:07:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0TvRX1heajsLZFd4GGwP4vhnY328h7RyY16leHPFWlcyFhg8AWc8/US2AUGlQu71mjn+OzM8EFLIlyzTcL7Y=
-X-Received: by 2002:a7b:c5c9:: with SMTP id n9mr4036143wmk.141.1632827224471;
- Tue, 28 Sep 2021 04:07:04 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=x0TF30fHxd3gegxcCEondgQDh02mpuK7Cfxm1pxNpfI=;
+        b=kUJcSf52Q+w72j4cnSg45tm8bXITCYtde25drKFXKZBeesusJk45z4jeQyzORLdMzw
+         Dounc2u3Ghr3clAwPHkuGQCQJCN5ekfEGfBVGyiIWX1MpB2jQN10a05AKB/MtfjvsT57
+         weuqtL5DcaceNsr0JoWU+f2VTkCdopbzBwedeTHAjIurhqVykrEjKC5bKDvknQfiOTwT
+         IDbUECi3g02mpej7Jc1xNFsrHqvlopCTm1HjerB9BQ+aXojDl/Xcm54scCRhqxzy0gR9
+         bDHJKODrLXEE1gVryY+frwMO1RV63gMmooO98dbXOUVdC6B+CCDZQ2emUjznX3GqBhBp
+         b3pA==
+X-Gm-Message-State: AOAM530ckvWctEN6K7NKknQ7PD0R6dUp2fElw0ZKNwyo3FQkII+D6eGp
+        znNqiCZlCC/JfW/5N+OWJoI=
+X-Google-Smtp-Source: ABdhPJwkwH/6z2zBMqGvim8Hu0uutGJmC5Y8vE9+kVQ7PnjlsiFXL6r6+IoZm1McbF2W/ryUC/wQ7w==
+X-Received: by 2002:a05:651c:1509:: with SMTP id e9mr5430925ljf.280.1632827347541;
+        Tue, 28 Sep 2021 04:09:07 -0700 (PDT)
+Received: from [172.28.2.233] ([46.61.204.60])
+        by smtp.gmail.com with ESMTPSA id r13sm1303965ljk.130.2021.09.28.04.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 04:09:07 -0700 (PDT)
+Message-ID: <f587da4b-09dd-4c32-4ee4-5ec8b9ad792f@gmail.com>
+Date:   Tue, 28 Sep 2021 14:09:06 +0300
 MIME-Version: 1.0
-References: <20201203000220.18238-1-jcline@redhat.com> <7f51dbe3dac85f692e01bb5cecdf4454a40b1893.camel@redhat.com>
-In-Reply-To: <7f51dbe3dac85f692e01bb5cecdf4454a40b1893.camel@redhat.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Tue, 28 Sep 2021 13:06:53 +0200
-Message-ID: <CACO55ttDK4eCZ-RUOnPRLawZYUbX9xyXDnqwB=4z7vNrZkkvxg@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau: avoid a use-after-free when BO init fails
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Jeremy Cline <jcline@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        Thierry Reding <treding@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] net: mdiobus: Fix memory leak in __mdiobus_register
+Content-Language: en-US
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, p.zabel@pengutronix.de,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+References: <20210926045313.2267655-1-yanfei.xu@windriver.com>
+ <20210928085549.GA6559@kili> <20210928092657.GI2048@kadam>
+ <6f90fa0f-6d3b-0ca7-e894-eb971b3b69fa@gmail.com>
+ <20210928103908.GJ2048@kadam>
+ <63b18426-c39e-d898-08fb-8bfd05b7be9e@gmail.com>
+ <20210928105943.GL2083@kadam>
+ <283d01f0-d5eb-914e-1bd2-baae0420073c@gmail.com>
+In-Reply-To: <283d01f0-d5eb-914e-1bd2-baae0420073c@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
+On 9/28/21 14:06, Pavel Skripkin wrote:
+>> It's not actually the same.  The state has to be set before the
+>> device_register() or there is still a leak.
+>> 
+> Ah, I see... I forgot to handle possible device_register() error. Will
+> send v2 soon, thank you
+> 
+> 
+> 
+Wait... Yanfei's patch is already applied to net tree and if I 
+understand correctly, calling put_device() 2 times will cause UAF or 
+smth else.
 
-and queued
 
-On Fri, Mar 26, 2021 at 10:41 PM Lyude Paul <lyude@redhat.com> wrote:
->
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
->
-> On Wed, 2020-12-02 at 19:02 -0500, Jeremy Cline wrote:
-> > nouveau_bo_init() is backed by ttm_bo_init() and ferries its return code
-> > back to the caller. On failures, ttm_bo_init() invokes the provided
-> > destructor which should de-initialize and free the memory.
-> >
-> > Thus, when nouveau_bo_init() returns an error the gem object has already
-> > been released and the memory freed by nouveau_bo_del_ttm().
-> >
-> > Fixes: 019cbd4a4feb ("drm/nouveau: Initialize GEM object before TTM object")
-> > Cc: Thierry Reding <treding@nvidia.com>
-> > Signed-off-by: Jeremy Cline <jcline@redhat.com>
-> > ---
-> >  drivers/gpu/drm/nouveau/nouveau_gem.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > index 787d05eefd9c..d30157cc7169 100644
-> > --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> > @@ -211,10 +211,8 @@ nouveau_gem_new(struct nouveau_cli *cli, u64 size, int
-> > align, uint32_t domain,
-> >         }
-> >
-> >         ret = nouveau_bo_init(nvbo, size, align, domain, NULL, NULL);
-> > -       if (ret) {
-> > -               nouveau_bo_ref(NULL, &nvbo);
-> > +       if (ret)
-> >                 return ret;
-> > -       }
-> >
-> >         /* we restrict allowed domains on nv50+ to only the types
-> >          * that were requested at creation time.  not possibly on
->
-> --
-> Sincerely,
->    Lyude Paul (she/her)
->    Software Engineer at Red Hat
->
-> Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-> asked me a question, are waiting for a review/merge on a patch, etc. and I
-> haven't responded in a while, please feel free to send me another email to check
-> on my status. I don't bite!
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
+
+With regards,
+Pavel Skripkin
