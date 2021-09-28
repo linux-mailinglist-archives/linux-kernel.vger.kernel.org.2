@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD4D41A5D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174DD41A5D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238759AbhI1DDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 23:03:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238710AbhI1DDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 23:03:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4751961156;
-        Tue, 28 Sep 2021 03:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632798100;
-        bh=etcWicIya78aAu3YgO2YZU7Km62u3r0LRoISmor1eqk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=RZH11clboMwjHRzownDyG7gYVL9PPmQcoKVi2Lus11wvBCli72L/0F69o3iXvnrdW
-         4alwwpmN1cEx4jnbs3cRFxBsXBRHxwIT4MAoPOosfu2DLFBlCv1J4i/GDec6g6Kere
-         0na4r8UNblarbPQatQr5nwYrILfBtrjNMd+QH4xgNU74lzJ71oZCY9PqC/BCM0HAB1
-         I5d33KBl0YbxLT5oheLEVT6F+8nATnH8V9rwJRjGtioC+izah85Y7ZkHoLifobjGWi
-         nr02yo+WUYSmQNxx8cMUSexOG1byzo9u488Uwq+NYo7TxnqGK4abYnud4hHK1LFDXC
-         baGQ+Bj6QBayg==
-Message-ID: <20d92bf2ae51aac2e5acaf5a206f7cdbb065904b.camel@kernel.org>
-Subject: Re: [PATCH v5 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Tue, 28 Sep 2021 06:01:38 +0300
-In-Reply-To: <0f75a6db-27e6-dfc5-4025-e81d8e753e30@intel.com>
-References: <20210914030422.377601-1-jarkko@kernel.org>
-         <20210914030422.377601-2-jarkko@kernel.org>
-         <f45245ba-41b8-62ae-38b5-64725a214bad@intel.com>
-         <254864594af4cde213a37a4db527e293a1ef1d7a.camel@kernel.org>
-         <0f75a6db-27e6-dfc5-4025-e81d8e753e30@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S238788AbhI1DEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 23:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238771AbhI1DEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 23:04:15 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9504C061604
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:02:36 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso27127704otb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 20:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CwQ0UfiMphl7UCupbZZAVfzMUncFhrOEd9zZGds8Kbw=;
+        b=Gs16D0xiZeUMFi79L/U+okQVmp5Q+nFLVf+DFcwPNUndE280ILn7ENCHXGd90v3LCQ
+         v8SjbMG8GS7tsO8kb2zQSjEfNcnsY7R+3/BexzFiX4IFtkS1dyFN4UHRVg+psoNWP9iB
+         SpwNaPeJ9fqDohZQbTdq1ID/e0Pf/vYvVONanz8xhBpWxl1Bkg7vtcudwGkdwQbPl72d
+         USbTbDzieG/qSJGrHzLB3jyOVBownWws0Qa6MwKp0qw73HMbWEFLtgYrZ/tCaJA5YEig
+         2dYtwC99n4xmV+ptzHDvdRqUTyv2cqLTE60W1DPEiIyJ6SzCE7cs1WoS0AxtZCoJ48dK
+         XnLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CwQ0UfiMphl7UCupbZZAVfzMUncFhrOEd9zZGds8Kbw=;
+        b=pfjti4jS7vke/DTPUCsLROzf+41BqE3kumkZGRfuN4Mz3sm3vJTMLmdR9Qx551Grw1
+         NsFYx9U7KUoVxcRV8Nf/CGPElcvSIZ7EnU984IQVcxiPBOIqjo9KMkxQn9h+pkJ4N3bA
+         4ypG6vaq9Wt25Q+Ajys/bW7xSO/wbcAmWjYTyQ4iqXv5Jn/tG2O2xAq+jXhp2xu73otl
+         k8pPw/blXX7OPcqeI7le0mOf5F9Xpc9xWpvNdsdGYd89+rhZucE4IHOaV5yIWrt54+aj
+         TD1U9a7gycJaOiYu5uWT9MomUMSXNvEireP0Sbr6MAkCnbSwySFcEFyGJc9dSkD0quYQ
+         aQYg==
+X-Gm-Message-State: AOAM532xzmgwMORQosq2LJZ6dwJD75DWLn4P5tMe11xDzRHRA9PYtNVW
+        PfbkNHEno2Oor6rshJCzecEWfw==
+X-Google-Smtp-Source: ABdhPJwNvtHLkCCuN5Mmeww6TemgodBFbOvZSbD+GmIHb4CCsiKRO+wYsRHyND0Razrke67rEtg3FA==
+X-Received: by 2002:a9d:7053:: with SMTP id x19mr3066995otj.229.1632798156178;
+        Mon, 27 Sep 2021 20:02:36 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a8sm4624788oos.46.2021.09.27.20.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 20:02:35 -0700 (PDT)
+Date:   Mon, 27 Sep 2021 20:03:10 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the rpmsg tree
+Message-ID: <YVKF7skeRjacpLhk@ripper>
+References: <20210928084011.3f2318fc@canb.auug.org.au>
+ <YVJXpBwfdMYKaE0R@ripper>
+ <20210928104341.31521fb0@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928104341.31521fb0@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-23 at 13:39 -0700, Reinette Chatre wrote:
-> Hi Jarkko,
->=20
-> On 9/23/2021 1:30 PM, Jarkko Sakkinen wrote:
-> > So cat you pick these patches to your patch set, and squash
-> > this fix to it?
->=20
-> My patch set is focused on SGX selftests while this series target the=20
-> x86 tree. I assumed that this series would go into x86 separately and=20
-> after they land we can proceed with the SGX selftest work.
+On Mon 27 Sep 17:43 PDT 2021, Stephen Rothwell wrote:
 
-But now your series has no chance to be applied, given that
-it contains patches which have discarded given a superior
-approach.
+> Hi Bjorn,
+> 
+> On Mon, 27 Sep 2021 16:45:40 -0700 Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Mon 27 Sep 15:40 PDT 2021, Stephen Rothwell wrote:
+> > May I ask what tool you use to detect this? Given that checkpatch
+> > doesn't care about the committer (afaict)...
+> 
+> After I fetch each tree, I give the new commit range to the attached
+> script (check_commits) which calls the other script as well
+> (check_fixes).
 
-Anyway, node fields are initialized here:
+Thanks for sharing those Stephen, I'll try to incorporate them into my
+checks.
 
-		if (!node_isset(nid, sgx_numa_mask)) {
-			spin_lock_init(&sgx_numa_nodes[nid].lock);
-			INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
-			node_set(nid, sgx_numa_mask);
-		}
-
-The correct way to fix the issue is to add
-
-			sgx_numa_nodes[nid].size =3D 0;
-
-Using kcalloc() would not be very sound, since you would wastefully
-initialize the pre-existing fields of the struct two times: first
-with zeros, and then with "real" values.
-
-/Jarkko
-
+Regards,
+Bjorn
