@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A3541B8E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC3C41B8EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242830AbhI1VDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:03:45 -0400
-Received: from mga11.intel.com ([192.55.52.93]:32063 "EHLO mga11.intel.com"
+        id S242839AbhI1VFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:05:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242572AbhI1VDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:03:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="221600620"
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="221600620"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 14:02:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="554303878"
-Received: from oogunmoy-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.221.219])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 14:01:58 -0700
-Subject: Re: [PATCH v4 0/8] Implement generic cc_platform_has() helper
- function
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Young <dyoung@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Will Deacon <will@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org
-References: <20210928191009.32551-1-bp@alien8.de>
- <80593893-c63b-d481-45f1-42a3a6fd762a@linux.intel.com>
- <YVN7vPE/7jecXcJ/@zn.tnic>
- <7319b756-55dc-c4d1-baf6-4686f0156ac4@linux.intel.com>
- <YVOB3mFV1Kj3MXAs@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <695a3bf6-5382-68df-3ab5-8841b777fca2@linux.intel.com>
-Date:   Tue, 28 Sep 2021 14:01:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S242829AbhI1VFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 17:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B67B160230;
+        Tue, 28 Sep 2021 21:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632863037;
+        bh=N/AOMgQYt5jS9sw/lWYKS+K/2mvp+/Ndcn8ou0y5iSM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=V86Sy0cEsjiTB+k0jeIrP2sAWqZqpG12kj+tFPvQ//GeJMYz8n5mm+TuxME/dTC1j
+         AFRz+EMDdRTLArbHK4R85MWbcmRRgRuNvo7D6eG9U7rTI6oWKtvh38xDpVG9PGI8ED
+         Bof/ScI03jQy3Is2T7VYxNlQWnvZXNUHxapAyAJMiCyENUJJitsGiPK3UzZClAu8gi
+         781SI0dJKkah3WD58sPdFqpDlP9pN2M8J9t/HlJQFFl8/aGfe/sLXUt8l9+RyAiYGc
+         CjlK/dN5gPdfhi88cNjHwhndhbw9ieHlDw5P+LQuQKFhSvA+8wD3mlFFVNNwqrn4PK
+         2YNe+BNhtbXxA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7FE855C0B37; Tue, 28 Sep 2021 14:03:57 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 14:03:57 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: in_irq() cleanup
+Message-ID: <20210928210357.GK880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210928002128.4501-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YVOB3mFV1Kj3MXAs@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928002128.4501-1-changbin.du@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/28/21 1:58 PM, Borislav Petkov wrote:
-> On Tue, Sep 28, 2021 at 01:48:46PM -0700, Kuppuswamy, Sathyanarayanan wrote:
->> Just read it. If you want to use cpuid_has_tdx_guest() directly in
->> cc_platform_has(), then you want to rename intel_cc_platform_has() to
->> tdx_cc_platform_has()?
+On Tue, Sep 28, 2021 at 08:21:28AM +0800, Changbin Du wrote:
+> Replace the obsolete and ambiguos macro in_irq() with new
+> macro in_hardirq().
 > 
-> Why?
-> 
-> You simply do:
-> 
-> 	if (cpuid_has_tdx_guest())
-> 		intel_cc_platform_has(...);
-> 
-> and lemme paste from that mail: " ...you should use
-> cpuid_has_tdx_guest() instead but cache its result so that you don't
-> call CPUID each time the kernel executes cc_platform_has()."
-> 
-> Makes sense?
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
-Yes. But, since the check is related to TDX, I just want to confirm whether
-you are fine with naming the function as intel_*().
+Queued for v5.17 (merge window after next), thank you!
 
-Since this patch is going to have dependency on TDX code, I will include
-this patch in TDX patch set.
+							Thanx, Paul
 
+> ---
+>  include/linux/rcutiny.h  | 2 +-
+>  kernel/rcu/tree.c        | 2 +-
+>  kernel/rcu/tree_plugin.h | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> index 9be015305f9f..858f4d429946 100644
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -85,7 +85,7 @@ static inline void rcu_irq_enter_irqson(void) { }
+>  static inline void rcu_irq_exit(void) { }
+>  static inline void rcu_irq_exit_check_preempt(void) { }
+>  #define rcu_is_idle_cpu(cpu) \
+> -	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
+> +	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
+>  static inline void exit_rcu(void) { }
+>  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>  {
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index bce848e50512..b53dd00975ab 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1471,7 +1471,7 @@ static void rcu_gp_kthread_wake(void)
+>  {
+>  	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+>  
+> -	if ((current == t && !in_irq() && !in_serving_softirq()) ||
+> +	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+>  	    !READ_ONCE(rcu_state.gp_flags) || !t)
+>  		return;
+>  	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index d070059163d7..727bf14c9a63 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -642,7 +642,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+>  			    t->rcu_blocked_node);
+>  		// Need to defer quiescent state until everything is enabled.
+> -		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
+> +		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
+>  			// Using softirq, safe to awaken, and either the
+>  			// wakeup is free or there is either an expedited
+>  			// GP in flight or a potential need to deboost.
+> -- 
+> 2.32.0
+> 
