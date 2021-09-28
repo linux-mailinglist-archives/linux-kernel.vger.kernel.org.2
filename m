@@ -2,245 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4EE41AC95
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C8541AC97
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240134AbhI1KEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:04:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239815AbhI1KEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:04:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B023F60E09;
-        Tue, 28 Sep 2021 10:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632823387;
-        bh=ULvY2kQ//pktQDFUCn0fZI98L8jCGIXAZrIqZ77NBW0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=u68mgzYBhq+BABdSbEOsejKoFvHY1DJRrS4Y9hoXL1gHeih1yWzezvqOtCyEKUt4C
-         A2SYaSGnWVJSCA8kbL1kkkmetG7bmYiBF8fcBSxlxmZiA0oX+tnqUE227Mpk6JNnhp
-         8T9Q3V5hWA6Cc5XldC0QJ0owBJH7j3w6h6KIHvUJv4OlrJeVvZNSuY/eN9HDyuH638
-         iJR1BhxibKvYnqEj5oVpCsufnw6FGi5JTkDlYD330E1O6YH4oaLm9zrjhfxbH/FCl2
-         H5T2Jh+cVePvoNDakKdBjRmq3ctV0qTR5PeUh/Sk40Ij1G0cpfcbQBs2GZIkury8EB
-         I48msSm9d7gQw==
-Date:   Tue, 28 Sep 2021 12:03:04 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/8] (REBASED) get_abi.pl undefined: improve precision
- and performance
-Message-ID: <20210928120304.62319fba@coco.lan>
-In-Reply-To: <YVHntS2e3FTWIjds@kroah.com>
-References: <YUyICHTRdfL8Ul7X@kroah.com>
-        <cover.1632411447.git.mchehab+huawei@kernel.org>
-        <YUy1oPjdLTh9rEfq@kroah.com>
-        <20210927105553.105f22c5@coco.lan>
-        <YVGNiPXNbWWy3CSj@kroah.com>
-        <20210927153942.75bbb9cf@coco.lan>
-        <YVHntS2e3FTWIjds@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S240124AbhI1KFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240127AbhI1KE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:04:56 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AE5C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:03:16 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id s24so2977254wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yz7OSxKrs5tDs3iPjdQ84SnbqujRTE3B+86PcByyECI=;
+        b=ccy5lOzpyBKsENGgU3HIS0chBhX6A/t8rSbAwK/u0Rx6pM6GJWJb+0Oubyy7wlqtpT
+         kR7Z4v5O/T/JAUPSWWCQmkMP0SKtpsgzbjmaA6fdvlzAQjzV4FWxgSyENfxXl4IcJD4p
+         509+WTfEDbHXYTADcotWB6cacZbX4m/gaLI5q83CDkKWNZcCa1VSpJZYKTYCXbiAnPzh
+         q378NkglDcDVIzPny7hgwXkw+pjtvygClmArk3YCWvKY0h9nvuQGElefYNrf93rL510u
+         Hc52apND0kR6oeHAy3EWI3QPQCLKEu9ThHJfOaDIQ/Y1YoQO8a5Z7QIlZbi5qX9sEPMi
+         v4AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yz7OSxKrs5tDs3iPjdQ84SnbqujRTE3B+86PcByyECI=;
+        b=ObY75kLrMq9WKC0+dz6PEMYlRO9U6RlVCH5ZwXV8J3ISospFzNTZFxmYIACetXuQg7
+         QtGOykYE+tJr3HSj4rnnPGvGWqGHciSt0vsXVv9lieTFO6v23y8LtRYRO7PP58UqxuL9
+         3gx/2QMqi/Tskd8vgSEQfaV/91Di8YDgv1azeo6MANPaMsI6Ggqy/1L4BaZvOyBw+1Oj
+         9gXCqG3W4ReGjJ720ExUHk3zeB6u82ChlIaIVg0DwBKGL0/H9J/dSEhI5LhPNtFFk4Pf
+         Gd7s6kZSBr7KZKc1HA9GQwbRZRP/PI96zG0o3gVbby+4wMjOMG34DBXH6J/UAIw8eSnl
+         EI6Q==
+X-Gm-Message-State: AOAM530jKLubQD2Otkp7q2ynlwosflBH4Ac0Vp3lv4TwaQ1C/zRZ4rEl
+        /Ahz3U8Z3pUauH/jivwnUA7sSw==
+X-Google-Smtp-Source: ABdhPJwdbB0131GO5e9RXgw7jZajpVoD+s7BqbYj4LRTMgnSJC90hHj+bS2xwaNZ7M3DVBRF0okusQ==
+X-Received: by 2002:a1c:22d5:: with SMTP id i204mr3680039wmi.145.1632823395493;
+        Tue, 28 Sep 2021 03:03:15 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id 8sm2139893wmj.18.2021.09.28.03.03.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 03:03:15 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 11:03:13 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>, bhelgaas@google.com,
+        andy.shevchenko@gmail.com, mgross@linux.intel.com,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] MFD: intel_pmt: Support non-PMT capabilities
+Message-ID: <YVLoYZQ1fYLeEYXt@google.com>
+References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
+ <20210922213007.2738388-3-david.e.box@linux.intel.com>
+ <YVIBI6TQrD/rehli@kroah.com>
+ <d540894d3d8c05722bd924c21bd9dd9c2b9def53.camel@linux.intel.com>
+ <YVLKRSQx01vB4N77@google.com>
+ <YVLb/GrePEKNDdtb@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVLb/GrePEKNDdtb@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 27 Sep 2021 17:48:05 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+On Tue, 28 Sep 2021, Greg KH wrote:
 
-> On Mon, Sep 27, 2021 at 03:39:42PM +0200, Mauro Carvalho Chehab wrote:
-> > Em Mon, 27 Sep 2021 11:23:20 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> >  =20
-> > > On Mon, Sep 27, 2021 at 10:55:53AM +0200, Mauro Carvalho Chehab wrote=
-: =20
-> > > > Em Thu, 23 Sep 2021 19:13:04 +0200
-> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > >    =20
-> > > > > On Thu, Sep 23, 2021 at 05:41:11PM +0200, Mauro Carvalho Chehab w=
-rote:   =20
-> > > > > > Hi Greg,
-> > > > > >=20
-> > > > > > As requested, this is exactly the same changes, rebased on the =
-top of
-> > > > > > driver-core/driver-core-next.
-> > > > > >=20
-> > > > > > -
-> > > > > >=20
-> > > > > > It follows a series of improvements for get_abi.pl. it is on th=
-e top of driver-core/driver-core-next.
-> > > > > >=20
-> > > > > > With such changes, on my development tree, the script is taking=
- 6 seconds to run=20
-> > > > > > on my desktop:
-> > > > > >=20
-> > > > > > 	$ !1076
-> > > > > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined_after &=
-& cat undefined_after| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|s=
-ort|uniq -c|sort -nr >undefined_symbols; wc -l undefined_after undefined_sy=
-mbols
-> > > > > >=20
-> > > > > > 	real	0m6,292s
-> > > > > > 	user	0m5,640s
-> > > > > > 	sys	0m0,634s
-> > > > > > 	  6838 undefined_after
-> > > > > > 	   808 undefined_symbols
-> > > > > > 	  7646 total
-> > > > > >=20
-> > > > > > And 7 seconds on a Dell Precision 5820:
-> > > > > >=20
-> > > > > > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat =
-undefined| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|=
-sort -nr >undefined_symbols; wc -l undefined; wc -l undefined_symbols
-> > > > > >=20
-> > > > > > 	real	0m7.162s
-> > > > > > 	user	0m5.836s
-> > > > > > 	sys	0m1.329s
-> > > > > > 	6548 undefined
-> > > > > > 	772 undefined_symbols
-> > > > > >=20
-> > > > > > Both tests were done against this tree (based on today's linux-=
-next):
-> > > > > >=20
-> > > > > > 	$ https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/deve=
-l.git/log/?h=3Dget_abi_undefined-latest
-> > > > > >=20
-> > > > > > It should be noticed that, as my tree has several ABI fixes,  t=
-he time to run the
-> > > > > > script is likely less than if you run on your tree, as there wi=
-ll be less symbols to
-> > > > > > be reported, and the algorithm is optimized to reduce the numbe=
-r of regexes
-> > > > > > when a symbol is found.
-> > > > > >=20
-> > > > > > Besides optimizing and improving the seek logic, this series al=
-so change the
-> > > > > > debug logic. It how receives a bitmap, where "8" means to print=
- the regexes
-> > > > > > that will be used by "undefined" command:
-> > > > > >=20
-> > > > > > 	$ time ./scripts/get_abi.pl undefined --debug 8 >foo
-> > > > > > 	real	0m17,189s
-> > > > > > 	user	0m13,940s
-> > > > > > 	sys	0m2,404s
-> > > > > >=20
-> > > > > > 	$wc -l foo
-> > > > > > 	18421939 foo
-> > > > > >=20
-> > > > > > 	$ cat foo
-> > > > > > 	...
-> > > > > > 	/sys/kernel/kexec_crash_loaded =3D~ /^(?^:^/sys/.*/iio\:device=
-.*/in_voltage.*_scale_available$)$/
-> > > > > > 	/sys/kernel/kexec_crash_loaded =3D~ /^(?^:^/sys/.*/iio\:device=
-.*/out_voltage.*_scale_available$)$/
-> > > > > > 	/sys/kernel/kexec_crash_loaded =3D~ /^(?^:^/sys/.*/iio\:device=
-.*/out_altvoltage.*_scale_available$)$/
-> > > > > > 	/sys/kernel/kexec_crash_loaded =3D~ /^(?^:^/sys/.*/iio\:device=
-.*/in_pressure.*_scale_available$)$/
-> > > > > > 	...
-> > > > > >=20
-> > > > > > On other words, on my desktop, the /sys match is performing >18=
-M regular=20
-> > > > > > expression searches, which takes 6,2 seconds (or 17,2 seconds, =
-if debug is=20
-> > > > > > enabled and sent to an area on my nvme storage).     =20
-> > > > >=20
-> > > > > Better, it's down to 10 minutes on my machine now:
-> > > > >=20
-> > > > > 	real	10m39.218s
-> > > > > 	user	10m37.742s
-> > > > > 	sys	0m0.775s   =20
-> > > >=20
-> > > > A lot better, but not clear why it is still taking ~40x more than h=
-ere...
-> > > > It could well be due to the other ABI changes yet to be applied
-> > > > (I'll submit it probably later today), but it could also be related=
- to
-> > > > something else. Could this be due to disk writes?   =20
-> > >=20
-> > > Disk writes to where for what?  This is a very fast disk (nvme raid
-> > > array)  It's also a very "big" system, with lots of sysfs files:
-> > >=20
-> > > 	$ find /sys/devices/ -type f | wc -l
-> > > 	44334 =20
-> >=20
-> > Ok. Maybe that partially explains why it is taking so long, as the
-> > number of regex to compare will increase (not linearly). =20
->=20
-> No idea.  I just ran it on my laptop and it took only 5 seconds.
+> On Tue, Sep 28, 2021 at 08:54:45AM +0100, Lee Jones wrote:
+> > On Mon, 27 Sep 2021, David E. Box wrote:
+> > 
+> > > On Mon, 2021-09-27 at 19:36 +0200, Greg KH wrote:
+> > > > On Wed, Sep 22, 2021 at 02:30:04PM -0700, David E. Box wrote:
+> > > > > Intel Platform Monitoring Technology (PMT) support is indicated by presence
+> > > > > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
+> > > > > structures may also be used by Intel to indicate support for other
+> > > > > capabilities unrelated to PMT.  OOBMSM is a device that can have both PMT
+> > > > > and non-PMT capabilities. In order to support these capabilities it is
+> > > > > necessary to modify the intel_pmt driver to handle the creation of platform
+> > > > > devices more generically.
+> > > > 
+> > > > I said this on your other driver submission, but why are you turning a
+> > > > PCIe device into a set of platform devices and craming it into the MFD
+> > > > subsystem?
+> > > > 
+> > > > PCIe devices are NOT platform devices.
+> > > 
+> > > But they *are* used to create platform devices when the PCIe device is multi-functional, which is
+> > > what intel_pmt is.
+> > > 
+> > > > 
+> > > > Why not use the auxiliary bus for this thing if you have individual
+> > > > drivers that need to "bind" to the different attributes that this single
+> > > > PCIe device is exporting.
+> > > 
+> > > It wasn't clear in the beginning how this would evolve. MFD made sense for the PMT (platform
+> > > monitoring technology) driver. PMT has 3 related but individually enumerable devices on the same IP,
+> > > like lpss. But the same IP is now being used for other features too like SDSi. We could work on
+> > > converting this to the auxiliary bus and then covert the cell drivers.
+> > 
+> > I see this as subsequent work.  It should not affect this submission.
+> > 
+> > FWIW, I still plan to review this set for inclusion into MFD.
+> 
+> That's fine, but as the add-on submission that builds on top of this is
+> a broken mess (which is what caused me to have to review this series), I
+> can't recommend that be taken yet as it needs work to prevent systems
+> from doing bad things.
 
-Ok, 5 seconds is similar to what I got here on the machines I
-tested so far. I'm waiting for a (shared) big machine to be available
-in order to be able to do some tests on it.
+Understood.  Deferred.
 
-> Hm, you aren't reading the values of the sysfs files, right?
-
-No. Just retrieving the directory contents. That part is actually
-fast: it takes less than 2 seconds here to read all ABI + traverse
-sysfs directories. Also, from your past logs, the time is spent
-later on, when it is handling the regex. On that time, there are
-just the regex parsing and printing the results.=20
-
-> Anything I can do to run to help figure out where the script is taking
-> so long?
-
-Not sure if it is worth the efforts. I mean, the relationship
-between the number of processed sysfs nodes and the number of regex
-to be tested (using big-oh and big-omega notation) should be between
-=CE=A9(n . log(n)) and O(n^2 . log(n)). There's not much space left for
-optimizing it, I guess.
-
-So, I would expect that a big server would take a log more time to
-process, it, due to the larger number of sysfs entries.
-
-Also, if one wants to speedup on a big machine, it could either
-exclude some pattern, like:
-
-	# Won't parse any PCI devices
-	$time ./scripts/get_abi.pl undefined --search-string '^(?!.*pci)' |wc -l
-	8438
-
-	real	0m3,494s
-	user	0m2,829s
-	sys	0m0,658s
-
-or (more likely) just search for an specific part of the ABI:
-
-	# Seek ABI only for PCI devices
- 	$ ./scripts/get_abi.pl undefined --search-string pci
-
----
-
-After sleeping on it, I opted to implement some progress information.
-
-That will help to identify any issues that might be causing the
-script to take so long to finish.
-
-I'll send the patches on a new series.
-
->=20
-> > > And any Documentation/ABI/ updates you might have I'll gladly
-> > > take as well. =20
-> >=20
-> > I'll be submitting it soon enough. Got sidetracked by a regression
-> > on my INBOX due to a fetchmail regression[1]. =20
->=20
-> Ick, fetchmail.  I recommend getmail instead, much more robust and a
-> sane maintainer :)
-
-Hmm... interesting. Never tried getmail. I guess I'll give it a
-try. It is a shame that Fedora doesn't package it yet.
-
->=20
-> I'll take a look at those patches now.
->=20
-> thanks,
->=20
-> greg k-h
-
-
-
-Thanks,
-Mauro
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
