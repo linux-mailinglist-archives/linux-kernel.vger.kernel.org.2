@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AA241B102
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628AB41AFF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240959AbhI1NkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:40:12 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:45838 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240882AbhI1NkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:40:11 -0400
-Received: from BC-Mail-Ex12.internal.baidu.com (unknown [172.31.51.52])
-        by Forcepoint Email with ESMTPS id 536C2E7DFD5F9B455AC8;
-        Tue, 28 Sep 2021 21:22:05 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex12.internal.baidu.com (172.31.51.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 28 Sep 2021 21:22:05 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 28 Sep 2021 21:22:04 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <andrew@lunn.ch>, <horatiu.vultur@microchip.com>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH] net: mdio-ipq4019: Fix the error for an optional regs resource
-Date:   Tue, 28 Sep 2021 21:21:57 +0800
-Message-ID: <20210928132157.2027-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S240879AbhI1NYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:24:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240579AbhI1NYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:24:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6748C611BD;
+        Tue, 28 Sep 2021 13:22:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632835358;
+        bh=cWaVXKQuN3nkLq32pZ/eOvCZQPH57EVZSiGyda8i8F8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fdmWfrfsJwEAyZfjzOtPJp3ifg4fVak+YTq/bqBKF2AU6gNd5YQ3gptbMO7oKMMlX
+         +zhdSXFgW5semnuzJglE9aaVXFQpeXMIteMYpCU563Awd53cx2OVsn1n6wMhJsxhIG
+         z7Ln/jD38NA0dtq2J+TIZMrwvK6OJUma/FqMnx+Qo0JgUTaTWrjhU7YfvA7MqVPXTe
+         GbK3C/gcAI/XRwCfXsDOW7KcbWs8J5WQFH9mhwOxZJ4ax4mAFAvcy0MFfkUF64BnWa
+         WCt9WHd09g5ip5cVAtpJI3c/X/FlnO1M9tZ/iYat0e7R8C4l/0xyltK1HH/veNlyyK
+         en744RjDi3mMw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 10C9F410A1; Tue, 28 Sep 2021 10:22:36 -0300 (-03)
+Date:   Tue, 28 Sep 2021 10:22:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Like Xu <like.xu.linux@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
+ arch_std_events
+Message-ID: <YVMXHM0F/y2ptX8C@kernel.org>
+References: <20210928102938.69681-1-likexu@tencent.com>
+ <YVMB5kt8XG+OdJ1M@kernel.org>
+ <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
+ <YVMVwDt3QHBPfT/T@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex16.internal.baidu.com (172.31.51.56) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVMVwDt3QHBPfT/T@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The second resource is optional which is only provided on the chipset
-IPQ5018. But the blamed commit ignores that and if the resource is
-not there it just fails.
+Em Tue, Sep 28, 2021 at 10:16:48AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Sep 28, 2021 at 01:49:20PM +0100, John Garry escreveu:
+> > On 28/09/2021 12:52, Arnaldo Carvalho de Melo wrote:
+> > > Em Tue, Sep 28, 2021 at 06:29:38PM +0800, Like Xu escreveu:
+> > > > From: Like Xu <likexu@tencent.com>
+> > > > 
+> > > > The compiler reports that free_sys_event_tables() is dead code. But
+> > > > according to the semantics, the "LIST_HEAD(arch_std_events)" should
+> > > > also be released, just like we do with 'arch_std_events' in the main().
+> > > 
+> > > Thanks, applied.
+> > > 
+> > > - Arnaldo
+> > > 
+> > 
+> > If not too late:
+> > Reviewed-by: John Garry <john.garry@huawei.com>
+> 
+> Not too late, collected.
+>  
+> > I think that it could be a good idea to raise gcc warning level to detect
+> > unused static functions, like this was
+> 
+> Agreed, but we already have:
+> 
+> CORE_CFLAGS += -Wall
+> CORE_CFLAGS += -Wextra
+> 
+> We can se it for this specific case with:
+> 
+> $ make V=1 -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin | grep jevents
+> make -f /var/home/acme/git/perf/tools/build/Makefile.build dir=pmu-events obj=jevents
+>   gcc -Wp,-MD,/tmp/build/perf/pmu-events/.jevents.o.d -Wp,-MT,/tmp/build/perf/pmu-events/jevents.o  -D"BUILD_STR(s)=#s" -I/var/home/acme/git/perf/tools/include  -c -o /tmp/build/perf/pmu-events/jevents.o pmu-events/jevents.c
+>    ld -r -o /tmp/build/perf/pmu-events/jevents-in.o  /tmp/build/perf/pmu-events/json.o /tmp/build/perf/pmu-events/jsmn.o /tmp/build/perf/pmu-events/jevents.o
+> gcc /tmp/build/perf/pmu-events/jevents-in.o -o /tmp/build/perf/pmu-events/jevents
+> /tmp/build/perf/pmu-events/jevents x86 pmu-events/arch /tmp/build/perf/pmu-events/pmu-events.c 1
+> jevents: Processing mapfile pmu-events/arch/x86/mapfile.csv
+> 
+> Humm... no "-Wall -Wextra" there... lemme try to fix it
 
-the resource is used like this,
-	if (priv->eth_ldo_rdy) {
-		val = readl(priv->eth_ldo_rdy);
-		val |= BIT(0);
-		writel(val, priv->eth_ldo_rdy);
-		fsleep(IPQ_PHY_SET_DELAY_US);
-	}
+With this:
 
-This patch reverts that to still allow the second resource to be optional
-because other SoC have the some MDIO controller and doesn't need to
-second resource.
+⬢[acme@toolbox perf]$ git diff
+diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+index a055dee6a46af77e..ea7107630bf4327f 100644
+--- a/tools/perf/pmu-events/Build
++++ b/tools/perf/pmu-events/Build
+@@ -1,7 +1,7 @@
+ hostprogs := jevents
 
-Fix Commit fa14d03e014a ("net: mdio-ipq4019: Make use of
-devm_platform_ioremap_resource()")
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/net/mdio/mdio-ipq4019.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ jevents-y      += json.o jsmn.o jevents.o
+-HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include
++HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include -Wall -Wextra
+ pmu-events-y   += pmu-events.o
+ JDIR           =  pmu-events/arch/$(SRCARCH)
+ JSON           =  $(shell [ -d $(JDIR) ] &&                            \
+⬢[acme@toolbox perf]$
 
-diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
-index 0d7d3e15d2f0..5f4cd24a0241 100644
---- a/drivers/net/mdio/mdio-ipq4019.c
-+++ b/drivers/net/mdio/mdio-ipq4019.c
-@@ -207,6 +207,7 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
- {
- 	struct ipq4019_mdio_data *priv;
- 	struct mii_bus *bus;
-+	struct resource *res;
- 	int ret;
- 
- 	bus = devm_mdiobus_alloc_size(&pdev->dev, sizeof(*priv));
-@@ -224,7 +225,10 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->mdio_clk);
- 
- 	/* The platform resource is provided on the chipset IPQ5018 */
--	priv->eth_ldo_rdy = devm_platform_ioremap_resource(pdev, 1);
-+	/* This resource is optional */
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+	if (res)
-+		priv->eth_ldo_rdy = devm_ioremap_resource(&pdev->dev, res);
- 
- 	bus->name = "ipq4019_mdio";
- 	bus->read = ipq4019_mdio_read;
--- 
-2.25.1
+I get this before applying Xu's patch:
 
+  LINK    /tmp/build/perf/libbpf.a
+pmu-events/jevents.c: In function ‘save_arch_std_events’:
+pmu-events/jevents.c:473:39: warning: unused parameter ‘data’ [-Wunused-parameter]
+  473 | static int save_arch_std_events(void *data, struct json_event *je)
+      |                                 ~~~~~~^~~~
+At top level:
+pmu-events/jevents.c:93:13: warning: ‘free_sys_event_tables’ defined but not used [-Wunused-function]
+   93 | static void free_sys_event_tables(void)
+      |             ^~~~~~~~~~~~~~~~~~~~~
+
+
+-------------------------------------
+
+I'll add this to perf/core, as this isn't a strict fix, so can wait for
+v5.16.
+
+- Arnaldo
