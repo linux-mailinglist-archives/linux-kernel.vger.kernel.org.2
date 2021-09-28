@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A3941BA00
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E0441BA03
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243053AbhI1WQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243047AbhI1WQj (ORCPT
+        id S243089AbhI1WQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:16:56 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:52935 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243073AbhI1WQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:16:39 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CEDC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:14:59 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w19so197788pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oDTEp4uXq7wouuQuWuPnWVQXCIo6P8LpvQajseAha48=;
-        b=BnufAkDaSqbvE0tuVagV8WXp+XHOA8rRfAQGH7v7vq47FtDaVwPb2gV3pg84col7Jn
-         wiWxSJtOhRHOZ1OnBfK1IusCBeqHNprdHmkCTk9hwy1TjpFLJ2o37qhbCK64RU58wR+/
-         NVNuIOjncjEgaNz1Aji8RAKlyT10kUNAthNYDNVDkepM7EAAeST1QgAUJgZz9JV6W8pQ
-         Ga3dyZRVb1TCTPcNFYt7tNYB7fChJLmzpTPIY1149VIXRC09i0vUfJF6BV+ql+c0RWWW
-         CLk/XS24h5X+HgfBHwpw+x6pOo0ByCwKeOnP2OHqWK6fByzx9dwNkhyWHGw0eQ1hWxHI
-         bubg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oDTEp4uXq7wouuQuWuPnWVQXCIo6P8LpvQajseAha48=;
-        b=QAe9svN3DHQLaSlbJCN+PWQZB6uEvp+pSmTDmKMXVGX2hKxqpbvEgm+JeFixZlCun9
-         itEbGsPBemF4jr2nzRNUIp4CYzFQxmPjy3IwOkZMbPwYbG6aN/URotCuDJ/QgIAxsJEB
-         bc8AxWVC4BOo2l9oLa3kMcrEMTDS8SS6WfM9agiSo2vPk3jZ5yahV1NYoAKsfCtu0Ji8
-         me5cqsR9sTL5M5jlFwCqHRS9vqvKBT1EEQBK1YvwcYVueUFoAjsC/PZZu5c2OUsr43lM
-         topy9pQfPeDKOvWMPccHyKcmrTkXm3e5GOJPTah12n98iKMT+9Gp9qZa8Wwl301662PW
-         KgLA==
-X-Gm-Message-State: AOAM531tbYEG5cOGcN1ihAHcfbr6amoGpRkzwQKbVjgbP+H13zbDrCCA
-        qemGIc3S1ZnLLfcHF5c8WCO2UQ==
-X-Google-Smtp-Source: ABdhPJxBJllV/6MHwH/O4bupLMykTY/L8aml4vOWRLyRzjZbQcPh2xbpVAvFMm0QwWZGt6UvJ4KliA==
-X-Received: by 2002:a62:dd0a:0:b0:44b:bd85:9387 with SMTP id w10-20020a62dd0a000000b0044bbd859387mr2015835pff.49.1632867298411;
-        Tue, 28 Sep 2021 15:14:58 -0700 (PDT)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id d7sm142548pfq.43.2021.09.28.15.14.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 15:14:57 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 22:14:54 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 14/14] KVM: x86: Invoke kvm_vcpu_block() directly for
- non-HALTED wait states
-Message-ID: <YVOT3gj1ulBTNSw3@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <20210925005528.1145584-15-seanjc@google.com>
+        Tue, 28 Sep 2021 18:16:51 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 0E1831C0006;
+        Tue, 28 Sep 2021 22:15:07 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 0/8] Cleanup series about Hamming helpers 
+Date:   Wed, 29 Sep 2021 00:14:59 +0200
+Message-Id: <20210928221507.199198-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925005528.1145584-15-seanjc@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:55:28PM -0700, Sean Christopherson wrote:
-> Call kvm_vcpu_block() directly for all wait states except HALTED so that
-> kvm_vcpu_halt() is no longer a misnomer on x86.
-> 
-> Functionally, this means KVM will never attempt halt-polling or adjust
-> vcpu->halt_poll_ns for INIT_RECEIVED (a.k.a. Wait-For-SIPI (WFS)) or
-> AP_RESET_HOLD; UNINITIALIZED is handled in kvm_arch_vcpu_ioctl_run(),
-> and x86 doesn't use any other "wait" states.
-> 
-> As mentioned above, the motivation of this is purely so that "halt" isn't
-> overloaded on x86, e.g. in KVM's stats.  Skipping halt-polling for WFS
-> (and RESET_HOLD) has no meaningful effect on guest performance as there
-> are typically single-digit numbers of INIT-SIPI sequences per AP vCPU,
-> per boot, versus thousands of HLTs just to boot to console.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Hello,
 
-Reviewed-by: David Matlack <dmatlack@google.com>
+The detailed description is available in each patch description but
+basically:
+* The FSMC driver was (I believe) still broken so here is a patch for
+  that.
+* As requested by Linus when he pulled a series of fixes during the 5.13
+  cycle, the need for declaring individual indentical helpers in each
+  driver using the "raw" Hamming ECC helpers was unjustified:
+  - Here is a proposal for simplifying the situation
+  - Followed by a series of revert (no need to backport these, it's just
+    general cleanup).
 
-> ---
->  arch/x86/kvm/x86.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index b444f9315766..a0f313c4bc49 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9893,7 +9893,10 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
->  	if (!kvm_arch_vcpu_runnable(vcpu) &&
->  	    (!kvm_x86_ops.pre_block || static_call(kvm_x86_pre_block)(vcpu) == 0)) {
->  		srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
-> -		kvm_vcpu_halt(vcpu);
-> +		if (vcpu->arch.mp_state == KVM_MP_STATE_HALTED)
-> +			kvm_vcpu_halt(vcpu);
-> +		else
-> +			kvm_vcpu_block(vcpu);
->  		vcpu->srcu_idx = srcu_read_lock(&kvm->srcu);
->  
->  		if (kvm_x86_ops.post_block)
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+Thanks,
+Miquèl
+
+Miquel Raynal (8):
+  mtd: rawnand: fsmc: Fix use of SM ORDER
+  mtd: rawnand: Let callers use the bare Hamming helpers
+  Revert "mtd: rawnand: txx9ndfmc: Fix external use of SW Hamming ECC
+    helper"
+  Revert "mtd: rawnand: tmio: Fix external use of SW Hamming ECC helper"
+  Revert "mtd: rawnand: sharpsl: Fix external use of SW Hamming ECC
+    helper"
+  Revert "mtd: rawnand: ndfc: Fix external use of SW Hamming ECC helper"
+  Revert "mtd: rawnand: lpc32xx_slc: Fix external use of SW Hamming ECC
+    helper"
+  Revert "mtd: rawnand: cs553x: Fix external use of SW Hamming ECC
+    helper"
+
+ drivers/mtd/nand/ecc-sw-hamming.c  |  7 ++++---
+ drivers/mtd/nand/raw/cs553x_nand.c | 12 +-----------
+ drivers/mtd/nand/raw/fsmc_nand.c   |  4 +++-
+ drivers/mtd/nand/raw/lpc32xx_slc.c | 15 +--------------
+ drivers/mtd/nand/raw/ndfc.c        | 12 +-----------
+ drivers/mtd/nand/raw/sharpsl.c     | 12 +-----------
+ drivers/mtd/nand/raw/tmio_nand.c   |  8 +++-----
+ drivers/mtd/nand/raw/txx9ndfmc.c   |  5 ++---
+ 8 files changed, 16 insertions(+), 59 deletions(-)
+
+-- 
+2.27.0
+
