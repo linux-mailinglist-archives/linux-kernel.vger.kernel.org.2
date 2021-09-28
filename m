@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520C841ABE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDA241ABE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239976AbhI1Jc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        id S240032AbhI1Jcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239832AbhI1JcV (ORCPT
+        with ESMTP id S239850AbhI1JcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:32:21 -0400
-X-Greylist: delayed 409 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Sep 2021 02:30:38 PDT
+        Tue, 28 Sep 2021 05:32:22 -0400
+X-Greylist: delayed 410 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Sep 2021 02:30:38 PDT
 Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F67C061604;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB70C061740;
         Tue, 28 Sep 2021 02:30:38 -0700 (PDT)
 Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id E70B1C2D;
-        Tue, 28 Sep 2021 02:23:51 -0700 (PDT)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 7279EC53;
+        Tue, 28 Sep 2021 02:23:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
         s=thorn; t=1632821032;
-        bh=tXLdw8+7XyyaNC2nx8/azLFD8tnijRO/sXuXLjMDFfI=;
+        bh=OL+wLYUxy0gYzafQl0tDCAxXVTFEgMWaHXWJNw47X7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KuJx3h8+xeOXqjn30yyHApPuhrufZusIfYS8iPa+FVxQ9JuO80EkpegS3MeE7Ch2s
-         I15GhwuMLy77uLvQkXlTpbS0ao/WpoymxODxEBEePZg43oejKsZl8OEPnpC4n/GQAm
-         ZUAMTya33ECDRvM8YguzsWoJ4+biEduXdAH9j7Zg=
+        b=I/IvhQUFC1S3knvGefzb8ZNayYDTTFr19IrAHEeDYC6Q5DfpKw3VdlTqSyzc5t5Se
+         XulSt7S5QeHATdCj1zrjevkBi0vFd3fK80+9VW3srO+Zr29AfBgwckveDXhAkiRSjC
+         2UauikC7JbsZsoSNtHgRL/r2vjRlLcfSEmvdY+3E=
 From:   Zev Weiss <zev@bewilderbeest.net>
 To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     Zev Weiss <zev@bewilderbeest.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] hwmon: (pmbus/lm25066) Add OF device ID table
-Date:   Tue, 28 Sep 2021 02:22:40 -0700
-Message-Id: <20210928092242.30036-7-zev@bewilderbeest.net>
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 7/8] hwmon: (pmbus/lm25066) Support configurable sense resistor values
+Date:   Tue, 28 Sep 2021 02:22:41 -0700
+Message-Id: <20210928092242.30036-8-zev@bewilderbeest.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210928092242.30036-1-zev@bewilderbeest.net>
 References: <20210928092242.30036-1-zev@bewilderbeest.net>
@@ -47,78 +48,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-See commit 8881a19187e4 ("hwmon: (ucd9000) Add OF device ID table")
-for reasoning.
+The appropriate mantissa values for the lm25066 family's direct-format
+current and power readings are a function of the sense resistor
+employed between the SENSE and VIN pins of the chip.  Instead of
+assuming that resistance is always the same 1mOhm as used in the
+datasheet, allow it to be configured via a device-tree property
+("shunt-resistor-micro-ohms").
 
 Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 ---
- drivers/hwmon/pmbus/lm25066.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ Documentation/hwmon/lm25066.rst |  2 ++
+ drivers/hwmon/pmbus/lm25066.c   | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
+diff --git a/Documentation/hwmon/lm25066.rst b/Documentation/hwmon/lm25066.rst
+index 9f1d7e4d3ca1..a2098eb24090 100644
+--- a/Documentation/hwmon/lm25066.rst
++++ b/Documentation/hwmon/lm25066.rst
+@@ -79,6 +79,8 @@ This driver does not auto-detect devices. You will have to instantiate the
+ devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+ details.
+ 
++The shunt (sense) resistor value can be configured by a device tree property;
++see Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml for details.
+ 
+ Platform data support
+ ---------------------
 diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
-index dbbf8571c437..18d5a76f346d 100644
+index 18d5a76f346d..29e848bcd436 100644
 --- a/drivers/hwmon/pmbus/lm25066.c
 +++ b/drivers/hwmon/pmbus/lm25066.c
-@@ -14,6 +14,7 @@
- #include <linux/slab.h>
- #include <linux/i2c.h>
- #include <linux/log2.h>
-+#include <linux/of_device.h>
- #include "pmbus.h"
- 
- enum chips { lm25056, lm25066, lm5064, lm5066, lm5066i };
-@@ -444,12 +445,24 @@ static const struct i2c_device_id lm25066_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, lm25066_id);
- 
-+static const struct of_device_id __maybe_unused lm25066_of_match[] = {
-+	{ .compatible = "ti,lm25056", .data = (void*)lm25056, },
-+	{ .compatible = "ti,lm25066", .data = (void*)lm25066, },
-+	{ .compatible = "ti,lm5064",  .data = (void*)lm5064,  },
-+	{ .compatible = "ti,lm5066",  .data = (void*)lm5066,  },
-+	{ .compatible = "ti,lm5066i", .data = (void*)lm5066i, },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, lm25066_of_match);
-+
+@@ -458,6 +458,7 @@ MODULE_DEVICE_TABLE(of, lm25066_of_match);
  static int lm25066_probe(struct i2c_client *client)
  {
  	int config;
++	u32 shunt;
  	struct lm25066_data *data;
  	struct pmbus_driver_info *info;
  	const struct __coeff *coeff;
-+	const struct of_device_id *of_id;
-+	const struct i2c_device_id *i2c_id;
+@@ -535,6 +536,17 @@ static int lm25066_probe(struct i2c_client *client)
+ 		info->b[PSC_POWER] = coeff[PSC_POWER].b;
+ 	}
  
- 	if (!i2c_check_functionality(client->adapter,
- 				     I2C_FUNC_SMBUS_READ_BYTE_DATA))
-@@ -464,7 +477,15 @@ static int lm25066_probe(struct i2c_client *client)
- 	if (config < 0)
- 		return config;
- 
--	data->id = i2c_match_id(lm25066_id, client)->driver_data;
-+	i2c_id = i2c_match_id(lm25066_id, client);
++	/*
++	 * Values in the TI datasheets are normalized for a 1mOhm sense
++	 * resistor; assume that unless DT specifies a value explicitly.
++	 */
++	if (of_property_read_u32(client->dev.of_node,
++	                         "shunt-resistor-micro-ohms", &shunt))
++		shunt = 1000;
 +
-+	of_id = of_match_device(lm25066_of_match, &client->dev);
-+	if (of_id && (enum chips)of_id->data != i2c_id->driver_data)
-+		dev_notice(&client->dev,
-+		           "Device mismatch: %s in device tree, %s detected\n",
-+		           of_id->name, i2c_id->name);
++	info->m[PSC_CURRENT_IN] = info->m[PSC_CURRENT_IN] * shunt / 1000;
++	info->m[PSC_POWER] = info->m[PSC_POWER] * shunt / 1000;
 +
-+	data->id = i2c_id->driver_data;
- 	info = &data->info;
+ 	return pmbus_do_probe(client, info);
+ }
  
- 	info->pages = 1;
-@@ -521,7 +542,8 @@ static int lm25066_probe(struct i2c_client *client)
- static struct i2c_driver lm25066_driver = {
- 	.driver = {
- 		   .name = "lm25066",
--		   },
-+		   .of_match_table = of_match_ptr(lm25066_of_match),
-+	},
- 	.probe_new = lm25066_probe,
- 	.id_table = lm25066_id,
- };
 -- 
 2.33.0
 
