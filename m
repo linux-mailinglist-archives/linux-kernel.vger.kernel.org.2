@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01F141B664
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47E641B66B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242466AbhI1Se5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242561AbhI1SeQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:34:16 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40073C061746;
-        Tue, 28 Sep 2021 11:32:36 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i4so47771lfv.4;
-        Tue, 28 Sep 2021 11:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G+CYfrIO1JCw1yxm6yg+/r1TsCdRkQWZWs7PCERtxoE=;
-        b=NxxHSHEqx5cBCRtezWHHqmqIDBczPEzUFzqarhaQ7yDb9PcQXiK3pjqbgZII8wI/34
-         fu006zFbJs1bfrRhChbg38ch4nSptHGRQobJ7gpR3Nf8MKdUBm1Ls0EP5J68I3jttFS5
-         g88KyyqBWTs1fvTdgHOOXCnoNVWjIFgHBG40x5K+EwgOdMJNCuAdlpaiwrPskn0V9oov
-         GOgA9aVyAT1ib22TcHjIYzqneT3hYbq7RHM/VwKHxckBoVIPr9vgJkbYAi84J2QQaFke
-         XZpyBnr4fj9cuCcUhybTWojOBFxy+wJgkozCH+5Y/whW4hOvB2FXQiHvcbJH4pV1fEQg
-         z3AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G+CYfrIO1JCw1yxm6yg+/r1TsCdRkQWZWs7PCERtxoE=;
-        b=cuG52Y/jCoIFYvYwE2expFeSpTywLa0IBmqKzLdz03OGXe2Gkdo9NxDuU5bDXY1Axs
-         Ov8PyMBQOFfiaG5Vmz6a6mUNHVXCpm+dwKEmeNbbXBocule28hWfiTg4JPHlnjSQB1s7
-         6mmW5WV3wtcWcg+XLKdFndDZCHTPMmC5qo7eXAmpHkGiAmT6uJX9PtgNPxB8cTQJ1C50
-         Fi5hJ/uxKQPZ2LZekrQ0rxaKaC6XXZHl4kUnUn24+ayWv/2YeT/00PaIThXacGhSUt6P
-         AHh5aEYreytSqSsPAVdOhypYFSK+9Pd3DJg/OXBO4tz1DeWtkRFUee/I9y6QDktSlRjE
-         AOLA==
-X-Gm-Message-State: AOAM532LRtX5pMPYOojTaucNrE2JuhApw3Ltcn4f5lnu669SGdszQdmK
-        EggwQVoO/ifDgX0u5F2zZlci+icRias=
-X-Google-Smtp-Source: ABdhPJxI/hl8PMmYNQUW8K1GZjpDc+8DxBV5fxrptnA97ex+/ZC+hX89FNRKJ5SIB8Ui7ljOdI/FxQ==
-X-Received: by 2002:a05:651c:988:: with SMTP id b8mr1385441ljq.187.1632853954646;
-        Tue, 28 Sep 2021 11:32:34 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id t12sm1988158lfc.55.2021.09.28.11.32.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 11:32:34 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 21:32:32 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs/ntfs3: Forbid FALLOC_FL_PUNCH_HOLE for normal files
-Message-ID: <20210928183232.qi63jh2feknm3e7t@kari-VirtualBox>
-References: <fad6f129-c53f-d751-be43-c403b1031449@paragon-software.com>
+        id S230139AbhI1Sft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:35:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242312AbhI1Sfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 14:35:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8D096103E;
+        Tue, 28 Sep 2021 18:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632854045;
+        bh=yatOfEZCG35taMbc6RN96f4TL49hkZJdqHa9Wh8F1Jw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=aLJSFtjSQ3Ph/2Sqoip0dlh0K4tMVVjiyzvEENPDVr7MXl1kqqNWYwx+snsa8Sjrr
+         RWcB4bpj6gYLhV/eWdvVSm7w0QgKYd09oNA0C9ySSZUvbJNAyNAn7GhaUTMBGkReCM
+         XpJhGt+257pccSLaYwcMz4edFqQORsgji4HQWrVZLULgck8Kt8LsSr7dCLedjIB27A
+         XRoO9gnA1utUNqlolEvrbD1bQvyo/7GmBCeZF9U8UtpHfFOXKp4thmSbYqZ6MYw1Qa
+         Lm5CXeY2nL4hjOrwsAoyHKERhKOKnB2hXhKWJ0IIVKOKy0jyJYOA1Mu1P1fVcmN/lN
+         ubhqFltEg1u6Q==
+Date:   Tue, 28 Sep 2021 13:34:03 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Carlos Bilbao <bilbao@vt.edu>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/17] ABI: sysfs-bus-pci: add a alternative What fields
+Message-ID: <20210928183403.GA715406@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fad6f129-c53f-d751-be43-c403b1031449@paragon-software.com>
+In-Reply-To: <15ba8c07f1b0fd7359106920c8e34a7b9af7aea6.1632750608.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:25:58PM +0300, Konstantin Komarov wrote:
-> FALLOC_FL_PUNCH_HOLE isn't allowed with normal files.
+Probably already queued up, but:
 
-But is this absolute or just for now it can't? In my mind this can be
-done, but you are expert here. Please write about it here. This will
-help who ever will implement this in future. Example why ntfs_zero_range
-did not punch a hole for normal file. You did actually implement that
-function for this purpose right?
+s/add a alternative/add alternative/ (in subject)
 
-> Fixes xfstest generic/016 021 022
+On Mon, Sep 27, 2021 at 03:59:43PM +0200, Mauro Carvalho Chehab wrote:
+> There are some PCI ABI that aren't shown under:
+> 
+> 	/sys/bus/pci/drivers/.../
+> 
+> Because they're registered with a different class. That's
+> the case of, for instance:
+> 
+> 	/sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/unbind
+> 
+> This one is not present under /sys/bus/pci:
+> 
+> 	$ find /sys/bus/pci -name 'CHT Whiskey Cove PMIC'
+> 
+> Although clearly this is provided by a PCI driver:
+> 
+> 	/sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/CHT Whiskey Cove PMIC/unbind
+> 
+> So, add an altertate What location in order to match bind/unbind
+> to such devices.
 
-Lot of grepping is done with these so use full format generic/xxx with
-each of these.
+s/altertate/alternate/
 
-Also this affects also to these, but I did not look if there is other
-problems than punching.
-
-  generic/012
-  generic/177
-  generic/255
-  generic/316
-
-
-Add fixes tag here.
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  fs/ntfs3/file.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-> index 5fb3508e5422..02ca665baa5f 100644
-> --- a/fs/ntfs3/file.c
-> +++ b/fs/ntfs3/file.c
-> @@ -587,8 +587,8 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
->  		truncate_pagecache(inode, vbo_down);
->  
->  		if (!is_sparsed(ni) && !is_compressed(ni)) {
-> -			/* Normal file. */
-> -			err = ntfs_zero_range(inode, vbo, end);
-> +			/* Normal file, can't make hole. */
-
-If this is just for now plese write example
-			/* TODO: Can't make hole to normal files yet. */
-
-> +			err = -EOPNOTSUPP;
->  			goto out;
->  		}
->  
-> -- 
-> 2.33.0
+> See [PATCH 00/17] at: https://lore.kernel.org/all/cover.1632750608.git.mchehab+huawei@kernel.org/
 > 
+>  Documentation/ABI/testing/sysfs-bus-pci | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index 1eeac7f59672..16afe3f59cbd 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -1,4 +1,5 @@
+>  What:		/sys/bus/pci/drivers/.../bind
+> +What:		/sys/devices/pciX/.../bind
+
+Wasn't somebody just updating these wildcard-ish items in pathnames?
+
+Ah, it was you :)
+
+  https://lore.kernel.org/all/4ede4ec98e295f054f3e5a6f3f9393b5e3d5d2a7.1631782432.git.mchehab+huawei@kernel.org/
+
+Changing "virtfnN" to "virtfn<N>".
+
+Is that same sort of thing applicable here?  My system has
+
+  /sys/devices/pci0000:00/...
+
+Bjorn
