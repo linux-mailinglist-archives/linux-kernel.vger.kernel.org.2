@@ -2,142 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F21241B190
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592CF41B194
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240172AbhI1OHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:07:25 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3647 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233878AbhI1OHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:07:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="285715022"
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="285715022"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 07:05:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="554008396"
-Received: from gpfry-mobl1.amr.corp.intel.com (HELO [10.251.22.193]) ([10.251.22.193])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 07:05:42 -0700
-Subject: Re: [PATCH v6 06/11] x86/traps: Add #VE support for TDX guest
-To:     Joerg Roedel <joro@8bytes.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210903172812.1097643-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YVMHmt/cf63w93A+@8bytes.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <63e59789-ce23-6b2b-5ef4-3782e7ddffd6@intel.com>
-Date:   Tue, 28 Sep 2021 07:05:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240920AbhI1OI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:08:57 -0400
+Received: from mail-dm6nam10on2066.outbound.protection.outlook.com ([40.107.93.66]:48682
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240658AbhI1OIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 10:08:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CbNlqdF37vnAjM9VVArjtE9lmZkfkKBmxNgAd6iC/nMQmt/HUtMzhDPxE/SXJ06Fu9yI9nVVEHYwwBYsyxeUZnV5SbLZ1090yPswYpM3J44y1fOjoJi2BghgfHH8dFpNa48eO2rF+s7k6Ugs7r63ubfeMO9cUn7dYByYGVvbTFVbqQ6NG9VwkWsfpubXvbazh0zm7wWWd1OHQuanj0CDIsJMfUHYYE0s96HZhs2QMd0pO7aB8VdlAyEmIfxtmFvPwgYVxaCiWi/3ca/T4+MylYjKWCcRWmQEMub0ZI1GqOFnkywZ5/jVlutklEch9XigAE34foyfGq6m4OY2BWPwwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=/xUDRrP0vl1Cluw9TFrH3F2MPLeW2SWaQdkld1YTxww=;
+ b=lrTRrT9IboCJyRQc8paNe+gdiwxAcJUVCTASG3hIlHz5GGnF2joXuzTTxq/mnn+dIJGBoEkC07RYODh0USzuqrgVlt4gONIrtaQSDu0MN2DW1r021q9nPuDje5SkomnlppjuG6EUcwcUSKAVdkYsILm3xGiJ0GsbxXHyBnSc2rCsWMxp+0TYThkiHiFxHSNcx/x6FI+mky9w5TLGO6XG4N2j/UuU2lrk9pgAdUkksnAV1jX45uKYiCpBt8aTIDvt6OcHrjcYIL0kPTwuoSv9V83h7rUpPwx6iODx0PCp2PuTvBBWiACryCGhNUUyNiJu4FlVUgDUdBaObKDG5z+u9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/xUDRrP0vl1Cluw9TFrH3F2MPLeW2SWaQdkld1YTxww=;
+ b=HMd4DnKytJF9w8RyCs53IWdNo08NcpADe3cUdgafKbYF5o3u/d/dIyWQTfPJ8xzIx6N7blpf5tJVK8c2wjtB8LD5wlglzg6wGtzijpRxkTN9w/WA8PAGt8TLZFZlLwb8GqHga0oNLfMNtsoxkLcfjzGSPRMy7AL2iQbqayZPzm7tLAOu3htZAwxdeqx4vg1XapOZsZ3tTA2sG+dLPrsOL3nbeGNtfk2D11H+koUFfvhRElSqy7Zdlx3eRlptEweBR04d7RoqtRXFx4GjAlrXAUBoJi7J/xkFXpO1qdtBLy/rAjiGIVjDuM1znfgLjDJ35ngnULI+/BoPrqC2xDVqTw==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
+ DM4PR12MB5342.namprd12.prod.outlook.com (2603:10b6:5:39f::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.14; Tue, 28 Sep 2021 14:07:14 +0000
+Received: from DM6PR12MB5520.namprd12.prod.outlook.com
+ ([fe80::3817:44ce:52ad:3c0b]) by DM6PR12MB5520.namprd12.prod.outlook.com
+ ([fe80::3817:44ce:52ad:3c0b%5]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
+ 14:07:14 +0000
+Date:   Tue, 28 Sep 2021 11:07:12 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
+ interfaces
+Message-ID: <20210928140712.GL964074@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-7-yi.l.liu@intel.com>
+ <20210921170943.GS327412@nvidia.com>
+ <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922123931.GI327412@nvidia.com>
+ <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210927150928.GA1517957@nvidia.com>
+ <BN9PR11MB54337B7F65B98C2335B806938CA89@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210928115751.GK964074@nvidia.com>
+ <9a314095-3db9-30fc-2ed9-4e46d385036d@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a314095-3db9-30fc-2ed9-4e46d385036d@linux.intel.com>
+X-ClientProxiedBy: MN2PR12CA0015.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::28) To DM6PR12MB5520.namprd12.prod.outlook.com
+ (2603:10b6:5:208::9)
 MIME-Version: 1.0
-In-Reply-To: <YVMHmt/cf63w93A+@8bytes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR12CA0015.namprd12.prod.outlook.com (2603:10b6:208:a8::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Tue, 28 Sep 2021 14:07:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVDlI-006zHe-CF; Tue, 28 Sep 2021 11:07:12 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70dadfc1-89b8-4b94-3a62-08d982894599
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5342:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB53424268FF0796B77A8EB46FC2A89@DM4PR12MB5342.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V3qu2CEv2kntfuGkv+dun0yHg8MeOcMAdxjN1cwg5x3J626lgDlKrejK0yPPuQR/X7PQbOVHYxC26Cj6OxfHR7jzwffVP32TX+TT7WUf17azihBS0Aed54FFIwf6xpOzLMwTgYS58EC0GDJrn3I4V+jYF0D7LM7thOOBAdVJP67CqLrhmUY4nM3I8Tu2jJ7K0hAQeobHrHWbjPeXaNGo4H158BYkFI5vS/d3XPGvCby0wB5DhY7+NycydcEnQwJnWJxI4FwLbMRNXS/xYrofEAgWAgG5SvhjEJARLVdnE3r5/tb+/wLdGwdpYYwrKqHBO9rHLbQXLQzofNDIg9sMGe2fh/9nsOCfT/MSLmJZ1/ZdJ9swiPK1jovxK6L2Qgv4lx71Mf7UmuCGumqM00PLM4Ir10T854dVq4dd02dATNpJy8n56BpxG67j0uhrqchVeCDQ79UDe/PJTFiTXe5/r54IHjhZh7tSJhho+KgM7ItT1juAfHC//4QNcwaj5sZ+cfVHtGrviEM89KmbOfwKjqPQhLu6nXUk61Swapt9P6Ww9TknwB1oPeyksP5yFwdfkubYTKQwJXcLfTpYlToFHDgsXeOYtONYpbSRrCjW93/SB67jNWlQ2TLRdZzVWrozGKD346tWtUSLp/HN8H1nn1x2Ef1Ko0R5kKZhTOpVgaHcXm/9Pm19EY1wx0h8xyRkhOKsV0W1cB4Df2jVKS2WDaD5vN+TtaXQiOjX4WqD6bV/91R4hVdUoD6D78zMaCdKw+GRS6jgJvZw15VDnhk2kQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(36756003)(66556008)(66476007)(26005)(2906002)(7416002)(66946007)(86362001)(83380400001)(966005)(508600001)(5660300002)(1076003)(38100700002)(8676002)(9746002)(6916009)(9786002)(33656002)(107886003)(54906003)(4326008)(426003)(8936002)(316002)(2616005)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kayAifRObtxiaoI6hmG/wPYclvAc8R5M/sylqShrgleNHDWmOHj4FUOKKP8k?=
+ =?us-ascii?Q?wDNQxfzB/49p0+D41JNrqJ7kOA/mwX855wrEbzBx2waIFPyrHKWFr9j7Eq0U?=
+ =?us-ascii?Q?IYkfU+7WOkDo6W2/J7WnE1K8HFbyNndjHFk871K2b8Q6UPxDewDIt4MpPiGu?=
+ =?us-ascii?Q?CJ03l9d9WXi7GozO/MWXf4Bxc3klcRUbF9HDdY8Sh2ObfIukN9PofcWbMvpj?=
+ =?us-ascii?Q?X8xiOfFCUyb4FM9iyBQcBHN6nc9PFR5v7bqTXyy7MPNYpoqGxzgk0FC/wNEh?=
+ =?us-ascii?Q?PUkN0JesSQ+bEdJXreaCiiBEgpB/StHX16g1EfLbtBhio8JVIo7vBJhcTQJL?=
+ =?us-ascii?Q?AmuRFN+ZQAzpMNLhVxTYTarAwjfnZUtU9JBGoQeOZJQL2QjTPOPGLcQmdhgD?=
+ =?us-ascii?Q?3FWjQY9m4TueUtweFquqBlEsJidxcnNmJnfH6pG9RpYfuQs8T5adKSpYVPQp?=
+ =?us-ascii?Q?Ml4TnuB4EhOcPURa5OGbCTwqlQ966hYVXH9DZTyCmeslgtxSN4wR1SZH0jsQ?=
+ =?us-ascii?Q?r1YuyXjFBb+DxD4Y8/FufEmyx0l61zoNuRJHwlv1P5OCZf+MROpdKNQWtwqh?=
+ =?us-ascii?Q?4DywKiVjy/lNPO/xNWw/klMxwtj30sOdaFjyHvP+7WNK0v5Fw5ssl0qbBTvC?=
+ =?us-ascii?Q?ny1QJiuTg8JsYvJq9kIotFd92JJ73S9rKSmtCoHYs3eMZ0d5jbd/Nv1CnerA?=
+ =?us-ascii?Q?kM1YUxudTN2cM/Af9FaT94H0zaHjJRgYApkL8BGsleHuVCxNIN4XpKRmYGh8?=
+ =?us-ascii?Q?9sZGO0OCe958k9GmUMEdssLGJy+Qy6n+6TfEltKxFjsgv8ZLX9YKLKdFmbaQ?=
+ =?us-ascii?Q?9kLQx8P2UYHhVk45lK6NwWZDQkCEQM8vROWeBMntqZid9qEEPnmjLQXcXPoT?=
+ =?us-ascii?Q?FVSeaAAG0gPsc9ENwlj+vAbwzURdLXB124h9/SP6nLd6e0+2Z432IByhMx0U?=
+ =?us-ascii?Q?FjKnDi2mNWUGIgZpYk9xH5Of2al+xP8G/8R7C8nQhnSzfoJOcV3Tu3aNtH+h?=
+ =?us-ascii?Q?nUAMdfOgI0tmd31TgWlGWyTQ+7l7SBdh0sx8S2SxgOggoAn0GqVNcyLomy44?=
+ =?us-ascii?Q?F5v+IB8dvUzevYpSbWcvEqjtB+HnX7MfTmoX+hIB20M9xza1iPw6Z4ndyeRB?=
+ =?us-ascii?Q?Mfb1v/IeohY6HKcS/CQzSr2eD4+r+Y4lJVJpLlq6MYyoPPaWR4Yd1i/4C68q?=
+ =?us-ascii?Q?uquDhzgr0IB8CzRYRBsrqGYDFBboAYc0RXP8i1ffo5UQbcaNHIH8pxXPav6D?=
+ =?us-ascii?Q?7JGwEYXxQVuqu93JXBMGjAb01jtiMTdaZCV9wxiuJA+uFfv8oRGwhk42CPAX?=
+ =?us-ascii?Q?/iRgPvku+NjNf9imnOR40dfB?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70dadfc1-89b8-4b94-3a62-08d982894599
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 14:07:14.3607
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sr/0q+2sGf/OGKshFMlDE8vRk7cBNRZuKhBMN/J5Gk79/Ev5AVVzrsUoJOCvOSwt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5342
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 5:16 AM, Joerg Roedel wrote:
-> On Fri, Sep 03, 2021 at 10:28:07AM -0700, Kuppuswamy Sathyanarayanan wrote:
->> In the settings that Linux will run in, virtual exceptions are never
->> generated on accesses to normal, TD-private memory that has been
->> accepted.
+On Tue, Sep 28, 2021 at 09:35:05PM +0800, Lu Baolu wrote:
+> Another issue is, when putting a device into user-dma mode, all devices
+> belonging to the same iommu group shouldn't be bound with a kernel-dma
+> driver. Kevin's prototype checks this by READ_ONCE(dev->driver). This is
+> not lock safe as discussed below,
 > 
-> Does this also hold true when the Hypervisor does unexpected things that
-> cause previously accepted pages to become unaccepted again? This means
-> pages like the entry code pages or other memory that is touched before
-> the syscall entry path switched stacks.
+> https://lore.kernel.org/linux-iommu/20210927130935.GZ964074@nvidia.com/
 > 
-> Can you sched some light on what happens in such a situation?
+> Any guidance on this?
 
-"Shared" pages can cause #VE's.  The guest must be careful not to touch
-them in the syscall entry path, for example.  But, shared pages are
-untrusted so they're not use for stacks.
+Something like this?
 
-"Private" pages can cause #VE's.  But, only *some* of them.  Before a
-page is accepted, it is in the SEPT_PENDING and a reference would cause
-a #VE.  But, after acceptance, page references either succeed or a TD
-Exit and the hypervisor gets to handle the situation.
 
-Basically, if the hypervisor does unexpected things, the hypervisor gets
-to handle it.
+int iommu_set_device_dma_owner(struct device *dev, enum device_dma_owner mode,
+			       struct file *user_owner)
+{
+	struct iommu_group *group = group_from_dev(dev);
 
-The "Intel® TDX Module 1.0 Specification" from
+	spin_lock(&iommu_group->dma_owner_lock);
+	switch (mode) {
+		case DMA_OWNER_KERNEL:
+			if (iommu_group->dma_users[DMA_OWNER_USERSPACE])
+				return -EBUSY;
+			break;
+		case DMA_OWNER_SHARED:
+			break;
+		case DMA_OWNER_USERSPACE:
+			if (iommu_group->dma_users[DMA_OWNER_KERNEL])
+				return -EBUSY;
+			if (iommu_group->dma_owner_file != user_owner) {
+				if (iommu_group->dma_users[DMA_OWNER_USERSPACE])
+					return -EPERM;
+				get_file(user_owner);
+				iommu_group->dma_owner_file = user_owner;
+			}
+			break;
+		default:
+			spin_unlock(&iommu_group->dma_owner_lock);
+			return -EINVAL;
+	}
+	iommu_group->dma_users[mode]++;
+	spin_unlock(&iommu_group->dma_owner_lock);
+	return 0;
+}
 
-https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
+int iommu_release_device_dma_owner(struct device *dev,
+				   enum device_dma_owner mode)
+{
+	struct iommu_group *group = group_from_dev(dev);
 
-has more details:
+	spin_lock(&iommu_group->dma_owner_lock);
+	if (WARN_ON(!iommu_group->dma_users[mode]))
+		goto err_unlock;
+	if (!iommu_group->dma_users[mode]--) {
+		if (mode == DMA_OWNER_USERSPACE) {
+			fput(iommu_group->dma_owner_file);
+			iommu_group->dma_owner_file = NULL;
+		}
+	}
+err_unlock:
+	spin_unlock(&iommu_group->dma_owner_lock);
+}
 
-> 10.10.2. #VE Injection by the CPU due to EPT Violations
-> #VE is enabled unconditionally for TDX non-root operation. The Intel TDX module sets the TD VMCS EPT-violation #VE
-> VM-execution control to 1.
-> For shared memory accesses (i.e., when GPA.SHARED == 1), as with legacy VMX, the VMM can choose which pages are
-> eligible for #VE mutation based on the value of the Shared EPTE bit 63.
-> For private memory accesses (GPA.SHARED == 0), an EPT Violation causes a TD Exit in most cases, except when the Secure
-> EPT entry state is SEPT_PENDING (an exception to this is described in 10.11.1 below). The Intel TDX module sets the
-> Secure EPT entry’s Suppress VE bit (63) to 0 if the entry’s state is SEPT_PENDING. It sets that bit to 1 for all other entry
-> states.
 
+Where, the driver core does before probe:
+
+   iommu_set_device_dma_owner(dev, DMA_OWNER_KERNEL, NULL)
+
+pci_stub/etc does in their probe func:
+
+   iommu_set_device_dma_owner(dev, DMA_OWNER_SHARED, NULL)
+
+And vfio/iommfd does when a struct vfio_device FD is attached:
+
+   iommu_set_device_dma_owner(dev, DMA_OWNER_USERSPACE, group_file/iommu_file)
+
+Jason
