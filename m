@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A56841AF4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD1F41AF65
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240712AbhI1MsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:48:04 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3883 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240578AbhI1MsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:48:03 -0400
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HJfLt2rLvz67jYn;
-        Tue, 28 Sep 2021 20:43:34 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 14:46:22 +0200
-Received: from [10.47.85.67] (10.47.85.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 28 Sep
- 2021 13:46:21 +0100
-Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
- arch_std_events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Like Xu <like.xu.linux@gmail.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210928102938.69681-1-likexu@tencent.com>
- <YVMB5kt8XG+OdJ1M@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
-Date:   Tue, 28 Sep 2021 13:49:20 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S240743AbhI1Mvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240685AbhI1Mvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:51:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 10689610E5;
+        Tue, 28 Sep 2021 12:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632833407;
+        bh=J/caRSgwiECfRbdXLv/qphbD2xZmdQFEavRPuIhTwvM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iHbJQTS8MjWB9rUuSymu4pSxiS7PXTfvh1NFpHwSIq9XsMeT8sVW6uER/lY+qNTOj
+         zWAHj+o/lymLDxD8GkKDAzbAdwW0RZ25ukOvbkE907HQo6FJk8Y3shYFIvuhfJAzva
+         zrPgU708oUFWinWZ3GfgvadIp7WHdl/zhGZVgQ9wH6hOEvbNzsEAfcGBNyKkO71pBb
+         eXZUS4J9gDqnj4ij4y5fl0iJTxwzkBiiMmbkM1TBmqVcwG4YJ/2MxXq1zxoX+/MGRl
+         keWU/tgKUTv1Fe3e6y9oY7wh3IzUqTuIwpaCogpomyVCCQpXVCZ1io2pJIqakHbDxn
+         HhbPN0hA4vdRA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0494E60A59;
+        Tue, 28 Sep 2021 12:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YVMB5kt8XG+OdJ1M@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.67]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] [v2] net: hns3: fix hclge_dbg_dump_tm_pg() stack usage
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163283340701.16226.1349215678242492151.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Sep 2021 12:50:07 +0000
+References: <20210928085900.2394697-1-arnd@kernel.org>
+In-Reply-To: <20210928085900.2394697-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, kuba@kernel.org, arnd@arndb.de,
+        huangguangbin2@huawei.com, moyufeng@huawei.com,
+        zhangjiaran@huawei.com, shenjian15@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2021 12:52, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Sep 28, 2021 at 06:29:38PM +0800, Like Xu escreveu:
->> From: Like Xu <likexu@tencent.com>
->>
->> The compiler reports that free_sys_event_tables() is dead code. But
->> according to the semantics, the "LIST_HEAD(arch_std_events)" should
->> also be released, just like we do with 'arch_std_events' in the main().
-> 
-> Thanks, applied.
-> 
-> - Arnaldo
-> 
+Hello:
 
-If not too late:
-Reviewed-by: John Garry <john.garry@huawei.com>
+This patch was applied to netdev/net.git (refs/heads/master):
 
-I think that it could be a good idea to raise gcc warning level to 
-detect unused static functions, like this was
-
-thanks
-
->   
->> Fixes: e9d32c1bf0cd7a98 ("perf vendor events: Add support for arch standard events")
->> Signed-off-by: Like Xu <likexu@tencent.com>
->> ---
->>   tools/perf/pmu-events/jevents.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
->> index 6731b3cf0c2f..7c887d37b893 100644
->> --- a/tools/perf/pmu-events/jevents.c
->> +++ b/tools/perf/pmu-events/jevents.c
->> @@ -1285,6 +1285,7 @@ int main(int argc, char *argv[])
->>   	}
->>   
->>   	free_arch_std_events();
->> +	free_sys_event_tables();
->>   	free(mapfile);
->>   	return 0;
->>   
->> @@ -1306,6 +1307,7 @@ int main(int argc, char *argv[])
->>   		create_empty_mapping(output_file);
->>   err_out:
->>   	free_arch_std_events();
->> +	free_sys_event_tables();
->>   	free(mapfile);
->>   	return ret;
->>   }
->> -- 
->> 2.32.0
+On Tue, 28 Sep 2021 10:58:34 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> This function copies strings around between multiple buffers
+> including a large on-stack array that causes a build warning
+> on 32-bit systems:
+> 
+> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pg':
+> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:782:1: error: the frame size of 1424 bytes is larger than 1400 bytes [-Werror=frame-larger-than=]
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] net: hns3: fix hclge_dbg_dump_tm_pg() stack usage
+    https://git.kernel.org/netdev/net/c/c894b51e2a23
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
