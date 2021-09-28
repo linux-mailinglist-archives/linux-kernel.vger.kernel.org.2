@@ -2,95 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63E741ACD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6868041ACDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240213AbhI1KWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240212AbhI1KWL (ORCPT
+        id S240177AbhI1KXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:23:52 -0400
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.103]:15051 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239952AbhI1KXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:22:11 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B335C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:20:29 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id m21so20637258pgu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EuSs/ib19QbHGtXBHlGySgf9ofW10LCByQaBGGoV3kU=;
-        b=ZBIHdNR6WRdahMMs7iY2gY8u3399vXljRvMfnIohv+VndCaVUksCHDgGG1KUioWHmp
-         SqrIXNOkLUTDPrFgDa7I1fGHQwWNFEmVHzVxosLlOzr9lbv9FxggG3bhr18jfL7yegYU
-         M3WdHjdbh1OmjU2tQh8VUAoUJkOj1q+VLLAp4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EuSs/ib19QbHGtXBHlGySgf9ofW10LCByQaBGGoV3kU=;
-        b=vG0e7MsjlvwpBpPlevfAlXSgrjHCPuhutStLgaIymuCpf1uISq59vvo/GhA4/5Xnu3
-         vij+EC3Pqy/T8qzdQZk6pnpeNPaHF9S55a4vfqB0IqqJCqRWAtR3xbUpiIPz/2QN+i/e
-         AeDIR75LSsFIHfsNOHD1E2sx3qPPfvoojYVYuBS4u7yAHI7A5KNzCFw7CCBdCE45jHnI
-         f19dVZy9HE02EXOE+N8bohSG0mXzB1LXwXddMep0dU1R3jKB01cIFVjoFQgmgqoAxMbz
-         GBC11ohlkC/VwNU/1OVLjDn6SpZnbJTUYt0jzoJ91u31JBNB96qyitInJBjFsiSJXhcw
-         HWGw==
-X-Gm-Message-State: AOAM530BjxxhEhAytXSva2TVIw9pV71hUZ6TOrBCyZfTnIKl2LnEt/mu
-        7GffVQHo6EK2ROz5CCyIHmx5/3pHhAP4LA==
-X-Google-Smtp-Source: ABdhPJwnlIf7Dv/oRueMSkuPEkejdDhbUSuTPNKiglgGErWUK5pSX5ncHwaUCsu7cHNlZebHjeYObw==
-X-Received: by 2002:a62:31c5:0:b0:447:b30c:9a79 with SMTP id x188-20020a6231c5000000b00447b30c9a79mr4478831pfx.67.1632824428889;
-        Tue, 28 Sep 2021 03:20:28 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:f6d8:1ad1:cc75:70fb])
-        by smtp.gmail.com with ESMTPSA id z9sm19734576pfr.124.2021.09.28.03.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 03:20:28 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org (open list:X86 PLATFORM DRIVERS)
-Subject: [PATCH 3/3] platform/x86: intel_scu_ipc: Update timeout value in comment
-Date:   Tue, 28 Sep 2021 03:19:34 -0700
-Message-Id: <20210928101932.2543937-4-pmalani@chromium.org>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-In-Reply-To: <20210928101932.2543937-1-pmalani@chromium.org>
-References: <20210928101932.2543937-1-pmalani@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 28 Sep 2021 06:23:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632824516;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=lIE+6NI+6gHXoIKYxSeCXrUSNgd4aDwsNn3eAUHjKFg=;
+    b=S/ykKYLIkGyxwpbfGJ7Ht7ipHSPviElE+Y8ShkcizVi5gh1dCE8kYwffOxAdM4/S6v
+    hErVS1O2hYoUsR6mGIXGh+S5XdRoyZ9QGbxT5Dg4ZExnT64SBxL8Lct5cisH3tTD5fGz
+    INpGUEJcZB9g0pWg4hVSv9kZJvt6fAa5DAghiYpD3663Ejlde45VUq4UUFdQ+6uuRgx5
+    10F+zrUk4Q0Gl9GGUWEQ5oZQPXaIzqT9pzStgwqJV5NS5Ac7OQydZjo/u3KHtnIdkB9d
+    CLjsIDP2uwrZ7CbEK91nOlDXMrnDJqNGXzaA301RZSnJ/wejynpqTL251gq9bhWrYcTT
+    JziQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43sT7Q="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
+    with ESMTPSA id I01f74x8SALtddb
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 28 Sep 2021 12:21:55 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v4 02/10] drm/ingenic: Add support for JZ4780 and HDMI
+ output
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <OA150R.JLKJBJP8V7FJ2@crapouillou.net>
+Date:   Tue, 28 Sep 2021 12:21:54 +0200
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1E10A04A-4A78-4B47-B0FB-1E8C99456DA1@goldelico.com>
+References: <cover.1632761067.git.hns@goldelico.com>
+ <68cca888be1894ce45f1a93cfabeb5aa1f88c20a.1632761067.git.hns@goldelico.com>
+ <OA150R.JLKJBJP8V7FJ2@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The comment decribing the IPC timeout hadn't been updated when the
-actual timeout was changed from 3 to 5 seconds in
-commit a7d53dbbc70a ("platform/x86: intel_scu_ipc: Increase virtual
-timeout from 3 to 5 seconds") .
+Hi,
 
-Since the value is anyway updated to 10s now, take this opportunity to
-update the value in the comment too.
+> Am 28.09.2021 um 11:35 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi Nikolaus / Paul,
+>=20
+> Le lun., sept. 27 2021 at 18:44:20 +0200, H. Nikolaus Schaller =
+<hns@goldelico.com> a =C3=A9crit :
+>> From: Paul Boddie <paul@boddie.org.uk>
+>> Add support for the LCD controller present on JZ4780 SoCs.
+>> This SoC uses 8-byte descriptors which extend the current
+>> 4-byte descriptors used for other Ingenic SoCs.
+>> Tested on MIPS Creator CI20 board.
+>> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>> ---
+>> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 85 =
++++++++++++++++++++++--
+>> drivers/gpu/drm/ingenic/ingenic-drm.h     | 42 +++++++++++
+>> 2 files changed, 122 insertions(+), 5 deletions(-)
+>> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
+b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> index f73522bdacaa..e2df4b085905 100644
+>> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> @@ -6,6 +6,7 @@
+>> #include "ingenic-drm.h"
+>> +#include <linux/bitfield.h>
+>> #include <linux/component.h>
+>> #include <linux/clk.h>
+>> #include <linux/dma-mapping.h>
+>> @@ -49,6 +50,11 @@ struct ingenic_dma_hwdesc {
+>> 	u32 addr;
+>> 	u32 id;
+>> 	u32 cmd;
+>> +	/* extended hw descriptor for jz4780 */
+>> +	u32 offsize;
+>> +	u32 pagewidth;
+>> +	u32 cpos;
+>> +	u32 dessize;
+>> } __aligned(16);
+>> struct ingenic_dma_hwdescs {
+>> @@ -60,9 +66,11 @@ struct jz_soc_info {
+>> 	bool needs_dev_clk;
+>> 	bool has_osd;
+>> 	bool map_noncoherent;
+>> +	bool use_extended_hwdesc;
+>> 	unsigned int max_width, max_height;
+>> 	const u32 *formats_f0, *formats_f1;
+>> 	unsigned int num_formats_f0, num_formats_f1;
+>> +	unsigned int max_reg;
+>> };
+>> struct ingenic_drm_private_state {
+>> @@ -168,12 +176,11 @@ static bool ingenic_drm_writeable_reg(struct =
+device *dev, unsigned int reg)
+>> 	}
+>> }
+>> -static const struct regmap_config ingenic_drm_regmap_config =3D {
+>> +static struct regmap_config ingenic_drm_regmap_config =3D {
+>> 	.reg_bits =3D 32,
+>> 	.val_bits =3D 32,
+>> 	.reg_stride =3D 4,
+>> -	.max_register =3D JZ_REG_LCD_SIZE1,
+>> 	.writeable_reg =3D ingenic_drm_writeable_reg,
+>> };
+>> @@ -663,6 +670,37 @@ static void =
+ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>> 		hwdesc->cmd =3D JZ_LCD_CMD_EOF_IRQ | (width * height * =
+cpp / 4);
+>> 		hwdesc->next =3D dma_hwdesc_addr(priv, next_id);
+>> +		if (priv->soc_info->use_extended_hwdesc) {
+>> +			hwdesc->cmd |=3D JZ_LCD_CMD_FRM_ENABLE;
+>> +
+>> +			/* Extended 8-byte descriptor */
+>> +			hwdesc->cpos =3D 0;
+>> +			hwdesc->offsize =3D 0;
+>> +			hwdesc->pagewidth =3D 0;
+>> +
+>> +			switch (newstate->fb->format->format) {
+>> +			case DRM_FORMAT_XRGB1555:
+>> +				hwdesc->cpos |=3D JZ_LCD_CPOS_RGB555;
+>> +				fallthrough;
+>> +			case DRM_FORMAT_RGB565:
+>> +				hwdesc->cpos |=3D JZ_LCD_CPOS_BPP_15_16;
+>> +				break;
+>> +			case DRM_FORMAT_XRGB8888:
+>> +				hwdesc->cpos |=3D JZ_LCD_CPOS_BPP_18_24;
+>> +				break;
+>> +			}
+>> +			hwdesc->cpos |=3D JZ_LCD_CPOS_PREMULTIPLY_LCD |
+>> +					    =
+(JZ_LCD_CPOS_COEFFICIENT_1_ALPHA1 <<
+>> +					     =
+JZ_LCD_CPOS_COEFFICIENT_OFFSET);
+>> +
+>> +			hwdesc->dessize =3D
+>> +				(0xff << JZ_LCD_DESSIZE_ALPHA_OFFSET) |
+>> +				FIELD_PREP(JZ_LCD_DESSIZE_HEIGHT_MASK <<
+>> +					   JZ_LCD_DESSIZE_HEIGHT_OFFSET, =
+height - 1) |
+>> +				FIELD_PREP(JZ_LCD_DESSIZE_WIDTH_MASK <<
+>> +					   JZ_LCD_DESSIZE_WIDTH_OFFSET, =
+width - 1);
+>> +		}
+>> +
+>> 		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
+>> 			fourcc =3D newstate->fb->format->format;
+>> @@ -694,6 +732,10 @@ static void =
+ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+>> 		    | JZ_LCD_CFG_SPL_DISABLE | JZ_LCD_CFG_REV_DISABLE;
+>> 	}
+>> +	/* set use of the 8-word descriptor and OSD foreground usage. */
+>> +	if (priv->soc_info->use_extended_hwdesc)
+>> +		cfg |=3D JZ_LCD_CFG_DESCRIPTOR_8;
+>> +
+>> 	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
+>> 		cfg |=3D JZ_LCD_CFG_HSYNC_ACTIVE_LOW;
+>> 	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
+>> @@ -1010,6 +1052,7 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+>> 	struct drm_encoder *encoder;
+>> 	struct ingenic_drm_bridge *ib;
+>> 	struct drm_device *drm;
+>> +	struct regmap_config regmap_config;
+>> 	void __iomem *base;
+>> 	long parent_rate;
+>> 	unsigned int i, clone_mask =3D 0;
+>> @@ -1063,8 +1106,10 @@ static int ingenic_drm_bind(struct device =
+*dev, bool has_components)
+>> 		return PTR_ERR(base);
+>> 	}
+>> +	regmap_config =3D ingenic_drm_regmap_config;
+>> +	regmap_config.max_register =3D soc_info->max_reg;
+>> 	priv->map =3D devm_regmap_init_mmio(dev, base,
+>> -					  &ingenic_drm_regmap_config);
+>> +					  &regmap_config);
+>=20
+> Could you split the code that makes .max_reg configurable per-SoC into =
+its own patch?
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Cc: Benson Leung <bleung@chromium.org>
----
- drivers/platform/x86/intel_scu_ipc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes.
 
-diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
-index d71a1dce781c..7cc9089d1e14 100644
---- a/drivers/platform/x86/intel_scu_ipc.c
-+++ b/drivers/platform/x86/intel_scu_ipc.c
-@@ -247,7 +247,7 @@ static inline int busy_loop(struct intel_scu_ipc_dev *scu)
- 	return -ETIMEDOUT;
- }
- 
--/* Wait till ipc ioc interrupt is received or timeout in 3 HZ */
-+/* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
- static inline int ipc_wait_for_interrupt(struct intel_scu_ipc_dev *scu)
- {
- 	int status;
--- 
-2.33.0.685.g46640cef36-goog
+>=20
+>> 	if (IS_ERR(priv->map)) {
+>> 		dev_err(dev, "Failed to create regmap\n");
+>> 		return PTR_ERR(priv->map);
+>> @@ -1274,7 +1319,7 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+>> 	/* Enable OSD if available */
+>> 	if (soc_info->has_osd)
+>> -		regmap_write(priv->map, JZ_REG_LCD_OSDC, =
+JZ_LCD_OSDC_OSDEN);
+>> +		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, =
+JZ_LCD_OSDC_OSDEN);
+>=20
+> Why?
+
+If I remember we should not assume that all others bits in =
+JZ_REG_LCD_OSDC
+can be safely overwritten by 0, although their reset state is 0 as well.
+
+These are several alpha-blending bits and interrupt masks in the same =
+register.
+Apparently only in jz4780.
+
+>=20
+>> 	mutex_init(&priv->clk_mutex);
+>> 	priv->clock_nb.notifier_call =3D ingenic_drm_update_pixclk;
+>> @@ -1444,6 +1489,7 @@ static const struct jz_soc_info jz4740_soc_info =
+=3D {
+>> 	.formats_f1 =3D jz4740_formats,
+>> 	.num_formats_f1 =3D ARRAY_SIZE(jz4740_formats),
+>> 	/* JZ4740 has only one plane */
+>> +	.max_reg =3D JZ_REG_LCD_SIZE1,
+>> };
+>> static const struct jz_soc_info jz4725b_soc_info =3D {
+>> @@ -1456,6 +1502,7 @@ static const struct jz_soc_info =
+jz4725b_soc_info =3D {
+>> 	.num_formats_f1 =3D ARRAY_SIZE(jz4725b_formats_f1),
+>> 	.formats_f0 =3D jz4725b_formats_f0,
+>> 	.num_formats_f0 =3D ARRAY_SIZE(jz4725b_formats_f0),
+>> +	.max_reg =3D JZ_REG_LCD_SIZE1,
+>> };
+>> static const struct jz_soc_info jz4770_soc_info =3D {
+>> @@ -1468,12 +1515,28 @@ static const struct jz_soc_info =
+jz4770_soc_info =3D {
+>> 	.num_formats_f1 =3D ARRAY_SIZE(jz4770_formats_f1),
+>> 	.formats_f0 =3D jz4770_formats_f0,
+>> 	.num_formats_f0 =3D ARRAY_SIZE(jz4770_formats_f0),
+>> +	.max_reg =3D JZ_REG_LCD_SIZE1,
+>> +};
+>> +
+>> +static const struct jz_soc_info jz4780_soc_info =3D {
+>> +	.needs_dev_clk =3D true,
+>> +	.has_osd =3D true,
+>> +	.use_extended_hwdesc =3D true,
+>> +	.max_width =3D 4096,
+>> +	.max_height =3D 2048,
+>> +	/* REVISIT: do we support formats different from jz4770? */
+>> +	.formats_f1 =3D jz4770_formats_f1,
+>> +	.num_formats_f1 =3D ARRAY_SIZE(jz4770_formats_f1),
+>> +	.formats_f0 =3D jz4770_formats_f0,
+>> +	.num_formats_f0 =3D ARRAY_SIZE(jz4770_formats_f0),
+>> +	.max_reg =3D JZ_REG_LCD_PCFG,
+>> };
+>> static const struct of_device_id ingenic_drm_of_match[] =3D {
+>> 	{ .compatible =3D "ingenic,jz4740-lcd", .data =3D =
+&jz4740_soc_info },
+>> 	{ .compatible =3D "ingenic,jz4725b-lcd", .data =3D =
+&jz4725b_soc_info },
+>> 	{ .compatible =3D "ingenic,jz4770-lcd", .data =3D =
+&jz4770_soc_info },
+>> +	{ .compatible =3D "ingenic,jz4780-lcd", .data =3D =
+&jz4780_soc_info },
+>> 	{ /* sentinel */ },
+>> };
+>> MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
+>> @@ -1492,10 +1555,16 @@ static int ingenic_drm_init(void)
+>> {
+>> 	int err;
+>> +	if (IS_ENABLED(CONFIG_DRM_INGENIC_DW_HDMI)) {
+>> +		err =3D =
+platform_driver_register(ingenic_dw_hdmi_driver_ptr);
+>> +		if (err)
+>> +			return err;
+>> +	}
+>=20
+> I don't see why you need to register the ingenic-dw-hdmi driver here. =
+Just register it in the ingenic-dw-hdmi driver.
+
+Ok, I never though about this (as the code was not from me). We =
+apparently just followed the IPU code pattern (learning by example).
+
+It indeed looks not necessary and would also avoid the =
+ingenic_dw_hdmi_driver_ptr dependency.
+
+But: what is ingenic_ipu_driver_ptr then good for?
+
+If we can get rid of this as well, we can drop patch 1/10 ("drm/ingenic: =
+Fix drm_init error path if IPU was registered") completely.
+
+>=20
+> Cheers,
+> -Paul
+>=20
+
+BR,
+Nikolaus
 
