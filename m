@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D007B41B122
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2108C41B124
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241054AbhI1Nv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
+        id S241090AbhI1Nve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240917AbhI1Nv0 (ORCPT
+        with ESMTP id S241004AbhI1Nvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:51:26 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99A5C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:49:46 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mVDUM-0005R3-Nb; Tue, 28 Sep 2021 15:49:42 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mVDUM-0000Mc-0b; Tue, 28 Sep 2021 15:49:42 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com
-Subject: [PATCH v3] ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
-Date:   Tue, 28 Sep 2021 15:49:40 +0200
-Message-Id: <20210928134940.1329-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Tue, 28 Sep 2021 09:51:33 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6204FC061575;
+        Tue, 28 Sep 2021 06:49:54 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 0692BAB8; Tue, 28 Sep 2021 09:49:53 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 0692BAB8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1632836993;
+        bh=gJgOMPKzYEwoXYQGRIcnNhlyKucOcati169rQJkAD9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WgZhwnwFrnNnJTABoQvcAjU3M2mrCFLPBwjDj0extZ446bc6qCQhdicln5t5cX89c
+         +eV+DrKT+NiM5lNDo3LRYQrw9CwO6cd1H+Di0vwMHb2MChb6yfd5wAAmQ8uf5Ne5a/
+         TK/0wQwdc/SAmjHB/PdY/S0kRrzVBtNrfupyUvyk=
+Date:   Tue, 28 Sep 2021 09:49:52 -0400
+From:   "bfields@fieldses.org" <bfields@fieldses.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "neilb@suse.com" <neilb@suse.com>,
+        "timo@rothenpieler.org" <timo@rothenpieler.org>,
+        "tyhicks@canonical.com" <tyhicks@canonical.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wanghai38@huawei.com" <wanghai38@huawei.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "dsahern@gmail.com" <dsahern@gmail.com>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "kolga@netapp.com" <kolga@netapp.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
+ rpcsec_gss_exit_net when use-gss-proxy==1
+Message-ID: <20210928134952.GA25415@fieldses.org>
+References: <20210928031440.2222303-1-wanghai38@huawei.com>
+ <20210928031440.2222303-3-wanghai38@huawei.com>
+ <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any pending interrupt can prevent entering standby based power off state.
-To avoid it, disable the GIC CPU interface.
+On Tue, Sep 28, 2021 at 01:30:17PM +0000, Trond Myklebust wrote:
+> On Tue, 2021-09-28 at 11:14 +0800, Wang Hai wrote:
+> > When use-gss-proxy is set to 1, write_gssp() creates a rpc client in
+> > gssp_rpc_create(), this increases the netns refcount by 2, these
+> > refcounts are supposed to be released in rpcsec_gss_exit_net(), but
+> > it
+> > will never happen because rpcsec_gss_exit_net() is triggered only
+> > when
+> > the netns refcount gets to 0, specifically:
+> >     refcount=0 -> cleanup_net() -> ops_exit_list ->
+> > rpcsec_gss_exit_net
+> > It is a deadlock situation here, refcount will never get to 0 unless
+> > rpcsec_gss_exit_net() is called. So, in this case, the netns refcount
+> > should not be increased.
+> > 
+> > In this case, xprt will take a netns refcount which is not supposed
+> > to be taken. Add a new flag to rpc_create_args called
+> > RPC_CLNT_CREATE_NO_NET_REF for not increasing the netns refcount.
+> > 
+> > It is safe not to hold the netns refcount, because when
+> > cleanup_net(), it
+> > will hold the gssp_lock and then shut down the rpc client
+> > synchronously.
+> > 
+> > 
+> I don't like this solution at all. Adding this kind of flag is going to
+> lead to problems down the road.
+> 
+> Is there any reason whatsoever why we need this RPC client to exist
+> when there is no active knfsd server? IOW: Is there any reason why we
+> shouldn't defer creating this RPC client for when knfsd starts up in
+> this net namespace, and why we can't shut it down when knfsd shuts
+> down?
 
-Fixes: 8148d2136002 ("ARM: imx6: register pm_power_off handler if "fsl,pmic-stby-poweroff" is set")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/mach-imx/pm-imx6.c | 2 ++
- 1 file changed, 2 insertions(+)
+The rpc create is done in the context of the process that writes to
+/proc/net/rpc/use-gss-proxy to get the right namespaces.  I don't know
+how hard it would be capture that information for a later create.
 
-diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
-index 9244437cb1b9..f2ecca339910 100644
---- a/arch/arm/mach-imx/pm-imx6.c
-+++ b/arch/arm/mach-imx/pm-imx6.c
-@@ -10,6 +10,7 @@
- #include <linux/io.h>
- #include <linux/irq.h>
- #include <linux/genalloc.h>
-+#include <linux/irqchip/arm-gic.h>
- #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
- #include <linux/of.h>
-@@ -619,6 +620,7 @@ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
- 
- static void imx6_pm_stby_poweroff(void)
- {
-+	gic_cpu_if_down(0);
- 	imx6_set_lpm(STOP_POWER_OFF);
- 	imx6q_suspend_finish(0);
- 
--- 
-2.30.2
-
+--b.
