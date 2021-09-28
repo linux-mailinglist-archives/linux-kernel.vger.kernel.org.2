@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1482741A9AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4785D41A9AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239297AbhI1H2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:28:18 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:34471 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239083AbhI1H2P (ORCPT
+        id S239277AbhI1H3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239083AbhI1H3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:28:15 -0400
-Received: by mail-ua1-f50.google.com with SMTP id 2so13856210uav.1;
-        Tue, 28 Sep 2021 00:26:36 -0700 (PDT)
+        Tue, 28 Sep 2021 03:29:40 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00717C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:28:00 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id r23so30908453wra.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=FGfM/v2xR28I5XOPKLkVMm2UhlBEzkYjUaF3UDPtFao=;
+        b=jzNN+tiA9aXQ+cWR8TfNM5yq+NXWs/PWcKNtNOAMATQ9+9grouwdxfDMKzNn3VqeiG
+         9o1vVPKfoo9beBm0t5qGjlFGZtlO7FBNw+lKgwgz8wDgiiEcMaoVI+815PzySGdC7I5I
+         TFZRRPQvFGMAEacX96q54/stXmUGO37tvsyc22Fy6sKxc9l6FOKUGtm8a2XVkiKPurzO
+         6RD6QR3YvTHGzWMI4eceGAody1HIjZ/VIdZG0mWP5dCFaJJr/3HDOCSxMZw5adaea8gr
+         kLcYcz+DfNaAlOs6+VXePplrh0m+QHJSBBZDRSLZH8j3jCpgdrEd/wmMfHJADhbOipyS
+         43Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/7byrD/3uBF9jfwibepcmS0PKt87kxJxiJqtBq6JUOg=;
-        b=0PkL3x2gL912kAYMKhsHH4bL6jwp2RTSpkHxC19Eu3lZ/GwvmxTMki6OVM6f3lZEev
-         dwLQvDIH+iFATA8UWMKO9INHBgjxqaD3h0BNkaHR11ZFuM98RvmfxsuTKJkb0HsEH6VS
-         btkXQYbc1CPAchRatpd89/KPBPUfZzes7JYPMjjMmny6Ya0+kJKzhstLhIhLnsZOad2V
-         mCXzlkRrDI++sERfdzG5oMpSCdBsyHA2aQDO9wNCMwsBQXGJAHg2SbBuikCXI9i+FrJ9
-         0ZaVdQKXc2MeW0Y5NotPP9T83PdydreA0lEqqVlUWK/WO3nbinyLMdRsH8dumezdrmXa
-         qEkg==
-X-Gm-Message-State: AOAM530QZShbFPACWg38WOaEVcCG546/KwRe2HWLeqvInWoJUp8c9rbf
-        2V5USuRFA5yfcsh8jr+0Fh6f4oHaaatx9zWVXXs=
-X-Google-Smtp-Source: ABdhPJxRnw16Xl7Q2vB5IRHC/DT3o83RXhgDFpziHy/1qoWT/HjL4K6Eqzc6dNBtoaoEc6AWS5ccqDF3S0u9uedu/bI=
-X-Received: by 2002:ab0:58c1:: with SMTP id r1mr2371560uac.89.1632813996064;
- Tue, 28 Sep 2021 00:26:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=FGfM/v2xR28I5XOPKLkVMm2UhlBEzkYjUaF3UDPtFao=;
+        b=NVN7fUIENMmJS6boC+yQFtEc1E2MyHxJyxtYaevdzuK1L4/8YWpHFW5V9CEoiZw6za
+         g2RFAHvdb2k+Gvr601gbm5kfYdOi5Sb/ApH0ZxFaytGCDhDlY0n5nH3kSOZ/HP4+cFZE
+         yVhZsrotbwdrR229nwygRvraJIT6cHPurMuzLveteTmR7lqnnyJkC8k0ncDFOAyu9a37
+         pUAltfS6/vgSM0qTY3/3GC5Qj5G5p4kp/bLNrwQEqnRB/6mqyXgEwHqP/N6czQRsLXEt
+         4COnYIYuTlCLl5M7LN/jdUOcml7FHRGZzTrxLHFm45mQSUeYqWkicKSXthrQypTIoeQx
+         RZbQ==
+X-Gm-Message-State: AOAM533yaYSlcwNZuJtwTGJxFqThaJO08kqdnsuKUg2jX/55nkWdr6JW
+        Tjnw1TXmEDAjGxzLaeOvfw8=
+X-Google-Smtp-Source: ABdhPJx8rQsbuu6nCfDH1zXomSYp4Pxgm1NSLBXrhacB4fgXtvlrX7rJrBIt14B9MkhpbPqPGV9+Uw==
+X-Received: by 2002:a5d:46ca:: with SMTP id g10mr4531600wrs.269.1632814079688;
+        Tue, 28 Sep 2021 00:27:59 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id o13sm23646917wri.53.2021.09.28.00.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 00:27:59 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 09:27:57 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     linusw@kernel.org, kaloz@openwrt.org, khalasa@piap.pl,
+        linux@armlinux.org.uk
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: intel-ixp42x-welltech-epbx100 no longer boot due to 463dbba4d189
+ ("ARM: 9104/2: Fix Keystone 2 kernel mapping regression")
+Message-ID: <YVLD/UMRYA55WiGI@Red>
 MIME-Version: 1.0
-References: <20210927193551.22422-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210927193551.22422-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 28 Sep 2021 09:26:24 +0200
-Message-ID: <CAMuHMdXSm993uBbWa2btNRzUcDMz_qOhCKXJ=8e_0TZBqkVALg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: defconfig: Enable RZG2L_ADC
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 9:36 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Enable ADC driver support for Renesas RZ/G2L based platforms.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Hello
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.16.
+I am working on puting my ixp4xx board on kernelCI.
+But it no longer boot since 4.14.
+It only prints "Starting kernelUncompressing Linux... done, booting the kernel." then nothing.
 
-Gr{oetje,eeting}s,
+I bisected the break to 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel mapping regression")
 
-                        Geert
+With this patch reverted on top of 4.14, 5.15-rc3 and next-20210927, the board boot successfully.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards
