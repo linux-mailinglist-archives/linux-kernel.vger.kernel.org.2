@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECE241A6EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A60841A6F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhI1FN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 01:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbhI1FN1 (ORCPT
+        id S234213AbhI1FSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 01:18:03 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:51379 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234148AbhI1FSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:13:27 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A690C061575;
-        Mon, 27 Sep 2021 22:11:49 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id z5so29086659ybj.2;
-        Mon, 27 Sep 2021 22:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wNEfN9GmMm8ACv81lqq2HdxH7rVZO3hCMzGo5Sw7PQU=;
-        b=FIhRutqSFdUoxNQZ7x0XryqsiEDitpevaKU+YiBk+prwVwyUQdEhk3h79XNY6a+Mt3
-         Rpr/R2iexJsWzWiRFwcHQcEKgyYR2mBgebSflfxpIyC/rZqbJgc46rdvzLWce54okk4p
-         esSogxXFBqtwBhvG+MHu38LfXnNCqLbVCVmdghr/n8pUBhtM/eyuDABiF+tEzWq3f6V+
-         I2D2c1Vh7tfUu+Hg4JL7o3SGTAOeeeuxy1Xop3cmQCOFMOKIE5rl86ntdANAv2GlIx4O
-         K8DaTKTH7jlioBNbQpRKBZnN6Wse53TkENraJEQ+PnF+5s8Bb9jKPbpWaWBiIHUo3DnZ
-         TCGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wNEfN9GmMm8ACv81lqq2HdxH7rVZO3hCMzGo5Sw7PQU=;
-        b=sVTdlmJCqqz80fVRdvvrJswlW3pka9/xHJXQTaMk18CLAvojPN5qmkkpiuEIGQEdDn
-         6+fhTmo4GSGMnoxh7HOktqK1a1CZ3+jTio0/ZNXU9A6BjwkDo8d3upiONU1BvTVl5JR7
-         oBYJte/9WQf2GiRu6E8QJUkUtJJfihKA508WTYzksDLq1o4LKhqmCXY7Bnwd/e16cTHU
-         zePLMr0LLsmzH1ZSSV0uTzErOpstSxcNs2wTBHoxJQEM18sfh3mqKqFZeL7kwsjdlTKz
-         BAQ5c8yHGw1+DbgiXmOgSAskgHEg83ux7zE28rMhQlqI881vsWmj3oiqcvtxJno8n7WE
-         DauA==
-X-Gm-Message-State: AOAM532ktqmb7Yx7AuEyhOZPmIAdad+3+c16gYLbmnEWkJDSH6dJA0LG
-        JxBmvU6mxP1sqKeF+UMLj3v8+YKJGztXE9/lDVE=
-X-Google-Smtp-Source: ABdhPJx8PfS0ekL23tdi9Cif7wuhcC5t+p7cVqHIL/D/je7dbzKITW8RmPJdgp4VsKaAsZfhn2t1fgxj/R39tcfkqiQ=
-X-Received: by 2002:a25:c88:: with SMTP id 130mr4196234ybm.176.1632805908028;
- Mon, 27 Sep 2021 22:11:48 -0700 (PDT)
+        Tue, 28 Sep 2021 01:18:02 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJSQs5y2Bz4wgv;
+        Tue, 28 Sep 2021 15:16:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632806181;
+        bh=YayUMtO1Bju7/J5xYvIjpk4bEm82PgnvsAQ8Es0oDGw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DIhxhTmOKN6bnSSi9ooLdz4StLy/+LdcPv+RkgUv8HzwX+ZLU+1pvFGM0BTMYBtHz
+         DdViYS28cpQlhogYhK04GlzIeErSANZKIoGr7YPwNwYZdhJKhi4KyMp/IqHUHG3ax8
+         7J3i+whBMzZfI3OJtfJ0uSckvYIq3U362ta4NEGpsqxzdcISljK2pI/CT13Uzn0RIM
+         fLOriHEZwZwAYtBU6KJecBzjSGoSJzgSmpGA7G/ge2qFi4YbekPPso5EGH9mVfpXan
+         fm7JqVTsSP+iz9zEPWifWoNGpwBzRDr3odfZjyfVxoTnzb5tMA2PyDFs52yMKMngeL
+         JKeND7WVL9C/Q==
+Date:   Tue, 28 Sep 2021 15:16:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH] crypto: api - Export crypto_boot_test_finished
+Message-ID: <20210928151621.7aec3f34@canb.auug.org.au>
+In-Reply-To: <20210927112341.GA22483@gondor.apana.org.au>
+References: <20210927143229.543749f4@canb.auug.org.au>
+        <20210927112341.GA22483@gondor.apana.org.au>
 MIME-Version: 1.0
-References: <cab456a9-680d-9791-599b-de003b88a9ea@linux.alibaba.com>
-In-Reply-To: <cab456a9-680d-9791-599b-de003b88a9ea@linux.alibaba.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 27 Sep 2021 22:11:37 -0700
-Message-ID: <CAM_iQpUuST2d0LZ5i7dqz=E1uL4Wiizf5WNbdJ=vc-9MR20SyQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] net: prevent user from passing illegal stab size
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:TC subsystem" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/ClZjcy/bnsPV/jLYuBXNe+7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/ClZjcy/bnsPV/jLYuBXNe+7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It has been applied, no need to resend.
+Hi Herbert,
 
-commit b193e15ac69d56f35e1d8e2b5d16cbd47764d053
-Author:     =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.com>
-AuthorDate: Fri Sep 24 10:35:58 2021 +0800
-Commit:     David S. Miller <davem@davemloft.net>
-CommitDate: Sun Sep 26 11:09:07 2021 +0100
+On Mon, 27 Sep 2021 19:23:42 +0800 Herbert Xu <herbert@gondor.apana.org.au>=
+ wrote:
+>
+> Oops, does this patch fix the problem?
 
-    net: prevent user from passing illegal stab size
+Yes, that fixes my build, thanks.
 
-Thanks.
+Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # ppc32 build
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ClZjcy/bnsPV/jLYuBXNe+7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFSpSUACgkQAVBC80lX
+0Gz6qwf/Qkt4Kr48KaWj55l97WffRRjsxyBx1TH2ssYLP/OiJz5lekeAbdXGkVut
+2bX32c5vTSgjfoCZ6ZIGKTd/HVIZcoHnaP90uo6bWDrRoQi6KW+4L1r9gbNLUEdy
+T6Hx9joPayWg//XTGFIQ9oPhxIOgUWZ/zCkF//Hi7GnTxQnMk4OjhmB8dP6AnxrM
+OMiKQG35HsazZyDuvtUtJ4TYIrKbEirKXvi2rHZ48DbMopWumKfWwlKH9/r1FQFc
+XAuzjMOnVCqm6stMtfr3KnlxybUcunmd6WqtFuBSx8cZhMTnPxTlBLaRvPT2IGPk
+UdFg/IR2Ayj6RM8o09Yp3QIuc/qvAQ==
+=tTbA
+-----END PGP SIGNATURE-----
+
+--Sig_/ClZjcy/bnsPV/jLYuBXNe+7--
