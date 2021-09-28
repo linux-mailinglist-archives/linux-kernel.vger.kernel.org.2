@@ -2,150 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AAF41A54F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3135C41A556
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238616AbhI1CZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 22:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        id S238628AbhI1C3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 22:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238598AbhI1CZG (ORCPT
+        with ESMTP id S238545AbhI1C3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 22:25:06 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEBFC061740
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 19:23:27 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 75so3245175pga.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 19:23:27 -0700 (PDT)
+        Mon, 27 Sep 2021 22:29:19 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F837C061575;
+        Mon, 27 Sep 2021 19:27:41 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id k17so17625443pff.8;
+        Mon, 27 Sep 2021 19:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ooN16JrioNGlmqQw6vIIMRaz6CAOTTB0/ZNT5KnAics=;
-        b=CbzCgNDLkTLm8G2E0VoWVuFUyaVIHenmxwWwkTlyBgpHtRcCTdFuJ/lkMB67/qor6A
-         ytP5Fh0YB6ntGqrUTYpPV7Sq0VtK6mNyg1tzzftzDwyIdU9ST353XlwCzut3ff6FI95S
-         NzR9Ng0nvon4rGosrGv4luX9qY1/8dcFFgODI=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sdoc9RGE6gS4jaJ958J2ofqibe80c4VFSM+XdfrkDLA=;
+        b=mtX21lszSTfglc2i3EQDgr62JNajWdAY+JjGhXstTLqdg6lDiHN9h/TRcPu/dhq2oh
+         Psj9h/SiYSS/PlFx2pjhludMpLWHw8OeRvHBrmDR7+6/E0qRZM8KD+HZlWD2C9K7CQvD
+         jGjL4o7rHwJY46jyecF3GatRFaX0YOHs12+RxX+ODXBvLv/8h0SEXHOwiJ9wHUd+uVq5
+         LxW9Stdt58ETnay+iafY+Yj4iI7NNJGjf+YZIeznWpljqUHRDi+sMo5zbsqs8y47Bic2
+         Pu0fR4wbAbBJ3i+0S0KV0Sf6BLN0dPzAo7H7H+59+A7tZ0XU2SKY0wDNkIIOGDpU5cln
+         ZeQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ooN16JrioNGlmqQw6vIIMRaz6CAOTTB0/ZNT5KnAics=;
-        b=S0GXptkgeJ+lC69OnsuLRhjTjHX5sjelljH5rv8YUNNyQO5Ws5SRZOfm5EyptEjacD
-         +a46c7p8SMgt0T7cycVe2oEY9efcb5IQAYJj8jmzkggJ9iEgs7Rcoi02tBI2tRlJLxHz
-         eYstNyAqsYhhah8u5Uw3W+jf8WVaQuK1CZu52pqttSzcE442je4caJ77jCM6oVrlbPVF
-         LsGOzGvDuByYy5RzU3z9NFczfJf6MSmYhmUUMylgmZGd3Ia92YA4YsO99wioVTLIh3Uc
-         PjnrZGDt16lD9AcyFw5Vngkv77VHqKsbUx9BjPPaVyH6KOdYCQvkhmjBHufdri5jv8O9
-         Fiog==
-X-Gm-Message-State: AOAM531svDAKzNqR6up25Fv0JUNTLSJGuPs8Dt4QsWksUa8yE1w5YrpX
-        Nara6sOytMo6L5/iwqnCcGFjTw==
-X-Google-Smtp-Source: ABdhPJz9q7h1zZF0H1p2F4KtS1JXYzYTplO3rpAIOYs3PKgNcVZQZl2eehV117fSYU9EPuWI4EEM1w==
-X-Received: by 2002:a62:9242:0:b0:446:5771:7901 with SMTP id o63-20020a629242000000b0044657717901mr3121242pfd.81.1632795806931;
-        Mon, 27 Sep 2021 19:23:26 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:2c64:ca0e:433e:ef5b])
-        by smtp.gmail.com with ESMTPSA id z33sm19060544pga.20.2021.09.27.19.23.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sdoc9RGE6gS4jaJ958J2ofqibe80c4VFSM+XdfrkDLA=;
+        b=xGRyhcEnNBiWAlmUq2ryDdH/4tGb/SWdklvoCbZb+39FosMtR/TZV+ZQKZ1t2cFHMV
+         91nqZZMEFDx8Rdit0YEZNQyuNgciONAW8MEa83/AXZEYTjoOc9i6z1rtuC4nbEDKajBF
+         rs4Lu/qoZu3i0eBlIy0gvPxUBbNd541kuIHrjKiclME0ObowKoHp6bzwZDbY4JnFwtkf
+         z92Wv3uWTmPKc/bt6sOlQHyLXC1tT5M84evdnn3M/z3yRlYrjRE5tpWV5OWUVE1XOcx7
+         oeyNByECiKiX85gaM1G8AapoTh7BsQ2+GVrRrnx55vdXGfWI5eO2WpVLkRu1jIMgjkLT
+         TsjA==
+X-Gm-Message-State: AOAM533yteBQiHLFYxJkAyjFC3S1B6UrsH1/oGCyiWVdzoShTx5Y/rOm
+        VCVn2/G/XpCPFVOPcAFd8k03cDXBg0g=
+X-Google-Smtp-Source: ABdhPJwLwl8KZAeBw6t/iXisbwEJ73khi+8+AhiS7gDicWv/Y/8Gt+bOyV8q5MpFH7fpuSBWUqh7fg==
+X-Received: by 2002:a65:6a15:: with SMTP id m21mr1603064pgu.415.1632796060297;
+        Mon, 27 Sep 2021 19:27:40 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id k14sm633261pji.45.2021.09.27.19.27.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 19:23:26 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 11:23:21 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Subject: Re: [PATCH v5] zram: Introduce an aged idle interface
-Message-ID: <YVJ8mSOwdWzyqIMz@google.com>
-References: <20210917210640.214211-1-bgeffon@google.com>
- <20210924161128.1508015-1-bgeffon@google.com>
+        Mon, 27 Sep 2021 19:27:39 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-sh@vger.kernel.org (open list:SUPERH),
+        linux-mips@vger.kernel.org (open list:BROADCOM BMIPS MIPS ARCHITECTURE),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE)
+Subject: [PATCH v2 00/12] Modular Broadcom irqchip drivers
+Date:   Mon, 27 Sep 2021 19:27:03 -0700
+Message-Id: <20210928022715.369160-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924161128.1508015-1-bgeffon@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/09/24 09:11), Brian Geffon wrote:
-[..]
+Hi Thomas, Marc,
 
-Some silly nits:
+This patch series aims at allowing the 3 interrupt controller drivers
+used on Broadcom STB platforms to be built as modules in order for those
+to be shipped in a GKI enabled system (Android).
 
-> +static void mark_idle(struct zram *zram, ktime_t cutoff)
->  {
-> -	struct zram *zram = dev_to_zram(dev);
-> +	int is_idle = 1;
->  	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
->  	int index;
->  
-> -	if (!sysfs_streq(buf, "all"))
-> -		return -EINVAL;
-> -
-> -	down_read(&zram->init_lock);
-> -	if (!init_done(zram)) {
-> -		up_read(&zram->init_lock);
-> -		return -EINVAL;
-> -	}
-> -
->  	for (index = 0; index < nr_pages; index++) {
->  		/*
->  		 * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
-> @@ -314,14 +308,49 @@ static ssize_t idle_store(struct device *dev,
->  		 */
->  		zram_slot_lock(zram, index);
->  		if (zram_allocated(zram, index) &&
-> -				!zram_test_flag(zram, index, ZRAM_UNDER_WB))
-> -			zram_set_flag(zram, index, ZRAM_IDLE);
-> +				!zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
-> +#ifdef CONFIG_ZRAM_MEMORY_TRACKING
-> +				is_idle = (!cutoff || ktime_after(cutoff, zram->table[index].ac_time));
+The irq-bcm7038-l1 requires us to export a number of symbols, which is
+not great, but there are not obvious solutions other than adding
+accessor functions to get the same information.
 
-checkpatch "WARNING: suspect code indent for conditional statements (16, 32)"
+Assuming you are happy with the changes though, please do take the last
+two changes as well through your tree.
 
-Looks like `is_idle` is at one extra indent level.
+Thanks!
 
-> +#endif
-> +			if (is_idle)
-> +				zram_set_flag(zram, index, ZRAM_IDLE);
-> +		}
->  		zram_slot_unlock(zram, index);
->  	}
-> +}
->  
-> -	up_read(&zram->init_lock);
-> +static ssize_t idle_store(struct device *dev,
-> +		struct device_attribute *attr, const char *buf, size_t len)
-> +{
-> +	struct zram *zram = dev_to_zram(dev);
-> +	ktime_t cutoff_time = 0;
-> +	ssize_t rv = -EINVAL;
->  
-> -	return len;
-> +	if (!sysfs_streq(buf, "all")) {
-> +		/*
-> +		 * If it did not parse as 'all' try to treat it as an integer when
-> +		 * we have memory tracking enabled.
-> +		 */
-> +		u64 age_sec;
+Changes in v2:
 
-checkpatch "WARNING: Missing a blank line after declarations"
+- avoid using irq_to_desc() and use irq_get_irq_data() instead
+- re-order patches to avoid linking failure for irq-brcmstb-l2
+- removed the use of .irq_cpu_offline() and converted BMIPS to use
+  irq_migrate_all_off_this_cpu()
+- avoid exporting of_irq_count() and use a platform device passed
+  down from the irqchip platform driver registration code instead
+- added kernel-doc fix
 
-> +		if (IS_ENABLED(CONFIG_ZRAM_MEMORY_TRACKING) && !kstrtoull(buf, 0, &age_sec))
-> +			cutoff_time = ktime_sub(ktime_get_boottime(),
-> +					ns_to_ktime(age_sec * NSEC_PER_SEC));
-> +		else
-> +			goto out;
-> +	}
-> +
-> +	down_read(&zram->init_lock);
-> +	if (!init_done(zram))
-> +		goto out_unlock;
-> +
-> +	/* A age_sec of 0 marks everything as idle, this is the "all" behavior */
+Florian Fainelli (12):
+  arch: Export cpu_logical_map to modules
+  MIPS: BMIPS: Remove use of irq_cpu_offline
+  irqchip/irq-bcm7038-l1: Remove .irq_cpu_offline()
+  irqchip/irq-bcm7038-l1: Use irq_get_irq_data()
+  irqchip/irq-bcm7038-l1: Switch to IRQCHIP_PLATFORM_DRIVER
+  genirq: Export irq_gc_{unmask_enable,mask_disable}_reg
+  irqchip/irq-brcmstb-l2: Switch to IRQCHIP_PLATFORM_DRIVER
+  irqchip: Provide platform_device to of_irq_init_cb_t
+  irqchip/irq-bcm7120-l2: Switch to IRQCHIP_PLATFORM_DRIVER
+  arm64: broadcom: Removed forced select of interrupt controllers
+  ARM: bcm: Removed forced select of interrupt controllers
+  irqchip: Fix kernel-doc parameter typo for IRQCHIP_DECLARE
 
-	s/age_sec/cutoff_time/
+ arch/arm/kernel/setup.c          |  1 +
+ arch/arm/mach-bcm/Kconfig        |  4 ----
+ arch/arm64/Kconfig.platforms     |  3 ---
+ arch/arm64/kernel/setup.c        |  1 +
+ arch/mips/Kconfig                |  1 +
+ arch/mips/kernel/smp-bmips.c     |  3 ++-
+ arch/sh/kernel/smp.c             |  1 +
+ drivers/irqchip/Kconfig          | 12 +++++++---
+ drivers/irqchip/irq-bcm7038-l1.c | 38 +++++---------------------------
+ drivers/irqchip/irq-bcm7120-l2.c | 28 +++++++++++++----------
+ drivers/irqchip/irq-brcmstb-l2.c | 16 ++++++++------
+ drivers/irqchip/irqchip.c        |  2 +-
+ drivers/of/irq.c                 |  2 +-
+ include/linux/irqchip.h          |  2 +-
+ include/linux/of_irq.h           |  5 ++++-
+ kernel/irq/generic-chip.c        |  2 ++
+ 16 files changed, 55 insertions(+), 66 deletions(-)
 
-> +	mark_idle(zram, cutoff_time);
-> +	rv = len;
+-- 
+2.25.1
+
