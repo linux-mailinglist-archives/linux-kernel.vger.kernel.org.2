@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C2A41B531
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF5F41B53A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242179AbhI1Rga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:36:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242171AbhI1Rg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:36:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF0B60F21;
-        Tue, 28 Sep 2021 17:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632850489;
-        bh=Yfz08pV/gYDk+AOKJrmWrje1tFITZe7lHU+DG0nHe6Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J3CdxDwHAF/IOVbYE4xxqV7Vv8NFVxTUJP/d0ax6bFYiBdgoclg3VgLO2tz+ndDj6
-         +ALOO3Q4lykpwvkmwFGWwExz6DdJAFZ0iuB8bxFtyAKAThiJkG8mOrDBnUJsmwalX3
-         lwc0oIQ9bR4XG7u3OK4l5ZmFbHZyRmtQD4YS1e4O/5IXOwXJDzD9lfJETjT+fqIR2T
-         RjVotFLwDdAzOAsmhjNJm/i1OzlCBs1sihufF6ZcFyQ040TPXSWikvUK0ukHDMoa/L
-         1G/yoeUpb86zY55GZYMIPkWr4xJIJswTPqkUkzXPoBAd8Qy7KdRa6vO9DtPgDTTXZ5
-         kjEfswrDsJRPw==
-Received: by mail-ed1-f50.google.com with SMTP id v10so82125349edj.10;
-        Tue, 28 Sep 2021 10:34:49 -0700 (PDT)
-X-Gm-Message-State: AOAM530Gy5f1Yzs1H78rU29janvahhEtul0GGW4UGzprPIKUVg0ss8tM
-        S2NRq7SFZLPfMtiolM/WrNMtcoXMv3x45djf6A==
-X-Google-Smtp-Source: ABdhPJySpBpXBtvPlQzRJSJ2jWwV4frZtniA8zfrmtuNaT8B9QSxRnDPopvqhpf1lHPNNHh2uyKCZ4Xxc1GjniBCCA0=
-X-Received: by 2002:a17:906:7217:: with SMTP id m23mr7883864ejk.466.1632850487958;
- Tue, 28 Sep 2021 10:34:47 -0700 (PDT)
+        id S242191AbhI1Rhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242163AbhI1Rhw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:37:52 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D922C06161C;
+        Tue, 28 Sep 2021 10:36:12 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id s137so8772498vke.11;
+        Tue, 28 Sep 2021 10:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XkS8nuoSDEWyzTbDLAQmajCu1bd0dDfm3L8LZr17AM4=;
+        b=KM5gWIHK9gZtVqbX8A61yxJekzaKsVLgyBgiSrAGMoAAA7JNgrg2jv05G/3jl44THH
+         ujnINPcXZCdc1g0dbDKUFwMZwnVaUJ/GRFBsTEu+dmRdOSy1b5SRV/2ccqJbWnE8CInu
+         xsQg8412qpriqhe3n7390/Ch1/5iHtlGhqvI6pscHeHuzC15GUZGrVxi2AfrIJ9zxLoo
+         JEzvwr1onohQwDjI6PABRR/cHqOR2L7zocM/gBdlpDYj2UwUeTbiTxKyjKKge5s6oL7F
+         ud/tC0IohdPxi0q8SUSOTSpKLi5SvoN9+UnyX93VgIfG7lg/HibrU3nSz3qK88RfCC8E
+         NKwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XkS8nuoSDEWyzTbDLAQmajCu1bd0dDfm3L8LZr17AM4=;
+        b=5RKwlfHlrQEnDb0fJO341Q3Tjd0/q+aVhf6G4Exae8nfoZYQWZq69KDMJewWptk+GX
+         QF23R1vLFMmJTVVAs9F5UyfDLCLEjRBWw7ABMi+zrj+5ukVG4p94lepl9eXVE1wcBgf9
+         Dpic0/0Vam3urkiq63xA/Bd6YXHy1D6hiGgd9jYBKR9HCh0YEP9o6fMnER/aZ2bXWPkD
+         s2TxQDW9z/fzoFAlKibGHKVHm3X3Rclq0DrdaMFSgKKvgnPnsygjbgj8AfuOx6MbwEII
+         qGZADifjOp16TRL9Q9Ze9i75El/EAz9xJSGsMbMRQLrPPhcvczcJsGpHCPOJ/o4GWvhB
+         glug==
+X-Gm-Message-State: AOAM533ZxPrIDtXz+Mn8bZX7JIk7U0n1uQpIesMyZS3gJScwCi8gwM1Z
+        kWb/OakFNewGXVcEetkMNYKKIIFQT+G1J7kf+oFSGz2aL02iHg==
+X-Google-Smtp-Source: ABdhPJzqSDHfpdpcT6UeO53NXofjG0BZqAEkms73wNoOcLKfw52xSoKOnNq4L+MZVaJ46RDGCnDlxxgoph/1xBPQqRU=
+X-Received: by 2002:a05:6122:16aa:: with SMTP id 42mr5480455vkl.22.1632850571446;
+ Tue, 28 Sep 2021 10:36:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928044546.4111223-1-bjorn.andersson@linaro.org> <YVLszZ7U7D91oIH2@gerhold.net>
-In-Reply-To: <YVLszZ7U7D91oIH2@gerhold.net>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 28 Sep 2021 12:34:35 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: soc: smem: Make indirection optional
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210928134654.991923-1-colin.king@canonical.com>
+In-Reply-To: <20210928134654.991923-1-colin.king@canonical.com>
+From:   Romain Perier <romain.perier@gmail.com>
+Date:   Tue, 28 Sep 2021 19:35:59 +0200
+Message-ID: <CABgxDoK+kv+NHEmaoV6YtsLpZPYYjx2k5DNaMVZCwe=dyacQtA@mail.gmail.com>
+Subject: Re: [PATCH][next][V2] rtc: msc313: Fix unintentional sign extension
+ issues with left shift of a u16
+To:     Colin King <colin.king@canonical.com>
+Cc:     Daniel Palmer <daniel@thingy.jp>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-rtc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:22 AM Stephan Gerhold <stephan@gerhold.net> wrote:
->
-> On Mon, Sep 27, 2021 at 09:45:44PM -0700, Bjorn Andersson wrote:
-> > In the olden days the Qualcomm shared memory (SMEM) region consisted of
-> > multiple chunks of memory, so SMEM was described as a standalone node
-> > with references to its various memory regions.
-> >
-> > But practically all modern Qualcomm platforms has a single reserved memory
-> > region used for SMEM. So rather than having to use two nodes to describe
-> > the one SMEM region, update the binding to allow the reserved-memory
-> > region alone to describe SMEM.
-> >
-> > The olden format is preserved as valid, as this is widely used already.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  .../bindings/soc/qcom/qcom,smem.yaml          | 34 ++++++++++++++++---
-> >  1 file changed, 30 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
-> > index f7e17713b3d8..4149cf2b66be 100644
-> > --- a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
-> > +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
-> > [...]
-> > @@ -43,6 +55,20 @@ examples:
-> >          #size-cells = <1>;
-> >          ranges;
-> >
-> > +        smem@fa00000 {
->
-> I think this is a good opportunity to make a decision which node name
-> should be used here. :)
+Hi,
 
-reserved-memory node names are kind of a mess, so I haven't tried for
-any standard... It needs to be solved globally.
 
->
-> You use smem@ here but mentioned before that you think using the generic
-> memory@ would be better [1]. And you use memory@ in PATCH 3/3:
->
-> -               smem_mem: memory@86000000 {
-> +               memory@86000000 {
-> +                       compatible = "qcom,smem";
->                         reg = <0x0 0x86000000 0 0x200000>;
->                         no-map;
-> +                       hwlocks = <&tcsr_mutex 3>;
->                 };
->
-> However, if you would use memory@ as example in this DT schema,
-> Rob's bot would complain with the same error that I mentioned earlier [2]:
->
-> soc/qcom/qcom,smem.example.dt.yaml: memory@fa00000: 'device_type' is a required property
->         From schema: dtschema/schemas/memory.yaml
->
-> We should either fix the error when using memory@ or start using some
-> different node name (Stephen Boyd suggested shared-memory@ for example).
-> Otherwise we'll just keep introducing more and more dtbs_check errors
-> for the Qualcomm device trees.
+Re-tested with rtctest and rtc-range, everything passed.
 
-A different node name. A node name should only have 1 meaning and
-'memory' is already defined.
 
-The main issue here is what to name nodes with only a size and no address.
 
-Rob
+Le mar. 28 sept. 2021 =C3=A0 15:46, Colin King <colin.king@canonical.com> a=
+ =C3=A9crit :
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Shifting the u16 value returned by readw by 16 bits to the left
+> will be promoted to a 32 bit signed int and then sign-extended
+> to an unsigned long. If the top bit of the readw is set then
+> the shifted value will be sign extended and the top 32 bits of
+> the result will be set.
+>
+> Fixes: be7d9c9161b9 ("rtc: Add support for the MSTAR MSC313 RTC")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Reviewed-by: Romain Perier <romain.perier@gmail.com>
+
+Thanks,
+Romain
+
+> ---
+> V2: Fix identical issue in msc313_rtc_read_time too. Thanks to Daniel Pal=
+mer
+>     for noticing this ommission.
+> ---
+>  drivers/rtc/rtc-msc313.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/rtc/rtc-msc313.c b/drivers/rtc/rtc-msc313.c
+> index 5f178d29cfd8..f3fde013c4b8 100644
+> --- a/drivers/rtc/rtc-msc313.c
+> +++ b/drivers/rtc/rtc-msc313.c
+> @@ -53,7 +53,7 @@ static int msc313_rtc_read_alarm(struct device *dev, st=
+ruct rtc_wkalrm *alarm)
+>         unsigned long seconds;
+>
+>         seconds =3D readw(priv->rtc_base + REG_RTC_MATCH_VAL_L)
+> -                       | (readw(priv->rtc_base + REG_RTC_MATCH_VAL_H) <<=
+ 16);
+> +                       | ((unsigned long)readw(priv->rtc_base + REG_RTC_=
+MATCH_VAL_H) << 16);
+>
+>         rtc_time64_to_tm(seconds, &alarm->time);
+>
+> @@ -122,7 +122,7 @@ static int msc313_rtc_read_time(struct device *dev, s=
+truct rtc_time *tm)
+>                 udelay(1);
+>
+>         seconds =3D readw(priv->rtc_base + REG_RTC_CNT_VAL_L)
+> -                       | (readw(priv->rtc_base + REG_RTC_CNT_VAL_H) << 1=
+6);
+> +                       | ((unsigned long)readw(priv->rtc_base + REG_RTC_=
+CNT_VAL_H) << 16);
+>
+>         rtc_time64_to_tm(seconds, tm);
+>
+> --
+> 2.32.0
+>
