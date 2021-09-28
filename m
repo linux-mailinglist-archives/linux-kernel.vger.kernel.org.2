@@ -2,460 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E928B41A5A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6479E41A5AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbhI1Coc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 22:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        id S238699AbhI1CvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 22:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238594AbhI1Cob (ORCPT
+        with ESMTP id S238590AbhI1CvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 22:44:31 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF22CC061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 19:42:52 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id x4so5654982pln.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 19:42:52 -0700 (PDT)
+        Mon, 27 Sep 2021 22:51:03 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B76BC061575;
+        Mon, 27 Sep 2021 19:49:24 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id h12so3533163pjj.1;
+        Mon, 27 Sep 2021 19:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tcZUk01AmOiNGBqm3bwH5OUg5lIXll9emOour941K2Y=;
-        b=xCJ6k7FbVBdK/P2m3lVGtjFfm68Jw6+5ovLifdpkAuxwlz2fNmulDdTfM8NMRhGRuD
-         SD7ezYQWV7QTZPJ7+knQt8svjcZF6YzyZlLuRgO6VeI1sAYxmre1JEuPtiaSsJBU1Ndm
-         xf1WNI26pAMW8AFwBKzK5FWoWK7hNwwWFkNsLEDgZ0Zkb76oAZVbDqNI8wG3rn5jMDQB
-         vZqmZsSSrFXa4YA+tccpmgP/fhwh29DK5kyzf1kA12V3AU9ew1VYMRUeIyrVQSmq1jXX
-         W/sqLrd6AwL7SFgkhhgZCkiJ61qRsX6CAdG3xGaaZzQM43hkrkcf4TFBX+ajbdGljlaI
-         3D+w==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KdRo+Cz1avyjeJcs19XkK76tvTgy7+yGSf3K2YFwI3k=;
+        b=kLTQJAYIMl0IrK3nQxWVQpYrfSV3PxQCCy4GvVBJ8QAQnS4FB7zO1J0YHOkonmCIzv
+         OSCA0tMbLlwL/orYYfLfPawiBsUHJUA7XYi52C8PBz8mDjtFMp0j6L2v90Yi0dmZubrn
+         izc8d2djOsOqwGAU7xfEdr0JVDQbFGdHngOp61o9+ChQcZDyjRUlfQQtb0PoB7DpYWBE
+         CHWvgBObC5YNxQZFAZ2J4mNaGWbHIYesPWl4iefibLEoaXtRlIPFBEKLYwdKjkaw4Oq7
+         MkhwTDe8hZ0W+I+pmkn54yyL/WbNIsz0zTIs6RnQ6GjPlOnzwmAHvbLqD6xN5qbCv9nZ
+         npKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tcZUk01AmOiNGBqm3bwH5OUg5lIXll9emOour941K2Y=;
-        b=tAXOCCJ1ZBRuWMkNVfmVwmrfoTVNxATp2/tVYgkS2vLAvWgizHYGaZ56vNoadn3wia
-         8YlHW2Ehf8AOvFQNbIHaPiyJduGV6GUAiOIZJ5QjadZLRbRIhCqE2dBZIlUDMEkwyX75
-         qd46Kp6ezJjhnsbdzxxypRLhxYcyu4o1lhIsM1pyrhsVSQd2aDMavwZyfyqYivnzZjik
-         uJuXf1j+hunnujxdqAijzPY3RCyNqFMm9rweGPYrQJT87lrHtGsopXrk6oeqQxPQeutv
-         IaBFaajGpYNqEziz3EyETEBCmMD45ZR5n9e2ZjwuNyhWZf3V1FScstW2us8mbuG/ugzT
-         +q9g==
-X-Gm-Message-State: AOAM531+V0V2+2QpppSGLDk8/bSSWu/qgj+rCG8Be0gjTovGgZLgkNWQ
-        /kgShYwhWON4b3kMeFUsDAEUdVEfNhqtrn8vP6vKFA==
-X-Google-Smtp-Source: ABdhPJzPsHrm1ihPzZl9la3p6UIONTP6xuaHTQ/Qi95CqU6TyEX5qzI6aeJyNBEbp9fLB3WeJQ0xT/RW/gXWbugLTy8=
-X-Received: by 2002:a17:90b:4f8a:: with SMTP id qe10mr2685263pjb.5.1632796972231;
- Mon, 27 Sep 2021 19:42:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KdRo+Cz1avyjeJcs19XkK76tvTgy7+yGSf3K2YFwI3k=;
+        b=NKHq57i6mE2SW+YScmofW1jM0mvcJflZVxkPkg/FQIKN5U5kK16p/K6+888IyzUWyp
+         PmEtCW7kRmlMwa19mm6SHlqiBpAyeV/kaLCw+pz9aykYXx3HUjgcmFk86fkivgTHJpan
+         Bp2/6iAscROTEvYUxQ5KrGVza1Uffk6yUVYYz9f+DPugme5DsUa0DB7bAJ4A/vVTl6WE
+         XZXkC8ly4fMZCHIhaVTOFYrgW4Kdx0CFojIDA1LRCg0s3phHatQ+pl40lwZ83bBskH6e
+         hNWe/EKvMjJkm8uREr80hMyyN6HA8e+9vaxjXRSsffKuMSM2cvgLOsiskMdvLR7NuYHQ
+         VVkQ==
+X-Gm-Message-State: AOAM5324T56jJGv6xaIrHWmZNpK5jj4yATMXvsYAVx6dQG5pgcgXtwt5
+        8fpODgD/bc6xhWLM4tdYcew=
+X-Google-Smtp-Source: ABdhPJxZJPG+esLFDCVQRqvSFj9ndW+00MnTobQgt3orU+nxh01t7r8Ots+FQA2ddImNLgPl9dHEYQ==
+X-Received: by 2002:a17:902:dcca:b0:13e:4139:8f0f with SMTP id t10-20020a170902dcca00b0013e41398f0fmr2865291pll.65.1632797363938;
+        Mon, 27 Sep 2021 19:49:23 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id e1sm21211592pgi.43.2021.09.27.19.49.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 19:49:23 -0700 (PDT)
+Subject: Re: [PATCH net-next v1 01/21] devlink: Notify users when objects are
+ accessible
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manish Chopra <manishc@marvell.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+References: <cover.1632565508.git.leonro@nvidia.com>
+ <0f7f201a059b24c96eac837e1f424e2483254e1c.1632565508.git.leonro@nvidia.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <97c1ba9d-52b9-5689-19ab-ad4a82e55ae2@gmail.com>
+Date:   Mon, 27 Sep 2021 19:49:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210926031339.40043-1-songmuchun@bytedance.com>
- <20210926031339.40043-2-songmuchun@bytedance.com> <CAGsJ_4ztDHPmAdnx_H_1S7ZkDR9QpiG=MqZ-XdAqiYK7=WwpKg@mail.gmail.com>
-In-Reply-To: <CAGsJ_4ztDHPmAdnx_H_1S7ZkDR9QpiG=MqZ-XdAqiYK7=WwpKg@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 28 Sep 2021 10:42:15 +0800
-Message-ID: <CAMZfGtVahadNpgTT1BQrcomAC9Kpj2R7NtygC7CLcQbp9g-Qew@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] mm: hugetlb: free the 2nd vmemmap page associated
- with each HugeTLB page
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0f7f201a059b24c96eac837e1f424e2483254e1c.1632565508.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 4:25 AM Barry Song <21cnbao@gmail.com> wrote:
->
-> On Sun, Sep 26, 2021 at 4:14 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > Currently, we only free 6 vmemmap pages associated with a 2MB HugeTLB
-> > page. However, we can remap all tail vmemmap pages to the page frame
-> > mapped to with the head vmemmap page. Finally, we can free 7 vmemmap
-> > pages for a 2MB HugeTLB page. It is a fine gain (e.g. we can save
-> > extra 2GB memory when there is 1TB HugeTLB pages in the system
-> > compared with the current implementation).
-> >
-> > But the head vmemmap page is not freed to the buddy allocator and all
-> > tail vmemmap pages are mapped to the head vmemmap page frame. So we
-> > can see more than one struct page struct with PG_head (e.g. 8 per 2 MB
-> > HugeTLB page) associated with each HugeTLB page. We should adjust
-> > compound_head() to make it returns the real head struct page when the
-> > parameter is the tail struct page but with PG_head flag.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  Documentation/admin-guide/kernel-parameters.txt |  2 +-
-> >  include/linux/page-flags.h                      | 78 +++++++++++++++++++++++--
-> >  mm/hugetlb_vmemmap.c                            | 60 ++++++++++---------
-> >  mm/sparse-vmemmap.c                             | 21 +++++++
-> >  4 files changed, 129 insertions(+), 32 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 91ba391f9b32..5aaf2f271980 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -1617,7 +1617,7 @@
-> >                         [KNL] Reguires CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> >                         enabled.
-> >                         Allows heavy hugetlb users to free up some more
-> > -                       memory (6 * PAGE_SIZE for each 2MB hugetlb page).
-> > +                       memory (7 * PAGE_SIZE for each 2MB hugetlb page).
-> >                         Format: { on | off (default) }
-> >
-> >                         on:  enable the feature
-> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> > index 70bf0ec29ee3..b49808e748ce 100644
-> > --- a/include/linux/page-flags.h
-> > +++ b/include/linux/page-flags.h
-> > @@ -184,13 +184,69 @@ enum pageflags {
-> >
-> >  #ifndef __GENERATING_BOUNDS_H
-> >
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +extern bool hugetlb_free_vmemmap_enabled;
-> > +
-> > +/*
-> > + * If the feature of freeing some vmemmap pages associated with each HugeTLB
-> > + * page is enabled, the head vmemmap page frame is reused and all of the tail
-> > + * vmemmap addresses map to the head vmemmap page frame (furture details can
-> > + * refer to the figure at the head of the mm/hugetlb_vmemmap.c).  In other
-> > + * words, there are more than one page struct with PG_head associated with each
-> > + * HugeTLB page.  We __know__ that there is only one head page struct, the tail
-> > + * page structs with PG_head are fake head page structs.  We need an approach
-> > + * to distinguish between those two different types of page structs so that
-> > + * compound_head() can return the real head page struct when the parameter is
-> > + * the tail page struct but with PG_head.
-> > + *
-> > + * The page_fixed_fake_head() returns the real head page struct if the @page is
-> > + * fake page head, otherwise, returns @page which can either be a true page
-> > + * head or tail.
-> > + */
-> > +static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
-> > +{
-> > +       if (!hugetlb_free_vmemmap_enabled)
-> > +               return page;
-> > +
-> > +       /*
-> > +        * Only addresses aligned with PAGE_SIZE of struct page may be fake head
-> > +        * struct page. The alignment check aims to avoid access the fields (
-> > +        * e.g. compound_head) of the @page[1]. It can avoid touch a (possibly)
-> > +        * cold cacheline in some cases.
-> > +        */
-> > +       if (IS_ALIGNED((unsigned long)page, PAGE_SIZE) &&
-> > +           test_bit(PG_head, &page->flags)) {
-> > +               /*
-> > +                * We can safely access the field of the @page[1] with PG_head
-> > +                * because the @page is a compound page composed with at least
-> > +                * two contiguous pages.
-> > +                */
-> > +               unsigned long head = READ_ONCE(page[1].compound_head);
-> > +
-> > +               if (likely(head & 1))
-> > +                       return (const struct page *)(head - 1);
-> > +       }
-> > +       return page;
-> > +}
-> > +#else
-> > +static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
-> > +{
-> > +       return page;
-> > +}
-> > +#endif
-> > +
-> > +static __always_inline int page_is_fake_head(struct page *page)
-> > +{
-> > +       return page_fixed_fake_head(page) != page;
-> > +}
-> > +
-> >  static inline unsigned long _compound_head(const struct page *page)
-> >  {
-> >         unsigned long head = READ_ONCE(page->compound_head);
-> >
-> >         if (unlikely(head & 1))
-> >                 return head - 1;
-> > -       return (unsigned long)page;
-> > +       return (unsigned long)page_fixed_fake_head(page);
-> >  }
-> >
-> >  #define compound_head(page)    ((typeof(page))_compound_head(page))
-> > @@ -225,12 +281,13 @@ static inline unsigned long _compound_head(const struct page *page)
-> >
-> >  static __always_inline int PageTail(struct page *page)
-> >  {
-> > -       return READ_ONCE(page->compound_head) & 1;
-> > +       return READ_ONCE(page->compound_head) & 1 || page_is_fake_head(page);
-> >  }
-> >
-> >  static __always_inline int PageCompound(struct page *page)
-> >  {
-> > -       return test_bit(PG_head, &page->flags) || PageTail(page);
-> > +       return test_bit(PG_head, &page->flags) ||
-> > +              READ_ONCE(page->compound_head) & 1;
-> >  }
-> >
-> >  #define        PAGE_POISON_PATTERN     -1l
-> > @@ -675,7 +732,20 @@ static inline bool test_set_page_writeback(struct page *page)
-> >         return set_page_writeback(page);
-> >  }
-> >
-> > -__PAGEFLAG(Head, head, PF_ANY) CLEARPAGEFLAG(Head, head, PF_ANY)
-> > +static __always_inline bool folio_test_head(struct folio *folio)
-> > +{
-> > +       return test_bit(PG_head, folio_flags(folio, FOLIO_PF_ANY));
-> > +}
-> > +
-> > +static __always_inline int PageHead(struct page *page)
-> > +{
-> > +       PF_POISONED_CHECK(page);
-> > +       return test_bit(PG_head, &page->flags) && !page_is_fake_head(page);
-> > +}
-> > +
-> > +__SETPAGEFLAG(Head, head, PF_ANY)
-> > +__CLEARPAGEFLAG(Head, head, PF_ANY)
-> > +CLEARPAGEFLAG(Head, head, PF_ANY)
-> >
-> >  /* Whether there are one or multiple pages in a folio */
-> >  static inline bool folio_test_single(struct folio *folio)
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index c540c21e26f5..f4a8fca691ee 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -124,9 +124,9 @@
-> >   * page of page structs (page 0) associated with the HugeTLB page contains the 4
-> >   * page structs necessary to describe the HugeTLB. The only use of the remaining
-> >   * pages of page structs (page 1 to page 7) is to point to page->compound_head.
-> > - * Therefore, we can remap pages 2 to 7 to page 1. Only 2 pages of page structs
-> > + * Therefore, we can remap pages 1 to 7 to page 0. Only 1 page of page structs
-> >   * will be used for each HugeTLB page. This will allow us to free the remaining
-> > - * 6 pages to the buddy allocator.
-> > + * 7 pages to the buddy allocator.
-> >   *
-> >   * Here is how things look after remapping.
-> >   *
-> > @@ -134,30 +134,30 @@
-> >   * +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
-> >   * |           |                     |     0     | -------------> |     0     |
-> >   * |           |                     +-----------+                +-----------+
-> > - * |           |                     |     1     | -------------> |     1     |
-> > - * |           |                     +-----------+                +-----------+
-> > - * |           |                     |     2     | ----------------^ ^ ^ ^ ^ ^
-> > - * |           |                     +-----------+                   | | | | |
-> > - * |           |                     |     3     | ------------------+ | | | |
-> > - * |           |                     +-----------+                     | | | |
-> > - * |           |                     |     4     | --------------------+ | | |
-> > - * |    PMD    |                     +-----------+                       | | |
-> > - * |   level   |                     |     5     | ----------------------+ | |
-> > - * |  mapping  |                     +-----------+                         | |
-> > - * |           |                     |     6     | ------------------------+ |
-> > - * |           |                     +-----------+                           |
-> > - * |           |                     |     7     | --------------------------+
-> > + * |           |                     |     1     | ---------------^ ^ ^ ^ ^ ^ ^
-> > + * |           |                     +-----------+                  | | | | | |
-> > + * |           |                     |     2     | -----------------+ | | | | |
-> > + * |           |                     +-----------+                    | | | | |
-> > + * |           |                     |     3     | -------------------+ | | | |
-> > + * |           |                     +-----------+                      | | | |
-> > + * |           |                     |     4     | ---------------------+ | | |
-> > + * |    PMD    |                     +-----------+                        | | |
-> > + * |   level   |                     |     5     | -----------------------+ | |
-> > + * |  mapping  |                     +-----------+                          | |
-> > + * |           |                     |     6     | -------------------------+ |
-> > + * |           |                     +-----------+                            |
-> > + * |           |                     |     7     | ---------------------------+
-> >   * |           |                     +-----------+
-> >   * |           |
-> >   * |           |
-> >   * |           |
-> >   * +-----------+
-> >   *
-> > - * When a HugeTLB is freed to the buddy system, we should allocate 6 pages for
-> > + * When a HugeTLB is freed to the buddy system, we should allocate 7 pages for
-> >   * vmemmap pages and restore the previous mapping relationship.
-> >   *
-> >   * For the HugeTLB page of the pud level mapping. It is similar to the former.
-> > - * We also can use this approach to free (PAGE_SIZE - 2) vmemmap pages.
-> > + * We also can use this approach to free (PAGE_SIZE - 1) vmemmap pages.
-> >   *
-> >   * Apart from the HugeTLB page of the pmd/pud level mapping, some architectures
-> >   * (e.g. aarch64) provides a contiguous bit in the translation table entries
-> > @@ -166,7 +166,13 @@
-> >   *
-> >   * The contiguous bit is used to increase the mapping size at the pmd and pte
-> >   * (last) level. So this type of HugeTLB page can be optimized only when its
-> > - * size of the struct page structs is greater than 2 pages.
-> > + * size of the struct page structs is greater than 1 page.
-> > + *
-> > + * Notice: The head vmemmap page is not freed to the buddy allocator and all
-> > + * tail vmemmap pages are mapped to the head vmemmap page frame. So we can see
-> > + * more than one struct page struct with PG_head (e.g. 8 per 2 MB HugeTLB page)
-> > + * associated with each HugeTLB page. The compound_head() can handle this
-> > + * correctly (more details refer to the comment above compound_head()).
-> >   */
-> >  #define pr_fmt(fmt)    "HugeTLB: " fmt
-> >
-> > @@ -175,14 +181,16 @@
-> >  /*
-> >   * There are a lot of struct page structures associated with each HugeTLB page.
-> >   * For tail pages, the value of compound_head is the same. So we can reuse first
-> > - * page of tail page structures. We map the virtual addresses of the remaining
-> > - * pages of tail page structures to the first tail page struct, and then free
-> > - * these page frames. Therefore, we need to reserve two pages as vmemmap areas.
-> > + * page of head page structures. We map the virtual addresses of all the pages
-> > + * of tail page structures to the head page struct, and then free these page
-> > + * frames. Therefore, we need to reserve one pages as vmemmap areas.
-> >   */
-> > -#define RESERVE_VMEMMAP_NR             2U
-> > +#define RESERVE_VMEMMAP_NR             1U
-> >  #define RESERVE_VMEMMAP_SIZE           (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
-> >
-> > -bool hugetlb_free_vmemmap_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
-> > +bool hugetlb_free_vmemmap_enabled __read_mostly =
-> > +       IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
-> > +EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled);
-> >
-> >  static int __init early_hugetlb_free_vmemmap_param(char *buf)
-> >  {
-> > @@ -236,7 +244,6 @@ int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> >          */
-> >         ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> >                                   GFP_KERNEL | __GFP_NORETRY | __GFP_THISNODE);
-> > -
-> >         if (!ret)
-> >                 ClearHPageVmemmapOptimized(head);
-> >
-> > @@ -282,9 +289,8 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
-> >
-> >         vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
-> >         /*
-> > -        * The head page and the first tail page are not to be freed to buddy
-> > -        * allocator, the other pages will map to the first tail page, so they
-> > -        * can be freed.
-> > +        * The head page is not to be freed to buddy allocator, the other tail
-> > +        * pages will map to the head page, so they can be freed.
-> >          *
-> >          * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? It is true
-> >          * on some architectures (e.g. aarch64). See Documentation/arm64/
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index db6df27c852a..54784d60f19d 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
-> > @@ -53,6 +53,17 @@ struct vmemmap_remap_walk {
-> >         struct list_head *vmemmap_pages;
-> >  };
-> >
-> > +/*
-> > + * How many struct page structs need to be reset. When we reuse the head
-> > + * struct page, the special metadata (e.g. page->flags or page->mapping)
-> > + * cannot copy to the tail struct page structs. The invalid value will be
-> > + * checked in the free_tail_pages_check(). In order to avoid the message
-> > + * of "corrupted mapping in tail page". We need to reset at least 3 (one
-> > + * head struct page struct and two tail struct page structs) struct page
-> > + * structs.
-> > + */
-> > +#define NR_RESET_STRUCT_PAGE           3
-> > +
-> >  static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
-> >                                   struct vmemmap_remap_walk *walk)
-> >  {
-> > @@ -245,6 +256,15 @@ static void vmemmap_remap_pte(pte_t *pte, unsigned long addr,
-> >         set_pte_at(&init_mm, addr, pte, entry);
-> >  }
-> >
-> > +static inline void reset_struct_pages(struct page *start)
-> > +{
-> > +       int i;
-> > +       struct page *from = start + NR_RESET_STRUCT_PAGE;
-> > +
-> > +       for (i = 0; i < NR_RESET_STRUCT_PAGE; i++)
-> > +               memcpy(start + i, from, sizeof(*from));
->
-> better to move the MACRO into this function or just before
-> vmemmap_restore_pte() if nobody else cares about it.
 
-Got it.
 
->
-> +/*
-> + * How many struct page structs need to be reset. When we reuse the head
-> + * struct page, the special metadata (e.g. page->flags or page->mapping)
-> + * cannot copy to the tail struct page structs. The invalid value will be
-> + * checked in the free_tail_pages_check(). In order to avoid the message
-> + * of "corrupted mapping in tail page". We need to reset at least 3 (one
-> + * head struct page struct and two tail struct page structs) struct page
-> + * structs.
-> + */
-> +#define NR_RESET_STRUCT_PAGE           3
->
-> for example, highmem.c:
->
-> /*
->  * With DEBUG_KMAP_LOCAL the stack depth is doubled and every second
->  * slot is unused which acts as a guard page
->  */
-> #ifdef CONFIG_DEBUG_KMAP_LOCAL
-> # define KM_INCR        2
-> #else
-> # define KM_INCR        1
-> #endif
->
-> static inline int kmap_local_idx_push(void)
-> {
->         WARN_ON_ONCE(in_hardirq() && !irqs_disabled());
->         current->kmap_ctrl.idx += KM_INCR;
->         BUG_ON(current->kmap_ctrl.idx >= KM_MAX_IDX);
->         return current->kmap_ctrl.idx - 1;
-> }
->
-> static inline int kmap_local_idx(void)
-> {
->         return current->kmap_ctrl.idx - 1;
-> }
->
-> static inline void kmap_local_idx_pop(void)
-> {
->         current->kmap_ctrl.idx -= KM_INCR;
->         BUG_ON(current->kmap_ctrl.idx < 0);
-> }
->
-> it is usually better to put one macro to where it will be used if the
-> macro is not global.
-
-Thanks for your example.
-
->
-> With the change,
-> Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-
-Thanks.
-
->
+On 9/25/21 4:22 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The devlink core code notified users about add/remove objects without
+> relation if this object can be accessible or not. In this patch we unify
+> such user visible notifications in one place.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  net/core/devlink.c | 107 +++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 93 insertions(+), 14 deletions(-)
+> 
+> diff --git a/net/core/devlink.c b/net/core/devlink.c
+> index 3ea33c689790..06edb2f1d21e 100644
+> --- a/net/core/devlink.c
+> +++ b/net/core/devlink.c
+> @@ -742,6 +742,7 @@ static void devlink_notify(struct devlink *devlink, enum devlink_command cmd)
+>  	int err;
+>  
+>  	WARN_ON(cmd != DEVLINK_CMD_NEW && cmd != DEVLINK_CMD_DEL);
+> +	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> @@ -1040,11 +1041,15 @@ static int devlink_nl_port_fill(struct sk_buff *msg,
+>  static void devlink_port_notify(struct devlink_port *devlink_port,
+>  				enum devlink_command cmd)
+>  {
+> +	struct devlink *devlink = devlink_port->devlink;
+>  	struct sk_buff *msg;
+>  	int err;
+>  
+>  	WARN_ON(cmd != DEVLINK_CMD_PORT_NEW && cmd != DEVLINK_CMD_PORT_DEL);
+>  
+> +	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
+> +		return;
 > +
-> > +}
-> > +
-> >  static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
-> >                                 struct vmemmap_remap_walk *walk)
-> >  {
-> > @@ -258,6 +278,7 @@ static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
-> >         list_del(&page->lru);
-> >         to = page_to_virt(page);
-> >         copy_page(to, (void *)walk->reuse_addr);
-> > +       reset_struct_pages(to);
-> >
-> >         set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
-> >  }
-> > --
-> > 2.11.0
-> >
->
-> Thanks
-> barry
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+>  		return;
+> @@ -1055,18 +1060,19 @@ static void devlink_port_notify(struct devlink_port *devlink_port,
+>  		return;
+>  	}
+>  
+> -	genlmsg_multicast_netns(&devlink_nl_family,
+> -				devlink_net(devlink_port->devlink), msg, 0,
+> -				DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+> +	genlmsg_multicast_netns(&devlink_nl_family, devlink_net(devlink), msg,
+> +				0, DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+>  }
+>  
+>  static void devlink_rate_notify(struct devlink_rate *devlink_rate,
+>  				enum devlink_command cmd)
+>  {
+> +	struct devlink *devlink = devlink_rate->devlink;
+>  	struct sk_buff *msg;
+>  	int err;
+>  
+>  	WARN_ON(cmd != DEVLINK_CMD_RATE_NEW && cmd != DEVLINK_CMD_RATE_DEL);
+> +	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
+
+
+FYI, this new warning was triggered by syzbot :
+
+WARNING: CPU: 1 PID: 6540 at net/core/devlink.c:5158 devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+Modules linked in:
+CPU: 1 PID: 6540 Comm: syz-executor.0 Not tainted 5.15.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+Code: 38 41 b8 c0 0c 00 00 31 d2 48 89 ee 4c 89 e7 e8 72 1a 26 00 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e e9 01 bd 41 fa e8 fc bc 41 fa <0f> 0b e9 f7 fe ff ff e8 f0 bc 41 fa 0f 0b eb da 4c 89 e7 e8 c4 18
+RSP: 0018:ffffc90002d6f658 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801f08d580 RSI: ffffffff87344e94 RDI: 0000000000000003
+RBP: ffff88801ee42100 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87344d8a R11: 0000000000000000 R12: ffff88801c1dc000
+R13: 0000000000000000 R14: 000000000000002c R15: ffff88801c1dc070
+FS:  0000555555e8e400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055dd7c590310 CR3: 0000000069a09000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ devlink_region_create+0x39f/0x4c0 net/core/devlink.c:10327
+ nsim_dev_dummy_region_init drivers/net/netdevsim/dev.c:481 [inline]
+ nsim_dev_probe+0x5f6/0x1150 drivers/net/netdevsim/dev.c:1479
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x245/0xcc0 drivers/base/dd.c:596
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:969
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc35/0x21b0 drivers/base/core.c:3359
+ nsim_bus_dev_new drivers/net/netdevsim/bus.c:435 [inline]
+ new_device_store+0x48b/0x770 drivers/net/netdevsim/bus.c:302
+ bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2163 [inline]
+ new_sync_write+0x429/0x660 fs/read_write.c:507
+ vfs_write+0x7cf/0xae0 fs/read_write.c:594
+ ksys_write+0x12d/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f328409d3ef
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 99 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 cc fd ff ff 48
+RSP: 002b:00007ffdc6851140 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f328409d3ef
+RDX: 0000000000000003 RSI: 00007ffdc6851190 RDI: 0000000000000004
+RBP: 0000000000000004 R08: 0000000000000000 R09: 00007ffdc68510e0
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007f3284144971
+R13: 00007ffdc6851190 R14: 0000000000000000 R15: 00007ffdc6851860
+
+05:42PM
+
+
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> @@ -1078,9 +1084,8 @@ static void devlink_rate_notify(struct devlink_rate *devlink_rate,
+>  		return;
+>  	}
+>  
+> -	genlmsg_multicast_netns(&devlink_nl_family,
+> -				devlink_net(devlink_rate->devlink), msg, 0,
+> -				DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+> +	genlmsg_multicast_netns(&devlink_nl_family, devlink_net(devlink), msg,
+> +				0, DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+>  }
+>  
+>  static int devlink_nl_cmd_rate_get_dumpit(struct sk_buff *msg,
+> @@ -4150,6 +4155,7 @@ static void __devlink_flash_update_notify(struct devlink *devlink,
+>  	WARN_ON(cmd != DEVLINK_CMD_FLASH_UPDATE &&
+>  		cmd != DEVLINK_CMD_FLASH_UPDATE_END &&
+>  		cmd != DEVLINK_CMD_FLASH_UPDATE_STATUS);
+> +	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> @@ -5145,17 +5151,18 @@ static void devlink_nl_region_notify(struct devlink_region *region,
+>  				     struct devlink_snapshot *snapshot,
+>  				     enum devlink_command cmd)
+>  {
+> +	struct devlink *devlink = region->devlink;
+>  	struct sk_buff *msg;
+>  
+>  	WARN_ON(cmd != DEVLINK_CMD_REGION_NEW && cmd != DEVLINK_CMD_REGION_DEL);
+> +	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
+>  
+>  	msg = devlink_nl_region_notify_build(region, snapshot, cmd, 0, 0);
+>  	if (IS_ERR(msg))
+>  		return;
+>  
+> -	genlmsg_multicast_netns(&devlink_nl_family,
+> -				devlink_net(region->devlink), msg, 0,
+> -				DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+> +	genlmsg_multicast_netns(&devlink_nl_family, devlink_net(devlink), msg,
+> +				0, DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+>  }
+>  
+>  /**
+> @@ -6920,10 +6927,12 @@ devlink_nl_health_reporter_fill(struct sk_buff *msg,
+>  static void devlink_recover_notify(struct devlink_health_reporter *reporter,
+>  				   enum devlink_command cmd)
+>  {
+> +	struct devlink *devlink = reporter->devlink;
+>  	struct sk_buff *msg;
+>  	int err;
+>  
+>  	WARN_ON(cmd != DEVLINK_CMD_HEALTH_REPORTER_RECOVER);
+> +	WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED));
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> @@ -6935,9 +6944,8 @@ static void devlink_recover_notify(struct devlink_health_reporter *reporter,
+>  		return;
+>  	}
+>  
+> -	genlmsg_multicast_netns(&devlink_nl_family,
+> -				devlink_net(reporter->devlink),
+> -				msg, 0, DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+> +	genlmsg_multicast_netns(&devlink_nl_family, devlink_net(devlink), msg,
+> +				0, DEVLINK_MCGRP_CONFIG, GFP_KERNEL);
+>  }
+>  
+>  void
+> @@ -8955,6 +8963,68 @@ struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
+>  }
+>  EXPORT_SYMBOL_GPL(devlink_alloc_ns);
+>  
+> +static void
+> +devlink_trap_policer_notify(struct devlink *devlink,
+> +			    const struct devlink_trap_policer_item *policer_item,
+> +			    enum devlink_command cmd);
+> +static void
+> +devlink_trap_group_notify(struct devlink *devlink,
+> +			  const struct devlink_trap_group_item *group_item,
+> +			  enum devlink_command cmd);
+> +static void devlink_trap_notify(struct devlink *devlink,
+> +				const struct devlink_trap_item *trap_item,
+> +				enum devlink_command cmd);
+> +
+> +static void devlink_notify_register(struct devlink *devlink)
+> +{
+> +	struct devlink_trap_policer_item *policer_item;
+> +	struct devlink_trap_group_item *group_item;
+> +	struct devlink_trap_item *trap_item;
+> +	struct devlink_port *devlink_port;
+> +
+> +	devlink_notify(devlink, DEVLINK_CMD_NEW);
+> +	list_for_each_entry(devlink_port, &devlink->port_list, list)
+> +		devlink_port_notify(devlink_port, DEVLINK_CMD_PORT_NEW);
+> +
+> +	list_for_each_entry(policer_item, &devlink->trap_policer_list, list)
+> +		devlink_trap_policer_notify(devlink, policer_item,
+> +					    DEVLINK_CMD_TRAP_POLICER_NEW);
+> +
+> +	list_for_each_entry(group_item, &devlink->trap_group_list, list)
+> +		devlink_trap_group_notify(devlink, group_item,
+> +					  DEVLINK_CMD_TRAP_GROUP_NEW);
+> +
+> +	list_for_each_entry(trap_item, &devlink->trap_list, list)
+> +		devlink_trap_notify(devlink, trap_item, DEVLINK_CMD_TRAP_NEW);
+> +
+> +	devlink_params_publish(devlink);
+> +}
+> +
+> +static void devlink_notify_unregister(struct devlink *devlink)
+> +{
+> +	struct devlink_trap_policer_item *policer_item;
+> +	struct devlink_trap_group_item *group_item;
+> +	struct devlink_trap_item *trap_item;
+> +	struct devlink_port *devlink_port;
+> +
+> +	devlink_params_unpublish(devlink);
+> +
+> +	list_for_each_entry_reverse(trap_item, &devlink->trap_list, list)
+> +		devlink_trap_notify(devlink, trap_item, DEVLINK_CMD_TRAP_DEL);
+> +
+> +	list_for_each_entry_reverse(group_item, &devlink->trap_group_list, list)
+> +		devlink_trap_group_notify(devlink, group_item,
+> +					  DEVLINK_CMD_TRAP_GROUP_DEL);
+> +	list_for_each_entry_reverse(policer_item, &devlink->trap_policer_list,
+> +				    list)
+> +		devlink_trap_policer_notify(devlink, policer_item,
+> +					    DEVLINK_CMD_TRAP_POLICER_DEL);
+> +
+> +	list_for_each_entry_reverse(devlink_port, &devlink->port_list, list)
+> +		devlink_port_notify(devlink_port, DEVLINK_CMD_PORT_DEL);
+> +	devlink_notify(devlink, DEVLINK_CMD_DEL);
+> +}
+> +
+>  /**
+>   *	devlink_register - Register devlink instance
+>   *
+> @@ -8964,7 +9034,7 @@ void devlink_register(struct devlink *devlink)
+>  {
+>  	mutex_lock(&devlink_mutex);
+>  	xa_set_mark(&devlinks, devlink->index, DEVLINK_REGISTERED);
+> -	devlink_notify(devlink, DEVLINK_CMD_NEW);
+> +	devlink_notify_register(devlink);
+>  	mutex_unlock(&devlink_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(devlink_register);
+> @@ -8982,7 +9052,7 @@ void devlink_unregister(struct devlink *devlink)
+>  	mutex_lock(&devlink_mutex);
+>  	WARN_ON(devlink_reload_supported(devlink->ops) &&
+>  		devlink->reload_enabled);
+> -	devlink_notify(devlink, DEVLINK_CMD_DEL);
+> +	devlink_notify_unregister(devlink);
+>  	xa_clear_mark(&devlinks, devlink->index, DEVLINK_REGISTERED);
+>  	mutex_unlock(&devlink_mutex);
+>  }
+> @@ -10086,6 +10156,9 @@ void devlink_params_publish(struct devlink *devlink)
+>  {
+>  	struct devlink_param_item *param_item;
+>  
+> +	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
+> +		return;
+> +
+>  	list_for_each_entry(param_item, &devlink->param_list, list) {
+>  		if (param_item->published)
+>  			continue;
+> @@ -10631,6 +10704,8 @@ devlink_trap_group_notify(struct devlink *devlink,
+>  
+>  	WARN_ON_ONCE(cmd != DEVLINK_CMD_TRAP_GROUP_NEW &&
+>  		     cmd != DEVLINK_CMD_TRAP_GROUP_DEL);
+> +	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
+> +		return;
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> @@ -10672,6 +10747,8 @@ static void devlink_trap_notify(struct devlink *devlink,
+>  
+>  	WARN_ON_ONCE(cmd != DEVLINK_CMD_TRAP_NEW &&
+>  		     cmd != DEVLINK_CMD_TRAP_DEL);
+> +	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
+> +		return;
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> @@ -11053,6 +11130,8 @@ devlink_trap_policer_notify(struct devlink *devlink,
+>  
+>  	WARN_ON_ONCE(cmd != DEVLINK_CMD_TRAP_POLICER_NEW &&
+>  		     cmd != DEVLINK_CMD_TRAP_POLICER_DEL);
+> +	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
+> +		return;
+>  
+>  	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+>  	if (!msg)
+> 
