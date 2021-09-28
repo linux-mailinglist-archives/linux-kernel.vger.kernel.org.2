@@ -2,126 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D377441ACF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879CB41ACF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240170AbhI1KbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:31:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32538 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240055AbhI1KbY (ORCPT
+        id S240211AbhI1Kb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240162AbhI1KbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:31:24 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S8sEdW035509;
-        Tue, 28 Sep 2021 06:29:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=PQeU7C76MiSQb8Cpy524WrJ4qxMuQBE5aX+bqIChG3k=;
- b=UGk9cebiBCrmQtvKmd0wn4fM+LR4aMJSCRidVWWufckfiy1j1YbAx7VGbui5P5hRD6ye
- FfUghDoUHxfv1EvQq+RLZc8n/6/C1WeBg0NeEHB3nOjHCTDMsrrZJlmOMGJhcIQY4Pm0
- z5I7jveWZny0c331aQYBXp8varwlPnt/QsWwKBzJbml/EW8wgqZwmOe75s44Qo5JzFDM
- /rn7m3uIMxsoZ02imiMVbsT3iKBK8UH+lyXB639JDVqMsTjNLAOk0m740BSU+hljYX26
- b16S0ZSKA7gdpwdyVxkpGgi9nTl66kJp73F4Y3t12ULuc7FRvpvssPbNqrmf8bne/oNk 6w== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbtew8jwu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 06:29:40 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SADuof003951;
-        Tue, 28 Sep 2021 10:29:39 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 3b9ud9k953-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 10:29:38 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SATZPQ40108514
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Sep 2021 10:29:35 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D46D52052;
-        Tue, 28 Sep 2021 10:29:35 +0000 (GMT)
-Received: from [9.171.64.190] (unknown [9.171.64.190])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CC0BF5205A;
-        Tue, 28 Sep 2021 10:29:34 +0000 (GMT)
-Message-ID: <b224bdf4-cd15-369e-e82a-95e77e8f798c@linux.ibm.com>
-Date:   Tue, 28 Sep 2021 12:29:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 5.10 048/103] s390/qeth: fix deadlock during failing
- recovery
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>
-References: <20210927170225.702078779@linuxfoundation.org>
- <20210927170227.414776158@linuxfoundation.org>
- <CA+G9fYs2a78_RXaqfE3WMjSOh=HhuS=OjVxh9Hswzrme+pqxqQ@mail.gmail.com>
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-In-Reply-To: <CA+G9fYs2a78_RXaqfE3WMjSOh=HhuS=OjVxh9Hswzrme+pqxqQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: H-ZsEvG73U7IQqDIdrlHLkQwObtoFBm-
-X-Proofpoint-GUID: H-ZsEvG73U7IQqDIdrlHLkQwObtoFBm-
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 28 Sep 2021 06:31:25 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF76C061575;
+        Tue, 28 Sep 2021 03:29:46 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id me1so14611995pjb.4;
+        Tue, 28 Sep 2021 03:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T3qMAEtfcaghHlWUPWmUJLo1MLuhihC6FaJPqweE7dQ=;
+        b=mgiO+E0ax2upDUbbtDrnYK0kGX2R1PgJ+HvHaWI74ZMV+8q8QZy/KeyufrYVCz1xAj
+         vG/Fhojg/6v2p9SSZN8Rv5qPUBker4IX60gsGefYDYfEI8pUCLMHIuY9jnUb5oum+doa
+         oKBNepFb8SBiPZqb+TM8d7+Dr6Fnx+Cauc+zOPhG9FpVUBjuYhzXdBZ+qniALsi7QnQa
+         paJPIjo2A6XvUdRZE3rgSYw6XVxvMIv4iVWP9YqIAZie5dmfR0e+T3NtuZn/Qv2BYDPK
+         cu8X1JgOiM/uA2AQZDOSljem942NeYUGQinjakMODRYQvtFEziQJKIEitKqVaqeimdld
+         cq6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T3qMAEtfcaghHlWUPWmUJLo1MLuhihC6FaJPqweE7dQ=;
+        b=7AdO4eXWYBQQGVxVCq/CsqkEzMXtzfvpb8cQcg354LKwTao1SbiQU7Vm9moAE8eGR1
+         Kj6TneeAyzMu2E0NZeUQj9tRiE+oUNsPazyyAIrYg5CleARq92tvfkN2QC78h6j/g/ek
+         1bbNe2R75ZBpGtR+WfIudzcfqdyQSgysL02kB0dKV5aJijAC5bfiithY+ao/bBPRVpRR
+         n05SzTFteHTuAAszRn59DD4sQc77xH7Ge77RPA3cnm9I/mmK9b3IKP9lZWxyD/cjICzJ
+         GHzIBcZ1Q+P7BhYtzEb9Lze4BC636X2eaD0X5t3UcATK0+2ViR14Rv7nXEJnZqYoQp9j
+         i6Nw==
+X-Gm-Message-State: AOAM5324iOA3QMzFB7yxK1ccpyWw+ycvPR+2kfkB9Xyxs1aEFNsS6PRw
+        X8dvAszz2MewQQGsT6Ozv+E=
+X-Google-Smtp-Source: ABdhPJxcvYiawospPcYUcQj7lGHUEehWcFBnvuFIv4SwS140ilyQvMJmhXGnp9CnLi1gdXWrQJrUyw==
+X-Received: by 2002:a17:90a:ca96:: with SMTP id y22mr4740692pjt.115.1632824985647;
+        Tue, 28 Sep 2021 03:29:45 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id w1sm10306763pfj.147.2021.09.28.03.29.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Sep 2021 03:29:45 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        John Garry <john.garry@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf jevents: Fix sys_event_tables to be freed like arch_std_events
+Date:   Tue, 28 Sep 2021 18:29:38 +0800
+Message-Id: <20210928102938.69681-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 priorityscore=1501 malwarescore=0 adultscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280058
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.09.21 19:45, Naresh Kamboju wrote:
-> Following commit caused the build failures on s390,
-> 
-> On Mon, 27 Sept 2021 at 22:43, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> From: Alexandra Winter <wintera@linux.ibm.com>
->>
->> [ Upstream commit d2b59bd4b06d84a4eadb520b0f71c62fe8ec0a62 ]
->>
+From: Like Xu <likexu@tencent.com>
 
-Yes, this depends on ee909d0b1dac ("s390/qeth: Fix deadlock in remove_discipline").
+The compiler reports that free_sys_event_tables() is dead code. But
+according to the semantics, the "LIST_HEAD(arch_std_events)" should
+also be released, just like we do with 'arch_std_events' in the main().
 
+Fixes: e9d32c1bf0cd7a98 ("perf vendor events: Add support for arch standard events")
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+ tools/perf/pmu-events/jevents.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> 
-> drivers/s390/net/qeth_core_main.c: In function 'qeth_close_dev_handler':
-> drivers/s390/net/qeth_core_main.c:83:9: error: too few arguments to
-> function 'ccwgroup_set_offline'
->    83 |         ccwgroup_set_offline(card->gdev);
->       |         ^~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/s390/net/qeth_core.h:44,
->                  from drivers/s390/net/qeth_core_main.c:46:
-> arch/s390/include/asm/ccwgroup.h:61:5: note: declared here
->    61 | int ccwgroup_set_offline(struct ccwgroup_device *gdev, bool call_gdrv);
->       |     ^~~~~~~~~~~~~~~~~~~~
-> make[3]: *** [scripts/Makefile.build:280:
-> drivers/s390/net/qeth_core_main.o] Error 1
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> 
-> Build url:
-> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1626658768#L73
-> 
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-> 
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index 6731b3cf0c2f..7c887d37b893 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -1285,6 +1285,7 @@ int main(int argc, char *argv[])
+ 	}
+ 
+ 	free_arch_std_events();
++	free_sys_event_tables();
+ 	free(mapfile);
+ 	return 0;
+ 
+@@ -1306,6 +1307,7 @@ int main(int argc, char *argv[])
+ 		create_empty_mapping(output_file);
+ err_out:
+ 	free_arch_std_events();
++	free_sys_event_tables();
+ 	free(mapfile);
+ 	return ret;
+ }
+-- 
+2.32.0
 
