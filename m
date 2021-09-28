@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05D841A90F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245F241A917
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239027AbhI1GpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:45:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56893 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238903AbhI1GpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:45:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632811423; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=x8KORn26l3Mm682yXCu4AC83A+TMlzb+xY8KDLZycGs=; b=wAl4vX/Byu9gRtRuBn3usxdAQt92vGFokTjCxJ+C/FI96C6OmcbLyluS9t8lGRnM86xSEE/s
- xPG0+Gul6pB+/uSubwGKPNxfoFrm8zcAOqfF8Rtm0Xl0rGqFGo1KP1pug6G6k7ntRBPDCgYJ
- 4Axc95FsX1Alkx03HJcYhIaVJuA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6152b99c8578ef11edda7979 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 06:43:40
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4ED82C43617; Tue, 28 Sep 2021 06:43:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71802C4338F;
-        Tue, 28 Sep 2021 06:43:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 71802C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] mwifiex: avoid null-pointer-subtraction warning
-References: <20210927121656.940304-1-arnd@kernel.org>
-Date:   Tue, 28 Sep 2021 09:43:32 +0300
-In-Reply-To: <20210927121656.940304-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Mon, 27 Sep 2021 14:16:35 +0200")
-Message-ID: <87wnn1qjxn.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S239016AbhI1GxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhI1GxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:53:02 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E99C061575;
+        Mon, 27 Sep 2021 23:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=FP5d4oGJafrFBg7wxHe/Fgsku6XDyxulL26lJvPMS2g=; b=U7t+Q5nzszvusxxrcfg0zROGVG
+        U095xy6183R1hMWWlOHOj/F8PxWHLFnnlRUUhrhKZItUulskYtHyC0kqs6s9ftn1XpzNVQxpU95nr
+        SSfBoHgr3ltjOThIK2aId9GkwFF62ofWhffnosIMqYnaAk6QMbaFow5KFPj9QLVVmLm0=;
+Received: from p200300ccff1611001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff16:1100:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mV6xU-0002oa-GV; Tue, 28 Sep 2021 08:51:20 +0200
+Date:   Tue, 28 Sep 2021 08:51:19 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lucas Stach <lst@pengutronix.de>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 4/5] ARM: dts: imx6sl: fix mmc compatibles
+Message-ID: <20210928085119.51547f2c@aktux>
+In-Reply-To: <CA+Eumj50L-bbVBX99Q-6y1-o_R58JvJFsStck+O2-18qJSUT1g@mail.gmail.com>
+References: <20210924091439.2561931-1-andreas@kemnade.info>
+        <20210924091439.2561931-5-andreas@kemnade.info>
+        <a5ec87f2-7e72-9c23-e13a-75498287b451@pengutronix.de>
+        <20210926203314.7c187191@aktux>
+        <CA+Eumj50L-bbVBX99Q-6y1-o_R58JvJFsStck+O2-18qJSUT1g@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+Hi,
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang complains about some NULL pointer arithmetic in this driver:
->
-> drivers/net/wireless/marvell/mwifiex/sta_tx.c:65:59: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
->         pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
->                                                                  ^
-> drivers/net/wireless/marvell/mwifiex/uap_txrx.c:478:53: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
->         pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
->
-> Rework that expression to do the same thing using a uintptr_t.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, 27 Sep 2021 09:34:57 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
 
-I'll queue this to v5.15.
+> On Sun, 26 Sept 2021 at 20:33, Andreas Kemnade <andreas@kemnade.info> wrote:
+> >
+> > Hi Ahmad,
+> >
+> > On Sun, 26 Sep 2021 08:54:35 +0200
+> > Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >  
+> > > Hello Andreas,
+> > >
+> > > On 24.09.21 11:14, Andreas Kemnade wrote:  
+> > > > Binding specification only allows one compatible here.  
+> > >
+> > > This same change was NACKed by Lucas here:
+> > > https://lore.kernel.org/linux-devicetree/72e1194e10ccb4f87aed96265114f0963e805092.camel@pengutronix.de/
+> > >
+> > > I also think the schema should be fixed instead.
+> > >  
+> > well, that argumentation makes sense. Feel free to drop this patch. I
+> > will not repost the series if it is just about dropping patches.  
+> 
+> The argument of using a new DTB with an old kernel, therefore
+> prohibiting changes in new DTB, does not make that much sense, except
+> when caring about other systems which would like to directly reuse the
+> DTB... anyway it's not that important to fight over it.
+> 
+well, I have no strong opinion here, but I want to get rid of that
+warning, unecessary noise which might hide real problems.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Regards,
+Andreas
