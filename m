@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8C141B7A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B91141B7A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242498AbhI1TgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:36:25 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:29453 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242415AbhI1TgY (ORCPT
+        id S242534AbhI1Thd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242415AbhI1Thc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:36:24 -0400
+        Tue, 28 Sep 2021 15:37:32 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B756C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:35:52 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id q6so218041ilm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1632857684; x=1664393684;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=I3lA1xehKn8cMjMnSUrKM01iaV9gThDho652gL/f/XI=;
-  b=thvAjuWgN2cL3dAZgbMB2iJsSY+jk9PqY/pEGgfy74rhvxVJHxZ7EtE1
-   aE+sLQOpj/pbE8a12ZGG7h5n/wC1iOB935SAtIpEZtgQn9bJ5cOhyXuKF
-   T2onSFVIJDQXXty4NXRNVTEFesaqdfVpSVfJUvovmexpysWSdNAD2Mo3M
-   w=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Sep 2021 12:34:44 -0700
-X-QCInternal: smtphost
-Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 12:34:44 -0700
-Received: from [10.251.44.228] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 28 Sep 2021
- 12:34:41 -0700
-Message-ID: <61e2f232-4abe-bb10-fff5-cabe8da5a7a9@quicinc.com>
-Date:   Tue, 28 Sep 2021 22:34:39 +0300
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=64evIw52oRekIZbHwSiCOQxkuAatfjf85RCST3duN+k=;
+        b=Y+whdzRKhZBi4F0e10aKGWY8V/H37d7/fT7EfJLwEzHf9sW/3ImWPZ9ET2U5Weu4yz
+         ZBjRIgLcc3KjeErqmbig8bPdI+Ka8EUE0FIf5dIotawpBRnC5dom3MQafQisZ8LWVawZ
+         r1pRp649QhA/oJDCUS6senPdUWmeY4p6YtiBUjiG6faSu5HSv5lEtbfP7y0ezWGarR4D
+         pC1C6h2vjPZw+Rer1rFu40SivFJbautH9NtQFhC6bCu4Cmm1NNk6ZDeWvKI3J5H/YtB0
+         q0/KXjB+kwRbKGl91HsUrqE0Z03rLt11AcxhXGBqB4TNHeHroEl+vdN1zscWzQQApUAZ
+         M1nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=64evIw52oRekIZbHwSiCOQxkuAatfjf85RCST3duN+k=;
+        b=MWJHIHaSAihY0LXb9PSiYRl0IwwlNewRrOBghef0NzZ+6VkmxRaNZx+6QKzrDHTpc7
+         pvpJpxQoTjLkzI5jQ8EAA7tRw/q3Noj4UPEdGvQrMqTheElKpYc+pjQjyRami8Bc5DJ0
+         gtKG++azqVDCUVYXRGoQORG4n5l5aMvyUmlKiDbFiKv7P84mMP+/EafBtwD9g6udlFUi
+         W81nbl9YOmZuzvHJ8aC/ww9yf0JsH3NNWfkRlZW5VO9cPSiGWxIXt//lM5M5UiKUzqYj
+         w6x2FA6xLjQ15RC4L8tOGHoxyaQJl8TIlGBQ2fMLmiP6gkadkMq941F0o5D2KlpYJr4i
+         WKDg==
+X-Gm-Message-State: AOAM531Gio8nsb+NjsdIFcIf7vmMF8Ae0u869OPCwJGPoeoVA87vRRjj
+        0WxtdnBzJini0AbSI23Z4g/G8g==
+X-Google-Smtp-Source: ABdhPJzFSVZGvIenvKrDxicIDxRtjRj8KENPEhcmGHIrbBWFLg+wtwG6D65MA29+I55UEiSKkXhAsQ==
+X-Received: by 2002:a05:6e02:1d1c:: with SMTP id i28mr5559430ila.33.1632857751863;
+        Tue, 28 Sep 2021 12:35:51 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d6sm11787173ile.51.2021.09.28.12.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 12:35:51 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVItK-007GOs-GL; Tue, 28 Sep 2021 16:35:50 -0300
+Date:   Tue, 28 Sep 2021 16:35:50 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210928193550.GR3544071@ziepe.ca>
+References: <cover.1632305919.git.leonro@nvidia.com>
+ <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+ <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+ <20210927231239.GE3544071@ziepe.ca>
+ <20210928131958.61b3abec.alex.williamson@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] arm64: mm: update max_pfn after memory hotplug
-Content-Language: en-US
-To:     Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Sudarshan Rajagopalan" <quic_sudaraja@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-References: <cover.1632853776.git.quic_cgoldswo@quicinc.com>
- <a51a27ee7be66024b5ce626310d673f24107bcb8.1632853776.git.quic_cgoldswo@quicinc.com>
-From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
-In-Reply-To: <a51a27ee7be66024b5ce626310d673f24107bcb8.1632853776.git.quic_cgoldswo@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928131958.61b3abec.alex.williamson@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2021 9:51 PM, Chris Goldsworthy wrote:
-> From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-> 
-> After new memory blocks have been hotplugged, max_pfn and max_low_pfn
-> needs updating to reflect on new PFNs being hot added to system.
-> Without this patch, debug-related functions that use max_pfn such as
-> get_max_dump_pfn() or read_page_owner() will not work with any page in
-> memory that is hot-added after boot.
-> 
-> Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
-> Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-> Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
+On Tue, Sep 28, 2021 at 01:19:58PM -0600, Alex Williamson wrote:
 
-Tested-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> In defining the device state, we tried to steer away from defining it
+> in terms of the QEMU migration API, but rather as a set of controls
+> that could be used to support that API to leave us some degree of
+> independence that QEMU implementation might evolve.
 
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->   arch/arm64/mm/mmu.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index cfd9deb..fd85b51 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
->   	if (ret)
->   		__remove_pgd_mapping(swapper_pg_dir,
->   				     __phys_to_virt(start), size);
-> +	else {
-> +		max_pfn = PFN_UP(start + size);
-> +		max_low_pfn = max_pfn;
-> +	}
-> +
->   	return ret;
->   }
->   
-> 
+That is certainly a different perspective, it would have been
+better to not express this idea as a FSM in that case...
+
+So each state in mlx5vf_pci_set_device_state() should call the correct
+combination of (un)freeze, (un)quiesce and so on so each state
+reflects a defined operation of the device?
+
+Jason
