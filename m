@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A460A41B103
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9966D41B105
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240958AbhI1NlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhI1NlU (ORCPT
+        id S240870AbhI1Nme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:42:34 -0400
+Received: from mail-0301.mail-europe.com ([188.165.51.139]:35151 "EHLO
+        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhI1Nmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:41:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA01DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:39:40 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mVDKd-0004QP-7h; Tue, 28 Sep 2021 15:39:39 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mVDKc-0001Ae-Dr; Tue, 28 Sep 2021 15:39:38 +0200
-Date:   Tue, 28 Sep 2021 15:39:38 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] ARM: imx6: mask all interrupts before calling
- stby-poweroff sequence
-Message-ID: <20210928133938.GG18181@pengutronix.de>
-References: <20210817122500.31953-1-o.rempel@pengutronix.de>
- <20210922023740.GD10217@dragon>
- <01b708d2-f211-8217-f686-0f7bf9fc8129@gmail.com>
+        Tue, 28 Sep 2021 09:42:33 -0400
+Date:   Tue, 28 Sep 2021 13:40:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
+        s=protonmail; t=1632836451;
+        bh=goGNKPNGpmWN8xZiI0ePSv9y7ZFexCM2xLmGM1nxKSo=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=kkfouFtRMK3aepi1qqNdSoc/a4kHsRDzBVqc9ihvD94R7RCZ+osnCZg7wGaYEvvuW
+         ORn3wFkg6v73WaZBVs53kK46hVjYo/ddzcLZWxVkLIs0F4BKTMZ8C9avhtUyuWkBo9
+         oy52UHmUbliMKMtgqb8jCoqa20XdtsAXujDRXAOU=
+To:     ebiederm@xmission.com
+From:   Jordan Glover <Golden_Miller83@protonmail.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-mm\\@kvack.org" <linux-mm@kvack.org>,
+        "legion\\@kernel.org" <legion@kernel.org>,
+        "containers\\@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        Yu Zhao <yuzhao@google.com>
+Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
+Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
+Message-ID: <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
+In-Reply-To: <878rzw77i3.fsf@disp2133>
+References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch> <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch> <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch> <878rzw77i3.fsf@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <01b708d2-f211-8217-f686-0f7bf9fc8129@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:39:02 up 222 days, 17:02, 124 users,  load average: 0.09, 0.11,
- 0.12
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 07:57:49PM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 9/21/2021 7:37 PM, Shawn Guo wrote:
-> > On Tue, Aug 17, 2021 at 02:25:00PM +0200, Oleksij Rempel wrote:
-> > > Any pending interrupt can prevent entering standby based power off state.
-> > > To avoid it, mask all interrupts.
-> > > 
-> > > Fixes: 8148d2136002 ("ARM: imx6: register pm_power_off handler if "fsl,pmic-stby-poweroff" is set")
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > ---
-> > >   arch/arm/mach-imx/pm-imx6.c | 23 +++++++++++++++++++++++
-> > >   1 file changed, 23 insertions(+)
-> > > 
-> > > diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
-> > > index 9244437cb1b9..63887ade411a 100644
-> > > --- a/arch/arm/mach-imx/pm-imx6.c
-> > > +++ b/arch/arm/mach-imx/pm-imx6.c
-> > > @@ -59,8 +59,11 @@
-> > >   #define MX6Q_SUSPEND_OCRAM_SIZE		0x1000
-> > >   #define MX6_MAX_MMDC_IO_NUM		33
-> > > +#define GIC_DIST_ENABLE_CLEAR		0x180
-> > > +
-> > >   static void __iomem *ccm_base;
-> > >   static void __iomem *suspend_ocram_base;
-> > > +static void __iomem *gic_raw_dist_base;
-> > >   static void (*imx6_suspend_in_ocram_fn)(void __iomem *ocram_vbase);
-> > >   /*
-> > > @@ -592,6 +595,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
-> > >   static void __init imx6_pm_common_init(const struct imx6_pm_socdata
-> > >   					*socdata)
-> > >   {
-> > > +	struct device_node *np;
-> > >   	struct regmap *gpr;
-> > >   	int ret;
-> > > @@ -615,10 +619,29 @@ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
-> > >   	if (!IS_ERR(gpr))
-> > >   		regmap_update_bits(gpr, IOMUXC_GPR1, IMX6Q_GPR1_GINT,
-> > >   				   IMX6Q_GPR1_GINT);
-> > > +
-> > > +	np = of_find_compatible_node(NULL, NULL, "arm,cortex-a9-gic");
-> > > +	gic_raw_dist_base = of_iomap(np, 0);
-> > > +}
-> > > +
-> > > +static void imx_gic_mask_all(void)
-> > > +{
-> > > +	int i;
-> > > +
-> > > +	if (WARN_ON(!gic_raw_dist_base))
-> > > +		return;
-> > > +
-> > > +	for (i = 0; i < 4; i++)
-> > > +		writel_relaxed(~0, gic_raw_dist_base + GIC_DIST_ENABLE_CLEAR + 4 * i);
-> > 
-> > Is it possible to have a helper function in GIC driver, that we can
-> > simply call into?
-> 
-> Cannot you call gic_cpu_if_down(0) which would presumably have the same
-> effect?
+On Thursday, September 16th, 2021 at 5:30 PM, <ebiederm@xmission.com> wrote=
+:
 
-Good idea, thank you! It works.
+> Jordan Glover Golden_Miller83@protonmail.ch writes:
+>
+> > On Wednesday, September 15th, 2021 at 10:42 PM, Jordan Glover Golden_Mi=
+ller83@protonmail.ch wrote:
+> >
+> > > I had about 2 containerized (flatpak/bubblewrap) apps (browser + musi=
+c player) running . I quickly closed them with intent to shutdown the syste=
+m but instead get the freeze and had to use magic sysrq to reboot. System l=
+ogs end with what I posted and before there is nothing suspicious.
+> > >
+> > > Maybe it's some random fluke. I'll reply if I hit it again.
+> >
+> > Heh, it jut happened again. This time closing firefox alone had such
+> > effect:
+>
+> Ok. It looks like he have a couple of folks seeing issues here.
+> I thought we had all of the issues sorted out for the release of v5.14,
+> but it looks like there is still some little bug left.
+>
+> If Alex doesn't beat me to it I will see if I can come up with a
+> debugging patch to make it easy to help track down where the reference
+> count is going wrong. It will be a little bit as my brain is mush at
+> the moment.
+>
+> Eric
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+As the issue persist in 5.14.7 I would be very interested in such patch.
+
+For now the thing is mostly reproducible when I close several tabs in ff th=
+en
+close the browser in short period of time. When I close tabs then wait out
+a bit then close the browser it doesn't happen so I guess some interrupted
+cleanup triggers it.
+
+Jordan
