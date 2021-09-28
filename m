@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118B841BB00
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F8D41BB05
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243263AbhI1X3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243253AbhI1X3b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:29:31 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83E7C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:27:51 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e7so729216pgk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=UW/aPYuyLtT3YksmTjRLPV3v7TvHXeedKMA+JyjT1Xw=;
-        b=pW7FKmKyda+D6uWULpgvmJlmtp9o5p4CJ8lEcmHO+P3STFdOB6g5wlE4M0p4zxKJfM
-         YmBXxjkjjgO65dlaY5oF+FP/iEC3fZJUjsP/LPLqF5wxMxMiyqnRe1kRbg6zWBnjC0Pp
-         3cEh3WJYIsr9AKZv8I9P8Ohp7nOxkZl6iDHmGq4LhH3DenADBOguLUMeeS4f6tAKXmpd
-         OobFkxwpJrYSz6726NQo+UV3QuGIwW6WB7AXHNT1J+OrrOh0Q2T8gJVu1oxGjON+Zb0Y
-         UgoQUZ/lP4Vl5vutCUp70NbfBXWib2lVLwZe3E5M3JEyBhsSzIG44qUKkbw/N9zO03SK
-         c9bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=UW/aPYuyLtT3YksmTjRLPV3v7TvHXeedKMA+JyjT1Xw=;
-        b=Wi7oQLEIUzh8efhb2U+A82/+Bi/oFK+G+/1cfsvS11jfBmeOnCWB0bXevPzYsX+eSG
-         wr8ZiFOUerjp809Pxt7QaTER2FZ7lSBk1Y1PmWudPWFdNsMj2Z77kPZt/SPOWKKu8z4C
-         v56CWwTNuQVaev2icQlZMJ/nE1/+R2SnBcPxrrMlG2m+aQokimDEj3R0NgEuZ0+xA1M7
-         3Mw3LvJ0VpKHVWFK+hFJiq66kX7Hyy5nUgPBRc4jrf5yjVn3lEFdf4VV+heuR/re15mL
-         LzA96VmkM1Np6qpsGKD8b1v0SbkX5aKs69kKrEBfG8Ee2TW3hf+1SqLnQIP5VVJRO1Lw
-         QSDA==
-X-Gm-Message-State: AOAM531x6+KYa3px1pOYya0gsSyVdYzvq3oPlmXLNORIhvSn/bqq2qyc
-        aXFRc1PUiIVSHv2jRNwxad8BR3rSXBtGzSMZ
-X-Google-Smtp-Source: ABdhPJxiY3bgggHm3kAeKAzoIrjUenbaCmREsqN+Y/N61Nicv8zxRfW7J3iZdh/U0pFnlJfW6ekXog==
-X-Received: by 2002:a63:d250:: with SMTP id t16mr6913292pgi.95.1632871671291;
-        Tue, 28 Sep 2021 16:27:51 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id c9sm228016pgq.58.2021.09.28.16.27.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 16:27:50 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, maz@kernel.org,
-        tglx@linutronix.de, jbrunet@baylibre.com
-Cc:     lee.jones@linaro.org, saravanak@google.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build
- as a module
-In-Reply-To: <20210902134914.176986-2-narmstrong@baylibre.com>
-References: <20210902134914.176986-1-narmstrong@baylibre.com>
- <20210902134914.176986-2-narmstrong@baylibre.com>
-Date:   Tue, 28 Sep 2021 16:27:50 -0700
-Message-ID: <7hpmss9t6x.fsf@baylibre.com>
+        id S243279AbhI1XaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243273AbhI1XaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 19:30:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB70761368;
+        Tue, 28 Sep 2021 23:28:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632871705;
+        bh=Aj0F5LPnVcUuzJUSV8yvbiS/m7CuZnciB2S9wM6oAZc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=EUNbeeGpLdIaiqtvxWR9rGTEdh3mG9fPw/efsCNs7w80S50R4767T57C+aLN3Mo+1
+         4wT96+eP+DIUZWGRX8so7Y+H7WxBL7eWBEopao1HLx+RsWJKS60k3z0em5vFg/keLP
+         gbGjeQVZYyWmAeGo/PN+multiD+4dOdccby883Z9dKWOSjLg2JDagKIT+N7/Hb7UZO
+         36Gr0e7gHa5dH4AMIPYRngDBEmYTJQUsao6QzTVLwz8jOi2TBYwqtOCQKmmefGjeWx
+         8Zp9KvPUxpj8oootVAkj9KmlXqMeLAHlCO2BxdgPqpEJYH5Z4Jpy9LECU18T72q1tx
+         zEz2mM68ooVKw==
+Date:   Tue, 28 Sep 2021 18:28:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Ferry Toth <fntoth@gmail.com>
+Subject: Re: [PATCH v2 0/7] PCI: ACPI: Get rid of struct pci_platform_pm_ops
+ and clean up code
+Message-ID: <20210928232823.GA748352@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1800633.tdWV9SEqCh@kreacher>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+[+cc Ferry]
 
-> In order to reduce the kernel Image size on multi-platform distributions,
-> make it possible to build the Amlogic GPIO IRQ controller as a module
-> by switching it to a platform driver.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+On Mon, Sep 20, 2021 at 08:52:19PM +0200, Rafael J. Wysocki wrote:
+> Hi All,
+> 
+> As explained in the changelog of patch [2/7], using struct pci_platform_pm_ops
+> for ACPI is not particularly beneficial, so it is better to get rid of it and
+> call the functions pointed to by it directly from the PCI core.
+> 
+> However, struct pci_platform_pm_ops is also used by the Intel MID support code,
+> but it is actually better to call the MID PM function directly from the PCI
+> core either, which is done in patch [1/7].
+> 
+> After these changes, patch [3/7] removes struct pci_platform_pm_ops and the
+> rest is just cleanups and some code consolidation on top of that.
 
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Tested-by: Kevin Hilman <khilman@baylibre.com>
+I like these a lot.  Not sure exactly where everything is after the
+conversation with Ferry.  Let me know if I should be doing anything.
