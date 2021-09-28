@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CCB41B3DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F4A41B3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241849AbhI1Q24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S241841AbhI1Q0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241773AbhI1Q2y (ORCPT
+        with ESMTP id S241702AbhI1Q0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:28:54 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436F0C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:27:14 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id dj4so85975766edb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:27:14 -0700 (PDT)
+        Tue, 28 Sep 2021 12:26:04 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2279C061746;
+        Tue, 28 Sep 2021 09:24:23 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id x8so11714582plv.8;
+        Tue, 28 Sep 2021 09:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aZK50rgSRHZQcRqY8tXdmJANbhQZl2eXtIuEyFm2xBo=;
-        b=8VxXob3ZcLXiEPRJancrM4G1DNombC5ICX1ghzgpvI1+dPOH5/CY+yPX4Dl5qHtr83
-         rsdK2BrXaJQFxGj5VD3V3mIEL1zpo6k41pirJf6ByPtd8aT+YA6jhxZ2Gu2LvHB+O1Ji
-         GbpLF8fCaO6SiRfhZ+qmSe4nCRd4ZwzEUviLmHLEITDrepTMW/l/bUNqy8FSKjgel1Dd
-         sEBCaNyJO4MCZyOGMkkgqjXU/t9f/W4Nr4RxK2oot8hE9zm4nNG2rVCUzPxSXSZBCEXP
-         og5MrR6nD7erIx7erGV/1K+DELWKsBX+nXG7lWQU95JjmIFMzAPHP1qz79eXyn6AglrS
-         gn6w==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FHlhAnJc71taZr/+BkaaA8wu8hR4fcgSNUCat/tWerI=;
+        b=daUOaWa3DRPTu4mbZ1dBxI6Jqoe5tBfdeHvSmVmieVSsPj2tzkn1WUfOOG0takYkdZ
+         xWFd1ua+TFmGjqcMBx9AWSxn5C3jzjzwzkRnFdlK1VBl51Xgeol6oyj5TvRpzBnLRC/o
+         qv7c1/QCbV+rKwAA6lQbfPDcmJJb9Z1FCkt+D8fLlbLWbOkC4PyVw5TryjBMOyUlv7p2
+         KvwczCZy2wRBzVDRNKtNe4x9ZSJcfHW91XErR09/yG9TAe09rGRmqknEPxuL7DL3etvA
+         gcLRSGoyqfZcx0DL2NAZ7pPCZE7fCrzE+IyyRunakQmtKgaW9hV688+pG/agoW84Kc16
+         VdIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aZK50rgSRHZQcRqY8tXdmJANbhQZl2eXtIuEyFm2xBo=;
-        b=h22eyLrWN4vt4ROLjozsdvh+rIp936YJbeYN2lqycZH8tD8DKS22JUJlLdMeN+2AMN
-         gxNejMlnWCBLQsYTuLhPuuSBgiNt02GcKkJfkGLBXx/6syhqVBEMkRJGHid44ZWSkFO5
-         RvMzklzSjz2TgWCS24e5m+bu3WqBbTfyqUWP5v6Gt4LTHJjf92mxsYmmNO7IbMvhTSb6
-         UAT7TweLvOKH2yhba2H1sR1Cc516jhN4JdCkbV7IYuBL5h6pts1EA1AJva1pXiAyX6uG
-         kLc2c8OxD0qCkuw2+ZmyUO7gXe1IZktzeTYf4igavS/sLfE0CTnwSYNIbt53ZA/AUemD
-         HDdw==
-X-Gm-Message-State: AOAM531UH2B4BoXpk2TvPpCnEB5XRe35Cyk4i7RZ3YHSWrKxxk2JeT9q
-        yPTyOWe2hPfMyX0BBVnG6jXvrBASiScZ0g==
-X-Google-Smtp-Source: ABdhPJzL9/oAR9j832jvWR3npYHEzFpq47jdRq2bhoGLOOi3OLmehlGQNvgILvork6ZIW2M1VTHGGg==
-X-Received: by 2002:a05:6402:64e:: with SMTP id u14mr8855207edx.184.1632846432847;
-        Tue, 28 Sep 2021 09:27:12 -0700 (PDT)
-Received: from fedora.. (dh207-96-123.xnet.hr. [88.207.96.123])
-        by smtp.googlemail.com with ESMTPSA id n23sm12579876edw.75.2021.09.28.09.27.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FHlhAnJc71taZr/+BkaaA8wu8hR4fcgSNUCat/tWerI=;
+        b=kXgkJZsIyGRcnA7avJMoK9AZR8ELQNVj9T3zf3mFztXEjc+P4/E70DrlAw9sj/ZKku
+         m5ilOvkXG/SQ6o+JjrdoBqbziZBd3T9DU1JtfZqlxCC4QwT+wbHymEYO7V2vNz+BKoQq
+         tezU5qNLWu6kp+bBOEOKKENnsevCi8LUI1TOCj4loZnbFCbYpmAnWH31eGIn6yVBDQUr
+         Eg17L/DjruaQdg0kxTibOZy2aSlGuZoIX9TsnKotvU1OlL+1bIXI4nKolEYrH4ZLubmm
+         OewLxT7/e1dflnAsK94c007jkIunM5jO7s4i0v2QqYivebjgkfvJ4JCWEY57/GSnJ2/N
+         G2sg==
+X-Gm-Message-State: AOAM531dnA8tInc1HK6TLOC9RikLoKVOgSyi9Ydz3IikNfrDlGYNCJ0l
+        IQTxFP0IgiMeyYKxCzS3dlS+khTTLM0=
+X-Google-Smtp-Source: ABdhPJxRoIfwR6j3nkdfKPAphyQ2MJbzLyba1v5zHwK/OM3EMGR2rXvXK833SIEOuAE3eVmE9y8roA==
+X-Received: by 2002:a17:90a:514e:: with SMTP id k14mr918232pjm.154.1632846263013;
+        Tue, 28 Sep 2021 09:24:23 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id c7sm20537216pfd.75.2021.09.28.09.24.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 09:27:12 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pali@kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v2 3/3] arm64: dts: marvell: espressobin-ultra: enable front USB3 port
-Date:   Tue, 28 Sep 2021 18:27:04 +0200
-Message-Id: <20210928162704.687513-3-robert.marko@sartura.hr>
+        Tue, 28 Sep 2021 09:24:21 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/dpu: Remove some nonsense
+Date:   Tue, 28 Sep 2021 09:28:59 -0700
+Message-Id: <20210928162903.1104847-1-robdclark@gmail.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210928162704.687513-1-robert.marko@sartura.hr>
-References: <20210928162704.687513-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Espressobin Ultra has a front panel USB3.0 Type-A port which works
-just fine so enable it.
-I dont see a reason why it was disabled in the first place anyway.
+From: Rob Clark <robdclark@chromium.org>
 
-Fixes: 3404fe15a60f ("arm64: dts: marvell: add DT for ESPRESSObin-Ultra")
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
-Changes in v2:
-* Add Fixes tag
----
- arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 1 -
- 1 file changed, 1 deletion(-)
+These aren't used.  And if we add use for them later, we should probably
+do something a bit more structured than string parsing.
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-index 7c786d218f1b..070725b81be5 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-@@ -108,7 +108,6 @@ rtc@51 {
- 
- &usb3 {
- 	usb-phy = <&usb3_phy>;
--	status = "disabled";
- };
- 
- &mdio {
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 6 ------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 8 --------
+ 2 files changed, 14 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index b131fd376192..e32dbb06aad1 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -958,12 +958,6 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
+ 	.min_core_ib = 2400000,
+ 	.min_llcc_ib = 800000,
+ 	.min_dram_ib = 800000,
+-	.core_ib_ff = "6.0",
+-	.core_clk_ff = "1.0",
+-	.comp_ratio_rt =
+-	"NV12/5/1/1.23 AB24/5/1/1.23 XB24/5/1/1.23",
+-	.comp_ratio_nrt =
+-	"NV12/5/1/1.25 AB24/5/1/1.25 XB24/5/1/1.25",
+ 	.undersized_prefill_lines = 2,
+ 	.xtra_prefill_lines = 2,
+ 	.dest_scale_prefill_lines = 3,
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+index d2a945a27cfa..4ade44bbd37e 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+@@ -676,10 +676,6 @@ struct dpu_perf_cdp_cfg {
+  * @min_core_ib        minimum mnoc ib vote in kbps
+  * @min_llcc_ib        minimum llcc ib vote in kbps
+  * @min_dram_ib        minimum dram ib vote in kbps
+- * @core_ib_ff         core instantaneous bandwidth fudge factor
+- * @core_clk_ff        core clock fudge factor
+- * @comp_ratio_rt      string of 0 or more of <fourcc>/<ven>/<mod>/<comp ratio>
+- * @comp_ratio_nrt     string of 0 or more of <fourcc>/<ven>/<mod>/<comp ratio>
+  * @undersized_prefill_lines   undersized prefill in lines
+  * @xtra_prefill_lines         extra prefill latency in lines
+  * @dest_scale_prefill_lines   destination scaler latency in lines
+@@ -702,10 +698,6 @@ struct dpu_perf_cfg {
+ 	u32 min_core_ib;
+ 	u32 min_llcc_ib;
+ 	u32 min_dram_ib;
+-	const char *core_ib_ff;
+-	const char *core_clk_ff;
+-	const char *comp_ratio_rt;
+-	const char *comp_ratio_nrt;
+ 	u32 undersized_prefill_lines;
+ 	u32 xtra_prefill_lines;
+ 	u32 dest_scale_prefill_lines;
 -- 
 2.31.1
 
