@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B673941B82A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8CB41B830
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242690AbhI1ULN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:11:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242679AbhI1ULM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:11:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC9A611BD;
-        Tue, 28 Sep 2021 20:09:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632859772;
-        bh=1zjiJRB4COENYADtGBiO8bi9VSTzBhcEvxXTXQ4YCJE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dz0C6jtbZVt+WG3dNRtf+Uc9eF5JOWHAvfNIrrYzMIOTtnDRCp+/azIndIeYUhuhS
-         GGj9WX0TpZ5ehMF/69Pmyeuh3/ucdVx+qA3a0SrYvsaqxSgZV0shpnjQj0dgnvtlDW
-         GK5b7nwNLoS1JV2QEWs0jn4T3pv6UNuQ3GOrIAsdusi/ot+w2ueV1sdE8WVRcdnqZX
-         cgiO+4gf5OFvRgfRTooLYYuaVZiaQIlw1bPQgPWn+ImuCn12t1mkZQ50n8ZtXb4XEj
-         c908lF8UTPW0K3QMGBiV0IMqbWqaiGDPylrbcjaaPN5jbUKJVQP3alF56n6OkfPFBJ
-         vyPqI1c2el5Eg==
-Date:   Tue, 28 Sep 2021 21:08:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, nsaenz@kernel.org,
-        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jgg@ziepe.ca, p.rosenberger@kunbus.com,
-        linux-integrity@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
- handler
-Message-ID: <20210928200843.GM4199@sirena.org.uk>
-References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
+        id S242690AbhI1UOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:14:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58952 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232756AbhI1UOP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:14:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632859955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3BRf/BoVQQhGwaFtZ+fvHSqHQV1racwbJknBUgVnbCI=;
+        b=Yu2pN/R9BhhROpfaCT+1kF0gxy/TQLDFWi2MfaTzyHu1M3Bnf0EDKNiZYDBWMloWlLAGfi
+        a2JJKiwmuzuV6PcvfdHdM+17qfY9Ix6eRg9Mmh4Zc2iiWAXnHSomhc5XRQrXX8pxIbw/uN
+        uWVOfggfM6yyB9vknxIF3jmPLK6sEnI=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-89JLxWC1MIC7ejmCh9eJCw-1; Tue, 28 Sep 2021 16:12:29 -0400
+X-MC-Unique: 89JLxWC1MIC7ejmCh9eJCw-1
+Received: by mail-ot1-f71.google.com with SMTP id a19-20020a9d3e13000000b0054d67e67b64so14159456otd.22
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:12:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3BRf/BoVQQhGwaFtZ+fvHSqHQV1racwbJknBUgVnbCI=;
+        b=zVH0cT7/ZZjERIifITasZzykVVorMx6oXC+rvdZ32x31m2rn4Sld8uvzLjozIVGIPi
+         2d0PQ0q0M7Bfwkii+/whGM7xAln5rxQX4uYrAKJ1m7Suo4FSuNYzDjCkkavjYCwtTm5r
+         RpxCMWvUr17hQqZc2L5n3y5z29sLbeXjZAT6Ju1oX+leAhOLeRSh0yrqfFbjCgoukBtQ
+         z7eipYD+VmPVKV7lsjXClzFm/YHb0J5oUNxdcYJcOmOR8hcFFtIbHpjSCiTkxWVnzam+
+         l2Nf66gV/YhBA8zAyaO7SEi9+bQ4K9h5nv5Z+zuCZt+G/QF1akFy4mFQGh68yg5tamBa
+         zlkg==
+X-Gm-Message-State: AOAM531Ho8tlxH7Bt3Rj05QJ78FyQpDWrl8x75QDWlM5nTXNpuL7lOvY
+        B26s5jbm55C0sOkb9zhM0L8KReM6D0I5JguN2oPLJQftfNrytcIMmOpmqNCJrRNmvUlv/gFAHME
+        b+wsSPUTS6we+zi2gMc9MaKC8
+X-Received: by 2002:a9d:7751:: with SMTP id t17mr6823665otl.276.1632859949030;
+        Tue, 28 Sep 2021 13:12:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4Aj9jK75RLkBh3LSiNl3n/TgPSKPaDUroxVKiDxiaDWymphftid12DXqezUM3wGC8T8cNCQ==
+X-Received: by 2002:a9d:7751:: with SMTP id t17mr6823656otl.276.1632859948835;
+        Tue, 28 Sep 2021 13:12:28 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z83sm30895oiz.41.2021.09.28.13.12.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 13:12:28 -0700 (PDT)
+From:   trix@redhat.com
+To:     robh+dt@kernel.org, frowand.list@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] of: remove duplicate declaration of of_iomap()
+Date:   Tue, 28 Sep 2021 13:12:14 -0700
+Message-Id: <20210928201214.294737-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="B9BE8dkJ1pIKavwa"
-Content-Disposition: inline
-In-Reply-To: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
-X-Cookie: 98% lean.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
---B9BE8dkJ1pIKavwa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A ranconfig produces this linker error
+irq-al-fic.c:252: undefined reference to `of_iomap'
 
-On Tue, Sep 28, 2021 at 09:56:57PM +0200, Lino Sanfilippo wrote:
-> Do not unregister the SPI controller in the shutdown handler. The reason
-> to avoid this is that controller unregistration results in the slave
-> devices remove() handler being called which may be unexpected for slave
-> drivers at system shutdown.
->=20
-> One example is if the BCM2835 driver is used together with the TPM SPI
-> driver:
-> At system shutdown first the TPM chip devices (pre) shutdown handler
-> (tpm_class_shutdown) is called, stopping the chip and setting an operatio=
-ns
-> pointer to NULL.
-> Then since the BCM2835 shutdown handler unregisters the SPI controller the
-> TPM SPI remove function (tpm_tis_spi_remove) is also called. In case of
-> TPM 2 this function accesses the now nullified operations pointer,
-> resulting in the following NULL pointer access:
->=20
-> [  174.078277] 8<--- cut here ---
-> [  174.078288] Unable to handle kernel NULL pointer dereference at virtua=
-l address 00000034
-> [  174.078293] pgd =3D 557a5fc9
-> [  174.078300] [00000034] *pgd=3D031cf003, *pmd=3D00000000
-> [  174.078317] Internal error: Oops: 206 [#1] SMP ARM
-> [  174.078323] Modules linked in: tpm_tis_spi tpm_tis_core tpm spidev gpi=
-o_pca953x mcp320x rtc_pcf2127 industrialio regmap_i2c regmap_spi 8021q garp=
- stp llc ftdi_sio6
+The declaration of of_iomap() is dependent on OF
+The definition of of_iomap() is dependent on OF_ADDRESS
+These should match.  There are duplicate declarations
+of of_iomap(), remove of_iomap() and the
+of_address_to_resource() duplicate.
 
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative (it often is
-for search engines if nothing else) then it's usually better to pull out
-the relevant sections.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ include/linux/of_address.h | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
---B9BE8dkJ1pIKavwa
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/linux/of_address.h b/include/linux/of_address.h
+index 45598dbec269..a190996b4b0b 100644
+--- a/include/linux/of_address.h
++++ b/include/linux/of_address.h
+@@ -122,13 +122,7 @@ static inline bool of_dma_is_coherent(struct device_node *np)
+ {
+ 	return false;
+ }
+-#endif /* CONFIG_OF_ADDRESS */
+ 
+-#ifdef CONFIG_OF
+-extern int of_address_to_resource(struct device_node *dev, int index,
+-				  struct resource *r);
+-void __iomem *of_iomap(struct device_node *node, int index);
+-#else
+ static inline int of_address_to_resource(struct device_node *dev, int index,
+ 					 struct resource *r)
+ {
+@@ -139,7 +133,7 @@ static inline void __iomem *of_iomap(struct device_node *device, int index)
+ {
+ 	return NULL;
+ }
+-#endif
++#endif /* CONFIG_OF_ADDRESS */
+ #define of_range_parser_init of_pci_range_parser_init
+ 
+ static inline const __be32 *of_get_address(struct device_node *dev, int index,
+-- 
+2.26.3
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFTdkoACgkQJNaLcl1U
-h9CTzgf9HUmFe5BoskDVSI+tZ1ZSUUmxs3qmjAsP2XzBPZp/I7ktj6J+xN+F2iIy
-hgzIj3PGq+/ytsrwbcQC1mNWCjseYHVAaDWyBzKnP8MLMp0g7LrpatFM/BSPmoTK
-3n2tvz8Hi+GK0q2I8aqw+JKku5QC+kz7VN4ppt+MfwMfswxpMwBgrY44uJh5aPE6
-i+iJjseUk9USwDgTvD9so28Vpk+iOwWvYAoVwgH3vZghRaJ80lJ9Uhv+dwyrmBVt
-/GMSxG8AtRWyHbYfegaCMdh/PX0tWYfAE2Pzg9qQgVzLW2t0jju2YZz7d+b48fhN
-2hT9RxJ6bnNzZ2U8LQ/e+giE8r5swQ==
-=ztne
------END PGP SIGNATURE-----
-
---B9BE8dkJ1pIKavwa--
