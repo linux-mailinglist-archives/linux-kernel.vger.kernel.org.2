@@ -2,201 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CFF41B9BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870A341B9C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242989AbhI1WBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S243022AbhI1WC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241482AbhI1WBO (ORCPT
+        with ESMTP id S242626AbhI1WC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:01:14 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950DAC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:59:34 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id g184so510650pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:59:34 -0700 (PDT)
+        Tue, 28 Sep 2021 18:02:57 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C7DC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:01:17 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id dj4so710777edb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hR85GCZfhL4YJawbBftoxChN3cnahiYUmelBrtysYzQ=;
-        b=d0JUHehyLXdFA5B/wgcgOjwuw3aZVkCR3Gk+OriLfpCmsGGgRbZi5+6+5dzXaHm/Rk
-         H3TiGrTERzN09CS95iDAWiZDAmZQ7WtptNJXypeXDWyysDPrB9RadntKAmDj8faRpKjd
-         fMchWKVs2KViwzp7iD2lGulOLLVhw7YhvFLNSrL+7iYLmoBrEXEPXy3mdg2HCz/DUqRI
-         DfUngAkqbFuin6e/uZEVEtmEQ9sA6tW5M9iMir9UF/2O+6uyZKAnHgdD6XMtiWjc3kEe
-         tZ6voUkCgJodnBe8T1C1vXvGgmHGQNNecVIO2odLcNPxegnl1sNnabyit3FrxNWbwdpX
-         e9Kg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GSMAPXo1PThgUYlUpGQDRfKG1H/fd1r5GZq0PpbbCCc=;
+        b=ylGvyhAGItjO7WiKLBnz+mwd1ZvvxUzYebNGS6bN1GHcljmVhpdpWiupis7ctKb3qe
+         DmGzGuTTiq5zLEOlnvoWK4DXIAAWyO4QgN73RS1GCiQ5Hh/pGciwsLnpiGKP9YJ+1o4S
+         2pZM7SE1omvOzcDPBCGAMWof/F/rZdSgqXdcEwzHluPcp3YVn3pL/W9E5GE/WVpWfVQC
+         9PlSwNUNNvVN7XYZGou2qjJSm+irCBIJHoVnxnC3ldMh3+Sw2sEpKTAZCBZQb3wQ9mku
+         km13FBMLzRH4r6BdvvsDt85scfCsr2C1v7n6uN7AsSZF1SNSYMTvIpzMOi6aoTisYv+y
+         5I2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hR85GCZfhL4YJawbBftoxChN3cnahiYUmelBrtysYzQ=;
-        b=m+rcOCYynDk9GqBKY40PxyXbjHKIVgA0AiCqQzB9oFPIRRioDNEb/nEG0jx8J9mVDj
-         kNY5V11/YL5z3LDtm7hyQ05GaWNmUjt6Bz+6iRWlve0HcQ9mkcey/JFYlpYJyjE7/+Hi
-         5gWEoI7oj4LclyocX3pVAyAxVU6lA2WGxSiUQ+q9uY9waQoztfDW2/s+VIU8oPPX43we
-         oduR+LC+Bo1lgJlIjkMua2QCyQPSpKkOsOT/1MSfPg+6VgYzTfZuWOJ3EzIvAx9pJbUi
-         m87seH6B+Y5O1N8PM3FMD84wEK1g7Misihu2IUNSbj2/Bdcw6vcXshIYobX1QIo5n3GT
-         X1ew==
-X-Gm-Message-State: AOAM531cTF9Zj3PGOjWP6tb+EA+cXks+OteYEWdFxCksByFtWu0r6ayC
-        YAZGFqjMIJ51a0ni5cu2ol98uw==
-X-Google-Smtp-Source: ABdhPJywxfOyjT/Bbb3z07Sb4ifGRgqWGAJFb2yLMs8NKV2zXEevYh6BB5SfG6ECW1CSnDRZbY3y1w==
-X-Received: by 2002:a63:50b:: with SMTP id 11mr5654394pgf.308.1632866373808;
-        Tue, 28 Sep 2021 14:59:33 -0700 (PDT)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id z14sm83969pjq.48.2021.09.28.14.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 14:59:32 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 21:59:29 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH 08/14] KVM: x86: Tweak halt emulation helper names to
- free up kvm_vcpu_halt()
-Message-ID: <YVOQQfgNDO3L0RsS@google.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <20210925005528.1145584-9-seanjc@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GSMAPXo1PThgUYlUpGQDRfKG1H/fd1r5GZq0PpbbCCc=;
+        b=D4hJWMTuhtvCu6p44wLV6NNaM/XPZL3L3Whrk2C7Bmm9F86yuCOEUIR6vgqOzIZObD
+         cmvsYyRHlPhuRx8V1N3vvoMS/ZI0q6/gH8r9swDICzhpahBOxOV7Phdecb4u52tNHhPB
+         ia4K2Oqvo0/uJx47F6npFZzUIJgPWVNuZV+ZahgImLYJbWNJXKw1FO0b/MwHf4pDbx/F
+         JryN23o4wS7cwdYXZg42EeH1ZPdfPcPE62V/30nZwcVQVt/3y3MXqrHY3nas9M9Jh8Jq
+         U8hu7n9VtsiIfNXDNUZIrBNtXcLrPFMeZ3YqU5iRJeSQQpcIYMfjEnf7FJp/uswNGOsB
+         s4hA==
+X-Gm-Message-State: AOAM531mRT8ce9l/8M7EsPkDL7dbJ1/z29aW3vAuUuJdiAYFjk3Pd39l
+        iRKrjQX0MG6rN0F9vw2pjXiXXhHEsLGFZdRf/qub+A==
+X-Google-Smtp-Source: ABdhPJwwGKfBVQ/xIs+wKo0BMv2aFJRA4Eg3sQ9gWVT7Ahfqlg1nwBWFVAmFc4yWxeML7PMGdB/NRmNZNSSpwYTCd8g=
+X-Received: by 2002:a50:f60a:: with SMTP id c10mr10420317edn.250.1632866475924;
+ Tue, 28 Sep 2021 15:01:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210925005528.1145584-9-seanjc@google.com>
+References: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
+In-Reply-To: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 29 Sep 2021 00:01:05 +0200
+Message-ID: <CACRpkdauJpfJfLazF+9VbeioR8UqLjYg+Sk6yPFnfmQn6Ky9Fw@mail.gmail.com>
+Subject: Re: [PATCH v14 0/5] Mediatek pinctrl patch on mt8195
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:55:22PM -0700, Sean Christopherson wrote:
-> Rename a variety of HLT-related helpers to free up the function name
-> "kvm_vcpu_halt" for future use in generic KVM code, e.g. to differentiate
-> between "block" and "halt".
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Fri, Sep 24, 2021 at 10:06 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
 
-Reviewed-by: David Matlack <dmatlack@google.com>
+> This series includes 5 patches:
+> 1.add rsel define.
+> 2.change pull up/down description
+> 3.fix coding style
+> 4.support rsel feature for common ICs
+> 5.add rsel setting on MT8195
+>
+> Changes in patch v14:
 
-> ---
->  arch/x86/include/asm/kvm_host.h |  2 +-
->  arch/x86/kvm/vmx/nested.c       |  2 +-
->  arch/x86/kvm/vmx/vmx.c          |  4 ++--
->  arch/x86/kvm/x86.c              | 13 +++++++------
->  4 files changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 4e8c21083bdb..cfebef10b89c 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1679,7 +1679,7 @@ int kvm_emulate_monitor(struct kvm_vcpu *vcpu);
->  int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
->  int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
->  int kvm_emulate_halt(struct kvm_vcpu *vcpu);
-> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
-> +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu);
->  int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
->  int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
->  
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index eedcebf58004..f689e463b678 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3618,7 +3618,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
->  		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
->  			vmx->nested.nested_run_pending = 0;
-> -			return kvm_vcpu_halt(vcpu);
-> +			return kvm_emulate_halt_noskip(vcpu);
->  		}
->  		break;
->  	case GUEST_ACTIVITY_WAIT_SIPI:
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d118daed0530..858f5f1f1273 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4740,7 +4740,7 @@ static int handle_rmode_exception(struct kvm_vcpu *vcpu,
->  		if (kvm_emulate_instruction(vcpu, 0)) {
->  			if (vcpu->arch.halt_request) {
->  				vcpu->arch.halt_request = 0;
-> -				return kvm_vcpu_halt(vcpu);
-> +				return kvm_emulate_halt_noskip(vcpu);
->  			}
->  			return 1;
->  		}
-> @@ -5414,7 +5414,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
->  
->  		if (vcpu->arch.halt_request) {
->  			vcpu->arch.halt_request = 0;
-> -			return kvm_vcpu_halt(vcpu);
-> +			return kvm_emulate_halt_noskip(vcpu);
->  		}
->  
->  		/*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index b0c21d42f453..eade8a2bdccf 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8643,7 +8643,7 @@ void kvm_arch_exit(void)
->  #endif
->  }
->  
-> -static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-> +static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
->  {
->  	++vcpu->stat.halt_exits;
->  	if (lapic_in_kernel(vcpu)) {
-> @@ -8655,11 +8655,11 @@ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
->  	}
->  }
->  
-> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-> +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu)
->  {
-> -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
-> +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
->  }
-> -EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
-> +EXPORT_SYMBOL_GPL(kvm_emulate_halt_noskip);
->  
->  int kvm_emulate_halt(struct kvm_vcpu *vcpu)
->  {
-> @@ -8668,7 +8668,7 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
->  	 * TODO: we might be squashing a GUESTDBG_SINGLESTEP-triggered
->  	 * KVM_EXIT_DEBUG here.
->  	 */
-> -	return kvm_vcpu_halt(vcpu) && ret;
-> +	return kvm_emulate_halt_noskip(vcpu) && ret;
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_halt);
->  
-> @@ -8676,7 +8676,8 @@ int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
->  {
->  	int ret = kvm_skip_emulated_instruction(vcpu);
->  
-> -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
-> +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD,
-> +					KVM_EXIT_AP_RESET_HOLD) && ret;
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
->  
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+Finally applied this v14 patch set for v5.16!
+
+If any further fixes are needed we can deal with them on top.
+
+Yours,
+Linus Walleij
