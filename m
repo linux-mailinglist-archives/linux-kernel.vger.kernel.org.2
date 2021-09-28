@@ -2,223 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D976041BAF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43C741BAFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243243AbhI1XWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:22:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243224AbhI1XWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:22:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B25C613A9;
-        Tue, 28 Sep 2021 23:21:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632871272;
-        bh=Qpmjy3v3LXLoqwxdodHgDFx1iO63hAnMdM8VOKZGpXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bjmMrQkaTwojf6QNFkY/FTOzBM3q0ptdF+4qIBCY9GeWM8sCEO5TYXfmBohl5jwuQ
-         YDSOPXZynWXBuvCcP8YF9n/qpvdDAsu0A1OrOyFVrTN+V9246BkDCEEPwKReJDb43X
-         NJQpiVzuFqnhUjjvWCafzB5DkNk0w/jCnvg9TLvUibjhnZIAWy8JGkVzKD7bEGScbS
-         S4n4hrHlwgfbO/4v93FBhh8evB1HDNH3JBo8ywTiS7F2oXRiMduCZCbtyi4HhZlusQ
-         JSxZEKaH3MjtyZXG2TAGJM8nTGr3B8CnB5KKIRnInY+L5mbLEno7ZLUBz3nCfnC1K6
-         IwmtKvJjE6jBw==
-Date:   Tue, 28 Sep 2021 18:25:14 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Replace "want address" users of
- BPF_CAST_CALL with BPF_CALL_IMM
-Message-ID: <20210928232514.GA297403@embeddedor>
-References: <20210928230946.4062144-1-keescook@chromium.org>
- <20210928230946.4062144-2-keescook@chromium.org>
+        id S243243AbhI1X1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243188AbhI1X1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 19:27:23 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67176C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:25:43 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id l6so200593plh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VT5WbeKu0/eAkdwTtxtDa6N+vEQxewEmE2ILnAElu/s=;
+        b=ISb4xKpQ3KFJ9GbIEUzIAHYtEC1cdwp731mKzzT6VysqyYqmCwkTPOTZ34fJVkr+B7
+         G00rj6qWxaNJ6xsCsbSAoIHqAit18YfUxXtTDNlvdz2UnwweKrHGeew8GEa6BNnBjKfo
+         sCnLF8Lbe7QGizn/2FpDqSfBjZ4bU8AJjHpXqdWJNiOOdpXQ2TivkNu8qqY+Iy0038DH
+         Xbwqsj3y2+khTxMFFuSCbxXMRVytRm1gk2lIVC/7lBZV49pWT+OaBiP9noSdnEf17rpi
+         +yWQuZ+Eh6zuEoYMuOrwIKfDkaY8lN+9xYAd37FtVRe72baLwrF7MsrStyOxdCBpv+1i
+         FzwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VT5WbeKu0/eAkdwTtxtDa6N+vEQxewEmE2ILnAElu/s=;
+        b=QPmOp8TMI5t3MuJKr8MUoDym+K6Gwi6/x18aInqA8fJimiL2eNzGrpLgwLG1N3ELwM
+         ikeLKaZhEjpYs2o0lQdD7jTT75PKnMb5ziCuwIpNGV7kG54Yt/kwgAj34YjgOH5bgXtO
+         rOqtgBIy8/JSqT2ijc4CNHe2wYjlfkJNtzPMcw15OMkV2UIm7cVyNdC+ygip3oztSOJ/
+         UWQLWhMJFbkEDN/JjCDNL0ij5VxJO6L6wUe2BUqxMsIylnNoT/ZO9v+VWALma8UCLwgU
+         wsjI7qM3/ACIKuY/UFBUbE5Ub4usAjC86Eq7aMYCFCplOS4zsZQIiA02leCsqCA9Ckff
+         5bvw==
+X-Gm-Message-State: AOAM531X/1kRZ6pb4QDW02GJucP2Q3tP0x9EpikSdTTIbssly9l/Kq/l
+        3Px2fUpn85g6sczVSwoqUmdRyA==
+X-Google-Smtp-Source: ABdhPJwNeho1jCzibhnWsQTqtNbPKwXZ+faCPzaJLhWwp/0vXkH5MyIOCY0TtRjXlbOWrJCNv6YBhQ==
+X-Received: by 2002:a17:902:6ac7:b0:13e:1fec:2bbc with SMTP id i7-20020a1709026ac700b0013e1fec2bbcmr7520714plt.82.1632871542538;
+        Tue, 28 Sep 2021 16:25:42 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id p4sm237228pgc.15.2021.09.28.16.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 16:25:41 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 23:25:38 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com, Isaku Yamahata <isaku.yamahata@intel.com>
+Subject: Re: [PATCH v3 02/31] KVM: MMU: Introduce struct kvm_page_fault
+Message-ID: <YVOkcn+PzZOpGRMA@google.com>
+References: <20210924163152.289027-1-pbonzini@redhat.com>
+ <20210924163152.289027-3-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928230946.4062144-2-keescook@chromium.org>
+In-Reply-To: <20210924163152.289027-3-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 04:09:45PM -0700, Kees Cook wrote:
-> In order to keep ahead of cases in the kernel where Control Flow
-> Integrity (CFI) may trip over function call casts, enabling
-> -Wcast-function-type is helpful. To that end, BPF_CAST_CALL causes
-> various warnings and is one of the last places in the kernel triggering
-> this warning.
+On Fri, Sep 24, 2021 at 12:31:23PM -0400, Paolo Bonzini wrote:
+> Create a single structure for arguments that are passed from
+> kvm_mmu_do_page_fault to the page fault handlers.  Later
+> the structure will grow to include various output parameters
+> that are passed back to the next steps in the page fault
+> handling.
 > 
-> Most places using BPF_CAST_CALL actually just want a void * to perform
-> math on. It's not actually performing a call, so just use a different
-> helper to get the void *, by way of the new BPF_CALL_IMM() helper, which
-> can clean up a common copy/paste idiom as well.
-> 
-> This change results in no object code difference.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Link: https://github.com/KSPP/linux/issues/20
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Link: https://lore.kernel.org/lkml/CAEf4Bzb46=-J5Fxc3mMZ8JQPtK1uoE0q6+g6WPz53Cvx=CBEhw@mail.gmail.com
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks
---
-Gustavo
-
+> Suggested-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  include/linux/filter.h |  6 +++++-
->  kernel/bpf/hashtab.c   |  6 +++---
->  kernel/bpf/verifier.c  | 26 +++++++++-----------------
->  lib/test_bpf.c         |  2 +-
->  4 files changed, 18 insertions(+), 22 deletions(-)
+>  arch/x86/kvm/mmu.h | 34 +++++++++++++++++++++++++++++++---
+>  1 file changed, 31 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 4a93c12543ee..6c247663d4ce 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -365,13 +365,17 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
->  #define BPF_CAST_CALL(x)					\
->  		((u64 (*)(u64, u64, u64, u64, u64))(x))
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index e9688a9f7b57..0553ef92946e 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -114,17 +114,45 @@ static inline void kvm_mmu_load_pgd(struct kvm_vcpu *vcpu)
+>  					  vcpu->arch.mmu->shadow_root_level);
+>  }
 >  
-> +/* Convert function address to BPF immediate */
+> +struct kvm_page_fault {
+> +	/* arguments to kvm_mmu_do_page_fault.  */
+> +	const gpa_t addr;
+> +	const u32 error_code;
+> +	const bool prefault;
+
+This is somewhat tangential to your change but... I notice KVM uses
+"prefetch" and "prefault" interchangably. If we changed prefault to
+prefetch here and in kvm_mmu_do_page_fault then that would make the
+naming consistent throughout KVM ("prefetch" for everything).
+
 > +
-> +#define BPF_CALL_IMM(x)	((void *)(x) - (void *)__bpf_call_base)
+> +	/* Derived from error_code.  */
+> +	const bool exec;
+> +	const bool write;
+> +	const bool present;
+> +	const bool rsvd;
+> +	const bool user;
 > +
->  #define BPF_EMIT_CALL(FUNC)					\
->  	((struct bpf_insn) {					\
->  		.code  = BPF_JMP | BPF_CALL,			\
->  		.dst_reg = 0,					\
->  		.src_reg = 0,					\
->  		.off   = 0,					\
-> -		.imm   = ((FUNC) - __bpf_call_base) })
-> +		.imm   = BPF_CALL_IMM(FUNC) })
+> +	/* Derived from mmu.  */
+> +	const bool is_tdp;
+> +};
+> +
+>  int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>  		       bool prefault);
 >  
->  /* Raw code statement block */
+>  static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  					u32 err, bool prefault)
+>  {
+> +	struct kvm_page_fault fault = {
+> +		.addr = cr2_or_gpa,
+> +		.error_code = err,
+> +		.exec = err & PFERR_FETCH_MASK,
+> +		.write = err & PFERR_WRITE_MASK,
+> +		.present = err & PFERR_PRESENT_MASK,
+> +		.rsvd = err & PFERR_RSVD_MASK,
+> +		.user = err & PFERR_USER_MASK,
+> +		.prefault = prefault,
+> +		.is_tdp = likely(vcpu->arch.mmu->page_fault == kvm_tdp_page_fault),
+> +	};
+>  #ifdef CONFIG_RETPOLINE
+> -	if (likely(vcpu->arch.mmu->page_fault == kvm_tdp_page_fault))
+> -		return kvm_tdp_page_fault(vcpu, cr2_or_gpa, err, prefault);
+> +	if (fault.is_tdp)
+> +		return kvm_tdp_page_fault(vcpu, fault.addr, fault.error_code, fault.prefault);
+>  #endif
+> -	return vcpu->arch.mmu->page_fault(vcpu, cr2_or_gpa, err, prefault);
+> +	return vcpu->arch.mmu->page_fault(vcpu, fault.addr, fault.error_code, fault.prefault);
+>  }
 >  
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 32471ba02708..3d8f9d6997d5 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -668,7 +668,7 @@ static int htab_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn_buf)
->  
->  	BUILD_BUG_ON(!__same_type(&__htab_map_lookup_elem,
->  		     (void *(*)(struct bpf_map *map, void *key))NULL));
-> -	*insn++ = BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
-> +	*insn++ = BPF_EMIT_CALL(__htab_map_lookup_elem);
->  	*insn++ = BPF_JMP_IMM(BPF_JEQ, ret, 0, 1);
->  	*insn++ = BPF_ALU64_IMM(BPF_ADD, ret,
->  				offsetof(struct htab_elem, key) +
-> @@ -709,7 +709,7 @@ static int htab_lru_map_gen_lookup(struct bpf_map *map,
->  
->  	BUILD_BUG_ON(!__same_type(&__htab_map_lookup_elem,
->  		     (void *(*)(struct bpf_map *map, void *key))NULL));
-> -	*insn++ = BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
-> +	*insn++ = BPF_EMIT_CALL(__htab_map_lookup_elem);
->  	*insn++ = BPF_JMP_IMM(BPF_JEQ, ret, 0, 4);
->  	*insn++ = BPF_LDX_MEM(BPF_B, ref_reg, ret,
->  			      offsetof(struct htab_elem, lru_node) +
-> @@ -2397,7 +2397,7 @@ static int htab_of_map_gen_lookup(struct bpf_map *map,
->  
->  	BUILD_BUG_ON(!__same_type(&__htab_map_lookup_elem,
->  		     (void *(*)(struct bpf_map *map, void *key))NULL));
-> -	*insn++ = BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
-> +	*insn++ = BPF_EMIT_CALL(__htab_map_lookup_elem);
->  	*insn++ = BPF_JMP_IMM(BPF_JEQ, ret, 0, 2);
->  	*insn++ = BPF_ALU64_IMM(BPF_ADD, ret,
->  				offsetof(struct htab_elem, key) +
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 7a8351604f67..1433752db740 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -1744,7 +1744,7 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id)
->  
->  	desc = &tab->descs[tab->nr_descs++];
->  	desc->func_id = func_id;
-> -	desc->imm = BPF_CAST_CALL(addr) - __bpf_call_base;
-> +	desc->imm = BPF_CALL_IMM(addr);
->  	err = btf_distill_func_proto(&env->log, btf_vmlinux,
->  				     func_proto, func_name,
->  				     &desc->func_model);
-> @@ -12514,8 +12514,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->  			if (!bpf_pseudo_call(insn))
->  				continue;
->  			subprog = insn->off;
-> -			insn->imm = BPF_CAST_CALL(func[subprog]->bpf_func) -
-> -				    __bpf_call_base;
-> +			insn->imm = BPF_CALL_IMM(func[subprog]->bpf_func);
->  		}
->  
->  		/* we use the aux data to keep a list of the start addresses
-> @@ -12995,32 +12994,25 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->  patch_map_ops_generic:
->  			switch (insn->imm) {
->  			case BPF_FUNC_map_lookup_elem:
-> -				insn->imm = BPF_CAST_CALL(ops->map_lookup_elem) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_lookup_elem);
->  				continue;
->  			case BPF_FUNC_map_update_elem:
-> -				insn->imm = BPF_CAST_CALL(ops->map_update_elem) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_update_elem);
->  				continue;
->  			case BPF_FUNC_map_delete_elem:
-> -				insn->imm = BPF_CAST_CALL(ops->map_delete_elem) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_delete_elem);
->  				continue;
->  			case BPF_FUNC_map_push_elem:
-> -				insn->imm = BPF_CAST_CALL(ops->map_push_elem) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_push_elem);
->  				continue;
->  			case BPF_FUNC_map_pop_elem:
-> -				insn->imm = BPF_CAST_CALL(ops->map_pop_elem) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_pop_elem);
->  				continue;
->  			case BPF_FUNC_map_peek_elem:
-> -				insn->imm = BPF_CAST_CALL(ops->map_peek_elem) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_peek_elem);
->  				continue;
->  			case BPF_FUNC_redirect_map:
-> -				insn->imm = BPF_CAST_CALL(ops->map_redirect) -
-> -					    __bpf_call_base;
-> +				insn->imm = BPF_CALL_IMM(ops->map_redirect);
->  				continue;
->  			}
->  
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 08f438e6fe9e..21ea1ab253a1 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -12439,7 +12439,7 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
->  					err = -EFAULT;
->  					goto out_err;
->  				}
-> -				*insn = BPF_EMIT_CALL(BPF_CAST_CALL(addr));
-> +				*insn = BPF_EMIT_CALL(addr);
->  				if ((long)__bpf_call_base + insn->imm != addr)
->  					*insn = BPF_JMP_A(0); /* Skip: NOP */
->  				break;
+>  /*
 > -- 
-> 2.30.2
+> 2.27.0
+> 
 > 
