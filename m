@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D7741B2B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65F341B2CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241518AbhI1PPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:15:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
+        id S241473AbhI1PTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:19:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241392AbhI1PPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:15:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B419F6101E;
-        Tue, 28 Sep 2021 15:13:50 +0000 (UTC)
+        id S241350AbhI1PTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:19:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D4646120D;
+        Tue, 28 Sep 2021 15:17:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632842030;
-        bh=9W+NZwnA2OzBhJ20rRTXExWsHLn9LLXH115/Fe1t9Ms=;
+        s=k20201202; t=1632842264;
+        bh=JTwi0y+kGzO/CZQFpN6CoyMNwE8s4U+X9YE370SODyw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MhL/Wcl1jpPJL0ypEjPfiT1QuOuJ4DHSaRxkv7efNrx9SaTBhDrZWl78bIu8TRimp
-         +xsqHNqqXmqacW1EXEzqUbCfzGd/3jttHGQzrWccQhO1ROdhnSd2zL5o0tVUR//h2E
-         r0/69TRzltdOWYQt00aEKqZPJx4igAHPxxyXp7VQsp7veX9zpM413Etr8iQgUh55fp
-         WuYPXjzrgwQKW/dnjIMQBXHVPb5CHQt0PtmOVR1GnA4BnjYDpf8KqnKvblOxJA6dQh
-         CLle/vwyDnOk7kOE0G/hYdLJfxoeug7zPvP9cs3uoeWRMoMK+42xE6hyca8su5Osfr
-         bYsBEAJM5aW+w==
-Received: by pali.im (Postfix)
-        id 620EB7E1; Tue, 28 Sep 2021 17:13:48 +0200 (CEST)
-Date:   Tue, 28 Sep 2021 17:13:48 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] arm64: dts: marvell: espressobin-ultra: enable UART
- output by default
-Message-ID: <20210928151348.cqgy6uuxs3owxaug@pali>
-References: <20210927154159.2168500-1-robert.marko@sartura.hr>
+        b=nuGDTiTGeigNdFo4qIzHOcMMdtR32KzzLA4ngFhnH/jG5w38pw7dekM2nzypjlqBX
+         mNMBQ4WZSu9BhYo1IVK442cRZPJKzlWDmELjZGdZPWJlkLS0g7r//iKfw7KgAdAaMu
+         6oDhIhYSvQ/nxd/WswXpyJNDfr+Y7FAIiYQzbbmzh1JYw25kbMQukxfgvh44BrD8Di
+         m+RCXOke6e6N1gElMPUy0YCYfaUXnTIiB3/uIHLPmCARWg0OhtbMY5rPcpBGw3jhnj
+         lHZSk7sRRV+HOntWX/cuD1ZccdGn2/B+Iv/2tD9fVET9F9icIIND/+/YT8u6M7ScM/
+         Ufv+7FmNFXo2w==
+Date:   Tue, 28 Sep 2021 20:47:37 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 0/3] Add support for page scope read
+Message-ID: <20210928151737.GA12183@thinkpad>
+References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927154159.2168500-1-robert.marko@sartura.hr>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 27 September 2021 17:41:56 Robert Marko wrote:
-> Since Espressobin Ultra board has a microUSB port
-> with the onboard USB to UART connected to it to be
-> used as a debug UART it makes no sense to require
-> the bootloader to pass console args to the kernel in
-> order to get console working.
-> 
-> So, use the "stdout-path" property to enable the UART
-> output on the microUSB port by default.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> index c5eb3604dd5b..c1770ceff3c1 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-> @@ -15,6 +15,10 @@ / {
->  	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
->  		     "marvell,armada3710";
->  
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
+Hi,
 
-This code is duplication of common espressobin code from
-armada-3720-espressobin.dtsi file:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+On Wed, Sep 15, 2021 at 03:27:28PM +0530, Md Sadre Alam wrote:
+> These series of patches to support page scope read.
+> 
+> In QPIC v1, SW is needed to write EXEC_CMD register
+> for each Code word and collect any Status related to
+> that CW before issueing EXEC_CMD for next CW.
+> 
+> Page scope command, currently supported only for read
+> commands in bam mode, is truly a page mode command where
+> SW is required to issue EXEC_CMD only once for a page.
+> Controller HW takes care of Codeword specific details
+> and automatically returns status associated with each
+> CW to BAM pipe, dedicated for status deposition.
+> 
 
->  	aliases {
->  		/* ethernet1 is WAN port */
->  		ethernet1 = &switch0port5;
+This description doesn't clearly convey the intention of the patches. Please
+take time to write the cover letter describing what the patches do and how
+they solve a problem.
+
+If possible, do mention the platform on which the patches were tested.
+
+And please avoid using Qualcomm specific acronymns such as CW as it only makes
+sense to limited amount of people who has access to technical documents.
+
+Thanks,
+Mani
+
+> Md Sadre Alam (3):
+>   mtd: rawnand: qcom: Add support for status pipe
+>   mtd: rawnand: qcom: Add sg list to handle status pipe request
+>   mtd: rawnand: qcom: Add support for page scope read
+> 
+>  drivers/mtd/nand/raw/qcom_nandc.c | 125 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 119 insertions(+), 6 deletions(-)
+> 
 > -- 
-> 2.31.1
+> 2.7.4
 > 
