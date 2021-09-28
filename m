@@ -2,133 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B976C41AA74
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200C341AA78
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239357AbhI1IMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239043AbhI1IMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:12:17 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD42560F9B;
-        Tue, 28 Sep 2021 08:10:37 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mV8CB-00DRl2-M2; Tue, 28 Sep 2021 09:10:35 +0100
-Date:   Tue, 28 Sep 2021 09:10:34 +0100
-Message-ID: <87pmstt91h.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
+        id S239477AbhI1IN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:13:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33958 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239043AbhI1IN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 04:13:26 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632816706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MuA+W1hIA1rAMXQIqohvtqkn6nT1tdEByWW7so2/mJE=;
+        b=o4AnzY92TDieIgsy0BxYM5ZrB7EKL02pFUFM6LcB4FFSjyx/IoknxzoYCwx61/g49g1LW9
+        K6ODGpL2PzQRXYgEhGdPzWWs/0oZKiBxLNrfe7Vf75kdG+hFBCC9oIUPDD4Z3KmMuxxn2z
+        Eg4wnTUmdqDlGRQ9761Xg/RubHl4bDgobqZFuEimIakTgiYXKDfnsZ7HDISSL4gSa4q4ni
+        WhxbEGAaexob8STeYYdPQ1VURR2ErZWrmiBRLAY6VVshAZAENbVuJrWbK11ilMwSQ2Y/uF
+        5qZWAPY1vXTkeOvt8isNigKPsNXfir2Zi9EpdZDuxDjOHZAqQht0UjX0xxs+bA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632816706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MuA+W1hIA1rAMXQIqohvtqkn6nT1tdEByWW7so2/mJE=;
+        b=l8vTUOns3NZZW+RgVuFEifsZxru0n8deKjPocVe7Z5Jbqqa5HK5OCRpnvmZ2yuboQGYauN
+        090YSxHuWDSQ8PAw==
+To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
         Peter Zijlstra <peterz@infradead.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 07/11] of/irq: Export of_irq_count to drivers
-In-Reply-To: <ec13207a-08b4-cbc4-7f29-1ce25ce1ebd0@gmail.com>
-References: <20210924170546.805663-1-f.fainelli@gmail.com>
-        <20210924170546.805663-8-f.fainelli@gmail.com>
-        <CAL_JsqLSiCb7-tHW3VTOTdMt=qahAij77zF2us-CZqXYAi0jmg@mail.gmail.com>
-        <b9bf844c-b6c0-9277-07e0-7592527ce4e4@gmail.com>
-        <CAL_JsqLv+RrmtDPTuMxtjbqAbGvEeAY_oOE5GqrPdP9ZpNGzqw@mail.gmail.com>
-        <ec13207a-08b4-cbc4-7f29-1ce25ce1ebd0@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: f.fainelli@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, linux@armlinux.org.uk, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, catalin.marinas@arm.com, will@kernel.org, ysato@users.sourceforge.jp, dalias@libc.org, tglx@linutronix.de, frowand.list@gmail.com, ardb@kernel.org, rppt@kernel.org, linus.walleij@linaro.org, akpm@linux-foundation.org, geert+renesas@glider.be, arnd@arndb.de, linux@roeck-us.net, wangkefeng.wang@huawei.com, mark.rutland@arm.com, andreyknvl@gmail.com, anshuman.khandual@arm.com, valentin.schneider@arm.com, mingo@kernel.org, peterz@infradead.org, linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org, linux-mips@vger.kernel.org, devicetree@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 05/13] x86/irq: Reserve a user IPI notification vector
+In-Reply-To: <447377f0-21e5-067d-55ac-cb2eeca7ceae@intel.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-6-sohil.mehta@intel.com> <87fstugabg.ffs@tglx>
+ <878rzkeq9f.ffs@tglx> <87bl4fcxz8.ffs@tglx>
+ <447377f0-21e5-067d-55ac-cb2eeca7ceae@intel.com>
+Date:   Tue, 28 Sep 2021 10:11:45 +0200
+Message-ID: <878rzhazlq.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 20:49:46 +0100,
-Florian Fainelli <f.fainelli@gmail.com> wrote:
-> 
-> On 9/27/21 12:43 PM, Rob Herring wrote:
-> > On Mon, Sep 27, 2021 at 2:28 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >> On 9/27/21 12:08 PM, Rob Herring wrote:
-> >>> On Fri, Sep 24, 2021 at 12:07 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>>>
-> >>>> In order to build drivers/irqchip/irq-bcm7120-l2.c as a module, we will
-> >>>> need to have of_irq_count() exported to modules.
-> >>>>
-> >>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> >>>> ---
-> >>>>  drivers/of/irq.c | 1 +
-> >>>>  1 file changed, 1 insertion(+)
-> >>>>
-> >>>> diff --git a/drivers/of/irq.c b/drivers/of/irq.c
-> >>>> index 352e14b007e7..949b9d1f8729 100644
-> >>>> --- a/drivers/of/irq.c
-> >>>> +++ b/drivers/of/irq.c
-> >>>> @@ -440,6 +440,7 @@ int of_irq_count(struct device_node *dev)
-> >>>>
-> >>>>         return nr;
-> >>>>  }
-> >>>> +EXPORT_SYMBOL_GPL(of_irq_count);
-> >>>
-> >>> Please convert to use platform_irq_count() instead.
-> >>
-> >> That requires a platform_device to be passed to platform_irq_count(),
-> >> will that work even when the drivers remain built into the kernel and
-> >> get initialized early on?
-> > 
-> > No, does your irqchip using this do both? Looks to me like it is
-> > always a platform_device.
-> 
-> On ARM/ARM64 not using GKI as well as MIPS, we would want the module to
-> be built into the kernel image, however when using GKI that driver would
-> become a module. How do you suggest reconciling both usages?
+Sohil,
 
-I don't see what GKI has to do with anything. Either the driver can be
-built as a module (and it is in this case a platform device at all
-times, built-in or not), or it cannot, and it falls into the
-IRQCHIP_DECLARE() category (and there is no export problem).
+On Mon, Sep 27 2021 at 12:07, Sohil Mehta wrote:
+> On 9/26/2021 5:39 AM, Thomas Gleixner wrote:
+>
+> The User-interrupt notification processing moves all the pending 
+> interrupts from UPID.PIR to the UIRR.
 
-Pick your poison!
+Indeed that makes sense. Should have thought about that myself.
+
+>> Also the restore portion on the way back to user space has to be coupled
+>> more tightly:
+>>
+>> arch_exit_to_user_mode_prepare()
+>> {
+>>          ...
+>>          if (unlikely(ti_work & _TIF_UPID))
+>>          	uintr_restore_upid(ti_work & _TIF_NEED_FPU_LOAD);
+>>          if (unlikely(ti_work & _TIF_NEED_FPU_LOAD))
+>>          	switch_fpu_return();
+>> }
+>
+> I am assuming _TIF_UPID would be set everytime SN is set and XSTATE is 
+> saved.
+
+Yes.
+
+>> upid_set_ndst(upid)
+>> {
+>> 	apicid = __this_cpu_read(x86_cpu_to_apicid);
+>>
+>>          if (x2apic_enabled())
+>>              upid->ndst.x2apic = apicid;
+>>          else
+>>              upid->ndst.apic = apicid;
+>> }
+>>
+>> uintr_restore_upid(bool xrstors_pending)
+>> {
+>>          clear_thread_flag(TIF_UPID);
+>>          
+>> 	// Update destination
+>>          upid_set_ndst(upid);
+>>
+>>          // Do we need something stronger here?
+>>          barrier();
+>>
+>>          clear_bit(SN, upid->status);
+>>
+>>          // Any SENDUIPI after this point sends to this CPU
+>>             
+>>          // Any bit which was set in upid->pir after SN was set
+>>          // and/or UINV was cleared by XSAVES up to the point
+>>          // where SN was cleared above is not reflected in UIRR.
+>>
+>> 	// As this runs with interrupts disabled the current state
+>>          // of upid->pir can be read and used for restore. A SENDUIPI
+>>          // which sets a bit in upid->pir after that read will send
+>>          // the notification vector which is going to be handled once
+>>          // the task reenables interrupts on return to user space.
+>>          // If the SENDUIPI set the bit before the read then the
+>>          // notification vector handling will just observe the same
+>>          // PIR state.
+>>
+>>          // Needs to be a locked access as there might be a
+>>          // concurrent SENDUIPI modiying it.
+>>          pir = read_locked(upid->pir);
+>>
+>>          if (xrstors_pending)) {
+>>          	// Update the saved xstate for xrstors
+>>             	current->xstate.uintr.uinv = UINTR_NOTIFICATION_VECTOR;
+>
+> XSAVES saves the UINV value into the XSTATE buffer. I am not sure if we 
+> need this again. Is it because it could have been overwritten by calling 
+> XSAVES twice?
+
+Yes that can happen AFAICT. I haven't done a deep analysis, but this
+needs to looked at.
+
+>>                  current->xstate.uintr.uirr = pir;
+>
+> I believe PIR should be ORed. There could be some bits already set in 
+> the UIRR.
+>
+> Also, shouldn't UPID->PIR be cleared? If not, we would detect these 
+> interrupts all over again during the next ring transition.
+
+Right. So that PIR read above needs to be a locked cmpxchg().
+
+>>          } else {
+>>                  // Manually restore UIRR and UINV
+>>                  wrmsrl(IA32_UINTR_RR, pir);
+> I believe read-modify-write here as well.
+
+Sigh, yes.
 
 Thanks,
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+        tglx
