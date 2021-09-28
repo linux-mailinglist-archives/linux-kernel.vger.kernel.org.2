@@ -2,274 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C2241AB53
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9BC41AB57
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239781AbhI1JBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:01:42 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:22910 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239623AbhI1JBl (ORCPT
+        id S239746AbhI1JCe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 05:02:34 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:42737 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239254AbhI1JCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:01:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632819587;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=QjkVh+X5B/D/wI3Y4vAzZ0HLzWUItUYeAwlzSj/mPtw=;
-    b=H+xHZGpgo4nwbiZaGdNmMbIH1wDRknHN2jiDKkGhh5kwNIfG2dqaA1RRezdIr7pEUp
-    cT5CSqnx+ZD6NdDXm8Ip+LBloPAUKi6SoLJVLRa34Jc7d/ZRpknXn7zeUBwTRQW9GHH3
-    GT6jAOdyG4PrrvN8UlYTvawrhJqKwtkBNTz8onQEEJhjAiLu9gScD+Oq1cQz6qKkqWr3
-    eW2YtP3UskemrlDpuaZd4B4wFw+4zx+kGxHbSzGb/lNz5EV/LU28SZcX7AEAodNzrNlb
-    Vec2NlhjzzmM0nxXg77gxHFs32hW/hOyIIPqNQzVXR/2G56MbvoBwpx9AmyqRZejr0St
-    Dbkg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43sT7Q="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8S8xjd8m
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 28 Sep 2021 10:59:45 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v4 03/10] dt-bindings: display: Add ingenic,jz4780-dw-hdmi
- DT Schema
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20210927170702.on243lp24fcfdhbj@gilmour>
-Date:   Tue, 28 Sep 2021 10:59:45 +0200
-Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Tue, 28 Sep 2021 05:02:33 -0400
+Received: by mail-vs1-f41.google.com with SMTP id z62so21220482vsz.9;
+        Tue, 28 Sep 2021 02:00:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2LPnGpLh0Z/OFWhJ3bW6nNOAP+i5ywRc/ibvIJ8V0ZU=;
+        b=ahdeUN3md/jKPjRspN5EIUzmln2WJmZ6FR/+5kqTRUNsvnfQPg/pNsXeO5Y5bbF1QF
+         Uans8tcpacTgMKAJUoh/9D/7H8kOwTlelfXceb4JO6u5/UMyR5esuUWpHLEyR/swevrj
+         On7Pvtbu31/0X0L2SUxPYqG+Kpx/A1xW07UT3fMR2TAIceVJVJAC0tl7Zi+RfIiNH8S8
+         LWUwhA3CwW5xv33AWar+B/4o2rEcZCx9vYF1RSM/g4n27rwCc9D0JrHr1senncdtf/N0
+         Yj1jum8BLPZX/EC6lXWv6hS4A5IuSLgzRUJBeFaowbfYhfc/J9h36T6gsoUPR4n+OOsr
+         +IRw==
+X-Gm-Message-State: AOAM531bDE+Ts7qNwEA1+1Lm8wGHekoXU6eDKxwUJrWTNQZGBRNFNDJ0
+        Wdgy4wb9K+/V6pLzllqYcP0KEp0PQSHfl0LOagCH5A3ANic=
+X-Google-Smtp-Source: ABdhPJyKCBGg8b+EUk7301gW1EQMjaY5eqfZE9QEHHk0EcY4l7Xt/v1Rn8gxQbSMp/ewzPBF7MH+2DTbO4Tgqmwiu4Y=
+X-Received: by 2002:a67:cc1c:: with SMTP id q28mr3526995vsl.37.1632819653399;
+ Tue, 28 Sep 2021 02:00:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210921213930.10366-1-linkmauve@linkmauve.fr>
+ <20210921213930.10366-2-linkmauve@linkmauve.fr> <CACPK8Xc+J0PbCdgheRxJbOVZ=OyyfsCA=cwkneMoboJLzC8TZQ@mail.gmail.com>
+In-Reply-To: <CACPK8Xc+J0PbCdgheRxJbOVZ=OyyfsCA=cwkneMoboJLzC8TZQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 28 Sep 2021 11:00:41 +0200
+Message-ID: <CAMuHMdURNY5BRc6bfaYxX+k02w7mz2aRLOi9uW-qaoT3oBPFtQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] crypto: nintendo-aes - add a new AES driver
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C529DB99-709A-4C24-B647-3A2004CBFE18@goldelico.com>
-References: <cover.1632761067.git.hns@goldelico.com>
- <6c8b72a03703de54fa02b29c1a53c84ca0889e50.1632761067.git.hns@goldelico.com>
- <20210927170702.on243lp24fcfdhbj@gilmour>
-To:     Maxime Ripard <maxime@cerno.tech>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Paul Mackerras <paulus@samba.org>,
+        Ash Logan <ash@heyquark.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.ne@posteo.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Sep 22, 2021 at 4:12 AM Joel Stanley <joel@jms.id.au> wrote:
+> On Tue, 21 Sept 2021 at 21:47, Emmanuel Gil Peyrot
+> <linkmauve@linkmauve.fr> wrote:
+> >
+> > This engine implements AES in CBC mode, using 128-bit keys only.  It is
+> > present on both the Wii and the Wii U, and is apparently identical in
+> > both consoles.
+> >
+> > The hardware is capable of firing an interrupt when the operation is
+> > done, but this driver currently uses a busy loop, I’m not too sure
+> > whether it would be preferable to switch, nor how to achieve that.
+> >
+> > It also supports a mode where no operation is done, and thus could be
+> > used as a DMA copy engine, but I don’t know how to expose that to the
+> > kernel or whether it would even be useful.
+> >
+> > In my testing, on a Wii U, this driver reaches 80.7 MiB/s, while the
+> > aes-generic driver only reaches 30.9 MiB/s, so it is a quite welcome
+> > speedup.
+> >
+> > This driver was written based on reversed documentation, see:
+> > https://wiibrew.org/wiki/Hardware/AES
+> >
+> > Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> > Tested-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>  # on Wii U
+> > ---
+> >  drivers/crypto/Kconfig        |  11 ++
+> >  drivers/crypto/Makefile       |   1 +
+> >  drivers/crypto/nintendo-aes.c | 273 ++++++++++++++++++++++++++++++++++
+> >  3 files changed, 285 insertions(+)
+> >  create mode 100644 drivers/crypto/nintendo-aes.c
+> >
+> > diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+> > index 9a4c275a1335..adc94ad7462d 100644
+> > --- a/drivers/crypto/Kconfig
+> > +++ b/drivers/crypto/Kconfig
+> > @@ -871,4 +871,15 @@ config CRYPTO_DEV_SA2UL
+> >
+> >  source "drivers/crypto/keembay/Kconfig"
+> >
+> > +config CRYPTO_DEV_NINTENDO
+> > +       tristate "Support for the Nintendo Wii U AES engine"
+> > +       depends on WII || WIIU || COMPILE_TEST
+>
+> This current seteup will allow the driver to be compile tested for
+> non-powerpc, which will fail on the dcbf instructions.
+>
+> Perhaps use this instead:
+>
+>        depends on WII || WIIU || (COMPILE_TEST && PPC)
 
-> Am 27.09.2021 um 19:07 schrieb maxime@cerno.tech:
->=20
-> Hi,
->=20
-> On Mon, Sep 27, 2021 at 06:44:21PM +0200, H. Nikolaus Schaller wrote:
->> From: Sam Ravnborg <sam@ravnborg.org>
->>=20
->> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
->> Based on .txt binding from Zubair Lutfullah Kakakhel
->>=20
->> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> Cc: Rob Herring <robh@kernel.org>
->> Cc: devicetree@vger.kernel.org
->> ---
->> .../bindings/display/ingenic-jz4780-hdmi.yaml | 85 =
-+++++++++++++++++++
->> 1 file changed, 85 insertions(+)
->> create mode 100644 =
-Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
->>=20
->> diff --git =
-a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml =
-b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
->> new file mode 100644
->> index 000000000000..5e60cdac4f63
->> --- /dev/null
->> +++ =
-b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
->> @@ -0,0 +1,85 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Bindings for Ingenic JZ4780 HDMI Transmitter
->> +
->> +maintainers:
->> +  - H. Nikolaus Schaller <hns@goldelico.com>
->> +
->> +description: |
->> +  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys =
-DesignWare HDMI 1.4
->> +  TX controller IP with accompanying PHY IP.
->> +
->> +allOf:
->> +  - $ref: panel/panel-common.yaml#
->=20
-> Is it a panel though?
+Or:
 
-Good question.=20
+    depends on PPC
+    depends on WII || WIIU || COMPILE_TEST
 
-Appears to have to be changed to
+to distinguish between hard and soft dependencies.
 
-  - $ref: bridge/synopsys,dw-hdmi.yaml#
+Gr{oetje,eeting}s,
 
->=20
->> +properties:
->> +  compatible:
->> +    items:
->> +      - const: ingenic,jz4780-dw-hdmi
->=20
-> This can just be a const, there's no need for the items
+                        Geert
 
-Maybe starting with an enum is better if more compatible strings are to =
-be added.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->=20
->> +
->> +  reg:
->> +    maxItems: 1
->> +    description: the address & size of the LCD controller registers
->=20
-> There's no need for that description, it's obvious enough
-
-Indeed.
-
->=20
->> +  reg-io-width:
->> +    const: 4
->=20
-> If it's fixed, why do you need it in the first place?
-
-There is a fixed default of 1 if not specified.
-
->=20
->> +  interrupts:
->> +    maxItems: 1
->> +    description: Specifies the interrupt provided by parent
->=20
-> There's no need for that description, it's obvious enough
-
-Indeed.
-
->=20
->> +  clocks:
->> +    maxItems: 2
->> +    description: Clock specifiers for isrf and iahb clocks
->=20
-> This can be defined as
->=20
-> clocks:
->  items:
->    - description: isrf
->    - description: iahb
->=20
-> A better description about what these clocks are would be nice as well
-
-Generally I see that this all is nowadays not independent of
-
-Documentation/devicetree/bindings/display/bridge/synopsys,dw-hdmi.yaml
-
-where there is already a description.
-
-On the other hand every SoC specialization runs its own copy. e.g.
-
-Documentation/devicetree/bindings/display/imx/fsl,imx6-hdmi.yaml
-Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yam
-
->=20
->> +  clock-names:
->> +    items:
->> +      - const: isfr
->=20
-> Is it isfr or isrf?
-
-isfr. Seems to be a typo in the description. See =
-bridge/synopsys,dw-hdmi.yaml#
-
-One question to the yaml specialists:
-
-since ../bridge/synopsys,dw-hdmi.yaml# already defines this, do we have =
-to repeat?
-Or can we reduce to just the changes?
-
-[I am still not familiar enough with the yaml stuff to understand if it =
-has sort
-of inheritance like device tree include files, so that you just have to =
-change
-relevant properties]
-
->=20
->> +      - const: iahb
-
-would it make sense to add additionalItems: false here?
-
-In the jz4780 case there are just two clocks while other specializations
-use more and synopsys,dw-hdmi.yaml# defines additionalItems: true.
-
->> +
->> +  hdmi-regulator: true
->> +    description: Optional regulator to provide +5V at the connector
->=20
-> regulators need to be suffixed by -supply
-
-My omission...
-
-And, it should be "hdmi-5v-supply" to match driver and device tree.
-
->=20
-> You also can just provide the description, you don't need the true =
-there
->=20
->> +  ddc-i2c-bus: true
->=20
-> ditto
-
-Ok
-
->=20
->> +    description: An I2C interface if the internal DDC I2C driver is =
-not to be used
->> +  ports: true
->=20
-> If there's a single port, you don't need ports
-
-There can be two ports - one for input from LCDC and one
-for output (HDMI connector). But explicitly defining an output
-port is optional to some extent (depending on driver structure).
-
->=20
-> You should also include /schemas/graph.yaml#/$defs/port-base
-
-Ok.
-
-BR and thanks,
-Nikolaus
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
