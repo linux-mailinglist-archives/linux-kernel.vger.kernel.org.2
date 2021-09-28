@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B25F41B4E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF50A41B50B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241988AbhI1RWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241944AbhI1RWh (ORCPT
+        id S242048AbhI1RXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:23:38 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:52656 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229778AbhI1RXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:22:37 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3081CC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:20:57 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id b15so93792275lfe.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:20:57 -0700 (PDT)
+        Tue, 28 Sep 2021 13:23:37 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 9D754821D8;
+        Tue, 28 Sep 2021 20:21:56 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oovrzJURHWJ6qCmrUM9JSWjLkbl3a0JTJO2dczu7GzA=;
-        b=Ok+ALmAEK+cZnQ6LuSSxPh+ShUTJqGCiOvmoU/FE8+AFDbt3w2xhf+OJV+wicegC6O
-         zU2DU4rpLyA0i2Uy7MMceYMncHY/4DZIXQRThvvvLyG/WcXtf+4JNsa58sUAo+1aj/mX
-         ON0HnvzkhDxEhQLZSLEsq4CHpc1tpzlgy0y2FlvYGd1Ocrkzy5HD82giCejK//R+7hGc
-         2LZXlfyICmNNA6D/mQkr26WrfwwJpQotDXTrg9YhgOu16u0AqgkKz6M5PqcrV+1Auksa
-         BIEPMAbqdhZe9qWJWdZokywf9Qi+0eW8StkBU5rPa+QxgyIrvn+v+bk9IsszNjTqpzbV
-         L+IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oovrzJURHWJ6qCmrUM9JSWjLkbl3a0JTJO2dczu7GzA=;
-        b=of2kTKoPqzPPJNrh90oPgRfoQmqSE9+1luu8bhHzLVI5hdaTg1OmaOz3LX84kBiD7g
-         AU780y18A/zf9i1KBGd+HSWxyryNtnU1KDGmLS6t67+x87MBFXZb+YIUR6/mcfoXv/qq
-         d68W7mmCS1FhRdNzI3RHHaYqGnfBfaef2i/DOpY7U0F2TSbaRjJBS5WVszWkpembh6d7
-         Fjqq6A0LWr4rdVwrGPoXfxv5EDI+cjWk1TKcdr749nL5iJS8IKFVivdBwrA3GawRVPSV
-         ddByO6vQg5bE2lAQlmfW9DA/Ynqz5l4cgUL9dOK1cWwqTvpHfgEUn1T4wmxyIOkCtjr9
-         XClw==
-X-Gm-Message-State: AOAM530BW8tR4l/u4cIF//urqNLSktiAvB06Mc9HveMKWuiOahvgcynt
-        3n0zSfI69A26+1XjZshu0fbAyIzXAKg7vkD/71Fa7mtGF+4vBg==
-X-Google-Smtp-Source: ABdhPJwui+sJR23H1nkOUy19dPvbUaqlhgFcXDNU9AQv+t/weNik7LllxBjVxzZsr61RZATSJV00S+5+8Lx+VKX9mTg=
-X-Received: by 2002:a05:6512:b0c:: with SMTP id w12mr6917372lfu.240.1632849654306;
- Tue, 28 Sep 2021 10:20:54 -0700 (PDT)
+        d=paragon-software.com; s=mail; t=1632849716;
+        bh=1eIU+Q66pTwxALS54M8jSJ/OOGHF+t7oZXoe1eQzNBY=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=cOLMthE/1M0+NvB7o1gxTLZ0327Y0jyS0xc5PxAtLfOqie21kiQJBsN5S7s6mC8lo
+         FlKBxHCj5EgTpkbgm+r9vvvvvCBbwUno/lTROUtm2jwSlEO7YzPsHaQvuGFnXpBheM
+         X9L3Y8Gu0Cw0PQbsBRH2cATbrR/5ePS25Xjenma8=
+Received: from [192.168.211.85] (192.168.211.85) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 28 Sep 2021 20:21:55 +0300
+Message-ID: <fbdcbb8f-380c-4da9-2860-a3729c75e04b@paragon-software.com>
+Date:   Tue, 28 Sep 2021 20:21:54 +0300
 MIME-Version: 1.0
-References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-15-arnd@kernel.org>
-In-Reply-To: <20210928154143.2106903-15-arnd@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 28 Sep 2021 10:20:42 -0700
-Message-ID: <CAKwvOdmhZiOQ1h6_qfOxTKkzoA+Go8BCp-GEUZ6LNQpd0cimzA@mail.gmail.com>
-Subject: Re: [PATCH 14/14] [RFC] ARM: forbid ftrace with clang and thumb2_kernel
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        Peter Smith <Peter.Smith@arm.com>,
-        Kristof Beyls <Kristof.Beyls@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 2/3] fs/ntfs3: Reject mount if boot's cluster size < media
+ sector size
+Content-Language: en-US
+To:     Kari Argillander <kari.argillander@gmail.com>
+CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+References: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
+ <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
+ <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.85]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 8:42 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang fails to build kernels with THUMB2 and FUNCTION_TRACER
-> enabled when there is any inline asm statement containing
-> the frame pointer register r7:
->
-> arch/arm/mach-versatile/dcscb.c:95:2: error: inline asm clobber list contains reserved registers: R7 [-Werror,-Winline-asm]
-
-^ This file no longer exists in tree?
-
-> arch/arm/mach-exynos/mcpm-exynos.c:154:2: error: inline asm clobber list contains reserved registers: R7 [-Werror,-Winline-asm]
-> arch/arm/probes/kprobes/actions-thumb.c:449:3: error: inline asm clobber list contains reserved registers: R7 [-Werror,-Winline-asm]
->
-> Apparently gcc should also have warned about this, and the
-> configuration is actually invalid, though there is some
-> disagreement on the bug trackers about this.
->
-> Link: https://bugs.llvm.org/show_bug.cgi?id=45826
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94986
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  arch/arm/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 0d4f3e2d50ad..7ea95bb40004 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -91,7 +91,7 @@ config ARM
->         select HAVE_FAST_GUP if ARM_LPAE
->         select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
->         select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
-> -       select HAVE_FUNCTION_TRACER if !XIP_KERNEL
-> +       select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !(THUMB2_KERNEL && CC_IS_CLANG)
->         select HAVE_GCC_PLUGINS
->         select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
->         select HAVE_IRQ_TIME_ACCOUNTING
-> --
-> 2.29.2
->
->
 
 
--- 
-Thanks,
-~Nick Desaulniers
+On 27.09.2021 21:56, Kari Argillander wrote:
+> On Mon, Sep 27, 2021 at 06:48:00PM +0300, Konstantin Komarov wrote:
+>> If we continue to work in this case, then we can corrupt fs.
+>>
+> 
+> Should have fixes tag.
+> 
+
+The bug is in initial commit.
+Do I need to write
+Fixes: 82cae269cfa95 "fs/ntfs3: Add initialization of super block"
+?
+
+>> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+>> ---
+>>  fs/ntfs3/super.c | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+>> index 7099d9b1f3aa..193f9a98f6ab 100644
+>> --- a/fs/ntfs3/super.c
+>> +++ b/fs/ntfs3/super.c
+>> @@ -763,9 +763,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>>  	sbi->mft.lbo = mlcn << sbi->cluster_bits;
+>>  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
+>>  
+>> +	/* Compare boot's cluster and sector. */
+> 
+> Pretty random obvious comment and I do not know what this does in this
+> patch.
+> 
+>>  	if (sbi->cluster_size < sbi->sector_size)
+>>  		goto out;
+>>  
+>> +	/* Compare boot's cluster and media sector. */
+>> +	if (sbi->cluster_size < sector_size)
+>> +		goto out; /* No way to use ntfs_get_block in this case. */
+> 
+> Usually comment should not go after line. If you take chunk from patch
+> 3/3 then this is not issue.
+> 
+>> +
+>>  	sbi->cluster_mask = sbi->cluster_size - 1;
+>>  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
+>>  	sbi->record_size = record_size = boot->record_size < 0
+>> -- 
+>> 2.33.0
+>>
+>>
+>>
