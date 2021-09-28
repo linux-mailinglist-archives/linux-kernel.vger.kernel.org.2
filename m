@@ -2,158 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42E541AAAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE91441AAAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239626AbhI1Ihc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S239639AbhI1Ihe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:37:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:41448 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239625AbhI1Ihc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Sep 2021 04:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235918AbhI1Iha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:37:30 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718F2C061575;
-        Tue, 28 Sep 2021 01:35:51 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id b82so29223157ybg.1;
-        Tue, 28 Sep 2021 01:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VkqOXfHINA+UZ7ncjJqcgVt9KM5mqN2AU4qxmIR04Ww=;
-        b=KwmceUcpNHtIhwmgml8dRJAWZBkf3N1tz0837q7wOglPnhgZbiBiaHveMoI+GKCkaO
-         9fSRAuTZqHX/B2+Wz8yq6JlVanohWSYcMGNt+k1n05jAdqgZVPrRT+q6KDUuxVf5+FYe
-         nUan9ZSqN603cNiZhtD/zIZRjqAVEHmZGGg2OKd3/Wr11Bm24G8bPnxYR2w/WoqDSdrA
-         L8k7ZZ/aGoP0gaWuL8/ZtoS+022b4ofGF0gNoW65h9ztD2mU15MFNH+IDWPYzSjf49Wy
-         0XYrqkD/YsDSyoLqg29hVIv8S7m5BhPfbCjggfCMtKtfj88B9uj8VSK5/SbIukv3josw
-         97Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VkqOXfHINA+UZ7ncjJqcgVt9KM5mqN2AU4qxmIR04Ww=;
-        b=3m6aAKhJmWbVv5DYz499ERg8rGFSc7A5n2PTWbAIpBAGvqWUjDRQm1a6qK2bJcsqoJ
-         0hIFEcsX2sSKJsBySKhuR9bEJdFNK+mYTFWtkOg3NNPXaonSW2uoLYHyvBHfadnZ9CkA
-         2bdWHNKAQdf+QW9hqdFfLz5o35il9i9CAexELXssavMgO4JEfRmamDlsjjEYckDDKuoH
-         1un0zBdi24QQVaDM6BQtVrGe9rTxrtzlJJKqxzLXW9L9soIlzBG6I40LX6igMGMIvPrM
-         kn7Ck1TxlzUew3Q3XeHWpiNrE5Qgh2U5M82QyZSVUAsR0EFImTTWmVEjj0Ymp1UCq3xT
-         LLxg==
-X-Gm-Message-State: AOAM533dXooNO5bSQwzC1LuYWQjKMzN7oFvpFEhGt3JrJupOJElCwfh9
-        jRzZlyEf75WvZtMWgEl+sxVNhEhqZhng+CBA638=
-X-Google-Smtp-Source: ABdhPJx+N772rkFl8TgYYnPHITbDZML6nU9VQF7XwiTvq7xfQ2qVjaojJfNShYL3RWazPhIqaTSyhA+wWnbzc+FrEBQ=
-X-Received: by 2002:a25:cc8:: with SMTP id 191mr5207905ybm.63.1632818150581;
- Tue, 28 Sep 2021 01:35:50 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B7466D;
+        Tue, 28 Sep 2021 01:35:53 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.23.93])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DCDC3F7B4;
+        Tue, 28 Sep 2021 01:35:49 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 09:35:46 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCHv2 0/5] arm64/irqentry: remove duplicate housekeeping of
+Message-ID: <20210928083546.GB1924@C02TD0UTHF1T.local>
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924173615.GA42068@C02TD0UTHF1T.local>
+ <20210924225954.GN880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210927092303.GC1131@C02TD0UTHF1T.local>
+ <20210928000922.GY880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210928083222.GA1924@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-References: <CAFcO6XOvGQrRTaTkaJ0p3zR7y7nrAWD79r48=L_BbOyrK9X-vA@mail.gmail.com>
- <CAK8P3a0kG_gdpaOoLb5H2qeq-T7orQ+2n19NNWQaRKgVNotDkw@mail.gmail.com> <CAFcO6XOgtizsTQbeWcD14yiMAaRp82QomNhSehCJ4t=d2CRx+g@mail.gmail.com>
-In-Reply-To: <CAFcO6XOgtizsTQbeWcD14yiMAaRp82QomNhSehCJ4t=d2CRx+g@mail.gmail.com>
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Tue, 28 Sep 2021 16:35:39 +0800
-Message-ID: <CAFcO6XN+N-O3hSd+HK+Zn76B1tKpeFueTkbdV0vycwGpJq4PtA@mail.gmail.com>
-Subject: Re: There is an array-index-out-bounds bug in detach_capi_ctr in drivers/isdn/capi/kcapi.c
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Karsten Keil <isdn@linux-pingi.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Content-Type: multipart/mixed; boundary="000000000000dac7b105cd0a1934"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928083222.GA1924@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dac7b105cd0a1934
-Content-Type: text/plain; charset="UTF-8"
+On Tue, Sep 28, 2021 at 09:32:22AM +0100, Mark Rutland wrote:
+> On Mon, Sep 27, 2021 at 05:09:22PM -0700, Paul E. McKenney wrote:
+> > On Mon, Sep 27, 2021 at 10:23:18AM +0100, Mark Rutland wrote:
+> > > On Fri, Sep 24, 2021 at 03:59:54PM -0700, Paul E. McKenney wrote:
+> > > > On Fri, Sep 24, 2021 at 06:36:15PM +0100, Mark Rutland wrote:
+> > > > > [Adding Paul for RCU, s390 folk for entry code RCU semantics]
+> > > > > 
+> > > > > On Fri, Sep 24, 2021 at 09:28:32PM +0800, Pingfan Liu wrote:
+> > > > > > After introducing arm64/kernel/entry_common.c which is akin to
+> > > > > > kernel/entry/common.c , the housekeeping of rcu/trace are done twice as
+> > > > > > the following:
+> > > > > >     enter_from_kernel_mode()->rcu_irq_enter().
+> > > > > > And
+> > > > > >     gic_handle_irq()->...->handle_domain_irq()->irq_enter()->rcu_irq_enter()
+> > > > > >
+> > > > > > Besides redundance, based on code analysis, the redundance also raise
+> > > > > > some mistake, e.g.  rcu_data->dynticks_nmi_nesting inc 2, which causes
+> > > > > > rcu_is_cpu_rrupt_from_idle() unexpected.
+> > > > > 
+> > > > > Hmmm...
+> > > > > 
+> > > > > The fundamental questionss are:
+> > > > > 
+> > > > > 1) Who is supposed to be responsible for doing the rcu entry/exit?
+> > > > > 
+> > > > > 2) Is it supposed to matter if this happens multiple times?
+> > > > > 
+> > > > > For (1), I'd generally expect that this is supposed to happen in the
+> > > > > arch/common entry code, since that itself (or the irqchip driver) could
+> > > > > depend on RCU, and if that's the case thatn handle_domain_irq()
+> > > > > shouldn't need to call rcu_irq_enter(). That would be consistent with
+> > > > > the way we handle all other exceptions.
+> > > > > 
+> > > > > For (2) I don't know whether the level of nesting is suppoosed to
+> > > > > matter. I was under the impression it wasn't meant to matter in general,
+> > > > > so I'm a little surprised that rcu_is_cpu_rrupt_from_idle() depends on a
+> > > > > specific level of nesting.
+> > > > > 
+> > > > > >From a glance it looks like this would cause rcu_sched_clock_irq() to
+> > > > > skip setting TIF_NEED_RESCHED, and to not call invoke_rcu_core(), which
+> > > > > doesn't sound right, at least...
+> > > > > 
+> > > > > Thomas, Paul, thoughts?
+> > > > 
+> > > > It is absolutely required that rcu_irq_enter() and rcu_irq_exit() calls
+> > > > be balanced.  Normally, this is taken care of by the fact that irq_enter()
+> > > > invokes rcu_irq_enter() and irq_exit() invokes rcu_irq_exit().  Similarly,
+> > > > nmi_enter() invokes rcu_nmi_enter() and nmi_exit() invokes rcu_nmi_exit().
+> > > 
+> > > Sure; I didn't mean to suggest those weren't balanced! The problem here
+> > > is *nesting*. Due to the structure of our entry code and the core IRQ
+> > > code, when handling an IRQ we have a sequence:
+> > > 
+> > > 	irq_enter() // arch code
+> > > 	irq_enter() // irq code
+> > > 
+> > > 	< irq handler here >
+> > > 
+> > > 	irq_exit() // irq code
+> > > 	irq_exit() // arch code
+> > > 
+> > > ... and if we use something like rcu_is_cpu_rrupt_from_idle() in the
+> > > middle (e.g. as part of rcu_sched_clock_irq()), this will not give the
+> > > expected result because of the additional nesting, since
+> > > rcu_is_cpu_rrupt_from_idle() seems to expect that dynticks_nmi_nesting
+> > > is only incremented once per exception entry, when it does:
+> > > 
+> > > 	/* Are we at first interrupt nesting level? */
+> > > 	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
+> > > 	if (nesting > 1)
+> > > 		return false;
+> > > 
+> > > What I'm trying to figure out is whether that expectation is legitimate,
+> > > and assuming so, where the entry/exit should happen.
+> > 
+> > Oooh...
+> > 
+> > The penalty for fooling rcu_is_cpu_rrupt_from_idle() is that RCU will
+> > be unable to detect a userspace quiescent state for a non-nohz_full
+> > CPU.  That could result in RCU CPU stall warnings if a user task runs
+> > continuously on a given CPU for more than 21 seconds (60 seconds in
+> > some distros).  And this can easily happen if the user has a CPU-bound
+> > thread that is the only runnable task on that CPU.
+> > 
+> > So, yes, this does need some sort of resolution.
+> > 
+> > The traditional approach is (as you surmise) to have only a single call
+> > to irq_enter() on exception entry and only a single call to irq_exit()
+> > on exception exit.  If this is feasible, it is highly recommended.
+> 
+> Cool; that's roughly what I was expecting / hoping to hear!
+> 
+> > In theory, we could have that "1" in "nesting > 1" be a constant supplied
+> > by the architecture (you would want "3" if I remember correctly) but
+> > in practice could we please avoid this?  For one thing, if there is
+> > some other path into the kernel for your architecture that does only a
+> > single irq_enter(), then rcu_is_cpu_rrupt_from_idle() just doesn't stand
+> > a chance.  It would need to compare against a different value depending
+> > on what exception showed up.  Even if that cannot happen, it would be
+> > better if your architecture could remain in blissful ignorance of the
+> > colorful details of ->dynticks_nmi_nesting manipulations.
+> 
+> I completely agree. I think it's much harder to keep that in check than
+> to enforce a "once per architectural exception" policy in the arch code.
+> 
+> > Another approach would be for the arch code to supply RCU a function that
+> > it calls.  If there is such a function (or perhaps better, if some new
+> > Kconfig option is enabled), RCU invokes it.  Otherwise, it compares to
+> > "1" as it does now.  But you break it, you buy it!  ;-)
+> 
+> I guess we could look at the exception regs and inspect the original
+> context, but it sounds overkill...
+> 
+> I think the cleanest thing is to leave this to arch code, and have the
+> common IRQ code stay well clear. Unfortunately most architectures
+> (including arch/arm) still need the common IRQ code to handle this, so
+> we'll have to make that conditional on Kconfig, something like the below
+> (build+boot tested only).
+> 
+> If there are no objections, I'll go check who else needs the same
+> treatment (IIUC at least s390 will), and spin that as a real
+> patch/series.
 
-Hi, I make a patch for this issue.
+Ah, looking again this is basically Pinfan's patch 2, so ignore the
+below, and I'll review Pingfan's patch instead.
 
-Regards,
- butt3rflyh4ck.
-
-
-On Fri, Sep 24, 2021 at 6:02 PM butt3rflyh4ck
-<butterflyhuangxx@gmail.com> wrote:
->
-> > When I last touched the capi code, I tried to remove it all, but we then
-> > left it in the kernel because the bluetooth cmtp code can still theoretically
-> > use it.
-> >
-> > May I ask how you managed to run into this? Did you find the bug through
-> > inspection first and then produce it using cmtp, or did you actually use
-> > cmtp?
->
-> I fuzz the bluez system and find a crash to analyze it and reproduce it.
->
-> > If the only purpose of cmtp is now to be a target for exploits, then I
-> > would suggest we consider removing both cmtp and capi for
-> > good after backporting your fix to stable kernels. Obviously
-> > if it turns out that someone actually uses cmtp and/or capi, we
-> > should not remove it.
-> >
-> Yes, I think this should be feasible.
->
-> Regards
->   butt3rflyh4ck.
->
->
-> --
-> Active Defense Lab of Venustech
-
-
-
--- 
-Active Defense Lab of Venustech
-
---000000000000dac7b105cd0a1934
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-isdn-cpai-check-ctr-cnr-to-avoid-array-index-out-of-.patch"
-Content-Disposition: attachment; 
-	filename="0001-isdn-cpai-check-ctr-cnr-to-avoid-array-index-out-of-.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ku3tr7kr0>
-X-Attachment-Id: f_ku3tr7kr0
-
-RnJvbSAxNTQ0OWJiNWFhYzFmODI4ZGM4MjA1NDY1MWZlOGY0ZGNhMzdiZWY3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBYaWFvbG9uZyBIdWFuZyA8YnV0dGVyZmx5aHVhbmd4eEBnbWFp
-bC5jb20+CkRhdGU6IFR1ZSwgMjggU2VwIDIwMjEgMTM6MDM6NDEgKzA4MDAKU3ViamVjdDogW1BB
-VENIXSBpc2RuOiBjcGFpOiBjaGVjayBjdHItPmNuciB0byBhdm9pZCBhcnJheSBpbmRleCBvdXQg
-b2YgYm91bmQKClRoZSBjbXRwX2FkZF9jb25uZWN0aW9uKCkgd291bGQgYWRkIGEgY210cCBzZXNz
-aW9uIHRvIGEgY29udHJvbGxlciBhbmQgcnVuIGEga2VybmVsCnRocmVhZCB0byBwcm9jZXNzIGNt
-dHAuCgoJX19tb2R1bGVfZ2V0KFRISVNfTU9EVUxFKTsKCXNlc3Npb24tPnRhc2sgPSBrdGhyZWFk
-X3J1bihjbXRwX3Nlc3Npb24sIHNlc3Npb24sICJrY210cGRfY3RyXyVkIiwKCQkJCQkJCQlzZXNz
-aW9uLT5udW0pOwoKRHVyaW5nIHRoaXMgcHJvY2VzcywgdGhlIGtlcm5lbCB0aHJlYWQgd291bGQg
-Y2FsbCBkZXRhY2hfY2FwaV9jdHIoKQp0byBkZXRhY2ggYSByZWdpc3RlciBjb250cm9sbGVyLiBp
-ZiB0aGUgY29udHJvbGxlciB3YXMgbm90IGF0dGFjaGVkIHlldCwgZGV0YWNoX2NhcGlfY3RyKCkK
-d291bGQgdHJpZ2dlciBhbiBhcnJheS1pbmRleC1vdXQtYm91bmRzIGJ1Zy4KClsgICA0Ni44NjYw
-NjldWyBUNjQ3OV0gVUJTQU46IGFycmF5LWluZGV4LW91dC1vZi1ib3VuZHMgaW4KZHJpdmVycy9p
-c2RuL2NhcGkva2NhcGkuYzo0ODM6MjEKWyAgIDQ2Ljg2NzE5Nl1bIFQ2NDc5XSBpbmRleCAtMSBp
-cyBvdXQgb2YgcmFuZ2UgZm9yIHR5cGUgJ2NhcGlfY3RyICpbMzJdJwpbICAgNDYuODY3OTgyXVsg
-VDY0NzldIENQVTogMSBQSUQ6IDY0NzkgQ29tbToga2NtdHBkX2N0cl8wIE5vdCB0YWludGVkCjUu
-MTUuMC1yYzIrICM4ClsgICA0Ni44NjkwMDJdWyBUNjQ3OV0gSGFyZHdhcmUgbmFtZTogUUVNVSBT
-dGFuZGFyZCBQQyAoaTQ0MEZYICsgUElJWCwKMTk5NiksIEJJT1MgMS4xNC4wLTIgMDQvMDEvMjAx
-NApbICAgNDYuODcwMTA3XVsgVDY0NzldIENhbGwgVHJhY2U6ClsgICA0Ni44NzA0NzNdWyBUNjQ3
-OV0gIGR1bXBfc3RhY2tfbHZsKzB4NTcvMHg3ZApbICAgNDYuODcwOTc0XVsgVDY0NzldICB1YnNh
-bl9lcGlsb2d1ZSsweDUvMHg0MApbICAgNDYuODcxNDU4XVsgVDY0NzldICBfX3Vic2FuX2hhbmRs
-ZV9vdXRfb2ZfYm91bmRzLmNvbGQrMHg0My8weDQ4ClsgICA0Ni44NzIxMzVdWyBUNjQ3OV0gIGRl
-dGFjaF9jYXBpX2N0cisweDY0LzB4YzAKWyAgIDQ2Ljg3MjYzOV1bIFQ2NDc5XSAgY210cF9zZXNz
-aW9uKzB4NWM4LzB4NWQwClsgICA0Ni44NzMxMzFdWyBUNjQ3OV0gID8gX19pbml0X3dhaXRxdWV1
-ZV9oZWFkKzB4NjAvMHg2MApbICAgNDYuODczNzEyXVsgVDY0NzldICA/IGNtdHBfYWRkX21zZ3Bh
-cnQrMHgxMjAvMHgxMjAKWyAgIDQ2Ljg3NDI1Nl1bIFQ2NDc5XSAga3RocmVhZCsweDE0Ny8weDE3
-MApbICAgNDYuODc0NzA5XVsgVDY0NzldICA/IHNldF9rdGhyZWFkX3N0cnVjdCsweDQwLzB4NDAK
-WyAgIDQ2Ljg3NTI0OF1bIFQ2NDc5XSAgcmV0X2Zyb21fZm9yaysweDFmLzB4MzAKWyAgIDQ2Ljg3
-NTc3M11bIFQ2NDc5XQoKU2lnbmVkLW9mZi1ieTogWGlhb2xvbmcgSHVhbmcgPGJ1dHRlcmZseWh1
-YW5neHhAZ21haWwuY29tPgotLS0KIGRyaXZlcnMvaXNkbi9jYXBpL2tjYXBpLmMgfCA1ICsrKysr
-CiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9p
-c2RuL2NhcGkva2NhcGkuYyBiL2RyaXZlcnMvaXNkbi9jYXBpL2tjYXBpLmMKaW5kZXggY2IwYWZl
-ODk3MTYyLi43MzEzNDU0ZTQwM2EgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvaXNkbi9jYXBpL2tjYXBp
-LmMKKysrIGIvZHJpdmVycy9pc2RuL2NhcGkva2NhcGkuYwpAQCAtNDgwLDYgKzQ4MCwxMSBAQCBp
-bnQgZGV0YWNoX2NhcGlfY3RyKHN0cnVjdCBjYXBpX2N0ciAqY3RyKQogCiAJY3RyX2Rvd24oY3Ry
-LCBDQVBJX0NUUl9ERVRBQ0hFRCk7CiAKKwlpZiAoY3RyLT5jbnIgPCAxIHx8IGN0ci0+Y25yIC0g
-MSA+PSBDQVBJX01BWENPTlRSKSB7CisJCWVyciA9IC1FSU5WQUw7CisJCWdvdG8gdW5sb2NrX291
-dDsKKwl9CisKIAlpZiAoY2FwaV9jb250cm9sbGVyW2N0ci0+Y25yIC0gMV0gIT0gY3RyKSB7CiAJ
-CWVyciA9IC1FSU5WQUw7CiAJCWdvdG8gdW5sb2NrX291dDsKLS0gCjIuMjUuMQoK
---000000000000dac7b105cd0a1934--
+Thanks,
+Mark.
