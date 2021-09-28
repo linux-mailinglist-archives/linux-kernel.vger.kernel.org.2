@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410E741A653
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EABC41A655
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhI1EPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 00:15:15 -0400
+        id S235161AbhI1EPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 00:15:19 -0400
 Received: from mga03.intel.com ([134.134.136.65]:12962 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhI1EPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 00:15:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="224682043"
+        id S232215AbhI1EPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 00:15:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="224682046"
 X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
-   d="scan'208";a="224682043"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 21:13:34 -0700
+   d="scan'208";a="224682046"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 21:13:36 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
-   d="scan'208";a="476150855"
+   d="scan'208";a="587094659"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 27 Sep 2021 21:13:33 -0700
+  by orsmga004.jf.intel.com with ESMTP; 27 Sep 2021 21:13:36 -0700
 Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
-        by linux.intel.com (Postfix) with ESMTP id AD2B558073D;
-        Mon, 27 Sep 2021 21:13:31 -0700 (PDT)
+        by linux.intel.com (Postfix) with ESMTP id 5A01D58073D;
+        Mon, 27 Sep 2021 21:13:34 -0700 (PDT)
 From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
 To:     Andrew Lunn <andrew@lunn.ch>, Jose Abreu <Jose.Abreu@synopsys.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -34,9 +34,11 @@ Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         Wong Vee Khee <veekhee@gmail.com>
 Subject: [PATCH net-next 1/2] net: pcs: xpcs: introduce xpcs_modify() helper function
-Date:   Tue, 28 Sep 2021 12:19:36 +0800
-Message-Id: <20210928041938.3936497-1-vee.khee.wong@linux.intel.com>
+Date:   Tue, 28 Sep 2021 12:19:37 +0800
+Message-Id: <20210928041938.3936497-2-vee.khee.wong@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210928041938.3936497-1-vee.khee.wong@linux.intel.com>
+References: <20210928041938.3936497-1-vee.khee.wong@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
