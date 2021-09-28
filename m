@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3834341B401
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45F541B403
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241839AbhI1Qjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:39:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230251AbhI1Qjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:39:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E6D96124B;
-        Tue, 28 Sep 2021 16:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632847076;
-        bh=SMngk4vQyYJh6Ix2Aws/opaA6OUWDxu+nMCYjp9HT1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iQgVWDbxrCaIXjszezjeShLIeggiuTGcNQ1kUNhlzz7L0iQPQpzMj3GWe9wAa83nE
-         xixsfm9d1hqwYDvSP6/GmrOO92hD7ltNJOXIhNKmkS+/il7busZ7WxoK/kqcpVsvDR
-         e/kiO2wqfW7dkNV80GGgOUqZ5DdiBiAf9pcqjVks+d5QN1jqaRRa6IavDliHyL7UIn
-         fKt0uLNwvrHFm31u8lclGjdcS8e8j/k6BHO9q19aFkxbvVwNswsqrL3WblpzcpP/Up
-         /EXgGepiez2LFYK8xweyCGaxty38Acn3ySjTGv5fn/yqwWgK5w70RXxn0FYFF0uJo2
-         21cKFAw9fxEsQ==
-Date:   Tue, 28 Sep 2021 09:37:55 -0700
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     akpm@linux-foundation.org, david@redhat.com,
-        geert+renesas@glider.be, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] memblock: check memory total_size
-Message-ID: <YVNE43IBP0iUmng5@kernel.org>
-References: <20210928105057.3406-1-peng.fan@oss.nxp.com>
+        id S241820AbhI1Qjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:39:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45367 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241841AbhI1Qjj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:39:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632847080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5SCTKeQfv554jeasIa56rvTLlkFOsyYw4BiVgx++QQ8=;
+        b=SwN9MiLH5YlMgaENFDW9k25ip5H5OUhaAzQlrg91BRw7t2vxGCFldJKnEQ63n7B+fhDuDk
+        +YasnJq8KVb+EpKjcFPNolCibvJ2fklUtkAgjR8gJpdho+qgtr+GeAmLKAzPfD+hIYiLWG
+        ULjztleuQxOSBK5HOnpzmDofnS0KpO4=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-vNLI2xM8PtGIl1mKRnP7bQ-1; Tue, 28 Sep 2021 12:37:58 -0400
+X-MC-Unique: vNLI2xM8PtGIl1mKRnP7bQ-1
+Received: by mail-oo1-f69.google.com with SMTP id r82-20020a4a3755000000b002b5eb748127so1994993oor.19
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:37:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5SCTKeQfv554jeasIa56rvTLlkFOsyYw4BiVgx++QQ8=;
+        b=wlm4OIbGd9cDyIjBDkPZ3O5WlItx5upfADEwT3QQaWc5RKxKnQjSD+HzfhKKPGVzCp
+         l4qyKspU6a7UzsqwWlEv+RIijzLO4aGx0XFUF36F0TQiiNlE8D2R8ya3IPedveqFgCmu
+         B4u3RsH1BfEUZRVNbXhViGp58DaGmIE8y9Sfx1kxjOpTR5doW8rBH7OMjwoQyZLhj1Q4
+         UxiUk4ZXe70LzbU1IHtDxqo7yMCBG8lsQj+cwnZxx4pzw4jD/fGO12YZXuki/PmnviZ1
+         +hthKrica95JFG0bPt6S8zbuGifUV7gzHWcg2EcZXzPxt6OsOu2vA3Ul3sAiyngNClp8
+         U6AQ==
+X-Gm-Message-State: AOAM532qOzRf0k0OY2koba5puV/5Mb4OOhtScZEsKwGd4SAB6nKXRpsE
+        o3GvqImaiXbKfYrg9y1cSUD9wdbMCQ45mLEREL1nvdWuy0k77uyuhAn49469K/z1fqzN85VmSA5
+        7Z7A+Vk98HuAQUhyNGH+P8/5r
+X-Received: by 2002:a9d:6209:: with SMTP id g9mr5882936otj.259.1632847078023;
+        Tue, 28 Sep 2021 09:37:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJytNzTK8C3cAee84xf3tGJRqByMjZehD4qb6jfFVSJs3Cl8aeFt9tGR5xD0HbdPEOZUB6s8PA==
+X-Received: by 2002:a9d:6209:: with SMTP id g9mr5882920otj.259.1632847077818;
+        Tue, 28 Sep 2021 09:37:57 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id 14sm4554856oiy.53.2021.09.28.09.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 09:37:57 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 10:37:56 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, colin.king@canonical.com
+Subject: [GIT PULL] VFIO fixes for v5.15-rc4
+Message-ID: <20210928103756.4070e4c6.alex.williamson@redhat.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928105057.3406-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On Tue, Sep 28, 2021 at 06:50:57PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> mem=[X][G|M] is broken on NXP i.MX ARM64 platform, there is cases that
-> even type.cnt is 1, but total_size is not 0 because regions are merged
-> into 1. So only check 'cnt' is not enough, total_size also needs to be
-> taked into consideration, othersize bootargs 'mem=[X][G|B]' not work
-> anymore.
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-I believe this is issue is not specific to i.MX but rather this could
-happen on any arm64 platform. Can you please update the changelog?
- 
-> Fixes: e888fa7bb882 ("memblock: Check memory add/cap ordering")
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  mm/memblock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 184dcd2e5d99..ab67b82a9cce 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -1687,7 +1687,7 @@ void __init memblock_cap_memory_range(phys_addr_t base, phys_addr_t size)
->  	if (!size)
->  		return;
->  
-> -	if (memblock.memory.cnt <= 1) {
-> +	if (memblock_memory->cnt <= 1 && !memblock_memory->total_size) {
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-The test for non-zero total size shold be sufficient here.
+are available in the Git repository at:
 
->  		pr_warn("%s: No memory registered yet\n", __func__);
->  		return;
->  	}
-> -- 
-> 2.30.0
-> 
+  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.15-rc4
 
--- 
-Sincerely yours,
-Mike.
+for you to fetch changes up to 42de956ca7e5f6c47048dde640f797e783b23198:
+
+  vfio/ap_ops: Add missed vfio_uninit_group_dev() (2021-09-24 10:04:44 -0600)
+
+----------------------------------------------------------------
+VFIO fixes for v5.15-rc4
+
+ - Fix vfio-ap leak on uninit (Jason Gunthorpe)
+
+ - Add missing prototype arg name (Colin Ian King)
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      vfio/pci: add missing identifier name in argument of function prototype
+
+Jason Gunthorpe (1):
+      vfio/ap_ops: Add missed vfio_uninit_group_dev()
+
+ drivers/s390/crypto/vfio_ap_ops.c | 4 +++-
+ drivers/vfio/pci/vfio_pci_core.c  | 2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
