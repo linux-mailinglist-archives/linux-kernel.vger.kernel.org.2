@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF50A41B50B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1481141B50F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242048AbhI1RXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:23:38 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:52656 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhI1RXh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:23:37 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 9D754821D8;
-        Tue, 28 Sep 2021 20:21:56 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632849716;
-        bh=1eIU+Q66pTwxALS54M8jSJ/OOGHF+t7oZXoe1eQzNBY=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=cOLMthE/1M0+NvB7o1gxTLZ0327Y0jyS0xc5PxAtLfOqie21kiQJBsN5S7s6mC8lo
-         FlKBxHCj5EgTpkbgm+r9vvvvvCBbwUno/lTROUtm2jwSlEO7YzPsHaQvuGFnXpBheM
-         X9L3Y8Gu0Cw0PQbsBRH2cATbrR/5ePS25Xjenma8=
-Received: from [192.168.211.85] (192.168.211.85) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 28 Sep 2021 20:21:55 +0300
-Message-ID: <fbdcbb8f-380c-4da9-2860-a3729c75e04b@paragon-software.com>
-Date:   Tue, 28 Sep 2021 20:21:54 +0300
+        id S242057AbhI1RYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241995AbhI1RYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:24:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A36BD610E6;
+        Tue, 28 Sep 2021 17:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632849744;
+        bh=p1omdo8J0LTck4weGVlceL1bR9p0Zh2+XitDJiT9QIA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W7e95aYScYjgBzh8nhBa4jglUt8uT5Zyk76gaF3/yQ2D7s4KfcgYaBrWJ08Di0zNM
+         xIPk5nMpNO+l1I1rJqvfXavCgeKI7pZrYDKcn+K0Ow7yydL6PVo1D8LU08ZUUPbyxT
+         z7LNpN16o03DwF5wNkf3JK4/9fSa7zr+c3P6s0CDlnAQC5qjSgztQiGpOCd+WCvH21
+         VF4/BDYQyzA47h0+zDtfcSpIY+jqbzTXXk0BQxdX0asWQs52o6ouIMuci+2HyvAhz3
+         RIcZz/mcKPFNrolrlRy4bkjyW/8JltpIC8U9AFRaxCfWhP+KMJYgTin09XgLGOhJ22
+         rc0zGUJIMW/4w==
+Received: by mail-ed1-f43.google.com with SMTP id bd28so24496787edb.9;
+        Tue, 28 Sep 2021 10:22:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531lVz1zLn3+S1vuaykDvjFw5yfS3el2+sSdxGlaGyD9f4bkZrby
+        Ww2GJcmbDnLZITTyI4tq8eDPDWXixwAZ3h1Sdw==
+X-Google-Smtp-Source: ABdhPJyYj6eZo+4rVJU4CYW255+Mc68GtlF90gxDfm5SHY/AXdUWRENNY4sqvr/w1Y6jnQWE59TZVZjjORVMXH70how=
+X-Received: by 2002:a17:906:a294:: with SMTP id i20mr8026916ejz.128.1632849740003;
+ Tue, 28 Sep 2021 10:22:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/3] fs/ntfs3: Reject mount if boot's cluster size < media
- sector size
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>
-CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>
-References: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
- <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
- <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
+References: <20210927064119.127285-1-gshan@redhat.com> <20210927064119.127285-3-gshan@redhat.com>
+ <CAL_JsqL8+_Q690-c3J4TS6LBF-mCUBxbhTfr994=Fwffqab0_w@mail.gmail.com> <c101363f-1de7-1d56-a8d9-243f003b48c1@redhat.com>
+In-Reply-To: <c101363f-1de7-1d56-a8d9-243f003b48c1@redhat.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 28 Sep 2021 12:22:08 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJtckde=Ngfhr7u3f_xsccavo+4Pt-v9o_nGHTX+wD91w@mail.gmail.com>
+Message-ID: <CAL_JsqJtckde=Ngfhr7u3f_xsccavo+4Pt-v9o_nGHTX+wD91w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of, numa: Fetch empty NUMA node ID from distance map
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.85]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 27, 2021 at 6:59 PM Gavin Shan <gshan@redhat.com> wrote:
+>
+> Hi Rob,
+>
+> On 9/28/21 12:49 AM, Rob Herring wrote:
+> > On Mon, Sep 27, 2021 at 1:42 AM Gavin Shan <gshan@redhat.com> wrote:
+> >>
+> >> There is no device node for the empty NUMA node. However, the
+> >> corresponding NUMA node ID and distance map is still valid in
+> >> "numa-distance-map-v1" compatible device node.
+> >>
+> >> This fetches the NUMA node ID and distance map for these empty
+> >> NUMA node from "numa-distance-map-v1" compatible device node.
+> >
+> > This is much nicer.
+> >
+>
+> Indeed, thanks for your suggestions :)
+>
+> >> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> >> ---
+> >>   drivers/of/of_numa.c | 2 ++
+> >>   1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/drivers/of/of_numa.c b/drivers/of/of_numa.c
+> >> index fe6b13608e51..5949829a1b00 100644
+> >> --- a/drivers/of/of_numa.c
+> >> +++ b/drivers/of/of_numa.c
+> >> @@ -111,6 +111,8 @@ static int __init of_numa_parse_distance_map_v1(struct device_node *map)
+> >>                          return -EINVAL;
+> >>                  }
+> >>
+> >> +               node_set(nodea, numa_nodes_parsed);
+> >> +
+> >
+> > With this, couldn't we remove of_numa_parse_cpu_nodes() as the only
+> > thing it does is node_set()?
+> >
+>
+> I don't think so for couple of reasons:
+>
+> (1) With problematic device-tree, the distance map node might be missed
+>      or incomplete. In this case, of_numa_parse_cpu_nodes() still helps.
 
+It's not the kernel's job to validate the DT (if it was, it is doing a
+terrible job). I would suggest writing some checks for dtc if we're
+worried about correctness. (The schemas don't work too well for cross
+node checks.)
 
-On 27.09.2021 21:56, Kari Argillander wrote:
-> On Mon, Sep 27, 2021 at 06:48:00PM +0300, Konstantin Komarov wrote:
->> If we continue to work in this case, then we can corrupt fs.
->>
-> 
-> Should have fixes tag.
-> 
+> (2) @numa_nodes_parsed is also updated when the memory nodes are iterated
+>      in of_numa_parse_memory_nodes() and numa_add_memblk().
+>
+> So @numa_nodes_parsed, which is synchronized to @node_possible_map afterwards,
+> is the gathering output of CPU nodes, memory nodes and distance map node.
 
-The bug is in initial commit.
-Do I need to write
-Fixes: 82cae269cfa95 "fs/ntfs3: Add initialization of super block"
-?
+Is it valid to have node id's that are not in the distance map?
 
->> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
->> ---
->>  fs/ntfs3/super.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
->> index 7099d9b1f3aa..193f9a98f6ab 100644
->> --- a/fs/ntfs3/super.c
->> +++ b/fs/ntfs3/super.c
->> @@ -763,9 +763,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
->>  	sbi->mft.lbo = mlcn << sbi->cluster_bits;
->>  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
->>  
->> +	/* Compare boot's cluster and sector. */
-> 
-> Pretty random obvious comment and I do not know what this does in this
-> patch.
-> 
->>  	if (sbi->cluster_size < sbi->sector_size)
->>  		goto out;
->>  
->> +	/* Compare boot's cluster and media sector. */
->> +	if (sbi->cluster_size < sector_size)
->> +		goto out; /* No way to use ntfs_get_block in this case. */
-> 
-> Usually comment should not go after line. If you take chunk from patch
-> 3/3 then this is not issue.
-> 
->> +
->>  	sbi->cluster_mask = sbi->cluster_size - 1;
->>  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
->>  	sbi->record_size = record_size = boot->record_size < 0
->> -- 
->> 2.33.0
->>
->>
->>
+Rob
