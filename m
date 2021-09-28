@@ -2,105 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5469041AFAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B81141AFAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240884AbhI1NKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S240644AbhI1NMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235776AbhI1NK2 (ORCPT
+        with ESMTP id S235776AbhI1NMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:10:28 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAB9C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:08:48 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id r83-20020a1c4456000000b0030cfc00ca5fso2225048wma.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=forissier-org.20210112.gappssmtp.com; s=20210112;
-        h=from:subject:to:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=/pci3M3EmSbgPBjAtl2mKWnbVJOKuoEiANMdEV1uPKg=;
-        b=uSZyvJoDVGXGX/a/IzC4ADZk9Cz8kgSd4043p3xqj9D8eOb4CEsb2Je6kCJ5ahaByE
-         oYFG6nejLHIzdjnEp/cKcKqP4bbEfXK79L/ZZ72dfIU52JvOaWYQyoA/NaU7vM1uYZAn
-         b1GJrMUNVLLV6D/n/DIj/oyypta2/9UcmPSh2boH6GpvszdIqQvGJnPMdJTHWqFH1JuQ
-         CEwB6oXYD8a6G3MxBM1Khhm+fTjPXjgKTWZYDuFfmWE1UmzHkD6pznGv3vL/seLJDqMv
-         9xov61DmqyWFYRneiRLAIt9JkaUgahCFjrDKe9xA74mrnvCUI7qdJ+1auQnA7xxYSnQA
-         53RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=/pci3M3EmSbgPBjAtl2mKWnbVJOKuoEiANMdEV1uPKg=;
-        b=6UoW2gUAJLQuQgJdvywGdAXzzu06DPiEjm9XVgNvgCJu6VrA/WQ+GLzC/pC+RYm+QS
-         3ezmGQ2ezqQ4HJ1T9tf4MZCjxBB96QTJjp4NDpOgN93sLbNbJDh6V88vJTQyPDvcCWuw
-         rAQpKcOuVxReUBbWqjp4uH+ydrxLbNGGqR9zBDGBwkbvv5RTE5gA4GOBZUaRGpHzPokk
-         CGLqP9AS2gPvyotjJjxOFlt5zI1t7MGucwlDe0wOvjoeD/x/f/yxiNyFISlEksPLkq3n
-         ud7dVGvqwgrEDg5m3SBldfuinSKDmlWI52RF/GM0c5ubHZYAar02C/+wWdXTGk5efCZx
-         ORiQ==
-X-Gm-Message-State: AOAM533w2i6jJjmma/nfLuJvgCt2BotbeqBicTTY8JH/3N/sdqPfNnuU
-        YxBFF2vWP4l5lcmJb7uqJnY4kegxBmvKqkGP8mZpk/3g
-X-Google-Smtp-Source: ABdhPJx9si3gvf6klG8ush3Kigexntv0Df2BAGFr573gGTZgq5bCwA/Af71JfWe1fuVEk/nIQ4tNHg==
-X-Received: by 2002:a7b:cc14:: with SMTP id f20mr4492075wmh.137.1632834527413;
-        Tue, 28 Sep 2021 06:08:47 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:269:e210:8445:bcf4:c79d:3156? ([2a01:e0a:269:e210:8445:bcf4:c79d:3156])
-        by smtp.gmail.com with ESMTPSA id 1sm3113897wms.0.2021.09.28.06.08.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 06:08:47 -0700 (PDT)
-From:   Jerome Forissier <jerome@forissier.org>
-Subject: optee: regression with kernel v5.14 (virtualization)
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Volodymyr Babchuk <vlad.babchuk@gmail.com>
-Message-ID: <a0e1c245-8209-a173-18c4-d21433bf46bf@forissier.org>
-Date:   Tue, 28 Sep 2021 15:08:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 28 Sep 2021 09:12:53 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC42C061575;
+        Tue, 28 Sep 2021 06:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8Y4+qGyuCO6q39+CSQ6y4fo3O7zf87El/V8Z1fXLg+o=; b=hZMyLWbpDXk1dFAoVgKVJW6UM5
+        /7QaKqfb6x7Q5wHPPutTiLBI++SDHPaSdJDbsA9SucV/fdgGEVXZ5ClufUPGbJJl0hew3o0IKHwD4
+        Wi+HhA3ERsYP9a+6lPvW9rbaat4K3hJC8VLOXHq+uXY0LaBYNTpnsYCkxFf3M3b/CsXuJp4hnVbTz
+        7mN/w1syAaQM5nYuvw/r/5h3UW+aYG20kS+TKp1RhW1kRlrNo5n5W2rARuO1WQqgz7tAm+ixkR2F0
+        SoDGH2rRokPB9PyXRTOWIve0oGQeRs+IBgF/RKDwhOzLQIlx3kAc1lYDQeO7TQIUspuwYWouO+XvG
+        nzh55p7g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54830)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mVCsz-000191-Pc; Tue, 28 Sep 2021 14:11:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mVCsy-0001ma-1p; Tue, 28 Sep 2021 14:11:04 +0100
+Date:   Tue, 28 Sep 2021 14:11:04 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, p.zabel@pengutronix.de,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] net: mdiobus: Fix memory leak in __mdiobus_register
+Message-ID: <YVMUaClu3ypcLMDB@shell.armlinux.org.uk>
+References: <20210926045313.2267655-1-yanfei.xu@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210926045313.2267655-1-yanfei.xu@windriver.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Sep 26, 2021 at 12:53:13PM +0800, Yanfei Xu wrote:
+> Once device_register() failed, we should call put_device() to
+> decrement reference count for cleanup. Or it will cause memory
+> leak.
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888114032e00 (size 256):
+>   comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
+>     08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
+>   backtrace:
+>     [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
+>     [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
+>     [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
+>     [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
+>     [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
+>     [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+>     [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+>     [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+>     [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+>     [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+>     [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+>     [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+>     [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+>     [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+>     [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+>     [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+>     [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+>     [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+>     [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
+>     [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
+>     [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
+>     [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888116f06900 (size 32):
+>   comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
+>   hex dump (first 32 bytes):
+>     75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
+>     [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
+>     [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+>     [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+>     [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
+>     [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
+>     [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+>     [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+>     [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+>     [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+>     [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+>     [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+>     [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+>     [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+>     [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+>     [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+>     [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+>     [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+>     [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+> 
+> Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> ---
+>  drivers/net/phy/mdio_bus.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+> index 53f034fc2ef7..6f4b4e5df639 100644
+> --- a/drivers/net/phy/mdio_bus.c
+> +++ b/drivers/net/phy/mdio_bus.c
+> @@ -537,6 +537,7 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+>  	err = device_register(&bus->dev);
+>  	if (err) {
+>  		pr_err("mii_bus %s failed to register\n", bus->id);
+> +		put_device(&bus->dev);
+>  		return -EINVAL;
+>  	}
 
-I met an issue when testing OP-TEE with the latest released kernel
-(v5.14). The kernel won't boot when virtualization is enabled. More
-precisely, the boot hangs as the optee driver is probed. The last line
-on the console is:
+This patch is incorrect:
 
-[xxx] optee: probing for conduit method.
+1) the reported failure does not involve this path.
+2) device_register() failing does not need a put_device() because
+   the contained device_add() undoes everything that it attempted to
+   do.
 
-The issue can easily be reproduced in the QEMU OP-TEE environment as
-documented in [1]:
+The above backtraces occur because we have had a successful
+device_register() fall, but later call device_del() and then kfree()
+the mdiobus, which has an embedded the struct device that has pointers
+to memory that has not been cleaned up - because kfree() is the wrong
+way to handle this.
 
-$ repo init -u https://github.com/OP-TEE/manifest.git -m qemu_v8.xml
-$ repo sync -j10
-$ cd linux
-$ git fetch github --unshallow
-$ git checkout v5.14
-$ cd ../build
-$ make -j2 toolchains
-$ make -j10 XEN_BOOT=y run
+bus->state needs to be set to indicate that the embedded struct device
+has been registered but no longer is registered if we fail after
+device_register() has been called.
 
-[Note, if you switch between XEN_BOOT=y and the default build, you need
-to "make arm-tf-clean"]
+If device_register() fails, then there is no problem.
 
-git bisect points at commit b5c10dd04b74 ("optee: Clear stale cache
-entries during initialization") and reverting this commit on top of
-v5.14 does resolve the issue.
-
-Any idea what's wrong?
-
-[1]
-https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
-
-Thanks,
 -- 
-Jerome
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
