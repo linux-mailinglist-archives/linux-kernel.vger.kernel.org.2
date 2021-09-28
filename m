@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9FB41B330
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF6441B331
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbhI1PoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:44:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60806 "EHLO mail.kernel.org"
+        id S241779AbhI1PoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241761AbhI1PoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:44:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 832A361213;
-        Tue, 28 Sep 2021 15:42:20 +0000 (UTC)
+        id S241800AbhI1PoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:44:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A32C86124A;
+        Tue, 28 Sep 2021 15:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632843742;
-        bh=CO94xDsc1VtfSRAfyKqtO5ONWPyRd2vlujyNsapS8kQ=;
+        s=k20201202; t=1632843744;
+        bh=fK3Q2oqvtUgvjlTJS3xSTsoPj9+qRtVxTymOeapiW40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nnijjKG41jlJwa3o/h94QbMzuYt/xrzfbVW7/HD2VIesnu/lRCqsG/OgYMX80y9IQ
-         hH4/BVEka83RqpyFz6r9slWxrqp0I3VvuGyIfOzKH+fuK+ZZLaGcLE0IV3JpAeha0I
-         ASE1LfkaUDQIdm7PjdJ2tgJ1FN2nzkzQqWPFLmgdf3vqv/sDRyxMT+eEamyKzMpgZl
-         knvAexWpCIo2DM5H84nxqeLWz98tsxUbukm0J9R/56hS96DmM8o6p1axJ1iQR2d3pv
-         4ZhohkxknS4pwtQEQv2Z/b7ozo2B1IY2gzN3qDsatFd9OH+5HmlrBdMR50JYNVmN7i
-         Kr8V4dFSt98kw==
+        b=mAfG2hEXhEA9bHqiR8mCQ+AdpcssV0EapvyKnwizMS/yg67TZQwYBIVIr9S0TGJ5M
+         JWP78C8oAEse8icvSQcOMwfqGqobHL1Gx5xjOwxlBE4NwgsXCwrdd7JI3pQ0J6lPN9
+         WTP54DQMmApJFLHt1k1/GPQmECcfR8htc9JCM5VomuuMn1fG/Fe09aM+SwJJ0XeAuf
+         40CR1iUeXdN6oxSZy4fODXilJvdCpMgC3qghEu2HeqfYCIQ0JEiVebzUE0SNsMxoc8
+         6c8xesWI/jgNBAHykYlmwbi3W/4O+e25+hngIxAwWUJ2xJ/9keCdAKxGB7vGHa49YQ
+         We/nhK6dn5PpA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Russell King <linux@armlinux.org.uk>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -31,10 +31,10 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: [PATCH 11/14] ARM: kasan: work around LPAE build warning
-Date:   Tue, 28 Sep 2021 17:41:40 +0200
-Message-Id: <20210928154143.2106903-12-arnd@kernel.org>
+        llvm@lists.linux.dev, Nicolas Pitre <nico@linaro.org>
+Subject: [PATCH 12/14] ARM: add CONFIG_PHYS_OFFSET default values
+Date:   Tue, 28 Sep 2021 17:41:41 +0200
+Message-Id: <20210928154143.2106903-13-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210928154143.2106903-1-arnd@kernel.org>
 References: <20210928154143.2106903-1-arnd@kernel.org>
@@ -46,48 +46,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-pgd_page_vaddr() returns an 'unsigned long' address, causing a warning
-with the memcpy() call in kasan_init():
+For platforms that are not yet converted to ARCH_MULTIPLATFORM,
+we can disable CONFIG_ARM_PATCH_PHYS_VIRT, which in turn requires
+setting a correct address here.
 
-arch/arm/mm/kasan_init.c: In function 'kasan_init':
-include/asm-generic/pgtable-nop4d.h:44:50: error: passing argument 2 of '__memcpy' makes pointer from integer without a cast [-Werror=int-conversion]
-   44 | #define pgd_page_vaddr(pgd)                     ((unsigned long)(p4d_pgtable((p4d_t){ pgd })))
-      |                                                 ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                                                  |
-      |                                                  long unsigned int
-arch/arm/include/asm/string.h:58:45: note: in definition of macro 'memcpy'
-   58 | #define memcpy(dst, src, len) __memcpy(dst, src, len)
-      |                                             ^~~
-arch/arm/mm/kasan_init.c:229:16: note: in expansion of macro 'pgd_page_vaddr'
-  229 |                pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
-      |                ^~~~~~~~~~~~~~
-arch/arm/include/asm/string.h:21:47: note: expected 'const void *' but argument is of type 'long unsigned int'
-   21 | extern void *__memcpy(void *dest, const void *src, __kernel_size_t n);
-      |                                   ~~~~~~~~~~~~^~~
+As we actualy know what all the values are supposed to be based
+on the old mach/memory.h header file contents (from git history),
+we can just add them here.
 
-Avoid this by adding an explicit typecast.
+This also solves a problem in Kconfig where 'make randconfig'
+fails to continue if no number is selected for a 'hex' option.
+Users can still override the number at configuration time, e.g.
+when the memory visible to the kernel starts at a nonstandard
+address on some machine, but it should no longer be required
+now.
 
-Fixes: 5615f69bc209 ("ARM: 9016/2: Initialize the mapping of KASan shadow memory")
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/all/CACRpkdb3DMvof3-xdtss0Pc6KM36pJA-iy=WhvtNVnsDpeJ24Q@mail.gmail.com/
+I originally posted this back in 2016, but the problem still
+persists. The patch has gotten much simpler though, as almost
+all platforms rely on ARM_PATCH_PHYS_VIRT now.
+
+Acked-by: Nicolas Pitre <nico@linaro.org>
+Link: https://lore.kernel.org/linux-arm-kernel/1455804123-2526139-5-git-send-email-arnd@arndb.de/
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mm/kasan_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/Kconfig | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mm/kasan_init.c b/arch/arm/mm/kasan_init.c
-index 9c348042a724..4b1619584b23 100644
---- a/arch/arm/mm/kasan_init.c
-+++ b/arch/arm/mm/kasan_init.c
-@@ -226,7 +226,7 @@ void __init kasan_init(void)
- 	BUILD_BUG_ON(pgd_index(KASAN_SHADOW_START) !=
- 		     pgd_index(KASAN_SHADOW_END));
- 	memcpy(tmp_pmd_table,
--	       pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
-+	       (void*)pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
- 	       sizeof(tmp_pmd_table));
- 	set_pgd(&tmp_pgd_table[pgd_index(KASAN_SHADOW_START)],
- 		__pgd(__pa(tmp_pmd_table) | PMD_TYPE_TABLE | L_PGD_SWAPPER));
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 12a0bd4b315d..0d4f3e2d50ad 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -264,10 +264,12 @@ config PHYS_OFFSET
+ 	hex "Physical address of main memory" if MMU
+ 	depends on !ARM_PATCH_PHYS_VIRT
+ 	default DRAM_BASE if !MMU
+-	default 0x00000000 if ARCH_FOOTBRIDGE
++	default 0x00000000 if ARCH_FOOTBRIDGE || ARCH_IXP4XX
+ 	default 0x10000000 if ARCH_OMAP1 || ARCH_RPC
+-	default 0x20000000 if ARCH_S5PV210
+-	default 0xc0000000 if ARCH_SA1100
++	default 0x30000000 if ARCH_S3C24XX
++	default 0xa0000000 if ARCH_IOP32X || ARCH_PXA
++	default 0xc0000000 if ARCH_EP93XX || ARCH_SA1100
++	default 0
+ 	help
+ 	  Please provide the physical address corresponding to the
+ 	  location of main memory in your system.
 -- 
 2.29.2
 
