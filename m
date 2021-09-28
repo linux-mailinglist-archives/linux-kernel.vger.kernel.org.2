@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D17241B894
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDEC41B8A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242764AbhI1Uss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242572AbhI1Usp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:48:45 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEB4C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:47:05 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id r7so15255233pjo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+43Onh4HLkZnURtDWg0isjVCwVeiEe/QdPT72teF59c=;
-        b=HEbBZj/V0ZB5lae5qYF2tkTybTiTwP3ivQzeDmRMWPH6F9XPE0VhLYAHR9r8vNt2ei
-         vBgsQns0l1TsumStQKiQ2LX7GlM/E4QiTKPFgwiLkQ6psBedgZOVUh78sGLMsgD9oBIk
-         bMI0T1XbPAVt4kU2ZgDrfqWUnNeuIizUpDp/O8LIAYScBvBe9SH3rUdHsdqWRtiKNL7+
-         QaM08y0bCXyEbkfRIyRfpEVQLIjbHQU3mE9NPlK5KQqyye6SfjGHZETWpb7oYWrgPC5N
-         SyFW3O4IxUvzf19JMPfXx/0ao+wBtbCbyhCBfAc85Sk9gpmHK+2bglNpDoF/vJaIK5Xh
-         gP5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+43Onh4HLkZnURtDWg0isjVCwVeiEe/QdPT72teF59c=;
-        b=lexNqMXISGIH2SIK8LMf1+h9ecV2RKq7d9A0NBCYM+Sk+QIc2cyVpXHCgU+yMGyB6l
-         AXQVGubqhZi6R69m7cWf6fdngQNaBApTvhniIwHlzdGjDxDbxn0qyupXuKcRdxTdSvWI
-         6nCgTeX3iavVnElS2M/UoSMvHZGBlJBssOJTJ6fehZPQuRW4E/6M0BGSXFxiLK3EYkGs
-         4gthw5t0Xi0h9xJmlcB0GHCiQJRO9CEIaqdaWRA+LQRZgh4OEVfoVUccXR/eThrzxFCO
-         +UfDiAuMC2cYSDyQzVMhkAey27Krqk0X5rr6lhJpYVchSmW04jaYPD1TeJPIBs8XIgwV
-         GVHw==
-X-Gm-Message-State: AOAM532ldJnocGwG7HhGXMHzhwY5XUBQ/OmNaJT/kroAXrc/fkEF2PUA
-        naDNfjaBYQ/qKKxLH9jPfahy3MUQK44=
-X-Google-Smtp-Source: ABdhPJx4cpsJn/joYMU866++cYAR7WQpe0hFwXByL6PnF3QWe1w8pxddYU9WSucKXHRAaDdfjMOYGA==
-X-Received: by 2002:a17:90b:1096:: with SMTP id gj22mr2120509pjb.124.1632862024942;
-        Tue, 28 Sep 2021 13:47:04 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:ad75:d50c:938b:6212])
-        by smtp.gmail.com with ESMTPSA id s2sm32071pjo.24.2021.09.28.13.47.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 13:47:04 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs-tools: fall back to the original version check when clock_gettime is not supported
-Date:   Tue, 28 Sep 2021 13:46:58 -0700
-Message-Id: <20210928204658.2230524-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+        id S242798AbhI1Uuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:50:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:10739 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242572AbhI1Uug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:50:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="310352163"
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="310352163"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 13:48:51 -0700
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="554299062"
+Received: from oogunmoy-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.221.219])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 13:48:48 -0700
+Subject: Re: [PATCH v4 0/8] Implement generic cc_platform_has() helper
+ function
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Will Deacon <will@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org
+References: <20210928191009.32551-1-bp@alien8.de>
+ <80593893-c63b-d481-45f1-42a3a6fd762a@linux.intel.com>
+ <YVN7vPE/7jecXcJ/@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <7319b756-55dc-c4d1-baf6-4686f0156ac4@linux.intel.com>
+Date:   Tue, 28 Sep 2021 13:48:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVN7vPE/7jecXcJ/@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
 
-In lower versions than macOS 10.12, they don't support clock_gettime
-function. It breaks the build, so we need to fall back to the original
-kernel version check algorithm, in that case.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fsck/mount.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+On 9/28/21 1:31 PM, Borislav Petkov wrote:
+> On Tue, Sep 28, 2021 at 12:19:49PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> Intel CC support patch is not included in this series. You want me
+>> to address the issue raised by Joerg before merging it?
+> 
+> Did you not see my email to you today:
+> 
+> https://lkml.kernel.org/r/YVL4ZUGhfsh1QfRX@zn.tnic
 
-diff --git a/fsck/mount.c b/fsck/mount.c
-index 7c4c681..c928a15 100644
---- a/fsck/mount.c
-+++ b/fsck/mount.c
-@@ -975,6 +975,16 @@ int validate_super_block(struct f2fs_sb_info *sbi, enum SB_ADDR sb_addr)
- 		MSG(0, "Info: MKFS version\n  \"%s\"\n", c.init_version);
- 		MSG(0, "Info: FSCK version\n  from \"%s\"\n    to \"%s\"\n",
- 					c.sb_version, c.version);
-+#if defined(__APPLE__)
-+		if (!c.no_kernel_check &&
-+			memcmp(c.sb_version, c.version,	VERSION_NAME_LEN)) {
-+			c.auto_fix = 0;
-+			c.fix_on = 1;
-+			memcpy(sbi->raw_super->version,
-+					c.version, VERSION_NAME_LEN);
-+			update_superblock(sbi->raw_super, SB_MASK(sb_addr));
-+		}
-+#else
- 		if (!c.no_kernel_check) {
- 			struct timespec t;
- 			u32 prev_time, cur_time, time_diff;
-@@ -1007,6 +1017,7 @@ int validate_super_block(struct f2fs_sb_info *sbi, enum SB_ADDR sb_addr)
- 			update_superblock(sbi->raw_super, SB_MASK(sb_addr));
- 		}
- out:
-+#endif
- 		print_sb_state(sbi->raw_super);
- 		return 0;
- 	}
+Just read it. If you want to use cpuid_has_tdx_guest() directly in
+cc_platform_has(), then you want to rename intel_cc_platform_has() to
+tdx_cc_platform_has()?
+
+> 
+> ?
+> 
+
 -- 
-2.33.0.685.g46640cef36-goog
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
