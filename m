@@ -2,117 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F2141B956
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAA141B993
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242956AbhI1Vfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242943AbhI1Vfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:35:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A1F6135F;
-        Tue, 28 Sep 2021 21:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632864843;
-        bh=2hOPqcyqypMpKLqdAQNJCW9CnAKsvTzqaAiKGYi0Y+Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GH0E0UAGigSBp79hPgAZBz1cOI8i1bRzNKg8vSXYptJ1gc05+KL9u+CIokrcwwJxo
-         CAmGmAgKMB1fpwC5esV78h1pZAKX8KKFKJM1+iXxHpxhINm+lYEjz0n3JbZrwTGq0M
-         Ed1zzTr8OuyiwecoOLx80FIi1P8JhPBVTVIeNDOI2Y0r29PDZVkkgZYrx8sWojasuU
-         +wl84HpWV0rvBMHb+WlGHnaolqjIDvs9fJozXC0OND2IPsSjueIkvIlWzLZZBW3xac
-         7cJlyyyoXPMw/Gfen2xB9JE9/KHnYnPUmzvKiSS+POdndIznLZjOoSYqTad0rnGaTX
-         ffRry30oczBQQ==
-Date:   Tue, 28 Sep 2021 16:38:05 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jeroen de Borst <jeroendb@google.com>,
-        Catherine Sullivan <csully@google.com>,
-        David Awogbemila <awogbemila@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][net-next] gve: Use kvcalloc() instead of kvzalloc()
-Message-ID: <20210928213805.GA273413@embeddedor>
+        id S243002AbhI1VqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:46:18 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:31874 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242917AbhI1VqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 17:46:17 -0400
+X-Greylist: delayed 357 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 17:46:16 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632865104;
+    s=strato-dkim-0002; d=aepfle.de;
+    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=rwJ/pcIomhhbC2tNRRfn4x7PLuFAfWVwCK91mxmeOvg=;
+    b=dHp+vTV3tN/FlhZxWUfWJLHomipLGl50zN3iPKsAcEheJk5hdPyKho+l6hjGirOc0l
+    eUTDumEV85ENN2L5mXoT1aEuQEWqh6NtMFG54lkO5bRJmqOQKr9o5SG/y12SALKEfbUC
+    cglEI+FwyyXSgTgdBNFP4Hj+7Rynx8TLIxOcwtd4UY5JfOCPNiRTtNwK1xqv/fQ7RAX9
+    JciU702I6HBRHVWVLvpdMbYOi+gPjM57VVwNrTC1WOhIS/KNJqFxql6k6kyJez5dPGi6
+    KNVRoxP/o/Cilct3PC4J5hgdYgmyW2IROLONi9JZ19XM3RBRC8Li/xAp5qZeJEzQQYib
+    EKPg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QED/SSGq+wjGiUC4oc0Nr2ihluivdVFdyQMV0m+WjuofHQ2iy5wtYiRmw1kI7ObDDT"
+X-RZG-CLASS-ID: mo00
+Received: from latitude.home.arpa
+    by smtp.strato.de (RZmta 47.33.8 AUTH)
+    with ESMTPSA id j06d2fx8SLcNXYW
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 28 Sep 2021 23:38:23 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 23:38:13 +0200
+From:   Olaf Hering <lkml@aepfle.de>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
+        kys@microsoft.com, sthemmin@microsoft.com,
+        anbelski@linux.microsoft.com
+Subject: Re: [PATCH v3 11/19] drivers/hv: set up synic pages for intercept
+ messages
+Message-ID: <20210928233813.6104593b@latitude.home.arpa>
+In-Reply-To: <1632853875-20261-12-git-send-email-nunodasneves@linux.microsoft.com>
+References: <1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com>
+        <1632853875-20261-12-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 2-factor argument form kvcalloc() instead of kvzalloc().
+Am Tue, 28 Sep 2021 11:31:07 -0700
+schrieb Nuno Das Neves <nunodasneves@linux.microsoft.com>:
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/google/gve/gve_main.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> -/* Define synthetic interrupt controller message constants. */
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 099a2bc5ae67..cd9df68cc01e 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -268,7 +268,7 @@ static int gve_alloc_notify_blocks(struct gve_priv *priv)
- 	int i, j;
- 	int err;
- 
--	priv->msix_vectors = kvzalloc(num_vecs_requested *
-+	priv->msix_vectors = kvcalloc(num_vecs_requested,
- 				      sizeof(*priv->msix_vectors), GFP_KERNEL);
- 	if (!priv->msix_vectors)
- 		return -ENOMEM;
-@@ -628,7 +628,7 @@ static int gve_alloc_rings(struct gve_priv *priv)
- 	int err;
- 
- 	/* Setup tx rings */
--	priv->tx = kvzalloc(priv->tx_cfg.num_queues * sizeof(*priv->tx),
-+	priv->tx = kvcalloc(priv->tx_cfg.num_queues, sizeof(*priv->tx),
- 			    GFP_KERNEL);
- 	if (!priv->tx)
- 		return -ENOMEM;
-@@ -641,7 +641,7 @@ static int gve_alloc_rings(struct gve_priv *priv)
- 		goto free_tx;
- 
- 	/* Setup rx rings */
--	priv->rx = kvzalloc(priv->rx_cfg.num_queues * sizeof(*priv->rx),
-+	priv->rx = kvcalloc(priv->rx_cfg.num_queues, sizeof(*priv->rx),
- 			    GFP_KERNEL);
- 	if (!priv->rx) {
- 		err = -ENOMEM;
-@@ -764,12 +764,11 @@ static int gve_alloc_queue_page_list(struct gve_priv *priv, u32 id,
- 
- 	qpl->id = id;
- 	qpl->num_entries = 0;
--	qpl->pages = kvzalloc(pages * sizeof(*qpl->pages), GFP_KERNEL);
-+	qpl->pages = kvcalloc(pages, sizeof(*qpl->pages), GFP_KERNEL);
- 	/* caller handles clean up */
- 	if (!qpl->pages)
- 		return -ENOMEM;
--	qpl->page_buses = kvzalloc(pages * sizeof(*qpl->page_buses),
--				   GFP_KERNEL);
-+	qpl->page_buses = kvcalloc(pages, sizeof(*qpl->page_buses), GFP_KERNEL);
- 	/* caller handles clean up */
- 	if (!qpl->page_buses)
- 		return -ENOMEM;
-@@ -828,7 +827,7 @@ static int gve_alloc_qpls(struct gve_priv *priv)
- 	if (priv->queue_format == GVE_GQI_RDA_FORMAT)
- 		return 0;
- 
--	priv->qpls = kvzalloc(num_qpls * sizeof(*priv->qpls), GFP_KERNEL);
-+	priv->qpls = kvcalloc(num_qpls, sizeof(*priv->qpls), GFP_KERNEL);
- 	if (!priv->qpls)
- 		return -ENOMEM;
- 
-@@ -847,7 +846,7 @@ static int gve_alloc_qpls(struct gve_priv *priv)
- 
- 	priv->qpl_cfg.qpl_map_size = BITS_TO_LONGS(num_qpls) *
- 				     sizeof(unsigned long) * BITS_PER_BYTE;
--	priv->qpl_cfg.qpl_id_map = kvzalloc(BITS_TO_LONGS(num_qpls) *
-+	priv->qpl_cfg.qpl_id_map = kvcalloc(BITS_TO_LONGS(num_qpls),
- 					    sizeof(unsigned long), GFP_KERNEL);
- 	if (!priv->qpl_cfg.qpl_id_map) {
- 		err = -ENOMEM;
--- 
-2.27.0
+I think this code movement could be done in a separate patch.
+This will reduce conflicts during backporting.
 
+Olaf
