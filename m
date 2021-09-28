@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92F941B781
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655B041B783
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242541AbhI1TXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:23:53 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:42652 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242393AbhI1TXv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:23:51 -0400
-Received: by mail-ot1-f48.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso3806883otu.9;
-        Tue, 28 Sep 2021 12:22:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HA3GT61Bfe4GqvyvYQ3VJ5/vu2QZDpfW7PYB8qA2Bbk=;
-        b=LxYyACsYE1aXd5jqBuu0cmd+szKQNM4ua1ZEcXyaIKRcnx2iSBdwTai5SUwT05q+Mo
-         hwDl896rVA8puIi2Gr+Bj9Lhq3WyZSl2E/YyDIoOXzjuWfiMEvWAAtBE6IMA0Af1sw2M
-         tCE2E4Fgzb39xjAa3byD/Wg1WeA1eumO3uTtldg24YEjkQSgOtTHMWTlxZlwMN151EQL
-         1Y221eP+nwwifTKQyrKaibvc4J8uNpia0WKjOLiMrGNQJF+qoNBcaDa6aj8410n96Sya
-         FzZTDsFDK6ESlLhZDSxJKk0Pn68N2cRugydFuH1bAwKbhHMby5HhjJI+icO9B8dHLnBY
-         avmQ==
-X-Gm-Message-State: AOAM532FqxuAz0100wGO4qpof8wBhffRueut3SMaTGMvHRhTX2OF4Zvw
-        CvYNt0FPjGh1DFv3eZRQuT4fdkyJDQ==
-X-Google-Smtp-Source: ABdhPJzs3j7n65sE1ezJrkEbZpZb5KZKBbIyBjeoC0EloBQHXT7weBjnYU+iKVLeChDMl7OQ1S+lKg==
-X-Received: by 2002:a05:6830:2816:: with SMTP id w22mr6700430otu.351.1632856931534;
-        Tue, 28 Sep 2021 12:22:11 -0700 (PDT)
-Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id h26sm3536155otn.67.2021.09.28.12.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:22:10 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: Fix 'interrupt-map' parent address cells
-Date:   Tue, 28 Sep 2021 14:22:09 -0500
-Message-Id: <20210928192210.1842377-1-robh@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S242464AbhI1TZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:25:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242418AbhI1TZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:25:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D56936135E;
+        Tue, 28 Sep 2021 19:23:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632857041;
+        bh=+uYxSqaD7aVPBaKXaT32Yr5tLRoGFr0pFL+5Ay/e56Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HNBMYr2YKcPOeolmmRJogIQ4BKEElzd/WHD5HZ7bOpPYdHd+Aa4Sj5Af3x2216PHB
+         DVPW7QrTR+G9RuWhEhTQsc5ygIXAJ6ItscmbGx2wfaq9kuw4JcNRUIZ3dqLviT4rWw
+         fLYtbIxNe4Ke+lNQ2otBEPkFjuq57NN2atgrEKMXs+oqnmxir305Uid08jOBw1VB7y
+         hlfNIja/5Dp5ifw/BKCJQT7FohkesAfeEwSbV/hCwqvcfR2YknFnSApoRXw+n74oq9
+         plzAafbM/RMg7knADtibv50AiSZxOLuuj/IMuqe79IR304veQAB5moXvAw37SwXqm/
+         wQsiLELWiQvLA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] drm/kmb: Remove set_test_mode_src_osc_freq_target_{hi,low}_bits()
+Date:   Tue, 28 Sep 2021 12:23:38 -0700
+Message-Id: <20210928192338.1987872-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.591.gddb1055343
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'interrupt-map' in several QCom SoCs is malformed. The '#address-cells'
-size of the parent interrupt controller (the GIC) is not accounted for.
+clang with W=1 warns:
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+drivers/gpu/drm/kmb/kmb_dsi.c:812:2: error: unused function
+'set_test_mode_src_osc_freq_target_low_bits' [-Werror,-Wunused-function]
+        set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi *kmb_dsi,
+        ^
+drivers/gpu/drm/kmb/kmb_dsi.c:824:2: error: unused function
+'set_test_mode_src_osc_freq_target_hi_bits' [-Werror,-Wunused-function]
+        set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi *kmb_dsi,
+        ^
+2 errors generated.
+
+Remove them, as they have been unused since the driver's introduction in
+commit 98521f4d4b4c ("drm/kmb: Mipi DSI part of the display driver").
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8998.dtsi |  8 ++++----
- arch/arm64/boot/dts/qcom/sdm845.dtsi  | 16 ++++++++--------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/kmb/kmb_dsi.c | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index 34039b5c8017..5a04a0427d08 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -954,10 +954,10 @@ pcie0: pci@1c00000 {
- 			interrupts = <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "msi";
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map =	<0 0 0 1 &intc 0 135 IRQ_TYPE_LEVEL_HIGH>,
--					<0 0 0 2 &intc 0 136 IRQ_TYPE_LEVEL_HIGH>,
--					<0 0 0 3 &intc 0 138 IRQ_TYPE_LEVEL_HIGH>,
--					<0 0 0 4 &intc 0 139 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-map =	<0 0 0 1 &intc 0 0 135 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 2 &intc 0 0 136 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 3 &intc 0 0 138 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 4 &intc 0 0 139 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c b/drivers/gpu/drm/kmb/kmb_dsi.c
+index 1793cd31b117..ae24c5fc35a5 100644
+--- a/drivers/gpu/drm/kmb/kmb_dsi.c
++++ b/drivers/gpu/drm/kmb/kmb_dsi.c
+@@ -808,34 +808,6 @@ static void test_mode_send(struct kmb_dsi *kmb_dsi, u32 dphy_no,
+ 	}
+ }
  
- 			clocks = <&gcc GCC_PCIE_0_PIPE_CLK>,
- 				 <&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 6d7172e6f4c3..287c12666a3a 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1990,10 +1990,10 @@ pcie0: pci@1c00000 {
- 			interrupt-names = "msi";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 149 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 150 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 151 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 152 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
-+			interrupt-map = <0 0 0 1 &intc 0 0 0 149 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-+					<0 0 0 2 &intc 0 0 0 150 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
-+					<0 0 0 3 &intc 0 0 0 151 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
-+					<0 0 0 4 &intc 0 0 0 152 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
- 
- 			clocks = <&gcc GCC_PCIE_0_PIPE_CLK>,
- 				 <&gcc GCC_PCIE_0_AUX_CLK>,
-@@ -2095,10 +2095,10 @@ pcie1: pci@1c08000 {
- 			interrupt-names = "msi";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
-+			interrupt-map = <0 0 0 1 &intc 0 0 0 434 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-+					<0 0 0 2 &intc 0 0 0 435 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
-+					<0 0 0 3 &intc 0 0 0 438 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
-+					<0 0 0 4 &intc 0 0 0 439 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
- 
- 			clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
- 				 <&gcc GCC_PCIE_1_AUX_CLK>,
+-static inline void
+-	set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi *kmb_dsi,
+-						   u32 dphy_no,
+-						   u32 freq)
+-{
+-	/* Typical rise/fall time=166, refer Table 1207 databook,
+-	 * sr_osc_freq_target[7:0]
+-	 */
+-	test_mode_send(kmb_dsi, dphy_no, TEST_CODE_SLEW_RATE_DDL_CYCLES,
+-		       (freq & 0x7f));
+-}
+-
+-static inline void
+-	set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi *kmb_dsi,
+-						  u32 dphy_no,
+-						  u32 freq)
+-{
+-	u32 data;
+-
+-	/* Flag this as high nibble */
+-	data = ((freq >> 6) & 0x1f) | (1 << 7);
+-
+-	/* Typical rise/fall time=166, refer Table 1207 databook,
+-	 * sr_osc_freq_target[11:7]
+-	 */
+-	test_mode_send(kmb_dsi, dphy_no, TEST_CODE_SLEW_RATE_DDL_CYCLES, data);
+-}
+-
+ static void mipi_tx_get_vco_params(struct vco_params *vco)
+ {
+ 	int i;
+
+base-commit: 93ee1a2c0f08345ab17c51198f725d4c95984f4c
 -- 
-2.30.2
+2.33.0.591.gddb1055343
 
