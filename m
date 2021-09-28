@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A843341AC1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA3041AC21
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240005AbhI1Jln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239844AbhI1Jll (ORCPT
+        id S239450AbhI1Jna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:43:30 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36688 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239952AbhI1Jn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:41:41 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8A7C061575;
-        Tue, 28 Sep 2021 02:40:02 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso2272821wme.0;
-        Tue, 28 Sep 2021 02:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=kDkv9Rpe3a3jzGJpilYOh+kLID8MJzgQoAqFKyN7zzY=;
-        b=dXhS1cV6qlYv0CDkxqkjmzcjKegIk7zJ2DYRCJ5Y2q+mvkKKsOFouo+tf4uBkvpFy2
-         jh6h4d0uOPoobXjanz6zqU2DVyxq7Tvbog/H60y4DwcfR+KTxrRkPdLYgIzchj5RmVnm
-         TQXZzvo+bfwifAQc4zDQNXULZR6DiRQ02ZgFhZ5QKj3SJ/8VDnOWmpZzsxtpTqEB0sxR
-         oj/hN5Sqe+nF5mmDfljrM3rYK36/DNYBmxD5i+bYiiOSl92IuKa5NifBxMqGR/5uKfGO
-         qJEfnQ0iqTr/6LQlwPPEPJDYcQ/TtMm2RgTed8p2D6M+05YUbad/8R2D1Aum9rpFKl1K
-         EiJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=kDkv9Rpe3a3jzGJpilYOh+kLID8MJzgQoAqFKyN7zzY=;
-        b=AdzExY+jk7Bl1IEVyywDQxUqGkrTu7CV8OqteIjNZMdRL1goQMKFMKnNNGaHeog/hz
-         e4tHPE2P5A2eR7zYphNlbj9+q0IqCztk2gIXJJH9TSpHqQmKaaXyzPwQZ5bde6DlpS5f
-         frtKvFN/iUDV2sJ/4lgnI6udO8rdw3ue1uKqDUwoXD+ZK3fDoy8Lglm6JdNpRZ/gRmJ4
-         VRrdb32xJ6mczhrYaZSH8Zfv4yKb5lcgyrBNAt1IIi8cXjA43aZ58Snv7KZCxCwCnb9P
-         Sf0g2TYPeqTZ4XUikH7H35UHV190q9xAo6fpm7S95BjAG+gMaoxeRN7dWUVZjEq+6M3Y
-         D/jQ==
-X-Gm-Message-State: AOAM532HqCVfx3BuLC3+vhL3ZSc5DpPTrZJKuG2E5VOyWRBs9JX7GQTA
-        wOrw/bUlR94DuD5/6E0NT9WneS8Tv6UQOQ==
-X-Google-Smtp-Source: ABdhPJxbDvWQk8LU895jSojgwYxMgVF/DrgdEY1oIDfvjuuanKc8kPB1K795AZFfMtuK4Vw/wEnOjw==
-X-Received: by 2002:a05:600c:4f54:: with SMTP id m20mr3766804wmq.96.1632822001067;
-        Tue, 28 Sep 2021 02:40:01 -0700 (PDT)
-Received: from p200300e94717cfac3e891446077632d6.dip0.t-ipconnect.de (p200300e94717cfac3e891446077632d6.dip0.t-ipconnect.de. [2003:e9:4717:cfac:3e89:1446:776:32d6])
-        by smtp.googlemail.com with ESMTPSA id t126sm2117440wma.4.2021.09.28.02.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 02:40:00 -0700 (PDT)
-Message-ID: <987cb93359dc95ce9fb387b755fadb0ab6eb98f9.camel@gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
- cannot meet the timeout value required by the device
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 28 Sep 2021 11:39:59 +0200
-In-Reply-To: <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
-References: <20210917172727.26834-1-huobean@gmail.com>
-         <20210917172727.26834-3-huobean@gmail.com>
-         <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
-         <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
-         <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
-         <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
-         <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
-         <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
-         <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
-         <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Tue, 28 Sep 2021 05:43:29 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18S9fVO4090139;
+        Tue, 28 Sep 2021 04:41:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632822091;
+        bh=5fhOQ797DjnUOCYG8CdLtVIlk+Gj6NLA3HvgmCL0G5M=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=THAo+h53Zr1RHOwJMp4KhBktULaanaSdhX4B71d/6Gd7oZy0fmIPhwRgFmUMzmxXf
+         zGk6EwrqaXhZBP3r9pvHyy5uxQN4jY4ZaK7ZXgWwagyEPNCWLV6CFhs28cv7AGlG8S
+         4LgPniUYkiw+YSkppOF54ud010h6n8G6n2TKjlqM=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18S9fV5e099692
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 28 Sep 2021 04:41:31 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 28
+ Sep 2021 04:41:31 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 28 Sep 2021 04:41:31 -0500
+Received: from [10.250.233.140] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18S9fQvT124042;
+        Tue, 28 Sep 2021 04:41:27 -0500
+Subject: Re: [PATCH v2 0/4] PCI: dwc: pci-dra7xx: miscellaneous improvements
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>
+CC:     <linux-pci@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+References: <20210531085934.2662457-1-luca@lucaceresoli.net>
+ <20210621144109.GC27516@lpieralisi> <20210813155328.GC15515@lpieralisi>
+ <46422460-ae9b-3c04-1f59-54bb6631317e@lucaceresoli.net>
+ <20210928093009.GA11323@lpieralisi>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <406047fd-4ee8-af7d-41d4-d2c152df8847@ti.com>
+Date:   Tue, 28 Sep 2021 15:11:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210928093009.GA11323@lpieralisi>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-24 at 23:33 +0200, Bean Huo wrote:
-> On Fri, 2021-09-24 at 16:26 +0300, Adrian Hunter wrote:
-> > On 24/09/21 4:08 pm, Bean Huo wrote:
-> > > On Fri, 2021-09-24 at 15:17 +0300, Adrian Hunter wrote:
-> > > > > > >          sdhci_writeb(host, count,
-> > > > > > > SDHCI_TIMEOUT_CONTROL);
-> > > > > > > }
-> > > > > > > The driver has detected that the hardware timer cannot
-> > > > > > > meet
-> > > > > > > the
-> > > > > > > timeout
-> > > > > > > requirements of the device, but we still use the hardware
-> > > > > > > timer,
-> > > > > > > which will
-> > > > > > > allow potential timeout issuea . Rather than allowing a
-> > > > > > > potential
-> > > > > > > problem to exist, why can’t software timing be used to
-> > > > > > > avoid
-> > > > > > > this
-> > > > > > > problem?
-> > > > > > Timeouts aren't that accurate.  The maximum is assumed
-> > > > > > still
-> > > > > > to
-> > > > > > work.
-> > > > > > mmc->max_busy_timeout is used to tell the core what the
-> > > > > > maximum
-> > > > > > is.
-> > > > > mmc->max_busy_timeout is still a representation of Host HW
-> > > > > timer
-> > > > > maximum timeout count, isn't it? 
-> > > > 
-> > > > Not necessarily.  For SDHCI_QUIRK2_DISABLE_HW_TIMEOUT it would
-> > > > be
-> > > > 
-> > > > set to zero to indicate no maximum.
-> > > 
-> > > yes, this is the purpose of the patch, for the host controller
-> > > without
-> > > quirk SDHCI_QUIRK2_DISABLE_HW_TIMEOUT, if the timeout count
-> > > required by
-> > > device is beyond the HW timer max count, we choose SW timer to
-> > > avoid the HW timer timeout IRQ.
-> > > 
-> > > I don't know if I get it correctly.
-> > 
-> > Why can't drivers that want the behaviour just set the quirk?
-> > 
-> > Drivers that do not work with the quirk, do not have to set it.
-> 
-> Adrian,
-> 
-> We cannot add this quirk to every host driver. This is the difference
-> on the device side. In addition, I don't know what the maximum
-> hardware
-> timer budget for each host is. Even if you use the same SOC, the
-> maximum time budget on different platforms may be different.
-> 
-> Assume that the maximum timeout time supported by the hardware timer
-> is
-> 100 milliseconds, but the maximum data transmission time required by
-> the device is 150 milliseconds. In most cases, data transfer will not
-> take so long. 150 is the maximum time under extreme conditions. This
-> means that the device just needs to complete a data transfer within
-> > 100ms and keep the data line busy. If we still use the HW timer, it
-> will trigger a DATA LINE timeout interrupt.
-> 
-> This patch does not affect scenarios where the hardware timer meets
-> the
-> max data transmission time requirements of the device. It will still
-> use the hardware timer. Only when the device changes, will it switch
-> to
-> using the SW timer.
-> 
-> Bean
-> 
+Hi Lorenzo,
 
-Hi Adrian,
+On 28/09/21 3:00 pm, Lorenzo Pieralisi wrote:
+> On Sun, Sep 19, 2021 at 11:03:00PM +0200, Luca Ceresoli wrote:
+>> Hi Lorenzo, Kishon,
+>>
+>> On 13/08/21 17:53, Lorenzo Pieralisi wrote:
+>>> On Mon, Jun 21, 2021 at 03:41:09PM +0100, Lorenzo Pieralisi wrote:
+>>>> On Mon, May 31, 2021 at 10:59:30AM +0200, Luca Ceresoli wrote:
+>>>>> This is an series of mixed improvements to the DRA7 PCI controller driver:
+>>>>> allow building as a loadabel module, allow to get and enable a clock and a
+>>>>> small cleanup.
+>>>>>
+>>>>> Luca
+>>>>>
+>>>>> Luca Ceresoli (4):
+>>>>>   PCI: dwc: Export more symbols to allow modular drivers
+>>>>>   PCI: dra7xx: Make it a kernel module
+>>>>>   PCI: dra7xx: Remove unused include
+>>>>>   PCI: dra7xx: Get an optional clock
+>>>>>
+>>>>>  drivers/pci/controller/dwc/Kconfig            |  6 ++---
+>>>>>  drivers/pci/controller/dwc/pci-dra7xx.c       | 22 +++++++++++++++++--
+>>>>>  .../pci/controller/dwc/pcie-designware-ep.c   |  1 +
+>>>>>  drivers/pci/controller/dwc/pcie-designware.c  |  1 +
+>>>>>  4 files changed, 25 insertions(+), 5 deletions(-)
+>>>>
+>>>> Hi Kishon,
+>>>>
+>>>> I'd need your ACK to proceed with this series that looks like it
+>>>> is ready to go, please let me know.
+>>>
+>>> Still need it - please let me know.
+>>>
+>>> Lorenzo
+>>
+>> Should I resend the series?
+>>
+>> BTW it still applies cleanly on both the pci next branch and on mainline
+>> master.
+> 
+> Kishon, please consider ACKing or otherwise comment on this series
+> to make some progress.
 
-Would you please review this patch again and is it possible to be
-accepted?
+I had already ACKed this series
+https://lore.kernel.org/all/598ee439-6882-5021-1351-f403e762430f@ti.com/
 
-Bean
+Anyways I'm adding it here again:
+Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
 
+Thank You,
+Kishon
+> 
+> Thanks,
+> Lorenzo
+> 
