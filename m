@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9786841A9EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115E841A9F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239384AbhI1HlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:41:16 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34473 "EHLO
+        id S239400AbhI1HlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:41:18 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:56047 "EHLO
         wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239292AbhI1HlI (ORCPT
+        by vger.kernel.org with ESMTP id S239351AbhI1HlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:41:08 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id A9A853201D3E;
-        Tue, 28 Sep 2021 03:39:28 -0400 (EDT)
+        Tue, 28 Sep 2021 03:41:10 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 777413201EAC;
+        Tue, 28 Sep 2021 03:39:30 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 28 Sep 2021 03:39:29 -0400
+  by compute1.internal (MEProxy); Tue, 28 Sep 2021 03:39:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=jOtRiwaxSb0hF
-        S8RoVKxeT6qIGh3HjpibGeoasHpu8Y=; b=cEXfbsob2hQz+0Cz2EwWiNjBPyOmQ
-        Hw1xDGhDZP3Pj6eWxX2nSRIZiOfBEnjKma2CZqmNfKcw3kenmzGkEV6Ejdeh9gW2
-        Mcd5yjPFgqd70qNKYIINcDQFWFUer2yYWnhiStocSSmEr6LpcO2R3QO1uQMCVAso
-        SYJ7rSEnOzNIY2q+cNfPwBeDYshhPhHq0AF/T06rOZ1X7+5PqR9GrKjv2mPw5DPB
-        LQOuxXv815DS6CKD79pCls1yyddztL3xjqVTL3MwJF2P5LwLEkVEWQb0B2YIVxsI
-        tjD3SpjrP7la648MJ6oDrjGfIHAPJFMzjAcy7LiTvPbjb75aqgjuco3YA==
+        :mime-version:content-transfer-encoding; s=fm3; bh=RdneWnT+FfBZb
+        XIntI66Z0p2UnPcivxdf0KDklSCTec=; b=TTXs4YqZZYaR+dCoSQkhTEQ679CiV
+        vUQfFESlrQ+u5ANF2oUAD1W5bE+fNw60kaxZDUsmV5aaJqQCMpuNVjUsQevgX3Ey
+        R2OgCNQyT1HGXGvfnPuhE65xQkxxrdMSbsG7pH6H+Jqa6nRYN79cd23475lNDuir
+        Qq3Zcxxf9RmNFv3eoJpbuQln0ohQOajGjX++Sk1i6Zf/UY2nIVNU/PyfuPU1zg4x
+        Dzdpy1nA1Cg4uvr35xFGieJ+IxofsPi+QmhS8sMSZY6XtdAaLbodX7liLDYPg1Sk
+        tH63JM2IdJKAgKWkh1956wcw2IrqaaOUNVgZ4KtlJb4zvItMFaqFYQUoA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=jOtRiwaxSb0hFS8RoVKxeT6qIGh3HjpibGeoasHpu8Y=; b=HCy1+wfF
-        kgJhJbaarm/jczE8dBI2M0TyFuAMhMRuQBiUZaAYfn/o5yVXr7Cx5qHQEaY9S+B/
-        chblAi6nnusdFZrp1rjUvprTDd6gTroiidsTnhvVhugIDzS8McEaPj7A1IA0FlhW
-        K7A5BZWW7Xvcj4a7sbyzvOpW0nV4/p0jeMkAiQpZtpHTTe6v3ogd+mc38FiyLstl
-        PYXbFDqdPbFQpG01gWw1SP4Ws2eM1NtMpaM4EsmIPngYRLNQ6vl5PPlsWWhSDqQ4
-        D75WNxKqpdv+wz5RrM+c/4nsNc/HM3/+pjI/hVFaGgXoO6VtRXGiFi+pTeSrPrn0
-        HEPQo0N/qjnBVw==
-X-ME-Sender: <xms:sMZSYYafwT_YJKzftfKQR6iG-iTq-TPM-wI-qYElrAwDWsMa05BjRw>
-    <xme:sMZSYTZsQabZYVck6j2UuAJtOG61J_djKgwBECzTOT9LhyfttBFEialyOwQnWYNTg
-    sbGAPO-Syne4UNLsg>
-X-ME-Received: <xmr:sMZSYS_vOx7aGh6nIFpW3j2D3VFYxjlVqXfjLcy7deNPBVo1j8XfgV6OZmAn44hM1JT6I6WssQBK_SxpwGUOeg2Q9deUbeU52WC_xcFPQDn1e10KCN_-qVbQ7NDMhz-s_wlFBw>
+        fm3; bh=RdneWnT+FfBZbXIntI66Z0p2UnPcivxdf0KDklSCTec=; b=nmoaiPLn
+        LJ4Evw477TJFq/uFhvB+hhgs9H5FrIfMO2HxdmnEqr0ErJayY3UdVNN4zcpjCcvC
+        hShNy3QzhplwxmV7V3rmOl32LLNakWY3/BoQmShh98CVgCOeGBc4GddC9NxdBnoM
+        sHpUPUfWP42Rxeryg16cQLc1k7A5UzyRWVN1/1Xk7EeK5O7muzWTgq+bTVDJwWGb
+        NdXpsO2xg28LrfrJU0YiOtpIpSd5Ya/kDH1jjNcacvSpOZgcHZGeEJQ4vPARKzvx
+        HE2188sGNtPGAnBvCjMkOJ3ZlWLQGEXlgqJuu1M6oSkKfAH9oWm/8mzbkm+BUT9e
+        xmILL0jkT963OA==
+X-ME-Sender: <xms:scZSYRrr2ETbyUBFIbvmC4Z2lvMFc2ROYrA1LuJw7dZ_yRnxCowmFw>
+    <xme:scZSYTqSg8MVWaHCz6XoDdQETlXM0lEAMporXJ9QlirI-wZFTaGGebo7_PSxEsQCS
+    J5O8MBBIUwDsQ6cEg>
+X-ME-Received: <xmr:scZSYeO2PYWOZ1FDh1ffu2ZxvoC0ZL8oepzESWosdQbdMRUMX9HP1wxOyh_xQD2j8I4d24o1q2GZjDPijlUB4ZB5FzzKVE43RQkB0kzAt_gsFF31gE97OEFm0k7bnjDr1brdzA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejledguddulecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejledguddulecutefuodetgg
     ftrfgrthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheej
     vdfgjeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
     homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:sMZSYSp9oD7s0iq-mCPeTtQ9RsaSaGDNrtSp-g6Vjc5GGu2jBUrlkw>
-    <xmx:sMZSYTrLxOUHey8WQQxc0du7a3Nmb4LVG-4KzXxqx2_Thy1w3ufunA>
-    <xmx:sMZSYQRAv8lnLoHEMO9XkR7uVrzA3GHw3H-huIsIEP9S8WQJAUFKug>
-    <xmx:sMZSYXcBEV56aO2GJ36CFGXNZhcxMwiYtrZkqGvbBKviwyUuFvb5aA>
+X-ME-Proxy: <xmx:ssZSYc48vuX_F6I6N3CRMEfDdkshF2NsqNQz3_4chMYay3xME-q9Ug>
+    <xmx:ssZSYQ68zKo6n9M7xM_tI6rn4WxYbOJFDT350cOfUAz4X39JM4Yu1Q>
+    <xmx:ssZSYUhC76t9CJyqSRCmkw9VGHUtjSMLai4ZXGZHY_2OEyw_q0ksog>
+    <xmx:ssZSYSsepIZucmdifwIBq10Ayys8AqoYG6UhlgQvVxrvzbuXAw3RTw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 03:39:27 -0400 (EDT)
+ 28 Sep 2021 03:39:29 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
@@ -63,9 +63,9 @@ To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
 Cc:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 2/4] clk: sunxi-ng: Allow drivers to be built as modules
-Date:   Tue, 28 Sep 2021 02:39:20 -0500
-Message-Id: <20210928073922.34264-3-samuel@sholland.org>
+Subject: [PATCH v2 3/4] clk: sunxi-ng: Convert early providers to platform drivers
+Date:   Tue, 28 Sep 2021 02:39:21 -0500
+Message-Id: <20210928073922.34264-4-samuel@sholland.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210928073922.34264-1-samuel@sholland.org>
 References: <20210928073922.34264-1-samuel@sholland.org>
@@ -75,368 +75,285 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While it is useful to build all of the CCU drivers at once, only 1-3 of
-them will be loaded at a time, or possibly none of them if the kernel is
-booted on a non-sunxi platform. These CCU drivers are relatively large;
-32-bit drivers have 30-50k of data each, while the 64-bit ones are
-50-75k due to the increased pointer overhead. About half of that data
-comes from relocations. Let's allow the user to build these drivers as
-modules so only the necessary data is loaded.
+The PRCM CCU drivers depend on clocks provided by other CCU drivers. For
+example, the sun8i-r-ccu driver uses the "pll-periph" clock provided by
+the SoC's main CCU.
 
-As a first step, convert the CCUs that are already platform drivers.
+However, sun8i-r-ccu is an early OF clock provider, and many of the
+main CCUs (e.g. sun50i-a64-ccu) use platform drivers. This means that
+the consumer clocks will be orphaned until the supplier driver is bound.
+This can be avoided by converting the remaining CCUs to use platform
+drivers. Then fw_devlink will ensure the drivers are bound in the
+optimal order.
 
-When the drivers are built as modules, normally the file name becomes
-the module name. However, the current file names are inconsistent with
-the <platform>-<peripheral> name used everywhere else: the devicetree
-bindings, the platform driver names, and the Kconfig symbols. Use
-Makfile logic to rename the modules so they follow the usual pattern.
+The sun5i CCU is the only one which actually needs to be an early clock
+provider, because it provides the clock for the system timer. That one
+is left alone.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- drivers/clk/sunxi-ng/Kconfig             | 16 +++---
- drivers/clk/sunxi-ng/Makefile            | 64 ++++++++++++++++--------
- drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c |  4 +-
- drivers/clk/sunxi-ng/ccu-sun50i-a100.c   |  4 +-
- drivers/clk/sunxi-ng/ccu-sun50i-a64.c    |  7 ++-
- drivers/clk/sunxi-ng/ccu-sun50i-h6.c     |  7 ++-
- drivers/clk/sunxi-ng/ccu-sun8i-a83t.c    |  7 ++-
- drivers/clk/sunxi-ng/ccu-sun8i-de2.c     |  9 ++--
- drivers/clk/sunxi-ng/ccu-sun8i-r40.c     |  6 ++-
- drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c  |  7 ++-
- drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c |  7 ++-
- drivers/clk/sunxi-ng/ccu-sun9i-a80.c     |  7 ++-
- 12 files changed, 98 insertions(+), 47 deletions(-)
+ drivers/clk/sunxi-ng/Kconfig             | 20 ++++----
+ drivers/clk/sunxi-ng/ccu-sun4i-a10.c     | 58 +++++++++++++--------
+ drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c   | 56 ++++++++++++--------
+ drivers/clk/sunxi-ng/ccu-sun50i-h616.c   | 33 ++++++++----
+ drivers/clk/sunxi-ng/ccu-sun6i-a31.c     | 40 +++++++++++----
+ drivers/clk/sunxi-ng/ccu-sun8i-a23.c     | 35 +++++++++----
+ drivers/clk/sunxi-ng/ccu-sun8i-a33.c     | 40 +++++++++++----
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.c      | 62 ++++++++++++++--------
+ drivers/clk/sunxi-ng/ccu-sun8i-r.c       | 65 ++++++++++++++----------
+ drivers/clk/sunxi-ng/ccu-sun8i-v3s.c     | 57 +++++++++++++--------
+ drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c | 38 ++++++++++----
+ 11 files changed, 332 insertions(+), 172 deletions(-)
 
 diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
-index e76e1676f0f0..c004ffc10ef7 100644
+index c004ffc10ef7..de88b6e0ec69 100644
 --- a/drivers/clk/sunxi-ng/Kconfig
 +++ b/drivers/clk/sunxi-ng/Kconfig
-@@ -13,22 +13,22 @@ config SUNIV_F1C100S_CCU
+@@ -8,7 +8,7 @@ config SUNXI_CCU
+ if SUNXI_CCU
+ 
+ config SUNIV_F1C100S_CCU
+-	bool "Support for the Allwinner newer F1C100s CCU"
++	tristate "Support for the Allwinner newer F1C100s CCU"
+ 	default MACH_SUNIV
  	depends on MACH_SUNIV || COMPILE_TEST
  
- config SUN50I_A64_CCU
--	bool "Support for the Allwinner A64 CCU"
-+	tristate "Support for the Allwinner A64 CCU"
+@@ -33,17 +33,17 @@ config SUN50I_H6_CCU
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ 
+ config SUN50I_H616_CCU
+-	bool "Support for the Allwinner H616 CCU"
++	tristate "Support for the Allwinner H616 CCU"
  	default ARM64 && ARCH_SUNXI
  	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- config SUN50I_A100_CCU
--	bool "Support for the Allwinner A100 CCU"
-+	tristate "Support for the Allwinner A100 CCU"
+ config SUN50I_H6_R_CCU
+-	bool "Support for the Allwinner H6 and H616 PRCM CCU"
++	tristate "Support for the Allwinner H6 and H616 PRCM CCU"
  	default ARM64 && ARCH_SUNXI
  	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- config SUN50I_A100_R_CCU
--	bool "Support for the Allwinner A100 PRCM CCU"
-+	tristate "Support for the Allwinner A100 PRCM CCU"
- 	default ARM64 && ARCH_SUNXI
- 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ config SUN4I_A10_CCU
+-	bool "Support for the Allwinner A10/A20 CCU"
++	tristate "Support for the Allwinner A10/A20 CCU"
+ 	default MACH_SUN4I
+ 	default MACH_SUN7I
+ 	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
+@@ -54,17 +54,17 @@ config SUN5I_CCU
+ 	depends on MACH_SUN5I || COMPILE_TEST
  
- config SUN50I_H6_CCU
--	bool "Support for the Allwinner H6 CCU"
-+	tristate "Support for the Allwinner H6 CCU"
- 	default ARM64 && ARCH_SUNXI
- 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ config SUN6I_A31_CCU
+-	bool "Support for the Allwinner A31/A31s CCU"
++	tristate "Support for the Allwinner A31/A31s CCU"
+ 	default MACH_SUN6I
+ 	depends on MACH_SUN6I || COMPILE_TEST
  
-@@ -69,7 +69,7 @@ config SUN8I_A33_CCU
- 	depends on MACH_SUN8I || COMPILE_TEST
- 
- config SUN8I_A83T_CCU
--	bool "Support for the Allwinner A83T CCU"
-+	tristate "Support for the Allwinner A83T CCU"
+ config SUN8I_A23_CCU
+-	bool "Support for the Allwinner A23 CCU"
++	tristate "Support for the Allwinner A23 CCU"
  	default MACH_SUN8I
  	depends on MACH_SUN8I || COMPILE_TEST
  
-@@ -84,16 +84,16 @@ config SUN8I_V3S_CCU
+ config SUN8I_A33_CCU
+-	bool "Support for the Allwinner A33 CCU"
++	tristate "Support for the Allwinner A33 CCU"
+ 	default MACH_SUN8I
  	depends on MACH_SUN8I || COMPILE_TEST
  
- config SUN8I_DE2_CCU
--	bool "Support for the Allwinner SoCs DE2 CCU"
-+	tristate "Support for the Allwinner SoCs DE2 CCU"
+@@ -74,12 +74,12 @@ config SUN8I_A83T_CCU
+ 	depends on MACH_SUN8I || COMPILE_TEST
+ 
+ config SUN8I_H3_CCU
+-	bool "Support for the Allwinner H3 CCU"
++	tristate "Support for the Allwinner H3 CCU"
  	default MACH_SUN8I || (ARM64 && ARCH_SUNXI)
+ 	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- config SUN8I_R40_CCU
--	bool "Support for the Allwinner R40 CCU"
-+	tristate "Support for the Allwinner R40 CCU"
+ config SUN8I_V3S_CCU
+-	bool "Support for the Allwinner V3s CCU"
++	tristate "Support for the Allwinner V3s CCU"
  	default MACH_SUN8I
  	depends on MACH_SUN8I || COMPILE_TEST
  
- config SUN9I_A80_CCU
--	bool "Support for the Allwinner A80 CCU"
-+	tristate "Support for the Allwinner A80 CCU"
- 	default MACH_SUN9I
+@@ -98,7 +98,7 @@ config SUN9I_A80_CCU
  	depends on MACH_SUN9I || COMPILE_TEST
  
-diff --git a/drivers/clk/sunxi-ng/Makefile b/drivers/clk/sunxi-ng/Makefile
-index 96c324306d97..1020ed49a588 100644
---- a/drivers/clk/sunxi-ng/Makefile
-+++ b/drivers/clk/sunxi-ng/Makefile
-@@ -21,24 +21,46 @@ obj-y				+= ccu_nm.o
- obj-y				+= ccu_mp.o
+ config SUN8I_R_CCU
+-	bool "Support for Allwinner SoCs' PRCM CCUs"
++	tristate "Support for Allwinner SoCs' PRCM CCUs"
+ 	default MACH_SUN8I || (ARCH_SUNXI && ARM64)
  
- # SoC support
--obj-$(CONFIG_SUNIV_F1C100S_CCU)	+= ccu-suniv-f1c100s.o
--obj-$(CONFIG_SUN50I_A64_CCU)	+= ccu-sun50i-a64.o
--obj-$(CONFIG_SUN50I_A100_CCU)	+= ccu-sun50i-a100.o
--obj-$(CONFIG_SUN50I_A100_R_CCU)	+= ccu-sun50i-a100-r.o
--obj-$(CONFIG_SUN50I_H6_CCU)	+= ccu-sun50i-h6.o
--obj-$(CONFIG_SUN50I_H616_CCU)	+= ccu-sun50i-h616.o
--obj-$(CONFIG_SUN50I_H6_R_CCU)	+= ccu-sun50i-h6-r.o
--obj-$(CONFIG_SUN4I_A10_CCU)	+= ccu-sun4i-a10.o
--obj-$(CONFIG_SUN5I_CCU)		+= ccu-sun5i.o
--obj-$(CONFIG_SUN6I_A31_CCU)	+= ccu-sun6i-a31.o
--obj-$(CONFIG_SUN8I_A23_CCU)	+= ccu-sun8i-a23.o
--obj-$(CONFIG_SUN8I_A33_CCU)	+= ccu-sun8i-a33.o
--obj-$(CONFIG_SUN8I_A83T_CCU)	+= ccu-sun8i-a83t.o
--obj-$(CONFIG_SUN8I_H3_CCU)	+= ccu-sun8i-h3.o
--obj-$(CONFIG_SUN8I_V3S_CCU)	+= ccu-sun8i-v3s.o
--obj-$(CONFIG_SUN8I_DE2_CCU)	+= ccu-sun8i-de2.o
--obj-$(CONFIG_SUN8I_R_CCU)	+= ccu-sun8i-r.o
--obj-$(CONFIG_SUN8I_R40_CCU)	+= ccu-sun8i-r40.o
--obj-$(CONFIG_SUN9I_A80_CCU)	+= ccu-sun9i-a80.o
--obj-$(CONFIG_SUN9I_A80_CCU)	+= ccu-sun9i-a80-de.o
--obj-$(CONFIG_SUN9I_A80_CCU)	+= ccu-sun9i-a80-usb.o
-+obj-$(CONFIG_SUNIV_F1C100S_CCU)	+= suniv-f1c100s-ccu.o
-+obj-$(CONFIG_SUN50I_A64_CCU)	+= sun50i-a64-ccu.o
-+obj-$(CONFIG_SUN50I_A100_CCU)	+= sun50i-a100-ccu.o
-+obj-$(CONFIG_SUN50I_A100_R_CCU)	+= sun50i-a100-r-ccu.o
-+obj-$(CONFIG_SUN50I_H6_CCU)	+= sun50i-h6-ccu.o
-+obj-$(CONFIG_SUN50I_H6_R_CCU)	+= sun50i-h6-r-ccu.o
-+obj-$(CONFIG_SUN50I_H616_CCU)	+= sun50i-h616-ccu.o
-+obj-$(CONFIG_SUN4I_A10_CCU)	+= sun4i-a10-ccu.o
-+obj-$(CONFIG_SUN5I_CCU)		+= sun5i-ccu.o
-+obj-$(CONFIG_SUN6I_A31_CCU)	+= sun6i-a31-ccu.o
-+obj-$(CONFIG_SUN8I_A23_CCU)	+= sun8i-a23-ccu.o
-+obj-$(CONFIG_SUN8I_A33_CCU)	+= sun8i-a33-ccu.o
-+obj-$(CONFIG_SUN8I_A83T_CCU)	+= sun8i-a83t-ccu.o
-+obj-$(CONFIG_SUN8I_H3_CCU)	+= sun8i-h3-ccu.o
-+obj-$(CONFIG_SUN8I_R40_CCU)	+= sun8i-r40-ccu.o
-+obj-$(CONFIG_SUN8I_V3S_CCU)	+= sun8i-v3s-ccu.o
-+obj-$(CONFIG_SUN8I_DE2_CCU)	+= sun8i-de2-ccu.o
-+obj-$(CONFIG_SUN8I_R_CCU)	+= sun8i-r-ccu.o
-+obj-$(CONFIG_SUN9I_A80_CCU)	+= sun9i-a80-ccu.o
-+obj-$(CONFIG_SUN9I_A80_CCU)	+= sun9i-a80-de-ccu.o
-+obj-$(CONFIG_SUN9I_A80_CCU)	+= sun9i-a80-usb-ccu.o
-+
-+suniv-f1c100s-ccu-y		+= ccu-suniv-f1c100s.o
-+sun50i-a64-ccu-y		+= ccu-sun50i-a64.o
-+sun50i-a100-ccu-y		+= ccu-sun50i-a100.o
-+sun50i-a100-r-ccu-y		+= ccu-sun50i-a100-r.o
-+sun50i-h6-ccu-y			+= ccu-sun50i-h6.o
-+sun50i-h6-r-ccu-y		+= ccu-sun50i-h6-r.o
-+sun50i-h616-ccu-y		+= ccu-sun50i-h616.o
-+sun4i-a10-ccu-y			+= ccu-sun4i-a10.o
-+sun5i-ccu-y			+= ccu-sun5i.o
-+sun6i-a31-ccu-y			+= ccu-sun6i-a31.o
-+sun8i-a23-ccu-y			+= ccu-sun8i-a23.o
-+sun8i-a33-ccu-y			+= ccu-sun8i-a33.o
-+sun8i-a83t-ccu-y		+= ccu-sun8i-a83t.o
-+sun8i-h3-ccu-y			+= ccu-sun8i-h3.o
-+sun8i-r40-ccu-y			+= ccu-sun8i-r40.o
-+sun8i-v3s-ccu-y			+= ccu-sun8i-v3s.o
-+sun8i-de2-ccu-y			+= ccu-sun8i-de2.o
-+sun8i-r-ccu-y			+= ccu-sun8i-r.o
-+sun9i-a80-ccu-y			+= ccu-sun9i-a80.o
-+sun9i-a80-de-ccu-y		+= ccu-sun9i-a80-de.o
-+sun9i-a80-usb-ccu-y		+= ccu-sun9i-a80-usb.o
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c b/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c
-index 804729e0a208..fddd6c877cec 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c
-@@ -5,7 +5,6 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
- #include <linux/platform_device.h>
- 
- #include "ccu_common.h"
-@@ -213,3 +212,6 @@ static struct platform_driver sun50i_a100_r_ccu_driver = {
- 	},
- };
- module_platform_driver(sun50i_a100_r_ccu_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a100.c b/drivers/clk/sunxi-ng/ccu-sun50i-a100.c
-index 1d475d5a3d91..5f93b5526e13 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a100.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a100.c
-@@ -6,7 +6,6 @@
- #include <linux/clk-provider.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
- #include <linux/platform_device.h>
- 
- #include "ccu_common.h"
-@@ -1275,3 +1274,6 @@ static struct platform_driver sun50i_a100_ccu_driver = {
- 	},
- };
- module_platform_driver(sun50i_a100_ccu_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-index a8c5a92b7d0c..41519185600a 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-@@ -5,7 +5,7 @@
+ endif
+diff --git a/drivers/clk/sunxi-ng/ccu-sun4i-a10.c b/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
+index bd9a8782fec3..c19828f1aa0f 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
++++ b/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
+@@ -7,7 +7,9 @@
  
  #include <linux/clk-provider.h>
  #include <linux/io.h>
 -#include <linux/of_address.h>
 +#include <linux/module.h>
- #include <linux/platform_device.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
  
  #include "ccu_common.h"
-@@ -980,4 +980,7 @@ static struct platform_driver sun50i_a64_ccu_driver = {
- 		.of_match_table	= sun50i_a64_ccu_ids,
- 	},
+ #include "ccu_reset.h"
+@@ -1425,18 +1427,19 @@ static const struct sunxi_ccu_desc sun7i_a20_ccu_desc = {
+ 	.num_resets	= ARRAY_SIZE(sunxi_a10_a20_ccu_resets),
  };
--builtin_platform_driver(sun50i_a64_ccu_driver);
-+module_platform_driver(sun50i_a64_ccu_driver);
+ 
+-static void __init sun4i_ccu_init(struct device_node *node,
+-				  const struct sunxi_ccu_desc *desc)
++static int sun4i_a10_ccu_probe(struct platform_device *pdev)
+ {
++	const struct sunxi_ccu_desc *desc;
+ 	void __iomem *reg;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%s: Could not map the clock registers\n",
+-		       of_node_full_name(node));
+-		return;
+-	}
++	desc = of_device_get_match_data(&pdev->dev);
++	if (!desc)
++		return -EINVAL;
++
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	val = readl(reg + SUN4I_PLL_AUDIO_REG);
+ 
+@@ -1464,19 +1467,30 @@ static void __init sun4i_ccu_init(struct device_node *node,
+ 	val &= ~GENMASK(7, 6);
+ 	writel(val | (2 << 6), reg + SUN4I_AHB_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, desc);
++	return devm_sunxi_ccu_probe(&pdev->dev, reg, desc);
+ }
+ 
+-static void __init sun4i_a10_ccu_setup(struct device_node *node)
+-{
+-	sun4i_ccu_init(node, &sun4i_a10_ccu_desc);
+-}
+-CLK_OF_DECLARE(sun4i_a10_ccu, "allwinner,sun4i-a10-ccu",
+-	       sun4i_a10_ccu_setup);
++static const struct of_device_id sun4i_a10_ccu_ids[] = {
++	{
++		.compatible = "allwinner,sun4i-a10-ccu",
++		.data = &sun4i_a10_ccu_desc,
++	},
++	{
++		.compatible = "allwinner,sun7i-a20-ccu",
++		.data = &sun7i_a20_ccu_desc,
++	},
++	{ }
++};
+ 
+-static void __init sun7i_a20_ccu_setup(struct device_node *node)
+-{
+-	sun4i_ccu_init(node, &sun7i_a20_ccu_desc);
+-}
+-CLK_OF_DECLARE(sun7i_a20_ccu, "allwinner,sun7i-a20-ccu",
+-	       sun7i_a20_ccu_setup);
++static struct platform_driver sun4i_a10_ccu_driver = {
++	.probe	= sun4i_a10_ccu_probe,
++	.driver	= {
++		.name			= "sun4i-a10-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun4i_a10_ccu_ids,
++	},
++};
++module_platform_driver(sun4i_a10_ccu_driver);
 +
 +MODULE_IMPORT_NS(SUNXI_CCU);
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-index e5672c10d065..1a5e418923f6 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-@@ -5,7 +5,7 @@
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
+index f30d7eb5424d..712e103382d8 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
+@@ -4,7 +4,8 @@
+  */
  
  #include <linux/clk-provider.h>
- #include <linux/io.h>
 -#include <linux/of_address.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- 
- #include "ccu_common.h"
-@@ -1254,4 +1254,7 @@ static struct platform_driver sun50i_h6_ccu_driver = {
- 		.of_match_table	= sun50i_h6_ccu_ids,
- 	},
- };
--builtin_platform_driver(sun50i_h6_ccu_driver);
-+module_platform_driver(sun50i_h6_ccu_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c b/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c
-index 3c310aea8cfa..76cbd9e9e89f 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/io.h>
--#include <linux/of_address.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- 
- #include "ccu_common.h"
-@@ -920,4 +920,7 @@ static struct platform_driver sun8i_a83t_ccu_driver = {
- 		.of_match_table	= sun8i_a83t_ccu_ids,
- 	},
- };
--builtin_platform_driver(sun8i_a83t_ccu_driver);
-+module_platform_driver(sun8i_a83t_ccu_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-de2.c b/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
-index 573b5051d305..e7e3ddf4a227 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
-@@ -5,8 +5,8 @@
- 
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
--#include <linux/of_address.h>
--#include <linux/of_platform.h>
 +#include <linux/module.h>
 +#include <linux/of_device.h>
  #include <linux/platform_device.h>
- #include <linux/reset.h>
- 
-@@ -394,4 +394,7 @@ static struct platform_driver sunxi_de2_clk_driver = {
- 		.of_match_table	= sunxi_de2_clk_ids,
- 	},
- };
--builtin_platform_driver(sunxi_de2_clk_driver);
-+module_platform_driver(sunxi_de2_clk_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
-index 8bb18d9add05..31eca0d3bc1e 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- 
-@@ -1371,4 +1372,7 @@ static struct platform_driver sun8i_r40_ccu_driver = {
- 		.of_match_table	= sun8i_r40_ccu_ids,
- 	},
- };
--builtin_platform_driver(sun8i_r40_ccu_driver);
-+module_platform_driver(sun8i_r40_ccu_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
-index 3cde2610f467..f2fe0e1cc3c0 100644
---- a/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
--#include <linux/of_address.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
- 
-@@ -270,4 +270,7 @@ static struct platform_driver sun9i_a80_de_clk_driver = {
- 		.of_match_table	= sun9i_a80_de_clk_ids,
- 	},
- };
--builtin_platform_driver(sun9i_a80_de_clk_driver);
-+module_platform_driver(sun9i_a80_de_clk_driver);
-+
-+MODULE_IMPORT_NS(SUNXI_CCU);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
-index 0740e8978ae8..575ae4ccc65f 100644
---- a/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
--#include <linux/of_address.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
  
  #include "ccu_common.h"
-@@ -138,4 +138,7 @@ static struct platform_driver sun9i_a80_usb_clk_driver = {
- 		.of_match_table	= sun9i_a80_usb_clk_ids,
- 	},
+@@ -221,30 +222,43 @@ static const struct sunxi_ccu_desc sun50i_h616_r_ccu_desc = {
+ 	.num_resets	= ARRAY_SIZE(sun50i_h616_r_ccu_resets),
  };
--builtin_platform_driver(sun9i_a80_usb_clk_driver);
-+module_platform_driver(sun9i_a80_usb_clk_driver);
+ 
+-static void __init sunxi_r_ccu_init(struct device_node *node,
+-				    const struct sunxi_ccu_desc *desc)
++static int sun50i_h6_r_ccu_probe(struct platform_device *pdev)
+ {
++	const struct sunxi_ccu_desc *desc;
+ 	void __iomem *reg;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	desc = of_device_get_match_data(&pdev->dev);
++	if (!desc)
++		return -EINVAL;
+ 
+-	of_sunxi_ccu_probe(node, reg, desc);
+-}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+-static void __init sun50i_h6_r_ccu_setup(struct device_node *node)
+-{
+-	sunxi_r_ccu_init(node, &sun50i_h6_r_ccu_desc);
++	return devm_sunxi_ccu_probe(&pdev->dev, reg, desc);
+ }
+-CLK_OF_DECLARE(sun50i_h6_r_ccu, "allwinner,sun50i-h6-r-ccu",
+-	       sun50i_h6_r_ccu_setup);
+ 
+-static void __init sun50i_h616_r_ccu_setup(struct device_node *node)
+-{
+-	sunxi_r_ccu_init(node, &sun50i_h616_r_ccu_desc);
+-}
+-CLK_OF_DECLARE(sun50i_h616_r_ccu, "allwinner,sun50i-h616-r-ccu",
+-	       sun50i_h616_r_ccu_setup);
++static const struct of_device_id sun50i_h6_r_ccu_ids[] = {
++	{
++		.compatible = "allwinner,sun50i-h6-r-ccu",
++		.data = &sun50i_h6_r_ccu_desc,
++	},
++	{
++		.compatible = "allwinner,sun50i-h616-r-ccu",
++		.data = &sun50i_h616_r_ccu_desc,
++	},
++	{ }
++};
++
++static struct platform_driver sun50i_h6_r_ccu_driver = {
++	.probe	= sun50i_h6_r_ccu_probe,
++	.driver	= {
++		.name			= "sun50i-h6-r-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun50i_h6_r_ccu_ids,
++	},
++};
++module_platform_driver(sun50i_h6_r_ccu_driver);
 +
 +MODULE_IMPORT_NS(SUNXI_CCU);
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80.c
-index d416af29e0d3..730fd8e28014 100644
---- a/drivers/clk/sunxi-ng/ccu-sun9i-a80.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80.c
-@@ -5,7 +5,7 @@
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h616.c b/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
+index 22eb18079a15..49a2474cf314 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
+@@ -7,7 +7,7 @@
  
  #include <linux/clk-provider.h>
  #include <linux/io.h>
@@ -445,12 +362,598 @@ index d416af29e0d3..730fd8e28014 100644
  #include <linux/platform_device.h>
  
  #include "ccu_common.h"
-@@ -1245,4 +1245,7 @@ static struct platform_driver sun9i_a80_ccu_driver = {
- 		.of_match_table	= sun9i_a80_ccu_ids,
- 	},
+@@ -1082,17 +1082,15 @@ static const u32 usb2_clk_regs[] = {
+ 	SUN50I_H616_USB3_CLK_REG,
  };
--builtin_platform_driver(sun9i_a80_ccu_driver);
-+module_platform_driver(sun9i_a80_ccu_driver);
+ 
+-static void __init sun50i_h616_ccu_setup(struct device_node *node)
++static int sun50i_h616_ccu_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *reg;
+ 	u32 val;
+ 	int i;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map clock registers\n", node);
+-		return;
+-	}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Enable the lock bits and the output enable bits on all PLLs */
+ 	for (i = 0; i < ARRAY_SIZE(pll_regs); i++) {
+@@ -1141,8 +1139,23 @@ static void __init sun50i_h616_ccu_setup(struct device_node *node)
+ 	val |= BIT(24);
+ 	writel(val, reg + SUN50I_H616_HDMI_CEC_CLK_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, &sun50i_h616_ccu_desc);
++	return devm_sunxi_ccu_probe(&pdev->dev, reg, &sun50i_h616_ccu_desc);
+ }
+ 
+-CLK_OF_DECLARE(sun50i_h616_ccu, "allwinner,sun50i-h616-ccu",
+-	       sun50i_h616_ccu_setup);
++static const struct of_device_id sun50i_h616_ccu_ids[] = {
++	{ .compatible = "allwinner,sun50i-h616-ccu" },
++	{ }
++};
++
++static struct platform_driver sun50i_h616_ccu_driver = {
++	.probe	= sun50i_h616_ccu_probe,
++	.driver	= {
++		.name			= "sun50i-h616-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun50i_h616_ccu_ids,
++	},
++};
++module_platform_driver(sun50i_h616_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun6i-a31.c b/drivers/clk/sunxi-ng/ccu-sun6i-a31.c
+index 3df5c0b41580..0762deffb33c 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun6i-a31.c
++++ b/drivers/clk/sunxi-ng/ccu-sun6i-a31.c
+@@ -9,7 +9,8 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+ #include "ccu_reset.h"
+@@ -1226,16 +1227,15 @@ static struct ccu_mux_nb sun6i_a31_cpu_nb = {
+ 	.bypass_index	= 1, /* index of 24 MHz oscillator */
+ };
+ 
+-static void __init sun6i_a31_ccu_setup(struct device_node *node)
++static int sun6i_a31_ccu_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *reg;
++	int ret;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Force the PLL-Audio-1x divider to 1 */
+ 	val = readl(reg + SUN6I_A31_PLL_AUDIO_REG);
+@@ -1257,10 +1257,30 @@ static void __init sun6i_a31_ccu_setup(struct device_node *node)
+ 	val |= 0x3 << 12;
+ 	writel(val, reg + SUN6I_A31_AHB1_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, &sun6i_a31_ccu_desc);
++	ret = devm_sunxi_ccu_probe(&pdev->dev, reg, &sun6i_a31_ccu_desc);
++	if (ret)
++		return ret;
+ 
+ 	ccu_mux_notifier_register(pll_cpu_clk.common.hw.clk,
+ 				  &sun6i_a31_cpu_nb);
++
++	return 0;
+ }
+-CLK_OF_DECLARE(sun6i_a31_ccu, "allwinner,sun6i-a31-ccu",
+-	       sun6i_a31_ccu_setup);
++
++static const struct of_device_id sun6i_a31_ccu_ids[] = {
++	{ .compatible = "allwinner,sun6i-a31-ccu" },
++	{ }
++};
++
++static struct platform_driver sun6i_a31_ccu_driver = {
++	.probe	= sun6i_a31_ccu_probe,
++	.driver	= {
++		.name			= "sun6i-a31-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun6i_a31_ccu_ids,
++	},
++};
++module_platform_driver(sun6i_a31_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-a23.c b/drivers/clk/sunxi-ng/ccu-sun8i-a23.c
+index 577bb235d658..e80cc3864e44 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-a23.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-a23.c
+@@ -5,7 +5,8 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+ #include "ccu_reset.h"
+@@ -724,16 +725,14 @@ static const struct sunxi_ccu_desc sun8i_a23_ccu_desc = {
+ 	.num_resets	= ARRAY_SIZE(sun8i_a23_ccu_resets),
+ };
+ 
+-static void __init sun8i_a23_ccu_setup(struct device_node *node)
++static int sun8i_a23_ccu_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *reg;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Force the PLL-Audio-1x divider to 1 */
+ 	val = readl(reg + SUN8I_A23_PLL_AUDIO_REG);
+@@ -745,7 +744,23 @@ static void __init sun8i_a23_ccu_setup(struct device_node *node)
+ 	val &= ~BIT(16);
+ 	writel(val, reg + SUN8I_A23_PLL_MIPI_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, &sun8i_a23_ccu_desc);
++	return devm_sunxi_ccu_probe(&pdev->dev, reg, &sun8i_a23_ccu_desc);
+ }
+-CLK_OF_DECLARE(sun8i_a23_ccu, "allwinner,sun8i-a23-ccu",
+-	       sun8i_a23_ccu_setup);
++
++static const struct of_device_id sun8i_a23_ccu_ids[] = {
++	{ .compatible = "allwinner,sun8i-a23-ccu" },
++	{ }
++};
++
++static struct platform_driver sun8i_a23_ccu_driver = {
++	.probe	= sun8i_a23_ccu_probe,
++	.driver	= {
++		.name			= "sun8i-a23-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun8i_a23_ccu_ids,
++	},
++};
++module_platform_driver(sun8i_a23_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-a33.c b/drivers/clk/sunxi-ng/ccu-sun8i-a33.c
+index 8f65cd03f5ac..d12878a1ba9e 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-a33.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-a33.c
+@@ -5,7 +5,8 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+ #include "ccu_reset.h"
+@@ -784,16 +785,15 @@ static struct ccu_mux_nb sun8i_a33_cpu_nb = {
+ 	.bypass_index	= 1, /* index of 24 MHz oscillator */
+ };
+ 
+-static void __init sun8i_a33_ccu_setup(struct device_node *node)
++static int sun8i_a33_ccu_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *reg;
++	int ret;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Force the PLL-Audio-1x divider to 1 */
+ 	val = readl(reg + SUN8I_A33_PLL_AUDIO_REG);
+@@ -805,7 +805,9 @@ static void __init sun8i_a33_ccu_setup(struct device_node *node)
+ 	val &= ~BIT(16);
+ 	writel(val, reg + SUN8I_A33_PLL_MIPI_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, &sun8i_a33_ccu_desc);
++	ret = devm_sunxi_ccu_probe(&pdev->dev, reg, &sun8i_a33_ccu_desc);
++	if (ret)
++		return ret;
+ 
+ 	/* Gate then ungate PLL CPU after any rate changes */
+ 	ccu_pll_notifier_register(&sun8i_a33_pll_cpu_nb);
+@@ -813,6 +815,24 @@ static void __init sun8i_a33_ccu_setup(struct device_node *node)
+ 	/* Reparent CPU during PLL CPU rate changes */
+ 	ccu_mux_notifier_register(pll_cpux_clk.common.hw.clk,
+ 				  &sun8i_a33_cpu_nb);
++
++	return 0;
+ }
+-CLK_OF_DECLARE(sun8i_a33_ccu, "allwinner,sun8i-a33-ccu",
+-	       sun8i_a33_ccu_setup);
++
++static const struct of_device_id sun8i_a33_ccu_ids[] = {
++	{ .compatible = "allwinner,sun8i-a33-ccu" },
++	{ }
++};
++
++static struct platform_driver sun8i_a33_ccu_driver = {
++	.probe	= sun8i_a33_ccu_probe,
++	.driver	= {
++		.name			= "sun8i-a33-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun8i_a33_ccu_ids,
++	},
++};
++module_platform_driver(sun8i_a33_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+index d2fc2903787d..e058cf691aea 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+@@ -5,7 +5,9 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+ #include "ccu_reset.h"
+@@ -1137,24 +1139,29 @@ static struct ccu_mux_nb sun8i_h3_cpu_nb = {
+ 	.bypass_index	= 1, /* index of 24 MHz oscillator */
+ };
+ 
+-static void __init sunxi_h3_h5_ccu_init(struct device_node *node,
+-					const struct sunxi_ccu_desc *desc)
++static int sun8i_h3_ccu_probe(struct platform_device *pdev)
+ {
++	const struct sunxi_ccu_desc *desc;
+ 	void __iomem *reg;
++	int ret;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	desc = of_device_get_match_data(&pdev->dev);
++	if (!desc)
++		return -EINVAL;
++
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Force the PLL-Audio-1x divider to 1 */
+ 	val = readl(reg + SUN8I_H3_PLL_AUDIO_REG);
+ 	val &= ~GENMASK(19, 16);
+ 	writel(val | (0 << 16), reg + SUN8I_H3_PLL_AUDIO_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, desc);
++	ret = devm_sunxi_ccu_probe(&pdev->dev, reg, desc);
++	if (ret)
++		return ret;
+ 
+ 	/* Gate then ungate PLL CPU after any rate changes */
+ 	ccu_pll_notifier_register(&sun8i_h3_pll_cpu_nb);
+@@ -1162,18 +1169,31 @@ static void __init sunxi_h3_h5_ccu_init(struct device_node *node,
+ 	/* Reparent CPU during PLL CPU rate changes */
+ 	ccu_mux_notifier_register(pll_cpux_clk.common.hw.clk,
+ 				  &sun8i_h3_cpu_nb);
+-}
+ 
+-static void __init sun8i_h3_ccu_setup(struct device_node *node)
+-{
+-	sunxi_h3_h5_ccu_init(node, &sun8i_h3_ccu_desc);
++	return 0;
+ }
+-CLK_OF_DECLARE(sun8i_h3_ccu, "allwinner,sun8i-h3-ccu",
+-	       sun8i_h3_ccu_setup);
+ 
+-static void __init sun50i_h5_ccu_setup(struct device_node *node)
+-{
+-	sunxi_h3_h5_ccu_init(node, &sun50i_h5_ccu_desc);
+-}
+-CLK_OF_DECLARE(sun50i_h5_ccu, "allwinner,sun50i-h5-ccu",
+-	       sun50i_h5_ccu_setup);
++static const struct of_device_id sun8i_h3_ccu_ids[] = {
++	{
++		.compatible = "allwinner,sun8i-h3-ccu",
++		.data = &sun8i_h3_ccu_desc,
++	},
++	{
++		.compatible = "allwinner,sun50i-h5-ccu",
++		.data = &sun50i_h5_ccu_desc,
++	},
++	{ }
++};
++
++static struct platform_driver sun8i_h3_ccu_driver = {
++	.probe	= sun8i_h3_ccu_probe,
++	.driver	= {
++		.name			= "sun8i-h3-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun8i_h3_ccu_ids,
++	},
++};
++module_platform_driver(sun8i_h3_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-r.c b/drivers/clk/sunxi-ng/ccu-sun8i-r.c
+index 9e754d1f754a..5b7fab832a52 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-r.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-r.c
+@@ -4,7 +4,8 @@
+  */
+ 
+ #include <linux/clk-provider.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -254,37 +255,47 @@ static const struct sunxi_ccu_desc sun50i_a64_r_ccu_desc = {
+ 	.num_resets	= ARRAY_SIZE(sun50i_a64_r_ccu_resets),
+ };
+ 
+-static void __init sunxi_r_ccu_init(struct device_node *node,
+-				    const struct sunxi_ccu_desc *desc)
++static int sun8i_r_ccu_probe(struct platform_device *pdev)
+ {
++	const struct sunxi_ccu_desc *desc;
+ 	void __iomem *reg;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	desc = of_device_get_match_data(&pdev->dev);
++	if (!desc)
++		return -EINVAL;
+ 
+-	of_sunxi_ccu_probe(node, reg, desc);
+-}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+-static void __init sun8i_a83t_r_ccu_setup(struct device_node *node)
+-{
+-	sunxi_r_ccu_init(node, &sun8i_a83t_r_ccu_desc);
++	return devm_sunxi_ccu_probe(&pdev->dev, reg, desc);
+ }
+-CLK_OF_DECLARE(sun8i_a83t_r_ccu, "allwinner,sun8i-a83t-r-ccu",
+-	       sun8i_a83t_r_ccu_setup);
+ 
+-static void __init sun8i_h3_r_ccu_setup(struct device_node *node)
+-{
+-	sunxi_r_ccu_init(node, &sun8i_h3_r_ccu_desc);
+-}
+-CLK_OF_DECLARE(sun8i_h3_r_ccu, "allwinner,sun8i-h3-r-ccu",
+-	       sun8i_h3_r_ccu_setup);
++static const struct of_device_id sun8i_r_ccu_ids[] = {
++	{
++		.compatible = "allwinner,sun8i-a83t-r-ccu",
++		.data = &sun8i_a83t_r_ccu_desc,
++	},
++	{
++		.compatible = "allwinner,sun8i-h3-r-ccu",
++		.data = &sun8i_h3_r_ccu_desc,
++	},
++	{
++		.compatible = "allwinner,sun50i-a64-r-ccu",
++		.data = &sun50i_a64_r_ccu_desc,
++	},
++	{ }
++};
+ 
+-static void __init sun50i_a64_r_ccu_setup(struct device_node *node)
+-{
+-	sunxi_r_ccu_init(node, &sun50i_a64_r_ccu_desc);
+-}
+-CLK_OF_DECLARE(sun50i_a64_r_ccu, "allwinner,sun50i-a64-r-ccu",
+-	       sun50i_a64_r_ccu_setup);
++static struct platform_driver sun8i_r_ccu_driver = {
++	.probe	= sun8i_r_ccu_probe,
++	.driver	= {
++		.name			= "sun8i-r-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun8i_r_ccu_ids,
++	},
++};
++module_platform_driver(sun8i_r_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
+index ce150f83ab54..87f87d6ea3ad 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
+@@ -8,7 +8,9 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+ #include "ccu_reset.h"
+@@ -805,38 +807,49 @@ static const struct sunxi_ccu_desc sun8i_v3_ccu_desc = {
+ 	.num_resets	= ARRAY_SIZE(sun8i_v3_ccu_resets),
+ };
+ 
+-static void __init sun8i_v3_v3s_ccu_init(struct device_node *node,
+-					 const struct sunxi_ccu_desc *ccu_desc)
++static int sun8i_v3s_ccu_probe(struct platform_device *pdev)
+ {
++	const struct sunxi_ccu_desc *desc;
+ 	void __iomem *reg;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	desc = of_device_get_match_data(&pdev->dev);
++	if (!desc)
++		return -EINVAL;
++
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Force the PLL-Audio-1x divider to 1 */
+ 	val = readl(reg + SUN8I_V3S_PLL_AUDIO_REG);
+ 	val &= ~GENMASK(19, 16);
+ 	writel(val, reg + SUN8I_V3S_PLL_AUDIO_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, ccu_desc);
+-}
+-
+-static void __init sun8i_v3s_ccu_setup(struct device_node *node)
+-{
+-	sun8i_v3_v3s_ccu_init(node, &sun8i_v3s_ccu_desc);
++	return devm_sunxi_ccu_probe(&pdev->dev, reg, desc);
+ }
+ 
+-static void __init sun8i_v3_ccu_setup(struct device_node *node)
+-{
+-	sun8i_v3_v3s_ccu_init(node, &sun8i_v3_ccu_desc);
+-}
++static const struct of_device_id sun8i_v3s_ccu_ids[] = {
++	{
++		.compatible = "allwinner,sun8i-v3-ccu",
++		.data = &sun8i_v3_ccu_desc,
++	},
++	{
++		.compatible = "allwinner,sun8i-v3s-ccu",
++		.data = &sun8i_v3s_ccu_desc,
++	},
++	{ }
++};
+ 
+-CLK_OF_DECLARE(sun8i_v3s_ccu, "allwinner,sun8i-v3s-ccu",
+-	       sun8i_v3s_ccu_setup);
++static struct platform_driver sun8i_v3s_ccu_driver = {
++	.probe	= sun8i_v3s_ccu_probe,
++	.driver	= {
++		.name			= "sun8i-v3s-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= sun8i_v3s_ccu_ids,
++	},
++};
++module_platform_driver(sun8i_v3s_ccu_driver);
+ 
+-CLK_OF_DECLARE(sun8i_v3_ccu, "allwinner,sun8i-v3-ccu",
+-	       sun8i_v3_ccu_setup);
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c b/drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c
+index 61ad7ee91c11..a36dcab517e3 100644
+--- a/drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c
++++ b/drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c
+@@ -6,7 +6,8 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+ #include "ccu_reset.h"
+@@ -525,20 +526,21 @@ static struct ccu_mux_nb suniv_cpu_nb = {
+ static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
+ {
+ 	void __iomem *reg;
++	int ret;
+ 	u32 val;
+ 
+-	reg = of_io_request_and_map(node, 0, of_node_full_name(node));
+-	if (IS_ERR(reg)) {
+-		pr_err("%pOF: Could not map the clock registers\n", node);
+-		return;
+-	}
++	reg = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(reg))
++		return PTR_ERR(reg);
+ 
+ 	/* Force the PLL-Audio-1x divider to 4 */
+ 	val = readl(reg + SUNIV_PLL_AUDIO_REG);
+ 	val &= ~GENMASK(19, 16);
+ 	writel(val | (3 << 16), reg + SUNIV_PLL_AUDIO_REG);
+ 
+-	of_sunxi_ccu_probe(node, reg, &suniv_ccu_desc);
++	ret = devm_sunxi_ccu_probe(&pdev->dev, reg, &suniv_ccu_desc);
++	if (ret)
++		return ret;
+ 
+ 	/* Gate then ungate PLL CPU after any rate changes */
+ 	ccu_pll_notifier_register(&suniv_pll_cpu_nb);
+@@ -546,6 +548,24 @@ static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
+ 	/* Reparent CPU during PLL CPU rate changes */
+ 	ccu_mux_notifier_register(pll_cpu_clk.common.hw.clk,
+ 				  &suniv_cpu_nb);
++
++	return 0;
+ }
+-CLK_OF_DECLARE(suniv_f1c100s_ccu, "allwinner,suniv-f1c100s-ccu",
+-	       suniv_f1c100s_ccu_setup);
++
++static const struct of_device_id suniv_f1c100s_ccu_ids[] = {
++	{ .compatible = "allwinner,suniv-f1c100s-ccu" },
++	{ }
++};
++
++static struct platform_driver suniv_f1c100s_ccu_driver = {
++	.probe	= suniv_f1c100s_ccu_probe,
++	.driver	= {
++		.name			= "suniv-f1c100s-ccu",
++		.suppress_bind_attrs	= true,
++		.of_match_table		= suniv_f1c100s_ccu_ids,
++	},
++};
++module_platform_driver(suniv_f1c100s_ccu_driver);
 +
 +MODULE_IMPORT_NS(SUNXI_CCU);
 +MODULE_LICENSE("GPL");
