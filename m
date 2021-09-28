@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA0541A5CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8D941A5CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238782AbhI1C76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 22:59:58 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:57302 "EHLO
+        id S238790AbhI1DAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 23:00:06 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:61429 "EHLO
         twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238673AbhI1C7z (ORCPT
+        with ESMTP id S238728AbhI1DAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 22:59:55 -0400
+        Mon, 27 Sep 2021 23:00:01 -0400
 Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18S2aTCb072684;
-        Tue, 28 Sep 2021 10:36:29 +0800 (GMT-8)
+        by twspam01.aspeedtech.com with ESMTP id 18S2aUxL072685;
+        Tue, 28 Sep 2021 10:36:30 +0800 (GMT-8)
         (envelope-from tommy_huang@aspeedtech.com)
 Received: from tommy0527-VirtualBox.aspeedtech.com (192.168.2.141) by
  TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
@@ -27,39 +27,55 @@ To:     <joel@jms.id.au>, <airlied@linux.ie>, <daniel@ffwll.ch>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH 0/6] *** Add AST2600 GFX node ***
-Date:   Tue, 28 Sep 2021 10:56:57 +0800
-Message-ID: <20210928025703.10909-1-tommy_huang@aspeedtech.com>
+Subject: [PATCH 1/6] ARM: dts: aspeed: Add GFX node to AST2600
+Date:   Tue, 28 Sep 2021 10:56:58 +0800
+Message-ID: <20210928025703.10909-2-tommy_huang@aspeedtech.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210928025703.10909-1-tommy_huang@aspeedtech.com>
+References: <20210928025703.10909-1-tommy_huang@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [192.168.2.141]
 X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
  (192.168.0.24)
 X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18S2aTCb072684
+X-MAIL: twspam01.aspeedtech.com 18S2aUxL072685
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add AST2600 GFX support first.
+From: Joel Stanley <joel@jms.id.au>
 
-Joel Stanley (5):
-  ARM: dts: aspeed: Add GFX node to AST2600
-  ARM: dts: aspeed: ast2600-evb: Enable GFX device
-  drm/aspeed: Add AST2600 support
-  HACK: drm/aspeed: INTR_STS hadndling
-  HACK: drm/aspeed: Paramterise modes
+The GFX device is present in the AST2600 SoC.
 
-tommy-huang (1):
-  dt-bindings: gpu: Add ASPEED GFX bindings document
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: tommy-huang <tommy_huang@aspeedtech.com>
+---
+ arch/arm/boot/dts/aspeed-g6.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
- .../devicetree/bindings/gpu/aspeed-gfx.txt     |  1 +
- arch/arm/boot/dts/aspeed-ast2600-evb.dts       | 13 +++++++++++++
- arch/arm/boot/dts/aspeed-g6.dtsi               | 11 +++++++++++
- drivers/gpu/drm/aspeed/aspeed_gfx_drv.c        | 18 +++++++++++++-----
- 4 files changed, 38 insertions(+), 5 deletions(-)
-
+diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+index 1b47be1704f8..e38c3742761b 100644
+--- a/arch/arm/boot/dts/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+@@ -351,6 +351,17 @@
+ 				quality = <100>;
+ 			};
+ 
++			gfx: display@1e6e6000 {
++				compatible = "aspeed,ast2600-gfx", "aspeed,ast2500-gfx", "syscon";
++				reg = <0x1e6e6000 0x1000>;
++				reg-io-width = <4>;
++				clocks = <&syscon ASPEED_CLK_GATE_D1CLK>;
++				resets = <&syscon ASPEED_RESET_GRAPHICS>;
++				syscon = <&syscon>;
++				status = "disabled";
++				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
++			};
++
+ 			xdma: xdma@1e6e7000 {
+ 				compatible = "aspeed,ast2600-xdma";
+ 				reg = <0x1e6e7000 0x100>;
 -- 
 2.17.1
 
