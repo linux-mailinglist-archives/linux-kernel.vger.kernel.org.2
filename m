@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CAB41B7A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8C141B7A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242470AbhI1Tdm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 15:33:42 -0400
-Received: from mail.shanghaitech.edu.cn ([119.78.254.11]:4666 "EHLO
-        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237134AbhI1Tdl (ORCPT
+        id S242498AbhI1TgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:36:25 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:29453 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242415AbhI1TgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:33:41 -0400
-Received: from [10.15.44.215] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 480405207077045;
-        Wed, 29 Sep 2021 03:31:47 +0800 (CST)
-Received: from DESKTOP-FOJ6ELG.localdomain (10.15.44.220) by
- smtp.shanghaitech.edu.cn (10.15.44.215) with Microsoft SMTP Server (TLS) id
- 14.3.399.0; Wed, 29 Sep 2021 03:31:46 +0800
-From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Mianhan Liu <liumh1@shanghaitech.edu.cn>
-Subject: [PATCH -next] drivers/base/arch_topology.c: remove superfluous header
-Date:   Wed, 29 Sep 2021 03:31:38 +0800
-Message-ID: <20210928193138.24192-1-liumh1@shanghaitech.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 28 Sep 2021 15:36:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1632857684; x=1664393684;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=I3lA1xehKn8cMjMnSUrKM01iaV9gThDho652gL/f/XI=;
+  b=thvAjuWgN2cL3dAZgbMB2iJsSY+jk9PqY/pEGgfy74rhvxVJHxZ7EtE1
+   aE+sLQOpj/pbE8a12ZGG7h5n/wC1iOB935SAtIpEZtgQn9bJ5cOhyXuKF
+   T2onSFVIJDQXXty4NXRNVTEFesaqdfVpSVfJUvovmexpysWSdNAD2Mo3M
+   w=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Sep 2021 12:34:44 -0700
+X-QCInternal: smtphost
+Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 12:34:44 -0700
+Received: from [10.251.44.228] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 28 Sep 2021
+ 12:34:41 -0700
+Message-ID: <61e2f232-4abe-bb10-fff5-cabe8da5a7a9@quicinc.com>
+Date:   Tue, 28 Sep 2021 22:34:39 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain
-X-Originating-IP: [10.15.44.220]
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] arm64: mm: update max_pfn after memory hotplug
+Content-Language: en-US
+To:     Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Sudarshan Rajagopalan" <quic_sudaraja@quicinc.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+References: <cover.1632853776.git.quic_cgoldswo@quicinc.com>
+ <a51a27ee7be66024b5ce626310d673f24107bcb8.1632853776.git.quic_cgoldswo@quicinc.com>
+From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
+In-Reply-To: <a51a27ee7be66024b5ce626310d673f24107bcb8.1632853776.git.quic_cgoldswo@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch_topology.c hasn't use any macro or function declared in linux/percpu.h,
-linux/smp.h and linux/string.h.
-Thus, these files can be removed from arch_topology.c safely without
-affecting the compilation of the drivers/base/ module
+On 9/28/2021 9:51 PM, Chris Goldsworthy wrote:
+> From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> 
+> After new memory blocks have been hotplugged, max_pfn and max_low_pfn
+> needs updating to reflect on new PFNs being hot added to system.
+> Without this patch, debug-related functions that use max_pfn such as
+> get_max_dump_pfn() or read_page_owner() will not work with any page in
+> memory that is hot-added after boot.
+> 
+> Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
+> Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Tested-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 
----
- drivers/base/arch_topology.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 434076659..92200873b 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -12,15 +12,12 @@
- #include <linux/device.h>
- #include <linux/of.h>
- #include <linux/slab.h>
--#include <linux/string.h>
- #include <linux/sched/topology.h>
- #include <linux/cpuset.h>
- #include <linux/cpumask.h>
- #include <linux/init.h>
--#include <linux/percpu.h>
- #include <linux/rcupdate.h>
- #include <linux/sched.h>
--#include <linux/smp.h>
- 
- static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
- static struct cpumask scale_freq_counters_mask;
--- 
-2.25.1
-
-
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> ---
+>   arch/arm64/mm/mmu.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index cfd9deb..fd85b51 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>   	if (ret)
+>   		__remove_pgd_mapping(swapper_pg_dir,
+>   				     __phys_to_virt(start), size);
+> +	else {
+> +		max_pfn = PFN_UP(start + size);
+> +		max_low_pfn = max_pfn;
+> +	}
+> +
+>   	return ret;
+>   }
+>   
+> 
