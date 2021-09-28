@@ -2,236 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5B141B8BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D123A41B8C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242814AbhI1U5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:57:32 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22653 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242773AbhI1U5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:57:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224873050"
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="224873050"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 13:55:51 -0700
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="554300891"
-Received: from gpfry-mobl1.amr.corp.intel.com (HELO [10.251.22.193]) ([10.251.22.193])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 13:55:50 -0700
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
- <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
- <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
- <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
- <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
- <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
-Date:   Tue, 28 Sep 2021 13:55:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242820AbhI1U5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:57:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59821 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242773AbhI1U5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:57:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632862572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=avud/PKF18tViJbM+ksOVnSjneWrBRMxvlVl+1jrICI=;
+        b=gKPlkr+twXDMkjWs9ghsURF+pUTm8bmNH2RCPbR01frjcCnGlQ3W8YpBeB/hy3DK1l5FUp
+        psS4JnuRWRmNIVM0PRnc/RqgwWEWXV3hgXN/pyBuwPY/bpO+cdwrI04/17eZRvGkeC2TcV
+        0ceoQ3+ZkVgm3lTeg0gRGyuCgBFkiB8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-CXDct7i7MUmI9xgDbaVQdw-1; Tue, 28 Sep 2021 16:56:11 -0400
+X-MC-Unique: CXDct7i7MUmI9xgDbaVQdw-1
+Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso11299944edj.20
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:56:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=avud/PKF18tViJbM+ksOVnSjneWrBRMxvlVl+1jrICI=;
+        b=ymzClZwzrOjkYkJ3wiVBImJi8nqYaan/NPwCina1XK3J1bE2+6CFhfqlg62MYLv61h
+         kc9dqCUNmidWmHY9m3N1/Z5gNzLxeCKq6pqLjaxC2wuj9MVaKXv9Z1poeyWVUK1RFyoK
+         cNnZNnKC0aG63mYvhXlXCE0IEbR0aTUkKAyIaEKRiDW4k574tM/IRnKulsSL7NjpNj+n
+         821v/1HUlwGmQ0vRMrmEWIn+qigsSwls3qNV4QwoTiQRs0wdpwLB8ts/b4+SCiwiuNwe
+         5D14zd4gEXixvNGPwk+cmD64OQ9dWLSRKvUHtXiiJffmCcdg/cz9HtGIpXLcQOBaDeLx
+         BYPA==
+X-Gm-Message-State: AOAM5317HpczH2zx1AuIn5K4Bzb6kk2A+u0GLFnbkz9jADsQkAaKRzFF
+        GCVxOsnxnIE4TuJzUr4xGDZDwM9ZnKYTQPSmL81fPLzAwrmJPeOiylRg7fK6Wsz5y6tz7bPUJIL
+        +kHQVPqDxVu/kbpmdBI7zDGbo
+X-Received: by 2002:a05:6402:1503:: with SMTP id f3mr10295217edw.24.1632862569918;
+        Tue, 28 Sep 2021 13:56:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwpuxFQvp4wBjULizt7Tt8oVwlJZzYE0pAlD1HyjxcSk6o48RnWuQ5wb4k0qiJTY/khrZ1sfQ==
+X-Received: by 2002:a05:6402:1503:: with SMTP id f3mr10295176edw.24.1632862569635;
+        Tue, 28 Sep 2021 13:56:09 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id cr9sm118857edb.17.2021.09.28.13.56.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 13:56:09 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 22:56:05 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>
+Subject: Re: [PATCH v9 10/13] perf expr: Merge find_ids and regular parsing
+Message-ID: <YVOBZRKnPD2jWQf0@krava>
+References: <20210923074616.674826-1-irogers@google.com>
+ <20210923074616.674826-11-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923074616.674826-11-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 1:28 PM, Luck, Tony wrote:
-> On Tue, Sep 28, 2021 at 12:19:22PM -0700, Dave Hansen wrote:
->> On 9/28/21 11:50 AM, Luck, Tony wrote:
->>> On Mon, Sep 27, 2021 at 04:51:25PM -0700, Dave Hansen wrote:
->> ...
->>>> 1. Hide whether we need to write to real registers
->>>> 2. Hide whether we need to update the in-memory image
->>>> 3. Hide other FPU infrastructure like the TIF flag.
->>>> 4. Make the users deal with a *whole* state in the replace API
->>>
->>> Is that difference just whether you need to save the
->>> state from registers to memory (for the "update" case)
->>> or not (for the "replace" case ... where you can ignore
->>> the current register, overwrite the whole per-feature
->>> xsave area and mark it to be restored to registers).
->>>
->>> If so, just a "bool full" argument might do the trick?
->>
->> I want to be able to hide the complexity of where the old state comes
->> from.  It might be in registers or it might be in memory or it might be
->> *neither*.  It's possible we're running with stale register state and a
->> current->...->xsave buffer that has XFEATURES&XFEATURE_FOO 0.
->>
->> In that case, the "old" copy might be memcpy'd out of the init_task.
->> Or, for pkeys, we might build it ourselves with init_pkru_val.
+On Thu, Sep 23, 2021 at 12:46:13AM -0700, Ian Rogers wrote:
+> Add a new option to parsing that the set of IDs being used should be
+> computed, this means every action needs to handle the compute_ids and
+> regular case. This means actions yield a new ids type is a set of ids or
+> the value being computed. Use the compute_ids case to replace find IDs
+> parsing.
 > 
-> So should there be an error case if there isn't an "old" state, and
-> the user calls:
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/expr.c |   9 +--
+>  tools/perf/util/expr.h |   1 -
+>  tools/perf/util/expr.l |   9 ---
+>  tools/perf/util/expr.y | 176 ++++++++++++++++++++++++++++++-----------
+>  4 files changed, 136 insertions(+), 59 deletions(-)
 > 
-> 	p = begin_update_one_xsave_feature(XFEATURE_something, false);
+> diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> index 81101be51044..db2445677c8c 100644
+> --- a/tools/perf/util/expr.c
+> +++ b/tools/perf/util/expr.c
+> @@ -314,10 +314,9 @@ void expr__ctx_free(struct expr_parse_ctx *ctx)
+>  
+>  static int
+>  __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+> -	      int start, int runtime)
+> +	      bool compute_ids, int runtime)
+>  {
+>  	struct expr_scanner_ctx scanner_ctx = {
+> -		.start_token = start,
+>  		.runtime = runtime,
+>  	};
+>  	YY_BUFFER_STATE buffer;
+> @@ -337,7 +336,7 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+>  	expr_set_debug(1, scanner);
+>  #endif
+>  
+> -	ret = expr_parse(val, ctx, scanner);
+> +	ret = expr_parse(val, ctx, compute_ids, scanner);
+>  
+>  	expr__flush_buffer(buffer, scanner);
+>  	expr__delete_buffer(buffer, scanner);
+> @@ -348,13 +347,13 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+>  int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
+>  		const char *expr, int runtime)
+>  {
+> -	return __expr__parse(final_val, ctx, expr, EXPR_PARSE, runtime) ? -1 : 0;
+> +	return __expr__parse(final_val, ctx, expr, /*compute_ids=*/false, runtime) ? -1 : 0;
+>  }
+>  
+>  int expr__find_ids(const char *expr, const char *one,
+>  		   struct expr_parse_ctx *ctx, int runtime)
+>  {
+> -	int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
+> +	int ret = __expr__parse(NULL, ctx, expr, /*compute_ids=*/true, runtime);
+>  
+>  	if (one)
+>  		expr__del_id(ctx, one);
+> diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+> index 4ed186bd1f13..b20513f0ae59 100644
+> --- a/tools/perf/util/expr.h
+> +++ b/tools/perf/util/expr.h
+> @@ -26,7 +26,6 @@ struct expr_parse_ctx {
+>  struct expr_id_data;
+>  
+>  struct expr_scanner_ctx {
+> -	int start_token;
+>  	int runtime;
+>  };
+>  
+> diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
+> index 13e5e3c75f56..702fdf6456ca 100644
+> --- a/tools/perf/util/expr.l
+> +++ b/tools/perf/util/expr.l
+> @@ -91,15 +91,6 @@ symbol		({spec}|{sym})+
+>  %%
+>  	struct expr_scanner_ctx *sctx = expr_get_extra(yyscanner);
+>  
+> -	{
+> -		int start_token = sctx->start_token;
+> -
+> -		if (sctx->start_token) {
+> -			sctx->start_token = 0;
+> -			return start_token;
+> -		}
+> -	}
+> -
+>  d_ratio		{ return D_RATIO; }
+>  max		{ return MAX; }
+>  min		{ return MIN; }
+> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+> index 78cbe377eb0e..6aeead54760a 100644
+> --- a/tools/perf/util/expr.y
+> +++ b/tools/perf/util/expr.y
+> @@ -1,6 +1,7 @@
+>  /* Simple expression parser */
+>  %{
+>  #define YYDEBUG 1
+> +#include <assert.h>
+>  #include <math.h>
+>  #include "util/debug.h"
+>  #include "smt.h"
+> @@ -12,15 +13,31 @@
+>  
+>  %parse-param { double *final_val }
+>  %parse-param { struct expr_parse_ctx *ctx }
+> +%parse-param { bool compute_ids }
+>  %parse-param {void *scanner}
+>  %lex-param {void* scanner}
+>  
+>  %union {
+>  	double	 num;
+>  	char	*str;
+> +	struct ids {
+> +		/*
+> +		 * When creating ids, holds the working set of event ids. NULL
+> +		 * implies the set is empty.
+> +		 */
+> +		struct hashmap *ids;
+> +		/*
+> +		 * The metric value. When not creating ids this is the value
+> +		 * read from a counter, a constant or some computed value. When
+> +		 * creating ids the value is either a constant or BOTTOM. NAN is
+> +		 * used as the special BOTTOM value, representing a "set of all
+> +		 * values" case.
+> +		 */
+> +		double val;
+> +	} ids;
+>  }
+>  
+> -%token ID NUMBER MIN MAX IF ELSE SMT_ON D_RATIO EXPR_ERROR EXPR_PARSE EXPR_OTHER
+> +%token ID NUMBER MIN MAX IF ELSE SMT_ON D_RATIO EXPR_ERROR
+>  %left MIN MAX IF
+>  %left '|'
+>  %left '^'
+> @@ -32,65 +49,109 @@
+>  %type <num> NUMBER
+>  %type <str> ID
+>  %destructor { free ($$); } <str>
+> -%type <num> expr if_expr
+> +%type <ids> expr if_expr
+> +%destructor { ids__free($$.ids); } <ids>
+>  
+>  %{
+>  static void expr_error(double *final_val __maybe_unused,
+>  		       struct expr_parse_ctx *ctx __maybe_unused,
+> +		       bool compute_ids __maybe_unused,
+>  		       void *scanner,
+>  		       const char *s)
+>  {
+>  	pr_debug("%s\n", s);
+>  }
+>  
+> +/*
+> + * During compute ids, the special "bottom" value uses NAN to represent the set
+> + * of all values. NAN is selected as it isn't a useful constant value.
+> + */
+> +#define BOTTOM NAN
+> +
+> +static struct ids union_expr(struct ids ids1, struct ids ids2)
+> +{
+> +	struct ids result = {
+> +		.val = BOTTOM,
+> +		.ids = ids__union(ids1.ids, ids2.ids),
+
+should we check for error in here?
+
+jirka
+
+> +	};
+> +	return result;
+> +}
+> +
+>  #define BINARY_LONG_OP(RESULT, OP, LHS, RHS)				\
+> -	RESULT = (long)LHS OP (long)RHS;
+> +	if (!compute_ids) {						\
+> +		RESULT.val = (long)LHS.val OP (long)RHS.val;		\
+> +		RESULT.ids = NULL;					\
+> +	} else {							\
+> +	        RESULT = union_expr(LHS, RHS);				\
+> +	}
+>  
+>  #define BINARY_OP(RESULT, OP, LHS, RHS)					\
+> -	RESULT = LHS OP RHS;
+> +	if (!compute_ids) {						\
+> +		RESULT.val = LHS.val OP RHS.val;			\
+> +		RESULT.ids = NULL;					\
+> +	} else {							\
+> +	        RESULT = union_expr(LHS, RHS);				\
+> +	}
+>  
+>  %}
+>  %%
+>  
+> -start:
+> -EXPR_PARSE all_expr
+> -|
+> -EXPR_OTHER all_other
+> -
+> -all_other: all_other other
+> -|
+> -
+> -other: ID
+> +start: if_expr
+>  {
+> -	expr__add_id(ctx, $1);
+> -}
+> -|
+> -MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
+> -|
+> -'<' | '>' | D_RATIO
+> +	if (compute_ids)
+> +		ctx->ids = ids__union($1.ids, ctx->ids);
+>  
+> -all_expr: if_expr			{ *final_val = $1; }
+> +	if (final_val)
+> +		*final_val = $1.val;
+> +}
+> +;
+>  
+>  if_expr: expr IF expr ELSE expr
+>  {
+> -	$$ = $3 ? $1 : $5;
+> +	if (!compute_ids) {
+> +		$$.ids = NULL;
+> +		if (fpclassify($3.val) == FP_ZERO) {
+> +			$$.val = $5.val;
+> +		} else {
+> +			$$.val = $1.val;
+> +		}
+> +	} else {
+> +		$$ = union_expr($1, union_expr($3, $5));
+> +	}
+>  }
+>  | expr
+>  ;
+>  
+>  expr: NUMBER
+>  {
+> -	$$ = $1;
+> +	$$.val = $1;
+> +	$$.ids = NULL;
+>  }
+>  | ID
+>  {
+> -	struct expr_id_data *data;
+> -
+> -	$$ = NAN;
+> -	if (expr__resolve_id(ctx, $1, &data) == 0)
+> -		$$ = expr_id_data__value(data);
+> -
+> -	free($1);
+> +	if (!compute_ids) {
+> +		/*
+> +		 * Compute the event's value from ID. If the ID isn't known then
+> +		 * it isn't used to compute the formula so set to NAN.
+> +		 */
+> +		struct expr_id_data *data;
+> +
+> +		$$.val = NAN;
+> +		if (expr__resolve_id(ctx, $1, &data) == 0)
+> +			$$.val = expr_id_data__value(data);
+> +
+> +		$$.ids = NULL;
+> +		free($1);
+> +	} else {
+> +		/*
+> +		 * Set the value to BOTTOM to show that any value is possible
+> +		 * when the event is computed. Create a set of just the ID.
+> +		 */
+> +		$$.val = BOTTOM;
+> +		$$.ids = ids__new();
+> +		if (!$$.ids || ids__insert($$.ids, $1, ctx->parent))
+> +			YYABORT;
+> +	}
+>  }
+>  | expr '|' expr { BINARY_LONG_OP($$, |, $1, $3); }
+>  | expr '&' expr { BINARY_LONG_OP($$, &, $1, $3); }
+> @@ -102,31 +163,47 @@ expr: NUMBER
+>  | expr '*' expr { BINARY_OP($$, *, $1, $3); }
+>  | expr '/' expr
+>  {
+> -	if ($3 == 0) {
+> -		pr_debug("division by zero\n");
+> -		YYABORT;
+> +	if (!compute_ids) {
+> +		if (fpclassify($3.val) == FP_ZERO) {
+> +			pr_debug("division by zero\n");
+> +			YYABORT;
+> +		}
+> +		$$.val = $1.val / $3.val;
+> +		$$.ids = NULL;
+> +	} else {
+> +		$$ = union_expr($1, $3);
+>  	}
+> -	$$ = $1 / $3;
+>  }
+>  | expr '%' expr
+>  {
+> -	if ((long)$3 == 0) {
+> -		pr_debug("division by zero\n");
+> -		YYABORT;
+> +	if (!compute_ids) {
+> +		if (fpclassify($3.val) == FP_ZERO) {
+> +			pr_debug("division by zero\n");
+> +			YYABORT;
+> +		}
+> +		$$.val = (long)$1.val % (long)$3.val;
+> +		$$.ids = NULL;
+> +	} else {
+> +		$$ = union_expr($1, $3);
+>  	}
+> -	$$ = (long)$1 % (long)$3;
+>  }
+>  | D_RATIO '(' expr ',' expr ')'
+>  {
+> -	if ($5 == 0) {
+> -		$$ = 0;
+> +	if (!compute_ids) {
+> +		$$.ids = NULL;
+> +		if (fpclassify($5.val) == FP_ZERO) {
+> +			$$.val = 0.0;
+> +		} else {
+> +			$$.val = $3.val / $5.val;
+> +		}
+>  	} else {
+> -		$$ = $3 / $5;
+> +		$$ = union_expr($3, $5);
+>  	}
+>  }
+>  | '-' expr %prec NEG
+>  {
+> -	$$ = -$2;
+> +	$$.val = -$2.val;
+> +	$$.ids = $2.ids;
+>  }
+>  | '(' if_expr ')'
+>  {
+> @@ -134,15 +211,26 @@ expr: NUMBER
+>  }
+>  | MIN '(' expr ',' expr ')'
+>  {
+> -	$$ = $3 < $5 ? $3 : $5;
+> +	if (!compute_ids) {
+> +		$$.val = $3.val < $5.val ? $3.val : $5.val;
+> +		$$.ids = NULL;
+> +	} else {
+> +		$$ = union_expr($3, $5);
+> +	}
+>  }
+>  | MAX '(' expr ',' expr ')'
+>  {
+> -	$$ = $3 > $5 ? $3 : $5;
+> +	if (!compute_ids) {
+> +		$$.val = $3.val > $5.val ? $3.val : $5.val;
+> +		$$.ids = NULL;
+> +	} else {
+> +		$$ = union_expr($3, $5);
+> +	}
+>  }
+>  | SMT_ON
+>  {
+> -	$$ = smt_on() > 0 ? 1.0 : 0.0;
+> +	$$.val = smt_on() > 0 ? 1.0 : 0.0;
+> +	$$.ids = NULL;
+>  }
+>  ;
+>  
+> -- 
+> 2.33.0.464.g1972c5931b-goog
 > 
-> Maybe instead of an error, just fill it in with the init state for the feature?
 
-Yes, please.  Let's not generate an error.  Let's populate the init
-state and let them move on with life.
-
->>> pseudo-code:
->>>
->>> void *begin_update_one_xsave_feature(enum xfeature xfeature, bool full)
->>> {
->>> 	void *addr;
->>>
->>> 	BUG_ON(!(xsave->header.xcomp_bv & xfeature));
->>>
->>> 	addr = __raw_xsave_addr(xsave, xfeature);
->>>
->>> 	fpregs_lock();
->>>
->>> 	if (full)
->>> 		return addr;
->>
->> If the feature is marked as in the init state in the buffer
->> (XSTATE_BV[feature]==0), this addr *could* contain total garbage.  So,
->> we'd want to make sure that the memory contents have the init state
->> written before handing them back to the caller.  That's not strictly
->> required if the user is writing the whole thing, but it's the nice thing
->> to do.
-> 
-> Nice guys waste CPU cycles writing to memory that is just going to get
-> written again.
-
-Let's skip the "replace" operation for now and focus on "update".  A
-full replace *can* be faster because it doesn't require the state to be
-written out.  But, we don't need that for now.
-
-Let's just do the "update" thing, and let's ensure that we reflect the
-init state into the buffer that gets returned if the feature was in its
-init state.
-
-Sound good?
-
->>> 	if (xfeature registers are "live")
->>> 		xsaves(xstate, 1 << xfeature);
->>
->> One little note: I don't think we would necessarily need to do an XSAVES
->> here.  For PKRU, for instance, we could just do a rdpkru.
-> 
-> Like this?
-> 
-> 	if (tsk == current) {
-> 		switch (xfeature) {
-> 		case XFEATURE_PKRU:
-> 			*(u32 *)addr = rdpkru();
-> 			break;
-> 		case XFEATURE_PASID:
-> 			rdmsrl(MSR_IA32_PASID, msr);
-> 			*(u64 *)addr = msr;
-> 			break;
-> 		... any other "easy" states ...
-> 		default:
-> 			xsaves(xstate, 1 << xfeature);
-> 			break;
-> 		}
-> 	}
-
-Yep.
-
->>> 	return addr;
->>> }
->>>
->>> void finish_update_one_xsave_feature(enum xfeature xfeature)
->>> {
->>> 	mark feature modified
->>
->> I think we'd want to do this at the "begin" time.  Also, do you mean we
->> should set XSTATE_BV[feature]?
-> 
-> Begin? End? It's all inside fpregs_lock(). But whatever seems best.
-
-I'm actually waffling about it.
-
-Does XSTATE_BV[feature] mean that state *is* there or that state *may*
-be there?  Either way works.
-
->> It's also worth noting that we *could*:
->>
->> 	xrstors(xstate, 1<<xfeature);
->>
->> as well.  That would bring the registers back up to day and we could
->> keep TIF_NEED_FPU_LOAD==0.
-> 
-> Only makes sense if "tsk == current". But does this help. The work seems
-> to be the same whether we do it now, or later. We don't know for sure
-> that we will directly return to the task. We might context switch to
-> another task, so loading the state into registers now would just be
-> wasted time.
-
-True, but the other side of the coin is that setting TIF_NEED_FPU_LOAD
-subjects us to an XRSTOR on the way out to userspace.  That XRSTOR might
-just be updating one state component in practice.
-
-Either way, sorry for the distraction.  We (me) should really be
-focusing on getting something that is functional but slow.
