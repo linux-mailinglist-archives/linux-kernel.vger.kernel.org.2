@@ -2,136 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D8E41A735
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A8841A73B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236098AbhI1Flh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 01:41:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42402 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhI1Flf (ORCPT
+        id S237745AbhI1FpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 01:45:06 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:26922 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235647AbhI1Fo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:41:35 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0C7BD201BB;
-        Tue, 28 Sep 2021 05:39:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632807595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=13TnURwhS8h4t01lwoZLD/d/5oPL9agrfycanDfeTRQ=;
-        b=PT9kgFrx9DkgIx21N+ey4rvrG+p5lgzclkflex7M8ulg7b/MPe/8YBUPSSqsTo2GTahbjJ
-        Gey5RuOSF1hNpbYAFgKbf2oL0K4d67fdRAt+eRdY+iU4RsWpBKefK/X7oBdujgebC7iQbz
-        cH9ujOHUnez6nwSvlDTdjkQYCRSdxBg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632807595;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=13TnURwhS8h4t01lwoZLD/d/5oPL9agrfycanDfeTRQ=;
-        b=VnyBApxFuoR87JCq7TgLnoYycKzbt1M/1osAF+bIrqg5sP1C+l/tWJFxYA8+084TxkpCY5
-        Hr8IhCD3XymifdAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB01913A98;
-        Tue, 28 Sep 2021 05:39:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JO5JKKqqUmHUNQAAMHmgww
-        (envelope-from <hare@suse.de>); Tue, 28 Sep 2021 05:39:54 +0000
-Subject: Re: [PATCH v2 03/10] nvme-multipath: add error handling support for
- add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        colyli@suse.de, kent.overstreet@gmail.com, kbusch@kernel.org,
-        sagi@grimberg.me, vishal.l.verma@intel.com,
-        dan.j.williams@intel.com, dave.jiang@intel.com,
-        ira.weiny@intel.com, konrad.wilk@oracle.com, roger.pau@citrix.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, minchan@kernel.org, ngupta@vflare.org,
-        senozhatsky@chromium.org
-Cc:     xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210927220039.1064193-1-mcgrof@kernel.org>
- <20210927220039.1064193-4-mcgrof@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <85d33b80-1d54-67ba-47f9-0298093b6d80@suse.de>
-Date:   Tue, 28 Sep 2021 07:39:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 28 Sep 2021 01:44:59 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HJSx14wHkzbmQH;
+        Tue, 28 Sep 2021 13:39:01 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 28 Sep 2021 13:43:17 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Tue, 28 Sep 2021 13:43:17 +0800
+Message-ID: <3cd69b8f-c1af-baaa-31aa-f2e61e4c84b6@huawei.com>
+Date:   Tue, 28 Sep 2021 13:43:16 +0800
 MIME-Version: 1.0
-In-Reply-To: <20210927220039.1064193-4-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Guo Ren <guoren@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-csky@vger.kernel.org>
+References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
+ <CAJF2gTRoXWqcMTkuu=L6gkF2cL79GonN6XBj86BMMptJnmz3zw@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <CAJF2gTRoXWqcMTkuu=L6gkF2cL79GonN6XBj86BMMptJnmz3zw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 12:00 AM, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Since we now can tell for sure when a disk was added, move
-> setting the bit NVME_NSHEAD_DISK_LIVE only when we did
-> add the disk successfully.
-> 
-> Nothing to do here as the cleanup is done elsewhere. We take
-> care and use test_and_set_bit() because it is protects against
-> two nvme paths simultaneously calling device_add_disk() on the
-> same namespace head.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->   drivers/nvme/host/multipath.c | 13 +++++++++++--
->   1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-> index e8ccdd398f78..35cace4f3f5f 100644
-> --- a/drivers/nvme/host/multipath.c
-> +++ b/drivers/nvme/host/multipath.c
-> @@ -496,13 +496,22 @@ int nvme_mpath_alloc_disk(struct nvme_ctrl *ctrl, struct nvme_ns_head *head)
->   static void nvme_mpath_set_live(struct nvme_ns *ns)
->   {
->   	struct nvme_ns_head *head = ns->head;
-> +	int rc;
->   
->   	if (!head->disk)
->   		return;
->   
-> +	/*
-> +	 * test_and_set_bit() is used because it is protecting against two nvme
-> +	 * paths simultaneously calling device_add_disk() on the same namespace
-> +	 * head.
-> +	 */
->   	if (!test_and_set_bit(NVME_NSHEAD_DISK_LIVE, &head->flags)) {
-> -		device_add_disk(&head->subsys->dev, head->disk,
-> -				nvme_ns_id_attr_groups);
-> +		rc = device_add_disk(&head->subsys->dev, head->disk,
-> +				     nvme_ns_id_attr_groups);
-> +		if (rc)
-> +			return;
-> +		set_bit(NVME_NSHEAD_DISK_LIVE, &head->flags);
->   		nvme_add_ns_head_cdev(head);
->   	}
->   
-> Errm.
-Setting the same bit twice?
-And shouldn't you unset the bit if 'device_add_disk()' fails?
 
-Cheers,
+On 2021/9/28 13:08, Guo Ren wrote:
+> On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
+>> only sh and csky select it, but the could use SPARSE_IRQ too, let's
+>> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
+> Can you elaborate the reason on why we need to kill MAY_HAVE_SPARSE_IRQ?
+> What are the benefits after the patch? (As you know we couldn't drop
+> "!SPARSE_IRQ".)
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+If csky want to keep MAY_HAVE_SPARSE_IRQ, then I won't kill it, or no 
+one use it,
+
+then cleanup it.
+
+
