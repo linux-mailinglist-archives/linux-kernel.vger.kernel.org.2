@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A271641B750
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD1041B754
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242403AbhI1TRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S242419AbhI1TR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242262AbhI1TR3 (ORCPT
+        with ESMTP id S242262AbhI1TRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:17:29 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE78C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:15:49 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id dk4so421qvb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:15:49 -0700 (PDT)
+        Tue, 28 Sep 2021 15:17:54 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0C7C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:16:14 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id az15so131567vsb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tcyMivDSSj98xjcYfl0Ss83FFw70+B/UboxWuutjjDI=;
-        b=ZXqOBoW2zcRY/XCsYnDKUJm0jeVb6g6QynSlK5Ml/gYsHIPYVyWznW28IH/m39nrRs
-         rG+j+z/VkkqSaLLAsjs0lqXyt+KgS2pwIFFxGvKOTpp6OskwVnUll7c0SZ88LW5r3udd
-         0x2by8/0zgW10HXmR0atwW5ZveJ3LbAJ7dsEEUr2Gu8vBnEg7aKaIp30t+n3dbCJEhXZ
-         2aFI7yDiqqERTNEfaySqTNHIuhyRB286ED8KYrDS7lbzOda3vmUboyfsyK3esMfGV4a8
-         lPty5Chcgd6dyRXlzNl6IVGzK8Mh2KFiv4dYejeXY92N3QfzHRKzIOavZpEbU+UISfzK
-         CNNQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=YhFbyKGAjDURrMX4j5jmY9hPx93T2nKItfkSZo/eqKE=;
+        b=YGdXi93sUSJcieya4BTztTVrjMylwvkR1AxRlEjSx/p9daezftNNiVREaJDS8MW0PY
+         PoDlDG0rQ60Hiu4s73stu9MdVpFnfiQtoMDXkcK66y8NYtY+QC3I/bbGc4VgQ14S1dnc
+         c9lGZqCiZI/FzT9lMGBHYhwxe2+JAf8G/Nl2cxZ9eYjbCb+0Cq5WIt8XWVKuIJ7lXhG0
+         DIyBO2erWFaVfuoclYnhfRbH6BLl5b1oMw34q2ZSl3L8xxc8JTbmfxvmmfwKMnPfpGf3
+         MtS5eJ/Ig3gJRDsd6Pt97Tp/hXDp7VGIa+eo0EqugHQ+IWjMNxgyP/72Yv1F6qj3KqeI
+         fh3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tcyMivDSSj98xjcYfl0Ss83FFw70+B/UboxWuutjjDI=;
-        b=tcQI4/02kRnifKBzm7Y2uUIT1G9Zq5PgmP578mFvFLDYrA3oIgjIXo/lX3cXOdy82D
-         fOdpuYxeubQcKWOKHqP2ek327/b4yjQCDZnvr5rejWPrGKPUNTmKNDngbgbmeSgzELOa
-         sxU//IWo4pnO0g3CuGZrTkFioKbW29+ZqguFtft58MBp0vibBLAPlcGm4R4C5QrTPSIz
-         37TymM7TiUh6tXYttkwzwU2G3NjaGwlnVfHocN5I07lWAvm1baWuwxyUBqYjR9AuzYGR
-         e0fRp4GKG5ogAqTOmFhxWBc9qT2hZprC1u0DmrFnkCAgClE1yZnIFn/mN8ltO+zB6WPn
-         3MwA==
-X-Gm-Message-State: AOAM532s3Btxk0iqt8vB0Iw0MdlI02PLvS0LDgLQcLX+YMimpajH/qdA
-        qgi6S8TXPhAomRO1mZCmZyuwjw==
-X-Google-Smtp-Source: ABdhPJwurJl1S4rZ2pOn1DTdiP6TavgJzB4eTygZmyEB+s55pljNt5t0RfW6XCRuHe8/1mcYm0z9gQ==
-X-Received: by 2002:a0c:dd92:: with SMTP id v18mr7551030qvk.41.1632856548504;
-        Tue, 28 Sep 2021 12:15:48 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id p9sm6469qkm.23.2021.09.28.12.15.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:15:48 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVIZv-007G30-3V; Tue, 28 Sep 2021 16:15:47 -0300
-Date:   Tue, 28 Sep 2021 16:15:47 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 08/20] iommu/dma: support PCI P2PDMA pages in
- dma-iommu map_sg
-Message-ID: <20210928191547.GP3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-9-logang@deltatee.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=YhFbyKGAjDURrMX4j5jmY9hPx93T2nKItfkSZo/eqKE=;
+        b=soznkgKlg62uda7Xx3aggz3ZtE6vr48+aGazYzHK7yTqud0ROl+dsaBrJH3MkcPjTr
+         SpN0lGvUSkCm5Jy3j4GEj29KfRmV/cNybjUzjHZVyRuyp46Nk/55gLMd4TXecVqTk1cf
+         NRO+d0g46HembTfsiomwVXbb17FWHlPj3ikvMH/ZRrlYTuvl7NR0k2V/S2z2TDEK2krS
+         VmRahXKn1ARP4lo3q0tDzKw2H7ukRhn8mcSjT8BKDDhfLew4b8ZYIzJV1Vr1P404JCfc
+         660Ke+jm8KAcEGvu4y5vdV+JjFISaazYNy2DdSqX6LNrGTN9ZYvKgtfpsUVBZyC4KQ2c
+         Y1lQ==
+X-Gm-Message-State: AOAM533Fn7iuYOSdS2wLJW2I33zj9InoRtO7R+UZx4ZgEBD+8SUcOwtj
+        TbFY9o8JGxDA27Uon16OyTIJ7l2dXsUYs/sXKlI=
+X-Google-Smtp-Source: ABdhPJyw3uECIXEOtRtCR5W3/gKbdgr2ElSRawUjJLTLrRSXjaJiyGkzK+woSWwM6Bjv2YW1ZeRsdKj5w2Zzcg1aRJA=
+X-Received: by 2002:a05:6102:6ce:: with SMTP id m14mr1040379vsg.42.1632856573579;
+ Tue, 28 Sep 2021 12:16:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916234100.122368-9-logang@deltatee.com>
+Received: by 2002:a9f:2d8b:0:0:0:0:0 with HTTP; Tue, 28 Sep 2021 12:16:12
+ -0700 (PDT)
+Reply-To: pi3501417@gmail.com
+From:   Pastor Ibobo <okoyefrancis201@gmail.com>
+Date:   Tue, 28 Sep 2021 12:16:12 -0700
+Message-ID: <CANVKyejPuJ+UJdHusO=1JRon7sm1vSjx_kCvLOL5bBN3mccfgA@mail.gmail.com>
+Subject: Good Day to you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:40:48PM -0600, Logan Gunthorpe wrote:
-> When a PCI P2PDMA page is seen, set the IOVA length of the segment
-> to zero so that it is not mapped into the IOVA. Then, in finalise_sg(),
-> apply the appropriate bus address to the segment. The IOVA is not
-> created if the scatterlist only consists of P2PDMA pages.
-> 
-> A P2PDMA page may have three possible outcomes when being mapped:
->   1) If the data path between the two devices doesn't go through
->      the root port, then it should be mapped with a PCI bus address
->   2) If the data path goes through the host bridge, it should be mapped
->      normally with an IOMMU IOVA.
->   3) It is not possible for the two devices to communicate and thus
->      the mapping operation should fail (and it will return -EREMOTEIO).
-> 
-> Similar to dma-direct, the sg_dma_mark_pci_p2pdma() flag is used to
-> indicate bus address segments. On unmap, P2PDMA segments are skipped
-> over when determining the start and end IOVA addresses.
-> 
-> With this change, the flags variable in the dma_map_ops is set to
-> DMA_F_PCI_P2PDMA_SUPPORTED to indicate support for P2PDMA pages.
-> 
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> ---
->  drivers/iommu/dma-iommu.c | 68 +++++++++++++++++++++++++++++++++++----
->  1 file changed, 61 insertions(+), 7 deletions(-)
+Good Day to you  I am bring this to your notice for you to know and
+understand when someone is telling you the truth, first of all, I
+truly understand that it is very hard for people to detect the real
+business transaction and that of the fake ones but you can never judge
+that every one are the same no!! no!!! it is impossible,
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Jason
+ we are busy fighting corruptions all over the world and people whom
+we have been fighting for are busying ruining into corruptions and
+scam believing them instead of believing the truth, for the past few
+Months you have been told to contact our Bank {standard American Bank}
+were your total fund have been deposited and credited and all you have
+been requested to do is  for your online account opening which will
+only cost you lesser amount  still yet you still don't believe .
+
+ Now can you count how many times you have send your hard earn money
+to those impostors since then and until now you still have gotten non
+of your fund, Now is too earlier for you if you can come back to your
+senses and do the right now I am here to put a trust to you and make
+sure that after this your will be apprehended to seek for me after the
+successful of your transaction try and have your account opening fee
+send and an account will be open for you which you will be credited
+instantly with the total amount of your awaiting fund of $30.7 Million
+Dollars and issued you with all your online, login details to start
+making use of your fund,
+
+ Understand that you can as well request for an ATM master card from
+the Bank Portal if you wish that once you have an account with
+standard American Bank But try and understand that we are here to make
+sure you start making use of your long waiting  fund if you wish try
+and get back to me on this matter and God bless you...
+E-MAIL (( pi3501417@gmail.com ))
+Best Regards,
+
+Pastor Ibobo
