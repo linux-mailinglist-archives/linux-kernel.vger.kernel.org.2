@@ -2,105 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A07941B846
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3F441B849
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhI1UYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:24:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59389 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242683AbhI1UYO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:24:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632860554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Px75PZplZbEMaaLvg/IKZKQmq+Fd+/Xi4N5X7tKeYOU=;
-        b=hDRxPRXumIYPR1DK0A9FEGFhwFgxHVce5YYq77E7VEGK4fn+FISgvRanGlsNBmXxoKkyHD
-        ow6i7wM8sD1FfzyLAFcIm1GpZgIPZ3k/9aNri6szwh6Pg0p83cCFbC8kRMJ0n/mkKBYCZX
-        9lqF1lPCuoMfnjZRf/RqBZE0RBORQvM=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-UyP1OeWCMlW37s57NjPCmQ-1; Tue, 28 Sep 2021 16:22:33 -0400
-X-MC-Unique: UyP1OeWCMlW37s57NjPCmQ-1
-Received: by mail-oo1-f69.google.com with SMTP id m10-20020a4a240a000000b002adae1d3d06so103354oof.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:22:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Px75PZplZbEMaaLvg/IKZKQmq+Fd+/Xi4N5X7tKeYOU=;
-        b=by+J4d2RQsAgpeOMR5Ga+Fw5gLqSmwTSXl25XRFloEE0J8ykzbt8rbqSc9jnWUSSEk
-         Rt0iJh8Hpx9CHDLaQt0GfkPnAIDdcYEqE3T/PC8VGu+u0vpPX9gvgO0KJPWEh4liAtmd
-         aeoa6FJTfwdPLW9XEqjLFQysB0m0Lbq3rkKMqmhxHJdRBIhvlaDvrSbAVT7EUoB5IRtL
-         nYB/aj1rl/gAGjev5zBkredPpbut68kNZF3CjaIcOY5km0pwaEJl1lB0D12fw3ozM55S
-         JMtrvzwjw6/VIf75oEaSJbBMzRKzEegDsPlqiJ31a1knDCF7yvSiPVhMNWOu1cztYiNb
-         vttA==
-X-Gm-Message-State: AOAM532gZYcejfUtyo5HvcuiS49D27+iB1G3sWtaFxx9Y7Toaogc3uKv
-        wkA7ZhMlHGqLxNa5MWK0paXVyWZW0MhIDbMe1PR282MCSot0Nv8TpotV0sqZ8yZsiJkztvU6FCK
-        ZplXuCRBwyHc84DcMrenTtLH+
-X-Received: by 2002:a05:6830:314e:: with SMTP id c14mr6935957ots.37.1632860552511;
-        Tue, 28 Sep 2021 13:22:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzR8N6ivbHyTQeeTuTu5EyUCFoNeJ/uw+Yu3F+JZpS9o76cUotJSm8am7W0TX6GQTPc2NRTNg==
-X-Received: by 2002:a05:6830:314e:: with SMTP id c14mr6935926ots.37.1632860552311;
-        Tue, 28 Sep 2021 13:22:32 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id 21sm41504oix.1.2021.09.28.13.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 13:22:32 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 14:22:30 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH mlx5-next 6/7] mlx5_vfio_pci: Expose migration commands
- over mlx5 device
-Message-ID: <20210928142230.20b0153a.alex.williamson@redhat.com>
-In-Reply-To: <7fc0cf0d76bb6df4679b55974959f5494e48f54d.1632305919.git.leonro@nvidia.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
-        <7fc0cf0d76bb6df4679b55974959f5494e48f54d.1632305919.git.leonro@nvidia.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S242572AbhI1U1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 16:27:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242315AbhI1U1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:27:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 31B8561052;
+        Tue, 28 Sep 2021 20:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632860722;
+        bh=zMMlt5PKyuh+lIN7U4JmYlNnD2nxTxFYyGFkSR4dRFE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=MXvrpia1nNe9ood3xQYd6U+mNtWjmQ+N3dFVL+aOp6nwU9HrgsnF2wnX1Z7DvH6Ka
+         eVGuiTGSvYJ7nbi+3TnLzD1cVUpMqHEoDrjWLOE11/ZHaZS5O4x6wBVVPcQ/nc3NVz
+         QpOWCaBA0DK1+aQ1DVdArhrd7Nd/gD7HPOCwauObdiAsajIKLEmyFMybqZKcX3bdH+
+         JnD1M6ZYzkEBwYYfqgfEq/NTbfyGlLi6NZ95zIXdXO8BaPpbbPo9kEg7JMSShhp6XK
+         8z7bAT/JDT2xs8PX5QsyFBB0unnMGit5i017xa62oGa2qhTy1lhJL//96zCf1Iaaie
+         em5TZFtc1UuQQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 25AF2609D2;
+        Tue, 28 Sep 2021 20:25:22 +0000 (UTC)
+Subject: Re: [GIT PULL] NIOS2: fixes for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210928130803.249346-1-dinguyen@kernel.org>
+References: <20210928130803.249346-1-dinguyen@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210928130803.249346-1-dinguyen@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git tags/nios2_fixes_for_v5.15_part1
+X-PR-Tracked-Commit-Id: 9523b33cc31cf8ce703f8facee9fd16cba36d5ad
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: dca50f08a03eba5bc7a6afecca3f8ab0029b7a6e
+Message-Id: <163286072209.20126.4287645746699261384.pr-tracker-bot@kernel.org>
+Date:   Tue, 28 Sep 2021 20:25:22 +0000
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     torvalds@linux-foundation.org, dinguyen@kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 13:38:55 +0300
-Leon Romanovsky <leon@kernel.org> wrote:
+The pull request you sent on Tue, 28 Sep 2021 08:08:03 -0500:
 
-> From: Yishai Hadas <yishaih@nvidia.com>
-> 
-> Expose migration commands over the device, it includes: suspend, resume,
-> get vhca id, query/save/load state.
-> 
-> As part of this adds the APIs and data structure that are needed to
-> manage the migration data.
-> 
-> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/vfio/pci/mlx5_vfio_pci_cmd.c | 358 +++++++++++++++++++++++++++
->  drivers/vfio/pci/mlx5_vfio_pci_cmd.h |  43 ++++
->  2 files changed, 401 insertions(+)
->  create mode 100644 drivers/vfio/pci/mlx5_vfio_pci_cmd.c
->  create mode 100644 drivers/vfio/pci/mlx5_vfio_pci_cmd.h
+> git://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git tags/nios2_fixes_for_v5.15_part1
 
-Should we set the precedent of a vendor sub-directory like we have
-elsewhere?  Either way I'd like to see a MAINTAINERS file update for the
-new driver.  Thanks,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/dca50f08a03eba5bc7a6afecca3f8ab0029b7a6e
 
-Alex
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
