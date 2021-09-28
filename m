@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F58841A5EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6C941A5EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238825AbhI1DN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 23:13:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35268 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238748AbhI1DNX (ORCPT
+        id S238810AbhI1DOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 23:14:06 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:55836 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238748AbhI1DOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 23:13:23 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 95E6C222DF;
-        Tue, 28 Sep 2021 03:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632798701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k1irZcE6GgE63UfMaZ69q7wFQxdxy8PkJV1UDRuOwDA=;
-        b=Af8PPYiGG/KoV03reINXBzNVPccmiyHVMrwNt2UIFxlU1jhXBp5nI2Gka9opvfla6EYXOa
-        u9dubE+5BF4AwBJlVzPfA+nwLlAQkhckDkag+FkKT+kBsnwd6qmqqlWA/pOjn0C1Ffe5V9
-        HYSxfFfncwL3S6Y8kijKplmMugjgsEE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632798701;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k1irZcE6GgE63UfMaZ69q7wFQxdxy8PkJV1UDRuOwDA=;
-        b=rvEM/v30W6HdMnLZksiPaBfoRjZ8iPYI6P23HeASJG7DpSxpqPRoywlWfOvhpMFCEARX9U
-        W3t0wcFCENMdaDDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C1463132D4;
-        Tue, 28 Sep 2021 03:11:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HD3CH+SHUmHafwAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 28 Sep 2021 03:11:32 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 27 Sep 2021 23:14:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UptRZmW_1632798744;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UptRZmW_1632798744)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 28 Sep 2021 11:12:25 +0800
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Subject: [RESEND PATCH v2] trace: prevent preemption in
+ perf_ftrace_function_call()
+Message-ID: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
+Date:   Tue, 28 Sep 2021 11:12:24 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "David Howells" <dhowells@redhat.com>
-Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        "Trond Myklebust" <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Anna Schumaker" <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        "Bob Liu" <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Josef Bacik" <josef@toxicpanda.com>,
-        "Seth Jennings" <sjenning@linux.vnet.ibm.com>,
-        "Jens Axboe" <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>,
-        "Minchan Kim" <minchan@kernel.org>,
-        "Steve French" <sfrench@samba.org>,
-        "Dan Magenheimer" <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, "Ilya Dryomov" <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, dhowells@redhat.com,
-        viro@zeniv.linux.org.uk, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-In-reply-to: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-Date:   Tue, 28 Sep 2021 13:11:29 +1000
-Message-id: <163279868982.18792.10448745714922373194@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Sep 2021, David Howells wrote:
-> Whilst trying to make this work, I found that NFS's support for swapfiles
-> seems to have been non-functional since Aug 2019 (I think), so the first
-> patch fixes that.  Question is: do we actually *want* to keep this
-> functionality, given that it seems that no one's tested it with an upstream
-> kernel in the last couple of years?
+With CONFIG_DEBUG_PREEMPT we observed reports like:
 
-SUSE definitely want to keep this functionality.  We have customers
-using it.
-I agree it would be good if it was being tested somewhere....
+  BUG: using smp_processor_id() in preemptible
+  caller is perf_ftrace_function_call+0x6f/0x2e0
+  CPU: 1 PID: 680 Comm: a.out Not tainted
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x8d/0xcf
+   check_preemption_disabled+0x104/0x110
+   ? optimize_nops.isra.7+0x230/0x230
+   ? text_poke_bp_batch+0x9f/0x310
+   perf_ftrace_function_call+0x6f/0x2e0
+   ...
+   __text_poke+0x5/0x620
+   text_poke_bp_batch+0x9f/0x310
 
-Thanks,
-NeilBrown
+This telling us the CPU could be changed after task is preempted, and
+the checking on CPU before preemption will be invalid.
+
+This patch just turn off preemption in perf_ftrace_function_call()
+to prevent CPU changing.
+
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ kernel/trace/trace_event_perf.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 6aed10e..dcbefdf 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -441,12 +441,19 @@ void perf_trace_buf_update(void *record, u16 type)
+ 	if (!rcu_is_watching())
+ 		return;
+
++	/*
++	 * Prevent CPU changing from now on. rcu must
++	 * be in watching if the task was migrated and
++	 * scheduled.
++	 */
++	preempt_disable_notrace();
++
+ 	if ((unsigned long)ops->private != smp_processor_id())
+-		return;
++		goto out;
+
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+-		return;
++		goto out;
+
+ 	event = container_of(ops, struct perf_event, ftrace_ops);
+
+@@ -468,16 +475,18 @@ void perf_trace_buf_update(void *record, u16 type)
+
+ 	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
+ 	if (!entry)
+-		goto out;
++		goto unlock;
+
+ 	entry->ip = ip;
+ 	entry->parent_ip = parent_ip;
+ 	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
+ 			      1, &regs, &head, NULL);
+
+-out:
++unlock:
+ 	ftrace_test_recursion_unlock(bit);
+ #undef ENTRY_SIZE
++out:
++	preempt_enable_notrace();
+ }
+
+ static int perf_ftrace_function_register(struct perf_event *event)
+-- 
+1.8.3.1
+
