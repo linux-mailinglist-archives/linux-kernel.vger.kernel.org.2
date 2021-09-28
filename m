@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FAE41AD8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B990441AD91
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240349AbhI1LIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240297AbhI1LIE (ORCPT
+        id S240361AbhI1LIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:08:21 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37450 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240378AbhI1LIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:08:04 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6906C061575;
-        Tue, 28 Sep 2021 04:06:24 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y28so90490150lfb.0;
-        Tue, 28 Sep 2021 04:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=nBjFzjWC4IRFGUtaFJjBkOTq/UnF6SfMPkVbWkqJ/wI=;
-        b=VqWDFLZqMtfHxYfXUNop5oqrfXktuM3ykAZIOWj9b0xLteSkHHGyZhaIE/xK5V1oJu
-         Um6U0bIXRoQoKoTI3nDGVn/5ggtpPv4tyXZhGgNd5CPklQuxf5WQhU2srIR+y7AjpeQS
-         Ugja7C//Vcw7Tis1XYit7/Wzmmv+mefrtAQhQaLn1WgPdsFOc7sf+HTsi81Rmmn8UxY/
-         c1Kk2wg8nyln6V7RFzpCTOWOd2YEbdpsskTgFDu40o4FzmDYuXfJVXgg7vW3E/aZq8Kt
-         GbEBA6lRMvLSUibegnXlBQvdcj9arOhIAeDds9r6Jt2/gU8hu8eOvoySvZGeiO6wvlM0
-         QFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=nBjFzjWC4IRFGUtaFJjBkOTq/UnF6SfMPkVbWkqJ/wI=;
-        b=AzaBTxgt6agWNFzv1EOVOFuhmLCVaLl8pGDR2bygbwN9t5xEqWvdkhyXEqe/CCkC6C
-         nlT9EKOkNTw86ZC59k2oOdNRmIJGx6EWrXbH55rWKO+6D6qafvGzWnNkL148owMzxbcm
-         BQ0km82hIWE2SaxEwpZtY2lP7V5KrUt2IvvJGlago8cOhxFiqo89LeUFdG/TfK+yAchA
-         BN8rFoKynqHd5PdIKuw+42wrEJn9vMC8uClkDIBHNU6FR/yKr8tnEGD+OkZylbl/A+ci
-         vF+AevIsRztfe2utMj+BmQimEvXKGzVUHLzd57k6GDph+3uamw6jVQQz/Rd0HFY7+wbV
-         wz3Q==
-X-Gm-Message-State: AOAM530IhNkTblnONefptiCVoxn38N7/aXHfNzP4Uw9s62q2zcIen9uH
-        YKg5BYiBYYlrmnjCG10fINA=
-X-Google-Smtp-Source: ABdhPJwIzsGInhBLwJ1DlMNSyo6mjxS12DwzrRjSNcjj2+UYDiz6e5iywGr4MqDiWLxqIYvgJFVdzg==
-X-Received: by 2002:a2e:9b98:: with SMTP id z24mr5034006lji.339.1632827181597;
-        Tue, 28 Sep 2021 04:06:21 -0700 (PDT)
-Received: from [172.28.2.233] ([46.61.204.60])
-        by smtp.gmail.com with ESMTPSA id m10sm1891225lfr.272.2021.09.28.04.06.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 04:06:21 -0700 (PDT)
-Message-ID: <283d01f0-d5eb-914e-1bd2-baae0420073c@gmail.com>
-Date:   Tue, 28 Sep 2021 14:06:20 +0300
+        Tue, 28 Sep 2021 07:08:15 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S8XcLk016130;
+        Tue, 28 Sep 2021 07:06:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1mpgBy81r5FdFxJZiUWxd+sXDCw4TLJf2XVitgyiAms=;
+ b=Ei8KyJPPCres3lucKTDLFVi6hzoOKNvW0z1qBpbXd/JflA14M1N/RF+ve31BWBY+XfjG
+ jpJ/cDX1L4fJSP0H5EijMkQRuOA3OIHGaqJlz+ac844PxnerTEnN5W4qwSFJU5cPt3ZQ
+ YALeuRaK+3gjbBhzmnSQQF4rtcG1UQrGCQUVy9oggY46IsdCVrIItP6UTv6iaaskgR7o
+ Fq7lX4+B43b4WRit7pSmszyni3n3YFgOEBCjxoQPEpr3dWqmA0Xm9+E2iSL/HdCxp5SQ
+ LgyoBayNOHcDEvGiOR08GOWbPQavfhJ3cBh6K4Fu0oN9AjNMz6MON2K4wWHNbp+pJq4D iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbyn82xem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Sep 2021 07:06:34 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18SB4i2q016019;
+        Tue, 28 Sep 2021 07:06:34 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbyn82xe6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Sep 2021 07:06:33 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SB1tnp007615;
+        Tue, 28 Sep 2021 11:06:32 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3b9ud9kj2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Sep 2021 11:06:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SB6Rjj42205456
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 11:06:27 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99FF65208C;
+        Tue, 28 Sep 2021 11:06:27 +0000 (GMT)
+Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.40.159])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D9F565208B;
+        Tue, 28 Sep 2021 11:06:26 +0000 (GMT)
+Subject: Re: [PATCH resend RFC 0/9] s390: fixes, cleanups and optimizations
+ for page table walkers
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+References: <20210909162248.14969-1-david@redhat.com>
+ <YVL1iwSicgWg1qx+@osiris>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <98061eff-f856-fc1d-9f04-a31ac5fcd790@de.ibm.com>
+Date:   Tue, 28 Sep 2021 13:06:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] net: mdiobus: Fix memory leak in __mdiobus_register
+In-Reply-To: <YVL1iwSicgWg1qx+@osiris>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, p.zabel@pengutronix.de,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-References: <20210926045313.2267655-1-yanfei.xu@windriver.com>
- <20210928085549.GA6559@kili> <20210928092657.GI2048@kadam>
- <6f90fa0f-6d3b-0ca7-e894-eb971b3b69fa@gmail.com>
- <20210928103908.GJ2048@kadam>
- <63b18426-c39e-d898-08fb-8bfd05b7be9e@gmail.com>
- <20210928105943.GL2083@kadam>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20210928105943.GL2083@kadam>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: v6ZpB-tt9vrgOnGrtd7cBEZrbFucJ2xE
+X-Proofpoint-GUID: 6Ey1BHB2gKtyVKQWMQVPkoWs1sYwhLkN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2109280063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 13:59, Dan Carpenter wrote:
-> On Tue, Sep 28, 2021 at 01:46:56PM +0300, Pavel Skripkin wrote:
->> > diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
->> > index ee8313a4ac71..c380a30a77bc 100644
->> > --- a/drivers/net/phy/mdio_bus.c
->> > +++ b/drivers/net/phy/mdio_bus.c
->> > @@ -538,6 +538,7 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
->> >   	bus->dev.groups = NULL;
->> >   	dev_set_name(&bus->dev, "%s", bus->id);
->> > +	bus->state = MDIOBUS_UNREGISTERED;
->> >   	err = device_register(&bus->dev);
->> >   	if (err) {
->> >   		pr_err("mii_bus %s failed to register\n", bus->id);
->> > 
->> > 
->> yep, it's the same as mine, but I thought, that MDIOBUS_UNREGISTERED is not
->> correct name for this state :) Anyway, thank you for suggestion
->> 
+
+Am 28.09.21 um 12:59 schrieb Heiko Carstens:
+> On Thu, Sep 09, 2021 at 06:22:39PM +0200, David Hildenbrand wrote:
+>> Resend because I missed ccing people on the actual patches ...
+>>
+>> RFC because the patches are essentially untested and I did not actually
+>> try to trigger any of the things these patches are supposed to fix. It
+>> merely matches my current understanding (and what other code does :) ). I
+>> did compile-test as far as possible.
+>>
+>> After learning more about the wonderful world of page tables and their
+>> interaction with the mmap_sem and VMAs, I spotted some issues in our
+>> page table walkers that allow user space to trigger nasty behavior when
+>> playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
+>> should be hard to trigger, others are fairly easy because we provide
+>> conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
+>>
+>> Future work:
+>> - Don't use get_locked_pte() when it's not required to actually allocate
+>>    page tables -- similar to how storage keys are now handled. Examples are
+>>    get_pgste() and __gmap_zap.
+>> - Don't use get_locked_pte() and instead let page fault logic allocate page
+>>    tables when we actually do need page tables -- also, similar to how
+>>    storage keys are now handled. Examples are set_pgste_bits() and
+>>    pgste_perform_essa().
+>> - Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
+>>    __gmap_zap() that's very easy.
+>>
+>> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+>> Cc: Janosch Frank <frankja@linux.ibm.com>
+>> Cc: Cornelia Huck <cohuck@redhat.com>
+>> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+>> Cc: Heiko Carstens <hca@linux.ibm.com>
+>> Cc: Vasily Gorbik <gor@linux.ibm.com>
+>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+>> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+>> Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
 > 
-> It's not actually the same.  The state has to be set before the
-> device_register() or there is still a leak.
+> For the whole series:
+> Acked-by: Heiko Carstens <hca@linux.ibm.com>
 > 
-Ah, I see... I forgot to handle possible device_register() error. Will 
-send v2 soon, thank you
+> Christian, given that this is mostly about KVM I'd assume this should
+> go via the KVM tree. Patch 6 (pci_mmio) is already upstream.
 
-
-
-With regards,
-Pavel Skripkin
+Right, I think I will queue this even without testing for now.
+Claudio, is patch 7 ok for you with the explanation from David?
