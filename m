@@ -2,262 +2,528 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527C941AB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D114641AB0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239958AbhI1Iwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:52:38 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:48492
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239895AbhI1IwM (ORCPT
+        id S239844AbhI1Iv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:51:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52760 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239761AbhI1Ivn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:52:12 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 28 Sep 2021 04:51:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632819004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GzDX+vQGQswidEJZ9asw0Hf411IrZwGPqiRkhkcHu/Y=;
+        b=JJLefRrYMuLtdK+xEOVfta7s4hl8K3CqfqwmtCguxf2l5v0I7QuF3GFhCw5y6KAMtboLEa
+        RnYQWAKxjPcFQHJkYi1ZrsajGf+i856HxOZBVTkBzojaWK6cDFNXM3xmCj4HNk2hVsdJGJ
+        Hv/h4Z9oFPlW4McVwaw7Z+sb99MQVko=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-3ueACyZEMPq7Doa0vDnGLA-1; Tue, 28 Sep 2021 04:50:02 -0400
+X-MC-Unique: 3ueACyZEMPq7Doa0vDnGLA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6006440257
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632819014;
-        bh=7tIJ+clHqy+CZwai/Om4gGD+ttDWFFGGGFnCE/+PWi8=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=D0QXdq+DVpt3NFgTJ8MjhgT47tkYBu5YnG9dE8F4RoIReHNdB39cdTYyh8ElXdCFY
-         j0FzoT6VIZHfKWCn3hpeo8JwjKjIJH3cTgdt8++QIlXb/LUFfcvN5EusZQP+XMgA6e
-         Vmp6l//N8c5QSl26WwjgVFKYYdpGv4XWX7y4X6V67h+yOrSQGu4hCU9nmIj1YQc6fB
-         AAORuGYGZI+nleOD5/l9yrSyITlJp7+2X7oUu2DeWrdttqra8MRccpxpEHL7mxeNsB
-         adBfmWOBZkVd8GtJ+LUifbOFIdtSG0x9Y4lJVRHQCE8a2x6DJ9WdZRmhyFXMk2oO7h
-         l8OpirdRxwmDg==
-Received: by mail-lf1-f69.google.com with SMTP id x33-20020a0565123fa100b003fcfd99073dso1127124lfa.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:50:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7tIJ+clHqy+CZwai/Om4gGD+ttDWFFGGGFnCE/+PWi8=;
-        b=Jj2nLpM/RQLCsu2LAUXhfTLF1+JTLX5uThTbMI0imqgG9Yv5yEoBUf4Z0iwjlt1McX
-         /uDAm+otiwbcfhv+o+RrJitXDW6rMZk8i3iAZvkqREDbSzbnnXWKRvVqz2xm4TVam0Gq
-         d844IfdGbxV6suzFCyxOziW6w9tFFaIwfLXGMdjto+o6NZar1Bu2CMLdeYghbm/5SeAL
-         ptS2qK9ExaQ7zZqo19tGv1vMn8z5sU2AyYbp7wyVUL2u0sQpaECaWAMIhw0ZqqQbTRA2
-         uR6QNhwVHTLJz7PshcEYQK0L9lXbbD4s6RP/0okQ89BC7CZG4+5KikYsGhQkZEUBXOyj
-         ehvA==
-X-Gm-Message-State: AOAM530weURS/m3LcHcM+B/60UvHymngnJ5og4kjqtB5pP68lrnBRKHP
-        3j+L9joH1W1/s17OZR3qiNgo/+eFCebkmKE66bYYdycdC0796aPzIGSPPwiyJoPDTczTqjev1Sg
-        niwMdlz/eLY4vntRz0dFItRNArA7FFzfvcl6VlPIGlQ==
-X-Received: by 2002:a2e:bba0:: with SMTP id y32mr4729611lje.135.1632819013560;
-        Tue, 28 Sep 2021 01:50:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXNIsIC74EHEhcaaIOoTj5Amse61yM2/pmnchBnUI0iS1c3lanOpAQelzFzUvbyrrH5gtK6Q==
-X-Received: by 2002:a2e:bba0:: with SMTP id y32mr4729585lje.135.1632819013368;
-        Tue, 28 Sep 2021 01:50:13 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id h13sm1848419lfl.205.2021.09.28.01.50.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 01:50:13 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 12/12] ARM: dts: exynos: use spaces instead of tabs around '='
-Date:   Tue, 28 Sep 2021 10:49:49 +0200
-Message-Id: <20210928084949.27939-13-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
-References: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B1411084686;
+        Tue, 28 Sep 2021 08:50:01 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E2C075C1C5;
+        Tue, 28 Sep 2021 08:49:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [RFC PATCH v2] fscache, 9p, afs,
+ nfs: Deal with some warnings from W=1
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        dhowells@redhat.com, linux-kernel@vger.kernel.org
+Date:   Tue, 28 Sep 2021 09:49:57 +0100
+Message-ID: <163281899704.2790286.9177774252843775348.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use spaces in Origen boards instead of tabs around '=' for simple
-property assignments, to match coding style.
+Deal with some warnings generated from make W=1:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ (1) Add/remove/fix kerneldoc parameters descriptions.
+
+ (2) afs_sillyrename() isn't an API functions, so remove the kerneldoc
+     annotation.
+
+ (3) The fscache object CREATE_OBJECT work state isn't used, so remove it.
+
+ (4) Move __add_fid() from between v9fs_fid_add() and its comment.
+
+ (5) 9p's caches_show() doesn't really make sense as an API function, show
+     remove the kerneldoc annotation.  It's also not prefixed with 'v9fs_'.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+cc: Anna Schumaker <anna.schumaker@netapp.com>
+cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-afs@lists.infradead.org
+cc: linux-nfs@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-doc@vger.kernel.org
 ---
- arch/arm/boot/dts/exynos4210-origen.dts | 24 ++++++++++++------------
- arch/arm/boot/dts/exynos4412-origen.dts | 14 +++++++-------
- 2 files changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos4210-origen.dts b/arch/arm/boot/dts/exynos4210-origen.dts
-index 1c5394152561..435fda60e86d 100644
---- a/arch/arm/boot/dts/exynos4210-origen.dts
-+++ b/arch/arm/boot/dts/exynos4210-origen.dts
-@@ -206,74 +206,74 @@ ldo3_reg: LDO3 {
- 			ldo4_reg: LDO4 {
- 				regulator-name = "VDD_RTC_1.8V";
- 				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt	= <1800000>;
-+				regulator-max-microvolt = <1800000>;
- 				regulator-always-on;
- 			};
+ fs/9p/fid.c            |   14 +++++++-------
+ fs/9p/v9fs.c           |    8 +++-----
+ fs/9p/vfs_addr.c       |   15 ++++++++++-----
+ fs/9p/vfs_file.c       |   33 ++++++++++++---------------------
+ fs/9p/vfs_inode.c      |   24 ++++++++++++++++--------
+ fs/9p/vfs_inode_dotl.c |   11 +++++++++--
+ fs/afs/dir_silly.c     |    4 ++--
+ fs/fscache/object.c    |    2 +-
+ fs/fscache/operation.c |    3 +++
+ fs/nfs_common/grace.c  |    1 -
+ 10 files changed, 63 insertions(+), 52 deletions(-)
+
+diff --git a/fs/9p/fid.c b/fs/9p/fid.c
+index 9d9de62592be..b8863dd0de5c 100644
+--- a/fs/9p/fid.c
++++ b/fs/9p/fid.c
+@@ -19,18 +19,18 @@
+ #include "v9fs_vfs.h"
+ #include "fid.h"
  
- 			ldo6_reg: LDO6 {
- 				regulator-name = "VMIPI_1.8V";
- 				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt	= <1800000>;
-+				regulator-max-microvolt = <1800000>;
- 				regulator-always-on;
- 			};
++static inline void __add_fid(struct dentry *dentry, struct p9_fid *fid)
++{
++	hlist_add_head(&fid->dlist, (struct hlist_head *)&dentry->d_fsdata);
++}
++
++
+ /**
+  * v9fs_fid_add - add a fid to a dentry
+  * @dentry: dentry that the fid is being added to
+  * @fid: fid to add
+  *
+  */
+-
+-static inline void __add_fid(struct dentry *dentry, struct p9_fid *fid)
+-{
+-	hlist_add_head(&fid->dlist, (struct hlist_head *)&dentry->d_fsdata);
+-}
+-
+ void v9fs_fid_add(struct dentry *dentry, struct p9_fid *fid)
+ {
+ 	spin_lock(&dentry->d_lock);
+@@ -67,7 +67,7 @@ static struct p9_fid *v9fs_fid_find_inode(struct inode *inode, kuid_t uid)
  
- 			ldo7_reg: LDO7 {
- 				regulator-name = "VDD_AUD_1.8V";
- 				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt	= <1800000>;
-+				regulator-max-microvolt = <1800000>;
- 			};
+ /**
+  * v9fs_open_fid_add - add an open fid to an inode
+- * @dentry: inode that the fid is being added to
++ * @inode: inode that the fid is being added to
+  * @fid: fid to add
+  *
+  */
+diff --git a/fs/9p/v9fs.c b/fs/9p/v9fs.c
+index cdb99507ef33..2e0fa7c932db 100644
+--- a/fs/9p/v9fs.c
++++ b/fs/9p/v9fs.c
+@@ -155,6 +155,7 @@ int v9fs_show_options(struct seq_file *m, struct dentry *root)
+ /**
+  * v9fs_parse_options - parse mount options into session structure
+  * @v9ses: existing v9fs session information
++ * @opts: The mount option string
+  *
+  * Return 0 upon success, -ERRNO upon failure.
+  */
+@@ -542,12 +543,9 @@ extern int v9fs_error_init(void);
+ static struct kobject *v9fs_kobj;
  
- 			ldo8_reg: LDO8 {
- 				regulator-name = "VADC_3.3V";
- 				regulator-min-microvolt = <3300000>;
--				regulator-max-microvolt	= <3300000>;
-+				regulator-max-microvolt = <3300000>;
- 			};
+ #ifdef CONFIG_9P_FSCACHE
+-/**
+- * caches_show - list caches associated with a session
+- *
+- * Returns the size of buffer written.
++/*
++ * List caches associated with a session
+  */
+-
+ static ssize_t caches_show(struct kobject *kobj,
+ 			   struct kobj_attribute *attr,
+ 			   char *buf)
+diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
+index 15017b7ce8f8..cff99f5c05e3 100644
+--- a/fs/9p/vfs_addr.c
++++ b/fs/9p/vfs_addr.c
+@@ -61,7 +61,7 @@ static void v9fs_init_rreq(struct netfs_read_request *rreq, struct file *file)
+ }
  
- 			ldo9_reg: LDO9 {
- 				regulator-name = "DVDD_SWB_2.8V";
- 				regulator-min-microvolt = <2800000>;
--				regulator-max-microvolt	= <2800000>;
-+				regulator-max-microvolt = <2800000>;
- 				regulator-always-on;
- 			};
+ /**
+- * v9fs_req_ceanup - Cleanup request initialized by v9fs_init_rreq
++ * v9fs_req_cleanup - Cleanup request initialized by v9fs_init_rreq
+  * @mapping: unused mapping of request to cleanup
+  * @priv: private data to cleanup, a fid, guaranted non-null.
+  */
+@@ -104,7 +104,7 @@ static const struct netfs_read_request_ops v9fs_req_ops = {
  
- 			ldo10_reg: LDO10 {
- 				regulator-name = "VDD_PLL_1.1V";
- 				regulator-min-microvolt = <1100000>;
--				regulator-max-microvolt	= <1100000>;
-+				regulator-max-microvolt = <1100000>;
- 				regulator-always-on;
- 			};
+ /**
+  * v9fs_vfs_readpage - read an entire page in from 9P
+- * @filp: file being read
++ * @file: file being read
+  * @page: structure to page
+  *
+  */
+@@ -124,6 +124,8 @@ static void v9fs_vfs_readahead(struct readahead_control *ractl)
  
- 			ldo11_reg: LDO11 {
- 				regulator-name = "VDD_AUD_3V";
- 				regulator-min-microvolt = <3000000>;
--				regulator-max-microvolt	= <3000000>;
-+				regulator-max-microvolt = <3000000>;
- 			};
+ /**
+  * v9fs_release_page - release the private state associated with a page
++ * @page: The page to be released
++ * @gfp: The caller's allocation restrictions
+  *
+  * Returns 1 if the page can be released, false otherwise.
+  */
+@@ -144,9 +146,9 @@ static int v9fs_release_page(struct page *page, gfp_t gfp)
  
- 			ldo14_reg: LDO14 {
- 				regulator-name = "AVDD18_SWB_1.8V";
- 				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt	= <1800000>;
-+				regulator-max-microvolt = <1800000>;
- 				regulator-always-on;
- 			};
+ /**
+  * v9fs_invalidate_page - Invalidate a page completely or partially
+- *
+- * @page: structure to page
+- * @offset: offset in the page
++ * @page: The page to be invalidated
++ * @offset: offset of the invalidated region
++ * @length: length of the invalidated region
+  */
  
- 			ldo17_reg: LDO17 {
- 				regulator-name = "VDD_SWB_3.3V";
- 				regulator-min-microvolt = <3300000>;
--				regulator-max-microvolt	= <3300000>;
-+				regulator-max-microvolt = <3300000>;
- 				regulator-always-on;
- 			};
+ static void v9fs_invalidate_page(struct page *page, unsigned int offset,
+@@ -206,6 +208,8 @@ static int v9fs_vfs_writepage(struct page *page, struct writeback_control *wbc)
  
- 			ldo21_reg: LDO21 {
- 				regulator-name = "VDD_MIF_1.2V";
- 				regulator-min-microvolt = <1200000>;
--				regulator-max-microvolt	= <1200000>;
-+				regulator-max-microvolt = <1200000>;
- 				regulator-always-on;
- 			};
+ /**
+  * v9fs_launder_page - Writeback a dirty page
++ * @page: The page to be cleaned up
++ *
+  * Returns 0 on success.
+  */
  
- 			buck1_reg: BUCK1 {
- 				regulator-name = "VDD_ARM_1.2V";
- 				regulator-min-microvolt = <950000>;
--				regulator-max-microvolt	= <1350000>;
-+				regulator-max-microvolt = <1350000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 			};
-@@ -281,7 +281,7 @@ buck1_reg: BUCK1 {
- 			buck2_reg: BUCK2 {
- 				regulator-name = "VDD_INT_1.1V";
- 				regulator-min-microvolt = <900000>;
--				regulator-max-microvolt	= <1100000>;
-+				regulator-max-microvolt = <1100000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 			};
-diff --git a/arch/arm/boot/dts/exynos4412-origen.dts b/arch/arm/boot/dts/exynos4412-origen.dts
-index 5479ef09f9f3..e6aec5facabf 100644
---- a/arch/arm/boot/dts/exynos4412-origen.dts
-+++ b/arch/arm/boot/dts/exynos4412-origen.dts
-@@ -382,7 +382,7 @@ ldo28_reg: LDO28 {
- 			buck1_reg: BUCK1 {
- 				regulator-name = "VDD_MIF";
- 				regulator-min-microvolt = <950000>;
--				regulator-max-microvolt	= <1100000>;
-+				regulator-max-microvolt = <1100000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
-@@ -391,7 +391,7 @@ buck1_reg: BUCK1 {
- 			buck2_reg: BUCK2 {
- 				regulator-name = "VDD_ARM";
- 				regulator-min-microvolt = <900000>;
--				regulator-max-microvolt	= <1350000>;
-+				regulator-max-microvolt = <1350000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
-@@ -400,7 +400,7 @@ buck2_reg: BUCK2 {
- 			buck3_reg: BUCK3 {
- 				regulator-name = "VDD_INT";
- 				regulator-min-microvolt = <900000>;
--				regulator-max-microvolt	= <1200000>;
-+				regulator-max-microvolt = <1200000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
-@@ -409,7 +409,7 @@ buck3_reg: BUCK3 {
- 			buck4_reg: BUCK4 {
- 				regulator-name = "VDD_G3D";
- 				regulator-min-microvolt = <750000>;
--				regulator-max-microvolt	= <1500000>;
-+				regulator-max-microvolt = <1500000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
-@@ -418,7 +418,7 @@ buck4_reg: BUCK4 {
- 			buck5_reg: BUCK5 {
- 				regulator-name = "VDD_M12";
- 				regulator-min-microvolt = <750000>;
--				regulator-max-microvolt	= <1500000>;
-+				regulator-max-microvolt = <1500000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
-@@ -427,7 +427,7 @@ buck5_reg: BUCK5 {
- 			buck6_reg: BUCK6 {
- 				regulator-name = "VDD12_5M";
- 				regulator-min-microvolt = <750000>;
--				regulator-max-microvolt	= <1500000>;
-+				regulator-max-microvolt = <1500000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
-@@ -436,7 +436,7 @@ buck6_reg: BUCK6 {
- 			buck9_reg: BUCK9 {
- 				regulator-name = "VDDF28_EMMC";
- 				regulator-min-microvolt = <750000>;
--				regulator-max-microvolt	= <3000000>;
-+				regulator-max-microvolt = <3000000>;
- 				regulator-always-on;
- 				regulator-boot-on;
- 				op_mode = <1>; /* Normal Mode */
--- 
-2.30.2
+@@ -225,6 +229,7 @@ static int v9fs_launder_page(struct page *page)
+ /**
+  * v9fs_direct_IO - 9P address space operation for direct I/O
+  * @iocb: target I/O control block
++ * @iter: The data/buffer to use
+  *
+  * The presence of v9fs_direct_IO() in the address space ops vector
+  * allowes open() O_DIRECT flags which would have failed otherwise.
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index 7ed76a4c18f1..80052497f00f 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -359,14 +359,11 @@ static int v9fs_file_flock_dotl(struct file *filp, int cmd,
+ }
+ 
+ /**
+- * v9fs_file_read - read from a file
+- * @filp: file pointer to read
+- * @udata: user data buffer to read data into
+- * @count: size of buffer
+- * @offset: offset at which to read data
++ * v9fs_file_read_iter - read from a file
++ * @iocb: The operation parameters
++ * @to: The buffer to read into
+  *
+  */
+-
+ static ssize_t
+ v9fs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+@@ -388,11 +385,9 @@ v9fs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ }
+ 
+ /**
+- * v9fs_file_write - write to a file
+- * @filp: file pointer to write
+- * @data: data buffer to write data from
+- * @count: size of buffer
+- * @offset: offset at which to write data
++ * v9fs_file_write_iter - write to a file
++ * @iocb: The operation parameters
++ * @from: The data to write
+  *
+  */
+ static ssize_t
+@@ -574,11 +569,9 @@ v9fs_vm_page_mkwrite(struct vm_fault *vmf)
+ }
+ 
+ /**
+- * v9fs_mmap_file_read - read from a file
+- * @filp: file pointer to read
+- * @data: user data buffer to read data into
+- * @count: size of buffer
+- * @offset: offset at which to read data
++ * v9fs_mmap_file_read_iter - read from a file
++ * @iocb: The operation parameters
++ * @to: The buffer to read into
+  *
+  */
+ static ssize_t
+@@ -589,11 +582,9 @@ v9fs_mmap_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ }
+ 
+ /**
+- * v9fs_mmap_file_write - write to a file
+- * @filp: file pointer to write
+- * @data: data buffer to write data from
+- * @count: size of buffer
+- * @offset: offset at which to write data
++ * v9fs_mmap_file_write_iter - write to a file
++ * @iocb: The operation parameters
++ * @from: The data to write
+  *
+  */
+ static ssize_t
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index 795706520b5e..08f48b70a741 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -218,7 +218,7 @@ v9fs_blank_wstat(struct p9_wstat *wstat)
+ 
+ /**
+  * v9fs_alloc_inode - helper function to allocate an inode
+- *
++ * @sb: The superblock to allocate the inode from
+  */
+ struct inode *v9fs_alloc_inode(struct super_block *sb)
+ {
+@@ -238,7 +238,7 @@ struct inode *v9fs_alloc_inode(struct super_block *sb)
+ 
+ /**
+  * v9fs_free_inode - destroy an inode
+- *
++ * @inode: The inode to be freed
+  */
+ 
+ void v9fs_free_inode(struct inode *inode)
+@@ -343,7 +343,7 @@ int v9fs_init_inode(struct v9fs_session_info *v9ses,
+  * v9fs_get_inode - helper function to setup an inode
+  * @sb: superblock
+  * @mode: mode to setup inode with
+- *
++ * @rdev: The device numbers to set
+  */
+ 
+ struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode, dev_t rdev)
+@@ -369,7 +369,7 @@ struct inode *v9fs_get_inode(struct super_block *sb, umode_t mode, dev_t rdev)
+ }
+ 
+ /**
+- * v9fs_clear_inode - release an inode
++ * v9fs_evict_inode - Remove an inode from the inode cache
+  * @inode: inode to release
+  *
+  */
+@@ -665,14 +665,15 @@ v9fs_create(struct v9fs_session_info *v9ses, struct inode *dir,
+ 
+ /**
+  * v9fs_vfs_create - VFS hook to create a regular file
++ * @mnt_userns: The user namespace of the mount
++ * @dir: The parent directory
++ * @dentry: The name of file to be created
++ * @mode: The UNIX file mode to set
++ * @excl: True if the file must not yet exist
+  *
+  * open(.., O_CREAT) is handled in v9fs_vfs_atomic_open().  This is only called
+  * for mknod(2).
+  *
+- * @dir: directory inode that is being created
+- * @dentry:  dentry that is being deleted
+- * @mode: create permissions
+- *
+  */
+ 
+ static int
+@@ -696,6 +697,7 @@ v9fs_vfs_create(struct user_namespace *mnt_userns, struct inode *dir,
+ 
+ /**
+  * v9fs_vfs_mkdir - VFS mkdir hook to create a directory
++ * @mnt_userns: The user namespace of the mount
+  * @dir:  inode that is being unlinked
+  * @dentry: dentry that is being unlinked
+  * @mode: mode for new directory
+@@ -900,10 +902,12 @@ int v9fs_vfs_rmdir(struct inode *i, struct dentry *d)
+ 
+ /**
+  * v9fs_vfs_rename - VFS hook to rename an inode
++ * @mnt_userns: The user namespace of the mount
+  * @old_dir:  old dir inode
+  * @old_dentry: old dentry
+  * @new_dir: new dir inode
+  * @new_dentry: new dentry
++ * @flags: RENAME_* flags
+  *
+  */
+ 
+@@ -1009,6 +1013,7 @@ v9fs_vfs_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 
+ /**
+  * v9fs_vfs_getattr - retrieve file metadata
++ * @mnt_userns: The user namespace of the mount
+  * @path: Object to query
+  * @stat: metadata structure to populate
+  * @request_mask: Mask of STATX_xxx flags indicating the caller's interests
+@@ -1050,6 +1055,7 @@ v9fs_vfs_getattr(struct user_namespace *mnt_userns, const struct path *path,
+ 
+ /**
+  * v9fs_vfs_setattr - set file metadata
++ * @mnt_userns: The user namespace of the mount
+  * @dentry: file whose metadata to set
+  * @iattr: metadata assignment structure
+  *
+@@ -1285,6 +1291,7 @@ static int v9fs_vfs_mkspecial(struct inode *dir, struct dentry *dentry,
+ 
+ /**
+  * v9fs_vfs_symlink - helper function to create symlinks
++ * @mnt_userns: The user namespace of the mount
+  * @dir: directory inode containing symlink
+  * @dentry: dentry for symlink
+  * @symname: symlink data
+@@ -1340,6 +1347,7 @@ v9fs_vfs_link(struct dentry *old_dentry, struct inode *dir,
+ 
+ /**
+  * v9fs_vfs_mknod - create a special file
++ * @mnt_userns: The user namespace of the mount
+  * @dir: inode destination for new link
+  * @dentry: dentry for file
+  * @mode: mode for creation
+diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+index e1c0240b51c0..01b9e1281a29 100644
+--- a/fs/9p/vfs_inode_dotl.c
++++ b/fs/9p/vfs_inode_dotl.c
+@@ -37,7 +37,10 @@ v9fs_vfs_mknod_dotl(struct user_namespace *mnt_userns, struct inode *dir,
+ 		    struct dentry *dentry, umode_t omode, dev_t rdev);
+ 
+ /**
+- * v9fs_get_fsgid_for_create - Helper function to get the gid for creating a
++ * v9fs_get_fsgid_for_create - Helper function to get the gid for a new object
++ * @dir_inode: The directory inode
++ *
++ * Helper function to get the gid for creating a
+  * new file system object. This checks the S_ISGID to determine the owning
+  * group of the new file system object.
+  */
+@@ -211,12 +214,13 @@ int v9fs_open_to_dotl_flags(int flags)
+ 
+ /**
+  * v9fs_vfs_create_dotl - VFS hook to create files for 9P2000.L protocol.
++ * @mnt_userns: The user namespace of the mount
+  * @dir: directory inode that is being created
+  * @dentry:  dentry that is being deleted
+  * @omode: create permissions
++ * @excl: True if the file must not yet exist
+  *
+  */
+-
+ static int
+ v9fs_vfs_create_dotl(struct user_namespace *mnt_userns, struct inode *dir,
+ 		     struct dentry *dentry, umode_t omode, bool excl)
+@@ -361,6 +365,7 @@ v9fs_vfs_atomic_open_dotl(struct inode *dir, struct dentry *dentry,
+ 
+ /**
+  * v9fs_vfs_mkdir_dotl - VFS mkdir hook to create a directory
++ * @mnt_userns: The user namespace of the mount
+  * @dir:  inode that is being unlinked
+  * @dentry: dentry that is being unlinked
+  * @omode: mode for new directory
+@@ -537,6 +542,7 @@ static int v9fs_mapped_iattr_valid(int iattr_valid)
+ 
+ /**
+  * v9fs_vfs_setattr_dotl - set file metadata
++ * @mnt_userns: The user namespace of the mount
+  * @dentry: file whose metadata to set
+  * @iattr: metadata assignment structure
+  *
+@@ -816,6 +822,7 @@ v9fs_vfs_link_dotl(struct dentry *old_dentry, struct inode *dir,
+ 
+ /**
+  * v9fs_vfs_mknod_dotl - create a special file
++ * @mnt_userns: The user namespace of the mount
+  * @dir: inode destination for new link
+  * @dentry: dentry for file
+  * @omode: mode for creation
+diff --git a/fs/afs/dir_silly.c b/fs/afs/dir_silly.c
+index dae9a57d7ec0..45cfd50a9521 100644
+--- a/fs/afs/dir_silly.c
++++ b/fs/afs/dir_silly.c
+@@ -86,8 +86,8 @@ static int afs_do_silly_rename(struct afs_vnode *dvnode, struct afs_vnode *vnode
+ 	return afs_do_sync_operation(op);
+ }
+ 
+-/**
+- * afs_sillyrename - Perform a silly-rename of a dentry
++/*
++ * Perform silly-rename of a dentry.
+  *
+  * AFS is stateless and the server doesn't know when the client is holding a
+  * file open.  To prevent application problems when a file is unlinked while
+diff --git a/fs/fscache/object.c b/fs/fscache/object.c
+index d7eab46dd826..86ad941726f7 100644
+--- a/fs/fscache/object.c
++++ b/fs/fscache/object.c
+@@ -77,7 +77,6 @@ static WORK_STATE(INIT_OBJECT,		"INIT", fscache_initialise_object);
+ static WORK_STATE(PARENT_READY,		"PRDY", fscache_parent_ready);
+ static WORK_STATE(ABORT_INIT,		"ABRT", fscache_abort_initialisation);
+ static WORK_STATE(LOOK_UP_OBJECT,	"LOOK", fscache_look_up_object);
+-static WORK_STATE(CREATE_OBJECT,	"CRTO", fscache_look_up_object);
+ static WORK_STATE(OBJECT_AVAILABLE,	"AVBL", fscache_object_available);
+ static WORK_STATE(JUMPSTART_DEPS,	"JUMP", fscache_jumpstart_dependents);
+ 
+@@ -907,6 +906,7 @@ static void fscache_dequeue_object(struct fscache_object *object)
+  * @object: The object to ask about
+  * @data: The auxiliary data for the object
+  * @datalen: The size of the auxiliary data
++ * @object_size: The size of the object according to the server.
+  *
+  * This function consults the netfs about the coherency state of an object.
+  * The caller must be holding a ref on cookie->n_active (held by
+diff --git a/fs/fscache/operation.c b/fs/fscache/operation.c
+index 433877107700..e002cdfaf3cc 100644
+--- a/fs/fscache/operation.c
++++ b/fs/fscache/operation.c
+@@ -22,7 +22,10 @@ static void fscache_operation_dummy_cancel(struct fscache_operation *op)
+ 
+ /**
+  * fscache_operation_init - Do basic initialisation of an operation
++ * @cookie: The cookie to operate on
+  * @op: The operation to initialise
++ * @processor: The function to perform the operation
++ * @cancel: A function to handle operation cancellation
+  * @release: The release function to assign
+  *
+  * Do basic initialisation of an operation.  The caller must still set flags,
+diff --git a/fs/nfs_common/grace.c b/fs/nfs_common/grace.c
+index edec45831585..0a9b72685f98 100644
+--- a/fs/nfs_common/grace.c
++++ b/fs/nfs_common/grace.c
+@@ -42,7 +42,6 @@ EXPORT_SYMBOL_GPL(locks_start_grace);
+ 
+ /**
+  * locks_end_grace
+- * @net: net namespace that this lock manager belongs to
+  * @lm: who this grace period is for
+  *
+  * Call this function to state that the given lock manager is ready to
+
 
