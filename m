@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CEC41B2E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783E441B2D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 17:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241542AbhI1P1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 11:27:12 -0400
-Received: from mga14.intel.com ([192.55.52.115]:12961 "EHLO mga14.intel.com"
+        id S241523AbhI1PVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:21:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241455AbhI1P1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:27:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224381066"
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="224381066"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 08:23:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="538340410"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Sep 2021 08:23:40 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/intel: Update event constraints for ICX
-Date:   Tue, 28 Sep 2021 08:19:03 -0700
-Message-Id: <1632842343-25862-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S241405AbhI1PVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 11:21:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8CBE61213;
+        Tue, 28 Sep 2021 15:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632842366;
+        bh=bycBfj7a7y99K5/y/PMobW5rEQpsQjstRkBVVLsg87A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gk6Cm1NdPgAYBtNQQcgvZOeOqFNgX2Rq/ZDqcIBit5BqcgE5nJFu/usr7Cejuz8Yv
+         f2wiClv1fwCiKdp1BXpGVk9lXtCftKtafwET6KX/9O30VwRlrduaXn/xWN/VPoq8ie
+         ffMFGvWxlRfhlPGZNAFbuEv8htFkKTafxNyPP0Q51j54LPUxbjQabJar3i226mfo5W
+         ixoFHf9NsjGfhO6y+Ohg9cfPPCIam86Ep+LXnKopMXH4M1vsLtm5CUl1MzpsadoHJy
+         FBpeCkEccqeCTnBb5qasiK1Mm5DP1BPb1yO4bhtP/O5Ueo3bTzcrkic5mhzaMXDNdK
+         vQuzrIo0H2+yQ==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: skip f2fs_preallocate_blocks() for overwrite case
+Date:   Tue, 28 Sep 2021 23:19:11 +0800
+Message-Id: <20210928151911.11189-1-chao@kernel.org>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+In f2fs_file_write_iter(), let's use f2fs_overwrite_io() to
+check whethere it is overwrite case, for such case, we can skip
+f2fs_preallocate_blocks() in order to avoid f2fs_do_map_lock(),
+which may be blocked by checkpoint() potentially.
 
-According to the latest event list, the event encoding 0xEF is only
-available on the first 4 counters. Add it into the event constraints
-table.
-
-Fixes: 6017608936c1 ("perf/x86/intel: Add Icelake support")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- arch/x86/events/intel/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/f2fs/file.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 7011e87..9a04443 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -263,6 +263,7 @@ static struct event_constraint intel_icl_event_constraints[] = {
- 	INTEL_EVENT_CONSTRAINT_RANGE(0xa8, 0xb0, 0xf),
- 	INTEL_EVENT_CONSTRAINT_RANGE(0xb7, 0xbd, 0xf),
- 	INTEL_EVENT_CONSTRAINT_RANGE(0xd0, 0xe6, 0xf),
-+	INTEL_EVENT_CONSTRAINT(0xef, 0xf),
- 	INTEL_EVENT_CONSTRAINT_RANGE(0xf0, 0xf4, 0xf),
- 	EVENT_CONSTRAINT_END
- };
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 13deae03df06..51fecb2f4db5 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -4321,6 +4321,10 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		preallocated = true;
+ 		target_size = iocb->ki_pos + iov_iter_count(from);
+ 
++		if (f2fs_overwrite_io(inode, iocb->ki_pos,
++						iov_iter_count(from)))
++			goto write;
++
+ 		err = f2fs_preallocate_blocks(iocb, from);
+ 		if (err) {
+ out_err:
 -- 
-2.7.4
+2.32.0
 
