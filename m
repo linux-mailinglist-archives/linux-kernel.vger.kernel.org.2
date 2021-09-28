@@ -2,285 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD7041AED9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E2A41AEDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240536AbhI1MXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:23:00 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57144 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240560AbhI1MW7 (ORCPT
+        id S240662AbhI1MX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:23:27 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56348
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240560AbhI1MX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:22:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632831680; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4mvy6jjxS0ooczx9EnQFRgss43by5+4IkFrZGEXls7Q=;
- b=saFuLkZ9Kx4CxnR7hTzFgTnyCobKVUoZcBVdLT+I6YiJam4RVTAZPwIRw5Hu+goV1dHd5PyN
- l1lkKtkj6hA/ToclzRWifCawk3Q8ID6jkN/r4p2HQZi4872LPsWUCX0K5yKRK9ZFNXSILG2C
- Bmgb+ErpClhYTYWI8B/EAVrcS5o=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 615308af713d5d6f967dd96a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 12:21:03
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08ABDC43635; Tue, 28 Sep 2021 12:21:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Tue, 28 Sep 2021 08:23:26 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8169CC4360C;
-        Tue, 28 Sep 2021 12:21:00 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 29D4D40827
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:21:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632831706;
+        bh=OfxwTguAAwbeZQgJ80ueoQgTshBZ+S7XY57UrX7LQSQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=DmG3nV3Q/1zATLZPaVn/5L7nPiWoj3O+XfgPAusfMfzMpZzSOuEJKOtvW9UM2iQ2M
+         gfy3qGkirkhNQMLfrmk1UlaFqOO0s8mRJTmfzhke+vTQu94yK0vkyraA3GHcMzKtPz
+         5m9Sovq2mUqrUyXVFd1l/DWcvVt47bKgReQkliEQkoNXpN0Zw1x7d90WeYkgkb7rkK
+         j8g0rYTf0FZwSjd1estkKcgzt8/t5iBeOCZa5fGJBdBE92S3I444w+8nobI/iL4ybJ
+         omxLx+BF/IL3wzeVmfStu1NC10QMeibIowYA2Cb0WU/D/8SCRQTd3vBln0/dmzJwex
+         nKs6VobAAIugQ==
+Received: by mail-lf1-f70.google.com with SMTP id 12-20020ac2484c000000b003fcb3298d00so16020093lfy.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:21:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OfxwTguAAwbeZQgJ80ueoQgTshBZ+S7XY57UrX7LQSQ=;
+        b=x4/OUwz5CqOwpBU3p7JpKRVWO9mJdnBCN2izpJVacASCZo/lbICAJlvwFyC4ITyoeA
+         K6xHt4tzhx+ezjaQeKUo0ZaGHSsDctUGx8dajGhqtrpZn5k/+5pi65Ec/P3n1iCgBobI
+         NnAA50HpePe5SCIdpfpsANESFHlUyKkL0kEqdPrrFA03PmMvUGtBLVLWjQgnony1MrVu
+         G1cLOIHR6VsqjVr6CbSaixeo7VmiRJx1ToDEgGr8TB1GLxguHDm9p+eioY+/3XSytcNV
+         7MdFHJt0rASmeZtnhVglhGVhCWzT0W3NFAcODVCyZg+Kqgx/1doMw018xJppeZDMGOoO
+         rbpg==
+X-Gm-Message-State: AOAM531uRx44BgGv5TZsHOBkCvdV788W9SMdihiaUTZZYMpkdtIEXTZm
+        DnyL1OlLtTftiq3NhoLgEANXW2lESv2qooRl2DKSuGSt92I+AgLjHToeA6Ar0ln6Ap8QVlAWOP/
+        VWObmqgZ6HTQR0bjs/QCE29SjgZ6evR1ZvXgvBcPJzA==
+X-Received: by 2002:a05:6512:114d:: with SMTP id m13mr5424602lfg.303.1632831705000;
+        Tue, 28 Sep 2021 05:21:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0vy5vZrqnYYaMKL16pGzHUs9IX7TEGREv9QsV/r46W3ZYpEP3iSl0+DfWN2eepyhKMjjDmg==
+X-Received: by 2002:a05:6512:114d:: with SMTP id m13mr5424585lfg.303.1632831704789;
+        Tue, 28 Sep 2021 05:21:44 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id v138sm2097090lfa.120.2021.09.28.05.21.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 05:21:44 -0700 (PDT)
+Subject: Re: [PATCH 06/12] regulator: dt-bindings: samsung,s5m8767: convert to
+ dtschema
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+References: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
+ <20210928084949.27939-7-krzysztof.kozlowski@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <48ec9ee9-0fc6-4c25-3e3a-1395286ee89d@canonical.com>
+Date:   Tue, 28 Sep 2021 14:21:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210928084949.27939-7-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 28 Sep 2021 17:51:00 +0530
-From:   mdalam@codeaurora.org
-To:     miquel.raynal@bootlin.com, mani@kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     sricharan@codeaurora.org
-Subject: Re: [PATCH 3/3] mtd: rawnand: qcom: Add support for page scope read
-In-Reply-To: <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
- <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
-Message-ID: <8765976685ca3a04af1c102a69c9ca63@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-15 15:27, Md Sadre Alam wrote:
-> QPIC V2.0 onwards QPIC controller support enhanced read mode
-> like page scope read and multi page read.
+On 28/09/2021 10:49, Krzysztof Kozlowski wrote:
+> Convert the regulators of Samsung S5M8767 PMIC to DT schema format.
 > 
-> In QPIC V1, SW is needed to write EXEC_CMD register for each
-> Code word and collect any Status related to that CW before
-> issueing EXEC_CMD for next CW.
-> 
-> Page scope command is truly a page mode command where SW is
-> required to issue EXEC_CMD only once for a page. Controller
-> HW takes care of Codeword specific details and automatically
-> returns status associated with each CW to BAM pipe, dedicated
-> for status deposition.
-> 
-> With this command, SW now can issue one read command for a page
-> and upon receiving completion interrupt, can process status,
-> that have already been deposited in memory through status BAM pipe.
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 77 
-> ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 71 insertions(+), 6 deletions(-)
+>  .../bindings/regulator/samsung,s5m8767.txt    | 23 +----
+>  .../bindings/regulator/samsung,s5m8767.yaml   | 83 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 +-
+>  3 files changed, 85 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
 > 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
-> b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 07448c4..257dec7e 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -157,6 +157,10 @@
->  #define	OP_FETCH_ID			0xb
->  #define	OP_RESET_DEVICE			0xd
-> 
-> +/* Auto status val and mask */
-> +#define	AUTO_STS_VAL			0x000B000B
-> +#define PAGE_SCOPE_READ			BIT(23)
+> diff --git a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+> index 6cd83d920155..a1c6eb6f07c8 100644
+> --- a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+> +++ b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+> @@ -48,28 +48,7 @@ Additional properties required if either of the optional properties are used:
+>     for dvs. The format of the gpio specifier depends in the gpio controller.
+>  
+>  
+> -Names of regulators supported by S5M8767 device:
+> -	- LDOn
+> -		  - valid values for n are 1 to 28
+> -		  - Example: LDO1, LDO2, LDO28
+> -	- BUCKn
+> -		  - valid values for n are 1 to 9.
+> -		  - Example: BUCK1, BUCK2, BUCK9
+> -Note: The 'n' in LDOn and BUCKn represents the LDO or BUCK number
+> -as per the datasheet of device.
+> -
+> -
+> -Optional properties of the nodes under "regulators" sub-node:
+> - - op_mode: describes the different operating modes of the LDO's with
+> -            power mode change in SOC. The different possible values are,
+> -             0 - always off mode
+> -             1 - on in normal mode
+> -             2 - low power mode
+> -             3 - suspend mode
+> - - s5m8767,pmic-ext-control-gpios: (optional) GPIO specifier for one
+> -                                   GPIO controlling this regulator
+> -                                   (enable/disable); This is valid only
+> -                                   for buck9.
 > +
->  /* Default Value for NAND_DEV_CMD_VLD */
->  #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
->  					 ERASE_START_VLD | SEQ_READ_START_VLD)
-> @@ -336,6 +340,8 @@ struct nandc_regs {
-> 
->  	__le32 erased_cw_detect_cfg_clr;
->  	__le32 erased_cw_detect_cfg_set;
-> +
-> +	__le32 auto_sts_en;
->  };
-> 
->  /*
-> @@ -421,6 +427,9 @@ struct qcom_nand_controller {
-> 
->  	u32 cmd1, vld;
->  	const struct qcom_nandc_props *props;
-> +
-> +	__le32 *status_buf;
-> +	int sts_buf_size;
->  };
-> 
->  /*
-> @@ -487,6 +496,7 @@ struct qcom_nandc_props {
->  	bool is_bam;
->  	bool is_qpic;
->  	bool qpic_v2;
-> +	bool page_scope;
->  	u32 dev_cmd_reg_start;
->  };
-> 
-> @@ -656,6 +666,8 @@ static __le32 *offset_to_nandc_reg(struct
-> nandc_regs *regs, int offset)
->  		return &regs->cfg1;
->  	case NAND_DEV0_ECC_CFG:
->  		return &regs->ecc_bch_cfg;
-> +	case NAND_AUTO_STATUS_EN:
-> +		return &regs->auto_sts_en;
->  	case NAND_READ_STATUS:
->  		return &regs->clrreadstatus;
->  	case NAND_DEV_CMD1:
-> @@ -756,10 +768,13 @@ static void update_rw_regs(struct qcom_nand_host
-> *host, int num_cw, bool read, i
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> 
->  	if (read) {
-> -		if (host->use_ecc)
-> +		if (host->use_ecc) {
->  			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
-> -		else
-> +			if (nandc->props->qpic_v2 && nandc->props->page_scope)
-> +				cmd |= PAGE_SCOPE_READ;
-> +		} else {
->  			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
-> +		}
->  	} else {
->  		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
->  	}
-> @@ -788,6 +803,9 @@ static void update_rw_regs(struct qcom_nand_host
-> *host, int num_cw, bool read, i
->  	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
->  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
-> 
-> +	if (nandc->props->qpic_v2 && nandc->props->page_scope)
-> +		nandc_set_reg(chip, NAND_AUTO_STATUS_EN, AUTO_STS_VAL);
-> +
->  	if (read)
->  		nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
->  				   host->cw_data : host->cw_size, 1);
-> @@ -1040,6 +1058,26 @@ static int prep_adm_dma_desc(struct
-> qcom_nand_controller *nandc, bool read,
->  }
-> 
->  /*
-> + * read_status_data_dma: prepares a DMA descriptor to transfer status 
-> from the
-> + *			 controller's status registers to buffer 'vaddr'
-> + * @reg_off:             offset within the controller's data buffer
-> + * @vaddr:               virtual address of the buffer we want to 
-> write to
-> + * @size:                DMA transaction size in bytes
-> + * @flags:               flags to control DMA descriptor preparation
-> + */
-> +static int read_status_data_dma(struct qcom_nand_controller *nandc,
-> int reg_off,
-> +				const u8 *vaddr, int size, unsigned int flags)
-> +{
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +
-> +	sg_set_buf(&bam_txn->sts_sgl[bam_txn->sts_sgl_pos],
-> +		   vaddr, size);
-> +	bam_txn->sts_sgl_pos++;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
->   * read_reg_dma:	prepares a descriptor to read a given number of
->   *			contiguous registers to the reg_read_buf pointer
->   *
-> @@ -1186,13 +1224,20 @@ config_nand_cw_read(struct nand_chip *chip,
-> bool use_ecc, int cw)
->  		write_reg_dma(nandc, reg, 4, NAND_BAM_NEXT_SGL);
-> 
->  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> 
->  	if (use_ecc) {
-> -		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> -		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> -			     NAND_BAM_NEXT_SGL);
-> +		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +			if (qcom_nandc_is_last_cw(ecc, cw))
-> +				write_reg_dma(nandc, NAND_EXEC_CMD, 1,
-> +					      NAND_BAM_NEXT_SGL);
-> +		} else {
-> +			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> +			read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> +			read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> +				     NAND_BAM_NEXT_SGL);
-> +		}
->  	} else {
-> +		write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
->  		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
->  	}
->  }
-> @@ -1959,6 +2004,8 @@ static int read_page_ecc(struct qcom_nand_host
-> *host, u8 *data_buf,
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->  	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
->  	int i, ret;
-> +	__le32 *status_buf_start = nandc->status_buf;
-> +	__le32 *status_buf_cw = nandc->status_buf;
-> 
->  	config_nand_page_read(chip);
-> 
-> @@ -1994,6 +2041,12 @@ static int read_page_ecc(struct qcom_nand_host
-> *host, u8 *data_buf,
->  			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
->  				      data_size, 0);
-> 
-> +		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +			read_status_data_dma(nandc, FLASH_BUF_ACC, (void *)status_buf_cw,
-> +					     (nandc->sts_buf_size >> 2), 0);
-> +			status_buf_cw += (nandc->sts_buf_size >> 4);
-> +		}
-> +
->  		/*
->  		 * when ecc is enabled, the controller doesn't read the real
->  		 * or dummy bad block markers in each chunk. To maintain a
-> @@ -2025,6 +2078,9 @@ static int read_page_ecc(struct qcom_nand_host
-> *host, u8 *data_buf,
->  		return ret;
->  	}
-> 
-> +	if (nandc->props->qpic_v2 && nandc->props->page_scope)
-> +		memmove(nandc->reg_read_buf, status_buf_start, nandc->sts_buf_size);
-> +
->  	return parse_read_errors(host, data_buf_start, oob_buf_start, page);
->  }
-> 
-> @@ -3005,6 +3061,14 @@ static int
-> qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
->  		}
->  	}
-> 
-> +	if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +		nandc->sts_buf_size = mtd->writesize == SZ_2K ? 48 : 96;
-> +		nandc->status_buf = devm_kzalloc(nandc->dev, nandc->sts_buf_size,
-> +						 GFP_KERNEL);
-> +		if (!nandc->status_buf)
-> +			return -ENOMEM;
-> +	}
-> +
->  	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
->  	if (ret)
->  		nand_cleanup(chip);
-> @@ -3197,6 +3261,7 @@ static const struct qcom_nandc_props 
-> sdx55_nandc_props = {
->  	.is_bam = true,
->  	.is_qpic = true,
->  	.qpic_v2 = true,
-> +	.page_scope = true,
->  	.dev_cmd_reg_start = 0x7000,
->  };
 
-Ping! Please provide me some updates on this patch.
+That's obviously not sufficient - I will remove full file in v2.
+
+Best regards,
+Krzysztof
