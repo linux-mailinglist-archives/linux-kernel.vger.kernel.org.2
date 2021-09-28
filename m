@@ -2,206 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E94641B14B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AB541B14D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241130AbhI1N4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:56:53 -0400
-Received: from mail-eopbgr80080.outbound.protection.outlook.com ([40.107.8.80]:54575
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241069AbhI1N4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:56:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nvycfFR17QuAwRBQlN1n3yJYaW4aQUzgoZFLwGRGtvGLH+E82ZEtIsRoh6d2p2viE5IeUcbE5aORyG2goga4cw1hLKLC/aUSUo+J56P7bKLdlL8Q/6vgeOjUi6+f7M+5i9ACx9x1lMAmYoY3hRMuinFq//2XyW8tJmZoPEYskccI6Rb2iNvPAQP35h4eH9Tqw4uno7dnlV7plMW7Pb7IirG41ugH3C+SaXg/BGP5t8l8W5Voq+x0pfLEL08+8n6h0HSs1JUL+ftkk2xKiLYwDWP6oNuQND0kO4DuPRNctHYsCyLzJUZqntI7YDzv5NBzjDrx9Ye0rfAymK77+IyIXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=MCPL+L4Hf4JEfg3oTDBbY/MMEpXT6PP35glbzT3dmDU=;
- b=GmL1C6wGoY+TE3TWT+jPvo2qN5/b2nAlb6wrPH9uCQljhLeLn20HB/dPObecXeuKAGhWsgClRk/Ztj/mZx3UY3CDIb2qW8FgRvo6Dm7h5USqZrTO1KIs3kPtWqQtfHtTEJV1YXVMPThech1fX2Wn6slUt5Hp53YLZ52jGE1CAz+3pfq7PpUCkG1/94rXg7FopWrLqZYkV6JtuoZs+oFhhZcfjkcov2owqmY/+2IVt79wQItBSK4oYpE0KoS6t0kehNfpJU/VOec8FPr3e/jnIS1BZh8XCjyJ95nklze8rYskwQm4jXivfRvJo7DuLndMf4XoiOWgYmxWMhI2LFlmzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MCPL+L4Hf4JEfg3oTDBbY/MMEpXT6PP35glbzT3dmDU=;
- b=JfRqvHH6JLlTTVi0jUbBxkc4eiMwLPmlhb0rjSSoxPUtSjFmb+BbU0ETMKgQUE29qK5S3JMiKb1ov83RnPtlYNEs/GnZ11rueCMN2F80Miushf4fsygXV7i94dHt5mTgsFB88ea/USZl2nEY44pkZOya5IKqGiMlctZ6S1bJZrA=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
- by VI1PR04MB5709.eurprd04.prod.outlook.com (2603:10a6:803:e3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 28 Sep
- 2021 13:55:10 +0000
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::e948:b382:34fc:c923]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::e948:b382:34fc:c923%7]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
- 13:55:10 +0000
-Subject: Re: [PATCH v2 2/2] vfio/fsl-mc: Add per device reset support
-To:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Li Yang <leoyang.li@nxp.com>, linux-arm-kernel@lists.infradead.org
-References: <20210922110530.24736-1-diana.craciun@oss.nxp.com>
- <20210922110530.24736-2-diana.craciun@oss.nxp.com>
-From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Message-ID: <e356b582-7911-6c8e-3201-dbfdbd3e3b1d@nxp.com>
-Date:   Tue, 28 Sep 2021 16:55:06 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20210922110530.24736-2-diana.craciun@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR05CA0019.eurprd05.prod.outlook.com (2603:10a6:205::32)
- To VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+        id S241026AbhI1N5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240990AbhI1N5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:57:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 754BB611CC;
+        Tue, 28 Sep 2021 13:55:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632837325;
+        bh=1k4v3tC1JwNUmjoQ8aHoDiZ4QQ9+9/A+kPEX9ZHMF9Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KYrmpqDDG75bPrLhyjM8HKBD7SzWu9rdQvm9QT1TqmWlk5rlf6jykaSqTKeccqlKv
+         FGZNc10SLlrsJYsotlMqMj8yonl7us8t7uigOthDC8Sdflh7CAANO0kGyNAhdM4gLH
+         lNNqDSW+pVNOiVYGEAtaAD7Fy0yrXIpvod8mwXjqKPrMSAiU3Q1mZtZ23V90IYVoVu
+         MzrnjcnUcny8T42hmoTZZFK2xIYyE3FE7aSgoGHIiVKLbnop/FH3Wvtxsgm5RrYHUu
+         cQHBkY1MbKaRy8jVtEw1d7fW+5y+qIN3Aq2Z9zP/yyhg5FWkrE4Q17flulCn9cVRAr
+         csyTy+1KwS78w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 467575C0807; Tue, 28 Sep 2021 06:55:25 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 06:55:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCHv2 0/5] arm64/irqentry: remove duplicate housekeeping of
+Message-ID: <20210928135525.GB880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924173615.GA42068@C02TD0UTHF1T.local>
+ <20210924225954.GN880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210927092303.GC1131@C02TD0UTHF1T.local>
+ <20210928000922.GY880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210928083222.GA1924@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Received: from [192.168.0.30] (95.76.3.165) by AM4PR05CA0019.eurprd05.prod.outlook.com (2603:10a6:205::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Tue, 28 Sep 2021 13:55:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 564575ab-1562-43a0-87c5-08d9828795e0
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5709:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5709C3A110A981180B70210AECA89@VI1PR04MB5709.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7KmeRL9jJphjnFPxP8a/bSleuJjXq43wdBfgXdbFMVyGkrGMj+/oZn5MqKFEUwpyrXiATUZtKjUPW73Ju1g3LLnizq0y4zO2uqpng61EcSNIcsEs8YgYe/e6Yk6a/KPyYhfTMkN2V1Fx0ulsUTSc87tuaL6VTx3ELArsZ8AOCzF7c6cytGC2PmvuVDI7Py11jfpB7CN0AOxb7/ACGFc/obu39yxaKDcHVFCWm7KT5yLBu8yL6wM/swfkdlQ76jRKW5lr6Yo9IIlG7V3ErN67z3a0DbE6Tk2oTf3MYrLeuZe/SftVrm/lYj5kCfSuYbBtKDqExiS3mYAzfTU43TpVQ/QmWPQB5djhjlcBK8xvrSNRWq9sZ7TqGcoCLxRGubloIYKo9a2jcyQHABonHmBeCf2/91J6FKQ8kvSlBhmDgmEDR6Q4rbInoREZZ/Tw2uynmFPI8F3SlR1G4N939uwmtm4pLIDviuVwaUS1H/n/XAGEX4cdccSIZPTZ3p8OvG54Ph4YPsVFFCKIoEwKae/9ZeKjmwyAu0cVlDkgLDmBhfpKfJa9hO2ilfN8ddib9li3NN6bgb1V9LcrnrEOkFFjZfdq/m6aj6AkWOPIUtAJgR357NUgAeghYp0iFV5d40V7N6/PI2BY6rTbmVc2uMftjGfNx8TW+88USW64xZQ/cHURzhgG61iiY34qQ9m5N9jhVfHVDO3qxxtQNwsgh4kZ+1HkO+ca60sixsrZyvE8MgllH+1bwBaKVR7iH4D27G8wLWbLETH05qIQ6ZT4eXHZAQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52116002)(86362001)(4326008)(2616005)(956004)(5660300002)(38100700002)(38350700002)(44832011)(16576012)(83380400001)(8936002)(31686004)(66946007)(498600001)(110136005)(6486002)(186003)(31696002)(2906002)(8676002)(53546011)(26005)(6666004)(66556008)(36756003)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TmdLdmJiV2krVmllY3JJa2lPTmlSN01qU2puOTdWa3BLb1VIZzlDSTg5emg3?=
- =?utf-8?B?NStDUy9IZkVmdEVvTzJFTmRmVndDU3Bac09pdHYyRVZ6b2hNNkZXUHI5b3Iv?=
- =?utf-8?B?RTMzY3VvbVJ6blZFVGkwT1RFRXRNQW1BbTVRaFJtRkZ1MTlWbW1UNVo1ckx0?=
- =?utf-8?B?WEVLbGtKRXpobEpOcmR1eSs0cjFldS9YbjBtK3Bibm9uSG5QSnBaM2d6cVNx?=
- =?utf-8?B?V3p6UFRtNjh0eHNFYUUyd2lucWJaQ1cxajEyUjhBS3BZNGphclprb1lDUHBV?=
- =?utf-8?B?Z0lKMWloTjZ4SmRzcE1mZTdTOXRrTUVxUVFmLzZMbHZmN3lPV2l2U3M0MVBT?=
- =?utf-8?B?d0YyZXc0WmFxZWFCNGI4QVBXRSs0M3pRajhwZWl1dGpNazY5NFNkVHF5QzdW?=
- =?utf-8?B?amNzTnBIcnp6OS9ncTJWYWJBVDVlOUx5d01HdENVNUp1b3pNUFV4U0RaQVBn?=
- =?utf-8?B?Ymp0UEpjZ3RYY0xBRjQzZCt3Q0ZYNUVTVDBjV0NMRkpmMXZUbGtJLzFsbG5i?=
- =?utf-8?B?TUpPK3pyL1IreU9Yek4rUTYyZnBhZXBOZnduZ2s2VHUrNEtiSytUTEZYTWFk?=
- =?utf-8?B?aUNUdEZjWWgya08wM1JNb2xkQUYzWUdQRm9nZzhGTTVtK1ArbXllN2trcXcv?=
- =?utf-8?B?dmNIVEg2REwvUUUvWGJpSnZPaytqR3J3Ny9XbEJiZVl3OThuOVJpdXJxWkdN?=
- =?utf-8?B?RERSUk1rR3FwTEVFS2JkMkxzSjVoRmZjZ0ZsMjFEbGUzcDFsZUc2ajh3L1R6?=
- =?utf-8?B?amxXWUJrMmpNL3N5VXluWlo4MENiN3VoOXRTQlFPbTR2dHcySndXbGUzVUFL?=
- =?utf-8?B?amxiNm1KRWpsTlV2YVdNNGhkVndkMjdMaVdseENqY2Vjb1JzdENicWJzMjE3?=
- =?utf-8?B?cnNOZy9NM3hXMkJuODFKby9mdEk3S0hkV2JUVjJrUklaNldPblBSbGJqcXdF?=
- =?utf-8?B?MmZ3N3daU3cxMGN2N05iYVVpazRkdFNwMHl6WkxUUS9YWVp0R1Z5OFBnbE1S?=
- =?utf-8?B?dGpiZHF0V3BGYVBmRkUrbGtBcGtySWcrUDVDUnZEcUN5c3o1OHFBT3V4cFg3?=
- =?utf-8?B?NmFvZFc2MTZyRHZnNEt0aXBQdkQ0azJGS2h6aUpKM1pHbWVRYnFnbjJyY0Ur?=
- =?utf-8?B?QldaR0I0cVBsakVlTG96Z29SaEF1V0ZBNWtScEo2ZzVibktsSlJKbkUxSGlr?=
- =?utf-8?B?M3RqT0g2ejZmdHNDWjlWTmw4cHNNM2dySXdaS2lXZ3hTOFNWc2x5dVZMVE53?=
- =?utf-8?B?Zkk2Z213c0hyMkdJWFY4UHRsRzJJSEp0RWJ3MGMvNGJ1TVBtSDVTTGlpUlVE?=
- =?utf-8?B?Ums4bEdrQWczZjhkSEIzUWZKOHVZVlVzeENIcjdQRVhlTUVhbEFsRFBpWXR4?=
- =?utf-8?B?ak0rM2x3dHZjblEzY0xjTjVYT2RDSmRPRFRIZno3RnhVRUpteE1uemE4K1Y2?=
- =?utf-8?B?VXBiaG5JUERxMHptNlBkU3hhenlrUTNXUGFvaUtsc1pyb2UyYW9nZ1JvdEYr?=
- =?utf-8?B?cFNKVUlwVmZqZS8vM2x2NFVHNVhCTGN6Um50Mk5uaHRMZDVDcDB3ZmlJbzJh?=
- =?utf-8?B?eVlibjNoMnVxbTFRTTNudlQ2VmQzbHRDVmlIejdtMkxpRStrR0lldVBsM3po?=
- =?utf-8?B?MjNTOEM2NnFTNkZmWkJHSVhXbmVNaWlydmZEK3M1WXI3MDdiZGtBSDdkQURn?=
- =?utf-8?B?dnhYdXpPWTJqa2NRNDB3RnR4N3dhNGFsS1FDMHYvc3FlUGovaVJ5L3RkUkUy?=
- =?utf-8?Q?0XzrfVggfFsGRaXIS51QDULyan/rOlwEwBc3Vqt?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 564575ab-1562-43a0-87c5-08d9828795e0
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 13:55:10.1718
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: brff/qIdMbw/TcO1PjthqndOGl0t5OIEd6MYvtKmtLkc5/eF5NZ9IvEOrzk8kZ8qTXgzVf6oQJERZR9SMu8U7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5709
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928083222.GA1924@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/22/2021 2:05 PM, Diana Craciun wrote:
-> Currently when a fsl-mc device is reset, the entire DPRC container
-> is reset which is very inefficient because the devices within a
-> container will be reset multiple times.
-> Add support for individually resetting a device.
+On Tue, Sep 28, 2021 at 09:32:22AM +0100, Mark Rutland wrote:
+> On Mon, Sep 27, 2021 at 05:09:22PM -0700, Paul E. McKenney wrote:
+> > On Mon, Sep 27, 2021 at 10:23:18AM +0100, Mark Rutland wrote:
+> > > On Fri, Sep 24, 2021 at 03:59:54PM -0700, Paul E. McKenney wrote:
+> > > > On Fri, Sep 24, 2021 at 06:36:15PM +0100, Mark Rutland wrote:
+> > > > > [Adding Paul for RCU, s390 folk for entry code RCU semantics]
+> > > > > 
+> > > > > On Fri, Sep 24, 2021 at 09:28:32PM +0800, Pingfan Liu wrote:
+> > > > > > After introducing arm64/kernel/entry_common.c which is akin to
+> > > > > > kernel/entry/common.c , the housekeeping of rcu/trace are done twice as
+> > > > > > the following:
+> > > > > >     enter_from_kernel_mode()->rcu_irq_enter().
+> > > > > > And
+> > > > > >     gic_handle_irq()->...->handle_domain_irq()->irq_enter()->rcu_irq_enter()
+> > > > > >
+> > > > > > Besides redundance, based on code analysis, the redundance also raise
+> > > > > > some mistake, e.g.  rcu_data->dynticks_nmi_nesting inc 2, which causes
+> > > > > > rcu_is_cpu_rrupt_from_idle() unexpected.
+> > > > > 
+> > > > > Hmmm...
+> > > > > 
+> > > > > The fundamental questionss are:
+> > > > > 
+> > > > > 1) Who is supposed to be responsible for doing the rcu entry/exit?
+> > > > > 
+> > > > > 2) Is it supposed to matter if this happens multiple times?
+> > > > > 
+> > > > > For (1), I'd generally expect that this is supposed to happen in the
+> > > > > arch/common entry code, since that itself (or the irqchip driver) could
+> > > > > depend on RCU, and if that's the case thatn handle_domain_irq()
+> > > > > shouldn't need to call rcu_irq_enter(). That would be consistent with
+> > > > > the way we handle all other exceptions.
+> > > > > 
+> > > > > For (2) I don't know whether the level of nesting is suppoosed to
+> > > > > matter. I was under the impression it wasn't meant to matter in general,
+> > > > > so I'm a little surprised that rcu_is_cpu_rrupt_from_idle() depends on a
+> > > > > specific level of nesting.
+> > > > > 
+> > > > > >From a glance it looks like this would cause rcu_sched_clock_irq() to
+> > > > > skip setting TIF_NEED_RESCHED, and to not call invoke_rcu_core(), which
+> > > > > doesn't sound right, at least...
+> > > > > 
+> > > > > Thomas, Paul, thoughts?
+> > > > 
+> > > > It is absolutely required that rcu_irq_enter() and rcu_irq_exit() calls
+> > > > be balanced.  Normally, this is taken care of by the fact that irq_enter()
+> > > > invokes rcu_irq_enter() and irq_exit() invokes rcu_irq_exit().  Similarly,
+> > > > nmi_enter() invokes rcu_nmi_enter() and nmi_exit() invokes rcu_nmi_exit().
+> > > 
+> > > Sure; I didn't mean to suggest those weren't balanced! The problem here
+> > > is *nesting*. Due to the structure of our entry code and the core IRQ
+> > > code, when handling an IRQ we have a sequence:
+> > > 
+> > > 	irq_enter() // arch code
+> > > 	irq_enter() // irq code
+> > > 
+> > > 	< irq handler here >
+> > > 
+> > > 	irq_exit() // irq code
+> > > 	irq_exit() // arch code
+> > > 
+> > > ... and if we use something like rcu_is_cpu_rrupt_from_idle() in the
+> > > middle (e.g. as part of rcu_sched_clock_irq()), this will not give the
+> > > expected result because of the additional nesting, since
+> > > rcu_is_cpu_rrupt_from_idle() seems to expect that dynticks_nmi_nesting
+> > > is only incremented once per exception entry, when it does:
+> > > 
+> > > 	/* Are we at first interrupt nesting level? */
+> > > 	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
+> > > 	if (nesting > 1)
+> > > 		return false;
+> > > 
+> > > What I'm trying to figure out is whether that expectation is legitimate,
+> > > and assuming so, where the entry/exit should happen.
+> > 
+> > Oooh...
+> > 
+> > The penalty for fooling rcu_is_cpu_rrupt_from_idle() is that RCU will
+> > be unable to detect a userspace quiescent state for a non-nohz_full
+> > CPU.  That could result in RCU CPU stall warnings if a user task runs
+> > continuously on a given CPU for more than 21 seconds (60 seconds in
+> > some distros).  And this can easily happen if the user has a CPU-bound
+> > thread that is the only runnable task on that CPU.
+> > 
+> > So, yes, this does need some sort of resolution.
+> > 
+> > The traditional approach is (as you surmise) to have only a single call
+> > to irq_enter() on exception entry and only a single call to irq_exit()
+> > on exception exit.  If this is feasible, it is highly recommended.
 > 
-> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-> ---
-
-Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-
----
-Best Regards, Laurentiu
-
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 45 ++++++++++++++++++++-----------
->  1 file changed, 30 insertions(+), 15 deletions(-)
+> Cool; that's roughly what I was expecting / hoping to hear!
 > 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index 0ead91bfa838..6d7b2d2571a2 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -65,6 +65,34 @@ static void vfio_fsl_mc_regions_cleanup(struct vfio_fsl_mc_device *vdev)
->  	kfree(vdev->regions);
+> > In theory, we could have that "1" in "nesting > 1" be a constant supplied
+> > by the architecture (you would want "3" if I remember correctly) but
+> > in practice could we please avoid this?  For one thing, if there is
+> > some other path into the kernel for your architecture that does only a
+> > single irq_enter(), then rcu_is_cpu_rrupt_from_idle() just doesn't stand
+> > a chance.  It would need to compare against a different value depending
+> > on what exception showed up.  Even if that cannot happen, it would be
+> > better if your architecture could remain in blissful ignorance of the
+> > colorful details of ->dynticks_nmi_nesting manipulations.
+> 
+> I completely agree. I think it's much harder to keep that in check than
+> to enforce a "once per architectural exception" policy in the arch code.
+> 
+> > Another approach would be for the arch code to supply RCU a function that
+> > it calls.  If there is such a function (or perhaps better, if some new
+> > Kconfig option is enabled), RCU invokes it.  Otherwise, it compares to
+> > "1" as it does now.  But you break it, you buy it!  ;-)
+> 
+> I guess we could look at the exception regs and inspect the original
+> context, but it sounds overkill...
+> 
+> I think the cleanest thing is to leave this to arch code, and have the
+> common IRQ code stay well clear. Unfortunately most architectures
+> (including arch/arm) still need the common IRQ code to handle this, so
+> we'll have to make that conditional on Kconfig, something like the below
+> (build+boot tested only).
+> 
+> If there are no objections, I'll go check who else needs the same
+> treatment (IIUC at least s390 will), and spin that as a real
+> patch/series.
+
+This approach (whether from you or Pinfan) looks good to me!
+
+							Thanx, Paul
+
+> Thanks,
+> Mark.
+> 
+> ---->8----
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 8df1c7102643..c59475e50e4c 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -225,6 +225,12 @@ config GENERIC_SMP_IDLE_THREAD
+>  config GENERIC_IDLE_POLL_SETUP
+>         bool
+>  
+> +config ARCH_ENTERS_IRQ
+> +       bool
+> +       help
+> +         An architecture should select this when it performs irq entry
+> +         management itself (e.g. calling irq_enter() and irq_exit()).
+> +
+>  config ARCH_HAS_FORTIFY_SOURCE
+>         bool
+>         help
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 5c7ae4c3954b..fa6476bf2b4d 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -16,6 +16,7 @@ config ARM64
+>         select ARCH_ENABLE_MEMORY_HOTREMOVE
+>         select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+>         select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+> +       select ARCH_ENTERS_IRQ
+>         select ARCH_HAS_CACHE_LINE_SIZE
+>         select ARCH_HAS_DEBUG_VIRTUAL
+>         select ARCH_HAS_DEBUG_VM_PGTABLE
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index 4e3c29bb603c..6affa12222e0 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -677,6 +677,15 @@ int generic_handle_domain_irq(struct irq_domain *domain, unsigned int hwirq)
+>  EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
+>  
+>  #ifdef CONFIG_HANDLE_DOMAIN_IRQ
+> +
+> +#ifdef ARCH_ENTERS_IRQ
+> +#define handle_irq_enter()
+> +#define handle_irq_exit()
+> +#else
+> +#define handle_irq_enter()     irq_enter()
+> +#define handle_irq_exit()      irq_exit()
+> +#endif
+> +
+>  /**
+>   * handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
+>   *                     usually for a root interrupt controller
+> @@ -693,7 +702,7 @@ int handle_domain_irq(struct irq_domain *domain,
+>         struct irq_desc *desc;
+>         int ret = 0;
+>  
+> -       irq_enter();
+> +       handle_irq_enter();
+>  
+>         /* The irqdomain code provides boundary checks */
+>         desc = irq_resolve_mapping(domain, hwirq);
+> @@ -702,7 +711,7 @@ int handle_domain_irq(struct irq_domain *domain,
+>         else
+>                 ret = -EINVAL;
+>  
+> -       irq_exit();
+> +       handle_irq_exit();
+>         set_irq_regs(old_regs);
+>         return ret;
 >  }
->  
-> +static int vfio_fsl_mc_reset_device(struct vfio_fsl_mc_device *vdev)
-> +{
-> +	struct fsl_mc_device *mc_dev = vdev->mc_dev;
-> +	int ret = 0;
-> +
-> +	if (is_fsl_mc_bus_dprc(vdev->mc_dev)) {
-> +		return dprc_reset_container(mc_dev->mc_io, 0,
-> +					mc_dev->mc_handle,
-> +					mc_dev->obj_desc.id,
-> +					DPRC_RESET_OPTION_NON_RECURSIVE);
-> +	} else {
-> +		u16 token;
-> +
-> +		ret = fsl_mc_obj_open(mc_dev->mc_io, 0, mc_dev->obj_desc.id,
-> +				      mc_dev->obj_desc.type,
-> +				      &token);
-> +		if (ret)
-> +			goto out;
-> +		ret = fsl_mc_obj_reset(mc_dev->mc_io, 0, token);
-> +		if (ret) {
-> +			fsl_mc_obj_close(mc_dev->mc_io, 0, token);
-> +			goto out;
-> +		}
-> +		ret = fsl_mc_obj_close(mc_dev->mc_io, 0, token);
-> +	}
-> +out:
-> +	return ret;
-> +}
->  
->  static void vfio_fsl_mc_close_device(struct vfio_device *core_vdev)
->  {
-> @@ -78,9 +106,7 @@ static void vfio_fsl_mc_close_device(struct vfio_device *core_vdev)
->  	vfio_fsl_mc_regions_cleanup(vdev);
->  
->  	/* reset the device before cleaning up the interrupts */
-> -	ret = dprc_reset_container(mc_cont->mc_io, 0, mc_cont->mc_handle,
-> -				   mc_cont->obj_desc.id,
-> -				   DPRC_RESET_OPTION_NON_RECURSIVE);
-> +	ret = vfio_fsl_mc_reset_device(vdev);
->  
->  	if (WARN_ON(ret))
->  		dev_warn(&mc_cont->dev,
-> @@ -203,18 +229,7 @@ static long vfio_fsl_mc_ioctl(struct vfio_device *core_vdev,
->  	}
->  	case VFIO_DEVICE_RESET:
->  	{
-> -		int ret;
-> -		struct fsl_mc_device *mc_dev = vdev->mc_dev;
-> -
-> -		/* reset is supported only for the DPRC */
-> -		if (!is_fsl_mc_bus_dprc(mc_dev))
-> -			return -ENOTTY;
-> -
-> -		ret = dprc_reset_container(mc_dev->mc_io, 0,
-> -					   mc_dev->mc_handle,
-> -					   mc_dev->obj_desc.id,
-> -					   DPRC_RESET_OPTION_NON_RECURSIVE);
-> -		return ret;
-> +		return vfio_fsl_mc_reset_device(vdev);
->  
->  	}
->  	default:
 > 
