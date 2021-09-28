@@ -2,250 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F7941A66B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784B241A69B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235159AbhI1EXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 00:23:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:15365 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhI1EXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 00:23:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="211700729"
-X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
-   d="scan'208";a="211700729"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 21:21:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
-   d="scan'208";a="476152443"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga007.jf.intel.com with ESMTP; 27 Sep 2021 21:21:20 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 27 Sep 2021 21:21:20 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Mon, 27 Sep 2021 21:21:20 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Mon, 27 Sep 2021 21:21:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k97Knyu3YLzD6PpeOtQVT16izXv+tl7JPCRw4NaDOVo28r8Nx17RJrCcxV82xohaL1d5OCzAtYOnocfi3YwnNazF+7X3XkywZwwu+F8DmfZdUc/GclpS/fAPwApEuC9tj+XCAmRAW5iYQvB2FmbIBjhGmEywmn8spTbgg1jnAWNJKr4ubWrmEjzEP3qw7sixweCX6Q39zejz9ZRIjoicJUO7n6lb2LpgSATONDgaTpbSMc4vBYtCw64u4c49HotCDQmj+fMMs0Vx3fGPgzcnJkW1imGlwVGtP0roKjdcZnQWr06vbK5dtuD5Y0y+dOPtM3ypw1dFyrZ3qNF1JcbvyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=3rAMGLQFr2ZRJxAbAYwZLfg0vqTXblWBx27I2XF6Dqo=;
- b=jmHZn4z3/0qLQGijk6824xF62hf4IMYa29PxjditPoQj+lLF6+atiAXKuc6DPRysJKha7kC/tByswAv8yDc+6ckhpGnnkIBiNjkMOsreNZXQ+b6QDobD2RVc2+tLC7c5LTNaHDQRF6v6jyTgvu79nbjemo7ZZ6eeeeTjxd0Tl+lVSLG6FJkX7an0mi4Mneo2lffexkT/lRlKBvdvcBdzXFJwaosydQc1lO4TDl1qKSGPD+rMAW8QcLsg3LmldlTPHIhbpiGB8xiDDvrLrehSimDBDjwZD69rRMEe/zErgL3Kzw4TbQZAzgRE4+ygS6NxdcpTmXILW44DSSL8q79G4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3rAMGLQFr2ZRJxAbAYwZLfg0vqTXblWBx27I2XF6Dqo=;
- b=snKbAeR8zBldY7b1O7EOb3uuy5nkfEWeCuSPlh0pj6sSw6dtEM6Da6bH3m0a/PhSAEH+e6SrqhrfZda4wO2uyyqmSWhUJjB6whDonP2cjigNm8fi3pTlKo2laJQSA0K/Y99Zo/xrpzI1KKj/Mx8a/7cBB170l/SdHoRbXt4wQDU=
-Received: from MW3PR11MB4554.namprd11.prod.outlook.com (2603:10b6:303:5d::7)
- by CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Tue, 28 Sep
- 2021 04:21:13 +0000
-Received: from MW3PR11MB4554.namprd11.prod.outlook.com
- ([fe80::a8a8:6311:c417:ebdf]) by MW3PR11MB4554.namprd11.prod.outlook.com
- ([fe80::a8a8:6311:c417:ebdf%7]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
- 04:21:13 +0000
-From:   "Penigalapati, Sandeep" <sandeep.penigalapati@intel.com>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
-CC:     "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-        "chenying.kernel@bytedance.com" <chenying.kernel@bytedance.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "wangdongdong.6@bytedance.com" <wangdongdong.6@bytedance.com>,
-        "zhouchengming@bytedance.com" <zhouchengming@bytedance.com>
-Subject: RE: [Intel-wired-lan] [PATCH v3] ixgbe: Fix NULL pointer dereference
- in ixgbe_xdp_setup
-Thread-Topic: [Intel-wired-lan] [PATCH v3] ixgbe: Fix NULL pointer dereference
- in ixgbe_xdp_setup
-Thread-Index: AQHXqgARPe10IxtL/0exW61B+339qau47EmQ
-Date:   Tue, 28 Sep 2021 04:21:13 +0000
-Message-ID: <MW3PR11MB45543254E1F9F87512A25A6F9CA89@MW3PR11MB4554.namprd11.prod.outlook.com>
-References: <20210915070440.6540-1-zhoufeng.zf@bytedance.com>
-In-Reply-To: <20210915070440.6540-1-zhoufeng.zf@bytedance.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-dlp-product: dlpe-windows
-authentication-results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d851acdb-e5b8-49e1-0be2-08d982376860
-x-ms-traffictypediagnostic: CO1PR11MB4914:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO1PR11MB4914ADAC4FCD2EE7709ECC029CA89@CO1PR11MB4914.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2043;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ymd3o/U5Vq8v3VsTShrh5ECr3Im9dhWbeIMFUIplP3J6FSE9BvvBuOW2jzc0UylaJPHEnunGc5l2qujUcPqhLVGZpDpCD1z4ZQHifWXJF+9Q4FulFSvc/MInBFFzExyFED09IlQPsglBgecucp4QbIfX+KUUgqYKmu0QsVN5rmC7C4ksHDfE0Dj6UdUquNtb0P3Ohe8zL1LXUXahqjQMq7ZNT+GhyLqTixL/fjAgmrZmnReHlPtcpwPgua9NbWk7JK6mptOm3LhBCHSSCecrQGTUDhCVWOgprALFN02wx/kcuLLUqgvE8cYoDQ9P6GTMCHNuuLBqhHGpBRQRpXscUQLRyN7Oe+Gj69REXZbGSqSBDHUl4kPkMRbX6m2AyHiZYS8K/Z6HUIvtdjuKZ4aplL2EUOuRGnvJyQgINWwkOEUhmy/tet6I1ePXYytzbie64HkHROC/0NVwfrodyrHmuc7PTJEj+whBFcc4+PqIzodBGL0M4ML1CIjJ0ftiHb0vgxcAg0Nvbjw0AuPluG3GYF7TI6WQJIEoLYUfawAYEoZs3X/yePrw4RFLZftCog8qPQM0R4c9gf4szmA5pXloCIT13bqf6jDoV9vJbtAOUE4MWd1tOXDEpkYNLfr2kXCr1wH5L/Ol4lXZ+ErIMorTirs2ryj3c1/+iQQoHNrPWVVnmIc8/F7BjTQpFkWAoxSU3uMXr0S8ojR6xCz9Rd2ENeTT6XP3r8IRH8GrdKHONc8XFXLFobD++yC1hX101BBMhJRtOn/FnahVEokWr8fT7iuxM8mFfNfsreRbDpiVXZUrINiW6sl/GOHR9G051QhuigyhoEn61oynPtX9UPWx/x7FOUoyksEzPFKYBmIr/wQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4554.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(83380400001)(54906003)(86362001)(26005)(9686003)(8676002)(8936002)(122000001)(7696005)(110136005)(508600001)(55016002)(52536014)(71200400001)(66446008)(66556008)(66476007)(2906002)(64756008)(66946007)(6506007)(186003)(4326008)(38070700005)(921005)(33656002)(6636002)(316002)(38100700002)(76116006)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gL0UoDRKyf7YmHgWl8ALomvooPf09bgB8Tj+aHFb+JbsV8ZzwPI8Gz6cY0TQ?=
- =?us-ascii?Q?HiIUXwCTZ8t0woxbfTzBLzgFrfEwsTBh7q9Hiz+yAZvFqhDwOC07JNjQy5O4?=
- =?us-ascii?Q?JuMFjsOIFj/qALZEc8ub5Zb2I5F5nBHY2+KlLw86Zcwdbkt+5l3fGUuWkYqr?=
- =?us-ascii?Q?Gnlzun5sIef3PssiXWL5bZ6G60PbfSr/wqUrGBbzZXM7ZVEXqRnpT5pT4O2p?=
- =?us-ascii?Q?dXBBFR0xRXim6ci9AFATp+qo7lhD2h+LUEyMY3CbOuYOw8VtDhWOC1YlDG2X?=
- =?us-ascii?Q?g0iZTeSDeCWBK57MSgBQScCjPA3rtrHMTcC+01ubVitzGpuOnv9D87h2qflA?=
- =?us-ascii?Q?/67jDnMRhQ5t5sd8a3iGxY0KCIyNHJsugaPX1zQCfwJXXY7/xTyHo8kPQUX/?=
- =?us-ascii?Q?C4Q8e1V5NtlhKgVkKCmMmDCotoihDks0+ifyDL1RT7iBQ4yc4Y+tSDzrWJr/?=
- =?us-ascii?Q?8BC83fPAEkjRW2+Py2n6NVgQQS9rBPPT6F//axxCtm1Dc9ED3SSQb2GxuTX1?=
- =?us-ascii?Q?DuGwsCreHCP2hygLth2Dr/xHMeyWtAnk9Bw9yQpnn/5bCToTW0htOpg6LFwX?=
- =?us-ascii?Q?jqgs/Ev+dZb1Y6LKVEzBNpyyjg4fHv/8YhjS3wrxj+cH/TT95F5ltg6UYSfr?=
- =?us-ascii?Q?AabnSrY02qIkJyiZCFdfI/6dNazvb3TwW77jiYze4OALtULmJg1evGfVD7vU?=
- =?us-ascii?Q?ld9MI/fgpzbfarbg3bKyFG71kS7uuj4aTbKrRXUiTjOKK2UfNi+aP9M19lP1?=
- =?us-ascii?Q?RKGneKBSf42qpUrvWYnvUAb8k9HfBtSO/D5EPpQ401d7YpCqvwo8L36JlMKu?=
- =?us-ascii?Q?h1iwHcnS7NYnXd6l/JN4z4NM3IjTtX+2zH7IeBmdtSPOPdcaukR+pVw6fNf1?=
- =?us-ascii?Q?M3upv/m2r7xnN5PeKhuBFLuPdeCxgyl6IlKLdT9UYY8La+tHOK6bntWWmtLH?=
- =?us-ascii?Q?e6sAYgfTxQw9/sR0XXHoduas+gf2j5vEoGDLSTMiL3ymBpDc4FBFwBfscwTc?=
- =?us-ascii?Q?zx2iyKrY7CYhPbeToOlRfXfSjUiA+xxvsGc28iNqq4mUfF3ebYvIb1Kc/jrQ?=
- =?us-ascii?Q?ELuGfgxafEhv4GucMGjuUq1kVZPnDmeSNygkefMMCyRi+o/u3b8tZekV3hYl?=
- =?us-ascii?Q?HRHITox1skk3ZySC0snCYpwrytADuzZpDmQM6b82juP1wZTc+aW2/R8NmaEX?=
- =?us-ascii?Q?4MWkQ4LiM4W14izBejMS+QrSgnA9dnj2Uv+VCYcqaqNpYs2LAzhGuRr8JVXT?=
- =?us-ascii?Q?Swrs2x/t5dSgm6sriN0Q1WUVo66uCZz63n8LQWfS5P/ur/Et5EF3VOK4s1Ob?=
- =?us-ascii?Q?xBX6sQmQ1QrGwTuRwFWv5UdC?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232438AbhI1E10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 00:27:26 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48435 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231432AbhI1E1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 00:27:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632803146; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8Fdju3P6IjvRGlsabLtKZvgu/gyQdArD8go49Jzs5gY=;
+ b=mWmnE+I4Pdxus0tzjU5Sj4uH7xN0ahQt5QuHQ9MrUy8siSj4U4Bnf+Kc6N/5UMSKf1tdPwJi
+ nR+i+4FRuoNZ46PivAf9kJV2SxcJtOOo3UcNaGsVqO6ET1r1SZRNqyBnsHZy5452iDSuQZ6U
+ keT/Z/7pi9NT93R/d1jYx8XX0H8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 615299451abbf21d347e70b5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 04:25:40
+ GMT
+Sender: mansur=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 18AD1C4360D; Tue, 28 Sep 2021 04:25:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mansur)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC18AC43460;
+        Tue, 28 Sep 2021 04:25:38 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4554.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d851acdb-e5b8-49e1-0be2-08d982376860
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 04:21:13.4198
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +A+zvKiqlDOXH+aXgrrW1QcNVa58ernEz3a4u7fPzyveQJ4NfsOSRjXwJnSuOMLUXAXPGuJ1uyaemleFcrslWi5d+/qLHnQv7u2wjwz38dc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4914
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Sep 2021 09:55:38 +0530
+From:   mansur@codeaurora.org
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, vgarodia@codeaurora.org,
+        dikshita@codeaurora.org
+Subject: Re: [V3] venus: vdec: decoded picture buffer handling during reconfig
+ sequence
+In-Reply-To: <78dec463-5e75-18d7-b74e-154f00b8a7b2@linaro.org>
+References: <20210825110841.12815-1-mansur@codeaurora.org>
+ <78dec463-5e75-18d7-b74e-154f00b8a7b2@linaro.org>
+Message-ID: <4db580aea0ddfc6092fd86b51e67802f@codeaurora.org>
+X-Sender: mansur@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
->Feng zhou
->Sent: Wednesday, September 15, 2021 12:35 PM
->To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
-><anthony.l.nguyen@intel.com>; davem@davemloft.net; kuba@kernel.org;
->ast@kernel.org; daniel@iogearbox.net; hawk@kernel.org;
->john.fastabend@gmail.com; jeffrey.t.kirsher@intel.com; Karlsson, Magnus
-><magnus.karlsson@intel.com>; Fijalkowski, Maciej
-><maciej.fijalkowski@intel.com>
->Cc: duanxiongchun@bytedance.com; netdev@vger.kernel.org; linux-
->kernel@vger.kernel.org; zhengqi.arch@bytedance.com;
->chenying.kernel@bytedance.com; intel-wired-lan@lists.osuosl.org;
->songmuchun@bytedance.com; zhoufeng.zf@bytedance.com;
->bpf@vger.kernel.org; wangdongdong.6@bytedance.com;
->zhouchengming@bytedance.com
->Subject: [Intel-wired-lan] [PATCH v3] ixgbe: Fix NULL pointer dereference =
-in
->ixgbe_xdp_setup
->
->From: Feng Zhou <zhoufeng.zf@bytedance.com>
->
->The ixgbe driver currently generates a NULL pointer dereference with some
->machine (online cpus < 63). This is due to the fact that the maximum value=
- of
->num_xdp_queues is nr_cpu_ids. Code is in "ixgbe_set_rss_queues"".
->
->Here's how the problem repeats itself:
->Some machine (online cpus < 63), And user set num_queues to 63 through
->ethtool. Code is in the "ixgbe_set_channels",
->	adapter->ring_feature[RING_F_FDIR].limit =3D count;
->
->It becomes 63.
->
->When user use xdp, "ixgbe_set_rss_queues" will set queues num.
->	adapter->num_rx_queues =3D rss_i;
->	adapter->num_tx_queues =3D rss_i;
->	adapter->num_xdp_queues =3D ixgbe_xdp_queues(adapter);
->
->And rss_i's value is from
->	f =3D &adapter->ring_feature[RING_F_FDIR];
->	rss_i =3D f->indices =3D f->limit;
->
->So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
->	for (i =3D 0; i < adapter->num_rx_queues; i++)
->		if (adapter->xdp_ring[i]->xsk_umem)
->
->It leads to panic.
->
->Call trace:
->[exception RIP: ixgbe_xdp+368]
->RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
->RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
->RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
->RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
->R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
->R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
->ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> 7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
-> 8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
-> 9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
->10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
->11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
->12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
->13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
->14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
->15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
->16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
->17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
->18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
->19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
->
->So I fix ixgbe_max_channels so that it will not allow a setting of queues =
-to be
->higher than the num_online_cpus(). And when run to ixgbe_xdp_setup, take
->the smaller value of num_rx_queues and num_xdp_queues.
->
->Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
->AF_XDP")
->Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->---
->v1:
->- Fix "ixgbe_max_channels" callback so that it will not allow a setting of
->queues to be higher than the num_online_cpus().
->v2:
->- Modify commit message
->more details can be seen from here:
->https://patchwork.ozlabs.org/project/intel-wired-
->lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/
->https://lore.kernel.org/netdev/20210903064013.9842-1-
->zhoufeng.zf@bytedance.com/
->Thanks to Maciej Fijalkowski and Paul Menzel for yours advice.
->
-> drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
-> drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
-> 2 files changed, 7 insertions(+), 3 deletions(-)
->
-Tested-by: Sandeep Penigalapati <sandeep.penigalapati@intel.com>
+On 2021-09-21 19:17, Stanimir Varbanov wrote:
+> Hi Mansur,
+> 
+> On 8/25/21 2:08 PM, Mansur Alisha Shaik wrote:
+>> In existing implementation, driver is freeing and un-mapping all the
+>> decoded picture buffers(DPB) as part of dynamic resolution change(DRC)
+>> handling. As a result, when firmware try to access the DPB buffer, 
+>> from
+>> previous sequence, SMMU context fault is seen due to the buffer being
+>> already unmapped.
+>> 
+>> With this change, driver defines ownership of each DPB buffer. If a 
+>> buffer
+>> is owned by firmware, driver would skip from un-mapping the same.
+>> 
+>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+>> 
+>> Changes in V3:
+>> - Migrated id allocation using kernel API ida_alloc_min()
+>> 
+>> ---
+>>  drivers/media/platform/qcom/venus/helpers.c | 50 
+>> ++++++++++++++++++++-
+>>  drivers/media/platform/qcom/venus/helpers.h |  2 +
+>>  drivers/media/platform/qcom/venus/vdec.c    |  7 ++-
+>>  3 files changed, 57 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/media/platform/qcom/venus/helpers.c 
+>> b/drivers/media/platform/qcom/venus/helpers.c
+>> index 8012f5c7bf34..f36361d346b2 100644
+>> --- a/drivers/media/platform/qcom/venus/helpers.c
+>> +++ b/drivers/media/platform/qcom/venus/helpers.c
+>> @@ -3,6 +3,7 @@
+>>   * Copyright (c) 2012-2016, The Linux Foundation. All rights 
+>> reserved.
+>>   * Copyright (C) 2017 Linaro Ltd.
+>>   */
+>> +#include <linux/idr.h>
+>>  #include <linux/list.h>
+>>  #include <linux/mutex.h>
+>>  #include <linux/slab.h>
+>> @@ -21,6 +22,13 @@
+>>  #define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
+>>  #define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
+>> 
+>> +static DEFINE_IDA(dpb_out_tag_ida);
+> 
+> No global static variables please. Make it part of venus_inst 
+> structure.
+As per my understanding it is not just static global variable.
+We are defining the ida structure and assign to name when pass as param 
+as follows
+struct ida {
+              struct idr		idr;
+              struct ida_bitmap	*free_bitmap;
+};
+#define IDA_INIT(name)		{ .idr = IDR_INIT((name).idr), .free_bitmap = 
+NULL, }
+#define DEFINE_IDA(name)	struct ida name = IDA_INIT(name)
+
+Any ida related API's expect pointer to this structure.
+If we move the variable then it might be bit difficult use ida_xxx() 
+API'same
+
+> 
+>> +
+>> +enum dpb_buf_owner {
+>> +	DRIVER,
+>> +	FIRMWARE,
+>> +};
+>> +
+>>  struct intbuf {
+>>  	struct list_head list;
+>>  	u32 type;
+>> @@ -28,6 +36,8 @@ struct intbuf {
+>>  	void *va;
+>>  	dma_addr_t da;
+>>  	unsigned long attrs;
+>> +	enum dpb_buf_owner owned_by;
+>> +	u32 dpb_out_tag;
+>>  };
+>> 
+>>  bool venus_helper_check_codec(struct venus_inst *inst, u32 
+>> v4l2_pixfmt)
+>> @@ -95,9 +105,16 @@ int venus_helper_queue_dpb_bufs(struct venus_inst 
+>> *inst)
+>>  		fdata.device_addr = buf->da;
+>>  		fdata.buffer_type = buf->type;
+>> 
+>> +		if (buf->owned_by == FIRMWARE)
+>> +			continue;
+>> +
+>> +		fdata.clnt_data = buf->dpb_out_tag;
+>> +
+>>  		ret = hfi_session_process_buf(inst, &fdata);
+>>  		if (ret)
+>>  			goto fail;
+>> +
+>> +		buf->owned_by = FIRMWARE;
+>>  	}
+>> 
+>>  fail:
+>> @@ -110,13 +127,19 @@ int venus_helper_free_dpb_bufs(struct venus_inst 
+>> *inst)
+>>  	struct intbuf *buf, *n;
+>> 
+>>  	list_for_each_entry_safe(buf, n, &inst->dpbbufs, list) {
+>> +		if (buf->owned_by == FIRMWARE)
+>> +			continue;
+>> +
+>> +		ida_free(&dpb_out_tag_ida, buf->dpb_out_tag);
+>> +
+>>  		list_del_init(&buf->list);
+>>  		dma_free_attrs(inst->core->dev, buf->size, buf->va, buf->da,
+>>  			       buf->attrs);
+>>  		kfree(buf);
+>>  	}
+>> 
+>> -	INIT_LIST_HEAD(&inst->dpbbufs);
+>> +	if (list_empty(&inst->dpbbufs))
+>> +		INIT_LIST_HEAD(&inst->dpbbufs);
+>> 
+>>  	return 0;
+>>  }
+>> @@ -134,6 +157,7 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst 
+>> *inst)
+>>  	unsigned int i;
+>>  	u32 count;
+>>  	int ret;
+>> +	int id;
+>> 
+>>  	/* no need to allocate dpb buffers */
+>>  	if (!inst->dpb_fmt)
+>> @@ -171,6 +195,15 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst 
+>> *inst)
+>>  			ret = -ENOMEM;
+>>  			goto fail;
+>>  		}
+>> +		buf->owned_by = DRIVER;
+>> +
+>> +		id = ida_alloc_min(&dpb_out_tag_ida, VB2_MAX_FRAME, GFP_KERNEL);
+>> +		if (id < 0) {
+>> +			ret = id;
+>> +			goto fail;
+>> +		}
+>> +
+>> +		buf->dpb_out_tag = id;
+>> 
+>>  		list_add_tail(&buf->list, &inst->dpbbufs);
+>>  	}
+>> @@ -1365,6 +1398,21 @@ venus_helper_find_buf(struct venus_inst *inst, 
+>> unsigned int type, u32 idx)
+>>  }
+>>  EXPORT_SYMBOL_GPL(venus_helper_find_buf);
+>> 
+>> +void venus_helper_find_dpb_buf(struct venus_inst *inst, struct 
+>> vb2_v4l2_buffer *vbuf,
+>> +			       unsigned int type, unsigned int buf_type, u32 tag)
+> 
+> If this helper will return void then it should be renamed to something
+> like venus_helper_dpb_buf_change_owner().
+> 
+Ok. I will change while posting next version.
+>> +{
+>> +	struct intbuf *dpb_buf;
+>> +
+>> +	if (type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
+>> +	    buf_type == HFI_BUFFER_OUTPUT)
+>> +		list_for_each_entry(dpb_buf, &inst->dpbbufs, list)
+>> +			if (dpb_buf->dpb_out_tag == tag) {
+>> +				dpb_buf->owned_by = DRIVER;
+>> +				break;
+>> +			}
+>> +}
+>> +EXPORT_SYMBOL_GPL(venus_helper_find_dpb_buf);
+>> +
+>>  int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
+>>  {
+>>  	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>> diff --git a/drivers/media/platform/qcom/venus/helpers.h 
+>> b/drivers/media/platform/qcom/venus/helpers.h
+>> index e6269b4be3af..17c5aadaec82 100644
+>> --- a/drivers/media/platform/qcom/venus/helpers.h
+>> +++ b/drivers/media/platform/qcom/venus/helpers.h
+>> @@ -14,6 +14,8 @@ struct venus_core;
+>>  bool venus_helper_check_codec(struct venus_inst *inst, u32 
+>> v4l2_pixfmt);
+>>  struct vb2_v4l2_buffer *venus_helper_find_buf(struct venus_inst 
+>> *inst,
+>>  					      unsigned int type, u32 idx);
+>> +void venus_helper_find_dpb_buf(struct venus_inst *inst, struct 
+>> vb2_v4l2_buffer *vbuf,
+>> +			       unsigned int type, unsigned int buf_type, u32 idx);
+>>  void venus_helper_buffers_done(struct venus_inst *inst, unsigned int 
+>> type,
+>>  			       enum vb2_buffer_state state);
+>>  int venus_helper_vb2_buf_init(struct vb2_buffer *vb);
+>> diff --git a/drivers/media/platform/qcom/venus/vdec.c 
+>> b/drivers/media/platform/qcom/venus/vdec.c
+>> index 198e47eb63f4..cafdc3d8e473 100644
+>> --- a/drivers/media/platform/qcom/venus/vdec.c
+>> +++ b/drivers/media/platform/qcom/venus/vdec.c
+>> @@ -1297,6 +1297,7 @@ static void vdec_buf_done(struct venus_inst 
+>> *inst, unsigned int buf_type,
+>>  	struct vb2_v4l2_buffer *vbuf;
+>>  	struct vb2_buffer *vb;
+>>  	unsigned int type;
+>> +	struct intbuf *dpb_buf;
+>> 
+>>  	vdec_pm_touch(inst);
+>> 
+>> @@ -1306,8 +1307,10 @@ static void vdec_buf_done(struct venus_inst 
+>> *inst, unsigned int buf_type,
+>>  		type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+>> 
+>>  	vbuf = venus_helper_find_buf(inst, type, tag);
+>> -	if (!vbuf)
+>> +	if (!vbuf) {
+>> +		venus_helper_find_dpb_buf(inst, vbuf, type, buf_type, tag);
+>>  		return;
+>> +	}
+>> 
+>>  	vbuf->flags = flags;
+>>  	vbuf->field = V4L2_FIELD_NONE;
+>> @@ -1622,6 +1625,8 @@ static int vdec_close(struct file *file)
+>> 
+>>  	vdec_pm_get(inst);
+>> 
+>> +	venus_helper_free_dpb_bufs(inst);
+>> +	INIT_LIST_HEAD(&inst->dpbbufs);
+> 
+> This belongs to venus_helper_free_dpb_bufs not here.
+> 
+Ok, I will remove it from here, since in free_dpb() api INIT_LIST_HEAD() 
+when list is free.
+
+>>  	v4l2_m2m_ctx_release(inst->m2m_ctx);
+>>  	v4l2_m2m_release(inst->m2m_dev);
+>>  	vdec_ctrl_deinit(inst);
+>> 
+> 
+> --
+> regards,
+> Stan
+Thanks,
+Mansur
