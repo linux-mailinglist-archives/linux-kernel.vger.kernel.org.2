@@ -2,159 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E386E41B57A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E5A41B57B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242079AbhI1R6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:58:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241520AbhI1R6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:58:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD5C460FF2;
-        Tue, 28 Sep 2021 17:56:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632851794;
-        bh=YdEI7Bqrro9bDQO4y5JLhhRKWf6HiLH8T6YQwDBQ1lQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JlJAgl38ZCcpdRshnTlkbAZ+qTClDGjH9lbbN87z5US+q8fXuoDjX2ASHWFO8cfPh
-         PJxe7bpIMNLVHRUHx/Md/NqkFraNe+Doo5f2oxx7nwQ/sxaZR/gna4Js7lLffDKS1a
-         3hc5AkX5sbAhW9xtNv3zvXc0vcT2JpTuBYi/qMxjQWhtBu7+aEnx8qUAXpOPFfR/ek
-         O0euJqAsyv9/ZE3Ymm/JmR1mWMkzX5icPzFzdS2br0eDfhOTc/c7KLlzDNiJ209/UG
-         nGm9KFc8Mon59seYPxNtdpaMsUAF5KgVCC+HbCjd35ON0Fd1O56ZLc1ox8vpKQ3kTY
-         alUBfDFM8Hxeg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 35318410A1; Tue, 28 Sep 2021 14:56:30 -0300 (-03)
-Date:   Tue, 28 Sep 2021 14:56:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Like Xu <like.xu.linux@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf jevents: Fix sys_event_tables to be freed like
- arch_std_events
-Message-ID: <YVNXTuq1PpLpMH/R@kernel.org>
-References: <20210928102938.69681-1-likexu@tencent.com>
- <YVMB5kt8XG+OdJ1M@kernel.org>
- <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
- <YVMVwDt3QHBPfT/T@kernel.org>
- <YVMXHM0F/y2ptX8C@kernel.org>
- <3949dfa2-d684-47af-ffa7-71b07141f64d@huawei.com>
+        id S242084AbhI1R63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241520AbhI1R62 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:58:28 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E43C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:56:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f13b2007486680f97542e69.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:b200:7486:680f:9754:2e69])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 619B21EC0754;
+        Tue, 28 Sep 2021 19:56:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632851806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JMNtVFM1EHS/txM8jM+h25VQUgsyuR4/LB9uwpoXsrQ=;
+        b=Osqrx06Ws9vZlEK8Hz5uMdRhGxYjqYK350UBHPeD9rRx2SrXf8svEdCSAMtLP7y46juqiM
+        NjbcD+10SzPHBvIWPbx25QgoIMexQRg9G73MhU0BIxpG+1s3zj8y+/fuQlOMQPEBmdQ8ZR
+        VievoaubnyikszaLTDtqUwrxdWuhi9w=
+Date:   Tue, 28 Sep 2021 19:56:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [GIT pull] x86/urgent for v5.15-rc3
+Message-ID: <YVNXWJEeGOqxXIjf@zn.tnic>
+References: <163265189226.178609.9712455554034472888.tglx@xen13>
+ <163265189517.178609.6605494600326137493.tglx@xen13>
+ <CAHk-=wj=C2W1VmW1RHU8ErvSjVF2Y=r9uWrnMCiz-U_aa8Dorw@mail.gmail.com>
+ <YVC4zz1vCskBMb6I@zn.tnic>
+ <CAHk-=whJvs+-kCMynbt9YRVfcyM5TL8wwNhdOX9iygC5y--CHw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3949dfa2-d684-47af-ffa7-71b07141f64d@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAHk-=whJvs+-kCMynbt9YRVfcyM5TL8wwNhdOX9iygC5y--CHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 28, 2021 at 02:32:02PM +0100, John Garry escreveu:
-> On 28/09/2021 14:22, Arnaldo Carvalho de Melo wrote:
-> >   jevents-y      += json.o jsmn.o jevents.o
-> > -HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include
-> > +HOSTCFLAGS_jevents.o   = -I$(srctree)/tools/include -Wall -Wextra
-> >   pmu-events-y   += pmu-events.o
-> >   JDIR           =  pmu-events/arch/$(SRCARCH)
-> >   JSON           =  $(shell [ -d $(JDIR) ] &&                            \
-> > ⬢[acme@toolbox perf]$
-> > 
-> > I get this before applying Xu's patch:
-> > 
-> >    LINK    /tmp/build/perf/libbpf.a
-> > pmu-events/jevents.c: In function ‘save_arch_std_events’:
-> > pmu-events/jevents.c:473:39: warning: unused parameter ‘data’ [-Wunused-parameter]
-> >    473 | static int save_arch_std_events(void *data, struct json_event *je)
-> >        |                                 ~~~~~~^~~~
-> > At top level:
-> > pmu-events/jevents.c:93:13: warning: ‘free_sys_event_tables’ defined but not used [-Wunused-function]
-> >     93 | static void free_sys_event_tables(void)
-> >        |             ^~~~~~~~~~~~~~~~~~~~~
-> > 
-> > 
-> > -------------------------------------
-> > 
-> > I'll add this to perf/core, as this isn't a strict fix, so can wait for
-> > v5.16.
-> 
-> Hi Arnaldo,
-> 
-> OK, would you also consider reusing CFLAGS:
-> 
-> --- a/tools/perf/pmu-events/Build
-> +++ b/tools/perf/pmu-events/Build
-> @@ -9,10 +9,12 @@ JSON          =  $(shell [ -d $(JDIR) ] &&
-> \
-> JDIR_TEST      =  pmu-events/arch/test
-> JSON_TEST      =  $(shell [ -d $(JDIR_TEST) ] &&                       \
->                        find $(JDIR_TEST) -name '*.json')
-> -
-> +HOSTCFLAGS_jevents += $(CFLAGS)
+On Sun, Sep 26, 2021 at 12:10:50PM -0700, Linus Torvalds wrote:
+> So every architecture uses that <asm-generic/unaligned.h> and is happy
+> about it.
 
-Humm, we have to check if CFLAGS doesn't come with cross-build options,
-i.e. IIRC we have to use HOSTCFLAGS instead. Unsure if there is some
-*CFLAGS variable that gets the common part, where these -Wall and
--Wextra, -Werror could go.
- 
-> I tried it, and there are more things to fix for jevents.o. Let me know your
-> preference and if any help required to fix any errors up.
+Ok, how does that look?
 
-I fixed the one I found, see below, I'll test build what I have in
-perf/core and push it, then you can continue from there, after checking
-this HOSTCFLAGS/CFLAGS issue.
+It looks pretty straight-forward to me but WTH do I know?!
 
-- Arnaldo
+Anyway, it builds and boots fine in a guest here so it must be perfect.
 
-From 0e46c8307574a8e2dac8d7ba97e0f6f4bbee67a5 Mon Sep 17 00:00:00 2001
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date: Tue, 28 Sep 2021 14:15:01 -0300
-Subject: [PATCH 1/1] perf jevents: Add __maybe_unused attribute to unused
- function arg
-
-The tools/perf/pmu-events/jevents.c file isn't being compiled with
--Werror and -Wextra, which will be the case soon, so before we turn
-those compiler flags on, fix what it would flag.
-
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Like Xu <like.xu.linux@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-To: John Garry <john.garry@huawei.com>
 ---
- tools/perf/pmu-events/jevents.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 6731b3cf0c2fc9b7..323e1dfe2436c049 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -45,6 +45,7 @@
- #include <sys/resource.h>		/* getrlimit */
- #include <ftw.h>
- #include <sys/stat.h>
-+#include <linux/compiler.h>
- #include <linux/list.h>
- #include "jsmn.h"
- #include "json.h"
-@@ -470,7 +471,7 @@ static void free_arch_std_events(void)
- 	}
- }
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index c565def611e2..d49ea843b915 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -13,34 +13,22 @@
+ #endif
+ #include <asm/inat.h> /*__ignore_sync_check__ */
+ #include <asm/insn.h> /* __ignore_sync_check__ */
++#include <asm/unaligned.h> /* __ignore_sync_check__ */
  
--static int save_arch_std_events(void *data, struct json_event *je)
-+static int save_arch_std_events(void *data __maybe_unused, struct json_event *je)
- {
- 	struct event_struct *es;
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
  
+ #include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
+ 
+-#define leXX_to_cpu(t, r)						\
+-({									\
+-	__typeof__(t) v;						\
+-	switch (sizeof(t)) {						\
+-	case 4: v = le32_to_cpu(r); break;				\
+-	case 2: v = le16_to_cpu(r); break;				\
+-	case 1:	v = r; break;						\
+-	default:							\
+-		BUILD_BUG(); break;					\
+-	}								\
+-	v;								\
+-})
+-
+ /* Verify next sizeof(t) bytes can be on the same instruction */
+ #define validate_next(t, insn, n)	\
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); r; })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
++	({ get_unaligned((t *)(insn)->next_byte + n); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index 797699462cd8..be59e17e75dc 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -13,34 +13,22 @@
+ #endif
+ #include "../include/asm/inat.h" /* __ignore_sync_check__ */
+ #include "../include/asm/insn.h" /* __ignore_sync_check__ */
++#include "../include/asm-generic/unaligned.h" /* __ignore_sync_check__ */
+ 
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
+ 
+ #include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
+ 
+-#define leXX_to_cpu(t, r)						\
+-({									\
+-	__typeof__(t) v;						\
+-	switch (sizeof(t)) {						\
+-	case 4: v = le32_to_cpu(r); break;				\
+-	case 2: v = le16_to_cpu(r); break;				\
+-	case 1:	v = r; break;						\
+-	default:							\
+-		BUILD_BUG(); break;					\
+-	}								\
+-	v;								\
+-})
+-
+ /* Verify next sizeof(t) bytes can be on the same instruction */
+ #define validate_next(t, insn, n)	\
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); r; })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
++	({ get_unaligned((t *)(insn)->next_byte + n); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-generic/unaligned.h
+new file mode 100644
+index 000000000000..47387c607035
+--- /dev/null
++++ b/tools/include/asm-generic/unaligned.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copied from the kernel sources to tools/perf/:
++ */
++
++#ifndef __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
++#define __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
++
++#define __get_unaligned_t(type, ptr) ({						\
++	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);	\
++	__pptr->x;								\
++})
++
++#define __put_unaligned_t(type, val, ptr) do {					\
++	struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);		\
++	__pptr->x = (val);							\
++} while (0)
++
++#define get_unaligned(ptr)	__get_unaligned_t(typeof(*(ptr)), (ptr))
++#define put_unaligned(val, ptr) __put_unaligned_t(typeof(*(ptr)), (val), (ptr))
++
++#endif /* __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H */
++
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
