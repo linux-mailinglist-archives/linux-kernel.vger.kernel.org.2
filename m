@@ -2,109 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A69241AEF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F01F41AEEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240775AbhI1M00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:26:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35338 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240652AbhI1M0K (ORCPT
+        id S240704AbhI1M0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240641AbhI1M0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:26:10 -0400
-Message-ID: <20210928122411.593486363@linutronix.de>
+        Tue, 28 Sep 2021 08:26:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3541C061769
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 05:24:33 -0700 (PDT)
+Message-ID: <20210928122411.648582026@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632831870;
+        s=2020; t=1632831872;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=giXfEJB7VPGDd7nVML7lYRyh9lgBEYYdNV16AYd75/I=;
-        b=oImR+2xEG2umK+JOVGwyho4ibCNF9vy9DHYTDc9LPKgO1FbBXrYW87sdVPh5WcyNsRf016
-        z4EsbwomIIxDRRqrVCYc1eQLNuuJm1WJPQUSM0c/g/JbKizSAwdiLYKoDD9+7wfg5wZC5r
-        uOdCIjSja3dmHthRfyH5piorjWLIWjNG43uumm0RdryliHd9xFjA77tjFytEs64DSxYFVc
-        qcmXxYPHZgHFsya+7gswM9TmXBrXokkDiNfJtmk1d9fvRUS63EmTWEvIrpR/CchFNugTbY
-        6R/waH7L89uvTx6eNUsrGgRG6TEx9/nDk+EyYR2fNXcReh9Lk+lixjaCIbfSJQ==
+         references:references; bh=4Kt2g+3oPmE2BKXDu/RDX88I5PSbgMAsN+xKYXaHDfY=;
+        b=L3zatJ0JubQb3CxZax/DLSSR0sk3eeiihvJSUGj2sgV7/XOx6Gz23ai+Rd8U1R4b3vLFJG
+        Bkkl7HG5LQBxmjWgeP2tV0k3mTCPC9808nzqxkt5V3ysFDq/7WbqyRF25S/NSTWqCHlQPy
+        ok7QYBepRd5OR1ulSdt3MyWupGKAvgiS+GKtkEe/wdQ3L+C7kTCtZ+I2Eu0KmKvYKR1OZt
+        MMGPz+sFMe28GyzRzwWYH3UVB0Ye3jrPVVlmANE7JzLgy8p0y7XwWWfvf95Ht5Rqg8WhaU
+        bMVwdc5dl9DrrrL9Z0A7z/BjzcOv9Gan6x8EwiG3rgiOJJzWJ0ZQi04bLk7icw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632831870;
+        s=2020e; t=1632831872;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=giXfEJB7VPGDd7nVML7lYRyh9lgBEYYdNV16AYd75/I=;
-        b=MYrjjal9jUYLWtfUVJhzqb3D5GKBPThOfzUu2mABWGLoCUVG7TTOURlyQew0v7X9WVKwLM
-        ZlxzksKDFgIV4GCw==
+         references:references; bh=4Kt2g+3oPmE2BKXDu/RDX88I5PSbgMAsN+xKYXaHDfY=;
+        b=hux+8OpW9HxVI+OJf1deY50ARHpsb8bZwioMaI/YwdAarO6BvRjij6L+xuZPj+Gp4hkeeh
+        i1xAvl7HweitAnCA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [patch 4/5] sched: Delay task stack freeing on RT
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [patch 5/5] sched: Move mmdrop to RCU on RT
 References: <20210928122339.502270600@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 28 Sep 2021 14:24:30 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 14:24:32 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+mmdrop() is invoked from finish_task_switch() by the incoming task to drop
+the mm which was handed over by the previous task. mmdrop() can be quite
+expensive which prevents an incoming real-time task from getting useful
+work done.
 
-Anything which is done on behalf of a dead task at the end of
-finish_task_switch() is preventing the incoming task from doing useful
-work. While it is benefitial for fork heavy workloads to recycle the task
-stack quickly, this is a latency source for real-time tasks.
+Provide mmdrop_sched() which maps to mmdrop() on !RT kernels. On RT kernels
+it delagates the eventually required invocation of __mmdrop() to RCU.
 
-Therefore delay the stack cleanup on RT enabled kernels.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/exit.c       |    5 +++++
- kernel/fork.c       |    5 ++++-
- kernel/sched/core.c |    8 ++++++--
- 3 files changed, 15 insertions(+), 3 deletions(-)
-
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -172,6 +172,11 @@ static void delayed_put_task_struct(stru
- 	kprobe_flush_task(tsk);
- 	perf_event_delayed_put(tsk);
- 	trace_sched_process_free(tsk);
-+
-+	/* RT enabled kernels delay freeing the VMAP'ed task stack */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		put_task_stack(tsk);
-+
- 	put_task_struct(tsk);
+ include/linux/mm_types.h |    4 ++++
+ include/linux/sched/mm.h |   20 ++++++++++++++++++++
+ kernel/fork.c            |   13 +++++++++++++
+ kernel/sched/core.c      |    2 +-
+ 4 files changed, 38 insertions(+), 1 deletion(-)
+---
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -12,6 +12,7 @@
+ #include <linux/completion.h>
+ #include <linux/cpumask.h>
+ #include <linux/uprobes.h>
++#include <linux/rcupdate.h>
+ #include <linux/page-flags-layout.h>
+ #include <linux/workqueue.h>
+ #include <linux/seqlock.h>
+@@ -572,6 +573,9 @@ struct mm_struct {
+ 		bool tlb_flush_batched;
+ #endif
+ 		struct uprobes_state uprobes_state;
++#ifdef CONFIG_PREEMPT_RT
++		struct rcu_head delayed_drop;
++#endif
+ #ifdef CONFIG_HUGETLB_PAGE
+ 		atomic_long_t hugetlb_usage;
+ #endif
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -49,6 +49,26 @@ static inline void mmdrop(struct mm_stru
+ 		__mmdrop(mm);
  }
  
++#ifdef CONFIG_PREEMPT_RT
++extern void __mmdrop_delayed(struct rcu_head *rhp);
++
++/*
++ * Invoked from finish_task_switch(). Delegates the heavy lifting on RT
++ * kernels via RCU.
++ */
++static inline void mmdrop_sched(struct mm_struct *mm)
++{
++	/* Provides a full memory barrier. See mmdrop() */
++	if (atomic_dec_and_test(&mm->mm_count))
++		call_rcu(&mm->delayed_drop, __mmdrop_delayed);
++}
++#else
++static inline void mmdrop_sched(struct mm_struct *mm)
++{
++	mmdrop(mm);
++}
++#endif
++
+ /**
+  * mmget() - Pin the address space associated with a &struct mm_struct.
+  * @mm: The address space to pin.
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -289,7 +289,10 @@ static inline void free_thread_stack(str
- 			return;
- 		}
+@@ -708,6 +708,19 @@ void __mmdrop(struct mm_struct *mm)
+ }
+ EXPORT_SYMBOL_GPL(__mmdrop);
  
--		vfree_atomic(tsk->stack);
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+			vfree_atomic(tsk->stack);
-+		else
-+			vfree(tsk->stack);
- 		return;
- 	}
- #endif
++#ifdef CONFIG_PREEMPT_RT
++/*
++ * RCU callback for delayed mm drop. Not strictly RCU, but call_rcu() is
++ * by far the least expensive way to do that.
++ */
++void __mmdrop_delayed(struct rcu_head *rhp)
++{
++	struct mm_struct *mm = container_of(rhp, struct mm_struct, delayed_drop);
++
++	__mmdrop(mm);
++}
++#endif
++
+ static void mmdrop_async_fn(struct work_struct *work)
+ {
+ 	struct mm_struct *mm;
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4846,8 +4846,12 @@ static struct rq *finish_task_switch(str
- 		if (prev->sched_class->task_dead)
- 			prev->sched_class->task_dead(prev);
- 
--		/* Task is done with its stack. */
--		put_task_stack(prev);
-+		/*
-+		 * Release VMAP'ed task stack immediate for reuse. On RT
-+		 * enabled kernels this is delayed for latency reasons.
-+		 */
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+			put_task_stack(prev);
- 
- 		put_task_struct_rcu_user(prev);
+@@ -4840,7 +4840,7 @@ static struct rq *finish_task_switch(str
+ 	 */
+ 	if (mm) {
+ 		membarrier_mm_sync_core_before_usermode(mm);
+-		mmdrop(mm);
++		mmdrop_sched(mm);
  	}
+ 	if (unlikely(prev_state == TASK_DEAD)) {
+ 		if (prev->sched_class->task_dead)
 
