@@ -2,128 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2810941B3EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E486841B3ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241783AbhI1QcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhI1QcP (ORCPT
+        id S230251AbhI1QcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:32:21 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:13488 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241800AbhI1QcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:32:15 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A55C06161C;
-        Tue, 28 Sep 2021 09:30:35 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k23-20020a17090a591700b001976d2db364so3262823pji.2;
-        Tue, 28 Sep 2021 09:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pf7A/zPJOzJAdofq5BEHkXRKW+JfDq2B/Lw5Xi7ZWR8=;
-        b=I4n1mLS6yyfK2Pml5cOKdjeIkbSwIYZLV1kxNVZE/n460OJwUf+RbDmq6TgahzaoBI
-         q6zhekv/AaAaRbObftJBKV3n2MSjsX+Hr7FRxK3nLLv8jivdiDRc4zBjjaAsbOEosNll
-         Hw/imLKtAgakirL7A+XpUhqV5ijyJ+6EP9pc/OWqLDyRhE6KujUutSg0vADaC19ieR5g
-         ML4Pli5vowDdD8C58JRCEJ5iPysIT+JjLcrt4l1U743c3uviaV8Z778KCX2wApagZF9Q
-         AscWkFUer3XyzPPXXU1b+59jGjY4TtKQ2mJC15gVlHgC+idM5W7bi/xe44MQaTCgLPS+
-         5Ulw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pf7A/zPJOzJAdofq5BEHkXRKW+JfDq2B/Lw5Xi7ZWR8=;
-        b=cauHUuBBVQJF6NJYIVC3QLbMVBwAOQLTB+aqV64d9GuUmj1K89rYGwmgldLxBfyJb1
-         JJWOE53RRDWFA6cXGadPIyr7WLie2FfA1SQIlDrsDgbTmFlaNNDbG02z9aWhSeUBYtWU
-         cfYSzbZAnXumHYXTBH+2Jxi0w1S/BzfzNpfwymEa0D0bVlUYtxOoUf8iojzHw/SeAdp1
-         6+mrufJyJR3m3TICJc94aEWXz28A6y6THNBnjXTdmQwhRxN+BViprGZS5u4D3X/EX1+T
-         9E/ykAAgYZQ3AllwYZBOWUXAnGT+mfxkpfFo+i39aIQLswDr4XmOvRnTK5RnL9qX4RZ1
-         tDvw==
-X-Gm-Message-State: AOAM531C4Bs10QcGhYSzkekMoiaaimsAD4NRKEg8HOnmnMg+0/7a81+N
-        wOu4KrINRmP/MdqD/bUlv3xgczcTf3g=
-X-Google-Smtp-Source: ABdhPJxraXf/1lgwJVd1Vhv/3FcnTg8Dk/MhQmlABdVIrIJz8K/OqIBjWXnSd9qBc+GMVUwcBHmbtA==
-X-Received: by 2002:a17:90a:a585:: with SMTP id b5mr899537pjq.201.1632846634657;
-        Tue, 28 Sep 2021 09:30:34 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id e6sm2479799pgp.85.2021.09.28.09.30.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 09:30:34 -0700 (PDT)
-Subject: Re: [PATCH v2 01/12] arch: Export cpu_logical_map to modules
-To:     Christoph Hellwig <hch@infradead.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-References: <20210928022715.369160-1-f.fainelli@gmail.com>
- <20210928022715.369160-2-f.fainelli@gmail.com>
- <YVKjYxf5bzJzWJDb@infradead.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d585d000-17c2-8641-2a6c-664dbea69ce9@gmail.com>
-Date:   Tue, 28 Sep 2021 09:30:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 28 Sep 2021 12:32:18 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SFpceK024408;
+        Tue, 28 Sep 2021 11:30:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=lDsgfNRJKnCcRztCgiTQv34/875GpVZYZarRaSv+m9g=;
+ b=Bo78CuA8FPaKv+v++tT13xG3buhkANqIVlc6gkBvHzf2TS7tXsjU8jAb5rOslC3o6GZm
+ Yez1pfRQPlH/sJe0b3969bhAMZvSRbB+s4skBArtkidmcdSMDOM8XmmlCjO7Lexe6XnC
+ ctriCIYNUCt+FqGXn8ipVYwjASbJLYma3/5IfTNuSV7WmbRy63YIJG0IOMw2tKlMOXu9
+ VzwSflTeKbttElo0atyiq7Cw4IjyMjn6c1dH296F8e1MM2vGCYRyTesU421Sx23ITDPx
+ YrGEBPcpC1dTEhEyu23+/pKhLCq2/sutoVAY1RBfWk6AIQLS5aTkF5zfSPd2wV7Fy7yJ zQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3bc62dg1y8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 28 Sep 2021 11:30:36 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 28 Sep
+ 2021 17:30:35 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Tue, 28 Sep 2021 17:30:35 +0100
+Received: from algalon.ad.cirrus.com (unknown [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1BEA0B0E;
+        Tue, 28 Sep 2021 16:30:35 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <lee.jones@linaro.org>
+CC:     <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: [PATCH v2] mfd: arizona: Split of_match table into I2C and SPI versions
+Date:   Tue, 28 Sep 2021 17:30:35 +0100
+Message-ID: <20210928163035.23960-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-In-Reply-To: <YVKjYxf5bzJzWJDb@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-GUID: _EYJtK_3Y-EHqdoDcUYL_DQOfjCo58yS
+X-Proofpoint-ORIG-GUID: _EYJtK_3Y-EHqdoDcUYL_DQOfjCo58yS
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/21 10:08 PM, Christoph Hellwig wrote:
-> On Mon, Sep 27, 2021 at 07:27:04PM -0700, Florian Fainelli wrote:
->> In order to allow drivers/irqchip/irq-bcm7038-l1.c to be built as a
->> module and usable in GKI, export cpu_logical_map or __cpu_logical_map
->> towards the modules. This follows what MIPS has been doing since
->> 2dc2ae344e0e ("MIPS: Export __cpu_number_map and __cpu_logical_map.")
-> 
-> This seems like a pretty bad idea.  For one you should export an
-> accessor instead of the data structure.  And this probably should be an
-> EXPORT_SYMBOL_GPL.
+The Arizona driver has both some devices which only have an I2C
+interface and some which only have a SPI interface. Currently both of
+these share an of_match table, but this means inapproriate compatibles
+are available for each interface. Tidy this up by creating a table for
+each interface listing only the appropriate compatibles.
 
-In hindsight, we should not need that change, and the use of
-cpu_logical_map[] within drivers/irqchip/irq-bcm7038-l1.c should be
-restricted to a MIPS build where the driver is a level 1 interrupt
-controller and there are multiple per-cpu register copies.
+Reported-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-In an ARM/ARM64 configuration that driver is always used as a second
-level interrupt controller whereby it is hanging off the ARM GIC
-interrupt controller, and the intc->cpus[] array will only be 1 element.
-Fortunately since you cannot re-parent a L2 interrupt controller's
-interrupt handler to a different CPU, "it just happens to work".
+Changes since v1:
+ - Drop inappropriate fixes tag
 
-Thanks!
+Thanks,
+Charles
+
+ drivers/mfd/arizona-core.c | 13 -------------
+ drivers/mfd/arizona-i2c.c  | 14 +++++++++++++-
+ drivers/mfd/arizona-spi.c  | 13 ++++++++++++-
+ drivers/mfd/arizona.h      |  2 --
+ 4 files changed, 25 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 9323b1e3a69ef..cbf1dd90b70d5 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -845,19 +845,6 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ 
+ 	return 0;
+ }
+-
+-const struct of_device_id arizona_of_match[] = {
+-	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
+-	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
+-	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
+-	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
+-	{ .compatible = "wlf,wm8998", .data = (void *)WM8998 },
+-	{ .compatible = "wlf,wm1814", .data = (void *)WM1814 },
+-	{ .compatible = "wlf,wm1831", .data = (void *)WM1831 },
+-	{ .compatible = "cirrus,cs47l24", .data = (void *)CS47L24 },
+-	{},
+-};
+-EXPORT_SYMBOL_GPL(arizona_of_match);
+ #else
+ static inline int arizona_of_get_core_pdata(struct arizona *arizona)
+ {
+diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
+index 5e83b730c4ced..3ed810e81f631 100644
+--- a/drivers/mfd/arizona-i2c.c
++++ b/drivers/mfd/arizona-i2c.c
+@@ -104,11 +104,23 @@ static const struct i2c_device_id arizona_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, arizona_i2c_id);
+ 
++#ifdef CONFIG_OF
++const struct of_device_id arizona_i2c_of_match[] = {
++	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
++	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
++	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
++	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
++	{ .compatible = "wlf,wm8998", .data = (void *)WM8998 },
++	{ .compatible = "wlf,wm1814", .data = (void *)WM1814 },
++	{},
++};
++#endif
++
+ static struct i2c_driver arizona_i2c_driver = {
+ 	.driver = {
+ 		.name	= "arizona",
+ 		.pm	= &arizona_pm_ops,
+-		.of_match_table	= of_match_ptr(arizona_of_match),
++		.of_match_table	= of_match_ptr(arizona_i2c_of_match),
+ 	},
+ 	.probe		= arizona_i2c_probe,
+ 	.remove		= arizona_i2c_remove,
+diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+index aa1d6f94ae532..9fe06dda37829 100644
+--- a/drivers/mfd/arizona-spi.c
++++ b/drivers/mfd/arizona-spi.c
+@@ -225,11 +225,22 @@ static const struct spi_device_id arizona_spi_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, arizona_spi_ids);
+ 
++#ifdef CONFIG_OF
++const struct of_device_id arizona_spi_of_match[] = {
++	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
++	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
++	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
++	{ .compatible = "wlf,wm1831", .data = (void *)WM1831 },
++	{ .compatible = "cirrus,cs47l24", .data = (void *)CS47L24 },
++	{},
++};
++#endif
++
+ static struct spi_driver arizona_spi_driver = {
+ 	.driver = {
+ 		.name	= "arizona",
+ 		.pm	= &arizona_pm_ops,
+-		.of_match_table	= of_match_ptr(arizona_of_match),
++		.of_match_table	= of_match_ptr(arizona_spi_of_match),
+ 		.acpi_match_table = ACPI_PTR(arizona_acpi_match),
+ 	},
+ 	.probe		= arizona_spi_probe,
+diff --git a/drivers/mfd/arizona.h b/drivers/mfd/arizona.h
+index 801cbbcd71cb5..66d6092d08515 100644
+--- a/drivers/mfd/arizona.h
++++ b/drivers/mfd/arizona.h
+@@ -28,8 +28,6 @@ extern const struct regmap_config wm8998_i2c_regmap;
+ 
+ extern const struct dev_pm_ops arizona_pm_ops;
+ 
+-extern const struct of_device_id arizona_of_match[];
+-
+ extern const struct regmap_irq_chip wm5102_aod;
+ extern const struct regmap_irq_chip wm5102_irq;
+ 
 -- 
-Florian
+2.11.0
+
