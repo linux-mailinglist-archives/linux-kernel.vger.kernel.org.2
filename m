@@ -2,85 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE6041B7FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFD541B826
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242637AbhI1UJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 16:09:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242120AbhI1UJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 16:09:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13EEA61157;
-        Tue, 28 Sep 2021 20:08:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632859693;
-        bh=2q54bLyOqMkKWDejBRp+5bRZfTrKTSWJcV2n/WM7O5I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=SJlILrO3fJ9ue8UvYpapX4ojkALIQWP0IhyvgGUEnmc2bU4/eR9Oz1WHf91TFCvXA
-         +AvaFLotNIk6GNVMTzMiHUmE0SECnG/DaFsMeYfbeJ4HnUD4sgFtdp1R5TXABKq/V5
-         4Gltdrd5KbjraDvTp7Dojw2UaOlvPdW7DYea08nUCxmciYyaMtdgK79OJikk1fI3dS
-         IQxjaLHV0wfoBer0BAfg32is1dAvMuIslQlV94SxW032Uh3Itk0NL7NQX8SiKEicB1
-         kZRIFonoYbzHfn7L/mtYQNU1K3C/vNR3V9ujP6yh2gmx56PtY428rmLhwG6a55K51M
-         NJoYyJGhopiig==
-Date:   Tue, 28 Sep 2021 15:08:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
-        oss-drivers@corigine.com, Paul Mackerras <paulus@samba.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Vadym Kochan <vkochan@marvell.com>, Michael Buesch <m@bues.ch>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        Simon Horman <simon.horman@corigine.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v4 4/8] PCI: replace pci_dev::driver usage that gets the
- driver name
-Message-ID: <20210928200811.GA724823@bhelgaas>
+        id S242683AbhI1UKs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 16:10:48 -0400
+Received: from mail.shanghaitech.edu.cn ([119.78.254.11]:7418 "EHLO
+        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242679AbhI1UK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:10:28 -0400
+X-Greylist: delayed 677 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 16:10:25 EDT
+Received: from [10.15.44.215] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 480409496331105;
+        Wed, 29 Sep 2021 04:08:24 +0800 (CST)
+Received: from DESKTOP-FOJ6ELG.localdomain (10.15.44.220) by
+ smtp.shanghaitech.edu.cn (10.15.44.215) with Microsoft SMTP Server (TLS) id
+ 14.3.399.0; Wed, 29 Sep 2021 04:08:22 +0800
+From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Subject: [PATCH -next -v2] ./drivers/bluetooth/btqcomsmd.c: remove superfluous header files from btqcomsmd.c
+Date:   Wed, 29 Sep 2021 04:08:11 +0800
+Message-ID: <20210928200811.22059-1-liumh1@shanghaitech.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210928192936.w5umyzivi4hs6q3r@pengutronix.de>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.15.44.220]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 09:29:36PM +0200, Uwe Kleine-König wrote:
-> On Tue, Sep 28, 2021 at 12:17:59PM -0500, Bjorn Helgaas wrote:
-> > [+to Oliver, Russell for eeh_driver_name() question below]
-> > 
-> > On Mon, Sep 27, 2021 at 10:43:22PM +0200, Uwe Kleine-König wrote:
-> > > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > > 
-> > > struct pci_dev::driver holds (apart from a constant offset) the same
-> > > data as struct pci_dev::dev->driver. With the goal to remove struct
-> > > pci_dev::driver to get rid of data duplication replace getting the
-> > > driver name by dev_driver_string() which implicitly makes use of struct
-> > > pci_dev::dev->driver.
+btqcomsmd.c hasn't use any macro or function declared in linux/of.h
+and linux/slab.h.
+Thus, these files can be removed from btqcomsmd.c safely without
+affecting the compilation of the ./drivers/bluetooth module
 
-> > Also, would you mind using "pci_dev.driver" instead of
-> > "pci_dev::driver"?  AFAIK, the "::" operator is not actually part of
-> > C, so I think it's more confusing than useful.
-> 
-> pci_dev.driver doesn't work either in C because pci_dev is a type and
-> not a variable.
+Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
 
-Sure, "pci_dev.driver" is not strictly acceptable C unless you have a
-"struct pci_dev pci_dev", but it's pretty common.
+---
+ drivers/bluetooth/btqcomsmd.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/bluetooth/btqcomsmd.c b/drivers/bluetooth/btqcomsmd.c
+index 2acb719e5..e556d96a4 100644
+--- a/drivers/bluetooth/btqcomsmd.c
++++ b/drivers/bluetooth/btqcomsmd.c
+@@ -5,9 +5,7 @@
+  */
+ 
+ #include <linux/module.h>
+-#include <linux/slab.h>
+ #include <linux/rpmsg.h>
+-#include <linux/of.h>
+ 
+ #include <linux/soc/qcom/wcnss_ctrl.h>
+ #include <linux/platform_device.h>
+-- 
+2.25.1
+
+
