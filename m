@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1240741AD7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D7C41AD7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240319AbhI1LCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240306AbhI1LCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:02:42 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38A4C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:01:01 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id v10so77203655edj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=c86yOLM1Fw2NMoiFPEmcUQyywQO4Qv6x2yNfhyADXJ4=;
-        b=zLra726wnkvkOSmf1X89RLppiIvWZFTEzrm1TBB/7qHh8ZCFilcAZe7rLX9r6yNG/1
-         z3pNYlKvIO7vTvBR15T2Jp1b/ss3a5LknZxtyIVipKTc4x0Fxkv80ju1zEK2g/byCjru
-         EwhLU7+he+QptHDbBNOLPndKFAS4Th8VXVtcaO/HHEKu5RuAfXqA4Yb++N4E3feaRSXq
-         bXrL7Y7xv/gB4Tj1vVrBY4+MNHRQ6cZgaMHxxDs3NDVb4i4/sniPVpLNwdrQYWxAXrNl
-         3Qt6c7ykv1SB2CCJvYmGFfe+xrEmO5tBjQ22sEtWepx+peMd0emEaFQzDDS2p3vMlg5v
-         qgCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=c86yOLM1Fw2NMoiFPEmcUQyywQO4Qv6x2yNfhyADXJ4=;
-        b=cKM1WpdV/CZ6W/UyMLXky+2mQF9+p5HYfFe2ZJ8rNVti0qSKfkzKlQSU0nwttHRiUp
-         7HWpudpOov2dHL5AB6IXipSRP//xGupdra0gPcYu1z12X55fWBR5eOyzXH439L+459Lu
-         GD+vmYbB+z61EpgZ2apps12q0ZU5RKNdfEaUv5wc6l5lspfzJK9JKLBWLZ4GrYO/fLwn
-         pceWVjTCyCu467+DOmDtYXNE/f0Vqwok4zsV+pC1T+iUThGhPSOCMHk5dPNetLXwSWMM
-         vOjy3H5LNZLGLmqM0frpFMJiQ+TMJkOegjTvN7r93Kew2MjBPZAk20V4Q2ZNoMcc/FjP
-         k+ZQ==
-X-Gm-Message-State: AOAM533M8utFyL4MTOpL/CjkdHucsh1eNFuBETqCS68ldZcT1S+y0Jrd
-        f7LnjMDp+kcL3G3P8u8b35HqmQ==
-X-Google-Smtp-Source: ABdhPJwySr57vsQBPKRK5lXiAKgIvsUqRg+PrWV2pP5hdXUy2coElLgB+jCde/y/uQMdf9FwRTs2ag==
-X-Received: by 2002:a17:906:3012:: with SMTP id 18mr6313135ejz.136.1632826860349;
-        Tue, 28 Sep 2021 04:01:00 -0700 (PDT)
-Received: from fedora.. (dh207-96-123.xnet.hr. [88.207.96.123])
-        by smtp.googlemail.com with ESMTPSA id q6sm10000938ejm.106.2021.09.28.04.00.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 04:01:00 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 2/2] arm64: dts: marvell: puzzle-m801: update model name
-Date:   Tue, 28 Sep 2021 13:00:53 +0200
-Message-Id: <20210928110053.66715-2-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210928110053.66715-1-robert.marko@sartura.hr>
-References: <20210928110053.66715-1-robert.marko@sartura.hr>
+        id S240329AbhI1LDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240238AbhI1LDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 07:03:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE476108F;
+        Tue, 28 Sep 2021 11:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632826903;
+        bh=4elokg0o9FH5+5sHoV+DUogyPycs4wXHfkpt86cNSUc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s5UfLHldW5pMxfvjMDqb2cc03GF+hikMXPc9WstlfWt2CclOBSFd9Clp61OC/kE8M
+         IfrCo8rmlIfWZBc37ND0v4pKb3+1H6+9quC6YUU8p1EmIBv1R4lqw3IbUBORvs3f5T
+         WZm746V0PdiAyaB3GO49VNjXOELsRsvulnchZwvP6K7H7IY52woWEhiIJKsOBIW5mF
+         x2Gx7CWToHGAuNZGIGhjFxgcoAtoyyKiL7FD6HUPqbHQZFrcDY+kgZEnMAXzyAf1Pc
+         wAWtt7yldFIBXqLdCDYSA66KV3chOYX4jzWutV7aiXF+yW+6qEnjvhVgKrNjvEIomy
+         Wq2PL66XVz6lg==
+Date:   Tue, 28 Sep 2021 13:01:37 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] module: fix clang CFI with MODULE_UNLOAD=n
+Message-ID: <YVL2EXeCKA3Leng+@p200300cbcf144d003adeadfffec0265a.dip0.t-ipconnect.de>
+References: <20210927121541.939745-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210927121541.939745-1-arnd@kernel.org>
+X-OS:   Linux p200300cbcf144d003adeadfffec0265a.dip0.t-ipconnect.de
+ 5.13.8-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the model name to match the vendor advertised one.
++++ Arnd Bergmann [27/09/21 14:15 +0200]:
+>From: Arnd Bergmann <arnd@arndb.de>
+>
+>When CONFIG_MODULE_UNLOAD is disabled, the module->exit member
+>is not defined, causing a build failure:
+>
+>kernel/module.c:4493:8: error: no member named 'exit' in 'struct module'
+>                mod->exit = *exit;
+>
+>add an #ifdef block around this.
+>
+>Fixes: cf68fffb66d6 ("add support for Clang CFI")
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
----
- arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied, thanks everyone!
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-index a6126e4c7fbd..24431ec6a0dc 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-@@ -3,7 +3,7 @@
-  * Copyright (C) 2016 Marvell Technology Group Ltd.
-  * Copyright (C) 2020 Sartura Ltd.
-  *
-- * Device Tree file for IEI Puzzle-M801
-+ * Device Tree file for iEi Puzzle-M801
-  */
- 
- #include "armada-8040.dtsi"
-@@ -12,7 +12,7 @@
- #include <dt-bindings/leds/common.h>
- 
- / {
--	model = "IEI-Puzzle-M801";
-+	model = "iEi Puzzle-M801";
- 	compatible = "iei,puzzle-m801", "marvell,armada8040",
- 		     "marvell,armada-ap806-quad", "marvell,armada-ap806";
- 
--- 
-2.31.1
-
+Jessica
