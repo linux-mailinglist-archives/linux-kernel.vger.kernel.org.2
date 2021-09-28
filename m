@@ -2,99 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5220541B54C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92C041B54E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242232AbhI1Rlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242069AbhI1Rlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:41:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4246360E90;
-        Tue, 28 Sep 2021 17:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632850797;
-        bh=wz591LnCXJxW9tbeCFqIz+lEG7TzLwznltkpkzwUlhs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=c5nT/qkvdPvejKSGpnEKrpeb6tjQzIwHe+1BO8b24voahRUJTaGLMzVfGkQRsTzCy
-         ebxkozbatUrART4MedlkUsqMmfxw2HRmuDzDI12+vJRJQ44Rpej9TxI6D0hBxcl0Oh
-         mEIASisoFvqSKkDLK31PvI4JzowCjvCDVvaBYc9hULEtc+ihttY++BKBmy+hrmqCMT
-         6z3T0MwNjqfoPaAw4M62lLoZz1ytNmxs2X9XKELVX/xgEHNkToe2uuFTdKnFeea1zd
-         lxOxGmac+spdgTOUhWuhiVyZtYoaarKPzLBX5TuDazKzQ1fnWNcHNy/qnWmYllyGpz
-         5DOkytLaWJPpA==
-Received: by mail-ed1-f45.google.com with SMTP id l8so37241308edw.2;
-        Tue, 28 Sep 2021 10:39:57 -0700 (PDT)
-X-Gm-Message-State: AOAM533+8MH2hLcVhhQxPFFxwh0kHv0B0Malk3tQYxvlhuPKFUUu6uR5
-        AcuZqSQ0/k5XiE/2EtNiS+sFO0m4toPaGKe5oQ==
-X-Google-Smtp-Source: ABdhPJw+2aohDM44L2GIkVGW0d+FDi1AD/O+XCnfDQ5VUAij0L7aF621b58LHaygqTTDWh/+zVSfb9lrZN3hQb/lM1E=
-X-Received: by 2002:a17:906:abd1:: with SMTP id kq17mr7965369ejb.390.1632850791354;
- Tue, 28 Sep 2021 10:39:51 -0700 (PDT)
+        id S242241AbhI1RmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:42:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35367 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242202AbhI1RmQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:42:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632850836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i/mLExJpGEltWuxQX4FZe3M+4GoSDCEzgPhBEr5FMEA=;
+        b=eDKUMRN6BkhN+Eve4uu+X6/Wjg2AAbS1BrpkZA2hqlmxdUHBKA09wDjy/TN7CZGQ3lp6bd
+        UYhF0b9Rw79j+HKbs7T2Y84l+Q71TY3GB+ekNy9cwvFShgmTWzDUPJY9BuBeJEhdihmpvz
+        M+ruup6NTszz9tcw9eU4tAZIyj4jI20=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-193-wGEJYakTOOuep1qZAwcWKQ-1; Tue, 28 Sep 2021 13:40:34 -0400
+X-MC-Unique: wGEJYakTOOuep1qZAwcWKQ-1
+Received: by mail-ed1-f69.google.com with SMTP id z6-20020a50cd06000000b003d2c2e38f1fso22676865edi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:40:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=i/mLExJpGEltWuxQX4FZe3M+4GoSDCEzgPhBEr5FMEA=;
+        b=iUDu2DAix78V/btMDuqyjYAORZBDkfKkhDBq8hpcujFmw529//dD47odm86PXZNlaE
+         0naMq84/UMCrNGf7YzVyD6iIw8VZnFJqSOEjHN14P0cP6cNlJG3a5/RsxD1jC3xld0cF
+         46jTUpZDtsj4Z3abIFGFD2gupTUdQ8bavLbdTSqZEmtaqWufMMf7hctDJT3sJBYNVRZK
+         ThYEp+5D2IwjBL6j5qu3TWlJCdAWf5iJjKQGI/ugkmxDcqUj1JywiwayTffcEQDcIekb
+         jz08NxMDb0qQ5PiGRbIzASpZMbY5vB8TPueEimxRNIdOFA5elWASempQ2KKdfkWKTP1k
+         1W5w==
+X-Gm-Message-State: AOAM530TX7XFOmftw8qzLaeqVIxJXTXItqLv7qGnSwgW9giCgm4ENjFD
+        C0m01+wBR2Ly9CzsaSXFpGoD5UGoD9HNEGx58AbguPGQ1ctc1WNVekWeP7xoeQlHXmriu5ondGZ
+        1dhn0Nm0zwljuG6LpLqGDNJ2z
+X-Received: by 2002:a05:6402:54d:: with SMTP id i13mr9049823edx.389.1632850833768;
+        Tue, 28 Sep 2021 10:40:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy1uRsUYkFrmzr9SFSboTh9F3ISbwn7GohEYiy/YAAhZwF2yzR3R6MUzDSzYRWA2nhcLdM6ag==
+X-Received: by 2002:a05:6402:54d:: with SMTP id i13mr9049801edx.389.1632850833583;
+        Tue, 28 Sep 2021 10:40:33 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y3sm13952710eda.9.2021.09.28.10.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 10:40:32 -0700 (PDT)
+Message-ID: <c3db653e-4ea2-3e99-aed6-c6e8a76e2ece@redhat.com>
+Date:   Tue, 28 Sep 2021 19:40:31 +0200
 MIME-Version: 1.0
-References: <1632831440-5880-1-git-send-email-abel.vesa@nxp.com>
-In-Reply-To: <1632831440-5880-1-git-send-email-abel.vesa@nxp.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 28 Sep 2021 12:39:39 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLQwdSZLLaL1A=MsHFA7A3iy0XvJbEzja+pdEyNrTboDA@mail.gmail.com>
-Message-ID: <CAL_JsqLQwdSZLLaL1A=MsHFA7A3iy0XvJbEzja+pdEyNrTboDA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] arm64: dts: Add i.MX8DXL initial support
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v3 0/4] KVM: allow mapping non-refcounted pages
+Content-Language: en-US
+To:     David Stevens <stevensd@chromium.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210825025009.2081060-1-stevensd@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20210825025009.2081060-1-stevensd@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 7:17 AM Abel Vesa <abel.vesa@nxp.com> wrote:
->
-> This allows i.MX8DXL EVK board to boot to prompt.
->
-> Changes since v1:
->  * added commit message for the 8th, 9th and 10th patches
->
-> Abel Vesa (5):
->   arm64: dts: imx8-ss-lsio: Add mu5a mailbox
->   arm64: dts: freescale: Add adma subsystem dtsi for imx8dxl
->   dt-bindings: fsl: scu: Add i.MX8DXL ocotp binding
->   dt-bindings: i2c: imx-lpi2c: Add i.MX8DXL compatible match
->   dt-bindings: serial: fsl-lpuart: Add i.MX8DXL compatible
->
-> Jacky Bai (5):
->   arm64: dts: freescale: Add the top level dtsi support for imx8dxl
->   arm64: dts: freescale: Add the imx8dxl connectivity subsys dtsi
->   arm64: dts: freescale: Add ddr subsys dtsi for imx8dxl
->   arm64: dts: freescale: Add lsio subsys dtsi for imx8dxl
->   arm64: dts: imx8dxl: Add i.MX8DXL evk board support
->
->  .../bindings/arm/freescale/fsl,scu.txt        |   3 +-
->  .../bindings/i2c/i2c-imx-lpi2c.yaml           |   2 +
->  .../bindings/serial/fsl-lpuart.yaml           |   1 +
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../boot/dts/freescale/imx8-ss-lsio.dtsi      |   7 +
->  arch/arm64/boot/dts/freescale/imx8dxl-evk.dts | 266 ++++++++++++++++++
->  .../boot/dts/freescale/imx8dxl-ss-adma.dtsi   |  53 ++++
->  .../boot/dts/freescale/imx8dxl-ss-conn.dtsi   | 137 +++++++++
->  .../boot/dts/freescale/imx8dxl-ss-ddr.dtsi    |  36 +++
->  .../boot/dts/freescale/imx8dxl-ss-lsio.dtsi   |  78 +++++
->  arch/arm64/boot/dts/freescale/imx8dxl.dtsi    | 245 ++++++++++++++++
->  11 files changed, 828 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-adma.dtsi
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-conn.dtsi
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-ddr.dtsi
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-lsio.dtsi
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl.dtsi
+On 25/08/21 04:50, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
+> 
+> This patch series adds support for mapping non-refcount VM_IO and
+> VM_PFNMAP memory into the guest.
+> 
+> Currently, the gfn_to_pfn functions require being able to pin the target
+> pfn, so they will fail if the pfn returned by follow_pte isn't a
+> ref-counted page.  However, the KVM secondary MMUs do not require that
+> the pfn be pinned, since they are integrated with the mmu notifier API.
+> This series adds a new set of gfn_to_pfn_page functions which parallel
+> the gfn_to_pfn functions but do not pin the pfn. The new functions
+> return the page from gup if it was present, so callers can use it and
+> call put_page when done.
+> 
+> The gfn_to_pfn functions should be depreciated, since as they are unsafe
+> due to relying on trying to obtain a struct page from a pfn returned by
+> follow_pte. I added new functions instead of simply adding another
+> optional parameter to the existing functions to make it easier to track
+> down users of the deprecated functions.
+> 
+> This series updates x86 and arm64 secondary MMUs to the new API.
+> 
+> v2 -> v3:
+>   - rebase on kvm next branch
 
-Please resend to the DT list if you want the bindings checked and reviewed.
+Hi David,
 
-Rob
+this needs a rebase.  I have pushed my current queue, but note that 
+parts of it are still untested.
+
+A bigger question here is the gfn_to_pfn caches and how to properly 
+invalidate them.  However your patch doesn't make things worse (only a 
+bit inconsistent because pointing certain MSRs to a VM_PFNMAP|VM_IO page 
+can fail).
+
+Paolo
+
+> v1 -> v2:
+>   - Introduce new gfn_to_pfn_page functions instead of modifying the
+>     behavior of existing gfn_to_pfn functions, to make the change less
+>     invasive.
+>   - Drop changes to mmu_audit.c
+>   - Include Nicholas Piggin's patch to avoid corrupting refcount in the
+>     follow_pte case, and use it in depreciated gfn_to_pfn functions.
+>   - Rebase on kvm/next
+> 
+> David Stevens (4):
+>    KVM: mmu: introduce new gfn_to_pfn_page functions
+>    KVM: x86/mmu: use gfn_to_pfn_page
+>    KVM: arm64/mmu: use gfn_to_pfn_page
+>    KVM: mmu: remove over-aggressive warnings
+> 
+>   arch/arm64/kvm/mmu.c            |  26 +++--
+>   arch/x86/kvm/mmu/mmu.c          |  50 +++++----
+>   arch/x86/kvm/mmu/mmu_internal.h |   3 +-
+>   arch/x86/kvm/mmu/paging_tmpl.h  |  23 ++--
+>   arch/x86/kvm/mmu/tdp_mmu.c      |   6 +-
+>   arch/x86/kvm/mmu/tdp_mmu.h      |   4 +-
+>   arch/x86/kvm/x86.c              |   6 +-
+>   include/linux/kvm_host.h        |  17 +++
+>   virt/kvm/kvm_main.c             | 188 +++++++++++++++++++++++---------
+>   9 files changed, 220 insertions(+), 103 deletions(-)
+> 
+
