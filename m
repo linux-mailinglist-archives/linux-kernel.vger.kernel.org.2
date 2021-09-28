@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125AF41B8D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDD341B8D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 22:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242843AbhI1VAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242836AbhI1VAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:00:34 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A070C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:58:55 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so56070oos.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 13:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=lN+LkRX7S70D5nVV7zC+dNpbI61BdRQlf1pXpHjEvnU=;
-        b=BqNa00Jv/wczuRQl2CsbEF087fnEuBEsWtWuOddVIpEr4F1WAbXg/JebtjR0mpK6V2
-         gl/ifgUDTMCHgD0QM5YRmQpoTUm2aq0jE8TJ89Q5fAHnYH6CwtssGC37iz04bmnaO96t
-         zRyHti+X3BIiBj/9xx7HNEgec/SyWwjCDTQnc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=lN+LkRX7S70D5nVV7zC+dNpbI61BdRQlf1pXpHjEvnU=;
-        b=Y1PgHC/MVDguFAzh7+o5zWCdlbc6Xszl1qrerAxBoLeHoXrJALnbsPk7RG6q9xwz7O
-         AcgHturc4rCfK1S544lf6HDGIFDCExIz2W/XSXQh/CLBWeZL+vO6Xq4801JyMjQux15Z
-         GHzqdRveWwU82WVgCD4fmNX5mfwmx1B3CfJpYv4WF6QaMntwgY7A/pdT7KSryPFLWzfh
-         /i8SUQnwBjr13sc5Yz2aYKahrrz/PqBw5TpOJU4W0F0DawmXwrBqc7XpnNClxz2bp9fp
-         jtZ6aTZpPKYfpkRvLdxDXkwBm5FNMjmTRGmcKidFjif5HKT/OgFTGHnwZThBuT/IQQDj
-         tURQ==
-X-Gm-Message-State: AOAM532wsvbZawgY5VOZZi9zmoCxyzugwOutfupwjYrardyyvOAdXgFr
-        8w6wTvT9n0lGTzbHbicyqwE5bBLQ5N24Rj1Yc0Y5EagYJKc=
-X-Google-Smtp-Source: ABdhPJy09zHOLdQTdxc47vBQk3oh7hLDqzFOIt1B9H5sRlagoeu6wP5B0XwML12xwBIRl5af+iLJeXbM4xt4gYBLo7A=
-X-Received: by 2002:a4a:942:: with SMTP id 63mr6740900ooa.25.1632862734306;
- Tue, 28 Sep 2021 13:58:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 28 Sep 2021 13:58:53 -0700
+        id S242852AbhI1VAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242845AbhI1VAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 17:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6E560FC0;
+        Tue, 28 Sep 2021 20:58:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632862739;
+        bh=Gl+jfadpVvNOg2XJ45MvVWQ8l+OKiOdvBFfmcAUq9WA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DKalrk9XQuztHgAP4K4twJc90Mpy5HxW/4EL063Esk1cB2aTpkCDPOwoJx7WfgPck
+         BoRArW/lQRw44gXDmpQJ/oanTSIBeUESshlmOOGgW/VEAtVB5yt0GmkY/L/bHa1qI4
+         /FI00FFVBLAfAwKjIyaMUnl8zoxi8GnryHxdQdNSfFJ+C2NZaDjzICaon8YuT8TVFf
+         1Pk28j9eP3fmqiqtoFDX5XYc7GhL3NWE0s3/T0FeewGOg5FVSc6+sowAss2HgxErJl
+         8A3OirUoaKY5nMbmZKFgIa3wDKNJD5feGoDNgmjCstKS7e0GdO+pVzc82WKZg5hocY
+         qweA4xvReocYg==
+Date:   Tue, 28 Sep 2021 13:58:58 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [PATCH] f2fs-tools: fall back to the original version check when
+ clock_gettime is not supported
+Message-ID: <YVOCEn9xHmHmJdDI@google.com>
+References: <20210928204658.2230524-1-daeho43@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210927184858.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
-References: <20210927184858.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 28 Sep 2021 13:58:53 -0700
-Message-ID: <CAE-0n506Pp-VUCOoMcFaSbrnp+Op3_QRVPFG8t9f1yOX8Ps2+Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928204658.2230524-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-09-27 18:49:39)
-> Factor out ti-sn65dsi86 edp bridge as a separate dts fragment.
-> This helps us introduce the second source edp bridge later.
->
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+Merged to address android build breakage.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On 09/28, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> In lower versions than macOS 10.12, they don't support clock_gettime
+> function. It breaks the build, so we need to fall back to the original
+> kernel version check algorithm, in that case.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+>  fsck/mount.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/fsck/mount.c b/fsck/mount.c
+> index 7c4c681..c928a15 100644
+> --- a/fsck/mount.c
+> +++ b/fsck/mount.c
+> @@ -975,6 +975,16 @@ int validate_super_block(struct f2fs_sb_info *sbi, enum SB_ADDR sb_addr)
+>  		MSG(0, "Info: MKFS version\n  \"%s\"\n", c.init_version);
+>  		MSG(0, "Info: FSCK version\n  from \"%s\"\n    to \"%s\"\n",
+>  					c.sb_version, c.version);
+> +#if defined(__APPLE__)
+> +		if (!c.no_kernel_check &&
+> +			memcmp(c.sb_version, c.version,	VERSION_NAME_LEN)) {
+> +			c.auto_fix = 0;
+> +			c.fix_on = 1;
+> +			memcpy(sbi->raw_super->version,
+> +					c.version, VERSION_NAME_LEN);
+> +			update_superblock(sbi->raw_super, SB_MASK(sb_addr));
+> +		}
+> +#else
+>  		if (!c.no_kernel_check) {
+>  			struct timespec t;
+>  			u32 prev_time, cur_time, time_diff;
+> @@ -1007,6 +1017,7 @@ int validate_super_block(struct f2fs_sb_info *sbi, enum SB_ADDR sb_addr)
+>  			update_superblock(sbi->raw_super, SB_MASK(sb_addr));
+>  		}
+>  out:
+> +#endif
+>  		print_sb_state(sbi->raw_super);
+>  		return 0;
+>  	}
+> -- 
+> 2.33.0.685.g46640cef36-goog
