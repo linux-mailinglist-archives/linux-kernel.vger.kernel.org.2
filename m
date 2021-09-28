@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9053341B4BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9FC41B4BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241972AbhI1RLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        id S241974AbhI1RLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241958AbhI1RLH (ORCPT
+        with ESMTP id S241966AbhI1RLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:11:07 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46891C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:09:27 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id dn26so8971694edb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:09:27 -0700 (PDT)
+        Tue, 28 Sep 2021 13:11:08 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C75FC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:09:28 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id dn26so8971922edb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MOkJiFFV+D+y/7iBdkppsbCFqP93nQiAS8IIYiy8lX0=;
-        b=ysvN9ddniGUrClxsHS1LmwTVKXK56UiClKP4e5jte2z5dCv8tP/UkjV/c5OKQ1MauZ
-         pPHhaIy8s2Ibs48CgwbBd6rZ547y3UdXlN3nM4+NMJoV6x+RCL7idHdno0ZmJBEvRveV
-         nX43+4/VG0ryjwCxCIAolz1nTByixXYUcyleuu+2+PLZ1Ac9f16c3bAVGrsRqpr2NVoB
-         c+QluS9RmGAhORtml9T+tiZgmTbQ9en4me1UHsQvEUwuwhK51yM28LM9pT0zF5aSXf60
-         KKRDljNVePGmWvfDDzC4BJlK/1LszqLQsLIcOex+i9UqM/p+4g80u/mas6C5S+G6D6Qo
-         yDrA==
+        bh=aZK50rgSRHZQcRqY8tXdmJANbhQZl2eXtIuEyFm2xBo=;
+        b=p0qI1ttJLpR80NCXOaI+kGOK+YMfIIB7tHLhbzpVu8ykE0BmvqCbQlt/mUcQ3hLCGu
+         oiUjYZ5s6vU9PzXq4FyWfoo2ptDOI2DVDx4rXN2lJ2c9Ruj46HfbjbX2p3pdWronHYkn
+         iZafES4mn56y8ChKaB55Ftz2IwlqGHHl0gN5WK79KF5iZNidez7LdO88weLGQFDPGJy4
+         jhFk1v2TWEF0n76qRfjgXW9yWoQpe1g6iYOypx1hZHSgP1ZQ0P097XaLcVFbRipQIgjc
+         GADrcMOtuz38SdRyz5/qBTjRLrEnVBT3pgsvXU0UMxfUwhRbiViPjERkvTCPiLDawH6C
+         rBGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MOkJiFFV+D+y/7iBdkppsbCFqP93nQiAS8IIYiy8lX0=;
-        b=OMM49LdPdNs8EZzhylaO6X7jLtOht2+4GXwFfr4ewHJhY/sTU59IGS45gFMRQBLbrN
-         p7Mjd4RrbzslJPIuRFzMmS9+IfBlceZVA37ykmZ3wJRcBtxmLH+BWbWHuWgyNR8mPGkU
-         2eoh3DAgEqkOj7WHCQ4CzBTBlMWfuFTImkKuBI58RPXUcLERsE6Cnp78+3TOzuJyOLec
-         g23UaRBajFatgRJrb3PVfBS3JEeJJeiOMAYY6BsbScC+sNsVrbQ64J3mBkHDq6zJ4SmH
-         mvo4HihI35E7nhrcJPL7bPstCYbbvShocwDWa9prbrRsoW6NPv5d9osp8ScnFb0RFeH/
-         wgzg==
-X-Gm-Message-State: AOAM531S1/bz/RycIgpSXLlXgS0O3CfbcTjH8xqbIwjFKKisA02KYpQP
-        7W9UDzfpdB8vdsKZKVQzdXUfiIOvqVFhWQ==
-X-Google-Smtp-Source: ABdhPJz4Y72BDlbKQ4LAeyOESF53Jg+2BscvxE5OZUe993IRCBuexeXHB/U7OXkgMxMULZYLv6F8qg==
-X-Received: by 2002:a17:906:c7d0:: with SMTP id dc16mr8158507ejb.555.1632848965759;
-        Tue, 28 Sep 2021 10:09:25 -0700 (PDT)
+        bh=aZK50rgSRHZQcRqY8tXdmJANbhQZl2eXtIuEyFm2xBo=;
+        b=EShHiTYHBwJeki9cEGqLopaJ0PRF7CWSBG4vNRk6fJH2STntN9HwyYUPudjVsdScNg
+         Gq9c6XxYsebXXMu93NOpUmWjz7Mvgn0c3MwmXRdgPdcmNIfMblTBWNAzL0Bmm1u0J9+d
+         iJ5eFAo801L99Bfn12abIARl6jGYnoOSTNcAwOrLt0M0Ik7W8zYGODw5acEwhNpvr/rG
+         Kw2yO0/dzzR8D2fnFR87Vg5cCAhvKOs6H5CzHj2nMe8LwXffEOrFt/VF7hXMjjSzPPHJ
+         59ZOec6rvoh5Vi2KzQ1vUEn5QUW22wOUpXl1HB5pngdMvprGbLMmbkt1t4jlZulMXEPQ
+         jJdw==
+X-Gm-Message-State: AOAM531dN4nnBAiGbnS7jolnRrylkSJVOXxYH31EXwxoYSe9XmHxT5Ra
+        kRNEL+Qd2yq4B3JyoGi1Il8CpxhibimptA==
+X-Google-Smtp-Source: ABdhPJymT3YOYPRu80o+Dk4PLwba8nkVBFvoSnZEq5bcWFN9vIm7CfRa2aF8CuYuYjay5M66WPnc3w==
+X-Received: by 2002:a17:906:f15:: with SMTP id z21mr7808803eji.177.1632848967075;
+        Tue, 28 Sep 2021 10:09:27 -0700 (PDT)
 Received: from fedora.. (cpezg-94-253-144-231-cbl.xnet.hr. [94.253.144.231])
-        by smtp.googlemail.com with ESMTPSA id bj21sm10806129ejb.42.2021.09.28.10.09.24
+        by smtp.googlemail.com with ESMTPSA id bj21sm10806129ejb.42.2021.09.28.10.09.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 10:09:25 -0700 (PDT)
+        Tue, 28 Sep 2021 10:09:26 -0700 (PDT)
 From:   Robert Marko <robert.marko@sartura.hr>
 To:     andrew@lunn.ch, gregory.clement@bootlin.com,
         sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, pali@kernel.org
 Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v3 2/3] arm64: dts: marvell: espressobin-ultra: add PHY and switch reset pins
-Date:   Tue, 28 Sep 2021 19:09:18 +0200
-Message-Id: <20210928170919.691845-2-robert.marko@sartura.hr>
+Subject: [PATCH v3 3/3] arm64: dts: marvell: espressobin-ultra: enable front USB3 port
+Date:   Tue, 28 Sep 2021 19:09:19 +0200
+Message-Id: <20210928170919.691845-3-robert.marko@sartura.hr>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210928170919.691845-1-robert.marko@sartura.hr>
 References: <20210928170919.691845-1-robert.marko@sartura.hr>
@@ -66,44 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both the Topaz switch and 88E1512 PHY have their reset and interrupts
-connected to the SoC.
+Espressobin Ultra has a front panel USB3.0 Type-A port which works
+just fine so enable it.
+I dont see a reason why it was disabled in the first place anyway.
 
-So, define the Topaz and 88E1512 reset pins in the DTS.
-
-Defining the interrupt pins wont work as both the 88E1512 and the
-Topaz switch uses active LOW IRQ signals but the A37xx GPIO controller
-only supports edge triggers.
-88E1512 would require special setup anyway as its INT pin is shared with
-the LED2 and you first need to configure it as INT.
-
+Fixes: 3404fe15a60f ("arm64: dts: marvell: add DT for ESPRESSObin-Ultra")
 Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
- arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes in v2:
+* Add Fixes tag
+---
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-index 610ff6f385c7..7c786d218f1b 100644
+index 7c786d218f1b..070725b81be5 100644
 --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
 +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
-@@ -114,12 +114,16 @@ &usb3 {
- &mdio {
- 	extphy: ethernet-phy@1 {
- 		reg = <1>;
-+
-+		reset-gpios = <&gpionb 2 GPIO_ACTIVE_LOW>;
- 	};
+@@ -108,7 +108,6 @@ rtc@51 {
+ 
+ &usb3 {
+ 	usb-phy = <&usb3_phy>;
+-	status = "disabled";
  };
  
- &switch0 {
- 	reg = <3>;
- 
-+	reset-gpios = <&gpiosb 23 GPIO_ACTIVE_LOW>;
-+
- 	ports {
- 		switch0port1: port@1 {
- 			reg = <1>;
+ &mdio {
 -- 
 2.31.1
 
