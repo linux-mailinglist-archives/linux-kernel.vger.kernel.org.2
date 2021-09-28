@@ -2,217 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949FF41A90A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05D841A90F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239019AbhI1Gn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:43:58 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:57393 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238903AbhI1Gn4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:43:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1632811335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WeglWZkQBdtppFapSy9NHOVS1TqpLDgaSzswyOhmizE=;
-        b=Q2wdHyVeihmIIWilxP7WN0APOrRPXA2zywdhSWaExr5NPiHpZwc4jJ4PNPXmqx9eVTQx/1
-        akyQrn5kaROZV+QOF/q+weXWjNJxJDFaZEoY1GZEKMOuP1Epz03tKEDnduFFfT197rhunj
-        LeIOmJruZuyhkI1Ker4hY1QBi9Jsh+E=
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur02lp2050.outbound.protection.outlook.com [104.47.6.50]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-37-0G3-M-bhOWGx1SuMmKlHkw-2; Tue, 28 Sep 2021 08:42:14 +0200
-X-MC-Unique: 0G3-M-bhOWGx1SuMmKlHkw-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OjAQ8TJ3uF3uByxqwzLz1k74PsIP74OTeGDJQinA20QYh/ODMLSNJ5QQ3mUJI1YEtYjs82f6jhY/l8Y9Lgckqlu0ZWQ8rtdRneyf14P/aKWHh4DbihSUw1n3pFhFz1LwP/JJpAP7diXG6mv2RimeIlpK9H5u/p4BUxo4F+khRUuh/KCQqACRQHaCGrSL3cLCu3zULECdiCOfHEtckYjeLJ2BQvvPSSJE7Ynrg/G/nNNknjpUX83Wdn/sUXSNgu2u/nmzNlA9rHw1iDNfLEHSK4+T993jUNiGLSPPt3c8OUeYEl4A52Dty0pqeZyrgmMmHL/ipJIV7jvRWm/G1IC2tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=WeglWZkQBdtppFapSy9NHOVS1TqpLDgaSzswyOhmizE=;
- b=l1XLrldlZgIUf/fvwRFYv19b+Ky68FVGoka7kULHCYTe4b+8iTCDb1B8hVdmWHbLzQLDmHL3aS1T20Zk9L5bPxpwK/GVxKP0pXLz3ZqgfXPF2xMhLIa9RvhKtzXiBMF/aoHiViy1l9Xr2qD8lN1X5knMemgzN6xEeoKzM4ARaJl3zXpStRnkbnVCdZ0xfflZGTfbnMHVs0pL3rB4a6m/qoL2SlrtsMVALX/+fVZVXWuE3W6rHraN+MCJamnM3jnjVSpWFo4nyomh9z1vKRzj7333ZoNnS5+X04GKOgoplA33BI31pW8jRgUbMksrylJDvi7xMc64m2KT93EkwJ/qAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB5587.eurprd04.prod.outlook.com (2603:10a6:208:125::12)
- by AM0PR04MB6002.eurprd04.prod.outlook.com (2603:10a6:208:117::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Tue, 28 Sep
- 2021 06:42:10 +0000
-Received: from AM0PR04MB5587.eurprd04.prod.outlook.com
- ([fe80::ac:a0be:c26c:908b]) by AM0PR04MB5587.eurprd04.prod.outlook.com
- ([fe80::ac:a0be:c26c:908b%5]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
- 06:42:10 +0000
-Subject: Re: [PATCH v4 1/2] xen-pciback: prepare for the split for stub and PV
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Juergen Gross <jgross@suse.com>
-References: <20210927065822.350973-1-andr2000@gmail.com>
- <e472468a-625e-6c4d-a9c2-85594e2ff908@suse.com>
- <accd0220-a9d7-145b-6632-9dee085ffc65@epam.com>
- <1cf5fbf3-6453-e258-3940-8b5bb96117b6@suse.com>
- <alpine.DEB.2.21.2109272112150.5022@sstabellini-ThinkPad-T480s>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <0b952b8d-0ebd-1c8c-84d4-f02e05bc2a2b@suse.com>
-Date:   Tue, 28 Sep 2021 08:42:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <alpine.DEB.2.21.2109272112150.5022@sstabellini-ThinkPad-T480s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR0P264CA0132.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1a::24) To AM0PR04MB5587.eurprd04.prod.outlook.com
- (2603:10a6:208:125::12)
+        id S239027AbhI1GpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:45:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56893 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238903AbhI1GpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:45:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632811423; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=x8KORn26l3Mm682yXCu4AC83A+TMlzb+xY8KDLZycGs=; b=wAl4vX/Byu9gRtRuBn3usxdAQt92vGFokTjCxJ+C/FI96C6OmcbLyluS9t8lGRnM86xSEE/s
+ xPG0+Gul6pB+/uSubwGKPNxfoFrm8zcAOqfF8Rtm0Xl0rGqFGo1KP1pug6G6k7ntRBPDCgYJ
+ 4Axc95FsX1Alkx03HJcYhIaVJuA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6152b99c8578ef11edda7979 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 06:43:40
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4ED82C43617; Tue, 28 Sep 2021 06:43:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71802C4338F;
+        Tue, 28 Sep 2021 06:43:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 71802C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] mwifiex: avoid null-pointer-subtraction warning
+References: <20210927121656.940304-1-arnd@kernel.org>
+Date:   Tue, 28 Sep 2021 09:43:32 +0300
+In-Reply-To: <20210927121656.940304-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Mon, 27 Sep 2021 14:16:35 +0200")
+Message-ID: <87wnn1qjxn.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0132.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1a::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 06:42:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b6bfc79-2216-4690-4c88-08d9824b187b
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6002:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB60022226134ABA6734736320B3A89@AM0PR04MB6002.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KyJTBonqIdK5Nq7JX+IMMfZPEiBIwpam3DWEaEUy8EDd77lCZj/SVHLlt5DDFT4QGrEq3yL8sgVhNL/8KPtWBn5jaecL1NcRzVMc06IzFqxFY/Xkq0AFh9VPHHTBTaNez8LJgKwVrOqD7XULGh3nhNgWnUaDPyUoXICYBKxpLyUlRXZJDwGaQFrGfahS+LZBYk2gNPSiD24Oa6upCAgbz4CIOJeHmURma3/ljI9ghlqIZSi9OCk8I3DO7wfcYBES3sIaEkTfmroTYhV0ZJ7DvcY51SdUctNFxY0rEqB05gwu4FeJAIug2K7unNy3ScZ9sciwl8ZwtvNh0tuFJZqhcPyJpiPYEt445VwhNR7SIPx+nFbcSu5X4VRthU4K3INbTLsjt7mTazMh7aRE/RzCx9vIXRzY2XXdmKLob0xKxRHhq3nTzdAalnLYzLEnajVxtgYB5wYmFBJvwNzg4YOtaCQ/OnUUWu1MgHk2ZcGl4dVWe/cO3fvDT/yK7OVxq7bRQPpuAYnywoIcKLE7Hw/ZMejykaIGYIOrKIrdN9EjA0ELtMW7DD0PUvkK09ry0Ciwj4kEzDklQvLWZZo0mMif3cmRpPlgGxltYZak4HGsmD07PfSmvjYo4SksIPXsZlKOh2Wx/Yuba9xKh8O6P8wKvppvsR6itazLdQyuS4VOl3rfRqspq8b+t1lHrdUndS9Joqt4NSvj3545rCXkSp7izlleKqItTa8RTXEdlyYuuuU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5587.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(5660300002)(316002)(107886003)(8936002)(8676002)(83380400001)(6486002)(186003)(53546011)(4326008)(54906003)(31686004)(16576012)(36756003)(26005)(31696002)(6916009)(66476007)(508600001)(86362001)(66556008)(956004)(2906002)(66946007)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VkNKRUszbE5vUlRwZ0NMMFdzbTh0Sm9QS0NWM3djc2pwS2F3Tk51YnZ0aEdP?=
- =?utf-8?B?Y1BDbmdkK29GdFhYRHpvSmFwWTJVSm1zVmpRNldWdFZkUG5na2d1ZmgzRHdR?=
- =?utf-8?B?Tmp5Z2JES0xNWUVwbUlpWnZKenJ0cEQ3M2pMNHIrL09LS2ZwL1dHam0ydWFX?=
- =?utf-8?B?QTJHZE82V3BYdzl1MFpGK3EzY3kzc3FiWUlZbW15MmVxbkZNb2hmM1ZHOVpa?=
- =?utf-8?B?dTZSV3UxSDJ2M1pjczF2ejM1ZzZRVk5KTjFURU1WRW5jdGpHTHdVd3loRlZZ?=
- =?utf-8?B?U3RUNTlrNnZ5M1g0cnZGNFlLM29PUkVYVERrUEFQaVh2RUgzMmh2Rm9DQi9t?=
- =?utf-8?B?VUkwK3c2d1pWNVZJNEV0Mm5NK21lcFJvYXg4UnBZdW9vUUFPT28zc255OXV2?=
- =?utf-8?B?elJtV2xxNjBnRnhSaGNlQmVGRFdObHdKUWU4NHU3bDVocTM5bnJRblllcndI?=
- =?utf-8?B?V3FrYy9tcy9aR3RSWG5QS2J1eUNjS052S0JIQ3hqWFpxYlBQVnBZQVMxU1JK?=
- =?utf-8?B?d0VRZmJEL3J1bGt5QWc3anZBSHFNMmdQREg4ai8zeE9TZWVPQklBSUhxSXQz?=
- =?utf-8?B?YmpWSldvazAzSGdLaDI4ajVmUUxHU2FmQzlpT0h0UUlXWGFVeVhIRG5qZ3NZ?=
- =?utf-8?B?WWU1aXJ3QmJrT1JvUnlVV25uUjF3Y0tiMUV5cFIrZHMxZjdlekhzQXFpQ0FE?=
- =?utf-8?B?YW9PZlFwemx4S2tCWXRTa1MvQ2R1RFZrdlNYR2VQUW5pR0Vaa0w3UmVUYVgy?=
- =?utf-8?B?eER1MzYxTmptK2dncmR0bElSK2ZjUVpVb3ErWHA3MHJGbE5EdmhDOVgrWncw?=
- =?utf-8?B?c3NPTk11R1F2a3A5WU41eWVvcU1QUzNwL3FNL3ZRVExrbDd6NlpnRmM4ZWJ2?=
- =?utf-8?B?TkRzT2VoSjd5NXExRS91WWdxWk9hWXNhRjN3QTBWek5jamZXZ05xNFlsczR1?=
- =?utf-8?B?Q1hYY3c2UjdtOUZwUHNDcFRRVElBL2Vwem40c0pZVHJRV2FsNEFVMDFsVmtq?=
- =?utf-8?B?RG1RUEJjVlphT1hTU1ozcERkNlJheTVEUmNwd2xXako2ckN6MFFpNlNZdlhX?=
- =?utf-8?B?bWcxSE1DenNLS0NVQVBaVndzcHkwcXNyaCtpQmZmTERmems1SUZRZVBDWjA5?=
- =?utf-8?B?b2hpOHZkSVFlTWM5UUNBRlgyN0gzcnBoR21wQUNRRlMrUVJmUzNKeWFmOG1W?=
- =?utf-8?B?STN0RlpjSGJuNGs5a2ZrWjJjVWlYY1lWbUlVZzhoUnNSWnJ2S0pIVmM1Mldj?=
- =?utf-8?B?TFRCQUhVSGV6TmVweGExRVJySll5RnROMy8xK2VyZFNPRUpiSzJiaWJNN2p4?=
- =?utf-8?B?bHNmbHdsdGpMTzR1bUNQK2VidkVjSjNyNDduT253ZUExclowenNQdGhLNC91?=
- =?utf-8?B?N2dMNFQzOStMUnVlVFprOVdFc1IwMUtLVlJubzZQc3RzWHRIS3BWWjhGSm00?=
- =?utf-8?B?emczbWxWZW94Q3N0VW9XMzdiaXdKMXkydXVETXdHMGZ1clpTNEg4OFVleWpw?=
- =?utf-8?B?SlRnTjBnZWRIT0daVWEvN0ZuaUx1Uzh2MkRZNHhFMmdER3Zoek9EYmZkSi9T?=
- =?utf-8?B?TTVWZmQ3RVliS2hJRlAydGxIUlhLMU90SEQvQTlmcVNGRW5BTUh1OXNjQ2M1?=
- =?utf-8?B?ZU1aQlkzQVlaaXJIZVpvTWtkOVZkZzlGaW84dWxiQVNIMnQ2SEFpakpqY3A5?=
- =?utf-8?B?ZmREWkFicm9VZTBiRTJiRnhuZ2Q5YjExNWN5MWNkbnM4a0lGYWMyTXljbkY1?=
- =?utf-8?Q?nhGLmG+RDd9nwXvxv8O1gFTlDZ2IpMs10N3gWZV?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b6bfc79-2216-4690-4c88-08d9824b187b
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5587.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 06:42:10.2703
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aMudJ5KM71Sf+5MfV+5mF0+1ALQRHAkYY9mZOKS+1cDAXiSaLMlNYieBztoYS/9xmSTQ3WjlOUy2ZDMKROz9zA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6002
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.2021 06:18, Stefano Stabellini wrote:
-> On Mon, 27 Sep 2021, Juergen Gross wrote:
->> On 27.09.21 09:35, Oleksandr Andrushchenko wrote:
->>>
->>> On 27.09.21 10:26, Jan Beulich wrote:
->>>> On 27.09.2021 08:58, Oleksandr Andrushchenko wrote:
->>>>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->>>>>
->>>>> Currently PCI backend implements multiple functionalities at a time.
->>>>> To name a few:
->>>>> 1. It is used as a database for assignable PCI devices, e.g. xl
->>>>>      pci-assignable-{add|remove|list} manipulates that list. So,
->>>>> whenever
->>>>>      the toolstack needs to know which PCI devices can be passed through
->>>>>      it reads that from the relevant sysfs entries of the pciback.
->>>>> 2. It is used to hold the unbound PCI devices list, e.g. when passing
->>>>>      through a PCI device it needs to be unbound from the relevant
->>>>> device
->>>>>      driver and bound to pciback (strictly speaking it is not required
->>>>>      that the device is bound to pciback, but pciback is again used as a
->>>>>      database of the passed through PCI devices, so we can re-bind the
->>>>>      devices back to their original drivers when guest domain shuts
->>>>> down)
->>>>> 3. Device reset for the devices being passed through
->>>>> 4. Para-virtualised use-cases support
->>>>>
->>>>> The para-virtualised part of the driver is not always needed as some
->>>>> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
->>>>> model for PCI device passthrough. For such use-cases make the very
->>>>> first step in splitting the xen-pciback driver into two parts: Xen
->>>>> PCI stub and PCI PV backend drivers.
->>>>>
->>>>> Signed-off-by: Oleksandr Andrushchenko
->>>>> <oleksandr_andrushchenko@epam.com>
->>>>>
->>>>> ---
->>>>> Changes since v3:
->>>>> - Move CONFIG_XEN_PCIDEV_STUB to the second patch
->>>> I'm afraid this wasn't fully done:
->>>>
->>>>> --- a/drivers/xen/xen-pciback/Makefile
->>>>> +++ b/drivers/xen/xen-pciback/Makefile
->>>>> @@ -1,5 +1,6 @@
->>>>>    # SPDX-License-Identifier: GPL-2.0
->>>>>    obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
->>>>> +obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
->>>> While benign when added here, this addition still doesn't seem to
->>>> belong here.
->>>
->>> My bad. So, it seems without CONFIG_XEN_PCIDEV_STUB the change seems
->>>
->>> to be non-functional. With CONFIG_XEN_PCIDEV_STUB we fail to build on 32-bit
->>>
->>> architectures...
->>>
->>> What would be the preference here? Stefano suggested that we still define
->>>
->>> CONFIG_XEN_PCIDEV_STUB, but in disabled state, e.g. we add tristate to it
->>>
->>> in the second patch
->>>
->>> Another option is just to squash the two patches.
->>
->> Squashing would be fine for me.
->  
-> It is fine for me to squash the two patches.
-> 
-> But in any case, wouldn't it be better to modify that specific change to:
-> 
-> diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciback/Makefile
-> index e2cb376444a6..e23c758b85ae 100644
-> --- a/drivers/xen/xen-pciback/Makefile
-> +++ b/drivers/xen/xen-pciback/Makefile
-> @@ -1,6 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
-> -obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
-> +obj-$(CONFIG_XEN_PCI_STUB) += xen-pciback.o
+Arnd Bergmann <arnd@kernel.org> writes:
 
-But that wouldn't allow the driver to be a module anymore, would it?
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang complains about some NULL pointer arithmetic in this driver:
+>
+> drivers/net/wireless/marvell/mwifiex/sta_tx.c:65:59: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+>         pad = ((void *)skb->data - (sizeof(*local_tx_pd) + hroom)-
+>                                                                  ^
+> drivers/net/wireless/marvell/mwifiex/uap_txrx.c:478:53: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+>         pad = ((void *)skb->data - (sizeof(*txpd) + hroom) - NULL) &
+>
+> Rework that expression to do the same thing using a uintptr_t.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Jan
+I'll queue this to v5.15.
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
