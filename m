@@ -2,288 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E140341B419
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FF341B41F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241781AbhI1QoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:44:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30852 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241820AbhI1QoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:44:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224789120"
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="224789120"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 09:42:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
-   d="scan'208";a="486589673"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga008.jf.intel.com with ESMTP; 28 Sep 2021 09:42:22 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        axboe@kernel.dk, pablomh@gmail.com,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] cpufreq: intel_pstate: Process HWP Guaranteed change notification
-Date:   Tue, 28 Sep 2021 09:42:17 -0700
-Message-Id: <20210928164217.950960-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S241849AbhI1QpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:45:02 -0400
+Received: from mail-mw2nam12on2096.outbound.protection.outlook.com ([40.107.244.96]:44571
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241773AbhI1QpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:45:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U+BSeAfKM8EDOU+VDfWMZ7jNv49I/8unfadMHEe8OfUcGDEGk+stxeYSrNAP5nSvosEsxIOxQG+3BKLI1HwfhWe8bgg+wLWYR//Z9V3SB5l8cF0G+yqo/kT8+a/B9YzMQcGIgMiRBInmwpKdaBp6wz54TzD6c96P4DLQyFODfvO8AonIm+RQwYtDSMQgSqrXkh0MG/Zc35cB+St1zGTQ6X/rKiy54mx7Osnv3vtHO3f29N4W4UaSp6vW8poG/EhM2OrqpGQAm5qgXKbAdMCie/SjKTT/7a2UJT1V1cbKguEB4Yi8rN14Uu+1ytmwjS1oBEIvV/GTe5M9Q8iyUXNgFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=bYq+iN+25bMDyokWwDowkf4b8s22VouY8clUMW5WL2Y=;
+ b=Mmv2QH5Nv7o0jSLUPseGR/JEXJu3VbsJuJI/d49neUYKJ/WzC65Ng2yBE7EzSBIL5FgJ171AtRpsY3UEZ0d/sxV8wHq3VMTr+o5EwrV8GkDgMn+RlhMTWx6kufcrLXXPt3wLsSQQKdMQC+qORW8Vx3crWeA4KafoCnuzzZesS5pMm9qyMo3ov4KVjYbc2eIvXKt45g+TwtUB7tMfJboIMfVbuwR31GBjvxXUbcsFA+SrIdTIaMgQ+M5bQscb9W3YNWF9SzgQoY4gde5b0XECmkxSpGoJn1j2p3CaU5ZKSIqP+L3GqvmAA92w6PYyNLKRgueXX4jO8IYkqdM8ZUR1jA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bYq+iN+25bMDyokWwDowkf4b8s22VouY8clUMW5WL2Y=;
+ b=HRHhK9YP3DWf8B95vYz5Gkeaef5Dv4cczECLhOiUZMwRDxLCTU07gTt5sNiKUYbBT0urEn+yTxZTP0KkP5ee5+0kTYpyZXwP8phCwb2OPEYeaUMEaO33nmqWt/9YPBoJ5LRc3g0CLAhDDUWjqCUKcgUlh2ypymW6qYsvDBLbaLU=
+Received: from SJ0PR11MB5661.namprd11.prod.outlook.com (2603:10b6:a03:3b9::5)
+ by SJ0PR11MB5600.namprd11.prod.outlook.com (2603:10b6:a03:3ab::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Tue, 28 Sep
+ 2021 16:43:19 +0000
+Received: from SJ0PR11MB5661.namprd11.prod.outlook.com
+ ([fe80::31bb:4f91:1eb5:7178]) by SJ0PR11MB5661.namprd11.prod.outlook.com
+ ([fe80::31bb:4f91:1eb5:7178%7]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
+ 16:43:19 +0000
+From:   Ryan Lee <RyanS.Lee@maximintegrated.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>
+Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+Thread-Index: AQHXsZF45/jZbOMADUKIjx+r35kUIKu3/BEAgAAPiFCAAAR+AIAAC+UAgAAGCoCAAAOCAIABhRvA
+Date:   Tue, 28 Sep 2021 16:43:19 +0000
+Message-ID: <SJ0PR11MB56618B8B6DE3922613E83C15E7A89@SJ0PR11MB5661.namprd11.prod.outlook.com>
+References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
+ <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
+ <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <20210927160622.GE4199@sirena.org.uk>
+ <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+ <20210927171033.GF4199@sirena.org.uk>
+ <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
+In-Reply-To: <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
+Accept-Language: en-US, ko-KR
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2ec6f30c-2fb1-4ae8-dddd-08d9829f1404
+x-ms-traffictypediagnostic: SJ0PR11MB5600:
+x-microsoft-antispam-prvs: <SJ0PR11MB560042D830E730071A9FD269E7A89@SJ0PR11MB5600.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /BdGBqgcqXRAB1g1/Q2YyqEWdNkma+GQmtvSckQAH3ITR9adWc/4vzxEl3LF6V8E6pLDBYWZJUvvCLQsa/6D3cYBPgvb8ZIMciX3bt0Kwnn08Je+73SdCRP1x4u2R+A1QJhOJGa7BQDWPmiZyRbd5lcdsUcqq/rg6zVHNz8DTZZTIDLyzdfAFcxXuVWdGdSUuUyPDr8RCEnMe1tGJ/tX9IPx9pKZDzdM6ccQw4SRUHeZqNJgywJklaVx1pCG+vW9ALOuwtY8fFLsCVj7NjLGrq57AEmvN/jvMFAKk/R9/xmNRodeh3Hr3ZI8BBXnUvoWke+fq5UgEudYe0T8wdLwYs8U77AyrtCupT7h1GzoB4t22ao//J9nm1dm4gkQJsnbdIJKgUKdjuRG4jDB0p8nekUQcXNmfppxySLvL/MZ/iBfM7HJ/8Y7Ijfd++dQPrLvNQPeDrPEXdE6RFmeolXAwSKIvXfzKtS5y8Furws+IqZzB9GYGOZMymFA4K0m3lUMZwtrOa3toYy3zJS5DB87LETOFysNJl+smguPN16bjjAkUOV+MBJgbDNZopWon9aLYUu3LaeB+wSe4icRlxNwWCg2RAjyQiGyGHLOJWTQqVIDHSt1Ny7oQRJUJGNwZL+jhI5yJG/nuycF9lQQlEjoXYm4ixrKw48hrIdQj7AzYupWV72/+4NdTakqBqVC+r4sVlJbqkdcIIYnVJtaDxfsmslYAC+OBFDvhyBkMPx+2wkqEHF5XEGldo2i1mDzFliDj+tg8IO9rtFhXb0MplOGJ3lXzb6Cb8aLuuR1XOKGczjCMq2Wgb4uTvXVXs6sZkaQ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5661.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66946007)(66556008)(122000001)(66446008)(38100700002)(64756008)(316002)(7416002)(83380400001)(8936002)(71200400001)(7696005)(26005)(76116006)(9686003)(110136005)(966005)(186003)(55016002)(5660300002)(6506007)(86362001)(2906002)(508600001)(53546011)(52536014)(4326008)(54906003)(38070700005)(33656002)(8676002)(14143004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SAp5/CgYJyb+MltA4dsBO0DbW28FTaowRRwYMG9L7QNcAKi6Ij0gzJaAqcUA?=
+ =?us-ascii?Q?I0EeUJwBTZnudCpHpgaQeyIJqZxKhqGHoR/2CPKBQ/MqVDqXL/OQgX3EySO2?=
+ =?us-ascii?Q?u+z0Lz6GsADnmMLMnF7/3fayS9aocYXm3Xd9qGdwe+7n9Uywr8Rpf2RQ69Ca?=
+ =?us-ascii?Q?hJOQBQqtptSGEW5rOWmUYlUsQp2DvsJagSqxurYBeDJnLSTaIPl5gwCm9cj8?=
+ =?us-ascii?Q?HM+DLt/O6WWBPo/kvM6iYUV1Z6l1pQPVVKUDlsYndlW0OJe+15BylLHb0vA/?=
+ =?us-ascii?Q?FXdKeK62q0g8tZOEjoHvhFbK1Gus0x27m5Awl3KZ5ndROhH51sRP3xjPnReP?=
+ =?us-ascii?Q?ZIehu+X5Rd+p3PadZN/SnvpWa69dtyf4SKFSSdFbD0MlZxcu439GEu7+6Gtv?=
+ =?us-ascii?Q?RiPsZ7AsqeeAb/QSZn7IFa3kX2Np67R0R85p64r980hP0YLGanlWQPXP7fD8?=
+ =?us-ascii?Q?gurp+NdOGaZMu96sYrP7xRskxIdi1TgyesAUohlo4udBhgh4FwwKZy/RZFd9?=
+ =?us-ascii?Q?xCpYCeU81N3v758cXg328YtJ1BIGSzKer9+RwuwXxXa/wgX/0Ig5/WM6mzOz?=
+ =?us-ascii?Q?FjnwjnxReG+TWfbM4/nHfSPVrbh/5OPLUU30J+fG/w2v5jq4B0Zy8WlfxNfp?=
+ =?us-ascii?Q?QjMd6IRzBk2ylFZEudzYfTeNN1WNLFVbi7GKoAxU8hwRvBJPxw5hqVPvdVW5?=
+ =?us-ascii?Q?060AXFbZlWRA5oys/edyuIHb631eo8zyW1CCJUKeOy6+0z3uHZYRKkyIu1N4?=
+ =?us-ascii?Q?tpBw+Us4lT2yVtY1JVa9rhwYSlZyYOs9H6sl2Y95ewqe9ZutFDNjEu6Cs3CC?=
+ =?us-ascii?Q?RDx4Im7XeFHr7cN++Ltj8e7bvkHg7WpZe1SqDBVBUnfNqip+ASdZ99Sk4nR6?=
+ =?us-ascii?Q?wUVHrfFNotgouY/nQ9S+tN5GOQssoc6mQYSYR1wlL6aRJrT7PjbwExyE/laT?=
+ =?us-ascii?Q?Pl0RGEpdUqhJj0brlLnZ/acEvLWj75yPJEmDGt6UNwUqlMRrwsRd43M27EIq?=
+ =?us-ascii?Q?04XqbY5YXmVBbfOFjHQImCxgvRo7RTNiLqvypaQA6p2M/rYreS2GqjwOiyI+?=
+ =?us-ascii?Q?pEYrUF8dHCSRrDPch8jtAn8oaoCMSQjf5wi5piceJzEDKZrlRgUSlrYfxdCn?=
+ =?us-ascii?Q?7jHy6HrNti0MoaQCxfKMn8FxsMM1FSAmE9cp3UtRpB9Xh98PuoJmgcJe7rLT?=
+ =?us-ascii?Q?B28txhmAcMFpIGsbanA3BQl3UT2mY2Y6yAth7HLMxFIBavneelflDuwElhJT?=
+ =?us-ascii?Q?us+XTOj5Z2usK2rrz14EwBo2MHyCrDkCb6z5x8h8XGUBZF76T7LpG/6q194g?=
+ =?us-ascii?Q?q7OX8+2On5Ztv1+pL7ijrTgJ?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5661.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ec6f30c-2fb1-4ae8-dddd-08d9829f1404
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 16:43:19.4888
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3DbnM8OeDmGMqwpGKTH/X8a/9gnL/8jj42BA0lIgK8ovAKvPHayZKdhQH7H1wNO9gBMIqpeUDCpolsrcZFwFvLGZfRC/ylgVMFThbDDvI6o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5600
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that HWP guaranteed ratio is changed in response to
-change in power and thermal limits. For example when Intel Speed Select
-performance profile is changed or there is change in TDP, hardware can
-send notifications. It is possible that the guaranteed ratio is
-increased. This creates an issue when turbo is disabled, as the old
-limits set in MSR_HWP_REQUEST are still lower and hardware will clip
-to older limits.
+> -----Original Message-----
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Sent: Monday, September 27, 2021 10:23 AM
+> To: Mark Brown <broonie@kernel.org>
+> Cc: guennadi.liakhovetski@linux.intel.com; alsa-devel@alsa-project.org;
+> ryan.lee.maxim@gmail.com; Ryan Lee <RyanS.Lee@maximintegrated.com>;
+> linux-kernel@vger.kernel.org; tiwai@suse.com; lgirdwood@gmail.com;
+> sathya.prakash.m.r@intel.com; yung-chuan.liao@linux.intel.com
+> Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty
+> before entering sleep
+>=20
+> EXTERNAL EMAIL
+>=20
+>=20
+>=20
+> On 9/27/21 12:10 PM, Mark Brown wrote:
+> > On Mon, Sep 27, 2021 at 11:48:56AM -0500, Pierre-Louis Bossart wrote:
+> >> On 9/27/21 11:06 AM, Mark Brown wrote:
+> >
+> >>> More specifically what it does is make the invalidation of the
+> >>> register cache unconditional.  It doesn't really matter if the
+> >>> invalidation is done on suspend or resume, so long as it happens
+> >>> before we attempt to resync - this could also be done by deleting the
+> first_hw_init check.
+> >
+> >> Mark, that's exactly my point: if the amp rejoins the bus, we will
+> >> *always* mark the cache as dirty, before the resync is done in the
+> >> resume sequence.
+> >
+> > Ah, yes - I see.
+> >
+> >> I am really trying to figure out if we have a major flaw in the
+> >> resume sequence and why things are different in the case of the Maxim
+> amp.
+> >
+> >> Instead of changing the suspend sequence, can we please try to modify
+> >> the max98373_io_init() routine to unconditionally flag the cache as
+> >> dirty, maybe this points to a problem with the management of the
+> >> max98373->first_hw_init flag.
+> >
+> > A quick survey of other drivers suggests that this pattern should be
+> > factored out into some helpers as it looks like there's several ways
+> > of implementing it that look very similar but not quite the same...
+>=20
+> No disagreement here, we tried really hard to enforce a common pattern fo=
+r
+> suspend-resume, but i just noticed that the maxim amp driver is different=
+ on
+> suspend (resume is consistent with the rest).
 
-This change enables HWP interrupt and process HWP interrupts. When
-guaranteed is changed, calls cpufreq_update_policy() so that driver
-callbacks are called to update to new HWP limits. This callback
-is called from a delayed workqueue of 10ms to avoid frequent updates.
+OK. I believe it was similar before. But it looks like 'regcache_mark_dirty=
+' is being
+disappeared on suspend function.
 
-Although the scope of IA32_HWP_INTERRUPT is per logical cpu, on some
-plaforms interrupt is generated on all CPUs. This is particularly a
-problem during initialization, when the driver didn't allocated
-data for other CPUs. So this change uses a cpumask of enabled CPUs and
-process interrupts on those CPUs only.
+static int __maybe_unused rt5682_dev_suspend(struct device *dev)
+{
+	struct rt5682_priv *rt5682 =3D dev_get_drvdata(dev);
 
-When the cpufreq offline() or suspend()callback is called, HWP interrupt
-is disabled on those CPUs and also cancels any pending work item.
+	if (!rt5682->hw_init)
+		return 0;
 
-Spin lock is used to protect data and processing shared with interrupt
-handler. Here READ_ONCE(), WRITE_ONCE() macros are used to designate
-shared data, even though spin lock act as an optmization barrier here.
+	cancel_delayed_work_sync(&rt5682->jack_detect_work);
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
-This patch is a replacement from the patch submitted to 5.15 and later
-reverted.
+	regcache_cache_only(rt5682->regmap, true);
+	regcache_mark_dirty(rt5682->regmap);
 
- drivers/cpufreq/intel_pstate.c | 117 +++++++++++++++++++++++++++++++--
- 1 file changed, 111 insertions(+), 6 deletions(-)
+	return 0;
+}
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 8c176b7dae41..facc56dd58dd 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -32,6 +32,7 @@
- #include <asm/cpu_device_id.h>
- #include <asm/cpufeature.h>
- #include <asm/intel-family.h>
-+#include "../drivers/thermal/intel/thermal_interrupt.h"
- 
- #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
- 
-@@ -219,6 +220,7 @@ struct global_params {
-  * @sched_flags:	Store scheduler flags for possible cross CPU update
-  * @hwp_boost_min:	Last HWP boosted min performance
-  * @suspended:		Whether or not the driver has been suspended.
-+ * @hwp_notify_work:	workqueue for HWP notifications.
-  *
-  * This structure stores per CPU instance data for all CPUs.
-  */
-@@ -257,6 +259,7 @@ struct cpudata {
- 	unsigned int sched_flags;
- 	u32 hwp_boost_min;
- 	bool suspended;
-+	struct delayed_work hwp_notify_work;
- };
- 
- static struct cpudata **all_cpu_data;
-@@ -985,11 +988,15 @@ static void intel_pstate_hwp_set(unsigned int cpu)
- 	wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
- }
- 
-+static void intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata);
-+
- static void intel_pstate_hwp_offline(struct cpudata *cpu)
- {
- 	u64 value = READ_ONCE(cpu->hwp_req_cached);
- 	int min_perf;
- 
-+	intel_pstate_disable_hwp_interrupt(cpu);
-+
- 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
- 		/*
- 		 * In case the EPP has been set to "performance" by the
-@@ -1053,6 +1060,9 @@ static int intel_pstate_suspend(struct cpufreq_policy *policy)
- 
- 	cpu->suspended = true;
- 
-+	/* disable HWP interrupt and cancel any pending work */
-+	intel_pstate_disable_hwp_interrupt(cpu);
-+
- 	return 0;
- }
- 
-@@ -1546,15 +1556,105 @@ static void intel_pstate_sysfs_hide_hwp_dynamic_boost(void)
- 
- /************************** sysfs end ************************/
- 
-+static void intel_pstate_notify_work(struct work_struct *work)
-+{
-+	struct cpudata *cpudata =
-+		container_of(to_delayed_work(work), struct cpudata, hwp_notify_work);
-+
-+	cpufreq_update_policy(cpudata->cpu);
-+	wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_STATUS, 0);
-+}
-+
-+static DEFINE_SPINLOCK(hwp_notify_lock);
-+static cpumask_t hwp_intr_enable_mask;
-+
-+void notify_hwp_interrupt(void)
-+{
-+	unsigned int this_cpu = smp_processor_id();
-+	struct cpudata *cpudata;
-+	unsigned long flags;
-+	u64 value;
-+
-+	if (!READ_ONCE(hwp_active) || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
-+		return;
-+
-+	rdmsrl_safe(MSR_HWP_STATUS, &value);
-+	if (!(value & 0x01))
-+		return;
-+
-+	spin_lock_irqsave(&hwp_notify_lock, flags);
-+
-+	if (!cpumask_test_cpu(this_cpu, &hwp_intr_enable_mask))
-+		goto ack_intr;
-+
-+	/*
-+	 * Currently we never free all_cpu_data. And we can't reach here
-+	 * without this allocated. But for safety for future changes, added
-+	 * check.
-+	 */
-+	if (unlikely(!READ_ONCE(all_cpu_data)))
-+		goto ack_intr;
-+
-+	/*
-+	 * The free is done during cleanup, when cpufreq registry is failed.
-+	 * We wouldn't be here if it fails on init or switch status. But for
-+	 * future changes, added check.
-+	 */
-+	cpudata = READ_ONCE(all_cpu_data[this_cpu]);
-+	if (unlikely(!cpudata))
-+		goto ack_intr;
-+
-+	schedule_delayed_work(&cpudata->hwp_notify_work, msecs_to_jiffies(10));
-+
-+	spin_unlock_irqrestore(&hwp_notify_lock, flags);
-+
-+	return;
-+
-+ack_intr:
-+	wrmsrl_safe(MSR_HWP_STATUS, 0);
-+	spin_unlock_irqrestore(&hwp_notify_lock, flags);
-+}
-+
-+static void intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata)
-+{
-+	unsigned long flags;
-+
-+	/* wrmsrl_on_cpu has to be outside spinlock as this can result in IPC */
-+	wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
-+
-+	spin_lock_irqsave(&hwp_notify_lock, flags);
-+	if (cpumask_test_and_clear_cpu(cpudata->cpu, &hwp_intr_enable_mask))
-+		cancel_delayed_work(&cpudata->hwp_notify_work);
-+	spin_unlock_irqrestore(&hwp_notify_lock, flags);
-+}
-+
-+static void intel_pstate_enable_hwp_interrupt(struct cpudata *cpudata)
-+{
-+	/* Enable HWP notification interrupt for guaranteed performance change */
-+	if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY)) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&hwp_notify_lock, flags);
-+		INIT_DELAYED_WORK(&cpudata->hwp_notify_work, intel_pstate_notify_work);
-+		cpumask_set_cpu(cpudata->cpu, &hwp_intr_enable_mask);
-+		spin_unlock_irqrestore(&hwp_notify_lock, flags);
-+
-+		/* wrmsrl_on_cpu has to be outside spinlock as this can result in IPC */
-+		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x01);
-+	}
-+}
-+
- static void intel_pstate_hwp_enable(struct cpudata *cpudata)
- {
--	/* First disable HWP notification interrupt as we don't process them */
-+	/* First disable HWP notification interrupt till we activate again */
- 	if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
- 		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
- 
- 	wrmsrl_on_cpu(cpudata->cpu, MSR_PM_ENABLE, 0x1);
- 	if (cpudata->epp_default == -EINVAL)
- 		cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
-+
-+	intel_pstate_enable_hwp_interrupt(cpudata);
- }
- 
- static int atom_get_min_pstate(void)
-@@ -2266,7 +2366,7 @@ static int intel_pstate_init_cpu(unsigned int cpunum)
- 		if (!cpu)
- 			return -ENOMEM;
- 
--		all_cpu_data[cpunum] = cpu;
-+		WRITE_ONCE(all_cpu_data[cpunum], cpu);
- 
- 		cpu->cpu = cpunum;
- 
-@@ -2929,8 +3029,10 @@ static void intel_pstate_driver_cleanup(void)
- 			if (intel_pstate_driver == &intel_pstate)
- 				intel_pstate_clear_update_util_hook(cpu);
- 
-+			spin_lock(&hwp_notify_lock);
- 			kfree(all_cpu_data[cpu]);
--			all_cpu_data[cpu] = NULL;
-+			WRITE_ONCE(all_cpu_data[cpu], NULL);
-+			spin_unlock(&hwp_notify_lock);
- 		}
- 	}
- 	cpus_read_unlock();
-@@ -3199,6 +3301,7 @@ static bool intel_pstate_hwp_is_enabled(void)
- 
- static int __init intel_pstate_init(void)
- {
-+	static struct cpudata **_all_cpu_data;
- 	const struct x86_cpu_id *id;
- 	int rc;
- 
-@@ -3224,7 +3327,7 @@ static int __init intel_pstate_init(void)
- 		 * deal with it.
- 		 */
- 		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) || hwp_forced) {
--			hwp_active++;
-+			WRITE_ONCE(hwp_active, 1);
- 			hwp_mode_bdw = id->driver_data;
- 			intel_pstate.attr = hwp_cpufreq_attrs;
- 			intel_cpufreq.attr = hwp_cpufreq_attrs;
-@@ -3275,10 +3378,12 @@ static int __init intel_pstate_init(void)
- 
- 	pr_info("Intel P-state driver initializing\n");
- 
--	all_cpu_data = vzalloc(array_size(sizeof(void *), num_possible_cpus()));
--	if (!all_cpu_data)
-+	_all_cpu_data = vzalloc(array_size(sizeof(void *), num_possible_cpus()));
-+	if (!_all_cpu_data)
- 		return -ENOMEM;
- 
-+	WRITE_ONCE(all_cpu_data, _all_cpu_data);
-+
- 	intel_pstate_request_control_from_smm();
- 
- 	intel_pstate_sysfs_expose_params();
--- 
-2.31.1
+>=20
+>=20
+> static int __maybe_unused rt711_dev_suspend(struct device *dev) {
+>         struct rt711_priv *rt711 =3D dev_get_drvdata(dev);
+>=20
+>         if (!rt711->hw_init)
+>                 return 0;
+>=20
+>         cancel_delayed_work_sync(&rt711->jack_detect_work);
+>         cancel_delayed_work_sync(&rt711->jack_btn_check_work);
+>         cancel_work_sync(&rt711->calibration_work);
+>=20
+>         regcache_cache_only(rt711->regmap, true);
+>=20
+>         return 0;
+> }
+>=20
+> static int __maybe_unused rt1308_dev_suspend(struct device *dev) {
+>         struct rt1308_sdw_priv *rt1308 =3D dev_get_drvdata(dev);
+>=20
+>         if (!rt1308->hw_init)
+>                 return 0;
+>=20
+>         regcache_cache_only(rt1308->regmap, true);
+>=20
+>         return 0;
+> }
+>=20
+> static __maybe_unused int max98373_suspend(struct device *dev) {
+>         struct max98373_priv *max98373 =3D dev_get_drvdata(dev);
+>         int i;
+>=20
+> <<<< missing test
+>=20
+>         /* cache feedback register values before suspend */
+>         for (i =3D 0; i < max98373->cache_num; i++)
+>                 regmap_read(max98373->regmap, max98373->cache[i].reg,
+> &max98373->cache[i].val);
+>=20
+> <<<< why is this needed???
+[]=20
+It looks like this was added to get a last ADC values when ADC value read i=
+s not available during suspension.
+https://www.spinics.net/lists/alsa-devel/msg119808.html
+
+>=20
+>         regcache_cache_only(max98373->regmap, true);
+>=20
+>         return 0;
+> }
+>=20
+>=20
 
