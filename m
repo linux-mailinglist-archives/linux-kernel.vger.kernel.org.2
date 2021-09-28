@@ -2,55 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586E441B9FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A3941BA00
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243030AbhI1WQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:16:28 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:42734 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242981AbhI1WQX (ORCPT
+        id S243053AbhI1WQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243047AbhI1WQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:16:23 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 4ED8DCECE5;
-        Wed, 29 Sep 2021 00:14:42 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH -next] ./drivers/bluetooth/btrsi.c: remove superfluous
- header files from btrsi.c
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210928195954.19629-1-liumh1@shanghaitech.edu.cn>
-Date:   Wed, 29 Sep 2021 00:14:41 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <6EC25777-CE57-4A75-8DC0-F1FF34F2AF8B@holtmann.org>
-References: <20210928195954.19629-1-liumh1@shanghaitech.edu.cn>
-To:     Mianhan Liu <liumh1@shanghaitech.edu.cn>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Tue, 28 Sep 2021 18:16:39 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CEDC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:14:59 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id w19so197788pfn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oDTEp4uXq7wouuQuWuPnWVQXCIo6P8LpvQajseAha48=;
+        b=BnufAkDaSqbvE0tuVagV8WXp+XHOA8rRfAQGH7v7vq47FtDaVwPb2gV3pg84col7Jn
+         wiWxSJtOhRHOZ1OnBfK1IusCBeqHNprdHmkCTk9hwy1TjpFLJ2o37qhbCK64RU58wR+/
+         NVNuIOjncjEgaNz1Aji8RAKlyT10kUNAthNYDNVDkepM7EAAeST1QgAUJgZz9JV6W8pQ
+         Ga3dyZRVb1TCTPcNFYt7tNYB7fChJLmzpTPIY1149VIXRC09i0vUfJF6BV+ql+c0RWWW
+         CLk/XS24h5X+HgfBHwpw+x6pOo0ByCwKeOnP2OHqWK6fByzx9dwNkhyWHGw0eQ1hWxHI
+         bubg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oDTEp4uXq7wouuQuWuPnWVQXCIo6P8LpvQajseAha48=;
+        b=QAe9svN3DHQLaSlbJCN+PWQZB6uEvp+pSmTDmKMXVGX2hKxqpbvEgm+JeFixZlCun9
+         itEbGsPBemF4jr2nzRNUIp4CYzFQxmPjy3IwOkZMbPwYbG6aN/URotCuDJ/QgIAxsJEB
+         bc8AxWVC4BOo2l9oLa3kMcrEMTDS8SS6WfM9agiSo2vPk3jZ5yahV1NYoAKsfCtu0Ji8
+         me5cqsR9sTL5M5jlFwCqHRS9vqvKBT1EEQBK1YvwcYVueUFoAjsC/PZZu5c2OUsr43lM
+         topy9pQfPeDKOvWMPccHyKcmrTkXm3e5GOJPTah12n98iKMT+9Gp9qZa8Wwl301662PW
+         KgLA==
+X-Gm-Message-State: AOAM531tbYEG5cOGcN1ihAHcfbr6amoGpRkzwQKbVjgbP+H13zbDrCCA
+        qemGIc3S1ZnLLfcHF5c8WCO2UQ==
+X-Google-Smtp-Source: ABdhPJxBJllV/6MHwH/O4bupLMykTY/L8aml4vOWRLyRzjZbQcPh2xbpVAvFMm0QwWZGt6UvJ4KliA==
+X-Received: by 2002:a62:dd0a:0:b0:44b:bd85:9387 with SMTP id w10-20020a62dd0a000000b0044bbd859387mr2015835pff.49.1632867298411;
+        Tue, 28 Sep 2021 15:14:58 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id d7sm142548pfq.43.2021.09.28.15.14.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 15:14:57 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 22:14:54 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 14/14] KVM: x86: Invoke kvm_vcpu_block() directly for
+ non-HALTED wait states
+Message-ID: <YVOT3gj1ulBTNSw3@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-15-seanjc@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925005528.1145584-15-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mianhan,
+On Fri, Sep 24, 2021 at 05:55:28PM -0700, Sean Christopherson wrote:
+> Call kvm_vcpu_block() directly for all wait states except HALTED so that
+> kvm_vcpu_halt() is no longer a misnomer on x86.
+> 
+> Functionally, this means KVM will never attempt halt-polling or adjust
+> vcpu->halt_poll_ns for INIT_RECEIVED (a.k.a. Wait-For-SIPI (WFS)) or
+> AP_RESET_HOLD; UNINITIALIZED is handled in kvm_arch_vcpu_ioctl_run(),
+> and x86 doesn't use any other "wait" states.
+> 
+> As mentioned above, the motivation of this is purely so that "halt" isn't
+> overloaded on x86, e.g. in KVM's stats.  Skipping halt-polling for WFS
+> (and RESET_HOLD) has no meaningful effect on guest performance as there
+> are typically single-digit numbers of INIT-SIPI sequences per AP vCPU,
+> per boot, versus thousands of HLTs just to boot to console.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-> btrsi.c hasn't use any macro or function declared in net/genetlink.h.
-> Thus, these files can be removed from btrsi.c safely without
-> affecting the compilation of the ./drivers/bluetooth module
-> 
-> Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
-> 
+Reviewed-by: David Matlack <dmatlack@google.com>
+
 > ---
-> drivers/bluetooth/btrsi.c | 1 -
-> 1 file changed, 1 deletion(-)
-
-patch has been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
-
+>  arch/x86/kvm/x86.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b444f9315766..a0f313c4bc49 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9893,7 +9893,10 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+>  	if (!kvm_arch_vcpu_runnable(vcpu) &&
+>  	    (!kvm_x86_ops.pre_block || static_call(kvm_x86_pre_block)(vcpu) == 0)) {
+>  		srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
+> -		kvm_vcpu_halt(vcpu);
+> +		if (vcpu->arch.mp_state == KVM_MP_STATE_HALTED)
+> +			kvm_vcpu_halt(vcpu);
+> +		else
+> +			kvm_vcpu_block(vcpu);
+>  		vcpu->srcu_idx = srcu_read_lock(&kvm->srcu);
+>  
+>  		if (kvm_x86_ops.post_block)
+> -- 
+> 2.33.0.685.g46640cef36-goog
+> 
