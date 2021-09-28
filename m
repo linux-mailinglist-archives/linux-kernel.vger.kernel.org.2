@@ -2,61 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6728A41A726
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3217841A728
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhI1FgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 01:36:20 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48799 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231330AbhI1FgT (ORCPT
+        id S235228AbhI1Fgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 01:36:53 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:45665 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhI1Fgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:36:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UpuToG2_1632807276;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UpuToG2_1632807276)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 28 Sep 2021 13:34:37 +0800
-Subject: Re: [RESEND PATCH v2] net: prevent user from passing illegal stab
- size
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:TC subsystem" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <cab456a9-680d-9791-599b-de003b88a9ea@linux.alibaba.com>
- <CAM_iQpUuST2d0LZ5i7dqz=E1uL4Wiizf5WNbdJ=vc-9MR20SyQ@mail.gmail.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <c2545718-a20a-355b-6158-ddeac91b942a@linux.alibaba.com>
-Date:   Tue, 28 Sep 2021 13:34:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 28 Sep 2021 01:36:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HJSrY6Wctz4xZJ;
+        Tue, 28 Sep 2021 15:35:09 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632807311;
+        bh=Wx9Kve/P2GL7Gxzv2UPcFM7tV5U40h3GUyBo9PB0LzU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FRqOM7kXXHmbdbdLhiEhtDkt2afYbf5aLZ1E3NcJpV8+YbF35Fa7dOQ0vgC2ReFc/
+         zlxzU33ttGg2JEHsY0cnRqiqzJTcOlSReRnu+p+aUBrIjUVkkzjpBA1nPzc3sl/eqa
+         yXd/4mYXnptOLhaG6klj82aiSBfCqTXwU8Qov+zE/U3NNceIzr34yqIloHTDKIS3CN
+         03nOJFVvqIGiPPEcDSgN0R6EfntyHMD3MtIXDdm2PESXABIptPgCS+GHG1SNwY5tl2
+         4bk4kqcLlOwYpVDyEv3deUpsEGBfE2h5bFR2ipBQxQOsPTvztouBrdbZaiic/1ROL0
+         q19ZjZAb9tBKw==
+Date:   Tue, 28 Sep 2021 15:35:08 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: linux-next: build failure after merge of the sound-asoc tree
+Message-ID: <20210928153508.101208f8@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpUuST2d0LZ5i7dqz=E1uL4Wiizf5WNbdJ=vc-9MR20SyQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Z6qW/.5+WE9bxcw8XnWTjDu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My bad... failed to get the notify, please ignore the noise.
+--Sig_/Z6qW/.5+WE9bxcw8XnWTjDu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Michael Wang
+Hi all,
 
-On 2021/9/28 下午1:11, Cong Wang wrote:
-> Hi,
-> 
-> It has been applied, no need to resend.
-> 
-> commit b193e15ac69d56f35e1d8e2b5d16cbd47764d053
-> Author:     王贇 <yun.wang@linux.alibaba.com>
-> AuthorDate: Fri Sep 24 10:35:58 2021 +0800
-> Commit:     David S. Miller <davem@davemloft.net>
-> CommitDate: Sun Sep 26 11:09:07 2021 +0100
-> 
->     net: prevent user from passing illegal stab size
-> 
-> Thanks.
-> 
+After merging the sound-asoc tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
+
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_coeff_put':
+wm_adsp.c:(.text.wm_coeff_put+0x54): undefined reference to `.cs_dsp_coeff_=
+write_ctrl'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_write_ctl':
+(.text.wm_adsp_write_ctl+0x60): undefined reference to `.cs_dsp_get_ctl'
+ld: (.text.wm_adsp_write_ctl+0xb4): undefined reference to `.cs_dsp_coeff_w=
+rite_ctrl'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_read_ctl':
+(.text.wm_adsp_read_ctl+0x50): undefined reference to `.cs_dsp_get_ctl'
+ld: (.text.wm_adsp_read_ctl+0xbc): undefined reference to `.cs_dsp_coeff_re=
+ad_ctrl'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_coeff_get':
+wm_adsp.c:(.text.wm_coeff_get+0x54): undefined reference to `.cs_dsp_coeff_=
+read_ctrl'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_coeff_tlv_get':
+wm_adsp.c:(.text.wm_coeff_tlv_get+0x60): undefined reference to `.cs_dsp_co=
+eff_read_ctrl'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_coeff_put_acked':
+wm_adsp.c:(.text.wm_coeff_put_acked+0xa4): undefined reference to `.cs_dsp_=
+coeff_write_acked_control'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp1_init':
+(.text.wm_adsp1_init+0x38): undefined reference to `.cs_dsp_adsp1_init'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp2_set_dspclk':
+(.text.wm_adsp2_set_dspclk+0x44): undefined reference to `.cs_dsp_set_dspcl=
+k'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_early_event':
+(.text.wm_adsp_early_event+0xac): undefined reference to `.cs_dsp_power_dow=
+n'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_event':
+(.text.wm_adsp_event+0x88): undefined reference to `.cs_dsp_run'
+ld: (.text.wm_adsp_event+0xb0): undefined reference to `.cs_dsp_stop'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp2_component_probe':
+(.text.wm_adsp2_component_probe+0x6c): undefined reference to `.cs_dsp_init=
+_debugfs'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp2_component_remove':
+(.text.wm_adsp2_component_remove+0x24): undefined reference to `.cs_dsp_cle=
+anup_debugfs'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp2_init':
+(.text.wm_adsp2_init+0xa8): undefined reference to `.cs_dsp_adsp2_init'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_halo_init':
+(.text.wm_halo_init+0xa8): undefined reference to `.cs_dsp_halo_init'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp2_remove':
+(.text.wm_adsp2_remove+0x24): undefined reference to `.cs_dsp_remove'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp2_bus_error':
+(.text.wm_adsp2_bus_error+0x24): undefined reference to `.cs_dsp_adsp2_bus_=
+error'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_halo_bus_error':
+(.text.wm_halo_bus_error+0x24): undefined reference to `.cs_dsp_halo_bus_er=
+ror'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_halo_wdt_expire':
+(.text.wm_halo_wdt_expire+0x24): undefined reference to `.cs_dsp_halo_wdt_e=
+xpire'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp1_event':
+(.text.wm_adsp1_event+0x168): undefined reference to `.cs_dsp_adsp1_power_u=
+p'
+ld: (.text.wm_adsp1_event+0x210): undefined reference to `.cs_dsp_adsp1_pow=
+er_down'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_control_add':
+wm_adsp.c:(.text.wm_adsp_control_add+0x70): undefined reference to `.cs_dsp=
+_mem_region_name'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_buffer_capture_block':
+wm_adsp.c:(.text.wm_adsp_buffer_capture_block+0x248): undefined reference t=
+o `.cs_dsp_read_raw_data_block'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_capture_block+0x27c): undefined referen=
+ce to `.cs_dsp_remove_padding'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_capture_block+0x344): undefined referen=
+ce to `.cs_dsp_write_data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_boot_work':
+wm_adsp.c:(.text.wm_adsp_boot_work+0x108): undefined reference to `.cs_dsp_=
+power_up'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_buffer_populate':
+wm_adsp.c:(.text.wm_adsp_buffer_populate+0x1ac): undefined reference to `.c=
+s_dsp_read_data_word'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_populate+0x1fc): undefined reference to=
+ `.cs_dsp_read_data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_buffer_parse_coeff':
+wm_adsp.c:(.text.wm_adsp_buffer_parse_coeff+0x58): undefined reference to `=
+.cs_dsp_coeff_read_ctrl'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_parse_coeff+0x2b0): undefined reference=
+ to `.cs_dsp_remove_padding'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_buffer_parse_legacy':
+wm_adsp.c:(.text.wm_adsp_buffer_parse_legacy+0x48): undefined reference to =
+`.cs_dsp_find_alg_region'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_parse_legacy+0xc4): undefined reference=
+ to `.cs_dsp_read_data_word'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_parse_legacy+0x150): undefined referenc=
+e to `.cs_dsp_read_data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_buffer_get_error':
+wm_adsp.c:(.text.wm_adsp_buffer_get_error+0x44): undefined reference to `.c=
+s_dsp_read_data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_compr_trigger':
+(.text.wm_adsp_compr_trigger+0x370): undefined reference to `.cs_dsp_write_=
+data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_buffer_update_avail':
+wm_adsp.c:(.text.wm_adsp_buffer_update_avail+0x70): undefined reference to =
+`.cs_dsp_read_data_word'
+ld: wm_adsp.c:(.text.wm_adsp_buffer_update_avail+0x16c): undefined referenc=
+e to `.cs_dsp_read_data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_compr_handle_irq':
+(.text.wm_adsp_compr_handle_irq+0x140): undefined reference to `.cs_dsp_rea=
+d_data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_adsp_compr_pointer':
+(.text.wm_adsp_compr_pointer+0x3d8): undefined reference to `.cs_dsp_write_=
+data_word'
+ld: sound/soc/codecs/wm_adsp.o: in function `.wm_coeff_tlv_put':
+wm_adsp.c:(.text.wm_coeff_tlv_put+0x100): undefined reference to `.cs_dsp_c=
+oeff_write_ctrl'
+
+Caused by commit
+
+  f6bc909e7673 ("firmware: cs_dsp: add driver to support firmware loading o=
+n Cirrus Logic DSPs")
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Z6qW/.5+WE9bxcw8XnWTjDu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFSqYwACgkQAVBC80lX
+0GyAvggAnxWsWol71ql0JeI2y0YccWBk1uF0FYv089Wcwlog1KPkn7tzXarlN/GG
+sNjHF8k7hcyWfs7U5zm4jc3amn2/naY91L+/c/bZQghxsjRKXtMO1meNmj4tEE3s
+LY2FtpCUeWEI+OX/4EcgiSS1DkA2NfbwGuEq7bk8ygRodBwk/Z1aIxr8C2S+zlWo
+F5CFdVYEx5vmSFj4OQkZF6rfC+z8YHBtpnkzZ/A7iqCPtEgQ0NcyrrImimJ+/XpR
+98gMd6gtv5tdviqXcVDEtj9aFxkQxMl6CvNPFG6E9WrKSEe1YwziPG5dJ/FG/lJ9
+AtCJIRc+WHk5w7KLhRPzRxYyuoVz/A==
+=LYkx
+-----END PGP SIGNATURE-----
+
+--Sig_/Z6qW/.5+WE9bxcw8XnWTjDu--
