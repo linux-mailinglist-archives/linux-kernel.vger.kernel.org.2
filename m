@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD5941B119
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FEE41B11D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241030AbhI1NtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhI1NtH (ORCPT
+        id S240988AbhI1NuP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 09:50:15 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:46839 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240959AbhI1NuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:49:07 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDF7C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:47:27 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id b20so93349750lfv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 06:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zwVENlJtRAi6Ax59HxxFqFtBJgRbm8ce1Id+5WhoWL8=;
-        b=XQFP1mUhXKlHXI+xEmvDrSXbeLGnD4CLmXjgYseEqEruv9KrCC6FSc8Y5Ho4LjbDOX
-         zC6snsJNUUz1wZImn8MwvqtBxmMBxpHhjrx+sD7movv4TlZPXtvtAREC+/yRiKmX0pue
-         ++eKN5f+0dJcVxMLuJppLKf8ZQF/8jTKUtiroQPAE26FNLy3qV5NuZ4Mfmn9YaCTMPq7
-         nzwGakmqi86S8+l5vHWVzyPlqaDPjAMTD04P50HoQaOwSxjmCvIFwGP8TkCDq/Iqin0z
-         nosD+DseVrciB0VXscUsdG8/7r83wCXEdGV3qDxxotWcJfScS76Tqa9v285icJA3aBNN
-         Ec1g==
+        Tue, 28 Sep 2021 09:50:13 -0400
+Received: by mail-oo1-f50.google.com with SMTP id l8-20020a4ae2c8000000b002b5ec765d9fso306635oot.13;
+        Tue, 28 Sep 2021 06:48:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zwVENlJtRAi6Ax59HxxFqFtBJgRbm8ce1Id+5WhoWL8=;
-        b=aIvI8BLRX0njmpWfQ9V90K655g56tK6jvBdD6tdUYqqSgwPyg0uN0OH9AWHTS8nnag
-         y4EJRlBJgq+8ehKXe46MKIPWxsfru0hpXo8kk8jgU3lCQyTnaq+IgumMlx0sIIpKdQij
-         joDTCRRHCGARfRl80yKUibTJZYOhpRzqhql2oXEtD8qNVWikrHXcOjbr5Yi/hkmIsCNz
-         BC09k7mN5DkVgnkGl0nCc/PlLEnrqY/pnCeIx0ctMu7PjH5tfJtPTVtgJF8gDpUzu93h
-         eLo2F14b7Hkz0eBbphSBOg2Q9xMjPmWDdH05aIWqFs/O5Mar0VzRJLKWkxfKWsxcXes1
-         peTA==
-X-Gm-Message-State: AOAM532f9sVmxy971rBVrbDq7I0kcOs5rOrqtV9c79+GagW22xm2ylQn
-        OAaSY5rHPHh7sLqLz2PI+7rN3QhBu6iJgM5CARyADg==
-X-Google-Smtp-Source: ABdhPJw2Fb4WlAdBMN6qf/ANOW7XfaZ4dwR3+5V+TQbap6YMXmbnt1TkRoKkuxS6/KOggTQZ6bWvGaBx1mJ0aeF2U9k=
-X-Received: by 2002:a19:f249:: with SMTP id d9mr5834936lfk.229.1632836846030;
- Tue, 28 Sep 2021 06:47:26 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yI0t52vDjp3qPZNaDmO9lPl1ra/Vt/GghnssMztBk0k=;
+        b=lAsmBK5QSPoAkC6EEEuOvJne1FQsxp4stJPhK7+pwTlHfZmemycTWDi4XDJMmebb6t
+         oPb0DGQRXV2kIpMdQCwVl3gPPTXU7lYIt5sqDIRU2yGhGY0zkNH5l48+h3PIJyjLk3Rr
+         ezwld6qSYFmAuddJgok/ujQwQZYY1MEMtHZjaie6O8DnVm3OxYfNLCA24ogcL8t12Ngv
+         bQt6mm8UoTM6CEjoNowj/EDUA9X08zrIjY4QDw0fwqqylXbi7Chhpj9BeasrmTHf2Z0y
+         3yjZFiY0lgLgSrGzXaBw06JOsgSOwTC28VpsTu477CH1H2KtyfQM3q85DktSzUuoLrbS
+         Me+A==
+X-Gm-Message-State: AOAM533+RQwnW0mqihWoDgTGJTUHAy04uUc9iNCH1iLesf5ZubyML9Ou
+        c+OvrE0kselM3n3E4WSjTQkp8cNik/A0w/rTOY0=
+X-Google-Smtp-Source: ABdhPJz2L0c4GWXxf1fUD52FhFTKwodEJWuxfNI9xDupslgZmo/KnLSAfIcTinulPIyrxhYqdvWFxutCWCWv1HAY8pw=
+X-Received: by 2002:a4a:df0b:: with SMTP id i11mr4991937oou.30.1632836913969;
+ Tue, 28 Sep 2021 06:48:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928013621.1245-1-caihuoqing@baidu.com>
-In-Reply-To: <20210928013621.1245-1-caihuoqing@baidu.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 28 Sep 2021 15:47:14 +0200
-Message-ID: <CACRpkdZX6JkBOFX9yd-gsrzD5ObXR1VKmVNFLNbAv2Q0w1w5FQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] iio: adc: ab8500-gpadc: Make use of the helper
- function dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+References: <20210922133116.102-1-richard.gong@amd.com> <CAJZ5v0jpOzNS5TFdJNXdxa_p2D_5QQMwwRcSMe8JmjOaTjR8gg@mail.gmail.com>
+ <3b26b179-69ba-64a2-807e-8d7609fbeb6e@amd.com>
+In-Reply-To: <3b26b179-69ba-64a2-807e-8d7609fbeb6e@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 28 Sep 2021 15:48:23 +0200
+Message-ID: <CAJZ5v0g+VcGz65s=iu4fzWmkHS7Z0Dx9tMpDgFZ46f3U4jRkoQ@mail.gmail.com>
+Subject: Re: [PATCHv1] ACPI: processor idle: Allow playing dead in C3 state
+To:     "Gong, Richard" <richard.gong@amd.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lijo.lazar@amd.com, Mario Limonciello <mario.limonciello@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 3:36 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
-
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
+On Tue, Sep 28, 2021 at 3:00 PM Gong, Richard <richard.gong@amd.com> wrote:
 >
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
-> v1->v2: Remove the separate line of PTR_ERR().
+> Hi Rafael,
+>
+> On 9/24/2021 11:31 AM, Rafael J. Wysocki wrote:
+> > On Wed, Sep 22, 2021 at 3:31 PM Richard Gong <richard.gong@amd.com> wrote:
+> >> When some cores are disabled on AMD platforms, the system will no longer
+> >> be able to enter suspend-to-idle s0ix.
+> >>
+> >> Update to allow playing dead in C3 state so that the CPUs can enter the
+> >> deepest state on AMD platforms.
+> >>
+> >> BugLink: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.freedesktop.org%2Fdrm%2Famd%2F-%2Fissues%2F1708&amp;data=04%7C01%7Crichard.gong%40amd.com%7Ca5c0db9ce02b4cd0864f08d97f78d33f%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637680980065602427%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=dIO5PDjpncLFIt0aGaTrKJHYIkJm8A4YByGn1%2FsHrtM%3D&amp;reserved=0
+> >> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+> >> Signed-off-by: Richard Gong <richard.gong@amd.com>
+> >> ---
+> >>   drivers/acpi/processor_idle.c | 3 ++-
+> >>   1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> >> index f37fba9e5ba0..61d5a72d218e 100644
+> >> --- a/drivers/acpi/processor_idle.c
+> >> +++ b/drivers/acpi/processor_idle.c
+> >> @@ -789,7 +789,8 @@ static int acpi_processor_setup_cstates(struct acpi_processor *pr)
+> >>                  state->enter = acpi_idle_enter;
+> >>
+> >>                  state->flags = 0;
+> >> -               if (cx->type == ACPI_STATE_C1 || cx->type == ACPI_STATE_C2) {
+> >> +               if (cx->type == ACPI_STATE_C1 || cx->type == ACPI_STATE_C2
+> >> +                       || cx->type == ACPI_STATE_C3) {
+> >>                          state->enter_dead = acpi_idle_play_dead;
+> >>                          drv->safe_state_index = count;
+> >>                  }
+> >> --
+> > Tentatively applied as 5.16 material, but have you done any research
+> > on why this restriction has been there in the first place?
+>
+> Yes, we need this change to align with the updated firmware on AMD
+> platforms.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Well, it wouldn't be necessary to change the code otherwise.
 
-Yours,
-Linus Walleij
+Still, without the patch it is not allowed to play dead in deep idle
+states (C3 type) and do you know why?
+
+Or IOW how likely is this change to break anything on legacy platforms?
