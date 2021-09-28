@@ -2,103 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8170141B413
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E140341B419
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241885AbhI1QnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:43:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49873 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241873AbhI1QnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:43:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632847297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PRr6yH8iE3kvIOaBo9Egrh5B+ijwJWy0w0Y5bYRa2to=;
-        b=ewtAzH1LcJSjLTi/nvQXK3kzn7hAW0bYhGTDo51FzU4mRDz3kb22uSRo+vnfsdfP3QJF4h
-        rwlw4PDh4ixGGZUIJGPveWJRd26ue2P1JASZTNXLymwxroaNM/1wzQ8xoJmN3tFhhL9gta
-        eLPVmIXTIp4THsJeDuLBFRUiQiF7sQk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-GvSsnRyPP4yrWnZ2FemaNw-1; Tue, 28 Sep 2021 12:41:35 -0400
-X-MC-Unique: GvSsnRyPP4yrWnZ2FemaNw-1
-Received: by mail-ed1-f71.google.com with SMTP id c7-20020a05640227c700b003d27f41f1d4so22433632ede.16
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:41:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=PRr6yH8iE3kvIOaBo9Egrh5B+ijwJWy0w0Y5bYRa2to=;
-        b=S10/opY9KFF7TcLrAwnBxjFQ+PAGIpW8Lk25EbzhjftIYDmq6vbTeHJWNofLVW6iRx
-         TEUXkCy1LpkTdBVeF7/e8D+CLgZ09sIC9uw4JA8W7Ty+Oeu1wn3f1TmVHU77ei0+IvRJ
-         cGgCZCWOCco4NfoJ/OmefBEchYINukIqdC6MbUeD+NBo/+nwl6WhSrCRamCXEAZ/uffQ
-         PpO4WA2h8AFjYIVwM2PYKfZ6QZFcdzekNRhJvbWuGhaLgC8ccbFFuHfGxWVwEH8V/wI5
-         kuTxc3f/IqjqCDLTE401rxIeHhsLyzMQrWdXnnB6I6Xe4/5saKZAo4d7pxphicWrYVzs
-         dwKg==
-X-Gm-Message-State: AOAM5336yxQkA2qVZKiGLjKditShHtdkhPbcWtGP/OAI98VIQWEaTlO3
-        nnenExTWVmYbgXmW0mRQtpRAfG5D+Q4hLa0gYHOKgGsDqcUtyjc+UY1BcEEV79/qjkK1Cj9ptKn
-        lc8nmQ0Av5u52E4adp8H2r/Ei
-X-Received: by 2002:a17:906:cc4a:: with SMTP id mm10mr1284259ejb.384.1632847294509;
-        Tue, 28 Sep 2021 09:41:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0B70PGd40+l8AVXMAvDDSQoARkmaV5PDGrsf3ott4UI1ydNflKd+KB9jJ04ZN4YwImVYzAg==
-X-Received: by 2002:a17:906:cc4a:: with SMTP id mm10mr1284232ejb.384.1632847294341;
-        Tue, 28 Sep 2021 09:41:34 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d3sm13456533edv.87.2021.09.28.09.41.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 09:41:33 -0700 (PDT)
-Message-ID: <452d73b2-2d39-e80d-021d-f24550eaea82@redhat.com>
-Date:   Tue, 28 Sep 2021 18:41:28 +0200
+        id S241781AbhI1QoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:44:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30852 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241820AbhI1QoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:44:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224789120"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="224789120"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 09:42:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="486589673"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga008.jf.intel.com with ESMTP; 28 Sep 2021 09:42:22 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org, viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk, pablomh@gmail.com,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] cpufreq: intel_pstate: Process HWP Guaranteed change notification
+Date:   Tue, 28 Sep 2021 09:42:17 -0700
+Message-Id: <20210928164217.950960-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 2/6] x86/kvm: add boot parameter for adding vcpu-id
- bits
-Content-Language: en-US
-To:     Juergen Gross <jgross@suse.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     maz@kernel.org, ehabkost@redhat.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-3-jgross@suse.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210903130808.30142-3-jgross@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09/21 15:08, Juergen Gross wrote:
-> +	if (vcpu_id_add_bits >= 0) {
-> +		n_bits += vcpu_id_add_bits;
-> +	} else {
-> +		n_bits++;		/* One additional bit for core level. */
-> +		if (topology_max_die_per_package() > 1)
-> +			n_bits++;	/* One additional bit for die level. */
+It is possible that HWP guaranteed ratio is changed in response to
+change in power and thermal limits. For example when Intel Speed Select
+performance profile is changed or there is change in TDP, hardware can
+send notifications. It is possible that the guaranteed ratio is
+increased. This creates an issue when turbo is disabled, as the old
+limits set in MSR_HWP_REQUEST are still lower and hardware will clip
+to older limits.
 
-This needs to be unconditional since it is always possible to emulate a 
-multiple-die-per-package topology for a guest, even if the host has just 
-one.
+This change enables HWP interrupt and process HWP interrupts. When
+guaranteed is changed, calls cpufreq_update_policy() so that driver
+callbacks are called to update to new HWP limits. This callback
+is called from a delayed workqueue of 10ms to avoid frequent updates.
 
-Paolo
+Although the scope of IA32_HWP_INTERRUPT is per logical cpu, on some
+plaforms interrupt is generated on all CPUs. This is particularly a
+problem during initialization, when the driver didn't allocated
+data for other CPUs. So this change uses a cpumask of enabled CPUs and
+process interrupts on those CPUs only.
 
+When the cpufreq offline() or suspend()callback is called, HWP interrupt
+is disabled on those CPUs and also cancels any pending work item.
 
-> +	}
-> +
-> +	if (!n_bits)
+Spin lock is used to protect data and processing shared with interrupt
+handler. Here READ_ONCE(), WRITE_ONCE() macros are used to designate
+shared data, even though spin lock act as an optmization barrier here.
+
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+This patch is a replacement from the patch submitted to 5.15 and later
+reverted.
+
+ drivers/cpufreq/intel_pstate.c | 117 +++++++++++++++++++++++++++++++--
+ 1 file changed, 111 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 8c176b7dae41..facc56dd58dd 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -32,6 +32,7 @@
+ #include <asm/cpu_device_id.h>
+ #include <asm/cpufeature.h>
+ #include <asm/intel-family.h>
++#include "../drivers/thermal/intel/thermal_interrupt.h"
+ 
+ #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
+ 
+@@ -219,6 +220,7 @@ struct global_params {
+  * @sched_flags:	Store scheduler flags for possible cross CPU update
+  * @hwp_boost_min:	Last HWP boosted min performance
+  * @suspended:		Whether or not the driver has been suspended.
++ * @hwp_notify_work:	workqueue for HWP notifications.
+  *
+  * This structure stores per CPU instance data for all CPUs.
+  */
+@@ -257,6 +259,7 @@ struct cpudata {
+ 	unsigned int sched_flags;
+ 	u32 hwp_boost_min;
+ 	bool suspended;
++	struct delayed_work hwp_notify_work;
+ };
+ 
+ static struct cpudata **all_cpu_data;
+@@ -985,11 +988,15 @@ static void intel_pstate_hwp_set(unsigned int cpu)
+ 	wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+ }
+ 
++static void intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata);
++
+ static void intel_pstate_hwp_offline(struct cpudata *cpu)
+ {
+ 	u64 value = READ_ONCE(cpu->hwp_req_cached);
+ 	int min_perf;
+ 
++	intel_pstate_disable_hwp_interrupt(cpu);
++
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+ 		/*
+ 		 * In case the EPP has been set to "performance" by the
+@@ -1053,6 +1060,9 @@ static int intel_pstate_suspend(struct cpufreq_policy *policy)
+ 
+ 	cpu->suspended = true;
+ 
++	/* disable HWP interrupt and cancel any pending work */
++	intel_pstate_disable_hwp_interrupt(cpu);
++
+ 	return 0;
+ }
+ 
+@@ -1546,15 +1556,105 @@ static void intel_pstate_sysfs_hide_hwp_dynamic_boost(void)
+ 
+ /************************** sysfs end ************************/
+ 
++static void intel_pstate_notify_work(struct work_struct *work)
++{
++	struct cpudata *cpudata =
++		container_of(to_delayed_work(work), struct cpudata, hwp_notify_work);
++
++	cpufreq_update_policy(cpudata->cpu);
++	wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_STATUS, 0);
++}
++
++static DEFINE_SPINLOCK(hwp_notify_lock);
++static cpumask_t hwp_intr_enable_mask;
++
++void notify_hwp_interrupt(void)
++{
++	unsigned int this_cpu = smp_processor_id();
++	struct cpudata *cpudata;
++	unsigned long flags;
++	u64 value;
++
++	if (!READ_ONCE(hwp_active) || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
++		return;
++
++	rdmsrl_safe(MSR_HWP_STATUS, &value);
++	if (!(value & 0x01))
++		return;
++
++	spin_lock_irqsave(&hwp_notify_lock, flags);
++
++	if (!cpumask_test_cpu(this_cpu, &hwp_intr_enable_mask))
++		goto ack_intr;
++
++	/*
++	 * Currently we never free all_cpu_data. And we can't reach here
++	 * without this allocated. But for safety for future changes, added
++	 * check.
++	 */
++	if (unlikely(!READ_ONCE(all_cpu_data)))
++		goto ack_intr;
++
++	/*
++	 * The free is done during cleanup, when cpufreq registry is failed.
++	 * We wouldn't be here if it fails on init or switch status. But for
++	 * future changes, added check.
++	 */
++	cpudata = READ_ONCE(all_cpu_data[this_cpu]);
++	if (unlikely(!cpudata))
++		goto ack_intr;
++
++	schedule_delayed_work(&cpudata->hwp_notify_work, msecs_to_jiffies(10));
++
++	spin_unlock_irqrestore(&hwp_notify_lock, flags);
++
++	return;
++
++ack_intr:
++	wrmsrl_safe(MSR_HWP_STATUS, 0);
++	spin_unlock_irqrestore(&hwp_notify_lock, flags);
++}
++
++static void intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata)
++{
++	unsigned long flags;
++
++	/* wrmsrl_on_cpu has to be outside spinlock as this can result in IPC */
++	wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
++
++	spin_lock_irqsave(&hwp_notify_lock, flags);
++	if (cpumask_test_and_clear_cpu(cpudata->cpu, &hwp_intr_enable_mask))
++		cancel_delayed_work(&cpudata->hwp_notify_work);
++	spin_unlock_irqrestore(&hwp_notify_lock, flags);
++}
++
++static void intel_pstate_enable_hwp_interrupt(struct cpudata *cpudata)
++{
++	/* Enable HWP notification interrupt for guaranteed performance change */
++	if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY)) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&hwp_notify_lock, flags);
++		INIT_DELAYED_WORK(&cpudata->hwp_notify_work, intel_pstate_notify_work);
++		cpumask_set_cpu(cpudata->cpu, &hwp_intr_enable_mask);
++		spin_unlock_irqrestore(&hwp_notify_lock, flags);
++
++		/* wrmsrl_on_cpu has to be outside spinlock as this can result in IPC */
++		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x01);
++	}
++}
++
+ static void intel_pstate_hwp_enable(struct cpudata *cpudata)
+ {
+-	/* First disable HWP notification interrupt as we don't process them */
++	/* First disable HWP notification interrupt till we activate again */
+ 	if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+ 		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
+ 
+ 	wrmsrl_on_cpu(cpudata->cpu, MSR_PM_ENABLE, 0x1);
+ 	if (cpudata->epp_default == -EINVAL)
+ 		cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
++
++	intel_pstate_enable_hwp_interrupt(cpudata);
+ }
+ 
+ static int atom_get_min_pstate(void)
+@@ -2266,7 +2366,7 @@ static int intel_pstate_init_cpu(unsigned int cpunum)
+ 		if (!cpu)
+ 			return -ENOMEM;
+ 
+-		all_cpu_data[cpunum] = cpu;
++		WRITE_ONCE(all_cpu_data[cpunum], cpu);
+ 
+ 		cpu->cpu = cpunum;
+ 
+@@ -2929,8 +3029,10 @@ static void intel_pstate_driver_cleanup(void)
+ 			if (intel_pstate_driver == &intel_pstate)
+ 				intel_pstate_clear_update_util_hook(cpu);
+ 
++			spin_lock(&hwp_notify_lock);
+ 			kfree(all_cpu_data[cpu]);
+-			all_cpu_data[cpu] = NULL;
++			WRITE_ONCE(all_cpu_data[cpu], NULL);
++			spin_unlock(&hwp_notify_lock);
+ 		}
+ 	}
+ 	cpus_read_unlock();
+@@ -3199,6 +3301,7 @@ static bool intel_pstate_hwp_is_enabled(void)
+ 
+ static int __init intel_pstate_init(void)
+ {
++	static struct cpudata **_all_cpu_data;
+ 	const struct x86_cpu_id *id;
+ 	int rc;
+ 
+@@ -3224,7 +3327,7 @@ static int __init intel_pstate_init(void)
+ 		 * deal with it.
+ 		 */
+ 		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) || hwp_forced) {
+-			hwp_active++;
++			WRITE_ONCE(hwp_active, 1);
+ 			hwp_mode_bdw = id->driver_data;
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.attr = hwp_cpufreq_attrs;
+@@ -3275,10 +3378,12 @@ static int __init intel_pstate_init(void)
+ 
+ 	pr_info("Intel P-state driver initializing\n");
+ 
+-	all_cpu_data = vzalloc(array_size(sizeof(void *), num_possible_cpus()));
+-	if (!all_cpu_data)
++	_all_cpu_data = vzalloc(array_size(sizeof(void *), num_possible_cpus()));
++	if (!_all_cpu_data)
+ 		return -ENOMEM;
+ 
++	WRITE_ONCE(all_cpu_data, _all_cpu_data);
++
+ 	intel_pstate_request_control_from_smm();
+ 
+ 	intel_pstate_sysfs_expose_params();
+-- 
+2.31.1
 
