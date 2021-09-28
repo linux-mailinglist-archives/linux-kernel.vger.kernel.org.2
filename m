@@ -2,459 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BA041A591
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E585741A593
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhI1Ch2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 22:37:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:12734 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238564AbhI1Ch1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 22:37:27 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HJNr55ThSzWXtd;
-        Tue, 28 Sep 2021 10:34:29 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 10:35:43 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 10:35:43 +0800
-Subject: Re: [PATCH -next] riscv/vdso: Add support for time namespaces
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20210901032025.2529454-1-tongtiangen@huawei.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <6cdb42c0-9b80-1d09-f309-5691f0013a96@huawei.com>
-Date:   Tue, 28 Sep 2021 10:35:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S238678AbhI1CjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 22:39:06 -0400
+Received: from mail-eopbgr50080.outbound.protection.outlook.com ([40.107.5.80]:64386
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238564AbhI1CjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 22:39:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bXydBCJNy9jHv38n8pQQ2CiVNeEzPtr86tMzmspCf8BA/vk22IE9xLR3F+WWFVtw66zLm4woRFdJfSJYptKi2dZI6vpxrUtDtWGbLP/6ut4apx3UwPHrn5GCisFr3A0vfmTUZ97mrbJTlsewiAYGEyX86TTnisUNsNOieh3AQY/gy4B8DJ4yjcGBA2zv5CYjcv+aRtBAH2jMDoNbRq5qRU3bcpntEcxhnJbPZwqZs/XQo6N8GcPQcB5h6lvXTf6Er9wMqnBXEQIh/JoVIg6uc88ETkLcgV2jxZwMOj5SOfLsf/xjipzPw+SYL6a3MZ0iJ8XkbAyEXMJv8S3ZHCsmSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=5TIrEuAyYwge0X4IbM4DyNThSucmaAWQuRn+f+LCO/g=;
+ b=aItYP457bdsAK/SCHYQcpj0RA0r1Cn+wUdC11iKqGit+hKBK1dC/U4Ki5XV7r9mrwwIUH+g4oTe7jQGc9yG6ZqczApt3y8EW/Uj8YYLAajVQxtL771gQYT3UtpMh5SRZRwWENIfYH8Ya6UjCQ4ml3J9i8grARKGMijCBC395k6pXSRQl4j5addXYtAsZ1anCIy4KPkhRqW12ik7Slf86WAfzjX+rNDvciWj8Cckoc1UkOydHTohrkYofWWIovwivGh4cndCZ4Iqm/UnKpQIxD9vEC1/MFN/08x68/IXvm5oLVvoPsctaMeJrTAnaFzxEfB4zt6dxzd7MgwMI9iUKxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5TIrEuAyYwge0X4IbM4DyNThSucmaAWQuRn+f+LCO/g=;
+ b=Jt1CL3k4ulNE17AfhaRsoKFnd9UbRAjwRd9z8EeRYLo6ZFVwWOKXK2IA9OU8ixYxjHojP4eGutusMTvOHkkbGZktsu4z9bL4S0tNgKz78S5bkC4lofnpjnwB6DNDuhFw8n1IXfuwI/zpL+q/PB6iUCMkWU9b1Slj3+PhyhmqP2s=
+Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
+ by AS8PR04MB8546.eurprd04.prod.outlook.com (2603:10a6:20b:421::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 28 Sep
+ 2021 02:37:23 +0000
+Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
+ ([fe80::c5ef:f538:c3e0:c4c2]) by AS8PR04MB8676.eurprd04.prod.outlook.com
+ ([fe80::c5ef:f538:c3e0:c4c2%9]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
+ 02:37:23 +0000
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>
+CC:     "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH v2 2/4] dt-bindings: phy: add imx8 pcie phy driver support
+Thread-Topic: [PATCH v2 2/4] dt-bindings: phy: add imx8 pcie phy driver
+ support
+Thread-Index: AQHXsq0EmVlO04zC/EmA/a1gOvUYm6u3jxyAgAEtCyA=
+Date:   Tue, 28 Sep 2021 02:37:23 +0000
+Message-ID: <AS8PR04MB86762E7C98765D1DB0F0D7408CA89@AS8PR04MB8676.eurprd04.prod.outlook.com>
+References: <1632641983-1455-1-git-send-email-hongxing.zhu@nxp.com>
+         <1632641983-1455-3-git-send-email-hongxing.zhu@nxp.com>
+ <f421d1c8079d6c6694972af04ec95318d3399152.camel@pengutronix.de>
+In-Reply-To: <f421d1c8079d6c6694972af04ec95318d3399152.camel@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7f8a20a4-4ae6-4eca-69da-08d98228e727
+x-ms-traffictypediagnostic: AS8PR04MB8546:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AS8PR04MB8546B1738EAA04768E6B4D878CA89@AS8PR04MB8546.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2m+w4Jedkwp9ONzatfHZl3X8YeO+PVsTLVilruGJnynlY71dYny3oY6mR7p/rRWBSjBhiT4/+nCrUoZfB/4KnVB57Ab8VwgBg60aJTN9xvf7EbtR7SXH63Dk5fPWoiMgNvodoZ3NimR9I4ERxNr4yiavCXYdzCBQPJw8h0g9tiOwvXvP9f0iNfzPXN34lGAXGoEcqFoe08XoQ4/4Wmqr4iPEZl+n29nD/tKZNUoK9H/uG1we1DY62A+z7uCyj6FPgGcYGF+gsWs7nNChHbNtz24fGwnuTLZF1qeeBDHwgtbYcwzU4vdEfxJuyF1TBaq/JzhAbQkv1C5T7VV9FUbUHf4UHe07WPe1nIurw8HjJpxmech5kQwbL19GJcIPKbRxdooqCl7ytG2TKw/1GuSAMc3OiCNRk2HW1B3Hndj1Ns+/lCLGgFY63+BZDp6XWrHWvXaexMGTbnQcevkr0MrJiWIsPsaWSnjLxxqaHpcy+zyONx7dcuYqus+VOCCmisfFM4L7olzkxMwrA2Ax3djQ4+c4sPEC0Vud2RGobgzEADInggo9j3CGj/T3CAvAwBvhtS/jlohNTBdpMi6ET7930uLcOPenj1by1XYYU7svwUoFQYQoFGdasPfDOT4qwwDGPfB93jeWtI2SX2Aw7A9ThPHo6Py0HyJUFS0C36ENb4GBpv9vnuczLRfNNdlE1T6VZP4WcOrZrkCNK7qci/9dkNIEEmJIeK7eL/B7rB0VROxLuGEHzoWmwmIq7GI6WpAG04iIo+7XuNCApOalEcVrPQHNOLojHt/TlKAhFNTLBWk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(53546011)(52536014)(9686003)(6506007)(55016002)(66946007)(4326008)(66476007)(66446008)(316002)(64756008)(66556008)(8676002)(2906002)(7416002)(7696005)(33656002)(38100700002)(122000001)(5660300002)(86362001)(110136005)(54906003)(45080400002)(26005)(186003)(83380400001)(71200400001)(38070700005)(508600001)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xeyxYxHCDvHMqdFhCjMQsg13rke2P0Jur5NmFy12H34dKStbp7QeFPcMujfB?=
+ =?us-ascii?Q?rQjGxbNlxKHn2Vz9EP+7qf2CZpO3tmnmFeABFmqmQ0x82BygTMkvnBc2cbR7?=
+ =?us-ascii?Q?xoNLoFPmNNLGPtL2Ps4LmcTBOZoq/Kmot57kZsmpDlQbhwOluCMSvEUdqjN6?=
+ =?us-ascii?Q?90fhT1s0C4JT3x2R8WRMbLUOdM/glHwXMaAxcb4Rvk0ALpeqAn2GMvYHqTzM?=
+ =?us-ascii?Q?1VlQZsLUSVd8JA6Nj/J8rxifd4hm4pxbv0+qfWKCJVpnUTX9JaIvlMCf5pca?=
+ =?us-ascii?Q?0ZvF/RQ8xhr7Y3BZa534hL5FZVEN7J1VoIOHogwDGiR9C5fQLKqy2pujhcmX?=
+ =?us-ascii?Q?JWoLZPf0fHUquvEa9NfUJm2jexiyWmNOGdclTgp6TjY6k4rgpvTqcLT0rnzh?=
+ =?us-ascii?Q?hHnDTDxhz7nQn2LPbBynYjTTDeSjT+hyHTDmBoFWdA/0cGfXc8wdTj+2OFaX?=
+ =?us-ascii?Q?POZBF1qNhB1eBLfL0/63rK//S28g5VfhFJsaqCOhj1eo9bB0EzdGt5X30BjD?=
+ =?us-ascii?Q?Yeh8FOuIpfjTk1mhHGzxBb86aDSh5ZEboDjg3MbuzJinbZvDjr0vnDzcUqNM?=
+ =?us-ascii?Q?ofFC0di7uBJ+NOobGz3D44eYB5Xbrw12CHYMIwLkFJ95FUOIg9fKF4BRx5DE?=
+ =?us-ascii?Q?4cjJXDJdcP3yjujY5W25z3BjivU7bSuW6CEbSmER7fPd74vHHE4eFQPxFzR5?=
+ =?us-ascii?Q?0EFxafr/GP08zQfaIMEBfwSrZLsrIDRNdGxw4NDOpx8rpbhLjnbgm+fqB9UE?=
+ =?us-ascii?Q?EwQynZnU4FMn5Gy/DQ3ySXmoviDaJdxDDZKSNbKnX9tB/LRcEMaA839WH0Mt?=
+ =?us-ascii?Q?6QJvaw9tRkcDntJTZKTjI/0N8qmYF6ffOjOm/1btXmrY7Omq3STh74mlhMgh?=
+ =?us-ascii?Q?FDZRkQ+Kxkp/ZcBFEdNGcQUhbLvWYXDylsBIj7uH/dgT1J3ZFNBNaFRJeuh3?=
+ =?us-ascii?Q?s7z+piVEwI0ETWUALpmhnBuQBarW8B1YApOJ2QuxtRG/8y6XeJH4fXYuKaxu?=
+ =?us-ascii?Q?2NwglCehfv+UC4eK5c+uWlFRiX/f/i76HXzOD1Ty6A+VNYmebSTH0+b44VZE?=
+ =?us-ascii?Q?o65UChtvj0NWRT+Wn5nnECefun7dVP7NcqsX1JYjroQQZCGa3D2GtcQ55CMX?=
+ =?us-ascii?Q?1dCjbKSA5Gw4RJxCfIhiV8WkB0B/4gcllI7p47WdbaElOHO02WyOfxWZdP9Z?=
+ =?us-ascii?Q?Xv//RFml5ZMgFN7n4wKEyZSPoITx7ooDKHlylh7Qcpbh15oiaCpAWQ9KHxe2?=
+ =?us-ascii?Q?v8z++Ugo++sSnHHrj8R4deBgB1mX5hThyCrpX/bfCZygZ83Eu2Yy2UAX4WZg?=
+ =?us-ascii?Q?EjCMRGRvse/Taw7ZsQYXlfkh?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20210901032025.2529454-1-tongtiangen@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f8a20a4-4ae6-4eca-69da-08d98228e727
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 02:37:23.6724
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UI3p5V35uSoxceoOnoY8mYo8qV7sXuEJfiimqFjgu8p8pMFBUGQKSc+BvxN4Nrk3q25CUqV3QtIglyvrcwKFFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8546
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kindly ping.
 
-On 2021/9/1 11:20, Tong Tiangen wrote:
-> Implement generic vdso time namespace support which also enables time
-> namespaces for riscv. This is quite similar to what arm64 does.
->
-> selftest/timens test result:
->   1..10
->   ok 1 Passed for CLOCK_BOOTTIME (syscall)
->   ok 2 Passed for CLOCK_BOOTTIME (vdso)
->   ok 3 # SKIP CLOCK_BOOTTIME_ALARM isn't supported
->   ok 4 # SKIP CLOCK_BOOTTIME_ALARM isn't supported
->   ok 5 Passed for CLOCK_MONOTONIC (syscall)
->   ok 6 Passed for CLOCK_MONOTONIC (vdso)
->   ok 7 Passed for CLOCK_MONOTONIC_COARSE (syscall)
->   ok 8 Passed for CLOCK_MONOTONIC_COARSE (vdso)
->   ok 9 Passed for CLOCK_MONOTONIC_RAW (syscall)
->   ok 10 Passed for CLOCK_MONOTONIC_RAW (vdso)
->   # Totals: pass:8 fail:0 xfail:0 xpass:0 skip:2 error:0
->
-> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
-> ---
-> This patch is based on patchset:
->   https://lore.kernel.org/lkml/20210901024621.2528797-1-tongtiangen@huawei.com/
->
->  arch/riscv/Kconfig                         |   1 +
->  arch/riscv/include/asm/page.h              |   2 +
->  arch/riscv/include/asm/vdso.h              |   2 +-
->  arch/riscv/include/asm/vdso/gettimeofday.h |   7 +
->  arch/riscv/kernel/vdso.c                   | 250 ++++++++++++++++-----
->  arch/riscv/kernel/vdso/vdso.lds.S          |   3 +
->  6 files changed, 211 insertions(+), 54 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index aac669a6c3d8..7b0eff8a7eef 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -61,6 +61,7 @@ config RISCV
->  	select GENERIC_SCHED_CLOCK
->  	select GENERIC_SMP_IDLE_THREAD
->  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
-> +	select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
->  	select HANDLE_DOMAIN_IRQ
->  	select HAVE_ARCH_AUDITSYSCALL
->  	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 109c97e991a6..b3e5ff0125fe 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -157,6 +157,8 @@ extern phys_addr_t __phys_addr_symbol(unsigned long x);
->  #define page_to_bus(page)	(page_to_phys(page))
->  #define phys_to_page(paddr)	(pfn_to_page(phys_to_pfn(paddr)))
->
-> +#define sym_to_pfn(x)           __phys_to_pfn(__pa_symbol(x))
-> +
->  #ifdef CONFIG_FLATMEM
->  #define pfn_valid(pfn) \
->  	(((pfn) >= ARCH_PFN_OFFSET) && (((pfn) - ARCH_PFN_OFFSET) < max_mapnr))
-> diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
-> index 34210b22ba91..bee9514104f7 100644
-> --- a/arch/riscv/include/asm/vdso.h
-> +++ b/arch/riscv/include/asm/vdso.h
-> @@ -14,7 +14,7 @@
->   */
->  #ifdef CONFIG_MMU
->
-> -#define __VVAR_PAGES    1
-> +#define __VVAR_PAGES    2
->
->  #ifndef __ASSEMBLY__
->
-> diff --git a/arch/riscv/include/asm/vdso/gettimeofday.h b/arch/riscv/include/asm/vdso/gettimeofday.h
-> index f839f16e0d2a..77d9c2f721c4 100644
-> --- a/arch/riscv/include/asm/vdso/gettimeofday.h
-> +++ b/arch/riscv/include/asm/vdso/gettimeofday.h
-> @@ -76,6 +76,13 @@ static __always_inline const struct vdso_data *__arch_get_vdso_data(void)
->  	return _vdso_data;
->  }
->
-> +#ifdef CONFIG_TIME_NS
-> +static __always_inline
-> +const struct vdso_data *__arch_get_timens_vdso_data(const struct vdso_data *vd)
-> +{
-> +	return _timens_data;
-> +}
-> +#endif
->  #endif /* !__ASSEMBLY__ */
->
->  #endif /* __ASM_VDSO_GETTIMEOFDAY_H */
-> diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-> index b70956d80408..a9436a65161a 100644
-> --- a/arch/riscv/kernel/vdso.c
-> +++ b/arch/riscv/kernel/vdso.c
-> @@ -13,6 +13,7 @@
->  #include <linux/err.h>
->  #include <asm/page.h>
->  #include <asm/vdso.h>
-> +#include <linux/time_namespace.h>
->
->  #ifdef CONFIG_GENERIC_TIME_VSYSCALL
->  #include <vdso/datapage.h>
-> @@ -25,14 +26,12 @@ extern char vdso_start[], vdso_end[];
->
->  enum vvar_pages {
->  	VVAR_DATA_PAGE_OFFSET,
-> +	VVAR_TIMENS_PAGE_OFFSET,
->  	VVAR_NR_PAGES,
->  };
->
->  #define VVAR_SIZE  (VVAR_NR_PAGES << PAGE_SHIFT)
->
-> -static unsigned int vdso_pages __ro_after_init;
-> -static struct page **vdso_pagelist __ro_after_init;
-> -
->  /*
->   * The vDSO data page.
->   */
-> @@ -42,83 +41,228 @@ static union {
->  } vdso_data_store __page_aligned_data;
->  struct vdso_data *vdso_data = &vdso_data_store.data;
->
-> -static int __init vdso_init(void)
-> +struct __vdso_info {
-> +	const char *name;
-> +	const char *vdso_code_start;
-> +	const char *vdso_code_end;
-> +	unsigned long vdso_pages;
-> +	/* Data Mapping */
-> +	struct vm_special_mapping *dm;
-> +	/* Code Mapping */
-> +	struct vm_special_mapping *cm;
-> +};
-> +
-> +static struct __vdso_info vdso_info __ro_after_init = {
-> +	.name = "vdso",
-> +	.vdso_code_start = vdso_start,
-> +	.vdso_code_end = vdso_end,
-> +};
-> +
-> +static int vdso_mremap(const struct vm_special_mapping *sm,
-> +		       struct vm_area_struct *new_vma)
-> +{
-> +	current->mm->context.vdso = (void *)new_vma->vm_start;
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init __vdso_init(void)
->  {
->  	unsigned int i;
-> +	struct page **vdso_pagelist;
-> +	unsigned long pfn;
->
-> -	vdso_pages = (vdso_end - vdso_start) >> PAGE_SHIFT;
-> -	vdso_pagelist =
-> -		kcalloc(vdso_pages + VVAR_NR_PAGES, sizeof(struct page *), GFP_KERNEL);
-> -	if (unlikely(vdso_pagelist == NULL)) {
-> -		pr_err("vdso: pagelist allocation failed\n");
-> -		return -ENOMEM;
-> +	if (memcmp(vdso_info.vdso_code_start, "\177ELF", 4)) {
-> +		pr_err("vDSO is not a valid ELF object!\n");
-> +		return -EINVAL;
->  	}
->
-> -	for (i = 0; i < vdso_pages; i++) {
-> -		struct page *pg;
-> +	vdso_info.vdso_pages = (
-> +		vdso_info.vdso_code_end -
-> +		vdso_info.vdso_code_start) >>
-> +		PAGE_SHIFT;
-> +
-> +	vdso_pagelist = kcalloc(vdso_info.vdso_pages,
-> +				sizeof(struct page *),
-> +				GFP_KERNEL);
-> +	if (vdso_pagelist == NULL)
-> +		return -ENOMEM;
-> +
-> +	/* Grab the vDSO code pages. */
-> +	pfn = sym_to_pfn(vdso_info.vdso_code_start);
-> +
-> +	for (i = 0; i < vdso_info.vdso_pages; i++)
-> +		vdso_pagelist[i] = pfn_to_page(pfn + i);
-> +
-> +	vdso_info.cm->pages = vdso_pagelist;
-> +
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_TIME_NS
-> +struct vdso_data *arch_get_vdso_data(void *vvar_page)
-> +{
-> +	return (struct vdso_data *)(vvar_page);
-> +}
-> +
-> +/*
-> + * The vvar mapping contains data for a specific time namespace, so when a task
-> + * changes namespace we must unmap its vvar data for the old namespace.
-> + * Subsequent faults will map in data for the new namespace.
-> + *
-> + * For more details see timens_setup_vdso_data().
-> + */
-> +int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
-> +{
-> +	struct mm_struct *mm = task->mm;
-> +	struct vm_area_struct *vma;
-> +
-> +	mmap_read_lock(mm);
->
-> -		pg = virt_to_page(vdso_start + (i << PAGE_SHIFT));
-> -		vdso_pagelist[i] = pg;
-> +	for (vma = mm->mmap; vma; vma = vma->vm_next) {
-> +		unsigned long size = vma->vm_end - vma->vm_start;
-> +
-> +		if (vma_is_special_mapping(vma, vdso_info.dm))
-> +			zap_page_range(vma, vma->vm_start, size);
->  	}
-> -	vdso_pagelist[i] = virt_to_page(vdso_data);
->
-> +	mmap_read_unlock(mm);
->  	return 0;
->  }
-> +
-> +static struct page *find_timens_vvar_page(struct vm_area_struct *vma)
-> +{
-> +	if (likely(vma->vm_mm == current->mm))
-> +		return current->nsproxy->time_ns->vvar_page;
-> +
-> +	/*
-> +	 * VM_PFNMAP | VM_IO protect .fault() handler from being called
-> +	 * through interfaces like /proc/$pid/mem or
-> +	 * process_vm_{readv,writev}() as long as there's no .access()
-> +	 * in special_mapping_vmops.
-> +	 * For more details check_vma_flags() and __access_remote_vm()
-> +	 */
-> +	WARN(1, "vvar_page accessed remotely");
-> +
-> +	return NULL;
-> +}
-> +#else
-> +static struct page *find_timens_vvar_page(struct vm_area_struct *vma)
-> +{
-> +	return NULL;
-> +}
-> +#endif
-> +
-> +static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
-> +			     struct vm_area_struct *vma, struct vm_fault *vmf)
-> +{
-> +	struct page *timens_page = find_timens_vvar_page(vma);
-> +	unsigned long pfn;
-> +
-> +	switch (vmf->pgoff) {
-> +	case VVAR_DATA_PAGE_OFFSET:
-> +		if (timens_page)
-> +			pfn = page_to_pfn(timens_page);
-> +		else
-> +			pfn = sym_to_pfn(vdso_data);
-> +		break;
-> +#ifdef CONFIG_TIME_NS
-> +	case VVAR_TIMENS_PAGE_OFFSET:
-> +		/*
-> +		 * If a task belongs to a time namespace then a namespace
-> +		 * specific VVAR is mapped with the VVAR_DATA_PAGE_OFFSET and
-> +		 * the real VVAR page is mapped with the VVAR_TIMENS_PAGE_OFFSET
-> +		 * offset.
-> +		 * See also the comment near timens_setup_vdso_data().
-> +		 */
-> +		if (!timens_page)
-> +			return VM_FAULT_SIGBUS;
-> +		pfn = sym_to_pfn(vdso_data);
-> +		break;
-> +#endif /* CONFIG_TIME_NS */
-> +	default:
-> +		return VM_FAULT_SIGBUS;
-> +	}
-> +
-> +	return vmf_insert_pfn(vma, vmf->address, pfn);
-> +}
-> +
-> +enum rv_vdso_map {
-> +	RV_VDSO_MAP_VVAR,
-> +	RV_VDSO_MAP_VDSO,
-> +};
-> +
-> +static struct vm_special_mapping rv_vdso_maps[] __ro_after_init = {
-> +	[RV_VDSO_MAP_VVAR] = {
-> +		.name   = "[vvar]",
-> +		.fault = vvar_fault,
-> +	},
-> +	[RV_VDSO_MAP_VDSO] = {
-> +		.name   = "[vdso]",
-> +		.mremap = vdso_mremap,
-> +	},
-> +};
-> +
-> +static int __init vdso_init(void)
-> +{
-> +	vdso_info.dm = &rv_vdso_maps[RV_VDSO_MAP_VVAR];
-> +	vdso_info.cm = &rv_vdso_maps[RV_VDSO_MAP_VDSO];
-> +
-> +	return __vdso_init();
-> +}
->  arch_initcall(vdso_init);
->
-> -int arch_setup_additional_pages(struct linux_binprm *bprm,
-> -	int uses_interp)
-> +static int __setup_additional_pages(struct mm_struct *mm,
-> +				    struct linux_binprm *bprm,
-> +				    int uses_interp)
->  {
-> -	struct mm_struct *mm = current->mm;
-> -	unsigned long vdso_base, vdso_len;
-> -	int ret;
-> +	unsigned long vdso_base, vdso_text_len, vdso_mapping_len;
-> +	void *ret;
->
->  	BUILD_BUG_ON(VVAR_NR_PAGES != __VVAR_PAGES);
->
-> -	vdso_len = (vdso_pages + VVAR_NR_PAGES) << PAGE_SHIFT;
-> +	vdso_text_len = vdso_info.vdso_pages << PAGE_SHIFT;
-> +	/* Be sure to map the data page */
-> +	vdso_mapping_len = vdso_text_len + VVAR_SIZE;
->
-> -	if (mmap_write_lock_killable(mm))
-> -		return -EINTR;
-> -
-> -	vdso_base = get_unmapped_area(NULL, 0, vdso_len, 0, 0);
-> +	vdso_base = get_unmapped_area(NULL, 0, vdso_mapping_len, 0, 0);
->  	if (IS_ERR_VALUE(vdso_base)) {
-> -		ret = vdso_base;
-> -		goto end;
-> +		ret = ERR_PTR(vdso_base);
-> +		goto up_fail;
->  	}
->
-> -	mm->context.vdso = NULL;
-> -	ret = install_special_mapping(mm, vdso_base, VVAR_SIZE,
-> -		(VM_READ | VM_MAYREAD), &vdso_pagelist[vdso_pages]);
-> -	if (unlikely(ret))
-> -		goto end;
-> +	ret = _install_special_mapping(mm, vdso_base, VVAR_SIZE,
-> +		(VM_READ | VM_MAYREAD | VM_PFNMAP), vdso_info.dm);
-> +	if (IS_ERR(ret))
-> +		goto up_fail;
->
-> +	vdso_base += VVAR_SIZE;
-> +	mm->context.vdso = (void *)vdso_base;
->  	ret =
-> -	   install_special_mapping(mm, vdso_base + VVAR_SIZE,
-> -		vdso_pages << PAGE_SHIFT,
-> +	   _install_special_mapping(mm, vdso_base, vdso_text_len,
->  		(VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC),
-> -		vdso_pagelist);
-> +		vdso_info.cm);
->
-> -	if (unlikely(ret))
-> -		goto end;
-> +	if (IS_ERR(ret))
-> +		goto up_fail;
->
-> -	/*
-> -	 * Put vDSO base into mm struct. We need to do this before calling
-> -	 * install_special_mapping or the perf counter mmap tracking code
-> -	 * will fail to recognise it as a vDSO (since arch_vma_name fails).
-> -	 */
-> -	mm->context.vdso = (void *)vdso_base + VVAR_SIZE;
-> +	return 0;
->
-> -end:
-> -	mmap_write_unlock(mm);
-> -	return ret;
-> +up_fail:
-> +	mm->context.vdso = NULL;
-> +	return PTR_ERR(ret);
->  }
->
-> -const char *arch_vma_name(struct vm_area_struct *vma)
-> +int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
->  {
-> -	if (vma->vm_mm && (vma->vm_start == (long)vma->vm_mm->context.vdso))
-> -		return "[vdso]";
-> -	if (vma->vm_mm && (vma->vm_start ==
-> -			   (long)vma->vm_mm->context.vdso - VVAR_SIZE))
-> -		return "[vdso_data]";
-> -	return NULL;
-> +	struct mm_struct *mm = current->mm;
-> +	int ret;
-> +
-> +	if (mmap_write_lock_killable(mm))
-> +		return -EINTR;
-> +
-> +	ret = __setup_additional_pages(mm, bprm, uses_interp);
-> +	mmap_write_unlock(mm);
-> +
-> +	return ret;
->  }
-> diff --git a/arch/riscv/kernel/vdso/vdso.lds.S b/arch/riscv/kernel/vdso/vdso.lds.S
-> index e9111f700af0..01d94aae5bf5 100644
-> --- a/arch/riscv/kernel/vdso/vdso.lds.S
-> +++ b/arch/riscv/kernel/vdso/vdso.lds.S
-> @@ -10,6 +10,9 @@ OUTPUT_ARCH(riscv)
->  SECTIONS
->  {
->  	PROVIDE(_vdso_data = . - __VVAR_PAGES * PAGE_SIZE);
-> +#ifdef CONFIG_TIME_NS
-> +	PROVIDE(_timens_data = _vdso_data + PAGE_SIZE);
-> +#endif
->  	. = SIZEOF_HEADERS;
->
->  	.hash		: { *(.hash) }			:text
->
+> -----Original Message-----
+> From: Lucas Stach <l.stach@pengutronix.de>
+> Sent: Monday, September 27, 2021 4:33 PM
+> To: Richard Zhu <hongxing.zhu@nxp.com>; kishon@ti.com; vkoul@kernel.org;
+> robh@kernel.org; galak@kernel.crashing.org; shawnguo@kernel.org
+> Cc: linux-phy@lists.infradead.org; devicetree@vger.kernel.org;
+> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> kernel@pengutronix.de; dl-linux-imx <linux-imx@nxp.com>
+> Subject: Re: [PATCH v2 2/4] dt-bindings: phy: add imx8 pcie phy driver su=
+pport
+>=20
+> Am Sonntag, dem 26.09.2021 um 15:39 +0800 schrieb Richard Zhu:
+> > Add dt-binding for the standalone i.MX8 PCIe PHY driver.
+> >
+> > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > ---
+> >  .../bindings/phy/fsl,imx8-pcie-phy.yaml       | 67
+> +++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml
+> > b/Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml
+> > new file mode 100644
+> > index 000000000000..fd08897fef82
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml
+> > @@ -0,0 +1,67 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id:
+> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
+i
+> >
+> +cetree.org%2Fschemas%2Fphy%2Ffsl%2Cimx8-pcie-phy.yaml%23&amp;dat
+> a=3D04%
+> >
+> +7C01%7Chongxing.zhu%40nxp.com%7C7c5f7203447a4c259d9f08d981915ef
+> 3%7C68
+> >
+> +6ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637683283637916778%
+> 7CUnknown
+> >
+> +%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha
+> WwiLC
+> >
+> +JXVCI6Mn0%3D%7C1000&amp;sdata=3Dm1S7Si0nL4zveL76S%2FvpKbFFrWhJa
+> mFNgcVld
+> > +Rxx82I%3D&amp;reserved=3D0
+> > +$schema:
+> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
+i
+> >
+> +cetree.org%2Fmeta-schemas%2Fcore.yaml%23&amp;data=3D04%7C01%7Cho
+> ngxing.
+> >
+> +zhu%40nxp.com%7C7c5f7203447a4c259d9f08d981915ef3%7C686ea1d3bc
+> 2b4c6fa9
+> >
+> +2cd99c5c301635%7C0%7C0%7C637683283637916778%7CUnknown%7CT
+> WFpbGZsb3d8e
+> >
+> +yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
+> D%7C1
+> >
+> +000&amp;sdata=3DS2uWTI603YkF68zqySbkcK32XaPEwU4%2BHuntwR%2Bkx7
+> g%3D&amp;
+> > +reserved=3D0
+> > +
+> > +title: Freescale i.MX8 SoC series PCIe PHY Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Richard Zhu <hongxing.zhu@nxp.com>
+> > +
+> > +properties:
+> > +  "#phy-cells":
+> > +    const: 0
+> > +
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,imx8mm-pcie-phy
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: PHY module clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: phy
+>=20
+> The clock name should describe what it is used for in the hardware block
+> described by the DT node. So I would think this should be called "ref" or
+> something like this, as I believe this clock is really only used as the r=
+eference
+> clock and can be disabled when the refclock is supplied via the pad, righ=
+t?
+>=20
+[Richard Zhu] That's right. "ref" is better. Thanks.
+
+> > +
+> > +  fsl,refclk-pad-mode:
+> > +    description: |
+> > +      Specifies the mode of the refclk pad used. It can be NO_USED(PHY
+> > +      refclock is derived from SoC internal source), INPUT(PHY refcloc=
+k
+> > +      is provided externally via the refclk pad) or OUTPUT(PHY refcloc=
+k
+> > +      is derived from SoC internal source and provided on the refclk p=
+ad).
+> > +      Refer include/dt-bindings/phy/phy-imx8-pcie.h for the constants
+> > +      to be used.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [ 0, 1, 2 ]
+> > +
+> > +required:
+> > +  - "#phy-cells"
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - fsl,refclk-pad-mode
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/imx8mm-clock.h>
+> > +
+> > +    pcie_phy: pcie-phy@32f00000 {
+> > +            compatible =3D "fsl,imx8mm-pcie-phy";
+> > +            reg =3D <0x32f00000 0x10000>;
+> > +            clocks =3D <&clk IMX8MM_CLK_PCIE1_PHY>;
+> > +            clock-names =3D "phy";
+> > +            assigned-clocks =3D <&clk IMX8MM_CLK_PCIE1_PHY>;
+> > +            assigned-clock-rates =3D <100000000>;
+> > +            assigned-clock-parents =3D <&clk
+> IMX8MM_SYS_PLL2_100M>;
+> > +            fsl,refclk-pad-mode =3D <1>;
+>=20
+> Include the new header added in patch 1 and use the enum.
+[Richard Zhu] Got that, would changed in next version. Thanks.
+>=20
+> > +            #phy-cells =3D <0>;
+> > +    };
+> > +...
+>=20
+
