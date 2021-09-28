@@ -2,145 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914D641B9D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5439641B9DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243029AbhI1WGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:06:46 -0400
-Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:63904
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S243034AbhI1WHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:07:31 -0400
+Received: from mail-oln040093003009.outbound.protection.outlook.com ([40.93.3.9]:13581
+        "EHLO na01-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242929AbhI1WGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:06:45 -0400
+        id S242929AbhI1WH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:07:29 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WRUzzhdefmJ6h3g6TIr7vSBu3tgHVLduDzIpiSGOzHan9q6/GBGZ+RKLVLLkp+qhj6D8E5h0dIBNFdpf3Jm0EqwWPCAmfyO4Et/Zi2cYefkReCQLIqfMS1fCZXgNQpWVRdIj3Rbw4p+6wG7wR8OYsq822G9xIb6oYsB/y66201hU3c7vCg87sZ65b2BecbRP9dxWU/4LTpD0fl9vDQyHdWCsLaJxqg2+PIM8QTugN8wt5CvV7joH7xuGv1vGTkcswnf2Mfw42httFtwgcP69Q5aj+l77TT06ofJGWAzbmThzhwpKw5XuWKnN2WHYTW+hkrjUz+Myb5Ii0II1NRBiaA==
+ b=V3m8R3iDnqkQrfrw/EWwT4tOpnywLuAUalvlWkndouMRzo3IG9s8C5s4RI8rWCH/2MItskQ3+sDUsysUynJVPBlj9AVDxlrTYs+/qAjCBFJBlbhqCN2JhAATnbC/cfExPKOccKuUvtmoMkW46w8zU/I9RRw24l3oqlvE1KAQo1ggLtxr/Lcvlxsx0HP4wALZKznLgzLxHaCXzRUX3Z9mBmFjqZVgBKHpG1dMiArgbc9g52qfINMfl9i+r1HcGbJvDlsco95KwOz1zRF15HqXJVwW0QOZosGYGHHS/f6vLghwABGcRWR4tvQVYgvtLMMM6LR/6yhq+CPzzW8RCUAzEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=Qe5kxN0ddAG7mPItxuJHjsxxxyi+e/yvMrh0jCYFVH0=;
- b=mq8SV5SwxizebaiuKKDLEeP8XekjDCKr5/VbnQcTyQZoSV+rSL+KJGE/Uj/SBZntl9aI84z936/XL1IX0ucXY4aAaQFoocvmI58Ewp4zkAvYZboj3pI9vkMMo3l2mt4xwK3VDQNL8a9Aah8A8DPKFXPQhjLZg5hBh706IzvXkk3vpyYbvuDnxrFckGuquwOK6QQYZV5IeOmZZ/Rb9zSBG5d5ABBBKUtNeyZaymnEfxMzSL06U/le4cUdD9qbvOrUr7sRiGvhmCv19wX9B+NMuX7ZAgq78BcREFTbOEYp8rr9HkTZtT8WTKuVfqF27kTZN9PqzEedKcIsBgC868p9Eg==
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Et4/L1TsKYipU6A0k17Q33kZadlLm27ZZAADyMfJLfA=;
+ b=WuDJOyaMaGUzMNsunlgCyAIguh1I1kIsB+DJ/xiooFtT7oTN870Ix2MVGCkSfalTulXXyqJOjPPgLYgWXVbEx/uwfywrUXPFC4q9/QZ/EzRInlnlbRt/iXHqPDArcJvWPg0hqhAZiO9icdt0z9zRlpqmKsv+WizhOzXvRdc7tVmVgVvVxpJt93PqgnWPbXc10qBpQ9RIeYF6tOT9uj4fZkEHS4cxV7MgY73QfixCVZ1usoqBBRzAwv/aulmK8ccSdHqPqPRJFInyahP5LEzufQ0VIk2jM0TZHq8Hd2maN5EB+jZYMMeo/dmwNObJJeD2QFjoB1bhIVHb6nLqU88/Zg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qe5kxN0ddAG7mPItxuJHjsxxxyi+e/yvMrh0jCYFVH0=;
- b=Pxlsptf+DlMyCcU6pvK6KDdace9IB2bgH53hk5FHMLMQxFKfyglGMjqlkZOLQ4mSNtKNDjpYCId45G3Dbq89iPIxKGzr4ARhTcqIJYhGLwuzg/eiFK7f2dewZAS/07Moa2g9MXaHKkW0z0rDNRW7IPLGLT+QAuJeP0h8C7olmnrjF92S2XcNes5FMjMfm8ORP97OCmWs1Q+s1dk6UrT8iKy7OScqWg5bhCsTykKhrpLHMmQ6K2n26xnsp2/Lg6PTPwZw2kQ7xgd/D2kMcofxgTeA+NGXd1N1ppcYjsQSrdyhPT/Na0Jr0UhdWmFVs58I5pLb2n2NL0D6n+grt+JOWA==
-Authentication-Results: deltatee.com; dkim=none (message not signed)
- header.d=none;deltatee.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
- DM6PR12MB5550.namprd12.prod.outlook.com (2603:10b6:5:1b6::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.14; Tue, 28 Sep 2021 22:05:03 +0000
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::3817:44ce:52ad:3c0b]) by DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::3817:44ce:52ad:3c0b%5]) with mapi id 15.20.4544.022; Tue, 28 Sep 2021
- 22:05:03 +0000
-Date:   Tue, 28 Sep 2021 19:05:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 4/20] PCI/P2PDMA: introduce helpers for dma_map_sg
- implementations
-Message-ID: <20210928220502.GA1738588@nvidia.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-5-logang@deltatee.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916234100.122368-5-logang@deltatee.com>
-X-ClientProxiedBy: CH2PR12CA0007.namprd12.prod.outlook.com
- (2603:10b6:610:57::17) To DM6PR12MB5520.namprd12.prod.outlook.com
- (2603:10b6:5:208::9)
+ bh=Et4/L1TsKYipU6A0k17Q33kZadlLm27ZZAADyMfJLfA=;
+ b=QuVkT5p5qh7lANaTdo8vH9YXf2INOXSlsW/NaK+bnRJfWfp/dkPcvQ44LwklmfLqBLLXj8/liS+WoNt9uJ876+0bzh4sSauadn00fKQ7ZlUWY7VgMmTjbXBsy8Uo7gOMmOBWdyaaBEwaeBHI+LiMlPdQ9XoJXo8X7kvFO8j70a0=
+Received: from BN8PR21MB1284.namprd21.prod.outlook.com (2603:10b6:408:a2::22)
+ by BN6PR21MB2091.namprd21.prod.outlook.com (2603:10b6:404:bc::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.3; Tue, 28 Sep
+ 2021 22:05:42 +0000
+Received: from BN8PR21MB1284.namprd21.prod.outlook.com
+ ([fe80::f8ac:5395:a706:f38f]) by BN8PR21MB1284.namprd21.prod.outlook.com
+ ([fe80::f8ac:5395:a706:f38f%3]) with mapi id 15.20.4566.009; Tue, 28 Sep 2021
+ 22:05:42 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: RE: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited
+ incoming packets
+Thread-Topic: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited
+ incoming packets
+Thread-Index: AQHXtIcuKpq91BhekkSiLD0Hct+0mau5/I/w
+Date:   Tue, 28 Sep 2021 22:05:42 +0000
+Message-ID: <BN8PR21MB128430486E2F07EA71A7FCBDCAA89@BN8PR21MB1284.namprd21.prod.outlook.com>
+References: <20210928163732.5908-1-parri.andrea@gmail.com>
+In-Reply-To: <20210928163732.5908-1-parri.andrea@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0ecfc4cb-be64-458c-937b-af3fb0c39c05;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-09-28T21:50:09Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8ad008db-a460-4cfb-00b0-08d982cc1d18
+x-ms-traffictypediagnostic: BN6PR21MB2091:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN6PR21MB20914CAC8A3E4C4A0C9F4C2DCAA89@BN6PR21MB2091.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ihP7r7bCgf27fWYiN/zYZIReoJ7eHvdqM+JSCSK/tB3Rw4LQZPaSdD5qkJ8pXU991bHNxH1lXQpsppn+mg2JxPaTPt3IfUgAjMeeLYVaN3d8jXDn3DiM6yHmbX9DGthvuOcFOlK+X9Cn1DaeDPUA5wxBM5doBtQw4H6pFAU1fMhDZoc6kME44ukpHNn/BLBezPsGr06UVCQ3pT1qU4nEe+dtD3y5L/52qzBDdsxYF/ciXR4lwvq4S272bAsNMhUcfEhEeCPhHrfpbu3sAFPU1oK+k+4JC0kJPG/HPUnZCAv2YdT4exafbslfxwACkNS4Oapx0bg7vh7Nkty4KRcqtufUjYDscARd5DfLvdZrqdrd6UoUGb9XgaBaEIPchd7Eq5iZ4y8Lj4SFRxLRp+C8bncfHud8JQLwQFcS8yVwJTOHX+twgP7nfMphRFfEL4Z7QGxsq+RvYWbav/IWHPDYforskaQKOvY9rEs1zLr4EfYXObOeUcQJxB5Xa2TYJPwSgFy4zDZD0gqc/9eUV745tkBZFOfJwczSLGCtTSN9Wq1PjpqfMCBAuhd2zBJiL+NQVOtOhoOvIWoiKW3dIfWd2MW8Bhrr7SXvD2UGvxKZ6yonz0/W+8JI5XB1EpuZXqyxog8vyqJJydWSi0CMpGeDsF2RUQsQ1VH71XWqsgHJ3Ca/8lBbUYxgg7XqZNEj3B2ITfCISvo4CRY2d2sFDJTDig==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR21MB1284.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(38100700002)(122000001)(2906002)(316002)(8676002)(66946007)(5660300002)(33656002)(53546011)(6506007)(86362001)(76116006)(54906003)(110136005)(8936002)(66446008)(64756008)(66476007)(4326008)(7696005)(66556008)(82950400001)(9686003)(186003)(508600001)(82960400001)(83380400001)(26005)(10290500003)(38070700005)(52536014)(8990500004)(55016002)(107886003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3RJiP8sMSBO7MzVEsS6pl980oOVAo7R2h95XxlC+oHTqlwP+QUssoMH5VWVE?=
+ =?us-ascii?Q?R03YfO4cHCQAjvkyBZ3+Y+gEeTdbT2ppe6NHWYQrVIVzCdigiArjER9m0B7k?=
+ =?us-ascii?Q?/29tpNEOpTxOTD8YeDPpIkBfxymvrZbm5wr5PJeW3Pxc5QbMBx+pDQF9t6h4?=
+ =?us-ascii?Q?me/wLC+2IXlJ9fGSTCJSNRMIvKN3HQ2/2KO/nOj28FNM5bsYoWRr+1V6BVjp?=
+ =?us-ascii?Q?fM9rY7Jl2m7i+SWOYhN1o/8yvtxrT1EZB9YyndPjtKBW72528n4d2Y9aK4lt?=
+ =?us-ascii?Q?ld1qvh/qvHeYQVrpVp008PCA5/WaznVGb8vP2Fvzw9b9MNLDoIiLkrbhLFpq?=
+ =?us-ascii?Q?sqLaPEtBRraA8TCPR/wyCGKkIIBguZhFFEGtdRttuC08KLfuMmeQEAAnM5Ab?=
+ =?us-ascii?Q?MpeYZ91vtueFPY8KGgM8NZQJL0j8+KnXi+ZvvFUtmMeiYn7ENUymG8fErBfA?=
+ =?us-ascii?Q?fjUOXyDfYoaXRXIwurfCWd6haGVXJXFQITDv2UXlB2Cd/GHxU5tVfbT8rH0W?=
+ =?us-ascii?Q?bZbFBBN7VzyUprZxJkCYlDYbRH9kwNy0+Rre6o+L27WX/UtiazluGhWfBbhg?=
+ =?us-ascii?Q?+ivzJTl6W+5VbnBkyeb+C4uN5fIVuLWcVFpAguzY0i4KA3KdZ6FJviU7wYdL?=
+ =?us-ascii?Q?SXSdXJ5HS0ZlYqE5z6aMYXUXk9Oac4eoVhgP7lj9g6Vbh3nu7pyN/3aXCEcj?=
+ =?us-ascii?Q?X4pNzrtcLx+afRc0hxvBdNRLfVGHQ3cNr9Pfk6WIt4vvwbUaLRjnv4hOCocJ?=
+ =?us-ascii?Q?947dUlA1fYsxd57KutLHbaUgT1Zdl8IB1ZCBHgdmxRvYE7eA/+lHmq5AD1aC?=
+ =?us-ascii?Q?QYluFcFvkeVF+fCruV9qdMr6ijPCQlUxrvxFdeKK5wAT2mudtyEMOGFK4Vr2?=
+ =?us-ascii?Q?P690S/VWTiv1X9p2qu3Ru0UiDz1i5ID1ChCEqHyYgJX6xiYZsOr6c2yclQ5m?=
+ =?us-ascii?Q?5WzG+DSO11cvJezc6l5TW1PqiZWv/lKU6UBaMJTtVurnChtxFf4LLMtZFp9+?=
+ =?us-ascii?Q?RxdgNpGtX+Rd5ya9Ns5mArEy5UpONDKV5ZUt90Zrp4fSBxmDGaf6lqU+Hoyv?=
+ =?us-ascii?Q?6yuH3kA+VKe5f+0GAS5CWeHUqjkgt7s5PbqoUGz5yu5fJ1/4Yd6VpMaYfRjr?=
+ =?us-ascii?Q?wPAKUCGVOnxf+wqA8v0iRutkLarbfJ24zBjplYUl3oNJkKw8+OHTAS7NHVOw?=
+ =?us-ascii?Q?yAZWthiie4XoxQSnYD3CVTQf9SpNT6hkPpgQdEqwHHIy0PiUt5zOlpis9lp8?=
+ =?us-ascii?Q?lJ340TDifzdtk1agHf0IAi59xgDINyOhsJ3RxgMA0RlUix6jn/D2VpnxwH5b?=
+ =?us-ascii?Q?BPgZzTTAPkH1Wl1hpYfnjBwF?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR12CA0007.namprd12.prod.outlook.com (2603:10b6:610:57::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Tue, 28 Sep 2021 22:05:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVLDi-007Ice-4B; Tue, 28 Sep 2021 19:05:02 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d1431c98-a1fb-40f7-c25b-08d982cc05ba
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5550:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB555067D3D9625CE21F528D0DC2A89@DM6PR12MB5550.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z/+59L6XbL1hKX79x54TMl+VW5TtLSP0rhJlfYGz9uibMTqstalowo3f7tJL7X7cHzTY9GsTKbOiQWdF8HvueBRAULoBkww4NNuwxogzgSBQwl22aCqKdgL5YXeQnu5dh0pdtpcpA3F68EqDtlKVHNb/Haz+nUwvGXeMEme+AEFBwnfrsHpKs91R8a2/zduf8Vgq4YxCjhhQTO548VEUGf08XfgrK0KpV3pt53kdr04SHhvxI7kANemBsLY4+p9yimGD7DUfzOPD6CBkO2YWi/6bD1qtxAtTKML6062AdENpGMiRPwCE33LN//UAjHDTu0I8W3DFozFQ+qVv0xU+Tg9Jve8mjET3x8w6U5sHV+Tkf0pw6IakhbY2mGQKIu2zmkwEglxYPR+9CytQ3/ArdwSQ8/3RLs07A4noOxk2PJ29YYS7WtTrXcG7epfGHVhGtoGxDhTDYTsJlxMqEzuhyDojP+rDrxcD73WPDZMdqaZKhpgjYwTJoGDdz7EGDBL2cWOXtftLV4NJE1szabmxbt9z6c7zfy/dYuxWvl8IhBuSch0OvOaoNIb90SfiVb2sHefdZHUjbP+AUW4TmAlw71tfVnqTsB/WP2/C/secvr5hBeKs/LQbfIlgmAFxVR9YhfKChu2lboDrgommteqY9Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(316002)(2906002)(7416002)(1076003)(83380400001)(9786002)(26005)(66556008)(66476007)(54906003)(36756003)(6916009)(186003)(33656002)(8936002)(9746002)(66946007)(426003)(508600001)(38100700002)(4326008)(2616005)(8676002)(86362001)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MbeOzvmyZtyGuYqIg8gFYQZVCLgxMhHjTbX6Cnf1P9tfwz7Suor1pImP8JPj?=
- =?us-ascii?Q?caO8q1PgVCOahQCCszk+zupX80XmzidTgq5okzLL73ltgtcSFMy5vAa4CEVn?=
- =?us-ascii?Q?TOQ4M5oEnT4EYh+gy5MQriwS/vct5rvCGogsj4kWW8zIh5puafcFPu+6pAB9?=
- =?us-ascii?Q?V7OllzpJtrWh8hp2HgHpNVhci6xk0OiPGuPtA0oNGgr0++xtZtBtrmNunmLO?=
- =?us-ascii?Q?MucA9WuPEaFD/hw7cpAfzMbkpw7eYQE97keo9C5hiewxKvPwkUtW0DIg3c68?=
- =?us-ascii?Q?iOzevMIgS2nCLU6KDhvgZ55iR09fqDN3kwYevBqbsPS2h2VD3aKA1i0SaagF?=
- =?us-ascii?Q?SrIwjD7XKqdtiiLN4B/9msRh/JYdOTTFVoft0g+D2ufyo+Gg7EWShXnJlQB0?=
- =?us-ascii?Q?3sJb1n/DBr3th7oz2cKMW85m6j2mDCWGPptgzmltkW02madh4fmGoJm9DBiA?=
- =?us-ascii?Q?sWAQrv942SbRP3h6RdameJXH6vUaHg48/S1twHJzMpuhD2z6gl/unIVx9yXu?=
- =?us-ascii?Q?sBVVSkjcD2NkVmzwBRgXkk+GV2OnenDZgwOv/JFLhioHDbrXxzOjcsM0wmgz?=
- =?us-ascii?Q?NEmRcIqZ2P0Ng/Ryp2MBUVbmj40rJC1SQbTPyDLjqO2GHTgeqk926by5iLdT?=
- =?us-ascii?Q?slZdR+entC+eQs/umXo3i/pFV9n0zgr6syMQ0M8s0f0jhympu3tZNU+F3YJ7?=
- =?us-ascii?Q?Zu1S7YDpNMVmUbPj4clJcnnPL733cw0OG+ptUj88XFX/fHY3Q15O7HNh4mG5?=
- =?us-ascii?Q?2wSTo+5XqDG9QRxxlGE/ypIcw1Kk4D1komdsBV4DMtFMxMl706iHRd/UAPKS?=
- =?us-ascii?Q?/TH0F2SbPzNo+6sVYd2NXBZ8XafDICmctv9X1gfHLpcFOkNVh+CROMVREZEx?=
- =?us-ascii?Q?mgRij3Tf9d4wuU11eV3jPowrANntpnds0fj4WCe0Bf6Y+rMADOngMmBLZwkZ?=
- =?us-ascii?Q?43hjPmt8O3zVgKw/hGidiRfpjqKAfHsaKB77sksgx6WTzI7fHRpYd04j0nmp?=
- =?us-ascii?Q?KucamxJj8AEGbCuVwOou9r/zEwMhZS1rb9GDOYlVjZY9eCFvZHF9Llx4YRTP?=
- =?us-ascii?Q?sCTnAgrS8OUlTT0uTHZ/Ek/mM6r/XBnrBAusOskl0wjtoR6WpLOxt6CcaZTV?=
- =?us-ascii?Q?IsHvuMXf2vt3vy6RUO9pqhcnvZzw0qKwK35sUyXFdjzruV3E+cEG2Jcph/I5?=
- =?us-ascii?Q?UoZElAKOQacaP7S27rdxv0zkVOUKY4d08rJN8Y5V7LCJhRyTVEAvNtg1EFzO?=
- =?us-ascii?Q?YUi4BnlgpAxnLnWHRPWXag72kSxRKl1A+EVY+WVvZu86jG2MRTepe+gD9Cto?=
- =?us-ascii?Q?PfCZfhJoc6EB1bM8xJaBiMbP?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1431c98-a1fb-40f7-c25b-08d982cc05ba
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 22:05:03.4026
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR21MB1284.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ad008db-a460-4cfb-00b0-08d982cc1d18
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 22:05:42.0798
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uzyvAr62RCkiS3PB4f9w7ovyyuBGQUV5TbN1p4rjkcrxQooUFwxjGG3tU9k4b3o9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5550
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cyptTYi57Xko8MCU4D8xy63Cb4gML22qFhaTewup32TEvVxVkYs6LA8BquV2IrFIMZBrRZIE0KDXqL+NiRvRSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR21MB2091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:40:44PM -0600, Logan Gunthorpe wrote:
 
-> +enum pci_p2pdma_map_type
-> +pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state, struct device *dev,
-> +		       struct scatterlist *sg)
-> +{
-> +	if (state->pgmap != sg_page(sg)->pgmap) {
-> +		state->pgmap = sg_page(sg)->pgmap;
 
-This has built into it an assumption that every page in the sg element
-has the same pgmap, but AFAIK nothing enforces this rule? There is no
-requirement that the HW has pfn gaps between the pgmaps linux decides
-to create over it.
+> -----Original Message-----
+> From: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Sent: Tuesday, September 28, 2021 12:38 PM
+> To: linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
+> scsi@vger.kernel.org
+> Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>;
+> Wei Liu <wei.liu@kernel.org>; James E . J . Bottomley
+> <jejb@linux.ibm.com>; Martin K . Petersen <martin.petersen@oracle.com>;
+> Michael Kelley <mikelley@microsoft.com>; Andrea Parri (Microsoft)
+> <parri.andrea@gmail.com>; Dexuan Cui <decui@microsoft.com>
+> Subject: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited
+> incoming packets
+>=20
+> The validation on the length of incoming packets performed in
+> storvsc_on_channel_callback() does not apply to "unsolicited"
+> packets with ID of 0 sent by Hyper-V.  Adjust the validation
+> by handling such unsolicited packets separately.
+>=20
+> Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming
+> packet in storvsc_on_channel_callback()")
+> Reported-by: Dexuan Cui <decui@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> ---
+> The (new) bound, VSTOR_MIN_UNSOL_PKT_SIZE, was "empirically
+> derived" based on testing and code auditing.  This explains
+> the RFC tag...
+>=20
+>  drivers/scsi/storvsc_drv.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+> index ebbbc1299c625..a9bbcbbfb54ee 100644
+> --- a/drivers/scsi/storvsc_drv.c
+> +++ b/drivers/scsi/storvsc_drv.c
+> @@ -292,6 +292,9 @@ struct vmstorage_protocol_version {
+>  #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
+>  #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
+>=20
+> +/* Lower bound on the size of unsolicited packets with ID of 0 */
+> +#define VSTOR_MIN_UNSOL_PKT_SIZE		48
+> +
+>  struct vstor_packet {
+>  	/* Requested operation type */
+>  	enum vstor_packet_operation operation;
+> @@ -1285,11 +1288,13 @@ static void storvsc_on_channel_callback(void
+> *context)
+>  	foreach_vmbus_pkt(desc, channel) {
+>  		struct vstor_packet *packet =3D hv_pkt_data(desc);
+>  		struct storvsc_cmd_request *request =3D NULL;
+> +		u32 pktlen =3D hv_pkt_datalen(desc);
+>  		u64 rqst_id =3D desc->trans_id;
+>=20
+> -		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
+> +		/* Unsolicited packets with ID of 0 are validated separately
+> below */
+> +		if (rqst_id !=3D 0 && pktlen < sizeof(struct vstor_packet) -
+>  				stor_device->vmscsi_size_delta) {
+> -			dev_err(&device->device, "Invalid packet len\n");
+> +			dev_err(&device->device, "Invalid packet: length=3D%u\n",
+> pktlen);
+>  			continue;
+>  		}
+>=20
+> @@ -1298,8 +1303,14 @@ static void storvsc_on_channel_callback(void
+> *context)
+>  		} else if (rqst_id =3D=3D VMBUS_RQST_RESET) {
+>  			request =3D &stor_device->reset_request;
+>  		} else {
+> -			/* Hyper-V can send an unsolicited message with ID of 0
+> */
+>  			if (rqst_id =3D=3D 0) {
+> +				if (pktlen < VSTOR_MIN_UNSOL_PKT_SIZE) {
+> +					dev_err(&device->device,
+> +						"Invalid packet with ID of 0:
+> length=3D%u\n",
+> +						pktlen);
+> +					continue;
+> +				}
+> +
+>  				/*
+>  				 * storvsc_on_receive() looks at the vstor_packet
+> in the message
+>  				 * from the ring buffer.  If the operation in the
+> vstor_packet is
 
-At least sg_alloc_append_table_from_pages() and probably something in
-the block world should be updated to not combine struct pages with
-different pgmaps, and this should be documented in scatterlist.*
-someplace.
+The patch looks good. But for readability, I'd suggested put the length=20
+checks together like this:
 
-Jason
+	u32 minlen =3D rqst_id ? sizeof(struct vstor_packet) -
+		stor_device->vmscsi_size_delta : VSTOR_MIN_UNSOL_PKT_SIZE;
+
+	if (pktlen < minlen) {
+		dev_err(&device->device,
+			   "Invalid pkt: id=3D%llu, len=3D%u, minlen=3D%u\n",
+			   rqst_id, pktlen, minlen);
+		continue;
+	}
+
+Thanks.
+
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+
+
