@@ -2,245 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A8241B17B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D420A41B181
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241161AbhI1OCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
+        id S241026AbhI1OD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240898AbhI1OCp (ORCPT
+        with ESMTP id S240898AbhI1OD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:02:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BDBC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=ZGKJbIQb/oSd6eIGdR1+b3C/vnQiuZe8y66fqeUzRIk=; b=boDq/QONrhvi9N7rdCEcrwGnzY
-        9TR0lEcuIxCa2orVcE0Ws8pMcRfTKfls4O//YcbTw6Y8AeQ6jT6s3QbuiFPGSpb+sFx8XTiv4SJ6q
-        MTk02RHah/tch+Rwvh54Vq/FbMthYRDJ1O0ByaPtHbUEbI5bLoLOjZE6d7a8IAwnVGI3UEZLTCz6h
-        r2oQFrejRK27v6Bj6zRTBb899PpM1N/TqiUxgE1k9n9xuTvxe873f3dsRIEjSmKKvSXj4nGPnnR58
-        elC5AA5U0rSxVQwdSkEBORaAw8eTyt269ICWQIly6btQubSArpvRXvS+5DM3iWcxKOwuiwJqYR2ni
-        pP8ksZTg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVDfE-007TNG-7U; Tue, 28 Sep 2021 14:00:56 +0000
-Date:   Tue, 28 Sep 2021 07:00:56 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Wang, Zhi A" <zhi.a.wang@intel.com>, Jessica Yu <jeyu@kernel.org>,
-        Lucas De Marchi <lucas.demarchi@intel.com>
-Cc:     Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Nikula, Jani" <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <YVMgGKk1K4gO8ls6@bombadil.infradead.org>
-References: <20210803143058.GA1721383@nvidia.com>
- <20210804052606.GG13928@zhen-hp.sh.intel.com>
- <20210816173458.GA9183@lst.de>
- <20210817010851.GW13928@zhen-hp.sh.intel.com>
- <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <20210820141724.GA29034@lst.de>
- <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
- <20210826061219.GD9942@zhen-hp.sh.intel.com>
- <55c11f22-99e5-6109-3be3-a04b06b3336e@intel.com>
+        Tue, 28 Sep 2021 10:03:57 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A469C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:02:18 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id f133so31953430yba.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rqQtIk/6RZp+oHtGBLpGghq9zf27UXMh7gjDqhWItOo=;
+        b=HqVIPg4A0tsJolcMNt2D5+uuLjf75KaCHkCr07E3YcgufntBlKo1+07kC0z/0YS/F4
+         hah88xjBDePVCPFuTVClSxTuhPhVOVJdfG9Ox9nFi/g30cuFRDugQs4+5quByhOu8mow
+         UJrJ+tq9Z53bY/YF0KE07hIAZEreZT4B8DeMV+47OkiBGIGgKWFGsGVYLwL8W/ApAyF3
+         HshGlV6RW50oaacQwrEBusuHbWpgqXPC1MpRznn/lGkNGBaHqK2kYc0LAaZWEJ8QsQm5
+         Y8TmtHB0wGWb6pOb6dpClyudlcfy45MAHy1UyIAIqHPT7xFEUv/NEEklgSv56AWrzMdy
+         PUoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rqQtIk/6RZp+oHtGBLpGghq9zf27UXMh7gjDqhWItOo=;
+        b=byA/HpVJR1/nGtNPw7YysAHrzVhK+7NwnC6+8o0ni5UcHUWovSWAreHFtRTLFXlBCy
+         AfqR8hmie/8HjxxZDdQXw+5SbAZ1u1wwU/aO+F5yQKpoIB/UsuZHY6v0rKIQWYlG3AuI
+         vByE2f0c6SM7QZuNCjjedFokgbj7dn52T/5Zza3Fp6dNM2+rDHAeNE/hugVPN7LeFvd4
+         SywOCBTP2LHlgwXeYsjbKmjUXapdGmUY7bDuCGDEKqCvBDK9A2T+Px5Za8h8WKDBSEqD
+         t3NnIju65iXwI8lZhMgWqxbA/t5IjsaUZgAJej74KuPrE81HvZ9xpK2ts2al0ZTJWnNu
+         bnXQ==
+X-Gm-Message-State: AOAM532yXBVNtHZCzTXS/fTMBVS9K+sNnFlI7tHV40zI1onENLfgMNr7
+        tPWBlRcnchWgq2E5T4GCYiGog700kDy0ua6BrhyJUA==
+X-Google-Smtp-Source: ABdhPJxcWNapNwbSMYpNuoLOZ/mFxsLh85WxLn5ZgLcnaaDmX2gfm0tqgls9grUv0gtjs4QFMD1DwqEBvGlihgmmXlo=
+X-Received: by 2002:a25:188b:: with SMTP id 133mr6630188yby.80.1632837737044;
+ Tue, 28 Sep 2021 07:02:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <55c11f22-99e5-6109-3be3-a04b06b3336e@intel.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20210927121811.940899-1-arnd@kernel.org>
+In-Reply-To: <20210927121811.940899-1-arnd@kernel.org>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Tue, 28 Sep 2021 17:02:06 +0300
+Message-ID: <CAOtvUMfNYkfKw-Vji7uVWXO=CbwGLj6=+awCKif5=cPCK1P-cQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: ccree - avoid out-of-range warnings from clang
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 07:41:00AM +0000, Wang, Zhi A wrote:
-> Hey guys:
-> 
-> After some investigation, I found the root cause this problem ("i915" 
-> module loading will be stuck with Christoph's refactor patches), which 
-> can be reproduced by building both i915 and kvmgt as kernel module and 
-> the loading i915.
+Hi,
 
-Thanks for looking into this!
+Thank you Arnd.
 
-> The root cause is: in Linux kernel loading, before a kernel module 
-> loading is finished, its symbols can not be reached by other module when 
-> resolving the symbols (even they can be found in /proc/kallsyms). 
-> Because the status of the kernel module is MODULE_STATE_COMING and 
-> resolve_symbol() from another kernel module will check this and return a 
-> -EBUSY.
-
-Well, it would seem that way but...
-
-> In this case, before i915 loading is finished, the requested module 
-> "kvmgt" cannot reach the symbols in module i915. Thus it kept waiting 
-> and left message like below in the dmesg:
-> 
-> [  644.152021] kvmgt: gave up waiting for init of module i915.
-> [  644.152039] kvmgt: Unknown symbol i915_gem_object_set_to_cpu_domain 
-> (err -16)
-> [  674.871409] kvmgt: gave up waiting for init of module i915.
-> [  674.871427] kvmgt: Unknown symbol intel_ring_begin (err -16)
-> [  705.590586] kvmgt: gave up waiting for init of module i915.
-> [  705.590604] kvmgt: Unknown symbol i915_vma_move_to_active (err -16)
-> [  736.310230] kvmgt: gave up waiting for init of module i915.
-> [  736.310248] kvmgt: Unknown symbol shmem_unpin_map (err -16)
-> ...
-> 
-> The error message is from execution path below:
-> 
-> kernel/module.c:
-> 
-> [i915 module loading] -> 
-> request_module("kvmgt")->[modprobe]->init_module("kvmgt")->load_module()->simplify_symbols()->resolve_symbol_wait():
-> 
-> static const struct kernel_symbol *
-> resolve_symbol_wait(struct module *mod,
->              const struct load_info *info,
->              const char *name)
-> {
->      const struct kernel_symbol *ksym;
->      char owner[MODULE_NAME_LEN];
-> 
->      if (wait_event_interruptible_timeout(module_wq,
->              !IS_ERR(ksym = resolve_symbol(mod, info, name, owner))
->              || PTR_ERR(ksym) != -EBUSY,
->                           30 * HZ) <= 0) {
->          pr_warn("%s: gave up waiting for init of module %s.\n",
->              mod->name, owner);
-> 
-> }
-
-Commit 9bea7f23952d5 ("module: fix bne2 "gave up waiting for init of
-module libcrc32c") is worth reviewing. It dealt with a similar issue,
-and in particular it addressed the issue with -EBUSY being returned
-by ref_module().
-
-And so, in theory that case should be dealt with in resolve_symbol_wait()
-already. And so can you try this just to verify something:
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 40ec9a030eec..98f87cbb37de 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1459,7 +1459,7 @@ resolve_symbol_wait(struct module *mod,
- 	if (wait_event_interruptible_timeout(module_wq,
- 			!IS_ERR(ksym = resolve_symbol(mod, info, name, owner))
- 			|| PTR_ERR(ksym) != -EBUSY,
--					     30 * HZ) <= 0) {
-+					     160 * HZ) <= 0) {
- 		pr_warn("%s: gave up waiting for init of module %s.\n",
- 			mod->name, owner);
- 	}
-
-> code: 
-> https://github.com/intel/gvt-linux/blob/bd950a66c7919d7121d2530f30984351534a96dc/kernel/module.c#L1452
-> 
-> In resolve_symbol_wait(), it calls resolve_symbol() to resolve the 
-> symbols in "i915". In resolve_symbol() -> ref_module() -> 
-> strong_try_module_get(), it will check the status of the module which 
-> owns the symbol.
-> 
-> static inline int strong_try_module_get(struct module *mod)
-> {
->      BUG_ON(mod && mod->state == MODULE_STATE_UNFORMED);
->      if (mod && mod->state == MODULE_STATE_COMING)
->          return -EBUSY;
->      if (try_module_get(mod))
->          return 0;
->      else
->          return -ENOENT;
-> }
-> 
-> code:https://github.com/intel/gvt-linux/blob/bd950a66c7919d7121d2530f30984351534a96dc/kernel/module.c#L318
-> 
-> But unfortunately, this execution path begins in i915 module loading, at 
-> this time, the status of kernel module "i915" is MODULE_STATE_COMING 
-> until loading of "kvmgt" is finished. Thus a -EBUSY is always returned 
-> when kernel is trying to resolve symbols for "kvmgt".
+On Mon, Sep 27, 2021 at 3:18 PM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> 
-> This patch below might need re-work:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang points out inconsistencies in the FIELD_PREP() invocation in
+> this driver that result from the 'mask' being a 32-bit value:
+>
+> drivers/crypto/ccree/cc_driver.c:117:18: error: result of comparison of c=
+onstant 18446744073709551615 with expression of type 'u32' (aka 'unsigned i=
+nt') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         cache_params |=3D FIELD_PREP(mask, val);
+>                         ^~~~~~~~~~~~~~~~~~~~~
+> include/linux/bitfield.h:94:3: note: expanded from macro 'FIELD_PREP'
+>                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
+>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/linux/bitfield.h:52:28: note: expanded from macro '__BF_FIELD_CHE=
+CK'
+>                 BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,         \
+>                 ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> This does not happen in other places that just pass a constant here.
+>
+> Work around the warnings by widening the type of the temporary variable.
+>
+> Fixes: 05c2a705917b ("crypto: ccree - rework cache parameters handling")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-If the above test patch still fails, well.. that might be telling of
-another issue which is perhaps difficult to see at first glance. If
-resolve_symbol_wait() won't succeed until request_module("kvmgt")
-completes and if this means having kvmgt's init routine complete, that
-could end up in some longer chain or in the worst case a sort of
-circular dependency which is only implicated by module loading. It'd be
-really odd... but I cannot rule it out.
+Acked-by: Gilad ben-Yossef <gilad@benyossef.com>
 
-This is one reason I hinted that you should strive to not do much on a
-module's init. If you can punt work off for later that's best.
+Gilad
 
-  Luis
 
-> 
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Wed Jul 21 17:53:38 2021 +0200
-> 
->      drm/i915/gvt: move the gvt code into kvmgt.ko
-> 
->      Instead of having an option to build the gvt code into the main i915
->      module, just move it into the kvmgt.ko module.  This only requires
->      a new struct with three entries that the main i915 module needs to
->      request before enabling VGPU passthrough operations.
-> 
->      This also conveniently streamlines the GVT initialization and avoids
->      the need for the global device pointer.
-> 
->      Signed-off-by: Christoph Hellwig <hch@lst.de>
->      Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
->      Link: 
-> http://patchwork.freedesktop.org/patch/msgid/20210721155355.173183-5-hch@lst.de
->      Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-> 
-> On 8/26/21 6:12 AM, Zhenyu Wang wrote:
-> > On 2021.08.20 12:56:34 -0700, Luis Chamberlain wrote:
-> >> On Fri, Aug 20, 2021 at 04:17:24PM +0200, Christoph Hellwig wrote:
-> >>> On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
-> >>>> I'm working on below patch to resolve this. But I met a weird issue in
-> >>>> case when building i915 as module and also kvmgt module, it caused
-> >>>> busy wait on request_module("kvmgt") when boot, it doesn't happen if
-> >>>> building i915 into kernel. I'm not sure what could be the reason?
-> >>> Luis, do you know if there is a problem with a request_module from
-> >>> a driver ->probe routine that is probably called by a module_init
-> >>> function itself?
-> >> Generally no, but you can easily foot yourself in the feet by creating
-> >> cross dependencies and not dealing with them properly. I'd make sure
-> >> to keep module initialization as simple as possible, and run whatever
-> >> takes more time asynchronously, then use a state machine to allow
-> >> you to verify where you are in the initialization phase or query it
-> >> or wait for a completion with a timeout.
-> >>
-> >> It seems the code in question is getting some spring cleaning, and its
-> >> unclear where the code is I can inspect. If there's a tree somewhere I
-> >> can take a peak I'd be happy to review possible oddities that may stick
-> >> out.
-> > I tried to put current patches under test here: https://github.com/intel/gvt-linux/tree/gvt-staging
-> > The issue can be produced with CONFIG_DRM_I915=m and CONFIG_DRM_I915_GVT_KVMGT=m.
-> >
-> >> My goto model for these sorts of problems is to abstract the issue
-> >> *outside* of the driver in question and implement new selftests to
-> >> try to reproduce. This serves two purposes, 1) helps with testing
-> >> 2) may allow you to see the problem more clearly.
-> >>
-> > I'll see if can abstract that.
-> >
-> > Thanks, Luis.
-> 
-> 
+
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
