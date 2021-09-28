@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2EB41AB2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6015C41AB31
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239796AbhI1Iwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:52:36 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53496
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239774AbhI1IwL (ORCPT
+        id S239962AbhI1Iwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:52:40 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:48594
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239897AbhI1IwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:52:11 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        Tue, 28 Sep 2021 04:52:12 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9A7CB4031B
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:50:11 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8711B40885
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632819011;
-        bh=MrRtMKWESY45De0HF10TbNHiqJiU4JWtrfj4T60+/KM=;
+        s=20210705; t=1632819013;
+        bh=9+M3zOsXaCPGsy+Y7A3HK2jtwWbSZ2cmPLzUVQxLrjg=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=ndER0NAr0UN+YQHUTT2ns733/eJLlpx4hh5yjodfw+hgXyETeClSYKznf4KJ2p4pf
-         D52xjHq1U7JzKDcK1PCskxIbfzRJrlnC9X6oaHD6c6d5d2VKqTSUcPrkRA9HZ/ZrsK
-         SBqn+bVfxdNwD2eZKDPxGlLxsjDeatDfhYNH8xiveDJpXIm/VAjJYO9IQmmuB1ECEL
-         mlDzNk6BUlT9rAt4aVYxyl+z6s69QmQLC1O2/ZL0zfepLNSMaUvipY84xrf6oEpRgQ
-         LyEasZneHj6pW9X++t/ppSLTAmRy/nYq5yndLW3eMEnewnPAKvbnbzOKd8ZB+vjR0r
-         mpiVVpr58LOHA==
-Received: by mail-lf1-f70.google.com with SMTP id d16-20020a056512369000b003fca9e038ddso17503781lfs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:50:11 -0700 (PDT)
+        b=rHCUhS49Cya8Zbyjlqf4NmHcrp5rk0zKoaaJEe3RQfXEIcS+gBCxfMYsfrHhZgc1F
+         Zmzpktvc2E/U9nXcJ6+lU3RlHeT7PTlPrWeBTah2S3ZouSruc0p9HRs2mMnBUOGEkB
+         5HYvHWCVgQeaIoMBOKgBPsUnqWUH8uOwWBme2FpmlPQlZFi3susI0Wyjd4vkLUtZal
+         xtvea1/v5OyjJHaEmjeOx25HkIYDeAiIj/DNO+0lfdLhZFE6Dlom980tTSIbjj18gC
+         IX/SAovj2c/a3ivUyjmrI+nRNQcP3ZZi64vcAQ2VMAEoJleT2vhpi4CpNUPwdKR1qx
+         Ge5QZAA3ew/1g==
+Received: by mail-lf1-f72.google.com with SMTP id r193-20020a19c1ca000000b003fc8f43caa6so18638809lff.17
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:50:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MrRtMKWESY45De0HF10TbNHiqJiU4JWtrfj4T60+/KM=;
-        b=1yAzHSAp13ZZU6Oxum3bHUEqY1lpij183jRvZ7S1hgCye07xpINxpF4XUQeyP+C7XT
-         Wm0E3uIhb3B1x5FYQkYbn/aJNnk9SiMsgRqGNKP4aW9MFw0z1s+/F/WfyeArbos926l/
-         6DHi2xz8RdrRpNZGbF7dACIHK1cMD476+b1rKn9NN3VkhQwia5KH92nIWLfbynbozyNF
-         2sR9IZwvbYT49LZFNBckhGUyPR3Y3gZL0KK45ZGYV3TdcxvwuimmnZv8tvATS/bNLc1O
-         EZs8XPPgVvrVyYECqA32sMIo6xcUxcZiLRZI8OUNaCw0zOyGheAEnfktKtsviQX4s+YN
-         iulw==
-X-Gm-Message-State: AOAM531kTGwXsLS8XOdyclzrqkLtSsDGF9CAEBpTCmIDOl4aaLF3qXhZ
-        KZ6sz3xhzbGeQZe7qwEWx20Rl4URjbYMbpwOZztPI3sl01svR6wIFPyKPvgFLIPOlohcrOFPz1E
-        wJwkx2tZyVVdbNivPuaKYOfNVNVzJuuifkZlxRslLaw==
-X-Received: by 2002:a05:651c:1124:: with SMTP id e4mr4530588ljo.261.1632819010966;
-        Tue, 28 Sep 2021 01:50:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxeT9hh5MikDORvgeeNHLdkoBlQ51tYUHQvGyxCDV/oLrmwZnjOgz8Pgq3riPZog98Bec4NGQ==
-X-Received: by 2002:a05:651c:1124:: with SMTP id e4mr4530572ljo.261.1632819010805;
-        Tue, 28 Sep 2021 01:50:10 -0700 (PDT)
+        bh=9+M3zOsXaCPGsy+Y7A3HK2jtwWbSZ2cmPLzUVQxLrjg=;
+        b=aXdMpiG5UzbIvrc+UIvdavjsMTjdRH0I+DTxrmG6y7n5j/sU53rKSbcMIRq9KnB8Zb
+         UE27t5Pk7AOJhPUi3z0MKMb3r+OswfkkUEcNuZlUXYkogtzbdEYhQ2sNp9bXUWFzJpzP
+         Lp6QBm5F9lmYfWE7nNpSh4rs0KDuRYydDiCB2HQQLlElTeQKzCDloaVr6IgweVXOHV2d
+         YX8bQ6Tj/oL3ATmt1jVBXhevTX5xva7kP4Gh6cEp8unQm4SNV6AHeFVfqPjuq++hEN9k
+         lfr1AJXPyvNS3WtQP9giFG+njSuwRazN8JDLDyCTRxpr47Dz9QrM5mbNR54Gi9J0ATY/
+         M7Jg==
+X-Gm-Message-State: AOAM533HCV2VqL66cbFZ6db3tpp8B/IXBq4GgZMdOSQ2TIXK3jSh2a9n
+        QbFieMl4oZh0nBlameVvoWuFO59jDrkdYD9+m7lxSUZcE4S4otIT9c5B57T6/za5MxyGnaw+xcQ
+        jkMgdMMOXiOuYvM2H++cgNFYB9UKLEE7kqNNJ1NnS4Q==
+X-Received: by 2002:a05:6512:13a0:: with SMTP id p32mr4522392lfa.492.1632819012268;
+        Tue, 28 Sep 2021 01:50:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxd1p1KF27X5q/HMw+Wy8K3uWfL4WhxDC2Ry8lcW1WZpEG8XLZ+MIvFRBAUiAMpcYmQVFUpMw==
+X-Received: by 2002:a05:6512:13a0:: with SMTP id p32mr4522379lfa.492.1632819012109;
+        Tue, 28 Sep 2021 01:50:12 -0700 (PDT)
 Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id h13sm1848419lfl.205.2021.09.28.01.50.09
+        by smtp.gmail.com with ESMTPSA id h13sm1848419lfl.205.2021.09.28.01.50.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 01:50:10 -0700 (PDT)
+        Tue, 28 Sep 2021 01:50:11 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -71,9 +71,9 @@ To:     Michael Turquette <mturquette@baylibre.com>,
         linux-arm-kernel@lists.infradead.org
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 10/12] mfd: dt-bindings: samsung,s5m8767: document buck and LDO supplies
-Date:   Tue, 28 Sep 2021 10:49:47 +0200
-Message-Id: <20210928084949.27939-11-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 11/12] ARM: dts: exynos: remove unneeded DVS voltages from PMIC on Arndale
+Date:   Tue, 28 Sep 2021 10:49:48 +0200
+Message-Id: <20210928084949.27939-12-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
 References: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
@@ -83,63 +83,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the properties with regulator supplies for bucks and LDOs.  At
-least one board uses it (Exynos5250 Arndale).
+The S5M8767 PMIC does not require anymore a safe DVS voltage, if the DVS
+GPIO is not enabled.  Although previously bindings required providing
+this safe DVS voltage, but since commit 04f9f068a619 ("regulator:
+s5m8767: Modify parsing method of the voltage table of buck2/3/4") this
+was ignored.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../bindings/mfd/samsung,s5m8767.yaml         | 38 +++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ arch/arm/boot/dts/exynos5250-arndale.dts | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml b/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
-index 35018346f68b..e97a94cab4e8 100644
---- a/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
-+++ b/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
-@@ -96,6 +96,44 @@ properties:
-     description: |
-       GPIO specifiers for three host gpio's used for dvs.
+diff --git a/arch/arm/boot/dts/exynos5250-arndale.dts b/arch/arm/boot/dts/exynos5250-arndale.dts
+index a771542e28b8..3583095fbb2a 100644
+--- a/arch/arm/boot/dts/exynos5250-arndale.dts
++++ b/arch/arm/boot/dts/exynos5250-arndale.dts
+@@ -240,9 +240,6 @@ pmic@66 {
+ 		vinl8-supply = <&buck8_reg>;
+ 		vinl9-supply = <&buck8_reg>;
  
-+  vinb1-supply:
-+    description: Power supply for buck1
-+  vinb2-supply:
-+    description: Power supply for buck1
-+  vinb3-supply:
-+    description: Power supply for buck1
-+  vinb4-supply:
-+    description: Power supply for buck1
-+  vinb5-supply:
-+    description: Power supply for buck1
-+  vinb6-supply:
-+    description: Power supply for buck1
-+  vinb7-supply:
-+    description: Power supply for buck1
-+  vinb8-supply:
-+    description: Power supply for buck1
-+  vinb9-supply:
-+    description: Power supply for buck1
-+
-+  vinl1-supply:
-+    description: Power supply for LDO3, LDO10, LDO26, LDO27
-+  vinl2-supply:
-+    description: Power supply for LDO13, LDO16, LDO25, LDO28
-+  vinl3-supply:
-+    description: Power supply for LDO11, LDO14
-+  vinl4-supply:
-+    description: Power supply for LDO4, LDO9
-+  vinl5-supply:
-+    description: Power supply for LDO12, LDO17, LDO19, LDO23
-+  vinl6-supply:
-+    description: Power supply for LDO18, LDO20, LDO21, LDO24
-+  vinl7-supply:
-+    description: Power supply for LDO5, LDO22
-+  vinl8-supply:
-+    description: Power supply for LDO1, LDO6, LDO7, LDO8, LDO15
-+  vinl9-supply:
-+    description: Power supply for LDO2
-+
-   wakeup-source: true
- 
- required:
+-		s5m8767,pmic-buck2-dvs-voltage = <1300000>;
+-		s5m8767,pmic-buck3-dvs-voltage = <1100000>;
+-		s5m8767,pmic-buck4-dvs-voltage = <1200000>;
+ 		s5m8767,pmic-buck-dvs-gpios = <&gpd1 0 GPIO_ACTIVE_HIGH>,
+ 					      <&gpd1 1 GPIO_ACTIVE_HIGH>,
+ 					      <&gpd1 2 GPIO_ACTIVE_HIGH>;
 -- 
 2.30.2
 
