@@ -2,103 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBE041AA81
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B87141AA86
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239513AbhI1IWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:22:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231342AbhI1IWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:22:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B65E561209
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632817222;
-        bh=FOqCQkHnZGbZdTybxy+5IK/DFnY6xsR2LcxikZl/+rY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UCvZFQTyf2Xb5DGTJMcRCTcmpWSrkZcBIzpbNC3WNmQ92ZvUZmkT7tGo1/LdmnKc7
-         YU9AA/Ls4GPIrKNGRMzGxU16EYsBQTmLi3CnUsblDXAyTEuHKSOh1kG4f6ULFpdl5c
-         3J3mQVQY3xTLEq04xL5gt8n47n9obHFYCtLPPEZt/HFuSOiQ3hnyUszu5zuTQ2yxfH
-         nFDpd9FTJZEgzRoRxZedXpJwrQbRXpiCn1fMr7VQff/G6Bdo/6NnhvePk4eBNhB2ca
-         ZWtKNOLLvganXhf1SLdX/oFEjwkjFnaJR+PbPbioJtU0ciNUfHodNED2dVqjq0xxgB
-         1n7TmaC60rQgQ==
-Received: by mail-wr1-f47.google.com with SMTP id t8so56582154wrq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:20:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530DctxoDjePqb6W+Y4eYjCLIHKByztiXAaZsIucfl6WAv8zMZcP
-        Ab8MQGNtIcE7Ku9x10X45YcOj5sL+vThjNcvID8=
-X-Google-Smtp-Source: ABdhPJyxkWC/1VGczppVyh9LB2qQTcVBdk7PWoSh1zOlZbPaInSRFjDMiURvzC39B0Iv2KWsxvtNxgd9aqfpKHqheSo=
-X-Received: by 2002:a5d:6cb4:: with SMTP id a20mr4296190wra.428.1632817221261;
- Tue, 28 Sep 2021 01:20:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927141815.1711736-1-arnd@kernel.org> <1B89CC23-0CB4-4DA3-BA84-3DD628675351@tuxera.com>
-In-Reply-To: <1B89CC23-0CB4-4DA3-BA84-3DD628675351@tuxera.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 28 Sep 2021 10:20:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a04K0z-ExztXisby506qz6pCuvx5pyOQU8hzFNULoHj8w@mail.gmail.com>
-Message-ID: <CAK8P3a04K0z-ExztXisby506qz6pCuvx5pyOQU8hzFNULoHj8w@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] ntfs: disable for 64KB because of stack overflow risk
-To:     Anton Altaparmakov <anton@tuxera.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S239556AbhI1IY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:24:56 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:49109 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239292AbhI1IYy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 04:24:54 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 28 Sep 2021 01:23:15 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Sep 2021 01:23:13 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Sep 2021 13:52:57 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id AB7DC21DD5; Tue, 28 Sep 2021 13:52:56 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mchehab@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v5] dt-bindings: media: venus: Add sc7280 dt schema
+Date:   Tue, 28 Sep 2021 13:52:53 +0530
+Message-Id: <1632817373-25755-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 1:21 AM Anton Altaparmakov <anton@tuxera.com> wrote:
->
-> Hi Arnd,
->
-> Thanks for the patch but what is the problem with the stack usage exceeding 2048 bytes?
->
-> I am not aware of any architectures that implements kernel stack size (THREAD_SIZE)
-> less than page size and by default most architectures with 4kiB page size even use two
-> pages to make the stack 8kiB.
+Add a schema description for the venus video encoder/decoder on the sc7280.
 
-The two are decoupled these days unless CONFIG_VMAP_STACK is enabled at build
-time, in which case the THREAD_SIZE is always a multiple of STACK_SIZE.
-No architecture currently forces the use of VMAP_STACK though, so the allocation
-is done in alloc_thread_stack_node() using this kmem_cache:
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
+changes since v4:
+    fixed missing dependencies.
 
-        thread_stack_cache = kmem_cache_create_usercopy("thread_stack",
-                                        THREAD_SIZE, THREAD_SIZE, 0, 0,
-                                        THREAD_SIZE, NULL);
+ .../bindings/media/qcom,sc7280-venus.yaml          | 162 +++++++++++++++++++++
+ 1 file changed, 162 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
 
-64K pages are allowed on arm64, powerpc, mips, microblaze, ia64, sh, hexagon
-and the upcoming loongarch port. The respective THREAD_SHIFT/THREAD_SIZE
-values on these are
+diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+new file mode 100644
+index 0000000..fa54c56
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+@@ -0,0 +1,162 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Qualcomm Venus video encode and decode accelerators
++
++maintainers:
++  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
++
++description: |
++  The Venus Iris2 IP is a video encode and decode accelerator present
++  on Qualcomm platforms
++
++properties:
++  compatible:
++    const: qcom,sc7280-venus
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  power-domains:
++    minItems: 2
++    maxItems: 3
++
++  power-domain-names:
++    minItems: 2
++    maxItems: 3
++    items:
++      - const: venus
++      - const: vcodec0
++      - const: cx
++
++  clocks:
++    maxItems: 5
++
++  clock-names:
++    items:
++      - const: core
++      - const: bus
++      - const: iface
++      - const: vcodec_core
++      - const: vcodec_bus
++
++  iommus:
++    maxItems: 2
++
++  memory-region:
++    maxItems: 1
++
++  interconnects:
++    maxItems: 2
++
++  interconnect-names:
++    items:
++      - const: cpu-cfg
++      - const: video-mem
++
++  video-decoder:
++    type: object
++
++    properties:
++      compatible:
++        const: venus-decoder
++
++    required:
++      - compatible
++
++    additionalProperties: false
++
++  video-encoder:
++    type: object
++
++    properties:
++      compatible:
++        const: venus-encoder
++
++    required:
++      - compatible
++
++    additionalProperties: false
++
++  video-firmware:
++    type: object
++
++    description: |
++      Firmware subnode is needed when the platform does not
++      have TrustZone.
++
++    properties:
++      iommus:
++        maxItems: 1
++
++    required:
++      - iommus
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - power-domains
++  - power-domain-names
++  - clocks
++  - clock-names
++  - iommus
++  - memory-region
++  - video-decoder
++  - video-encoder
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
++        #include <dt-bindings/interconnect/qcom,sc7280.h>
++        #include <dt-bindings/power/qcom-rpmpd.h>
++
++        venus: video-codec@aa00000 {
++                compatible = "qcom,sc7280-venus";
++                reg = <0x0aa00000 0xd0600>;
++                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++                clock-names = "core", "bus", "iface",
++                              "vcodec_core", "vcodec_bus";
++
++                power-domains = <&videocc MVSC_GDSC>,
++                                <&videocc MVS0_GDSC>,
++                                <&rpmhpd SC7280_CX>;
++                power-domain-names = "venus", "vcodec0", "cx";
++
++                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
++                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++                interconnect-names = "cpu-cfg", "video-mem";
++
++                iommus = <&apps_smmu 0x2180 0x20>,
++                         <&apps_smmu 0x2184 0x20>;
++
++                memory-region = <&video_mem>;
++
++                video-decoder {
++                        compatible = "venus-decoder";
++                };
++
++                video-encoder {
++                        compatible = "venus-encoder";
++                };
++
++                video-firmware {
++                        iommus = <&apps_smmu 0x21a2 0x0>;
++                };
++        };
+-- 
+2.7.4
 
-arch/arm64/include/asm/memory.h:#define MIN_THREAD_SHIFT (14 +
-KASAN_THREAD_SHIFT)
-arch/powerpc/Kconfig:config THREAD_SHIFT
-arch/powerpc/Kconfig-   default "14" if PPC64
-arch/mips/include/asm/thread_info.h:#define THREAD_SIZE_ORDER (0)
-arch/mips/include/asm/thread_info.h:#define THREAD_SIZE (PAGE_SIZE <<
-THREAD_SIZE_ORDER)
-arch/microblaze/include/asm/thread_info.h:#define THREAD_SHIFT 13
-arch/ia64/include/asm/ptrace.h:# define KERNEL_STACK_SIZE_ORDER         0
-arch/ia64/include/asm/ptrace.h:#define IA64_STK_OFFSET
- ((1 << KERNEL_STACK_SIZE_ORDER)*PAGE_SIZE)
-arch/ia64/include/asm/ptrace.h:#define KERNEL_STACK_SIZE
- IA64_STK_OFFSET
-arch/ia64/include/asm/thread_info.h:#define THREAD_SIZE
- KERNEL_STACK_SIZE
-arch/sh/include/asm/thread_info.h:#define THREAD_SHIFT  12
-arch/hexagon/include/asm/thread_info.h:#define THREAD_SHIFT 12
-
-As far as I can tell, only mips and ia64 require the kernel stack to
-be a multiple
-of the page size here, and I would consider that a bug: This is extremely
-wasteful, especially considering that those machines typically won't have the
-vast amounts of RAM that modern arm64 and powerpc64 servers have.
-
-On a hexagon or sh system with 4KB stacks, using over 2KB in one function
-is definitely excessive. Those machines wouldn't normally need NTFS support,
-but that was kind-of the point of my patch.
-
-         Arnd
