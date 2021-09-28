@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2538C41AB84
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A1041AB86
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239809AbhI1JKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:10:43 -0400
-Received: from phobos.denx.de ([85.214.62.61]:33960 "EHLO phobos.denx.de"
+        id S239831AbhI1JKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239712AbhI1JKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:10:42 -0400
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 2EC8D82E88;
-        Tue, 28 Sep 2021 11:08:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1632820140;
-        bh=I1ENllMnE/kun7HNTxG3cN2RKJcBJbIGHuLqvk8y4vM=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=EoP2uEmArfCpIqIL5Y6NKNiBDFYD6nEezc4n4atw2Vcqapa7DSzlO1B3aFuu45N4f
-         2lr+B0yTuVtLWFyvY5Fyc/BvnFzBesOO/yC4cNYSTTBWJiKNrgvixZl3Xkd9FBd2LX
-         XQqkwfwCNAmjV7JiGN5wAzGoTtlcGdoyd2bM4v5WB7F0B7gYTqYOXNvfZO4SQBrr8T
-         qZB3xRWFx46orY35lP9/uAkOx3310rGpdjM7HbDOD0zMHuTfsGyZzm8dI3+mPg/bCF
-         92jMuoPfYb2pV/xw32vprhUfKnrXb3411TYX37dTR/e9sYGCc7b9M0YKx9Anpyt18G
-         xRk054C5OB/fw==
-Subject: Re: [PATCH] drm: mxsfb: Set proper default bus format when using a
- bridge
-To:     =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>
-References: <YVLYh/SgBritG/RJ@qwark.sigxcpu.org>
-Cc:     Stefan Agner <stefan@agner.ch>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <1fda3b80-7df2-2ce3-b049-6773e849e9dc@denx.de>
-Date:   Tue, 28 Sep 2021 11:08:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239795AbhI1JKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:10:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEEAC60FC2;
+        Tue, 28 Sep 2021 09:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632820155;
+        bh=1Vhte9Ro5QwLvH3RD7I8NX1g4Y5GHjQOuHyXqDB5SP4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RiqHZJ56Bc8xwKRyjWd2VRc6QiAa7sRjm1CkEUTVcMIHDKRWw2iszX6r6mRPogcBB
+         uqkRyMbgkovNzgH4FSOxKKyZClW+DdlTPv+9/naHJ98JmDFbA1i4q6YKDOzoj/FX16
+         FjgQvZ2xYhMalZlnB8jA/gLoDbHapX/dw6zJVZ7w=
+Date:   Tue, 28 Sep 2021 11:09:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: hi6421-spmi-pmic: cleanup drvdata
+Message-ID: <YVLbuI6SXVPy2CQm@kroah.com>
+References: <YUsuZaMJoEMHkxgG@google.com>
+ <0cc63f19506ea78d3a1c111774c97bbbc1a9a292.1632812219.git.mchehab+huawei@kernel.org>
+ <YVLA14jbwqXjNM2f@kroah.com>
+ <YVLI9sXN2R/IHSzq@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YVLYh/SgBritG/RJ@qwark.sigxcpu.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVLI9sXN2R/IHSzq@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 10:55 AM, Guido Günther wrote:
-> If a bridge doesn't do any bus format handling MEDIA_BUS_FMT_FIXED is
-> returned. Fallback to a reasonable default (MEDIA_BUS_FMT_RGB888_1X24) in
-> that case.
+On Tue, Sep 28, 2021 at 08:49:10AM +0100, Lee Jones wrote:
+> On Tue, 28 Sep 2021, Greg Kroah-Hartman wrote:
 > 
-> This unbreaks e.g. using mxsfb with the nwl bridge and mipi panels.
+> > On Tue, Sep 28, 2021 at 08:58:19AM +0200, Mauro Carvalho Chehab wrote:
+> > > There are lots of fields in struct hi6421_spmi_pmic that aren't
+> > > used. As a matter of fact, only regmap is needed.
+> > > 
+> > > So, drop the struct as a whole, and just set the regmap as
+> > > the drvdata.
+> > > 
+> > > Acked-by: Mark Brown <broonie@kernel.org>
+> > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > 
+> > As everyone else acked this, any objection for me to just take this in
+> > my char-misc tree?
+> > 
+> > Otherwise, whoever else want to take it:
+> > 
+> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> Fixes: b776b0f00f24 ("drm: mxsfb: Use bus_format from the nearest bridge if present")
+> If you do end up taking it, you'll have to convert my Ack.
 > 
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> ---
+> Although, I'm probably in a better position to take it TBH.
 > 
-> I'll look at what needs to be done in nwl separately but this also
-> unbreaks other bridge seupts that don't to format negotiation yet.
-> 
->   drivers/gpu/drm/mxsfb/mxsfb_kms.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-> index af6c620adf6e..4ef94cf686b0 100644
-> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-> @@ -369,6 +369,8 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
->   			drm_atomic_get_new_bridge_state(state,
->   							mxsfb->bridge);
->   		bus_format = bridge_state->input_bus_cfg.format;
-> +		if (bus_format == MEDIA_BUS_FMT_FIXED)
-> +			bus_format = MEDIA_BUS_FMT_RGB888_1X24;
+> Happy with either.  You decide.
 
-Shouldn't the NWL bridge return the correct format ?
+You can take it, thanks!
+
+greg k-h
