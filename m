@@ -2,178 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33D41B273
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3506A41B276
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241420AbhI1O73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241176AbhI1O72 (ORCPT
+        id S241427AbhI1PAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 11:00:50 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41696
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241371AbhI1PAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:59:28 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC005C06161C;
-        Tue, 28 Sep 2021 07:57:48 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id C42C7701E; Tue, 28 Sep 2021 10:57:47 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org C42C7701E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1632841067;
-        bh=VV8iWrMyEn5Ds44I0VGMqI+X+W7JHc96OWu+qTBzoTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ax/OmFJavGXbdY8TnzaodxZDJ7jjzD0gCRB7fKMdaL1c0bq5cAnt0vgrocnksF1oW
-         tBU2O+geCSK5yo61rgpXjXoBLX6nVc9W8pEsHKQ5/wxQEqY6kNna57hbqi4fzhWPWB
-         2iVoH/7tf7Ln7f0U34AEUdU0x47kUujUZXZoFnl4=
-Date:   Tue, 28 Sep 2021 10:57:47 -0400
-From:   "bfields@fieldses.org" <bfields@fieldses.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "neilb@suse.com" <neilb@suse.com>,
-        "tom@talpey.com" <tom@talpey.com>,
-        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "tyhicks@canonical.com" <tyhicks@canonical.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wanghai38@huawei.com" <wanghai38@huawei.com>,
-        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "timo@rothenpieler.org" <timo@rothenpieler.org>,
-        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
-        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
-        "kolga@netapp.com" <kolga@netapp.com>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
-Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
- rpcsec_gss_exit_net when use-gss-proxy==1
-Message-ID: <20210928145747.GD25415@fieldses.org>
-References: <20210928031440.2222303-1-wanghai38@huawei.com>
- <20210928031440.2222303-3-wanghai38@huawei.com>
- <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
- <20210928134952.GA25415@fieldses.org>
- <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
- <20210928141718.GC25415@fieldses.org>
- <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
+        Tue, 28 Sep 2021 11:00:46 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 67D54402F0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632841143;
+        bh=g6a7xv0xqYvnK76VH1tylZcfdtAggOaJwHiB19FiKPk=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=HisHDcrUzU91Pwvj0LyFUM6FETRi+bh7NuW/3w8W/Cke8sxaLxNOsgOPmIKNBvjbL
+         wPaIKf6ah6cBE8dVhyABRhOdOkzmX4qVmVljnquMIRVMxZpMqg4W4dVsZTVK+tzYp/
+         x3yiiBwyfohSdQkEq6w/1rrbwY5eEURUJ6YtLW7Y+I0LiteuKFcg1MZ8IntLHdwOtq
+         EDwTQLaa2m964tM3By1BZ20T93ms2SGRI2EH70NLzvmzcnk8Db/GZpJkTKUVv/gHZK
+         IafKc6G21x1KaERxIh/OWM4eVO4P7Ph/vd93Tsz9y6cnbHyg3B5R2Iftj2d0mH5BHo
+         K42lt0e8T4k/A==
+Received: by mail-ed1-f69.google.com with SMTP id s12-20020a05640217cc00b003cde58450f1so22240956edy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:59:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g6a7xv0xqYvnK76VH1tylZcfdtAggOaJwHiB19FiKPk=;
+        b=uf5i7lJ0kEje+fmg1SXVmpB5SPnLE+sPs8sGnbc850nJS8qMGuexR9ybAsaA8TJjiN
+         YL8Dv+FAVdRMFZiCog6fhsaBdhZXwHn6LCiZm0Rplb+Q//5OuyDwHWtmCmUsncnOAChp
+         IgCgN8VlWiF75hG5TBgZOMFVnXa4vQE/5a6W6ats3RGNth2VPzrZpHHSYF37CQ/uAFam
+         D/z/PtS9saLo9bq4aTN42hAzQ1IWwLN4dFK6eSdTadFx8aYbZxdVL0qEzMFWip8Piyfs
+         zbdlEXLDPxvvktQ5ot82kBJ3WUsbCgEzxyduKq8W9g0Z1ZTD6PJSmioQuJH4i8AFhkIZ
+         7s5g==
+X-Gm-Message-State: AOAM532nvyihRmPyYDskYNgU8NVEfWNdidH/O65bY5XyxwBydjWDn5Mu
+        sMal+KNjuwmYtiykKEYus9bpxuUNDtrsh14EKkmw85tWBIoIg5epRr/Cnt3mF9LEEuIOHvAt276
+        2L5O3eSd4VnSpu1/PrGPhNcBjmKZcS9qx4w2EDH5h9L9uBba1/6m/rv3+5A==
+X-Received: by 2002:a17:907:2090:: with SMTP id pv16mr6104092ejb.156.1632841142956;
+        Tue, 28 Sep 2021 07:59:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyb7dk2zpfUDJWU60w07G3nZqzH6RPURAItRu5XoTm2AssdQ9aQtejza93BvvpSwe7KzFU5kG1Gdf13XV9bIQQ=
+X-Received: by 2002:a17:907:2090:: with SMTP id pv16mr6104067ejb.156.1632841142712;
+ Tue, 28 Sep 2021 07:59:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20210923172107.1117604-1-guoren@kernel.org> <CAOnJCUJWnDB+uRxDh=YSbGW4bf5RQvke03iCTYMYHPsw3cwnHQ@mail.gmail.com>
+ <CAOnJCULrE595ex3gBTnu4GnPazO4mg8Tkrtbv6j8iLWe+sKJSA@mail.gmail.com>
+ <0790abcfa1174e0e9b5e7b185f87ced9@mailhost.ics.forth.gr> <CAAhSdy2-y4xpM9PCrS0vgCN9ngFiBygeDOWcbgsX6Myb4XjDQg@mail.gmail.com>
+ <CAOnJCULg36kNiDV6ymTSRff8yYZvFKpxm5uh=cAicQT44OcLYw@mail.gmail.com>
+ <ad40c335-ee8f-9ff3-4c34-f8fa5ef49e8b@ics.forth.gr> <CAAeLtUBn=WXmp4Ur+7Vg8DgKDVsK8xiiL4ukw_1EDR6tDUoftA@mail.gmail.com>
+In-Reply-To: <CAAeLtUBn=WXmp4Ur+7Vg8DgKDVsK8xiiL4ukw_1EDR6tDUoftA@mail.gmail.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Tue, 28 Sep 2021 16:58:51 +0200
+Message-ID: <CA+zEjCuaxtD8P1CwD25kfNFGFr+nZJt7k+=P8ck5NvLNNgTttw@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] riscv: Add RISC-V svpbmt extension
+To:     Philipp Tomsich <philipp.tomsich@vrull.eu>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Taiten Peng <taiten.peng@canonical.com>,
+        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Gordan Markus <gordan.markus@canonical.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Greg Favor <gfavor@ventanamicro.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        Xinhaoqu <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:27:33PM +0000, Trond Myklebust wrote:
-> On Tue, 2021-09-28 at 10:17 -0400, bfields@fieldses.org wrote:
-> > On Tue, Sep 28, 2021 at 02:04:49PM +0000, Trond Myklebust wrote:
-> > > On Tue, 2021-09-28 at 09:49 -0400, bfields@fieldses.org wrote:
-> > > > On Tue, Sep 28, 2021 at 01:30:17PM +0000, Trond Myklebust wrote:
-> > > > > On Tue, 2021-09-28 at 11:14 +0800, Wang Hai wrote:
-> > > > > > When use-gss-proxy is set to 1, write_gssp() creates a rpc
-> > > > > > client
-> > > > > > in
-> > > > > > gssp_rpc_create(), this increases the netns refcount by 2,
-> > > > > > these
-> > > > > > refcounts are supposed to be released in
-> > > > > > rpcsec_gss_exit_net(),
-> > > > > > but
-> > > > > > it
-> > > > > > will never happen because rpcsec_gss_exit_net() is triggered
-> > > > > > only
-> > > > > > when
-> > > > > > the netns refcount gets to 0, specifically:
-> > > > > >     refcount=0 -> cleanup_net() -> ops_exit_list ->
-> > > > > > rpcsec_gss_exit_net
-> > > > > > It is a deadlock situation here, refcount will never get to 0
-> > > > > > unless
-> > > > > > rpcsec_gss_exit_net() is called. So, in this case, the netns
-> > > > > > refcount
-> > > > > > should not be increased.
-> > > > > > 
-> > > > > > In this case, xprt will take a netns refcount which is not
-> > > > > > supposed
-> > > > > > to be taken. Add a new flag to rpc_create_args called
-> > > > > > RPC_CLNT_CREATE_NO_NET_REF for not increasing the netns
-> > > > > > refcount.
-> > > > > > 
-> > > > > > It is safe not to hold the netns refcount, because when
-> > > > > > cleanup_net(), it
-> > > > > > will hold the gssp_lock and then shut down the rpc client
-> > > > > > synchronously.
-> > > > > > 
-> > > > > > 
-> > > > > I don't like this solution at all. Adding this kind of flag is
-> > > > > going to
-> > > > > lead to problems down the road.
-> > > > > 
-> > > > > Is there any reason whatsoever why we need this RPC client to
-> > > > > exist
-> > > > > when there is no active knfsd server? IOW: Is there any reason
-> > > > > why
-> > > > > we
-> > > > > shouldn't defer creating this RPC client for when knfsd starts
-> > > > > up
-> > > > > in
-> > > > > this net namespace, and why we can't shut it down when knfsd
-> > > > > shuts
-> > > > > down?
-> > > > 
-> > > > The rpc create is done in the context of the process that writes
-> > > > to
-> > > > /proc/net/rpc/use-gss-proxy to get the right namespaces.  I don't
-> > > > know
-> > > > how hard it would be capture that information for a later create.
-> > > > 
-> > > 
-> > > svcauth_gss_proxy_init() uses the net namespace SVC_NET(rqstp)
-> > > (i.e.
-> > > the knfsd namespace) in the call to
-> > > gssp_accept_sec_context_upcall().
-> > > 
-> > > IOW: the net namespace used in the call to find the RPC client is
-> > > the
-> > > one set up by knfsd, and so if use-gss-proxy was set in a different
-> > > namespace than the one used by knfsd, then it won't be found.
-> > 
-> > Right.  If you've got multiple containers, you don't want to find a
-> > gss-proxy from a different container.
-> > 
-> 
-> Exactly. So there is no namespace context to capture in the RPC client
-> other than what's already in knfsd.
+On Tue, Sep 28, 2021 at 3:48 PM Philipp Tomsich
+<philipp.tomsich@vrull.eu> wrote:
 >
-> The RPC client doesn't capture any other process context. It can cache
-> a user cred in order to capture the user namespace, but that
-> information appears to be unused by this gssd RPC client.
+> Nick,
+>
+> On Tue, 28 Sept 2021 at 15:19, Nick Kossifidis <mick@ics.forth.gr> wrote:
+> >
+> > On 9/28/21 7:26 AM, Atish Patra wrote:
+> > > On Mon, Sep 27, 2021 at 8:50 PM Anup Patel <anup@brainfault.org> wrot=
+e:
+> > >>
+> > >> On Tue, Sep 28, 2021 at 6:32 AM Nick Kossifidis <mick@ics.forth.gr> =
+wrote:
+> > >>>
+> > >>> =CE=A3=CF=84=CE=B9=CF=82 2021-09-27 23:13, Atish Patra =CE=AD=CE=B3=
+=CF=81=CE=B1=CF=88=CE=B5:
+> > >>>>> We need to decide whether we should support the upstream kernel f=
+or
+> > >>>>> D1. Few things to consider.
+> > >>>>> =E2=80=93 Can it be considered as an errata ?
+> > >>>
+> > >>> It's one thing to follow the spec and have an error in the
+> > >>> implementation, and another to not follow the spec.
+> > >>>
+> > >>>>> =E2=80=93 Does it set a bad precedent and open can of worms in fu=
+ture ?
+> > >>>
+> > >>> IMHO yes, I'm thinking of Kendryte 210 devs for example coming up a=
+nd
+> > >>> asking for MMU support, they 've also shipped many chips already. I=
+ can
+> > >>> also imagine other vendors in the future coming up with implementat=
+ions
+> > >>> that violate the spec in which case handling the standard stuff wil=
+l
+> > >>> become messy and complex, and hurt performance/security. We'll end =
+up
+> > >>> filling the code with exceptions and tweaks all over the place. We =
+need
+> > >>> to be strict about what is "riscv" and what's "draft riscv" or "ris=
+cv
+> > >>> inspired", and what we are willing to support upstream. I can under=
+stand
+> > >>> supporting vendor extensions upstream but they need to fit within t=
+he
+> > >>> standard spec, we can't have for example extensions that use encodi=
+ng
+> > >>> space/csrs/fields etc reserved for standard use, they may only use
+> > >>> what's reserved for custom/vendor use. At least let's agree on that=
+.
+> > >>
+> > >> Totally agree with Nick here. It's a slippery slope.
+> > >>
+> > >> Including D1 PTE bits (or Kendryte K210 MMU) part of the Linux RISC-=
+V
+> > >> means future hardware which intentionally violates specs will also h=
+ave to
+> > >> be merged and the RISC-V patch acceptance policy will have no signif=
+icance.
+> > >>
+> > >>>
+> > >>>>> =E2=80=93 Can we just ignore D1 given the mass volume ?
+> > >>>>>
+> > >>>
+> > >>> IMHO no, we need to find a way to support it upstream but I believe
+> > >>> there is another question to answer:
+> > >>>
+> > >>> Do we also guarantee "one image to rule them all" approach, require=
+d by
+> > >>> binary distros, for implementations that violate the spec ? Are we =
+ok
+> > >>> for example to support Allwinner D1 upstream but require a custom
+> > >>> configuration/build instead of supporting it with the "generic" ima=
+ge ?
+> > >>> In one case we need to handle the violation at runtime and introduc=
+e
+> > >>> overhead for everyone (like looking up __riscv_svpbmt every time we=
+ set
+> > >>> a PTE in this case), in the other it's an #ifdef.
+> > >>
+> > >> At least, we should not have hardware violating specs as part of the
+> > >> unified kernel image instead have these intentional deviations/viola=
+tions
+> > >> under separate kconfig which will not be enabled by default. This me=
+ans
+> > >> vendors (of such hardware) and distros will have to explicitly enabl=
+e
+> > >> support for such violations/deviations.
+> > >>
+> > >
+> > > If we merge the code and are not enabled by default, it would be a
+> > > maintenance nightmare in future.
+> > > These part of the kernel will not be regularly tested but we have to
+> > > carry the changes for a long time.
+> >
+> > I don't see a difference between having these features as part of the
+> > generic image vs having them as custom configs/builds. The code will ge=
+t
+> > executed only on boards that support the custom/non-compliant
+> > implementation anyway. To the contrary we'll have more code to test if
+> > we are doing things at runtime vs at compile time.
+> >
+> > > Similar changes will only grow over time causing a lot of custom
+> > > configs that are not enabled by default.
+> > >
+> >
+> > We'll have a lot of custom configs that will only get used on boards
+> > that use them, vs runtime code that will run for no reason on every
+> > board and choose the default/standard-compliant implementation most of
+> > the time. In the end the code will only get tested on specific hardware
+> > anyway.
+> >
+> > > IMHO, if we want to support this board in upstream, we should just
+> > > clearly state that it is one time special exception
+> > > for this board only because of the following reasons
+> > >
+> > > 1. The board design predates the patch acceptance policy.
+> > > 2. We don't have enough affordable Linux compatible platforms today.
+> > > 3. Allowing running an upstream kernel on D1 helps the RISC-V softwar=
+e
+> > > ecosystem to grow.
+> > >
+> >
+> > The same can be said for Kendryte as well, are we willing to also
+> > support their MMU implementation on the generic image if a patch comes
+> > in? To be clear I'm not saying we shouldn't support D1 or Kendryte
+> > upstream, I'm just saying that we shouldn't sacrifice the complexity an=
+d
+> > performance of the code path for standard-compliant implementations, to
+> > support non-compliant implementations, and instead support non-complian=
+t
+> > implementations with custom kernel builds using compile time options. I=
+t
+>
+> For priming the pump on the software effort, having a solution that is en=
+abled
+> on distro-builds is clearly preferable =E2=80=94 that leads to the soluti=
+on that Palmer
+> had outlined at LPC, which is to have a KCONFIG option that enables the
+> alternate code paths and can be turned off for embedded use-cases.
+>
+> > still counts as upstream support, they won't have to maintain their own
+> > forks. It'll also allow custom implementations to have more flexibility
+> > on what they can do since they will be able to use completely
+> > different/custom code paths, instead of trying to fit in the standard
+> > code path (which will become a mess over time). I think this approach i=
+s
+> > much more flexible and will allow more customizations to be supported
+> > upstream in the future.
+>
+> The important detail will be the ground rules: changes have to be suffici=
+ently
+> quarantined that (a) they can be turned off, (b) can be reverted easily (=
+in case
+> that vendors fail to perform their maintenance obligations),
 
-OK, that's good to know, thanks.
+Can we really remove support once it is in and widely used?
 
-It's doing a path lookup (it uses an AF_LOCAL socket), and I'm not
-assuming that will get the same result across containers.  Is there an
-easy way to do just that path lookup here and delay the res till knfsd
-startup?
-
---b.
-
-> 
-> So I'll repeat my question: Why can't we set this gssd RPC client up at
-> knfsd startup time, and tear it down when knfsd is shut down?
-> 
-> -- 
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-> 
-> 
+> and (c) they don't
+> affect the performance and complexity of the standard code paths.
+>
+> Cheers,
+> Philipp.
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
