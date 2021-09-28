@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2F741B400
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2F541B406
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241814AbhI1Qj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        id S241864AbhI1Qjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhI1Qj1 (ORCPT
+        with ESMTP id S241841AbhI1Qjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:39:27 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0279CC06161C;
-        Tue, 28 Sep 2021 09:37:48 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id s17so66732543edd.8;
-        Tue, 28 Sep 2021 09:37:47 -0700 (PDT)
+        Tue, 28 Sep 2021 12:39:54 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42F7C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:38:14 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id r1so32977864ybo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:38:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jrcpzz4dtYaFlPbqYodpFsWNyFSc5+StVlE5y5OqwxM=;
-        b=k5ebFqrnBLaLFSno78OpVJG5cLS0Jevk+XVX+K57MW1HGDkaNy0LzwbRiUatPwHPIC
-         nqafbskkxODgUlEJSTNq+ZChz2FITbXr1JMVk00bczeaXwafIyrrmLwFTmyq+RYXiKF8
-         7nAJEYU8CL135keNqGc7C22BfSkAdVjT5xNHIifeSFteOkGNcTvsIZdEaBMg7+C1bW1N
-         LyW1YyjAw6/6FEnlMs1tceIJvtYz5pzTuzlx8F1yHUsudRA6Kj36UEkAigN/6RAjvEnB
-         fczwwPjw+OVtyYfQri0TkusvY12RU5oZP+Zs23nVW2n1eV96z5XBECMdk0/DY487o1MC
-         W58Q==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NidJhDFKleQVXlEZfqCJKrel6vUdjqPR6YuC5wFIREs=;
+        b=VaOO6PWInASpyJkK+NCUu7r06A85FElDK+VCiYMAWxx41ZXkhpPaJ4gvQAZdFV7yXE
+         rhMZ/bB+Di2JPC0yeZcB5c79kPLmix7zSmNr1GW8+vM4CYQypuKYcYEm9vLpDdY13I/t
+         UTUOuoJApZDWuGKPCRm/edwlKn7HXnISzfij5d7r07Vqc5koana6ZBbvdkJJokO6y5Eq
+         kHpvkHD6TbS1pxOG+Kth7Qlte25LP8+7gABsjPPbq618aDWKWa5cc6L2RFIj4UfVpCC4
+         7+WLhGm0IMFLcNAcGi/n7ZdmLJFVwC2xCDbGMEvGosa6doPy4aGdol4lIzZtir+Fsje/
+         olkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jrcpzz4dtYaFlPbqYodpFsWNyFSc5+StVlE5y5OqwxM=;
-        b=4uG9bNCh2oLiEJ2BMUhJP6820kszRR0a8eEjyM6If2R37EuR4wpMYfcBNrjstzix75
-         8pEVY7+mf1eJ/b8ojyNzGNDx8sQdlI4E7tsj5RfpgriEqtiyfACEPKf1ObC6GfeeVGFI
-         LXED14Q5/PgWZkU5gHUvN1ulg2IKKZLyXDxovAxzORbhDTVcHxwBQ6ht7lLdw/2bSTpe
-         EG8cHsUoLfUsBpyDqCKi6bk4hwVjGitLpg9iP8NYD/Tt6z2mEVC8eJavcUHQn+yh5Z3H
-         hpCJbURJYkwKsqRB5ezZaAMgOT/yeBHU+GsZ4BsbmqGFZ3VNpWHoqQqtFB/o5N6AP01P
-         ypiw==
-X-Gm-Message-State: AOAM531LEGvDxptjBh8k+j+JVPkbvKPKSx4yQe4xhtoOHBsD9azqWR52
-        uS2tleCU1G9wlNUmK9IUeSvuNRw6FzSgSg==
-X-Google-Smtp-Source: ABdhPJx0IjUpgp+y/ta+eDfb+DgVaWhzMy0duDs4Sk4ZhwrKZ3FpocIZVGLBHxbFgQDHdt2M1yrubQ==
-X-Received: by 2002:a17:906:7053:: with SMTP id r19mr7672281ejj.476.1632847065213;
-        Tue, 28 Sep 2021 09:37:45 -0700 (PDT)
-Received: from anparri.mshome.net (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
-        by smtp.gmail.com with ESMTPSA id u4sm10737848ejc.19.2021.09.28.09.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 09:37:44 -0700 (PDT)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited incoming packets
-Date:   Tue, 28 Sep 2021 18:37:32 +0200
-Message-Id: <20210928163732.5908-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NidJhDFKleQVXlEZfqCJKrel6vUdjqPR6YuC5wFIREs=;
+        b=yjdKVU/ngkGdJZgR5u9mxEJE04tLbFXN1McuvdsLIZXFH3J+Yh8uO/6VP1gvjVPfZe
+         E8xZANsVjsWwwN6XIXSC/uuwSzDpKpvXEUajOhkF1K1uac7j+VXC1qoRL6X+2tqf/M2H
+         oJHt/6V4tD3DxD1kiCKYaFE4sfbWjYOkhHPqDG+PkEnv9X8CGx49Q5quFtM6qhVeVcgi
+         t6fCVAGfL2vg6uzZ5MNIMf9CAQHJ46kEGiIwizmGLDPn0M7cBt9Bkp3Jdt+0n9L6J5Gc
+         05jPq2Q/sfhXM3gO36PACGYeAI6Y2x4OI2xn5EMcvonC8a3mrcmnGbhnNwqRVQuh4nMO
+         0DOw==
+X-Gm-Message-State: AOAM532qRsQW+n9NNZaEXEvJ0Ms6mhzu7mu+hClMALvEt+bgsddmsaMB
+        KQb+5tq6pZacmEqeiChDfDGvGjwvNK1wRGWFbmNAxA==
+X-Google-Smtp-Source: ABdhPJyexz0v4kSqFZ9qeYAlNw+MyCoD5uulH8/ODMbblguUJ/vUtCAhclfCvhFYok2NfKJqLxRpbX3rD+QF+59idGw=
+X-Received: by 2002:a25:4684:: with SMTP id t126mr6335213yba.476.1632847092780;
+ Tue, 28 Sep 2021 09:38:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210927204830.4018624-1-dmitry.baryshkov@linaro.org>
+ <CAGETcx-3Y3rOSoXu3SbDa6BP_jcT8uSQA+MV55QCY4b0Oe7L-A@mail.gmail.com>
+ <11fe1793-1455-ae44-b213-9afe47dfa370@linaro.org> <CAGETcx_HRmvDKuXQEJkMk7zBpedLGkQmvJ24tAWpCHFf4DPX_w@mail.gmail.com>
+ <YVMK90kRtkBxptlR@kroah.com>
+In-Reply-To: <YVMK90kRtkBxptlR@kroah.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 28 Sep 2021 09:37:36 -0700
+Message-ID: <CAGETcx_7hgF_mk+fh6Bk1VvGm=2t1gZ_P2C4+N2Ai0V6jEkpxw@mail.gmail.com>
+Subject: Re: [PATCH] Revert "of: property: fw_devlink: Add support for remote-endpoint"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The validation on the length of incoming packets performed in
-storvsc_on_channel_callback() does not apply to "unsolicited"
-packets with ID of 0 sent by Hyper-V.  Adjust the validation
-by handling such unsolicited packets separately.
+On Tue, Sep 28, 2021 at 5:30 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Sep 27, 2021 at 06:13:12PM -0700, Saravana Kannan wrote:
+> > On Mon, Sep 27, 2021 at 5:56 PM Dmitry Baryshkov
+> > > root@qcom-armv8a:~# ls -l /sys/bus/platform/devices/88e9000.phy/
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+> > > consumer:platform:a600000.usb ->
+> > > ../../../virtual/devlink/platform:88e9000.phy--platform:a600000.usb
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+> > > consumer:platform:af00000.clock-controller ->
+> > > ../../../virtual/devlink/platform:88e9000.phy--platform:af00000.clock-controller
+> > > -rw-r--r--    1 root     root          4096 Aug  4 15:13 driver_override
+> > > -r--r--r--    1 root     root          4096 Aug  4 15:13 modalias
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:13 of_node ->
+> > > ../../../../firmware/devicetree/base/soc@0/phy@88e9000
+> > > drwxr-xr-x    2 root     root             0 Aug  4 15:13 power
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:10 subsystem ->
+> > > ../../../../bus/platform
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+> > > supplier:platform:100000.clock-controller ->
+> > > ../../../virtual/devlink/platform:100000.clock-controller--platform:88e9000.phy
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+> > > supplier:platform:18200000.rsc:clock-controller ->
+> > > ../../../virtual/devlink/platform:18200000.rsc:clock-controller--platform:88e9000.phy
+> > > lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+> > > supplier:platform:18200000.rsc:pm8150-rpmh-regulators ->
+> > > ../../../virtual/devlink/platform:18200000.rsc:pm8150-rpmh-regulators--platform:88e9000.phy
+> > > -rw-r--r--    1 root     root          4096 Aug  4 15:10 uevent
+> > > -r--r--r--    1 root     root          4096 Aug  4 15:13
+> > > waiting_for_supplier
+> > >
+> > > Thus it is not possible to spot this device link without
+> > > CONFIG_DEBUG_DRIVER=y (or any similar debugging technique).
+> >
+> > I sent out some patches to make this easier. But doesn't look like
+> > it'll land in 5.15.
+> > https://lore.kernel.org/lkml/20210915172808.620546-1-saravanak@google.com/
+>
+> I have now queued these up to make it into 5.15-final, this thread has
+> convinced me :)
 
-Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()")
-Reported-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
----
-The (new) bound, VSTOR_MIN_UNSOL_PKT_SIZE, was "empirically
-derived" based on testing and code auditing.  This explains
-the RFC tag...
+Thanks :)
 
- drivers/scsi/storvsc_drv.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index ebbbc1299c625..a9bbcbbfb54ee 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -292,6 +292,9 @@ struct vmstorage_protocol_version {
- #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
- #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
- 
-+/* Lower bound on the size of unsolicited packets with ID of 0 */
-+#define VSTOR_MIN_UNSOL_PKT_SIZE		48
-+
- struct vstor_packet {
- 	/* Requested operation type */
- 	enum vstor_packet_operation operation;
-@@ -1285,11 +1288,13 @@ static void storvsc_on_channel_callback(void *context)
- 	foreach_vmbus_pkt(desc, channel) {
- 		struct vstor_packet *packet = hv_pkt_data(desc);
- 		struct storvsc_cmd_request *request = NULL;
-+		u32 pktlen = hv_pkt_datalen(desc);
- 		u64 rqst_id = desc->trans_id;
- 
--		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
-+		/* Unsolicited packets with ID of 0 are validated separately below */
-+		if (rqst_id != 0 && pktlen < sizeof(struct vstor_packet) -
- 				stor_device->vmscsi_size_delta) {
--			dev_err(&device->device, "Invalid packet len\n");
-+			dev_err(&device->device, "Invalid packet: length=%u\n", pktlen);
- 			continue;
- 		}
- 
-@@ -1298,8 +1303,14 @@ static void storvsc_on_channel_callback(void *context)
- 		} else if (rqst_id == VMBUS_RQST_RESET) {
- 			request = &stor_device->reset_request;
- 		} else {
--			/* Hyper-V can send an unsolicited message with ID of 0 */
- 			if (rqst_id == 0) {
-+				if (pktlen < VSTOR_MIN_UNSOL_PKT_SIZE) {
-+					dev_err(&device->device,
-+						"Invalid packet with ID of 0: length=%u\n",
-+						pktlen);
-+					continue;
-+				}
-+
- 				/*
- 				 * storvsc_on_receive() looks at the vstor_packet in the message
- 				 * from the ring buffer.  If the operation in the vstor_packet is
--- 
-2.25.1
-
+-Saravana
