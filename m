@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D9E41B78A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CAB41B7A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242495AbhI1T2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:28:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237134AbhI1T2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:28:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA0B660EFF;
-        Tue, 28 Sep 2021 19:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632857225;
-        bh=oCBbl8iyvvFuyp7pTuxm/BITtl36CdytkTW4MqCGb/k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rM9pR8eZiIKWWK1u0jAbzGhkG9T841zlHUHom9g9KmEzcfPA6ukthnvNxtOPDPCFf
-         tiFtDSCp3L/3XPoNKMmqFUV966AzHTKdEbklcmFdNR1flRDM1xV1hlXYauXchBqdFr
-         O4qcAE7movxqfhGBzJMte4iEhQBtWCI+cY/YrcoruFdY0cDj4gYuG3VV2QV5mUT7nh
-         GXb1JF44xzs96Ag+RxyPf6BZdjt5DX14kF0hlbm6Yn421zSYEjZhZxsBF90JD6VvMO
-         GDfDemnYOgXveuxXGXW4ehhwLxNG4UtoJW9aAVMrGicgsBCucKAaio8LG1kPHQlX2w
-         dl+MLWyvRefkA==
-Date:   Tue, 28 Sep 2021 14:31:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2][net-next] net_sched: Use struct_size() and
- flex_array_size() helpers
-Message-ID: <20210928193107.GA262595@embeddedor>
+        id S242470AbhI1Tdm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 15:33:42 -0400
+Received: from mail.shanghaitech.edu.cn ([119.78.254.11]:4666 "EHLO
+        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237134AbhI1Tdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:33:41 -0400
+Received: from [10.15.44.215] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 480405207077045;
+        Wed, 29 Sep 2021 03:31:47 +0800 (CST)
+Received: from DESKTOP-FOJ6ELG.localdomain (10.15.44.220) by
+ smtp.shanghaitech.edu.cn (10.15.44.215) with Microsoft SMTP Server (TLS) id
+ 14.3.399.0; Wed, 29 Sep 2021 03:31:46 +0800
+From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Subject: [PATCH -next] drivers/base/arch_topology.c: remove superfluous header
+Date:   Wed, 29 Sep 2021 03:31:38 +0800
+Message-ID: <20210928193138.24192-1-liumh1@shanghaitech.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.15.44.220]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() and flex_array_size() helpers instead of
-an open-coded version, in order to avoid any potential type mistakes
-or integer overflows that, in the worse scenario, could lead to heap
-overflows.
+arch_topology.c hasn't use any macro or function declared in linux/percpu.h,
+linux/smp.h and linux/string.h.
+Thus, these files can be removed from arch_topology.c safely without
+affecting the compilation of the drivers/base/ module
 
-Link: https://github.com/KSPP/linux/issues/160
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+
 ---
-Changes in v2:
- - Rebase on top of net-next/master.
+ drivers/base/arch_topology.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
- net/sched/sch_api.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index 5e90e9b160e3..e1a40d3b1ed0 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -507,20 +507,21 @@ static struct qdisc_size_table *qdisc_get_stab(struct nlattr *opt,
- 	list_for_each_entry(stab, &qdisc_stab_list, list) {
- 		if (memcmp(&stab->szopts, s, sizeof(*s)))
- 			continue;
--		if (tsize > 0 && memcmp(stab->data, tab, tsize * sizeof(u16)))
-+		if (tsize > 0 &&
-+		    memcmp(stab->data, tab, flex_array_size(stab, data, tsize)))
- 			continue;
- 		stab->refcnt++;
- 		return stab;
- 	}
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 434076659..92200873b 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -12,15 +12,12 @@
+ #include <linux/device.h>
+ #include <linux/of.h>
+ #include <linux/slab.h>
+-#include <linux/string.h>
+ #include <linux/sched/topology.h>
+ #include <linux/cpuset.h>
+ #include <linux/cpumask.h>
+ #include <linux/init.h>
+-#include <linux/percpu.h>
+ #include <linux/rcupdate.h>
+ #include <linux/sched.h>
+-#include <linux/smp.h>
  
--	stab = kmalloc(sizeof(*stab) + tsize * sizeof(u16), GFP_KERNEL);
-+	stab = kmalloc(struct_size(stab, data, tsize), GFP_KERNEL);
- 	if (!stab)
- 		return ERR_PTR(-ENOMEM);
- 
- 	stab->refcnt = 1;
- 	stab->szopts = *s;
- 	if (tsize > 0)
--		memcpy(stab->data, tab, tsize * sizeof(u16));
-+		memcpy(stab->data, tab, flex_array_size(stab, data, tsize));
- 
- 	list_add_tail(&stab->list, &qdisc_stab_list);
- 
+ static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+ static struct cpumask scale_freq_counters_mask;
 -- 
-2.27.0
+2.25.1
+
 
