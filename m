@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2496F41B7D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412DC41B7CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242586AbhI1T7L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 15:59:11 -0400
-Received: from mail.shanghaitech.edu.cn ([119.78.254.11]:11895 "EHLO
-        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242525AbhI1T7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:59:07 -0400
-X-Greylist: delayed 567 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 15:59:07 EDT
-Received: from [10.15.44.215] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 480409496331105;
-        Wed, 29 Sep 2021 03:57:08 +0800 (CST)
-Received: from DESKTOP-FOJ6ELG.localdomain (10.15.44.220) by
- smtp.shanghaitech.edu.cn (10.15.44.215) with Microsoft SMTP Server (TLS) id
- 14.3.399.0; Wed, 29 Sep 2021 03:57:08 +0800
-From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Mianhan Liu <liumh1@shanghaitech.edu.cn>
-Subject: [PATCH] ./drivers/bluetooth/btqcomsmd.c: remove superfluous header files from btqcomsmd.c
-Date:   Wed, 29 Sep 2021 03:56:59 +0800
-Message-ID: <20210928195659.18645-1-liumh1@shanghaitech.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S242598AbhI1TzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:55:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242492AbhI1TzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:55:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EAC561139;
+        Tue, 28 Sep 2021 19:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632858813;
+        bh=e6MtrjsgtQPw9bfe+NcBnbhVfsOEoU0GU4nhflE6ch8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NCQ9+jzB5f6pisllAQXlnmIvPZYIPhCkeQidb19IDqRI7VPivuLARbfSI3v1X3qj4
+         lpxGvQBONpAsPAnitBBzeTXLroMxTdq2s+Fml0gMY/8Dl37RJb9vSMFLVcS76yIXoB
+         p+551u+4+32fJcT7vDOfTAIW9MfoodTg1dtwX1/0ACbd2Qi7spsokUFC6L7QNpVv8K
+         uqGLNkrXp4eJwBmXcrcITbib6mky9QV0M/gtVV12lVJcoMELKUIVHSArSx7YQBoAtE
+         Qf6ifuU4uYe5FIKnsvd2YAPsmgAek96+5Za9YBaGyhy1XDhFZZcRXoZm8Ri/zqwdxR
+         e4neogR1a8UTQ==
+Date:   Tue, 28 Sep 2021 14:57:35 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][net-next] ethtool: ioctl: Use array_size() helper in
+ copy_{from,to}_user()
+Message-ID: <20210928195735.GA264809@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain
-X-Originating-IP: [10.15.44.220]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-btqcomsmd.c hasn't use any macro or function declared in btqca.h,
-linux/of.h and linux/slab.h.
-Thus, these files can be removed from btqcomsmd.c safely without
-affecting the compilation of the ./drivers/bluetooth module
+Use array_size() helper instead of the open-coded version in
+copy_{from,to}_user().  These sorts of multiplication factors
+need to be wrapped in array_size().
+
+Link: https://github.com/KSPP/linux/issues/160
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/bluetooth/btqcomsmd.c | 3 ---
- 1 file changed, 3 deletions(-)
+ net/ethtool/ioctl.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/bluetooth/btqcomsmd.c b/drivers/bluetooth/btqcomsmd.c
-index 2acb719e5..0fcb423c4 100644
---- a/drivers/bluetooth/btqcomsmd.c
-+++ b/drivers/bluetooth/btqcomsmd.c
-@@ -5,9 +5,7 @@
-  */
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 999e2a6bed13..bf6e8c2f9bf7 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -89,7 +89,8 @@ static int ethtool_get_features(struct net_device *dev, void __user *useraddr)
+ 	if (copy_to_user(useraddr, &cmd, sizeof(cmd)))
+ 		return -EFAULT;
+ 	useraddr += sizeof(cmd);
+-	if (copy_to_user(useraddr, features, copy_size * sizeof(*features)))
++	if (copy_to_user(useraddr, features,
++			 array_size(copy_size, sizeof(*features))))
+ 		return -EFAULT;
  
- #include <linux/module.h>
--#include <linux/slab.h>
- #include <linux/rpmsg.h>
--#include <linux/of.h>
+ 	return 0;
+@@ -799,7 +800,7 @@ static noinline_for_stack int ethtool_get_sset_info(struct net_device *dev,
+ 		goto out;
  
- #include <linux/soc/qcom/wcnss_ctrl.h>
- #include <linux/platform_device.h>
-@@ -15,7 +13,6 @@
- #include <net/bluetooth/bluetooth.h>
- #include <net/bluetooth/hci_core.h>
+ 	useraddr += offsetof(struct ethtool_sset_info, data);
+-	if (copy_to_user(useraddr, info_buf, idx * sizeof(u32)))
++	if (copy_to_user(useraddr, info_buf, array_size(idx, sizeof(u32))))
+ 		goto out;
  
--#include "btqca.h"
+ 	ret = 0;
+@@ -1022,7 +1023,7 @@ static int ethtool_copy_validate_indir(u32 *indir, void __user *useraddr,
+ {
+ 	int i;
  
- struct btqcomsmd {
- 	struct hci_dev *hdev;
+-	if (copy_from_user(indir, useraddr, size * sizeof(indir[0])))
++	if (copy_from_user(indir, useraddr, array_size(size, sizeof(indir[0]))))
+ 		return -EFAULT;
+ 
+ 	/* Validate ring indices */
+@@ -1895,7 +1896,7 @@ static int ethtool_self_test(struct net_device *dev, char __user *useraddr)
+ 	if (copy_to_user(useraddr, &test, sizeof(test)))
+ 		goto out;
+ 	useraddr += sizeof(test);
+-	if (copy_to_user(useraddr, data, test.len * sizeof(u64)))
++	if (copy_to_user(useraddr, data, array_size(test.len, sizeof(u64))))
+ 		goto out;
+ 	ret = 0;
+ 
+@@ -1937,7 +1938,8 @@ static int ethtool_get_strings(struct net_device *dev, void __user *useraddr)
+ 		goto out;
+ 	useraddr += sizeof(gstrings);
+ 	if (gstrings.len &&
+-	    copy_to_user(useraddr, data, gstrings.len * ETH_GSTRING_LEN))
++	    copy_to_user(useraddr, data,
++			 array_size(gstrings.len, ETH_GSTRING_LEN)))
+ 		goto out;
+ 	ret = 0;
+ 
 -- 
-2.25.1
-
+2.27.0
 
