@@ -2,88 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A4841B427
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9565641B464
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241899AbhI1QpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:45:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhI1QpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:45:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21FB661262;
-        Tue, 28 Sep 2021 16:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632847415;
-        bh=DhJjFTTFkazjP1XuwCae41RMyEElrP/mXzZaoteYjUo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M/RzLMhQRcyIEjAFhh0GhTf993U7L7630Owtw6N494O+uUDxaqiutCHMveFCeJuuS
-         22pp3ILDAtbbmxJDALokVoZ94L3CVtvderAJsof2sfZaMtP0iL8ngG4Ecxlk2eNFFz
-         W3bXjGbNlox6m/oPdQ6biFJYW7Xt6EVr6zr/eCxzK91kMqIjrCsJSrdglt4QfidLv3
-         tk4mxVZ7f8I7G8m1f2cNuBHNKjZedSP3Knccax6eam6Qmjw1PVOj8Ip9uwRV//yzu0
-         AEJRrDkv1B7+Z/15bFKbllxQ9FKkCNCVAoTYgJF6YuFqrgf0SDjBSXTatLTDZXAHGP
-         j+lN6FzSUM3Ug==
-Date:   Tue, 28 Sep 2021 09:43:30 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: drivers/gpu/drm/kmb/kmb_dsi.c:812:2: warning: unused function
- 'set_test_mode_src_osc_freq_target_low_bits'
-Message-ID: <YVNGMg/TI+jo/1R1@archlinux-ax161>
-References: <202109282205.VsHhj6PP-lkp@intel.com>
- <CAMuHMdX0Zm_hMheZ0e1Xu991jnUr=aY_cDBHHGFvQ1sKqM1b9A@mail.gmail.com>
+        id S241813AbhI1Qsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229795AbhI1Qsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:48:36 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BFEC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:46:56 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id dn26so8704191edb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:46:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TUxglweC6N1WY79ISdseA2NBR0rjJM+nm4q/sPuPvsA=;
+        b=ORghtTfTJlUjmS/iU/IOM0zHv2l5wotpDxzaZJP0qH2UabwgsPuO55RGX4n2YAkccf
+         NgxUgtAKvNjHvp0+rhawdMFNacSNNZv81hjdx1Q4EAOdX4YFZqBDKFEcsV4/UqTv3Cgz
+         4j9CNi6uFwBwneW/h97PtvBzG+QB6unQhG3XZzMtN/TL0fgBFH3CBvPDo1wK+KVlfyfj
+         iqGZ1xPszqaQVbOHupcPZGQNt3vn/zIv7Ht6li3AouYpM/SeiBNfNk4VkPEt8dxjWSUA
+         i1gqkXiR3AsJ7alttSk17M1YFwhr8d2687VpjNNpx0N4IOtBWxAL4XS+0xh1t9ZWPB81
+         si9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TUxglweC6N1WY79ISdseA2NBR0rjJM+nm4q/sPuPvsA=;
+        b=N7l5YF4/CDxAMxCRKW4n/EYKGxav7UWkINNc+WmpQYiA+lVvNq7LVslfyOk/CqlG/D
+         X1sJtgLSZmuxht+NxSZYnEd5XvbPHnA8/ySb5bf2H6ZL+3UbUcazlSacK+LiXhlcUT9q
+         3/nlzcAYl3cOfZ4hOW3vq8UveQKatpUKcJ+MoDWbJZiEYAuXB52IL5VKl90VxB3wOwq9
+         JWe78gF3mzu2t8ios6PjVIm+CgPz7fOYSFPYo308CD+yKdgHyWAnF3Z5vmT5sl+JVIEb
+         N1d9EWamsWxgSvg1Fun9wOUqAJLsycXcQjt6Jy72Bjo4VBwQSmdhWEjq7oYSayqBW4fl
+         3rkQ==
+X-Gm-Message-State: AOAM532pTRFF0ToC/pdZxjh2ttc0cN9PB7XJrU6JKeCtg+8xXS6cdFNQ
+        Nb6GrZ1VJrdnkORUR3C9yZYXQE8Ov8WmoPN3I+dP2A==
+X-Google-Smtp-Source: ABdhPJyoQ8w3rXfIaAKPbUHV7IKGbpBzKG6kA3uJYEVUw8UsKwgpcetJC6CjtuU0Z8lM3P2Grz7Et1wVehMdUw8Z9hQ=
+X-Received: by 2002:a05:6402:5146:: with SMTP id n6mr8547850edd.357.1632847614431;
+ Tue, 28 Sep 2021 09:46:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX0Zm_hMheZ0e1Xu991jnUr=aY_cDBHHGFvQ1sKqM1b9A@mail.gmail.com>
+References: <20210928071741.331837387@linuxfoundation.org>
+In-Reply-To: <20210928071741.331837387@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Sep 2021 22:16:42 +0530
+Message-ID: <CA+G9fYsp=-fDNdY-NYx6oZUmaembx5MqPZh-YA4Cwn=TVLm12w@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/102] 5.10.70-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Tue, 28 Sept 2021 at 12:49, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.70 release.
+> There are 102 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 30 Sep 2021 07:17:22 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.70-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Tue, Sep 28, 2021 at 05:39:19PM +0200, Geert Uytterhoeven wrote:
-> On Tue, Sep 28, 2021 at 5:09 PM kernel test robot <lkp@intel.com> wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   0513e464f9007b70b96740271a948ca5ab6e7dd7
-> > commit: ade896460e4a62f5e4a892a98d254937f6f5b64c drm: DRM_KMB_DISPLAY should depend on ARCH_KEEMBAY
-> > date:   11 months ago
-> > config: mips-randconfig-r013-20210928 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install mips cross compiling tool for clang build
-> >         # apt-get install binutils-mips-linux-gnu
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ade896460e4a62f5e4a892a98d254937f6f5b64c
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout ade896460e4a62f5e4a892a98d254937f6f5b64c
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash drivers/gpu/drm/kmb/ drivers/net/ethernet/mellanox/mlxsw/ mm/
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> drivers/gpu/drm/kmb/kmb_dsi.c:812:2: warning: unused function 'set_test_mode_src_osc_freq_target_low_bits'
-> >    set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi
-> >    ^
-> > >> drivers/gpu/drm/kmb/kmb_dsi.c:824:2: warning: unused function 'set_test_mode_src_osc_freq_target_hi_bits'
-> >    set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi
-> 
-> These two functions are "static inline", so there should not be such
-> warning. Toolchain issue?
+The stable-rc 5.10.70-rc2 report,
 
-No toolchain issue, Masahiro specifically made clang W=1 builds warns on
-static inline unused functions because of instances like this, see
-commit 6863f5643dd7 ("kbuild: allow Clang to find unused static inline
-functions for W=1 build").
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Cheers,
-Nathan
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.10.70-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 9583b61453b7d7bd52b2b593858583715f37f254
+* git describe: v5.10.69-103-g9583b61453b7
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.69-103-g9583b61453b7
+
+## No regressions (compared to v5.10.67-125-gbb6d31464809)
+
+## No fixes (compared to v5.10.67-125-gbb6d31464809)
+
+## Test result summary
+total: 83364, pass: 69629, fail: 554, skip: 12129, xfail: 1052
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 289 passed, 0 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 35 passed, 1 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
