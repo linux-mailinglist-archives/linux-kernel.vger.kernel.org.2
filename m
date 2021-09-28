@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A0941AF0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4948441AF0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240724AbhI1Mbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240526AbhI1Mbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S240534AbhI1Mbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240571AbhI1Mbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Sep 2021 08:31:47 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BE5C061575;
-        Tue, 28 Sep 2021 05:30:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yF1lWcH2qjndVjno9oL2GGiLBEO3Zc/VEOg/LYKD2Zw=; b=pZ1FyoI9SmTcmf2eZPSWQ3fJk4
-        1+u2M1qKaoebPofrBylcAMGuLhkJDQMwn6KxxRQTmq4UnrtBzY9nhdD1J4tU3Va+nfTCmHULJWFA8
-        x1xzp0CQubwEDl0UQYsaEhvENaTFyJqLxLHV7PgQfnCGN6BeMcKhkbCGnveCHh81Urls4vT+Z4R8J
-        94ytDvUot3QCjQDlJHsRC6CuMFTvXnB7HtfTUpOP3c/Ne/KqAfw6p8e4Ks9EHn8Coiu0uL8l97ZOW
-        7H48RAShYAU0uP8oMAb1r4SSGKc5zt+kAVlHQUd8yAaueUmPeAXjNMi1E/GRklyR5Nj4+kHsD1CQr
-        8YXbGVrw==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1mVCFG-0004La-Ms; Tue, 28 Sep 2021 15:30:02 +0300
-Subject: Re: [PATCH -next v2] memory: tegra186-emc: Fix error return code in
- tegra186_emc_probe()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     krzysztof.kozlowski@canonical.com, mperttunen@nvidia.com
-References: <20210928021545.3774677-1-yangyingliang@huawei.com>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <9080ad2f-e01b-5c7a-333e-6039a8824ae5@kapsi.fi>
-Date:   Tue, 28 Sep 2021 15:30:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: by mail.kernel.org (Postfix) with ESMTPS id 44232611F0;
+        Tue, 28 Sep 2021 12:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632832208;
+        bh=XNbhJ0Qs1GVCmMoLw+Q1yDMi3WDMwW1B9piNF+yvZJQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GPlIqGr857ucQ9Wty2ycb3h6ZEgGLsTdbaqlpWrdLNhb6LrmS6/J3JhmGtZVhH1HT
+         nnjiOocSqThHQ9eKpeZxTvaobNglzQcHDmV2pdENKYwvOuJADDMefvDhaDG18/dJIC
+         7aZP/9OgDFB6XUqs5aqVPRj43mZsXxz9yZws29B4rjaS0Afj8cD8skCbrv81UtKf2I
+         LrBb6m2DWIA0PZ8UdkfVTEkFoEVxrhewCAIO7I8MZupUVYAhEcS/6m3MwhpJMiaswc
+         2ziEu8WA0xN0Qd3ENb8X8ls02gUM4rrFPU4KXy960QbbNy2ZrejECcUr2lMVxeThpW
+         anONbL2DhYKdg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 384CA60A7E;
+        Tue, 28 Sep 2021 12:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210928021545.3774677-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: mdio: mscc-miim: Fix the mdio controller
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163283220822.6805.11331370615132640445.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Sep 2021 12:30:08 +0000
+References: <20210928071720.2084666-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20210928071720.2084666-1-horatiu.vultur@microchip.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, caihuoqing@baidu.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 5:15 AM, Yang Yingliang wrote:
-> Return the error code when command fails.
-> 
-> Fixes: 13324edbe926 ("memory: tegra186-emc: Handle errors in BPMP response")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->   drivers/memory/tegra/tegra186-emc.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/memory/tegra/tegra186-emc.c b/drivers/memory/tegra/tegra186-emc.c
-> index abc0c2eeaab7..746c4ef2c0af 100644
-> --- a/drivers/memory/tegra/tegra186-emc.c
-> +++ b/drivers/memory/tegra/tegra186-emc.c
-> @@ -198,6 +198,7 @@ static int tegra186_emc_probe(struct platform_device *pdev)
->   		goto put_bpmp;
->   	}
->   	if (msg.rx.ret < 0) {
-> +		err = -EINVAL;
->   		dev_err(&pdev->dev, "EMC DVFS MRQ failed: %d (BPMP error code)\n", msg.rx.ret);
->   		goto put_bpmp;
->   	}
-> 
+Hello:
 
-Reviewed-by: Mikko Perttunen <mperttunen@nvidia.com>
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Tue, 28 Sep 2021 09:17:20 +0200 you wrote:
+> According to the documentation the second resource is optional. But the
+> blamed commit ignores that and if the resource is not there it just
+> fails.
+> 
+> This patch reverts that to still allow the second resource to be
+> optional because other SoC have the some MDIO controller and doesn't
+> need to second resource.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: mdio: mscc-miim: Fix the mdio controller
+    https://git.kernel.org/netdev/net/c/c6995117b60e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
