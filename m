@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE2A41A5CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 04:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD4D41A5D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 05:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238840AbhI1DAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Sep 2021 23:00:16 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:44325 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238822AbhI1DAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Sep 2021 23:00:07 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18S2aVAJ072697;
-        Tue, 28 Sep 2021 10:36:31 +0800 (GMT-8)
-        (envelope-from tommy_huang@aspeedtech.com)
-Received: from tommy0527-VirtualBox.aspeedtech.com (192.168.2.141) by
- TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 28 Sep 2021 10:57:11 +0800
-From:   tommy-huang <tommy_huang@aspeedtech.com>
-To:     <joel@jms.id.au>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <robh+dt@kernel.org>, <andrew@aj.id.au>,
-        <linux-aspeed@lists.ozlabs.org>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH 6/6] dt-bindings: gpu: Add ASPEED GFX bindings document
-Date:   Tue, 28 Sep 2021 10:57:03 +0800
-Message-ID: <20210928025703.10909-7-tommy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210928025703.10909-1-tommy_huang@aspeedtech.com>
-References: <20210928025703.10909-1-tommy_huang@aspeedtech.com>
+        id S238759AbhI1DDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Sep 2021 23:03:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238710AbhI1DDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Sep 2021 23:03:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4751961156;
+        Tue, 28 Sep 2021 03:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632798100;
+        bh=etcWicIya78aAu3YgO2YZU7Km62u3r0LRoISmor1eqk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=RZH11clboMwjHRzownDyG7gYVL9PPmQcoKVi2Lus11wvBCli72L/0F69o3iXvnrdW
+         4alwwpmN1cEx4jnbs3cRFxBsXBRHxwIT4MAoPOosfu2DLFBlCv1J4i/GDec6g6Kere
+         0na4r8UNblarbPQatQr5nwYrILfBtrjNMd+QH4xgNU74lzJ71oZCY9PqC/BCM0HAB1
+         I5d33KBl0YbxLT5oheLEVT6F+8nATnH8V9rwJRjGtioC+izah85Y7ZkHoLifobjGWi
+         nr02yo+WUYSmQNxx8cMUSexOG1byzo9u488Uwq+NYo7TxnqGK4abYnud4hHK1LFDXC
+         baGQ+Bj6QBayg==
+Message-ID: <20d92bf2ae51aac2e5acaf5a206f7cdbb065904b.camel@kernel.org>
+Subject: Re: [PATCH v5 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Tue, 28 Sep 2021 06:01:38 +0300
+In-Reply-To: <0f75a6db-27e6-dfc5-4025-e81d8e753e30@intel.com>
+References: <20210914030422.377601-1-jarkko@kernel.org>
+         <20210914030422.377601-2-jarkko@kernel.org>
+         <f45245ba-41b8-62ae-38b5-64725a214bad@intel.com>
+         <254864594af4cde213a37a4db527e293a1ef1d7a.camel@kernel.org>
+         <0f75a6db-27e6-dfc5-4025-e81d8e753e30@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.141]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18S2aVAJ072697
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ast2600-gfx description for gfx driver.
+On Thu, 2021-09-23 at 13:39 -0700, Reinette Chatre wrote:
+> Hi Jarkko,
+>=20
+> On 9/23/2021 1:30 PM, Jarkko Sakkinen wrote:
+> > So cat you pick these patches to your patch set, and squash
+> > this fix to it?
+>=20
+> My patch set is focused on SGX selftests while this series target the=20
+> x86 tree. I assumed that this series would go into x86 separately and=20
+> after they land we can proceed with the SGX selftest work.
 
-Signed-off-by: tommy-huang <tommy_huang@aspeedtech.com>
----
- Documentation/devicetree/bindings/gpu/aspeed-gfx.txt | 1 +
- 1 file changed, 1 insertion(+)
+But now your series has no chance to be applied, given that
+it contains patches which have discarded given a superior
+approach.
 
-diff --git a/Documentation/devicetree/bindings/gpu/aspeed-gfx.txt b/Documentation/devicetree/bindings/gpu/aspeed-gfx.txt
-index 958bdf962339..29ecf119cef2 100644
---- a/Documentation/devicetree/bindings/gpu/aspeed-gfx.txt
-+++ b/Documentation/devicetree/bindings/gpu/aspeed-gfx.txt
-@@ -3,6 +3,7 @@ Device tree configuration for the GFX display device on the ASPEED SoCs
- Required properties:
-   - compatible
-     * Must be one of the following:
-+      + aspeed,ast2600-gfx
-       + aspeed,ast2500-gfx
-       + aspeed,ast2400-gfx
-     * In addition, the ASPEED pinctrl bindings require the 'syscon' property to
--- 
-2.17.1
+Anyway, node fields are initialized here:
+
+		if (!node_isset(nid, sgx_numa_mask)) {
+			spin_lock_init(&sgx_numa_nodes[nid].lock);
+			INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
+			node_set(nid, sgx_numa_mask);
+		}
+
+The correct way to fix the issue is to add
+
+			sgx_numa_nodes[nid].size =3D 0;
+
+Using kcalloc() would not be very sound, since you would wastefully
+initialize the pre-existing fields of the struct two times: first
+with zeros, and then with "real" values.
+
+/Jarkko
 
