@@ -2,332 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5329541AC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2851241AC82
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240079AbhI1J6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:58:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30363 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240060AbhI1J6V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:58:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632823002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Ac1KzapFbm3DrLpJhS8RPsZYRZpeFigmvf6S+kYg10=;
-        b=eJ5y8nRaNyADvgFwx4dt07Jh58Dij5voS6ZYdygh+PZAwfMYZzEWk1ZfLKfkOu7tlx7Siu
-        Tsn8S4r4VQkbaKodcAnDyDVw3b0yCXVqTwruCmevIHm/wqzHgLYGn+oE+XB1LQXE5M6PjP
-        o2mKSFUakaUsAAXekX3QnFmLGJJ5TVM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-9kgC0SCiOiCHZSXBuoeWDw-1; Tue, 28 Sep 2021 05:56:40 -0400
-X-MC-Unique: 9kgC0SCiOiCHZSXBuoeWDw-1
-Received: by mail-wr1-f72.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso14859339wrb.20
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 02:56:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1Ac1KzapFbm3DrLpJhS8RPsZYRZpeFigmvf6S+kYg10=;
-        b=I1MSHRfo5sCwZWwz8+kCxyXvOcyWY0rioCA8FFydhakVmXqxDzxATnX1JPPA0ZV1+u
-         +aNnmoI4k15VSj6V8DzkNgc7p9FrSg9ANgbowip7BV9h/FavaCQsYUZUyKV8SOzJokVM
-         q8/x8AQoj/qDXDLSlDeL5hDImHCb32Xq3igLSxuelJNcYomcliUMNIsoCP95Om/mF1ci
-         7MKYi7Yq3yLm9VdwNRMaIPK4ZPJ7jaP/kllbQqXjr4PqSPGf3IF4eIGo6nQ6PBJ+u2bt
-         v+1lKoaH0Y74vKvftBE++Ge31esG1a3cyOGtogJr3uv7aev4AMsG3WIP/xtFtCv2o0qu
-         xkVg==
-X-Gm-Message-State: AOAM532ffXkp/7OgVN5Ku2j7MGkau8htFh+ONU2V7E2YYwJNJa4DhNAf
-        8uHzvtRhmeGFr4MFO79TtjVG1I3jvE7hpuzOja5t9BzbhD93vD8CxZrD2TOjHCqGroK39IIZMad
-        PChtu+pFCueNfWc+9GzEOAlas
-X-Received: by 2002:a5d:6343:: with SMTP id b3mr5205741wrw.124.1632822999510;
-        Tue, 28 Sep 2021 02:56:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLOJkdLvKu+9MFHMG+herne+2M1V/vkdbPksCq7GDCqPbAQQGDN7120pkvAGNUeduom1Kn2w==
-X-Received: by 2002:a5d:6343:: with SMTP id b3mr5205710wrw.124.1632822999284;
-        Tue, 28 Sep 2021 02:56:39 -0700 (PDT)
-Received: from work-vm (cpc109025-salf6-2-0-cust480.10-2.cable.virginm.net. [82.30.61.225])
-        by smtp.gmail.com with ESMTPSA id l11sm2420077wms.45.2021.09.28.02.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 02:56:38 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 10:56:35 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 37/45] KVM: SVM: Add support to handle MSR based
- Page State Change VMGEXIT
-Message-ID: <YVLm0/8F8CDLEPXe@work-vm>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-38-brijesh.singh@amd.com>
+        id S240078AbhI1KA5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 06:00:57 -0400
+Received: from aposti.net ([89.234.176.197]:54750 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239815AbhI1KAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:00:52 -0400
+Date:   Tue, 28 Sep 2021 10:58:58 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v4 10/10] drm/ingenic: add some jz4780 specific features
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Message-Id: <AE250R.2UXAKOURL8O52@crapouillou.net>
+In-Reply-To: <8cbfba68ce45e10106eb322d622cb7ac64c0e4d4.1632761068.git.hns@goldelico.com>
+References: <cover.1632761067.git.hns@goldelico.com>
+        <8cbfba68ce45e10106eb322d622cb7ac64c0e4d4.1632761068.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-38-brijesh.singh@amd.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Brijesh Singh (brijesh.singh@amd.com) wrote:
-> SEV-SNP VMs can ask the hypervisor to change the page state in the RMP
-> table to be private or shared using the Page State Change MSR protocol
-> as defined in the GHCB specification.
+Hi,
+
+Le lun., sept. 27 2021 at 18:44:28 +0200, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> From: Paul Boddie <paul@boddie.org.uk>
 > 
-> Before changing the page state in the RMP entry, lookup the page in the
-> NPT to make sure that there is a valid mapping for it. If the mapping
-> exist then try to find a workable page level between the NPT and RMP for
-> the page. If the page is not mapped in the NPT, then create a fault such
-> that it gets mapped before we change the page state in the RMP entry.
+> The jz4780 has some features which need initialization
+> according to the vendor kernel.
 > 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 > ---
->  arch/x86/include/asm/sev-common.h |   9 ++
->  arch/x86/kvm/svm/sev.c            | 197 ++++++++++++++++++++++++++++++
->  arch/x86/kvm/trace.h              |  34 ++++++
->  arch/x86/kvm/x86.c                |   1 +
->  4 files changed, 241 insertions(+)
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 39 
+> +++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 > 
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index 91089967ab09..4980f77aa1d5 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -89,6 +89,10 @@ enum psc_op {
->  };
->  
->  #define GHCB_MSR_PSC_REQ		0x014
-> +#define GHCB_MSR_PSC_GFN_POS		12
-> +#define GHCB_MSR_PSC_GFN_MASK		GENMASK_ULL(39, 0)
-> +#define GHCB_MSR_PSC_OP_POS		52
-> +#define GHCB_MSR_PSC_OP_MASK		0xf
->  #define GHCB_MSR_PSC_REQ_GFN(gfn, op)			\
->  	/* GHCBData[55:52] */				\
->  	(((u64)((op) & 0xf) << 52) |			\
-> @@ -98,6 +102,11 @@ enum psc_op {
->  	GHCB_MSR_PSC_REQ)
->  
->  #define GHCB_MSR_PSC_RESP		0x015
-> +#define GHCB_MSR_PSC_ERROR_POS		32
-> +#define GHCB_MSR_PSC_ERROR_MASK		GENMASK_ULL(31, 0)
-> +#define GHCB_MSR_PSC_ERROR		GENMASK_ULL(31, 0)
-> +#define GHCB_MSR_PSC_RSVD_POS		12
-> +#define GHCB_MSR_PSC_RSVD_MASK		GENMASK_ULL(19, 0)
->  #define GHCB_MSR_PSC_RESP_VAL(val)			\
->  	/* GHCBData[63:32] */				\
->  	(((u64)(val) & GENMASK_ULL(63, 32)) >> 32)
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 991b8c996fc1..6d9483ec91ab 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -31,6 +31,7 @@
->  #include "svm_ops.h"
->  #include "cpuid.h"
->  #include "trace.h"
-> +#include "mmu.h"
->  
->  #define __ex(x) __kvm_handle_fault_on_reboot(x)
->  
-> @@ -2905,6 +2906,181 @@ static void set_ghcb_msr(struct vcpu_svm *svm, u64 value)
->  	svm->vmcb->control.ghcb_gpa = value;
->  }
->  
-> +static int snp_rmptable_psmash(struct kvm *kvm, kvm_pfn_t pfn)
-> +{
-> +	pfn = pfn & ~(KVM_PAGES_PER_HPAGE(PG_LEVEL_2M) - 1);
-> +
-> +	return psmash(pfn);
-> +}
-> +
-> +static int snp_make_page_shared(struct kvm *kvm, gpa_t gpa, kvm_pfn_t pfn, int level)
-
-....
-
-> +
-> +			/*
-> +			 * Mark the userspace range unmerable before adding the pages
-
-                                                    ^^^^^^^^^ typo
-
-> +			 * in the RMP table.
-> +			 */
-> +			mmap_write_lock(kvm->mm);
-> +			rc = snp_mark_unmergable(kvm, hva, page_level_size(level));
-> +			mmap_write_unlock(kvm->mm);
-> +			if (rc)
-> +				return -EINVAL;
-> +		}
-> +
-> +		write_lock(&kvm->mmu_lock);
-> +
-> +		rc = kvm_mmu_get_tdp_walk(vcpu, gpa, &pfn, &npt_level);
-> +		if (!rc) {
-> +			/*
-> +			 * This may happen if another vCPU unmapped the page
-> +			 * before we acquire the lock. Retry the PSC.
-> +			 */
-> +			write_unlock(&kvm->mmu_lock);
-> +			return 0;
-> +		}
-> +
-> +		/*
-> +		 * Adjust the level so that we don't go higher than the backing
-> +		 * page level.
-> +		 */
-> +		level = min_t(size_t, level, npt_level);
-> +
-> +		trace_kvm_snp_psc(vcpu->vcpu_id, pfn, gpa, op, level);
-> +
-> +		switch (op) {
-> +		case SNP_PAGE_STATE_SHARED:
-> +			rc = snp_make_page_shared(kvm, gpa, pfn, level);
-> +			break;
-> +		case SNP_PAGE_STATE_PRIVATE:
-> +			rc = rmp_make_private(pfn, gpa, level, sev->asid, false);
-
-Minor nit; it seems a shame that snp_make_page_shared and
-rmp_make_private  both take gpa, pfn, level - in different orders.
-
-Dave
-
-> +			break;
-> +		default:
-> +			rc = -EINVAL;
-> +			break;
-> +		}
-> +
-> +		write_unlock(&kvm->mmu_lock);
-> +
-> +		if (rc) {
-> +			pr_err_ratelimited("Error op %d gpa %llx pfn %llx level %d rc %d\n",
-> +					   op, gpa, pfn, level, rc);
-> +			return rc;
-> +		}
-> +
-> +		gpa = gpa + page_level_size(level);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->  {
->  	struct vmcb_control_area *control = &svm->vmcb->control;
-> @@ -3005,6 +3181,27 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->  				  GHCB_MSR_INFO_POS);
->  		break;
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index e2df4b085905..605549b316b5 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -66,6 +66,10 @@ struct jz_soc_info {
+>  	bool needs_dev_clk;
+>  	bool has_osd;
+>  	bool map_noncoherent;
+> +	bool has_alpha;
+> +	bool has_pcfg;
+> +	bool has_recover;
+> +	bool has_rgbc;
+>  	bool use_extended_hwdesc;
+>  	unsigned int max_width, max_height;
+>  	const u32 *formats_f0, *formats_f1;
+> @@ -732,6 +736,9 @@ static void 
+> ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+>  		    | JZ_LCD_CFG_SPL_DISABLE | JZ_LCD_CFG_REV_DISABLE;
 >  	}
-> +	case GHCB_MSR_PSC_REQ: {
-> +		gfn_t gfn;
-> +		int ret;
-> +		enum psc_op op;
-> +
-> +		gfn = get_ghcb_msr_bits(svm, GHCB_MSR_PSC_GFN_MASK, GHCB_MSR_PSC_GFN_POS);
-> +		op = get_ghcb_msr_bits(svm, GHCB_MSR_PSC_OP_MASK, GHCB_MSR_PSC_OP_POS);
-> +
-> +		ret = __snp_handle_page_state_change(vcpu, op, gfn_to_gpa(gfn), PG_LEVEL_4K);
-> +
-> +		if (ret)
-> +			set_ghcb_msr_bits(svm, GHCB_MSR_PSC_ERROR,
-> +					  GHCB_MSR_PSC_ERROR_MASK, GHCB_MSR_PSC_ERROR_POS);
-> +		else
-> +			set_ghcb_msr_bits(svm, 0,
-> +					  GHCB_MSR_PSC_ERROR_MASK, GHCB_MSR_PSC_ERROR_POS);
-> +
-> +		set_ghcb_msr_bits(svm, 0, GHCB_MSR_PSC_RSVD_MASK, GHCB_MSR_PSC_RSVD_POS);
-> +		set_ghcb_msr_bits(svm, GHCB_MSR_PSC_RESP, GHCB_MSR_INFO_MASK, GHCB_MSR_INFO_POS);
-> +		break;
-> +	}
->  	case GHCB_MSR_TERM_REQ: {
->  		u64 reason_set, reason_code;
->  
-> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index 1c360e07856f..35ca1cf8440a 100644
-> --- a/arch/x86/kvm/trace.h
-> +++ b/arch/x86/kvm/trace.h
-> @@ -7,6 +7,7 @@
->  #include <asm/svm.h>
->  #include <asm/clocksource.h>
->  #include <asm/pvclock-abi.h>
-> +#include <asm/sev-common.h>
->  
->  #undef TRACE_SYSTEM
->  #define TRACE_SYSTEM kvm
-> @@ -1711,6 +1712,39 @@ TRACE_EVENT(kvm_vmgexit_msr_protocol_exit,
->  		  __entry->vcpu_id, __entry->ghcb_gpa, __entry->result)
->  );
->  
-> +/*
-> + * Tracepoint for the SEV-SNP page state change processing
-> + */
-> +#define psc_operation					\
-> +	{SNP_PAGE_STATE_PRIVATE, "private"},		\
-> +	{SNP_PAGE_STATE_SHARED,  "shared"}		\
-> +
-> +TRACE_EVENT(kvm_snp_psc,
-> +	TP_PROTO(unsigned int vcpu_id, u64 pfn, u64 gpa, u8 op, int level),
-> +	TP_ARGS(vcpu_id, pfn, gpa, op, level),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(int, vcpu_id)
-> +		__field(u64, pfn)
-> +		__field(u64, gpa)
-> +		__field(u8, op)
-> +		__field(int, level)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->vcpu_id = vcpu_id;
-> +		__entry->pfn = pfn;
-> +		__entry->gpa = gpa;
-> +		__entry->op = op;
-> +		__entry->level = level;
-> +	),
-> +
-> +	TP_printk("vcpu %u, pfn %llx, gpa %llx, op %s, level %d",
-> +		  __entry->vcpu_id, __entry->pfn, __entry->gpa,
-> +		  __print_symbolic(__entry->op, psc_operation),
-> +		  __entry->level)
-> +);
-> +
->  #endif /* _TRACE_KVM_H */
->  
->  #undef TRACE_INCLUDE_PATH
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e5d5c5ed7dd4..afcdc75a99f2 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12371,3 +12371,4 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_enter);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_exit);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_msr_protocol_enter);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_vmgexit_msr_protocol_exit);
-> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_snp_psc);
-> -- 
-> 2.17.1
 > 
+> +	if (priv->soc_info->has_recover)
+> +		cfg |= JZ_LCD_CFG_RECOVER_FIFO_UNDERRUN;
+
+Did you actually test this? I know that in theory it sounds like 
+something we'd want, but unless there is a proven use for it, it's 
+better to keep it disabled.
+
+> +
+>  	/* set use of the 8-word descriptor and OSD foreground usage. */
+>  	if (priv->soc_info->use_extended_hwdesc)
+>  		cfg |= JZ_LCD_CFG_DESCRIPTOR_8;
+> @@ -1321,6 +1328,25 @@ static int ingenic_drm_bind(struct device 
+> *dev, bool has_components)
+>  	if (soc_info->has_osd)
+>  		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
 > 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> +	if (soc_info->has_alpha)
+> +		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_ALPHAEN);
+
+I remember you saying that OSD mode was not yet working on the JZ4780. 
+So I can't see how you could have tested this.
+
+> +
+> +	/* Magic values from the vendor kernel for the priority thresholds. 
+> */
+> +	if (soc_info->has_pcfg)
+> +		regmap_write(priv->map, JZ_REG_LCD_PCFG,
+> +			     JZ_LCD_PCFG_PRI_MODE |
+> +			     JZ_LCD_PCFG_HP_BST_16 |
+> +			     (511 << JZ_LCD_PCFG_THRESHOLD2_OFFSET) |
+> +			     (400 << JZ_LCD_PCFG_THRESHOLD1_OFFSET) |
+> +			     (256 << JZ_LCD_PCFG_THRESHOLD0_OFFSET));
+
+Unless you add a big comment that explains what these values do and why 
+we do want them, I don't want magic values in here. The fact that the 
+kernel vendor sets this doesn't mean it's needed and/or wanted.
+
+> +
+> +	/* RGB output control may be superfluous. */
+> +	if (soc_info->has_rgbc)
+> +		regmap_write(priv->map, JZ_REG_LCD_RGBC,
+> +			     JZ_LCD_RGBC_RGB_FORMAT_ENABLE |
+> +			     JZ_LCD_RGBC_ODD_RGB |
+> +			     JZ_LCD_RGBC_EVEN_RGB);
+
+ingenic-drm only supports RGB output right now, so I guess the 
+RGB_FORMAT_ENABLE bit needs to be set in patch [2/10], otherwise patch 
+[2/10] cannot state that it adds support for the JZ4780, if it doesn't 
+actually work.
+
+The other two bits can be dropped, they are already set in 
+ingenic_drm_encoder_atomic_mode_set().
+
+> +
+>  	mutex_init(&priv->clk_mutex);
+>  	priv->clock_nb.notifier_call = ingenic_drm_update_pixclk;
+> 
+> @@ -1484,6 +1510,9 @@ static const struct jz_soc_info jz4740_soc_info 
+> = {
+>  	.needs_dev_clk = true,
+>  	.has_osd = false,
+>  	.map_noncoherent = false,
+> +	.has_pcfg = false,
+> +	.has_recover = false,
+> +	.has_rgbc = false,
+>  	.max_width = 800,
+>  	.max_height = 600,
+>  	.formats_f1 = jz4740_formats,
+> @@ -1496,6 +1525,9 @@ static const struct jz_soc_info 
+> jz4725b_soc_info = {
+>  	.needs_dev_clk = false,
+>  	.has_osd = true,
+>  	.map_noncoherent = false,
+> +	.has_pcfg = false,
+> +	.has_recover = false,
+> +	.has_rgbc = false,
+
+This is wrong, the JZ4725B and JZ4770 SoCs both have the RGBC register 
+and the RECOVER bit.
+
+Cheers,
+-Paul
+
+>  	.max_width = 800,
+>  	.max_height = 600,
+>  	.formats_f1 = jz4725b_formats_f1,
+> @@ -1509,6 +1541,9 @@ static const struct jz_soc_info jz4770_soc_info 
+> = {
+>  	.needs_dev_clk = false,
+>  	.has_osd = true,
+>  	.map_noncoherent = true,
+> +	.has_pcfg = false,
+> +	.has_recover = false,
+> +	.has_rgbc = false,
+>  	.max_width = 1280,
+>  	.max_height = 720,
+>  	.formats_f1 = jz4770_formats_f1,
+> @@ -1521,6 +1556,10 @@ static const struct jz_soc_info 
+> jz4770_soc_info = {
+>  static const struct jz_soc_info jz4780_soc_info = {
+>  	.needs_dev_clk = true,
+>  	.has_osd = true,
+> +	.has_alpha = true,
+> +	.has_pcfg = true,
+> +	.has_recover = true,
+> +	.has_rgbc = true,
+>  	.use_extended_hwdesc = true,
+>  	.max_width = 4096,
+>  	.max_height = 2048,
+> --
+> 2.31.1
+> 
+
 
