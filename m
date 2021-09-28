@@ -2,220 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638A641A92B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846CE41A92E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbhI1HAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239024AbhI1HAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 635D4610A5;
-        Tue, 28 Sep 2021 06:58:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632812307;
-        bh=lp8MP9YioyCUAmP0PSXCMeBeQXDIBgFJrhSJhdMz+18=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ACVWCWjf6M9KkhqrzNSygYmGx9hgm6fA9KXFrhq9jyBC4We26Iruu9Fd3b81yQXD/
-         Zl2k5kpV9LBGv+/TV1hqyGyJI0QhouBcXhIAI4p/hUDW4tBF0rPicNth9ov9HioX0i
-         PfhgxxtCmFzVo4QVXcUTRfDMDO6rYg6AIPJ3nXWaHTPc41TXcp6AQFIFrtyHqYN4de
-         viU5+PtJbwwIcMgXgF9lUQQ98O/Pkc4yqy6sBVPPzchQ+21RkRjr2XZ6bGDKqVn/Z1
-         v6039hkhtyQQH5AwowaHiB6kicvR7p2MC8r76/WowswrHXcDLDTV1P9Bu3aippXfsO
-         TkXiwlneZiKeg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mV74L-000R2y-B7; Tue, 28 Sep 2021 08:58:25 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mfd: hi6421-spmi-pmic: cleanup drvdata
-Date:   Tue, 28 Sep 2021 08:58:19 +0200
-Message-Id: <0cc63f19506ea78d3a1c111774c97bbbc1a9a292.1632812219.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YUsuZaMJoEMHkxgG@google.com>
-References: <YUsuZaMJoEMHkxgG@google.com>
+        id S239125AbhI1HA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:00:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57648 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239126AbhI1HAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 03:00:52 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1E9E92233E;
+        Tue, 28 Sep 2021 06:59:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632812349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8b2olotqmBe8T0BpUmGKRkSj3kbHQqlP9ZL2h4U6D6w=;
+        b=phtozVx+GmmE9nDTx+OxHMDSUVol8CU7ms/13mLHmu9Ca7R51FPGBHNnO6DQZY0toZvuT8
+        MYN+ihzpcUVfI9Y7V8/UqlLTxosoHJ3IhShAIxiq7x1LXGoKXdTUZa+xbuvR4JR+pmAhG6
+        RZhIKpdgrV75Li7bMupdYD7AkDLDhGM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB65113513;
+        Tue, 28 Sep 2021 06:59:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rB/CKzy9UmHWVwAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 28 Sep 2021 06:59:08 +0000
+Subject: Re: [PATCH v4 1/2] xen-pciback: prepare for the split for stub and PV
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210927065822.350973-1-andr2000@gmail.com>
+ <e472468a-625e-6c4d-a9c2-85594e2ff908@suse.com>
+ <accd0220-a9d7-145b-6632-9dee085ffc65@epam.com>
+ <1cf5fbf3-6453-e258-3940-8b5bb96117b6@suse.com>
+ <alpine.DEB.2.21.2109272112150.5022@sstabellini-ThinkPad-T480s>
+ <0b952b8d-0ebd-1c8c-84d4-f02e05bc2a2b@suse.com>
+ <b4c8b964-56d7-c693-98e0-ecb435925eb0@epam.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <da921aa0-0259-cd2e-5f43-5e2934ad3f82@suse.com>
+Date:   Tue, 28 Sep 2021 08:59:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <b4c8b964-56d7-c693-98e0-ecb435925eb0@epam.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="y4XK9qQ6Q6UB0y5bw2qxgXOrIOa8fCY7M"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are lots of fields in struct hi6421_spmi_pmic that aren't
-used. As a matter of fact, only regmap is needed.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--y4XK9qQ6Q6UB0y5bw2qxgXOrIOa8fCY7M
+Content-Type: multipart/mixed; boundary="WBDbVkRjhr2Xl4zRhV5ApKwybLg9i6LKa";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+ Jan Beulich <jbeulich@suse.com>, Stefano Stabellini <sstabellini@kernel.org>
+Cc: "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+ "julien@xen.org" <julien@xen.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <da921aa0-0259-cd2e-5f43-5e2934ad3f82@suse.com>
+Subject: Re: [PATCH v4 1/2] xen-pciback: prepare for the split for stub and PV
+References: <20210927065822.350973-1-andr2000@gmail.com>
+ <e472468a-625e-6c4d-a9c2-85594e2ff908@suse.com>
+ <accd0220-a9d7-145b-6632-9dee085ffc65@epam.com>
+ <1cf5fbf3-6453-e258-3940-8b5bb96117b6@suse.com>
+ <alpine.DEB.2.21.2109272112150.5022@sstabellini-ThinkPad-T480s>
+ <0b952b8d-0ebd-1c8c-84d4-f02e05bc2a2b@suse.com>
+ <b4c8b964-56d7-c693-98e0-ecb435925eb0@epam.com>
+In-Reply-To: <b4c8b964-56d7-c693-98e0-ecb435925eb0@epam.com>
 
-So, drop the struct as a whole, and just set the regmap as
-the drvdata.
+--WBDbVkRjhr2Xl4zRhV5ApKwybLg9i6LKa
+Content-Type: multipart/mixed;
+ boundary="------------2FAFFFE2618023AB1523ED08"
+Content-Language: en-US
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
- drivers/misc/hi6421v600-irq.c            |  9 ++++-----
- drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
- include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
- 4 files changed, 14 insertions(+), 46 deletions(-)
- delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
+This is a multi-part message in MIME format.
+--------------2FAFFFE2618023AB1523ED08
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mfd/hi6421-spmi-pmic.c b/drivers/mfd/hi6421-spmi-pmic.c
-index 4f136826681b..c9c0c3d7011f 100644
---- a/drivers/mfd/hi6421-spmi-pmic.c
-+++ b/drivers/mfd/hi6421-spmi-pmic.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/mfd/core.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -30,19 +29,14 @@ static const struct regmap_config regmap_config = {
- static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
- {
- 	struct device *dev = &sdev->dev;
-+	struct regmap *regmap;
- 	int ret;
--	struct hi6421_spmi_pmic *ddata;
--	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
--	if (!ddata)
--		return -ENOMEM;
- 
--	ddata->regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
--	if (IS_ERR(ddata->regmap))
--		return PTR_ERR(ddata->regmap);
-+	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
--	ddata->dev = dev;
--
--	dev_set_drvdata(&sdev->dev, ddata);
-+	dev_set_drvdata(&sdev->dev, regmap);
- 
- 	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
- 				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-diff --git a/drivers/misc/hi6421v600-irq.c b/drivers/misc/hi6421v600-irq.c
-index 08535e97ff43..1c763796cf1f 100644
---- a/drivers/misc/hi6421v600-irq.c
-+++ b/drivers/misc/hi6421v600-irq.c
-@@ -10,7 +10,6 @@
- #include <linux/bitops.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
- #include <linux/of_gpio.h>
- #include <linux/platform_device.h>
-@@ -220,7 +219,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 	struct platform_device *pmic_pdev;
- 	struct device *dev = &pdev->dev;
- 	struct hi6421v600_irq *priv;
--	struct hi6421_spmi_pmic *pmic;
-+	struct regmap *regmap;
- 	unsigned int virq;
- 	int i, ret;
- 
-@@ -229,8 +228,8 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 	 * which should first set drvdata. If this doesn't happen, hit
- 	 * a warn on and return.
- 	 */
--	pmic = dev_get_drvdata(pmic_dev);
--	if (WARN_ON(!pmic))
-+	regmap = dev_get_drvdata(pmic_dev);
-+	if (WARN_ON(!regmap))
- 		return -ENODEV;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -238,7 +237,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	priv->dev = dev;
--	priv->regmap = pmic->regmap;
-+	priv->regmap = regmap;
- 
- 	spin_lock_init(&priv->lock);
- 
-diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-index 662d87ae61cb..4671678f6b19 100644
---- a/drivers/regulator/hi6421v600-regulator.c
-+++ b/drivers/regulator/hi6421v600-regulator.c
-@@ -9,8 +9,8 @@
- // Guodong Xu <guodong.xu@linaro.org>
- 
- #include <linux/delay.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/driver.h>
-@@ -237,7 +237,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	struct hi6421_spmi_reg_priv *priv;
- 	struct hi6421_spmi_reg_info *info;
- 	struct device *dev = &pdev->dev;
--	struct hi6421_spmi_pmic *pmic;
-+	struct regmap *regmap;
- 	struct regulator_dev *rdev;
- 	int i;
- 
-@@ -246,8 +246,8 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	 * which should first set drvdata. If this doesn't happen, hit
- 	 * a warn on and return.
- 	 */
--	pmic = dev_get_drvdata(pmic_dev);
--	if (WARN_ON(!pmic))
-+	regmap = dev_get_drvdata(pmic_dev);
-+	if (WARN_ON(!regmap))
- 		return -ENODEV;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -261,7 +261,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 
- 		config.dev = pdev->dev.parent;
- 		config.driver_data = priv;
--		config.regmap = pmic->regmap;
-+		config.regmap = regmap;
- 
- 		rdev = devm_regulator_register(dev, &info->desc, &config);
- 		if (IS_ERR(rdev)) {
-diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
-deleted file mode 100644
-index e5b8dbf828b6..000000000000
---- a/include/linux/mfd/hi6421-spmi-pmic.h
-+++ /dev/null
-@@ -1,25 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * Header file for device driver Hi6421 PMIC
-- *
-- * Copyright (c) 2013 Linaro Ltd.
-- * Copyright (C) 2011 Hisilicon.
-- * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
-- *
-- * Guodong Xu <guodong.xu@linaro.org>
-- */
--
--#ifndef	__HISI_PMIC_H
--#define	__HISI_PMIC_H
--
--#include <linux/irqdomain.h>
--#include <linux/regmap.h>
--
--struct hi6421_spmi_pmic {
--	struct resource				*res;
--	struct device				*dev;
--	void __iomem				*regs;
--	struct regmap				*regmap;
--};
--
--#endif		/* __HISI_PMIC_H */
--- 
-2.31.1
+On 28.09.21 08:56, Oleksandr Andrushchenko wrote:
+>=20
+> On 28.09.21 09:42, Jan Beulich wrote:
+>> On 28.09.2021 06:18, Stefano Stabellini wrote:
+>>> On Mon, 27 Sep 2021, Juergen Gross wrote:
+>>>> On 27.09.21 09:35, Oleksandr Andrushchenko wrote:
+>>>>> On 27.09.21 10:26, Jan Beulich wrote:
+>>>>>> On 27.09.2021 08:58, Oleksandr Andrushchenko wrote:
+>>>>>>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>>>>>>
+>>>>>>> Currently PCI backend implements multiple functionalities at a ti=
+me.
+>>>>>>> To name a few:
+>>>>>>> 1. It is used as a database for assignable PCI devices, e.g. xl
+>>>>>>>        pci-assignable-{add|remove|list} manipulates that list. So=
+,
+>>>>>>> whenever
+>>>>>>>        the toolstack needs to know which PCI devices can be passe=
+d through
+>>>>>>>        it reads that from the relevant sysfs entries of the pciba=
+ck.
+>>>>>>> 2. It is used to hold the unbound PCI devices list, e.g. when pas=
+sing
+>>>>>>>        through a PCI device it needs to be unbound from the relev=
+ant
+>>>>>>> device
+>>>>>>>        driver and bound to pciback (strictly speaking it is not r=
+equired
+>>>>>>>        that the device is bound to pciback, but pciback is again =
+used as a
+>>>>>>>        database of the passed through PCI devices, so we can re-b=
+ind the
+>>>>>>>        devices back to their original drivers when guest domain s=
+huts
+>>>>>>> down)
+>>>>>>> 3. Device reset for the devices being passed through
+>>>>>>> 4. Para-virtualised use-cases support
+>>>>>>>
+>>>>>>> The para-virtualised part of the driver is not always needed as s=
+ome
+>>>>>>> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-fr=
+ontend
+>>>>>>> model for PCI device passthrough. For such use-cases make the ver=
+y
+>>>>>>> first step in splitting the xen-pciback driver into two parts: Xe=
+n
+>>>>>>> PCI stub and PCI PV backend drivers.
+>>>>>>>
+>>>>>>> Signed-off-by: Oleksandr Andrushchenko
+>>>>>>> <oleksandr_andrushchenko@epam.com>
+>>>>>>>
+>>>>>>> ---
+>>>>>>> Changes since v3:
+>>>>>>> - Move CONFIG_XEN_PCIDEV_STUB to the second patch
+>>>>>> I'm afraid this wasn't fully done:
+>>>>>>
+>>>>>>> --- a/drivers/xen/xen-pciback/Makefile
+>>>>>>> +++ b/drivers/xen/xen-pciback/Makefile
+>>>>>>> @@ -1,5 +1,6 @@
+>>>>>>>      # SPDX-License-Identifier: GPL-2.0
+>>>>>>>      obj-$(CONFIG_XEN_PCIDEV_BACKEND) +=3D xen-pciback.o
+>>>>>>> +obj-$(CONFIG_XEN_PCIDEV_STUB) +=3D xen-pciback.o
+>>>>>> While benign when added here, this addition still doesn't seem to
+>>>>>> belong here.
+>>>>> My bad. So, it seems without CONFIG_XEN_PCIDEV_STUB the change seem=
+s
+>>>>>
+>>>>> to be non-functional. With CONFIG_XEN_PCIDEV_STUB we fail to build =
+on 32-bit
+>>>>>
+>>>>> architectures...
+>>>>>
+>>>>> What would be the preference here? Stefano suggested that we still =
+define
+>>>>>
+>>>>> CONFIG_XEN_PCIDEV_STUB, but in disabled state, e.g. we add tristate=
+ to it
+>>>>>
+>>>>> in the second patch
+>>>>>
+>>>>> Another option is just to squash the two patches.
+>>>> Squashing would be fine for me.
+>>>   =20
+>>> It is fine for me to squash the two patches.
+>>>
+>>> But in any case, wouldn't it be better to modify that specific change=
+ to:
+>>>
+>>> diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciba=
+ck/Makefile
+>>> index e2cb376444a6..e23c758b85ae 100644
+>>> --- a/drivers/xen/xen-pciback/Makefile
+>>> +++ b/drivers/xen/xen-pciback/Makefile
+>>> @@ -1,6 +1,5 @@
+>>>    # SPDX-License-Identifier: GPL-2.0
+>>> -obj-$(CONFIG_XEN_PCIDEV_BACKEND) +=3D xen-pciback.o
+>>> -obj-$(CONFIG_XEN_PCIDEV_STUB) +=3D xen-pciback.o
+>>> +obj-$(CONFIG_XEN_PCI_STUB) +=3D xen-pciback.o
+>> But that wouldn't allow the driver to be a module anymore, would it?
+>=20
+> Exactly. I forgot that when playing with module/built-in I was not able=
 
+>=20
+> to control that anymore because CONFIG_XEN_PCI_STUB will always be
+>=20
+> in "y" state, thus even if you have CONFIG_XEN_PCIDEV_BACKEND=3Dm
+>=20
+> you won't be able to build it as module. So, I will probably put a comm=
+ent
+>=20
+> about that in the Makefile explaining the need for
+>=20
+> obj-$(CONFIG_XEN_PCIDEV_BACKEND) +=3D xen-pciback.o
+> obj-$(CONFIG_XEN_PCIDEV_STUB) +=3D xen-pciback.o
+
+In case the real split between both parts of xen-pciback is done this
+will be needed anyway.
+
+
+Juergen
+
+
+--------------2FAFFFE2618023AB1523ED08
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------2FAFFFE2618023AB1523ED08--
+
+--WBDbVkRjhr2Xl4zRhV5ApKwybLg9i6LKa--
+
+--y4XK9qQ6Q6UB0y5bw2qxgXOrIOa8fCY7M
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFSvTsFAwAAAAAACgkQsN6d1ii/Ey+A
+WQf+NRBEl6DmoTEEl+iQbKygzsYAUM2iPZECUpYS1qb/EZaYSPmnRAeP5rDEcSrAb4OUUJPVKoj+
+pftLjG6fez7P7EWn/9uX9AxszDdQvHkGxZJOItIB1tzX0vIvb0PYt/5871fN4BGwtsxUK5YxcnJz
+IqrkmS10nPq+Sk3xC0cHQuGO2WJbRR1tGKtHTKXbjzj3X4neQC2MQhBT4YcneAJWb3L6ddSyqhYh
+RmOODbo3rDBPBgvvlX6wkz+CQYtAP9QjbQf0USKFGzFSGX1RCapw8HEoCcHQabiQWRzpTM1zSgWM
+hxjutNZx9UYRHlTCYOZ/WE4r+F8ysdBXZixgcSOJsQ==
+=YXjY
+-----END PGP SIGNATURE-----
+
+--y4XK9qQ6Q6UB0y5bw2qxgXOrIOa8fCY7M--
