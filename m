@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19B241B73F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B8041B745
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242358AbhI1TOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:14:07 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42412 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbhI1TOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:14:06 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 99DFA1C0B87; Tue, 28 Sep 2021 21:12:25 +0200 (CEST)
-Date:   Tue, 28 Sep 2021 21:12:25 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/102] 5.10.70-rc2 review
-Message-ID: <20210928191225.GA29510@duo.ucw.cz>
-References: <20210928071741.331837387@linuxfoundation.org>
+        id S242262AbhI1TOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhI1TOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:14:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2203D6135D;
+        Tue, 28 Sep 2021 19:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632856393;
+        bh=7B069zu3fIEzc7J70Px6o5DhIK24ITV1Z/pXFm5SPE0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l6f3rhKcvzS0cbgcm8Mrrz4ooPJZlG/4m1v9BWnHnLbjLhFxTHio3iJqUb30rWppT
+         bkrU3N/7CrsynPS44VKf0F2VQiuAKkNUFlNPTayOIUECmpi5i8qpKmMSC/lBmgtS7j
+         X4kQkoxKPRo4YEiG5j2cprdm3SqnXAJO0aQYTGHuo1F1PYDZMuTo0r+HG+4p53LGkx
+         6g2hElAnx6lHAbgmMZ4OmahFoV7S1PCe5RpOroGQpbz3A8K5WRGTW29H9j5IXkbBGD
+         3mQlgTa3+GnIvq5ZXBvfbIyXjy3El0UVXSA16dxV71BieYlJXPFw3G4y+ns8x5uyUQ
+         yBbjLwWqCZu2w==
+Received: by mail-yb1-f177.google.com with SMTP id b82so10852ybg.1;
+        Tue, 28 Sep 2021 12:13:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533yGAKgXXVhFyLR4KCWpEiXc68xctSPw1mwofXvq2AJCebThXU+
+        eucum2gS5POVXfUbELpSsADXhFQW6GVUdPulV9w=
+X-Google-Smtp-Source: ABdhPJzG+BFlkram6wvHYJeDdwoU4EG8PEfLiuo+UnYK/GvSnKWgTPJ0sB5vh6yCxEX5jumwKy2fpW82HRuvpNo3wUE=
+X-Received: by 2002:a25:3614:: with SMTP id d20mr8888513yba.537.1632856392408;
+ Tue, 28 Sep 2021 12:13:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
-Content-Disposition: inline
-In-Reply-To: <20210928071741.331837387@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210912165309.98695-1-ogabbay@kernel.org> <20210912165309.98695-2-ogabbay@kernel.org>
+ <20210928171329.GF3544071@ziepe.ca>
+In-Reply-To: <20210928171329.GF3544071@ziepe.ca>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Tue, 28 Sep 2021 22:12:45 +0300
+X-Gmail-Original-Message-ID: <CAFCwf11_2TTVnqr8HqrsCW6cxUHu9txKuX-3U6mgMVPq8WqKdg@mail.gmail.com>
+Message-ID: <CAFCwf11_2TTVnqr8HqrsCW6cxUHu9txKuX-3U6mgMVPq8WqKdg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 28, 2021 at 8:13 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Sun, Sep 12, 2021 at 07:53:08PM +0300, Oded Gabbay wrote:
+> >       /* HL_MEM_OP_* */
+> >       __u32 op;
+> > -     /* HL_MEM_* flags */
+> > +     /* HL_MEM_* flags.
+> > +      * For the HL_MEM_OP_EXPORT_DMABUF_FD opcode, this field holds the
+> > +      * DMA-BUF file/FD flags.
+> > +      */
+> >       __u32 flags;
+> >       /* Context ID - Currently not in use */
+> >       __u32 ctx_id;
+> > @@ -1072,6 +1091,13 @@ struct hl_mem_out {
+> >
+> >                       __u32 pad;
+> >               };
+> > +
+> > +             /* Returned in HL_MEM_OP_EXPORT_DMABUF_FD. Represents the
+> > +              * DMA-BUF object that was created to describe a memory
+> > +              * allocation on the device's memory space. The FD should be
+> > +              * passed to the importer driver
+> > +              */
+> > +             __u64 fd;
+>
+> fd's should be a s32 type in a fixed width uapi.
+Yep, will correct this.
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+> I usually expect to see the uapi changes inside the commit that
+> consumes them, splitting the patch like this seems strange but
+> harmless.
+I'll remember that when I send the RDMA patches down the road :)
 
-Hi!
-
-> This is the start of the stable review cycle for the 5.10.70 release.
-> There are 102 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYVNpGQAKCRAw5/Bqldv6
-8rVOAJ9SBohYfhkJWzo2HINZflnNXsCELQCfZ9mtqGVZzrhksuIlJD17WRIWc98=
-=BKrq
------END PGP SIGNATURE-----
-
---9jxsPFA5p3P2qPhR--
+Thanks,
+Oded
+>
+> Jason
