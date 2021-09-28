@@ -2,223 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CE341B78E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D330441B795
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242505AbhI1Tag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
+        id S242519AbhI1TcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242390AbhI1Tae (ORCPT
+        with ESMTP id S229678AbhI1TcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:30:34 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD45C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:28:54 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d8so17985qtd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=XsjdlDkMgrnWm86KRTDvDjoKxU8q2vnfS+JjL8NLogA=;
-        b=FuzIcqUVNAcGSTyqmjq6CxJXt5JaO/UJ1whu6w1uLhzJ7tOgMiI/BqPIDYpo2yB/r5
-         +3erNGPZZe0d46lwQuwh/6yQSJM7Nqom1N+KNlFPcllLtoxQwXLsYJqTbX15htYJgZMW
-         Rz6JU+5qtGl8RFzK4PO9UFvtkeoAKb6OgrMAXDkxbjh1gTceM5WzVQ6uGhtiQkFPigi1
-         949tlvot0OA+yAYo5MJN9/vXs8f0xcIuzHgVfs+0K5MDU8Fg+MVFKz/PDiBOE442+oZd
-         Ely1QnldKyFWj6fomdpt4a7Bc6Y1q1zaMUSoCW5ggmvdwvG4vpAQPti4J46IAA4FauFI
-         oZnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=XsjdlDkMgrnWm86KRTDvDjoKxU8q2vnfS+JjL8NLogA=;
-        b=1YkehTMdYSlPjKWbjo0lQZwVW4m0A0EGDvGBTDmNmOF6K6SGlaYbrhPjABnVXWTfV1
-         o8YFZvashZwYC0LGAjxvc/1c0yv6huEoqURlnp5xpHsNaVaneSFYVT6yBxJIlMEZ0vTQ
-         zEao1l4t4pfIWUO+ZIEMY6xEpHgaXVHUvdO6Sx5N1UVplax4KLbTMIFXSWnFFCDV0+uH
-         +y2DV9912dFCOpkHFfzd9bRQArSpkC9yM1LFLM5mblGX7mPYEBwSXRTtpJfC1YlSnG4l
-         xmIEwIhQzEVdpBgT/CNIBFqHwm8yWDGkaLwrj7QVRwVrMiGRsAtFnds3tvSRrhzgCiSk
-         438w==
-X-Gm-Message-State: AOAM53383FiAi/poUtoMmETD7ZZIXjUPJdborIUyQDda2k2lGy699yCK
-        f2eoLecAVn+ksruC30hhQoI1g6yfm23KrA==
-X-Google-Smtp-Source: ABdhPJzgk74SyZVdpo5IjXsggwCbj9+UHEjp9jdMROK0mNUg1gOkAOfCx5cXfOcLL/Ct6gcHSpTNWQ==
-X-Received: by 2002:ac8:72d3:: with SMTP id o19mr7912437qtp.19.1632857333488;
-        Tue, 28 Sep 2021 12:28:53 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k2sm24206qtg.35.2021.09.28.12.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:28:52 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 12:28:40 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Peter Xu <peterx@redhat.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH v4 1/4] mm/shmem: Unconditionally set pte dirty in
- mfill_atomic_install_pte
-In-Reply-To: <YVI195OZ7t3i3n6t@t490s>
-Message-ID: <256c72c4-ac99-94fb-d76-fab08e5cf5f4@google.com>
-References: <20210915181456.10739-1-peterx@redhat.com> <20210915181456.10739-2-peterx@redhat.com> <49fddb9a-4a52-1df-8b7c-dde2a89330bf@google.com> <YVI195OZ7t3i3n6t@t490s>
+        Tue, 28 Sep 2021 15:32:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48472C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:30:28 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVInV-0002NN-Sw; Tue, 28 Sep 2021 21:29:49 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVInI-0003R4-Vh; Tue, 28 Sep 2021 21:29:36 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVInI-00068D-TU; Tue, 28 Sep 2021 21:29:36 +0200
+Date:   Tue, 28 Sep 2021 21:29:36 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
+        oss-drivers@corigine.com, Paul Mackerras <paulus@samba.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Vadym Kochan <vkochan@marvell.com>, Michael Buesch <m@bues.ch>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Simon Horman <simon.horman@corigine.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v4 4/8] PCI: replace pci_dev::driver usage that gets the
+ driver name
+Message-ID: <20210928192936.w5umyzivi4hs6q3r@pengutronix.de>
+References: <20210927204326.612555-5-uwe@kleine-koenig.org>
+ <20210928171759.GA704204@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3jbimpqsr3sfse6m"
+Content-Disposition: inline
+In-Reply-To: <20210928171759.GA704204@bhelgaas>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021, Peter Xu wrote:
-> On Thu, Sep 23, 2021 at 08:56:33PM -0700, Hugh Dickins wrote:
-> > I'm not going to NAK this, but you and I have different ideas of
-> > "very nice cleanups".  Generally, you appear (understandably) to be
-> > trying to offload pieces of work from your larger series, but often
-> > I don't see the sense of them, here in isolation anyway.
-> > 
-> > Is this a safe transformation of the existing code? Yes, I believe so
-> > (at least until someone adds some PTESAN checker which looks to see
-> > if any ptes are dirty in vmas to which user never had write access).
-> > But it took quite a lot of lawyering to arrive at that conclusion.
-> 
-> I can get your point there, but I keep a skeptical view if there'll be a tool
-> called PTESAN that asserts VM_WRITE for pte_dirty.
-> 
-> After we've noticed the arm64 implementation of pte_mkdirty() last time, I've
-> already started to not bind the ideas on VM_WRITE or pte_write() for pte dirty.
 
-Yes, I know that there are good cases of pte_dirty() without pte_write():
-that's why I said "never had write access" - never.
+--3jbimpqsr3sfse6m
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> As I said before, that's quite natural when I think "the uffd-way", because
-> uffd can easily arm a page with read-only but while the page is dirty.  I think
-> you'll answer that with "we should mark the page dirty instead" in this case,
-> as you stated below.  I also agree.  However if we see pte_dirty a major way to
-> track data dirty information, and at last when it'll be converged into the
-> PageDirty, I think it doesn't really matter a huge lot to us if we set pte or
-> page dirty, or is it?
+Hello,
 
-Please, imagine the faulting process has a PROT_READ,MAP_SHARED mmap of
-/etc/passwd, or any of a million files you would not want it to write to.
+On Tue, Sep 28, 2021 at 12:17:59PM -0500, Bjorn Helgaas wrote:
+> [+to Oliver, Russell for eeh_driver_name() question below]
+>=20
+> On Mon, Sep 27, 2021 at 10:43:22PM +0200, Uwe Kleine-K=F6nig wrote:
+> > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >=20
+> > struct pci_dev::driver holds (apart from a constant offset) the same
+> > data as struct pci_dev::dev->driver. With the goal to remove struct
+> > pci_dev::driver to get rid of data duplication replace getting the
+> > driver name by dev_driver_string() which implicitly makes use of struct
+> > pci_dev::dev->driver.
+>=20
+> When you repost to fix the build issue, can you capitalize the subject
+> line to match the other?
 
-The process serving that fault by doing the ioctl has (in my perhaps
-mistaken mental model of userfaultfd) greater privilege, and is able
-to fill in the contents of what /etc/passwd should contain: it fills the
-right data into the page, which is preserved by being marked PageDirty.
+Yes, sure.
 
-The faulting process can never write to that page, and that pte ought
-never to be marked dirty.
+> Also, would you mind using "pci_dev.driver" instead of
+> "pci_dev::driver"?  AFAIK, the "::" operator is not actually part of
+> C, so I think it's more confusing than useful.
 
-Marking the pte dirty is not a security problem: doing so does not
-grant write access (though it's easy to imagine incorrect code elsewhere
-that "deduces" pte_write() from pte_dirty() for some reason - I'm pretty
-sure we have had such instances in the past, if not now).  But it is an
-anomaly that would be better avoided.
+pci_dev.driver doesn't work either in C because pci_dev is a type and
+not a variable. This is probably subjective, but for me pci_dev.driver
+looks definitively stranger than pci_dev::driver. And :: is at least not
+unseen in the kernel commit logs. (git log --grep=3D::)
+But if you insist I can change to .
 
-Which is precisely why there is the "writable" check before doing it at
-present ("writable" being a stand-in for the FAULT_FLAG_WRITE not visible
-at this end).  (There is also "|| !page_in_cache" - that's to allow for a
-read-only mmap of a page supplied by mcopy_atomic_pte(): which I argue
-would be better with a SetPageDirty() in the caller than a pte_mkdirty()
-here; but anonymous pages are less of a worry than shared file pages.)
+> > diff --git a/arch/powerpc/include/asm/ppc-pci.h b/arch/powerpc/include/=
+asm/ppc-pci.h
+> > index 2b9edbf6e929..e8f1795a2acf 100644
+> > --- a/arch/powerpc/include/asm/ppc-pci.h
+> > +++ b/arch/powerpc/include/asm/ppc-pci.h
+> > @@ -57,7 +57,14 @@ void eeh_sysfs_remove_device(struct pci_dev *pdev);
+> > =20
+> >  static inline const char *eeh_driver_name(struct pci_dev *pdev)
+> >  {
+> > -	return (pdev && pdev->driver) ? pdev->driver->name : "<null>";
+> > +	if (pdev) {
+> > +		const char *drvstr =3D dev_driver_string(&pdev->dev);
+> > +
+> > +		if (strcmp(drvstr, ""))
+> > +			return drvstr;
+> > +	}
+> > +
+> > +	return "<null>";
+>=20
+> Can we just do this?
+>=20
+>   if (pdev)
+>     return dev_driver_string(&pdev->dev);
+>=20
+>   return "<null>";
 
-So, as I said before, I believe what you're doing in this patch happens
-to be a safe transformation of existing code; but not a nice cleanup.
+Works for me, too. It behaves a bit differerently than my suggestion
+(which nearly behaves identical to the status quo), but only in some
+degenerated cases.
 
-> 
-> > 
-> > Is this a cleanup? No, it's a dirtyup.
-> > 
-> > shmem_mfill_atomic_pte() does SetPageDirty (before unlocking page)
-> > because that's where the page contents are made dirty.  You could
-> > criticise it for doing SetPageDirty even in the zeropage case:
-> > yes, we've been lazy there; but that's a different argument.
-> > 
-> > If someone is faulting this page into a read-only vma, it's
-> > surprising to make the pte dirty there.  What would be most correct
-> > would be to keep the SetPageDirty in shmem_mfill_atomic_pte()
-> > (with or without zeropage optimization), and probably SetPageDirty
-> > in some other places in mm/userfaultfd.c (I didn't look where) when
-> > the page is filled with supplied data, and mfill_atomic_install_pte()
-> > only do that pte_mkdirty() when it's serving a FAULT_FLAG_WRITE.
-> 
-> That's a good point, and yeah if we can unconditionally mark PageDirty it'll be
-> great too; I think what bothered me most in the past was that the condition to
-> check dirty is too complicated, for which myself has been debugging for two
-> cases where we should apply the dirty bit but we forgot; each of the debugging
-> process took me a few days or more to figure out, thanks to my awkward
-> debugging skills.
-> 
-> Then I noticed, why not we do the way around if for 99% of the cases they're
-> dirty in real systems?  Say, let's set dirty unconditionally and see when there
-> (could have, which I still doubt) is a negative effect on having some page
-> dirty, we track that from a "degraded" performance results.  Then we convert
-> some hard-to-debug data corrupt issues into "oh previously this programs runs
-> at speed 100x, now it runs 99x, why I got 1% performance lost?"  I even highly
-> doubt whether it'll come true: for the uffd case (which is the only case I
-> modified in this patch), I can hardly tell how many people would like to use
-> the mappings read-only, and how much they'll suffer from that extra dirty bit
-> or PageDirty.
-> 
-> That's why I really like this patch to happen, I want to save time for myself,
-> and for anyone who will be fighting for another dirty lost issues.
+> I think it's more complicated than it's worth to include a strcmp().
+> It's possible this will change those error messages about "Might be
+> infinite loop in %s driver", but that doesn't seem like a huge deal.
+>=20
+> I moved Oliver to "to:" and added Russell in case they object.
+>=20
+> >  }
+> > =20
+> >  #endif /* CONFIG_EEH */
+> > diff --git a/drivers/bcma/host_pci.c b/drivers/bcma/host_pci.c
+> > index 69c10a7b7c61..0973022d4b13 100644
+> > --- a/drivers/bcma/host_pci.c
+> > +++ b/drivers/bcma/host_pci.c
+> > @@ -175,9 +175,10 @@ static int bcma_host_pci_probe(struct pci_dev *dev,
+> >  	if (err)
+> >  		goto err_kfree_bus;
+> > =20
+> > -	name =3D dev_name(&dev->dev);
+> > -	if (dev->driver && dev->driver->name)
+> > -		name =3D dev->driver->name;
+> > +	name =3D dev_driver_string(&dev->dev);
+> > +	if (!strcmp(name, ""))
+> > +		name =3D dev_name(&dev->dev);
+> >  	err =3D pci_request_regions(dev, name);
+>=20
+> Again seems more complicated than it's worth to me.  This is in the
+> driver's .probe() method, so really_probe() has already set
+> "dev->driver =3D drv", which means dev->driver is always set to
+> &bcma_pci_bridge_driver here, and bcma_pci_bridge_driver.name is
+> always "bcma-pci-bridge".
+>=20
+> Almost all callers of pci_request_regions() just hardcode the driver
+> name or use a DRV_NAME #define
+>=20
+> So I think we should just do:
+>=20
+>   err =3D pci_request_regions(dev, "bcma-pci-bridge");
 
-I've lost time on missed dirties too, so I ought to be more sympathetic
-to your argument than I am: I'm afraid I read it as saying that you don't
-really understand "dirty", so want to do it more often to be "safe".
-Not a persuasive argument.
+Yes, looks right. I'd put this in a separate patch.
 
-> 
-> > 
-> > I haven't looked again (I have a pile of mails to respond to!),
-> > but when I looked before I think I found that the vmf flags are
-> > not available to the userfaultfd ioctler.  If so, then it would
-> > be more appropriate to just leave the mkdirty to the hardware on
-> > return from fault (except - and again I cannot spend time researching
-> > this - perhaps I'm too x86-centric, and there are other architectures
-> > on which the software *must* do the mkdirty fixup to avoid refaulting
-> > forever - though probably userfaultfd state would itself prevent that).
-> 
-> If it's based on the fact that we'll set PageDirty for file-backed, then it
-> looks okay, but not usre.
-> 
-> One thing to mention is pte_mkdirty() also counts in soft dirty by nature.  I'm
-> imagining a program that was soft-dirty tracked and somehow using UFFDIO_COPY
-> as the major data filler (so the task itself may not write to the page directly
-> hence HW won't set dirty bit there).  If with pte_mkdirty the other userspace
-> tracker with soft-dirty can still detect this, while with PageDirty I believe
-> it can't.  From that POV I'm not sure whether I can say that as proactively
-> doing pte_mkdirty is a safer approach just in case such an use case exist, as
-> myself can't say they're illegal, so pte_dirty is a superset of PageDirty not
-> vice versa.
+> >  	if (err)
+> >  		goto err_pci_disable;
+> > [...]
+> > diff --git a/drivers/ssb/pcihost_wrapper.c b/drivers/ssb/pcihost_wrappe=
+r.c
+> > index 410215c16920..4938ed5cfae5 100644
+> > --- a/drivers/ssb/pcihost_wrapper.c
+> > +++ b/drivers/ssb/pcihost_wrapper.c
+> > @@ -78,9 +78,11 @@ static int ssb_pcihost_probe(struct pci_dev *dev,
+> >  	err =3D pci_enable_device(dev);
+> >  	if (err)
+> >  		goto err_kfree_ssb;
+> > -	name =3D dev_name(&dev->dev);
+> > -	if (dev->driver && dev->driver->name)
+> > -		name =3D dev->driver->name;
+> > +
+> > +	name =3D dev_driver_string(&dev->dev);
+> > +	if (*name =3D=3D '\0')
+> > +		name =3D dev_name(&dev->dev);
+> > +
+> >  	err =3D pci_request_regions(dev, name);
+>=20
+> Also seems like more trouble than it's worth.  This one is a little
+> strange but is always called for either b43_pci_bridge_driver or
+> b44_pci_driver, both of which have .name set, so I think we should
+> simply do:
+>=20
+>   err =3D pci_request_regions(dev, dev_driver_string(&dev->dev));
 
-And this is not persuasive either: without much deeper analysis
-(which I'll decline to do!), it's impossible to tell whether an excess of
-pte_mkdirty()s is good or bad for the hypothetical uffd+softdirty tracker:
-you're guessing good, I'm guessing bad.
+yes, agreed, too.
 
-How about a compromise (if you really want to continue with this patch):
-you leave the SetPageDirty(page) in shmem_mfill_atomic_pte(), where I
-feel a responsibility for it; but you do whatever works for you with
-pte_mkdirty() at the mm/userfaultfd.c end?
+Best regards
+Uwe
 
-(In the course of writing this, it has occurred to me that a much nicer
-solution might be to delete mfill_atomic_install_pte() altogether, and
-change the userfaultfd protocol so that handle_userfault() returns the
-page supplied by ioctler, for process to map into its own userspace
-in its usual way. But that's a big change, that neither of would be
-keen to make; and it would not be surprising if it turned out actually
-to be a very bad change - perhaps tried and abandoned before the "atomic"
-functions were decided on. I wouldn't even dare mention it, unless that
-direction might happen to fit in with something else you're plannng.)
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Hugh
+--3jbimpqsr3sfse6m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFTbR0ACgkQwfwUeK3K
+7AkC6Af/ZPcvEOEpmwUpNE9viOQkpwE5r7inA2n8+IzHLf0m7dP7WazFs81CvS6i
+HZGQD4L2Ry5WlRHlPAXPVD6fMnoM5OT8vhqQKktvBdtYQ9wlPJlrdQHuIk9ifD/z
+YfkGM/W3gd2V9nA+yxomM57MDRBHhFkjK05VcBnGFO5hXGIyV3gSS/RgIWKPGXuW
+mYyO5SgEEQrK5uOf8gnokzmOE5aHgYZ9bhMUZKk01a1d5vI44/QZf1cLlrHRyamS
+3jeLoyS7nE9+wcMnKG67Qir5YuB99CLu21yGHqDMOQLzZ9FNjVUO682GRS/gnblZ
+IJlg24PzVAR9Feb4374crlRgTrq3+w==
+=LLP8
+-----END PGP SIGNATURE-----
+
+--3jbimpqsr3sfse6m--
