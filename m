@@ -2,246 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28A341AC9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C5B41ACA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240121AbhI1KIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:08:19 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:29697 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240063AbhI1KIR (ORCPT
+        id S240129AbhI1KNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:13:17 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:14269 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240056AbhI1KNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:08:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632823591;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=DyJsQy6DBgEboRxYZDiRbGkfeA7thSMpO532KcupjQE=;
-    b=ajexmnBSbqidqvIr0mE4XgsuXEE30n2YlrUmM1vqtlXyOPNQGjfb+Wdkg3y6h4jWol
-    lDv7uxlRFc6R3+QYUTrI4q699N+JW1mkJff3BRqR5sJJ/UmCD9E7paGxkN4CxxWhHmwv
-    DzbMaVIlKSTMvzneDXhyA9c0rXkAeKGnBymrzDA56P4RPdUGtNvmJyV//QPb9bqo6FK6
-    tVBDeLmHHa+NnCGujT5JQDhuGTAPDF6MizjsF4EyLOJ9PMnpNNWJUxndKtJJdHWGhiXj
-    jtghRe/AFwjZMcUKOky1d6Igdldt6RlgmAHYZfio6Drz0QaQUX8xk7a7CgELkEuTIuhZ
-    dRHQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43sT7Q="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8SA6TdXv
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 28 Sep 2021 12:06:29 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v4 10/10] drm/ingenic: add some jz4780 specific features
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <AE250R.2UXAKOURL8O52@crapouillou.net>
-Date:   Tue, 28 Sep 2021 12:06:28 +0200
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E40D4D33-536F-4218-BEDD-C64539F15D40@goldelico.com>
-References: <cover.1632761067.git.hns@goldelico.com>
- <8cbfba68ce45e10106eb322d622cb7ac64c0e4d4.1632761068.git.hns@goldelico.com>
- <AE250R.2UXAKOURL8O52@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Tue, 28 Sep 2021 06:13:16 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210928101135euoutp027b3e9c026f244f4559c2a919aea52510~o9K6kQgpN1918519185euoutp02P
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:11:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210928101135euoutp027b3e9c026f244f4559c2a919aea52510~o9K6kQgpN1918519185euoutp02P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632823895;
+        bh=Uq7JRZfgtgIv8od+MEX1Yfq8ZJs11gdCeWJ7IvAJEEA=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=HjxN/tf7pdMxGuOY9ZboCv30dvt0rlPvMCjj74WHuW6wIU519w9hrRRXqq4+zBpdg
+         oIieXU7Aqez4eSTcQZFL6RF4cYdykaDU9DdY/rRWtfOEHBac2mqxIcH8VNmq/rPe2e
+         jCcXGKwKk29AzMSZ/I3uekDn5rovvlvd9zVBnlBA=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210928101135eucas1p1bb9f8b528c94e8bfac0bdd9a60404e72~o9K55rkHy1386313863eucas1p1Z;
+        Tue, 28 Sep 2021 10:11:35 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id DB.67.56448.65AE2516; Tue, 28
+        Sep 2021 11:11:34 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210928101134eucas1p107ae33386004de51bdcc1d240b097980~o9K5kBEmR2078120781eucas1p1p;
+        Tue, 28 Sep 2021 10:11:34 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210928101134eusmtrp1fb43c49b5403cc6df32cbe8848fd4994~o9K5i38nM0481104811eusmtrp1_;
+        Tue, 28 Sep 2021 10:11:34 +0000 (GMT)
+X-AuditID: cbfec7f5-d3bff7000002dc80-27-6152ea56b9d1
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id F2.FC.31287.65AE2516; Tue, 28
+        Sep 2021 11:11:34 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210928101134eusmtip219257f3df32cf3a26d2a67ad319979be~o9K49EOtN1684316843eusmtip2q;
+        Tue, 28 Sep 2021 10:11:34 +0000 (GMT)
+Subject: Re: [PATCH] iommu/dma: Tidy up Kconfig selects
+To:     Joerg Roedel <joro@8bytes.org>, Robin Murphy <robin.murphy@arm.com>
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        x86@kernel.org, linux-ia64@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <e88879bf-cd4e-1018-da50-6f0a1dda4784@samsung.com>
+Date:   Tue, 28 Sep 2021 12:11:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YVLgw1nfEf7U13Mh@8bytes.org>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se2xLcRTH97v39vZu0bqqsmPYpIt6zDaLNW6MBhEqXssWFhKmqatEW9Ka
+        V0yWeu5i80pNN7XQPc3IwsyEaanGq15LNibxKtMyM5ttLBprr8f++57z+5zzPd/kR+GSEkEU
+        tc6wiTUa1DoZGUHU3vnhic/wp6knVYiZinMujCluSGFyCy8Kma/7vwiYZ/VFJOP46hUwu18q
+        mN6L7wQzKJXXYcNUVbYqpKqpzCVVx5rLkOra8xxS1VkTnUouj5i2mtWt28waE5WrItb2FtrR
+        xnPk1mvfnHgOyhNwKJwCOhlqbp8mOBRBSehyBO0HehFfdCGwd7WgICWhOxHUcaK/E5++nMJ5
+        qAyBq9X+Z6IDQevJZixIDaWnwJnaAiKopfRcsObXCYIQTp9FUFbXG4JIOgm4No4MahGthFuH
+        PCFN0GOg++7V0IHDaA1YfplxnhkCd096Q0vD6QnQUPE9pHE6Bq60FeG8joQX3tNY0AxoLwXX
+        ufx+iOovZsN7n5aPMBT87ktCXo+E+8cOEjy/C8Ebz3khXxxE8MxcgHgqBV56fpLBRTg9Hi7U
+        J/LtmcDdsAn5/WJobhvC3yCGo7UncL4tgv17JTwtB6u7+p+t4/FT/DCSWQcksw5IYx2Qxvrf
+        txgRlSiSzTLptaxpsoHdkmBS601ZBm2CZoO+BvX/pPsB9/c6VO7vSHAijEJOBBQuk4rSicVq
+        iWi1ett21rgh05ilY01ONIIiZJGi+stVmRJaq97ErmfZjazx7ytGhUflYOYnlcexvr57wkGd
+        9Z+v9zE7w9umx+/4qWuXxS5a0555ddTyxvQwKBjT0xllFjO5+mJLWvnrBQFVSbIv1fugpTTG
+        8qBjqsaPJVXKXZg35bi7o0s/TtPUl1EWZluwbOI7uXJXIM5z86MhTqd86GspGv9R1rP00YuA
+        v3vrK65k1JHC8tY9XPJMvz3mxLeGOcUXFmYv3Ocbnv+hCRMekBr9sY/lipaSOY7obNeS+HaF
+        /dErccHYPIt32srGaqonLtMy3ZfHbLdFxwZyzVLt7rh0m7ixdtlIjVIowlzO+WFOhWPGvEkr
+        spnS0tHPMxLl1U3Vc8Osb2cNVmQRn93N3VIZYVqrTpqAG03q35Dv+4O4AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsVy+t/xe7phr4ISDZZ2aFisXH2UyWLBfmuL
+        ztkb2C0+dLxjtbi8aw6bxcEPT1gtWu6YWvzY8JjVgcPjycF5TB5r5q1h9Ni0qpPNY/KN5Ywe
+        u282sHl83iQXwBalZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZ
+        llqkb5egl/Fj9hLGgtVsFbs/HWJuYOxj7WLk5JAQMJF4/W4ucxcjF4eQwFJGiZVzNrFBJGQk
+        Tk5rgCoSlvhzrYsNoug9o8SZtVPZQRLCAuYSi7bNYAGxRQTcJWb172AFKWIWWMwoceDIPSaI
+        jnOMEgv+ngEbxSZgKNH1tgtsBa+AncTh3nNgNouAqsS3kzvBakQFkiXevv7OBFEjKHFy5hOw
+        DZwCWhL7V34Fs5kFzCTmbX7IDGHLS2x/OwfKFpe49WQ+0wRGoVlI2mchaZmFpGUWkpYFjCyr
+        GEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAiNx27Gfm3cwznv1Ue8QIxMH4yFGCQ5mJRHeYBb/
+        RCHelMTKqtSi/Pii0pzU4kOMpkD/TGSWEk3OB6aCvJJ4QzMDU0MTM0sDU0szYyVx3q1z18QL
+        CaQnlqRmp6YWpBbB9DFxcEo1MOmelvZo3VO570BSSdqDZapf5vFpW3cpOn3wdZYvjMn/czpa
+        smoBr0XtxiLJw1am2WyTrJaf+TLvsM1x/ZWaZ+4Udfhkt6h/6LSJn3/4qQkvi9ilX8fu/nCS
+        PORy/6jOXY91Ln87o5PLHqSnnFJct1KDj0vjywbn14pv/2cvPr5nxa1Gv59KqfbtFVwNK50y
+        /W7tWfdmz8RFgWH7Tz8QiMhx9tzLc+XIx+AjZQKPdUqTkza82NK/SzMx6mGZU9CNM1kua/n8
+        dMrCmo+WVVn9dY8q3vgo+Hny842p30+Wrj9XeU64LCBMY69W4hfGW0LX8gpXHJJMcMn12LiX
+        vXztFH159U2uDvnHpr2bpr50qRJLcUaioRZzUXEiADLqOW5NAwAA
+X-CMS-MailID: 20210928101134eucas1p107ae33386004de51bdcc1d240b097980
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210928093051eucas1p2fc69dc7b8dff175901ac2b00be6c33c7
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210928093051eucas1p2fc69dc7b8dff175901ac2b00be6c33c7
+References: <9ba6f2e8568a3ff6a94fade66668d99705433c44.1631536879.git.robin.murphy@arm.com>
+        <CGME20210928093051eucas1p2fc69dc7b8dff175901ac2b00be6c33c7@eucas1p2.samsung.com>
+        <YVLgw1nfEf7U13Mh@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On 28.09.2021 11:30, Joerg Roedel wrote:
+> On Mon, Sep 13, 2021 at 01:41:19PM +0100, Robin Murphy wrote:
+>> Now that the dust has settled on converting all the x86 drivers to
+>> iommu-dma, we can punt the Kconfig selection to arch code where it
+>> was always intended to be.
+> Can we select IOMMU_DMA under IOMMU_SUPPORT instead? The only drivers
+> not using IOMMU_DMA are the arm32 ones, afaics.
+>
+> If we could get rid of the arm32 exception, the IOMMU_DMA symbol could
+> also go away entirely and we handle it under IOMMU_SUPPORT instead. But
+> that is something for the future :)
 
-> Am 28.09.2021 um 11:58 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> Hi,
->=20
-> Le lun., sept. 27 2021 at 18:44:28 +0200, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> From: Paul Boddie <paul@boddie.org.uk>
->> The jz4780 has some features which need initialization
->> according to the vendor kernel.
->> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 39 =
-+++++++++++++++++++++++
->> 1 file changed, 39 insertions(+)
->> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
-b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> index e2df4b085905..605549b316b5 100644
->> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> @@ -66,6 +66,10 @@ struct jz_soc_info {
->> 	bool needs_dev_clk;
->> 	bool has_osd;
->> 	bool map_noncoherent;
->> +	bool has_alpha;
->> +	bool has_pcfg;
->> +	bool has_recover;
->> +	bool has_rgbc;
->> 	bool use_extended_hwdesc;
->> 	unsigned int max_width, max_height;
->> 	const u32 *formats_f0, *formats_f1;
->> @@ -732,6 +736,9 @@ static void =
-ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
->> 		    | JZ_LCD_CFG_SPL_DISABLE | JZ_LCD_CFG_REV_DISABLE;
->> 	}
->> +	if (priv->soc_info->has_recover)
->> +		cfg |=3D JZ_LCD_CFG_RECOVER_FIFO_UNDERRUN;
->=20
-> Did you actually test this? I know that in theory it sounds like =
-something we'd want, but unless there is a proven use for it, it's =
-better to keep it disabled.
->=20
->> +
->> 	/* set use of the 8-word descriptor and OSD foreground usage. */
->> 	if (priv->soc_info->use_extended_hwdesc)
->> 		cfg |=3D JZ_LCD_CFG_DESCRIPTOR_8;
->> @@ -1321,6 +1328,25 @@ static int ingenic_drm_bind(struct device =
-*dev, bool has_components)
->> 	if (soc_info->has_osd)
->> 		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, =
-JZ_LCD_OSDC_OSDEN);
->> +	if (soc_info->has_alpha)
->> +		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, =
-JZ_LCD_OSDC_ALPHAEN);
->=20
-> I remember you saying that OSD mode was not yet working on the JZ4780. =
-So I can't see how you could have tested this.
+Maybe it would be a good motivation to get back to 
+https://lore.kernel.org/linux-iommu/cover.1597931875.git.robin.murphy@arm.com/ 
+:)
 
-Basically this is all stuff from the vendor kernel under the assumption =
-that they know better than everyone of us.
-On the other hand this whole patch is sort of optional and we know that =
-the basic milestone to get HDMI working
-is reached without it. So if you prefer we can drop it for the moment in =
-v5 and leave it for further analysis later.
-
->=20
->> +
->> +	/* Magic values from the vendor kernel for the priority =
-thresholds. */
->> +	if (soc_info->has_pcfg)
->> +		regmap_write(priv->map, JZ_REG_LCD_PCFG,
->> +			     JZ_LCD_PCFG_PRI_MODE |
->> +			     JZ_LCD_PCFG_HP_BST_16 |
->> +			     (511 << JZ_LCD_PCFG_THRESHOLD2_OFFSET) |
->> +			     (400 << JZ_LCD_PCFG_THRESHOLD1_OFFSET) |
->> +			     (256 << JZ_LCD_PCFG_THRESHOLD0_OFFSET));
->=20
-> Unless you add a big comment that explains what these values do and =
-why we do want them, I don't want magic values in here. The fact that =
-the kernel vendor sets this doesn't mean it's needed and/or wanted.
-
-Well, who has a contact within Ingenic?
-
->=20
->> +
->> +	/* RGB output control may be superfluous. */
->> +	if (soc_info->has_rgbc)
->> +		regmap_write(priv->map, JZ_REG_LCD_RGBC,
->> +			     JZ_LCD_RGBC_RGB_FORMAT_ENABLE |
->> +			     JZ_LCD_RGBC_ODD_RGB |
->> +			     JZ_LCD_RGBC_EVEN_RGB);
->=20
-> ingenic-drm only supports RGB output right now, so I guess the =
-RGB_FORMAT_ENABLE bit needs to be set in patch [2/10], otherwise patch =
-[2/10] cannot state that it adds support for the JZ4780, if it doesn't =
-actually work.
->=20
-> The other two bits can be dropped, they are already set in =
-ingenic_drm_encoder_atomic_mode_set().
-
-Ok.
-
->=20
->> +
->> 	mutex_init(&priv->clk_mutex);
->> 	priv->clock_nb.notifier_call =3D ingenic_drm_update_pixclk;
->> @@ -1484,6 +1510,9 @@ static const struct jz_soc_info jz4740_soc_info =
-=3D {
->> 	.needs_dev_clk =3D true,
->> 	.has_osd =3D false,
->> 	.map_noncoherent =3D false,
->> +	.has_pcfg =3D false,
->> +	.has_recover =3D false,
->> +	.has_rgbc =3D false,
->> 	.max_width =3D 800,
->> 	.max_height =3D 600,
->> 	.formats_f1 =3D jz4740_formats,
->> @@ -1496,6 +1525,9 @@ static const struct jz_soc_info =
-jz4725b_soc_info =3D {
->> 	.needs_dev_clk =3D false,
->> 	.has_osd =3D true,
->> 	.map_noncoherent =3D false,
->> +	.has_pcfg =3D false,
->> +	.has_recover =3D false,
->> +	.has_rgbc =3D false,
->=20
-> This is wrong, the JZ4725B and JZ4770 SoCs both have the RGBC register =
-and the RECOVER bit.
-
-Ok, good to know! Will change.
-
-BR and thanks,
-Nikolaus
-
->=20
-> Cheers,
-> -Paul
->=20
->> 	.max_width =3D 800,
->> 	.max_height =3D 600,
->> 	.formats_f1 =3D jz4725b_formats_f1,
->> @@ -1509,6 +1541,9 @@ static const struct jz_soc_info jz4770_soc_info =
-=3D {
->> 	.needs_dev_clk =3D false,
->> 	.has_osd =3D true,
->> 	.map_noncoherent =3D true,
->> +	.has_pcfg =3D false,
->> +	.has_recover =3D false,
->> +	.has_rgbc =3D false,
->> 	.max_width =3D 1280,
->> 	.max_height =3D 720,
->> 	.formats_f1 =3D jz4770_formats_f1,
->> @@ -1521,6 +1556,10 @@ static const struct jz_soc_info =
-jz4770_soc_info =3D {
->> static const struct jz_soc_info jz4780_soc_info =3D {
->> 	.needs_dev_clk =3D true,
->> 	.has_osd =3D true,
->> +	.has_alpha =3D true,
->> +	.has_pcfg =3D true,
->> +	.has_recover =3D true,
->> +	.has_rgbc =3D true,
->> 	.use_extended_hwdesc =3D true,
->> 	.max_width =3D 4096,
->> 	.max_height =3D 2048,
->> --
->> 2.31.1
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
