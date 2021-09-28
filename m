@@ -2,135 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4F841AAA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9AE41AAA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239615AbhI1Ifz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:35:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13362 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235918AbhI1Ify (ORCPT
+        id S239618AbhI1Igb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:36:31 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:58991 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235918AbhI1Iga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:35:54 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HJXjq4wpPz8ynb;
-        Tue, 28 Sep 2021 16:29:35 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 16:34:13 +0800
-Received: from [10.67.102.67] (10.67.102.67) by kwepemm600016.china.huawei.com
- (7.193.23.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 28 Sep
- 2021 16:34:12 +0800
-Subject: Re: [PATCH] net: hns3: fix hclge_dbg_dump_tm_pg() stack usage
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>,
-        "Jian Shen" <shenjian15@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210927095006.868305-1-arnd@kernel.org>
-From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
-Message-ID: <bd4871e4-62e6-2cb2-26be-34bda8dcb7dd@huawei.com>
-Date:   Tue, 28 Sep 2021 16:34:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 28 Sep 2021 04:36:30 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 3B1513201CC5;
+        Tue, 28 Sep 2021 04:34:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 28 Sep 2021 04:34:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=8
+        Ndt5mR9lDoSu8oa1clA56MdgUfnF9KzG9Uod91RcnU=; b=KZVLBBU9tsRVCpQVU
+        H9FxCaX5369ZyOsqGNsP3qYIksV05riSj+RoC/l+jaRLOkfaZ/WbCaS7ZO2QxRhn
+        lCpxawnGZEokifQJg0pv4mALe53EAhMJNM6txASv43J5Zb8mgWTLiycBqWUzTTG6
+        /L3fWcoeZucoFEclJ/ipR1shPqpVYm4bdi2+NHJRS2xUFYddS0w924/WrW8qS4wi
+        D9WupVeTsq1EE8azv+TB4K3y292ASGhtp+zRJT5oFA/ZebiZRPQn7jK+WgonC094
+        vAE4KpH0rwUjN5DYn3k2Nx7fIBG+H99HpzsoMG/ifujaDXUqG/3jTXRSP7o+gnh+
+        j8mGw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=8Ndt5mR9lDoSu8oa1clA56MdgUfnF9KzG9Uod91Rc
+        nU=; b=Sg2RWt/Yens/ISPIedhUpJgADepthjpuYd0DEt0w8Olv+N2mY75iZtVC1
+        2ETBlChDYl/ZIX5G5smSd+qaCGFW4/92xgbAhXUm2CG7NFshsqGtF/hyAIT7YMLh
+        pHRA/bCdMF9RullNm10pAkT8xLOAD9cyPtOBcOdoDmqKX23EC0qZHD9J5Sn7xJJ7
+        9TgjStmtzYA2JsyP7/10DNUPRTouSz2PmtrwvgbQ/+ZpN1nTQKSVWAdQDI7dEauf
+        F5sI2NpqDL2BXuS8xdGhll9QeBWCJ1qWCpZ2qfJUrzmAzDJ4HFepvcDLKFPnpMPc
+        5xmUAnzDsK+m9PRCCyiQaZbcMqFGg==
+X-ME-Sender: <xms:qNNSYdofR0s493s_Qoi0cHuKFXMO7qpg7rb30134BvIq11pSbKOiXw>
+    <xme:qNNSYfqH1KSnffOoT4pIdB5KZlM8JxRQqYWCfXhD1Xoc87w3m632wqshtNQ9UlZXD
+    lsBKXSirP570c68TCI>
+X-ME-Received: <xmr:qNNSYaPZgD7SrpAVN0ba6dCWQG8TSyrLk7g-Do82vaPBNS2UIPKtbyk2_wYsJ235EqyQRXJRj72TvvTnWnUp48TImtFiEd9yAyyXv6dK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudektddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
+    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:qdNSYY6IjKFZojSQJzAv9CPPgZ7Qb4FBkO5_NkyvE1IFLchU1_Vxsg>
+    <xmx:qdNSYc58sU4zKkYu_4p9QKaDaJi91ON-dGhF9QflmXgl4M2tJfB5TQ>
+    <xmx:qdNSYQjUgSqyCHbqZsFt-EVN63OzWuPea0HlYBd1G5f25GB3XA2yoA>
+    <xmx:qdNSYZsvhIXXCSNFO-tF1UamMpmFXyY6vYe4uB5ox1TKu1cbGav7bA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 28 Sep 2021 04:34:48 -0400 (EDT)
+Date:   Tue, 28 Sep 2021 10:34:46 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Regression with mainline kernel on rpi4
+Message-ID: <20210928083446.cfji7hmndt6a5nop@gilmour>
+References: <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
+ <20210922095725.dk4vk42zb3kh7y6s@gilmour>
+ <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
+ <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com>
+ <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
+ <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
+ <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
+ <CAHk-=whASMriPYRdH8kxC_UwObBtwHbPvf7rb58sUEZZyaFxJg@mail.gmail.com>
+ <20210924133022.waqgtr5xjjxigong@gilmour>
+ <CAKMK7uFxO-ss86k483VJQJiHwcAYxNwD06xSEZStn+fWiRJ6iw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210927095006.868305-1-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.67]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAKMK7uFxO-ss86k483VJQJiHwcAYxNwD06xSEZStn+fWiRJ6iw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
+On Sat, Sep 25, 2021 at 12:50:17AM +0200, Daniel Vetter wrote:
+> On Fri, Sep 24, 2021 at 3:30 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > On Wed, Sep 22, 2021 at 01:25:21PM -0700, Linus Torvalds wrote:
+> > > On Wed, Sep 22, 2021 at 1:19 PM Sudip Mukherjee
+> > > <sudipm.mukherjee@gmail.com> wrote:
+> > > >
+> > > > I added some debugs to print the addresses, and I am getting:
+> > > > [   38.813809] sudip crtc 0000000000000000
+> > > >
+> > > > This is from struct drm_crtc *crtc =3D connector->state->crtc;
+> > >
+> > > Yeah, that was my personal suspicion, because while the line number
+> > > implied "crtc->state" being NULL, the drm data structure documentation
+> > > and other drivers both imply that "crtc" was the more likely one.
+> > >
+> > > I suspect a simple
+> > >
+> > >         if (!crtc)
+> > >                 return;
+> > >
+> > > in vc4_hdmi_set_n_cts() is at least part of the fix for this all, but
+> > > I didn't check if there is possibly something else that needs to be
+> > > done too.
+> >
+> > Thanks for the decode_stacktrace.sh and the follow-up
+> >
+> > Yeah, it looks like we have several things wrong here:
+> >
+> >   * we only check that connector->state is set, and not
+> >     connector->state->crtc indeed.
+> >
+> >   * We also check only in startup(), so at open() and not later on when
+> >     the sound streaming actually start. This has been there for a while,
+> >     so I guess it's never really been causing a practical issue before.
+>=20
+> You also have no locking
 
-On 2021/9/27 17:49, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This function copies strings around between multiple buffers
-> including a large on-stack array that causes a build warning
-> on 32-bit systems:
-> 
-> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pg':
-> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:782:1: error: the frame size of 1424 bytes is larger than 1400 bytes [-Werror=frame-larger-than=]
-> 
-> The function can probably be cleaned up a lot, to go back to
-> printing directly into the output buffer, but dynamically allocating
-> the structure is a simpler workaround for now.
-> 
-> Fixes: 04d96139ddb3 ("net: hns3: refine function hclge_dbg_dump_tm_pri()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 26 ++++++++++++++++---
->   1 file changed, 22 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-> index 87d96f82c318..3ed87814100a 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-> @@ -719,9 +719,9 @@ static void hclge_dbg_fill_shaper_content(struct hclge_tm_shaper_para *para,
->   	sprintf(result[(*index)++], "%6u", para->rate);
->   }
->   
-> -static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
-> +static int __hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *data_str,
-> +				  char *buf, int len)
->   {
-> -	char data_str[ARRAY_SIZE(tm_pg_items)][HCLGE_DBG_DATA_STR_LEN];
->   	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
->   	char *result[ARRAY_SIZE(tm_pg_items)], *sch_mode_str;
->   	u8 pg_id, sch_mode, weight, pri_bit_map, i, j;
-> @@ -729,8 +729,10 @@ static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
->   	int pos = 0;
->   	int ret;
->   
-> -	for (i = 0; i < ARRAY_SIZE(tm_pg_items); i++)
-> -		result[i] = &data_str[i][0];
-> +	for (i = 0; i < ARRAY_SIZE(tm_pg_items); i++) {
-> +		result[i] = data_str;
-> +		data_str += HCLGE_DBG_DATA_STR_LEN;
-> +	}
->   
->   	hclge_dbg_fill_content(content, sizeof(content), tm_pg_items,
->   			       NULL, ARRAY_SIZE(tm_pg_items));
-> @@ -781,6 +783,22 @@ static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
->   	return 0;
->   }
->   
-> +static int hclge_dbg_dump_tm_pg(struct hclge_dev *hdev, char *buf, int len)
-> +{
-> +	int ret;
-> +	char *data_str = kcalloc(ARRAY_SIZE(tm_pg_items),
-> +				 HCLGE_DBG_DATA_STR_LEN, GFP_KERNEL);
-> +
-Hi Arnd, thanks your modification, according to linux code style, should the code be written as follow?
-	char *data_str;
-	int ret;
+Indeed. Do we just need locking to prevent a concurrent audio setup and
+modeset, or do you have another corner case in mind?
 
-	data_str = kcalloc(ARRAY_SIZE(tm_pg_items),
-			   HCLGE_DBG_DATA_STR_LEN, GFP_KERNEL);
-> +	if (!data_str)
-> +		return -ENOMEM;
-> +
-> +	ret = __hclge_dbg_dump_tm_pg(hdev, data_str, buf, len);
-> +
-> +	kfree(data_str);
-> +
-> +	return ret;
-> +}
-> +
->   static int hclge_dbg_dump_tm_port(struct hclge_dev *hdev,  char *buf, int len)
->   {
->   	struct hclge_tm_shaper_para shaper_para;
-> 
+Also, generally, what locks should we make sure we have locked when
+accessing the connector and CRTC state? drm_mode_config.connection_mutex
+and drm_mode_config.mutex, respectively?
+
+> plus looking at ->state objects outside of atomic commit machinery
+> makes no sense because you're not actually in sync with the hw state.
+> Relevant bits need to be copied over at commit time, protected by some
+> spinlock (and that spinlock also needs to be held over whatever other
+> stuff you're setting to make sure we don't get a funny out-of-sync
+> state anywhere).
+
+If we already have a lock protecting against having both an ASoC and KMS
+function running, it's not clear to me what the spinlock would prevent
+here?
+
+Maxime
