@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FA041B375
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589A941B377
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241758AbhI1QEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:04:37 -0400
-Received: from pb-smtp1.pobox.com ([64.147.108.70]:53929 "EHLO
-        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241600AbhI1QEg (ORCPT
+        id S241768AbhI1QEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241749AbhI1QEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:04:36 -0400
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id B5296DF42F;
-        Tue, 28 Sep 2021 12:02:55 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=4bMrkmufLiQqbAD1pzxtLKc7Xm2QXqXXrC6POt
-        E4iUI=; b=BMHo6YdQv9IC0ETzCDkW52HY/40nCzu3F0DbX0M6Fk7bUKCZpl644y
-        Wn3Fu4UEMXmD6awsFWiveDmFKa9cygsxdD65KmUFUI1Fq/vVe2CHeWAMlU1SyWoN
-        KusuQg+yxXKp9lWpJQhDcEWHxxzQ/5XTvoy1W98MjIyyvjlOtEhSs=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id AA7C7DF42C;
-        Tue, 28 Sep 2021 12:02:55 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=4bMrkmufLiQqbAD1pzxtLKc7Xm2QXqXXrC6POtE4iUI=; b=egrd5wPIzSwp4hqzxwpKTlca22zszwfK3BNI+f60YZjGo9b8hVlEOi9Ty0JbVcLZCunJz1WdSNt9Y7p69/dgCNC0n6ZPYkIF2rcybOnYXxVKUkvvtPXqUz1TYnJ1e7hwf8TDWDYibYA0VfM4JI15HZ8/hyOh6wSvLFyXcQVC37c=
-Received: from yoda.home (unknown [96.21.170.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 12920DF42B;
-        Tue, 28 Sep 2021 12:02:55 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 154692DA0083;
-        Tue, 28 Sep 2021 12:02:54 -0400 (EDT)
-Date:   Tue, 28 Sep 2021 12:02:53 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH 12/14] ARM: add CONFIG_PHYS_OFFSET default values
-In-Reply-To: <20210928154143.2106903-13-arnd@kernel.org>
-Message-ID: <5n4on6-8483-3417-1r59-86no56q082p1@syhkavp.arg>
-References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-13-arnd@kernel.org>
+        Tue, 28 Sep 2021 12:04:45 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C9BC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:03:05 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id k13so8607987ilo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HH09lUa+7qN1sYezPxRWaJBxZPYFuimbbtUWFtN4us8=;
+        b=K6hclX3gk+EEFG3tbRp+TEhpJaNfPLHUT5zMP/me4eBptchCIlH9ZzqnibDvZvkDka
+         4z7rg6Kjb47gDXQBygug8cvjpju2Ppuu4cFmVOo//9EsBP/+Ei+tozcD0N7nWzEKXII1
+         1bcmcl9I1MUDZdiAiBb15ld/Z5kSyxJdVQTz+l10tW5BgpnwFzVaNod5AKQqVtBzRTfp
+         d7zm1vafM9IMYIhHarxQdIL6khvQY1JKxgIpS1KDv1r5pgkhEGGc1C/7QQm2xCfkFY4B
+         mJwzzD8l2KheXSy+CvEt6B0l3Qix7Hbr7GhLdwnWvHRBgCNjnXP8+NF253EQ+l7o0y72
+         jFXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HH09lUa+7qN1sYezPxRWaJBxZPYFuimbbtUWFtN4us8=;
+        b=MDV03OGvIrkgkB3OXt3MxNqwuP35bMNOHs33p+3qkXwo1BI13Dije3toEDX7BvfMVF
+         OVYidxUffxhInJM5p/mqSq6nc1JOhu/WRJvQOyL9b6VnLKYH4p6f59cOOC3hffwZvzDo
+         6I6vplxM2I1Cw4V4W/1ANETkF/epS2sCQ/jCOHyidoki4FdQMvX5U2WaKkfgJ2bQlitH
+         wDkccQZW7NzUwMUzdvQIWpwgkXN2RURHNZ39cyooSrhAZXJlu8OXDlcMSJpuZ2XqWNiv
+         g8U/cdJ59a5TWbej+RTtbZdrW+VKVfzH0NbaHdaP4I3fTBWU0yDbn8IEMXz0uI0JJ3bW
+         Q7GQ==
+X-Gm-Message-State: AOAM531skQIfnj/tvnoTItjBSM1xrH9Gjc18WY392EwkLOahTcWI4j86
+        nGr2b7N9msjbioUsFQqVPzcFyj8iJVC2IECo3w5vUg==
+X-Google-Smtp-Source: ABdhPJyH8hUx2p+EEf65T6N6lduFBQ4l8PLfDZKFT1VhuWe2kzjudCVA+TsEZRvuVTlF4gpRQwMQ2G4/F/fqX9YNXdw=
+X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr4927872ili.40.1632844984977;
+ Tue, 28 Sep 2021 09:03:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 8AA52D24-2075-11EC-81F6-62A2C8D8090B-78420484!pb-smtp1.pobox.com
+References: <20210927154159.2168500-1-robert.marko@sartura.hr>
+ <20210927154159.2168500-4-robert.marko@sartura.hr> <20210928153731.7we6p7mclil2e5j2@pali>
+In-Reply-To: <20210928153731.7we6p7mclil2e5j2@pali>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 28 Sep 2021 18:02:54 +0200
+Message-ID: <CA+HBbNH61aAQ=ad3cRVHBvDqdTa2p85Lc62SLjOELRK3BJRnsw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] arm64: dts: marvell: espressobin-ultra: enable front
+ USB3 port
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021, Arnd Bergmann wrote:
+On Tue, Sep 28, 2021 at 5:37 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Monday 27 September 2021 17:41:59 Robert Marko wrote:
+> > Espressobin Ultra has a front panel USB3.0 Type-A port which works
+> > just fine so enable it.
+> > I dont see a reason why it was disabled in the first place anyway.
+>
+> If USB 3.0 port is was tested and is working fine, then what about
+> adding Fixes: tag into commit message?
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> For platforms that are not yet converted to ARCH_MULTIPLATFORM,
-> we can disable CONFIG_ARM_PATCH_PHYS_VIRT, which in turn requires
-> setting a correct address here.
-> 
-> As we actualy know what all the values are supposed to be based
-> on the old mach/memory.h header file contents (from git history),
-> we can just add them here.
-> 
-> This also solves a problem in Kconfig where 'make randconfig'
-> fails to continue if no number is selected for a 'hex' option.
-> Users can still override the number at configuration time, e.g.
-> when the memory visible to the kernel starts at a nonstandard
-> address on some machine, but it should no longer be required
-> now.
-> 
-> I originally posted this back in 2016, but the problem still
-> persists. The patch has gotten much simpler though, as almost
-> all platforms rely on ARM_PATCH_PHYS_VIRT now.
-> 
-> Acked-by: Nicolas Pitre <nico@linaro.org>
+Sure, gotta send a v4 anyway dropping the first patch.
 
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Regards,
+Robert
+>
+> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > ---
+> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.=
+dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > index 96855a10b4a0..aada43fa236c 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+> > @@ -112,7 +112,6 @@ rtc@51 {
+> >
+> >  &usb3 {
+> >       usb-phy =3D <&usb3_phy>;
+> > -     status =3D "disabled";
+> >  };
+> >
+> >  &mdio {
+> > --
+> > 2.31.1
+> >
 
-> Link: https://lore.kernel.org/linux-arm-kernel/1455804123-2526139-5-git-send-email-arnd@arndb.de/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm/Kconfig | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 12a0bd4b315d..0d4f3e2d50ad 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -264,10 +264,12 @@ config PHYS_OFFSET
->  	hex "Physical address of main memory" if MMU
->  	depends on !ARM_PATCH_PHYS_VIRT
->  	default DRAM_BASE if !MMU
-> -	default 0x00000000 if ARCH_FOOTBRIDGE
-> +	default 0x00000000 if ARCH_FOOTBRIDGE || ARCH_IXP4XX
->  	default 0x10000000 if ARCH_OMAP1 || ARCH_RPC
-> -	default 0x20000000 if ARCH_S5PV210
-> -	default 0xc0000000 if ARCH_SA1100
-> +	default 0x30000000 if ARCH_S3C24XX
-> +	default 0xa0000000 if ARCH_IOP32X || ARCH_PXA
-> +	default 0xc0000000 if ARCH_EP93XX || ARCH_SA1100
-> +	default 0
->  	help
->  	  Please provide the physical address corresponding to the
->  	  location of main memory in your system.
-> -- 
-> 2.29.2
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+
+
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
