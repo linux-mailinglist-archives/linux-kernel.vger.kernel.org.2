@@ -2,121 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E0941AD27
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA9E41AD2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240229AbhI1KlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:41:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39949 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240177AbhI1KlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:41:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632825563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DYyRP8f2WSPXLKn2r0atH4kHz0+e95PC/BIsP+3v9Vg=;
-        b=dNvu07C0YQMgYpXij1bVVnC+V9H/2xi4CPgIjZcHJw0vxUKwXJ5SSyn1LOSN5hJAOYGbB2
-        zUzHuueOaxOrm5iG4tLpPfPYjj0eBJEVhWiCoCh2LCl48mZpG5UH7+VXDE8Z0QvTbNfG3i
-        c9JwzLlM0h7fXNLSXdzGBa7qcjcj9oE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-edxOmMNuOdWQ_ArM1DV1pA-1; Tue, 28 Sep 2021 06:39:22 -0400
-X-MC-Unique: edxOmMNuOdWQ_ArM1DV1pA-1
-Received: by mail-wr1-f71.google.com with SMTP id x2-20020a5d54c2000000b0015dfd2b4e34so14959733wrv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:39:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=DYyRP8f2WSPXLKn2r0atH4kHz0+e95PC/BIsP+3v9Vg=;
-        b=1jTGKbtEMI0C7d25Hs2OHDX3jsHo7lIGnY3yN5v7TEeL65162yMV2llmmxdjEsb4/Z
-         UtegXoXPWIsar9SXrDMVby6HoijCsYCjBXEIYRD17FDfSvyPHqe5mStLdy6nIut25qMw
-         TIxqjX4D5tXf3kgdWpETrZ0tKfM/BtDVoHX7+sMqdS82SfcZtI4fX/5ftBssKBRK1DWk
-         9DDhNs81yrOvKTZD0eaYOxHtNL5CBUUwUMLrUqf8q5bemFMckUuzZT8IN/VVWJoWJasW
-         9yELF9AUj55KRKweFGymoq9iBQkwTcKJoKWGp0AMKPVBg6g4H4hyp/X7OvEWd2ra66K1
-         T70A==
-X-Gm-Message-State: AOAM530tYtMlwSsAggFnvFHedOqCTKRChGx1VIRoadWOd69PFWDWmGY3
-        nY6tMPAK2CMIpDQeNUjIiI3Yk9ixr6GnD5062YeqedeV7pF/u3Hd5qjCQrimYtrTZDEf5tg3tV5
-        NB+zOOk6sbiFJjK0FZJy6InlB
-X-Received: by 2002:a1c:9a07:: with SMTP id c7mr3955088wme.106.1632825560826;
-        Tue, 28 Sep 2021 03:39:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzCY0Hdy7y3Kl5ZYiOJTlyBidLUskdQBMThtPvr1/Xa9GGJ57rzbqXIsDlLSvJOnzI3ScMsg==
-X-Received: by 2002:a1c:9a07:: with SMTP id c7mr3955070wme.106.1632825560558;
-        Tue, 28 Sep 2021 03:39:20 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23aaf.dip0.t-ipconnect.de. [79.242.58.175])
-        by smtp.gmail.com with ESMTPSA id x17sm19856317wrc.51.2021.09.28.03.39.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 03:39:20 -0700 (PDT)
-Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
- for static memory
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     guptap@codeaurora.org
-References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
-Date:   Tue, 28 Sep 2021 12:39:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240264AbhI1KmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:42:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240211AbhI1KmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:42:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67E7F60F70;
+        Tue, 28 Sep 2021 10:40:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632825633;
+        bh=VxXQaJBe6UecTA3nVtoqBtsl3L0uZUDbEZHfXcICPUA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fXVBw6tcetmUU1BiFI6T7YBw8JNQ0CA1hbXU0svE46k0FHlOuw/MnWOFbVfJMp4OQ
+         z0V+IxR8sGYK74xe8ewbv9SdjgJDAgu2V0K2GVSE8jaKQ594zYzy2/dayhzl01La67
+         lDPc+ErZvR3kbnlJT/yLoQKNu5olWAAWl8Z9xyAyZnL0QsbMf2Ps7c+bwLmuannwhj
+         WX4UbCEm+pe+6rh4ibzErnVPH+UBz2oYNm2IDwNlqUuSZWcAUsWrbktGjRL1SK1x45
+         kFCMlcrcySd8KcIkfcN7WDBcJ1sNbaANOR/zNtS9G/iMEsOnI3wn/41smuHaqkZ0N2
+         /ZP3IsisJFfbQ==
+Received: by mail-wm1-f47.google.com with SMTP id r83-20020a1c4456000000b0030cfc00ca5fso1822648wma.2;
+        Tue, 28 Sep 2021 03:40:33 -0700 (PDT)
+X-Gm-Message-State: AOAM531cxpFQV6VtC7PQ7/dpQyVhxJmUZtVHplZtGCK1a6FF/oZi7sbM
+        NkDIxLAPWFqc/W7dLipeo64TzngDhfMPYqViOns=
+X-Google-Smtp-Source: ABdhPJxM71b93hCZd3TzbLqYpIKM4hHy9QljjdwUn4uXnE+eZrXsn+MVP6e1rkEC0rsOJYRgfximYvHM/wLc0c6+ibs=
+X-Received: by 2002:a1c:4b0c:: with SMTP id y12mr3883570wma.35.1632825632037;
+ Tue, 28 Sep 2021 03:40:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210927094123.576521-1-arnd@kernel.org> <40217483-1b8d-28ec-bbfc-8f979773b166@redhat.com>
+ <20210927130253.GH2083@kadam> <CAK8P3a3YFh4QTC6dk6onsaKcqCM3Nmb2JhMXK5QdZpHtffjyLg@mail.gmail.com>
+ <CAHk-=wheEHQxdSJgTkt7y4yFjzhWxMxE-p7dKLtQSBs4ceHLmw@mail.gmail.com>
+ <70a77e44-c43a-f5ce-58d5-297ca2cfe5d9@redhat.com> <CAK8P3a3sEy7NAhMHcV7XPpZxo5tHnQz1oCP43YTe_ZQuzOHgPA@mail.gmail.com>
+ <42797736-a64b-e244-136a-d4526b732a50@redhat.com>
+In-Reply-To: <42797736-a64b-e244-136a-d4526b732a50@redhat.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 28 Sep 2021 12:40:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2rMbLJdk4m7Kn1J-FfHZeR92wb1Ux8EEz4d2=5SOB9rg@mail.gmail.com>
+Message-ID: <CAK8P3a2rMbLJdk4m7Kn1J-FfHZeR92wb1Ux8EEz4d2=5SOB9rg@mail.gmail.com>
+Subject: Re: [PATCH] vboxsf: fix old signature detection
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.21 11:04, Faiyaz Mohammed wrote:
-> For INITRD and initmem memory is reserved through "memblock_reserve"
-> during boot up but it is free via "free_reserved_area" instead
-> of "memblock_free".
-> For example:
-> [    0.294848] Freeing initrd memory: 12K.
-> [    0.696688] Freeing unused kernel memory: 4096K.
-> 
-> To get the start and end address of the above freed memory and to account
-> proper memblock added memblock_dbg log in "free_reserved_area".
-> After adding log:
-> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000] free_initrd_mem+0x20/0x28
-> [    0.294848] Freeing initrd memory: 12K.
-> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000] free_initmem+0x70/0xc8
-> [    0.696688] Freeing unused kernel memory: 4096K.
-> 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
-> ---
->   mm/page_alloc.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c..f85c3b2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
->   		pr_info("Freeing %s memory: %ldK\n",
->   			s, pages << (PAGE_SHIFT - 10));
->   
-> +#ifdef CONFIG_HAVE_MEMBLOCK
-> +		memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
-> +			__pa(start), __pa(end), (void *)_RET_IP_);
-> +#endif
+On Tue, Sep 28, 2021 at 12:31 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 9/28/21 12:11 PM, Arnd Bergmann wrote:
+> > It's already upstream, see d5f6545934c4 ("qnx4: work around gcc
+> > false positive warning bug").
+>
+> Ah, actually you mean: 9b3b353ef330 ("vboxfs: fix broken legacy mount
+> signature checking"),
 
-IMHO, the "memblock_free" part is misleading. Something was allocated 
-early via memblock, then we transitioned to the buddy, now we're freeing 
-that early allocation via the buddy.
+Yes, that's the right one of course.
 
-I would not expect memblock_dbg once memblock might not actually be 
-alive anymore.
-
--- 
-Thanks,
-
-David / dhildenb
-
+      Arnd
