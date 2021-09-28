@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726AE41AA6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B976C41AA74
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239439AbhI1IHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239043AbhI1IHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:07:20 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DE5C061604
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:05:41 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id d6so56268446wrc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yK4+pJccx+L287LRxGHzTccwnqeDUuV1kwFuIH5wuVw=;
-        b=iAVLDREMsjNYoZqnBt/mr0bb5N77eb2MByH+vDh3phYyZ84A2vxq3mu5hX00fpU8aJ
-         WHR6cToDFFDfaPvtWju8g34JT4RdmalPYl0QeN2XhW9iPxpG2L7C9aSN9wyJsIUybzQX
-         9ziSJ4xZZ5y2jSk/YrBmNh3MCHZvDcrqNNomTMtvf+97pnP0FxsyhiY0RAz0V7PvIrH7
-         1BIkMysEEMZNcaklpc+Lf1OAM8g+hS6HKlz1XZvv1ArzvGmZx7GZJ4J+hhLVOMkbu08o
-         c5uLFO/4uKXwDXTJ+/M4+sbN2Tiy1pJzxz+Ec2M+vX+5UFM4lGnaV99zK8ueUCfDTorR
-         dX9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yK4+pJccx+L287LRxGHzTccwnqeDUuV1kwFuIH5wuVw=;
-        b=5KMcOn9re7Hbv4SLbUb04EwSPnEOVjVIVhaW0vhkT+D7W4N5enJJBUUDI/wvgxPJvk
-         2BC32BPTH9NjSDX91tZGcrj6jF3nEy8kSlBeW5YXSmKRWbCBpxoE0v1SK31mIkqFheVa
-         EKeUURYvtXk40FMf9TYujob1EjJJum6D3t1gc51GLpyZja2rjyRCpdRzOhmhFd0xFvUX
-         GerbFrdgz3AobduH5iZ/KMPn6on31oTo5ZQvmPcdr55OXMGcNpD3yXGbU1pGkZHykmKw
-         BZWRLYg09eHvznLrm9791jH+ze8tktAau5m1hI1+jyg1Omi1xWutzRuMclzB5EZBrZY7
-         XnjA==
-X-Gm-Message-State: AOAM530gpQARJtouIpRKnMZXZUorcjV8hEhsLv1eLbh7mIfTSJiwMn+D
-        C0rBS4ztLsdwy2li/8Nd8ipozTV1PtLLew==
-X-Google-Smtp-Source: ABdhPJw0ihAuouAtL7667xaUqI13cOXkzgsMzFFzcWGbXnJNyqSsW5UvGDnlI71/IIjeBeAISjCy/w==
-X-Received: by 2002:adf:cf04:: with SMTP id o4mr4653696wrj.352.1632816339914;
-        Tue, 28 Sep 2021 01:05:39 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id c9sm1928057wmb.41.2021.09.28.01.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 01:05:39 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 09:05:37 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v1 2/4] mfd: arizona: Add missing entries SPI to device
- ID table
-Message-ID: <YVLM0VxNGdH8AxQO@google.com>
-References: <20210923194645.53046-1-broonie@kernel.org>
- <20210923194645.53046-3-broonie@kernel.org>
- <538c0c79-d568-be03-e524-01f5c6429554@opensource.cirrus.com>
- <20210924112000.GB4840@sirena.org.uk>
- <20210927102754.GE9223@ediswmail.ad.cirrus.com>
- <20210927105528.GA4199@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210927105528.GA4199@sirena.org.uk>
+        id S239357AbhI1IMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239043AbhI1IMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 04:12:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD42560F9B;
+        Tue, 28 Sep 2021 08:10:37 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mV8CB-00DRl2-M2; Tue, 28 Sep 2021 09:10:35 +0100
+Date:   Tue, 28 Sep 2021 09:10:34 +0100
+Message-ID: <87pmstt91h.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 07/11] of/irq: Export of_irq_count to drivers
+In-Reply-To: <ec13207a-08b4-cbc4-7f29-1ce25ce1ebd0@gmail.com>
+References: <20210924170546.805663-1-f.fainelli@gmail.com>
+        <20210924170546.805663-8-f.fainelli@gmail.com>
+        <CAL_JsqLSiCb7-tHW3VTOTdMt=qahAij77zF2us-CZqXYAi0jmg@mail.gmail.com>
+        <b9bf844c-b6c0-9277-07e0-7592527ce4e4@gmail.com>
+        <CAL_JsqLv+RrmtDPTuMxtjbqAbGvEeAY_oOE5GqrPdP9ZpNGzqw@mail.gmail.com>
+        <ec13207a-08b4-cbc4-7f29-1ce25ce1ebd0@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: f.fainelli@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, linux@armlinux.org.uk, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, catalin.marinas@arm.com, will@kernel.org, ysato@users.sourceforge.jp, dalias@libc.org, tglx@linutronix.de, frowand.list@gmail.com, ardb@kernel.org, rppt@kernel.org, linus.walleij@linaro.org, akpm@linux-foundation.org, geert+renesas@glider.be, arnd@arndb.de, linux@roeck-us.net, wangkefeng.wang@huawei.com, mark.rutland@arm.com, andreyknvl@gmail.com, anshuman.khandual@arm.com, valentin.schneider@arm.com, mingo@kernel.org, peterz@infradead.org, linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org, linux-mips@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021, Mark Brown wrote:
-
-> On Mon, Sep 27, 2021 at 10:27:54AM +0000, Charles Keepax wrote:
+On Mon, 27 Sep 2021 20:49:46 +0100,
+Florian Fainelli <f.fainelli@gmail.com> wrote:
 > 
-> > Yeah we should really be having different lists for SPI and I2C
-> > here I guess. I am happy to have a quick look at doing a patch
-> > for that, unless you particularly want to fix it up?
+> On 9/27/21 12:43 PM, Rob Herring wrote:
+> > On Mon, Sep 27, 2021 at 2:28 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>
+> >> On 9/27/21 12:08 PM, Rob Herring wrote:
+> >>> On Fri, Sep 24, 2021 at 12:07 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>>>
+> >>>> In order to build drivers/irqchip/irq-bcm7120-l2.c as a module, we will
+> >>>> need to have of_irq_count() exported to modules.
+> >>>>
+> >>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> >>>> ---
+> >>>>  drivers/of/irq.c | 1 +
+> >>>>  1 file changed, 1 insertion(+)
+> >>>>
+> >>>> diff --git a/drivers/of/irq.c b/drivers/of/irq.c
+> >>>> index 352e14b007e7..949b9d1f8729 100644
+> >>>> --- a/drivers/of/irq.c
+> >>>> +++ b/drivers/of/irq.c
+> >>>> @@ -440,6 +440,7 @@ int of_irq_count(struct device_node *dev)
+> >>>>
+> >>>>         return nr;
+> >>>>  }
+> >>>> +EXPORT_SYMBOL_GPL(of_irq_count);
+> >>>
+> >>> Please convert to use platform_irq_count() instead.
+> >>
+> >> That requires a platform_device to be passed to platform_irq_count(),
+> >> will that work even when the drivers remain built into the kernel and
+> >> get initialized early on?
+> > 
+> > No, does your irqchip using this do both? Looks to me like it is
+> > always a platform_device.
 > 
-> I dropped the patch so please feel free to go ahead.
+> On ARM/ARM64 not using GKI as well as MIPS, we would want the module to
+> be built into the kernel image, however when using GKI that driver would
+> become a module. How do you suggest reconciling both usages?
 
-Just this one, or should I drop the set?
+I don't see what GKI has to do with anything. Either the driver can be
+built as a module (and it is in this case a platform device at all
+times, built-in or not), or it cannot, and it falls into the
+IRQCHIP_DECLARE() category (and there is no export problem).
+
+Pick your poison!
+
+Thanks,
+
+	M.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Without deviation from the norm, progress is not possible.
