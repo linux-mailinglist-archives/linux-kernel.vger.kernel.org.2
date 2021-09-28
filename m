@@ -2,73 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EDD41B75A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A90A41B75E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242441AbhI1TSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:18:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237134AbhI1TSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:18:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FA4D6124B;
-        Tue, 28 Sep 2021 19:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632856614;
-        bh=FfXlaxy+LpiN2TDECZvSAwnUFrz442elIyOG2GVbO8M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RS6/ltESYmaovDS0Cqh0C2Zyu5s+4KCCmu0kmt3d85oACAGbk/hXyitw3jJXwomrw
-         g6LjlLL337rjkmCg9c+yx3ct7XcU+iQkAP/yWrl3apH78gKll3bmRx2WmDpqydkG0y
-         k+y+vFU4PN0tdrOyT6GaXZv5V64esUVXAlsFPKYbZXm+BiQnVQffu+XJXFQaTbZ56M
-         oi1B+Q5qA43khtNZvu/ukGgWM+xwrCeiR0QeHXg0S+k2lUl5TNtqi4xpoOwN/GBTtp
-         Iskw4F3mYC5CmJZMGdzUSNfaMM/QgKSUIRuf2WGyfY7n/pzE3SEW5lVaKLphVaqx3T
-         hRmHJ7yy4oA0A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2FF0B410A1; Tue, 28 Sep 2021 16:16:51 -0300 (-03)
-Date:   Tue, 28 Sep 2021 16:16:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.garry@huawei.com>, will@kernel.org,
-        mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, zhangshaokun@hisilicon.com,
-        liuqi115@huawei.com
-Subject: Re: [PATCH 1/5] perf parse-events: Set numeric term config
-Message-ID: <YVNqI+YFGbX+xiuk@kernel.org>
-References: <1631795665-240946-1-git-send-email-john.garry@huawei.com>
- <1631795665-240946-2-git-send-email-john.garry@huawei.com>
- <CAP-5=fVG3_p3Xf3s6FnpSRFwt3+CxitPZwRK0fMbz2t8WZaSEw@mail.gmail.com>
+        id S242456AbhI1TTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242315AbhI1TTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:19:23 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDA5C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:17:43 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id c20so2580qtb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7f1QZiONeDrfm8AhTnbc53U7HhkzQ840mRRtmUewnCI=;
+        b=jv2OU4dRonKtBmDWObStEgucOWtPlJyqGW207XvuQpqOpfcn92InOEODzxDn3983J8
+         NWUMSihLuwJkDTW1ES/IWD1pW4f1IgZWhUtRjvhMkDyUbQyYUzTcg2auWALiBpPMh6T5
+         o6Y/op/SaG0z9lus3Le6nGPTcAsbC0wYw1OmeasBeOOIc0Unh8ixnfIYVGFTDQvdWUf7
+         ejnTvxk5F1g8wMgxUrGGmpVnriP2WtOERNRAu+rKxEr8b83QkHsd4GVA2mxfZkrmQHOF
+         YHUBTillHF8tNjol2rYAKfciv/4RCk/9bFro7e8E17vrA8nf9zNDkX9XT7E2zrdw+Kvq
+         T7bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7f1QZiONeDrfm8AhTnbc53U7HhkzQ840mRRtmUewnCI=;
+        b=BaPb+a3bA3S5cR15BORzXGy8m4GajFfzjQQ9LnN8dPt6Y/cGLwlUlo6I+kR0oQjTDd
+         k3D8EUyKxfqc2u4i4joWs/ZCa/yeKRPuqskI9ltq+s0qzqD+ejxLo7HSIH0nE9Zk5sFI
+         Pq8/2iRoG7v9pugDtoudkVH+Loi/Pb6j0qLKWsXTEHdq1Z22ZOkPxv/DIJKskKQDlQR+
+         +QCf3WZAla5d7ktEJkC8/AeRbwu+MfvSxOi9IlPTwa0WHmeLjTIuvDiZqZ2RTu4rXjna
+         q56cq0t+P5hFa5a/UQClZD5c2PHxUOwSIa+L8BS+j/4wwM4PMJHr3/qwt0rPqN5YTKFw
+         eQww==
+X-Gm-Message-State: AOAM531Eojn/Mfm5VK0viPxCg+BJiaNlklVWGp45G4m1ptkKEbU5kdeF
+        HoZJjifMVQ+fM0daZ2zo3xeZPg==
+X-Google-Smtp-Source: ABdhPJzuCBFM9bapdOvbnZSM2ycmiyqPK8ZUR9G41TIe6DE91xtbhVAs4nO11mNSn8qAAkRHmlWp7A==
+X-Received: by 2002:ac8:7d4b:: with SMTP id h11mr7542407qtb.333.1632856663191;
+        Tue, 28 Sep 2021 12:17:43 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id c6sm5387224qtx.72.2021.09.28.12.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 12:17:42 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVIbl-007G4o-JW; Tue, 28 Sep 2021 16:17:41 -0300
+Date:   Tue, 28 Sep 2021 16:17:41 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 11/20] RDMA/core: introduce
+ ib_dma_pci_p2p_dma_supported()
+Message-ID: <20210928191741.GQ3544071@ziepe.ca>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-12-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fVG3_p3Xf3s6FnpSRFwt3+CxitPZwRK0fMbz2t8WZaSEw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210916234100.122368-12-logang@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 28, 2021 at 10:59:42AM -0700, Ian Rogers escreveu:
-> On Thu, Sep 16, 2021 at 5:39 AM John Garry <john.garry@huawei.com> wrote:
-> >
-> > For numeric terms, the config field may be NULL as it is not set from the
-> > l+y parsing.
-> >
-> > Fix by setting the term config from the term type name.
-> >
-> > Also fix up the pmu-events test to set the alias strings to set the period
-> > term properly, and fix up parse-events test to check the term config
-> > string.
-> >
-> > Signed-off-by: John Garry <john.garry@huawei.com>
+On Thu, Sep 16, 2021 at 05:40:51PM -0600, Logan Gunthorpe wrote:
+> Introduce the helper function ib_dma_pci_p2p_dma_supported() to check
+> if a given ib_device can be used in P2PDMA transfers. This ensures
+> the ib_device is not using virt_dma and also that the underlying
+> dma_device supports P2PDMA.
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+> Use the new helper in nvme-rdma to replace the existing check for
+> ib_uses_virt_dma(). Adding the dma_pci_p2pdma_supported() check allows
+> switching away from pci_p2pdma_[un]map_sg().
 > 
-> Having this would be very useful with an issue I'm looking into.
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>  drivers/nvme/target/rdma.c |  2 +-
+>  include/rdma/ib_verbs.h    | 11 +++++++++++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
 
-Thanks, applied the series.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-- Arnaldo
+> +/*
+> + * Check if a IB device's underlying DMA mapping supports P2PDMA transfers.
+> + */
+> +static inline bool ib_dma_pci_p2p_dma_supported(struct ib_device *dev)
+> +{
+> +	if (ib_uses_virt_dma(dev))
+> +		return false;
 
+If someone wants to make rxe/hfi/qib use this stuff then they will
+have to teach the the driver to do all the p2p checks and add some
+struct ib_device flag
+
+Jason
