@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EB241BB0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F94041BB12
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243318AbhI1Xfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243285AbhI1Xfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:35:45 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3AEC06161C;
-        Tue, 28 Sep 2021 16:34:05 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 75so738346pga.3;
-        Tue, 28 Sep 2021 16:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h24Y/kU4aKtRh6g7biQbWx3x7udSPQEcujcIEn455v0=;
-        b=Mo1um+Z+QYjFY/3/an5OPYNFh+LEMl1J3HqnTAyDZaoYFJU1/zWYVG5v3qZdxy9Ndk
-         BFPBZ9AF/esBWOvQ+JWl8TxjscwgTN04e9uA3WgDulYBxOE4XRjlYw0k+bydNPafVL8t
-         FItKfZWmzqWTspr5d5hFdW+2fa+7CaSMYq5+5hcyxqsdh7YlcLDNwu5DH//ce+zSH/nq
-         lsx3i2Jy++83X2T8vvG1ZBqvGf771MgPUN1rYpTL3/3Gg/8wp9dsK9CWqqZTI24MbybD
-         rq7OwoJ+ehTi8QMRJvyID6D6EhaR/t6VYR93anBQStPD2GRgAPYPxRPyGjh81SQkqukW
-         GnMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h24Y/kU4aKtRh6g7biQbWx3x7udSPQEcujcIEn455v0=;
-        b=DXJHie8yTHFrosmFQY2oIDUaeck80O7fJwdgimKJ3A93z5+hFVEhKeBzl493Ejx5la
-         PEp+5TgX9JeMvJN6R0jvB5M0U0sdL0aCG/eCdRrFvJ5GQUS172Qy8JqAOG+vAVzWy4ZD
-         v2rdzgPsoMv2vQK4xhezHju5kQMU/PnVABqx4pp3ntk81w8X3gm5g2a6rEXMHuwXg9mJ
-         ng+BUIGv1M57QAlQXCHZLNJnEMiMABvRgJbpGZol0IgecChfNauNwhE6qVEGUpGFfpkp
-         sIhfYRoayjzZiZRvJmHoZBGDwtVDp0j9TbgCduOKx3qlATV6CjGkPmnxHKU19PBA/Brz
-         tfMg==
-X-Gm-Message-State: AOAM531y7ROyXaaUn0uaWyb3DfnascMs2kAdvZSS2+eaJ4ClB7uMQZoa
-        IgJo/8dtRyTnlJ88yBhWTbHOg7pw0YILf5MN/VQ=
-X-Google-Smtp-Source: ABdhPJz30jvU7lO+zF3B5UC0yuoIV5T9T/sFi3ZGEZLGPXoPHji902/gE1XIbkGFGU3Fc+XmdI5bjHjt2rmV/m64yok=
-X-Received: by 2002:a63:374c:: with SMTP id g12mr3873161pgn.35.1632872044701;
- Tue, 28 Sep 2021 16:34:04 -0700 (PDT)
+        id S243353AbhI1XjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243302AbhI1XjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 19:39:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C42996137A;
+        Tue, 28 Sep 2021 23:37:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632872244;
+        bh=QVz9TS6fN5Lu3ZMboqlRBGqyZ37OariEqwrf+NlAd0c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Q8vvG/VTLjz+wkPfyKxRpBn9tB521oXhQlfQZ1sxsEI/eUwWJQnUHuaDqLcdx6lup
+         bEY3azlP8zEIgMXdD7/RLYg3MOtk6xbkw0ILrqKvBpCG4D2OK4MyN91p17q3moBlt5
+         9x/Bl/QCi3AQMDMkQqIl1HrLxJPvN7S26h2fISZbd7ARO+nfgcmkRZgKiiqA9SxaN8
+         vLsWdCEufLwFIx81ce4ht/SwZI5BRAeTKqwj7PoBbDcrIjLmmtERybuNk9fvgboFhr
+         TpQQ29craoS7VpaVAAJK5SKF3940BM3Dd/DY+YjmkBjzf4uryWN9WsHr0fO4q7AshQ
+         8eK3bbrZxixLw==
+Date:   Tue, 28 Sep 2021 18:37:21 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     =?utf-8?B?5p2O55yf6IO9?= <lizhenneng@kylinos.cn>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI/sysfs: add write attribute for boot_vga
+Message-ID: <20210928233721.GA748816@bhelgaas>
 MIME-Version: 1.0
-References: <20210928230946.4062144-1-keescook@chromium.org>
-In-Reply-To: <20210928230946.4062144-1-keescook@chromium.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 28 Sep 2021 16:33:53 -0700
-Message-ID: <CAADnVQL7eY1Vs5S+DuYhFKYoP83Vr5CQ5sjn=UT_6Xo3=HGMvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/2] bpf: Build with -Wcast-function-type
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <70a472b8-7a3e-1792-efe4-125584231824@kylinos.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 4:09 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Hi,
->
-> In order to keep ahead of cases in the kernel where Control Flow Integrity
-> (CFI) may trip over function call casts, enabling -Wcast-function-type
-> is helpful. To that end, replace BPF_CAST_CALL() as it triggers warnings
-> with this option and is now one of the last places in the kernel in need
-> of fixing.
->
-> Thanks,
->
-> -Kees
->
-> v2:
-> - rebase to bpf-next
-> - add acks
-> v1: https://lore.kernel.org/lkml/20210927182700.2980499-1-keescook@chromium.org
+On Mon, Sep 27, 2021 at 11:45:59AM +0800, 李真能 wrote:
+> 
+> 在 2021/9/27 上午4:20, Bjorn Helgaas 写道:
+> > On Sun, Sep 26, 2021 at 03:15:39PM +0800, Zhenneng Li wrote:
+> > > Add writing attribute for boot_vga sys node,
+> > > so we can config default video display
+> > > output dynamically when there are two video
+> > > cards on a machine.
+> > > 
+> > > Xorg server will determine running on which
+> > > video card based on boot_vga node's value.
+> > When you repost this, please take a look at the git commit log history
+> > and make yours similar.  Specifically, the subject should start with a
+> > capital letter, and the body should be rewrapped to fill 75
+> > characters.
+> > 
+> > Please contrast this with the existing VGA arbiter.  See
+> > Documentation/gpu/vgaarbiter.rst.  It sounds like this may overlap
+> > with the VGA arbiter functionality, so this should explain why we need
+> > both and how they interact.
+> 
+> "Some "legacy" VGA devices implemented on PCI typically have the same
+> hard-decoded addresses as they did on ISA. When multiple PCI devices are
+> accessed at same time they need some kind of coordination. ", this is the
+> explain of config VGA_ARB, that is to say, some legacy vga devices need use
+> the same pci bus address, if user app(such as xorg) want access card A, but
+> card A and card B have same bus address,  then VGA agaarbiter will determine
+> will card to be accessed.
 
-Applied. Thanks
+Yes.  I think the arbiter also provides an interface for controlling
+the routing of these legacy resources.
+
+Your patch changes the kernel's idea of the default VGA device, but
+doesn't affect the resource routing, AFAICT.
+
+> And xorg will read boot_vga to determine which graphics card is the primary
+> graphics output device.
+
+Doesn't xorg also have its own mechanism for selecting which graphics
+device to use?
+
+Is the point here that you want to write the sysfs file to select the
+device instead of changing the xorg configuration?  If it's possible
+to configure xorg directly to use different devices, my inclination
+would be to use that instead of doing it via sysfs.
+
+> That is the difference about boot_vga and vgaarbiter.
+>
+> > > Signed-off-by: Zhenneng Li <lizhenneng@kylinos.cn>
+> > > ---
+> > >   drivers/pci/pci-sysfs.c | 24 +++++++++++++++++++++++-
+> > >   1 file changed, 23 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > index 7bbf2673c7f2..a6ba19ce7adb 100644
+> > > --- a/drivers/pci/pci-sysfs.c
+> > > +++ b/drivers/pci/pci-sysfs.c
+> > > @@ -664,7 +664,29 @@ static ssize_t boot_vga_show(struct device *dev, struct device_attribute *attr,
+> > >   			  !!(pdev->resource[PCI_ROM_RESOURCE].flags &
+> > >   			     IORESOURCE_ROM_SHADOW));
+> > >   }
+> > > -static DEVICE_ATTR_RO(boot_vga);
+> > > +
+> > > +static ssize_t boot_vga_store(struct device *dev, struct device_attribute *attr,
+> > > +			      const char *buf, size_t count)
+> > > +{
+> > > +	unsigned long val;
+> > > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > > +	struct pci_dev *vga_dev = vga_default_device();
+> > > +
+> > > +	if (kstrtoul(buf, 0, &val) < 0)
+> > > +		return -EINVAL;
+> > > +
+> > > +	if (val != 1)
+> > > +		return -EINVAL;
+> > > +
+> > > +	if (!capable(CAP_SYS_ADMIN))
+> > > +		return -EPERM;
+> > > +
+> > > +	if (pdev != vga_dev)
+> > > +		vga_set_default_device(pdev);
+> > > +
+> > > +	return count;
+> > > +}
+> > > +static DEVICE_ATTR_RW(boot_vga);
+> > >   static ssize_t pci_read_config(struct file *filp, struct kobject *kobj,
+> > >   			       struct bin_attribute *bin_attr, char *buf,
+> > > -- 
+> > > 2.25.1
+> > > 
+> > > 
+> > > No virus found
+> > > 		Checked by Hillstone Network AntiVirus
