@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C3741A6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2EC41A6F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhI1FCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 01:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhI1FCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:02:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D86561157;
-        Tue, 28 Sep 2021 05:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632805273;
-        bh=zsQk0tlFBx4r/np/dpdue6p/eJJfxXfQU+IrfF5+Bhw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tmy2YODD81AfnYlUzCWGvxSes7alPN10gAmsR7FPADYzq1nE85XE5OaS6xPRTIeZJ
-         snqyTguLpEYvV67F+ah2/9xAU3ulKQR/jWBL/ffXkUfRX71RkHFkPTAXlutaE+padl
-         LzStgM8WEz4HgDCy5v18gGr70esGI7awFcq2wLV0=
-Date:   Tue, 28 Sep 2021 07:01:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, bhelgaas@google.com,
-        andy.shevchenko@gmail.com, mgross@linux.intel.com,
-        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] MFD: intel_pmt: Support non-PMT capabilities
-Message-ID: <YVKhlWSb3pdMLCEk@kroah.com>
-References: <20210922213007.2738388-1-david.e.box@linux.intel.com>
- <20210922213007.2738388-3-david.e.box@linux.intel.com>
- <YVIBI6TQrD/rehli@kroah.com>
- <d540894d3d8c05722bd924c21bd9dd9c2b9def53.camel@linux.intel.com>
+        id S234124AbhI1FR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 01:17:26 -0400
+Received: from esa10.hc1455-7.c3s2.iphmx.com ([139.138.36.225]:24728 "EHLO
+        esa10.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233279AbhI1FRY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 01:17:24 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 01:17:24 EDT
+IronPort-SDR: QE8h0f/MjikkdTDlK+FY15167lYE5vqkpTeJMBNxUEQaW5mYfCRwRELPYLz7C259TPR+7jAo1M
+ ZOOBysg4gcicXutcQHE+ZV/qNrb9CDPzXtVZh/e57fSTVt+J/xSRmJ6HpQu0Dlhjmt3p7+LWHF
+ Hl4bYW2a2P8GT/2l10de/HLdLuoNNuZfvRNAy/CsIBasU5jJUNBdKy7zNjQNwpUONoLgIhxcbM
+ vkbcI7swL4j+YgvVfXdqNepjpv+NYvysXybZB19eby3IauOfPwhg4ykmOLaigi10v2A6svnVSr
+ Jjc04ejs/6Tp/wEpqseSMrYx
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="34550053"
+X-IronPort-AV: E=Sophos;i="5.85,328,1624287600"; 
+   d="scan'208";a="34550053"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP; 28 Sep 2021 14:08:19 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
+        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 8FDB823A37B
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:08:18 +0900 (JST)
+Received: from yto-om2.fujitsu.com (yto-om2.o.css.fujitsu.com [10.128.89.163])
+        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id D1E18C5555
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:08:12 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by yto-om2.fujitsu.com (Postfix) with ESMTP id BBA394007DF01;
+        Tue, 28 Sep 2021 14:08:12 +0900 (JST)
+From:   Hasegawa Hitomi <hasegawa-hitomi@fujitsu.com>
+To:     frederic@kernel.org
+Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        fweisbec@gmail.com, juri.lelli@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@kernel.org,
+        peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
+        vincent.guittot@linaro.org,
+        Hasegawa Hitomi <hasegawa-hitomi@fujitsu.com>
+Subject: [RFC][PATCH 0/1] sched/cputime: Improve getrusage(RUSAGE_THREAD) with nohz_full
+Date:   Tue, 28 Sep 2021 14:08:03 +0900
+Message-Id: <20210928050804.4156102-1-hasegawa-hitomi@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d540894d3d8c05722bd924c21bd9dd9c2b9def53.camel@linux.intel.com>
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 11:40:37AM -0700, David E. Box wrote:
-> On Mon, 2021-09-27 at 19:36 +0200, Greg KH wrote:
-> > On Wed, Sep 22, 2021 at 02:30:04PM -0700, David E. Box wrote:
-> > > Intel Platform Monitoring Technology (PMT) support is indicated by presence
-> > > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
-> > > structures may also be used by Intel to indicate support for other
-> > > capabilities unrelated to PMT.  OOBMSM is a device that can have both PMT
-> > > and non-PMT capabilities. In order to support these capabilities it is
-> > > necessary to modify the intel_pmt driver to handle the creation of platform
-> > > devices more generically.
-> > 
-> > I said this on your other driver submission, but why are you turning a
-> > PCIe device into a set of platform devices and craming it into the MFD
-> > subsystem?
-> > 
-> > PCIe devices are NOT platform devices.
-> 
-> But they *are* used to create platform devices when the PCIe device is multi-functional, which is
-> what intel_pmt is.
+Frederic, seems busy, so I create the proper patch, would you please add
+your Signed-off-by: if this fix is okey.
+This patch is a fix proposed in the following thread [1].
 
-That is an abuse of platform devices, as that is not what they are for.
 
-> > Why not use the auxiliary bus for this thing if you have individual
-> > drivers that need to "bind" to the different attributes that this single
-> > PCIe device is exporting.
-> 
-> It wasn't clear in the beginning how this would evolve. MFD made sense for the PMT (platform
-> monitoring technology) driver. PMT has 3 related but individually enumerable devices on the same IP,
-> like lpss. But the same IP is now being used for other features too like SDSi. We could work on
-> converting this to the auxiliary bus and then covert the cell drivers.
+The getrusage(RUSAGE_THREAD) with nohz_full returns shorter utime/stime
+than the actual time.
 
-Please do so.
+In the current implementation, task_cputime_adjusted() calls task_cputime()
+to get the "current" utime and stime, then calls cputime_adjust () to adjust
+the sum of utime and stime to be equal to cputime.sum_exec_runtime.
+In nohz_full, sum_exec_runtime is not updated regularly, which is the cause
+of this discrepancy.
 
-> > Or why not just fix the hardware to report individual PCIe devices, like
-> > a sane system would do?
-> 
-> We have some systems with 1000+ PCIe devices. Each PCIe device adds cost to HW. So increasingly
-> VSEC/DVSEC is used to expose features which are handled by the same micro-controller in the HW.
+This patch add a process to update sum_exec_runtime after getting
+the information from "current" and before adjusting. 
+This addition applies only when run with nohz_full.
 
-A PCIe device is a virtual thing, what HW cost do they have?
+Thanks.
+Hitomi Hasegawa
 
-Anyway, a platform device should NOT ever be a child of a PCI device,
-that is not ok and should be fixed here please.
+[1] https://lore.kernel.org/lkml/OSBPR01MB21837C8931D90AE55AF4A955EB529@OSBPR01MB2183.jpnprd01.prod.outlook.com/
 
-A platform device is just that, something that the platform provides on
-a non-discoverable bus.  A PCIe device is NOT that type of device at
-all and never has been.
+--
 
-thanks,
+Hasegawa Hitomi (1):
+  sched/cputime: Improve getrusage(RUSAGE_THREAD) with nohz_full
 
-greg k-h
+ include/linux/sched/cputime.h |  5 +++--
+ kernel/sched/cputime.c        | 12 +++++++++---
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
