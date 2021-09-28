@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1AB41A8EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6323341A8F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238930AbhI1G1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:27:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234890AbhI1G1S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:27:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632810339;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9wq1dVPtAXDMCZC9S+u92KoCxHpT0A4H8ulsqFHsRII=;
-        b=UDRvPPH2Ztv/ykXHYg6Q/XQvcsd1qQmx4vD0ABeJBMaPCkhF2QJAeS9GTqG3m377s2iXFD
-        HFFgsa4Xkh6j4TAisZS1qelygOF1BWjHMT4SettqUrj+11FTTEXVE+v9T3Rc6MbHm3UQ3p
-        9Fh1BKSN+rObCnMVm7aji7p/N6QdS98=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-kLQN9vOWMjy8dKnKDjQ5jQ-1; Tue, 28 Sep 2021 02:25:37 -0400
-X-MC-Unique: kLQN9vOWMjy8dKnKDjQ5jQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so1510508wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 23:25:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=9wq1dVPtAXDMCZC9S+u92KoCxHpT0A4H8ulsqFHsRII=;
-        b=1Z/lIuvePn/8uqRoOkmPONamNEOgyZugy/Q2zejwOAU/zUAvnCwfUMrFQwSayY5q/d
-         nqfixaT1Rk0cMx41rDIiFZzpU4Q4Xi7pmWxbfT0lcunwbhrSYKSoZ7WrIqQnaFfUq6LP
-         xRKmoqdJPyBENsqncQjnnmQxRP0PfdDFHnz4lp1pB2QH49o2g4f0RKeLTaiYDcQOUoG/
-         a4gLFbILHf5VUfIHVLw9X1A8oEvKw1WK00hmcUKhJm5uI4LI/K6noccPaSVU9mDknfUV
-         D58gGVoSNR0r+HQcs2dKLdhBKOJLINKKiThFcQ9m8JwZQ8MwrkspeX3OT2Weaxnq2YdJ
-         r69Q==
-X-Gm-Message-State: AOAM5302msyy0+rYgNCPAC+nvMHkxe5Wbzzd9xgpkMBf7Cp1747tjQOG
-        H6Bf/5dxikcRPrY3ZIDXGDxy40KQLxiB4Gxu3q/ZHx2ewKq+mRAm/AffhtGhT2V3q3yUxBlqM1d
-        f7AkDWfMiyY8DGIl1MHhmiNUH
-X-Received: by 2002:a5d:64cf:: with SMTP id f15mr4278527wri.284.1632810336267;
-        Mon, 27 Sep 2021 23:25:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzqSUu50iJ95OWE4UOFTINQsxuRK/ueiYpb9FlWfdG9FdcSiC/DUJ4GzrvCnuOU9QL4gLjBUA==
-X-Received: by 2002:a5d:64cf:: with SMTP id f15mr4278495wri.284.1632810336011;
-        Mon, 27 Sep 2021 23:25:36 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id l10sm1663709wmq.42.2021.09.27.23.25.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 23:25:35 -0700 (PDT)
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v15 00/12] SMMUv3 Nested Stage Setup (IOMMU part)
-To:     Krishna Reddy <vdumpa@nvidia.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "will@kernel.org" <will@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "zhukeqian1@huawei.com" <zhukeqian1@huawei.com>
-Cc:     "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
-        "wangxingang5@huawei.com" <wangxingang5@huawei.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>,
-        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        "chenxiang66@hisilicon.com" <chenxiang66@hisilicon.com>,
-        "jiangkunkun@huawei.com" <jiangkunkun@huawei.com>
-References: <20210411111228.14386-1-eric.auger@redhat.com>
- <BY5PR12MB37640C26FEBC8AC6E3EDF40BB3A79@BY5PR12MB3764.namprd12.prod.outlook.com>
-From:   Eric Auger <eric.auger@redhat.com>
-Message-ID: <c3fcc2fb-3173-af83-2b30-423c2c1ab83d@redhat.com>
-Date:   Tue, 28 Sep 2021 08:25:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S238960AbhI1G2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:28:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234207AbhI1G2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 02:28:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 309B5611BD;
+        Tue, 28 Sep 2021 06:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632810429;
+        bh=gGSfvzOmjzE3uTefL139gVbIvttn9yn4r5LhiGbvw/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jo3iPuwkTOeimGBgEgOu8dd17zrY7ubjaXar4ncU7iWGiXBIJItkqjmkeqmxuo5Qw
+         GDGoPQG4TOEzGzaXtGs5W8eugUfsDMwBaxjRg/XitBV3DcorMjkZEW+2Tz36EvyRFe
+         HMjlVawtRWZwurFLvveKPWUyvG3vE4pnjA1L45lr0YS2IkV6vbHgry3FLvPe6ISIpc
+         /9G4l3wWtgodeRBdOjc5v7Y3aR6FC/gErEZ68BV+oiW2m6QTRgERJ+cVeiUjoWNXzO
+         l09Fx5FOgKWr4CBqROaVFgmXE0MzYU8TPviVVqLUtiNBjYIrHu36jVkl7p20oyBAzp
+         CgvW/Ch/zpydg==
+Date:   Mon, 27 Sep 2021 23:27:07 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     XiaokangQian <xiaokang.qian@arm.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, nd@arm.com, ardb@kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: arm64/gcm-ce - unroll factors to 4-way
+ interleave of aes and ghash
+Message-ID: <YVK1u4BgVAa84fMa@sol.localdomain>
+References: <20210923063027.166247-1-xiaokang.qian@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <BY5PR12MB37640C26FEBC8AC6E3EDF40BB3A79@BY5PR12MB3764.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923063027.166247-1-xiaokang.qian@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+On Thu, Sep 23, 2021 at 06:30:25AM +0000, XiaokangQian wrote:
+> To improve performance on cores with deep piplines such as A72,N1,
+> implement gcm(aes) using a 4-way interleave of aes and ghash (totally
+> 8 blocks in parallel), which can make full utilize of pipelines rather
+> than the 4-way interleave we used currently. It can gain about 20% for
+> big data sizes such that 8k.
+> 
+> This is a complete new version of the GCM part of the combined GCM/GHASH
+> driver, it will co-exist with the old driver, only serve for big data
+> sizes. Instead of interleaving four invocations of AES where each chunk
+> of 64 bytes is encrypted first and then ghashed, the new version uses a
+> more coarse grained approach where a chunk of 64 bytes is encrypted and
+> at the same time, one chunk of 64 bytes is ghashed (or ghashed and
+> decrypted in the converse case).
+> 
+> The table below compares the performance of the old driver and the new
+> one on various micro-architectures and running in various modes with
+> various data sizes.
+> 
+>             |     AES-128       |     AES-192       |     AES-256       |
+>      #bytes | 1024 | 1420 |  8k | 1024 | 1420 |  8k | 1024 | 1420 |  8k |
+>      -------+------+------+-----+------+------+-----+------+------+-----+
+>         A72 | 5.5% |  12% | 25% | 2.2% |  9.5%|  23%| -1%  |  6.7%| 19% |
+>         A57 |-0.5% |  9.3%| 32% | -3%  |  6.3%|  26%| -6%  |  3.3%| 21% |
+>         N1  | 0.4% |  7.6%|24.5%| -2%  |  5%  |  22%| -4%  |  2.7%| 20% |
+> 
+> Signed-off-by: XiaokangQian <xiaokang.qian@arm.com>
 
-On 9/27/21 11:17 PM, Krishna Reddy wrote:
-> Hi Eric,
->> This is based on Jean-Philippe's
->> [PATCH v14 00/10] iommu: I/O page faults for SMMUv3
->> https://www.spinics.net/lists/arm-kernel/msg886518.html
->> (including the patches that were not pulled for 5.13)
->>
-> Jean's patches have been merged to v5.14.
-> Do you anticipate IOMMU/VFIO part patches getting into upstream kernel soon?
+Does this pass the self-tests, including the fuzz tests which are enabled by
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y?
 
-I am going to respin the smmu part rebased on v5.15. As for the VFIO
-part, this needs to be totally redesigned based on /dev/iommu (see
-[RFC 00/20] Introduce /dev/iommu for userspace I/O address space
-management).
-
-I will provide some updated kernel and qemu branches for testing purpose
-only.
-
-Thanks
-
-Eric
->
-> -KR
->
-
+- Eric
