@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D5C41AA8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508741AA8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239564AbhI1IZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:25:32 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:47136
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239043AbhI1IZa (ORCPT
+        id S239567AbhI1I0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:26:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45734 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239355AbhI1I0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:25:30 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 28 Sep 2021 04:26:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632817479; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=/J3WgXBQexzgk6jFJ2cFLXTOIQ/hy9vUhIyILCLwDKw=;
+ b=lsdZWYY9SOpIPfXP5YzB/XEzC2CWZDaDQoPQFFcwN2D+dCrbFy9Dhc4P8IkddAoLnyW+J7Kr
+ LDi1hN2VwgK8y7Vb/lqi5valV7ssJL4kgaSwDntD0CFphWZal0mNrhcgprOILpE5k4vlYdN7
+ lXsgCU/wa5MoBuN0zO7/XPCA0ls=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6152d14647d64efb6db086a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 08:24:38
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CCB84C4360D; Tue, 28 Sep 2021 08:24:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0C80F4019A
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 08:23:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632817430;
-        bh=hCpkTZoM4n3uBZpcQB8z06X1QRNDpVNEm2rAShQKtzU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=qyiiJxtf66z1YC8O+On/5QDQ4Gk2qP4USH5COhl2yTdWREofPufPZ5Gt53hHWwMQz
-         twCQV2ucZDzDd5/aHyD0TEUJogTpWYwi/Zr1FYzPJG3PUwNHGOItPwrQuh+zY5dwnT
-         y3+GUh5LGd/4nBzlFGO8cltvp+4He3nYJsMCJoZqdY5Or+hap/OP5ff4TDCK24RLTD
-         D0M5SCOFLW61eR62BZMwyyVyhAEUnXh18sOrWwVNFjFOprgBiJOzZqMhEK6BaWZI9Y
-         S3TqewUOzuAEdXoR2kxkFZgSlm2brHckZizFQ6D9w2ZfqkcmDAODRCSSjoSLtTgZz8
-         fO6paGLBTaVDw==
-Received: by mail-lf1-f70.google.com with SMTP id x29-20020ac259dd000000b003f950c726e1so18522892lfn.14
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:23:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hCpkTZoM4n3uBZpcQB8z06X1QRNDpVNEm2rAShQKtzU=;
-        b=H9y+Gz8fR5YEG/GSBSBgK1+YXp+HXJUDEoOcVFiFOj8UbvrOT6zqANslOGtxH2RVjV
-         tZ51BEEDeIWh82lpsSGDccB+MJdrwI7/Z8NnO8zg5QCs4QA9JlB6f8hk/F68GST6v6bq
-         +IuRwOBOpZjmHma5ep9Wa/CKmrffZa3XfRehgDVQ2Da/ahydJDysEU0o8GvJoJZxYHps
-         8iuizJNm+582D2vXd2LeIPcyj7J6JVE5ix0S8OODzCkfPIZNVfdKCDFo88sFpe/m6IGg
-         4/Exb0tr8v6t+RPsN1/uJG57JY+tFMyTSO37/8AnNv+/wAUk0Rj6h4VQjh4FkncStVvg
-         Mh+w==
-X-Gm-Message-State: AOAM530WAVy5iisytyLdY0sdOOcfeZleG3tSGowO+03pcOfIyZAKOnJv
-        vvzbrXc7ActiCknlfvoCp1NM/jHjC5LZ7x8ZmwWtShkk6BUITzgPK/UL6j5yiO5Y+qsEAyohVcw
-        GfKEN0ABFUMqE65wr33L7+JBCxVZef5h8X1W/c7Lk2g==
-X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr4623525lfd.496.1632817429477;
-        Tue, 28 Sep 2021 01:23:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0kiQhvPEnXkPPjDKvzDmgWIBkyJznAjn8DmsrfGeFcE9vto/pgYlvsJ9re4+/35+AKYMcPQ==
-X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr4623518lfd.496.1632817429338;
-        Tue, 28 Sep 2021 01:23:49 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id y5sm1491271ljc.56.2021.09.28.01.23.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 01:23:48 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH] dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells dependency
-Date:   Tue, 28 Sep 2021 10:23:46 +0200
-Message-Id: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7A019C4360C;
+        Tue, 28 Sep 2021 08:24:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7A019C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ipw2200: Fix a function name in print messages
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210925124621.197-1-caihuoqing@baidu.com>
+References: <20210925124621.197-1-caihuoqing@baidu.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     <caihuoqing@baidu.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210928082437.CCB84C4360D@smtp.codeaurora.org>
+Date:   Tue, 28 Sep 2021 08:24:37 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The meta-schema already defines dependency between clock-cells and
-clock-output-names.
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 4 ----
- 1 file changed, 4 deletions(-)
+> Use dma_alloc_coherent() instead of pci_alloc_consistent(),
+> because only dma_alloc_coherent() is called here.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-index 23abb7e8b9d8..dd70431df0b7 100644
---- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-+++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-@@ -158,10 +158,6 @@ properties:
-     description:
-       The MIO bank number in which the command and data lines are configured.
- 
--dependencies:
--  clock-output-names: [ '#clock-cells' ]
--  '#clock-cells': [ clock-output-names ]
--
- required:
-   - compatible
-   - reg
+Patch applied to wireless-drivers-next.git, thanks.
+
+a8e5387f8362 ipw2200: Fix a function name in print messages
+
 -- 
-2.30.2
+https://patchwork.kernel.org/project/linux-wireless/patch/20210925124621.197-1-caihuoqing@baidu.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
