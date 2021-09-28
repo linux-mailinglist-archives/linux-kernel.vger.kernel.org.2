@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E711641A8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0873341A8B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 08:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239723AbhI1GLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 02:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239592AbhI1GLF (ORCPT
+        id S238903AbhI1GOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 02:14:07 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:61941 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234543AbhI1GOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 02:11:05 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC78C0610E3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 23:05:40 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id j15so11997192plh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 23:05:40 -0700 (PDT)
+        Tue, 28 Sep 2021 02:14:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BhMrU55lN8tHDVLP6L+4nS25hbBJHkn4rqkbx7oYk2k=;
-        b=IKw0WEqPcL//vY1E9es5ClunAmQ3FwjVN/b6Pw9GwXZUgH9h7hyaZ3AdOpVPeIHGNu
-         sSJbc0pcFjX52VBIt/R1NKuJHYQFQyfrlV7rLSfhgkWp0/RJPqjAGd7VOcDkU5DkjW3U
-         gCcmnTCknh0HspqLoH+t64EXmMiW917r9QruU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BhMrU55lN8tHDVLP6L+4nS25hbBJHkn4rqkbx7oYk2k=;
-        b=vpjzHiEtEhyo4QxA/E22w4SaS36pjE4I6isLg0MKIQGC8S61QjROIsKr/jERLgz0Gf
-         YRviyh9v3T5+4FTMVF8xFbnVgM+4WY5Lmt1KOAFX7Vd2WGP+8iiLUGLnxS1xoVUgbCTW
-         Roabcd8DPlpG1qFtLzb4bWlusZeX/EtqvoQCZ5rvHwH4BMarRPF/dut8Y/lqcvl82m4U
-         7C+vnX+jtb/L0puUBqj5zu96/pNmgZWZukkIXiZqpO21vjN5H6sop5GHjgYAQEhy0LY7
-         iz78mmXH+6IMr07se+aBe8mNbtkPoJ9GDyurT7bFLIf4KDJKxQSVtqXdn1CvhDWa8M7x
-         Oc8A==
-X-Gm-Message-State: AOAM533PmgXFQxAj97m/tBf0DTJ9TYynmaZopZuA9cXMwW7RbnDWvjkf
-        r2oGWfO/l0o3r8J/zaU8uqhQ8w==
-X-Google-Smtp-Source: ABdhPJx2U8eD0ZSPt51jAKmJ5tNZ0Js511+SLu0K+K76c3ZVUrLT4yhAcywreDNeAxLgcGj4+yizgQ==
-X-Received: by 2002:a17:90a:b706:: with SMTP id l6mr3555139pjr.200.1632809140199;
-        Mon, 27 Sep 2021 23:05:40 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:f0ec:9bde:f74c:2825])
-        by smtp.gmail.com with ESMTPSA id e11sm15376274pfm.28.2021.09.27.23.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 23:05:39 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 14:05:36 +0800
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv6 2/8] videobuf2: inverse buffer cache_hints flags
-Message-ID: <YVKwsMDU6eNO1X0u@google.com>
-References: <20210909112430.61243-1-senozhatsky@chromium.org>
- <20210909112430.61243-3-senozhatsky@chromium.org>
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1632809546; x=1664345546;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=gs3m7sok0bsohq67jQzde48+nSgu0gFPpPY8ZHI02gg=;
+  b=VoG9U/EfTtEbTEJRMWBBP95FYVyZXypnDaJ27py4jqydKrEVTP3JdMtH
+   r2bQLwG5AtXlNaAdUoRBeVyZruMC3fbcouXuQ2LndCskLHzjtZfGpyj3O
+   DqepHEzkHPSgxHcI7WOyKnxgsJ3utShaoaNJIjWXvEtSlCHLtENRfd+0r
+   E=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 27 Sep 2021 23:12:26 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2021 23:12:25 -0700
+Received: from hu-cgoldswo-sd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 27 Sep 2021 23:12:24 -0700
+Date:   Mon, 27 Sep 2021 23:12:23 -0700
+From:   Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
+CC:     David Hildenbrand <david@redhat.com>,
+        Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+Subject: Re: [RFC] arm64: mm: update max_pfn after memory hotplug
+Message-ID: <20210928061016.GA28837@hu-cgoldswo-sd.qualcomm.com>
+References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
+ <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
+ <833493d2-d585-47ee-c258-79eae5deff36@redhat.com>
+ <ed2f59dc-ecd3-ae9c-e44c-81e903c6f08f@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20210909112430.61243-3-senozhatsky@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed2f59dc-ecd3-ae9c-e44c-81e903c6f08f@quicinc.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Sep 09, 2021 at 08:24:24PM +0900, Sergey Senozhatsky wrote:
-> It would be less error prone if the default cache hints value
-> (we kzalloc() structs, so it's zeroed out by default) would be
-> to "always sync/flush" caches. Inverse and rename cache hints
-> flags.
+On Tue, Sep 28, 2021 at 02:22:59AM +0300, Georgi Djakov wrote:
+> On 9/27/2021 6:51 PM, David Hildenbrand wrote:
+> >On 24.09.21 00:54, Chris Goldsworthy wrote:
+> >>From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> >>
+> >>After new memory blocks have been hotplugged, max_pfn and max_low_pfn
+> >>needs updating to reflect on new PFNs being hot added to system.
+> >>
+> >>Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+> >>Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+> >>---
+> >>  arch/arm64/mm/mmu.c | 5 +++++
+> >>  1 file changed, 5 insertions(+)
+> >>
+> >>diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> >>index cfd9deb..fd85b51 100644
+> >>--- a/arch/arm64/mm/mmu.c
+> >>+++ b/arch/arm64/mm/mmu.c
+> >>@@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
+> >>      if (ret)
+> >>          __remove_pgd_mapping(swapper_pg_dir,
+> >>                       __phys_to_virt(start), size);
+> >>+    else {
+> >>+        max_pfn = PFN_UP(start + size);
+> >>+        max_low_pfn = max_pfn;
+> >>+    }
+> >>+
+> >>      return ret;
+> >
+> >Note: didn't verify if updating max_low_pfn is correct here.
 > 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  .../media/common/videobuf2/videobuf2-core.c   | 31 ++++++-------------
->  .../media/common/videobuf2/videobuf2-v4l2.c   | 17 +++-------
->  include/media/videobuf2-core.h                | 12 +++----
->  3 files changed, 21 insertions(+), 39 deletions(-)
+> My understanding is that max_low_pfn defines the low/high memory
+> boundary and it should be also updated.
 > 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> index c4ff356da600..9d57df348b5f 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> Thanks,
+> Georgi
 
-[...]
+To build more on Georgi's response, our assumption here after an offline
+discussion is that max_low_pfn would not be equal to max_pfn only if there is
+high memory - another assumption is that arm64 kernels will not need high memory
+due to their large logical mappings. Under these two assumptions, the patch is
+correct. Perhaps Catalin can ack or critique this, as he initially set max_pfn =
+max_low_pfn in the first arm64 mm initialization code:
 
-> @@ -415,17 +415,6 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
->  		vb->index = q->num_buffers + buffer;
->  		vb->type = q->type;
->  		vb->memory = memory;
-> -		/*
-> -		 * We need to set these flags here so that the videobuf2 core
-> -		 * will call ->prepare()/->finish() cache sync/flush on vb2
-> -		 * buffers when appropriate. However, we can avoid explicit
-> -		 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-> -		 * because DMA exporter takes care of it.
-> -		 */
-> -		if (q->memory != VB2_MEMORY_DMABUF) {
-> -			vb->need_cache_sync_on_prepare = 1;
-> -			vb->need_cache_sync_on_finish = 1;
-> -		}
-
-This hunk seems odd. It's not inverting the logic but just removing
-the block wholesale. The end result is different. This seems to be fixed
-in a following patch, but the change here doesn't match what the commit
-log says.
-
-ChenYu
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c1cc1552616d0f354d040823151e61634e7ad01f
