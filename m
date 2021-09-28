@@ -2,91 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE7C41B202
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F90841B20A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241227AbhI1OWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:22:23 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:49274 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241299AbhI1OWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:22:22 -0400
-Received: from BJHW-Mail-Ex12.internal.baidu.com (unknown [10.127.64.35])
-        by Forcepoint Email with ESMTPS id A8276E2D4722719671E6;
-        Tue, 28 Sep 2021 22:20:41 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex12.internal.baidu.com (10.127.64.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 28 Sep 2021 22:20:41 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 28 Sep 2021 22:20:40 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "Neil Armstrong" <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-Subject: [PATCH v3 9/9] iio: adc: ti-ads7950: Make use of the helper function dev_err_probe()
-Date:   Tue, 28 Sep 2021 22:19:55 +0800
-Message-ID: <20210928141956.2148-9-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210928141956.2148-1-caihuoqing@baidu.com>
-References: <20210928141956.2148-1-caihuoqing@baidu.com>
+        id S241127AbhI1OZs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 10:25:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38574 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240960AbhI1OZr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 10:25:47 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2C0811F43CF4;
+        Tue, 28 Sep 2021 15:24:07 +0100 (BST)
+Date:   Tue, 28 Sep 2021 16:24:02 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Boris Brezillon <bbrezillon@kernel.org>
+Subject: Re: [PATCH] mtd: add MEMREAD ioctl
+Message-ID: <20210928162402.6bb64fcf@collabora.com>
+In-Reply-To: <20210928155859.433844cb@xps13>
+References: <20210920070221.10173-1-kernel@kempniu.pl>
+        <20210928155859.433844cb@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex12_2021-09-28 22:20:41:697
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When possible use dev_err_probe help to properly deal with the
-PROBE_DEFER error, the benefit is that DEFER issue will be logged
-in the devices_deferred debugfs file.
-Using dev_err_probe() can reduce code size, and the error value
-gets printed.
+Hi Miquel, Michal,
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/iio/adc/ti-ads7950.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue, 28 Sep 2021 15:58:59 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-diff --git a/drivers/iio/adc/ti-ads7950.c b/drivers/iio/adc/ti-ads7950.c
-index a2b83f0bd526..a7efa3eada2c 100644
---- a/drivers/iio/adc/ti-ads7950.c
-+++ b/drivers/iio/adc/ti-ads7950.c
-@@ -600,8 +600,8 @@ static int ti_ads7950_probe(struct spi_device *spi)
- 
- 	st->reg = devm_regulator_get(&spi->dev, "vref");
- 	if (IS_ERR(st->reg)) {
--		dev_err(&spi->dev, "Failed to get regulator \"vref\"\n");
--		ret = PTR_ERR(st->reg);
-+		ret = dev_err_probe(&spi->dev, PTR_ERR(st->reg),
-+				     "Failed to get regulator \"vref\"\n");
- 		goto error_destroy_mutex;
- 	}
- 
--- 
-2.25.1
+> Hi Michał,
+> 
+> + Boris just in case you have anything obvious that pops up in your
+>   head when reading the description, otherwise no need to thoroughfully
+>   review this ;)
 
+Couple of comment below.
+
+
+> > Signed-off-by: Michał Kępień <kernel@kempniu.pl>
+> > ---
+> > This patch is a shameless calque^W^W^Wheavily inspired by MEMWRITE code,
+> > so quite a lot of copy-pasting happened.  I guess it is somewhat
+> > expected when adding a read-side counterpart of existing code which
+> > takes care of writes, but please excuse me if I went too far.
+> > 
+> > Note that "scripts/checkpatch.pl --strict" returns two alignment
+> > warnings for this patch.  Given that existing code triggers the same
+> > warnings, I assumed that local consistency trumps checkpatch.pl's
+> > complaints.
+> > 
+> >  drivers/mtd/mtdchar.c      | 60 ++++++++++++++++++++++++++++++++++++++
+> >  include/uapi/mtd/mtd-abi.h | 43 +++++++++++++++++++++++----
+> >  2 files changed, 98 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> > index 155e991d9d75..92e0024bdcf7 100644
+> > --- a/drivers/mtd/mtdchar.c
+> > +++ b/drivers/mtd/mtdchar.c
+> > @@ -621,6 +621,58 @@ static int mtdchar_write_ioctl(struct mtd_info *mtd,
+> >  	return ret;
+> >  }
+> >  
+> > +static int mtdchar_read_ioctl(struct mtd_info *mtd,
+> > +		struct mtd_read_req __user *argp)
+> > +{
+> > +	struct mtd_info *master = mtd_get_master(mtd);
+> > +	struct mtd_read_req req;
+> > +	struct mtd_oob_ops ops = {};
+> > +	void __user *usr_data, *usr_oob;
+> > +	int ret;
+> > +
+> > +	if (copy_from_user(&req, argp, sizeof(req)))
+> > +		return -EFAULT;
+> > +
+> > +	usr_data = (void __user *)(uintptr_t)req.usr_data;
+> > +	usr_oob = (void __user *)(uintptr_t)req.usr_oob;
+> > +
+> > +	if (!master->_read_oob)
+> > +		return -EOPNOTSUPP;
+> > +	ops.mode = req.mode;
+> > +	ops.len = (size_t)req.len;
+> > +	ops.ooblen = (size_t)req.ooblen;
+> > +	ops.ooboffs = 0;
+> > +
+> > +	if (usr_data) {
+> > +		ops.datbuf = kmalloc(ops.len, GFP_KERNEL);
+
+Hm, I know the write path does that, but I'm really not sure
+kmalloc()-ing a buffer of the requested read length is a good
+idea. Having a loop doing reads with an erasesize granularity would
+avoid this unbounded allocation while keeping performance acceptable in
+most cases.
+
+> > +		if (IS_ERR(ops.datbuf))
+> > +			return PTR_ERR(ops.datbuf);
+> > +	} else {
+> > +		ops.datbuf = NULL;
+> > +	}
+> > +
+> > +	if (usr_oob) {
+> > +		ops.oobbuf = kmalloc(ops.ooblen, GFP_KERNEL);
+> > +		if (IS_ERR(ops.oobbuf)) {
+> > +			kfree(ops.datbuf);
+> > +			return PTR_ERR(ops.oobbuf);
+> > +		}
+> > +	} else {
+> > +		ops.oobbuf = NULL;
+> > +	}
+> > +
+> > +	ret = mtd_read_oob(mtd, (loff_t)req.start, &ops);
+> > +
+> > +	if (copy_to_user(usr_data, ops.datbuf, ops.retlen) ||
+> > +	    copy_to_user(usr_oob, ops.oobbuf, ops.oobretlen))
+> > +		ret = -EFAULT;
+> > +
+> > +	kfree(ops.datbuf);
+> > +	kfree(ops.oobbuf);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+> >  {
+> >  	struct mtd_file_info *mfi = file->private_data;
+> > @@ -643,6 +695,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+> >  	case MEMGETINFO:
+> >  	case MEMREADOOB:
+> >  	case MEMREADOOB64:
+> > +	case MEMREAD:
+> >  	case MEMISLOCKED:
+> >  	case MEMGETOOBSEL:
+> >  	case MEMGETBADBLOCK:
+> > @@ -817,6 +870,13 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+> >  		break;
+> >  	}
+> >  
+> > +	case MEMREAD:
+> > +	{
+> > +		ret = mtdchar_read_ioctl(mtd,
+> > +		      (struct mtd_read_req __user *)arg);
+> > +		break;
+> > +	}
+> > +
+> >  	case MEMLOCK:
+> >  	{
+> >  		struct erase_info_user einfo;
+> > diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+> > index b869990c2db2..337e6e597fad 100644
+> > --- a/include/uapi/mtd/mtd-abi.h
+> > +++ b/include/uapi/mtd/mtd-abi.h
+> > @@ -55,9 +55,9 @@ struct mtd_oob_buf64 {
+> >   * @MTD_OPS_RAW:	data are transferred as-is, with no error correction;
+> >   *			this mode implies %MTD_OPS_PLACE_OOB
+> >   *
+> > - * These modes can be passed to ioctl(MEMWRITE) and are also used internally.
+> > - * See notes on "MTD file modes" for discussion on %MTD_OPS_RAW vs.
+> > - * %MTD_FILE_MODE_RAW.
+> > + * These modes can be passed to ioctl(MEMWRITE) and ioctl(MEMREAD); they are
+> > + * also used internally. See notes on "MTD file modes" for discussion on
+> > + * %MTD_OPS_RAW vs. %MTD_FILE_MODE_RAW.
+> >   */
+> >  enum {
+> >  	MTD_OPS_PLACE_OOB = 0,
+> > @@ -91,6 +91,32 @@ struct mtd_write_req {
+> >  	__u8 padding[7];
+> >  };
+> >  
+> > +/**
+> > + * struct mtd_read_req - data structure for requesting a read operation
+> > + *
+> > + * @start:	start address
+> > + * @len:	length of data buffer
+> > + * @ooblen:	length of OOB buffer
+> > + * @usr_data:	user-provided data buffer
+> > + * @usr_oob:	user-provided OOB buffer
+> > + * @mode:	MTD mode (see "MTD operation modes")
+> > + * @padding:	reserved, must be set to 0
+> > + *
+> > + * This structure supports ioctl(MEMREAD) operations, allowing data and/or OOB
+> > + * reads in various modes. To read from OOB-only, set @usr_data == NULL, and to
+> > + * read data-only, set @usr_oob == NULL. However, setting both @usr_data and
+> > + * @usr_oob to NULL is not allowed.
+> > + */
+> > +struct mtd_read_req {
+> > +	__u64 start;
+> > +	__u64 len;
+> > +	__u64 ooblen;
+> > +	__u64 usr_data;
+> > +	__u64 usr_oob;
+> > +	__u8 mode;
+> > +	__u8 padding[7];
+> > +};
+
+I do agree that a new interface is needed, but if we're adding a new
+entry point, let's make sure it covers all possible use cases we have
+now. At the very least, I think we're missing info about the maximum
+number of corrected bits per ECC region on the portion being read.
+Propagating EUCLEAN errors is nice, but it's not precise enough IMHO.
+
+I remember discussing search a new READ ioctl with Sascha Hauer a few
+years back, but I can't find the discussion...
+
+Regards,
+
+Boris
