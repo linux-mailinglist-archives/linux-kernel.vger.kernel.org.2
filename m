@@ -2,189 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3840641AD32
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BB041AD2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240277AbhI1Km6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:42:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43367 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240206AbhI1Kmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:42:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632825672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=Iu25a+cqnBrHkIKSfPPiJTfwCo9Wph8TbFl7lcWV0QE=;
-        b=YcIWGYyhcBm69xVGzsMGFhCWIk0iHPY7hglfF30mbIZsj1PAVDCQHUUGEuuV1vNXqOV2NC
-        VKeLEz9xrb6vhvZpW3pI0ajuOog0DEI8ABbVPQXDK3kvEqHIvc+4ja2dcJT2xo4TFgR4pR
-        vWgJOPCpAeMO80df8xve3LkWGuCYe78=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-maGNiL2yPWGr93X2dokkXA-1; Tue, 28 Sep 2021 06:41:11 -0400
-X-MC-Unique: maGNiL2yPWGr93X2dokkXA-1
-Received: by mail-oo1-f69.google.com with SMTP id b13-20020a4a9bcd000000b002ac6e0fb8f5so23770746ook.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 03:41:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=Iu25a+cqnBrHkIKSfPPiJTfwCo9Wph8TbFl7lcWV0QE=;
-        b=dp0uAt3jH7EhV45kwwcfUt7qPKZ5VCEcTzA7QZwxeu4h5nH+DPqsNDnVEmOsuxg7Pa
-         fVbIWMqkKKBhXgArLPvJHsbByy1yPUHgZPwylKNOfSzoyP3Kfg9fdDVmxXyFawqgtJpU
-         hWBtSqOv1JhmPIw4bOgE0EV4OWjLfbSSJjCEhqpW+jycnR+Ltpw2TizwncMkRXnZR1cS
-         sIKdx1ze9TOElcG5qgnNOGJ9zRNfT3f8puhbZ7Ohg+N5Uzq4BTbx7hMTzreI9k83sCAE
-         4/B+hCVqTbF0J4y8mMIAZr7RcFr7vt1cudkLlpBovCs6nTDCIyMnS0dr3IVWggBoRoIR
-         Tt/Q==
-X-Gm-Message-State: AOAM533htwDUnV8W+4n2H6FJOCj6WfoUQD6Cpg2AdLYrZZLebyllcTT9
-        7RWV1fI3kZgzrv7GkTz/IdJCbDdQD1Ch4FN2WYCO5Qjj16hchOsW/2eJrmLgCgOOVHXp9Lpqv63
-        Jc73zew7UWjIsI8eSlHG6fB9DiAJd1d5kpXbeBd6Z
-X-Received: by 2002:a54:4f1d:: with SMTP id e29mr3051082oiy.179.1632825670131;
-        Tue, 28 Sep 2021 03:41:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxguprT5Kh+XNwcMXaa/xjlzAHVOdzCXISGeISVXs6yPk5zkBGlnnZsxcg5XWTANTYg4+5V0X1BkJquCNdkBSY=
-X-Received: by 2002:a54:4f1d:: with SMTP id e29mr3051069oiy.179.1632825669870;
- Tue, 28 Sep 2021 03:41:09 -0700 (PDT)
+        id S240278AbhI1Kmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:42:47 -0400
+Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:10686
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240199AbhI1Kmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:42:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JPJg3ftAT/0rVDkk+DZsrD8xgrUv2Vdxs6qSj5b268svYNxZC9uIZTnLU6QvMMNMjjG1+Fu806d/QUljfB9yIa+LXqteZUcOIBRL6nGwRniy/85qBGJn3Ffpu8C5IQPuWwpOUq2ZVA2G9q6eZLUc8t65KkZFyPWs78pLJ0BmAHo8zs3RWh5RJpWTz7YTNIXXoE4HBr/7x78iACiR7pN+eCK28+r/G1hGY4UhALFWv4rHvFNHcSEDmS7Tt8uiZC1Bd/Z4bCjEI5OLZXelvCmpcDHqGkx1y0t+bRoJrnp9lFbA+O8hy3ItdwAYgRa9/dDqwVAyB+DhbcgA3sX7ENhKdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=3OG0aklxP7KClmbmEeBOrI/SEyBgrZnh/2jkoHGgnF0=;
+ b=O+/Os3/xl9mZMctq2FKPHkBr1Z7fYmA15rrLyCwPxv8/qP5s77z5EdFw2QzpLpk8YEiM0FM4rvgEc3IUhyE3LlEMHjG7d3dNd2MqLaiOFj+O3S/cVcweW5uXOWXSXx1ihHTmA+d8h4JRFTgwdEEGE7iEaugsmPUPAW9pAGh+dr4J+Rq34LfgYAByfNtyfSADAJdv+ozhvlPHca8kUDpsEuHB4bclN5BK7wL1KpPchYsCzGmNj0Ze0+3iIxNKsdH1FcIyRajHyNZMDbi+A/N4Co+mY+X5NfmyE6XSk4LJoNoeDylPO8vfM8QVl61g7lPn+wXhPzVNkT6mkEtgIj64xQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3OG0aklxP7KClmbmEeBOrI/SEyBgrZnh/2jkoHGgnF0=;
+ b=Tzl5N3VUCeA1O29SO0FMA9NMUrSdR93V7SBaAIR5fbALoGUYKfMxSxuNA0clxDUvf5RP/eYIpXLcTcWCKPR4DDV9c6fZHwDRmKm6m9tLfD4uM7ujkLnIy8khNq0QyJ1L0HMyta4x/vhetopPgX6x/aZ103U9oyGizIXtLeMUyd8=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.20; Tue, 28 Sep
+ 2021 10:41:05 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
+ 10:41:05 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+CC:     Andrew Lunn <andrew@lunn.ch>, Jose Abreu <Jose.Abreu@synopsys.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Wong Vee Khee <veekhee@gmail.com>
+Subject: Re: [PATCH net-next 2/2] net: pcs: xpcs: fix incorrect CL37 AN
+ sequence
+Thread-Topic: [PATCH net-next 2/2] net: pcs: xpcs: fix incorrect CL37 AN
+ sequence
+Thread-Index: AQHXtB86VIvr3ExuHU+3raGaTBurpKu5Qm0A
+Date:   Tue, 28 Sep 2021 10:41:04 +0000
+Message-ID: <20210928104104.etfxxaeuwk2has32@skbuf>
+References: <20210928041938.3936497-1-vee.khee.wong@linux.intel.com>
+ <20210928041938.3936497-3-vee.khee.wong@linux.intel.com>
+In-Reply-To: <20210928041938.3936497-3-vee.khee.wong@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d362f354-6b42-4ed6-6999-08d9826c792b
+x-ms-traffictypediagnostic: VI1PR04MB5136:
+x-microsoft-antispam-prvs: <VI1PR04MB5136ABF27B6386A39ADD00ECE0A89@VI1PR04MB5136.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hmaXFbN1W32b4K+43o+BWLwvQvRyow8hMF20evRTCkmENxiMnHptbVqLEN31ckmxE+T5sxibvjofCm2WDy54WFDhR29AEcsatKyNTcg8ugYCO7tjLiovTA6bRoS+GZR78PZq7Lw3okBLyPusjktk9aYdwi5VZOrNQKs7RR+Gj1SIzuAjRBGgq558J88bIaFKaV5HXP/nHejpJV70OTvLGyfWH6sV77yI1TBX4J0IZjmSNjuA3kh1bvB4DLvomsPQfqGz4EJXjNACfYzZj2MLKSh94T+/Kd5BYwek0QOIrKIJsZ74sHZrEPJBQRtofxVBTOVUn1LfHtbeMf+QC7MVuKcZXyeL+P4/53DZ6TlqIWTxXsKewYJX/7RukBW41AcUkcoR+o9jZL0MqG2+z9Wb1CWMenKWMhZy0wA4mdUNmAfNLYbN3XwRPieb/mPHqWykTjHJCKvX/WtkCqBesEmfGLjPohjwO+vKJOX0JH/bYCiIEUQFHacHVPoaIyYKvZsmdDuJXPRAQGZBFvdxy0DAYdKX42gm/cIYxeI3SYtgrFDedF2MjIvM9t2liFr2LsWy5IWrBYcv6ZDIzT49r1JN7OPQoqepQwR0iD+rXBHLcoBrhQqLUJ21m1z389QbXdn8qpxoKu21hdSLjFBe6yDGI5GQQIYi+6cUxjtTr4tl88ufmC5eGE1BAV5ucdBp4YA87AstBIXri628LKQdNeKVoQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(6916009)(7416002)(6512007)(71200400001)(9686003)(26005)(8936002)(38100700002)(66556008)(6486002)(186003)(8676002)(122000001)(44832011)(33716001)(38070700005)(2906002)(508600001)(6506007)(66446008)(66946007)(5660300002)(66476007)(54906003)(64756008)(1076003)(76116006)(86362001)(4326008)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/k8SyQFbsGgX2NtMXPOUafcdXSyn+ySqt7jJk8akv+qId2L/vVjNx7Cxxz+J?=
+ =?us-ascii?Q?JEBhFIccc0h4DR3RUrVRoHbyYiqhj4OlDLwmrVo5qMZMsbpMbx7nnGZyJ+gv?=
+ =?us-ascii?Q?OLgmdMaF8I1YhJlF2q/dJJZVk5AoNscEf2Dpmkv2XezneGzfBKpeiJsa1ykj?=
+ =?us-ascii?Q?u73D3BDDcZhrhSn0SPgKGMLcf1h/R+USFWd1nl9Ciw/WRMQSbcee6+9kYhMQ?=
+ =?us-ascii?Q?A6aPZWGKOfAITKbMpgQW+mkFDLcFf2CgwMQSgaeeiHM982a2zSSeXApTEn36?=
+ =?us-ascii?Q?r0Q1SWww/B1i6vT6hUJy768YZdJI/Y1VLwqQuV5F5PyPR7vcdTUNHfXDO7B1?=
+ =?us-ascii?Q?Ar/sGPavM4Dw9czgtGwhkqGapeqADI8QysayfOjulTLagTbNgMAqiMhI2p+h?=
+ =?us-ascii?Q?AhgLKD2QZseJG2KnH8BNfr9tD0ZsC6qH3UxYOBqbPTmcY9iVubZYebAClcmE?=
+ =?us-ascii?Q?EJQlRZfWhfnfgf4dGJt8FToEDNb9rlRcVRq3gYEiSHpZ6GYnw/HmVVF2Nkpt?=
+ =?us-ascii?Q?iCsdZ4I+RdslhuJsxhSUtrilI7M27uElzsN7gQJtn7vqnXwo3w3N15zyVwQF?=
+ =?us-ascii?Q?sAIK6ALY5gp4Xo/ARa0N/DLOzqNT1+1OA4ZJQnDPc218OMg302PJFsCDfy8m?=
+ =?us-ascii?Q?yXxVg1chf90/IAH+3PL03tw5Lnba+lSacZLwiidHL6UDc+/uYZUPjj5tBD5/?=
+ =?us-ascii?Q?hJsYeoqzFjoBV+nWDP9VHNGQO8mrReU66llACg7IwZQy6RU5X5WIjdT8pGJ1?=
+ =?us-ascii?Q?fQwBtvChgqxCUZiV0HZUQIiiOzOvbohC72Nx3iLI8Y9gm83u5QVHbbk9GY99?=
+ =?us-ascii?Q?KOXsA8nNvTzV9xZbV/3oxpsmsMRyJICdZQ0nxLmOldhPb+UuVNhQVHH6DbD/?=
+ =?us-ascii?Q?ShVPwV7xeg1aLUkeneNvMxt6N23f/7DH4Xc2Y8YDDjvwGApCovtpJSO1shxM?=
+ =?us-ascii?Q?QHJZpuciyQz0l7iJ4mHZzTaTn8Kr6h9gIhNVS31cD0iLdpZeEFg6qYYVHP1P?=
+ =?us-ascii?Q?rv5kkqYsmqfrqHLm90hj5uZUXmjHsX5xK2HXNfSk0ytx9zS1TUqTF9SdARj2?=
+ =?us-ascii?Q?C7EPbpXjqX6GyehxzYrr2QFLSCWxQbIPEEGzkuOJrBqxNiDBY/cDhvg7sjTN?=
+ =?us-ascii?Q?5wHHBCG+56I/lhlf1mZqry6iawa5wtR4pUDCFzj1PieebXPMQzOZUDy7fEYJ?=
+ =?us-ascii?Q?+0OXYw+fSugcoPrES5mMOdvlMZR7ifvlOsyeoz0a87H18ESRDmjQsZa9uEUD?=
+ =?us-ascii?Q?cdZZno8LuJf/6ClSjm8NTypWb4MrsKsAKqA/h9hux5wwiM0GVX2WKq1x8lng?=
+ =?us-ascii?Q?qkk0qDFZNytgMC+ONIm6QI3U+KB3InItmmc7BB2ohJcwIg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A17DAE00EE4EF1439964612DB27075FA@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-From:   Bruno Goncalves <bgoncalv@redhat.com>
-Date:   Tue, 28 Sep 2021 12:40:59 +0200
-Message-ID: <CA+QYu4oBndcsqv9f4r5Xn_C+WnPO1HYf4TGJ9b7=95R0akZX-Q@mail.gmail.com>
-Subject: btrfs - ppc64le - NIP [c0000000004bfbf4] kmem_cache_alloc_node+0x1c4/0x4d0
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        CKI Project <cki-project@redhat.com>,
-        Xiong Zhou <xzhou@redhat.com>, Huanian Li <huanli@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d362f354-6b42-4ed6-6999-08d9826c792b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 10:41:04.9433
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: C5Fn3jz5L71O1B6j4UmN8iIxOftqtB4Fx9yogjGvF+DmG1B/00CnpRNnGlOA5Lk2K0f2kwZmdenJwxFi+MOamA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Sep 28, 2021 at 12:19:38PM +0800, Wong Vee Khee wrote:
+> According to Synopsys DesignWare Cores Ethernet PCS databook, it is
+> required to disable Clause 37 auto-negotiation by programming bit-12
+> (AN_ENABLE) to 0 if it is already enabled, before programming various
+> fields of VR_MII_AN_CTRL registers.
+>=20
+> After all these programming are done, it is then required to enable
+> Clause 37 auto-negotiation by programming bit-12 (AN_ENABLE) to 1.
+>=20
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> ---
 
-When testing stable tree from
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-using cki xfstests for btrfs [1] on ppc64le we hit the following
-panic:
+Other comments:
 
-[11660.843269] Running test [T:132376093 - xfstests - btrfs]
-[11679.449129] BUG: Unable to handle kernel data access on read at
-0xf7b347dd8c8fdb98
-[11679.449160] Faulting instruction address: 0xc0000000004bfa94
-[11679.449175] Oops: Kernel access of bad area, sig: 11 [#1]
-[11679.449186] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
-[11679.449211] Modules linked in: xt_nat xt_addrtype xt_mark
-nft_chain_nat xt_MASQUERADE nf_nat xt_comment veth bridge stp llc
-vsock_loopback vmw_vsock_virtio_transport_common vsock loop tun af_key
-crypto_user scsi_transport_iscsi xt_multiport ip_gre ip_tunnel gre
-bluetooth ecdh_generic overlay xt_CONNSECMARK xt_SECMARK nft_counter
-xt_state xt_conntrack nft_compat ah6 ah4 nft_objref nft_ct
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink vfat
-fat jfs sctp ip6_udp_tunnel udp_tunnel ipmi_watchdog ipmi_poweroff
-ipmi_ssif ipmi_devintf dm_log_writes rfkill sunrpc at24 joydev
-tpm_i2c_nuvoton crct10dif_vpmsum ofpart regmap_i2c ipmi_powernv
-powernv_flash mtd opal_prd tg3 rtc_opal ipmi_msghandler i2c_opal fuse
-zram ip_tables xfs ast i2c_algo_bit drm_vram_helper drm_kms_helper
-syscopyarea sysfillrect sysimgblt fb_sys_fops cec drm_ttm_helper ttm
-vmx_crypto crc32c_vpmsum drm i2c_core drm_panel_orientation_quirks
-[last unloaded: raid10]
-[11679.449536] CPU: 48 PID: 1114140 Comm: configure Tainted: G
-  OE     5.14.7 #1
-[11679.449562] NIP:  c0000000004bfa94 LR: c0000000004bf94c CTR: c000000000976790
-[11679.449595] REGS: c000000088b9f0a0 TRAP: 0380   Tainted: G
- OE      (5.14.7)
-[11679.449629] MSR:  9000000000009033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR:
-88222248  XER: 000000ad
-[11679.449663] CFAR: c0000000004bfa78 IRQMASK: 1
-[11679.449663] GPR00: c0000000004bf94c c000000088b9f340
-c000000002866d00 0000000000000000
-[11679.449663] GPR04: 0000000000002900 ffffffffffffffff
-00000000000004b5 c009e000014f04c0
-[11679.449663] GPR08: 0000000000000118 f7b347dd8c8fda80
-c009dfe0057b04c0 6f723cbf8c9e92a8
-[11679.449663] GPR12: 0000000000004000 c000001ffffab800
-000000015217f760 0000000000000000
-[11679.449663] GPR16: 0000000121d387b8 c000000088b9fbf0
-0000000000000000 0000000000080001
-[11679.449663] GPR20: c0000000460cc0a0 0000000000000001
-0000000000060800 c0000000414c11f0
-[11679.449663] GPR24: 0000000000000000 c0000000028a8af8
-c00000000097520c ffffffffffffffff
-[11679.449663] GPR28: 0000000000002900 0000000000000000
-0000000000000001 c00000002ff9d080
-[11679.449887] NIP [c0000000004bfa94] kmem_cache_alloc_node+0x1c4/0x4d0
-[11679.449924] LR [c0000000004bf94c] kmem_cache_alloc_node+0x7c/0x4d0
-[11679.449957] Call Trace:
-[11679.449973] [c000000088b9f340] [c000000088b9f3d0]
-0xc000000088b9f3d0 (unreliable)
-[11679.450018] [c000000088b9f3b0] [c00000000097520c] bfq_get_queue+0x1cc/0x680
-[11679.450052] [c000000088b9f470] [c000000000975d20] bfq_init_rq+0x530/0xc90
-[11679.450085] [c000000088b9f550] [c0000000009768a4]
-bfq_insert_requests+0x114/0x16f0
-[11679.450120] [c000000088b9f6c0] [c00000000093a86c]
-blk_mq_sched_insert_requests+0xac/0x1e0
-[11679.450156] [c000000088b9f710] [c000000000932468]
-blk_mq_flush_plug_list+0x138/0x1f0
-[11679.450182] [c000000088b9f780] [c00000000091d8e8] blk_finish_plug+0x68/0x90
-[11679.450206] [c000000088b9f7b0] [c0000000003eb990] read_pages+0x1d0/0x4b0
-[11679.450230] [c000000088b9f830] [c0000000003ebe8c]
-page_cache_ra_unbounded+0x21c/0x300
-[11679.450266] [c000000088b9f8d0] [c0000000003dc4ac]
-filemap_get_pages+0x11c/0x7d0
-[11679.450301] [c000000088b9f9a0] [c0000000003dcc4c] filemap_read+0xec/0x480
-[11679.450326] [c000000088b9fad0] [c008000019d224d8]
-xfs_file_buffered_read+0xe0/0x120 [xfs]
-[11679.450450] [c000000088b9fb10] [c008000019d23ad4]
-xfs_file_read_iter+0xac/0x170 [xfs]
-[11679.450568] [c000000088b9fb50] [c00000000051ade4] __kernel_read+0x144/0x360
-[11679.450593] [c000000088b9fc40] [c000000000526a74] bprm_execve+0x254/0x7e0
-[11679.450616] [c000000088b9fd10] [c00000000052792c]
-do_execveat_common+0x17c/0x250
-[11679.450650] [c000000088b9fd70] [c000000000527a48] sys_execve+0x48/0x60
-[11679.450683] [c000000088b9fdb0] [c00000000002d47c]
-system_call_exception+0x11c/0x360
-[11679.450718] [c000000088b9fe10] [c00000000000c1e8]
-system_call_vectored_common+0xe8/0x278
-[11679.450754] --- interrupt: 3000 at 0x7fff9a6f0d04
-[11679.450784] NIP:  00007fff9a6f0d04 LR: 0000000000000000 CTR: 0000000000000000
-[11679.450798] REGS: c000000088b9fe80 TRAP: 3000   Tainted: G
- OE      (5.14.7)
-[11679.450812] MSR:  900000000280f033
-<SF,HV,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 42224442  XER: 00000000
-[11679.450860] IRQMASK: 0
-[11679.450860] GPR00: 000000000000000b 00007fffc7ec6ba0
-00007fff9a817000 0000000152180480
-[11679.450860] GPR04: 000000015217ecb0 0000000152141a00
-00000001520f0012 000000000015217e
-[11679.450860] GPR08: 000000015212ad60 0000000000000000
-0000000000000000 0000000000000000
-[11679.450860] GPR12: 0000000000000000 00007fff9a95afa0
-000000015217f760 0000000000000000
-[11679.450860] GPR16: 0000000121d387b8 0000000121d394d4
-0000000000000000 000000000000001f
-[11679.450860] GPR20: 000000015217ecb0 000000015217fd70
-0000000000000000 0000000152180480
-[11679.450860] GPR24: 0000000000000000 000000015217f760
-000000015216bc60 000000015217ecb0
-[11679.450860] GPR28: 0000000152141a00 ffffffffffffffff
-000000015217ff10 0000000000100000
-[11679.451087] NIP [00007fff9a6f0d04] 0x7fff9a6f0d04
-[11679.451107] LR [0000000000000000] 0x0
-[11679.451125] --- interrupt: 3000
-[11679.451142] Instruction dump:
-[11679.451161] 2e1bffff 3b000000 3bc00001 2c2a0000 4182009c 41920010
-894a0007 7c1b5000
-[11679.451240] 4082008c 811f0028 e95f0000 e97f00b8 <7ce9402a> 7c094214
-79490720 0b090000
-[11679.451352] ---[ end trace 91affa7e930d27d6 ]---
-[11679.533226]
-[11680.533327] Kernel panic - not syncing: Fatal exception
-[11682.416281] ---[ end Kernel panic - not syncing: Fatal exception ]---
+- please provide a Fixes: tag, like:
 
-We don't have a reliable reproducer, but we have hit this 3 times so far.
+Fixes: b97b5331b8ab ("net: pcs: add C37 SGMII AN support for intel mGbE con=
+troller")
 
-It might be related to the issue found with KASAN [2].
+(just like that, not split on multiple lines)
 
-[1] https://gitlab.com/cki-project/kernel-tests/-/tree/main/filesystems/xfs/xfstests
-[2] https://lore.kernel.org/linux-block/98103103-c517-59d2-a4d6-9b0758cbdfc1@kernel.dk/T/
-
-Thank you,
-Bruno
-
+- please target the patches to the "net" tree. I see the xpcs_modify
+  patch has other stuff in its context (nxp_sja1105) that will conflict
+  with the tree in which the bad commit was originally introduced, so I
+  think the easiest way would be if you could just open-code the initial
+  clearing of bit MDIO_AN_CTRL1_ENABLE. You could then wait until "net"
+  merges with "net-next" again and do the other cleanups afterwards - it
+  looks like other places could use a _modify method as well, just
+  looking at DW_VR_MII_AN_CTRL, DW_VR_MII_DIG_CTRL1. Also, the complete
+  replacement of DW_VR_MII_MMD_CTRL with MDIO_CTRL1 can also be done in
+  net-next. Just try to keep the fix minimally self-contained.=
