@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE5641BAD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712E441BAD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 01:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243228AbhI1XMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 19:12:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65166 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243196AbhI1XMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 19:12:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224862672"
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="224862672"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 16:10:41 -0700
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="478985758"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 16:10:41 -0700
-Date:   Tue, 28 Sep 2021 16:10:39 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
- <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
- <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
- <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
- <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
- <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
- <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+        id S243192AbhI1XOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 19:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhI1XOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 19:14:07 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F6DC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:12:27 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id b82so1229688ybg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 16:12:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pOdOmaZeHSF1Li4O+vfzWzIn7J4ES2tgo5Y2gh1hPm8=;
+        b=Xq0w/CSJ42qnLcAxw851YfM8Bk+H3MCmvwd6AAQr+bOHCG+a/yQ3TU/MoSEAffmHvt
+         EY8TRMcl0e9y1NI+QM8cKvLbbhZ0zmRf8Y7Ek2JzgnCc+5D/+sGGhpqI+kP116QaYTaD
+         b7uQmGwGJ/149ePJtaXK7HMbybDfhfMx55oPc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pOdOmaZeHSF1Li4O+vfzWzIn7J4ES2tgo5Y2gh1hPm8=;
+        b=0XkEA/lt6yc6uV1qY4SjMfl4YHFVbdF8jqFdpm+chEZzkeBWec+0Xwdr4F8G8ebogM
+         VV8i+WoDqJzsX+KE7N84I5F4LMoavQCvSS/P059DbMpmRHnTjld5fIzbFsp5YTEQouFC
+         gvSw1MwNhVBGWgFpfQmosq1HLACbXcbPysn0c6POPYyD+LyIYaHq/fzvsYgE4ShDav8p
+         692rYrzs+IUKNukSC9rvYLBc5uMUT4zuuedGFrt2gmFYtEZH4VYe1xd7Ebi1N3nXd0bL
+         he/yFHZBSfMcS0adWavzkwCPbbO6m3KLP8jTb6IT49a+DKtckrQfJWnL79xLRX5yusfA
+         sZDw==
+X-Gm-Message-State: AOAM5320iUUIsZ/x2NLE9n9e+ik1rm6HAcE/vPFedJRN0MR5L7WmOPCU
+        P4cbw9Y8UZwX1mSLsdqQZg7CvlUjoCnimyKWtBoGww==
+X-Google-Smtp-Source: ABdhPJzH2wRPvaXG9zSbeWeGet3Akiwkc2bWJiSFXuPEJRtQbROL1ub01UhQrPEt19FSDojqFU4jiuVHzME8LRH1kHM=
+X-Received: by 2002:a25:6a55:: with SMTP id f82mr9698121ybc.217.1632870746431;
+ Tue, 28 Sep 2021 16:12:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+References: <20210927184858.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+ <CAE-0n506JaDYzX_AXnL_eq9hDSPF1Lfxyd7chr=uYkxFkJHy6w@mail.gmail.com>
+In-Reply-To: <CAE-0n506JaDYzX_AXnL_eq9hDSPF1Lfxyd7chr=uYkxFkJHy6w@mail.gmail.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Tue, 28 Sep 2021 16:12:15 -0700
+Message-ID: <CA+cxXhnbFvMxfTMNODqR-Gyio+xJA6BmQYNo3jWcHtFHT=4NSw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moving beyond pseudo-code and into compiles-but-probably-broken-code.
+Hi Stephen,
 
+On Tue, Sep 28, 2021 at 1:54 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-09-27 18:49:39)
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> > new file mode 100644
+> > index 000000000000..7b1034a5a8e9
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+> > @@ -0,0 +1,87 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Google Trogdor dts fragment for the boards with TI sn65dsi86 edp bridge
+> > + *
+> > + * Copyright 2021 Google LLC.
+> > + */
+> > +
+> > +&dsi0_out {
+> > +       remote-endpoint = <&sn65dsi86_in>;
+> > +       data-lanes = <0 1 2 3>;
+> > +};
+> > +
+> > +&edp_brij_i2c {
+> > +       sn65dsi86_bridge: bridge@2d {
+> > +               compatible = "ti,sn65dsi86";
+> > +               reg = <0x2d>;
+> > +               pinctrl-names = "default";
+> > +               pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
+>
+> I still don't see edp_brij_en used in the second patch so why didn't
+> this pinctrl node move to this file like edp_brij_irq did?
 
-The intent of the functions below is that Fenghua should be able to
-do:
+edp_brij_en is also used in patch 2/2 (ps8640 support).
+So I don't want to move it to this file.
 
-void fpu__pasid_write(u32 pasid)
-{
-	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
-	struct ia32_pasid_state *addr;
-
-	addr = begin_update_one_xsave_feature(current, XFEATURE_PASID, true);
-	addr->pasid = msr_val;
-	finish_update_one_xsave_feature(current);
-}
-
-So here's the two new functions that would be added to
-arch/x86/kernel/fpu/xstate.c
-
-----
-
-void *begin_update_one_xsave_feature(struct task_struct *tsk,
-                                     enum xfeature xfeature, bool full)
-{
-        struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
-        struct xregs_state *xinit = &init_fpstate.xsave;
-        u64 fmask = 1ull << xfeature;
-        void *addr;
-
-        BUG_ON(!(xsave->header.xcomp_bv & fmask));
-
-        fpregs_lock();
-
-        addr = __raw_xsave_addr(xsave, xfeature);
-
-        if (full || tsk != current) {
-                memcpy(addr, __raw_xsave_addr(xinit, xfeature), xstate_sizes[xfeature]);
-                goto out;
-        }
-
-	/* could optimize some cases where xsaves() isn't fastest option */
-        if (!(xsave->header.xfeatures & fmask))
-                xsaves(xsave, fmask);
-
-out:
-        xsave->header.xfeatures |= fmask;
-        return addr;
-}
-
-void finish_update_one_xsave_feature(struct task_struct *tsk)
-{
-        set_ti_thread_flag(task_thread_info(tsk), TIF_NEED_FPU_LOAD);
-        fpregs_unlock();
-}
-
-----
-
--Tony
+>
+> > +               gpio-controller;
+> > +               #gpio-cells = <2>;
