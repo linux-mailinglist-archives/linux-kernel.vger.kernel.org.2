@@ -2,90 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3A741B9C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF7041B9D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243005AbhI1WC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242626AbhI1WCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:02:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80D5B6136F;
-        Tue, 28 Sep 2021 22:00:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632866445;
-        bh=CaN2PnlNMh9LsZR0N5tYAAay0l8HEHjBKEMkhUPznzQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BKHBD8FnQdKH6wMU5ofemXpNnD0H52CNuPBjV2gTMiso9N74ACN+SEFCrslu3BQ6D
-         c4Jx/ukbxWtFH5B8DKhJfeIAzcRkQAjJ8MQBVcTroeBKrifr0hITH00zum3dgqlri3
-         XLtF6+y+2vcD6JFodrCWNXfaBJ0HBw14rTuArkbEn3+3l/Vol1WAk93HXdzvxrwWAP
-         yRLfllZTK9Ixf6zOhuihp1ByRfRyhz/tchHuyexzSPCd5Z7HkonZg4ppaAvTm/b4aa
-         yndxb8YIlc3Q5FIXUGmHbZGcVHWh3sy4eI5gQUR8BVID+StpFno958qgOJJrZ8aXiD
-         tvLzGaJfZNPyg==
-Date:   Tue, 28 Sep 2021 17:04:47 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][net-next] net/mlx5: Use kvcalloc() instead of kvzalloc()
-Message-ID: <20210928220447.GA276861@embeddedor>
+        id S242130AbhI1WE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241482AbhI1WE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:04:58 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25368C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:03:18 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id s75so525291pgs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HhWJHJzwSlwok1AmtMjKCRhZCZC7gZ0nzg2WuvY1qEE=;
+        b=tigZj4v4CeD0329C4UL89vBMNZKnQ83w87+ZjG/BkopVGCTWeqLcdLtmMMMyBh4mY7
+         7Dg9uin+BfDKQe3/AO/kBYz/oYXaVu1zZluev925ki7GPxG9RsFR+LVM6CwXOErqWOQ1
+         pcncNiTkf8gIAQ18xmLQoQFFSVJjeL/kv9WgotyouEYXoN9oN4CFt1v1v3hF+tD2MuSP
+         4hRr4rqTnaTfyQu2hB8T0n1Sl6+dT/y/KrjaEze5I0PN5XK1QLwnll8S68T9w3WOhivA
+         8src448DI7RUYdTJ7WPFB9p1z6qh3ARAEdVyO8+kHbRNjGL0an+DZUP9EMoHBQVa5OH2
+         UFig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HhWJHJzwSlwok1AmtMjKCRhZCZC7gZ0nzg2WuvY1qEE=;
+        b=OYXy+lEfEOrH8N9sdK+bUSuTlFLQUsCbVnmnx1tuOSxq/LokoHrdfqYjrkn9HPq4Pn
+         lK3lVZJhhwNICClGHh9mgPT50bwwYfNL8IQX1JBGxjg/wA+AIZF18xrz5CXZDQA36MOd
+         P2ruPmR/DXfEdnEVfLAzqgRfT/fY0DOEAoHjVwlVDbyo10Ay0V90s5n/N+nJtD/zmwzq
+         oVWjjsyPbqnidUa6Sam156u4goV64xibMEt/usraIlJ+Ip24BluTqtfc3ceil55YC68N
+         Qp2bO2VaMAi3E5ijZAq/ymsQnqP0XYmcA1/gIv0Zxq9tCYveft77EClG/cyoGLxJlXte
+         J7xg==
+X-Gm-Message-State: AOAM530cidid0joCVPW0z9QYqlvGL9yA1WTcg45wDqbiEh4AtsSQIMou
+        xMvb3Lk6PgphIDKjix8rvqkpzw==
+X-Google-Smtp-Source: ABdhPJz8FBfuYulYfix3SaPNrNClCNKJqQQmFIru90iSEGa1D9tLSPPzdOByJRFDeYbge7PjxYA/EA==
+X-Received: by 2002:aa7:980a:0:b0:43e:670:8505 with SMTP id e10-20020aa7980a000000b0043e06708505mr7905502pfl.74.1632866597392;
+        Tue, 28 Sep 2021 15:03:17 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id t33sm129606pfg.71.2021.09.28.15.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 15:03:16 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 22:03:13 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 10/14] KVM: Split out a kvm_vcpu_block() helper from
+ kvm_vcpu_halt()
+Message-ID: <YVORIQVU3Vz/gWUI@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-11-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210925005528.1145584-11-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 2-factor argument form kvcalloc() instead of kvzalloc().
+On Fri, Sep 24, 2021 at 05:55:24PM -0700, Sean Christopherson wrote:
+> Factor out the "block" part of kvm_vcpu_halt() so that x86 can emulate
+> non-halt wait/sleep/block conditions that should not be subjected to
+> halt-polling.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Link: https://github.com/KSPP/linux/issues/162
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c              | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index db5dfff585c9..4dc3a822907a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -2058,7 +2058,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *dev)
- 		return -EINVAL;
- 	}
- 
--	cmd->stats = kvzalloc(MLX5_CMD_OP_MAX * sizeof(*cmd->stats), GFP_KERNEL);
-+	cmd->stats = kvcalloc(MLX5_CMD_OP_MAX, sizeof(*cmd->stats), GFP_KERNEL);
- 	if (!cmd->stats)
- 		return -ENOMEM;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 0d461e38add3..4e1628f25265 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -1009,7 +1009,7 @@ mlx5_eswitch_add_send_to_vport_meta_rules(struct mlx5_eswitch *esw)
- 	u16 vport_num;
- 
- 	num_vfs = esw->esw_funcs.num_vfs;
--	flows = kvzalloc(num_vfs * sizeof(*flows), GFP_KERNEL);
-+	flows = kvcalloc(num_vfs, sizeof(*flows), GFP_KERNEL);
- 	if (!flows)
- 		return -ENOMEM;
- 
-@@ -1188,7 +1188,7 @@ static int esw_add_fdb_peer_miss_rules(struct mlx5_eswitch *esw,
- 
- 	peer_miss_rules_setup(esw, peer_dev, spec, &dest);
- 
--	flows = kvzalloc(nvports * sizeof(*flows), GFP_KERNEL);
-+	flows = kvcalloc(nvports, sizeof(*flows), GFP_KERNEL);
- 	if (!flows) {
- 		err = -ENOMEM;
- 		goto alloc_flows_err;
--- 
-2.27.0
-
+> ---
+>  include/linux/kvm_host.h |  1 +
+>  virt/kvm/kvm_main.c      | 50 ++++++++++++++++++++++++++++------------
+>  2 files changed, 36 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index d2a8be3fb9ba..655c2b24db2d 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -966,6 +966,7 @@ void kvm_sigset_activate(struct kvm_vcpu *vcpu);
+>  void kvm_sigset_deactivate(struct kvm_vcpu *vcpu);
+>  
+>  void kvm_vcpu_halt(struct kvm_vcpu *vcpu);
+> +bool kvm_vcpu_block(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu);
+>  bool kvm_vcpu_wake_up(struct kvm_vcpu *vcpu);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 280cf1dca7db..fe34457530c2 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3199,6 +3199,34 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
+>  	return ret;
+>  }
+>  
+> +/*
+> + * Block the vCPU until the vCPU is runnable, an event arrives, or a signal is
+> + * pending.  This is mostly used when halting a vCPU, but may also be used
+> + * directly for other vCPU non-runnable states, e.g. x86's Wait-For-SIPI.
+> + */
+> +bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
+> +{
+> +	bool waited = false;
+> +
+> +	kvm_arch_vcpu_blocking(vcpu);
+> +
+> +	prepare_to_rcuwait(&vcpu->wait);
+> +	for (;;) {
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +
+> +		if (kvm_vcpu_check_block(vcpu) < 0)
+> +			break;
+> +
+> +		waited = true;
+> +		schedule();
+> +	}
+> +	finish_rcuwait(&vcpu->wait);
+> +
+> +	kvm_arch_vcpu_unblocking(vcpu);
+> +
+> +	return waited;
+> +}
+> +
+>  static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+>  					  ktime_t end, bool success)
+>  {
+> @@ -3221,6 +3249,12 @@ static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+>  	}
+>  }
+>  
+> +/*
+> + * Emulate a vCPU halt condition, e.g. HLT on x86, WFI on arm, etc...  If halt
+> + * polling is enabled, busy wait for a short time before blocking to avoid the
+> + * expensive block+unblock sequence if a wake event arrives soon after the vCPU
+> + * is halted.
+> + */
+>  void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+>  {
+>  	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
+> @@ -3245,21 +3279,7 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+>  		} while (kvm_vcpu_can_poll(cur, stop));
+>  	}
+>  
+> -	kvm_arch_vcpu_blocking(vcpu);
+> -
+> -	prepare_to_rcuwait(&vcpu->wait);
+> -	for (;;) {
+> -		set_current_state(TASK_INTERRUPTIBLE);
+> -
+> -		if (kvm_vcpu_check_block(vcpu) < 0)
+> -			break;
+> -
+> -		waited = true;
+> -		schedule();
+> -	}
+> -	finish_rcuwait(&vcpu->wait);
+> -
+> -	kvm_arch_vcpu_unblocking(vcpu);
+> +	waited = kvm_vcpu_block(vcpu);
+>  
+>  	cur = ktime_get();
+>  	if (waited) {
+> -- 
+> 2.33.0.685.g46640cef36-goog
+> 
