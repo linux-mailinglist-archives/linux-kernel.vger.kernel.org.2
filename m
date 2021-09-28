@@ -2,305 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76F741B1C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED17F41B1C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 16:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241220AbhI1OOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 10:14:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3172 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240908AbhI1OOC (ORCPT
+        id S241137AbhI1ONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 10:13:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53436 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241103AbhI1ONd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 10:14:02 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SC8E2m006152;
-        Tue, 28 Sep 2021 10:12:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=3wsbUkqmrx13+n8Rxa7S2JfyWOpm1Ji/LvMcjMremB0=;
- b=AuEchPTcsc87wIF6Opmsi0DaJE6HqQXQ8QmUmYDcZGW/ekMhfwQWs75njIoHisdC7S1I
- TaHse76i1WXW6Lim9ZGOTU1PBean8EzluHshrmpwERZ/V/b4IotzeapcCnmqwBFntXAB
- /ptuAtCveC/BTjGlVftIAgLmZLvIam0hycJpS1OtfMOox1I5knUnuXdLrSeS+ijFSJns
- aWbRmymRHCgy50KHEEGySnHQzDYOc6P2w0LK/1+eQHp9t32/pAFKJ4hmJ61avOvMQBi3
- 0OLV1yPaa2sWWHfq6RzWijnNML/J1fg+kQmq8+g2hMGacF9c+JEc3dgIIANmao897Dl8 zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bc092ebnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 10:12:04 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18SDe4bA003559;
-        Tue, 28 Sep 2021 10:12:03 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bc092ebkf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 10:12:03 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SE3Gta021696;
-        Tue, 28 Sep 2021 14:12:00 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3b9u1jeunq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 14:12:00 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SEBqWF46137710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Sep 2021 14:11:52 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC83E52065;
-        Tue, 28 Sep 2021 14:11:52 +0000 (GMT)
-Received: from [9.43.58.127] (unknown [9.43.58.127])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3872352054;
-        Tue, 28 Sep 2021 14:11:45 +0000 (GMT)
-Subject: Re: [PATCH v8 1/2] powerpc/pseries: Interface to represent PAPR
- firmware attributes
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        shuah@kernel.org, farosas@linux.ibm.com, kjain@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pratik.r.sampat@gmail.com
-References: <20210928115102.57117-1-psampat@linux.ibm.com>
- <20210928115102.57117-2-psampat@linux.ibm.com> <YVMFvyGwfH+rxYPz@kroah.com>
- <289d2081-7ae8-f76a-5180-49bc6061a05c@linux.ibm.com>
- <YVMfonwjmbgL/ZCX@kroah.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Message-ID: <1d8e82ab-fab7-d014-c812-2c086dd7a63f@linux.ibm.com>
-Date:   Tue, 28 Sep 2021 19:41:44 +0530
+        Tue, 28 Sep 2021 10:13:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632838313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVoo+M6uUaOiYZtopIoxfUEyXOYNBvxexaFRMYrLxg8=;
+        b=RCq7u7YClTAixlyC200RUq3D+Klh5eXdadH403o8TFUDQzHbyDor7+r4WeZzO29aLRKZP4
+        26n+KsULmJxB5hCPP0BaY5RSHBgtZCXJGXPwtjWHgZFJo6SErY6QVXVUz7MlFmQ9U3zCwI
+        YR1D5BIvmv8Gyr9gfo6WBl7tEnM4F0s=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-zqrVS2EyOZiEaGkMsD_eQg-1; Tue, 28 Sep 2021 10:11:52 -0400
+X-MC-Unique: zqrVS2EyOZiEaGkMsD_eQg-1
+Received: by mail-ed1-f71.google.com with SMTP id a6-20020a50c306000000b003da30a380e1so17220895edb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 07:11:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xVoo+M6uUaOiYZtopIoxfUEyXOYNBvxexaFRMYrLxg8=;
+        b=4B1/GOhPbzMJNpuwnlvngHZZRy7fs9WoKF5BGDcHUVLfTl7qVeY2xThQ1Z4BzPl/AO
+         p75x1FXby3Tr8s0++KYjeFvIkToI8eFWt5SYGhGVxMcE0bmLdYpx5qaaGm+37AgLoVhu
+         qzWxJc77gm5wO4qsS0u9MP6dC0PKN+uSHimNMBUZMGhZ8eWCRJeuF5bzBc2K1OL2suMB
+         SzjHdv3ss7QwJRMK7GxXVQ9hAmBc0ap+UHWgXq9xPHeqSEGcvIr7D3T4eQAQAd1bxKx0
+         sSOKeYJSTAmADSA+x6fzMm1o6i1gC+Yjw2IXHwToeJLY5MxcpxAQRhSEcnD6N68yX/5v
+         6tqA==
+X-Gm-Message-State: AOAM531YKTZa/CyarFJ+kvprgWHlwr8F++NUfrLnZmJKx7YF4Y8AlcT3
+        lVF72atEm8z9QeD3nmoHnhCNQpUqVo3yK0MucUd6LQSqlB6pjM7yedNe/UNgHqm9NcH+zaazoDE
+        F0k0+HpI91kY5Ix+dfeAdZaJd
+X-Received: by 2002:a05:6402:16d9:: with SMTP id r25mr7760139edx.80.1632838311151;
+        Tue, 28 Sep 2021 07:11:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhk0du4D+Vm3+XSAwsmoG7TkvY6f7Qf0gdVsJwR7KL5IvNw8f6IW3WLCZlbkhbATinMWWHMQ==
+X-Received: by 2002:a05:6402:16d9:: with SMTP id r25mr7760115edx.80.1632838310858;
+        Tue, 28 Sep 2021 07:11:50 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id b13sm14713128ede.97.2021.09.28.07.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 07:11:50 -0700 (PDT)
+Subject: Re: [PATCH v11] asus-wmi: Add support for custom fan curves
+To:     Luke Jones <luke@ljones.dev>
+Cc:     Bastien Nocera <hadess@hadess.net>, linux-kernel@vger.kernel.org,
+        pobrn@protonmail.com, linux@roeck-us.net,
+        platform-driver-x86@vger.kernel.org
+References: <20210907232232.5205-1-luke@ljones.dev>
+ <20210907232232.5205-2-luke@ljones.dev>
+ <1d9d4de26d0c862acf3e579f14de9596027f3c3b.camel@hadess.net>
+ <99750R.GZYR2PKX93HX@ljones.dev>
+ <10be9244-0d89-ef79-08d0-fe7024609ee2@redhat.com>
+ <NY750R.JRUHTBKNLH1F1@ljones.dev>
+ <461e3768-7c6d-7351-3482-2545ad0af754@redhat.com>
+ <YP850R.AMCS62ND6R8R3@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e809e7eb-3f38-19fe-46aa-ff40f2fde838@redhat.com>
+Date:   Tue, 28 Sep 2021 16:11:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YVMfonwjmbgL/ZCX@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YP850R.AMCS62ND6R8R3@ljones.dev>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: apBFcd0aGB2zWRr9xoHDNOJkogDDUscS
-X-Proofpoint-GUID: 7ThZpnyAIZBb16ZL2TgNz6ueBR9BpeJe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280081
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 28/09/21 7:28 pm, Greg KH wrote:
-> On Tue, Sep 28, 2021 at 06:13:18PM +0530, Pratik Sampat wrote:
->> Hello Greg,
+On 9/28/21 2:15 PM, Luke Jones wrote:
+> 
+> 
+> On Tue, Sep 28 2021 at 14:03:54 +0200, Hans de Goede <hdegoede@redhat.com> wrote:
+>> Hi,
 >>
->> Thank you for your review.
+>> On 9/28/21 1:59 PM, Luke Jones wrote:
+>>>
+>>>
+>>>  On Tue, Sep 28 2021 at 13:56:05 +0200, Hans de Goede <hdegoede@redhat.com> wrote:
+>>>>  Hi,
+>>>>
+>>>>  On 9/28/21 1:43 PM, Luke Jones wrote:
+>>>>>   Sure, the path is similar to /sys/devices/platform/asus-nb-wmi/hwmon/hwmon4/pwm1_enable where hwmon4 will likely be different depending on init, and pwm2_enable is the second fan if it exists. The values are 1,2,3 - where 1 = fan curve enabled/manual, 2 = auto. 3 here is custom extra that writes default curve back then defaults to 2.
+>>>>>
+>>>>>   As I understand it, this should be adhering to the accepted kernel standard, so if you use this for ASUS laptops, then it should carry over to other brands that implement it also.
+>>>>
+>>>>  Ah, so this is a bit different then how I thought this would work
+>>>>  (this is probably better though).
+>>>>
+>>>>  <snip>
+>>>>
+>>>>>>>    The fans have settings [1,2,3] under pwm<N>_enable:
+>>>>>>>    1. Enable and write settings out
+>>>>>>>    2. Disable and use factory fan mode
+>>>>>>>    3. Same as 2, additionally restoring default factory curve.
+>>>>
+>>>>  Quoting Documentation/hwmon/sysfs-interface.rst
+>>>>
+>>>>  `pwm[1-*]_enable`
+>>>>                  Fan speed control method:
+>>>>
+>>>>                  - 0: no fan speed control (i.e. fan at full speed)
+>>>>                  - 1: manual fan speed control enabled (using `pwm[1-*]`)
+>>>>                  - 2+: automatic fan speed control enabled
+>>>>
+>>>>  1 normally means the fans runs at a fixed speed, but you are using it
+>>>>  for the custom/manual profile, which is still a temp<->pwm table,
+>>>>  right?
+>>>>
+>>>>  I guess this make sense since full manual control is not supported
+>>>>  and this keeps "2" aka auto as being the normal factory auto
+>>>>  setting which is good.
+>>>>
+>>>>  Bastien is this interface usable for p-p-d ?
+>>>>
+>>>>  I guess that it is a bit annoying that you need to figure out
+>>>>  the # in the hwmon# part of the path, but there will be only
+>>>>  one hwmon child.
+>>>>
+>>>>  You could also go through /sys/class/hwmon but then you really
+>>>>  have no idea which one to use. Ideally we would have some way
+>>>>  to indicate that there is a hmwon class-dev associated with
+>>>>  /sys/firmware/acpi/platform_profile but as we mentioned before
+>>>>  we should defer coming up with a generic solution for this
+>>>>  until we have more then 1 user, so that we hopefully get the
+>>>>  generic solution right in one go.
+>>>
+>>>  If it's at all helpful, I named the interface as "asus_custom_fan_curve". I use this to verify I have the correct hwmon for asusctl. Open to suggestions on that.
 >>
->> On 28/09/21 5:38 pm, Greg KH wrote:
->>> On Tue, Sep 28, 2021 at 05:21:01PM +0530, Pratik R. Sampat wrote:
->>>> Adds a generic interface to represent the energy and frequency related
->>>> PAPR attributes on the system using the new H_CALL
->>>> "H_GET_ENERGY_SCALE_INFO".
->>>>
->>>> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
->>>> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
->>>> will be deprecated P10 onwards.
->>>>
->>>> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
->>>> hcall(
->>>>     uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
->>>>     uint64 flags,           // Per the flag request
->>>>     uint64 firstAttributeId,// The attribute id
->>>>     uint64 bufferAddress,   // Guest physical address of the output buffer
->>>>     uint64 bufferSize       // The size in bytes of the output buffer
->>>> );
->>>>
->>>> This H_CALL can query either all the attributes at once with
->>>> firstAttributeId = 0, flags = 0 as well as query only one attribute
->>>> at a time with firstAttributeId = id, flags = 1.
->>>>
->>>> The output buffer consists of the following
->>>> 1. number of attributes              - 8 bytes
->>>> 2. array offset to the data location - 8 bytes
->>>> 3. version info                      - 1 byte
->>>> 4. A data array of size num attributes, which contains the following:
->>>>     a. attribute ID              - 8 bytes
->>>>     b. attribute value in number - 8 bytes
->>>>     c. attribute name in string  - 64 bytes
->>>>     d. attribute value in string - 64 bytes
->>>>
->>>> The new H_CALL exports information in direct string value format, hence
->>>> a new interface has been introduced in
->>>> /sys/firmware/papr/energy_scale_info to export this information to
->>>> userspace in an extensible pass-through format.
->>>>
->>>> The H_CALL returns the name, numeric value and string value (if exists)
->>>>
->>>> The format of exposing the sysfs information is as follows:
->>>> /sys/firmware/papr/energy_scale_info/
->>>>      |-- <id>/
->>>>        |-- desc
->>>>        |-- value
->>>>        |-- value_desc (if exists)
->>>>      |-- <id>/
->>>>        |-- desc
->>>>        |-- value
->>>>        |-- value_desc (if exists)
->>>> ...
->>>>
->>>> The energy information that is exported is useful for userspace tools
->>>> such as powerpc-utils. Currently these tools infer the
->>>> "power_mode_data" value in the lparcfg, which in turn is obtained from
->>>> the to be deprecated H_GET_EM_PARMS H_CALL.
->>>> On future platforms, such userspace utilities will have to look at the
->>>> data returned from the new H_CALL being populated in this new sysfs
->>>> interface and report this information directly without the need of
->>>> interpretation.
->>>>
->>>> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
->>>> Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
->>>> Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
->>>> Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
->>>> ---
->>>>    .../sysfs-firmware-papr-energy-scale-info     |  26 ++
->>>>    arch/powerpc/include/asm/hvcall.h             |  24 +-
->>>>    arch/powerpc/kvm/trace_hv.h                   |   1 +
->>>>    arch/powerpc/platforms/pseries/Makefile       |   3 +-
->>>>    .../pseries/papr_platform_attributes.c        | 312 ++++++++++++++++++
->>>>    5 files changed, 364 insertions(+), 2 deletions(-)
->>>>    create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
->>>>    create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
->>>>
->>>> diff --git a/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
->>>> new file mode 100644
->>>> index 000000000000..139a576c7c9d
->>>> --- /dev/null
->>>> +++ b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
->>>> @@ -0,0 +1,26 @@
->>>> +What:		/sys/firmware/papr/energy_scale_info
->>>> +Date:		June 2021
->>>> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
->>>> +Description:	Directory hosting a set of platform attributes like
->>>> +		energy/frequency on Linux running as a PAPR guest.
->>>> +
->>>> +		Each file in a directory contains a platform
->>>> +		attribute hierarchy pertaining to performance/
->>>> +		energy-savings mode and processor frequency.
->>>> +
->>>> +What:		/sys/firmware/papr/energy_scale_info/<id>
->>>> +		/sys/firmware/papr/energy_scale_info/<id>/desc
->>>> +		/sys/firmware/papr/energy_scale_info/<id>/value
->>>> +		/sys/firmware/papr/energy_scale_info/<id>/value_desc
->>>> +Date:		June 2021
->>>> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
->>>> +Description:	Energy, frequency attributes directory for POWERVM servers
->>>> +
->>>> +		This directory provides energy, frequency, folding information. It
->>>> +		contains below sysfs attributes:
->>>> +
->>>> +		- desc: String description of the attribute <id>
->>>> +
->>>> +		- value: Numeric value of attribute <id>
->>>> +
->>>> +		- value_desc: String value of attribute <id>
->>> Can you just make 4 different entries in this file, making it easier to
->>> parse and extend over time?
->> Do you mean I only create one file per attribute and populate it with 4
->> different entries as follows?
+>> Ah yes, that means the interface could be looked up through /sys/class/hwmon
+>> too, that is probably the safest route to go then, as the
+>> /sys/devices/platform/asus-nb-wmi/ path might change if we e.g. ever
+>> convert the asus-wmi code to use the new wmi bus interface.
+> 
+> Oh man... can you link me to relevant bits? I'll stick this on my to-do for future. There will be more patches from me over time so this might be good to have done?
+
+This is not something which we have made mandatory for old code to
+switch too. The idea is that you get one wmi_device per guid
+under: /sys/bus/wmi/devices/
+
+And then the old platform_drivers (which do typically use
+"wmi:GUID" as modalias) are converted to wmi_drivers which
+bind to a wmi_device and can make calls on that using e.g. :
+
+wmidev_evaluate_method(wmi_dev, ...)
+
+instead of:
+
+wmi_evaluate_method(GUID, ...)
+
+Grep for module_wmi_driver in drivers/platform/x86
+for drivers which have been converted to use this.
+
+I see that the asus code uses 3 GUIDs:
+
+ASUS_WMI_MGMT_GUID
+ASUS_NB_WMI_EVENT_GUID
+EEEPC_WMI_EVENT_GUID
+
+With the first one being shared and the modalias-es
+for the asus-nb-wmi resp eeepc-wmi drivers actually
+pointing to the 2 EVENT_GUIDs.
+
+So you could change things to have the 2 drivers
+bind to the 2 different event_guids, they can
+then also have a notify callback as part of their
+driver structure instead of having to call
+
+wmi_install_notify_handler() / wmi_remove_notify_handler()
+
+###
+
+Actually, never mind, switching to the new way of doing things
+will move all the sysfs attributes from
+/sys/devices/platform/asus-nb-wmi/...
+to some thing like:
+/sys/devices/platform/PNP0C14:07/wmi_bus/wmi_bus-PNP0C14:07/D931B4CF-F54E-4D07-9420-42858CC6A234
+
+So this would be a clear userspace API break :|
+
+IOW we are stuck with using the old way of doing things
+in asus-wmi.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+
+> 
 >>
->> # cat /sys/firmware/papr/energy_scale_info/<id>
->> id:
->> desc:
->> value:
->> value_desc:
-> No, I mean in this documentation file, have 4 different "What:" entries,
-> don't lump 4 of them together into one larger Description for no reason
-> like you did here.
->
-> The sysfs files themselves are fine.
-
-Ah okay, I understand what you're saying. I just need to make 4 different
-entries in the documentation.
-Thanks for that clarification.
-
->>>> +struct papr_attr {
->>>> +	u64 id;
->>>> +	struct kobj_attribute kobj_attr;
->>> Why does an attribute have to be part of this structure?
->> I bundled both an attribute as well as its ID in a structure because each
->> attributes value could only be queried from the firmware with the corresponding
->> ID.
->> It seemed to be logically connected and that's why I had them in the structure.
->> Are you suggesting we maintain them separately and don't need the coupling?
-> The id is connected to the kobject, not the attribute, right?
-> Attributes do not have uniqueness like this normally.
->
->
->>>> +static struct papr_ops_info {
->>>> +	const char *attr_name;
->>>> +	ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *kobj_attr,
->>>> +			char *buf);
->>>> +} ops_info[MAX_ATTRS] = {
->>>> +	{ "desc", papr_show_desc },
->>>> +	{ "value", papr_show_value },
->>>> +	{ "value_desc", papr_show_value_desc },
->>> What is wrong with just using the __ATTR_RO() macro and then having an
->>> array of attributes in a single group?  That should be a lot simpler
->>> overall, right?
->> If I understand this correctly, you mean I can have a array of attributes in a
->> flat single group?
-> Yes.
->
->> I suppose that would be a simpler, given your earlier suggestion to wrap
->> attribute values up in a single file per attribute.
+>> Now that you have confirmed that any writes to
+>> /sys/firmware/acpi/platform_profile override any custom profiles
+>> I wonder if p-p-d needs to take this into account at all though.
 >>
->> However, the intent of grouping and keeping files separate was that each sysfs
->> file has only one value to display.
-> That is correct, and not a problem here at all.
->
->> I can change it to using an array of attributes in a single group too if you
->> believe that is right way to go instead.
-> You have 3 variables for your attributes:
->
-> static struct kobj_attribute papr_desc = __ATTR_RO(desc);
-> static struct kobj_attribute papr_value = __ATTR_RO(value);
-> static struct kobj_attribute papr_value_desc = __ATTR_RO(value_desc);
->
-> and then your attribute group:
-> static struct attribute papr_attrs[] = {
-> 	&papr_desc.attr,
-> 	&papr_value.attr,
-> 	&papr_value_desc.attr,
-> 	NULL,
-> };
->
-> ATTRIBUTE_GROUPS(papr);
->
-> Then take that papr_groups and register that with the kobject when
-> needed.
->
-> But, you seem to only be having a whole kobject for a subdirectory,
-> right?  No need for that, just name your attribute group, so instead of
->
-> ATTRIBUTE_GROUPS(papr);
->
-> do:
-> static const struct attribute_group papr_group = {
-> 	.name = "Your Subdirectory Name here",
-> 	.attrs = papr_attrs,
-> };
->
-> Hope this helps,
-
-Yes, this does!
-I understand now that a whole kobject for a sub-directory is futile.
-The approach you suggested for having papr_groups register with the kobject
-whenever needed is more cleaner.
-
-Thanks for the help, I'll rework my current logic according to that.
-
-Pratik
-
-> greg k-h
+>> The easiest way to deal with this in p-p-d, is just to not deal
+>> with it at all...    If that turns out to be a bad idea, we
+>> can always reconsider and add some special handling to p-p-d for
+>> this later.
+> 
+> I believe Bastiens concern here will be that manual control can still be enabled and ppd won't be aware of it without a check. For example the user may switch profile then re-enable the fan-curve. If some problem arises due to manual control of fan then there is no way for ppd to determine if manual was enabled without actually looking.
+> 
+> This does mean the pwm name here is set in stone. But also means it's special-cased I guess. Perhaps a check for pwm<N>_enable, then check for the pairs of pwm<N>_auto_<xX> that come with it?
+> 
+> Ciao,
+> Luke.
+> 
+>>
+>> Regards,
+>>
+>> Hans
+>>
+> 
+> 
 
