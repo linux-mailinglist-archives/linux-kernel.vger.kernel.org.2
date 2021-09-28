@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0449041AFDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3060C41AFD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 15:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240920AbhI1NUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 09:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59174 "EHLO mail.kernel.org"
+        id S240870AbhI1NUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 09:20:34 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:44230 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240907AbhI1NUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 09:20:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CF44611CC;
-        Tue, 28 Sep 2021 13:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632835137;
-        bh=VeB5GXPFGYAi+MDx0ZEO0Lyx1tXoFrq/FrWnMOweEWQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D3dc8sMvlzcVo4NjXJ2vCRYVxSd/g7YSq3UTSfBOQFPNSX//4VhBwZC3SAWmebs/Q
-         iHi/R9QijnXcrS5mBfMuL34YavB44RRDFDtOkkKW6diQ08yr76Z06D7TQDyweNMim1
-         87hzyb5rjoc4JbHlt9OKqreZ14uLoiJtGPYxRZYxgfI47GSGbk3hGjd50oUO9x8/6/
-         z9yjU+XfDMXOieObCTTm20a1I1NWslqCYKQ1z0NsGimH0+rt72IVWKA9UtU2K7x+ag
-         0YHiMFXNMvZO93ij5Kqk/yZUxaU8LZDdOWuhm6olHJ19+zelgyeEb3E7rfpuTp9qC2
-         nHGTzbmrO+G3w==
-Received: by mail-oi1-f174.google.com with SMTP id s24so27324696oij.8;
-        Tue, 28 Sep 2021 06:18:57 -0700 (PDT)
-X-Gm-Message-State: AOAM531wJ9oTHOJWYqDDXg4ZKxL5KRcXzOAeFDS9KApx4OOakfQkdJel
-        DGfhKtjs7gYwuk8yqQBlZx4nYdlQ4clRGdwoyls=
-X-Google-Smtp-Source: ABdhPJyep3Pw1Kqo5huUAuGsrpllZ2c8nSuyzA6EOwJFgMmmBzpyy+vZsyEyrP7TXFbetznr+4dx/vVu8duHYpn76tM=
-X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr3509831oiu.33.1632835136613;
- Tue, 28 Sep 2021 06:18:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-5-ardb@kernel.org>
- <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
- <87ee99lii7.fsf@mpe.ellerman.id.au> <87pmst1rn9.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87pmst1rn9.fsf@mpe.ellerman.id.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 28 Sep 2021 15:18:45 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
-Message-ID: <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        id S240669AbhI1NUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 09:20:33 -0400
+Received: from zn.tnic (p200300ec2f13b20058b29c6ae6f5cd57.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:b200:58b2:9c6a:e6f5:cd57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8E4641EC06F0;
+        Tue, 28 Sep 2021 15:18:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632835132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LjcqAr6iC5eAZQwo8NZC/xi/L1XaohYMz5bx+mVoIPM=;
+        b=LobFhPA/kuaLJzh1ln3hzQmeEEf9bDCR/ekZM07TTqfUTgWHGQtRC7c+GxzMNk6vC7nNXp
+        m7qXnk0OBnqqBFJAMRRkEuLPUfo23UvStV7pOc4Vuid6dkdQqYatiuz8vnIog6EkvXFXCj
+        rSW6GTWFxLI6QXsXv/4QyokHieCRNpI=
+Date:   Tue, 28 Sep 2021 15:18:46 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 04/11] x86/tdx: Add protected guest support for TDX
+ guest
+Message-ID: <YVMWNhSUc8nNpBn/@zn.tnic>
+References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210903172812.1097643-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YVMAgFpGvKgBfx0P@8bytes.org>
+ <20fc6806-0c46-15d6-930b-6b4e90dfee6d@linux.intel.com>
+ <YVMS5GF/R3mpISWu@8bytes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVMS5GF/R3mpISWu@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 02:16, Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Michael Ellerman <mpe@ellerman.id.au> writes:
-> > Ard Biesheuvel <ardb@kernel.org> writes:
-> >> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >>>
-> >>> The CPU field will be moved back into thread_info even when
-> >>> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
-> >>> of struct thread_info.
-> >>>
-> >>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> >>
-> >> Michael,
-> >>
-> >> Do you have any objections or issues with this patch or the subsequent
-> >> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
-> >> that he was happy with it.
-> >
-> > No objections, it looks good to me, thanks for cleaning up that horror :)
-> >
-> > It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
-> > git tree with the dependencies I'd be happy to run some tests over it.
->
-> Actually I realised I can just drop the last patch.
->
-> So that looks fine, passes my standard quick build & boot on qemu tests,
-> and builds with/without stack protector enabled.
->
+On Tue, Sep 28, 2021 at 03:04:36PM +0200, Joerg Roedel wrote:
+> Yes, but distributions will enable this in their default configs, so the
+> function call will happen on every Intel machine, even on bare-metal.
 
-Thanks.
+The result of whether the guest is a TDX needs to be cached and queried
+instead anyway:
 
-Do you have any opinion on how this series should be merged? Kees Cook
-is willing to take them via his cross-arch tree, or you could carry
-them if you prefer. Taking it via multiple trees at the same time is
-going to be tricky, or take two cycles, with I'd prefer to avoid.
+https://lkml.kernel.org/r/YVL4ZUGhfsh1QfRX@zn.tnic
 
 -- 
-Ard.
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
