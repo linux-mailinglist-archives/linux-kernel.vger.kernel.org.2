@@ -2,69 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4540741AECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0179F41AED6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240668AbhI1MVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54516 "EHLO mail.kernel.org"
+        id S240683AbhI1MWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:22:19 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:46470 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240559AbhI1MVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:21:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 183F26101E;
-        Tue, 28 Sep 2021 12:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632831607;
-        bh=schGRFdjJDCpJQzMBQ5TEMEFyPj8xqlPF0C6UXv4JkU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EvdNabbju648TKg0aDuuD9wzlWUXaoXS4BTTolfoSSSFhMQwWEEtYMfqbq9RGy74H
-         P+PBI3UV6/qRhr9JVxjnpToqcKxtDPhgB5shPNcT7O0Lk/NVFS7fE9f3MY4byfd97t
-         ZM1GsGWp6X83Mt48KV6tb/wzuGBLD+BhENcPmg0lZwJ1EiX7caJAZ4MF+zevKwaVZZ
-         itqWuIxuTHe12oimEg6eK4Fc4pHHM9Cck7UUDmJcqVD9eK5CSwMKfPNFx68OfJ3ga2
-         iYV+IiP/B7gnHWbRNxUKq5tZ3rdqchDXNRpsIBMH5Rmg0dP2nGFJXJ4Vg2kuTY8ovG
-         bbw50sO1G8iXw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0BED360A7E;
-        Tue, 28 Sep 2021 12:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S240622AbhI1MWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:22:17 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id AC75EFB03;
+        Tue, 28 Sep 2021 14:20:36 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id EggkIh7qLVK4; Tue, 28 Sep 2021 14:20:35 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 14:20:33 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH] drm: mxsfb: Set proper default bus format when using a
+ bridge
+Message-ID: <YVMIkaJnCyvBu6/d@qwark.sigxcpu.org>
+References: <YVLYh/SgBritG/RJ@qwark.sigxcpu.org>
+ <1fda3b80-7df2-2ce3-b049-6773e849e9dc@denx.de>
+ <YVLeMlQWd/lBNjsX@qwark.sigxcpu.org>
+ <3ebcbc4dba56011ddf4761dc47513dbb66fe656d.camel@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] [RESEND] net: ks8851: fix link error
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163283160704.2416.5814873993469611911.git-patchwork-notify@kernel.org>
-Date:   Tue, 28 Sep 2021 12:20:07 +0000
-References: <20210927141321.1598251-1-arnd@kernel.org>
-In-Reply-To: <20210927141321.1598251-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        marex@denx.de, arnd@arndb.de, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <3ebcbc4dba56011ddf4761dc47513dbb66fe656d.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Mon, 27 Sep 2021 16:13:02 +0200 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+Hi,
+On Tue, Sep 28, 2021 at 11:27:49AM +0200, Lucas Stach wrote:
+> Am Dienstag, dem 28.09.2021 um 11:19 +0200 schrieb Guido Günther:
+> > Hi,
+> > On Tue, Sep 28, 2021 at 11:08:58AM +0200, Marek Vasut wrote:
+> > > On 9/28/21 10:55 AM, Guido Günther wrote:
+> > > > If a bridge doesn't do any bus format handling MEDIA_BUS_FMT_FIXED is
+> > > > returned. Fallback to a reasonable default (MEDIA_BUS_FMT_RGB888_1X24) in
+> > > > that case.
+> > > > 
+> > > > This unbreaks e.g. using mxsfb with the nwl bridge and mipi panels.
+> > > > 
+> > > > Fixes: b776b0f00f24 ("drm: mxsfb: Use bus_format from the nearest bridge if present")
+> > > > 
+> > > > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > > > ---
+> > > > 
+> > > > I'll look at what needs to be done in nwl separately but this also
+> > > > unbreaks other bridge seupts that don't to format negotiation yet.
+> > > > 
+> > > >   drivers/gpu/drm/mxsfb/mxsfb_kms.c | 2 ++
+> > > >   1 file changed, 2 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> > > > index af6c620adf6e..4ef94cf686b0 100644
+> > > > --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> > > > +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> > > > @@ -369,6 +369,8 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
+> > > >   			drm_atomic_get_new_bridge_state(state,
+> > > >   							mxsfb->bridge);
+> > > >   		bus_format = bridge_state->input_bus_cfg.format;
+> > > > +		if (bus_format == MEDIA_BUS_FMT_FIXED)
+> > > > +			bus_format = MEDIA_BUS_FMT_RGB888_1X24;
+> > > 
+> > > Shouldn't the NWL bridge return the correct format ?
+> > 
+> > Yes it should and I'll send a separate patch for that but we currently
+> > don't do anything meaningful at all if the bridge doesn't do format
+> > negotiation and then fail setup in mxsfb_set_formats().
+> > 
+> > I think we should at least preserve the status quo (as we do with the
+> > non bridge case in b776b0f00f24 too).
+> > 
+> > We could have a warning to spot drivers that don't do that yet and hence
+> > the generic code returns MEDIA_BUS_FMT_FIXED.
+> > 
+> That sounds sensible. Using a default format if we don't know what to
+> do is going to be a unpleasant surprise for those with a display
+> pipeline that doesn't work with the default format. So please add a
+> dev_warn when we are doing this fallback.
 > 
-> An object file cannot be built for both loadable module and built-in
-> use at the same time:
+> Also I would argue that the NWL fix is the patch that should go in the
+> stable tree. This one should only be a additional safety net, so I
+> would drop the Fixes tag.
+
+Dropped and folded into the small series with other fixes needed to
+get get the bus format propagated up from the panel.
+Cheers,
+ -- Guido
+
 > 
-> arm-linux-gnueabi-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
-> ks8851_common.c:(.text+0xf80): undefined reference to `__this_module'
+> Regards,
+> Lucas
 > 
-> [...]
-
-Here is the summary with links:
-  - [RESEND] net: ks8851: fix link error
-    https://git.kernel.org/netdev/net/c/51bb08dd04a0
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
