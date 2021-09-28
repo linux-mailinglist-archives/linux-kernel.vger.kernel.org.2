@@ -2,176 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06ED241B3AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10D941B3AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbhI1QWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:22:00 -0400
-Received: from mail-eopbgr80104.outbound.protection.outlook.com ([40.107.8.104]:10304
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241697AbhI1QV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:21:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hA1osaOb4Nt+ntaZbTUu1nQI9xJepFz17TWexxpIyheaWmbQqV+q8L0Y1gQsLfIgzuHIELlQGGeRpqIV6/Gh9+J0r6XrjfuOiknbB5cHgyS39fUsro0RfKfzlyzr0Y07ZH+VfJfY+sSy6YcMTiZdtQjIiKD4XpJx39cOu4TTQ0mro3FXRjslvzb0ol3ZIXXp26qAFXxy7wGzAJnOTtruJyKt1llSjP90Jc1cUdP2mKt5zNnyht1KqkzZ1gChkAKjr4+2fwZ/rlXiclIr/AYzUILsApXwc8rVRtlI0SZDEnrydrkNaRAu3GEojDPMP5AT75qFM29AGXYN9Gl/2WLjBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=TZz3U7IKxoUue+UOVWl/95prRpdxPUlIbsOCSNjHLhw=;
- b=FjvVV594c2FgzlE26iO7i3JYPCWtxaDPek8FHYRDzo93CM6xBbvOPlmAte5lY9Gdao/uJTJte5FWXCgrG7SDWnFZvp0HJS3WkzHqhDr8xGtHOGxDWhVamMnH3g3vQwcDa6J8NtbfJFXiu6tcS7muQA1s6pmegCmuFCsIiP0TwqSHVIWOF7AlVHl+ptlOoLZuG5BEnsOI5+7dnkrY3PU5ICTZl1FAoCawlRkn8WLqyghkkG+TR4n4UkSNAt//hz01TShOUmWQcrjUpvW4AohKYgehYyJ5jfaQfJNtGltn57R4f3ZlLEv3nZBnVEApC30FBlmeKUGAaABe49AWfibUPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=opensynergy.com; dmarc=pass action=none
- header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TZz3U7IKxoUue+UOVWl/95prRpdxPUlIbsOCSNjHLhw=;
- b=GNbhPNgGdk0Rr0XY1Y+t3Ahi23a7Oq9oGDjyuiN2k86yPvl4CXwKCr4J6xpRHk+jLakQ7VgHFXb0hDxZYXhJa6q0rWA6nFwNpAqFF5O5omGP/7PbHRqYzgALFsndN4rsATyXjC/fGv0ZOnQzyQlDwvI92m997ox8drgtn3fVPkU=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=opensynergy.com;
-From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-To:     jbhayana@google.com, jic23@kernel.org
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
-        andriy.tryshnivskyy@opensynergy.com
-Subject: [PATCH v3 1/1] iio/scmi: Add reading "raw" attribute.
-Date:   Tue, 28 Sep 2021 19:19:57 +0300
-Message-Id: <20210928161957.24628-2-andriy.tryshnivskyy@opensynergy.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210928161957.24628-1-andriy.tryshnivskyy@opensynergy.com>
-References: <20210928161957.24628-1-andriy.tryshnivskyy@opensynergy.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AS9PR06CA0273.eurprd06.prod.outlook.com
- (2603:10a6:20b:45a::13) To AM6PR04MB6359.eurprd04.prod.outlook.com
- (2603:10a6:20b:fc::16)
+        id S241773AbhI1QWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:22:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241759AbhI1QWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:22:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632846027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z9uMJK26P60RAhxwk6AHTnSttWiM8SyG1M4QvAkMsAA=;
+        b=Qi+m8VFWk/Ifxf2o+9G/U2ode0QSkmpzlsQ5YCoKzKrFf5PiTayJSPrMRB8S0temgX2BAv
+        5mCDVaeSxC8T2Jc5JlShXJOi6WWzuecZzyRpw13eyedgShEVw85X/09bx0Pz3FaTR22u+S
+        HltV5+cqYeslp+ewiKhvv9Sq5M6tbf8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-oJECCGQ9P3mo4qnmWvkQFQ-1; Tue, 28 Sep 2021 12:20:26 -0400
+X-MC-Unique: oJECCGQ9P3mo4qnmWvkQFQ-1
+Received: by mail-ed1-f70.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso22449573edx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:20:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Z9uMJK26P60RAhxwk6AHTnSttWiM8SyG1M4QvAkMsAA=;
+        b=ReuUJGfrrnZnm9O1k/sWMF2id3SVu2Uyt3XgUxnClS3A4/+X3M1tPgB7rCjKvPhB1d
+         BBtha2xHeKPGej4J6gJ3jalukFllZ5qTfQfL+AVQ6APKzy2u8pndYcvBHAARFMjc9veV
+         2GbWt3p54BXYCCq4iWbOAsdJpiDSSKdm55v8CtY64kgaNjRckTSKBa7VYrQQ4khN4ang
+         oAtJWLa3ZrPMVWAmyzAywvgKYool0WKHgMTSBq/kUpFzUAq9rpLKNeu8FXlA50djY3D4
+         +8dKFVIXMFtrgd30Jba4JjxMi3GyOSXNnK+XS4CrXZS1TJO32+1uOC0ZBKJ2s5T8rzug
+         L/4Q==
+X-Gm-Message-State: AOAM530eye+518tp+v8+WEXoh/kszNkBTe9najPuzkrhYdRC4+JbHQPP
+        q3K/Ew3AN5qXUTUe27QY32xDY2WETdzuuGfz8p2A25q8JHjOf+ltPriL7WzQjY/IZNoF3tZjX1E
+        7PW8cJPYW/JJAw+syZBAcySJX
+X-Received: by 2002:a17:906:5d6:: with SMTP id t22mr7639881ejt.98.1632846024792;
+        Tue, 28 Sep 2021 09:20:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyio9n7XU3Vkcgm5WLJWy0FSGCW2mQFmeonM9ZvIwP7eL35roJUNMyb5wbTQhpjehr95KRmfA==
+X-Received: by 2002:a17:906:5d6:: with SMTP id t22mr7639858ejt.98.1632846024607;
+        Tue, 28 Sep 2021 09:20:24 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 21sm10523657ejv.54.2021.09.28.09.20.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 09:20:24 -0700 (PDT)
+Message-ID: <82acae8f-6b27-928f-0c00-1df8fc9d26b8@redhat.com>
+Date:   Tue, 28 Sep 2021 18:20:17 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ffc47726-9601-4dc1-aec1-08d9829bd98d
-X-MS-TrafficTypeDiagnostic: AM6PR04MB5879:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR04MB58793F309A5DB2D097008B66E6A89@AM6PR04MB5879.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CSpe/iyDfIPIA0GGNk4GQ9uEkjpdJrPq+R7tjjTzT575fCFmlYeDuFjyE0tzIFmSIt929Zl34IMXcfilJY+H2bdA9/wc3nqIO90D5NKtNvaCKuRFRhj5oSo33T2mV+gvqoYG3ueuHkzFXNhzsY1l6G2XgyFz40Fd+FTTRUJm7tH1cGN6QXE4TBS2PuVByyPg5SgK6o5hBQzR9D5+GoKstNjrdQBk9/Zsm28i/zSHGm1mBWWPMQNLUlMw/b+8TUp/vZZm2n1d78Ztq2BM8uSjVORDLqIdrbXtOMh3/QzwXc9tG9mgWaVgpMhSub4bl9RKJwvsG1s81v6bomFasfhci5TJlii7wWtwn3iaJQBLrfvKDtfU4XO88RalAE2A/NQQBOEmrf6i1otuX53TcsTQcnERH0q5la87fyhsRjzwcOiYCzJx/yNUlCCrNqtZjqmifFp2FQrxNCLbF7pdexEuEa891fHrGa5H6v3eo5Zs8lEy5W/e+9sEJsdsLutRvgJ+pbd+f8xPIeWa6ApqGbnhyJr0Hfm+7b8yP5Kuwnoo9amCB8z9MJt88MYfVl7qqJHJgaP0HY51F0aDyZoDx0yDM4aDe5IzcPMAgxbD0nYt1kzgJbTyIKL0J3dI/OeQvQEnQTjd4S+/K4qlNE24kUCdejkBPGArd9OBujicMWxh/jqgVZdejyF8XrtN5lgnMg7lx5RjFgJnF+tIhUOUxDIwvg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39840400004)(376002)(346002)(396003)(366004)(4326008)(8676002)(52116002)(55236004)(186003)(1076003)(83380400001)(44832011)(38100700002)(38350700002)(107886003)(26005)(2616005)(66476007)(2906002)(5660300002)(66946007)(316002)(86362001)(8936002)(66556008)(42186006)(36756003)(508600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VMbKLITlD2cJZqM2mYrzuYgtygyBCbHqB3e5Tf95JFd/0qZpus2PxkN686CW?=
- =?us-ascii?Q?gFMO34YgqrRHKXJlCdybtfqZ5Fgf2hWz8nAlxgBIMzgmyi7WAttoP1vcjHz9?=
- =?us-ascii?Q?6msgqIhuOM2wJd3Nw3Fd6sVvEayv3D6byfoXJLLI0ijTUCWZvd7cDYBp4Q8O?=
- =?us-ascii?Q?JfvRF3wpiUtcxaEUtPz9FKCBiy0WNogKU8HckxLExN373WPxStUPo6xF00B8?=
- =?us-ascii?Q?+osGVceAgNa+Nv061q2Bts9lXNcvCxupCUXHmJiQgOGZ4eEkfv0hghbWTjp5?=
- =?us-ascii?Q?99oHN2E3W+9rjoyAXhiFG017+Nvd+CyaYEs6X0pAKYb24Hm3k3F01tBeAY2O?=
- =?us-ascii?Q?wXpJjPzjNzfJ7H14IWs21e5Z3rt0UG/lDpoPhTatpMcvjUIC2CV5fYGWZXzY?=
- =?us-ascii?Q?5ZvXpvdNKPtijrQw0w0IoJoPCw2U1cHg1m7nQFVhQs2+aMaW4HsO/KsCrQCG?=
- =?us-ascii?Q?U5rSvtxLMOukNjRF/EIA4A5ghKbtIN1wLsbeRXmDt2RIzl0Z6AgPl7H3qPK+?=
- =?us-ascii?Q?xe9qRoZA5CEi2IwUMjHHZNejwUxDMPLl7p/3PJuQ71lGeGYQ4bcHqgDANZbO?=
- =?us-ascii?Q?3nRfBAwyIbee4lrKL7yeER1e2Mja6tmO0429Sjtqtml7eYrgfsLySHvDII3L?=
- =?us-ascii?Q?efE+1b6TCznd6kyzER1BEFp4yB0MDSiiHxRHg4QcYSePoHmyYxoZojLoDZiM?=
- =?us-ascii?Q?wcDk3hZm/X6ckB7yWXMxeHRibVphn+SaAgKvREcWMLXNbPfySu/sGWHqyanb?=
- =?us-ascii?Q?KIxLpOWMBm+r5X3iXr9kYXYVU5Mix0JtPmYSPvTxS4/DSnt8Uox/CDX+J4ad?=
- =?us-ascii?Q?EPwfPwd99vE9Pk0yvqKpY1GwlXsiyhzZdiT8Z4d5EDrlF7G/6/F6NuKxkDEi?=
- =?us-ascii?Q?zB16mdTskSDtUxJUelDEGUDQfcazELYp0o4l0LNMkwGKdlC8yMfHKhnQeCwM?=
- =?us-ascii?Q?v9pofcdLxANB3/zBdG0ZQvsfYF9iOnDQD1v3bDLWr2DdCVwIEyojbNqfi6D3?=
- =?us-ascii?Q?fHxOYQmeaYCoowt2031oxK/JIPRxAGVBhwRl1wEy2a0ePKIic2URPixBhIiF?=
- =?us-ascii?Q?3B9RdBrJ3FudoNafi41JPax2twwOdO9wasmklaUUA04TfDnJz8kOHQb4mx49?=
- =?us-ascii?Q?FDdKhuKuPaDOj7K7ooKFGUY4RKiX5JbZ087IQ9yZ21nOw15zmNbjJlnSVpup?=
- =?us-ascii?Q?kiMFUtBWEztYVa7/UJC/m0bRkBgpXqoT3cxk2s1db5HI4iYD4BzjHvMdqYjM?=
- =?us-ascii?Q?ZftkCrrsB3GxAV85fr817apjWCa7Etnkc+v4avzxsRpOzM8JtjwpUkT/nfDm?=
- =?us-ascii?Q?+kA6n9tK8gTqQo/BD8D3oVci?=
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffc47726-9601-4dc1-aec1-08d9829bd98d
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 16:20:13.2217
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kd/f+cSHo69LSX+6fWpXa4oHo0NOVgh0bPzj55bZIgdgCSx8zfxRuv8VGJG0uhEmmfN/R5P1JI5IV+Es4HP+aQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5879
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH 2/3] nSVM: introduce smv->nested.save to cache save
+ area fields
+Content-Language: en-US
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210903102039.55422-1-eesposit@redhat.com>
+ <20210903102039.55422-3-eesposit@redhat.com>
+ <fbb40bb8c12715c0aa9d6a113784f8a21603e2b3.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <fbb40bb8c12715c0aa9d6a113784f8a21603e2b3.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
-reading "raw" attribute in scmi_iio_read_raw.
+On 12/09/21 12:39, Maxim Levitsky wrote:
+> On Fri, 2021-09-03 at 12:20 +0200, Emanuele Giuseppe Esposito wrote:
+>> This is useful in next patch, to avoid having temporary
+>> copies of vmcb12 registers and passing them manually.
+> 
+> This is NOT what I had in mind, but I do like that idea very much,
+> IMHO this is much better than what I had in mind!
+> 
+> The only thing that I would change is that I woudn't reuse 'struct vmcb_save_area'
+> for the copy, as this both wastes space (minor issue),
+> and introduces a chance of someone later using non copied
+> fields from it (can cause a bug later on).
+> 
+> I would just define a new struct for that (but keep same names
+> for readability)
+> 
+> Maybe something like 'struct vmcb_save_area_cached'?
 
-Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
----
- drivers/iio/common/scmi_sensors/scmi_iio.c | 45 +++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+I agree, I like this too.  However, it needs a comment that this new 
+struct is not kept up-to-date, and is only valid until enter_svm_guest_mode.
 
-diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-index 7cf2bf282cef..7ea52186ad50 100644
---- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-+++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-@@ -286,6 +286,9 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
- 	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
- 	s8 scale;
- 	int ret;
-+	int err;
-+	u32 sensor_config;
-+	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SCALE:
-@@ -300,6 +303,45 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
- 	case IIO_CHAN_INFO_SAMP_FREQ:
- 		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
- 		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-+	case IIO_CHAN_INFO_RAW:
-+		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-+					   SCMI_SENS_CFG_SENSOR_ENABLE);
-+		err = sensor->sensor_ops->config_set(
-+			sensor->ph, sensor->sensor_info->id, sensor_config);
-+		if (err) {
-+			dev_err(&iio_dev->dev,
-+				"Error in enabling sensor %s err %d",
-+				sensor->sensor_info->name, err);
-+			return err;
-+		}
-+
-+		err = sensor->sensor_ops->reading_get_timestamped(
-+			sensor->ph, sensor->sensor_info->id,
-+			sensor->sensor_info->num_axis, readings);
-+		if (err) {
-+			dev_err(&iio_dev->dev,
-+				"Error in reading raw attribute for sensor %s err %d",
-+				sensor->sensor_info->name, err);
-+			return err;
-+		}
-+
-+		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-+					   SCMI_SENS_CFG_SENSOR_DISABLE);
-+		err = sensor->sensor_ops->config_set(
-+			sensor->ph, sensor->sensor_info->id, sensor_config);
-+		if (err) {
-+			dev_err(&iio_dev->dev,
-+				"Error in enabling sensor %s err %d",
-+				sensor->sensor_info->name, err);
-+			return err;
-+		}
-+		/* Check if raw value fits 32 bits */
-+		if (readings[ch->scan_index].value < INT_MIN ||
-+		    readings[ch->scan_index].value > INT_MAX)
-+			return -ERANGE;
-+		/* Use 32-bit value, since practically there is no need in 64 bits */
-+		*val = (int)readings[ch->scan_index].value;
-+		return IIO_VAL_INT;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -381,7 +423,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
- 	iio_chan->type = type;
- 	iio_chan->modified = 1;
- 	iio_chan->channel2 = mod;
--	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
-+	iio_chan->info_mask_separate =
-+		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
- 	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
- 	iio_chan->info_mask_shared_by_type_available =
- 		BIT(IIO_CHAN_INFO_SAMP_FREQ);
--- 
-2.17.1
+I might even propose a
+
+#ifdef CONFIG_DEBUG_KERNEL
+	memset(&svm->nested.save, 0xaf, sizeof(svm->nested.save));
+#endif
+
+but there are no uses of CONFIG_DEBUG_KERNEL in all of Linux so it's 
+probably not the way one should use that symbol.  Can anybody think of a 
+similar alternative?  Or should the memset simply be unconditional?
+
+Paolo
 
