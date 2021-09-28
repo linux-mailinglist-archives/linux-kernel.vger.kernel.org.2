@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C80141B97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA53341B980
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242958AbhI1Vlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbhI1Vli (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:41:38 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974ACC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:39:58 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id ba1so541449edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gDh9+EkJ1XaioXG706gkM4MC/zvXOsIVOcJCDT0kPlA=;
-        b=By1oZKn5ZK9lpmbNq9hmZ9zb4Q5xi6mybeF9MwvF2f8trWsWis+vN0IT+3VXJSeKXg
-         +R2RtWPiXDlLjsZdkcekT6ysH7JpyHG94Tb6k2xKDjnRIaKq+kjoKO5tAoU2tc+19nam
-         +7xiU8S3OSUHHeCLbkbYDUPPTslbhFrmnmT6mxCIaOMOiEHurXSexF/D7Esh5QgCbea9
-         ErtdN+oWwQhRV4WmBJpeylpvRpPKQoE2BJfE+GA8sJyXrJhZvt26Pftiwbdi/Unzm16Q
-         PM4yejiUuDuVmAfug58LWDePo2zbeT9FpSmz2FFInlZVP67VbX06bMLh63VA5F+Xtbw8
-         PZ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gDh9+EkJ1XaioXG706gkM4MC/zvXOsIVOcJCDT0kPlA=;
-        b=EwrltK8f3zolrKUyPfOx42UPxdtd/+qxtyCkc600mD19jX1mdBstAzn+RUc8+DGxbK
-         NGmWiypCXA8vKKDfjw4KGIwM99ZuVhLQk7QpVIoCNIoIdAxt8ITymtB57VhafyS8tAmK
-         KynY7nC6vZiv/VViEpTBInalJ6WEJvsWXxA3MArCdxl6vrLOCZ1SVaLPsxGBQu/YmPu5
-         4mtfW8TnsNtpxMM/noMtEue7VDtsOXEk7Mr0doQfXtNFRUCGgYVZE+dxo0mYWUNoEnuT
-         P7aB19qHOsrT4aAal/u8MPoBkw9emSwOfcDbt8sk9yjA9mvLZolZRcw66B9EKW6da4e3
-         imnw==
-X-Gm-Message-State: AOAM530S7gWVGd6khUh/zBNFYXdK32lnxOgz+7x92W2OmnsJEe3zlkeq
-        z4XJJoK7M40N96dKgR0H24eoy4vVgsxSOFhFwfXkFw==
-X-Google-Smtp-Source: ABdhPJxNM3CwYb0naketQjkRI2A0IGPc/ibk6F55WPHNr5CZpsGwvlMmC4LJjLEfkXKKOmGc0AXr+WUGMOXXH44mSV4=
-X-Received: by 2002:a17:906:8618:: with SMTP id o24mr6777111ejx.189.1632865197080;
- Tue, 28 Sep 2021 14:39:57 -0700 (PDT)
+        id S242979AbhI1VmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:42:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:35412 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232358AbhI1VmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 17:42:15 -0400
+Received: from zn.tnic (p200300ec2f13b200371079131a9f19c8.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:b200:3710:7913:1a9f:19c8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 185C51EC06C1;
+        Tue, 28 Sep 2021 23:40:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632865234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3zAlBZi1O1Z7iGiOtlzR59oObKF3oTwf3vRM6tWoLcY=;
+        b=K5Ca7t9hqqMM2deF0li2lbysEHXsHTs91GSL2ZqKLhzfX9w19AiIGCNaZ3Y63sCu3hsepG
+        fIbQEa5D8HQEE2RRoDDCLkqS/Fxfaghkv3CiOoHYu4QVTSTfUfcSzUHkFkeeRHlHYg9afU
+        kuT2sPlWmWHkAbKxJ37GJ775LHgIgQc=
+Date:   Tue, 28 Sep 2021 23:40:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Will Deacon <will@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v4 0/8] Implement generic cc_platform_has() helper
+ function
+Message-ID: <YVOLzMwyXP3ZSR0F@zn.tnic>
+References: <20210928191009.32551-1-bp@alien8.de>
+ <80593893-c63b-d481-45f1-42a3a6fd762a@linux.intel.com>
+ <YVN7vPE/7jecXcJ/@zn.tnic>
+ <7319b756-55dc-c4d1-baf6-4686f0156ac4@linux.intel.com>
+ <YVOB3mFV1Kj3MXAs@zn.tnic>
+ <695a3bf6-5382-68df-3ab5-8841b777fca2@linux.intel.com>
 MIME-Version: 1.0
-References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-4-arnd@kernel.org>
-In-Reply-To: <20210928154143.2106903-4-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 28 Sep 2021 23:39:46 +0200
-Message-ID: <CACRpkdZYJogU_SN3H9oeVq=zJkRgRT1gDz3xp59gdqWXxw-B=w@mail.gmail.com>
-Subject: Re: [PATCH 03/14] ARM: remove duplicate memcpy() definition
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <695a3bf6-5382-68df-3ab5-8841b777fca2@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:42 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Tue, Sep 28, 2021 at 02:01:57PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> Yes. But, since the check is related to TDX, I just want to confirm whether
+> you are fine with naming the function as intel_*().
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Both the decompressor code and the kasan logic try to override
-> the memcpy() and memmove()  definitions, which leading to a clash
-> in a KASAN-enabled kernel with XZ decompression:
->
-> arch/arm/boot/compressed/decompress.c:50:9: error: 'memmove' macro redefined [-Werror,-Wmacro-redefined]
->  #define memmove memmove
->         ^
-> arch/arm/include/asm/string.h:59:9: note: previous definition is here
->  #define memmove(dst, src, len) __memmove(dst, src, len)
->         ^
-> arch/arm/boot/compressed/decompress.c:51:9: error: 'memcpy' macro redefined [-Werror,-Wmacro-redefined]
->  #define memcpy memcpy
->         ^
-> arch/arm/include/asm/string.h:58:9: note: previous definition is here
->  #define memcpy(dst, src, len) __memcpy(dst, src, len)
->         ^
->
-> Here we want the set of functions from the decompressor, so undefine
-> the other macros before the override.
->
-> Fixes: d6d51a96c7d6 ("ARM: 9014/2: Replace string mem* functions for KASan")
-> Fixes: a7f464f3db93 ("ARM: 7001/2: Wire up support for the XZ decompressor")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Why is this such a big of a deal?!
 
-Solves this, right?
-https://lore.kernel.org/lkml/202105091112.F5rmd4By-lkp@intel.com/
+There's amd_cc_platform_has() and intel_cc_platform_has() will be the
+corresponding Intel version.
 
-Can you put in a reported-by and Link: to this so we got it tracked?
+> Since this patch is going to have dependency on TDX code, I will include
+> this patch in TDX patch set.
 
->  #ifdef CONFIG_KERNEL_XZ
-> +#undef memmove
->  #define memmove memmove
-> +#undef memcpy
->  #define memcpy memcpy
->  #include "../../../../lib/decompress_unxz.c"
->  #endif
+Ok.
 
-That's clever, maybe drop a small comment in the code why we do this
-pretty unintuitive looking thing and how this works?
+-- 
+Regards/Gruss,
+    Boris.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+https://people.kernel.org/tglx/notes-about-netiquette
