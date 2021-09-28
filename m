@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177A341B952
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0A341B954
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242934AbhI1VfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S242940AbhI1Vfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242917AbhI1VfU (ORCPT
+        with ESMTP id S242923AbhI1Vfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:35:20 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C161AC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:33:40 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y26so1751382lfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:33:40 -0700 (PDT)
+        Tue, 28 Sep 2021 17:35:37 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B96C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:33:58 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id c6-20020a9d2786000000b005471981d559so254067otb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zAK5KWONO/Z7HLFe2Uv80i/fStPUDPzXZXg2mThOE4o=;
-        b=vXjvDduX8Iyl6bM/yznsWEvsPMgEbgx9IlDYrdNaTNvP0HMwe129N9WgEzIfyCGNKX
-         UFr0ie9SnOxPmXQfypPg3olY5I+3sDILif4FYnDDdACQ1BFkSlunw1sIn7fPN4FuPOcr
-         R+uY2KZr6KnLUHt+cXKsXwWU3dLprFgqwLzn0tWG0tf7NIOdrzoLR4WaUOD7a6uxcMJM
-         hosBJGe6FfhMWOjprNTQ06w+1vRYVpvjbU5CUkvvfZtJHWXoc0y0Rch4gdCp/9AZxLDw
-         fczhVyjJnF/54YWqtyNOtvn+kiuQt8QA830LEFeHsovnNSk8717WpxQM/r+CYNS4yQ31
-         goYQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x0j16BBvqxXG+KYJUkAYzRaWwxrrN/feAhDVtADRmrQ=;
+        b=dK2ys5OM2DozYPjmO+MJwEhKeoGMx5Eg+pWLrOzD9NWkGrdiqUXfcpubXs12crSqWm
+         MOojC5w0nDgndZ7mtlK67E0g+RsHAEXAuVZOGGoyvO6tHyFKlDpzppCA6Io8IXqHu2gX
+         STNHhmyNGmFz0aZjMQECxDrxxq4MyhnaBVVIejbhEkE4Mp21mHzcJSUxfiZmQZZsj6Yy
+         XJ6h8jpz2bf9ZP2ab8ZCs674NNC0lP3EuUwuZvlIEo1Yy2RenjPizt0ap7OUqI++w9vZ
+         SlFfGjRznEvjJWYhs9yc5cXpJYq2PhKGdlionjwS2ogUlzCyl5GVP9ykeb/JzLQWKBR/
+         DZCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zAK5KWONO/Z7HLFe2Uv80i/fStPUDPzXZXg2mThOE4o=;
-        b=JOSNURVHd6U9kvqjryp+M5856hcPjQLctC/ePqr4Fjc4MidvaJKx0XeIgBYMdQxlg+
-         vsFESFQwnOOSaN1INRxhBiPagmDuszk9AnpqiVAJWgOe7r08xC0+ShLS2XLWclbyTe4m
-         4T7YxS0Hjanp6ol6C7QiFdFgie2wrOD921s/Xyw3tE/UhLPNta8tZK3z4Vm2yMREbXH0
-         ffSP1vUEYp6sf0l4BuUy0E9yINWJ3u+Rolr6qu/ntG2FVbuT8ncohUkihr0P+lnMMd/o
-         zJrsGyE14bOgocv2D/ZDONYhEiLDSDHyJb7OuVkXRNs+rGUZmQxcVkAPUw3DwOxz/BhF
-         EM8w==
-X-Gm-Message-State: AOAM532bJiSjX2qhJPuxhR78BYqwfUd4xcxMKIGAFAIqdyjW6kzXPAHF
-        3skuPewNjJIfVdFJphdQIlr0R+UH/C2OwB8RijhxzQ==
-X-Google-Smtp-Source: ABdhPJzxOmJ4vA/QR0y62A+k8pNNEjGO4hO5qkA0b5HDkhnTghJMoX9c8iVn83p2LEJa2c8W6qfmS+k1z7OJGgZ1FFI=
-X-Received: by 2002:a05:6512:e82:: with SMTP id bi2mr7767870lfb.95.1632864819075;
- Tue, 28 Sep 2021 14:33:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x0j16BBvqxXG+KYJUkAYzRaWwxrrN/feAhDVtADRmrQ=;
+        b=3MAgb10v07ZThz6SH4iSil1nCiIz5f2c14tV28MoRhoqZizPdxUuy/YdcVbFXmy7vk
+         06eB5vu5Z/GxWg2/nSbaPD3rAIyRqq74YVUh+HitD5I3j9zpay4/z3AUroPBEGXFk6DH
+         h2boN3CO42imVBF5Z0PZzs59++flBoVmbrz5idCYZ6YM8/7MSkSqJTDNAlDcK1IvCqNx
+         xkYKKdRgWVUymov7WJhf9letg4FpNwp4PH16pIExCDEStLR/VDVmiFkIV9isoAVUYgqb
+         v/43eFiV9NIWgdj6wxXd3pdgk9O/KIdPLdFPaXQ5Wd5rTfAdJf8xoL/bGvUiF8viMeOw
+         oUkw==
+X-Gm-Message-State: AOAM532DPk0VYRvUHDCLGAwOw2969CcQ0FbwnB6rcpPOssvHfpCgpmfU
+        +uNRuJmCiewHRssFb7iYhvifVMWE38Urog==
+X-Google-Smtp-Source: ABdhPJxoVraG0TfAlcXuHZ3rh8f4xpaUbnHCReaZKkKlwqFDy5QUmzAZPi0J35hqTuGq2klHPSYHYw==
+X-Received: by 2002:a9d:7284:: with SMTP id t4mr7084188otj.285.1632864837366;
+        Tue, 28 Sep 2021 14:33:57 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s24sm61536otp.36.2021.09.28.14.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 14:33:56 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 16:33:55 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org
+Subject: Re: [PATCH] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for
+ msg with no recipient
+Message-ID: <YVOKQwGj5/jR8Q5H@builder.lan>
+References: <20210928132902.1594277-1-aardelean@deviqon.com>
 MIME-Version: 1.0
-References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-3-arnd@kernel.org>
-In-Reply-To: <20210928154143.2106903-3-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 28 Sep 2021 23:33:28 +0200
-Message-ID: <CACRpkdY2cjyzCtAwzuOE-4XoGNcxEzP+xEUWmUUs-b9wW+pjsA@mail.gmail.com>
-Subject: Re: [PATCH 02/14] ARM: patch: fix BE32 compilation
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928132902.1594277-1-aardelean@deviqon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:42 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Tue 28 Sep 08:29 CDT 2021, Alexandru Ardelean wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> On BE32 kernels, the __opcode_to_mem_thumb32() interface is intentionally
-> not defined, but it is referenced whenever runtime patching is enabled
-> for the kernel, which may be for ftrace, jump label, kprobes or kgdb:
->
-> arch/arm/kernel/patch.c: In function '__patch_text_real':
-> arch/arm/kernel/patch.c:94:32: error: implicit declaration of function '__opcode_to_mem_thumb32' [-Werror=implicit-function-declaration]
->    94 |                         insn = __opcode_to_mem_thumb32(insn);
->       |                                ^~~~~~~~~~~~~~~~~~~~~~~
->
-> Since BE32 kernels never run Thumb2 code, we never end up using the
-> result of this call, so providing an extern declaration without
-> a definition makes it build correctly.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> From: Alexandru Ardelean <ardeleanalex@gmail.com>
+> 
+> Even though it may be user-space's fault for this error (some application
+> terminated or crashed without cleaning up it's endpoint), the rpmsg
+> communication should not overflow the syslog with too many messages.
+> 
+> A dev_warn_ratelimited() seems like a good alternative in case this can
+> occur.
+> 
 
-Looks good to me!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Is there anything a user could/should do when they see this entry in
+their log?
 
-Yours,
-Linus Walleij
+It doesn't look very actionable to me, should we perhaps degrade it
+further to just a dev_dbg()?
+
+Regards,
+Bjorn
+
+> Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 8e49a3bacfc7..546f0fb66f1d 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -749,7 +749,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+>  		/* farewell, ept, we don't need you anymore */
+>  		kref_put(&ept->refcount, __ept_release);
+>  	} else
+> -		dev_warn(dev, "msg received with no recipient\n");
+> +		dev_warn_ratelimited(dev, "msg received with no recipient\n");
+>  
+>  	/* publish the real size of the buffer */
+>  	rpmsg_sg_init(&sg, msg, vrp->buf_size);
+> -- 
+> 2.31.1
+> 
