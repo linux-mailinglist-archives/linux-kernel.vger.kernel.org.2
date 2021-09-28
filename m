@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCD841A6E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECE241A6EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 07:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbhI1FKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 01:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhI1FKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 01:10:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBABF61139;
-        Tue, 28 Sep 2021 05:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632805748;
-        bh=wxiEQE4HfYuGo22M9COVJdqHjGkdxglZYjdK21SKD1c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TMuhghflXMo6tvXMBH8DwdnzXOp7D44+ZzLjkxcibSt5GcVF4aM1kJRCcbuLdJX/N
-         ceeIMajuBUjgn8YmoYm7G23JBYq0Cg7wokWIqtmAcEJVZ2KbLgTW0rkx4yBFERb1t3
-         2BBNLP0V1zZ47+4RK4IbRnWmsCgiR1mOpKqUpARA0Dxq3Ek9OnSTHgSd2ssbsLN7z2
-         Y1IAGTtf/Zq/jqeAq/6cTQc5dcNwrVIVqq1QgfGJtmLn7pK55qHxERN7LjtqJ7iWgj
-         qybdsfaNOJOCN3tgekAKFw0HC0NXh1k2vWQwe8RQJuyW78LaOjO+RPZWtgv5tpR1Ho
-         3eYJpUa3SOF+w==
-Received: by mail-ua1-f51.google.com with SMTP id 37so5866965uaq.11;
-        Mon, 27 Sep 2021 22:09:08 -0700 (PDT)
-X-Gm-Message-State: AOAM5316lSXj+ObzQjJUa1fAjrW9lsfx55610IZ4JFXUyoScQWpW2O/g
-        nl9Jt3atz//Qa6iKHkBNeiND2Bz7LofTdCObrkM=
-X-Google-Smtp-Source: ABdhPJzFDBLdxqwLp4ZawHUkPXwOGB4Pixh9LgqRTDXynfixA0A7azNL5SZmYyEGVVt43Oc5tQnW2sWCHSqP36Gz9HI=
-X-Received: by 2002:ab0:5b59:: with SMTP id v25mr3336009uae.57.1632805747980;
- Mon, 27 Sep 2021 22:09:07 -0700 (PDT)
+        id S234133AbhI1FN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 01:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233360AbhI1FN1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 01:13:27 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A690C061575;
+        Mon, 27 Sep 2021 22:11:49 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id z5so29086659ybj.2;
+        Mon, 27 Sep 2021 22:11:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wNEfN9GmMm8ACv81lqq2HdxH7rVZO3hCMzGo5Sw7PQU=;
+        b=FIhRutqSFdUoxNQZ7x0XryqsiEDitpevaKU+YiBk+prwVwyUQdEhk3h79XNY6a+Mt3
+         Rpr/R2iexJsWzWiRFwcHQcEKgyYR2mBgebSflfxpIyC/rZqbJgc46rdvzLWce54okk4p
+         esSogxXFBqtwBhvG+MHu38LfXnNCqLbVCVmdghr/n8pUBhtM/eyuDABiF+tEzWq3f6V+
+         I2D2c1Vh7tfUu+Hg4JL7o3SGTAOeeeuxy1Xop3cmQCOFMOKIE5rl86ntdANAv2GlIx4O
+         K8DaTKTH7jlioBNbQpRKBZnN6Wse53TkENraJEQ+PnF+5s8Bb9jKPbpWaWBiIHUo3DnZ
+         TCGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wNEfN9GmMm8ACv81lqq2HdxH7rVZO3hCMzGo5Sw7PQU=;
+        b=sVTdlmJCqqz80fVRdvvrJswlW3pka9/xHJXQTaMk18CLAvojPN5qmkkpiuEIGQEdDn
+         6+fhTmo4GSGMnoxh7HOktqK1a1CZ3+jTio0/ZNXU9A6BjwkDo8d3upiONU1BvTVl5JR7
+         oBYJte/9WQf2GiRu6E8QJUkUtJJfihKA508WTYzksDLq1o4LKhqmCXY7Bnwd/e16cTHU
+         zePLMr0LLsmzH1ZSSV0uTzErOpstSxcNs2wTBHoxJQEM18sfh3mqKqFZeL7kwsjdlTKz
+         BAQ5c8yHGw1+DbgiXmOgSAskgHEg83ux7zE28rMhQlqI881vsWmj3oiqcvtxJno8n7WE
+         DauA==
+X-Gm-Message-State: AOAM532ktqmb7Yx7AuEyhOZPmIAdad+3+c16gYLbmnEWkJDSH6dJA0LG
+        JxBmvU6mxP1sqKeF+UMLj3v8+YKJGztXE9/lDVE=
+X-Google-Smtp-Source: ABdhPJx8PfS0ekL23tdi9Cif7wuhcC5t+p7cVqHIL/D/je7dbzKITW8RmPJdgp4VsKaAsZfhn2t1fgxj/R39tcfkqiQ=
+X-Received: by 2002:a25:c88:: with SMTP id 130mr4196234ybm.176.1632805908028;
+ Mon, 27 Sep 2021 22:11:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 28 Sep 2021 13:08:56 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRoXWqcMTkuu=L6gkF2cL79GonN6XBj86BMMptJnmz3zw@mail.gmail.com>
-Message-ID: <CAJF2gTRoXWqcMTkuu=L6gkF2cL79GonN6XBj86BMMptJnmz3zw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
+References: <cab456a9-680d-9791-599b-de003b88a9ea@linux.alibaba.com>
+In-Reply-To: <cab456a9-680d-9791-599b-de003b88a9ea@linux.alibaba.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 27 Sep 2021 22:11:37 -0700
+Message-ID: <CAM_iQpUuST2d0LZ5i7dqz=E1uL4Wiizf5WNbdJ=vc-9MR20SyQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] net: prevent user from passing illegal stab size
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:TC subsystem" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> Most ARCHs support SPARSE_IRQ, and MAY_HAVE_SPARSE_IRQ is useless, and
-> only sh and csky select it, but the could use SPARSE_IRQ too, let's
-> kill MAY_HAVE_SPARSE_IRQ, also cleanup the kernel/irq/Kconfig a little.
-Can you elaborate the reason on why we need to kill MAY_HAVE_SPARSE_IRQ?
-What are the benefits after the patch? (As you know we couldn't drop
-"!SPARSE_IRQ".)
+Hi,
 
->
-> Kefeng Wang (3):
->   sh: Cleanup about SPARSE_IRQ
->   csky: Use SPARSE_IRQ
->   genirq: Cleanup Kconfig
->
->  arch/csky/Kconfig         |  2 +-
->  arch/sh/Kconfig           |  1 -
->  arch/sh/include/asm/irq.h |  9 -------
->  kernel/irq/Kconfig        | 50 ++++++++++++++++-----------------------
->  4 files changed, 21 insertions(+), 41 deletions(-)
->
-> --
-> 2.26.2
->
+It has been applied, no need to resend.
 
+commit b193e15ac69d56f35e1d8e2b5d16cbd47764d053
+Author:     =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.com>
+AuthorDate: Fri Sep 24 10:35:58 2021 +0800
+Commit:     David S. Miller <davem@davemloft.net>
+CommitDate: Sun Sep 26 11:09:07 2021 +0100
 
--- 
-Best Regards
- Guo Ren
+    net: prevent user from passing illegal stab size
 
-ML: https://lore.kernel.org/linux-csky/
+Thanks.
