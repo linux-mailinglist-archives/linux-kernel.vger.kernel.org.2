@@ -2,172 +2,620 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F9A41A9B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815C241A9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239302AbhI1Hd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:33:26 -0400
-Received: from mga18.intel.com ([134.134.136.126]:43771 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239083AbhI1HdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:33:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="211722978"
-X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
-   d="scan'208";a="211722978"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 00:31:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; 
-   d="scan'208";a="437102156"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga006.jf.intel.com with ESMTP; 28 Sep 2021 00:31:26 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 28 Sep 2021 00:31:26 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 28 Sep 2021 00:31:26 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 28 Sep 2021 00:31:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lb6Jdn2I43igkHvnlnW29hn/GtSCVJ4NEpvs8ivskVjgGJTZTmujPelIxPmFwJUZpR9R/KE5KgQrOoIFjtsCRwmi7xQq0Y5LgMRZ4oAXaJoamU/6tfej17sH80fMxcwR3FEG9zmzID0erS0j4TL3I/8NBj0hkU0B7ERgXHfFJnMJmP2BBDImJL39cDkHtil3iWNXKAcWlBnbmp0H858VCBLho7iWvlSc3aDtBVCkj/OwurvPWs6LKDwt1CVwZyC9J7zNcOHnr1Rc1pOnN5VMJALQZP1AGVZwcHXAe1FtZgbRmAreQrTyGMBtoLLz6uXMTzLnyTwHnjMCNf3k28hUaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=7TreN8Ba8XOsJ7+E/5FKQ4z3mjty3sDtjtkaX0ggNx8=;
- b=KBVaCuHPbzemfWVcRS/+VzNWGErVyM6m3qhKwvCO07RIvCBjhJRnPWXMetRoQiO3Bg2XJ3o/o/y01XjXJvkEF241rBHgk8iWrnxryGVhsIUe8O9y+7kMVcXq5ckCKro/kslwz/AOdnxihiFdqlgsPd4/G+cVdbnBLEt1S71soM55Idt5y9HWbxvzkSfK5NbEVeOq1DNCGVzttpG55WPdVLjna5rddh2jCmQaeRSuZDRICvBjYXNnKKoFiC2OwBBxQMFa0bGgwzyDh/FXB0SSmkiZBPqhvBo4M8Ww5O9xbaq4VVqsdKuM1r2eaHOyTzPJSFm4zeQOhmzekgq96u9VSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7TreN8Ba8XOsJ7+E/5FKQ4z3mjty3sDtjtkaX0ggNx8=;
- b=Np7zaspi8iprrh/8MmLeFSRUPQP92FyBMr8fsBssaPr6PzT3sPKTDu5OJN7lg0749c7dMiaBbDAZvI2Qt7+pqTaBGLya+sthPHgCU8OsbzttZMiVg6ug09lVAl6hoRDRoR4nqIAYKJ4vBogYqpDfuj9WuKwCwZvP19dvEmtQlc8=
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by MWHPR11MB1296.namprd11.prod.outlook.com (2603:10b6:300:1d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 28 Sep
- 2021 07:31:25 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::44d8:67f3:8883:dec7]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::44d8:67f3:8883:dec7%3]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
- 07:31:25 +0000
-From:   "Ooi, Joyce" <joyce.ooi@intel.com>
-To:     "Tham, Mun Yew" <mun.yew.tham@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH] MAINTAINERS: Update Mun Yew Tham as Altera Triple Speed
- Ethernet Driver maintainer
-Thread-Topic: [PATCH] MAINTAINERS: Update Mun Yew Tham as Altera Triple Speed
- Ethernet Driver maintainer
-Thread-Index: AQHXtDht7M2bvX29Z0isrz76daj8e6u5DNTw
-Date:   Tue, 28 Sep 2021 07:31:24 +0000
-Message-ID: <CO1PR11MB48206E39FEB84F36BC237B08F2A89@CO1PR11MB4820.namprd11.prod.outlook.com>
-References: <20210928071056.11588-1-mun.yew.tham@intel.com>
-In-Reply-To: <20210928071056.11588-1-mun.yew.tham@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 25ee8c21-a404-4248-4fd3-08d98251fa39
-x-ms-traffictypediagnostic: MWHPR11MB1296:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB12968636CA68072D21ADC36EF2A89@MWHPR11MB1296.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:513;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qsnoyNYM9o4BdmYLouX+vcEQov4Up4+2ClB74PDLgX7+M7SgaXbYYKQviPszEbFiKonbbgd6Lysxo+wiblRvNf/kgoxR0HUjD1DEFzxNckwmZCVSmoHVVTx71VIggBTwMYX+w6ucGZPPA6yVKpe0fZsAGXOzpHqmMMRtRXIP76S/iaahtHuczgMcJRinagwSTJgE4zjO0GG0BaHwlV0Cm7uvNHjF3yMXTel4TrSxN/XKoGU1qds6/QE7IYDMmfgFC/eXvFfj5ppN6FmBGJrTxoT67qvSYnJ2RnEJGgePzrE6q4aeiPjkdvfzefX8T1lkTXWXfEJVsoeHTJZWFXqGv7Ah6TV2yrvMM8bSyHkf2hi7f8fvz6cwqBKC8kMLJI+WvDK4a/IU/HLOKxrixBlOUsbq2xqh2H/45jhwmEmitXHwjO+0CEjfqVlrT9f5G40QTzfEYvmRpPksXR5V8TI0qWMMTb23H2/OvnIT8U5jjwOvgwe7TO286rB83zGYDTA9JmwSRbKLBAMm+wOSDOiEg4lPTpYgY9aairv/1/Bq53C/hmKnyGtHxgQ+RAaI4emp+5JE6eVxkKHbF86aO11nYdSrHIp+0xLbNx2bT+Pl4D7nHAgMXtUhm26xiEG/AfvDWJ6ODpbbWt/EmR3JI+kgcBIstCjrH9LmmPsWP12zphY6gCuJtuTrFOleOWglFBWwx6sGzk8oiTXSvmDoqBdoVQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(52536014)(33656002)(66556008)(2906002)(38100700002)(7696005)(86362001)(55016002)(6506007)(8936002)(64756008)(8676002)(26005)(5660300002)(53546011)(186003)(122000001)(316002)(9686003)(66446008)(15650500001)(38070700005)(76116006)(71200400001)(66946007)(54906003)(66476007)(508600001)(110136005)(83380400001)(4744005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3df0xeH8mlpg/shtGcNtbY53Ho+DzE0MItSxZky9XehxE6te/UtOzuuH1e2X?=
- =?us-ascii?Q?fz/PAa9dtrnBr/DfdQe7qk7PCzX56t016uREhnhqKnDiRQB7wj+ealdJzDjf?=
- =?us-ascii?Q?US2Dip/TA+62XU8hwEaNV+6GepUZpOWE6mLR+YaVJDIcvr4vECx9wNGm6RYe?=
- =?us-ascii?Q?ABAZVH7NUgh0pd1ltTFAvvhT5YjyxP35fRzoqhn+P7oVHmUAL1X8m2JRSd3J?=
- =?us-ascii?Q?R342UqRBxbCMkPcbWjaY/hjCEB420uAN0D+aJ5QR3friPwTU+r+m3T1sUg9S?=
- =?us-ascii?Q?UiZCvXg0TPWwn0uRw/ykV0NIYN+LbdqTcYXQbj6mnbcUdSt4/HubTfzFj2q+?=
- =?us-ascii?Q?DuYycTIZnemtm1SmCXFgVQXM27r65bh6EfLPQ35i2p19kZ9mAGOETcZw+E1w?=
- =?us-ascii?Q?GhBn1sKmEpAmYC1LydNiR97mAFeSebcmR7wd974TLM5r2o0GGjsjXjIIrNdD?=
- =?us-ascii?Q?3K/Q7XcTc8M0i6HdbwagBflfPTwwrzE0lFAUusK2aiNL65PEOt4Jxff2wrR9?=
- =?us-ascii?Q?C2+iEdIiyHlvouYT/i5rGkjTLzCLv4KXqM1E4UbxxbwnR5nRcNcidDmFSLBu?=
- =?us-ascii?Q?N+Z+d+C8Si6LVeZrBB2aiLy5gSZaQck9nr0VihSI4u3nxevlFaB2VuixTcLG?=
- =?us-ascii?Q?65h8MmagUEIo+Jdio5Tieaz8P+hbzTJkDsCFG6I/uE35wMIEZB/i8MZv1sHV?=
- =?us-ascii?Q?pf8caE9xb05tjGCM27/Q6dWaTd9UP8DFSALNPMAehjYZdaYOrFvFX1DkIvvo?=
- =?us-ascii?Q?IOoJO91Qb2dmiGKix/N/66K9awqU7FhvqkH2R96Y2Fd+Yyzq08u5APk+wdeV?=
- =?us-ascii?Q?qVV87SEaelO3ojbvcY0FAnppudwvIL2e6xisM9dlmKwM7HKklCULFyLQhxZC?=
- =?us-ascii?Q?j47P9QZVEW4ly8/4s5VPwO2j4KTaiYqK4uUfPDd4SAxDlXLLqJK8p8mI0mFm?=
- =?us-ascii?Q?obwFiAJy3bEKCX/QtbnzhrGQxSpyo/6ggnFU851d8BZ4g6UOkRABZ+ggMAZH?=
- =?us-ascii?Q?9qDtGAyFf1ok3jik7f34jzi8260LUKnh4VrU8jSpd/621yIboxGuydDzJTlf?=
- =?us-ascii?Q?TATl0QdajDrbJ5hzM7HEn7HadnPbgCPxMtxy/D5l0nOrR83+/LflTgrnhojm?=
- =?us-ascii?Q?3NhIwtICSsBda5tDbMj1j02ZsIkVQ4hqHQTI2zfrQHBXXOEXvlyu/jkf7/4o?=
- =?us-ascii?Q?3TgwPqJN47F6ijDScvq/Fe0rAa4l+H4oVr88stRsiGZEo4imtljWKBxoX160?=
- =?us-ascii?Q?nQdz0g1mw5ardsm+EVmBN6xUZK5KRYp7Vd0N2gTjItydQ/DRiKH54nC/V2dV?=
- =?us-ascii?Q?oW+7+SqmZcaXPBCathUzIWp9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S239330AbhI1Hdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239211AbhI1Hd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 03:33:29 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F52C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:31:49 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id x7so64846882edd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9ZPWC8s4j/7aOxkUrUDlOreeT5K8/UTzsEDfclppyRw=;
+        b=TCDZFyGDkvytaMS80bVABrLXRmVvc1K/I2QOplwTX/4PNAlQSd93AbbZM9doggep3o
+         LWfNqE1LOy5rj2kmIvAiG1YyCB6J8+P+WXDEqyUMVJ1Qm6w2Q2090tajzADY+iQd2Sgk
+         wHXiE0Q9kWm9Ug49w/gebJyVqELhJSMkD7uIQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=9ZPWC8s4j/7aOxkUrUDlOreeT5K8/UTzsEDfclppyRw=;
+        b=Y20l0BfSiGlvfSEGfl0a9bKRF/M82BE3PhGctCGBf7vZeElFUL4nKL5hRzaosdkoSn
+         aEwrFC/pMBDPp0zhNkrnMU5eyUCfN/+8Al2+isGJjZrUprABwbx7aj+OgWInlOnKm14H
+         D8Us0PA/zDWGdjwC4U+4w274GmBT6O7OevmHixxCtidxVUS69Vf5J1bNqCdn9jQtaUQG
+         zX75zIlK5hNDda2A+0n2OgHIQ7qiG7jnW9OWKbqHL80XZF4l2GT9guqR28N9halJ4nQC
+         pLbO5R8+EcEcxvj0MN649e8SBl7VIHciKvv8o9evEBbJ8ymEojWxVBqgk9AdlC9S4oum
+         UUPg==
+X-Gm-Message-State: AOAM531Niy1VNwPy4Uab8PK84xw32fPDtfoeQkEcTk/9NVgheAbVnu8e
+        1X4hq6esFfyjhkn/cvEoLm/X6A==
+X-Google-Smtp-Source: ABdhPJwiMY8+9I6W00KAh3mW0SRDiVZcsk4hiMel6f3vPrvxlKUHQPhSfxSps+lTZoKrShmfHOnTOw==
+X-Received: by 2002:a17:906:318b:: with SMTP id 11mr5269458ejy.493.1632814308404;
+        Tue, 28 Sep 2021 00:31:48 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id x15sm6839337edd.7.2021.09.28.00.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 00:31:47 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 09:31:45 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module
+ namespace
+Message-ID: <YVLE4b/nG5/qCOJN@phenom.ffwll.local>
+Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <YU8oVDFoeD5YYeDT@kroah.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25ee8c21-a404-4248-4fd3-08d98251fa39
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 07:31:24.9795
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: L5hcHe1WfD2jWY4s3ViRHs428I2GilRsC3JdZiXXx6fUNrqKf3ube/OfDR+p5xZvP90av5kiPs0CwBwj14p6NQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1296
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YU8oVDFoeD5YYeDT@kroah.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Tham, Mun Yew <mun.yew.tham@intel.com>
-> Sent: Tuesday, September 28, 2021 3:11 PM
-> To: Ooi, Joyce <joyce.ooi@intel.com>; David S . Miller
-> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-kernel@vger.kernel.org; netdev@vger.kernel.org; Tham, Mun Yew
-> <mun.yew.tham@intel.com>
-> Subject: [PATCH] MAINTAINERS: Update Mun Yew Tham as Altera Triple
-> Speed Ethernet Driver maintainer
->=20
-> Update Altera Triple Speed Ethernet Driver maintainer's email from
-> <joyce.ooi@intel.com> to <mun.yew.tham@intel.com>
->=20
-> Signed-off-by: Mun Yew Tham <mun.yew.tham@intel.com>
+On Sat, Sep 25, 2021 at 03:47:00PM +0200, Greg Kroah-Hartman wrote:
+> In order to better track where in the kernel the dma-buf code is used,
+> put the symbols in the namespace DMA_BUF and modify all users of the
+> symbols to properly import the namespace to not break the build at the
+> same time.
+> 
+> Now the output of modinfo shows the use of these symbols, making it
+> easier to watch for users over time:
+> 
+> $ modinfo drivers/misc/fastrpc.ko | grep import
+> import_ns:      DMA_BUF
+> 
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7f4615336fa5..4a591f1ffdf2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -831,7 +831,7 @@ F:	include/dt-bindings/reset/altr,rst-mgr-
-> a10sr.h
->  F:	include/linux/mfd/altera-a10sr.h
->=20
->  ALTERA TRIPLE SPEED ETHERNET DRIVER
-> -M:	Joyce Ooi <joyce.ooi@intel.com>
-> +M:	Mun Yew Tham <mun.yew.tham@intel.com>
->  L:	netdev@vger.kernel.org
->  S:	Maintained
->  F:	drivers/net/ethernet/altera/
+> 
+> The topic of dma-buf came up in the Maintainer's summit yesterday, and
+> one comment was to put the symbols in their own module namespace, to
+> make it easier to notice and track who was using them.  This patch does
+> so, and finds some "interesting" users of the api already in the tree.
 
-Acked-by: Joyce Ooi <joyce.ooi@intel.com>=20
+Yeah, the interesting ones is why I added the dma-buf wildcard match a
+while ago.  Since that landed I don't think anything escaped. Should we
+perhaps also add
 
-> --
-> 2.26.2
+K: MODULE_IMPORT_NS(DMA_BUF);
 
+to the dma-buf MAINATINERS entry? Entirely untested, also no idea whether
+there's not a better way to match for module namespaces. Either way:
+
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+> 
+> Only test-built on x86 allmodconfig, don't know what other arches will
+> pick up, will let 0-day run on it for a bit...
+> 
+> Comments?
+> 
+> 
+> 
+>  drivers/dma-buf/dma-buf.c                     | 34 +++++++++----------
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       |  3 ++
+>  drivers/gpu/drm/drm_gem_framebuffer_helper.c  |  3 ++
+>  drivers/gpu/drm/drm_prime.c                   |  3 ++
+>  drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c   |  3 ++
+>  drivers/gpu/drm/exynos/exynos_drm_gem.c       |  3 ++
+>  drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c    |  3 ++
+>  drivers/gpu/drm/tegra/gem.c                   |  3 ++
+>  drivers/gpu/drm/vmwgfx/ttm_object.c           |  3 ++
+>  drivers/infiniband/core/umem_dmabuf.c         |  3 ++
+>  .../media/common/videobuf2/videobuf2-core.c   |  1 +
+>  .../common/videobuf2/videobuf2-dma-contig.c   |  1 +
+>  .../media/common/videobuf2/videobuf2-dma-sg.c |  1 +
+>  .../common/videobuf2/videobuf2-vmalloc.c      |  1 +
+>  drivers/misc/fastrpc.c                        |  1 +
+>  .../staging/media/tegra-vde/dmabuf-cache.c    |  3 ++
+>  drivers/tee/tee_shm.c                         |  3 ++
+>  drivers/virtio/virtio_dma_buf.c               |  1 +
+>  drivers/xen/gntdev-dmabuf.c                   |  3 ++
+>  samples/vfio-mdev/mbochs.c                    |  1 +
+>  20 files changed, 60 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 63d32261b63f..6c2b5ea828a6 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -610,7 +610,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+>  	module_put(exp_info->owner);
+>  	return ERR_PTR(ret);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_export);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_export, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_fd - returns a file descriptor for the given struct dma_buf
+> @@ -634,7 +634,7 @@ int dma_buf_fd(struct dma_buf *dmabuf, int flags)
+>  
+>  	return fd;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_fd);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_fd, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_get - returns the struct dma_buf related to an fd
+> @@ -660,7 +660,7 @@ struct dma_buf *dma_buf_get(int fd)
+>  
+>  	return file->private_data;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_get);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_get, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_put - decreases refcount of the buffer
+> @@ -679,7 +679,7 @@ void dma_buf_put(struct dma_buf *dmabuf)
+>  
+>  	fput(dmabuf->file);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_put);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_put, DMA_BUF);
+>  
+>  static void mangle_sg_table(struct sg_table *sg_table)
+>  {
+> @@ -810,7 +810,7 @@ dma_buf_dynamic_attach(struct dma_buf *dmabuf, struct device *dev,
+>  	dma_buf_detach(dmabuf, attach);
+>  	return ERR_PTR(ret);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_dynamic_attach);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_dynamic_attach, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_attach - Wrapper for dma_buf_dynamic_attach
+> @@ -825,7 +825,7 @@ struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
+>  {
+>  	return dma_buf_dynamic_attach(dmabuf, dev, NULL, NULL);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_attach);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_attach, DMA_BUF);
+>  
+>  static void __unmap_dma_buf(struct dma_buf_attachment *attach,
+>  			    struct sg_table *sg_table,
+> @@ -871,7 +871,7 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attach)
+>  
+>  	kfree(attach);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_detach);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_detach, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_pin - Lock down the DMA-buf
+> @@ -901,7 +901,7 @@ int dma_buf_pin(struct dma_buf_attachment *attach)
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_pin);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_pin, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_unpin - Unpin a DMA-buf
+> @@ -922,7 +922,7 @@ void dma_buf_unpin(struct dma_buf_attachment *attach)
+>  	if (dmabuf->ops->unpin)
+>  		dmabuf->ops->unpin(attach);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_unpin);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_unpin, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_map_attachment - Returns the scatterlist table of the attachment;
+> @@ -1012,7 +1012,7 @@ struct sg_table *dma_buf_map_attachment(struct dma_buf_attachment *attach,
+>  #endif /* CONFIG_DMA_API_DEBUG */
+>  	return sg_table;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_map_attachment);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_map_attachment, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_unmap_attachment - unmaps and decreases usecount of the buffer;might
+> @@ -1048,7 +1048,7 @@ void dma_buf_unmap_attachment(struct dma_buf_attachment *attach,
+>  	    !IS_ENABLED(CONFIG_DMABUF_MOVE_NOTIFY))
+>  		dma_buf_unpin(attach);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_unmap_attachment);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_unmap_attachment, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_move_notify - notify attachments that DMA-buf is moving
+> @@ -1068,7 +1068,7 @@ void dma_buf_move_notify(struct dma_buf *dmabuf)
+>  		if (attach->importer_ops)
+>  			attach->importer_ops->move_notify(attach);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_move_notify);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_move_notify, DMA_BUF);
+>  
+>  /**
+>   * DOC: cpu access
+> @@ -1212,7 +1212,7 @@ int dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_begin_cpu_access);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_begin_cpu_access, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_end_cpu_access - Must be called after accessing a dma_buf from the
+> @@ -1240,7 +1240,7 @@ int dma_buf_end_cpu_access(struct dma_buf *dmabuf,
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_end_cpu_access);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_end_cpu_access, DMA_BUF);
+>  
+>  
+>  /**
+> @@ -1282,7 +1282,7 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
+>  
+>  	return dmabuf->ops->mmap(dmabuf, vma);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_mmap);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_mmap, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_vmap - Create virtual mapping for the buffer object into kernel
+> @@ -1336,7 +1336,7 @@ int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+>  	mutex_unlock(&dmabuf->lock);
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_vmap);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_vmap, DMA_BUF);
+>  
+>  /**
+>   * dma_buf_vunmap - Unmap a vmap obtained by dma_buf_vmap.
+> @@ -1360,7 +1360,7 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+>  	}
+>  	mutex_unlock(&dmabuf->lock);
+>  }
+> -EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+> +EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap, DMA_BUF);
+>  
+>  #ifdef CONFIG_DEBUG_FS
+>  static int dma_buf_debug_show(struct seq_file *s, void *unused)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> index 38dade421d46..38e144504649 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@ -41,6 +41,7 @@
+>  #include <linux/swiotlb.h>
+>  #include <linux/dma-buf.h>
+>  #include <linux/sizes.h>
+> +#include <linux/module.h>
+>  
+>  #include <drm/ttm/ttm_bo_api.h>
+>  #include <drm/ttm/ttm_bo_driver.h>
+> @@ -59,6 +60,8 @@
+>  #include "amdgpu_res_cursor.h"
+>  #include "bif/bif_4_1_d.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  #define AMDGPU_TTM_VRAM_MAX_DW_READ	(size_t)128
+>  
+>  static int amdgpu_ttm_backend_bind(struct ttm_device *bdev,
+> diff --git a/drivers/gpu/drm/drm_gem_framebuffer_helper.c b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
+> index 3c75d79dbb65..746fd8c73845 100644
+> --- a/drivers/gpu/drm/drm_gem_framebuffer_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_framebuffer_helper.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/slab.h>
+> +#include <linux/module.h>
+>  
+>  #include <drm/drm_damage_helper.h>
+>  #include <drm/drm_fb_helper.h>
+> @@ -17,6 +18,8 @@
+>  
+>  #include "drm_internal.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  #define AFBC_HEADER_SIZE		16
+>  #define AFBC_TH_LAYOUT_ALIGNMENT	8
+>  #define AFBC_HDR_ALIGN			64
+> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+> index deb23dbec8b5..d8ba95744410 100644
+> --- a/drivers/gpu/drm/drm_prime.c
+> +++ b/drivers/gpu/drm/drm_prime.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/export.h>
+>  #include <linux/dma-buf.h>
+>  #include <linux/rbtree.h>
+> +#include <linux/module.h>
+>  
+>  #include <drm/drm.h>
+>  #include <drm/drm_drv.h>
+> @@ -39,6 +40,8 @@
+>  
+>  #include "drm_internal.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  /**
+>   * DOC: overview and lifetime rules
+>   *
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+> index 6d8bed9c739d..6788ea8490d1 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+> @@ -5,10 +5,13 @@
+>  
+>  #include <drm/drm_prime.h>
+>  #include <linux/dma-buf.h>
+> +#include <linux/module.h>
+>  
+>  #include "etnaviv_drv.h"
+>  #include "etnaviv_gem.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  static struct lock_class_key etnaviv_prime_lock_class;
+>  
+>  struct sg_table *etnaviv_gem_prime_get_sg_table(struct drm_gem_object *obj)
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_gem.c b/drivers/gpu/drm/exynos/exynos_drm_gem.c
+> index 4396224227d1..0a0c042a3155 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_gem.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_gem.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/dma-buf.h>
+>  #include <linux/pfn_t.h>
+>  #include <linux/shmem_fs.h>
+> +#include <linux/module.h>
+>  
+>  #include <drm/drm_prime.h>
+>  #include <drm/drm_vma_manager.h>
+> @@ -17,6 +18,8 @@
+>  #include "exynos_drm_drv.h"
+>  #include "exynos_drm_gem.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  static int exynos_drm_alloc_buf(struct exynos_drm_gem *exynos_gem, bool kvmap)
+>  {
+>  	struct drm_device *dev = exynos_gem->base.dev;
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> index afa34111de02..abb854281347 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> @@ -7,11 +7,14 @@
+>  #include <linux/dma-buf.h>
+>  #include <linux/highmem.h>
+>  #include <linux/dma-resv.h>
+> +#include <linux/module.h>
+>  
+>  #include "i915_drv.h"
+>  #include "i915_gem_object.h"
+>  #include "i915_scatterlist.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  I915_SELFTEST_DECLARE(static bool force_different_devices;)
+>  
+>  static struct drm_i915_gem_object *dma_buf_to_obj(struct dma_buf *buf)
+> diff --git a/drivers/gpu/drm/tegra/gem.c b/drivers/gpu/drm/tegra/gem.c
+> index 6ec598f5d5b3..d38fd7e12b57 100644
+> --- a/drivers/gpu/drm/tegra/gem.c
+> +++ b/drivers/gpu/drm/tegra/gem.c
+> @@ -12,6 +12,7 @@
+>  
+>  #include <linux/dma-buf.h>
+>  #include <linux/iommu.h>
+> +#include <linux/module.h>
+>  
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_prime.h>
+> @@ -20,6 +21,8 @@
+>  #include "drm.h"
+>  #include "gem.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  static void tegra_bo_put(struct host1x_bo *bo)
+>  {
+>  	struct tegra_bo *obj = host1x_to_tegra_bo(bo);
+> diff --git a/drivers/gpu/drm/vmwgfx/ttm_object.c b/drivers/gpu/drm/vmwgfx/ttm_object.c
+> index 04789b2bb2a2..899945f54dc7 100644
+> --- a/drivers/gpu/drm/vmwgfx/ttm_object.c
+> +++ b/drivers/gpu/drm/vmwgfx/ttm_object.c
+> @@ -48,8 +48,11 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/slab.h>
+>  #include <linux/atomic.h>
+> +#include <linux/module.h>
+>  #include "ttm_object.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  /**
+>   * struct ttm_object_file
+>   *
+> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+> index e824baf4640d..2d14929543af 100644
+> --- a/drivers/infiniband/core/umem_dmabuf.c
+> +++ b/drivers/infiniband/core/umem_dmabuf.c
+> @@ -6,9 +6,12 @@
+>  #include <linux/dma-buf.h>
+>  #include <linux/dma-resv.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/module.h>
+>  
+>  #include "uverbs.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+>  {
+>  	struct sg_table *sgt;
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 508ac295eb06..773c68dcd158 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -2978,3 +2978,4 @@ EXPORT_SYMBOL_GPL(vb2_thread_stop);
+>  MODULE_DESCRIPTION("Media buffer core framework");
+>  MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>, Marek Szyprowski");
+>  MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS(DMA_BUF);
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> index a7f61ba85440..9a1a9baca2e4 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> @@ -755,3 +755,4 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_set_max_seg_size);
+>  MODULE_DESCRIPTION("DMA-contig memory handling routines for videobuf2");
+>  MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
+>  MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS(DMA_BUF);
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> index c5b06a509566..db90ebb8950f 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> @@ -666,3 +666,4 @@ EXPORT_SYMBOL_GPL(vb2_dma_sg_memops);
+>  MODULE_DESCRIPTION("dma scatter/gather memory handling routines for videobuf2");
+>  MODULE_AUTHOR("Andrzej Pietrasiewicz");
+>  MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS(DMA_BUF);
+> diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+> index 83f95258ec8c..fa983897d0e9 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+> @@ -444,3 +444,4 @@ EXPORT_SYMBOL_GPL(vb2_vmalloc_memops);
+>  MODULE_DESCRIPTION("vmalloc memory handling routines for videobuf2");
+>  MODULE_AUTHOR("Pawel Osciak <pawel@osciak.com>");
+>  MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS(DMA_BUF);
+> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> index beda610e6b30..fa5c067f1c1e 100644
+> --- a/drivers/misc/fastrpc.c
+> +++ b/drivers/misc/fastrpc.c
+> @@ -1763,3 +1763,4 @@ static void fastrpc_exit(void)
+>  module_exit(fastrpc_exit);
+>  
+>  MODULE_LICENSE("GPL v2");
+> +MODULE_IMPORT_NS(DMA_BUF);
+> diff --git a/drivers/staging/media/tegra-vde/dmabuf-cache.c b/drivers/staging/media/tegra-vde/dmabuf-cache.c
+> index a93b317885bf..a98d03419b8f 100644
+> --- a/drivers/staging/media/tegra-vde/dmabuf-cache.c
+> +++ b/drivers/staging/media/tegra-vde/dmabuf-cache.c
+> @@ -12,9 +12,12 @@
+>  #include <linux/sched.h>
+>  #include <linux/slab.h>
+>  #include <linux/workqueue.h>
+> +#include <linux/module.h>
+>  
+>  #include "vde.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  struct tegra_vde_cache_entry {
+>  	enum dma_data_direction dma_dir;
+>  	struct dma_buf_attachment *a;
+> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> index 8a9384a64f3e..8a8deb95e918 100644
+> --- a/drivers/tee/tee_shm.c
+> +++ b/drivers/tee/tee_shm.c
+> @@ -10,8 +10,11 @@
+>  #include <linux/slab.h>
+>  #include <linux/tee_drv.h>
+>  #include <linux/uio.h>
+> +#include <linux/module.h>
+>  #include "tee_private.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  static void release_registered_pages(struct tee_shm *shm)
+>  {
+>  	if (shm->pages) {
+> diff --git a/drivers/virtio/virtio_dma_buf.c b/drivers/virtio/virtio_dma_buf.c
+> index 5127a2f0c986..2521a75009c3 100644
+> --- a/drivers/virtio/virtio_dma_buf.c
+> +++ b/drivers/virtio/virtio_dma_buf.c
+> @@ -86,3 +86,4 @@ int virtio_dma_buf_get_uuid(struct dma_buf *dma_buf,
+>  EXPORT_SYMBOL(virtio_dma_buf_get_uuid);
+>  
+>  MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS(DMA_BUF);
+> diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
+> index 4c13cbc99896..12e380db7f55 100644
+> --- a/drivers/xen/gntdev-dmabuf.c
+> +++ b/drivers/xen/gntdev-dmabuf.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/module.h>
+>  
+>  #include <xen/xen.h>
+>  #include <xen/grant_table.h>
+> @@ -21,6 +22,8 @@
+>  #include "gntdev-common.h"
+>  #include "gntdev-dmabuf.h"
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+> +
+>  #ifndef GRANT_INVALID_REF
+>  /*
+>   * Note on usage of grant reference 0 as invalid grant reference:
+> diff --git a/samples/vfio-mdev/mbochs.c b/samples/vfio-mdev/mbochs.c
+> index c313ab4d1f4e..a83be6cd162f 100644
+> --- a/samples/vfio-mdev/mbochs.c
+> +++ b/samples/vfio-mdev/mbochs.c
+> @@ -1493,5 +1493,6 @@ static void __exit mbochs_dev_exit(void)
+>  	mbochs_class = NULL;
+>  }
+>  
+> +MODULE_IMPORT_NS(DMA_BUF);
+>  module_init(mbochs_dev_init)
+>  module_exit(mbochs_dev_exit)
+> -- 
+> 2.33.0
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
