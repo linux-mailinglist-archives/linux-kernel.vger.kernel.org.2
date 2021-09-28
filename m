@@ -2,115 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A2741AABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EB741AAD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239692AbhI1IlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:41:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239637AbhI1Ik5 (ORCPT
+        id S239717AbhI1IqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239722AbhI1IqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:40:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632818357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x73TaEwSMGsf6IJOBqJhMbAKQfUjkLTOhEKFUx2syuQ=;
-        b=FUn7TzMwAhG0tzci8BySJV/YMdTWjhDNIjMRI6g8pkVMFxqXnJaD/72rQqtXNRo3EFBN03
-        NQcGuwZR4tfkUzVvA3sce924GFUvnMGscvFDy585SVEXp6mu4SC8OKHiYysD6ndsyPLq3n
-        Y9FHnDKnLdv2Z2sJi0N8D/7RQ9tSVbo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-hkCjyarUMkiVPhb0GwvSSQ-1; Tue, 28 Sep 2021 04:39:15 -0400
-X-MC-Unique: hkCjyarUMkiVPhb0GwvSSQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28E9D802947;
-        Tue, 28 Sep 2021 08:39:14 +0000 (UTC)
-Received: from xps-13.redhat.com (unknown [10.39.195.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B27815D9D5;
-        Tue, 28 Sep 2021 08:39:12 +0000 (UTC)
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        =?UTF-8?q?Michal=20Mal=C3=BD?= <madcatxster@devoid-pointer.net>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 2/2] HID: lg4ff: do not return a value for deinit
-Date:   Tue, 28 Sep 2021 10:39:06 +0200
-Message-Id: <20210928083906.43983-3-benjamin.tissoires@redhat.com>
-In-Reply-To: <20210928083906.43983-1-benjamin.tissoires@redhat.com>
-References: <20210928083906.43983-1-benjamin.tissoires@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Tue, 28 Sep 2021 04:46:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D6BC061740
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=igqyip6PgtFTWLu5RC+rY33V0lnfiZxYZTJqWS0dFL8=; b=T9BZ/UUad7E8CuBBmM+hdimKrG
+        usc7XkaVwzjAizfnA3fa8CNdEJPnMZ42dkAf0oDEG1S7OJbkY83sHJmmQLWD9m02kYgg/9/CHV7Bl
+        kRiRnxkGFJwIqBsFbk+kBRDhtRp4VsS2S7Z8EQfNn4Q4aHMBUkzBeqa3UsAIp/GxMp4yJj/0qOSl8
+        CE9MXysk8yNTGND5HD5tr46u3phTyqduKWB21+DX+XCAI3FYiQzKKAPSA23F9dE6WRqLmFSIqg5re
+        famOVU0D1u/Y/LCSxfdlN74FN8LBc4uucnST4szx45bzqlVFdgBfgjynZOFKd65PK/CpPQnzGsypW
+        IqcaRG/Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mV8hW-00AgFA-I8; Tue, 28 Sep 2021 08:43:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39CE7300047;
+        Tue, 28 Sep 2021 10:42:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id C335C2C2FF131; Tue, 28 Sep 2021 10:42:55 +0200 (CEST)
+Message-ID: <20210928084020.819856223@infradead.org>
+User-Agent: quilt/0.66
+Date:   Tue, 28 Sep 2021 10:40:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     paulmck@kernel.org, tglx@linutronix.de, sfr@canb.auug.org.au
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
+Subject: [PATCH 0/3] rcu,sched: noinstr fixes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When removing a device, we can not do much if there is an error while
-removing it. Use the common pattern of returning void there so we are
-not tempted to check on the return value.
-And honestly, we were not looking at it, so why bother?
+A few noinstr fixes.. I'll stick the sched one in sched/urgent, Paul could you pick up the other two?
 
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
----
- drivers/hid/hid-lg4ff.c | 5 ++---
- drivers/hid/hid-lg4ff.h | 4 ++--
- 2 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/hid/hid-lg4ff.c b/drivers/hid/hid-lg4ff.c
-index 5e6a0cef2a06..ad75c86e0bf5 100644
---- a/drivers/hid/hid-lg4ff.c
-+++ b/drivers/hid/hid-lg4ff.c
-@@ -1445,7 +1445,7 @@ int lg4ff_init(struct hid_device *hid)
- 	return error;
- }
- 
--int lg4ff_deinit(struct hid_device *hid)
-+void lg4ff_deinit(struct hid_device *hid)
- {
- 	struct lg4ff_device_entry *entry;
- 	struct lg_drv_data *drv_data;
-@@ -1453,7 +1453,7 @@ int lg4ff_deinit(struct hid_device *hid)
- 	drv_data = hid_get_drvdata(hid);
- 	if (!drv_data) {
- 		hid_err(hid, "Error while deinitializing device, no private driver data.\n");
--		return -1;
-+		return;
- 	}
- 	entry = drv_data->device_props;
- 	if (!entry)
-@@ -1489,5 +1489,4 @@ int lg4ff_deinit(struct hid_device *hid)
- 	kfree(entry);
- out:
- 	dbg_hid("Device successfully unregistered\n");
--	return 0;
- }
-diff --git a/drivers/hid/hid-lg4ff.h b/drivers/hid/hid-lg4ff.h
-index 25bc88cd877e..4440e4ea2267 100644
---- a/drivers/hid/hid-lg4ff.h
-+++ b/drivers/hid/hid-lg4ff.h
-@@ -10,14 +10,14 @@ int lg4ff_adjust_input_event(struct hid_device *hid, struct hid_field *field,
- int lg4ff_raw_event(struct hid_device *hdev, struct hid_report *report,
- 		u8 *rd, int size, struct lg_drv_data *drv_data);
- int lg4ff_init(struct hid_device *hdev);
--int lg4ff_deinit(struct hid_device *hdev);
-+void lg4ff_deinit(struct hid_device *hdev);
- #else
- static inline int lg4ff_adjust_input_event(struct hid_device *hid, struct hid_field *field,
- 					   struct hid_usage *usage, s32 value, struct lg_drv_data *drv_data) { return 0; }
- static inline int lg4ff_raw_event(struct hid_device *hdev, struct hid_report *report,
- 		u8 *rd, int size, struct lg_drv_data *drv_data) { return 0; }
- static inline int lg4ff_init(struct hid_device *hdev) { return 0; }
--static inline int lg4ff_deinit(struct hid_device *hdev) { return 0; }
-+static inline void lg4ff_deinit(struct hid_device *hdev) { return; }
- #endif
- 
- #endif
--- 
-2.26.3
 
