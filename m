@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05E441B6C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E954841B6C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242325AbhI1S7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:59:07 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:41493 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhI1S7G (ORCPT
+        id S242344AbhI1S7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:59:09 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39844 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242324AbhI1S7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:59:06 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 8CF6F293;
-        Tue, 28 Sep 2021 11:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1632855446;
-        bh=IFT3ZrpRZd+Ibr02i8FrlOCSYn/cxKG+rD5MpR8Vock=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWL+C+dHOgnPcq0cZchQ12PhW3t9SddpmR2MCjXQLHiGjRkmHFwkj9b5Fxcx308dN
-         WkzsqUDmdqAMqFjnryQZ3xWDMM603fAOMHZzB8wQL+2+A5H0NRuApMACU2H3jptchH
-         j/SDraM5EGdylpEkqfLBwv2INKURWptZ+I6RjTao=
-Date:   Tue, 28 Sep 2021 11:57:03 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Joel Stanley <joel@jms.id.au>, Eddie James <eajames@linux.ibm.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Subject: Re: [PATCH v3] media: aspeed-video: ignore interrupts that aren't
- enabled
-Message-ID: <YVNlfwLUDNxtp0fs@hatter.bewilderbeest.net>
-References: <20210617220229.7352-1-zev@bewilderbeest.net>
- <46edf81d60a38747f7d2511f840253a1c6867652.camel@linux.ibm.com>
- <HK0PR06MB338081E134AA6F43ECBCBA4DF2D29@HK0PR06MB3380.apcprd06.prod.outlook.com>
- <CACPK8XfE6zB9BWYq7e8WbXkPFp2Cicwv2x2dc8h6jNaR2qZV0g@mail.gmail.com>
+        Tue, 28 Sep 2021 14:59:08 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 87BB11C0B87; Tue, 28 Sep 2021 20:57:27 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 20:57:27 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Aditya Srivastava <yashsri421@gmail.com>
+Subject: Re: [PATCH v2] HSI: cmt_speech: unmark comments as kernel-doc
+Message-ID: <20210928185727.GA10433@duo.ucw.cz>
+References: <20210928183536.30645-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
 Content-Disposition: inline
-In-Reply-To: <CACPK8XfE6zB9BWYq7e8WbXkPFp2Cicwv2x2dc8h6jNaR2qZV0g@mail.gmail.com>
+In-Reply-To: <20210928183536.30645-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 04:47:14AM PDT, Joel Stanley wrote:
->Hi Mauro,
->
->On Mon, 6 Sept 2021 at 10:10, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
->> > Subject: Re: [PATCH v3] media: aspeed-video: ignore interrupts that aren't
->> > enabled
->> >
->> > On Thu, 2021-06-17 at 17:02 -0500, Zev Weiss wrote:
->> > > As partially addressed in commit 65d270acb2d6 ("media: aspeed: clear
->> > > garbage interrupts"), the ASpeed video engine sometimes asserts
->> > > interrupts that the driver hasn't enabled.  In addition to the
->> > > CAPTURE_COMPLETE and FRAME_COMPLETE interrupts dealt with in that
->> > > patch, COMP_READY has also been observed.  Instead of playing
->> > > whack-a-mole with each one individually, we can instead just blanket
->> > > ignore everything we haven't explicitly enabled.
->> >
->> > Suspect this will fix an intermittent problem on AST2500 with screensaver.
->> > Change looks good, thanks!
->> >
->> > Reviewed-by: Eddie James <eajames@linux.ibm.com>
->> >
->> Reviewed-by: Ryan Chen <ryan_chen@aspeedtech.com>
->> > >
->> > > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->
->I notice this wasn't merged in the pull request you sent for v5.15.
->Would you be able to ensure it makes it in the next pull request you
->send?
->
->It can have some fixes tags too:
->
->Fixes: 65d270acb2d6 ("media: aspeed: clear garbage interrupts")
->Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
->Acked-by: Joel Stanley <joel@jms.id.au>
->
->Cheers,
->
->Joel
->
 
-Also not in the recent merge of the media/v5.15-2 tag it looks like -- ping?
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
-Thanks,
-Zev
+> Fix build warnings from the kernel test robot:
+>=20
+> drivers/hsi/clients/cmt_speech.c:831: warning: This comment starts with '=
+/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-=
+doc.rst
+>     * Block until pending data transfers have completed.
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Aditya Srivastava <yashsri421@gmail.com>
+> Acked-by: Pavel Machek <pavel@ucw.cz>
 
+If noone applies it, you may want to send it to akpm, he's  often
+helpful in pushing similar patches.
+
+Best regards,
+							Pavel
+						=09
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYVNllwAKCRAw5/Bqldv6
+8s0eAJ9qS7PYdwLpdbMLswIYnkLecrFPpQCgteSzpK8HQwDB0Rgz17Q0NlPE+Wk=
+=XOow
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
