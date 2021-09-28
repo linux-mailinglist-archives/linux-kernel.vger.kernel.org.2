@@ -2,167 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200C341AA78
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1697741AA7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239477AbhI1IN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:13:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33958 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239043AbhI1IN0 (ORCPT
+        id S239357AbhI1IRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231342AbhI1IRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:13:26 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632816706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MuA+W1hIA1rAMXQIqohvtqkn6nT1tdEByWW7so2/mJE=;
-        b=o4AnzY92TDieIgsy0BxYM5ZrB7EKL02pFUFM6LcB4FFSjyx/IoknxzoYCwx61/g49g1LW9
-        K6ODGpL2PzQRXYgEhGdPzWWs/0oZKiBxLNrfe7Vf75kdG+hFBCC9oIUPDD4Z3KmMuxxn2z
-        Eg4wnTUmdqDlGRQ9761Xg/RubHl4bDgobqZFuEimIakTgiYXKDfnsZ7HDISSL4gSa4q4ni
-        WhxbEGAaexob8STeYYdPQ1VURR2ErZWrmiBRLAY6VVshAZAENbVuJrWbK11ilMwSQ2Y/uF
-        5qZWAPY1vXTkeOvt8isNigKPsNXfir2Zi9EpdZDuxDjOHZAqQht0UjX0xxs+bA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632816706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MuA+W1hIA1rAMXQIqohvtqkn6nT1tdEByWW7so2/mJE=;
-        b=l8vTUOns3NZZW+RgVuFEifsZxru0n8deKjPocVe7Z5Jbqqa5HK5OCRpnvmZ2yuboQGYauN
-        090YSxHuWDSQ8PAw==
-To:     Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 05/13] x86/irq: Reserve a user IPI notification vector
-In-Reply-To: <447377f0-21e5-067d-55ac-cb2eeca7ceae@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-6-sohil.mehta@intel.com> <87fstugabg.ffs@tglx>
- <878rzkeq9f.ffs@tglx> <87bl4fcxz8.ffs@tglx>
- <447377f0-21e5-067d-55ac-cb2eeca7ceae@intel.com>
-Date:   Tue, 28 Sep 2021 10:11:45 +0200
-Message-ID: <878rzhazlq.ffs@tglx>
+        Tue, 28 Sep 2021 04:17:07 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212B1C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:15:28 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id b20so89499214lfv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=8PbBAApAzj8vGheaDKyBd/wLCvod6F+nHg/W/gSrI7w=;
+        b=hAs0lZwAeOL7X0F5HS61VyP3YvuyXU5y7IzBe5qbRefwc4e1PO5nWCG2iJbdJDeIPu
+         3MJY2WKKAa6Mm9XcP4M1GogbTkE3MwDQmxsX+nIUD/Jx93fgbkesJ4QS2X4ihArwBfUh
+         Lu/TvJqEWBh/D5aj1wepAaWcK5WlkOPHAuDFJ/jVtZCgOYK8zmavhpixnAxhrOZd+xeV
+         exA3HKbeYkt5V2e/F2K1sBcXgKFFAYxOeKpttCRnzUh74TnNMzoJlSR0WAq62vUXDqVn
+         HeSpIrfkOTLurHxQhrlDrdvk1XivtyBx9HlaNPmDanrYSxNyVr0X6hjLZSqxS1MrdrJQ
+         snvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=8PbBAApAzj8vGheaDKyBd/wLCvod6F+nHg/W/gSrI7w=;
+        b=Bz57GnmCnip/VTzz2B5IC54RwzhDuW9YSAfp/EuhBug2rUWZQ+LkkKBqiFB6fuqBNW
+         SNgcFQ2BGQm6+s4DLo8heUhCjqHI0nBaJoDtTy4JzSaWmXQsBByUz8yO7oYzv+5oeoeO
+         eEmxvhXeimp0wPInVHSBGrDbYVhk/mk+TplOSwp8utTW3fIZ5Jh0JjcALL437e3lXeXS
+         QhxJ/EI5383kC25CrUW5rtylJ99PUyPU23xERC+PrsTISdnaLMqN5BqY5RHKUjK1IsRs
+         3xPU7TfBgSe0UVtDhxMjBwE9ULu8BfeqSMXIA3T5qBQaffsok9bpk67OKlB7W2HUXNVS
+         bSNA==
+X-Gm-Message-State: AOAM530KvNGKv4rlvg9IyjDq/HkDBIj2kVEyTyBw7+V90qr3VFhnlv7P
+        5bNXnOFNaZ9eMDNsGWFF1BJo/W+7dAU=
+X-Google-Smtp-Source: ABdhPJyx/BqQ3jfaTxiN1emcbrEocsPmPiZGJZThtGzccBPq4LGJoQ0WzgRKOFKDy3szcpUd0PKiAg==
+X-Received: by 2002:a2e:7d19:: with SMTP id y25mr4380985ljc.206.1632816926380;
+        Tue, 28 Sep 2021 01:15:26 -0700 (PDT)
+Received: from [172.28.2.233] ([46.61.204.60])
+        by smtp.gmail.com with ESMTPSA id e15sm1849418lfs.107.2021.09.28.01.15.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 01:15:26 -0700 (PDT)
+Message-ID: <cfec2c6f-34a9-d95e-5f07-c69e74b06450@gmail.com>
+Date:   Tue, 28 Sep 2021 11:15:24 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [syzbot] memory leak in __mdiobus_register
+Content-Language: en-US
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot <syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, rafael@kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <35d0ddc1-41cd-16fb-41ea-5529d19c04d2@gmail.com>
+ <0000000000005252e105ccee8e1b@google.com>
+ <CAD-N9QUJWifqhNt09xDcu=w0K0o+wYUxpZyqkTs4q5eMp_kVgw@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAD-N9QUJWifqhNt09xDcu=w0K0o+wYUxpZyqkTs4q5eMp_kVgw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sohil,
-
-On Mon, Sep 27 2021 at 12:07, Sohil Mehta wrote:
-> On 9/26/2021 5:39 AM, Thomas Gleixner wrote:
->
-> The User-interrupt notification processing moves all the pending 
-> interrupts from UPID.PIR to the UIRR.
-
-Indeed that makes sense. Should have thought about that myself.
-
->> Also the restore portion on the way back to user space has to be coupled
->> more tightly:
+On 9/28/21 10:42, Dongliang Mu wrote:
+> On Mon, Sep 27, 2021 at 7:44 AM syzbot
+> <syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com> wrote:
 >>
->> arch_exit_to_user_mode_prepare()
->> {
->>          ...
->>          if (unlikely(ti_work & _TIF_UPID))
->>          	uintr_restore_upid(ti_work & _TIF_NEED_FPU_LOAD);
->>          if (unlikely(ti_work & _TIF_NEED_FPU_LOAD))
->>          	switch_fpu_return();
->> }
->
-> I am assuming _TIF_UPID would be set everytime SN is set and XSTATE is 
-> saved.
-
-Yes.
-
->> upid_set_ndst(upid)
->> {
->> 	apicid = __this_cpu_read(x86_cpu_to_apicid);
+>> Hello,
 >>
->>          if (x2apic_enabled())
->>              upid->ndst.x2apic = apicid;
->>          else
->>              upid->ndst.apic = apicid;
->> }
+>> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 >>
->> uintr_restore_upid(bool xrstors_pending)
->> {
->>          clear_thread_flag(TIF_UPID);
->>          
->> 	// Update destination
->>          upid_set_ndst(upid);
+>> Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
 >>
->>          // Do we need something stronger here?
->>          barrier();
+>> Tested on:
 >>
->>          clear_bit(SN, upid->status);
+>> commit:         5816b3e6 Linux 5.15-rc3
+>> git tree:       upstream
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=41799858eb55f380
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=398e7dc692ddbbb4cfec
+>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>> patch:          https://syzkaller.appspot.com/x/patch.diff?x=1147b840b00000
 >>
->>          // Any SENDUIPI after this point sends to this CPU
->>             
->>          // Any bit which was set in upid->pir after SN was set
->>          // and/or UINV was cleared by XSAVES up to the point
->>          // where SN was cleared above is not reflected in UIRR.
->>
->> 	// As this runs with interrupts disabled the current state
->>          // of upid->pir can be read and used for restore. A SENDUIPI
->>          // which sets a bit in upid->pir after that read will send
->>          // the notification vector which is going to be handled once
->>          // the task reenables interrupts on return to user space.
->>          // If the SENDUIPI set the bit before the read then the
->>          // notification vector handling will just observe the same
->>          // PIR state.
->>
->>          // Needs to be a locked access as there might be a
->>          // concurrent SENDUIPI modiying it.
->>          pir = read_locked(upid->pir);
->>
->>          if (xrstors_pending)) {
->>          	// Update the saved xstate for xrstors
->>             	current->xstate.uintr.uinv = UINTR_NOTIFICATION_VECTOR;
->
-> XSAVES saves the UINV value into the XSTATE buffer. I am not sure if we 
-> need this again. Is it because it could have been overwritten by calling 
-> XSAVES twice?
+>> Note: testing is done by a robot and is best-effort only.
+> 
+> Hi Pavel,
+> 
+> Confirm the patch you posted [1] is the real fix of this bug report.
+> 
+> I tested the patch from Yanfei Xu [2] in my local workspace, and the
+> memory leak is still triggered. In addition, I have pushed a patch
+> request for that patch. The result would prove that patch is not
+> working for this bug.
+> 
+> BTW, there occur incorrect fix commits on the syzbot dashboard
+> sometimes. Maybe it should be cleaned in the future.
+> 
 
-Yes that can happen AFAICT. I haven't done a deep analysis, but this
-needs to looked at.
 
->>                  current->xstate.uintr.uirr = pir;
->
-> I believe PIR should be ORed. There could be some bits already set in 
-> the UIRR.
->
-> Also, shouldn't UPID->PIR be cleared? If not, we would detect these 
-> interrupts all over again during the next ring transition.
+Hi, Dongliang,
 
-Right. So that PIR read above needs to be a locked cmpxchg().
+thank you for confirmation. As I said in reply to [1] Yanfei's patch is 
+also correct, but it solves other memory leak in same function.
 
->>          } else {
->>                  // Manually restore UIRR and UINV
->>                  wrmsrl(IA32_UINTR_RR, pir);
-> I believe read-modify-write here as well.
+AFAIU, if my patch will be applied too there will be 2 fix patches on 
+syzkaller bug report page, so no need to remove Yanfei's patch from bug 
+report page :)
 
-Sigh, yes.
 
-Thanks,
+> [1] https://lkml.org/lkml/2021/9/27/289
+> [2] https://www.spinics.net/lists/kernel/msg4089781.html
+> 
 
-        tglx
+
+With regards,
+Pavel Skripkin
