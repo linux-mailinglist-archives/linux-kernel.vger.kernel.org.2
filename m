@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EF841BA09
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7101441BA0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243121AbhI1WRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:17:19 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:48779 "EHLO
+        id S243148AbhI1WRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:17:23 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:51879 "EHLO
         relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243085AbhI1WQy (ORCPT
+        with ESMTP id S243055AbhI1WQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:16:54 -0400
+        Tue, 28 Sep 2021 18:16:55 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EB88E1C0007;
-        Tue, 28 Sep 2021 22:15:12 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id C3D511C0009;
+        Tue, 28 Sep 2021 22:15:13 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -23,9 +23,9 @@ Cc:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Vladimir Zapolskiy <vz@mleia.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4/8] Revert "mtd: rawnand: tmio: Fix external use of SW Hamming ECC helper"
-Date:   Wed, 29 Sep 2021 00:15:03 +0200
-Message-Id: <20210928221507.199198-5-miquel.raynal@bootlin.com>
+Subject: [PATCH 5/8] Revert "mtd: rawnand: sharpsl: Fix external use of SW Hamming ECC helper"
+Date:   Wed, 29 Sep 2021 00:15:04 +0200
+Message-Id: <20210928221507.199198-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210928221507.199198-1-miquel.raynal@bootlin.com>
 References: <20210928221507.199198-1-miquel.raynal@bootlin.com>
@@ -36,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 6a4c5ada577467a5f79e06f2c5e69c09983c22fb.
+This reverts commit 46fcb57e6b7283533ebf8ba17a6bd30fa88bdc9f.
 
 Before the introduction of the ECC framework infrastructure, many
 drivers used the ->calculate/correct() Hamming helpers directly. The
@@ -73,37 +73,46 @@ helper, thus this fix from [2] can now be safely reverted.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/tmio_nand.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/sharpsl.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
-index 6d93dd31969b..de8e919d0ebe 100644
---- a/drivers/mtd/nand/raw/tmio_nand.c
-+++ b/drivers/mtd/nand/raw/tmio_nand.c
-@@ -34,7 +34,6 @@
- #include <linux/interrupt.h>
- #include <linux/ioport.h>
+diff --git a/drivers/mtd/nand/raw/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
+index 2f1fe464e663..5612ee628425 100644
+--- a/drivers/mtd/nand/raw/sharpsl.c
++++ b/drivers/mtd/nand/raw/sharpsl.c
+@@ -11,7 +11,6 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
  #include <linux/mtd/mtd.h>
 -#include <linux/mtd/nand-ecc-sw-hamming.h>
  #include <linux/mtd/rawnand.h>
  #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
-@@ -293,12 +292,11 @@ static int tmio_nand_correct_data(struct nand_chip *chip, unsigned char *buf,
- 	int r0, r1;
+ #include <linux/mtd/sharpsl.h>
+@@ -97,15 +96,6 @@ static int sharpsl_nand_calculate_ecc(struct nand_chip *chip,
+ 	return readb(sharpsl->io + ECCCNTR) != 0;
+ }
  
- 	/* assume ecc.size = 512 and ecc.bytes = 6 */
--	r0 = ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
--				    chip->ecc.size, false);
-+	r0 = rawnand_sw_hamming_correct(chip, buf, read_ecc, calc_ecc);
- 	if (r0 < 0)
- 		return r0;
--	r1 = ecc_sw_hamming_correct(buf + 256, read_ecc + 3, calc_ecc + 3,
--				    chip->ecc.size, false);
-+	r1 = rawnand_sw_hamming_correct(chip, buf + 256, read_ecc + 3,
-+					calc_ecc + 3);
- 	if (r1 < 0)
- 		return r1;
- 	return r0 + r1;
+-static int sharpsl_nand_correct_ecc(struct nand_chip *chip,
+-				    unsigned char *buf,
+-				    unsigned char *read_ecc,
+-				    unsigned char *calc_ecc)
+-{
+-	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
+-				      chip->ecc.size, false);
+-}
+-
+ static int sharpsl_attach_chip(struct nand_chip *chip)
+ {
+ 	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
+@@ -116,7 +106,7 @@ static int sharpsl_attach_chip(struct nand_chip *chip)
+ 	chip->ecc.strength = 1;
+ 	chip->ecc.hwctl = sharpsl_nand_enable_hwecc;
+ 	chip->ecc.calculate = sharpsl_nand_calculate_ecc;
+-	chip->ecc.correct = sharpsl_nand_correct_ecc;
++	chip->ecc.correct = rawnand_sw_hamming_correct;
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
