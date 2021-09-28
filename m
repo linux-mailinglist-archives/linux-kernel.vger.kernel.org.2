@@ -2,182 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B9041AA6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726AE41AA6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 10:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239594AbhI1IGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 04:06:25 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:59529 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239372AbhI1IFh (ORCPT
+        id S239439AbhI1IHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 04:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239043AbhI1IHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 04:05:37 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 2E50F2B01620;
-        Tue, 28 Sep 2021 04:03:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 28 Sep 2021 04:03:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=MZr1ROPsa7huk
-        ZlSBuo6Lot+29g5/AyZ+XRVJeB1+z0=; b=uE/MuVjV8S+Y5a7yePJbasPwcE/uY
-        1T26aIR1rxCiWu5feWUc+7e76u6EGYlwPwEvSbR1upjFnq7QeNBxMEs/hirHpggS
-        rVVO3xcvHfWoGOwbBA86XTRHoBAddX7n0Pwcg7iQ4LW9erTb16A5r6ae+zPGdp5m
-        N+U1M99CFgpzOV3uE69IoFuACjIfRRKcTKJ8qMr98dr5xmxgjbgtWH0CJuIn3hsz
-        pKRq2whWz1lV7OEhTHdZjYeQijiLI4lgYYf7x5DtF84ODTFPVbUH34P1bB0hXVEf
-        jyG5TPMaTwNntnk2DFdKATPJqeuyE4L7YXobSg9Ids7mRLFMgh3Sv8QoQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=MZr1ROPsa7hukZlSBuo6Lot+29g5/AyZ+XRVJeB1+z0=; b=QDH/DdCA
-        OyRWaJABYJaWLRlwsGkbGakKqlJDi+6QtosbTMOLOG/O70T4pCuN42eyM1dQRT2I
-        WMupQSPEU2pvGCmOKh22J5uXZM/MAcdQesnCDFMLfDSMs1ix2C/y1iJ6mG8HrrGA
-        ucyxuMrdfWgmvTLxbl0j6IgPXVUMzyop9jniJdnZuRhAPWS8pu0+elGyWn9c9/Qa
-        qwP1g5EpxkuBSq18j5p68aPV1FoucSdvHeEUuuJG0by8phR62UfQNE0CaMWbMPpH
-        Nq90qXo/q96nQGI+CKJPYRc+Lhu00odvJ5slb5VP4ILDZNw7egyVUWqcOYfSzwvL
-        rLFiCVREhd2M4g==
-X-ME-Sender: <xms:bMxSYe2iMM7HK9hfvhLuVwOtYuBoU-1GAOU81XDkmaR_dyTuV8hYLQ>
-    <xme:bMxSYRFpiH3WnHo3Mxp93ys9Lu4Wd7h8uCNVk2bpx235G2rlm_pxuwbCs6ozCGM93
-    Evqvj7sVO0GwZeVxQ>
-X-ME-Received: <xmr:bMxSYW5ahpKNdikqoO8GId0F135MEhe8haNDmv-I3nbmWpA6k3OextC_210TyuzhFRTWyvyaKYS6eKUdpZI5RWX6jbX5NwM4OiO2rvVfEU9r7IDAhlNMVWIjHcN7rKFWWgcEfQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudejledguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheej
-    vdfgjeehueeinecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:bMxSYf3Avh56HFfNYmPz_LRkT4emcQ2sArV1NTgC-6rItD0_jXdc9g>
-    <xmx:bMxSYRE-GwQAelDGacPXFMjJ1JTQsCF9EXsQhYLoN5_Pnod5EpuMpg>
-    <xmx:bMxSYY9P769JUpt9jTPpGdOAO36W_Es99YK9ForUHXsld2ty8pND4w>
-    <xmx:bMxSYZGAJhmVNXSUbjWKc5czldz-uXC76Az2j_r5999p13qa0b0zMvsSsmo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 04:03:56 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 9/9] [DO NOT MERGE] clk: sunxi-ng: sun6i-rtc: Add support for T5
-Date:   Tue, 28 Sep 2021 03:03:35 -0500
-Message-Id: <20210928080335.36706-10-samuel@sholland.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210928080335.36706-1-samuel@sholland.org>
-References: <20210928080335.36706-1-samuel@sholland.org>
+        Tue, 28 Sep 2021 04:07:20 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DE5C061604
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:05:41 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id d6so56268446wrc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 01:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yK4+pJccx+L287LRxGHzTccwnqeDUuV1kwFuIH5wuVw=;
+        b=iAVLDREMsjNYoZqnBt/mr0bb5N77eb2MByH+vDh3phYyZ84A2vxq3mu5hX00fpU8aJ
+         WHR6cToDFFDfaPvtWju8g34JT4RdmalPYl0QeN2XhW9iPxpG2L7C9aSN9wyJsIUybzQX
+         9ziSJ4xZZ5y2jSk/YrBmNh3MCHZvDcrqNNomTMtvf+97pnP0FxsyhiY0RAz0V7PvIrH7
+         1BIkMysEEMZNcaklpc+Lf1OAM8g+hS6HKlz1XZvv1ArzvGmZx7GZJ4J+hhLVOMkbu08o
+         c5uLFO/4uKXwDXTJ+/M4+sbN2Tiy1pJzxz+Ec2M+vX+5UFM4lGnaV99zK8ueUCfDTorR
+         dX9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yK4+pJccx+L287LRxGHzTccwnqeDUuV1kwFuIH5wuVw=;
+        b=5KMcOn9re7Hbv4SLbUb04EwSPnEOVjVIVhaW0vhkT+D7W4N5enJJBUUDI/wvgxPJvk
+         2BC32BPTH9NjSDX91tZGcrj6jF3nEy8kSlBeW5YXSmKRWbCBpxoE0v1SK31mIkqFheVa
+         EKeUURYvtXk40FMf9TYujob1EjJJum6D3t1gc51GLpyZja2rjyRCpdRzOhmhFd0xFvUX
+         GerbFrdgz3AobduH5iZ/KMPn6on31oTo5ZQvmPcdr55OXMGcNpD3yXGbU1pGkZHykmKw
+         BZWRLYg09eHvznLrm9791jH+ze8tktAau5m1hI1+jyg1Omi1xWutzRuMclzB5EZBrZY7
+         XnjA==
+X-Gm-Message-State: AOAM530gpQARJtouIpRKnMZXZUorcjV8hEhsLv1eLbh7mIfTSJiwMn+D
+        C0rBS4ztLsdwy2li/8Nd8ipozTV1PtLLew==
+X-Google-Smtp-Source: ABdhPJw0ihAuouAtL7667xaUqI13cOXkzgsMzFFzcWGbXnJNyqSsW5UvGDnlI71/IIjeBeAISjCy/w==
+X-Received: by 2002:adf:cf04:: with SMTP id o4mr4653696wrj.352.1632816339914;
+        Tue, 28 Sep 2021 01:05:39 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id c9sm1928057wmb.41.2021.09.28.01.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 01:05:39 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 09:05:37 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v1 2/4] mfd: arizona: Add missing entries SPI to device
+ ID table
+Message-ID: <YVLM0VxNGdH8AxQO@google.com>
+References: <20210923194645.53046-1-broonie@kernel.org>
+ <20210923194645.53046-3-broonie@kernel.org>
+ <538c0c79-d568-be03-e524-01f5c6429554@opensource.cirrus.com>
+ <20210924112000.GB4840@sirena.org.uk>
+ <20210927102754.GE9223@ediswmail.ad.cirrus.com>
+ <20210927105528.GA4199@sirena.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210927105528.GA4199@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The T5 RTC is similar to the H616 RTC (no rtc-32k mux, pll-32k as the
-second fanout input), except that it adds the ext-osc32k input.
+On Mon, 27 Sep 2021, Mark Brown wrote:
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/clk/sunxi-ng/ccu-sun6i-rtc.c | 45 ++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+> On Mon, Sep 27, 2021 at 10:27:54AM +0000, Charles Keepax wrote:
+> 
+> > Yeah we should really be having different lists for SPI and I2C
+> > here I guess. I am happy to have a quick look at doing a patch
+> > for that, unless you particularly want to fix it up?
+> 
+> I dropped the patch so please feel free to go ahead.
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun6i-rtc.c b/drivers/clk/sunxi-ng/ccu-sun6i-rtc.c
-index f742f6569f6c..88946c990b61 100644
---- a/drivers/clk/sunxi-ng/ccu-sun6i-rtc.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun6i-rtc.c
-@@ -240,6 +240,15 @@ static SUNXI_CCU_GATE_HW(osc32k_fanout_gate_clk, "osc32k-fanout",
- static SUNXI_CCU_M_FW_WITH_GATE(rtc_spi_clk, "rtc-spi", "ahb",
- 				0x310, 0, 5, BIT(31), 0);
- 
-+static struct ccu_common *sun8i_t5_rtc_ccu_clks[] = {
-+	&iosc_clk,
-+	&iosc_32k_clk,
-+	&ext_osc32k_gate_clk.common,
-+	&osc32k_clk.common,
-+	&osc24M_32k_clk.common,
-+	&osc32k_fanout_clk.common,
-+};
-+
- static struct ccu_common *sun50i_h6_rtc_ccu_clks[] = {
- 	&iosc_clk,
- 	&iosc_32k_clk,
-@@ -269,6 +278,21 @@ static struct ccu_common *sun50i_r329_rtc_ccu_clks[] = {
- 	&rtc_spi_clk.common,
- };
- 
-+static struct clk_hw_onecell_data sun8i_t5_rtc_ccu_hw_clks = {
-+	.num = CLK_NUMBER,
-+	.hws = {
-+		[CLK_OSC32K]		= &osc32k_clk.common.hw,
-+		[CLK_OSC32K_FANOUT]	= &osc32k_fanout_clk.common.hw,
-+		[CLK_IOSC]		= &iosc_clk.hw,
-+
-+		[CLK_IOSC_32K]		= &iosc_32k_clk.hw,
-+		[CLK_EXT_OSC32K_GATE]	= &ext_osc32k_gate_clk.common.hw,
-+		[CLK_OSC24M_32K]	= &osc24M_32k_clk.common.hw,
-+		[CLK_RTC_32K]		= &rtc_32k_fixed_clk.hw,
-+		[CLK_RTC_SPI]		= NULL,
-+	},
-+};
-+
- static struct clk_hw_onecell_data sun50i_h6_rtc_ccu_hw_clks = {
- 	.num = CLK_NUMBER,
- 	.hws = {
-@@ -314,6 +338,13 @@ static struct clk_hw_onecell_data sun50i_r329_rtc_ccu_hw_clks = {
- 	},
- };
- 
-+static const struct sunxi_ccu_desc sun8i_t5_rtc_ccu_desc = {
-+	.ccu_clks	= sun8i_t5_rtc_ccu_clks,
-+	.num_ccu_clks	= ARRAY_SIZE(sun8i_t5_rtc_ccu_clks),
-+
-+	.hw_clks	= &sun8i_t5_rtc_ccu_hw_clks,
-+};
-+
- static const struct sunxi_ccu_desc sun50i_h6_rtc_ccu_desc = {
- 	.ccu_clks	= sun50i_h6_rtc_ccu_clks,
- 	.num_ccu_clks	= ARRAY_SIZE(sun50i_h6_rtc_ccu_clks),
-@@ -335,6 +366,11 @@ static const struct sunxi_ccu_desc sun50i_r329_rtc_ccu_desc = {
- 	.hw_clks	= &sun50i_r329_rtc_ccu_hw_clks,
- };
- 
-+static void sun8i_t5_rtc_ccu_setup(void)
-+{
-+	have_iosc_calib = 1;
-+}
-+
- static void sun50i_h6_rtc_ccu_setup(void)
- {
- 	have_iosc_calib = 1;
-@@ -357,6 +393,11 @@ static void sun50i_r329_rtc_ccu_setup(void)
- 	};
- }
- 
-+static const struct sun6i_rtc_match_data sun8i_t5_rtc_ccu_data = {
-+	.desc	= &sun8i_t5_rtc_ccu_desc,
-+	.setup	= sun8i_t5_rtc_ccu_setup,
-+};
-+
- static const struct sun6i_rtc_match_data sun50i_h6_rtc_ccu_data = {
- 	.desc	= &sun50i_h6_rtc_ccu_desc,
- 	.setup	= sun50i_h6_rtc_ccu_setup,
-@@ -373,6 +414,10 @@ static const struct sun6i_rtc_match_data sun50i_r329_rtc_ccu_data = {
- };
- 
- static const struct of_device_id sun6i_rtc_ccu_match[] = {
-+	{
-+		.compatible	= "allwinner,sun8i-t5-rtc",
-+		.data		= &sun8i_t5_rtc_ccu_data,
-+	},
- 	{
- 		.compatible	= "allwinner,sun50i-h6-rtc",
- 		.data		= &sun50i_h6_rtc_ccu_data,
+Just this one, or should I drop the set?
+
 -- 
-2.31.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
