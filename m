@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A76B41A6C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B61841A6CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhI1EtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 00:49:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13348 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhI1EtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 00:49:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HJRhT2YxJz8yww;
-        Tue, 28 Sep 2021 12:43:05 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 12:47:40 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 28 Sep 2021 12:47:40 +0800
-Message-ID: <f68bf3ba-987d-fd82-adce-8ed1681cecd1@huawei.com>
-Date:   Tue, 28 Sep 2021 12:47:39 +0800
+        id S233196AbhI1Etp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 00:49:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232038AbhI1Eto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 00:49:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F3A61157;
+        Tue, 28 Sep 2021 04:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632804485;
+        bh=rIPpR3k4tQd1NuIq7TpHR6yPadssaAAh/Dq8CqelThY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xofd4et8t4QVcH/QX/qGqEVZ78SGvQs2KXYS9+zd/TT+V2Ah3Zu4rPNYc07a6q/H/
+         r4Gyo2Qcm1QmtFMFjRYyav2BuPWJaptA5JMY8oKTtZeCrYSbxmfX4/g4TBapekyQmI
+         SZRp9MhkFAggJkHzFjLIg59I0lQo2oRgUUzXWi8E=
+Date:   Tue, 28 Sep 2021 06:48:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 2/2] platform/x86: Add Intel Software Defined Silicon
+ driver
+Message-ID: <YVKeglYilJvqp1jk@kroah.com>
+References: <20210924213157.3584061-1-david.e.box@linux.intel.com>
+ <20210924213157.3584061-2-david.e.box@linux.intel.com>
+ <YU7BPIH123HUZKhw@kroah.com>
+ <3392aea6b112926b063bbe46b1decaad4c9f9e6e.camel@linux.intel.com>
+ <YVFCetbrNV+WkJ5Q@kroah.com>
+ <10bee4a609c48b8e10458c25755f17222c43c33c.camel@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/3] csky: Use SPARSE_IRQ
-Content-Language: en-US
-To:     Guo Ren <guoren@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-csky@vger.kernel.org>
-References: <20210927081402.191717-1-wangkefeng.wang@huawei.com>
- <20210927081402.191717-3-wangkefeng.wang@huawei.com>
- <CAJF2gTT1oM6L+R4c6bKKJV5xnHre+P4+779vH5h7xG9Hf-ZKCQ@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <CAJF2gTT1oM6L+R4c6bKKJV5xnHre+P4+779vH5h7xG9Hf-ZKCQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <10bee4a609c48b8e10458c25755f17222c43c33c.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 27, 2021 at 10:53:09AM -0700, David E. Box wrote:
+> On Mon, 2021-09-27 at 06:03 +0200, Greg KH wrote:
+> > On Sun, Sep 26, 2021 at 06:15:16PM -0700, David E. Box wrote:
+> > > > > +static int sdsi_remove(struct platform_device *pdev)
+> > > > > +{
+> > > > > +       struct sdsi_priv *priv = platform_get_drvdata(pdev);
+> > > > > +
+> > > > > +       priv->dev_present = false;
+> > > > > +       sysfs_remove_bin_file(&priv->pdev->dev.kobj, &priv->registers_bin_attr);
+> > > > > +       misc_deregister(&priv->miscdev);
+> > > > > +       kref_put(&priv->kref, sdsi_priv_release);
+> > > > 
+> > > > Why do you need a kref for a structure that already can be controlled by
+> > > > a different lifetime rule?
+> > > 
+> > > Which rule am I missing? This kref allows the structure to remain in case the device is removed
+> > > while the file is open.
+> > 
+> > This device is on a hardware bus that allows removal?
+> 
+> Well the device can be unbound. A test case covers this.
 
-On 2021/9/28 11:39, Guo Ren wrote:
-> On Mon, Sep 27, 2021 at 4:11 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> The sparse IRQ framework is preferred, switch over to it,
->> and Kill MAY_HAVE_SPARSE_IRQ.
->>
->> Cc: Guo Ren <guoren@kernel.org>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   arch/csky/Kconfig | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
->> index 9d4d898df76b..3d720a577be7 100644
->> --- a/arch/csky/Kconfig
->> +++ b/arch/csky/Kconfig
->> @@ -69,7 +69,6 @@ config CSKY
->>          select HAVE_RSEQ
->>          select HAVE_STACKPROTECTOR
->>          select HAVE_SYSCALL_TRACEPOINTS
->> -       select MAY_HAVE_SPARSE_IRQ
->>          select MODULES_USE_ELF_RELA if MODULES
->>          select OF
->>          select OF_EARLY_FLATTREE
->> @@ -82,6 +81,7 @@ config CSKY
->>          select PCI_SYSCALL if PCI
->>          select PCI_MSI if PCI
->>          select SET_FS
->> +       select SPARSE_IRQ
-> Most csky platforms use !SPARSE_IRQ, so please remove the above line.
-Ok, will drop this.
->
->>          select TRACE_IRQFLAGS_SUPPORT
->>
->>   config LOCKDEP_SUPPORT
->> --
->> 2.26.2
->>
->
+Great, where are these tests?  Why not add them to the kernel tree
+itself in the proper location?
+
+And in the real-world, who would ever unbind this?
+
+> > Anyway, you now are dealing with lifetime rules of 3 structures all at
+> > once, and the interactions between them is not very obvious.  It would
+> > probably be simpler just to stick with 2, right?  You really only care
+> > about the misc structure here.
+> 
+> In the case that the device is unbound, both the pdev and miscdev go away. Something has to outlive
+> them in order to handle any open files still trying to use the ioctl.
+
+I do not think that the miscdev goes away if the file handle is still
+open, right?
+
+thanks,
+
+greg k-h
