@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC53C41AF6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8339741AF7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240803AbhI1M4X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 08:56:23 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:54645 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240731AbhI1M4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:56:22 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0356F20002;
-        Tue, 28 Sep 2021 12:54:41 +0000 (UTC)
-Date:   Tue, 28 Sep 2021 14:54:40 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     mdalam@codeaurora.org
-Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 3/3] mtd: rawnand: qcom: Add support for page scope read
-Message-ID: <20210928145440.758ead6b@xps13>
-In-Reply-To: <8765976685ca3a04af1c102a69c9ca63@codeaurora.org>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
-        <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
-        <8765976685ca3a04af1c102a69c9ca63@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S240860AbhI1M5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 08:57:47 -0400
+Received: from mga04.intel.com ([192.55.52.120]:34584 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240848AbhI1M5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 08:57:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="222796674"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="222796674"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 05:56:06 -0700
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="553982639"
+Received: from oogunmoy-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.221.219])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 05:56:03 -0700
+Subject: Re: [PATCH v6 04/11] x86/tdx: Add protected guest support for TDX
+ guest
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210903172812.1097643-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YVMAgFpGvKgBfx0P@8bytes.org>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <20fc6806-0c46-15d6-930b-6b4e90dfee6d@linux.intel.com>
+Date:   Tue, 28 Sep 2021 05:56:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YVMAgFpGvKgBfx0P@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-mdalam@codeaurora.org wrote on Tue, 28 Sep 2021 17:51:00 +0530:
 
-> On 2021-09-15 15:27, Md Sadre Alam wrote:
-> > QPIC V2.0 onwards QPIC controller support enhanced read mode
-> > like page scope read and multi page read.
-> > 
-> > In QPIC V1, SW is needed to write EXEC_CMD register for each
+On 9/28/21 4:46 AM, Joerg Roedel wrote:
+> On Fri, Sep 03, 2021 at 10:28:05AM -0700, Kuppuswamy Sathyanarayanan wrote:
+>>   static inline bool prot_guest_has(unsigned int attr)
+>>   {
+>>   	if (sme_me_mask)
+>>   		return amd_prot_guest_has(attr);
+>> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
+>> +		return intel_prot_guest_has(attr);
+> 
+> This causes a function call on every Intel machine this code runs. is
+> there an easier to check whether TDX is enabled, like the sme_me_mask
+> check on AMD?
 
-                the driver needs to (same below)
+This will only be called when CONFIG_ARCH_HAS_CC_PLATFORM is set by a platform.
+So it won't be called for all platforms.
 
-> > Code word and collect any Status related to that CW before
-> > issueing EXEC_CMD for next CW.
-> > 
-> > Page scope command is truly a page mode command where SW is
-> > required to issue EXEC_CMD only once for a page. Controller
-> > HW takes care of Codeword specific details and automatically
-> > returns status associated with each CW to BAM pipe, dedicated
-> > for status deposition.
-> > 
-> > With this command, SW now can issue one read command for a page
-> > and upon receiving completion interrupt, can process status,
-> > that have already been deposited in memory through status BAM pipe.
-> > 
-> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> > ---
-> >  drivers/mtd/nand/raw/qcom_nandc.c | 77 > ++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 71 insertions(+), 6 deletions(-)
-> > 
+Also, intel_prot_guest_has() is a generic Intel platform branch call (so we can't
+directly check for TDX here).
 
-Thanks,
-Miquèl
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
