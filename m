@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A5241B9E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6AA41B9E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 00:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242998AbhI1WJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242494AbhI1WJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:09:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DEAA61357;
-        Tue, 28 Sep 2021 22:07:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632866859;
-        bh=s29u+ndGckzyi3RdYvXQRzn9okKr6F7XeNAuFwFBAEI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mbRghuJx0LY9gMG60LB8EEezX9DZZfcdAXycn0LE760bC8X75ZWJ88gmHtK9y3joL
-         WZZW/27NzHzhj86qfoAp6Hd3COJaGwyCYyumJVY3O/4HBnE9o4TW9cM1tzpMB/+lPz
-         S4vLw6SrdHQmMRH+sxFfAzO16WhsDW3jop8n01/ljkU3u2SmUzOFQw4xeY4qhIuUth
-         iQc5Mswmk9zOYrnVajl6v2t0bQH3X5SW1y6GKYd60ioGlu3QpskSUbSka4wXk0MshI
-         6OnuiZJek+kVHIfXmoX7O5UEdilCq4IjZOms9vmwwHhAybBbCK+rnAgHLSBbZY55vZ
-         KtyZMPgO989CQ==
-Date:   Wed, 29 Sep 2021 00:07:34 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Carlos Bilbao <bilbao@vt.edu>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/17] ABI: sysfs-bus-pci: add a alternative What fields
-Message-ID: <20210929000734.77328446@coco.lan>
-In-Reply-To: <20210928183403.GA715406@bhelgaas>
-References: <15ba8c07f1b0fd7359106920c8e34a7b9af7aea6.1632750608.git.mchehab+huawei@kernel.org>
-        <20210928183403.GA715406@bhelgaas>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S242494AbhI1WJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243010AbhI1WJV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:09:21 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4071DC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:07:41 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id q125so302337qkd.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 15:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hqLpx7Wm6Aikf3yaBVZ1DfYqAohja9hoxxDTJ4xjS7o=;
+        b=I79TXBeeKhqw/PkSZBawchrYJxCClh648BkPzWLbNa1UkVvlTTkBiT5/9JZ+EP89Ho
+         guh8PRCNJ/vUJtFdxBjphdv3bgHIkUSsNWXSjlUDvsWO3HOrWnzDZvk/lFdojijY2jBm
+         97fJyoUUndoubaQUCmKy2tXrCNSbPLATypEeOetRkXaSK7lLYOl8+AdZseYJPanJiAoB
+         KfXAL15/M4xU3OTAtvuix3kZ1MqdcjRGfyiy9wFV2n8BOIJUv9Q4ppd4p+p0P7dD6qbE
+         GLziTGb2w4zMAPXS6NDZ4GbcEi892+RAgDw4uV9gr7Gi4UuGL6DvBJ3bjf+mUAn+Yeim
+         ooKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=hqLpx7Wm6Aikf3yaBVZ1DfYqAohja9hoxxDTJ4xjS7o=;
+        b=ul7ITVeVDz1WBiYVWhH6vly4YFAGB5dCcQG/apBruwVqIMqGj3ElNyq0qiebwiiUTP
+         foRwdIcdtJIey7vG4848q6O2or7YIqs/5lEe3fZ2sn+ujmvATsyU9Lmsh827M3b1Yjcf
+         LlUWl+TaMJSPdCB8VdzRNqY5iLXfklxiX6oMgMHE8BTpqVBr9FHOR0eCXCnacrp2jfua
+         luJ8SeP6t/MPOXF+0btMOYcfhp6ERI7fO2KWZcJyFsW9/VgdC0BFXw5dnoKH8HzvvmSt
+         Xj9oHUFlhL/EQabgLas01ulAG1U6q7dQPBKU1JsSeLHiPylwxgupTUA1az85daAzRpq1
+         dIfQ==
+X-Gm-Message-State: AOAM531JzZ3rqL1KzRwtrhjxP8uGAzapjnxVH8z9Gm3b7uoR6zQOlhgO
+        jxvAVG1U+knY0mHPdoSaG6PXFKVntR6+OA==
+X-Google-Smtp-Source: ABdhPJwYa3sPb+5NPeY3D11qHxW63pqGnDrFPVG/BTx8yJXFd0HA44jnISUSxDVomkPI7Dkdn063kA==
+X-Received: by 2002:ae9:de86:: with SMTP id s128mr2452630qkf.146.1632866860009;
+        Tue, 28 Sep 2021 15:07:40 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e16sm332752qtq.18.2021.09.28.15.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 15:07:39 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 15:07:39 -0700 (PDT)
+X-Google-Original-Date: Tue, 28 Sep 2021 15:07:35 PDT (-0700)
+Subject:     Re: [RFC PATCH 7/8] riscv: rely on core code to keep thread_info::cpu updated
+In-Reply-To: <20210914121036.3975026-8-ardb@kernel.org>
+CC:     linux-kernel@vger.kernel.org, ardb@kernel.org, keithpac@amazon.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        christophe.leroy@csgroup.eu, paulus@samba.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, peterz@infradead.org, keescook@chromium.org,
+        luto@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     ardb@kernel.org
+Message-ID: <mhng-7d24dba9-38a7-4267-b01c-388471412237@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 28 Sep 2021 13:34:03 -0500
-Bjorn Helgaas <helgaas@kernel.org> escreveu:
+On Tue, 14 Sep 2021 05:10:35 PDT (-0700), ardb@kernel.org wrote:
+> Now that the core code switched back to using thread_info::cpu to keep
+> a task's CPU number, we no longer need to keep it in sync explicitly. So
+> just drop the code that does this.
+>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/riscv/kernel/asm-offsets.c | 1 -
+>  arch/riscv/kernel/entry.S       | 5 -----
+>  arch/riscv/kernel/head.S        | 1 -
+>  3 files changed, 7 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
+> index 90f8ce64fa6f..478d9f02dab5 100644
+> --- a/arch/riscv/kernel/asm-offsets.c
+> +++ b/arch/riscv/kernel/asm-offsets.c
+> @@ -33,7 +33,6 @@ void asm_offsets(void)
+>  	OFFSET(TASK_TI_PREEMPT_COUNT, task_struct, thread_info.preempt_count);
+>  	OFFSET(TASK_TI_KERNEL_SP, task_struct, thread_info.kernel_sp);
+>  	OFFSET(TASK_TI_USER_SP, task_struct, thread_info.user_sp);
+> -	OFFSET(TASK_TI_CPU, task_struct, thread_info.cpu);
+>
+>  	OFFSET(TASK_THREAD_F0,  task_struct, thread.fstate.f[0]);
+>  	OFFSET(TASK_THREAD_F1,  task_struct, thread.fstate.f[1]);
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 98f502654edd..459eb1714353 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -544,11 +544,6 @@ ENTRY(__switch_to)
+>  	REG_L s9,  TASK_THREAD_S9_RA(a4)
+>  	REG_L s10, TASK_THREAD_S10_RA(a4)
+>  	REG_L s11, TASK_THREAD_S11_RA(a4)
+> -	/* Swap the CPU entry around. */
+> -	lw a3, TASK_TI_CPU(a0)
+> -	lw a4, TASK_TI_CPU(a1)
+> -	sw a3, TASK_TI_CPU(a1)
+> -	sw a4, TASK_TI_CPU(a0)
+>  	/* The offset of thread_info in task_struct is zero. */
+>  	move tp, a1
+>  	ret
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index fce5184b22c3..d5ec30ef6f5d 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -317,7 +317,6 @@ clear_bss_done:
+>  	call setup_trap_vector
+>  	/* Restore C environment */
+>  	la tp, init_task
+> -	sw zero, TASK_TI_CPU(tp)
+>  	la sp, init_thread_union + THREAD_SIZE
+>
+>  #ifdef CONFIG_KASAN
 
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> > index 1eeac7f59672..16afe3f59cbd 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-pci
-> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> > @@ -1,4 +1,5 @@
-> >  What:		/sys/bus/pci/drivers/.../bind
-> > +What:		/sys/devices/pciX/.../bind  
-> 
-> Wasn't somebody just updating these wildcard-ish items in pathnames?
-> 
-> Ah, it was you :)
-> 
->   https://lore.kernel.org/all/4ede4ec98e295f054f3e5a6f3f9393b5e3d5d2a7.1631782432.git.mchehab+huawei@kernel.org/
-> 
-> Changing "virtfnN" to "virtfn<N>".
-> 
-> Is that same sort of thing applicable here?  My system has
-> 
->   /sys/devices/pci0000:00/...
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Yes and no ;-)
-
-See, there are lots of places under Documentation/ABI that already use
-X, Y and Z uppercase letters to identify wildcards. As there aren't any
-sysfs entries that have those uppercase letters, I opted to teach the 
-get_abi.pl script to threat such uppercase chars as wildcards. The same
-can't be done with N, because the USB subsystem (and a couple of other
-ABIs) use uppercase N as valid symbols like "bNum.*".
-
-Long term, one alternative would be to replace the What fields by a 
-regular expressions on ABI. That would avoid some magic inside 
-get_abi.pl. However, a change like that would require touching almost
-all files, and has a drawback to make them more obscure - even
-if we use named group regexes.
-
-Thanks,
-Mauro
+Thanks!
