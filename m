@@ -2,413 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427E341AF58
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9253841AF57
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 14:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240788AbhI1MuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 08:50:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63626 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240711AbhI1MuW (ORCPT
+        id S240784AbhI1MuP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 08:50:15 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:46637 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240779AbhI1MuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:50:22 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18SAxS9t015863;
-        Tue, 28 Sep 2021 08:48:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=tHa4dpoRSg+76Su9l/gMtdWmRb+q+JmH4HBns0B1eHs=;
- b=IpYTcmHdDrWL9SjSZFpxzUEwUDR7mE5LfUdkI/9vPuD3A2xYhIeJshw+L/qokLV2v835
- INHarUuLhFixlNDI+bOcxyVwVTOHrZ4xkon1b6QCniEsYDf8SN2zbnwsKGSZkMemzntO
- exnIqWuucMFvq3IwcpjDe2+zIVuWK5dd8vv+SuueEsrQtOBNvSnic8oXRJazxcgxR1nZ
- s5ByMUvPzbR10cE5FbVJZssBextU9Tnm2eZbhv10rztRiUcjaLHB6ezNSbg0dGzRdgpr
- bsmVaZ+hCW5J0VMXBkyKaX1WeUiblb4MjQ2qeq2RsLEgPmxpmtvxn9EHjpAVwihIDhJF oA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbvq78wn9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 08:48:29 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18SChGhN030321;
-        Tue, 28 Sep 2021 12:48:26 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3b9u1je25q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 12:48:26 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18SCmNRt44368356
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Sep 2021 12:48:23 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2DAD0AE05D;
-        Tue, 28 Sep 2021 12:48:23 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7756CAE053;
-        Tue, 28 Sep 2021 12:48:18 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.50.245])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Sep 2021 12:48:18 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, dan.j.williams@intel.com,
-        ira.weiny@intel.com, vishal.l.verma@intel.com
-Cc:     maddy@linux.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com, kjain@linux.ibm.com
-Subject: [PATCH v5 3/4] powerpc/papr_scm: Add perf interface support
-Date:   Tue, 28 Sep 2021 18:18:12 +0530
-Message-Id: <20210928124812.146734-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 28 Sep 2021 08:50:14 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0A9DDFF803;
+        Tue, 28 Sep 2021 12:48:32 +0000 (UTC)
+Date:   Tue, 28 Sep 2021 14:48:32 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     mdalam@codeaurora.org
+Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 2/3] mtd: rawnand: qcom: Add sg list to handle status
+ pipe request
+Message-ID: <20210928144832.02e86fe1@xps13>
+In-Reply-To: <07b52169db478045d409def2b5f55b01@codeaurora.org>
+References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
+        <1631699851-12172-3-git-send-email-mdalam@codeaurora.org>
+        <07b52169db478045d409def2b5f55b01@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jwxO1MLLBMQRSXaXwBtTKeY2WhYATZnT
-X-Proofpoint-ORIG-GUID: jwxO1MLLBMQRSXaXwBtTKeY2WhYATZnT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0 adultscore=0
- phishscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280071
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Performance monitoring support for papr-scm nvdimm devices
-via perf interface is added which includes addition of pmu
-functions like add/del/read/event_init for nvdimm_pmu struture.
+Hello,
 
-A new parameter 'priv' in added to the pdev_archdata structure to save
-nvdimm_pmu device pointer, to handle the unregistering of pmu device.
+mdalam@codeaurora.org wrote on Tue, 28 Sep 2021 17:50:06 +0530:
 
-papr_scm_pmu_register function populates the nvdimm_pmu structure
-with name, capabilities, cpumask along with event handling
-functions. Finally the populated nvdimm_pmu structure is passed to
-register the pmu device. Event handling functions internally uses
-hcall to get events and counter data.
+> On 2021-09-15 15:27, Md Sadre Alam wrote:
+> > From QPIC V2.0 onwards there is separate pipe to read status
+> > for each code word while reading in enhanced mode.
 
-Result in power9 machine with 2 nvdimm device:
+What is enhanced mode?
 
-Ex: List all event by perf list
+> page scope read and multi page read.
 
-command:# perf list nmem
+This is not a correct sentence.
 
-  nmem0/cache_rh_cnt/                                [Kernel PMU event]
-  nmem0/cache_wh_cnt/                                [Kernel PMU event]
-  nmem0/cri_res_util/                                [Kernel PMU event]
-  nmem0/ctl_res_cnt/                                 [Kernel PMU event]
-  nmem0/ctl_res_tm/                                  [Kernel PMU event]
-  nmem0/fast_w_cnt/                                  [Kernel PMU event]
-  nmem0/host_l_cnt/                                  [Kernel PMU event]
-  nmem0/host_l_dur/                                  [Kernel PMU event]
-  nmem0/host_s_cnt/                                  [Kernel PMU event]
-  nmem0/host_s_dur/                                  [Kernel PMU event]
-  nmem0/med_r_cnt/                                   [Kernel PMU event]
-  nmem0/med_r_dur/                                   [Kernel PMU event]
-  nmem0/med_w_cnt/                                   [Kernel PMU event]
-  nmem0/med_w_dur/                                   [Kernel PMU event]
-  nmem0/mem_life/                                    [Kernel PMU event]
-  nmem0/poweron_secs/                                [Kernel PMU event]
-  ...
-  nmem1/mem_life/                                    [Kernel PMU event]
-  nmem1/poweron_secs/                                [Kernel PMU event]
+> > This sgl list will be use to handle the request via status pipe
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- arch/powerpc/include/asm/device.h         |   5 +
- arch/powerpc/platforms/pseries/papr_scm.c | 225 ++++++++++++++++++++++
- 2 files changed, 230 insertions(+)
+         ^^^              used                          the
 
-diff --git a/arch/powerpc/include/asm/device.h b/arch/powerpc/include/asm/device.h
-index 219559d65864..47ed639f3b8f 100644
---- a/arch/powerpc/include/asm/device.h
-+++ b/arch/powerpc/include/asm/device.h
-@@ -48,6 +48,11 @@ struct dev_archdata {
- 
- struct pdev_archdata {
- 	u64 dma_mask;
-+	/*
-+	 * Pointer to nvdimm_pmu structure, to handle the unregistering
-+	 * of pmu device
-+	 */
-+	void *priv;
- };
- 
- #endif /* _ASM_POWERPC_DEVICE_H */
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index f48e87ac89c9..bdf2620db461 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -19,6 +19,7 @@
- #include <asm/papr_pdsm.h>
- #include <asm/mce.h>
- #include <asm/unaligned.h>
-+#include <linux/perf_event.h>
- 
- #define BIND_ANY_ADDR (~0ul)
- 
-@@ -68,6 +69,8 @@
- #define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
- #define PAPR_SCM_PERF_STATS_VERSION 0x1
- 
-+#define to_nvdimm_pmu(_pmu)	container_of(_pmu, struct nvdimm_pmu, pmu)
-+
- /* Struct holding a single performance metric */
- struct papr_scm_perf_stat {
- 	u8 stat_id[8];
-@@ -120,6 +123,9 @@ struct papr_scm_priv {
- 
- 	/* length of the stat buffer as expected by phyp */
- 	size_t stat_buffer_len;
-+
-+	 /* array to have event_code and stat_id mappings */
-+	char **nvdimm_events_map;
- };
- 
- static int papr_scm_pmem_flush(struct nd_region *nd_region,
-@@ -340,6 +346,218 @@ static ssize_t drc_pmem_query_stats(struct papr_scm_priv *p,
- 	return 0;
- }
- 
-+static int papr_scm_pmu_get_value(struct perf_event *event, struct device *dev, u64 *count)
-+{
-+	struct papr_scm_perf_stat *stat;
-+	struct papr_scm_perf_stats *stats;
-+	struct papr_scm_priv *p = (struct papr_scm_priv *)dev->driver_data;
-+	int rc, size;
-+
-+	/* Allocate request buffer enough to hold single performance stat */
-+	size = sizeof(struct papr_scm_perf_stats) +
-+		sizeof(struct papr_scm_perf_stat);
-+
-+	if (!p || !p->nvdimm_events_map)
-+		return -EINVAL;
-+
-+	stats = kzalloc(size, GFP_KERNEL);
-+	if (!stats)
-+		return -ENOMEM;
-+
-+	stat = &stats->scm_statistic[0];
-+	memcpy(&stat->stat_id,
-+	       p->nvdimm_events_map[event->attr.config],
-+		sizeof(stat->stat_id));
-+	stat->stat_val = 0;
-+
-+	rc = drc_pmem_query_stats(p, stats, 1);
-+	if (rc < 0) {
-+		kfree(stats);
-+		return rc;
-+	}
-+
-+	*count = be64_to_cpu(stat->stat_val);
-+	kfree(stats);
-+	return 0;
-+}
-+
-+static int papr_scm_pmu_event_init(struct perf_event *event)
-+{
-+	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
-+	struct papr_scm_priv *p;
-+
-+	if (!nd_pmu)
-+		return -EINVAL;
-+
-+	/* test the event attr type for PMU enumeration */
-+	if (event->attr.type != event->pmu->type)
-+		return -ENOENT;
-+
-+	/* it does not support event sampling mode */
-+	if (is_sampling_event(event))
-+		return -EOPNOTSUPP;
-+
-+	/* no branch sampling */
-+	if (has_branch_stack(event))
-+		return -EOPNOTSUPP;
-+
-+	p = (struct papr_scm_priv *)nd_pmu->dev->driver_data;
-+	if (!p)
-+		return -EINVAL;
-+
-+	/* Invalid eventcode */
-+	if (event->attr.config == 0 || event->attr.config > 16)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int papr_scm_pmu_add(struct perf_event *event, int flags)
-+{
-+	u64 count;
-+	int rc;
-+	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
-+
-+	if (!nd_pmu)
-+		return -EINVAL;
-+
-+	if (flags & PERF_EF_START) {
-+		rc = papr_scm_pmu_get_value(event, nd_pmu->dev, &count);
-+		if (rc)
-+			return rc;
-+
-+		local64_set(&event->hw.prev_count, count);
-+	}
-+
-+	return 0;
-+}
-+
-+static void papr_scm_pmu_read(struct perf_event *event)
-+{
-+	u64 prev, now;
-+	int rc;
-+	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
-+
-+	if (!nd_pmu)
-+		return;
-+
-+	rc = papr_scm_pmu_get_value(event, nd_pmu->dev, &now);
-+	if (rc)
-+		return;
-+
-+	prev = local64_xchg(&event->hw.prev_count, now);
-+	local64_add(now - prev, &event->count);
-+}
-+
-+static void papr_scm_pmu_del(struct perf_event *event, int flags)
-+{
-+	papr_scm_pmu_read(event);
-+}
-+
-+static int papr_scm_pmu_check_events(struct papr_scm_priv *p, struct nvdimm_pmu *nd_pmu)
-+{
-+	struct papr_scm_perf_stat *stat;
-+	struct papr_scm_perf_stats *stats;
-+	char *statid;
-+	int index, rc, count;
-+	u32 available_events;
-+
-+	if (!p->stat_buffer_len)
-+		return -ENOENT;
-+
-+	available_events = (p->stat_buffer_len  - sizeof(struct papr_scm_perf_stats))
-+			/ sizeof(struct papr_scm_perf_stat);
-+
-+	/* Allocate the buffer for phyp where stats are written */
-+	stats = kzalloc(p->stat_buffer_len, GFP_KERNEL);
-+	if (!stats) {
-+		rc = -ENOMEM;
-+		return rc;
-+	}
-+
-+	/* Allocate memory to nvdimm_event_map */
-+	p->nvdimm_events_map = kcalloc(available_events, sizeof(char *), GFP_KERNEL);
-+	if (!p->nvdimm_events_map) {
-+		rc = -ENOMEM;
-+		goto out_stats;
-+	}
-+
-+	/* Called to get list of events supported */
-+	rc = drc_pmem_query_stats(p, stats, 0);
-+	if (rc)
-+		goto out_nvdimm_events_map;
-+
-+	for (index = 0, stat = stats->scm_statistic, count = 0;
-+		     index < available_events; index++, ++stat) {
-+		statid = kzalloc(strlen(stat->stat_id) + 1, GFP_KERNEL);
-+		if (!statid) {
-+			rc = -ENOMEM;
-+			goto out_nvdimm_events_map;
-+		}
-+
-+		strcpy(statid, stat->stat_id);
-+		p->nvdimm_events_map[count] = statid;
-+		count++;
-+	}
-+	p->nvdimm_events_map[count] = NULL;
-+	kfree(stats);
-+	return 0;
-+
-+out_nvdimm_events_map:
-+	kfree(p->nvdimm_events_map);
-+out_stats:
-+	kfree(stats);
-+	return rc;
-+}
-+
-+static void papr_scm_pmu_register(struct papr_scm_priv *p)
-+{
-+	struct nvdimm_pmu *nd_pmu;
-+	int rc, nodeid;
-+
-+	nd_pmu = kzalloc(sizeof(*nd_pmu), GFP_KERNEL);
-+	if (!nd_pmu) {
-+		rc = -ENOMEM;
-+		goto pmu_err_print;
-+	}
-+
-+	rc = papr_scm_pmu_check_events(p, nd_pmu);
-+	if (rc)
-+		goto pmu_check_events_err;
-+
-+	nd_pmu->pmu.task_ctx_nr = perf_invalid_context;
-+	nd_pmu->pmu.name = nvdimm_name(p->nvdimm);
-+	nd_pmu->pmu.event_init = papr_scm_pmu_event_init;
-+	nd_pmu->pmu.read = papr_scm_pmu_read;
-+	nd_pmu->pmu.add = papr_scm_pmu_add;
-+	nd_pmu->pmu.del = papr_scm_pmu_del;
-+
-+	nd_pmu->pmu.capabilities = PERF_PMU_CAP_NO_INTERRUPT |
-+				PERF_PMU_CAP_NO_EXCLUDE;
-+
-+	/*updating the cpumask variable */
-+	nodeid = dev_to_node(&p->pdev->dev);
-+	nd_pmu->arch_cpumask = *cpumask_of_node(nodeid);
-+
-+	rc = register_nvdimm_pmu(nd_pmu, p->pdev);
-+	if (rc)
-+		goto pmu_register_err;
-+
-+	/*
-+	 * Set archdata.priv value to nvdimm_pmu structure, to handle the
-+	 * unregistering of pmu device.
-+	 */
-+	p->pdev->archdata.priv = nd_pmu;
-+	return;
-+
-+pmu_register_err:
-+	kfree(p->nvdimm_events_map);
-+pmu_check_events_err:
-+	kfree(nd_pmu);
-+pmu_err_print:
-+	dev_info(&p->pdev->dev, "nvdimm pmu didn't register rc=%d\n", rc);
-+}
-+
- /*
-  * Issue hcall to retrieve dimm health info and populate papr_scm_priv with the
-  * health information.
-@@ -1236,6 +1454,7 @@ static int papr_scm_probe(struct platform_device *pdev)
- 		goto err2;
- 
- 	platform_set_drvdata(pdev, p);
-+	papr_scm_pmu_register(p);
- 
- 	return 0;
- 
-@@ -1254,6 +1473,12 @@ static int papr_scm_remove(struct platform_device *pdev)
- 
- 	nvdimm_bus_unregister(p->bus);
- 	drc_pmem_unbind(p);
-+
-+	if (pdev->archdata.priv)
-+		unregister_nvdimm_pmu(pdev->archdata.priv);
-+
-+	pdev->archdata.priv = NULL;
-+	kfree(p->nvdimm_events_map);
- 	kfree(p->bus_desc.provider_name);
- 	kfree(p);
- 
--- 
-2.26.2
+Please use plain english in the commit description.
 
+> > during page scope and multi page read.
+
+What is page scope?
+
+> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+
+Thanks,
+Miquèl
