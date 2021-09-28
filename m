@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681F941AA15
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA6A41AA1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 09:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbhI1Hwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 03:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239287AbhI1Hwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:52:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9409760F4B;
-        Tue, 28 Sep 2021 07:51:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632815465;
-        bh=G1ViAjdA/G2dcjMEDMQdQby/GLDRcGsYdwynsKMsnKk=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=oOqd8qGX3jSdpA7FXe0FcknkS8/OJxthL/6ruCuf469jklDKFKnsddSAim2oUap5u
-         O1uTcCXrC6XT6eTXp5slvt2LDfBvtPYQwBE9hnA6tsus300Ted25NfOAnOPJRESpie
-         KhTXQsuaGKCsCdl8UmsPBK/CiFghAPoRgCZeZvoM=
-Date:   Tue, 28 Sep 2021 09:51:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module
- namespace
-Message-ID: <YVLJZwNwY4UimfzL@kroah.com>
-References: <YU8oVDFoeD5YYeDT@kroah.com>
- <YVLE4b/nG5/qCOJN@phenom.ffwll.local>
+        id S239482AbhI1HzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 03:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239450AbhI1HzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 03:55:06 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28933C061604
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:53:27 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id e15so89111820lfr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 00:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ii9qLWgitq2lwVS5qa82b5LU5SvJwtKKJcHVt8hkGzs=;
+        b=DBqRHD9HQvd6fYoRv8zX0pl+lhqTmHdIrYxcgnAPAjRiaVMPA8zlN4WOk6NvRNf/BD
+         AfgU7bcRpq/NwpK7GtLR66NyuhdDaGNDlZHmD2RGePs+Y3NRFxCnWxO4Zm9otgifKvAo
+         FKhxqJQfBrEPUJFvCPWPOKJbF8tXqSMGqA7eA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ii9qLWgitq2lwVS5qa82b5LU5SvJwtKKJcHVt8hkGzs=;
+        b=P8EXMkp317EmdC8MFCmyCnMDOxEb41UJsJ1A5OMxHLzf1ExaMJaJOt8VcHvJ+o60kv
+         9bcLyqaBPV5pXwT33z66cj/tCJfzYk+Q3xFypmZ3bVjtCAESpbr9ZA2lByfDUTTI44DP
+         Wde1lU9Ufq2rxfcor89ba0MR+GHidSPTiPS5yS//iKudnyL08vPWkqqXSTUInT6zcHmq
+         hC38axaFNF20TF83YtnoMhxkyeJMW/ScSmviXA5fcva98wuXYX8c5Q32AS9rgGpNANAc
+         ZaiPFoh8S7v7iqN+UxTwEJuSTEFJ1ZeTLS4zATXRiNa7UcILmIt56z34btKA3lH8DY9g
+         vIRQ==
+X-Gm-Message-State: AOAM5306dHFnDlFzW1UyoAyL8c3Wij6q5hWnCqJiqoovOQQLDtn9OiSu
+        zX5n7gvlusXD3q2Q96VILRKpJL5bzAY7NCbStHoQVINgWWF6LA==
+X-Google-Smtp-Source: ABdhPJzWnm2L7IxEjLI8zb38BjNviOGp+t6lkt2c66XagFyi2eN7OLh5PhhiMSLvNV5kaS0Y/u7rYQP8nh7yUQ1Wj6A=
+X-Received: by 2002:a05:651c:1790:: with SMTP id bn16mr4344323ljb.457.1632815605494;
+ Tue, 28 Sep 2021 00:53:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YVLE4b/nG5/qCOJN@phenom.ffwll.local>
+References: <20210928034634.333785-1-senozhatsky@chromium.org> <CAGXv+5HaZcf-RwGGb7phfKcoTnaeiN2H6b_BvR+qdcRYys=nzA@mail.gmail.com>
+In-Reply-To: <CAGXv+5HaZcf-RwGGb7phfKcoTnaeiN2H6b_BvR+qdcRYys=nzA@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 28 Sep 2021 15:53:14 +0800
+Message-ID: <CAGXv+5G16fZWyyFDHTeaqJG02cYhVm20u47ZXJb+HdHmFc8HSw@mail.gmail.com>
+Subject: Re: [PATCH] media: videobuf2: always set buffer vb2 pointer
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 09:31:45AM +0200, Daniel Vetter wrote:
-> On Sat, Sep 25, 2021 at 03:47:00PM +0200, Greg Kroah-Hartman wrote:
-> > In order to better track where in the kernel the dma-buf code is used,
-> > put the symbols in the namespace DMA_BUF and modify all users of the
-> > symbols to properly import the namespace to not break the build at the
-> > same time.
-> > 
-> > Now the output of modinfo shows the use of these symbols, making it
-> > easier to watch for users over time:
-> > 
-> > $ modinfo drivers/misc/fastrpc.ko | grep import
-> > import_ns:      DMA_BUF
-> > 
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: "Christian König" <christian.koenig@amd.com>
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > Cc: Maxime Ripard <mripard@kernel.org>
-> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> > 
-> > The topic of dma-buf came up in the Maintainer's summit yesterday, and
-> > one comment was to put the symbols in their own module namespace, to
-> > make it easier to notice and track who was using them.  This patch does
-> > so, and finds some "interesting" users of the api already in the tree.
-> 
-> Yeah, the interesting ones is why I added the dma-buf wildcard match a
-> while ago.  Since that landed I don't think anything escaped. Should we
-> perhaps also add
-> 
-> K: MODULE_IMPORT_NS(DMA_BUF);
-> 
-> to the dma-buf MAINATINERS entry? Entirely untested, also no idea whether
-> there's not a better way to match for module namespaces. Either way:
+On Tue, Sep 28, 2021 at 2:24 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+>
+> On Tue, Sep 28, 2021 at 2:16 PM Sergey Senozhatsky
+> <senozhatsky@chromium.org> wrote:
+> >
+> > We need to always link allocated vb2_dc_buf back to vb2_buffer because
+> > we dereference vb2 in prepare() and finish() callbacks.
+> >
+> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+>
+> This fixes the breakage from the "videobuf2: support new noncontiguous DMA
+> API" series on the RK3399 Scarlet if the ChromeOS patch that changes
+> min_buffers_needed to 0 [1] is not applied.
+>
+> Since there are other in-tree drivers that have min_buffers_needed=0,
+> I would recommend getting some more testing.
 
-I don't know if that would really work, if anything, just make the
-MAINTAINERS file harder to maintain :)
+Seems I had a stale kernel when testing the min_buffers_needed=0 case.
 
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Everythings works now.
 
-Thanks for the review, I'll send out a v2 later today...
-
-greg k-h
+Tested-by: Chen-Yu Tsai <wenst@chromium.org>
