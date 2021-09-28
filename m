@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B91141B7A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787F041B7AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 21:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242534AbhI1Thd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 15:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242415AbhI1Thc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 15:37:32 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B756C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:35:52 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id q6so218041ilm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 12:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=64evIw52oRekIZbHwSiCOQxkuAatfjf85RCST3duN+k=;
-        b=Y+whdzRKhZBi4F0e10aKGWY8V/H37d7/fT7EfJLwEzHf9sW/3ImWPZ9ET2U5Weu4yz
-         ZBjRIgLcc3KjeErqmbig8bPdI+Ka8EUE0FIf5dIotawpBRnC5dom3MQafQisZ8LWVawZ
-         r1pRp649QhA/oJDCUS6senPdUWmeY4p6YtiBUjiG6faSu5HSv5lEtbfP7y0ezWGarR4D
-         pC1C6h2vjPZw+Rer1rFu40SivFJbautH9NtQFhC6bCu4Cmm1NNk6ZDeWvKI3J5H/YtB0
-         q0/KXjB+kwRbKGl91HsUrqE0Z03rLt11AcxhXGBqB4TNHeHroEl+vdN1zscWzQQApUAZ
-         M1nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=64evIw52oRekIZbHwSiCOQxkuAatfjf85RCST3duN+k=;
-        b=MWJHIHaSAihY0LXb9PSiYRl0IwwlNewRrOBghef0NzZ+6VkmxRaNZx+6QKzrDHTpc7
-         pvpJpxQoTjLkzI5jQ8EAA7tRw/q3Noj4UPEdGvQrMqTheElKpYc+pjQjyRami8Bc5DJ0
-         gtKG++azqVDCUVYXRGoQORG4n5l5aMvyUmlKiDbFiKv7P84mMP+/EafBtwD9g6udlFUi
-         W81nbl9YOmZuzvHJ8aC/ww9yf0JsH3NNWfkRlZW5VO9cPSiGWxIXt//lM5M5UiKUzqYj
-         w6x2FA6xLjQ15RC4L8tOGHoxyaQJl8TIlGBQ2fMLmiP6gkadkMq941F0o5D2KlpYJr4i
-         WKDg==
-X-Gm-Message-State: AOAM531Gio8nsb+NjsdIFcIf7vmMF8Ae0u869OPCwJGPoeoVA87vRRjj
-        0WxtdnBzJini0AbSI23Z4g/G8g==
-X-Google-Smtp-Source: ABdhPJzFSVZGvIenvKrDxicIDxRtjRj8KENPEhcmGHIrbBWFLg+wtwG6D65MA29+I55UEiSKkXhAsQ==
-X-Received: by 2002:a05:6e02:1d1c:: with SMTP id i28mr5559430ila.33.1632857751863;
-        Tue, 28 Sep 2021 12:35:51 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id d6sm11787173ile.51.2021.09.28.12.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:35:51 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVItK-007GOs-GL; Tue, 28 Sep 2021 16:35:50 -0300
-Date:   Tue, 28 Sep 2021 16:35:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <20210928193550.GR3544071@ziepe.ca>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <20210927164648.1e2d49ac.alex.williamson@redhat.com>
- <20210927231239.GE3544071@ziepe.ca>
- <20210928131958.61b3abec.alex.williamson@redhat.com>
+        id S242415AbhI1Th6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 15:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242535AbhI1Th5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 15:37:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3FA61131;
+        Tue, 28 Sep 2021 19:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632857777;
+        bh=/hPKLMPJTNrhU1SP0bMA34z2EYxtK4mD++/ujAwU6A4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h6eGGH0fk6/SkY3p+QaFpdTDka6h9KtK4CpJIjQVf8LiUKr8o+llRxPFcV7LkqV8M
+         Z3+hSITUMhBWOBM2/ITWO0IyxyiKGeDl607P7bOazNx5NQbndOq4lieEc+Wyw12tN8
+         JOgzDoGxiFUZDjfFNrLZI/af0nt8o+C8qPTkKeGO7Vy4ezfLCYV83GcDdeGAZvFLJD
+         nsaEh2q2AhB3eyn708Mfk0UpJq3UzrhLpjTcz80BwIrbgPIoogknndzNBguE5Y/kqL
+         e1nweHR9yTNeX6ZXkne0h52alGpPBYgo8VDGfJ/BdTfu8ejPsguJBhAbS/yE4lX/RY
+         N20xF3Twn9VIw==
+Received: by mail-ed1-f45.google.com with SMTP id r18so11548545edv.12;
+        Tue, 28 Sep 2021 12:36:17 -0700 (PDT)
+X-Gm-Message-State: AOAM532jdaDAcW49axkMVF+rx0kVtRbH+NvDM/6yM0rictaltYDnVGZU
+        V4E+64ttQcMKGd548XNSvnVCVdsFOOIIdB+SaA==
+X-Google-Smtp-Source: ABdhPJxkN1rAEe0u7at9IuCHUo7sUflpWJWdcsHHnqh3vlDJJdBMkZRw+1OPM2MmSyluZXfETP88gy0YMvDpRaQqOk4=
+X-Received: by 2002:a17:906:fa8a:: with SMTP id lt10mr8741415ejb.320.1632857776271;
+ Tue, 28 Sep 2021 12:36:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928131958.61b3abec.alex.williamson@redhat.com>
+References: <20210928182139.652896-1-f.fainelli@gmail.com> <20210928182139.652896-10-f.fainelli@gmail.com>
+In-Reply-To: <20210928182139.652896-10-f.fainelli@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 28 Sep 2021 14:36:04 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+Hcpj6CCM6hYFC5hpNfm9fcqZXDuyxR4vKn9hzRK-QiA@mail.gmail.com>
+Message-ID: <CAL_Jsq+Hcpj6CCM6hYFC5hpNfm9fcqZXDuyxR4vKn9hzRK-QiA@mail.gmail.com>
+Subject: Re: [PATCH v3 09/14] irqchip: Provide platform_device to of_irq_init_cb_t
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM SUB-ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 01:19:58PM -0600, Alex Williamson wrote:
+On Tue, Sep 28, 2021 at 1:22 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> Provide the platform device mapping to the interrupt controller node to
+> the of_irq_init_cb_t callback such that drivers can make use of it.
+>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/irqchip/irqchip.c | 2 +-
+>  drivers/of/irq.c          | 2 +-
+>  include/linux/of_irq.h    | 5 ++++-
+>  3 files changed, 6 insertions(+), 3 deletions(-)
 
-> In defining the device state, we tried to steer away from defining it
-> in terms of the QEMU migration API, but rather as a set of controls
-> that could be used to support that API to leave us some degree of
-> independence that QEMU implementation might evolve.
+Less invasive than I thought as we lose any function typing. Maybe at
+least the one platform driver, drivers/irqchip/qcom-pdc.c, should have
+its function parameters updated.
 
-That is certainly a different perspective, it would have been
-better to not express this idea as a FSM in that case...
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-So each state in mlx5vf_pci_set_device_state() should call the correct
-combination of (un)freeze, (un)quiesce and so on so each state
-reflects a defined operation of the device?
-
-Jason
+>
+> diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
+> index 3570f0a588c4..289784eefd00 100644
+> --- a/drivers/irqchip/irqchip.c
+> +++ b/drivers/irqchip/irqchip.c
+> @@ -55,6 +55,6 @@ int platform_irqchip_probe(struct platform_device *pdev)
+>         if (par_np && !irq_find_matching_host(par_np, DOMAIN_BUS_ANY))
+>                 return -EPROBE_DEFER;
+>
+> -       return irq_init_cb(np, par_np);
+> +       return irq_init_cb(np, par_np, pdev);
+>  }
+>  EXPORT_SYMBOL_GPL(platform_irqchip_probe);
+> diff --git a/drivers/of/irq.c b/drivers/of/irq.c
+> index 352e14b007e7..18f3f5c00c87 100644
+> --- a/drivers/of/irq.c
+> +++ b/drivers/of/irq.c
+> @@ -538,7 +538,7 @@ void __init of_irq_init(const struct of_device_id *matches)
+>                                  desc->dev,
+>                                  desc->dev, desc->interrupt_parent);
+>                         ret = desc->irq_init_cb(desc->dev,
+> -                                               desc->interrupt_parent);
+> +                                               desc->interrupt_parent, NULL);
+>                         if (ret) {
+>                                 of_node_clear_flag(desc->dev, OF_POPULATED);
+>                                 kfree(desc);
+> diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
+> index aaf219bd0354..89acc8b089f0 100644
+> --- a/include/linux/of_irq.h
+> +++ b/include/linux/of_irq.h
+> @@ -9,7 +9,10 @@
+>  #include <linux/ioport.h>
+>  #include <linux/of.h>
+>
+> -typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *);
+> +struct platform_device;
+> +
+> +typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *,
+> +                               struct platform_device *);
+>
+>  /*
+>   * Workarounds only applied to 32bit powermac machines
+> --
+> 2.25.1
+>
