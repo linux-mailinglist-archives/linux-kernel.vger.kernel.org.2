@@ -2,183 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1B541B9B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CFF41B9BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242917AbhI1WAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 18:00:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38366 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241482AbhI1WAE (ORCPT
+        id S242989AbhI1WBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 18:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241482AbhI1WBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 18:00:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632866303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XR+T+4Yz7vkyWVX7zGt6efMFvlpokGhPisZF/3hhTbs=;
-        b=0X9eMmEL8b2e7Q0egDdfX+psnLY1wdt5LR2yJPPo5OtUnDYUHSsCV0HDjuCWh6/wvsPZrC
-        iGJKf47i+P0dd9x/OzAnnLRLiI9i6/zMW5FNi4qzpH7Q5DYO//LUhO7CVtGsItKHCQAbNS
-        RhI6+AQTjJ63GscJchjsn9ZcO+vV8MVxQbfU7l3u75VlbukEPBNkCMZNAq+a7KixU9tKdD
-        L8gTWKgoBPJAukhj6BpO9xDirbVGGiP9B7yXrmS5ogCevyVSvkwLPVKyP6Z1URHMULs5b/
-        xd5T1LHGRvMc+XOpIQCxom1D0E1/ueSFu7jarQzr1fhw2QkgG0/gdJYGsors/Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632866303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XR+T+4Yz7vkyWVX7zGt6efMFvlpokGhPisZF/3hhTbs=;
-        b=BUMSEcsCZcgPUpZ8rPOVtXlYqrcbr7K15XgcQPCvyHw0jA7unvoMIQzrmiiA8hrwCqqh+j
-        QgdVh/ABQHREPKCQ==
-To:     Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/5 v0.6] sched/umcg: RFC: add userspace atomic helpers
-In-Reply-To: <20210917180323.278250-3-posk@google.com>
-References: <20210917180323.278250-1-posk@google.com>
- <20210917180323.278250-3-posk@google.com>
-Date:   Tue, 28 Sep 2021 23:58:23 +0200
-Message-ID: <87ilyk9xc0.ffs@tglx>
+        Tue, 28 Sep 2021 18:01:14 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950DAC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:59:34 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g184so510650pgc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hR85GCZfhL4YJawbBftoxChN3cnahiYUmelBrtysYzQ=;
+        b=d0JUHehyLXdFA5B/wgcgOjwuw3aZVkCR3Gk+OriLfpCmsGGgRbZi5+6+5dzXaHm/Rk
+         H3TiGrTERzN09CS95iDAWiZDAmZQ7WtptNJXypeXDWyysDPrB9RadntKAmDj8faRpKjd
+         fMchWKVs2KViwzp7iD2lGulOLLVhw7YhvFLNSrL+7iYLmoBrEXEPXy3mdg2HCz/DUqRI
+         DfUngAkqbFuin6e/uZEVEtmEQ9sA6tW5M9iMir9UF/2O+6uyZKAnHgdD6XMtiWjc3kEe
+         tZ6voUkCgJodnBe8T1C1vXvGgmHGQNNecVIO2odLcNPxegnl1sNnabyit3FrxNWbwdpX
+         e9Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hR85GCZfhL4YJawbBftoxChN3cnahiYUmelBrtysYzQ=;
+        b=m+rcOCYynDk9GqBKY40PxyXbjHKIVgA0AiCqQzB9oFPIRRioDNEb/nEG0jx8J9mVDj
+         kNY5V11/YL5z3LDtm7hyQ05GaWNmUjt6Bz+6iRWlve0HcQ9mkcey/JFYlpYJyjE7/+Hi
+         5gWEoI7oj4LclyocX3pVAyAxVU6lA2WGxSiUQ+q9uY9waQoztfDW2/s+VIU8oPPX43we
+         oduR+LC+Bo1lgJlIjkMua2QCyQPSpKkOsOT/1MSfPg+6VgYzTfZuWOJ3EzIvAx9pJbUi
+         m87seH6B+Y5O1N8PM3FMD84wEK1g7Misihu2IUNSbj2/Bdcw6vcXshIYobX1QIo5n3GT
+         X1ew==
+X-Gm-Message-State: AOAM531cTF9Zj3PGOjWP6tb+EA+cXks+OteYEWdFxCksByFtWu0r6ayC
+        YAZGFqjMIJ51a0ni5cu2ol98uw==
+X-Google-Smtp-Source: ABdhPJywxfOyjT/Bbb3z07Sb4ifGRgqWGAJFb2yLMs8NKV2zXEevYh6BB5SfG6ECW1CSnDRZbY3y1w==
+X-Received: by 2002:a63:50b:: with SMTP id 11mr5654394pgf.308.1632866373808;
+        Tue, 28 Sep 2021 14:59:33 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id z14sm83969pjq.48.2021.09.28.14.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 14:59:32 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 21:59:29 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 08/14] KVM: x86: Tweak halt emulation helper names to
+ free up kvm_vcpu_halt()
+Message-ID: <YVOQQfgNDO3L0RsS@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-9-seanjc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925005528.1145584-9-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
+On Fri, Sep 24, 2021 at 05:55:22PM -0700, Sean Christopherson wrote:
+> Rename a variety of HLT-related helpers to free up the function name
+> "kvm_vcpu_halt" for future use in generic KVM code, e.g. to differentiate
+> between "block" and "halt".
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-On Fri, Sep 17 2021 at 11:03, Peter Oskolkov wrote:
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-> Add helper functions to work atomically with userspace 32/64 bit values -
-> there are some .*futex.* named helpers, but they are not exactly
-> what is needed for UMCG; I haven't found what else I could use, so I
-> rolled these.
->
-> At the moment only X86_64 is supported.
->
-> Note: the helpers should probably go into arch/ somewhere; I have
-> them in kernel/sched/umcg_uaccess.h temporarily for convenience. Please
-> let me know where I should put them.
-
-Again: This does not qualify as a changelog, really.
-
-That aside, you already noticed that there are futex helpers. Your
-reasoning that they can't be reused is only partially correct.
-
-What you named __try_cmpxchg_user_32() is pretty much a verbatim copy of
-X86 futex_atomic_cmpxchg_inatomic(). The only difference is that you placed
-the uaccess_begin()/end() into the inline.
-
-Not going anywhere. You have the bad luck to have the second use case
-for such an infrastucture and therefore you have the honours of mopping
-it up by making it a generic facility which replaces the futex specific
-variant.
-
-Also some of the other instances are just a remix of the futex_op()
-mechanics so your argument is even more weak.
-
-> +static inline int fix_pagefault(unsigned long uaddr, bool write_fault, int bytes)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	int ret;
-> +
-> +	/* Validate proper alignment. */
-> +	if (uaddr % bytes)
-> +		return -EINVAL;
-
-Why do you want to make this check _after_ the page fault? Checks
-on user supplied pointers have to be done _before_ trying to access
-them.
-
-> +
-> +	if (mmap_read_lock_killable(mm))
-> +		return -EINTR;
-> +	ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
-> +			NULL);
-> +	mmap_read_unlock(mm);
-> +
-> +	return ret < 0 ? ret : 0;
-> +}
-
-There is no point in making this inline. Fault handling is not a hotpath
-by any means.
-
-Aside of that it's pretty much what futex.c::fault_in_user_writeable()
-does. So it's pretty obvious to factor this out in the first step into
-mm/gup.c or whatever place the mm people fancy and make the futex code
-use it.
-
-> +/**
-> + * cmpxchg_32_user_nosleep - compare_exchange 32-bit values
-> + *
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + * -EAGAIN: @expected did not match; consult @prev
-> + */
-> +static inline int cmpxchg_user_32_nosleep(u32 __user *uaddr, u32 *old, u32 new)
-> +{
-> +	int ret = -EFAULT;
-> +	u32 __old = *old;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	__uaccess_begin_nospec();
-
-Why exactly do you need _nospec() here? Just to make sure that this code
-is x86 only or just because you happened to copy a x86 implementation
-which uses these nospec() variants?
-
-Again, 90% of this is generic and not at all x86 specific and this
-nospec() thing is very well hidden in the architecture code for a good
-reason while
-
-       if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-		return -EFAULT;
-
-	pagefault_disable();
-        ret = user_op(.....);
-	pagefault_enable();
-        
-is completely generic and does not have any x86 or other architecture
-dependency in it.
-
-> +	ret = __try_cmpxchg_user_32(old, uaddr, __old, new);
-> +	user_access_end();
-> +
-> +	if (!ret)
-> +		ret =  *old == __old ? 0 : -EAGAIN;
-> +
-> +	pagefault_enable();
-> +	return ret;
-> +}
-
-Aside of that this should go into mm/maccess.c or some other reasonable
-place where people can find it along with other properly named
-_nofault() helpers.
-
-Nothing except the ASM wrappers is architecture specific here. So 90% of
-this can be made generic infrastructure as out of line library code.
-
-And yes, I mean out of line library code unless you can come up with a
-compelling reason backed by actual numbers why this has to be inlined.
-
-May I recommend to read this for inspiration:
-
-  https://lore.kernel.org/lkml/alpine.LFD.2.00.1001251002430.3574@localhost.localdomain/
-
-Thanks,
-
-        tglx
+> ---
+>  arch/x86/include/asm/kvm_host.h |  2 +-
+>  arch/x86/kvm/vmx/nested.c       |  2 +-
+>  arch/x86/kvm/vmx/vmx.c          |  4 ++--
+>  arch/x86/kvm/x86.c              | 13 +++++++------
+>  4 files changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 4e8c21083bdb..cfebef10b89c 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1679,7 +1679,7 @@ int kvm_emulate_monitor(struct kvm_vcpu *vcpu);
+>  int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
+>  int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
+>  int kvm_emulate_halt(struct kvm_vcpu *vcpu);
+> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
+> +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu);
+>  int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
+>  int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
+>  
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index eedcebf58004..f689e463b678 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -3618,7 +3618,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>  		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
+>  		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
+>  			vmx->nested.nested_run_pending = 0;
+> -			return kvm_vcpu_halt(vcpu);
+> +			return kvm_emulate_halt_noskip(vcpu);
+>  		}
+>  		break;
+>  	case GUEST_ACTIVITY_WAIT_SIPI:
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index d118daed0530..858f5f1f1273 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4740,7 +4740,7 @@ static int handle_rmode_exception(struct kvm_vcpu *vcpu,
+>  		if (kvm_emulate_instruction(vcpu, 0)) {
+>  			if (vcpu->arch.halt_request) {
+>  				vcpu->arch.halt_request = 0;
+> -				return kvm_vcpu_halt(vcpu);
+> +				return kvm_emulate_halt_noskip(vcpu);
+>  			}
+>  			return 1;
+>  		}
+> @@ -5414,7 +5414,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
+>  
+>  		if (vcpu->arch.halt_request) {
+>  			vcpu->arch.halt_request = 0;
+> -			return kvm_vcpu_halt(vcpu);
+> +			return kvm_emulate_halt_noskip(vcpu);
+>  		}
+>  
+>  		/*
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b0c21d42f453..eade8a2bdccf 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8643,7 +8643,7 @@ void kvm_arch_exit(void)
+>  #endif
+>  }
+>  
+> -static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+> +static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
+>  {
+>  	++vcpu->stat.halt_exits;
+>  	if (lapic_in_kernel(vcpu)) {
+> @@ -8655,11 +8655,11 @@ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+>  	}
+>  }
+>  
+> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+> +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu)
+>  {
+> -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
+> +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
+>  }
+> -EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
+> +EXPORT_SYMBOL_GPL(kvm_emulate_halt_noskip);
+>  
+>  int kvm_emulate_halt(struct kvm_vcpu *vcpu)
+>  {
+> @@ -8668,7 +8668,7 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
+>  	 * TODO: we might be squashing a GUESTDBG_SINGLESTEP-triggered
+>  	 * KVM_EXIT_DEBUG here.
+>  	 */
+> -	return kvm_vcpu_halt(vcpu) && ret;
+> +	return kvm_emulate_halt_noskip(vcpu) && ret;
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_emulate_halt);
+>  
+> @@ -8676,7 +8676,8 @@ int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
+>  {
+>  	int ret = kvm_skip_emulated_instruction(vcpu);
+>  
+> -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
+> +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD,
+> +					KVM_EXIT_AP_RESET_HOLD) && ret;
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
+>  
+> -- 
+> 2.33.0.685.g46640cef36-goog
+> 
