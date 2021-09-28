@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D124241A6BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FD141A6C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 06:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238924AbhI1ErD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 00:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        id S238934AbhI1ErF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 00:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238893AbhI1Eqy (ORCPT
+        with ESMTP id S238911AbhI1Eqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 00:46:54 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD40DC061604
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 21:45:15 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso6780346oom.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 21:45:15 -0700 (PDT)
+        Tue, 28 Sep 2021 00:46:55 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78150C061769
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 21:45:16 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id t189so28524763oie.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Sep 2021 21:45:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vRzGhEMXchIY55D13bcq5jzx75HCS4FbYSUPBwMzgvM=;
-        b=QrJ++pvDZOLabP7PuFL2zHxkYIasTvmcBxrj3qji7l1em1YvOFnDkmWWuB4w1epuK1
-         n6+V0/DN9brplMD1Lpmr45unx491w5gaJv0j7SxaFmUD2xd8N8F7lm7XcRyb8VCffYAy
-         F+4WkQldcGmQokS05/O97mgBVXgmfqrws2708UvAjtn4ygTJEf2U9oxajxjutCraPU/+
-         4kJqF0vuMchIY40xiiJjb6nKo0OPN8fSVTg0eykIEJxymvARljxX67n4zEvtVBwC1MNO
-         HLGghTiiiXSdGw9tA3PPxXDV85hTQ7nFXw0CjThJfwOujkP0umIzFWUM4aS3kfgQjYfn
-         Gc/A==
+        bh=jKrFYQbVmIe+dhzGAjc1VtNM8uE4C6GnX/epkEN2A2w=;
+        b=mtcq60eptWxV634R2t+ONfOuSk3sV5WKjNRaRBnasymHVuxUlS02osiUxKMHS/GKQG
+         LMR+K0TLil8QYlfufI6nhfe00nVHfoM6znSmkatnHN1EX2u8WOEZK+Iecszvh0dXmlIg
+         F8KUXUT2yZdhv4RGsNwTPY+/Lxe80QYeBaLq3h8mIRf3sqfsNxbDt8Ax+gPnVCpYrCpF
+         Xs3JB3u7fvTeUyGhYLdQLp1bkniE9JoPK1WlX/u1w96uf5+FqthQ9T/lSAhTaMKdE7XT
+         AAJZmVa8p3ylIOmg0+M+MwF5j3acNx4CLk30NVaf9mxUZbrv5i8xoVxN+d0x6QBbFHYQ
+         tFaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vRzGhEMXchIY55D13bcq5jzx75HCS4FbYSUPBwMzgvM=;
-        b=bhC+sbnCCYAyZtd+5U4nuudOI+G0m9pCM5n8akA6LIJiZMxPpMbJDQLKZKnBbdNcMW
-         NXyw3mOuluVZakb/lBI5la+7I9TON5Dcmo9Ill9zkIuBo7+zphLA0YbWuCFYJEAQ5ABv
-         Hh7XjZMfamztVQKXs06Nf0Yc3tWBNxRvyLxPgyAKhoSYKwyQ85heymvn6Q3KAQg8wC1a
-         M9hWEBjO0hAuK83ayakwRpwG7ngjZ9Sl60rgvIMoKm35GbQeaO1FHHLQzJj/QXvLDSdf
-         ElQ1Dh9OeE9+7rLOV3W136hGsfdgboZi/pvou4+I/5Rxg3lazHutTVN+GFkSfTBaTF2Z
-         /ixg==
-X-Gm-Message-State: AOAM531VYP319DyFJipEBjxiY+of4csYM4UnO2B4NdJIPF6d0T4yZ7ah
-        vtTtimMjsucJXkcmGAlxKvZdSA==
-X-Google-Smtp-Source: ABdhPJyzcTkQcTYam5q6TbZYkwkpVo9JZNqfasrZ/mUOCU0QQ2yRfodKN8s+jmOHyTzoG/xh6FXDHw==
-X-Received: by 2002:a4a:3ecd:: with SMTP id t196mr3209527oot.69.1632804315151;
+        bh=jKrFYQbVmIe+dhzGAjc1VtNM8uE4C6GnX/epkEN2A2w=;
+        b=DcIAapodGFHXXTB3MHXFNgLxKMU/iM1gGMOXU0CieoAOviewOcrfH/Aa0D+gMRhVCX
+         Xe2AbYSV2Tdi0Vj3tiNhK4AD+rZXUQSvFNuSkWKRzD3llciGd6B3k+Lojq01buddzeIC
+         RejdbOQT6Dp7rHtBj6a38oyMVwjKvsl7MBYOf7QJ5DwbcRGK8imx9NEotT4fjIfcLC2d
+         WE0tWVd9BuFEio56BSXR7PSnEtzJ96nAwEGm7noTwZyqRN/5iiIE/pbMxhXINYnb4O+C
+         SJFtkRXoCZhyBSqecSeEwVEEL8TDSJoFDo1DSVjgAIWPTu+ceXycDaUlq5JH43OtoshO
+         UNfg==
+X-Gm-Message-State: AOAM531aRI/s1aVyrEMLtM2HXj+cMkZFWgvKlg4P1C6zigI6cEjBXLHe
+        FkH9bbU/OLU0Cpc1JA9kEcCXWg==
+X-Google-Smtp-Source: ABdhPJz/3hdsDNYQscFjm7jGLKZgf/J7BYyEvihJDaD+7+SAAJ6EC/wMmTlVr48xgAMqu4ANAzKlow==
+X-Received: by 2002:a05:6808:11c8:: with SMTP id p8mr2155127oiv.72.1632804315874;
         Mon, 27 Sep 2021 21:45:15 -0700 (PDT)
 Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x29sm2553341oox.18.2021.09.27.21.45.14
+        by smtp.gmail.com with ESMTPSA id x29sm2553341oox.18.2021.09.27.21.45.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 21:45:14 -0700 (PDT)
+        Mon, 27 Sep 2021 21:45:15 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -55,9 +55,9 @@ To:     Andy Gross <agross@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] soc: qcom: smem: Support reserved-memory description
-Date:   Mon, 27 Sep 2021 21:45:45 -0700
-Message-Id: <20210928044546.4111223-2-bjorn.andersson@linaro.org>
+Subject: [PATCH 3/3] arm64: dts: qcom: sdm845: Drop standalone smem node
+Date:   Mon, 27 Sep 2021 21:45:46 -0700
+Message-Id: <20210928044546.4111223-3-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210928044546.4111223-1-bjorn.andersson@linaro.org>
 References: <20210928044546.4111223-1-bjorn.andersson@linaro.org>
@@ -67,167 +67,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Practically all modern Qualcomm platforms has a single reserved-memory
-region for SMEM. So rather than having to describe SMEM in the form of a
-node with a reference to a reserved-memory node, allow the SMEM device
-to be instantiated directly from the reserved-memory node.
-
-The current means of falling back to dereferencing the "memory-region"
-is kept as a fallback, if it's determined that the SMEM node is a
-reserved-memory node.
-
-The "qcom,smem" compatible is added to the reserved_mem_matches list, to
-allow the reserved-memory device to be probed.
-
-In order to retain the readability of the code, the resolution of
-resources is split from the actual ioremapping.
+Now that the SMEM binding and driver allows the SMEM node to be
+described in the reserved-memory region directly, move the compatible
+and hwlock properties to the reserved-memory node and drop the
+standadlone node.
 
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/of/platform.c   |  1 +
- drivers/soc/qcom/smem.c | 57 ++++++++++++++++++++++++++++-------------
- 2 files changed, 40 insertions(+), 18 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index 32d5ff8df747..07813fb1ef37 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -505,6 +505,7 @@ EXPORT_SYMBOL_GPL(of_platform_default_populate);
- static const struct of_device_id reserved_mem_matches[] = {
- 	{ .compatible = "qcom,rmtfs-mem" },
- 	{ .compatible = "qcom,cmd-db" },
-+	{ .compatible = "qcom,smem" },
- 	{ .compatible = "ramoops" },
- 	{ .compatible = "nvmem-rmem" },
- 	{}
-diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
-index 4fb5aeeb0843..c7e519bfdc8a 100644
---- a/drivers/soc/qcom/smem.c
-+++ b/drivers/soc/qcom/smem.c
-@@ -9,6 +9,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
-@@ -240,7 +241,7 @@ static const u8 SMEM_INFO_MAGIC[] = { 0x53, 0x49, 0x49, 0x49 }; /* SIII */
-  * @size:	size of the memory region
-  */
- struct smem_region {
--	u32 aux_base;
-+	phys_addr_t aux_base;
- 	void __iomem *virt_base;
- 	size_t size;
- };
-@@ -499,7 +500,7 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
- 	for (i = 0; i < smem->num_regions; i++) {
- 		region = &smem->regions[i];
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index beee57087d05..2800eae61910 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -99,9 +99,11 @@ aop_cmd_db_mem: memory@85fe0000 {
+ 			no-map;
+ 		};
  
--		if (region->aux_base == aux_base || !aux_base) {
-+		if ((u32)region->aux_base == aux_base || !aux_base) {
- 			if (size != NULL)
- 				*size = le32_to_cpu(entry->size);
- 			return region->virt_base + le32_to_cpu(entry->offset);
-@@ -664,7 +665,7 @@ phys_addr_t qcom_smem_virt_to_phys(void *p)
- 		if (p < region->virt_base + region->size) {
- 			u64 offset = p - region->virt_base;
+-		smem_mem: memory@86000000 {
++		memory@86000000 {
++			compatible = "qcom,smem";
+ 			reg = <0x0 0x86000000 0 0x200000>;
+ 			no-map;
++			hwlocks = <&tcsr_mutex 3>;
+ 		};
  
--			return (phys_addr_t)region->aux_base + offset;
-+			return region->aux_base + offset;
- 		}
- 	}
+ 		tz_mem: memory@86200000 {
+@@ -941,12 +943,6 @@ tcsr_mutex: hwlock {
+ 		#hwlock-cells = <1>;
+ 	};
  
-@@ -863,12 +864,12 @@ qcom_smem_enumerate_partitions(struct qcom_smem *smem, u16 local_host)
- 	return 0;
- }
- 
--static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
--				const char *name, int i)
-+static int qcom_smem_resolve_mem(struct qcom_smem *smem, const char *name,
-+				 struct smem_region *region)
- {
-+	struct device *dev = smem->dev;
- 	struct device_node *np;
- 	struct resource r;
--	resource_size_t size;
- 	int ret;
- 
- 	np = of_parse_phandle(dev->of_node, name, 0);
-@@ -881,13 +882,9 @@ static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
- 	of_node_put(np);
- 	if (ret)
- 		return ret;
--	size = resource_size(&r);
- 
--	smem->regions[i].virt_base = devm_ioremap_wc(dev, r.start, size);
--	if (!smem->regions[i].virt_base)
--		return -ENOMEM;
--	smem->regions[i].aux_base = (u32)r.start;
--	smem->regions[i].size = size;
-+	region->aux_base = r.start;
-+	region->size = resource_size(&r);
- 
- 	return 0;
- }
-@@ -895,12 +892,14 @@ static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
- static int qcom_smem_probe(struct platform_device *pdev)
- {
- 	struct smem_header *header;
-+	struct reserved_mem *rmem;
- 	struct qcom_smem *smem;
- 	size_t array_size;
- 	int num_regions;
- 	int hwlock_id;
- 	u32 version;
- 	int ret;
-+	int i;
- 
- 	num_regions = 1;
- 	if (of_find_property(pdev->dev.of_node, "qcom,rpm-msg-ram", NULL))
-@@ -914,13 +913,35 @@ static int qcom_smem_probe(struct platform_device *pdev)
- 	smem->dev = &pdev->dev;
- 	smem->num_regions = num_regions;
- 
--	ret = qcom_smem_map_memory(smem, &pdev->dev, "memory-region", 0);
--	if (ret)
--		return ret;
-+	rmem = of_reserved_mem_lookup(pdev->dev.of_node);
-+	if (rmem) {
-+		smem->regions[0].aux_base = rmem->base;
-+		smem->regions[0].size = rmem->size;
-+	} else {
-+		/*
-+		 * Fall back to the memory-region reference, if we're not a
-+		 * reserved-memory node.
-+		 */
-+		ret = qcom_smem_resolve_mem(smem, "memory-region", &smem->regions[0]);
-+		if (ret)
-+			return ret;
-+	}
- 
--	if (num_regions > 1 && (ret = qcom_smem_map_memory(smem, &pdev->dev,
--					"qcom,rpm-msg-ram", 1)))
--		return ret;
-+	if (num_regions > 1) {
-+		ret = qcom_smem_resolve_mem(smem, "qcom,rpm-msg-ram", &smem->regions[1]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < num_regions; i++) {
-+		smem->regions[i].virt_base = devm_ioremap_wc(&pdev->dev,
-+							     smem->regions[i].aux_base,
-+							     smem->regions[i].size);
-+		if (!smem->regions[i].virt_base) {
-+			dev_err(&pdev->dev, "failed to remap %pa\n", &smem->regions[i].aux_base);
-+			return -ENOMEM;
-+		}
-+	}
- 
- 	header = smem->regions[0].virt_base;
- 	if (le32_to_cpu(header->initialized) != 1 ||
+-	smem {
+-		compatible = "qcom,smem";
+-		memory-region = <&smem_mem>;
+-		hwlocks = <&tcsr_mutex 3>;
+-	};
+-
+ 	smp2p-cdsp {
+ 		compatible = "qcom,smp2p";
+ 		qcom,smem = <94>, <432>;
 -- 
 2.29.2
 
