@@ -2,162 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453A441ABB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358D141ABBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239832AbhI1JZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239573AbhI1JZ0 (ORCPT
+        id S239886AbhI1J02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:26:28 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:10400 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239708AbhI1J00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:25:26 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96B2C061575;
-        Tue, 28 Sep 2021 02:23:47 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 75so4159114pga.3;
-        Tue, 28 Sep 2021 02:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bNCbpKkDoRa/LEy6AE/asdoXmkV09NnhXW1RxZk9Sdg=;
-        b=d7EQaIO2BrzYhwnuLWNgscYrGYoCF1llQTdP7VsnWfHPgbO7X8mwFpRL1rP0sxjRol
-         /+BkBsfPxs/6kB2aGGiarfL3uCD04VsP3Qvt0ysEyyh6Gt2+3I1FWrhhioqM5RZZcaaQ
-         08hitTmCaLcQBEott0EDr+wFaOq4jqZ1NJtcmmH1pPW9zZ2ctPp9TAkDzkUATz66B0OO
-         APGXI2+QPUkq1LfuP1SdBGqjMyXvkbKRa4yN0N3eDg3lv3bc7gcKGRD1XvdkWanbXoPX
-         wdfl6sy2mQQiSep/qjiZSaFK4BGckINkhPOtEFqjaiLg960K/wVSLQzxtSjHYSHxv/ie
-         tbaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bNCbpKkDoRa/LEy6AE/asdoXmkV09NnhXW1RxZk9Sdg=;
-        b=6pvsUNZ7GDN99vZaBo4jhqdk6EIpZL5QPQGzfBm/5pKcUXgxh5ieE2VESZLdKsDdxi
-         AKqTvPMQV/5mvXgizF1IERFcIe61NYpY3MUb4PE2wPXxxJYA2HJW5iz7ylWyOd6uvz58
-         c0zRS60Y9EiKQKYPfIYVCQ+jf5tg5EeD9rU/O8lj9AtJg3WZNY9x1NWuJIpyVq5HM/2r
-         5YBiNnQmLktU3Pw+0nlnCnf+8SWSxPhubNusWIN1oi4PbREDRGFHptu8sJAqJsl0zCrP
-         YnNn7kZLx5og4M4fhHhu4995ttRO2+6mZy3m8zybYWmh5imWAduN0kdNu+PGoUs6dfnx
-         aAnA==
-X-Gm-Message-State: AOAM532kJb344XCiUusObebg+PdxcIjUyZTvyFARpNsI+88PLTpRHn8G
-        pHs+L9yLxz02aoewMiQXb0g=
-X-Google-Smtp-Source: ABdhPJwGWB7Tw6GaWECCuWCSL7zfwRyp/J9yMIqD2mhp7FZqF/2KIG0FGrBjcU+pMCnt5vLHDbzqyg==
-X-Received: by 2002:aa7:9f03:0:b0:447:dd09:6dda with SMTP id g3-20020aa79f03000000b00447dd096ddamr4300020pfr.36.1632821027229;
-        Tue, 28 Sep 2021 02:23:47 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id mv6sm1943328pjb.16.2021.09.28.02.23.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 02:23:46 -0700 (PDT)
-Subject: Re: [PATCH V5 12/12] net: netvsc: Add Isolation VM support for netvsc
- driver
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "rientjes@google.com" <rientjes@google.com>
-References: <20210914133916.1440931-1-ltykernel@gmail.com>
- <20210914133916.1440931-13-ltykernel@gmail.com>
- <MWHPR21MB15939A5D74CA1DF25EE816ADD7DB9@MWHPR21MB1593.namprd21.prod.outlook.com>
- <43e22b84-7273-4099-42ea-54b06f398650@gmail.com>
- <e379a60b-4d74-9167-983f-f70c96bb279e@gmail.com>
- <20210928053911.GA29208@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <de18b708-7252-642b-c60f-59e12ac27421@gmail.com>
-Date:   Tue, 28 Sep 2021 17:23:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 28 Sep 2021 05:26:26 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S8A28M025160;
+        Tue, 28 Sep 2021 04:24:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=9VqIQz/1HqDmwPai2TYqvrCqYupABpAsyUut7dZ736M=;
+ b=pFLUqA3rP6s9vALO1j4rVtdJ880oQlmw2WpBASjERkcmuXEDpPkdh+ZRgwwaSlJs6zie
+ Ku0jyFaBkG78xmZ+YdNpQYf9Y0IvyZersPlmkBZvWSk5BWHPJhkyUWaCc2DEq07T/x2t
+ c9X+xgK1iGXLPaf9qxoQAdBob6A1fkXIHKS2EFEKp1kNeOZDMcvesRyq3z4j6MP2yVX3
+ xnglaL2IGW9Vuej4mAqb/8jcF23TAbO2fBwKx/ExVJ6YnKlppjFEq0DcZBYWcSO/8Len
+ K3JfFxKn7BFWETUi9snqgpJ5rk+cxe1A7HLWXdcPu3PJS1nxcAWPYrcKtx3NieBHHj6A Mw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3bbgmygx4j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 28 Sep 2021 04:24:02 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 28 Sep
+ 2021 10:24:00 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Tue, 28 Sep 2021 10:24:00 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 318DD11AF;
+        Tue, 28 Sep 2021 09:24:00 +0000 (UTC)
+Date:   Tue, 28 Sep 2021 09:24:00 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-ia64@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH 1/2] firmware: include drivers/firmware/Kconfig
+ unconditionally
+Message-ID: <20210928092400.GH9223@ediswmail.ad.cirrus.com>
+References: <20210928075216.4193128-1-arnd@kernel.org>
+ <20210928083751.GG9223@ediswmail.ad.cirrus.com>
+ <CAK8P3a11c6eLRWKvQeSqvEicc9bMDeEEGV5fygTidoRzYf9KnQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210928053911.GA29208@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a11c6eLRWKvQeSqvEicc9bMDeEEGV5fygTidoRzYf9KnQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: Pzx4P-PCvsYzz7bz1-hxMXEM9-0MDlJo
+X-Proofpoint-GUID: Pzx4P-PCvsYzz7bz1-hxMXEM9-0MDlJo
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2021 1:39 PM, Christoph Hellwig wrote:
-> On Mon, Sep 27, 2021 at 10:26:43PM +0800, Tianyu Lan wrote:
->> Hi Christoph:
->>      Gentile ping. The swiotlb and shared memory mapping changes in this
->> patchset needs your reivew. Could you have a look? >
-> I'm a little too busy for a review of such a huge patchset right now.
-> That being said here are my comments from a very quick review:
-Hi Christoph:
-       Thanks for your comments. Most patches in the series are Hyper-V
-change. I will split patchset and make it easy to review.
-
-
+On Tue, Sep 28, 2021 at 10:51:36AM +0200, Arnd Bergmann wrote:
+> On Tue, Sep 28, 2021 at 10:37 AM Charles Keepax
+> <ckeepax@opensource.cirrus.com> wrote:
+> > I guess the question might be where else would said code go?
+> > drivers/firmware seemed most obvious, all the other locations
+> > I can think of don't really make sense. Can't really put it a bus
+> > like spi/i2c etc. because we have parts on many buses. Can't
+> > really put it in a functional subsystem (audio/input etc.) since
+> > the whole idea was to try and get some independence from that so
+> > we don't have parts including subsystems they don't use. Could
+> > maybe put it in MFD, but no hard guarantee every part using it
+> > will be an MFD device and I am fairly confident Lee will feel it
+> > isn't MFD code as it doesn't relate to managing multiple devices.
+> > Only other option I can think of would be to make some sort of
+> > drivers/dsp or maybe drivers/cs_dsp, but not clear to me that is
+> > obviously better than using drivers/firmware.
 > 
->   - the bare memremap usage in swiotlb looks strange and I'd
->     definitively expect a well documented wrapper.
-
-OK. Should the wrapper in the DMA code? How about dma_map_decrypted() 
-introduced in the V4?
-https://lkml.org/lkml/2021/8/27/605
-
->   - given that we can now hand out swiotlb memory for coherent mappings
->     we need to carefully audit what happens when this memremaped
->     memory gets mmaped or used through dma_get_sgtable
-
-OK. I check that.
-
->   - the netscv changes I'm not happy with at all.  A large part of it
->     is that the driver already has a bad structure, but this series
->     is making it significantly worse.  We'll need to find a way
->     to use the proper dma mapping abstractions here.  One option
->     if you want to stick to the double vmapped buffer would be something
->     like using dma_alloc_noncontigous plus a variant of
->     dma_vmap_noncontiguous that takes the shared_gpa_boundary into
->     account.
+> Other DSPs use the drivers/remoteproc/ subsystem, but that
+> is more for general-purpose DSPs that can load application
+> specific firmware rather than loading a single firmware blob
+> as you'd normally do with the request_firmware() style interface.
 > 
+> Not sure if that fits what you do. Can you point to a high-level
+> description of what this DSP does besides audio, and how
+> flexible it is? That might help find the right place for this.
 
-OK. I will do that.
+Hm... wasn't aware of that one, we should probably investigate that
+a little more at this end. From a quick look, seems a bit more like
+it is designed for much larger more general purpose probably memory
+mapped DSPs. I guess our code is a little more firmware parsing
+and loading, and a bit less generic remote proceedure call stuff.
 
+I am not sure there is great deal available publically on the
+DSP core. It is talked about in a few of our datasheets, see
+section 4.4 in [1]. But a basic description might be it is a
+signal processing focused, very small DSP core. If can be loaded
+with different firmwares at runtime, and indeed might be doing say
+echo cancellation in one use-case, or always on voice detect in
+another. Functionally it is very unlikely to be used for anything
+besides signal processing inside the device it is in, since it is
+typically quite integrated with that hardware and will be sitting
+behind a slow bus, like I2C or SPI.
 
+Current users are all audio, planning to upstream some haptics
+parts soon, with possible other uses in the future.
+
+[1] https://statics.cirrus.com/pubs/proDatasheet/CS48L32_DS1219F4.pdf
+
+Thanks,
+Charles
