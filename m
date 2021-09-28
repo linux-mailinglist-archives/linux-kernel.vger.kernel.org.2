@@ -2,115 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D568341B5A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E178841B5A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242115AbhI1SE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        id S242041AbhI1SGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236453AbhI1SEz (ORCPT
+        with ESMTP id S241601AbhI1SGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:04:55 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44258C06161C;
-        Tue, 28 Sep 2021 11:03:15 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id y28so95315094lfb.0;
-        Tue, 28 Sep 2021 11:03:15 -0700 (PDT)
+        Tue, 28 Sep 2021 14:06:07 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AF9C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:04:28 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id q205so28507691iod.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g5T99dSi8dQg7Ihj73OPFwSxUQ8IoNsRLiLCuXcEeJA=;
-        b=feRVhuQrnABDU9OFTZis+TLDGYP84edOeNQwPxivaL2HddIGcbpZgooKDI0Myzrt03
-         wUbZeRozpkRjFGrM6X5lvQYP+XdHxaVWJ20/+OluttkOaOGnP7I85JdpEU2ex2+Z0BH2
-         rd1DKjv7E2gpRL9aFZhjmi+T16hu+zw8NtNObzyhIw/qU/CXPps48W3R9aR0kcpiGA7N
-         3BwGHNq7Y0rH9oerCZP1MUHSgPnyLGfq5j1uqJBcTdkviPg1XK6zcKuo+d0OcnYEWouT
-         eeHTRd6c0DSKS5qcnR0UckSV13kACdQTlyqh+6VT/YBsE9zGRcTBo9GgwViW5MQFpfe+
-         DZxg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bDVYOLB7ex1Q9vkrSPm262dNZJoCknbaodkzbjGXegw=;
+        b=Cb6mSB0S4he9qRLlc0Lvdl3gJQCWvUTjqMFSk/AIHILMmJAMLUJGmnHrAr3goy9gKm
+         GgMGzMhq3N+RRR0UMSb07dfE4AZmvIs7OETSKRAe+/aeu6G6rmah+xK+r0aQ1l7rsiwI
+         cpHYyiPrpPdodYiFJeiFVPLkcXDvx0sPGwsTc1QbB/ER3NN+dbxvpVmMuww+roDFJR3C
+         VoUiKK3UmFt6iITCdDut2+e1VWqQNiQ//MlxxbIHIMsaWZSNpGVH57UBFDvZUGnHjitQ
+         LtjyZDblOJAKJs5nybJcZfEUk+uGLrpaRfhd38xGBJV53ZNvlA5O7Cg0cs1Dl9yFt00w
+         24mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g5T99dSi8dQg7Ihj73OPFwSxUQ8IoNsRLiLCuXcEeJA=;
-        b=7Brh9abHOdPTpAypkZeAt/TMJ8UWcYvjPlaFZ2OBn4knQ/G38bANuH9pnVUy8quRSm
-         Ve348552/imIVIoEtp5DHZzKQf0yCBz3Mu/AhpEIDwHKTbfnKu8rfSyYTL0pBa7KvEHE
-         KuZNYSdQOPVtquKwkLDcR+C40lWC29kEPkMGT0q0MVnq9zdWpOqP45fA6HwsQwN+4uxf
-         jH8MhDnmXU15Y3iMrGwFyiFP7ogGitwylpYD+aea+htWYQHVeqTQHY0/ucJiHG6Yds5T
-         WY19PHMqVU2CQVoVgRtOpYuH2bAbJDE54UvEC4brzgvDK0Sw2DcZKI1hqS17ok+jjafb
-         SNbQ==
-X-Gm-Message-State: AOAM530uCiFH2VAzak6RjD/BxoL0i5imAcXFOh4mq+izCDK0+g145DJh
-        xsXSdBEjT6Ju5zOhOgyuZEM6areF0M4=
-X-Google-Smtp-Source: ABdhPJzROxesMHK1UNtlIaYnsvi6bY2MSXXtEQXbOHw+WQNnArEq8xVyLxubeknFx7GnpqpHilEbEA==
-X-Received: by 2002:ac2:420d:: with SMTP id y13mr4466243lfh.527.1632852193604;
-        Tue, 28 Sep 2021 11:03:13 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id i8sm1986394lfb.227.2021.09.28.11.03.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 11:03:13 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 21:03:11 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] fs/ntfs3: Reject mount if boot's cluster size <
- media sector size
-Message-ID: <20210928180311.eu5pldpiuio7ssah@kari-VirtualBox>
-References: <a7c2e6d3-68a1-25f7-232e-935ae9e5f6c8@paragon-software.com>
- <228cbe20-87d6-4020-55fb-111d22e2b487@paragon-software.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bDVYOLB7ex1Q9vkrSPm262dNZJoCknbaodkzbjGXegw=;
+        b=LFU8ixb2ltb6ouYJS3XlJU/wgXusvWGVTasDF8BN9iUrJCL5HHboX2CiffoXmhj6MU
+         SKRpCNcm8gczgbKetxaUPbAjrozMHVsjxmD3JXlV60jdY7mfHI3XQpnEQG4mu/VOaIUI
+         fuhl3NEqX1QmuAe85rB7EjrdniUPDkN5sEw72vyVOFFmvSWEzcu7Thtj3/5RPYjDlJ4F
+         nzLDnjSKCufZbB77XGUFuGyRJ5awnnMO6sNbvee5uZawF+1ciEdlVSnilL+wIMxG32lb
+         Zl7KtCcMVxyuXJJ/Fqc+yutBk4Zo9pKzhbTrFspiOLwZVJ+NqyayLO9se70v7SfkVHeN
+         8EKg==
+X-Gm-Message-State: AOAM531OJCENkKIU/Xg/1mk8f5fDM7IUhOer5/NpgaHN6vVC03tjzgYC
+        vojWYoDJcUivPef3NMlU85JoWxLdw14H6wJ5cUrViQ==
+X-Google-Smtp-Source: ABdhPJwOOjCVDszVS05Ucr+Nrat3t+eXy89miaekDdENbKYLkKTvV+bbF/pByUMwRcR0yEbSWMJP2H16vbKbY/p6Vpk=
+X-Received: by 2002:a5e:de08:: with SMTP id e8mr5114015iok.151.1632852267031;
+ Tue, 28 Sep 2021 11:04:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <228cbe20-87d6-4020-55fb-111d22e2b487@paragon-software.com>
+References: <1631795665-240946-1-git-send-email-john.garry@huawei.com> <1631795665-240946-6-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1631795665-240946-6-git-send-email-john.garry@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 28 Sep 2021 11:04:11 -0700
+Message-ID: <CAP-5=fV1fkxRNHy7OGP8GxXeX81ZQmtr7CqbBUpNkjVY_zSvQQ@mail.gmail.com>
+Subject: Re: [PATCH 5/5] perf vendor events arm64: Revise hip08 uncore events
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, zhangshaokun@hisilicon.com,
+        liuqi115@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:18:07PM +0300, Konstantin Komarov wrote:
-> If we continue to work in this case, then we can corrupt fs.
-> 
+On Thu, Sep 16, 2021 at 5:39 AM John Garry <john.garry@huawei.com> wrote:
+>
+> To improve alias matching, remove the PMU name prefix from the EventName.
+> This will mean that the pmu code will merge aliases, such that we no
+> longer get a huge list of per-PMU events - see perf_pmu_merge_alias().
+>
+> Also make the following associated changes:
+> - Use "ConfigCode" rather than "EventCode", so the pmu code is not so
+>   disagreeable about inconsistent event codes
+> - Add undocumented HHA event codes to allow alias merging (for those
+>   events)
+>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 
-Remember to add fixes tag.
+Acked-by: Ian Rogers <irogers@google.com>
 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Thanks,
+Ian
+
 > ---
->  fs/ntfs3/super.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index aff90f70e7bf..890c5d9d6d60 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -763,9 +763,20 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
->  	sbi->mft.lbo = mlcn << sbi->cluster_bits;
->  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
->  
-> -	if (sbi->cluster_size < sbi->sector_size)
-> +	/* Compare boot's cluster and sector. */
-> +	if (sbi->cluster_size < boot_sector_size)
-
-This should actually be in patch 3/3 as this has nothing to do with bug
-fix and bug fix is most important thing to be seperated and as you have
-do be front in the series. After that
-
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
-
->  		goto out;
->  
-> +	/* Compare boot's cluster and media sector. */
-> +	if (sbi->cluster_size < sector_size) {
-> +		/* No way to use ntfs_get_block in this case. */
-> +		ntfs_err(
-> +			sb,
-> +			"Failed to mount 'cause NTFS's cluster size (%u) is less than media sector size (%u)",
-> +			sbi->cluster_size, sector_size);
-> +		goto out;
-> +	}
-> +
->  	sbi->cluster_mask = sbi->cluster_size - 1;
->  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
->  	sbi->record_size = record_size = boot->record_size < 0
-> -- 
-> 2.33.0
-> 
-> 
+>  .../arm64/hisilicon/hip08/uncore-ddrc.json    |  32 ++---
+>  .../arm64/hisilicon/hip08/uncore-hha.json     | 120 +++++++++++++++---
+>  .../arm64/hisilicon/hip08/uncore-l3c.json     |  52 ++++----
+>  3 files changed, 142 insertions(+), 62 deletions(-)
+>
+> diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json
+> index 61514d38601b..2b3cb55df288 100644
+> --- a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json
+> +++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json
+> @@ -1,56 +1,56 @@
+>  [
+>     {
+> -           "EventCode": "0x00",
+> -           "EventName": "uncore_hisi_ddrc.flux_wr",
+> +           "ConfigCode": "0x00",
+> +           "EventName": "flux_wr",
+>             "BriefDescription": "DDRC total write operations",
+>             "PublicDescription": "DDRC total write operations",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x01",
+> -           "EventName": "uncore_hisi_ddrc.flux_rd",
+> +           "ConfigCode": "0x01",
+> +           "EventName": "flux_rd",
+>             "BriefDescription": "DDRC total read operations",
+>             "PublicDescription": "DDRC total read operations",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x02",
+> -           "EventName": "uncore_hisi_ddrc.flux_wcmd",
+> +           "ConfigCode": "0x02",
+> +           "EventName": "flux_wcmd",
+>             "BriefDescription": "DDRC write commands",
+>             "PublicDescription": "DDRC write commands",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x03",
+> -           "EventName": "uncore_hisi_ddrc.flux_rcmd",
+> +           "ConfigCode": "0x03",
+> +           "EventName": "flux_rcmd",
+>             "BriefDescription": "DDRC read commands",
+>             "PublicDescription": "DDRC read commands",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x04",
+> -           "EventName": "uncore_hisi_ddrc.pre_cmd",
+> +           "ConfigCode": "0x04",
+> +           "EventName": "pre_cmd",
+>             "BriefDescription": "DDRC precharge commands",
+>             "PublicDescription": "DDRC precharge commands",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x05",
+> -           "EventName": "uncore_hisi_ddrc.act_cmd",
+> +           "ConfigCode": "0x05",
+> +           "EventName": "act_cmd",
+>             "BriefDescription": "DDRC active commands",
+>             "PublicDescription": "DDRC active commands",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x06",
+> -           "EventName": "uncore_hisi_ddrc.rnk_chg",
+> +           "ConfigCode": "0x06",
+> +           "EventName": "rnk_chg",
+>             "BriefDescription": "DDRC rank commands",
+>             "PublicDescription": "DDRC rank commands",
+>             "Unit": "hisi_sccl,ddrc"
+>     },
+>     {
+> -           "EventCode": "0x07",
+> -           "EventName": "uncore_hisi_ddrc.rw_chg",
+> +           "ConfigCode": "0x07",
+> +           "EventName": "rw_chg",
+>             "BriefDescription": "DDRC read and write changes",
+>             "PublicDescription": "DDRC read and write changes",
+>             "Unit": "hisi_sccl,ddrc"
+> diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json
+> index ada86782933f..9a7ec7af2060 100644
+> --- a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json
+> +++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json
+> @@ -1,72 +1,152 @@
+>  [
+>     {
+> -           "EventCode": "0x00",
+> -           "EventName": "uncore_hisi_hha.rx_ops_num",
+> +           "ConfigCode": "0x00",
+> +           "EventName": "rx_ops_num",
+>             "BriefDescription": "The number of all operations received by the HHA",
+>             "PublicDescription": "The number of all operations received by the HHA",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x01",
+> -           "EventName": "uncore_hisi_hha.rx_outer",
+> +           "ConfigCode": "0x01",
+> +           "EventName": "rx_outer",
+>             "BriefDescription": "The number of all operations received by the HHA from another socket",
+>             "PublicDescription": "The number of all operations received by the HHA from another socket",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x02",
+> -           "EventName": "uncore_hisi_hha.rx_sccl",
+> +           "ConfigCode": "0x02",
+> +           "EventName": "rx_sccl",
+>             "BriefDescription": "The number of all operations received by the HHA from another SCCL in this socket",
+>             "PublicDescription": "The number of all operations received by the HHA from another SCCL in this socket",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x03",
+> -           "EventName": "uncore_hisi_hha.rx_ccix",
+> +           "ConfigCode": "0x03",
+> +           "EventName": "rx_ccix",
+>             "BriefDescription": "Count of the number of operations that HHA has received from CCIX",
+>             "PublicDescription": "Count of the number of operations that HHA has received from CCIX",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x1c",
+> -           "EventName": "uncore_hisi_hha.rd_ddr_64b",
+> +           "ConfigCode": "0x4",
+> +           "EventName": "rx_wbi",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x5",
+> +           "EventName": "rx_wbip",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x11",
+> +           "EventName": "rx_wtistash",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x1c",
+> +           "EventName": "rd_ddr_64b",
+>             "BriefDescription": "The number of read operations sent by HHA to DDRC which size is 64 bytes",
+>             "PublicDescription": "The number of read operations sent by HHA to DDRC which size is 64bytes",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x1d",
+> -           "EventName": "uncore_hisi_hha.wr_ddr_64b",
+> +           "ConfigCode": "0x1d",
+> +           "EventName": "wr_ddr_64b",
+>             "BriefDescription": "The number of write operations sent by HHA to DDRC which size is 64 bytes",
+>             "PublicDescription": "The number of write operations sent by HHA to DDRC which size is 64 bytes",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x1e",
+> -           "EventName": "uncore_hisi_hha.rd_ddr_128b",
+> +           "ConfigCode": "0x1e",
+> +           "EventName": "rd_ddr_128b",
+>             "BriefDescription": "The number of read operations sent by HHA to DDRC which size is 128 bytes",
+>             "PublicDescription": "The number of read operations sent by HHA to DDRC which size is 128 bytes",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x1f",
+> -           "EventName": "uncore_hisi_hha.wr_ddr_128b",
+> +           "ConfigCode": "0x1f",
+> +           "EventName": "wr_ddr_128b",
+>             "BriefDescription": "The number of write operations sent by HHA to DDRC which size is 128 bytes",
+>             "PublicDescription": "The number of write operations sent by HHA to DDRC which size is 128 bytes",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x20",
+> -           "EventName": "uncore_hisi_hha.spill_num",
+> +           "ConfigCode": "0x20",
+> +           "EventName": "spill_num",
+>             "BriefDescription": "Count of the number of spill operations that the HHA has sent",
+>             "PublicDescription": "Count of the number of spill operations that the HHA has sent",
+>             "Unit": "hisi_sccl,hha"
+>     },
+>     {
+> -           "EventCode": "0x21",
+> -           "EventName": "uncore_hisi_hha.spill_success",
+> +           "ConfigCode": "0x21",
+> +           "EventName": "spill_success",
+>             "BriefDescription": "Count of the number of successful spill operations that the HHA has sent",
+>             "PublicDescription": "Count of the number of successful spill operations that the HHA has sent",
+>             "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x23",
+> +           "EventName": "bi_num",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x32",
+> +           "EventName": "mediated_num",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x33",
+> +           "EventName": "tx_snp_num",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x34",
+> +           "EventName": "tx_snp_outer",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x35",
+> +           "EventName": "tx_snp_ccix",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x38",
+> +           "EventName": "rx_snprspdata",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x3c",
+> +           "EventName": "rx_snprsp_outer",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x40",
+> +           "EventName": "sdir-lookup",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x41",
+> +           "EventName": "edir-lookup",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x42",
+> +           "EventName": "sdir-hit",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x43",
+> +           "EventName": "edir-hit",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x4c",
+> +           "EventName": "sdir-home-migrate",
+> +           "Unit": "hisi_sccl,hha"
+> +   },
+> +   {
+> +           "ConfigCode": "0x4d",
+> +           "EventName": "edir-home-migrate",
+> +           "Unit": "hisi_sccl,hha"
+>     }
+>  ]
+> diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json
+> index 67ab19e8cf3a..e3479b65be9a 100644
+> --- a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json
+> +++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json
+> @@ -1,91 +1,91 @@
+>  [
+>     {
+> -           "EventCode": "0x00",
+> -           "EventName": "uncore_hisi_l3c.rd_cpipe",
+> +           "ConfigCode": "0x00",
+> +           "EventName": "rd_cpipe",
+>             "BriefDescription": "Total read accesses",
+>             "PublicDescription": "Total read accesses",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x01",
+> -           "EventName": "uncore_hisi_l3c.wr_cpipe",
+> +           "ConfigCode": "0x01",
+> +           "EventName": "wr_cpipe",
+>             "BriefDescription": "Total write accesses",
+>             "PublicDescription": "Total write accesses",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x02",
+> -           "EventName": "uncore_hisi_l3c.rd_hit_cpipe",
+> +           "ConfigCode": "0x02",
+> +           "EventName": "rd_hit_cpipe",
+>             "BriefDescription": "Total read hits",
+>             "PublicDescription": "Total read hits",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x03",
+> -           "EventName": "uncore_hisi_l3c.wr_hit_cpipe",
+> +           "ConfigCode": "0x03",
+> +           "EventName": "wr_hit_cpipe",
+>             "BriefDescription": "Total write hits",
+>             "PublicDescription": "Total write hits",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x04",
+> -           "EventName": "uncore_hisi_l3c.victim_num",
+> +           "ConfigCode": "0x04",
+> +           "EventName": "victim_num",
+>             "BriefDescription": "l3c precharge commands",
+>             "PublicDescription": "l3c precharge commands",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x20",
+> -           "EventName": "uncore_hisi_l3c.rd_spipe",
+> +           "ConfigCode": "0x20",
+> +           "EventName": "rd_spipe",
+>             "BriefDescription": "Count of the number of read lines that come from this cluster of CPU core in spipe",
+>             "PublicDescription": "Count of the number of read lines that come from this cluster of CPU core in spipe",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x21",
+> -           "EventName": "uncore_hisi_l3c.wr_spipe",
+> +           "ConfigCode": "0x21",
+> +           "EventName": "wr_spipe",
+>             "BriefDescription": "Count of the number of write lines that come from this cluster of CPU core in spipe",
+>             "PublicDescription": "Count of the number of write lines that come from this cluster of CPU core in spipe",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x22",
+> -           "EventName": "uncore_hisi_l3c.rd_hit_spipe",
+> +           "ConfigCode": "0x22",
+> +           "EventName": "rd_hit_spipe",
+>             "BriefDescription": "Count of the number of read lines that hits in spipe of this L3C",
+>             "PublicDescription": "Count of the number of read lines that hits in spipe of this L3C",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x23",
+> -           "EventName": "uncore_hisi_l3c.wr_hit_spipe",
+> +           "ConfigCode": "0x23",
+> +           "EventName": "wr_hit_spipe",
+>             "BriefDescription": "Count of the number of write lines that hits in spipe of this L3C",
+>             "PublicDescription": "Count of the number of write lines that hits in spipe of this L3C",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x29",
+> -           "EventName": "uncore_hisi_l3c.back_invalid",
+> +           "ConfigCode": "0x29",
+> +           "EventName": "back_invalid",
+>             "BriefDescription": "Count of the number of L3C back invalid operations",
+>             "PublicDescription": "Count of the number of L3C back invalid operations",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x40",
+> -           "EventName": "uncore_hisi_l3c.retry_cpu",
+> +           "ConfigCode": "0x40",
+> +           "EventName": "retry_cpu",
+>             "BriefDescription": "Count of the number of retry that L3C suppresses the CPU operations",
+>             "PublicDescription": "Count of the number of retry that L3C suppresses the CPU operations",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x41",
+> -           "EventName": "uncore_hisi_l3c.retry_ring",
+> +           "ConfigCode": "0x41",
+> +           "EventName": "retry_ring",
+>             "BriefDescription": "Count of the number of retry that L3C suppresses the ring operations",
+>             "PublicDescription": "Count of the number of retry that L3C suppresses the ring operations",
+>             "Unit": "hisi_sccl,l3c"
+>     },
+>     {
+> -           "EventCode": "0x42",
+> -           "EventName": "uncore_hisi_l3c.prefetch_drop",
+> +           "ConfigCode": "0x42",
+> +           "EventName": "prefetch_drop",
+>             "BriefDescription": "Count of the number of prefetch drops from this L3C",
+>             "PublicDescription": "Count of the number of prefetch drops from this L3C",
+>             "Unit": "hisi_sccl,l3c"
+> --
+> 2.26.2
+>
