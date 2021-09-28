@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1885441B561
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536CE41B566
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242033AbhI1RqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S242006AbhI1Rus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241404AbhI1RqI (ORCPT
+        with ESMTP id S241966AbhI1Rur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:46:08 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73658C06161C;
-        Tue, 28 Sep 2021 10:44:28 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id u18so93956332lfd.12;
-        Tue, 28 Sep 2021 10:44:28 -0700 (PDT)
+        Tue, 28 Sep 2021 13:50:47 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55884C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:49:07 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso3465097otu.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=aZjQH7QMaSl5FVaqYf6XvxwPYWNnZykG+9zOEaj2ve8=;
-        b=ikPva56GfBzLVz9pfiLjNMzDQwJQ13fOS6PD+07irzd9UwvL09+1AvafRN/kRz7tfr
-         m07+bSlrSOOWl+czXXBnR9T5Is0yfpPCg5awpeF2pvKGIHRl7OWfsWtJ0XnGgLOB5Bqz
-         EpUgBtWailjmwVvqs/f/Frx03W8BPM6UUfEtFmVhRvzWrI937buBDjfl3WzMBNJ64YBD
-         cMdFjBYoad6Dq1SOLHGVS5Lo3L16+vYbHl1HlrLmwUM9+8VZA9lR7KTlZHBfY29VNs0c
-         yUMxeLFPA2IlKhJLe9jOAN51Sw7C5LQUQfx7bS4hQ6NsHejJeyacccnlFVDoFc1EsdnW
-         4fAw==
+        bh=Ee67sOAid6wHL8yrDSwQ2wW8ZqBQe7W4ic7SnZyjfy8=;
+        b=XkGwrkSb1R6uAaHn7U04oOGdQRt47kH/S27GgW65TXmlE2fbFeeveSEdrLCk/4MOUO
+         /UTt5ME2isOVlwZaH5OYnnx5uoCTuNYj2nC/tSN4SOk1NWhTh6eZ/GZrTFaIqDpRPdzO
+         lh8UaOwqd9ldEX1quDBn4WgxDwjWY+quVKSRdhmOoI7p1j2mQZ5qZCSmBpFqyO6WlneW
+         uxi9yt+oXIlsFXRw2bGVeNC958u+tqz2r7Sa447ChWP7mMjwV3wQ0752wig/oKUVO3Eh
+         dXpiYW5tTaGKlkp6KDA7eumj6IqqImgef08A2BUG+5vdyAL7/TR/8Gz867Ge239byU3X
+         vNMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aZjQH7QMaSl5FVaqYf6XvxwPYWNnZykG+9zOEaj2ve8=;
-        b=KDW4JKLj4r2DcvoJJbVFjUYjENSh7c4S6DPsVpo8v45TyJeyZ5pK7SUyXav2qvMxZZ
-         XTwDKlLVp8fl/Uc53Sj35tB9suHc7ZjneuCOO+7n8XoqLerBJz2SpN0Fjji50DDHWBFp
-         vVu7dknUvkf878oTwpu450ZWl2jC+5HY4Rx91TlZNBVnWjrWkJ7AnlGTeWDaKxwcnVSQ
-         oTDoVe/UkViTUSalgENcNcyiGL8hBAlbTJzMjiEZEaCN7HoR6NRXoArlZJx3cOvhZouF
-         /JqcW59elMpYMlkTpT7pp67KEnh5UMEj7EivgPZn7gqPIu0PutO+jtjTWtpqsI1tdQ7I
-         k4tA==
-X-Gm-Message-State: AOAM533rsA43pN6Cq+7q0WevA6XfP4CIoSpDxUwPa5z9uwqSjDuRT03B
-        zMaTKr+BQmKDq1jlW5I23htRgjSW1lw=
-X-Google-Smtp-Source: ABdhPJx56tNegwxTEFCawBFhlyG+ObrsBC9oQQtRrYyvlPxrw7+usHAtHxuaL9eiYgL9xPgmdg2wvw==
-X-Received: by 2002:ac2:57cb:: with SMTP id k11mr6558368lfo.70.1632851065421;
-        Tue, 28 Sep 2021 10:44:25 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id l9sm1988435lfh.36.2021.09.28.10.44.24
+        bh=Ee67sOAid6wHL8yrDSwQ2wW8ZqBQe7W4ic7SnZyjfy8=;
+        b=fe+1Ylle26h3AxZiSaPrp+8xLFxSb7tKzbX4WjnMbpTN/8bBQQTqzaBD0hTF2vShIH
+         hVIRoS1yR2H2cxkDMqW2I/CB2Vwe86dnpn+YpTDAUKuJMKYIfpmAF++LYmzc9WR4/C0W
+         4U3HIzLL99Pn9qG1mQ7KKI8INz3+PdbcVg6n9SZSlsFFGzVvAe00qVR6GDj1O/1qXWLQ
+         bqGAW+FO1vRL/Y6MGuy9b2gD9/SeyKFRjrondwvc603ycvGWApG5nEpq1NWP83mJbENX
+         o2U8zR2bx2p+PeAx3ZZjt6gOJdWV59R270pQnM0ud6yeeKhToc/0xhb/ggEWwzd5Cdv+
+         gqIg==
+X-Gm-Message-State: AOAM532ADQc6TOyDg4tsemVNVbnG8qNVy53X5o276nsKUV/d3YkVSP0A
+        zUUj13tDIvLWH530lg5+5Dc+FA==
+X-Google-Smtp-Source: ABdhPJyfTt/EzawBdjDkqYLPD5aqWqzUHFwedZ70wOMrQFJJcvuAQrUVr0u3d53SZEuqTVmefmT9tg==
+X-Received: by 2002:a9d:7093:: with SMTP id l19mr6345851otj.15.1632851346478;
+        Tue, 28 Sep 2021 10:49:06 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u2sm3080220otg.51.2021.09.28.10.49.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 10:44:25 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 20:44:23 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] fs/ntfs3: Fix memory leak if fill_super failed
-Message-ID: <20210928174423.z7a6chrjmmyezlsp@kari-VirtualBox>
-References: <a7c2e6d3-68a1-25f7-232e-935ae9e5f6c8@paragon-software.com>
- <5ee2a090-1709-5ca0-1e78-8db1f3ded973@paragon-software.com>
+        Tue, 28 Sep 2021 10:49:06 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 12:49:03 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Andy Gross <agross@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: soc: smem: Make indirection optional
+Message-ID: <YVNVj68WjBBXef3h@yoga>
+References: <20210928044546.4111223-1-bjorn.andersson@linaro.org>
+ <YVLszZ7U7D91oIH2@gerhold.net>
+ <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5ee2a090-1709-5ca0-1e78-8db1f3ded973@paragon-software.com>
+In-Reply-To: <CAL_Jsq+66j8Y5y+PQ+mezkaxN1pfHFKz524YUF4Lz_OU5E-mZQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:17:29PM +0300, Konstantin Komarov wrote:
-> Restore fc->s_fs_info to free memory allocated in ntfs_init_fs_context.
-> 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/super.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index 800897777eb0..aff90f70e7bf 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -1242,6 +1242,10 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	return 0;
->  out:
->  	iput(inode);
-> +
-> +	/* Restore fc->s_fs_info to free memory allocated in ntfs_init_fs_context. */
-> +	fc->s_fs_info = sbi;
-> +
+On Tue 28 Sep 12:34 CDT 2021, Rob Herring wrote:
 
-Nack. fc->s_fs_info is already pointing to sbi. We null this just before
-we exit so it is impossible to be anything else in failure case.
-
-	fc->fs_private = NULL;
-	fc->s_fs_info = NULL;
-
-	return 0;
-out:
-	iput(inode);
-
->  	return err;
->  }
->  
-> -- 
-> 2.33.0
+> On Tue, Sep 28, 2021 at 5:22 AM Stephan Gerhold <stephan@gerhold.net> wrote:
+> >
+> > On Mon, Sep 27, 2021 at 09:45:44PM -0700, Bjorn Andersson wrote:
+> > > In the olden days the Qualcomm shared memory (SMEM) region consisted of
+> > > multiple chunks of memory, so SMEM was described as a standalone node
+> > > with references to its various memory regions.
+> > >
+> > > But practically all modern Qualcomm platforms has a single reserved memory
+> > > region used for SMEM. So rather than having to use two nodes to describe
+> > > the one SMEM region, update the binding to allow the reserved-memory
+> > > region alone to describe SMEM.
+> > >
+> > > The olden format is preserved as valid, as this is widely used already.
+> > >
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > ---
+> > >  .../bindings/soc/qcom/qcom,smem.yaml          | 34 ++++++++++++++++---
+> > >  1 file changed, 30 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
+> > > index f7e17713b3d8..4149cf2b66be 100644
+> > > --- a/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
+> > > +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smem.yaml
+> > > [...]
+> > > @@ -43,6 +55,20 @@ examples:
+> > >          #size-cells = <1>;
+> > >          ranges;
+> > >
+> > > +        smem@fa00000 {
+> >
+> > I think this is a good opportunity to make a decision which node name
+> > should be used here. :)
 > 
+> reserved-memory node names are kind of a mess, so I haven't tried for
+> any standard... It needs to be solved globally.
 > 
+
+I'd be happy to paint the shed any color you decide :)
+
+That said, the binding itself doesn't mandate any node name, so it's
+just the example here that would be "wrong" - and just as wrong as it
+currently is.
+
+> >
+> > You use smem@ here but mentioned before that you think using the generic
+> > memory@ would be better [1]. And you use memory@ in PATCH 3/3:
+> >
+> > -               smem_mem: memory@86000000 {
+> > +               memory@86000000 {
+> > +                       compatible = "qcom,smem";
+> >                         reg = <0x0 0x86000000 0 0x200000>;
+> >                         no-map;
+> > +                       hwlocks = <&tcsr_mutex 3>;
+> >                 };
+> >
+> > However, if you would use memory@ as example in this DT schema,
+> > Rob's bot would complain with the same error that I mentioned earlier [2]:
+> >
+> > soc/qcom/qcom,smem.example.dt.yaml: memory@fa00000: 'device_type' is a required property
+> >         From schema: dtschema/schemas/memory.yaml
+> >
+> > We should either fix the error when using memory@ or start using some
+> > different node name (Stephen Boyd suggested shared-memory@ for example).
+> > Otherwise we'll just keep introducing more and more dtbs_check errors
+> > for the Qualcomm device trees.
+> 
+> A different node name. A node name should only have 1 meaning and
+> 'memory' is already defined.
+> 
+> The main issue here is what to name nodes with only a size and no address.
+> 
+
+This particular node has both address and size (as does all of the other
+reserved-memory regions we use upstream today)...
+
+Regards,
+Bjorn
