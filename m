@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD68F41B66D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3BB41B66F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 20:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242116AbhI1ShS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhI1ShR (ORCPT
+        id S242202AbhI1Sir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:38:47 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:58167 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhI1Sin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:37:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2E4C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 11:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=40bUCuVCFcd5OYLICpvhHEvyyz8Qm/qp260OS/gYGQ0=; b=ykmulKGnks2qJMCUT5QQV+RUcN
-        P15CIbZLz7hZFkNt68V0WbZkVctDEVT1N5G745PB/gxXv4twLvNZy/jfQom0tXOLhrs4bnjBwvuev
-        sLJXKa890pQRmTX0enOtaKxV5LinVzuK18o22D31WDQf0HhdumwRsmnBx8MP5vvp6wpCLj+W4Oaqs
-        tMfHqvNqO6rHw4t1FVOZoyjPvhl35Iy0ReTlmuLi3tFhVljaIp/IEtaU/wQ5OaykaShDP0yZOveF4
-        Rsm+lvOtLHw7hQXbC08oMCwkn7ibf+qA9uWHiINnLpc5wtBV7ArZb3LOjvmspv9WzAeJQp9zt+wET
-        wbhtPBtw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVHx3-008Tq0-4h; Tue, 28 Sep 2021 18:35:37 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH v2] HSI: cmt_speech: unmark comments as kernel-doc
-Date:   Tue, 28 Sep 2021 11:35:36 -0700
-Message-Id: <20210928183536.30645-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 28 Sep 2021 14:38:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1632854224; x=1664390224;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=p47ihjltdJKVdxd8quCmufYkMCouLxbnDJw1udtkFMU=;
+  b=w4zq7VEBgoD6cBYsNHWyQNAo0ug/ipt3GJZYtAbV9CUqDnZPOjtGPy9c
+   z47XfmSb6gldWFQc3mvl6IaLX24e3BNkedUxTaPmyvDeb5+mzSKWajWsJ
+   rikBbvplpUbhoJ85WsJnVkCAdWXQsdGXT4Zg7wBNQBV+m3w/FA/7omNCH
+   IyrBHqkz+taBfuDjr5hI6FTRYbubl1Q61tr2R6tBqr9GhB0sq8dWbngng
+   qM2OYHGBWo5FXGeucCAtA1Plbf6MjVV9g88+9jHNBTbWom4LjjPA1qbRm
+   8c3jlLPpAyaYsjtR1k70A8rp9ilZ7FRZdCgQP1IMASuUSbmHnwV/MwEIb
+   g==;
+IronPort-SDR: UrP/0OJBehLYyed6jSRgK0b+JVbzJHslbpsJ2u8qthRiu07/e056T9Ndn+MpdMJDO9qZCme+6q
+ h34qEdSBMR8EQBJRJTqh1l22BxVarrfvKwKZi5tx3JqkIxzocRe1AQdrGZTORqVYYsbgRb/HSr
+ DcYdWIzuMAAa0trh+iNLvOpxZV8ePNSlm0RnBbc4HI6Jzk8tDnhyC4be+QiLWAbZy1VuFyVWFC
+ 6L6Fcq6IKkzLX/60BWca6PrDDKcV+Y312HZkEUBpUCzkQoSVxVhluMGcj0gmmk8dlBu5yt1s+m
+ wwWRYvA0gVjUoCDv/zfFi3r0
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="133511756"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Sep 2021 11:37:03 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 28 Sep 2021 11:37:03 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 28 Sep 2021 11:37:02 -0700
+Date:   Tue, 28 Sep 2021 20:38:23 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: phy: mchp: Add support for LAN8804 PHY
+Message-ID: <20210928183823.zmauxjbzxxu2pnvz@soft-dev3-1.localhost>
+References: <20210928073502.2108815-1-horatiu.vultur@microchip.com>
+ <YVMGkmgwIQDMwldp@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <YVMGkmgwIQDMwldp@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build warnings from the kernel test robot:
+The 09/28/2021 14:12, Andrew Lunn wrote:
+> 
+> On Tue, Sep 28, 2021 at 09:35:02AM +0200, Horatiu Vultur wrote:
+> > The LAN8804 PHY has same features as that of LAN8814 PHY except that it
+> > doesn't support 1588, SyncE or Q-USGMII.
+> 
+> Sorry, i missed it first time. The subject line is wrong. There is no
+> mchp driver in mainline.
 
-drivers/hsi/clients/cmt_speech.c:831: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Block until pending data transfers have completed.
+No worries, thanks for reviewing the patch.
+I will send soon another version.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Aditya Srivastava <yashsri421@gmail.com>
-Acked-by: Pavel Machek <pavel@ucw.cz>
----
-v2: Drop #Cc: Kai Vehmanen <kai.vehmanen@nokia.com> [bounce]
-    Add Pavel's Ack.
+> 
+> When you fix it, please add my Reviewed-by.
+> 
+>      Andrew
 
- drivers/hsi/clients/cmt_speech.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- linux-next-20210928.orig/drivers/hsi/clients/cmt_speech.c
-+++ linux-next-20210928/drivers/hsi/clients/cmt_speech.c
-@@ -827,7 +827,7 @@ static int check_buf_params(struct cs_hs
- 	return r;
- }
- 
--/**
-+/*
-  * Block until pending data transfers have completed.
-  */
- static int cs_hsi_data_sync(struct cs_hsi_iface *hi)
-@@ -850,7 +850,7 @@ static int cs_hsi_data_sync(struct cs_hs
- 			r = -ERESTARTSYS;
- 			goto out;
- 		}
--		/**
-+		/*
- 		 * prepare_to_wait must be called with hi->lock held
- 		 * so that callbacks can check for waitqueue_active()
- 		 */
+-- 
+/Horatiu
