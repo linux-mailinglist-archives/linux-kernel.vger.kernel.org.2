@@ -2,110 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF1741ADB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF5E41ADBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240302AbhI1LTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 07:19:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35650 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240170AbhI1LTn (ORCPT
+        id S240317AbhI1LXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:23:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32449 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231202AbhI1LX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:19:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632827884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTH1Bqp5aQrMW9U7Wyi09yKeBdxoa/KnxdAvfiFTjy0=;
-        b=ApNirNrITskNaJtHM6jYrLzYPKxFSdOOrJPtB2HOzyAvjWjVJDK+PNKCpDCBVS8GkFGDsa
-        XUCZil1RECx0Z0q1GecG5xQmd+Ky10tmHHMvkQpAXFQFngJDA0YeTVMIgkRwUR5L/SUv0O
-        BeaUzmvSikGnx3no1MGv4/ASXm3LbLs=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-VHxARXXkOO-AM4STDZDCJw-1; Tue, 28 Sep 2021 07:18:02 -0400
-X-MC-Unique: VHxARXXkOO-AM4STDZDCJw-1
-Received: by mail-wm1-f71.google.com with SMTP id p63-20020a1c2942000000b0030ccf0767baso966677wmp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:18:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LTH1Bqp5aQrMW9U7Wyi09yKeBdxoa/KnxdAvfiFTjy0=;
-        b=YWeeUJS9+a1wmVGWXjPDO4hz2VphFWj6gDyM7zj1hKXF1yJWfyD3Yf9jnUHMFH5MUS
-         vbGqoKAITnM1fE7imnjXba+LDqHr8jaEA6bR0goL+CxPfYEM7fxolBGHT4s+dCxzk2/w
-         eMIv7RsJ/nfBqmQbSHJU4HyRPRyX7k/PNqRzmsd3lcNFLqGQMI7F/DpcWTcF9j+QiTjL
-         KtDc6meu0cP6mqBDOyPPwutYPtKkdf0QXIzdkLajKGx+IBC8xgOo8XEo9wPoSnSz+tC6
-         4EBV/RBg4Rp8Vu2bL7/B+R/jXaNsjnkX4nJaUVoWhJNJ9Y6W4UeBL36N+u/uWBV4rhLw
-         DQJg==
-X-Gm-Message-State: AOAM533FjfD40XpjfO/WxC/6saEjeGcMM+zqTtqpQy5gSjEcEgx2qj39
-        NIbHAxp+JsAnH/cu4OGPm3wV8UcwYMSJpaX8Uu3RRajyPtGZB17H49Bh3QzChggiosRLw2YnoPE
-        YOq7N6s7YRFp7Rs/fG3pgkKS2DcbI/6dJGVxF8ruE
-X-Received: by 2002:a5d:59a6:: with SMTP id p6mr5703235wrr.142.1632827881283;
-        Tue, 28 Sep 2021 04:18:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXey4AvCzQ1OIitejIrHYkhslIGKRMhKkajU7oL55IV3B2Y8nmEuFYibwyOSrec5I/msAUej7ScCzCJYa6KtI=
-X-Received: by 2002:a5d:59a6:: with SMTP id p6mr5703226wrr.142.1632827881160;
- Tue, 28 Sep 2021 04:18:01 -0700 (PDT)
+        Tue, 28 Sep 2021 07:23:28 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-15--0vqw5XpP2eZpR0q1rGoTw-1; Tue, 28 Sep 2021 12:21:41 +0100
+X-MC-Unique: -0vqw5XpP2eZpR0q1rGoTw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Tue, 28 Sep 2021 12:21:34 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Tue, 28 Sep 2021 12:21:34 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Vlastimil Babka' <vbabka@suse.cz>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: RE: Struct page proposal
+Thread-Topic: Struct page proposal
+Thread-Index: AQHXs9LpTZJKxz8WW0W8bJ9gHUBVtau5TKIA
+Date:   Tue, 28 Sep 2021 11:21:34 +0000
+Message-ID: <5426849ba4c4424791729cdbdec29bfe@AcuMS.aculab.com>
+References: <YUvWm6G16+ib+Wnb@moria.home.lan>
+ <bc22b4d0-ba63-4559-88d9-a510da233cad@suse.cz>
+ <YVIH5j5xkPafvNds@casper.infradead.org> <YVII7eM7P42riwoI@moria.home.lan>
+ <751358b2-aec2-43a3-cbbe-1f8c4469b6d3@suse.cz>
+In-Reply-To: <751358b2-aec2-43a3-cbbe-1f8c4469b6d3@suse.cz>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210821021447.27097-1-luo.penghao@zte.com.cn>
-In-Reply-To: <20210821021447.27097-1-luo.penghao@zte.com.cn>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Tue, 28 Sep 2021 13:17:50 +0200
-Message-ID: <CACO55tt3FF1gEffPjQTS+m3oW1yWG_xUQL_kP=kezyesj_oYkg@mail.gmail.com>
-Subject: Re: [PATCH linux-next] drm/nouveau/mmu/gp100-: drop unneeded
- assignment in the if condition.
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alistair Popple <apopple@nvidia.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
-
-but I will remove the unnecessary brackets as well
-
-On Sat, Aug 21, 2021 at 10:46 AM CGEL <cgel.zte@gmail.com> wrote:
->
-> From: Luo penghao <luo.penghao@zte.com.cn>
->
-> In order to keep the code style consistency of the whole file,
-> the 'inst' assignments should be deleted.
->
-> The clang_analyzer complains as follows:
->
-> drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c:499:8: warning:
-> Although the value storedto 'inst' is used in the enclosing expression,
-> the value is never actually read from 'inst'.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
-> index f02abd9..5d7766a 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
-> @@ -502,7 +502,7 @@ gp100_vmm_fault_cancel(struct nvkm_vmm *vmm, void *argv, u32 argc)
->         args->v0.inst |= 0x80000000;
->
->         if (!WARN_ON(nvkm_gr_ctxsw_pause(device))) {
-> -               if ((inst = nvkm_gr_ctxsw_inst(device)) == args->v0.inst) {
-> +               if ((nvkm_gr_ctxsw_inst(device)) == args->v0.inst) {
->                         gf100_vmm_invalidate(vmm, 0x0000001b
->                                              /* CANCEL_TARGETED. */ |
->                                              (args->v0.hub    << 20) |
-> --
-> 2.15.2
->
->
+Li4uDQo+IEJ5ICJtYWpvciByZWRlc2lnbiIgSSBtZWFudCBlLmcuIHNvbWV0aGluZyBhbG9uZyAt
+IGJpdG1hcHMgb2YgZnJlZSBwYWdlcyBwZXINCj4gZWFjaCBvcmRlcj8gKGluc3RlYWQgb2YgdGhl
+IGZyZWUgbGlzdHMpIEhtIGJ1dCBJIGd1ZXNzIG5vLCB0aGUgd29yc3QgY2FzZSB0aW1lcw0KPiBz
+ZWFyY2hpbmcgZm9yIGZyZWUgcGFnZXMgd291bGQganVzdCBzdWNrLi4uDQoNCkFycmF5cyBvZiBw
+b2ludGVycyBhcmUgbW9yZSBjYWNoZS1mcmllbmRseSB0aGFuIGxpbmtlZCBsaXN0cy4NCkJ1dCB5
+b3UgbWF5IG5lZWQgdGhlICdhcnJheSBvZiBwb2ludGVycycgdG8gYWN0dWFsbHkgYmUgYQ0KbGlu
+a2VkIGxpc3QhDQpXaGlsZSB5b3UgbWlnaHQgbmVlZCB0byBleHRlbmQgdGhlIGxpc3QgZm9yIGEg
+J2ZyZWUnLCBpZiBpdCBpcw0KYSBsaXN0IG9mIHBhZ2VzIHlvdSd2ZSBhbHdheXMgZ290IG9uZSB0
+byBoYW5kLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFt
+bGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3Ry
+YXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
