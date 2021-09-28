@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D3041AD60
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E738D41AD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 12:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240308AbhI1K5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 06:57:10 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:38008 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239306AbhI1K5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 06:57:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632826530; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=z0OOqPlUIz2VSpoSabNQP0cl97JN4q8tbV7qWlpVx6w=;
- b=UbTsYQZsIvsI4K5+sR4Dh5cqGCiKIYaJoAhuouq75Nf6KVeLaVcFjQtvk1ZdGok/zxx57whh
- zpNnYTZndSsci2S9+D9+cMOUioiuz6boqO72C+zXNOLfX5cTQhTTnF+HBLy/4bYhA9IWi1/g
- k86Dy/LytpNRTArVuicfdFMRBu0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6152f4a1a5a9bab6e857497c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 10:55:29
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9C23DC43619; Tue, 28 Sep 2021 10:55:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0C2B3C4338F;
-        Tue, 28 Sep 2021 10:55:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0C2B3C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S240315AbhI1K5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 06:57:33 -0400
+Received: from mga17.intel.com ([192.55.52.151]:36550 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240238AbhI1K5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 06:57:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="204822824"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="204822824"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 03:55:53 -0700
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; 
+   d="scan'208";a="520409501"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 03:55:50 -0700
+Received: by lahna (sSMTP sendmail emulation); Tue, 28 Sep 2021 13:55:47 +0300
+Date:   Tue, 28 Sep 2021 13:55:47 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bleung@chromium.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: Re: [PATCH 3/3] platform/x86: intel_scu_ipc: Update timeout value in
+ comment
+Message-ID: <YVL0s/HiQMits8M6@lahna>
+References: <20210928101932.2543937-1-pmalani@chromium.org>
+ <20210928101932.2543937-4-pmalani@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath11k: qmi: avoid error messages when dma allocation
- fails
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210823063258.37747-1-aaron.ma@canonical.com>
-References: <20210823063258.37747-1-aaron.ma@canonical.com>
-To:     Aaron Ma <aaron.ma@canonical.com>
-Cc:     aaron.ma@canonical.com, davem@davemloft.net, kuba@kernel.org,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210928105529.9C23DC43619@smtp.codeaurora.org>
-Date:   Tue, 28 Sep 2021 10:55:29 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928101932.2543937-4-pmalani@chromium.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aaron Ma <aaron.ma@canonical.com> wrote:
-
-> qmi tries to allocate a large contiguous dma memory at first,
-> on the AMD Ryzen platform it fails, then retries with small slices.
-> So set flag GFP_NOWARN to avoid flooding dmesg.
+On Tue, Sep 28, 2021 at 03:19:34AM -0700, Prashant Malani wrote:
+> The comment decribing the IPC timeout hadn't been updated when the
+> actual timeout was changed from 3 to 5 seconds in
+> commit a7d53dbbc70a ("platform/x86: intel_scu_ipc: Increase virtual
+> timeout from 3 to 5 seconds") .
 > 
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Since the value is anyway updated to 10s now, take this opportunity to
+> update the value in the comment too.
+> 
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> Cc: Benson Leung <bleung@chromium.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-b9b5948cdd7b ath11k: qmi: avoid error messages when dma allocation fails
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210823063258.37747-1-aaron.ma@canonical.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
