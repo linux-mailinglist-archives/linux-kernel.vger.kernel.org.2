@@ -2,119 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E6C41B93E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9629941B942
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 23:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242919AbhI1V12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 17:27:28 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25179 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242846AbhI1V1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:27:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224877767"
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="224877767"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 14:25:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
-   d="scan'208";a="438223466"
-Received: from ppahwa-mobl1.amr.corp.intel.com (HELO [10.212.48.236]) ([10.212.48.236])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 14:25:43 -0700
-Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
-To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        sharadg@nvidia.com, linux-arm-kernel@lists.infradead.org
-References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
- <1630056839-6562-2-git-send-email-spujar@nvidia.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
-Date:   Tue, 28 Sep 2021 16:25:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S242927AbhI1V2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 17:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241482AbhI1V16 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 17:27:58 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3126C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:26:18 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so2649202pjc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 14:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L4Z1qtd59VARXTo8mTMZfhpyo/YJa2yppwRF4l1omg8=;
+        b=rSq0scJL/ha88RRlXKX42Isqbw/cwS5kVIP0Rz8OfVzzn6D5kKDMweVE0Q4ktQSiMJ
+         FhxFPNTbhY9xS2vAGEQ+qB5gV/IMUC6h9JD8Smhm2ssJbOQpHIqEJKUl6mN0qk2Gvwz4
+         iqKk5TZe73g8eJV+2vJnrwoJvPJ1P6NI4t92YcMxTQruO4ZgcMdMIYBXrSN2yeCfPbAN
+         tFQ4GxwssW84Y1vg4LGpetlrhcF6FFA2L4YDutUNKomAAwAsIirg3JkaUm6HVKTrF3V4
+         BHRGBPVxBUQcMzwQWA2PNjc4/b6DItbdmvXb7Ajmp33ZzPOIr2q8iG4+IHZG+ueXE4Hc
+         nmmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L4Z1qtd59VARXTo8mTMZfhpyo/YJa2yppwRF4l1omg8=;
+        b=uvusnU8izSpZGV9XklwqK8rLoMdy+cj7EXP3awuSkbmzINHwsZT5MSIeAxDLSbJ5jk
+         FDiksxo3fo7kOzIgmuXTbCe5p6s+wQlp/TX6ViY/CXzlquR9c7Wa4rEJICyorn+R6aSl
+         8JD3TzPOz2e2C4WqUhJTscrDOzaAnALz4QvFfA5JJBM2Yw/gCwsPHZY2pxOqqJDRaxUh
+         M17N4ea+87NZ9Ek2Ztn4BoBFhjMgflZnlXCoUUY+vz2AQHf6x2zs+czbr3XxJU4NG8CS
+         fyRrYLGfBhF1v+d8+uToObgaXRTh7mC7ulNEtLPrvuJ5apkaQ17ibgL7xPP8LIl5TOdK
+         Ytcw==
+X-Gm-Message-State: AOAM532Ui4mtYqFQK4bOr0FRI488fQjOVQJH4QNHklCqGY+I3OU2t+vL
+        hBmKr4W8sV5FtEaS9PrFBzW9Hg==
+X-Google-Smtp-Source: ABdhPJyiNQfJ0RYEvCNSbQfmhva0TWeah3nt33T8BlFeMgmCPfbY0etgFPJGRuPzGjsIEt8CokHbDg==
+X-Received: by 2002:a17:902:a3c2:b0:13d:be85:43ca with SMTP id q2-20020a170902a3c200b0013dbe8543camr7239171plb.0.1632864378224;
+        Tue, 28 Sep 2021 14:26:18 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id j20sm109118pgb.2.2021.09.28.14.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 14:26:17 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 21:26:13 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 04/14] KVM: Reconcile discrepancies in halt-polling stats
+Message-ID: <YVOIdZhAe5Bqn4hc@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+ <20210925005528.1145584-5-seanjc@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1630056839-6562-2-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925005528.1145584-5-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/27/21 4:33 AM, Sameer Pujar wrote:
-> In some cases, multiple FE components have the same BE component in their
-> respective DPCM paths. One such example would be a mixer component, which
-> can receive two or more inputs and sends a mixed output. In such cases,
-> to avoid reconfiguration of already active DAI (mixer output DAI in this
-> case), check the BE stream state to filter out the redundancy.
+On Fri, Sep 24, 2021 at 05:55:18PM -0700, Sean Christopherson wrote:
+> Move the halt-polling "success" and histogram stats update into the
+> dedicated helper to fix a discrepancy where the success/fail "time" stats
+> consider polling successful so long as the wait is avoided, but the main
+> "success" and histogram stats consider polling successful if and only if
+> a wake event was detected by the halt-polling loop.
 > 
-> In summary, allow connection of BE if the respective current stream state
-> is either NEW or CLOSED.
+> Move halt_attempted_poll to the helper as well so that all the stats are
+> updated in a single location.  While it's a bit odd to update the stat
+> well after the fact, practically speaking there's no meaningful advantage
+> to updating before polling.
+> 
+> Note, there is a functional change in addition to the success vs. fail
+> change.  The histogram updates previously called ktime_get() instead of
+> using "cur".  But that change is desirable as it means all the stats are
+> now updated with the same polling time, and avoids the extra ktime_get(),
+> which isn't expensive but isn't free either.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-This patch breaks our SOF CI tests, ironically in all cases where we
-have a mixer with a 'Deep buffer' port! The tests with multiple streams
-all fail with this error:
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-[  124.366400]  Port0 Deep Buffer: ASoC: no backend DAIs enabled for
-Port0 Deep Buffer
-[  124.366406]  Port0 Deep Buffer: ASoC: dpcm_fe_dai_prepare() failed (-22)
-
-Reverting this patch restore the mixer functionality.
-
-I see multiple problems with this patch:
-
-At a high-level, there's at least a race condition where this BE state
-is checked without any protection. That was already a problem that I
-highlighted in a recent RFC and still working on, when we have multiple
-FEs we can have START/STOP triggers happening concurrently and it's
-necessary to serialize these triggers when checking the state, and this
-patch increases the 'surface' for this race condition.
-
-But in addition we'd need to agree on what an 'active BE' is. Why can't
-we connect a second stream while the first one is already in HW_PARAMS
-or PAUSED or STOP? It's perfectly legal in ALSA/ASoC to have multiple
-HW_PARAMS calls, and when we reach STOP we have to do a prepare again.
-
-And more fundamentally, the ability to add a second FE on a 'active' BE
-in START state is a basic requirement for a mixer, e.g. to play a
-notification on one FE while listening to music on another. What needs
-to happen is only to make sure that the FE and BE are compatible in
-terms of HW_PARAMS and not sending a second TRIGGER_STOP, only checking
-the BE NEW or CLOSE state is way too restrictive.
-
-I will agree this sort of mixer use cases is not well supported in
-soc-pcm.c, but let's not make it worse than it was before this patch,
-shall we?
-
-I can send a revert with the explanations in the commit message if there
-is a consensus that this patch needs to be revisited.
-
-[1] https://github.com/thesofproject/linux/pull/3177
-[2] https://sof-ci.01.org/linuxpr/PR3177/build6440/devicetest/
-
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 > ---
->  sound/soc/soc-pcm.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  virt/kvm/kvm_main.c | 35 ++++++++++++++++-------------------
+>  1 file changed, 16 insertions(+), 19 deletions(-)
 > 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 48f71bb..e30cb5a 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -1395,6 +1395,10 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
->  		if (!fe->dpcm[stream].runtime && !fe->fe_compr)
->  			continue;
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 12fe91a0a4c8..2ba22b68af3b 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3202,12 +3202,23 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
+>  static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+>  					  ktime_t end, bool success)
+>  {
+> +	struct kvm_vcpu_stat_generic *stats = &vcpu->stat.generic;
+>  	u64 poll_ns = ktime_to_ns(ktime_sub(end, start));
 >  
-> +		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_NEW) &&
-> +		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_CLOSE))
-> +			continue;
+> -	if (success)
+> -		vcpu->stat.generic.halt_poll_success_ns += poll_ns;
+> -	else
+> -		vcpu->stat.generic.halt_poll_fail_ns += poll_ns;
+> +	++vcpu->stat.generic.halt_attempted_poll;
 > +
->  		/* newly connected FE and BE */
->  		err = dpcm_be_connect(fe, be, stream);
->  		if (err < 0) {
+> +	if (success) {
+> +		++vcpu->stat.generic.halt_successful_poll;
+> +
+> +		if (!vcpu_valid_wakeup(vcpu))
+> +			++vcpu->stat.generic.halt_poll_invalid;
+> +
+> +		stats->halt_poll_success_ns += poll_ns;
+> +		KVM_STATS_LOG_HIST_UPDATE(stats->halt_poll_success_hist, poll_ns);
+> +	} else {
+> +		stats->halt_poll_fail_ns += poll_ns;
+> +		KVM_STATS_LOG_HIST_UPDATE(stats->halt_poll_fail_hist, poll_ns);
+> +	}
+>  }
+>  
+>  /*
+> @@ -3227,30 +3238,16 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>  	if (do_halt_poll) {
+>  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
+>  
+> -		++vcpu->stat.generic.halt_attempted_poll;
+>  		do {
+>  			/*
+>  			 * This sets KVM_REQ_UNHALT if an interrupt
+>  			 * arrives.
+>  			 */
+> -			if (kvm_vcpu_check_block(vcpu) < 0) {
+> -				++vcpu->stat.generic.halt_successful_poll;
+> -				if (!vcpu_valid_wakeup(vcpu))
+> -					++vcpu->stat.generic.halt_poll_invalid;
+> -
+> -				KVM_STATS_LOG_HIST_UPDATE(
+> -				      vcpu->stat.generic.halt_poll_success_hist,
+> -				      ktime_to_ns(ktime_get()) -
+> -				      ktime_to_ns(start));
+> +			if (kvm_vcpu_check_block(vcpu) < 0)
+>  				goto out;
+> -			}
+>  			cpu_relax();
+>  			poll_end = cur = ktime_get();
+>  		} while (kvm_vcpu_can_poll(cur, stop));
+> -
+> -		KVM_STATS_LOG_HIST_UPDATE(
+> -				vcpu->stat.generic.halt_poll_fail_hist,
+> -				ktime_to_ns(ktime_get()) - ktime_to_ns(start));
+>  	}
+>  
+>  
+> -- 
+> 2.33.0.685.g46640cef36-goog
 > 
