@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C67841B3BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD7541B3C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241768AbhI1QYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241662AbhI1QYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:24:40 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BFCC06161C;
-        Tue, 28 Sep 2021 09:23:01 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id k23-20020a17090a591700b001976d2db364so3243448pji.2;
-        Tue, 28 Sep 2021 09:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wAY3/JWg2wbXJxCRk/+67tG4BaraBIPavuBFme6tVEQ=;
-        b=WdD2fQMQ4yQqLhkndIhwcFvm28lW6pOc9aRY2mdmuLh6kuoSQ+gquLZFvcP1DBe8nB
-         QcIRprCdYkYjg/zd9SmxvXVHjnqKr+7y7grilB0DQYEk92LIaqZIEpqzOYsnScN0+IUr
-         HjBbMUUaM76wx0988U28Pu/wxikUEPkrvV3OLoLs75PUMRnz7ZQsAI1A/6uPcHMVKn2T
-         4n4rzJwi09MGC7Ywe1iwHjsoaJjrbCgacHuIZLDT8kabb7SToa7+vS47JqY50qj2nyFo
-         XsGewgvYjBotUeGZlbOTzmJXK+XxTjUYB2X/xL6YlkReiHABm1IcoftQpOM7MyNsch6o
-         uEnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wAY3/JWg2wbXJxCRk/+67tG4BaraBIPavuBFme6tVEQ=;
-        b=hbQOk9fk/aVblrkRZfOQIY+YX7Qs74jJlbu2tOGT7MURdg+lvMnznIvZd71xIRqGZe
-         d6nkjq/hHHeIJX2tCq1Ky+zW5NlZZc8cKISwnaTSwumnLaZH9e55+TPaadC+6eUP8H4N
-         L7N5I2B/JL741CZvjv8uWnL+gJwftxAg7BgWQdfCitjgmPAv8GRIhiBfAYulEa28H2wd
-         h1FhH9oyG1YLtASzr4vQU0lGExrsAaIyzf0mJMgj78FMR9W07KH2U38muPOpUZ3JTfmi
-         H7Xu2yQsNXZR4E80E0edLLulW5EASjaLfSy3CokKEicw+/+asp32RZjHsO/+U4QaZV1U
-         S+3g==
-X-Gm-Message-State: AOAM531UUMnGuJyWVGasLJrZkcALNWo2cD2SyPAaqN68AWrmt2+xShiC
-        3t2PjuTrd+NVErcbbAcWmNLPXy1Yj1M=
-X-Google-Smtp-Source: ABdhPJy/9Uy/Br/pHc64+APndSUOnX5oGTCdbZF/7XFtBYKQyNFZalc1cRiT+sEtPm1r3Bp4wE+eGg==
-X-Received: by 2002:a17:90a:31cf:: with SMTP id j15mr827904pjf.86.1632846180413;
-        Tue, 28 Sep 2021 09:23:00 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id m10sm3003134pjs.21.2021.09.28.09.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 09:22:59 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/102] 5.10.70-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210928071741.331837387@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <afc197dc-f79e-8afd-92ad-0986307dfa8a@gmail.com>
-Date:   Tue, 28 Sep 2021 09:22:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241779AbhI1QZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:25:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241523AbhI1QZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 12:25:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7743160462;
+        Tue, 28 Sep 2021 16:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632846235;
+        bh=TDRbxwBj/2W9pDd6B9PBVOmmKA862fSHrFNZCrzr+J8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=l0RRuno3aURqpeAXIT7vrsGoSqhyX9JHrXn6Ske/uBliN+5BncnR1ZMsuaVRxBycC
+         Nig4YI2Cx6MjbWe8h2c0ryYilV1uSPTI6yEdFQQSjQAsZkzKX0RIcjj2xD2usw9z/P
+         Kd+bFtHbyxnU9VZ/fLI+NDf0c8zxS/VEzWzEY9S5SKovr29VizlJBRLPzY50LETVl5
+         /cI4mvh83XKXJMP4stVKWfQ5qUHXzfwEEth2DD1iN/iuPU7Le+5xQf8eYTIY96o5ui
+         EB97bO9YNq57f/OLGRiVLHSIq/RWhjJOmYVMZmPO05QDknKieRVY32PrGieY0OxgyP
+         F98PQkDhLSbNg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Colin King <colin.king@canonical.com>, linux-spi@vger.kernel.org,
+        Parshuram Thombare <pthombar@cadence.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH][next] spi: cadence: Fix spelling mistake "nunber" -> "number"
+Date:   Tue, 28 Sep 2021 17:22:58 +0100
+Message-Id: <163284597895.17677.3059104552866813432.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210928130712.990474-1-colin.king@canonical.com>
+References: <20210928130712.990474-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210928071741.331837387@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 12:18 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.70 release.
-> There are 102 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, 28 Sep 2021 14:07:12 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Responses should be made by Thu, 30 Sep 2021 07:17:22 +0000.
-> Anything received after that time might be too late.
+> There is a spelling mistake in a dev_err error message. Fix it.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.70-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
 > 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit kernels:
+Applied to
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: cadence: Fix spelling mistake "nunber" -> "number"
+      commit: 5c258a8a9cf987b254c4ebdb6481a4d76bcf490b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
