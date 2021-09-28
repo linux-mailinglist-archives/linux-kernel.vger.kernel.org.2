@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C56B41B3F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B8041B410
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 18:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241781AbhI1Qfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 12:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241766AbhI1Qfd (ORCPT
+        id S241864AbhI1QnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 12:43:14 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51800 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241862AbhI1QnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 12:35:33 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57214C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:33:54 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id x12so7897249qkf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 09:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=VtwzV2efLkjsFNIGItsdV2UmMmN4tPD6hnSWw71kvwxcmtyhtlrcpp9SwlZrZBhl59
-         ycaJyBkKOWmnjxOnqlVcMh7moIyujpNqH8KFSeghUV8Yf3W6wXTBocCfoAQzGU1UNnnT
-         EHNa70bTs08sqEHAgA4GuzoH4VhyeGSXTm750QkIdhqGR7+TmsFxXNCRIMfkn5if2btF
-         LUATuJ+3Bta0mAhoCvpJmquJcHxKmLGGgH1joQVdYL120JBqgIwgP5iido3JOBgVty5H
-         /ROxZqRCc4qO/LuHGokrFuhxSxy6m58xeyd3AGUk4zwos+HawqXb0Z3wMAJnJhHLKbfy
-         xjsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=eS8dzWoWsQ5OnHNa7o/jY/80ZTDH10rqKpmb0xh894eNX9/7lQatxSapT9QuKVabWI
-         bPdALqvEVZuUscDnwAXlXw3vdLMcCcEdZotPVKJGraEfmteSV5jkZH8a0bFKPwQCYgBS
-         JlG98m4nfuM7tTtG9xhfgTxg7+1+pAoFfpukUi4rNIBAQ8dl2czxS8PwhXpnuH9f8Hmo
-         hTp4sJigC4ycvDP9YzvgbmcAt5PFLzjAaSoqWqWbugOrcHcAXEh54lWMYXXj1ZC9mwAg
-         icZ1q2kczhZMHZqitu4bAllppkR0K6grWa5E9x8zt4OYxYlysj5btgj4uqjxCvB3a3wj
-         7fqQ==
-X-Gm-Message-State: AOAM532La7FT7h02CaKsYNBzOv+q+joorSw1uIxQK/gdpJbmfH9Nid2n
-        gscx3UhF/N3f59XO58BhfAyVIuP6otOoAj4WepVsm5E+VQw=
-X-Google-Smtp-Source: ABdhPJwM471SQzIA1CTQ1jfMAWn8xCpEyNb23avmeKunj78lHBJpbrHuUDx9nisLd0dwRJLaSDaWJlasW8GcHmwv8Jo=
-X-Received: by 2002:ae9:ddc7:: with SMTP id r190mr878003qkf.362.1632846833363;
- Tue, 28 Sep 2021 09:33:53 -0700 (PDT)
+        Tue, 28 Sep 2021 12:43:11 -0400
+X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 12:43:11 EDT
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18SGY7oi003138;
+        Tue, 28 Sep 2021 11:34:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632846847;
+        bh=xSTXq8R8vgo138+dhfYd3IzStIxHaO1s9BsjwZOMBLA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=VASFaVffwcLLoVPVobvxVSOnepc8KJZeW9yh3KTCIul8r/ahsukmB2n4U0qNH0AhO
+         tenUt9266pe4KizjcUzqr7sSF4wlkPgNZDkR+VD2RaX+hS11nCskGtoDrroYe2UT5D
+         EZKbRyOGmZGyLCSQ+/zjFs97yhewrNgWZuZPfUnU=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18SGY7Fl034589
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 28 Sep 2021 11:34:07 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 28
+ Sep 2021 11:34:06 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 28 Sep 2021 11:34:07 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18SGY6LM028980;
+        Tue, 28 Sep 2021 11:34:06 -0500
+Date:   Tue, 28 Sep 2021 22:04:05 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Daniel Palmer <daniel@0x0f.com>
+CC:     <linux-mtd@lists.infradead.org>, <tudor.ambarus@microchip.com>,
+        <michael@walle.cc>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for ZB25VQ128
+Message-ID: <20210928163403.iufy6rgn7imiebpz@ti.com>
+References: <20210918072256.3505379-1-daniel@0x0f.com>
+ <20210920112625.fnqayim5mg5iggag@ti.com>
+ <CAFr9PX=xKoa9fCbYf6Mpn=oudnY7A=6meKBSmzNHYLFad364tw@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ad4:5fc5:0:0:0:0:0 with HTTP; Tue, 28 Sep 2021 09:33:52
- -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi344@gmail.com>
-Date:   Tue, 28 Sep 2021 09:33:52 -0700
-Message-ID: <CADgtnOMkiTMfSc-KxMCEXCmbwhK2VwwSh1tMPy41t4HfmeU7uA@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAFr9PX=xKoa9fCbYf6Mpn=oudnY7A=6meKBSmzNHYLFad364tw@mail.gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On 28/09/21 10:15PM, Daniel Palmer wrote:
+> Hi Pratyush,
+> 
+> On Mon, 20 Sept 2021 at 20:26, Pratyush Yadav <p.yadav@ti.com> wrote:
+> >
+> > Zbit should be in bank 10, so it should be preceeded by 9 0x7f bytes,
+> > correct? I don't see any logic to handle that in SPI NOR currently so I
+> > assume this manufacturer does not implement the continuation codes.
+> >
+> > In that case, it should go to the manufacturer collisions driver
+> > proposed here [0].
+> >
+> > [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210727045222.905056-6-tudor.ambarus@microchip.com/
+> 
+> Sorry, I'm not sure what I should do with this information. I didn't
+> even know about the continuation codes thing until now.
+> Is there something I need to do here or do I just need to wait for the
+> collision handling code to get merged?
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+I think that should be what you need to do. Tudor, any plans on 
+re-rolling that patch series in the near future?
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+> 
+> Thanks,
+> 
+> Daniel
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
-
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-
-Your Urgent Reply Will Be Appreciated
-
-Best Regards
-Mrs Aisha Al-Qaddafi
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
