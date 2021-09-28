@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833C941AB71
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA0241AB82
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 11:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239880AbhI1JG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 05:06:58 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:54592 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239774AbhI1JGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:06:55 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-01 (Coremail) with SMTP id qwCowAA3PQmu2lJhUhakAQ--.14119S2;
-        Tue, 28 Sep 2021 17:04:46 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] x86/microcode/amd: Add __list_del_entry_valid() in front of __list_del() in free_cache()
-Date:   Tue, 28 Sep 2021 09:04:44 +0000
-Message-Id: <1632819884-800736-1-git-send-email-jiasheng@iscas.ac.cn>
+        id S239906AbhI1JJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 05:09:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64090 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239903AbhI1JJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:09:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632820055; h=References: In-Reply-To: References:
+ In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=8WntT5xGB4DvG/Btl80iJinvKCdTDOZQIHSQcSFgEIc=; b=lt+cILLKPo1ch0KjViaFQxXZ069VMQx1Z7Z6Y96vXFFsafQCFbJFzuSZjPuKAzbh625rA3xW
+ XwHgsVOejD2FHPU2sfF3QDsoA0dtd5d06ZCsAEGFd+ccHTm0hyMat91RFKEFZKTk7Xe5seCD
+ sMjuQtftI65wZ1zOYKIAr21DpYU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6152db16713d5d6f968f0958 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 09:06:30
+ GMT
+Sender: nguyenb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AE4CBC4361A; Tue, 28 Sep 2021 09:06:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from stor-berry.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2ABE6C4338F;
+        Tue, 28 Sep 2021 09:06:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2ABE6C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   "Bao D. Nguyen" <nguyenb@codeaurora.org>
+To:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] scsi: ufs: export hibern8 entry and exit
+Date:   Tue, 28 Sep 2021 02:06:12 -0700
+Message-Id: <a29bfdd0c8f1d1a3e5fb69e43ea277c97a7f0cb6.1632818942.git.nguyenb@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: qwCowAA3PQmu2lJhUhakAQ--.14119S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZryxtr4UtFWrCrWfJrWkWFg_yoWkArb_Za
-        45t348ur4fAFy2vwsFyw48Gas3Zw1rtFs5Kryxta4rt345KFs8Aa12qa1YgFy3WrZYqFZ5
-        Arn5CF4UG3s3ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFWl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjMmh5UUUUU==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+In-Reply-To: <cover.1632818942.git.nguyenb@codeaurora.org>
+References: <cover.1632818942.git.nguyenb@codeaurora.org>
+In-Reply-To: <cover.1632818942.git.nguyenb@codeaurora.org>
+References: <cover.1632818942.git.nguyenb@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Directly use __list_del() to remove 'p->plist' might be unsafe,
-as we can see from the __list_del_entry_valid() of 'lib/list_debug.c'
-that p->plist->prev or p->plist->next may be the LIST_POISON,
-or p->list is not a valid double list.
-In that case, __list_del() will be corruption.
-Therefore, we suggest that __list_del_entry_valid()
-should be added in front of the __list_del() in free_cache.
+From: Asutosh Das <asutoshd@codeaurora.org>
 
-Fixes: bad5fa6 ("x86, microcode: Move to a proper location")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Qualcomm controllers need to be in hibern8 before scaling up
+or down the clocks. Hence, export the hibern8 entry and exit
+functions.
+
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
 ---
- arch/x86/kernel/cpu/microcode/amd.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/ufs/ufshcd.c | 4 ++--
+ drivers/scsi/ufs/ufshcd.h | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
-index 3d4a483..e589cff 100644
---- a/arch/x86/kernel/cpu/microcode/amd.c
-+++ b/arch/x86/kernel/cpu/microcode/amd.c
-@@ -626,6 +626,8 @@ static void free_cache(void)
- 	struct ucode_patch *p, *tmp;
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 3841ab49..f3aad32 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -227,7 +227,6 @@ static void ufshcd_hba_exit(struct ufs_hba *hba);
+ static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
+ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+ static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+ static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
+ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba);
+ static void ufshcd_resume_clkscaling(struct ufs_hba *hba);
+@@ -4116,7 +4115,7 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_link_recovery);
  
- 	list_for_each_entry_safe(p, tmp, &microcode_cache, plist) {
-+		if (!__list_del_entry_valid(&p->plist))
-+			continue;
- 		__list_del(p->plist.prev, p->plist.next);
- 		kfree(p->data);
- 		kfree(p);
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
++int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ {
+ 	int ret;
+ 	struct uic_command uic_cmd = {0};
+@@ -4138,6 +4137,7 @@ static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(ufshcd_uic_hibern8_enter);
+ 
+ int ufshcd_uic_hibern8_exit(struct ufs_hba *hba)
+ {
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 52ea6f3..124f50b 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -1001,6 +1001,7 @@ int ufshcd_init(struct ufs_hba *, void __iomem *, unsigned int);
+ int ufshcd_link_recovery(struct ufs_hba *hba);
+ int ufshcd_make_hba_operational(struct ufs_hba *hba);
+ void ufshcd_remove(struct ufs_hba *);
++int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+ int ufshcd_uic_hibern8_exit(struct ufs_hba *hba);
+ void ufshcd_delay_us(unsigned long us, unsigned long tolerance);
+ int ufshcd_wait_for_register(struct ufs_hba *hba, u32 reg, u32 mask,
 -- 
-2.7.4
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
