@@ -2,153 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE73C41B585
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0CC41B588
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242122AbhI1SAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 14:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S242112AbhI1SBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 14:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhI1SA3 (ORCPT
+        with ESMTP id S230238AbhI1SBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 14:00:29 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53512C06161C;
-        Tue, 28 Sep 2021 10:58:49 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u18so94115541lfd.12;
-        Tue, 28 Sep 2021 10:58:49 -0700 (PDT)
+        Tue, 28 Sep 2021 14:01:36 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4626FC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:59:56 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id i13so24325911ilm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 10:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=68p1tAQ5Jz/+Bnsf/d8ssuN60AfPupdQ5Ex9JLDoD9Q=;
-        b=hfaJWJijWESeyx+nfAyg/5CUbQMOg6oC23UpLWwtplLtdufQsotDCaAJycNtLSaffX
-         YjxDeqXVAQy5as4OgYiRYi10ftKa6jjAkTdZ/Abs64cZYU0EPbo91KF4DZ8ZJBXkgop5
-         kpWEBBL+HEAr0STVxrnOdWSU2tBr8D0ck5o7fjE0bAoIzP9vIv0ttESrEpVccQD3VVVq
-         E90TES/koWKD2cSkSK54w1qC6G0zBmsCgbSSkWfBaN9RAqf4YxYkWRKstuQQ5vnV2n3z
-         qYL45vzUUzXjse7/XHATX0G3f6mAkUZrfVhUpdTjXtY+zXXjEFV4qA9OBR/G/nUI5Ydx
-         v0mA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2BniPafuDoFdlymopELQXkB/zQh7F6LVoUvjWNE/VRg=;
+        b=glkMq8CqzAY65V+OfwsRWbZMfrbm5gk2blCTp6HIIduX5J0r1s9yNPz7ULbG20e6TW
+         nwe2TsaMYxdv3YxGyKZZT+BqyhO+hIwkGFvXsYrRxwF/bZA8XvYQ95Ax1f3GmffZ2wzw
+         QMKk7kYfUteYb7dtrXOW1iFNZ7lxxf/CNN6SayYgUF191WpLw8WXyuWz95lyCm4hNNio
+         1O7cVUTfjZtzRriKK6cfo59a/Zwen6v6mHn5tdw8fibVHsu11wOAariYsIKNcXsZs9fj
+         CCizVcbfKkS7PteVgyObIKXxeBZHnjKXaQxZsmw2SciE+7EwEHNKrH3LHLXs7SUVmsAo
+         PWBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=68p1tAQ5Jz/+Bnsf/d8ssuN60AfPupdQ5Ex9JLDoD9Q=;
-        b=WWZ4cX204uuBeJAFN2e2ApYvNVvihOApuN0gX4TX8QIO8bbtmW5F/LyASvGUq6gSeY
-         uTuNa54VZapFsuCE1LlfL6eU762R5XTK2vQwKl7K3NaGfnh1FDBQ5Jq8vEVIC5NpjcZK
-         h6DZOulNwBp7hHidNx70V/Wrl6X8sQMUXlKG3jmrSKrQiU/rwJEjVf9qjDcXen72flhU
-         1az7TGUVQSJ7lsov3O13G8YxgRn204oj9NLRYzvxGJp/axWEWMGUW8ZlkG6Ig1cZ0LvJ
-         xc4KZXn5VyXF+ogXH6ijYVi8R0iApNqx2DbFea0FML7NH4Ys0HOn4+J/aGCkTzMETSLf
-         RmuQ==
-X-Gm-Message-State: AOAM531VNepvadP52WfJOIB9XsgmrlVT2H16VSU3f7Irvr08w5zv8TSs
-        y/OejOyIWI7Kq2sr9eo+xtvkDkXT+tg=
-X-Google-Smtp-Source: ABdhPJwHlivlQiRnD5k8IklBc6f4F+Q6oIjddUwg9tGJBV+1ajKB/xsV4QfPlYoGqNrXjBDZUgFa+A==
-X-Received: by 2002:a05:651c:178e:: with SMTP id bn14mr1339716ljb.521.1632851927694;
-        Tue, 28 Sep 2021 10:58:47 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id j11sm1983386lfu.33.2021.09.28.10.58.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 10:58:47 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 20:58:45 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/3] fs/ntfs3: Reject mount if boot's cluster size <
- media sector size
-Message-ID: <20210928175845.ytqj4o4m2e5bsfrr@kari-VirtualBox>
-References: <16cbff75-f705-37cb-ad3f-43d433352f6b@paragon-software.com>
- <6036b141-56e2-0d08-b9ff-641c3451f45a@paragon-software.com>
- <20210927185621.2wkznecc4jndja6b@kari-VirtualBox>
- <fbdcbb8f-380c-4da9-2860-a3729c75e04b@paragon-software.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2BniPafuDoFdlymopELQXkB/zQh7F6LVoUvjWNE/VRg=;
+        b=ZbCbz8BhXTureY7F98twpnyT7adsqNdwlhLk3PawYV7rcaFPpcEN7Mxf8dMox1zucW
+         6A70DjaZKrPyL5GZN2mbKdN8C0v7fFYzaEHZeXYWlNA0+8981CxnoUoPzMcFCWqh2Xf1
+         h7HcLdE1y7Yh6QXuPk44yaXnF9gAQOYWjfc1BrKLNK/6uZLdAycHvlTej4+GR1DqA88C
+         wDCB+MwRaccUEdzXHTPUrIBJgomPYORD5P3e8aX5e0EXZYwsJcrNlOt8xIffpYPx9IeW
+         rYf7tpC/zK5M/HBqagMrRBrEEXK0tivc5SulYs+UiNbZlzJTeG8ceDf/4+X4+2Hf0DGg
+         Ri0w==
+X-Gm-Message-State: AOAM5304o/pGxEQrS2aSupO2U6ZM6hKniKL0m9uSEawI86xbCko8pksW
+        qpDWLmI7I4Z/XTgrMHeut2Efae18nbw5jQ1QJFTSZw==
+X-Google-Smtp-Source: ABdhPJzQriZBhaXa8Nz8rzqkeHFOVtzxDfH7dKuTTCQu8Bb7gYIbKnLCthu8TUtgv0Ac7wqnKtun73U9BkEpVpidxz0=
+X-Received: by 2002:a05:6e02:b23:: with SMTP id e3mr5253595ilu.53.1632851995505;
+ Tue, 28 Sep 2021 10:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbdcbb8f-380c-4da9-2860-a3729c75e04b@paragon-software.com>
+References: <1631795665-240946-1-git-send-email-john.garry@huawei.com> <1631795665-240946-2-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1631795665-240946-2-git-send-email-john.garry@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 28 Sep 2021 10:59:42 -0700
+Message-ID: <CAP-5=fVG3_p3Xf3s6FnpSRFwt3+CxitPZwRK0fMbz2t8WZaSEw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] perf parse-events: Set numeric term config
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, zhangshaokun@hisilicon.com,
+        liuqi115@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:21:54PM +0300, Konstantin Komarov wrote:
-> 
-> 
-> On 27.09.2021 21:56, Kari Argillander wrote:
-> > On Mon, Sep 27, 2021 at 06:48:00PM +0300, Konstantin Komarov wrote:
-> >> If we continue to work in this case, then we can corrupt fs.
-> >>
-> > 
-> > Should have fixes tag.
-> > 
-> 
-> The bug is in initial commit.
-> Do I need to write
-> Fixes: 82cae269cfa95 "fs/ntfs3: Add initialization of super block"
-> ?
+On Thu, Sep 16, 2021 at 5:39 AM John Garry <john.garry@huawei.com> wrote:
+>
+> For numeric terms, the config field may be NULL as it is not set from the
+> l+y parsing.
+>
+> Fix by setting the term config from the term type name.
+>
+> Also fix up the pmu-events test to set the alias strings to set the period
+> term properly, and fix up parse-events test to check the term config
+> string.
+>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 
-Yes, but format is not right. It needs to be 12 letter sha and need
-brackets.
+Acked-by: Ian Rogers <irogers@google.com>
 
-Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+Having this would be very useful with an issue I'm looking into.
 
-Just add these to your gitconfig
+Thanks,
+Ian
 
-[core]
-	abbrev = 12
-[pretty]
-	fixes = Fixes: %h (\"%s\")
-
-And after that you can use
-	git show -s --pretty=fixes <sha>
-
-You can see also that others have used this same fixes line in commits:
-
-b8155e95de38 ("fs/ntfs3: Fix error handling in indx_insert_into_root()")
-8c83a4851da1 ("fs/ntfs3: Potential NULL dereference in hdr_find_split()")
-04810f000afd ("fs/ntfs3: Fix error code in indx_add_allocate()")
-1263eddfea99 ("fs/ntfs3: Remove unused including <linux/version.h>")
-8c01308b6d6b ("fs/ntfs3: Remove unused variable cnt in ntfs_security_init()")
-71eeb6ace80b ("fs/ntfs3: Fix integer overflow in multiplication")
-
-The reason for fixes tag is that automatic tools can more easily
-cherry-pick things. Kernel stable branches example big these
-automatically, but there is also other companys which big these. Also it
-is sometimes nice to check commit which introduce this bug. Also some
-organization or study might use these for some statics.
-
-> 
-> >> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> >> ---
-> >>  fs/ntfs3/super.c | 5 +++++
-> >>  1 file changed, 5 insertions(+)
-> >>
-> >> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> >> index 7099d9b1f3aa..193f9a98f6ab 100644
-> >> --- a/fs/ntfs3/super.c
-> >> +++ b/fs/ntfs3/super.c
-> >> @@ -763,9 +763,14 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
-> >>  	sbi->mft.lbo = mlcn << sbi->cluster_bits;
-> >>  	sbi->mft.lbo2 = mlcn2 << sbi->cluster_bits;
-> >>  
-> >> +	/* Compare boot's cluster and sector. */
-> > 
-> > Pretty random obvious comment and I do not know what this does in this
-> > patch.
-> > 
-> >>  	if (sbi->cluster_size < sbi->sector_size)
-> >>  		goto out;
-> >>  
-> >> +	/* Compare boot's cluster and media sector. */
-> >> +	if (sbi->cluster_size < sector_size)
-> >> +		goto out; /* No way to use ntfs_get_block in this case. */
-> > 
-> > Usually comment should not go after line. If you take chunk from patch
-> > 3/3 then this is not issue.
-> > 
-> >> +
-> >>  	sbi->cluster_mask = sbi->cluster_size - 1;
-> >>  	sbi->cluster_mask_inv = ~(u64)sbi->cluster_mask;
-> >>  	sbi->record_size = record_size = boot->record_size < 0
-> >> -- 
-> >> 2.33.0
-> >>
-> >>
-> >>
+> ---
+>  tools/perf/tests/parse-events.c | 8 ++++----
+>  tools/perf/tests/pmu-events.c   | 6 +++---
+>  tools/perf/util/parse-events.c  | 2 +-
+>  3 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+> index fd3556cc9ad4..8875e388563e 100644
+> --- a/tools/perf/tests/parse-events.c
+> +++ b/tools/perf/tests/parse-events.c
+> @@ -605,7 +605,7 @@ static int test__checkterms_simple(struct list_head *terms)
+>         TEST_ASSERT_VAL("wrong type val",
+>                         term->type_val == PARSE_EVENTS__TERM_TYPE_NUM);
+>         TEST_ASSERT_VAL("wrong val", term->val.num == 10);
+> -       TEST_ASSERT_VAL("wrong config", !term->config);
+> +       TEST_ASSERT_VAL("wrong config", !strcmp(term->config, "config"));
+>
+>         /* config1 */
+>         term = list_entry(term->list.next, struct parse_events_term, list);
+> @@ -614,7 +614,7 @@ static int test__checkterms_simple(struct list_head *terms)
+>         TEST_ASSERT_VAL("wrong type val",
+>                         term->type_val == PARSE_EVENTS__TERM_TYPE_NUM);
+>         TEST_ASSERT_VAL("wrong val", term->val.num == 1);
+> -       TEST_ASSERT_VAL("wrong config", !term->config);
+> +       TEST_ASSERT_VAL("wrong config", !strcmp(term->config, "config1"));
+>
+>         /* config2=3 */
+>         term = list_entry(term->list.next, struct parse_events_term, list);
+> @@ -623,7 +623,7 @@ static int test__checkterms_simple(struct list_head *terms)
+>         TEST_ASSERT_VAL("wrong type val",
+>                         term->type_val == PARSE_EVENTS__TERM_TYPE_NUM);
+>         TEST_ASSERT_VAL("wrong val", term->val.num == 3);
+> -       TEST_ASSERT_VAL("wrong config", !term->config);
+> +       TEST_ASSERT_VAL("wrong config", !strcmp(term->config, "config2"));
+>
+>         /* umask=1*/
+>         term = list_entry(term->list.next, struct parse_events_term, list);
+> @@ -661,7 +661,7 @@ static int test__checkterms_simple(struct list_head *terms)
+>         TEST_ASSERT_VAL("wrong type val",
+>                         term->type_val == PARSE_EVENTS__TERM_TYPE_NUM);
+>         TEST_ASSERT_VAL("wrong val", term->val.num == 0xead);
+> -       TEST_ASSERT_VAL("wrong config", !term->config);
+> +       TEST_ASSERT_VAL("wrong config", !strcmp(term->config, "config"));
+>         return 0;
+>  }
+>
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index 43743cf719ef..8c5a6ba1cb14 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -67,7 +67,7 @@ static const struct perf_pmu_test_event segment_reg_loads_any = {
+>                 .desc = "Number of segment register loads",
+>                 .topic = "other",
+>         },
+> -       .alias_str = "umask=0x80,(null)=0x30d40,event=0x6",
+> +       .alias_str = "umask=0x80,period=0x30d40,event=0x6",
+>         .alias_long_desc = "Number of segment register loads",
+>  };
+>
+> @@ -78,7 +78,7 @@ static const struct perf_pmu_test_event dispatch_blocked_any = {
+>                 .desc = "Memory cluster signals to block micro-op dispatch for any reason",
+>                 .topic = "other",
+>         },
+> -       .alias_str = "umask=0x20,(null)=0x30d40,event=0x9",
+> +       .alias_str = "umask=0x20,period=0x30d40,event=0x9",
+>         .alias_long_desc = "Memory cluster signals to block micro-op dispatch for any reason",
+>  };
+>
+> @@ -89,7 +89,7 @@ static const struct perf_pmu_test_event eist_trans = {
+>                 .desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+>                 .topic = "other",
+>         },
+> -       .alias_str = "umask=0,(null)=0x30d40,event=0x3a",
+> +       .alias_str = "umask=0,period=0x30d40,event=0x3a",
+>         .alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+>  };
+>
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 51a2219df601..e10243454e8b 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -3083,7 +3083,7 @@ int parse_events_term__num(struct parse_events_term **term,
+>         struct parse_events_term temp = {
+>                 .type_val  = PARSE_EVENTS__TERM_TYPE_NUM,
+>                 .type_term = type_term,
+> -               .config    = config,
+> +               .config    = config ? : strdup(config_term_names[type_term]),
+>                 .no_value  = no_value,
+>                 .err_term  = loc_term ? loc_term->first_column : 0,
+>                 .err_val   = loc_val  ? loc_val->first_column  : 0,
+> --
+> 2.26.2
+>
