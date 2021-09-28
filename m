@@ -2,100 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055CC41ADA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFEA41ADA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 13:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhI1LOE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 07:14:04 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:56312 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239068AbhI1LOD (ORCPT
+        id S240325AbhI1LOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 07:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239068AbhI1LOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 07:14:03 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 55A9ECECD9;
-        Tue, 28 Sep 2021 13:12:20 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v4 4/4] Bluetooth: btusb: enable Mediatek MT7921 to
- support AOSP extension
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210926150657.v4.4.I257ac5cfaf955d15670479efc311bbab702397f4@changeid>
-Date:   Tue, 28 Sep 2021 13:12:19 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        pali@kernel.org, josephsih@google.com,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
+        Tue, 28 Sep 2021 07:14:16 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0253CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:12:37 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s11so20767846pgr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 04:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uUOAN7watDpAxDREqBm4Gm5B8qCscUU3nYUbBAEy4F0=;
+        b=hU3Qp7q+L84+Bc11O5CF/NNqjXej7nGN3EXPHJOugiogNqEUATZftWY3zqYbSH88Bu
+         OLBFflpyiE7WaBSF6v9ugJiBmwBa65ShS3/IbJJw8qwgtGagHbnXYAFvPGE4ltYDSbiK
+         1ZeO3aDw+M8R8gflMCWm/n+uwSSM5qTFosU4mNPDAaaXYQ+Jrh+rzIMKGgFVbRZazbJc
+         rUQV52eJsWzEUeF0THQhdDqzyr9cfglPos30Y1vTy1WSxi/8EAnEGiIlO0MBtX6eowDT
+         7K3yCHhfCFnvfEoETEv999qlgzVx+MopABAdWbdqpC+QzKDgmuZ0i9xlQ5i+n066cu18
+         omyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uUOAN7watDpAxDREqBm4Gm5B8qCscUU3nYUbBAEy4F0=;
+        b=5CaqbdpDMaFBj5kEHN2HmfnJ0/1SZCgdsW5Gv/tKxHZJ/xyCBkBq15eXJiW8GMmQrK
+         QV3UJiwn2lnmNBWJxPdey7faHBB6OqvT5pv0YRyeLcw8Kbd62MOVdSETRyBO5tkdYMmw
+         DWM1hDSrfsAkxHErWHY4C+PMws7poXHTXbgRlOcZ5XLkXd4uUYgVmmQJwOaoAae5nnF/
+         ptAKRSCiQ/Aoil58cXD8WScUAfEUvSa41Ivv5ujymi2YX6RCjCM7yviT0HvfNfzll5Dn
+         CIlxCWpU1iwMdPhpT+4MKsJOEW8j/nLI5P83Ui8nxW7AVGno/geMIVgpFBUj1T3SJfKt
+         fj1g==
+X-Gm-Message-State: AOAM533gdQdUj5FKjYTMPN7VCta/QjCaSykNUR8K0BzCY8hPvKy0agI7
+        0RocQlAN11SxW5JrN8Y9If8=
+X-Google-Smtp-Source: ABdhPJzRZfsNNowFIloeTlB5KdvxDaJZbuMF/dWcr41q9FkJjHPAv1iVMXfXVW1f3VGgg+iS+Ou6qg==
+X-Received: by 2002:aa7:956a:0:b0:447:96bd:8df5 with SMTP id x10-20020aa7956a000000b0044796bd8df5mr4971065pfq.35.1632827556481;
+        Tue, 28 Sep 2021 04:12:36 -0700 (PDT)
+Received: from linux.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id x5sm13966559pfq.136.2021.09.28.04.12.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 04:12:36 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 11:12:31 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <192E0207-7D40-4A45-9254-7C103921DDD6@holtmann.org>
-References: <20210926150657.v4.1.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
- <20210926150657.v4.4.I257ac5cfaf955d15670479efc311bbab702397f4@changeid>
-To:     Joseph Hwang <josephsih@chromium.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+Subject: Re: [QUESTION] is SLAB considered legacy and deprecated?
+Message-ID: <20210928111231.GA2596@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joseph,
+On Mon, Sep 27, 2021 at 07:03:19PM +0200, Vlastimil Babka wrote:
+> On 9/27/21 11:03, Hyeonggon Yoo wrote:
+> > Hello there,
+> > 
+> > I've been working on adding 'lockless cache' on sl[au]b for a while.
+> > But what it actually does is actually adding 'queuing' on slub.
+> 
+> Yeah, I pointed out those threads from 2011 that called it exactly that...
+> was there any conclusion why that was not ultimately merged?
+>
 
-> This patch enables Mediatek MT7921 to support the AOSP extension.
-> 
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> 
-> ---
-> 
-> Changes in v4:
-> - Call hci_set_aosp_capable in the driver.
-> - This patch is added in this Series-changes 4.
-> 
-> drivers/bluetooth/btusb.c | 6 ++++++
-> 1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index da85cc14f931..de0228e2245b 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -60,6 +60,7 @@ static struct usb_driver btusb_driver;
-> #define BTUSB_VALID_LE_STATES   0x800000
-> #define BTUSB_QCA_WCN6855	0x1000000
-> #define BTUSB_INTEL_BROKEN_INITIAL_NCMD 0x4000000
-> +#define BTUSB_AOSP		0x8000000
-> 
-> static const struct usb_device_id btusb_table[] = {
-> 	/* Generic Bluetooth USB device */
-> @@ -394,6 +395,7 @@ static const struct usb_device_id blacklist_table[] = {
-> 	/* MediaTek Bluetooth devices */
-> 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0e8d, 0xe0, 0x01, 0x01),
-> 	  .driver_info = BTUSB_MEDIATEK |
-> +			 BTUSB_AOSP |
-> 			 BTUSB_WIDEBAND_SPEECH |
-> 			 BTUSB_VALID_LE_STATES },
-> 
-> @@ -407,6 +409,7 @@ static const struct usb_device_id blacklist_table[] = {
-> 
-> 	/* Additional MediaTek MT7921 Bluetooth devices */
-> 	{ USB_DEVICE(0x04ca, 0x3802), .driver_info = BTUSB_MEDIATEK |
-> +						     BTUSB_AOSP |
-> 						     BTUSB_WIDEBAND_SPEECH |
-> 						     BTUSB_VALID_LE_STATES },
-> 	{ USB_DEVICE(0x13d3, 0x3563), .driver_info = BTUSB_MEDIATEK |
-> @@ -3867,6 +3870,9 @@ static int btusb_probe(struct usb_interface *intf,
-> 		hdev->set_bdaddr = btusb_set_bdaddr_mtk;
-> 		set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
-> 		data->recv_acl = btusb_recv_acl_mtk;
-> +
-> +		if (id->driver_info & BTUSB_AOSP)
-> +			hci_set_aosp_capable(hdev);
-> 	}
+It's best to ask Christoph, as he suggested to add queuing on slub.
+Well, after reading old threads, I concluded that it was not merged
+because Christoph stopped developing this.
 
-so I don’t like this. Do we have Mediatek devices that don’t support the AOSP extensions and can’t we determine via some vendor command what features are supported? I do not want to clutter btusb.c any further. The vendor specific setup should be able to figure out what the hardware supports and what it doesn’t.
+To make sure that he stopped developing this, I searched
+his name and sorted by date. [1]
 
-Regards
+Then I see Christoph's last response on SLUB + Queueing was:
+Christopher Lameter Wrote:
+	David Rientjes Wrote:
+	> Overall, the results are _much_ better than the vanilla slub allocator
+	> that I frequently saw ~20% regressions with the TCP_RR netperf benchmark
+	> on a couple of my machines with larger cpu counts. However, there still
+	> is a significant performance degradation compared to slab.
 
-Marcel
+	It seems that the memory leak is still present. This likely skews the
+	results. Thought I had it fixed. Thanks.
 
+It was not merged on 2.6.37-rc1 at that time [2]
+And after some time he worked on improving SLUB itself [3], [4], [5],
+not SLUB with queuing. (anyway his work resulted in lots of improvement on
+slub without queuing)
+
+And in [4], Christoph Lameter wrote:
+	Well here is another result of my obsession with SLAB allocators. There must be
+	some way to get an allocator done that is faster without queueing and I hope
+	that we are now there (maybe only almost...). Any help with cleaning up the
+	rough edges would be appreciated.
+
+So I guess he concluded that adding queuing on SLUB was not good idea
+(again, it's best to ask him)
+
+> > So there is a fundamental question coming into my mind:
+> > 	'is SLAB considered legacy and deprecated?'
+> 
+> To some extend, but not yet in a sense where we would have a deadline to get
+> rid of it. 
+
+What makes you to say 'To some extent'?
+That's what I'm curious about :)
+
+> In some contexts it's still being preferred, AFAIK.
+
+In what context is SLAB or SLUB is preferred?
+And what is the core reason that SLUB is used by default?
+
+> > It seems there are little development on SLAB and people think that
+> > SLAB is legacy and deprecated, so CONFIG_SLUB is used by default.
+> > 
+> > But I think both has pros and cons for their own:
+> > 	SLAB: more temporal locality (cache friendly)
+> > 	but high usage of memory, and less spatial locality (TLB misses) than SLUB.
+> > 
+> > 	SLUB: less temporal locality (less cache friendly) than SLAB
+> > 	but more spatial locality (TLB hit), and low usage of memory
+> > 	and good debugging feature.
+> 
+> I'm not so sure about the usage of memory, SLUB can easily use more I
+> believe. Instead of caching some arrays of objects it will have one or more
+> private slabs per cpu, and the slabs are larger-order pages.
+>
+
+SLAB uses much memory than slab, when there are *lots* of NUMA nodes.
+	because kmem_cache_node exist per node and it keeps alien cache
+	(used for caching freeing object from remote node),
+	so it keeps MAX_NUMANODES ^ 2 of array_cache per slab.
+	that is why I said SLAB uses much memory than SLUB.
+
+to quote Christoph Lameter's (who made SLUB and current maintainer) presentation in 2014:
+	See link [6] for this
+	p21: "SLAB queuing can get intensive memory usage going grows
+	exponentially by NUMA node"
+
+But I'm not sure if SLAB or SLUB is good on UMA architecture.
+
+> > Why do people say SLAB is deprecated/legacy?
+> 
+> Do they?
+>
+
+Yes I think they do.
+
+One example is presentation of David Rientjes (one of maintainers) in 2011:
+	See link [7]
+	p5: "SLAB is deprecated, very little development"
+	p5: "Many distributions still ship with CONFIG_SLAB even
+		though it is not the kernel default"
+
+Anyway, I wanted to discuss the current status of SLAB.
+
+To me, it seems that people do not work on SLAB lately
+and it seems some maintainers (David, Christoph) think
+it's better to move from SLAB to SLUB. one of them is Christoph himself.
+As he made SLUB because he don't agree on design of SLAB. [8]
+
+Thanks,
+Hyeonggon.
+
+Searching his name and sort by date
+[1] https://lore.kernel.org/lkml/?q=Christoph+Lameter&o=10800
+
+[GIT PULL] SLAB updates for 2.6.37-rc1 by Pekka Enberg
+[2] https://lore.kernel.org/lkml/alpine.DEB.2.00.1010242005280.4447@tiger/#r
+
+His work on lockless fastpath of slub (2011-02),
+[3] https://lore.kernel.org/lkml/20110225173850.486326452@linux.com/
+
+His work on lockless fastpath of slub (2011-06)
+[4] https://lore.kernel.org/lkml/20110601172543.437240675@linux.com/
+
+His work on per cpu partial lists
+[5] https://lore.kernel.org/lkml/20110809211221.831975979@linux.com/
+
+Christoph's presentation on slab
+[6] - https://events.static.linuxfound.org/sites/events/files/slides/slaballocators.pdf
+
+David's presentation on slab
+[7] - https://www.socallinuxexpo.org/scale9x-media/scalemedia/scale/scale9x-media/simple_cfp/presentations/16_30-DavidRientjes-Status_of_the_Linux_Slab_Allocators.pdf
+
+[8] SLUB: The unqueued slab allocator V6
+https://lwn.net/Articles/229096/
