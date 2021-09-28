@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1481141B50F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D93441B515
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Sep 2021 19:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242057AbhI1RYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 13:24:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
+        id S242041AbhI1RZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 13:25:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28393 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241995AbhI1RYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:24:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A36BD610E6;
-        Tue, 28 Sep 2021 17:22:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632849744;
-        bh=p1omdo8J0LTck4weGVlceL1bR9p0Zh2+XitDJiT9QIA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W7e95aYScYjgBzh8nhBa4jglUt8uT5Zyk76gaF3/yQ2D7s4KfcgYaBrWJ08Di0zNM
-         xIPk5nMpNO+l1I1rJqvfXavCgeKI7pZrYDKcn+K0Ow7yydL6PVo1D8LU08ZUUPbyxT
-         z7LNpN16o03DwF5wNkf3JK4/9fSa7zr+c3P6s0CDlnAQC5qjSgztQiGpOCd+WCvH21
-         VF4/BDYQyzA47h0+zDtfcSpIY+jqbzTXXk0BQxdX0asWQs52o6ouIMuci+2HyvAhz3
-         RIcZz/mcKPFNrolrlRy4bkjyW/8JltpIC8U9AFRaxCfWhP+KMJYgTin09XgLGOhJ22
-         rc0zGUJIMW/4w==
-Received: by mail-ed1-f43.google.com with SMTP id bd28so24496787edb.9;
-        Tue, 28 Sep 2021 10:22:24 -0700 (PDT)
-X-Gm-Message-State: AOAM531lVz1zLn3+S1vuaykDvjFw5yfS3el2+sSdxGlaGyD9f4bkZrby
-        Ww2GJcmbDnLZITTyI4tq8eDPDWXixwAZ3h1Sdw==
-X-Google-Smtp-Source: ABdhPJyYj6eZo+4rVJU4CYW255+Mc68GtlF90gxDfm5SHY/AXdUWRENNY4sqvr/w1Y6jnQWE59TZVZjjORVMXH70how=
-X-Received: by 2002:a17:906:a294:: with SMTP id i20mr8026916ejz.128.1632849740003;
- Tue, 28 Sep 2021 10:22:20 -0700 (PDT)
+        id S241974AbhI1RZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 13:25:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632849826; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mb/o+TU/jtzYpiRKctEI+EzDEsfd4AjUR8iTNCtSlZo=;
+ b=CV9iOsGEn8B9ZQ2+AMr94E8N1VozmO68vwG4C23hyWRu5FRJh1CCg8/yEfcoLBCSlB4ciYv2
+ IGGztWqAYK6qSy8G1LBkb4Zd8e7xFNwbRzzmfb6ynXoSByfxjmauNkpWaBcBYitZhkTZdur4
+ bWfbFNlKqpPmiBcvkI7Wg2glyDc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 61534f6447d64efb6d51911b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 17:22:44
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E9223C008F2; Tue, 28 Sep 2021 17:22:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7904C008EF;
+        Tue, 28 Sep 2021 17:22:41 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210927064119.127285-1-gshan@redhat.com> <20210927064119.127285-3-gshan@redhat.com>
- <CAL_JsqL8+_Q690-c3J4TS6LBF-mCUBxbhTfr994=Fwffqab0_w@mail.gmail.com> <c101363f-1de7-1d56-a8d9-243f003b48c1@redhat.com>
-In-Reply-To: <c101363f-1de7-1d56-a8d9-243f003b48c1@redhat.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 28 Sep 2021 12:22:08 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJtckde=Ngfhr7u3f_xsccavo+4Pt-v9o_nGHTX+wD91w@mail.gmail.com>
-Message-ID: <CAL_JsqJtckde=Ngfhr7u3f_xsccavo+4Pt-v9o_nGHTX+wD91w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] of, numa: Fetch empty NUMA node ID from distance map
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Sep 2021 10:22:41 -0700
+From:   khsieh@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] drm/msm/dp: Support up to 3 DP controllers
+In-Reply-To: <YSkdaljt7DPbyTDe@builder.lan>
+References: <20210825234233.1721068-1-bjorn.andersson@linaro.org>
+ <20210825234233.1721068-4-bjorn.andersson@linaro.org>
+ <CAE-0n52YaQXQ4-=bR5ffMHOMp7CyFnCS-u9a2pddvaRUQhLrog@mail.gmail.com>
+ <YSkdaljt7DPbyTDe@builder.lan>
+Message-ID: <66f0f29e449b02e30678ed2e3487c7f2@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 6:59 PM Gavin Shan <gshan@redhat.com> wrote:
->
-> Hi Rob,
->
-> On 9/28/21 12:49 AM, Rob Herring wrote:
-> > On Mon, Sep 27, 2021 at 1:42 AM Gavin Shan <gshan@redhat.com> wrote:
-> >>
-> >> There is no device node for the empty NUMA node. However, the
-> >> corresponding NUMA node ID and distance map is still valid in
-> >> "numa-distance-map-v1" compatible device node.
-> >>
-> >> This fetches the NUMA node ID and distance map for these empty
-> >> NUMA node from "numa-distance-map-v1" compatible device node.
-> >
-> > This is much nicer.
-> >
->
-> Indeed, thanks for your suggestions :)
->
-> >> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> >> ---
-> >>   drivers/of/of_numa.c | 2 ++
-> >>   1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/drivers/of/of_numa.c b/drivers/of/of_numa.c
-> >> index fe6b13608e51..5949829a1b00 100644
-> >> --- a/drivers/of/of_numa.c
-> >> +++ b/drivers/of/of_numa.c
-> >> @@ -111,6 +111,8 @@ static int __init of_numa_parse_distance_map_v1(struct device_node *map)
-> >>                          return -EINVAL;
-> >>                  }
-> >>
-> >> +               node_set(nodea, numa_nodes_parsed);
-> >> +
-> >
-> > With this, couldn't we remove of_numa_parse_cpu_nodes() as the only
-> > thing it does is node_set()?
-> >
->
-> I don't think so for couple of reasons:
->
-> (1) With problematic device-tree, the distance map node might be missed
->      or incomplete. In this case, of_numa_parse_cpu_nodes() still helps.
+On 2021-08-27 10:14, Bjorn Andersson wrote:
+> On Fri 27 Aug 00:20 CDT 2021, Stephen Boyd wrote:
+> 
+>> Quoting Bjorn Andersson (2021-08-25 16:42:31)
+>> > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+>> > index 2c7de43f655a..4a6132c18e57 100644
+>> > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> > @@ -78,6 +78,8 @@ struct dp_display_private {
+>> >         char *name;
+>> >         int irq;
+>> >
+>> > +       int id;
+>> > +
+>> >         /* state variables */
+>> >         bool core_initialized;
+>> >         bool hpd_irq_on;
+>> > @@ -115,8 +117,19 @@ struct dp_display_private {
+>> >         struct dp_audio *audio;
+>> >  };
+>> >
+>> > +
+>> > +struct msm_dp_config {
+>> > +       phys_addr_t io_start[3];
+>> 
+>> Can this be made into another struct, like msm_dp_desc, that also
+>> indicates what type of DP connector it is, i.e. eDP vs DP? That would
+>> help me understand in modetest and /sys/class/drm what sort of 
+>> connector
+>> is probing. dp_drm_connector_init() would need to pass the type of
+>> connector appropriately. Right now, eDP connectors still show up as DP
+>> instead of eDP in sysfs.
+>> 
+> 
+> I like it, will spin a v3 with this.
+> 
+> Regards,
+> Bjorn
 
-It's not the kernel's job to validate the DT (if it was, it is doing a
-terrible job). I would suggest writing some checks for dtc if we're
-worried about correctness. (The schemas don't work too well for cross
-node checks.)
+Hi Bjorn,
 
-> (2) @numa_nodes_parsed is also updated when the memory nodes are iterated
->      in of_numa_parse_memory_nodes() and numa_add_memblk().
->
-> So @numa_nodes_parsed, which is synchronized to @node_possible_map afterwards,
-> is the gathering output of CPU nodes, memory nodes and distance map node.
+Have you spin off V3 yet?
+When you expect your patches related to DP be up streamed?
 
-Is it valid to have node id's that are not in the distance map?
-
-Rob
+Thanks,
+kuogee
+> 
+>> > +       size_t num_dp;
+>> > +};
+>> > +
+>> > +static const struct msm_dp_config sc7180_dp_cfg = {
+>> > +       .io_start = { 0x0ae90000 },
+>> > +       .num_dp = 1,
+>> > +};
+>> > +
+>> >  static const struct of_device_id dp_dt_match[] = {
+>> > -       {.compatible = "qcom,sc7180-dp"},
+>> > +       { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
+>> >         {}
+>> >  };
+>> >
