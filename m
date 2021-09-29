@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF7941C9EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB90241CA08
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345740AbhI2QSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60000 "EHLO mail.kernel.org"
+        id S1345714AbhI2Q0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:26:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233501AbhI2QSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:18:14 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DDEB6159A;
-        Wed, 29 Sep 2021 16:16:27 +0000 (UTC)
-Date:   Wed, 29 Sep 2021 17:20:21 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "Neil Armstrong" <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH v3 1/9] iio: adc: ab8500-gpadc: Make use of the helper
- function dev_err_probe()
-Message-ID: <20210929172021.4b797990@jic23-huawei>
-In-Reply-To: <20210928141956.2148-1-caihuoqing@baidu.com>
-References: <20210928141956.2148-1-caihuoqing@baidu.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1345534AbhI2Q0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:26:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36D3461440;
+        Wed, 29 Sep 2021 16:24:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632932673;
+        bh=w4VJ0cTrcVdnFPOz099Y8UG/uO+ZbS2A3UhOj01R4SI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=boVv8N2dksnZXdTCWUBJUd4AG5QEJsKyjisvpIIvRYNyjyxLOHvLxSS4ZoSFOQB/D
+         G+tWMSoaQCgfJ5BABvIP8m6wvc5R/+MTW7PmuM0otR9fKnh1ij6wgXbOCtwWFND66b
+         EEwc2vo5okag4C6ZXEbv+6o+1AJ05Y/kmkTqR9mjFX/RzRGoSamKwWFr3E6ifpgHcH
+         jY0yzP+ZkMWorb2JjcyaBIHVjt+lR+f7D2chVjxfPnLBHWIOF3OHzB2uKPstckMJPA
+         FFl9E0tG2kaHzFoHFVSSsO5Cbfvjzedc17Bu29DLiCMIzZ2R9gOtXankzvRY91cK/3
+         R2/C4U1t20AGw==
+Date:   Wed, 29 Sep 2021 17:24:28 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        Coiby Xu <coxu@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arm64: kexec_file: use more system keyrings to
+ verify kernel image signature
+Message-ID: <20210929162428.GG22029@willie-the-truck>
+References: <20210927005004.36367-1-coiby.xu@gmail.com>
+ <20210927005004.36367-3-coiby.xu@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927005004.36367-3-coiby.xu@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 22:19:47 +0800
-Cai Huoqing <caihuoqing@baidu.com> wrote:
-
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
+On Mon, Sep 27, 2021 at 08:50:04AM +0800, Coiby Xu wrote:
+> From: Coiby Xu <coxu@redhat.com>
 > 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-
-I believe we could in theory get an -EPROBE_DEFER from
-platform_get_irq_by_name() so we should handle that one similarly.
-
-I have no idea if can actually happen on this platform, but seems to me
-that we should be thorough given how easy it is to do here.
-
-Thanks,
-
-Jonathan
-
+> This allows to verify arm64 kernel image signature using not only
+> .builtin_trusted_keys but also .secondary_trusted_keys and .platform keyring.
+> 
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 > ---
-> v1->v2: Remove the separate line of PTR_ERR().
+>  arch/arm64/kernel/kexec_image.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
->  drivers/iio/adc/ab8500-gpadc.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ab8500-gpadc.c b/drivers/iio/adc/ab8500-gpadc.c
-> index 7b5212ba5501..c58d0e2ae538 100644
-> --- a/drivers/iio/adc/ab8500-gpadc.c
-> +++ b/drivers/iio/adc/ab8500-gpadc.c
-> @@ -1146,11 +1146,9 @@ static int ab8500_gpadc_probe(struct platform_device *pdev)
->  
->  	/* The VTVout LDO used to power the AB8500 GPADC */
->  	gpadc->vddadc = devm_regulator_get(dev, "vddadc");
-> -	if (IS_ERR(gpadc->vddadc)) {
-> -		ret = PTR_ERR(gpadc->vddadc);
-> -		dev_err(dev, "failed to get vddadc\n");
-> -		return ret;
-> -	}
-> +	if (IS_ERR(gpadc->vddadc))
-> +		return dev_err_probe(dev, PTR_ERR(gpadc->vddadc),
-> +				     "failed to get vddadc\n");
->  
->  	ret = regulator_enable(gpadc->vddadc);
->  	if (ret) {
+> diff --git a/arch/arm64/kernel/kexec_image.c b/arch/arm64/kernel/kexec_image.c
+> index 9ec34690e255..2357ee2f229a 100644
+> --- a/arch/arm64/kernel/kexec_image.c
+> +++ b/arch/arm64/kernel/kexec_image.c
+> @@ -14,7 +14,6 @@
+>  #include <linux/kexec.h>
+>  #include <linux/pe.h>
+>  #include <linux/string.h>
+> -#include <linux/verification.h>
+>  #include <asm/byteorder.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/image.h>
+> @@ -133,8 +132,7 @@ static void *image_load(struct kimage *image,
+>  #ifdef CONFIG_KEXEC_IMAGE_VERIFY_SIG
+>  static int image_verify_sig(const char *kernel, unsigned long kernel_len)
+>  {
+> -	return verify_pefile_signature(kernel, kernel_len, NULL,
+> -				       VERIFYING_KEXEC_PE_SIGNATURE);
+> +	return arch_kexec_kernel_verify_pe_sig(kernel, kernel_len);
 
+I'm fine with this in principle, but it looks like the first patch is the
+important one.
+
+So for the arm64 bit:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
