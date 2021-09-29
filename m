@@ -2,178 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30C241BCD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF87941BCE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243875AbhI2Cfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 22:35:39 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:12965 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243851AbhI2CfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:35:24 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HK0lC0RyYzWZG7;
-        Wed, 29 Sep 2021 10:32:23 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 10:33:41 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 10:33:41 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-csky@vger.kernel.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 3/3] genirq: Cleanup Kconfig
-Date:   Wed, 29 Sep 2021 10:35:22 +0800
-Message-ID: <20210929023522.57732-4-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210929023522.57732-1-wangkefeng.wang@huawei.com>
-References: <20210929023522.57732-1-wangkefeng.wang@huawei.com>
+        id S243768AbhI2Cn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 22:43:58 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61422 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242877AbhI2Cn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 22:43:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="310397020"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="310397020"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 19:42:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="476498465"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 28 Sep 2021 19:42:09 -0700
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
+ interfaces
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-7-yi.l.liu@intel.com>
+ <20210921170943.GS327412@nvidia.com>
+ <BN9PR11MB5433DA330D4583387B59AA7F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922123931.GI327412@nvidia.com>
+ <BN9PR11MB5433CE19425E85E7F52093278CA79@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210927150928.GA1517957@nvidia.com>
+ <BN9PR11MB54337B7F65B98C2335B806938CA89@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210928115751.GK964074@nvidia.com>
+ <9a314095-3db9-30fc-2ed9-4e46d385036d@linux.intel.com>
+ <20210928140712.GL964074@nvidia.com>
+ <4ba3294b-1628-0522-17ff-8aa38ed5a615@linux.intel.com>
+ <BN9PR11MB54338527F3D400A559EE0B058CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <96999691-f056-d3ca-bcdf-e55e8d040517@linux.intel.com>
+Date:   Wed, 29 Sep 2021 10:38:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+In-Reply-To: <BN9PR11MB54338527F3D400A559EE0B058CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the last user of MAY_HAVE_SPARSE_IRQ is gone, kill it, and clean
-up the SPARSE_IRQ description, covert the help text into comment.
+On 9/29/21 10:29 AM, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Wednesday, September 29, 2021 10:22 AM
+>>
+>> On 9/28/21 10:07 PM, Jason Gunthorpe wrote:
+>>> On Tue, Sep 28, 2021 at 09:35:05PM +0800, Lu Baolu wrote:
+>>>> Another issue is, when putting a device into user-dma mode, all devices
+>>>> belonging to the same iommu group shouldn't be bound with a kernel-
+>> dma
+>>>> driver. Kevin's prototype checks this by READ_ONCE(dev->driver). This is
+>>>> not lock safe as discussed below,
+>>>>
+>>>> https://lore.kernel.org/linux-
+>> iommu/20210927130935.GZ964074@nvidia.com/
+>>>>
+>>>> Any guidance on this?
+>>>
+>>> Something like this?
+>>>
+>>>
+>>> int iommu_set_device_dma_owner(struct device *dev, enum
+>> device_dma_owner mode,
+>>> 			       struct file *user_owner)
+>>> {
+>>> 	struct iommu_group *group = group_from_dev(dev);
+>>>
+>>> 	spin_lock(&iommu_group->dma_owner_lock);
+>>> 	switch (mode) {
+>>> 		case DMA_OWNER_KERNEL:
+>>> 			if (iommu_group-
+>>> dma_users[DMA_OWNER_USERSPACE])
+>>> 				return -EBUSY;
+>>> 			break;
+>>> 		case DMA_OWNER_SHARED:
+>>> 			break;
+>>> 		case DMA_OWNER_USERSPACE:
+>>> 			if (iommu_group-
+>>> dma_users[DMA_OWNER_KERNEL])
+>>> 				return -EBUSY;
+>>> 			if (iommu_group->dma_owner_file != user_owner) {
+>>> 				if (iommu_group-
+>>> dma_users[DMA_OWNER_USERSPACE])
+>>> 					return -EPERM;
+>>> 				get_file(user_owner);
+>>> 				iommu_group->dma_owner_file =
+>> user_owner;
+>>> 			}
+>>> 			break;
+>>> 		default:
+>>> 			spin_unlock(&iommu_group->dma_owner_lock);
+>>> 			return -EINVAL;
+>>> 	}
+>>> 	iommu_group->dma_users[mode]++;
+>>> 	spin_unlock(&iommu_group->dma_owner_lock);
+>>> 	return 0;
+>>> }
+>>>
+>>> int iommu_release_device_dma_owner(struct device *dev,
+>>> 				   enum device_dma_owner mode)
+>>> {
+>>> 	struct iommu_group *group = group_from_dev(dev);
+>>>
+>>> 	spin_lock(&iommu_group->dma_owner_lock);
+>>> 	if (WARN_ON(!iommu_group->dma_users[mode]))
+>>> 		goto err_unlock;
+>>> 	if (!iommu_group->dma_users[mode]--) {
+>>> 		if (mode == DMA_OWNER_USERSPACE) {
+>>> 			fput(iommu_group->dma_owner_file);
+>>> 			iommu_group->dma_owner_file = NULL;
+>>> 		}
+>>> 	}
+>>> err_unlock:
+>>> 	spin_unlock(&iommu_group->dma_owner_lock);
+>>> }
+>>>
+>>>
+>>> Where, the driver core does before probe:
+>>>
+>>>      iommu_set_device_dma_owner(dev, DMA_OWNER_KERNEL, NULL)
+>>>
+>>> pci_stub/etc does in their probe func:
+>>>
+>>>      iommu_set_device_dma_owner(dev, DMA_OWNER_SHARED, NULL)
+>>>
+>>> And vfio/iommfd does when a struct vfio_device FD is attached:
+>>>
+>>>      iommu_set_device_dma_owner(dev, DMA_OWNER_USERSPACE,
+>> group_file/iommu_file)
+>>
+>> Really good design. It also helps alleviating some pains elsewhere in
+>> the iommu core.
+>>
+>> Just a nit comment, we also need DMA_OWNER_NONE which will be set
+>> when
+>> the driver core unbinds the driver from the device.
+>>
+> 
+> Not necessarily. NONE is represented by none of dma_user[mode]
+> is valid.
+> 
 
-Also move GENERIC_IRQ_MULTI_HANDLER into menu, and change all spaces
-to tabs to fix alignment issue.
+Fair enough.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- kernel/irq/Kconfig | 50 +++++++++++++++++++---------------------------
- 1 file changed, 20 insertions(+), 30 deletions(-)
-
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index fbc54c2a7f23..aa7d0e3edea6 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -2,13 +2,9 @@
- menu "IRQ subsystem"
- # Options selectable by the architecture code
- 
--# Make sparse irq Kconfig switch below available
--config MAY_HAVE_SPARSE_IRQ
--       bool
--
- # Legacy support, required for itanic
- config GENERIC_IRQ_LEGACY
--       bool
-+	bool
- 
- # Enable the generic irq autoprobe mechanism
- config GENERIC_IRQ_PROBE
-@@ -16,15 +12,15 @@ config GENERIC_IRQ_PROBE
- 
- # Use the generic /proc/interrupts implementation
- config GENERIC_IRQ_SHOW
--       bool
-+	bool
- 
- # Print level/edge extra information
- config GENERIC_IRQ_SHOW_LEVEL
--       bool
-+	bool
- 
- # Supports effective affinity mask
- config GENERIC_IRQ_EFFECTIVE_AFF_MASK
--       bool
-+	bool
- 
- # Support for delayed migration from interrupt context
- config GENERIC_PENDING_IRQ
-@@ -36,7 +32,7 @@ config GENERIC_IRQ_MIGRATION
- 
- # Alpha specific irq affinity mechanism
- config AUTO_IRQ_AFFINITY
--       bool
-+	bool
- 
- # Interrupt injection mechanism
- config GENERIC_IRQ_INJECTION
-@@ -44,16 +40,16 @@ config GENERIC_IRQ_INJECTION
- 
- # Tasklet based software resend for pending interrupts on enable_irq()
- config HARDIRQS_SW_RESEND
--       bool
-+	bool
- 
- # Edge style eoi based handler (cell)
- config IRQ_EDGE_EOI_HANDLER
--       bool
-+	bool
- 
- # Generic configurable interrupt chip implementation
- config GENERIC_IRQ_CHIP
--       bool
--       select IRQ_DOMAIN
-+	bool
-+	select IRQ_DOMAIN
- 
- # Generic irq_domain hw <--> linux irq number translation
- config IRQ_DOMAIN
-@@ -103,6 +99,10 @@ config HANDLE_DOMAIN_IRQ
- config IRQ_TIMINGS
- 	bool
- 
-+# Allow to specify the low level IRQ handler at run time.
-+config GENERIC_IRQ_MULTI_HANDLER
-+	bool
-+
- config GENERIC_IRQ_MATRIX_ALLOCATOR
- 	bool
- 
-@@ -111,20 +111,15 @@ config GENERIC_IRQ_RESERVATION_MODE
- 
- # Support forced irq threading
- config IRQ_FORCED_THREADING
--       bool
-+	bool
- 
-+# Sparse irq numbering is useful for distro kernels that want
-+# to define a high CONFIG_NR_CPUS value but still want to have
-+# low kernel memory footprint on smaller machines.
-+# Sparse irqs can also be beneficial on NUMA boxes, as they spread
-+# out the interrupt descriptors in a more NUMA-friendly way.
- config SPARSE_IRQ
--	bool "Support sparse irq numbering" if MAY_HAVE_SPARSE_IRQ
--	help
--
--	  Sparse irq numbering is useful for distro kernels that want
--	  to define a high CONFIG_NR_CPUS value but still want to have
--	  low kernel memory footprint on smaller machines.
--
--	  ( Sparse irqs can also be beneficial on NUMA boxes, as they spread
--	    out the interrupt descriptors in a more NUMA-friendly way. )
--
--	  If you don't know what to do here, say N.
-+	bool
- 
- config GENERIC_IRQ_DEBUGFS
- 	bool "Expose irq internals in debugfs"
-@@ -139,8 +134,3 @@ config GENERIC_IRQ_DEBUGFS
- 	  If you don't know what to do here, say N.
- 
- endmenu
--
--config GENERIC_IRQ_MULTI_HANDLER
--	bool
--	help
--	  Allow to specify the low level IRQ handler at run time.
--- 
-2.26.2
-
+Best regards,
+baolu
