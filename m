@@ -2,110 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6222F41C1E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4F241C207
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245157AbhI2Jrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245123AbhI2Jry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:47:54 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B698C06161C;
-        Wed, 29 Sep 2021 02:46:14 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so3784130pjv.5;
-        Wed, 29 Sep 2021 02:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hRb6GtweOQTJtQqt+eAkXwu4EBYpz5bP1O98wcEaZU8=;
-        b=peGr8gYEJb+0TyUtZ7vqBPpXueOkDMlS1axF66LFGp+fItysdUtbt84LO85Cs0dtzq
-         cm/1L7v8/EfQL6k42GyPV0KORoqxqpv4NwJT+chv0riK852/UnxsfsckGRcUmyFmj2U9
-         fXp4fvTybVim0j29gBmxqYatGnkHyIE887VAabtHKM/DIESvgRzGuFwjV1gWermpOjnC
-         Li7PPTRmQmgwSDIcBdbalmsBzV2MyyarRyhYpaZlUFX1Ws26MZSQMsJH3g5u1Z8c1vk4
-         tSIPBekiXfOD1MPPPpEuC9FiruF75kmFceSTLe/3sLgTdCPDKKUsKAzzLkvA0o+Sbphn
-         XQ/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hRb6GtweOQTJtQqt+eAkXwu4EBYpz5bP1O98wcEaZU8=;
-        b=T1HpAolBZ98HZoOsqnI5MPlni0ntYoNfemKTwY7O4UvHvptAunmpU7tAC53w6t3u6D
-         OWPBxwcNnVEDnoInL8sO3PxjGIqtvJ6lIv5+hLZpx3xpNFmxfGh7v0cC/53L3yBbRz1d
-         hRvct+oW0jFuWD3gZkdzxtgnWF/qMPCZE2uO4JAjBMc+LtE+Vs249bKHfNkYzdV896R3
-         L8mXnMuRfHokktsVeDMj6Nw612mjkLhkFVG1GrSMwk0fVK7vLB9REl/9kK1YGxTer5LI
-         7RXk20nECzna55CanDMLz1LSagBKRlt2zr5O9aKQ+xZHsCubzKFcBoyuHGoQqxo+tGkt
-         f//Q==
-X-Gm-Message-State: AOAM531E2+OFufc/cGB5pE3P5U7uyqaFi4evM79guO+G7/1xdQ42SWbf
-        /vLthWRqgvaeps/ICg0//PrZlCv8UilaaMbVRCM=
-X-Google-Smtp-Source: ABdhPJyNHGVfB/KAkq26HeUsgGiNNXl30qfjOQrV4zyIPODAsfprNyULY2ZqvDgpdZkB//X15w04QkV/jc/Av+X9w0I=
-X-Received: by 2002:a17:90b:38cf:: with SMTP id nn15mr5446613pjb.81.1632908773663;
- Wed, 29 Sep 2021 02:46:13 -0700 (PDT)
+        id S245174AbhI2Jw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:52:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245079AbhI2Jw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:52:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B08BC613A5;
+        Wed, 29 Sep 2021 09:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632909075;
+        bh=TQQ+cjIN9++CtK9DgtuA6I+X1WnMjFRfMLxBOvN/9hI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RDOtNOVfqPdKvpSr/OsPhNB0fjENTcC6due2YIfIDrAMsow0opiYt1QHJew4ql2n1
+         fZH4NruBoG9wJO8wbT0XZJbvOC+xUiY29xWFOTMILMu96eFiy5sv/dZZ7M1arg9kJs
+         7GltsB1HljAlqeovMRCxLsp8lK6AS/SlkTAt5UjPTSLE3nvQDh8DTRk4hRPx/qY3Wu
+         Ljm7ukEFU/n7DLFsJw3WsBW0ZdKkSNdy4ty2WkKje0ftyfAwYt0JLv6bCNAmbKzOtE
+         71e19ToUqhiQJknv1dNPYIjXnX1N8db1jYZmFGrSBIsCKGj8DAhwjqiVCn57wl0taE
+         eBXytOfpUPuAw==
+Date:   Wed, 29 Sep 2021 10:51:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joerg Roedel <joro@8bytes.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
+Message-ID: <20210929095107.GA21057@willie-the-truck>
+References: <20210927152412.2900928-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210928195548.17846-1-pekka.korpinen@iki.fi>
-In-Reply-To: <20210928195548.17846-1-pekka.korpinen@iki.fi>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 29 Sep 2021 12:46:02 +0300
-Message-ID: <CA+U=DspS04Crdr7OwfrTuBueTYOA+rV9sS0_mB-Q9+hsoufxKw@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: ad5446: Fix ad5622_write() return value
-To:     Pekka Korpinen <pekka.korpinen@iki.fi>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927152412.2900928-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:57 PM Pekka Korpinen <pekka.korpinen@iki.fi> wrote:
->
-> On success i2c_master_send() returns the number of bytes written. The
-> call from iio_write_channel_info(), however, expects the return value to
-> be zero on success.
->
-
-Requires a Fixes tag.
-But other than that:
-
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-
-> Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Now that SCM can be a loadable module, we have to add another
+> dependency to avoid link failures when ipa or adreno-gpu are
+> built-in:
+> 
+> aarch64-linux-ld: drivers/net/ipa/ipa_main.o: in function `ipa_probe':
+> ipa_main.c:(.text+0xfc4): undefined reference to `qcom_scm_is_available'
+> 
+> ld.lld: error: undefined symbol: qcom_scm_is_available
+> >>> referenced by adreno_gpu.c
+> >>>               gpu/drm/msm/adreno/adreno_gpu.o:(adreno_zap_shader_load) in archive drivers/built-in.a
+> 
+> This can happen when CONFIG_ARCH_QCOM is disabled and we don't select
+> QCOM_MDT_LOADER, but some other module selects QCOM_SCM. Ideally we'd
+> use a similar dependency here to what we have for QCOM_RPROC_COMMON,
+> but that causes dependency loops from other things selecting QCOM_SCM.
+> 
+> This appears to be an endless problem, so try something different this
+> time:
+> 
+>  - CONFIG_QCOM_SCM becomes a hidden symbol that nothing 'depends on'
+>    but that is simply selected by all of its users
+> 
+>  - All the stubs in include/linux/qcom_scm.h can go away
+> 
+>  - arm-smccc.h needs to provide a stub for __arm_smccc_smc() to
+>    allow compile-testing QCOM_SCM on all architectures.
+> 
+>  - To avoid a circular dependency chain involving RESET_CONTROLLER
+>    and PINCTRL_SUNXI, change the 'depends on RESET_CONTROLLER' in
+>    the latter one to 'select'.
+> 
+> The last bit is rather annoying, as drivers should generally never
+> 'select' another subsystem, and about half the users of the reset
+> controller interface do this anyway.
+> 
+> Nevertheless, this version seems to pass all my randconfig tests
+> and is more robust than any of the prior versions.
+> 
+> Comments?
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> This bug causes incorrect consumption of the sysfs buffer in
-> iio_write_channel_info(). When writing more than two characters to
-> out_voltage0_raw, the ad5446 write handler is called multiple times
-> causing unexpected behavior.
->
-> A similar fix was applied for ad5064.c in 2015 - commit 03fe472ef33b
-> ("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
->
->  drivers/iio/dac/ad5446.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
-> index 488ec69967d6..dfd541bbde5b 100644
-> --- a/drivers/iio/dac/ad5446.c
-> +++ b/drivers/iio/dac/ad5446.c
-> @@ -531,8 +531,13 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
->  {
->         struct i2c_client *client = to_i2c_client(st->dev);
->         __be16 data = cpu_to_be16(val);
-> +       int ret;
-> +
-> +       ret = i2c_master_send(client, (char *)&data, sizeof(data));
-> +       if (ret < 0)
-> +               return ret;
->
-> -       return i2c_master_send(client, (char *)&data, sizeof(data));
-> +       return 0;
->  }
->
->  /*
-> --
-> 2.33.0
->
+>  drivers/firmware/Kconfig                |  4 +-
+>  drivers/gpu/drm/msm/Kconfig             |  4 +-
+>  drivers/iommu/Kconfig                   |  2 +-
+>  drivers/media/platform/Kconfig          |  2 +-
+>  drivers/mmc/host/Kconfig                |  2 +-
+>  drivers/net/ipa/Kconfig                 |  1 +
+>  drivers/net/wireless/ath/ath10k/Kconfig |  2 +-
+>  drivers/pinctrl/qcom/Kconfig            |  3 +-
+>  drivers/pinctrl/sunxi/Kconfig           |  6 +--
+>  include/linux/arm-smccc.h               | 10 ++++
+>  include/linux/qcom_scm.h                | 71 -------------------------
+>  11 files changed, 23 insertions(+), 84 deletions(-)
+> 
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index 220a58cf0a44..f7dd82ef0b9c 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -203,9 +203,7 @@ config INTEL_STRATIX10_RSU
+>  	  Say Y here if you want Intel RSU support.
+>  
+>  config QCOM_SCM
+> -	tristate "Qcom SCM driver"
+> -	depends on ARM || ARM64
+> -	depends on HAVE_ARM_SMCCC
+> +	tristate
+>  	select RESET_CONTROLLER
+>  
+>  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index e9c6af78b1d7..3ddf739a6f9b 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -17,7 +17,7 @@ config DRM_MSM
+>  	select DRM_SCHED
+>  	select SHMEM
+>  	select TMPFS
+> -	select QCOM_SCM if ARCH_QCOM
+> +	select QCOM_SCM
+>  	select WANT_DEV_COREDUMP
+>  	select SND_SOC_HDMI_CODEC if SND_SOC
+>  	select SYNC_FILE
+> @@ -55,7 +55,7 @@ config DRM_MSM_GPU_SUDO
+>  
+>  config DRM_MSM_HDMI_HDCP
+>  	bool "Enable HDMI HDCP support in MSM DRM driver"
+> -	depends on DRM_MSM && QCOM_SCM
+> +	depends on DRM_MSM
+>  	default y
+>  	help
+>  	  Choose this option to enable HDCP state machine
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index 124c41adeca1..989c83acbfee 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -308,7 +308,7 @@ config APPLE_DART
+>  config ARM_SMMU
+>  	tristate "ARM Ltd. System MMU (SMMU) Support"
+>  	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+> -	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
+> +	select QCOM_SCM
+>  	select IOMMU_API
+>  	select IOMMU_IO_PGTABLE_LPAE
+>  	select ARM_DMA_USE_IOMMU if ARM
+
+I don't want to get in the way of this patch because I'm also tired of the
+randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
+a wide variety of (non-qcom) SoCs and so it seems a shame to require the
+QCOM_SCM code to be included for all of those when it's not strictly needed
+at all.
+
+Will
