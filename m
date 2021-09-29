@@ -2,179 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E7841C3DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2B141C3E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245567AbhI2Lzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:55:36 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51086
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244943AbhI2Lzf (ORCPT
+        id S1343514AbhI2L40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343508AbhI2L4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:55:35 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        Wed, 29 Sep 2021 07:56:06 -0400
+X-Greylist: delayed 95437 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Sep 2021 04:54:25 PDT
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA2AC06161C;
+        Wed, 29 Sep 2021 04:54:25 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id CEB314060E;
-        Wed, 29 Sep 2021 11:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632916432;
-        bh=SA3MOhUQB8LiGeG2R1qfgrcRYehbqo7vhZPQxaRL3OU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=jtY1PiModmvCpOJ9on9ATR8EYWn4f0xjXLFdHz/GnD5zjepReEYx9+6JuzHeXnTNN
-         aXgW3N/Da0O0NbUV1k/P3scgIjJytZfrTddN9sj5di67DIkmrRSfVTgHOFLN1FHcbE
-         BFYBe5S8o5QVsI72uG3akFb5Y4m+J3iNfyub/RXPu4fXsR5ECTmUGYpOOTvKzVSH6m
-         LQEhzoYzeQL/MOdI5Pmn75MUuNfG7rd+Sg0S/W9OjD2mRC9nPv3I9aiJB9kjBzqdKJ
-         wadzjsHAiAVLeT7/u7n1JE+FBdN4C8NMlRmumkooFn+1IDPv89R3Vs6sB++vGRFIh0
-         KsS0uqJDv1plw==
-From:   Colin King <colin.king@canonical.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][V2] drm/msm: Fix potential integer overflow on 32 bit multiply
-Date:   Wed, 29 Sep 2021 12:53:52 +0100
-Message-Id: <20210929115352.212849-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id C2A4B228;
+        Wed, 29 Sep 2021 04:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1632916463;
+        bh=QIOhbXTW+4LTUMlGEWB6KTncQEdjxs82r47WlkWtpzM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PTRcCeCWPbaNeUFJGtSuQneB/EDyfvdN4ll8NFb8jeYFSNP2dv8+OpvPAEtAaOGD/
+         ILxTuNdlM8KvWB2E9+S9lfk2UhzebJ+nOecoREqBVDC2Opjam2gd9JblinMDfPw406
+         FC1thpKR8dYPcjQogufcLRZckybbLL8ukMrRuf28=
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     openbmc@lists.ozlabs.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Zev Weiss <zev@bewilderbeest.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
+Subject: [PATCH 0/6] Dynamic aspeed-smc flash chips via "reserved" DT status
+Date:   Wed, 29 Sep 2021 04:54:02 -0700
+Message-Id: <20210929115409.21254-1-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hello,
 
-In the case where clock is 2147485 or greater the 32 bit multiplication
-by 1000 will cause an integer overflow. Fix this by making the constant
-1000 an unsigned long to ensure a long multiply occurs to avoid the
-overflow before assigning the result to the long result in variable
-requested.  Most probably a theoretical overflow issue, but worth fixing
-to clear up static analysis warnings.
+This patch series aims to improve a scenario that arises in OpenBMC
+and which isn't handled very well at the moment.  Certain devices, the
+example at hand being the flash chip used to store the host's firmware
+(e.g. the BIOS), may be shared between the BMC and the host system but
+only available to one or the other at any given time.  The device may
+thus be effectively off-limits to the BMC when it boots, and only
+usable after userspace performs the necessary steps to coordinate
+appropriately with the host (tracking its power state, twiddling
+GPIOs, sending IPMI commands, etc.).
 
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: c8afe684c95c ("drm/msm: basic KMS driver for snapdragon")
-Fixes: 3e87599b68e7 ("drm/msm/mdp4: add LVDS panel support")
-Fixes: 937f941ca06f ("drm/msm/dp: Use qmp phy for DP PLL and PHY")
-Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
-Fixes: a3376e3ec81c ("drm/msm: convert to drm_bridge")
+Neither the "okay" nor the "disabled" device-tree status values works
+nicely for the flash device this case -- an "okay" device gets probed
+automatically as soon as the device and a driver for it are available,
+and a "disabled" one gets forgotten about entirely, whereas we want
+the BMC's kernel to be aware of the existence of the device, but not
+try to actually do anything with it (i.e. probe it) until explicitly
+requested to do so by userspace.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
-V2: Find and fix all unintentional integer overflows that match this
-    overflow pattern.
----
- drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c    | 2 +-
- drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c   | 2 +-
- drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c | 2 +-
- drivers/gpu/drm/msm/dp/dp_ctrl.c                    | 4 ++--
- drivers/gpu/drm/msm/edp/edp_connector.c             | 2 +-
- drivers/gpu/drm/msm/hdmi/hdmi_bridge.c              | 2 +-
- drivers/gpu/drm/msm/hdmi/hdmi_connector.c           | 2 +-
- 7 files changed, 8 insertions(+), 8 deletions(-)
+However, while there's no support for it currently in the kernel tree,
+the device-tree spec [0] also lists "reserved" as a possible status
+value, and its description seems like a fairly reasonable fit for this
+situation:
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c
-index 88645dbc3785..83140066441e 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c
-@@ -50,7 +50,7 @@ static void mdp4_dtv_encoder_mode_set(struct drm_encoder *encoder,
- 
- 	DBG("set mode: " DRM_MODE_FMT, DRM_MODE_ARG(mode));
- 
--	mdp4_dtv_encoder->pixclock = mode->clock * 1000;
-+	mdp4_dtv_encoder->pixclock = mode->clock * 1000U;
- 
- 	DBG("pixclock=%lu", mdp4_dtv_encoder->pixclock);
- 
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c
-index 10eb3e5b218e..d90dc0a39855 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c
-@@ -225,7 +225,7 @@ static void mdp4_lcdc_encoder_mode_set(struct drm_encoder *encoder,
- 
- 	DBG("set mode: " DRM_MODE_FMT, DRM_MODE_ARG(mode));
- 
--	mdp4_lcdc_encoder->pixclock = mode->clock * 1000;
-+	mdp4_lcdc_encoder->pixclock = mode->clock * 1000U;
- 
- 	DBG("pixclock=%lu", mdp4_lcdc_encoder->pixclock);
- 
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-index 7288041dd86a..a965e7962a7f 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-@@ -64,7 +64,7 @@ static int mdp4_lvds_connector_mode_valid(struct drm_connector *connector,
- 	struct drm_encoder *encoder = mdp4_lvds_connector->encoder;
- 	long actual, requested;
- 
--	requested = 1000 * mode->clock;
-+	requested = 1000U * mode->clock;
- 	actual = mdp4_lcdc_round_pixclk(encoder, requested);
- 
- 	DBG("requested=%ld, actual=%ld", requested, actual);
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 62e75dc8afc6..6babeb79aeb0 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1316,7 +1316,7 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
- 	opts_dp->lanes = ctrl->link->link_params.num_lanes;
- 	opts_dp->link_rate = ctrl->link->link_params.rate / 100;
- 	dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
--					ctrl->link->link_params.rate * 1000);
-+					ctrl->link->link_params.rate * 1000U);
- 
- 	phy_configure(phy, &dp_io->phy_opts);
- 	phy_power_on(phy);
-@@ -1336,7 +1336,7 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
- 	int ret = 0;
- 
- 	dp_ctrl_set_clock_rate(ctrl, DP_STREAM_PM, "stream_pixel",
--					ctrl->dp_ctrl.pixel_rate * 1000);
-+					ctrl->dp_ctrl.pixel_rate * 1000U);
- 
- 	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, true);
- 	if (ret)
-diff --git a/drivers/gpu/drm/msm/edp/edp_connector.c b/drivers/gpu/drm/msm/edp/edp_connector.c
-index 73cb5fd97a5a..837e7873141f 100644
---- a/drivers/gpu/drm/msm/edp/edp_connector.c
-+++ b/drivers/gpu/drm/msm/edp/edp_connector.c
-@@ -64,7 +64,7 @@ static int edp_connector_mode_valid(struct drm_connector *connector,
- 	struct msm_kms *kms = priv->kms;
- 	long actual, requested;
- 
--	requested = 1000 * mode->clock;
-+	requested = 1000L * mode->clock;
- 	actual = kms->funcs->round_pixclk(kms,
- 			requested, edp_connector->edp->encoder);
- 
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c b/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c
-index 6e380db9287b..e4c68a59772a 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c
-@@ -209,7 +209,7 @@ static void msm_hdmi_bridge_mode_set(struct drm_bridge *bridge,
- 
- 	mode = adjusted_mode;
- 
--	hdmi->pixclock = mode->clock * 1000;
-+	hdmi->pixclock = mode->clock * 1000U;
- 
- 	hstart = mode->htotal - mode->hsync_start;
- 	hend   = mode->htotal - mode->hsync_start + mode->hdisplay;
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_connector.c b/drivers/gpu/drm/msm/hdmi/hdmi_connector.c
-index 58707a1f3878..ce116a7b1bba 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi_connector.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi_connector.c
-@@ -385,7 +385,7 @@ static int msm_hdmi_connector_mode_valid(struct drm_connector *connector,
- 	struct msm_kms *kms = priv->kms;
- 	long actual, requested;
- 
--	requested = 1000 * mode->clock;
-+	requested = 1000U * mode->clock;
- 	actual = kms->funcs->round_pixclk(kms,
- 			requested, hdmi_connector->hdmi->encoder);
- 
+  Indicates that the device is operational, but should not be used.
+  Typically this is used for devices that are controlled by another
+  software component, such as platform firmware.
+
+These patches start making use of this status value in the aspeed-smc
+driver.  The first patch adds a companion routine to
+of_device_is_available() that checks for a "reserved" status instead
+of "okay".  The second patch is a small MTD adjustment to allow an
+unregistered device to be cleanly re-registered.  Patches 3 through 5
+modify the aspeed-smc driver to allow individual chips to be attached
+and detached at runtime, and to avoid automatically attaching any
+marked as reserved.  Finally, patch 6 employs the newly-supported
+status in adding support for the BIOS flash device to the ASRock Rack
+e3c246d4i BMC.
+
+
+Thanks,
+Zev
+
+[0] https://github.com/devicetree-org/devicetree-specification/releases/download/v0.3/devicetree-specification-v0.3.pdf
+
+Zev Weiss (6):
+  of: base: Add function to check for status = "reserved"
+  mtd: core: clear out unregistered devices a bit more
+  mtd: spi-nor: aspeed: Refactor registration/unregistration
+  mtd: spi-nor: aspeed: Allow attaching & detaching chips at runtime
+  mtd: spi-nor: aspeed: Don't automatically attach reserved chips
+  ARM: dts: aspeed: Add e3c246d4i BIOS flash device
+
+ .../ABI/stable/sysfs-driver-aspeed-smc        |  17 ++
+ .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  |  16 ++
+ drivers/mtd/mtdcore.c                         |   7 +-
+ drivers/mtd/spi-nor/controllers/aspeed-smc.c  | 177 +++++++++++++++---
+ drivers/of/base.c                             |  53 +++++-
+ include/linux/of.h                            |   6 +
+ 6 files changed, 238 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-driver-aspeed-smc
+
 -- 
-2.32.0
+2.33.0
 
