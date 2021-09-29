@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932BC41CB29
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C6441CB2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243284AbhI2Rq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S1345252AbhI2RrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244930AbhI2Rq1 (ORCPT
+        with ESMTP id S1344502AbhI2RrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:46:27 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65C5C06161C;
-        Wed, 29 Sep 2021 10:44:45 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i19so11121796lfu.0;
-        Wed, 29 Sep 2021 10:44:45 -0700 (PDT)
+        Wed, 29 Sep 2021 13:47:02 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFCFC06161C;
+        Wed, 29 Sep 2021 10:45:21 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id v10so11844324edj.10;
+        Wed, 29 Sep 2021 10:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k40QSKaIzA7xI71zhIsTqgkNgsI1dltQ3koc7EdeH7M=;
-        b=l97ZYlbzmvKAyfwAYe+jsP1QjlEw1GC0NWjKIkPDeJjvSQSOa5AprQqUy1bkTebqtd
-         X7NL/LesrR2p4CX6R6yulPo0rE4QC2cqNkaxgv1uXfqEw4wP3qMM5OnAgTiakJKQLI1K
-         FeonMIeflrgodwHKapVpYs/yicDdfZve6nlwzqK3Fxp36qBnC4HeJid/cmYiOIfeBVuH
-         wD3WI16J0MGv0yAi3ZE66ny3DPdcY3A9f3hAd88+zf859KpKnNKqA4WO8tHXlCOTYao1
-         RbnJ3keA2C/hFDgIYvDIPiDvrW2DIk6DTlciyHX10pXZp8o8B71YiGtSHAYda9YPRWcc
-         B/RA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FIySyrXxkEKwm26jEVGIMsY7wJRMxgw98emBJrp8y6k=;
+        b=TPaJQTAmcDitxf8sdYRG0suoD9OHN+sqJSpRUZK8MeJi++z5D1ptjyVQYeiOQb0xRz
+         q/12yatXna9nstDHjtX91d0WHkcHgEAmqP9KMZqwMfGcdSq7xnaER0/LWjNOXtpP9FKn
+         F3+D2FaUshkIzokd6Ze1bOk/b9cs9UH1g7G0Ksb88yXanQlTAXv2ypXxRprYdArK4k0G
+         Xn+kJjK5+UFvUyGSF2oJM/6kx8z9D3NMPMQN/uBU+/8OO7orSgyv8a58AwQYVQpBjb3A
+         18cLyXbIvuY44Xrh/FnXl+PelNAiW3VaJSNiucUy2QkJmmJ3Hh60DV5sVavSCgo0lUb8
+         A+Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k40QSKaIzA7xI71zhIsTqgkNgsI1dltQ3koc7EdeH7M=;
-        b=12lm986V30V3m0GrYHpvXB19NiIy4f2T+UPIOTEnu0GH3GUIxAtHncnPOtyX0815Yv
-         ZYGwA0FYxyi55b4DiAuIu92hnVe72aWhvYDKdOyRMTIRhKro8B/AhLe/D8aB2hW15alA
-         fDJVEYRiP1sVR1EhRJhfhJA/55AIC5ul6m2V/dChztJDFJqW3rdomRPbMqTwP9Rk/sGg
-         SGanF3WfHMQRvW6PzD5C5ZxWezbZGI3ub+8G5ipc/aOV+egeg/C7ETaybtwoQH+3T5Le
-         HlcyhBC7DdcsMRZ0Gg2S5xv6I+NpFX0DKnirrflVXrWQof+cF5w7QQEhaNd3dEQWg1Hz
-         Rgeg==
-X-Gm-Message-State: AOAM530dS1a/k8ROiNlMrqjfvXer+cPVkLps+Kzxxyo/3iRyYbKfxshS
-        LQNO6fGz5bfrboudBKp6pe8v1c/KYKw=
-X-Google-Smtp-Source: ABdhPJxHVdMVdhhT8Xf7U20OOMF9gil0ngthBcjWbnD2wFVZAWBvqYqKz27ekusaLjTlyu00XpFG2w==
-X-Received: by 2002:a19:ae14:: with SMTP id f20mr989424lfc.488.1632937483901;
-        Wed, 29 Sep 2021 10:44:43 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id br40sm61892lfb.64.2021.09.29.10.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 10:44:43 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 20:44:41 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs/ntfs3: Check for NULL if ATTR_EA_INFO is incorrect
-Message-ID: <20210929174441.qshpp5ukuszb7cf5@kari-VirtualBox>
-References: <227c13e3-5a22-0cba-41eb-fcaf41940711@paragon-software.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FIySyrXxkEKwm26jEVGIMsY7wJRMxgw98emBJrp8y6k=;
+        b=bwTpLIRvO8V7/spP36xvwJ4PbNUS7gG2Vsrf2zLJ4FLJpmD7AZGqmA8C/jyg09A2au
+         vXt4p8KAAX7K02XDtWsUqICafmz+KBJqK860EsJP7SqXnbeA01VPyZkKJn9G2gWOHo7d
+         nZEfhKxFfkBN27/FoJltM1wRqMgWtMPfRGDjp0Xp5udoimmKBnMZSWkF6VMANqoHJ+Re
+         r4PTWmZ63nBcgpECIENwKmhCkntap83iQ3xQ4lgCXqbnvmdIN+qnqKaaN4SWl3zlBO5L
+         3VkCdGHR+C1TPjJb7+WuFXjHanPEGjJ/6GIj/P4/mvILBlgrZF5Y11WY3ACdd+z38pR9
+         3NBw==
+X-Gm-Message-State: AOAM531MHijAAd/9isynwPi8J8V5whxOlJaWBTZDOA7yLwONWtl2vMPn
+        Jh+GZlt+Dpjt55r8luaHeFpMX4m6bZ0=
+X-Google-Smtp-Source: ABdhPJyv6MYqHGEXqX5DmaZbUP++IQh7gQRcGMZL91Fz4wXLE2Arze2Mh7vp5GGyw/Lnk8fL/qPVcw==
+X-Received: by 2002:a50:fa89:: with SMTP id w9mr1411930edr.113.1632937519918;
+        Wed, 29 Sep 2021 10:45:19 -0700 (PDT)
+Received: from [192.168.0.108] ([176.228.98.2])
+        by smtp.gmail.com with ESMTPSA id dt4sm350760ejb.27.2021.09.29.10.45.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 10:45:19 -0700 (PDT)
+Subject: Re: [PATCH][net-next] net/mlx4: Use array_size() helper in
+ copy_to_user()
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210928201733.GA268467@embeddedor>
+ <283d239b-9af9-d3a3-72be-9138c032ef63@gmail.com>
+ <16ae2d2d-3aba-82b2-0bd8-90f7d0367a62@gmail.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <e2f72429-91c5-7140-c13d-35d4623092de@gmail.com>
+Date:   Wed, 29 Sep 2021 20:45:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <227c13e3-5a22-0cba-41eb-fcaf41940711@paragon-software.com>
+In-Reply-To: <16ae2d2d-3aba-82b2-0bd8-90f7d0367a62@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 07:35:43PM +0300, Konstantin Komarov wrote:
-> This can be reason for reported panic.
 
-Is this public panic? If it is then put link here. If you have report
-from panic you can put it here also. Patch itself looks correct.
 
-> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+On 9/29/2021 8:21 PM, Eric Dumazet wrote:
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/frecord.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-> index 9a53f809576d..007602badd90 100644
-> --- a/fs/ntfs3/frecord.c
-> +++ b/fs/ntfs3/frecord.c
-> @@ -3080,7 +3080,9 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
->                         const struct EA_INFO *info;
->  
->                         info = resident_data_ex(attr, sizeof(struct EA_INFO));
-> -                       dup->ea_size = info->size_pack;
-> +                       /* If ATTR_EA_INFO exists 'info' can't be NULL. */
-> +                       if (info)
-> +                               dup->ea_size = info->size_pack;
->                 }
->         }
->  
-> -- 
-> 2.33.0
+> On 9/29/21 3:24 AM, Tariq Toukan wrote:
+>>
+>>
+>> On 9/28/2021 11:17 PM, Gustavo A. R. Silva wrote:
+>>> Use array_size() helper instead of the open-coded version in
+>>> copy_to_user(). These sorts of multiplication factors need
+>>> to be wrapped in array_size().
+>>>
+>>> Link: https://github.com/KSPP/linux/issues/160
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>>    drivers/net/ethernet/mellanox/mlx4/cq.c | 3 ++-
+>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+>>> index f7053a74e6a8..4d4f9cf9facb 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx4/cq.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+>>> @@ -314,7 +314,8 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+>>>                buf += PAGE_SIZE;
+>>>            }
+>>>        } else {
+>>> -        err = copy_to_user((void __user *)buf, init_ents, entries * cqe_size) ?
+>>> +        err = copy_to_user((void __user *)buf, init_ents,
+>>> +                   array_size(entries, cqe_size)) ?
+>>>                -EFAULT : 0;
+>>>        }
+>>>   
+>>
+>> Thanks for your patch.
+>> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 > 
+> Not sure why avoiding size_t overflows would make this code safer.
+> init_ents contains PAGE_SIZE bytes...
+> 
+> BTW
+> 
+> Is @entries guaranteed to be a power of two ?
+
+Yes.
+
+> 
+> This function seems to either copy one chunk ( <= PAGE_SIZE),
+> or a number of full pages.
+> 
+
+Exactly. No remainder handling is needed, for the reason you mentioned 
+above.
