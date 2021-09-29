@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8A941D000
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4430141D006
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347585AbhI2Xd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:33:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345134AbhI2Xd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:33:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E116135D;
-        Wed, 29 Sep 2021 23:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632958305;
-        bh=gDC8FeyWEK+m6y1oljAXM/J6NEZQW93X8rLKfj3knFM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NN3ijR4TISmoUJq81Zy37jY9PjgUYWr1BP/sBn1OfDNimXfNczZOTVlBRFYi7KdEr
-         RW3FtjLpG7VUwM3JHrL8iT/N71iEhCjuMHpQ9p1+bEiLpk/Yb7F3BjkQeuutBDFOuo
-         4y8StbCdPsAQAqoV6S/9tsLkZcjUHrmh5gA8n9kA=
-Date:   Wed, 29 Sep 2021 16:31:43 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     alex.popov@linux.com
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Garnier <thgarnie@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Laura Abbott <labbott@redhat.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, notify@kernel.org
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-Message-Id: <20210929163143.aa8b70ac9d5cf0b628823370@linux-foundation.org>
-In-Reply-To: <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
-References: <20210929185823.499268-1-alex.popov@linux.com>
-        <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1347588AbhI2XgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232554AbhI2XgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:36:23 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ABEC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:34:41 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id t4so2691343plo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s50PiUE0GZ0ZQQyDE7urYqyC+XXAehvlB01y0urqqec=;
+        b=jHod2IEAOYSVMk4eJ9KFe66IDNul71zOAQnH7GZhxrEAYN54b/WprrgAWaMqj8wppk
+         8PVbfnmuUnkaOZzQI2ceK0mpoApel9aQ8+U6aXrn+KimynTOOm9yJbupVhbBtY7U9mE3
+         ir91XMap1ANGFfr6e5w+czRSC3G48rSuncKp4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s50PiUE0GZ0ZQQyDE7urYqyC+XXAehvlB01y0urqqec=;
+        b=FpAg6S5APR33c90/G7B0P0Bd/d9yZzhpkgJfynWvCblvoZdgpBwiugiyQrHme0baek
+         YsVySzNJZxzAjb9YmKruutFC4MRSSWSLIWIxzVgxYT5sj9HzBXRWJTkpA9BddUx1SNro
+         iyZHK3ukcLOSFT7NQ5/p+absCRZCf8z7vupMyJ1OOadmP/5NVBFrFDCPs1J08ug7+hhq
+         9LBrwZ8Fpg74Eba+cO5nlGWtLeCyTiAwQvoYf2Z5sa4F+oJZFgm6VGYQ+Mdi8v7jP51B
+         jQu63Tt6FvLRWPqtnpmGFfqUIBbsfgbTXZdm6weh6kLR0I++W4VMtQO8AaIvCFmgb7jk
+         +ZyA==
+X-Gm-Message-State: AOAM531a/FBf7qZ7H9B91vYH6oqc1dG4pJeRjzaLDxfmZLgC/WywI7HE
+        UYDndUPI6h8d6tIsQsA+DtCQ5w==
+X-Google-Smtp-Source: ABdhPJxe5v97/gfWltea1abaN/1MdcuCha0nNqWTUiqPt0CdOhwDAm3vef6xuKBgecmbNsijHEo/ow==
+X-Received: by 2002:a17:90a:a78f:: with SMTP id f15mr2783279pjq.106.1632958481050;
+        Wed, 29 Sep 2021 16:34:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v12sm631373pgt.94.2021.09.29.16.34.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 16:34:40 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 16:34:39 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Alcock <nick.alcock@oracle.com>
+Cc:     jeyu@kernel.org, masahiroy@kernel.org,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, eugene.loh@oracle.com, kris.van.hees@oracle.com
+Subject: Re: [PATCH v5] kallsyms: new /proc/kallmodsyms with builtin modules
+Message-ID: <202109291629.81106C83D@keescook>
+References: <20210929215154.300692-1-nick.alcock@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929215154.300692-1-nick.alcock@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 22:01:33 +0300 Alexander Popov <alex.popov@linux.com> wrote:
-
-> On 29.09.2021 21:58, Alexander Popov wrote:
-> > Currently, the Linux kernel provides two types of reaction to kernel
-> > warnings:
-> >  1. Do nothing (by default),
-> >  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
-> >     so panic_on_warn is usually disabled on production systems.
-> > 
-> > From a safety point of view, the Linux kernel misses a middle way of
-> > handling kernel warnings:
-> >  - The kernel should stop the activity that provokes a warning,
-> >  - But the kernel should avoid complete denial of service.
-> > 
-> > From a security point of view, kernel warning messages provide a lot of
-> > useful information for attackers. Many GNU/Linux distributions allow
-> > unprivileged users to read the kernel log, so attackers use kernel
-> > warning infoleak in vulnerability exploits. See the examples:
-> >   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
-> >   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
-> > 
-> > Let's introduce the pkill_on_warn boot parameter.
-> > If this parameter is set, the kernel kills all threads in a process
-> > that provoked a kernel warning. This behavior is reasonable from a safety
-> > point of view described above. It is also useful for kernel security
-> > hardening because the system kills an exploit process that hits a
-> > kernel warning.
-> > 
-> > Signed-off-by: Alexander Popov <alex.popov@linux.com>
+On Wed, Sep 29, 2021 at 10:51:47PM +0100, Nick Alcock wrote:
+> It would be useful if there were a mapping between kernel symbol and module
+> name that only changed when the kernel source code is changed.  This mapping
+> should not change simply because a module becomes built into the kernel.
 > 
-> This patch was tested using CONFIG_LKDTM.
-> The kernel kills a process that performs this:
->   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
-> 
-> If you are fine with this approach, I will prepare a patch adding the
-> pkill_on_warn sysctl.
+> It might also be useful if there were reliable symbol size information to
+> determine whether an address is within a symbol or outside it, especially
+> given that there could be huge gaps between symbols.
 
-Why do we need a boot parameter?  Isn't a sysctl all we need for this
-feature?
+This is a pretty cool series, but I'm left wondering "for what reason?" :)
+Perhaps I missed the specific rationale; there was a lot to run. ;)
 
-Also, 
+It would be useful, sure, but is there something that does, in fact,
+need this, or would like this if it were available? Since this provides
+a userspace API, what would be consuming that API? For example, when
+Syscall User Dispatch was added, it was clear it was for Wine[1].
 
-	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
-		do_group_exit(SIGKILL);
+-Kees
 
-- why do we care about system_state?  An explanatory code comment
-  seems appropriate.
+[1] https://lore.kernel.org/lkml/160690190770.3364.5119373826178425644.tip-bot2@tip-bot2/
 
-- do we really want to do this in states > SYSTEM_RUNNING?  If so, why?
+-- 
+Kees Cook
