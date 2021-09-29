@@ -2,248 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB19241BBB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D4B41BBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243433AbhI2AdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 20:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240715AbhI2AdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 20:33:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27AAA613BD;
-        Wed, 29 Sep 2021 00:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632875488;
-        bh=HjdVWJnKMwXF65cLTCeXMKC9SY3TjN/w3RiwrlWgIGQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gm5cDH4m2v6piR46mLc/JSBVCPI+BfX7C0Jl7Q9/ebduscr7kYKOyDJkRRCW97nyn
-         OTatGXAIaYy1C1n0aWd1IAjKuOvRWb2mnvy9J8yYdLcaUe4FNNmyDRHCy0lW4hmgLr
-         UVhvsec9oDp8bC3APGn9osA0ZA2pTfi2elVoASuoeo8ItgTHPmH0nfi0XQWufrVgg/
-         S1TUt3arPeuIoYfFmD/XGk2UG4IIQnjyy4UCFhlFKR/dIAEWnnoMKqItFfEsiyBlrZ
-         KcLb3haPCx5SKIcykWluOcG5RPc72bVPhpgFYbPljMjvXkHtdcJcOaHnKgdjXnVBov
-         mHe++aRPFe4wg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH MANUALSEL 5.14] net: core: Correct the sock::sk_lock.owned lockdep annotations
-Date:   Tue, 28 Sep 2021 20:31:27 -0400
-Message-Id: <20210929003127.208073-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S243429AbhI2Afl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 20:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240715AbhI2Afk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 20:35:40 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBD3C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:34:00 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id i23so1319304wrb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HSdhi5MD3J11mywOpDX17swzDtW7khzOFHmAT7RZlcY=;
+        b=delwZA3PvlcFeAc1BlOlesya2RRKOCOBwSS2vHqtKOJKz9eoS+AWiXS/9S0AnHld6X
+         OgwS+wy0u79R35QTZ9Z0uw+HASzBwrEwRGR4Jgvg+7xASRDt9k53DbY0ii625hsqRLtV
+         Tp27g3vk5ml/y7cOYxw2bfv799qpEw+ECAC+ADT4YViKF8bjC4jHWA0RxXEXERH0Qy2y
+         NAHhY36mlpAwVIZWnHhwzhZhNePt9fgJ3jEPNKdG5XoP4ZftZvoqGmwAfcmGL1hKIAzI
+         6kMa5md6FcUhcoGdvBStC4grrpNAPIBPPGT3JoyWAxqOjwYHJGVljfJ1x+E0GA/TS8EF
+         cuuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HSdhi5MD3J11mywOpDX17swzDtW7khzOFHmAT7RZlcY=;
+        b=IySjbrenDEaVc3PI2Ms9dIJpznXWOTj5vhrrSDuyv/nVv8YkSSmS6sOhcOakhdigU0
+         OJvffkPWnfiZJb6oZDMR20Erbnt+3jFieXqChcnjhxDTVNNPOZZYvvfdCOAfX0NnPUw7
+         94L2v7m4jCur7SkALPup/yzDKBnZYyq8BDRqY/L6YlxDGCIOe+gl+0pLs3T7o+Ded9Bn
+         tPSkQjqCCuiHjICgotErWz7iOWl7jL2s81E/a+VQ7fRptI8co+lKyfPAWWxb6PxuuaG5
+         Q+qXjtXCDW6ZeVB3hnkwk8yI1Po6OIj6QLNa/NBhDPPIYIpSTV1G+M01tXyQcF/nhwkC
+         1s/w==
+X-Gm-Message-State: AOAM532P3nL5yMsaPBgKqImcJYgTczQ4tIlIolxv+t+d7yepaMdlIMyy
+        7cq5okl4KrXBhbznU+emyLngpCev9NFB3yZlSpfh5w==
+X-Google-Smtp-Source: ABdhPJwNa5YuLE7ElHy5BCEAzIuUz0ClkJjlxnz/5YVr9faR2sHTg3Uxqzdl6UbdIqOWFYWgcXlHzRpESMRIBWVaitY=
+X-Received: by 2002:a5d:4e4e:: with SMTP id r14mr3517966wrt.147.1632875638582;
+ Tue, 28 Sep 2021 17:33:58 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210928221111.1162779-1-dlatypov@google.com>
+In-Reply-To: <20210928221111.1162779-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 29 Sep 2021 08:33:47 +0800
+Message-ID: <CABVgOS=0K78N+KMK3km5TKVDD9L8AMRpNCfvihCqU2h3U-oE-w@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: misc fixes (unused vars, imports, leaked files)
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Wed, Sep 29, 2021 at 6:11 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Drop some variables in unit tests that were unused and/or add assertions
+> based on them.
+>
+> For ExitStack, it was imported, but the `es` variable wasn't used so it
+> didn't do anything, and we were leaking the file objects.
+> Refactor it to just use nested `with` statements to properly close them.
+>
+> And drop the direct use of .close() on file objects in the kunit tool
+> unit test, as these can be leaked if test assertions fail.
 
-[ Upstream commit 2dcb96bacce36021c2f3eaae0cef607b5bb71ede ]
+To clarify for a python novice: this is referring to using "with" so
+that the file isn't leaked if the assertion fails, rather than
+suggesting that leaks are okay for failing tests, right?
 
-lock_sock_fast() and lock_sock_nested() contain lockdep annotations for the
-sock::sk_lock.owned 'mutex'. sock::sk_lock.owned is not a regular mutex. It
-is just lockdep wise equivalent. In fact it's an open coded trivial mutex
-implementation with some interesting features.
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
 
-sock::sk_lock.slock is a regular spinlock protecting the 'mutex'
-representation sock::sk_lock.owned which is a plain boolean. If 'owned' is
-true, then some other task holds the 'mutex', otherwise it is uncontended.
-As this locking construct is obviously endangered by lock ordering issues as
-any other locking primitive it got lockdep annotated via a dedicated
-dependency map sock::sk_lock.dep_map which has to be updated at the lock
-and unlock sites.
+These all seem sensible to me. Thanks for cleaning this up!
 
-lock_sock_nested() is a straight forward 'mutex' lock operation:
+Reviewed-by: David Gow <davidgow@google.com>
 
-  might_sleep();
-  spin_lock_bh(sock::sk_lock.slock)
-  while (!try_lock(sock::sk_lock.owned)) {
-      spin_unlock_bh(sock::sk_lock.slock);
-      wait_for_release();
-      spin_lock_bh(sock::sk_lock.slock);
-  }
-
-The lockdep annotation for sock::sk_lock.owned is for unknown reasons
-_after_ the lock has been acquired, i.e. after the code block above and
-after releasing sock::sk_lock.slock, but inside the bottom halves disabled
-region:
-
-  spin_unlock(sock::sk_lock.slock);
-  mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
-  local_bh_enable();
-
-The placement after the unlock is obvious because otherwise the
-mutex_acquire() would nest into the spin lock held region.
-
-But that's from the lockdep perspective still the wrong place:
-
- 1) The mutex_acquire() is issued _after_ the successful acquisition which
-    is pointless because in a dead lock scenario this point is never
-    reached which means that if the deadlock is the first instance of
-    exposing the wrong lock order lockdep does not have a chance to detect
-    it.
-
- 2) It only works because lockdep is rather lax on the context from which
-    the mutex_acquire() is issued. Acquiring a mutex inside a bottom halves
-    and therefore non-preemptible region is obviously invalid, except for a
-    trylock which is clearly not the case here.
-
-    This 'works' stops working on RT enabled kernels where the bottom halves
-    serialization is done via a local lock, which exposes this misplacement
-    because the 'mutex' and the local lock nest the wrong way around and
-    lockdep complains rightfully about a lock inversion.
-
-The placement is wrong since the initial commit a5b5bb9a053a ("[PATCH]
-lockdep: annotate sk_locks") which introduced this.
-
-Fix it by moving the mutex_acquire() in front of the actual lock
-acquisition, which is what the regular mutex_lock() operation does as well.
-
-lock_sock_fast() is not that straight forward. It looks at the first glance
-like a convoluted trylock operation:
-
-  spin_lock_bh(sock::sk_lock.slock)
-  if (!sock::sk_lock.owned)
-      return false;
-  while (!try_lock(sock::sk_lock.owned)) {
-      spin_unlock_bh(sock::sk_lock.slock);
-      wait_for_release();
-      spin_lock_bh(sock::sk_lock.slock);
-  }
-  spin_unlock(sock::sk_lock.slock);
-  mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
-  local_bh_enable();
-  return true;
-
-But that's not the case: lock_sock_fast() is an interesting optimization
-for short critical sections which can run with bottom halves disabled and
-sock::sk_lock.slock held. This allows to shortcut the 'mutex' operation in
-the non contended case by preventing other lockers to acquire
-sock::sk_lock.owned because they are blocked on sock::sk_lock.slock, which
-in turn avoids the overhead of doing the heavy processing in release_sock()
-including waking up wait queue waiters.
-
-In the contended case, i.e. when sock::sk_lock.owned == true the behavior
-is the same as lock_sock_nested().
-
-Semantically this shortcut means, that the task acquired the 'mutex' even
-if it does not touch the sock::sk_lock.owned field in the non-contended
-case. Not telling lockdep about this shortcut acquisition is hiding
-potential lock ordering violations in the fast path.
-
-As a consequence the same reasoning as for the above lock_sock_nested()
-case vs. the placement of the lockdep annotation applies.
-
-The current placement of the lockdep annotation was just copied from
-the original lock_sock(), now renamed to lock_sock_nested(),
-implementation.
-
-Fix this by moving the mutex_acquire() in front of the actual lock
-acquisition and adding the corresponding mutex_release() into
-unlock_sock_fast(). Also document the fast path return case with a comment.
-
-Reported-by: Sebastian Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/net/sock.h |  1 +
- net/core/sock.c    | 37 +++++++++++++++++++++++--------------
- 2 files changed, 24 insertions(+), 14 deletions(-)
-
-diff --git a/include/net/sock.h b/include/net/sock.h
-index f23cb259b0e2..e9ef47c0cfce 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1641,6 +1641,7 @@ static inline void unlock_sock_fast(struct sock *sk, bool slow)
- 		release_sock(sk);
- 		__release(&sk->sk_lock.slock);
- 	} else {
-+		mutex_release(&sk->sk_lock.dep_map, _RET_IP_);
- 		spin_unlock_bh(&sk->sk_lock.slock);
- 	}
- }
-diff --git a/net/core/sock.c b/net/core/sock.c
-index a3eea6e0b30a..54b8eeccbdf4 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3158,17 +3158,15 @@ EXPORT_SYMBOL(sock_init_data);
- 
- void lock_sock_nested(struct sock *sk, int subclass)
- {
-+	/* The sk_lock has mutex_lock() semantics here. */
-+	mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
-+
- 	might_sleep();
- 	spin_lock_bh(&sk->sk_lock.slock);
- 	if (sk->sk_lock.owned)
- 		__lock_sock(sk);
- 	sk->sk_lock.owned = 1;
--	spin_unlock(&sk->sk_lock.slock);
--	/*
--	 * The sk_lock has mutex_lock() semantics here:
--	 */
--	mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
--	local_bh_enable();
-+	spin_unlock_bh(&sk->sk_lock.slock);
- }
- EXPORT_SYMBOL(lock_sock_nested);
- 
-@@ -3206,24 +3204,35 @@ EXPORT_SYMBOL(release_sock);
-  */
- bool lock_sock_fast(struct sock *sk) __acquires(&sk->sk_lock.slock)
- {
-+	/* The sk_lock has mutex_lock() semantics here. */
-+	mutex_acquire(&sk->sk_lock.dep_map, 0, 0, _RET_IP_);
-+
- 	might_sleep();
- 	spin_lock_bh(&sk->sk_lock.slock);
- 
--	if (!sk->sk_lock.owned)
-+	if (!sk->sk_lock.owned) {
- 		/*
--		 * Note : We must disable BH
-+		 * Fast path return with bottom halves disabled and
-+		 * sock::sk_lock.slock held.
-+		 *
-+		 * The 'mutex' is not contended and holding
-+		 * sock::sk_lock.slock prevents all other lockers to
-+		 * proceed so the corresponding unlock_sock_fast() can
-+		 * avoid the slow path of release_sock() completely and
-+		 * just release slock.
-+		 *
-+		 * From a semantical POV this is equivalent to 'acquiring'
-+		 * the 'mutex', hence the corresponding lockdep
-+		 * mutex_release() has to happen in the fast path of
-+		 * unlock_sock_fast().
- 		 */
- 		return false;
-+	}
- 
- 	__lock_sock(sk);
- 	sk->sk_lock.owned = 1;
--	spin_unlock(&sk->sk_lock.slock);
--	/*
--	 * The sk_lock has mutex_lock() semantics here:
--	 */
--	mutex_acquire(&sk->sk_lock.dep_map, 0, 0, _RET_IP_);
- 	__acquire(&sk->sk_lock.slock);
--	local_bh_enable();
-+	spin_unlock_bh(&sk->sk_lock.slock);
- 	return true;
- }
- EXPORT_SYMBOL(lock_sock_fast);
--- 
-2.33.0
-
+-- David
