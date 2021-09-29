@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A304C41C252
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9187B41C256
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245354AbhI2KLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46528 "EHLO mail.kernel.org"
+        id S245401AbhI2KL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245330AbhI2KLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:11:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 21F4D613DA;
-        Wed, 29 Sep 2021 10:10:08 +0000 (UTC)
+        id S245361AbhI2KLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:11:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 39DD86140F;
+        Wed, 29 Sep 2021 10:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632910208;
-        bh=QU88gdxAQKxhHUQXF5N7ud55cYRdrIC2ho+vk3rpsJk=;
+        s=k20201202; t=1632910210;
+        bh=jrmRbKNPMFpcB18C3466rR2kz+lxEqlk6JTtgbV8kOY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DBNF8100Qc+lpmA0Jzxfg0ii47GdYcxkETVhmRFZ/aUTXZgHw6kfAtwozCBjBBszc
-         B1P+slHLbXO4XYz6smr6/dYazbdcTG2O+EuCHxSpgps9CuyppiZdJv8pactJOVzVZs
-         RP59WyJdWfGwNjxodYulr7SMDBDuMChTYOW3RUu7q3IemM3kG3UziXJ9F/eRFFJUgl
-         CVgXbgwixuci5MnBh0VYJFtoBY9H0k0oTPoE9mZB35+2o9hdl//x94O1VouumbnwYo
-         16+hXgqv6J3EyeRKn6Ly6xKjkN19oPuBClHQhyN0yWU2o3aTVagTfOOSLPU1z+vkrF
-         dzjhHCzBrK4FQ==
+        b=H2OD8w1K/KFLZLNvuSHeJlLhQSF2mxuKAbIZuH5kQ9jNs1CZ+lB5qVxtSRVABJ1/o
+         +9SqC6E9G1V/K2WUAf03VDz+H5kLx0dPEjGNpNZtobCm462fFxg4ipriRkcl+InY5c
+         cb24Te7vhrEgp/8vTsM7cu70n29MjXLAsjai4OJGsCSx8rCBXvlVflweeUdz0VMANA
+         w7zWfo3mEXaNPviT5e1Z1ExrbBidBYIZkfcuNy06qlxXYzgkohLGlZ9oXYBXZ0gpKV
+         uhm6qh1lhG8QDngB8nMisZ1FkhLo8zrRz/MoSwyARqUfzUnZfhRulLW0D98da235ri
+         kqSHXkTEQT81w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 110D3609D6;
-        Wed, 29 Sep 2021 10:10:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2E833609D6;
+        Wed, 29 Sep 2021 10:10:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/8] net: hns3: add some fixes for -net
+Subject: Re: [PATCH net-next v2] net: phy: micrel: Add support for LAN8804 PHY
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163291020806.13642.6595140708181277709.git-patchwork-notify@kernel.org>
-Date:   Wed, 29 Sep 2021 10:10:08 +0000
-References: <20210929093556.9146-1-huangguangbin2@huawei.com>
-In-Reply-To: <20210929093556.9146-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com
+Message-Id: <163291021018.13642.14705205654674444145.git-patchwork-notify@kernel.org>
+Date:   Wed, 29 Sep 2021 10:10:10 +0000
+References: <20210928184519.2315931-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20210928184519.2315931-1-horatiu.vultur@microchip.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 29 Sep 2021 17:35:48 +0800 you wrote:
-> This series adds some fixes for the HNS3 ethernet driver.
+On Tue, 28 Sep 2021 20:45:19 +0200 you wrote:
+> The LAN8804 PHY has same features as that of LAN8814 PHY except that it
+> doesn't support 1588, SyncE or Q-USGMII.
 > 
-> Guangbin Huang (3):
->   net: hns3: PF enable promisc for VF when mac table is overflow
->   net: hns3: fix always enable rx vlan filter problem after selftest
->   net: hns3: disable firmware compatible features when uninstall PF
+> This PHY is found inside the LAN966X switches.
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,1/8] net: hns3: do not allow call hns3_nic_net_open repeatedly
-    https://git.kernel.org/netdev/net/c/5b09e88e1bf7
-  - [net,2/8] net: hns3: remove tc enable checking
-    https://git.kernel.org/netdev/net/c/a8e76fefe3de
-  - [net,3/8] net: hns3: don't rollback when destroy mqprio fail
-    https://git.kernel.org/netdev/net/c/d82650be60ee
-  - [net,4/8] net: hns3: fix mixed flag HCLGE_FLAG_MQPRIO_ENABLE and HCLGE_FLAG_DCB_ENABLE
-    https://git.kernel.org/netdev/net/c/0472e95ffeac
-  - [net,5/8] net: hns3: fix show wrong state when add existing uc mac address
-    https://git.kernel.org/netdev/net/c/108b3c7810e1
-  - [net,6/8] net: hns3: PF enable promisc for VF when mac table is overflow
-    https://git.kernel.org/netdev/net/c/276e60421668
-  - [net,7/8] net: hns3: fix always enable rx vlan filter problem after selftest
-    https://git.kernel.org/netdev/net/c/27bf4af69fcb
-  - [net,8/8] net: hns3: disable firmware compatible features when uninstall PF
-    https://git.kernel.org/netdev/net/c/0178839ccca3
+  - [net-next,v2] net: phy: micrel: Add support for LAN8804 PHY
+    https://git.kernel.org/netdev/net-next/c/7c2dcfa295b1
 
 You are awesome, thank you!
 --
