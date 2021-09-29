@@ -2,82 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A76841BFC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463C441BFD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244584AbhI2HVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 03:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244561AbhI2HVv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 03:21:51 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55157C06161C;
-        Wed, 29 Sep 2021 00:20:10 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z24so6628224lfu.13;
-        Wed, 29 Sep 2021 00:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ivSjBMiknUtK/G9F8IN6EmQkvTCaKoqitHBmZt+NYuI=;
-        b=A3GkN/ZPVr5HhPbvPb1ssCp0DS8U8LPttpuScBxNtOn8myqvp6vvqJtIxC1nkm6vuX
-         Hohegugl2oiYytx51mM9J7+9yFQTiskIAoUauQbsBYdFhdsHD9jt71CptkbzMe0iUwtg
-         IKM1J7vGGMk30s7mDrvY/yXf5Nas8hMhRQzBltR599SYyhTPhn6di1Y78wxzhF5/6H5j
-         EYg315JFS1xKdHqNAjXPGPzPRX7NVtJJAZ5KV/LxW9VeUt1edwIvSGiZjbT3wSOFr+CX
-         YPdPCaVCmG3obbN2yaM4u5yEVh14LnnlqiU7J5Jhq2WhCfKtUG7vZNWilKqA/L5jTKEd
-         12ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ivSjBMiknUtK/G9F8IN6EmQkvTCaKoqitHBmZt+NYuI=;
-        b=DS3zKGWKRF7n3hD5Wn6pAk7vSmrweIrJZTUEUfUnenA0o12EQMGm/3o2q2/6S2i/kZ
-         GE9hUUKriZTPT7dp52NykmxP4OHE0taSvc6djf+ySmXHvoZHo3EAHkI7UwdFRZOHrfqT
-         +TaNSC5iPhfKWdCKg2Q5+YwK2j0VVvmrjONLMMo1w7Mfz7MyG69jXXSQ/WZIgDBmt1Oi
-         mBcZ7WElecQxPhhTN6Tp5eM+0nkCW4zi/yr5zOPGmJ1CzVkz5e+J+Qm/jEeEzUCrC4hN
-         M+L8PMdBTR9NdwFmqEvBBATXxg3YP4QIj0UjcESzk3pG+Re1xKo94B7T42ILS9zHGMNq
-         rdrQ==
-X-Gm-Message-State: AOAM531RbLzn9L7ZnKr4FXhfd98vqM80FMTy6Wplg6gB3EkJvgShP3ju
-        FGSFcSW7GcZmGxUnVd+UIsI=
-X-Google-Smtp-Source: ABdhPJx//GZQ7qn0vbjndvTJFoA+3YFBOWPisLoTOPDqYfUy3mbnT03pMy6AoAFXomwERV5GYR8MDw==
-X-Received: by 2002:ac2:4466:: with SMTP id y6mr6156047lfl.278.1632900008781;
-        Wed, 29 Sep 2021 00:20:08 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
-        by smtp.googlemail.com with ESMTPSA id l11sm144491lfg.39.2021.09.29.00.20.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 00:20:08 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] i2c:busses:Read and Write routines for PCI1XXXX
- I2C module
-To:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>,
-        wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        treding@nvidia.com, mirq-linux@rere.qmqm.pl, s.shtylyov@omp.ru,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     UNGLinuxDriver@microchip.com
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
- <20210929062215.23905-3-LakshmiPraveen.Kopparthi@microchip.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ff447184-b510-4e70-c941-1f0c5b7d0fb5@gmail.com>
-Date:   Wed, 29 Sep 2021 10:20:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244641AbhI2H01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 03:26:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:14864 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244638AbhI2H0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 03:26:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="247401403"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="247401403"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 00:24:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="476553453"
+Received: from allen-box.sh.intel.com ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 29 Sep 2021 00:24:07 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 1/1] iommu/vt-d: Delete dev_has_feat callback
+Date:   Wed, 29 Sep 2021 15:20:30 +0800
+Message-Id: <20210929072030.1330225-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210929062215.23905-3-LakshmiPraveen.Kopparthi@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.09.2021 09:22, LakshmiPraveen Kopparthi пишет:
-> Read and Write callbacks for PCI1XXXX I2C adapter is added.
-> 
-> Signed-off-by: LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-> ---
->  drivers/i2c/busses/i2c-mchp-pci1xxxx.c | 485 +++++++++++++++++++++++++
->  1 file changed, 485 insertions(+)
+The commit 262948f8ba573 ("iommu: Delete iommu_dev_has_feature()") has
+deleted the iommu_dev_has_feature() interface. Remove the dev_has_feat
+callback to avoid dead code.
 
-Why this is a separate patch?
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/intel/iommu.c | 59 ++++---------------------------------
+ 1 file changed, 5 insertions(+), 54 deletions(-)
+
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 01162b0b9712..dc733de9eea5 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -5516,62 +5516,14 @@ static int intel_iommu_disable_sva(struct device *dev)
+ 	return ret;
+ }
+ 
+-/*
+- * A PCI express designated vendor specific extended capability is defined
+- * in the section 3.7 of Intel scalable I/O virtualization technical spec
+- * for system software and tools to detect endpoint devices supporting the
+- * Intel scalable IO virtualization without host driver dependency.
+- *
+- * Returns the address of the matching extended capability structure within
+- * the device's PCI configuration space or 0 if the device does not support
+- * it.
+- */
+-static int siov_find_pci_dvsec(struct pci_dev *pdev)
+-{
+-	int pos;
+-	u16 vendor, id;
+-
+-	pos = pci_find_next_ext_capability(pdev, 0, 0x23);
+-	while (pos) {
+-		pci_read_config_word(pdev, pos + 4, &vendor);
+-		pci_read_config_word(pdev, pos + 8, &id);
+-		if (vendor == PCI_VENDOR_ID_INTEL && id == 5)
+-			return pos;
+-
+-		pos = pci_find_next_ext_capability(pdev, pos, 0x23);
+-	}
+-
+-	return 0;
+-}
+-
+-static bool
+-intel_iommu_dev_has_feat(struct device *dev, enum iommu_dev_features feat)
++static int intel_iommu_enable_iopf(struct device *dev)
+ {
+ 	struct device_domain_info *info = get_domain_info(dev);
+ 
+-	if (feat == IOMMU_DEV_FEAT_AUX) {
+-		int ret;
+-
+-		if (!dev_is_pci(dev) || dmar_disabled ||
+-		    !scalable_mode_support() || !pasid_mode_support())
+-			return false;
+-
+-		ret = pci_pasid_features(to_pci_dev(dev));
+-		if (ret < 0)
+-			return false;
+-
+-		return !!siov_find_pci_dvsec(to_pci_dev(dev));
+-	}
+-
+-	if (feat == IOMMU_DEV_FEAT_IOPF)
+-		return info && info->pri_supported;
+-
+-	if (feat == IOMMU_DEV_FEAT_SVA)
+-		return info && (info->iommu->flags & VTD_FLAG_SVM_CAPABLE) &&
+-			info->pasid_supported && info->pri_supported &&
+-			info->ats_supported;
++	if (info && info->pri_supported)
++		return 0;
+ 
+-	return false;
++	return -ENODEV;
+ }
+ 
+ static int
+@@ -5582,7 +5534,7 @@ intel_iommu_dev_enable_feat(struct device *dev, enum iommu_dev_features feat)
+ 		return intel_iommu_enable_auxd(dev);
+ 
+ 	case IOMMU_DEV_FEAT_IOPF:
+-		return intel_iommu_dev_has_feat(dev, feat) ? 0 : -ENODEV;
++		return intel_iommu_enable_iopf(dev);
+ 
+ 	case IOMMU_DEV_FEAT_SVA:
+ 		return intel_iommu_enable_sva(dev);
+@@ -5708,7 +5660,6 @@ const struct iommu_ops intel_iommu_ops = {
+ 	.get_resv_regions	= intel_iommu_get_resv_regions,
+ 	.put_resv_regions	= generic_iommu_put_resv_regions,
+ 	.device_group		= intel_iommu_device_group,
+-	.dev_has_feat		= intel_iommu_dev_has_feat,
+ 	.dev_feat_enabled	= intel_iommu_dev_feat_enabled,
+ 	.dev_enable_feat	= intel_iommu_dev_enable_feat,
+ 	.dev_disable_feat	= intel_iommu_dev_disable_feat,
+-- 
+2.25.1
+
