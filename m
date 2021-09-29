@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B2F41C38B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A35D41C388
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245706AbhI2LiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245664AbhI2LiV (ORCPT
+        id S245695AbhI2LiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:38:12 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:38720 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245664AbhI2LiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:38:21 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6846C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=NG/dLqRkfXHdlB4dmK0BgcBIdTMjxPfvn7MfDjTG9OQ=; b=x5
-        Y2PoyLwwRVwoZa3v8CwgEkb82mzZvjytFBMCSP08brAFyuNtbc2pdxdKG+Kp8xuFY6BtT1WpMfqD3
-        UhJ1x1zfRfYJeGep9A2+apYkxhQIOjrSjZJxzjRxCqqTQDVZ++NN2OC1vzxkkmHwk3ug7h32o/Kc3
-        FDFPmfmgaNW0ptDg/rOWUeUU7knZ04JJY9Byl5kfqBDjq68NYZsDmh3/F33ZsTc5eUQQA8HXlakDu
-        HfzFTp1bQPrxeuIQKCNqiCgfHbTc1XjXl2PSbi37jIvcWsF0A32Um6Knp/BHclXOgdn7whW8c4pl2
-        KpwAyuIbaWnVLf6Rz1ypQrIqdzDyb8qw==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mVXsx-00032A-OM; Wed, 29 Sep 2021 12:36:27 +0100
-From:   John Keeping <john@metanate.com>
-To:     alsa-devel@alsa-project.org
-Cc:     John Keeping <john@metanate.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: rawmidi: Fix potential UAF from sequencer destruction
-Date:   Wed, 29 Sep 2021 12:36:20 +0100
-Message-Id: <20210929113620.2194847-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 29 Sep 2021 07:38:08 -0400
+Received: by mail-io1-f72.google.com with SMTP id s21-20020a6bdc15000000b005db56ae6275so2199122ioc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:36:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=PKgKN2Eqt15tt78hRikEq7x2wz37kMe0a24grKmsqGc=;
+        b=zcjiXygQhujzHAmdmzuNiGOVERE5PVuoDG5cK3R2mQclnGOMgMUjgUOIl5DzR5glbu
+         KE2i4kqTbVTyrFRTaLZWpRfyV99CxBGv73i1LzQ8ZEll18/+Q+2OvnVypRgS58ZGHM92
+         blfopr0Ll4Q4ClwJbqjJE6Ixeo1TgkEM8A1SPqzhbkiUBMnZ8lUt2ADf7XJzV0Ci+EdF
+         FhsSpgMuaIPEIEYhVRc7OpBGC3O3PXVtI4+CWH41TWrPKaJEEpYbbaQpOILbvxFsfnpN
+         6cmwQU4+ZDkB+V1IH2rJoqe8zPuekJIXwrXmE0PFW4rjxs/eAJJErckzMOHjQOAc9heR
+         LA3w==
+X-Gm-Message-State: AOAM530LvoU8EQJ3jXMVyf8Gl33qv6smmW6wfxj4MiBoFFFxd9S8wRbb
+        l0yxnI7eyFuOAdPYunK/kDeJuHKKbI/FXJC/YOn/2sTFlQzf
+X-Google-Smtp-Source: ABdhPJwJZigqwhPrbwsTToPjubhdPdxpYMZTeDtSJkWxb2Ekxj2J+XcE+Cr4RKu+5qdgekb7ei8zIS8k853GY5rphaRCykV2j6gw
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+X-Received: by 2002:a05:6e02:1709:: with SMTP id u9mr7696896ill.202.1632915387399;
+ Wed, 29 Sep 2021 04:36:27 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 04:36:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009d466d05cd20bdbe@google.com>
+Subject: [syzbot] INFO: trying to register non-static key in sco_conn_del
+From:   syzbot <syzbot+44e9ca14eedcbe453eca@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the sequencer device outlives the rawmidi device, then
-snd_rawmidi_dev_seq_free() will run after release_rawmidi_device() has
-freed the snd_rawmidi structure.
+Hello,
 
-This can easily be reproduced with CONFIG_DEBUG_KOBJECT_RELEASE.
+syzbot found the following issue on:
 
-Keep a reference to the rawmidi device until the sequencer has been
-destroyed in order to avoid this.
+HEAD commit:    7d42e9818258 Merge tag 'gpio-fixes-for-v5.15-rc3' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=107c5ff7300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e917f3dfc452c977
+dashboard link: https://syzkaller.appspot.com/bug?extid=44e9ca14eedcbe453eca
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Signed-off-by: John Keeping <john@metanate.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44e9ca14eedcbe453eca@syzkaller.appspotmail.com
+
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 1 PID: 23193 Comm: syz-executor.2 Not tainted 5.15.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ assign_lock_key kernel/locking/lockdep.c:939 [inline]
+ register_lock_class+0xf79/0x10c0 kernel/locking/lockdep.c:1251
+ __lock_acquire+0x105/0x54a0 kernel/locking/lockdep.c:4894
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ lock_sock_nested+0x2f/0xf0 net/core/sock.c:3183
+ lock_sock include/net/sock.h:1612 [inline]
+ sco_conn_del+0x12a/0x2b0 net/bluetooth/sco.c:194
+ sco_disconn_cfm+0x71/0xb0 net/bluetooth/sco.c:1205
+ hci_disconn_cfm include/net/bluetooth/hci_core.h:1518 [inline]
+ hci_conn_hash_flush+0x127/0x260 net/bluetooth/hci_conn.c:1608
+ hci_dev_do_close+0x57d/0x1130 net/bluetooth/hci_core.c:1793
+ hci_unregister_dev+0x1c0/0x5a0 net/bluetooth/hci_core.c:4029
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbae/0x2a30 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x47f/0x2160 kernel/signal.c:2868
+ arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f51377a1709
+Code: Unable to access opcode bytes at RIP 0x7f51377a16df.
+RSP: 002b:00007f5134d18218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007f51378a5f68 RCX: 00007f51377a1709
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f51378a5f68
+RBP: 00007f51378a5f60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f51378a5f6c
+R13: 00007fffbbb2087f R14: 00007f5134d18300 R15: 0000000000022000
+
+
 ---
- sound/core/rawmidi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 6f30231bdb88..b015f5f69175 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -1860,6 +1860,7 @@ static void snd_rawmidi_dev_seq_free(struct snd_seq_device *device)
- 	struct snd_rawmidi *rmidi = device->private_data;
- 
- 	rmidi->seq_dev = NULL;
-+	put_device(&rmidi->dev);
- }
- #endif
- 
-@@ -1936,6 +1937,9 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
- #if IS_ENABLED(CONFIG_SND_SEQUENCER)
- 	if (!rmidi->ops || !rmidi->ops->dev_register) { /* own registration mechanism */
- 		if (snd_seq_device_new(rmidi->card, rmidi->device, SNDRV_SEQ_DEV_ID_MIDISYNTH, 0, &rmidi->seq_dev) >= 0) {
-+			/* Ensure we outlive the sequencer (see snd_rawmidi_dev_seq_free). */
-+			get_device(&rmidi->dev);
-+
- 			rmidi->seq_dev->private_data = rmidi;
- 			rmidi->seq_dev->private_free = snd_rawmidi_dev_seq_free;
- 			sprintf(rmidi->seq_dev->name, "MIDI %d-%d", rmidi->card->number, rmidi->device);
--- 
-2.33.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
