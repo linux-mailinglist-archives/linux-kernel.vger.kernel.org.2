@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4D541CA87
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57B141CA95
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345635AbhI2Qq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:46:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55676 "EHLO mga11.intel.com"
+        id S1346042AbhI2Quh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:50:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:13625 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhI2QqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:46:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="221781795"
+        id S229561AbhI2Quf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:50:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212071027"
 X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="221781795"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 09:44:42 -0700
+   d="scan'208";a="212071027"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 09:48:54 -0700
 X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="520894343"
+   d="scan'208";a="479333203"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 09:44:40 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 09:48:51 -0700
 Received: from andy by smile with local (Exim 4.95-RC2)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mVchB-006sIX-9q;
-        Wed, 29 Sep 2021 19:44:37 +0300
-Date:   Wed, 29 Sep 2021 19:44:37 +0300
+        id 1mVclE-006sM6-Fc;
+        Wed, 29 Sep 2021 19:48:48 +0300
+Date:   Wed, 29 Sep 2021 19:48:48 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>,
-        wsa@kernel.org, treding@nvidia.com, mirq-linux@rere.qmqm.pl,
-        s.shtylyov@omp.ru, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v1 1/2] i2c:busses:Register PCI1XXXX adapter to I2C
- subsystem
-Message-ID: <YVSX9ZE5hJpYNgN5@smile.fi.intel.com>
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
- <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
- <d39e99ff-6498-e532-e833-1c65861d566f@gmail.com>
+To:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        macro@orcam.me.uk, zev@bewilderbeest.net, vigneshr@ti.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH v1 0/3] serial:8250:Add driver support for MCHP PCI1XXXX
+ UART module
+Message-ID: <YVSY8L6A6H71DvM5@smile.fi.intel.com>
+References: <20210929113049.64557-1-LakshmiPraveen.Kopparthi@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d39e99ff-6498-e532-e833-1c65861d566f@gmail.com>
+In-Reply-To: <20210929113049.64557-1-LakshmiPraveen.Kopparthi@microchip.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:18:46AM +0300, Dmitry Osipenko wrote:
-> 29.09.2021 09:22, LakshmiPraveen Kopparthi пишет:
+On Wed, Sep 29, 2021 at 05:00:46PM +0530, LakshmiPraveen Kopparthi wrote:
+> PCI1XXXX UART is a PCIe to UART module. It has 5 SKUs, each is
+> differentiated by the device IDs in the PCIe config space. Each
+> SKU supports a maximum of 4 UART ports(UART0,1,2,3) with fixed 
+> offests.Based on the sub device ID, the combinations of UART 
+> ports shall be enumerated.
+> 
+> The UART port is compatible with the standard 16550A, but has some 
+> modifications.The modifications includes a change in the baud rate
+> settings,auto control of RTS signal for RS485 feature and an
+> increase of TX & RX FIFO size to 256 Bytes.Also, it has a capability
+> to wake up the CPU. 
+> 
+> These patches adds the support to enumerate and exercise all the
+> combinations of UART ports in all the SKUs.
 
-...
+>  drivers/tty/serial/8250/8250_pci.c  | 384 ++++++++++++++++++++++++++++
 
-> return intr_handled ? IRQ_HANDLED : IRQ_NONE;
+Please, do not add this to 8250_pci.c. Use separate quirk driver as it's done
+in plenty of examples:
 
-> Or turn intr_handled into "irqreturn_t ret" and return it directly.
-
-Or
-	return IRQ_RETVAL(...);
-
-...
-
-> > +static const struct pci_device_id pci1xxxx_i2c_pci_id_table[] = {
-> > +	{ PCI_DEVICE(PCI_VENDOR_ID_MICROCHIP, PCI12000_I2C_PID) },
-> > +	{ PCI_DEVICE(PCI_VENDOR_ID_MICROCHIP, PCI11010_I2C_PID) },
-> > +	{ PCI_DEVICE(PCI_VENDOR_ID_MICROCHIP, PCI11101_I2C_PID) },
-> > +	{ PCI_DEVICE(PCI_VENDOR_ID_MICROCHIP, PCI11400_I2C_PID) },
-> > +	{ PCI_DEVICE(PCI_VENDOR_ID_MICROCHIP, PCI11414_I2C_PID) },
-
-If you switch to PCI_VDEVIDE, you will see how you may improve the device ID
-definitions.
-
-> > +	{0, }
-
-Redundant content inside curly braces.
-
-> > +};
-
-> > +
-
-Redundant blank line.
-
-> > +MODULE_DEVICE_TABLE(pci, pci1xxxx_i2c_pci_id_table);
+	8250_lpss.c, 8250_mid.c, 8250_exar.c, ...
 
 -- 
 With Best Regards,
