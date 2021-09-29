@@ -2,150 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B73841BEAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 07:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B099341BEAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 07:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244205AbhI2FYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 01:24:39 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:35876
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243585AbhI2FYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 01:24:37 -0400
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 953EF40319
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632892976;
-        bh=MnfWci33OxaIqWkhaUWKgeCRCJGFxddYrn7zGjAWBHA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=A3E908NKT5lrxierITA4ef/Bz19YWD3rL6Cga4Ny5DhETDk3fQQ5xP5zHN6ZX9lNn
-         kft1foZh/cC12afLpFAWeMoR4T/dWqyRQp7DFj+eOz2S30AqBgY2vU7UjgN53d8SqW
-         AwoNgULFA/RuTpxQCY0zRt2mN0YcHAlcmq0YG86PrMB+AE8p6onP9/OYG+MBf0x0uN
-         QTQTBpxE4so5SL6eJJXL96wJKJm3+gSlA8xpNibkzpTu0tIzvC6UzmPPHYNmEvCAfd
-         XpRztnsOSDHCPjh+bIqV+A68KLJ3PG7Cyv0+UEm1TtswzuRWuVgsoEV4Pf2SwGY+PI
-         XIfb6ks+tDzfw==
-Received: by mail-pl1-f197.google.com with SMTP id p5-20020a170902a405b029012cbb4fcc03so630856plq.19
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 22:22:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MnfWci33OxaIqWkhaUWKgeCRCJGFxddYrn7zGjAWBHA=;
-        b=uMB4uhGwpIm/G+BoKfieZkhm1a5F57uez2bI2z2XVsVespHrMOD8dC2PJZjKhN+nQR
-         mxtKXbg0XqXBW76qWcFiGdUZs7Q7I/h/Jxh/aW3Wl+WofR10dVfoNaAqFSXVrNJ20vYE
-         m5rU5WiBTAKG8aOmky66ifNg7pM1sBpQMKS3LtLEltDPlRIRajdRcRl4sszQIq9kEdk9
-         EyJV/O4rQTEE9jocpzGWxsgDWvSX5m4AvYPHQbrfCtgy9x/jijw06av62FeiWvgwV7Z5
-         AlyBq0G/O+9dv03wKbKFj8qYNz2VM8RvJixyUWhd+t+foM+0+wKTQCApCDIKo13E4kYZ
-         kcAA==
-X-Gm-Message-State: AOAM531mWwS2N+b5PyaDWp3AGpqcpsf7nzlFE8XbTp/hg2Qqa4ugV6vh
-        U/cWys1zuCPYaWhDvr+HsBWe/spEepzDHqEjstXsXSCvYZSMCFveyrMYhq3ih94HMbj61p7vrPF
-        bRtVI4iSXXtcBpVrh/fOoadFzgQCib1/r+hIRr7dXAWkrfZUqVwkCnO3Q
-X-Received: by 2002:a17:902:c205:b0:13e:6097:b992 with SMTP id 5-20020a170902c20500b0013e6097b992mr356401pll.88.1632892974837;
-        Tue, 28 Sep 2021 22:22:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwe8IyOlbCT51ICJiY1uJcNZ5fZbmOaqVjrN7mA1wMd1ahpwf2AhqRpxfpONAKrmSs5BjZzbTIu2c62FHkYrnM=
-X-Received: by 2002:a17:902:c205:b0:13e:6097:b992 with SMTP id
- 5-20020a170902c20500b0013e6097b992mr356367pll.88.1632892974439; Tue, 28 Sep
- 2021 22:22:54 -0700 (PDT)
+        id S244096AbhI2F06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 01:26:58 -0400
+Received: from mga03.intel.com ([134.134.136.65]:54542 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243585AbhI2F0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 01:26:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224934025"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="224934025"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 22:25:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="438325690"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga003.jf.intel.com with ESMTP; 28 Sep 2021 22:25:14 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 22:25:13 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 22:25:13 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Tue, 28 Sep 2021 22:25:13 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Tue, 28 Sep 2021 22:25:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JrkJE3TEI4oV48W94ecEH84YRYEth6FC33uqD3L5bhS9jgClqsLrIalsX7MeVs1QGWueESXTCxR3Jxkn3Ba1F/2DA5t0cZvtibLnYwkn/bBargMj0leGc4QHuuFi087qf38pfaHkp5l/NTtkLBbrJNJ55s6IgT9RlAyy/0CsUU+GgbV7Xj4IUfI7gQPyG82827pxwfwNsw5nZA+MB1PU3qmkBEdpaitUb4mGu3KiHpCkf0BDNAh74NQXBVDjFfU1R6E89XbTXx3KnV9F7qDvdbNQGrJD5Lj5/aND9BvKOBfMZywE7poKSQgXxaOhDVNpCgDYWSoTGj4OaQ4tBlQBBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=uy843s4cq3msn3EOpMNlwcDiDWVaiuBHMUOMv9zwEg8=;
+ b=Phk/gVuummvXMpYkPQexGC+lbLMf/PetbqnAHq30VJL9UtY3chM7F5iJQigi8y4EL4YCPiF269xyaIebRYYCSjWYOzjmUIggIMhlOw6ZG5zxOjoT9XZspzoqcMhevqPvQ8Gz+D92At/0/qhgxyuOgFpI0beP9KOSzNlJ2qqYp27vgUsvedNAyG5Au7JHQ87p61dklT2oliFzpUTsRGGdc96XUExh1Z5rZfED/tiQI7hTWTEuPPhPwoculvA/skd0MhXa1Q7QgQ/7csjjZlPHktXK1ejJQ1rWIptiMgkT6eE/0dX5K1t8I1NJkZRfZflsiNPxr3+LlnNSSr8lEw3VnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uy843s4cq3msn3EOpMNlwcDiDWVaiuBHMUOMv9zwEg8=;
+ b=R+iaPNKID8BoCRYFucimWtNOi1QPafxIyH9FlqGSzxTtCdCU9fVx+ByTiPiH+BdMsV0jVCrzPI78iE4/Oh8TBNKnjZEGk721gSzydwV8RRC+wTbrAib4RfPo96kb8j/ZGlDaY3nqaldfR1WUSThoJBeyXbRCtYRAiK6ZiS90P+4=
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ by MW3PR11MB4681.namprd11.prod.outlook.com (2603:10b6:303:57::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
+ 2021 05:25:07 +0000
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::44d8:67f3:8883:dec7]) by CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::44d8:67f3:8883:dec7%3]) with mapi id 15.20.4544.021; Wed, 29 Sep 2021
+ 05:25:07 +0000
+From:   "Ooi, Joyce" <joyce.ooi@intel.com>
+To:     "Tham, Mun Yew" <mun.yew.tham@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>
+CC:     =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V2 pci 0/2] Update Mun Yew Tham as Pci Driver maintainer
+Thread-Topic: [PATCH V2 pci 0/2] Update Mun Yew Tham as Pci Driver maintainer
+Thread-Index: AQHXtPBooCt1dvGSWkWUT/YU8NRqmqu6eoZg
+Date:   Wed, 29 Sep 2021 05:25:06 +0000
+Message-ID: <CO1PR11MB4820E3A166F8C08A85125458F2A99@CO1PR11MB4820.namprd11.prod.outlook.com>
+References: <20210929050955.25758-1-mun.yew.tham@intel.com>
+In-Reply-To: <20210929050955.25758-1-mun.yew.tham@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4f51eeb8-829e-475d-6059-08d983097fbf
+x-ms-traffictypediagnostic: MW3PR11MB4681:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB4681117D0AC901B86B447C33F2A99@MW3PR11MB4681.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vNiI9aYAyEusvOtdgYT3n2u1un6a1BZEAi/Cy0ZywkBcIDf/FAbV0Jx9wngsxRkgR6q/pvXATN+4Z/FO9SuEoSm9uMsjhf7bPoxhP1XLXbM7i4P02cNBLh3S8i3kuzIfe+fkot2zeRzbW1nLHbvEaTsr7wzka0eCq4P6RPg3f1To90sjYQkrIlzU/sX0OwfogA9KPLspKJUfq9DIOUPIrEKPm/RaHiJuiDj8jXXU3QCe7dqL/dbBthOWdRA7EnzrBwSTZPkwqf7dtgzsoLS/9JTCWmXjX5lzAXHPwQPVhHPuvCVjeKjUL21ArRa0T7dp6oIwqi1YRG1uo2hZ+8pwjpPcDQU23b2Y/aAYmmB/aeUktEtwJcpDERWKZV5hMFIRju5RSLOU8k/Z+lgfuQYktoJAkz/EhtLtCNOZ/J6YhPNaRbyoFmXqX51wEsOC4AzL7Hih2M3yz+041RIpNcZ0k4UBHHcnuRUx1dTOiDQ/0xQCo2cO+i8+T4wqcnUghdkIfiEkrsBnozOvz/Bi4pSwOGZK4KfY2XLuh2V53c2Vr753moxxLLZfVF4clVfJ4XldF8ct54NTWnq1rBoBrakbEgi7Zq4rux7YZewMPFDaN5K7uEAbxVO9RmMb0RVHGDYvRfz2Vp46ZQovwymg+3PiY0vclOSdsYiER7Ax4QtJ48iX2QZT6W58soPqzSpODQ0gUNAV1HcH4Jhsnn900X/cDg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(52536014)(7696005)(53546011)(71200400001)(54906003)(6506007)(5660300002)(4744005)(186003)(26005)(15650500001)(76116006)(66574015)(508600001)(8936002)(83380400001)(66946007)(8676002)(316002)(66446008)(64756008)(66556008)(4326008)(55016002)(66476007)(9686003)(2906002)(38100700002)(122000001)(86362001)(38070700005)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?maBv/LPP8fPrEHT08/cTaeimDbzYJE66fUBQD4rg3xkmQbDLGa8cGumpzb?=
+ =?iso-8859-2?Q?7rVgx6k76/9M1lE5P+4LuQ/PgglA8fPNZ447yMwBKUSr+O1PMj6kGIUyQx?=
+ =?iso-8859-2?Q?5hvvpz2rnDKbGMD/2FJOm1b+CBlcOVFImCzpnHibPM4hs3QnwrenpgAwC/?=
+ =?iso-8859-2?Q?/i3QH6ZFDCkq7Za4yTeEoOCaFN70sZtWYQtqE17dBglU4fBi2hCdFsz5Ab?=
+ =?iso-8859-2?Q?4+Qlr7X6tAFrvH6af6vWAnbE7kqP1fHOSDUlzUxgklh89eTIaq6xAELDHf?=
+ =?iso-8859-2?Q?AmemSbTMCGCojK+MPCNFWfxJyrDEuf4+W7c4YD62+YdoawIQi+W54aHO3Y?=
+ =?iso-8859-2?Q?nx1HzK7ubr4zuI+ntDVM5CqO1zCG4UN7NB6/RAGBlPDIzEpAy7EaTWNYev?=
+ =?iso-8859-2?Q?R/WuI9MbE9mzf/I00t+9qEP7TXd7ePOys8fFuh9RzkwWYeVeXELZR2xM5I?=
+ =?iso-8859-2?Q?COQpH5p9oGWSWFSbbxjSQQbwqMy0nKFsL0t/pSclE3C4JBZk4G+IhTkcYw?=
+ =?iso-8859-2?Q?D94ql4E8ccZPFdIW9QWYiUEVkMKBSW8xvNpb55g3ovO3fAlymdaoankTDc?=
+ =?iso-8859-2?Q?/amuw7cDUqgTKB/OHVdRmydnLA5uArKdc7LwXowOmVoyT8w9CygCdZpT83?=
+ =?iso-8859-2?Q?o5KT+DM32Q1jFQq/SZ1BW1S+rdrR2Hi3UKZd1g4cR84IchlkG1fn4NaUW1?=
+ =?iso-8859-2?Q?falGyy2mRWke+yqnax0n0pZ1oGZqvUTpofy/5i6ngESg9UZMKA3aJqPihm?=
+ =?iso-8859-2?Q?6+P8wBNBvmnlzBZQ4Wl6WV8EPjS99pMmgL7YQGnyVBEtP1xlK6YEaWUVHf?=
+ =?iso-8859-2?Q?axDbxG9x3EzgzcGVAvht+omkYOxxedf+3Y01nuTeLOCIe0Tp7HfGZ/6VnG?=
+ =?iso-8859-2?Q?xUxVOSrqOu5crujOetx+KoXds6fwB2UHKfID2OaUFsHNnKK8/IDnDvMFnX?=
+ =?iso-8859-2?Q?zd6nv1ENQ0HJSGlLvHen+BJ7WY3xexnCTDmXSrCJa7T8IrTN/Ns8Ws/oNY?=
+ =?iso-8859-2?Q?xRkAcgK3aaQvyaqKKBqYLoRIk9gWWrEoFsHd36b+xoQ4rHiiVcGKbsi7ir?=
+ =?iso-8859-2?Q?/6UnOtpiJ6RGHDDR42FaXYyEMlixLfg7GpJj2lhiSDeOMDgVgKKRRhNMmn?=
+ =?iso-8859-2?Q?iWdAz2OTYeONMcw40Uu8w2G7ZqytDJGV0+OMm2zPG6suNgPZe8XHpr/NH7?=
+ =?iso-8859-2?Q?+KzVUDol2dkkEzXpclI/FT03VHptlNBwLFEOgP1Gnt7buKxywtWygf+hYy?=
+ =?iso-8859-2?Q?ilIXOujnRjVrQ3Y/wSXV/M2dq8iC3nSr9Yfp0HKdmON7VbOtYAYYo6i4GD?=
+ =?iso-8859-2?Q?Rgwj9rXdWk503X/vhw7Z3fz6ATWL5A7XB+9lJShK64k6Jaxg53cKX8m5k8?=
+ =?iso-8859-2?Q?9h3hk3T0ki?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210823030143.29937-1-po-hsu.lin@canonical.com> <87h7fdg8pr.fsf@cloudflare.com>
-In-Reply-To: <87h7fdg8pr.fsf@cloudflare.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Wed, 29 Sep 2021 13:22:54 +0800
-Message-ID: <CAMy_GT8=vViQOGANARcTb4qyB4635nLC=XAFZTijchou+Aa9Dg@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Use kselftest skip code for skipped tests
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        hawk@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
-        john.fastabend@gmail.com, yhs@fb.com, songliubraving@fb.com,
-        kafai@fb.com, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f51eeb8-829e-475d-6059-08d983097fbf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 05:25:07.0131
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LCly5qI+xtVFoJbVToEZxqL/Y93W89NctJkuETBaflmmoMq2X6vuEJCQmbNStRmBYqVGYbY7ET9MDLlbMU0Ahg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4681
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 5:44 PM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Mon, Aug 23, 2021 at 05:01 AM CEST, Po-Hsu Lin wrote:
-> > There are several test cases in the bpf directory are still using
-> > exit 0 when they need to be skipped. Use kselftest framework skip
-> > code instead so it can help us to distinguish the return status.
-> >
-> > Criterion to filter out what should be fixed in bpf directory:
-> >   grep -r "exit 0" -B1 | grep -i skip
-> >
-> > This change might cause some false-positives if people are running
-> > these test scripts directly and only checking their return codes,
-> > which will change from 0 to 4. However I think the impact should be
-> > small as most of our scripts here are already using this skip code.
-> > And there will be no such issue if running them with the kselftest
-> > framework.
-> >
-> > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> > ---
-> >  tools/testing/selftests/bpf/test_bpftool_build.sh | 5 ++++-
-> >  tools/testing/selftests/bpf/test_xdp_meta.sh      | 5 ++++-
-> >  tools/testing/selftests/bpf/test_xdp_vlan.sh      | 7 +++++--
-> >  3 files changed, 13 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
-> > index ac349a5..b6fab1e 100755
-> > --- a/tools/testing/selftests/bpf/test_bpftool_build.sh
-> > +++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
-> > @@ -1,6 +1,9 @@
-> >  #!/bin/bash
-> >  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >
-> > +# Kselftest framework requirement - SKIP code is 4.
-> > +ksft_skip=4
-> > +
-> >  case $1 in
-> >       -h|--help)
-> >               echo -e "$0 [-j <n>]"
-> > @@ -22,7 +25,7 @@ KDIR_ROOT_DIR=$(realpath $PWD/$SCRIPT_REL_DIR/../../../../)
-> >  cd $KDIR_ROOT_DIR
-> >  if [ ! -e tools/bpf/bpftool/Makefile ]; then
-> >       echo -e "skip:    bpftool files not found!\n"
-> > -     exit 0
-> > +     exit $ksft_skip
-> >  fi
-> >
-> >  ERROR=0
->
-> This bit has been fixed a couple days ago by a similar change:
->
-> https://lore.kernel.org/bpf/20210820025549.28325-1-lizhijian@cn.fujitsu.com
->
-Hello Jakub,
+> -----Original Message-----
+> From: Tham, Mun Yew <mun.yew.tham@intel.com>
+> Sent: Wednesday, September 29, 2021 1:10 PM
+> To: Ooi, Joyce <joyce.ooi@intel.com>; Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas <bhelgaas@google.com>; Rob
+> Herring <robh@kernel.org>
+> Cc: Krzysztof Wilczy=F1ski <kw@linux.com>; linux-pci@vger.kernel.org; lin=
+ux-
+> kernel@vger.kernel.org; Tham, Mun Yew <mun.yew.tham@intel.com>
+> Subject: [PATCH V2 pci 0/2] Update Mun Yew Tham as Pci Driver maintainer
+>=20
+> This is to update both Pci Driver For Altera Pcie Ip and Pci Msi Driver F=
+or
+> Altera Msi Ip maintainer.
+>=20
+> Mun Yew Tham (2):
+>   Update Mun Yew Tham as Pci Driver For Altera Pcie Ip maintainer
+>   Update Mun Yew Tham as Pci Msi Driver For Altera Msi Ip maintainer
+>=20
+>  MAINTAINERS | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for the feedback, I have submit a v2 patch for this:
-https://lore.kernel.org/bpf/20210929051250.13831-1-po-hsu.lin@canonical.com/
+Acked-by: Joyce Ooi <joyce.ooi@intel.com>
+>=20
+> --
+> 2.26.2
 
-Cheers
-
-> > diff --git a/tools/testing/selftests/bpf/test_xdp_meta.sh b/tools/testing/selftests/bpf/test_xdp_meta.sh
-> > index 637fcf4..fd3f218 100755
-> > --- a/tools/testing/selftests/bpf/test_xdp_meta.sh
-> > +++ b/tools/testing/selftests/bpf/test_xdp_meta.sh
-> > @@ -1,5 +1,8 @@
-> >  #!/bin/sh
-> >
-> > +# Kselftest framework requirement - SKIP code is 4.
-> > +ksft_skip=4
-> > +
-> >  cleanup()
-> >  {
-> >       if [ "$?" = "0" ]; then
->
-> Would consider making it read-only:
->
->   readonly KSFT_SKIP=4
->
-> [...]
