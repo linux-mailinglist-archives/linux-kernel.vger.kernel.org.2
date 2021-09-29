@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4211541C5D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88F141C5D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344233AbhI2NjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:39:19 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59006 "EHLO mga18.intel.com"
+        id S1344255AbhI2Nlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344296AbhI2NjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:39:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212025201"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="212025201"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 06:37:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="617514210"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2021 06:37:28 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH 2/2] device property: Remove device_add_properties() API
-Date:   Wed, 29 Sep 2021 16:37:29 +0300
-Message-Id: <20210929133729.9427-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210929133729.9427-1-heikki.krogerus@linux.intel.com>
-References: <20210929133729.9427-1-heikki.krogerus@linux.intel.com>
+        id S1344186AbhI2Nls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:41:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 632EC6137A;
+        Wed, 29 Sep 2021 13:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632922807;
+        bh=HRxvn3IUjfecEGEfskFUy3y0BDqwSgrQjWLQzEOJJgw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RTPVEKKDWu8xLuOVgrWyDppGS6t0eE5njBJgD1i3idYi2+uHPuZa5cxEcjeFQ3cZe
+         6NABzyvWfwl476XJU0PdI98Izs20RoC9vvAoAveJEZuCn+cAfihiwiMabw0KRLU2e+
+         TjWVzaCDWGdqoHQJP8rzeE3N3fWPyiTmO527AagTY9mO2loOHnXdQV7WiMI4gLE6vU
+         ul6sdJZ8l6+2P15LTHORFb07eoWaQztgWFnh43dsVGZ4Hd/JzdNsuR4airw1rBFwB3
+         v8FM8IQp926Dnl24p7J95hZj1aT8hWczKBdj0YqITOJZkMf+W5a/5yeHOFVImIQmNU
+         0lw8wtPminwVw==
+Date:   Wed, 29 Sep 2021 06:40:04 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
+ fix
+Message-ID: <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <cover.1632916329.git.leonro@nvidia.com>
+References: <cover.1632916329.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no more users for it.
+On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:
+> This series starts from the fixing the bug introduced by implementing
+> devlink delayed notifications logic, where I missed some of the
+> notifications functions.
+> 
+> The rest series provides a way to dynamically set devlink ops that is
+> needed for mlx5 multiport device and starts cleanup by removing
+> not-needed logic.
+> 
+> In the next series, we will delete various publish API, drop general
+> lock, annotate the code and rework logic around devlink->lock.
+> 
+> All this is possible because driver initialization is separated from the
+> user input now.
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/core.c      |  1 -
- drivers/base/property.c  | 48 ----------------------------------------
- include/linux/property.h |  4 ----
- 3 files changed, 53 deletions(-)
+Swapping ops is a nasty hack in my book.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 7758223f040c8..7935ee642fa3f 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -3573,7 +3573,6 @@ void device_del(struct device *dev)
- 	device_pm_remove(dev);
- 	driver_deferred_probe_del(dev);
- 	device_platform_notify_remove(dev);
--	device_remove_properties(dev);
- 	device_links_purge(dev);
- 
- 	if (dev->bus)
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 453918eb7390c..1f1eee37817e0 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -508,54 +508,6 @@ struct fwnode_handle *fwnode_find_reference(const struct fwnode_handle *fwnode,
- }
- EXPORT_SYMBOL_GPL(fwnode_find_reference);
- 
--/**
-- * device_remove_properties - Remove properties from a device object.
-- * @dev: Device whose properties to remove.
-- *
-- * The function removes properties previously associated to the device
-- * firmware node with device_add_properties(). Memory allocated to the
-- * properties will also be released.
-- */
--void device_remove_properties(struct device *dev)
--{
--	struct fwnode_handle *fwnode = dev_fwnode(dev);
--
--	if (!fwnode)
--		return;
--
--	if (is_software_node(fwnode->secondary)) {
--		fwnode_remove_software_node(fwnode->secondary);
--		set_secondary_fwnode(dev, NULL);
--	}
--}
--EXPORT_SYMBOL_GPL(device_remove_properties);
--
--/**
-- * device_add_properties - Add a collection of properties to a device object.
-- * @dev: Device to add properties to.
-- * @properties: Collection of properties to add.
-- *
-- * Associate a collection of device properties represented by @properties with
-- * @dev. The function takes a copy of @properties.
-- *
-- * WARNING: The callers should not use this function if it is known that there
-- * is no real firmware node associated with @dev! In that case the callers
-- * should create a software node and assign it to @dev directly.
-- */
--int device_add_properties(struct device *dev,
--			  const struct property_entry *properties)
--{
--	struct fwnode_handle *fwnode;
--
--	fwnode = fwnode_create_software_node(properties, NULL);
--	if (IS_ERR(fwnode))
--		return PTR_ERR(fwnode);
--
--	set_secondary_fwnode(dev, fwnode);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(device_add_properties);
--
- /**
-  * fwnode_get_name - Return the name of a node
-  * @fwnode: The firmware node
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 357513a977e5d..daf0b5841286f 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -377,10 +377,6 @@ property_entries_dup(const struct property_entry *properties);
- 
- void property_entries_free(const struct property_entry *properties);
- 
--int device_add_properties(struct device *dev,
--			  const struct property_entry *properties);
--void device_remove_properties(struct device *dev);
--
- bool device_dma_supported(struct device *dev);
- 
- enum dev_dma_attr device_get_dma_attr(struct device *dev);
--- 
-2.33.0
+And all that to avoid having two op structures in one driver.
+Or to avoid having counters which are always 0?
 
+Sorry, at the very least you need better explanation for this.
