@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D652241C162
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7FE41C16B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244965AbhI2JOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:14:34 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56227 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239961AbhI2JOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:14:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Uq0BRJ3_1632906770;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Uq0BRJ3_1632906770)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 29 Sep 2021 17:12:50 +0800
-Subject: Re: [PATCH] ocfs2: mount fails with buffer overflow in strlen
-To:     =?UTF-8?Q?Valentin_Vidi=c4=87?= <vvidic@valentin-vidic.from.hr>
-Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-References: <20210927154459.15976-1-vvidic@valentin-vidic.from.hr>
- <00850aed-2027-a0ab-e801-c6498a5a49f8@linux.alibaba.com>
- <20210928131450.GM28341@valentin-vidic.from.hr>
- <212f878e-1bbe-347c-ba43-e4ffb9b4afbe@linux.alibaba.com>
- <20210929062434.GN28341@valentin-vidic.from.hr>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <1ab61ba3-8c9b-092c-7843-9c45b58e3987@linux.alibaba.com>
-Date:   Wed, 29 Sep 2021 17:12:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S245010AbhI2JQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:16:49 -0400
+Received: from mga14.intel.com ([192.55.52.115]:50660 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239961AbhI2JQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:16:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224553655"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="224553655"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 02:14:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="617357979"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2021 02:14:46 -0700
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH] perf report: Output non-zero offset for decompressed records
+Date:   Wed, 29 Sep 2021 12:14:45 +0300
+Message-Id: <20210929091445.18274-1-alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
-In-Reply-To: <20210929062434.GN28341@valentin-vidic.from.hr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Print offset of PERF_RECORD_COMPRESSED record instead of zero for
+decompressed records in raw trace dump (-D option of perf-report):
 
+0x17cf08 [0x28]: event: 9
 
-On 9/29/21 2:24 PM, Valentin Vidić wrote:
-> On Wed, Sep 29, 2021 at 10:38:59AM +0800, Joseph Qi wrote:
->> Okay, you are right, strlen(src) is indeed wrong here.
->>
->> But please note that in strlcpy():
->> size_t ret = strlen(src);
->> if (size) {
->> 	size_t len = (ret >= size) ? size - 1 : ret;
->> 	memcpy(dest, src, len);
->> 	dest[len] = '\0';
->> }
->>
->> Take ci_stack "o2cb" for example, strlen("o2cb") may return wrong if the
->> coming byte is not null, say it is 10.
->> The input size is 5, so len will finally be 4.
->> So dest is still correct ending with null byte. No overflow happens.
->> So the problem here is the wrong return value, but it is discarded in
->> ocfs2_initialize_super().
-> 
-> strlcpy starts with a call to strlen(src) and this is where the read overflow
-> happens. If the kernel is compiled with CONFIG_FORTIFY_SOURCE this gets
-> executed instead (include/linux/fortify-string.h):
-> 
-> __FORTIFY_INLINE __kernel_size_t strlen(const char *p)
-> {
->         __kernel_size_t ret;
->         size_t p_size = __builtin_object_size(p, 1);
-> 
->         /* Work around gcc excess stack consumption issue */
->         if (p_size == (size_t)-1 ||
->                 (__builtin_constant_p(p[p_size - 1]) && p[p_size - 1] == '\0'))
->                 return __underlying_strlen(p);
->         ret = strnlen(p, p_size);
->         if (p_size <= ret)
->                 fortify_panic(__func__);
->         return ret;
-> }
-> 
-> So while strlcpy did work before this fortify check, it is probably not the
-> best option anymore due to the missing null terminator in the source.
-> 
-Got it, it really triggers panic in strlen().
-So could you please update the commit log? I think CONFIG_FORTIFY_SOURCE
-is necessary information since it is not default enabled.
-And add comments with your changes, e.g.
+instead of:
 
-/*
- * ci_stack and ci_cluster in ocfs2_cluster_info may not null
- * terminated, make sure no overflow happens here.
- */
+0 [0x28]: event: 9
 
-BTW, since we use kzalloc to alloc osb, so we don't have to manually
-set the last null byte.
+The fix is not critical, because currently file_pos for compressed
+events is used in perf_session__process_event only to show offsets
+in the raw dump.
 
-Thanks,
-Joseph
+This patch was separated from patchset:
+https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
+and was already rewieved.
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
+Tested-by: Riccardo Mancini <rickyman7@gmail.com>
+Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+---
+ tools/perf/util/session.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 069c2cfdd3be..352f16076e01 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -2116,7 +2116,7 @@ fetch_decomp_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
+ static int __perf_session__process_decomp_events(struct perf_session *session)
+ {
+ 	s64 skip;
+-	u64 size, file_pos = 0;
++	u64 size;
+ 	struct decomp *decomp = session->decomp_last;
+ 
+ 	if (!decomp)
+@@ -2132,7 +2132,7 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
+ 		size = event->header.size;
+ 
+ 		if (size < sizeof(struct perf_event_header) ||
+-		    (skip = perf_session__process_event(session, event, file_pos)) < 0) {
++		    (skip = perf_session__process_event(session, event, decomp->file_pos)) < 0) {
+ 			pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
+ 				decomp->file_pos + decomp->head, event->header.size, event->header.type);
+ 			return -EINVAL;
+-- 
+2.19.0
+
