@@ -2,147 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5370F41CAD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C3F41CAD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344939AbhI2RFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:05:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243396AbhI2RFg (ORCPT
+        id S1345033AbhI2RGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:06:05 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:40892 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243396AbhI2RGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:05:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632935034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hTE5zFleGLnTuyLrFqdFPMU22BAwoJNwUb4warb1Xi4=;
-        b=XCmS5QXOna/fo3c3BLu8WIZZAC60SDfXCdspTe1Cy6nJLp0zaYqrFPPy9ewcOOYR/SesJa
-        7tu3u9X92YzNotctq5CCEY8jWFjGkzI7IlBCbrMj30LzfsdJOdJSsCv8SB+q8TInSfUjE0
-        E6YLGIGmTt0dQeiFIOsfW4oCp0YaFHw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-_UBuHAyHOVyAKFnFjKEe0A-1; Wed, 29 Sep 2021 13:03:53 -0400
-X-MC-Unique: _UBuHAyHOVyAKFnFjKEe0A-1
-Received: by mail-wm1-f69.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so1514928wmj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 10:03:52 -0700 (PDT)
+        Wed, 29 Sep 2021 13:06:04 -0400
+Received: by mail-pj1-f44.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so4673579pjv.5;
+        Wed, 29 Sep 2021 10:04:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hTE5zFleGLnTuyLrFqdFPMU22BAwoJNwUb4warb1Xi4=;
-        b=zbXT6C8+tuVBF3G9cONPWUt6kV38BiTvaZ58iYSrN64LyY6FGNi4JPEuEcP4e5eesJ
-         qu5UZriTIukixQjSTCya1bxu+8/Foplh5h5Dixk5cUMU7i4/ew2TqWAy0P6lCHSbdoir
-         buav95/5ixueYbKrW7+jPA4nULJCmEZLFMUmR6Z8UL/QSRn2DKL1WwhN6aSSLIot8r19
-         BLkl09UNR2wraXBcysLqVwUdzAlKdS+8Sa0MoH4UyINeI8CXynpweKG3dSlM0ZElzoyO
-         FIYUWbHKrLUAjPwSFKgbjQzhCvhUlva+aSmXgt9TvguZrJByUyxs2Ldbk3n6PKeo8zz7
-         6itQ==
-X-Gm-Message-State: AOAM530OT/yfvYU2JQUhZAXR4lOGedcLvGkXl9PHI3BDsOoJUd2dAkeA
-        pRoXI1W1RqTs04NaJz/ksPTLzjkQmMgPEXmWJZfhc9q+PfBXyAUkN+ITF0v4c3POwv82y1VYFhf
-        ot1hr4EzHM3zRlHH5YgetNFFR
-X-Received: by 2002:a05:600c:3b26:: with SMTP id m38mr1065215wms.176.1632935031977;
-        Wed, 29 Sep 2021 10:03:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFT3c0vb/qzy1G4SkbQIPZPlSnrPV+5jondgwEWp4VtQKpRxeIjZOjfnGgAlQfz4Cp6i/4Yw==
-X-Received: by 2002:a05:600c:3b26:: with SMTP id m38mr1065198wms.176.1632935031786;
-        Wed, 29 Sep 2021 10:03:51 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
-        by smtp.gmail.com with ESMTPSA id o15sm372589wmc.21.2021.09.29.10.03.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 10:03:51 -0700 (PDT)
-Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
- for static memory
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     guptap@codeaurora.org
-References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
- <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
- <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
- <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
- <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
-Date:   Wed, 29 Sep 2021 19:03:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y2x6S7nH9jaik0J6Z6GU8rfIpZ/ztNMY7uEdNTzinB8=;
+        b=pdy/2zfn3z3Ciyqpf7Iqk25y8cotet/Jv0J62CWHcXPJtp17tbGRkI/uqK2ICsgIp6
+         j8fFdohYFbDTmcPvHLu+/vW2k0ryeHo4Ep9scLFJyXje8yd5k14xR7M/M9g3JtNN6Wiv
+         f4URg+6cVs504vsxIdVx32WLF+obbAfWhSTiIV8ORY53TJ8WJQlACrQfhXvOGY3XMWJw
+         PhTMyq+Tn7l8otju1CmW7CxJnsEIQgO1PZ2fSEoO1fuQlpKecQOezBMbSGJ2N7VENcjo
+         4M8EhfZ/YSwEuuzuM/KCeCsh6Ucb7NvGE5OTOL64zeoSaUy1x/9a4Ri9txnOGdtaC3EG
+         wVYQ==
+X-Gm-Message-State: AOAM530g4FNH5CMIMyy1bR2iZMvLIaVeh1S9zxibxac+MCMAue4VbVFi
+        aIH4N2eWRfedzp0i8KxhjxRRLEpkThen2427d8w=
+X-Google-Smtp-Source: ABdhPJxT8uO+Fpw/lmKF8geLN6eHCgcaUhnslCjW0B2FOboNDfjtzqhoq/qeUW03OjhljwftVbkdKlD3NO8xEjkvSLk=
+X-Received: by 2002:a17:90b:390:: with SMTP id ga16mr7637268pjb.185.1632935062753;
+ Wed, 29 Sep 2021 10:04:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210919192104.98592-3-mcroce@linux.microsoft.com>
+ <202109200526.YYwdkOeI-lkp@intel.com> <CAFnufp2bhWVd-SdSaK3ppFNkoBpJa+-0+kSrWzdxrmYNjyM+Zg@mail.gmail.com>
+In-Reply-To: <CAFnufp2bhWVd-SdSaK3ppFNkoBpJa+-0+kSrWzdxrmYNjyM+Zg@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Wed, 29 Sep 2021 19:04:11 +0200
+Message-ID: <CANBLGcyxwKCkFD2Z3S8SiWRWcVgshGxgT1YyVcJrc6DHUV4r2w@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] riscv: optimized memmove
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.09.21 10:58, Faiyaz Mohammed wrote:
-> 
-> 
-> On 9/28/2021 4:46 PM, David Hildenbrand wrote:
->> On 28.09.21 12:53, Faiyaz Mohammed wrote:
->>>
->>>
->>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
->>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
->>>>> For INITRD and initmem memory is reserved through "memblock_reserve"
->>>>> during boot up but it is free via "free_reserved_area" instead
->>>>> of "memblock_free".
->>>>> For example:
->>>>> [    0.294848] Freeing initrd memory: 12K.
->>>>> [    0.696688] Freeing unused kernel memory: 4096K.
->>>>>
->>>>> To get the start and end address of the above freed memory and to
->>>>> account
->>>>> proper memblock added memblock_dbg log in "free_reserved_area".
->>>>> After adding log:
->>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
->>>>> free_initrd_mem+0x20/0x28
->>>>> [    0.294848] Freeing initrd memory: 12K.
->>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
->>>>> free_initmem+0x70/0xc8
->>>>> [    0.696688] Freeing unused kernel memory: 4096K.
->>>>>
->>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->>>>> ---
->>>>>     mm/page_alloc.c | 5 +++++
->>>>>     1 file changed, 5 insertions(+)
->>>>>
->>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>>>> index b37435c..f85c3b2 100644
->>>>> --- a/mm/page_alloc.c
->>>>> +++ b/mm/page_alloc.c
->>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start,
->>>>> void *end, int poison, const char
->>>>>             pr_info("Freeing %s memory: %ldK\n",
->>>>>                 s, pages << (PAGE_SHIFT - 10));
->>>>>     +#ifdef CONFIG_HAVE_MEMBLOCK
->>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
->>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
->>>>> +#endif
->>>>
->>>> IMHO, the "memblock_free" part is misleading. Something was allocated
->>>> early via memblock, then we transitioned to the buddy, now we're freeing
->>>> that early allocation via the buddy.
->>>> Yes, we're freeing the early allocation via buddy, but for proper
->>> memblock accounting we need this debug print.
->>>
->>
->> What do you mean with "accounting" ? These are debug statements.
->>
->>
-> Yes, these are debug statements, which help to know the a-b address
-> belongs to x callsite. This info is required when memblock=debug is
-> passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
+On Mon, 27 Sept 2021 at 12:49, Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> On Mon, Sep 20, 2021 at 12:06 AM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi Matteo,
+> >
+> > Thank you for the patch! Yet something to improve:
+> >
+> > [auto build test ERROR on linux/master]
+> > [also build test ERROR on linus/master v5.15-rc1 next-20210917]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Matteo-Croce/riscv-optimized-mem-functions/20210920-032303
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git bdb575f872175ed0ecf2638369da1cb7a6e86a14
+> > config: riscv-randconfig-r004-20210919 (attached as .config)
+> > compiler: riscv64-linux-gcc (GCC) 11.2.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/9a948fd7d78a58890608e9dd0f77e5ff84f36e3e
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Matteo-Croce/riscv-optimized-mem-functions/20210920-032303
+> >         git checkout 9a948fd7d78a58890608e9dd0f77e5ff84f36e3e
+> >         # save the attached .config to linux build tree
+> >         mkdir build_dir
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=riscv SHELL=/bin/bash
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    arch/riscv/lib/string.c: In function '__memmove':
+> > >> arch/riscv/lib/string.c:89:7: error: inlining failed in call to 'always_inline' 'memcpy': function body can be overwritten at link time
+> >       89 | void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy);
+> >          |       ^~~~~~
+> >    arch/riscv/lib/string.c:99:24: note: called from here
+> >       99 |                 return memcpy(dest, src, count);
+> >          |                        ^~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> >
+> > vim +89 arch/riscv/lib/string.c
+> >
+> > 86c5866e9b7fdd Matteo Croce 2021-09-19  88
+> > 86c5866e9b7fdd Matteo Croce 2021-09-19 @89  void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy);
+> > 86c5866e9b7fdd Matteo Croce 2021-09-19  90  EXPORT_SYMBOL(memcpy);
+> > 9a948fd7d78a58 Matteo Croce 2021-09-19  91
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> How can we fix this? Maybe calling __memcpy() instead?
 
-The issue I'm having is talking in the name of memblock "memblock_dbg, 
-memblock_free", when memblock might no longer be around. We have other 
-places where we free early memblock allocations back to the buddy.
+Yes, that fixes building with CONFIG_FORTIFY_SOURCE=y for me. Kasan
+already wraps memmove itself, so it should be fine to call __memcpy
+directly.
 
--- 
-Thanks,
-
-David / dhildenb
-
+/Emil
