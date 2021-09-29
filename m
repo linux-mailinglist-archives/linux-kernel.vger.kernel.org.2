@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E7341BD63
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9AA41BC9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243968AbhI2D3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:29:43 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:44577 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243907AbhI2D3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:29:42 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HK1zN6KgDz4xZJ; Wed, 29 Sep 2021 13:28:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1632886080;
-        bh=or14ij/yBL19FjOCDsq0iAERcyiiYaHgFexNi04sb48=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jK76m0XsvCYgqc5O5vt60FBITyisxy37c72l0yhrARzYXhnqOHbuEDZXS3rqSNwKa
-         LDl3EBUKF3iXf6FoCnHsokBb8jPZenL2TYKf+4WEHthw3EjMsbu+Bw17crMQDvL7fv
-         MGdaUPaeiRdaBOALa7efNweYMOueSg3zZgFhhlD0=
-Date:   Wed, 29 Sep 2021 12:08:59 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, jgg@nvidia.com, hch@lst.de,
-        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
-        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
-        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
-        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
-Message-ID: <YVPKu/F3IpPMtGCh@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-3-yi.l.liu@intel.com>
+        id S243628AbhI2CMv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 22:12:51 -0400
+Received: from mga02.intel.com ([134.134.136.20]:63923 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243681AbhI2CMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 22:12:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="212096871"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="212096871"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 19:11:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="476492026"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by orsmga007.jf.intel.com with ESMTP; 28 Sep 2021 19:11:09 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 19:11:08 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 19:11:08 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
+ Tue, 28 Sep 2021 19:11:08 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Yu, Fenghua" <fenghua.yu@intel.com>
+CC:     "Hansen, Dave" <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Thread-Topic: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Thread-Index: AQHXrlppUXtiT4Ul9UCq0y1lpkQn1quyuuKAgAWuhwCAAKRkgIAAyOqAgAB9aAD//53xAIAAfQEA//+wWACAAICAgP//j4cAAA9QjQAADVLnoP//o0IAgABnfsA=
+Date:   Wed, 29 Sep 2021 02:11:07 +0000
+Message-ID: <2db5b44102264632a571e0b6ce11ef81@intel.com>
+References: <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
+ <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
+ <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
+ <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
+ <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+ <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
+ <YVOp60LOL+bfh3iT@otcwcpicx3.sc.intel.com>
+ <YVOuYAFaTG6Khotb@agluck-desk2.amr.corp.intel.com>
+ <ae7a12650d2741f9970449a08721a28e@intel.com>
+ <a60c365c7bca4c84942086939fd988d1@intel.com>
+ <YVO+WAqroakEYI/D@otcwcpicx3.sc.intel.com>
+In-Reply-To: <YVO+WAqroakEYI/D@otcwcpicx3.sc.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rFAAVZBIABvNkDR9"
-Content-Disposition: inline
-In-Reply-To: <20210919063848.1476776-3-yi.l.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> But the helpers seem to be generic. They take "task" as a parameter and
+> handle the task as non-current case. So the helpers are not for PASID only.
+> They may be used by others to modify a running task's FPU state. But
+> It's not safe to do so.
+>
+> At least need some comments/restriction for the helpers to be used on
+> a running task?
 
---rFAAVZBIABvNkDR9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fenghua,
 
-On Sun, Sep 19, 2021 at 02:38:30PM +0800, Liu Yi L wrote:
-> This patch introduces a new interface (/dev/vfio/devices/$DEVICE) for
-> userspace to directly open a vfio device w/o relying on container/group
-> (/dev/vfio/$GROUP). Anything related to group is now hidden behind
-> iommufd (more specifically in iommu core by this RFC) in a device-centric
-> manner.
->=20
-> In case a device is exposed in both legacy and new interfaces (see next
-> patch for how to decide it), this patch also ensures that when the device
-> is already opened via one interface then the other one must be blocked.
->=20
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-[snip]
+Correct. When I add some comments I'll make it very clear that it is the
+responsibility of the caller to make sure that the task that is targeted
+cannot run.
 
-> +static bool vfio_device_in_container(struct vfio_device *device)
-> +{
-> +	return !!(device->group && device->group->container);
+Earlier in this thread Dave suggested there are two cases where these
+helpers might be useful:
 
-You don't need !! here.  && is already a logical operation, so returns
-a valid bool.
+1) Fork/clone - to set up some xsave state in the child ... but this would be
+done before the child is allowed to run.
 
-> +}
-> +
->  static int vfio_device_fops_release(struct inode *inode, struct file *fi=
-lep)
->  {
->  	struct vfio_device *device =3D filep->private_data;
-> @@ -1560,7 +1691,16 @@ static int vfio_device_fops_release(struct inode *=
-inode, struct file *filep)
-> =20
->  	module_put(device->dev->driver->owner);
-> =20
-> -	vfio_group_try_dissolve_container(device->group);
-> +	if (vfio_device_in_container(device)) {
-> +		vfio_group_try_dissolve_container(device->group);
-> +	} else {
-> +		atomic_dec(&device->opened);
-> +		if (device->group) {
-> +			mutex_lock(&device->group->opened_lock);
-> +			device->group->opened--;
-> +			mutex_unlock(&device->group->opened_lock);
-> +		}
-> +	}
-> =20
->  	vfio_device_put(device);
-> =20
-> @@ -1613,6 +1753,7 @@ static int vfio_device_fops_mmap(struct file *filep=
-, struct vm_area_struct *vma)
-> =20
->  static const struct file_operations vfio_device_fops =3D {
->  	.owner		=3D THIS_MODULE,
-> +	.open		=3D vfio_device_fops_open,
->  	.release	=3D vfio_device_fops_release,
->  	.read		=3D vfio_device_fops_read,
->  	.write		=3D vfio_device_fops_write,
-> @@ -2295,6 +2436,52 @@ static struct miscdevice vfio_dev =3D {
->  	.mode =3D S_IRUGO | S_IWUGO,
->  };
-> =20
-> +static char *vfio_device_devnode(struct device *dev, umode_t *mode)
-> +{
-> +	return kasprintf(GFP_KERNEL, "vfio/devices/%s", dev_name(dev));
+2) ptrace - this is a "maybe" because ptrace already has code to handle all
+the xsave state as a single entity. Perhaps someone might want to change it
+to only modify a single feature ... but this seems unlikely. In any case the
+ptrace code already "stops" the target process while it is reading/writing state.
 
-Others have pointed out some problems with the use of dev_name()
-here.  I'll add that I think you'll make things much easier if instead
-of using one huge "devices" subdir, you use a separate subdir for each
-vfio sub-driver (so, one for PCI, one for each type of mdev, one for
-platform, etc.).  That should make avoiding name conflicts a lot simpler.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---rFAAVZBIABvNkDR9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFTyrkACgkQbDjKyiDZ
-s5LDRxAA45DlpAfiA499JLduAg68fEU3Bdr3uqrAxaxXW5bnLJVw9BLOv1YV6Izb
-GffTAoUJE/gceiS+dIPmE1A8Zxsdb3vCT3Ci8gKEevQ/zMcqBdnO5KZ//nRAlrMl
-vsDahtaUQy/3uxRqSA8r2jlEujuHfdFJzi5pNosxfLQkCiSkYzAG7ePdxDOEBhJv
-bqay3ZBkns2E8RjTZ8ytDBV2zHqQW3G2/kqFAK7qx8eefGROcDAv7NoroHt8EB8+
-EYBXZgj+4nQChP+wQoEmXkRzkDocPtS4IKODB1YjTTCKW4O0YI8TfuvnCCPRLrku
-VZFk4PNw9sADsqB4plA+3/QkeDLskC23/GTZ/+djAVcsSAs+Oyiisw63I7LibeKg
-h5LKefqlBoOURSgk9f0AHIYwaxoE7qXgsf7zGKcI80waLoVWkOQXSj5/D0asFtGf
-sZrthpsKPKAl40jH+lA35r98Acb/m8uJdICPUoG/QTtc8F/0UIjWKsZxJH8Wtss8
-FaCAP1lw3gKK76Trdi2XavMZFkRmWNatPKTiCaNY8qQRyt/RvAteJjnwR1R2RKji
-fAQo8P1ZNxAhrGdYI9QzAsy0pYyO0Va/TPy0lf9KRQHIH4ff2DGHQB0azLwyJ+JF
-3x7clC6gMiPwmHmWUMwTgrenfi6br6zggTRWzC2sWbs0iJCzIRo=
-=C+J/
------END PGP SIGNATURE-----
-
---rFAAVZBIABvNkDR9--
+-Tony
