@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7A341CA21
+	by mail.lfdr.de (Postfix) with ESMTP id 97C5141CA22
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345849AbhI2Qb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:31:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56440 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345687AbhI2Qbz (ORCPT
+        id S1345825AbhI2QcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345910AbhI2QcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:31:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632933014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LzEA/AMsDC+zBVogDRmix14O9ZRH28vVpD1t8BFMOTQ=;
-        b=OHBmXcXFal572r+La62x/Pn62V3aPieYOB7wpdnX+fdQtLC0NoStUv+jiupRblcNaL3ueG
-        KAyzB/qmCFYPkPzJ99/RNGLkOgQmgI6ENjA0Hl59ZGewjTj0IjWYZ6sXmWRuGDsqkZZI1A
-        WaMksgp254vi7iOLDxJkYraotUwtBZw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-axm7TcP3OvOWmhsUEMTxHQ-1; Wed, 29 Sep 2021 12:30:12 -0400
-X-MC-Unique: axm7TcP3OvOWmhsUEMTxHQ-1
-Received: by mail-wm1-f69.google.com with SMTP id j21-20020a05600c1c1500b0030ccce95837so1031703wms.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:30:12 -0700 (PDT)
+        Wed, 29 Sep 2021 12:32:02 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F51AC061769
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:30:21 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id e15so13215861lfr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=dpqmTpQas2GBcy9NTLgFKk4Ern9IXCMccxCg1tz7q4s=;
+        b=oXEcOolsZBbZpxLkSBI35fjHs9Op71APCDx371q/h3oYjh6pUifwpuVcxBXquaxPLT
+         eHoXfuX5rz/05JXUVFAXgD6NfaJAhsHi4gv+erfHgnqqCyEduvlqmujGtVA9JiP78T8h
+         EpPlbMFC2iEoi7kxVGgfl9k76fZ0MNySlRafl9qGEQNQ14nVEaL0oJx6Xv1ZGAMqvNPr
+         Xd9DNF9oQvRUAaOlvrbz+CmFPPuGUNRaI1HzhPsHZUPCoG3OrAVC4G6Ld++DsSSKS7c+
+         RLSiVMemdo7xWCx/AEBaTbgug89p3RQXLJk/OtjwYXYJum8PI69Euxs0VkPrROzqCBmP
+         ZIuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=LzEA/AMsDC+zBVogDRmix14O9ZRH28vVpD1t8BFMOTQ=;
-        b=CbIUd+YJarP5E2NEvWJTkPuukBJBPcbIxBN0X4FHMAIuolntrmBG2x9PpREyIJ9mIQ
-         ifwBzbxhN5K2Xeyg3HMFKUVtXjifhSFVlzyW/mEXDGsePk4jA+hSsl0G/cRL3XAKNy+w
-         2rUV2NPVo+UQtY81Ll7kjvphW2RwoabfIE6tMgG9ej9yJNtGEEPkRSqdHTbaJF4qiynI
-         f44mOhZpdiMsqaIxdgWl2QOykxbK+YuCQnsjPVYfFpjWkIwDqPUpv6VZn/nD+llLbcae
-         a7jfWlGBxvk04EmBq/2Q4g4S91gx4FW8aPBiW8qK5CRzITqGJjXZ5oh/LkFLTM+MTiHj
-         Vwow==
-X-Gm-Message-State: AOAM533UtO6yyXlXfQLZ2uKgnVge0y7rQ5CCWAgWx908+lkIJ+pMo4B3
-        NB3dRbSXgi9tLBEJbxxXwtYB1/QYw67C8i28dZHZ82JN8HoSIgkA37U4bxdR0BtkocTD/Q6XP1P
-        xO9BkxKMl92JAcVHoA5/fF/2c
-X-Received: by 2002:a05:6000:184c:: with SMTP id c12mr1026243wri.150.1632933011555;
-        Wed, 29 Sep 2021 09:30:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWpbhPpbSmBcJNqivlDLJZ/UTUefLQTk4gKa/CcEn6HHHOoDfx1bOgZbQtRoI/dHj6OAlJWg==
-X-Received: by 2002:a05:6000:184c:: with SMTP id c12mr1026220wri.150.1632933011388;
-        Wed, 29 Sep 2021 09:30:11 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
-        by smtp.gmail.com with ESMTPSA id m21sm354405wmq.37.2021.09.29.09.30.09
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dpqmTpQas2GBcy9NTLgFKk4Ern9IXCMccxCg1tz7q4s=;
+        b=VE4RS5x/utL5dWlBTU7PjO/NuycSLxG07FBdlyS5FckKrb7E1qQdGnlqogWJHJbNvz
+         NNkbV+d1Qai1eRrJuNbzLlhF+oPqWPJKSfIq+vwHJaObGjAa88s1EHWveAyROXwVLq2i
+         /m52LpeYVUQWx79+yhr5wUj6ZxV98DdZpyges4DP/d8yLTu4x+BeVBk+nyRczM7R1B0F
+         gHqs8OE8y7Cfc7mYf3qHSRvza4FeFlV8nDQX0xdzk4rNxVRw/r6u9vk2Tbdm1/S6jOH0
+         LG6Slgqjph0eeJbQ6ImWYGCbdGBvht8eLCW2MQOTWYOw4t2/sHsQek+sJV4xSu7lNSs+
+         +SNw==
+X-Gm-Message-State: AOAM530v3nG7jUowztux7MN1QHqpBip/uh9lyeyvdn5FHQ3IVAvfkxAZ
+        /mCa56KIfTIesxAx/oxjdUQ=
+X-Google-Smtp-Source: ABdhPJxhDxaP93+TmJlBLgqiuA0R+6nDmzIIcLkpG6ecqrWY2+KCQt1nXQQ4sdDfwaSz9lNOMouvFg==
+X-Received: by 2002:a05:651c:289:: with SMTP id b9mr840417ljo.465.1632933019498;
+        Wed, 29 Sep 2021 09:30:19 -0700 (PDT)
+Received: from [192.168.1.11] ([217.117.245.149])
+        by smtp.gmail.com with ESMTPSA id x23sm40192lfd.136.2021.09.29.09.30.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 09:30:10 -0700 (PDT)
-Subject: Re: [PATCH v1 2/4] memblock: allow to specify flags with
- memblock_add_node()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-References: <20210927150518.8607-1-david@redhat.com>
- <20210927150518.8607-3-david@redhat.com> <YVSTkGdh2nQWQp+U@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3651c7d0-f7b6-63ff-216a-b74176623a6f@redhat.com>
-Date:   Wed, 29 Sep 2021 18:30:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 29 Sep 2021 09:30:18 -0700 (PDT)
+Message-ID: <79069fea-c0f4-2363-6f58-39396689f95e@gmail.com>
+Date:   Wed, 29 Sep 2021 19:30:16 +0300
 MIME-Version: 1.0
-In-Reply-To: <YVSTkGdh2nQWQp+U@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [syzbot] memory leak in bsg_register_queue
 Content-Language: en-US
+To:     syzbot <syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000f5edbe05cba2df23@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <000000000000f5edbe05cba2df23@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.09.21 18:25, Mike Rapoport wrote:
-> On Mon, Sep 27, 2021 at 05:05:16PM +0200, David Hildenbrand wrote:
->> We want to specify flags when hotplugging memory. Let's prepare to pass
->> flags to memblock_add_node() by adjusting all existing users.
->>
->> Note that when hotplugging memory the system is already up and running
->> and we don't want to add the memory first and apply flags later: it
->> should happen within one memblock call.
+On 9/10/21 15:01, syzbot wrote:
+> Hello,
 > 
-> Why is it important that the system is up and why it should happen in a
-> single call?
-> I don't mind adding flags parameter to memblock_add_node() but this
-> changelog does not really explain the reasons to do it.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0319b848b155 binfmt: a.out: Fix bogus semicolon
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1776fab5300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4d196bb8b1e038c0
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cfe9b7cf55bb54ed4e57
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b2e115300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f2147d300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com
+> 
 
-"After memblock_add_node(), we could race with anybody performing a 
-search for MEMBLOCK_NONE, like kexec_file -- and that only happens once 
-the system is already up and running. So we want both steps to happen 
-atomically."
+#syz test: 
+git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git 
+1a0db7744e453844aa2db3f2959aea4a378025ea
 
-I can add that to the patch description.
 
-(I think it still won't be completely atomic because memblock isn't 
-properly implementing locking yet, but that's a different story)
-
--- 
-Thanks,
-
-David / dhildenb
-
+With regards,
+Pavel Skripkin
