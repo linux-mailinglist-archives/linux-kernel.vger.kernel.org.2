@@ -2,87 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61A541CC5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF8241CC80
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346455AbhI2TMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346211AbhI2TMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:12:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F8461526;
-        Wed, 29 Sep 2021 19:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632942660;
-        bh=g/8s55Jc9bqt8ZNNteEuzgrzOaKJ/elKL6Rcokeb5XM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nXFeiZPSW79r4UtpWMpAj+sFQtFDItw0Azdkv+bcgqAhlqsNY1rIMFzeJg0E7AOSL
-         GGu092Vwb+B8Zt66Dd9akCOdAQvl3OY6aYceGqV3pxbJuAGIkSdxbV/MNqD2KFhu3T
-         /7NbpFrr3sVtXygweNooeksB8BgKwFl5i9ggQhKmF7iWNj6jC9yjwHkRG/tzHnLdNx
-         K4Xv8A8njMCu+Idbn8Qw3uojter5eeOMewy7T24AH+8FsPdwDK8As8WQalcTgI2CUo
-         dDvWtlydXy2hkheMpF31hBm/d5sop6hyYl6WolfVTVwbkDyYm+995y/SnXJbN4pNh3
-         ZHTzk8/g/jVpA==
-Date:   Wed, 29 Sep 2021 14:15:04 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ALSA: virtio: Replace zero-length array with
- flexible-array member
-Message-ID: <20210929191504.GA337268@embeddedor>
+        id S1346534AbhI2TTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245131AbhI2TTA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:19:00 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCB3C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:17:18 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g41so15044892lfv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=mTYrYfRcpOqB6R4Sxta/MBfuL5XFQNtVPBAzoCOcfGbEzqlYUyTJnnvTPMTaSJeVB4
+         LYV96W9WGj4qWDtPa2f1aT6aAZalkhD1waluxD9MN0QUMrghOcrAQVCFbFD0fhDtTIcR
+         6tsQCdowUzRk1NtDegmzPc00jEh9zaMBEPiCddplQo7bjYJXVAFETto4g3eD42VIRFyJ
+         g7fRhRhZ38+YJqc7p0R7Z3Zs7wM4mA0VFxeboJgA8Nx3hzfGEOMki8jV69Px63esbgo6
+         64scNDtvBiSoy4ku4g/HIScAo4VhO3FNOv8iccxWQR5PN63Q3wBfWbCN4nQXb2iRdKUQ
+         6qVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=gCA42L5byW6xBltsYG8Fx8oN7qSEJ3gi8yLSLFYbCwS4IQZa7f3jiU0qP0qB51DVq2
+         VbmHAWpj53Gxf+G31vMcH5pRa1AvE7EhvD/Uv7l2FAD7+wti9/3sRIw6gvb+bHDmnDaN
+         RWClWU4fTP/NxO4iiISL6c0Nh3bxq7ruV7w9kDNeMqb6nBFvS4ByFj4TEet3crW6cqF5
+         wC0a1Q4KUScqctnkQMRUJ+crt6ZFCaA9fmMJBxJ6oOaya44aEZcSPe12iPTNbo+Ftakx
+         2+BiR5yEDzxyMJxe4plOApaEkQI2XAftAyJOhuPi7AcfKUfE4VA+5o8vb1/49QMCZ+DH
+         Mdlw==
+X-Gm-Message-State: AOAM533wNjJRz0CqPKBVlE2vyDNNzHmNbDsL2+j/R1jSKSnl+6A+zt15
+        p2hQLUt9jsmpMcWpJcmX8H2/66k6iS6mi5nJ3/k=
+X-Google-Smtp-Source: ABdhPJzThssUxWj+qBh+4p9uZnVxCzmmbz0MUIe4TCF3jp51Cjqw5SDzfPAZKD77acJMwgT93RDkAMhEy3xVJv8QGf4=
+X-Received: by 2002:a05:6512:3ee:: with SMTP id n14mr1336855lfq.589.1632943036799;
+ Wed, 29 Sep 2021 12:17:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:651c:4d0:0:0:0:0 with HTTP; Wed, 29 Sep 2021 12:17:16
+ -0700 (PDT)
+Reply-To: georgebrownlevi@outlook.com
+From:   Mr Brown Levi <amesata8@gmail.com>
+Date:   Wed, 29 Sep 2021 19:17:16 +0000
+Message-ID: <CAJR0EqOwtGCHgVnYqQYnwtEYaxCyPxR=ZND6xPnpjBKk0QSbSA@mail.gmail.com>
+Subject: Do you received my previous email?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare
-having a dynamically sized set of trailing elements in a structure.
-Kernel code should always use “flexible array members”[1] for these
-cases. The older style of one-element or zero-length arrays should
-no longer be used[2].
-
-Also, make use of the struct_size() helper in kzalloc().
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/78
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- sound/virtio/virtio_pcm_msg.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
-index f88c8f29cbd8..aca2dc1989ba 100644
---- a/sound/virtio/virtio_pcm_msg.c
-+++ b/sound/virtio/virtio_pcm_msg.c
-@@ -20,7 +20,7 @@ struct virtio_pcm_msg {
- 	struct virtio_snd_pcm_xfer xfer;
- 	struct virtio_snd_pcm_status status;
- 	size_t length;
--	struct scatterlist sgs[0];
-+	struct scatterlist sgs[];
- };
- 
- /**
-@@ -146,8 +146,7 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
- 		int sg_num = virtsnd_pcm_sg_num(data, period_bytes);
- 		struct virtio_pcm_msg *msg;
- 
--		msg = kzalloc(sizeof(*msg) + sizeof(*msg->sgs) * (sg_num + 2),
--			      GFP_KERNEL);
-+		msg = kzalloc(struct_size(msg, sgs, sg_num + 2), GFP_KERNEL);
- 		if (!msg)
- 			return -ENOMEM;
- 
--- 
-2.27.0
 
