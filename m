@@ -2,387 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC3A41CE3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA36041CE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346254AbhI2VfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245276AbhI2VfC (ORCPT
+        id S1346702AbhI2VgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:36:20 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:59044 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345930AbhI2VgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:35:02 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CBFC061768
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:33:20 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id g41so16432221lfv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:33:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Db6sq5b/zoZ7Ckw0MsC3401ruyMn9GYqskLXtTDWY1U=;
-        b=YdD0IEPWfMh3400z3lZO/rXLrtkQdQQzT6E5rNYfIx/1o1+K+Sfq8GEGo2o9PK3SVa
-         6ODe3xygpnglVPfJK7LbN0wS38dxtDpecAWVPMXikimHtBJ6+YhqM650fFsJ4+zlyuU6
-         9LdRaIjGBfhkgktm2Zm1XsMhVMBMCExPjVbSkA2RfiB4vFvaKHbIN2Yfy4WmYZIsuTPO
-         t/CXw8yCyg+AjLGDWtdP023ISv/OzvDjJW0JDYwn17qtSF78jWMSGOVPzGSQJetv5aIO
-         KGaP4EhF/uc/epmRf4no4+MwopbE3RlK0tnZh6R9UZgx5fpSGZ5Lpd1gjB1ahUYuUFKz
-         ayaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Db6sq5b/zoZ7Ckw0MsC3401ruyMn9GYqskLXtTDWY1U=;
-        b=GYRLkhjQ0ub1Hs0UWFG1NcJeqn81zNSAn0j3BvSWgS005CLY1vjhHTkc3wNEzSht4R
-         FZ7OYvi6xHSYN3dJRiLKfNG8+x65A7L2v0sadPlO7kp3Hs/UUV2eexWF9V4miEuUY/XO
-         ZS/Vya3hmXPlAru/QOUZUyg5FpkaN9wZWXFjtVTWFi7kfbzfkzip0Zpw0QoLUatWXd5c
-         w24oYSvPrk5MevMalViCqB+WekDpm9JH0VmZ8+Tu2jMnBOUqjfoMYBUxjqBt9xs34Dho
-         MvjNS4n1qZSmNydnylwf1E06s3EXSIBJ7hPl0zw0a+nz+pDg/U7a3BEPUylXj/Xmo2cS
-         Vsnw==
-X-Gm-Message-State: AOAM531cRmOkFTeKmYij+vHE2VM6ffqTXD++MKeRzzcA3omkyiZtWlRD
-        2ZeAZBUHBpi74uIxiAbx20O4FarsIhy16npcfy2hDA==
-X-Google-Smtp-Source: ABdhPJzhCoDwFynfAd1TEDbYhSvAM8Evozq3qMnqQMfeskozU8Jk++cf4vW2wdpliQwTatEGUSw7odWrZm7W1h6plVw=
-X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr2269532ljp.282.1632951198592;
- Wed, 29 Sep 2021 14:33:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-43-brijesh.singh@amd.com>
-In-Reply-To: <20210820155918.7518-43-brijesh.singh@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Wed, 29 Sep 2021 15:33:07 -0600
-Message-ID: <CAMkAt6rzFvscq46CKYrhcf3d8VCGzy3tiM_SycnDRr9gVwXOSA@mail.gmail.com>
-Subject: Re: [PATCH Part2 v5 42/45] KVM: SVM: Provide support for
- SNP_GUEST_REQUEST NAE event
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
+        Wed, 29 Sep 2021 17:36:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=Bs8bMhC7bQAuNPOpZEH0zniuEdm9NW/YrFeZImeIfOA=; b=I2EoSXtUtxxE6I7rRXNlaQi1Cr
+        26y7kb5TT5Pm2pY5KxdBM9XFbLlCc1/rp6B788hVTB6/j0GiBnouY+POEQdum7NZv9aXHc5gg45iF
+        yDAL1n2pfsNdyOEb90H2C4R4SoWew8wSXqeMJiwcAExoJRoh6co1C/CZ0YGaO2ofnpKtpl9BhvsIt
+        n2teiyqjsDdWHRe3V8sdAM1Oxu9gQupPSVaReSA3KUwu7+sZf+t5nMdzuSACvG6+2YM5krqC8RIUR
+        dFiVhA4xErhytJnA9uXt2A1tDoLp4et4Tm1Ld8W02rwrG6hBlPYYC+mPAn/D7qJpK5zLNDI85nLXB
+        zO+aoKCA==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mVhDc-0006Oe-EH; Wed, 29 Sep 2021 15:34:25 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        Marc Orr <marcorr@google.com>,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-15-logang@deltatee.com>
+ <20210928194707.GU3544071@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <9c40347c-f9a8-af86-71a5-2156359e15ce@deltatee.com>
+Date:   Wed, 29 Sep 2021 15:34:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20210928194707.GU3544071@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v3 14/20] mm: introduce FOLL_PCI_P2PDMA to gate getting
+ PCI P2PDMA pages
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:01 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> Version 2 of GHCB specification added the support for two SNP Guest
-> Request Message NAE events. The events allows for an SEV-SNP guest to
-> make request to the SEV-SNP firmware through hypervisor using the
-> SNP_GUEST_REQUEST API define in the SEV-SNP firmware specification.
->
-> The SNP_EXT_GUEST_REQUEST is similar to SNP_GUEST_REQUEST with the
-> difference of an additional certificate blob that can be passed through
-> the SNP_SET_CONFIG ioctl defined in the CCP driver. The CCP driver
-> provides snp_guest_ext_guest_request() that is used by the KVM to get
-> both the report and certificate data at once.
->
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 197 +++++++++++++++++++++++++++++++++++++++--
->  arch/x86/kvm/svm/svm.h |   2 +
->  2 files changed, 193 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 712e8907bc39..81ccad412e55 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -19,6 +19,7 @@
->  #include <linux/trace_events.h>
->  #include <linux/sev.h>
->  #include <linux/ksm.h>
-> +#include <linux/sev-guest.h>
->  #include <asm/fpu/internal.h>
->
->  #include <asm/pkru.h>
-> @@ -338,6 +339,7 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->
->                 init_srcu_struct(&sev->psc_srcu);
->                 ret = sev_snp_init(&argp->error);
-> +               mutex_init(&sev->guest_req_lock);
->         } else {
->                 ret = sev_platform_init(&argp->error);
->         }
-> @@ -1602,23 +1604,39 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
->
->  static void *snp_context_create(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  {
-> +       void *context = NULL, *certs_data = NULL, *resp_page = NULL;
-> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
->         struct sev_data_snp_gctx_create data = {};
-> -       void *context;
->         int rc;
->
-> +       /* Allocate memory used for the certs data in SNP guest request */
-> +       certs_data = kmalloc(SEV_FW_BLOB_MAX_SIZE, GFP_KERNEL_ACCOUNT);
-> +       if (!certs_data)
-> +               return NULL;
-> +
->         /* Allocate memory for context page */
->         context = snp_alloc_firmware_page(GFP_KERNEL_ACCOUNT);
->         if (!context)
-> -               return NULL;
-> +               goto e_free;
-> +
-> +       /* Allocate a firmware buffer used during the guest command handling. */
-> +       resp_page = snp_alloc_firmware_page(GFP_KERNEL_ACCOUNT);
-> +       if (!resp_page)
-> +               goto e_free;
->
->         data.gctx_paddr = __psp_pa(context);
->         rc = __sev_issue_cmd(argp->sev_fd, SEV_CMD_SNP_GCTX_CREATE, &data, &argp->error);
-> -       if (rc) {
-> -               snp_free_firmware_page(context);
-> -               return NULL;
-> -       }
-> +       if (rc)
-> +               goto e_free;
-> +
-> +       sev->snp_certs_data = certs_data;
->
->         return context;
-> +
-> +e_free:
-> +       snp_free_firmware_page(context);
-> +       kfree(certs_data);
-> +       return NULL;
->  }
->
->  static int snp_bind_asid(struct kvm *kvm, int *error)
-> @@ -2248,6 +2266,8 @@ static int snp_decommission_context(struct kvm *kvm)
->         snp_free_firmware_page(sev->snp_context);
->         sev->snp_context = NULL;
->
-> +       kfree(sev->snp_certs_data);
-> +
->         return 0;
->  }
->
-> @@ -2746,6 +2766,8 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm, u64 *exit_code)
->         case SVM_VMGEXIT_UNSUPPORTED_EVENT:
->         case SVM_VMGEXIT_HV_FEATURES:
->         case SVM_VMGEXIT_PSC:
-> +       case SVM_VMGEXIT_GUEST_REQUEST:
-> +       case SVM_VMGEXIT_EXT_GUEST_REQUEST:
->                 break;
->         default:
->                 goto vmgexit_err;
-> @@ -3161,6 +3183,155 @@ static unsigned long snp_handle_page_state_change(struct vcpu_svm *svm)
->         return rc ? map_to_psc_vmgexit_code(rc) : 0;
->  }
->
-> +static unsigned long snp_setup_guest_buf(struct vcpu_svm *svm,
-> +                                        struct sev_data_snp_guest_request *data,
-> +                                        gpa_t req_gpa, gpa_t resp_gpa)
-> +{
-> +       struct kvm_vcpu *vcpu = &svm->vcpu;
-> +       struct kvm *kvm = vcpu->kvm;
-> +       kvm_pfn_t req_pfn, resp_pfn;
-> +       struct kvm_sev_info *sev;
-> +
-> +       sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +       if (!IS_ALIGNED(req_gpa, PAGE_SIZE) || !IS_ALIGNED(resp_gpa, PAGE_SIZE))
-> +               return SEV_RET_INVALID_PARAM;
-> +
-> +       req_pfn = gfn_to_pfn(kvm, gpa_to_gfn(req_gpa));
-> +       if (is_error_noslot_pfn(req_pfn))
-> +               return SEV_RET_INVALID_ADDRESS;
-> +
-> +       resp_pfn = gfn_to_pfn(kvm, gpa_to_gfn(resp_gpa));
-> +       if (is_error_noslot_pfn(resp_pfn))
-> +               return SEV_RET_INVALID_ADDRESS;
-> +
-> +       if (rmp_make_private(resp_pfn, 0, PG_LEVEL_4K, 0, true))
-> +               return SEV_RET_INVALID_ADDRESS;
-> +
-> +       data->gctx_paddr = __psp_pa(sev->snp_context);
-> +       data->req_paddr = __sme_set(req_pfn << PAGE_SHIFT);
-> +       data->res_paddr = __sme_set(resp_pfn << PAGE_SHIFT);
-> +
-> +       return 0;
-> +}
-> +
-> +static void snp_cleanup_guest_buf(struct sev_data_snp_guest_request *data, unsigned long *rc)
-> +{
-> +       u64 pfn = __sme_clr(data->res_paddr) >> PAGE_SHIFT;
-> +       int ret;
-> +
-> +       ret = snp_page_reclaim(pfn);
-> +       if (ret)
-> +               *rc = SEV_RET_INVALID_ADDRESS;
-> +
-> +       ret = rmp_make_shared(pfn, PG_LEVEL_4K);
-> +       if (ret)
-> +               *rc = SEV_RET_INVALID_ADDRESS;
-> +}
-> +
-> +static void snp_handle_guest_request(struct vcpu_svm *svm, gpa_t req_gpa, gpa_t resp_gpa)
-> +{
-> +       struct sev_data_snp_guest_request data = {0};
-> +       struct kvm_vcpu *vcpu = &svm->vcpu;
-> +       struct kvm *kvm = vcpu->kvm;
-> +       struct kvm_sev_info *sev;
-> +       unsigned long rc;
-> +       int err;
-> +
-> +       if (!sev_snp_guest(vcpu->kvm)) {
-> +               rc = SEV_RET_INVALID_GUEST;
-> +               goto e_fail;
-> +       }
-> +
-> +       sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +       mutex_lock(&sev->guest_req_lock);
-> +
-> +       rc = snp_setup_guest_buf(svm, &data, req_gpa, resp_gpa);
-> +       if (rc)
-> +               goto unlock;
-> +
-> +       rc = sev_issue_cmd(kvm, SEV_CMD_SNP_GUEST_REQUEST, &data, &err);
-> +       if (rc)
-> +               /* use the firmware error code */
-> +               rc = err;
-> +
-> +       snp_cleanup_guest_buf(&data, &rc);
-> +
-> +unlock:
-> +       mutex_unlock(&sev->guest_req_lock);
-> +
-> +e_fail:
-> +       svm_set_ghcb_sw_exit_info_2(vcpu, rc);
-> +}
-> +
-> +static void snp_handle_ext_guest_request(struct vcpu_svm *svm, gpa_t req_gpa, gpa_t resp_gpa)
-> +{
-> +       struct sev_data_snp_guest_request req = {0};
-> +       struct kvm_vcpu *vcpu = &svm->vcpu;
-> +       struct kvm *kvm = vcpu->kvm;
-> +       unsigned long data_npages;
-> +       struct kvm_sev_info *sev;
-> +       unsigned long rc, err;
-> +       u64 data_gpa;
-> +
-> +       if (!sev_snp_guest(vcpu->kvm)) {
-> +               rc = SEV_RET_INVALID_GUEST;
-> +               goto e_fail;
-> +       }
-> +
-> +       sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +       data_gpa = vcpu->arch.regs[VCPU_REGS_RAX];
-> +       data_npages = vcpu->arch.regs[VCPU_REGS_RBX];
-> +
-> +       if (!IS_ALIGNED(data_gpa, PAGE_SIZE)) {
-> +               rc = SEV_RET_INVALID_ADDRESS;
-> +               goto e_fail;
-> +       }
-> +
-> +       /* Verify that requested blob will fit in certificate buffer */
-> +       if ((data_npages << PAGE_SHIFT) > SEV_FW_BLOB_MAX_SIZE) {
-> +               rc = SEV_RET_INVALID_PARAM;
-> +               goto e_fail;
-> +       }
-> +
-> +       mutex_lock(&sev->guest_req_lock);
-> +
-> +       rc = snp_setup_guest_buf(svm, &req, req_gpa, resp_gpa);
-> +       if (rc)
-> +               goto unlock;
-> +
-> +       rc = snp_guest_ext_guest_request(&req, (unsigned long)sev->snp_certs_data,
-> +                                        &data_npages, &err);
-> +       if (rc) {
-> +               /*
-> +                * If buffer length is small then return the expected
-> +                * length in rbx.
-> +                */
-> +               if (err == SNP_GUEST_REQ_INVALID_LEN)
-> +                       vcpu->arch.regs[VCPU_REGS_RBX] = data_npages;
-> +
-> +               /* pass the firmware error code */
-> +               rc = err;
-> +               goto cleanup;
-> +       }
-> +
-> +       /* Copy the certificate blob in the guest memory */
-> +       if (data_npages &&
-> +           kvm_write_guest(kvm, data_gpa, sev->snp_certs_data, data_npages << PAGE_SHIFT))
-> +               rc = SEV_RET_INVALID_ADDRESS;
-> +
-> +cleanup:
-> +       snp_cleanup_guest_buf(&req, &rc);
-> +
-> +unlock:
-> +       mutex_unlock(&sev->guest_req_lock);
-> +
-> +e_fail:
-> +       svm_set_ghcb_sw_exit_info_2(vcpu, rc);
-> +}
-> +
->  static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->  {
->         struct vmcb_control_area *control = &svm->vmcb->control;
-> @@ -3404,6 +3575,20 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
->                 svm_set_ghcb_sw_exit_info_2(vcpu, rc);
->                 break;
->         }
-> +       case SVM_VMGEXIT_GUEST_REQUEST: {
-> +               snp_handle_guest_request(svm, control->exit_info_1, control->exit_info_2);
-> +
-> +               ret = 1;
-> +               break;
-> +       }
-> +       case SVM_VMGEXIT_EXT_GUEST_REQUEST: {
-> +               snp_handle_ext_guest_request(svm,
-> +                                            control->exit_info_1,
-> +                                            control->exit_info_2);
-> +
-> +               ret = 1;
-> +               break;
-> +       }
 
-Don't we need some sort of rate limiting here? Since the PSP is a
-shared resource that the host needs access to as well as other guests
-it seems a little dangerous to let the guest spam this interface.
 
->         case SVM_VMGEXIT_UNSUPPORTED_EVENT:
->                 vcpu_unimpl(vcpu,
->                             "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 280072995306..71fe46a778f3 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -92,6 +92,8 @@ struct kvm_sev_info {
->         u64 snp_init_flags;
->         void *snp_context;      /* SNP guest context page */
->         struct srcu_struct psc_srcu;
-> +       void *snp_certs_data;
-> +       struct mutex guest_req_lock;
->  };
->
->  struct kvm_svm {
-> --
-> 2.17.1
->
+
+On 2021-09-28 1:47 p.m., Jason Gunthorpe wrote:
+> On Thu, Sep 16, 2021 at 05:40:54PM -0600, Logan Gunthorpe wrote:
+>> Callers that expect PCI P2PDMA pages can now set FOLL_PCI_P2PDMA to
+>> allow obtaining P2PDMA pages. If a caller does not set this flag
+>> and tries to map P2PDMA pages it will fail.
+>>
+>> This is implemented by adding a flag and a check to get_dev_pagemap().
+> 
+> I would like to see the get_dev_pagemap() deleted from GUP in the
+> first place.
+> 
+> Why isn't this just a simple check of the page->pgmap type after
+> acquiring a valid page reference? See my prior note
+
+It could be, but that will mean dereferencing the pgmap for every page
+to determine the type of page and then comparing with FOLL_PCI_P2PDMA.
+
+Probably not terrible to go this way.
+
+Logan
