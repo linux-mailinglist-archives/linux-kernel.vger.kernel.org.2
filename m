@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D862441C3CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA0C41C3CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245291AbhI2LxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        id S245208AbhI2LxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245256AbhI2Lw6 (ORCPT
+        with ESMTP id S245266AbhI2Lw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:52:58 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258E0C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:51:17 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t11so1314477plq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:51:17 -0700 (PDT)
+        Wed, 29 Sep 2021 07:52:59 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712BAC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:51:18 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id m26so1763076pff.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:51:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ikf7fVByEJKZspDKJs9uWwvbKIOIx9YgMwV54xQl3hM=;
-        b=btZvicR6OZjifbPzESVKzfNz08HNfq4EUibv9GmJgb1MUA7lyyCXRSbB/zd0CsQN/i
-         1Jams8WrLhHedfCUw9MUDulAlm+sHkzOX6dD9U+roSrYX/zIf49+0MctwVV2RmkVgU6Y
-         Big0r77K4R4WHeUjUXccDH1aSLRxyIVI3sGVjaVE2gW1x/WgaZLWznuVNHyfxsGct+uw
-         vxSAGPx1MspRS4zHIDBDw0JcnvFVddRM5Ybce01h9K2WTeGY8HL30Swn2cpRfA9BVYku
-         KkH52xMw6etth/rCOL8LYbj4kNI3ibYsO30hdFP7vZ1swyRXibN1N6qNcpOg0nJPC7jQ
-         ALfg==
+        bh=hItkjKaxg4Uh2f64bMlyPxgrZcRDpiWgCRGOxnSrprQ=;
+        b=FtLWKYuDhpunrKnFXsXBREVmHtlWWgxTNGwGJSvV3L3rSeUh4kx7MQiwiNErW8kuYn
+         pF5z0iU0zfASnNwj1Q6H3bXnoE7vgcTrUyWo5qaIDKxRCC36UHH6UDwS9A34LlbQ7Va+
+         Rtdlet8cNM/yA7IxNmL0jGr0W7dBgni+sNh8gR6K52YMcxLS3LLLKurJnkh7S6+7WR2V
+         Q3nuM2Hfdz/O2TqHWFRFKotR8jMKamWvDvnS1dpCj2C6JAslpjEXqtClXaPbj4GFCr/8
+         PGYkCEeW0vNLjaPkIR9oBkAseZgCZ5x15BZjSYAR2Y985JldRfNaKo/BT0Eg76EDG1M+
+         H57Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ikf7fVByEJKZspDKJs9uWwvbKIOIx9YgMwV54xQl3hM=;
-        b=OxGFE12G4m0hogNHVRlU9PM/gQ/PLKcRybiUgI+mHtZGangxU/WuoTCaBllGymRnGC
-         MKQv8gbstJmlu/UX36jMTyHYR39mcb0vnHRNnFx0Q8LyNdRiq78CbdocebH0c3Ok8HT+
-         SxfelP7cJFNKB+bsDOSBK8UZEZgkKdrj2qQGS5lmcs46ZOUEuK+PmizZO3pFP61qFYA5
-         u6LyxFrSGMdymTaRkFp1lJ28EgNGU1RgkNiZWB3eJi++hfpxHO4G8mgxB3XYoqzhzs4s
-         U7t9Pina6vk2+1yFSAwcVT+1uMmNvvm59+SS9IFDxUNObIzOCUhcRBC2O55AT13NiDTW
-         3yvA==
-X-Gm-Message-State: AOAM53272LpPBovYGHhKgxaaiTxpz9S6DRhEcDJk0mu6AS67O9oTGtUH
-        fbu2FwpDc0wUutXju4eNWd4=
-X-Google-Smtp-Source: ABdhPJzDKV3JHquItgU/3MOE1X6mUzInt9JmVz3Owv/qzjDAr6iP9bc3q7GiOc0uckrFhAXbK4F8LQ==
-X-Received: by 2002:a17:902:a38b:b0:138:d329:27ac with SMTP id x11-20020a170902a38b00b00138d32927acmr9738399pla.7.1632916276769;
-        Wed, 29 Sep 2021 04:51:16 -0700 (PDT)
+        bh=hItkjKaxg4Uh2f64bMlyPxgrZcRDpiWgCRGOxnSrprQ=;
+        b=rro5du4QoKtDRm/tHYw9K8eoi6gvuWHNf8fKEqBBAMg3X/IWnwQYwwPzFZz5DusBDN
+         MAaV5Ixnkmxu94LGBrGcHug7EInDhzgaJJdQZ95BqxsWZJg7+SEWmpBWZxb5HAX6ohVF
+         MPsuHEWNEeOhjDJVguV26Ip4opdiPL03jYGRJr60ro8jPmYb+gnItewkaje5bOCvAh87
+         VZbUM4qkxcdR4ETTuZLeFUqtUvS5uwHzGxcIzP9LctljbcjKzhpCAWAMPOK6pxRnQtl5
+         QIsujFu6z/yep0YloAUy649QdOZM1SJn9eq4owjHr27L+PSnRXTa2hGF7nlRnaY/zR+o
+         iVWw==
+X-Gm-Message-State: AOAM530ST6+skOwIihVltaLCQipGVI6csMgnw2Go41igt7c1CclMAJ0b
+        rnN83OgJ8lEb2JbvrQQoG/I=
+X-Google-Smtp-Source: ABdhPJzar4gSruPebWaUw1CGk1TqMuz8q98Im8OxbXEGGA5/ZAtb7uDelt0ZG/XGANoOl2j4KFxUAw==
+X-Received: by 2002:a63:2c8f:: with SMTP id s137mr9134656pgs.115.1632916278045;
+        Wed, 29 Sep 2021 04:51:18 -0700 (PDT)
 Received: from localhost.localdomain ([144.202.123.152])
-        by smtp.gmail.com with ESMTPSA id u12sm2403204pgi.21.2021.09.29.04.51.15
+        by smtp.gmail.com with ESMTPSA id u12sm2403204pgi.21.2021.09.29.04.51.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 04:51:16 -0700 (PDT)
+        Wed, 29 Sep 2021 04:51:17 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     akpm@linux-foundation.org, pmladek@suse.com, peterz@infradead.org,
         valentin.schneider@arm.com, keescook@chromium.org,
@@ -55,9 +55,9 @@ To:     akpm@linux-foundation.org, pmladek@suse.com, peterz@infradead.org,
         robdclark@chromium.org, viro@zeniv.linux.org.uk,
         christian@brauner.io, dietmar.eggemann@arm.com
 Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH 3/5] kernel/sched: improve the BUILD_BUG_ON() in get_task_comm()
-Date:   Wed, 29 Sep 2021 11:50:34 +0000
-Message-Id: <20210929115036.4851-4-laoar.shao@gmail.com>
+Subject: [PATCH 4/5] kernel: increase the size of kthread's comm
+Date:   Wed, 29 Sep 2021 11:50:35 +0000
+Message-Id: <20210929115036.4851-5-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210929115036.4851-1-laoar.shao@gmail.com>
 References: <20210929115036.4851-1-laoar.shao@gmail.com>
@@ -67,28 +67,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What we really want to guarantee is that the buf size can't be less than
-TASK_COMM_LEN. While the size be greater than TASK_COMM_LEN is
-acceptable.
+Some of the kthreads' comm are trucated due to the limitation of
+TASK_COMM_LEN, for example,
+
+  rcu_tasks_kthre
+  rcu_tasks_rude_
+  rcu_tasks_trace
+  ecryptfs-kthrea
+  vfio-irqfd-clea
+  ext4-rsv-conver
+  jbd2/nvme0n1p2-
+  ...
+
+Besides the in-tree kthreads listed above, the out-of-tree kthreads may
+also be trucated, for example,
+
+  rtase_work_queu
+  nvidia-modeset/
+  UVM global queu
+  UVM deferred re
+  ...
+
+That is not expected by the author of these kthreads.
+
+This patch increases the size of ktread's comm from 16 to 24, which is
+the same with workqueue's, to improve this situation. After this cahnge,
+the name of kthread can be fully displayed in /proc/[pid]/comm,
+for example,
+
+  rcu_tasks_kthread
+  rcu_tasks_rude_kthread
+  rcu_tasks_trace_kthread
+  ecryptfs-kthread
+  vfio-irqfd-cleanup
+  ext4-rsv-conversion
+  jbd2/nvme0n1p2-8
+  ...
+
+Because there're only a few of kthreads, so it won't increase too much
+memory.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/sched.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/exec.c             | 5 ++++-
+ include/linux/sched.h | 2 ++
+ kernel/fork.c         | 9 ++++++++-
+ kernel/kthread.c      | 2 +-
+ 4 files changed, 15 insertions(+), 3 deletions(-)
 
+diff --git a/fs/exec.c b/fs/exec.c
+index 021c9dc727bc..4bf0501b7766 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1222,9 +1222,12 @@ EXPORT_SYMBOL_GPL(__get_task_comm);
+ 
+ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
+ {
++	size_t size;
++
+ 	task_lock(tsk);
+ 	trace_task_rename(tsk, buf);
+-	strscpy(tsk->comm, buf, TASK_COMM_LEN);
++	size = tsk->flags & PF_KTHREAD ? KTHREAD_COMM_LEN : TASK_COMM_LEN;
++	strscpy(tsk->comm, buf, size);
+ 	task_unlock(tsk);
+ 	perf_event_comm(tsk, exec);
+ }
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b387b5943db4..959eaef248fc 100644
+index 959eaef248fc..6b336eba4ff6 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1931,7 +1931,7 @@ static inline void set_task_comm(struct task_struct *tsk, const char *from)
+@@ -276,6 +276,8 @@ struct task_group;
  
- extern char *__get_task_comm(char *to, size_t len, struct task_struct *tsk);
- #define get_task_comm(buf, tsk) ({			\
--	BUILD_BUG_ON(sizeof(buf) != TASK_COMM_LEN);	\
-+	BUILD_BUG_ON(sizeof(buf) < TASK_COMM_LEN);	\
- 	__get_task_comm(buf, sizeof(buf), tsk);		\
- })
+ /* Task command name length: */
+ #define TASK_COMM_LEN			16
++/* KTHREAD_COMM_LEN must be >= TASK_COMM_LEN */
++#define KTHREAD_COMM_LEN		24
  
+ extern void scheduler_tick(void);
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 227aec240501..a2939353383d 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -723,7 +723,14 @@ static void mmdrop_async(struct mm_struct *mm)
+ 
+ static int task_comm_alloc(struct task_struct *p)
+ {
+-	p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
++	size_t size;
++
++	/*
++	 * PF_KTHREAD may be cleared in exec, but the allocated memory can
++	 * be safely freed.
++	 */
++	size = p->flags & PF_KTHREAD ? KTHREAD_COMM_LEN : TASK_COMM_LEN;
++	p->comm = kzalloc(size, GFP_KERNEL);
+ 	if (!p->comm)
+ 		return -ENOMEM;
+ 
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 5b37a8567168..6def951c605a 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -398,7 +398,7 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 	task = create->result;
+ 	if (!IS_ERR(task)) {
+ 		static const struct sched_param param = { .sched_priority = 0 };
+-		char name[TASK_COMM_LEN];
++		char name[KTHREAD_COMM_LEN];
+ 
+ 		/*
+ 		 * task is already visible to other tasks, so updating
 -- 
 2.17.1
 
