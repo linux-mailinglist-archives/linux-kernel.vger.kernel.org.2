@@ -2,133 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA59F41BC34
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7140441BC37
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243615AbhI2BiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 21:38:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30448 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229505AbhI2BiY (ORCPT
+        id S243642AbhI2BjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 21:39:10 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:35270 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229505AbhI2BjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 21:38:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632879403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmXXQz14OHu7NQNRzC6miY+wGBVQ4lf/YmhSvfWG8yE=;
-        b=GD2qRIKo4rr5J0XWoDY/GbqPCI7v7uviQL+xD+TedIpXexFhV1qHe1WwO0eo6tlcmz+HS4
-        s07WKRWupfm0c4jnekzaM8bztmtLzV3hMESltSnE6z5RJP/jiut9eTfzJ2EhmRMJ3kFJGE
-        gRERJwxuRgejOmhDTqTgUnTr4y3klWU=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-nBPzP1pGNLW_6i8H980IpQ-1; Tue, 28 Sep 2021 21:36:42 -0400
-X-MC-Unique: nBPzP1pGNLW_6i8H980IpQ-1
-Received: by mail-qt1-f197.google.com with SMTP id b20-20020ac87fd4000000b002a69ee90efbso3224952qtk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 18:36:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xmXXQz14OHu7NQNRzC6miY+wGBVQ4lf/YmhSvfWG8yE=;
-        b=0KMYxXspCOgoqvaoWfzQg9ZafWZTOMxy59ES9Lmzadal403OScTDjhhokFVR7VQQR6
-         te44HZ6vkKtpKNhIWCqWvzyt6Hd0UN7536CEoDUDEGnhirbyRre1OKIfj3zdEOODKi2T
-         HeB21Wh6J+BIkLABhucFVv228kutsRsSPUDIcV6t1MWM3foOuREAVVqFWhBwadEua81o
-         VoIfkaJBQF821N9sIlAEgei654P+chk/9IcoFu3THIWqS2ozHFF2CquHiL/g8e/EMclj
-         29fFdC3IIXDc+S48nVODttGfczz7oMIfby7HuK7CuRkW45Afb7yAxp+lnmhXho1QFHRF
-         ZodQ==
-X-Gm-Message-State: AOAM532PN+rz/7KYcCNSOYQmUik3VEwLFG/DHozAUGr9M4G2SjCDDXKi
-        nx9wY8gKJI/rDtO4bhDt760u91QThqXUelKjEPaxyon6jFjj/GvLP484DUAL5/GeJIXp7BebhXf
-        qvjgnC8ZLT6D2PE8m5ne3whgx
-X-Received: by 2002:ac8:4a10:: with SMTP id x16mr9383330qtq.97.1632879401445;
-        Tue, 28 Sep 2021 18:36:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwLnW/cM1Suo+FWTs6RJKI1CQo3+FE+UoEL65KNdGKxlIxeo2lntNMs+HgoTajpWesWkIg/PQ==
-X-Received: by 2002:ac8:4a10:: with SMTP id x16mr9383313qtq.97.1632879401228;
-        Tue, 28 Sep 2021 18:36:41 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id p19sm622628qkk.83.2021.09.28.18.36.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 18:36:40 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 18:36:37 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        will@kernel.org, x86@kernel.org
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
- __entry_tramp_text_end
-Message-ID: <20210929013637.bcarm56e4mqo3ndt@treble>
-References: <000000000000a3cf8605cb2a1ec0@google.com>
- <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
- <20210921165134.GE35846@C02TD0UTHF1T.local>
- <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
- <20210927170122.GA9201@C02TD0UTHF1T.local>
- <20210927171812.GB9201@C02TD0UTHF1T.local>
- <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
- <20210928103543.GF1924@C02TD0UTHF1T.local>
+        Tue, 28 Sep 2021 21:39:09 -0400
+X-UUID: 387354b2a8f24c17838d5d53d5f74665-20210929
+X-UUID: 387354b2a8f24c17838d5d53d5f74665-20210929
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1576674533; Wed, 29 Sep 2021 09:37:24 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Wed, 29 Sep 2021 09:37:22 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 29 Sep 2021 09:37:21 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>
+CC:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Matthias Kaehlcke <mka@chromium.org>,
+        <anan.sun@mediatek.com>, <yi.kuo@mediatek.com>,
+        <acourbot@chromium.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        "Dafna Hirschfeld" <dafna.hirschfeld@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        <anthony.huang@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: [PATCH v8 00/12] Clean up "mediatek,larb"
+Date:   Wed, 29 Sep 2021 09:37:07 +0800
+Message-ID: <20210929013719.25120-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210928103543.GF1924@C02TD0UTHF1T.local>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 11:35:43AM +0100, Mark Rutland wrote:
-> > In the other x86 thread Josh Poimboeuf suggested to use asm goto to a
-> > cold part of the function instead of .fixup:
-> > https://lore.kernel.org/lkml/20210927234543.6waods7rraxseind@treble/
-> > This sounds like a more reliable solution that will cause less
-> > maintenance burden. Would it work for arm64 as well?
-> 
-> Maybe we can use that when CC_HAS_ASM_GOTO_OUTPUT is avaiable, but in
-> general we can't rely on asm goto supporting output arguments (and IIRC
-> GCC doesn't support that at all), so we'd still have to support the
-> current fixup scheme.
+MediaTek IOMMU block diagram always like below:
 
-Even without CC_HAS_ASM_GOTO_OUTPUT it should still be possible to hack
-something together if you split the original insn asm and the extable
-asm into separate statements, like:
+        M4U
+         |
+    smi-common
+         |
+  -------------
+  |         |  ...
+  |         |
+larb1     larb2
+  |         |
+vdec       venc
 
-diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-index 6b52182e178a..8f62469f2027 100644
---- a/arch/x86/include/asm/msr.h
-+++ b/arch/x86/include/asm/msr.h
-@@ -137,20 +139,21 @@ static inline unsigned long long native_read_msr_safe(unsigned int msr,
- {
- 	DECLARE_ARGS(val, low, high);
- 
--	asm volatile("2: rdmsr ; xor %[err],%[err]\n"
--		     "1:\n\t"
--		     ".section .fixup,\"ax\"\n\t"
--		     "3: mov %[fault],%[err]\n\t"
--		     "xorl %%eax, %%eax\n\t"
--		     "xorl %%edx, %%edx\n\t"
--		     "jmp 1b\n\t"
--		     ".previous\n\t"
--		     _ASM_EXTABLE(2b, 3b)
--		     : [err] "=r" (*err), EAX_EDX_RET(val, low, high)
--		     : "c" (msr), [fault] "i" (-EIO));
-+	*err = 0;
-+	asm volatile("417: rdmsr\n"
-+		     : EAX_EDX_RET(val, low, high)
-+		     : "c" (msr));
-+	asm_volatile_goto(_ASM_EXTABLE(417b, %l[Efault]) :::: Efault);
-+
-+done:
- 	if (tracepoint_enabled(read_msr))
- 		do_trace_read_msr(msr, EAX_EDX_VAL(val, low, high), *err);
- 	return EAX_EDX_VAL(val, low, high);
-+
-+Efault:
-+	*err = -EIO;
-+	ZERO_ARGS(val, low, high);
-+	goto done;
- }
- 
- /* Can be uninlined because referenced by paravirt */
+All the consumer connect with smi-larb, then connect with smi-common.
+
+When the consumer works, it should enable the smi-larb's power which also
+need enable the smi-common's power firstly.
+
+Thus, Firstly, use the device link connect the consumer and the
+smi-larbs. then add device link between the smi-larb and smi-common.
+
+After adding the device_link, then "mediatek,larb" property can be removed.
+the iommu consumer don't need call the mtk_smi_larb_get/put to enable
+the power and clock of smi-larb and smi-common.
+
+About the MM dt-binding/dtsi patches, I guess they should go together, thus
+I don't split them for each a MM module and each a SoC.
+
+Base on a jpeg dtbing patchset[1] that already got the necessary R-b.
+
+[1] https://lore.kernel.org/linux-mediatek/20210702102304.3346429-1-hsinyi@chromium.org/
+
+Change notes:
+v8: 1) Rebase on v5.15-rc1.
+    2) Don't rebase the below mdp patchset that may still need more discuss.
+    https://lore.kernel.org/linux-mediatek/20210709022324.1607884-1-eizan@chromium.org/
+    3) Add Frank's Tested-by. Remove Dafna's Tested-by as he requested.
+
+v7: https://lore.kernel.org/linux-mediatek/20210730025238.22456-1-yong.wu@mediatek.com/
+    1) Fix a arm32 boot fail issue. reported from Frank.
+    2) Add a return fail in the mtk drm. suggested by Dafna.
+
+v6: https://lore.kernel.org/linux-mediatek/20210714025626.5528-1-yong.wu@mediatek.com/
+    1) rebase on v5.14-rc1.
+    2) Fix the issue commented in v5 from Dafna and Hsin-Yi.
+    3) Remove the patches about using pm_runtime_resume_and_get since they have
+       already been merged by other patches.
+
+v5: https://lore.kernel.org/linux-mediatek/20210410091128.31823-1-yong.wu@mediatek.com/
+    1) Base v5.12-rc2.
+    2) Remove changing the mtk-iommu to module_platform_driver patch, It have already been a
+    independent patch.
+
+v4: https://lore.kernel.org/linux-mediatek/1590826218-23653-1-git-send-email-yong.wu@mediatek.com/ 
+    base on v5.7-rc1.
+  1) Move drm PM patch before smi patchs.
+  2) Change builtin_platform_driver to module_platform_driver since we may need
+     build as module.
+  3) Rebase many patchset as above.
+
+v3: https://lore.kernel.org/linux-iommu/1567503456-24725-1-git-send-email-yong.wu@mediatek.com/
+    1) rebase on v5.3-rc1 and the latest mt8183 patchset.
+    2) Use device_is_bound to check whether the driver is ready from Matthias.    
+    3) Add DL_FLAG_STATELESS flag when calling device_link_add and explain the
+   reason in the commit message[3/14].
+    4) Add a display patch[12/14] into this series. otherwise it may affect
+   display HW fastlogo even though it don't happen in mt8183.
+   
+v2: https://lore.kernel.org/linux-iommu/1560171313-28299-1-git-send-email-yong.wu@mediatek.com/
+   1) rebase on v5.2-rc1.
+   2) Move adding device_link between the consumer and smi-larb into
+iommu_add_device from Robin.
+   3) add DL_FLAG_AUTOREMOVE_CONSUMER even though the smi is built-in from Evan.
+   4) Remove the shutdown callback in iommu.   
+
+v1: https://lore.kernel.org/linux-iommu/1546318276-18993-1-git-send-email-yong.wu@mediatek.com/
+
+Yong Wu (11):
+  dt-binding: mediatek: Get rid of mediatek, larb for multimedia HW
+  iommu/mediatek-v1: Free the existed fwspec if the master dev already
+    has
+  iommu/mediatek: Add probe_defer for smi-larb
+  iommu/mediatek: Add device_link between the consumer and the larb
+    devices
+  media: mtk-jpeg: Get rid of mtk_smi_larb_get/put
+  media: mtk-mdp: Get rid of mtk_smi_larb_get/put
+  drm/mediatek: Get rid of mtk_smi_larb_get/put
+  media: mtk-vcodec: Get rid of mtk_smi_larb_get/put
+  memory: mtk-smi: Get rid of mtk_smi_larb_get/put
+  arm: dts: mediatek: Get rid of mediatek,larb for MM nodes
+  arm64: dts: mediatek: Get rid of mediatek,larb for MM nodes
+
+Yongqiang Niu (1):
+  drm/mediatek: Add pm runtime support for ovl and rdma
+
+ .../display/mediatek/mediatek,disp.txt        |  9 ----
+ .../bindings/media/mediatek-jpeg-decoder.yaml |  9 ----
+ .../bindings/media/mediatek-jpeg-encoder.yaml |  9 ----
+ .../bindings/media/mediatek-mdp.txt           |  8 ----
+ .../bindings/media/mediatek-vcodec.txt        |  4 --
+ arch/arm/boot/dts/mt2701.dtsi                 |  2 -
+ arch/arm/boot/dts/mt7623n.dtsi                |  5 ---
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 16 -------
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  6 ---
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  8 +++-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  9 +++-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 15 ++++---
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   | 36 +--------------
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |  1 -
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  5 +--
+ drivers/iommu/mtk_iommu.c                     | 24 +++++++++-
+ drivers/iommu/mtk_iommu_v1.c                  | 31 ++++++++++++-
+ .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 45 +------------------
+ .../media/platform/mtk-jpeg/mtk_jpeg_core.h   |  2 -
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 40 -----------------
+ drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  2 -
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  1 -
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 37 +++------------
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  3 --
+ .../platform/mtk-vcodec/mtk_vcodec_enc.c      |  1 -
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   | 44 +++---------------
+ drivers/memory/mtk-smi.c                      | 14 ------
+ include/soc/mediatek/smi.h                    | 20 ---------
+ 28 files changed, 90 insertions(+), 316 deletions(-)
+
+-- 
+2.18.0
+
 
