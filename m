@@ -2,155 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100B241BCEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7E341BD69
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243822AbhI2CsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 22:48:08 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:65380 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243763AbhI2CsG (ORCPT
+        id S244055AbhI2D34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243941AbhI2D3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:48:06 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T211KI008632;
-        Wed, 29 Sep 2021 02:46:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=L9xqR4VutLml4twP2ovK+QnNiISVsCYSw+7Q/GzwDR8=;
- b=kdVkym4JhOV+M71YvMHS6/qV8CmsiUCWFIuKPMFKsjhCUPx0D1dvHp3F09CYHIT/Fw0G
- Z3stlgUoKHsMoVKLAX3QVGinOywDD0/IgE6GETzhSXDXtogfXpRFgZWcsXR0hZsuHknS
- vq1hnfa3AI8A4+1OowFYnjm/LvE/ShB4yHiLBsQm5z8mLutOs4RCTQyhaNoxhJzd3UNk
- p+eHls/lOIM0gdcCxhqx5JXDBJ2BatcYiy1Sr514w1yM9UVkYb0KqAKG1urMlVVdQHiZ
- KoGZ/vZyQaQ7eDZZrmVZXmn/TU1FQAcqYqvlvO6jXCHjxFMJoTWJF8YquGm44oxAxzeB ng== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bbh6nv3x6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 02:46:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18T2ewBj114298;
-        Wed, 29 Sep 2021 02:46:13 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by aserp3030.oracle.com with ESMTP id 3bc4k8m1rh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 02:46:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G7Buiqih/Hl39JaODCqKM1vBO3+7KRitesbjuOt+t/AN3YQvLyy2fNuWyopGoNYm/+NvhzpAR0hu5G9bs6+yDxf77ZiJ7WXTSUNR8IZ5qicfKho5XSjwauaogeTXoDnEfpFcrpwaL6IQ2ecZuguKCj+RnXyMWQCDpfFD2B7hSWAMGDGddIu54Y2UW34WZF1teRy+GZtxCivuWJF8udsxgOyz2JI252zpTuQFBsTvX6GAhjptKYJvzZHv1GCRA/ocAG2sh73ah8bIeufpowUaVcWMGFAlvJdAsHdQQAU0umDgly5hl1/b5hCgZ4FhpDf2AV0DpqHCUMh0kvekn8lJxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=L9xqR4VutLml4twP2ovK+QnNiISVsCYSw+7Q/GzwDR8=;
- b=OpMds3tuEnR/DrOLHC4B545N3IEKgQ20rCcJbTG3v+AdPx1w6ToRCmly9zsP0pCKKNVhKVc15oOoBlqGxmy2qr6tVcuuYtHzXwOHhK7AyUO6mNCTeYOVgu2oL5ZwOiyag1YQCSC4ajeE6Sx0MQIJgiuc01x+9xjF8p6QA9TsZR/zJLr+lEOlxfOBRie4KWrR7MRKPDZBfiD4Zu91AYUHy9fSby/+tgZGN3ITZi2X4BfAVwsVP6D93vrjxepRzSlINaJlSTUYsTyHjFF7Gtbe7/7sosZ9fYJXaM2/farLr7ZpPZdPZAGuwcPrBcmEXfgbayUn2CsMGnOOV+FIj/P4Iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 28 Sep 2021 23:29:43 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5752C061745;
+        Tue, 28 Sep 2021 20:28:02 -0700 (PDT)
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HK1zN6cnQz4xbT; Wed, 29 Sep 2021 13:28:00 +1000 (AEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L9xqR4VutLml4twP2ovK+QnNiISVsCYSw+7Q/GzwDR8=;
- b=TjUQDY1zxVgciLrzD8OYRCwGBrBeCXtjIJWzaLMFO6xKxUAuG2v1ATmrJYpzQDtEKL/mFf3rwIRrYG7n/pRqy9bw4XH66ooAY0YmOnbBN8vJ0l7KKjKdLknaq1hOBFezSYy6ru0qDNg3qk85hmXUfGj2htffxgkHNpHgkhyr+kg=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5436.namprd10.prod.outlook.com (2603:10b6:510:e2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Wed, 29 Sep
- 2021 02:46:11 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%8]) with mapi id 15.20.4566.014; Wed, 29 Sep 2021
- 02:46:11 +0000
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org,
-        Chanho Park <chanho61.park@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 2/2] scsi: ufs: exynos: unify naming
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1czosgkuy.fsf@ca-mkp.ca.oracle.com>
-References: <20210924132658.109814-1-krzysztof.kozlowski@canonical.com>
-        <20210924132658.109814-2-krzysztof.kozlowski@canonical.com>
-Date:   Tue, 28 Sep 2021 22:46:09 -0400
-In-Reply-To: <20210924132658.109814-2-krzysztof.kozlowski@canonical.com>
-        (Krzysztof Kozlowski's message of "Fri, 24 Sep 2021 15:26:58 +0200")
-Content-Type: text/plain
-X-ClientProxiedBy: SN2PR01CA0021.prod.exchangelabs.com (2603:10b6:804:2::31)
- To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+        d=gibson.dropbear.id.au; s=201602; t=1632886080;
+        bh=qzQIQZ4QRhIcmilmBeomTPiSlLs3WETVdIoKH8ljR5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p5e2lRrXkAIwbSxkG3qdFSqNl4eS0ICYpOq4Hcu5VnMPhSadYB0m7dyvRiC++N3Lg
+         8arvLC3O7qOMZjze+SPIHfiKcZWeSnfEeejTsR98qNOzIYVzQKTVZTraACX8JjPnVJ
+         bBLKwH+HMNsXDmQWOS8SMuMsqAS3TnSMGTxZrasU=
+Date:   Wed, 29 Sep 2021 12:46:14 +1000
+From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
+Message-ID: <YVPTdqWw6or3mK/h@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-4-yi.l.liu@intel.com>
+ <20210921160108.GO327412@nvidia.com>
+ <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922010014.GE327412@nvidia.com>
 MIME-Version: 1.0
-Received: from ca-mkp.ca.oracle.com (138.3.201.46) by SN2PR01CA0021.prod.exchangelabs.com (2603:10b6:804:2::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 02:46:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 00959295-6452-4f9e-fbca-08d982f34c0a
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5436:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB54369BF51C4799EF2DE843E58EA99@PH0PR10MB5436.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PVEHSHRlUWeNZZ4Zq2fxT4RRFaps0yezRbEJNeMBxeYnCK53RdeKDkeswQpRMIv+28yScVOtOJvbBfafrIBBpCEgbgVNcVTCUcCDlXw3ZgytcMPmWd3QcsbvbbjvgfEtDKXJqx16YcQYuARtbRaurYcdrMIUD326mIZC6V9K2QeOQM/TI7IOpQk9+pXuZ1uBU1x24VkYevKISbVmPUB/XZTZQzsdi4OqtoMPRlAAUftNe4glkEq9X622Ky+LpmbvSvWFoUuEt+UAfhehxChDxt8t/emK63nHCU2Spsql53uFrWbxox2PefUJIzC6irlotMOuG71mvj9Vkg6qSbj+f3NTzQ2AcDETGy7OVcgNmkDrzPpxt+sERtmnwBGz6HDXHslk5gLzCjNLTCPTDvDHFnXFECjWsDN/XyIsgWWhmyqPZDBbwAh1hP9WPzwyAz47FvU9mJAVKH+8fDr6RMWlB2j+UbzPxlUEf3FOVGUjBS7JyEKaxtsV4ic7h7pC/nJkaZ7dpby1DjV5gU+jTQvkgWo3TiibYmFr8Zydfmc1CzTgeq5v47b2bWub6LvDaDI/mAsgEcz/MjLc1uEjbKujlilVNSge0G5LSwDK80ucpIbuWsfp0Rff+iRzi9UliEkR5ks+olzpcuxzrnmxGDOG4xwdk4/MP8bpHOvFHcwjFyZYInn2XGp9aiLKH6f0NplfQMAarSD80cAh+fuXT+PqvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(558084003)(7416002)(5660300002)(956004)(508600001)(36916002)(4326008)(26005)(66556008)(66476007)(7696005)(8936002)(52116002)(8676002)(66946007)(55016002)(6916009)(186003)(54906003)(2906002)(38100700002)(38350700002)(316002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pxHM7dUXMrg54x/kLBh+abyKFZlYPqnB8ntb7EWQ5/Tz+aqnBEPlxuFB1V1k?=
- =?us-ascii?Q?2ES8AiELhhLP4NqT3aljK6pLy/CWtVtl47KoFYyNFW5F+l8p88GHDNQ7IE9j?=
- =?us-ascii?Q?buGp8ZJW9B+7XKQmcBSy4hUg08qywMZWWtbQ2Eu8xoRnob9HIuwv7MeRjXsL?=
- =?us-ascii?Q?FSFWfLN8QwmrZH2s579Cvf8eSIOWjKAKS0dtVA0rJRKM9HykE1cK28TuOOvL?=
- =?us-ascii?Q?Qxfm1sSmEsG0JH0WKOEbPllAgF9zas9Xn55pa7O+XCROeb/TcB24TxTZVYrC?=
- =?us-ascii?Q?pOF385jqUUQwqJCZ1luCrchpYZTQzglf6K84OIIerE9bRPY6p1/5G6rzc5++?=
- =?us-ascii?Q?7SkWtyYXLLkMwQjh3ED6WHK/KLljkl7RDTuq0tKBsOsWP1n4zSPVVYjSHXgR?=
- =?us-ascii?Q?0ov6tqMGfNpTPQbgAzbpQ2/BKXqOapxZf2f75Ek0aZ3jqTH2oil2BZeHN76z?=
- =?us-ascii?Q?wYTYPhTYb/hpbeD+frB3HKosNHfhxxjfcCbvvpBgiTpxg6gzZmEp69h5C1F5?=
- =?us-ascii?Q?GVlhx7s5MvfxQkupJOc7KqYsHlNo3on/l6yZ1NoywFTl6Ks8vGFnAVimjYMX?=
- =?us-ascii?Q?3i46rIu6vgETwDh6a3GP1EOHWeyM+g++Op7TUirZAT5vIWA2g3k2RwyL5Fkt?=
- =?us-ascii?Q?aGH5exo39quAqRm/RAzXeoHhirJMzFWusT4LaTj+fnB6BoDm5Em0EKetGT84?=
- =?us-ascii?Q?z4yLJol3zhgxSSc7pvvnEQ13rdpOZd+3KdyfgEAgGc95wvfluUdsoF362Yqy?=
- =?us-ascii?Q?m3aFLcpnfPsbQbvLEWk5RAvACV3iJScf2RJlE14W7gYuxCnR8/1vcVwHF3M0?=
- =?us-ascii?Q?1ULB2M0Uj70BflXM/nlpWD3LT+7/u8CrIohJIoOUA+UfFEs2V7mk8nf5IF6L?=
- =?us-ascii?Q?zUW6mnDVjU+rDpKQvikx95hNvCBJXqUPZ7o6Q8tJhIzCayS9qTdrZyBjSLFb?=
- =?us-ascii?Q?FtOWRATQZrO+QecMfyn7QOskkctlszUKkFYleRKMbDFbWSqQu7kBFMqgl1fG?=
- =?us-ascii?Q?fvN5yeQjLKZbfTaWSFqyQWy46xMBvh2zA7niNslKWOokoBbYTa/SvAi99G+i?=
- =?us-ascii?Q?e7PNl/NFbLPe+yAXBVvT6WQuGsUCmSdAl0PB1DcIvj8jnVJndKHaQcuJrU/C?=
- =?us-ascii?Q?MjtIaff6XyXk1FyXoaMUg3Uxrs8rG5WPw2mJ8FVLESF27/rIGAzZ+iAbV5SD?=
- =?us-ascii?Q?F7fBlfORlzEV/B5VOlu/kqRj3zQDvRdcgXD5PCsjvLnBS8Z/8qIeLZDj01F6?=
- =?us-ascii?Q?UPNPW+DXrRagCXFGv1mlz535zpDQD2MYNSCc9wsMWHxmK4Whh2oMBACOkhbz?=
- =?us-ascii?Q?UhEbd6k9VDsE+fo86SwILzdX?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00959295-6452-4f9e-fbca-08d982f34c0a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 02:46:11.6726
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cjnW/HsrHq6uG4/rbIXVs9klApJj77V9juDikh2TjPGhqJndaoquMdai7r6kppXnqe9/VgsrISZpaElTkZHv9eywIN3/ujkVgyjNdRf2ipI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5436
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10121 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2109290013
-X-Proofpoint-ORIG-GUID: xwWCDHIS502JbJU9ex_23_iw1LqLoZER
-X-Proofpoint-GUID: xwWCDHIS502JbJU9ex_23_iw1LqLoZER
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="M1+gRInfuzVDe7lG"
+Content-Disposition: inline
+In-Reply-To: <20210922010014.GE327412@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Krzysztof,
+--M1+gRInfuzVDe7lG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> We use everywhere "Samsung" and "Exynos", not the uppercase versions.
+On Tue, Sep 21, 2021 at 10:00:14PM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 22, 2021 at 12:54:02AM +0000, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Wednesday, September 22, 2021 12:01 AM
+> > >=20
+> > > >  One open about how to organize the device nodes under
+> > > /dev/vfio/devices/.
+> > > > This RFC adopts a simple policy by keeping a flat layout with mixed
+> > > devname
+> > > > from all kinds of devices. The prerequisite of this model is that d=
+evnames
+> > > > from different bus types are unique formats:
+> > >=20
+> > > This isn't reliable, the devname should just be vfio0, vfio1, etc
+> > >=20
+> > > The userspace can learn the correct major/minor by inspecting the
+> > > sysfs.
+> > >=20
+> > > This whole concept should disappear into the prior patch that adds the
+> > > struct device in the first place, and I think most of the code here
+> > > can be deleted once the struct device is used properly.
+> > >=20
+> >=20
+> > Can you help elaborate above flow? This is one area where we need
+> > more guidance.
+> >=20
+> > When Qemu accepts an option "-device vfio-pci,host=3DDDDD:BB:DD.F",
+> > how does Qemu identify which vifo0/1/... is associated with the specifi=
+ed=20
+> > DDDD:BB:DD.F?=20
+>=20
+> When done properly in the kernel the file:
+>=20
+> /sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
+>=20
+> Will contain the major:minor of the VFIO device.
+>=20
+> Userspace then opens the /dev/vfio/devices/vfioX and checks with fstat
+> that the major:minor matches.
+>=20
+> in the above pattern "pci" and "DDDD:BB:DD.FF" are the arguments passed
+> to qemu.
 
-Applied to 5.16/scsi-staging, thanks!
+I thought part of the appeal of the device centric model was less
+grovelling around in sysfs for information.  Using type/address
+directly in /dev seems simpler than having to dig around matching
+things here.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Note that this doesn't have to be done in kernel: you could have the
+kernel just call them /dev/vfio/devices/vfio0, ... but add udev rules
+that create symlinks from say /dev/vfio/pci/DDDD:BB:SS.F - >
+=2E./devices/vfioXX based on the sysfs information.
+
+>=20
+> You can look at this for some general over engineered code to handle
+> opening from a sysfs handle like above:
+>=20
+> https://github.com/linux-rdma/rdma-core/blob/master/util/open_cdev.c
+>=20
+> Jason
+>=20
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--M1+gRInfuzVDe7lG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFT03YACgkQbDjKyiDZ
+s5L5+RAA2E2lYOOD4bTHuC/PsiWELLG1eQQa3Jb4G+sT+fOVdbBmt8zME8lEAiXb
+iKIx7FlKDY1YCkr3fHedUDTXNRKphIvtkJYkHS43zI2KaRkqn20pxvps6kjA0MvV
+IMdk+8ZiUyA806bldQ6iEYhk7K888zeHPhSBhdZ6tSiWi5Yg6llD0A+WTGVmI9vx
+pm6Cu3r80UouuTm2JY37yyYamFsGAGs0iVNiFxA/zhtGjJ5soKUOcqZSx4P8MfHD
+2GOsiRGlwRx2peP+yrqAw9CutaR4jphP2ehVoqjyKq4wzMZ7PQCkuoUiFo3fNFjs
+J8lUiY9PxisD+0rStds1WF1oPHocq2B/ALXzDlHPxFTitdH/OiDKZ0p86jHZcNVN
+QdqipuJH4bXo4iyqWg0ksf3ECdekPJo0xfN4aMmDLHst4mhjSslQz/0WPZlQJKCe
+cOiG2I6akTADkQR65q1bKyr2gZR0fZTZp0AwBGQ6Nj1I2iHKHOI05+/pQC9NCVkn
+pkWc6WL12WGybyo/GyDblf5h1bfZTDJFLxS16uymh/MT+LPjGtik1I4KQezl1IA5
+rAy5LpQ11dBOizN6dCO7XhmGLeRGXLXGxhe676t9fix+bibSYU0pvZUnffYHOxZw
+pOv6wsRFvaM4ZhTBIB8PcbgNZHreiWAoFGdvfjHVRVR1Xl9Kx2A=
+=JS/Z
+-----END PGP SIGNATURE-----
+
+--M1+gRInfuzVDe7lG--
