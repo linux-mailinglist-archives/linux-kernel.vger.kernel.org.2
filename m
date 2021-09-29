@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD01A41C259
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A304C41C252
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245411AbhI2KMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:12:06 -0400
-Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:53501 "EHLO
-        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245406AbhI2KMA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:12:00 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id AD3BCFB4AC
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:10:18 +0100 (IST)
-Received: (qmail 21284 invoked from network); 29 Sep 2021 10:10:18 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPA; 29 Sep 2021 10:10:18 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Linux-MM <linux-mm@kvack.org>
-Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 5/5] mm/page_alloc: Remove the throttling logic from the page allocator
-Date:   Wed, 29 Sep 2021 11:09:14 +0100
-Message-Id: <20210929100914.14704-6-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210929100914.14704-1-mgorman@techsingularity.net>
-References: <20210929100914.14704-1-mgorman@techsingularity.net>
+        id S245354AbhI2KLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:11:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245330AbhI2KLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:11:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 21F4D613DA;
+        Wed, 29 Sep 2021 10:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632910208;
+        bh=QU88gdxAQKxhHUQXF5N7ud55cYRdrIC2ho+vk3rpsJk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DBNF8100Qc+lpmA0Jzxfg0ii47GdYcxkETVhmRFZ/aUTXZgHw6kfAtwozCBjBBszc
+         B1P+slHLbXO4XYz6smr6/dYazbdcTG2O+EuCHxSpgps9CuyppiZdJv8pactJOVzVZs
+         RP59WyJdWfGwNjxodYulr7SMDBDuMChTYOW3RUu7q3IemM3kG3UziXJ9F/eRFFJUgl
+         CVgXbgwixuci5MnBh0VYJFtoBY9H0k0oTPoE9mZB35+2o9hdl//x94O1VouumbnwYo
+         16+hXgqv6J3EyeRKn6Ly6xKjkN19oPuBClHQhyN0yWU2o3aTVagTfOOSLPU1z+vkrF
+         dzjhHCzBrK4FQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 110D3609D6;
+        Wed, 29 Sep 2021 10:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/8] net: hns3: add some fixes for -net
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163291020806.13642.6595140708181277709.git-patchwork-notify@kernel.org>
+Date:   Wed, 29 Sep 2021 10:10:08 +0000
+References: <20210929093556.9146-1-huangguangbin2@huawei.com>
+In-Reply-To: <20210929093556.9146-1-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page allocator stalls based on the number of pages that are
-waiting for writeback to start but this should now be redundant.
-shrink_inactive_list() will wake flusher threads if the LRU tail are
-unqueued dirty pages so the flusher should be active. If it fails to make
-progress due to pages under writeback not being completed quickly then
-it should stall on VMSCAN_THROTTLE_WRITEBACK.
+Hello:
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- mm/page_alloc.c | 21 +--------------------
- 1 file changed, 1 insertion(+), 20 deletions(-)
+This series was applied to netdev/net.git (refs/heads/master):
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 78e538067651..8fa0109ff417 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4795,30 +4795,11 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
- 		trace_reclaim_retry_zone(z, order, reclaimable,
- 				available, min_wmark, *no_progress_loops, wmark);
- 		if (wmark) {
--			/*
--			 * If we didn't make any progress and have a lot of
--			 * dirty + writeback pages then we should wait for
--			 * an IO to complete to slow down the reclaim and
--			 * prevent from pre mature OOM
--			 */
--			if (!did_some_progress) {
--				unsigned long write_pending;
--
--				write_pending = zone_page_state_snapshot(zone,
--							NR_ZONE_WRITE_PENDING);
--
--				if (2 * write_pending > reclaimable) {
--					congestion_wait(BLK_RW_ASYNC, HZ/10);
--					return true;
--				}
--			}
--
- 			ret = true;
--			goto out;
-+			break;
- 		}
- 	}
- 
--out:
- 	/*
- 	 * Memory allocation/reclaim might be called from a WQ context and the
- 	 * current implementation of the WQ concurrency control doesn't
--- 
-2.31.1
+On Wed, 29 Sep 2021 17:35:48 +0800 you wrote:
+> This series adds some fixes for the HNS3 ethernet driver.
+> 
+> Guangbin Huang (3):
+>   net: hns3: PF enable promisc for VF when mac table is overflow
+>   net: hns3: fix always enable rx vlan filter problem after selftest
+>   net: hns3: disable firmware compatible features when uninstall PF
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/8] net: hns3: do not allow call hns3_nic_net_open repeatedly
+    https://git.kernel.org/netdev/net/c/5b09e88e1bf7
+  - [net,2/8] net: hns3: remove tc enable checking
+    https://git.kernel.org/netdev/net/c/a8e76fefe3de
+  - [net,3/8] net: hns3: don't rollback when destroy mqprio fail
+    https://git.kernel.org/netdev/net/c/d82650be60ee
+  - [net,4/8] net: hns3: fix mixed flag HCLGE_FLAG_MQPRIO_ENABLE and HCLGE_FLAG_DCB_ENABLE
+    https://git.kernel.org/netdev/net/c/0472e95ffeac
+  - [net,5/8] net: hns3: fix show wrong state when add existing uc mac address
+    https://git.kernel.org/netdev/net/c/108b3c7810e1
+  - [net,6/8] net: hns3: PF enable promisc for VF when mac table is overflow
+    https://git.kernel.org/netdev/net/c/276e60421668
+  - [net,7/8] net: hns3: fix always enable rx vlan filter problem after selftest
+    https://git.kernel.org/netdev/net/c/27bf4af69fcb
+  - [net,8/8] net: hns3: disable firmware compatible features when uninstall PF
+    https://git.kernel.org/netdev/net/c/0178839ccca3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
