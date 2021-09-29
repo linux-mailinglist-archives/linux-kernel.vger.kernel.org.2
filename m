@@ -2,172 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9C941CCE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419A841CCE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345511AbhI2TvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:51:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345056AbhI2TvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:51:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D32613DA;
-        Wed, 29 Sep 2021 19:49:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632944964;
-        bh=RCKQpg6aiz4Y9fPYcSghXnoRac3MFMpvYTPY8Mo6PQg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qMRZEt6iSy2H7y+pvJRvlJW+JjzXzQNPxL6gVS71pais8DGDEILD6LmrDGMxrL8f0
-         ZbrWnvez97yhBGwmmAWpSxZkQzAveqPKNirHZjoJOiBrS1gPo7hTKS9eEC3ZNBnqGj
-         SUCZONbIx9PVl1YveGfKCurZ5IuRTELe4zXuUW8F0Umy9xPjD5TPQlhF4stNJhD22d
-         Nzw9IJb71BImaaZL42CuuJRKVqyePwHhgXm3L81iN7ih4Onsm82BlZZxrh29lWoA9d
-         tEpNokDFUKxgWjrat20JzW5Es9aZikeWXsnDD43mqTo3URGnqp2ZFOf3hvRzEkpmD9
-         cRJa0HFNj8vSA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7B84A5C1309; Wed, 29 Sep 2021 12:49:24 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 12:49:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Garnier <thgarnie@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Laura Abbott <labbott@redhat.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, notify@kernel.org
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-Message-ID: <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210929185823.499268-1-alex.popov@linux.com>
- <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+        id S1345621AbhI2Tv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345056AbhI2Tvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:51:55 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F43BC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:50:14 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id k32so2444988uae.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YBnrGvzpOalQc1rPribEAYXuOJwtyiiHK62RY8KenlQ=;
+        b=FPpe9Q2b5DHrn+WU3m/hxinNK1e2liJ1oeJrapwYERV0E/AYiaPqvZbfZ6cCY9iyVJ
+         pSBU1F5N4Sk12cZGG1pVPmwTcujDy2cdrRKvtB96L57xvYeDqkBaBbXjlnGKdW7L/oPb
+         ZacTI5cC1E9LHyQC5hE6MAi4ciTqztlBodzgRmmYG2npIlCV7gEVJdxyqPyEqFe537zs
+         KV7Kr14rOvqwaB44iBwRD4IlLKofhntmC8zmidYWlF6FOv3jnpro2aLENCkfyKlVDlzQ
+         R1t+zWQKQMupARPaCow97jyA8pg/1azfyGCCQyBeCvMqRKbV6jj0efl79zwCL82ncNqH
+         YOdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YBnrGvzpOalQc1rPribEAYXuOJwtyiiHK62RY8KenlQ=;
+        b=jARnzY3Es7mIuVh8dVFhrxcj1vNUtAqbTxlJMjduwDJ9tDyCAvVlDtztlTQ1AHPTlH
+         fn07i6cG5uuw/WxNV7JLCXl0g0+TL9E1uBOiSdsuzyim5ArvkCTFybRnLfl/eU467BqM
+         m/abaTGQ+FTy09/swis62OGzsgCE6iUuQVkIZqEI6miD+6RqwogCKaoVwLLYYCaEQGq4
+         Ram+kGI64QRlsm0AFDHMqXVG2G2ESoDbf5K5D+wVxCwsf4CmR8Xm72eInvNhzZsN1O0g
+         FkZD1trxhnatUYqk4nnoqgOhquiFTuifVziFzkq+TM4WHyGWkcT+2ttZYD1gdh3gJr0a
+         ohqA==
+X-Gm-Message-State: AOAM531AuNL6qYyHkpgtE9fpClV/VRXOoawTfg8G3+uN+G10MGksb9Ej
+        8nfio6clw6shGixqR8ar11UvfWLj6GiNyjo+iG74FqLzYpmkAg==
+X-Google-Smtp-Source: ABdhPJxvKbLjTzwtXdtwANfFqJi0bFsVEXnzUaJ+/sJGfQYpol+wq4iDhalq4ZNwFCygTZNPtiS6r0YiyiUBwNVGYQA=
+X-Received: by 2002:a9f:301c:: with SMTP id h28mr2249241uab.58.1632945012871;
+ Wed, 29 Sep 2021 12:50:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+References: <20210913183753.563103-1-ramjiyani@google.com> <x494ka39rc7.fsf@segfault.boston.devel.redhat.com>
+In-Reply-To: <x494ka39rc7.fsf@segfault.boston.devel.redhat.com>
+From:   Ramji Jiyani <ramjiyani@google.com>
+Date:   Wed, 29 Sep 2021 12:50:01 -0700
+Message-ID: <CAKUd0B_TCXRY4h1hTztfwWbNSFQqsudDLn2S_28csgWZmZAG3Q@mail.gmail.com>
+Subject: Re: [PATCH] aio: Add support for the POLLFREE
+To:     Jeff Moyer <jmoyer@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Arnd Bergmann <arnd@arndb.de>, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        oleg@redhat.com, hch@lst.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:01:33PM +0300, Alexander Popov wrote:
-> On 29.09.2021 21:58, Alexander Popov wrote:
-> > Currently, the Linux kernel provides two types of reaction to kernel
-> > warnings:
-> >  1. Do nothing (by default),
-> >  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
-> >     so panic_on_warn is usually disabled on production systems.
-> > 
-> > From a safety point of view, the Linux kernel misses a middle way of
-> > handling kernel warnings:
-> >  - The kernel should stop the activity that provokes a warning,
-> >  - But the kernel should avoid complete denial of service.
-> > 
-> > From a security point of view, kernel warning messages provide a lot of
-> > useful information for attackers. Many GNU/Linux distributions allow
-> > unprivileged users to read the kernel log, so attackers use kernel
-> > warning infoleak in vulnerability exploits. See the examples:
-> >   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
-> >   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
-> > 
-> > Let's introduce the pkill_on_warn boot parameter.
-> > If this parameter is set, the kernel kills all threads in a process
-> > that provoked a kernel warning. This behavior is reasonable from a safety
-> > point of view described above. It is also useful for kernel security
-> > hardening because the system kills an exploit process that hits a
-> > kernel warning.
-> > 
-> > Signed-off-by: Alexander Popov <alex.popov@linux.com>
-> 
-> This patch was tested using CONFIG_LKDTM.
-> The kernel kills a process that performs this:
->   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
-> 
-> If you are fine with this approach, I will prepare a patch adding the
-> pkill_on_warn sysctl.
+Hi Jeff:
 
-I suspect that you need a list of kthreads for which you are better
-off just invoking panic().  RCU's various kthreads, for but one set
-of examples.
+Thanks for the response.
 
-							Thanx, Paul
+On Wed, Sep 29, 2021 at 11:18 AM Jeff Moyer <jmoyer@redhat.com> wrote:
+>
+> Adding Oleg and Christoph.
+>
+> Ramji Jiyani <ramjiyani@google.com> writes:
+>
+> > Commit f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread
+> > exits.") fixed the use-after-free in eventpoll but aio still has the
+> > same issue because it doesn't honor the POLLFREE flag.
+> >
+> > Add support for the POLLFREE flag to force complete iocb inline in
+> > aio_poll_wake(). A thread may use it to signal it's exit and/or request
+> > to cleanup while pending poll request. In this case, aio_poll_wake()
+> > needs to make sure it doesn't keep any reference to the queue entry
+> > before returning from wake to avoid possible use after free via
+> > poll_cancel() path.
+>
+> Is this an in-kernel user?
 
-> Best regards,
-> Alexander
-> 
+Yes, an in-kernel user here is android binder.
+
+> Can you explain more about how or when this
+> happens?  Do you have a stack trace that shows the problem?
+
+This is to fix a use after free issue between binder thread and aio
+interactions.
+
+Suppose we poll a binder file through aio. The poll inserts a wait_queue_entry
+into the wait_queue_head list associated with the file. And it takes a
+reference on the binder file, so it can't go away. The poll then returns to
+userspace while poll operation remains pending (async io).
+
+So after starting the poll, we can run BINDER_THREAD_EXIT to free the wait
+queue head.The aio poll is still queued though, so aio will UAF the queue head.
+
+Here are the simplified codes to sequence of events in which case UAF occurs.
+
+static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
+                void *key)
+{
+         if (mask && !(mask & req->events))    // (1)
+                return 0;
+
+        list_del_init(&req->wait.entry);      // (2)
+
+        if (mask && spin_trylock_irqsave(&iocb->ki_ctx->ctx_lock, flags)) {
+                // complete request now
+                list_del(&iocb->ki_list);     // (3)
+                ...
+        } else {
+                // complete later
+                schedule_work(&req->work);    // (4)
+        }
+        return 1;
+}
+
+In check (1), mask has EPOLLHUP from binder and actually req->events will
+always have EPOLLHUP as well (this is set unconditionally in aio_poll()).
+So we proceed to (2), which unlinks the wait queue entry. Next, we complete
+the request either right now (3) or later with scheduled work (4), depending
+on whether the trylock of ctx_lock succeeds.
+
+It turns out that UAF is possible in case (4), where the request remains linked
+through ki_list. This allows io_cancel() to find and cancel the request:
+
+static int aio_poll_cancel(struct kiocb *iocb)
+{
+        ...
+
+        spin_lock(&req->head->lock);                // (5)
+        WRITE_ONCE(req->cancelled, true);
+        if (!list_empty(&req->wait.entry)) {
+                list_del_init(&req->wait.entry);    // (6)
+                schedule_work(&aiocb->poll.work);
+        }
+        spin_unlock(&req->head->lock);
+
+        return 0;
+}
+
+The list_del_init() at (6) would UAF, but the wait queue entry was already
+unlinked, so this is unreachable. But req->head in (5) also points to the
+freed queue head, so spin_lock() will still UAF.
+
+There was a similar issue with eventpoll. Unlike aio's aio_poll_wake()
+eventpoll's
+ep_poll_callback() honors the POLLFREE flag. It makes sure that both the queue
+entry is unlinked and the queue head pointer is cleared in case of POLLFREE.
+
+The patch is introducing the POLLFREE in which case the request needs to be
+honored inline as the reference may not be valid in future time when the worker
+thread gets to it.
+
+> I'm not sure this use of POLLFREE exactly follows with the initial intention of
+> the flag, but hopefully Oleg can comment on that.
+>
+> Thanks,
+> Jeff
+
+Thanks,
+Ram
+
+>
+> > The POLLFREE flag is no more exclusive to the epoll and is being
+> > shared with the aio. Remove comment from poll.h to avoid confusion.
+> > Also enclosed the POLLFREE macro definition in parentheses to fix
+> > checkpatch error.
+> >
+> > Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
 > > ---
-> >  Documentation/admin-guide/kernel-parameters.txt | 4 ++++
-> >  kernel/panic.c                                  | 5 +++++
-> >  2 files changed, 9 insertions(+)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 91ba391f9b32..86c748907666 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -4112,6 +4112,10 @@
-> >  	pirq=		[SMP,APIC] Manual mp-table setup
-> >  			See Documentation/x86/i386/IO-APIC.rst.
-> >  
-> > +	pkill_on_warn=	Kill all threads in a process that provoked a
-> > +			kernel warning.
-> > +			Format: { "0" | "1" }
+> >  fs/aio.c                        | 45 ++++++++++++++++++---------------
+> >  include/uapi/asm-generic/poll.h |  2 +-
+> >  2 files changed, 26 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/fs/aio.c b/fs/aio.c
+> > index 51b08ab01dff..5d539c05df42 100644
+> > --- a/fs/aio.c
+> > +++ b/fs/aio.c
+> > @@ -1674,6 +1674,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
+> >  {
+> >       struct poll_iocb *req = container_of(wait, struct poll_iocb, wait);
+> >       struct aio_kiocb *iocb = container_of(req, struct aio_kiocb, poll);
+> > +     struct kioctx *ctx = iocb->ki_ctx;
+> >       __poll_t mask = key_to_poll(key);
+> >       unsigned long flags;
+> >
+> > @@ -1683,29 +1684,33 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
+> >
+> >       list_del_init(&req->wait.entry);
+> >
+> > -     if (mask && spin_trylock_irqsave(&iocb->ki_ctx->ctx_lock, flags)) {
+> > -             struct kioctx *ctx = iocb->ki_ctx;
+> > +     /*
+> > +      * Use irqsave/irqrestore because not all filesystems (e.g. fuse)
+> > +      * call this function with IRQs disabled and because IRQs have to
+> > +      * be disabled before ctx_lock is obtained.
+> > +      */
+> > +     if (mask & POLLFREE) {
+> > +             /* Force complete iocb inline to remove refs to deleted entry */
+> > +             spin_lock_irqsave(&ctx->ctx_lock, flags);
+> > +     } else if (!(mask && spin_trylock_irqsave(&ctx->ctx_lock, flags))) {
+> > +             /* Can't complete iocb inline; schedule for later */
+> > +             schedule_work(&req->work);
+> > +             return 1;
+> > +     }
+> >
+> > -             /*
+> > -              * Try to complete the iocb inline if we can. Use
+> > -              * irqsave/irqrestore because not all filesystems (e.g. fuse)
+> > -              * call this function with IRQs disabled and because IRQs
+> > -              * have to be disabled before ctx_lock is obtained.
+> > -              */
+> > -             list_del(&iocb->ki_list);
+> > -             iocb->ki_res.res = mangle_poll(mask);
+> > -             req->done = true;
+> > -             if (iocb->ki_eventfd && eventfd_signal_allowed()) {
+> > -                     iocb = NULL;
+> > -                     INIT_WORK(&req->work, aio_poll_put_work);
+> > -                     schedule_work(&req->work);
+> > -             }
+> > -             spin_unlock_irqrestore(&ctx->ctx_lock, flags);
+> > -             if (iocb)
+> > -                     iocb_put(iocb);
+> > -     } else {
+> > +     /* complete iocb inline */
+> > +     list_del(&iocb->ki_list);
+> > +     iocb->ki_res.res = mangle_poll(mask);
+> > +     req->done = true;
+> > +     if (iocb->ki_eventfd && eventfd_signal_allowed()) {
+> > +             iocb = NULL;
+> > +             INIT_WORK(&req->work, aio_poll_put_work);
+> >               schedule_work(&req->work);
+> >       }
+> > +     spin_unlock_irqrestore(&ctx->ctx_lock, flags);
+> > +     if (iocb)
+> > +             iocb_put(iocb);
 > > +
-> >  	plip=		[PPT,NET] Parallel port network link
-> >  			Format: { parport<nr> | timid | 0 }
-> >  			See also Documentation/admin-guide/parport.rst.
-> > diff --git a/kernel/panic.c b/kernel/panic.c
-> > index cefd7d82366f..47b728bfb1d3 100644
-> > --- a/kernel/panic.c
-> > +++ b/kernel/panic.c
-> > @@ -53,6 +53,7 @@ static int pause_on_oops_flag;
-> >  static DEFINE_SPINLOCK(pause_on_oops_lock);
-> >  bool crash_kexec_post_notifiers;
-> >  int panic_on_warn __read_mostly;
-> > +int pkill_on_warn __read_mostly;
-> >  unsigned long panic_on_taint;
-> >  bool panic_on_taint_nousertaint = false;
-> >  
-> > @@ -610,6 +611,9 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
-> >  
-> >  	print_oops_end_marker();
-> >  
-> > +	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
-> > +		do_group_exit(SIGKILL);
-> > +
-> >  	/* Just a warning, don't kill lockdep. */
-> >  	add_taint(taint, LOCKDEP_STILL_OK);
+> >       return 1;
 > >  }
-> > @@ -694,6 +698,7 @@ core_param(panic, panic_timeout, int, 0644);
-> >  core_param(panic_print, panic_print, ulong, 0644);
-> >  core_param(pause_on_oops, pause_on_oops, int, 0644);
-> >  core_param(panic_on_warn, panic_on_warn, int, 0644);
-> > +core_param(pkill_on_warn, pkill_on_warn, int, 0644);
-> >  core_param(crash_kexec_post_notifiers, crash_kexec_post_notifiers, bool, 0644);
-> >  
-> >  static int __init oops_setup(char *s)
-> > 
-> 
+> >
+> > diff --git a/include/uapi/asm-generic/poll.h b/include/uapi/asm-generic/poll.h
+> > index 41b509f410bf..35b1b69af729 100644
+> > --- a/include/uapi/asm-generic/poll.h
+> > +++ b/include/uapi/asm-generic/poll.h
+> > @@ -29,7 +29,7 @@
+> >  #define POLLRDHUP       0x2000
+> >  #endif
+> >
+> > -#define POLLFREE     (__force __poll_t)0x4000        /* currently only for epoll */
+> > +#define POLLFREE     ((__force __poll_t)0x4000)
+> >
+> >  #define POLL_BUSY_LOOP       (__force __poll_t)0x8000
+>
