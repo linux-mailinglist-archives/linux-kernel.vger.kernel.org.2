@@ -2,150 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB0D41CB8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5224241CB9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345759AbhI2SM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343518AbhI2SMv (ORCPT
+        id S1345874AbhI2SRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:17:51 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:44378 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345830AbhI2SRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:12:51 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C885C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:11:10 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 145so2645018pfz.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=InCyEGJRepaMndZ1Cu28LiyH3Mn458LrfVZqSQJHIF4=;
-        b=WEyGTc+vZ4OhLdsJ5Wolv2SBWxKb1HEvIL2Z19iZUEWkA1tAHUBgndB/1bEvSVHCSv
-         zNlvDSEvIyhuHNBRIFlVU8NHL3WiR3zAZuYVlw+4e+Wlxsk9RgJYA9OYCBZ/43KyyApQ
-         UrwQL0+HtMpE+4ea9FFErYdSUT/U7a+NC4FTA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=InCyEGJRepaMndZ1Cu28LiyH3Mn458LrfVZqSQJHIF4=;
-        b=YlAMFkBmWGIOXlLtak5e53k05rEs6rY7BmO5eh3AAP74hGeKDSY3lN/5SXXlUhyvOH
-         Yejx4AhFE2UhmBgc9lZobFEpVXe7a3Owp8B8IOqQqAmrg+9W2XlIyCaqvbZ2iZeVnenb
-         LwfdgWYqJcp2L2fKdu3tymUBk8QxJOjUkW6EF+AGh0jnGsFW+mx4ubN+I87dWu8EZnBs
-         qAchbav2VGche5AOHrR8ZFuUSPwhfX6R+zxwIekjAUK3Z+coq3vBQRDCV4hXVacRUXDZ
-         ZkTM06ZzfbLv2QMoteXO+WchyvxEj0lS8k2HPmaV8n/qybiGXHlrnf4LygoDEIZOYOPd
-         a8ag==
-X-Gm-Message-State: AOAM530ttnuC4seXlQaXjK7OXMKgljR8axq1OC99e6mH+wcdL/IodDFL
-        1oIV7s0rPukZzapDpCP/gMzuMA==
-X-Google-Smtp-Source: ABdhPJz/sRBdMqIeinvVX0EtmbbT7UuLVMdyjP4q8q2AiAOFLWkCmgwI+cIEhMxZMutU0r+qHD/7ng==
-X-Received: by 2002:a63:7c5c:: with SMTP id l28mr1102609pgn.73.1632939069520;
-        Wed, 29 Sep 2021 11:11:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h3sm338372pju.33.2021.09.29.11.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 11:11:08 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 11:11:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, pmladek@suse.com, peterz@infradead.org,
-        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        viro@zeniv.linux.org.uk, christian@brauner.io,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] kernel/fork: allocate task->comm dynamicly
-Message-ID: <202109291109.FAF3F47BA@keescook>
-References: <20210929115036.4851-1-laoar.shao@gmail.com>
- <20210929115036.4851-3-laoar.shao@gmail.com>
+        Wed, 29 Sep 2021 14:17:49 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 4b43f70ce33f2bb0; Wed, 29 Sep 2021 20:16:07 +0200
+Received: from kreacher.localnet (unknown [213.134.161.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 86CDB66A71A;
+        Wed, 29 Sep 2021 20:16:06 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ferry Toth <fntoth@gmail.com>
+Cc:     Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v3 2/3] PCI: PM: Make pci_choose_state() call pci_target_state()
+Date:   Wed, 29 Sep 2021 20:11:18 +0200
+Message-ID: <5673063.MhkbZ0Pkbq@kreacher>
+In-Reply-To: <7312660.EvYhyI6sBW@kreacher>
+References: <1800633.tdWV9SEqCh@kreacher> <7312660.EvYhyI6sBW@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929115036.4851-3-laoar.shao@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.161.209
+X-CLIENT-HOSTNAME: 213.134.161.209
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekvddguddvudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepteeggfelteegudehueegieekveduleeuledvueefjeefffegfeejudfgteefhefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepvddufedrudefgedrudeiuddrvddtleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrdduiedurddvtdelpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhnthhothhhsehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdp
+ rhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:50:33AM +0000, Yafang Shao wrote:
-> task->comm is defined as an array embedded in struct task_struct before.
-> This patch changes it to a char pointer. It will be allocated in the fork
-> and freed when the task is freed.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  include/linux/sched.h |  2 +-
->  kernel/fork.c         | 19 +++++++++++++++++++
->  2 files changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index e12b524426b0..b387b5943db4 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1051,7 +1051,7 @@ struct task_struct {
->  	 * - access it with [gs]et_task_comm()
->  	 * - lock it with task_lock()
->  	 */
-> -	char				comm[TASK_COMM_LEN];
-> +	char				*comm;
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-This, I think, is basically a non-starter. It adds another kmalloc to
-the fork path without a well-justified reason. TASK_COMM_LEN is small,
-yes, but why is growing it valuable enough to slow things down?
+The pci_choose_state() and pci_target_state() implementations are
+somewhat divergent without a good reason, because they are used
+for similar purposes.
 
-(Or, can you prove that this does NOT slow things down? It seems like
-it would.)
+Change the pci_choose_state() implementation to use pci_target_state()
+internally except for transitions to the working state of the system
+in which case it is expected to return D0.
 
--Kees
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
->  
->  	struct nameidata		*nameidata;
->  
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 38681ad44c76..227aec240501 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -721,6 +721,20 @@ static void mmdrop_async(struct mm_struct *mm)
->  	}
->  }
->  
-> +static int task_comm_alloc(struct task_struct *p)
-> +{
-> +	p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
-> +	if (!p->comm)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
-> +static void task_comm_free(struct task_struct *p)
-> +{
-> +	kfree(p->comm);
-> +}
-> +
->  static inline void free_signal_struct(struct signal_struct *sig)
->  {
->  	taskstats_tgid_free(sig);
-> @@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
->  	bpf_task_storage_free(tsk);
->  	exit_creds(tsk);
->  	delayacct_tsk_free(tsk);
-> +	task_comm_free(tsk);
->  	put_signal_struct(tsk->signal);
->  	sched_core_free(tsk);
->  
-> @@ -2076,6 +2091,10 @@ static __latent_entropy struct task_struct *copy_process(
->  	if (data_race(nr_threads >= max_threads))
->  		goto bad_fork_cleanup_count;
->  
-> +	retval = task_comm_alloc(p);
-> +	if (retval)
-> +		goto bad_fork_cleanup_count;
-> +
->  	delayacct_tsk_init(p);	/* Must remain after dup_task_struct() */
->  	p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE | PF_NO_SETAFFINITY);
->  	p->flags |= PF_FORKNOEXEC;
-> -- 
-> 2.17.1
-> 
+Same as the v2:
 
--- 
-Kees Cook
+https://patchwork.kernel.org/project/linux-acpi/patch/12860712.dW097sEU6C@kreacher/
+
+---
+ drivers/pci/pci-acpi.c |    3 --
+ drivers/pci/pci.c      |   54 ++++++++++++++-----------------------------------
+ 2 files changed, 16 insertions(+), 41 deletions(-)
+
+Index: linux-pm/drivers/pci/pci.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci.c
++++ linux-pm/drivers/pci/pci.c
+@@ -1394,44 +1394,6 @@ int pci_set_power_state(struct pci_dev *
+ }
+ EXPORT_SYMBOL(pci_set_power_state);
+ 
+-/**
+- * pci_choose_state - Choose the power state of a PCI device
+- * @dev: PCI device to be suspended
+- * @state: target sleep state for the whole system. This is the value
+- *	   that is passed to suspend() function.
+- *
+- * Returns PCI power state suitable for given device and given system
+- * message.
+- */
+-pci_power_t pci_choose_state(struct pci_dev *dev, pm_message_t state)
+-{
+-	pci_power_t ret;
+-
+-	if (!dev->pm_cap)
+-		return PCI_D0;
+-
+-	ret = platform_pci_choose_state(dev);
+-	if (ret != PCI_POWER_ERROR)
+-		return ret;
+-
+-	switch (state.event) {
+-	case PM_EVENT_ON:
+-		return PCI_D0;
+-	case PM_EVENT_FREEZE:
+-	case PM_EVENT_PRETHAW:
+-		/* REVISIT both freeze and pre-thaw "should" use D0 */
+-	case PM_EVENT_SUSPEND:
+-	case PM_EVENT_HIBERNATE:
+-		return PCI_D3hot;
+-	default:
+-		pci_info(dev, "unrecognized suspend event %d\n",
+-			 state.event);
+-		BUG();
+-	}
+-	return PCI_D0;
+-}
+-EXPORT_SYMBOL(pci_choose_state);
+-
+ #define PCI_EXP_SAVE_REGS	7
+ 
+ static struct pci_cap_saved_state *_pci_find_saved_cap(struct pci_dev *pci_dev,
+@@ -2843,6 +2805,22 @@ void pci_dev_complete_resume(struct pci_
+ 	spin_unlock_irq(&dev->power.lock);
+ }
+ 
++/**
++ * pci_choose_state - Choose the power state of a PCI device.
++ * @dev: Target PCI device.
++ * @state: Target state for the whole system.
++ *
++ * Returns PCI power state suitable for @dev and @state.
++ */
++pci_power_t pci_choose_state(struct pci_dev *dev, pm_message_t state)
++{
++	if (state.event == PM_EVENT_ON)
++		return PCI_D0;
++
++	return pci_target_state(dev, false);
++}
++EXPORT_SYMBOL(pci_choose_state);
++
+ void pci_config_pm_runtime_get(struct pci_dev *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+Index: linux-pm/drivers/pci/pci-acpi.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci-acpi.c
++++ linux-pm/drivers/pci/pci-acpi.c
+@@ -910,9 +910,6 @@ pci_power_t acpi_pci_choose_state(struct
+ {
+ 	int acpi_state, d_max;
+ 
+-	if (acpi_pci_disabled)
+-		return PCI_POWER_ERROR;
+-
+ 	if (pdev->no_d3cold)
+ 		d_max = ACPI_STATE_D3_HOT;
+ 	else
+
+
+
