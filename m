@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C7941C892
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04D841C895
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345357AbhI2Pij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:38:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35978 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345343AbhI2Pii (ORCPT
+        id S1345333AbhI2PkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:40:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38796 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1345251AbhI2PkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632929817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0bLmQ8J7WzFZZOAVo6vTND1Ds/Cvdj0ZAb6Klxb3veU=;
-        b=cmQYoQmKFGtP0UgcpQz6XtT2fYxKt8Ta8zwKaeIHzC5hXqMgJE7nopYeD+m6hYrngyry6x
-        3ePEoZJsAFL38HS/7vHLwWqsAT4wPVtw2N5i0VY4AM3Ifw5zl2Fjs4/2kLyo66xSav8ZrI
-        9rgxZnXZyYMWqVnKWfzbwH2DurUy0KE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-IRL-3rx8NjODsOtNHae2Qg-1; Wed, 29 Sep 2021 11:36:54 -0400
-X-MC-Unique: IRL-3rx8NjODsOtNHae2Qg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D50A41006AA2;
-        Wed, 29 Sep 2021 15:36:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DFA719C59;
-        Wed, 29 Sep 2021 15:36:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2] afs: Fix afs_launder_page() to set correct start file
- position
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Jeffrey Altman <jaltman@auristor.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 29 Sep 2021 16:36:46 +0100
-Message-ID: <163292980654.4004896.7134735179887998551.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163292979744.4004896.11826056491597096493.stgit@warthog.procyon.org.uk>
-References: <163292979744.4004896.11826056491597096493.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 29 Sep 2021 11:40:09 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TFIXuJ021894;
+        Wed, 29 Sep 2021 11:38:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ni6fW0e6udKKS09xxpVAxi6YbZN4f06i9VJgZGlNL+o=;
+ b=UGQmqc3Qrujy+vHPBI9cxcojAJJSe3ADiTp0mgHqDypQ6QckY8MT0LEtqCvXTXK4HSKX
+ C8KSdz5TsaR6FEP/iuDlXiFbXXCC1hKmH8Kl5Uc4aU25QvCQU4eE3klnLqezSMeV657Y
+ gbPcSRNFFfbmr8zd8TW7P/WiHssO3RJLIjEFgztFac2sbbI35FbC3TdHWFHjAqfRw6L0
+ A4Ic7ZZAz3nJ/IcN7AsIbAtpgwJAD32wmcFQkreOcdLDhwIK8CjHztGHEWNe5+EGC3ti
+ pXNFJ/vQSA/X8rnwQeOkATORLo8unrdpkWkNpmINS4ketcjLl1ocXdAD1jR4Mo2HL2RF VA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bcspg2f83-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 11:38:07 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18TFJUBW025629;
+        Wed, 29 Sep 2021 11:38:07 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bcspg2f7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 11:38:07 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18TFI0DU016321;
+        Wed, 29 Sep 2021 15:38:06 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 3b9udc6c0x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 15:38:06 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18TFc5ku28115358
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Sep 2021 15:38:05 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 77637124052;
+        Wed, 29 Sep 2021 15:38:05 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B45D7124058;
+        Wed, 29 Sep 2021 15:38:04 +0000 (GMT)
+Received: from [9.163.24.144] (unknown [9.163.24.144])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Sep 2021 15:38:04 +0000 (GMT)
+Subject: Re: [PATCH v2] hwmon: (pmbus/ibm-cffps) max_power_out swap changes
+To:     Brandon Wyman <bjwyman@gmail.com>, Joel Stanley <joel@jms.id.au>,
+        openbmc@lists.ozlabs.org, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210928205051.1222815-1-bjwyman@gmail.com>
+From:   Eddie James <eajames@linux.ibm.com>
+Message-ID: <2a3e0a3c-c256-92e6-7b1f-e80d56ee5b2c@linux.ibm.com>
+Date:   Wed, 29 Sep 2021 10:38:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210928205051.1222815-1-bjwyman@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FJaFGjauPgaFMsF0btOQzpV-JpIOZ3N0
+X-Proofpoint-GUID: j6qtbYT6SRxz1Hj-T9E5wORoo20Akb_X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-29_06,2021-09-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109290092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix afs_launder_page() to set the starting position of the StoreData RPC at
-the offset into the page at which the modified data starts instead of at
-the beginning of the page (the iov_iter is correctly offset).
 
-The offset got lost during the conversion to passing an iov_iter into
-afs_store_data().
-
-Changes:
-ver #2:
- - Use page_offset() rather than manually calculating it[1].
-
-Fixes: bd80d8a80e12 ("afs: Use ITER_XARRAY for writing")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/YST/0e92OdSH0zjg@casper.infradead.org/ [1]
-Link: https://lore.kernel.org/r/162880783179.3421678.7795105718190440134.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/162937512409.1449272.18441473411207824084.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/162981148752.1901565.3663780601682206026.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/163005741670.2472992.2073548908229887941.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/163221839087.3143591.14278359695763025231.stgit@warthog.procyon.org.uk/ # v2
----
-
- fs/afs/write.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 2dfe3b3a53d6..f24370f5c774 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -974,8 +974,7 @@ int afs_launder_page(struct page *page)
- 		iov_iter_bvec(&iter, WRITE, bv, 1, bv[0].bv_len);
- 
- 		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
--		ret = afs_store_data(vnode, &iter, (loff_t)page->index * PAGE_SIZE,
--				     true);
-+		ret = afs_store_data(vnode, &iter, page_offset(page) + f, true);
- 	}
- 
- 	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
+On 9/28/21 3:50 PM, Brandon Wyman wrote:
+> The bytes for max_power_out from the ibm-cffps devices differ in byte
+> order for some power supplies.
+>
+> The Witherspoon power supply returns the bytes in MSB/LSB order.
+>
+> The Rainier power supply returns the bytes in LSB/MSB order.
+>
+> The Witherspoon power supply uses version cffps1. The Rainier power
+> supply should use version cffps2. If version is cffps1, swap the bytes
+> before output to max_power_out.
 
 
+Looks fine, thanks Brandon!
+
+Reviewed-by: Eddie James <eajames@linux.ibm.com>
+
+
+>
+> Tested:
+>      Witherspoon before: 3148. Witherspoon after: 3148.
+>      Rainier before: 53255. Rainier after: 2000.
+>
+> Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
+> ---
+>   drivers/hwmon/pmbus/ibm-cffps.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
+> index df712ce4b164..79bfcd2749a6 100644
+> --- a/drivers/hwmon/pmbus/ibm-cffps.c
+> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
+> @@ -171,8 +171,14 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
+>   		cmd = CFFPS_SN_CMD;
+>   		break;
+>   	case CFFPS_DEBUGFS_MAX_POWER_OUT:
+> -		rc = i2c_smbus_read_word_swapped(psu->client,
+> -						 CFFPS_MAX_POWER_OUT_CMD);
+> +		if (cffps1 == psu->version) {
+> +			rc = i2c_smbus_read_word_swapped(psu->client,
+> +					CFFPS_MAX_POWER_OUT_CMD);
+> +		} else {
+> +			rc = i2c_smbus_read_word_data(psu->client,
+> +					CFFPS_MAX_POWER_OUT_CMD);
+> +		}
+> +
+>   		if (rc < 0)
+>   			return rc;
+>   
