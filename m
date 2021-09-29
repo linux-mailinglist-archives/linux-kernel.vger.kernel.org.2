@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F5441C905
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164F141C8D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345816AbhI2QAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:00:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29844 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345542AbhI2P7z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:59:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632931092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I9QQVC3ObAKQWGkVakHBATBn/ed3/zk0MSyQjfvAbQY=;
-        b=Y4J4DJWq9/LKkNhmFS5O+uCBBs6MX93JMKAxuDqblEkVm8WbJ+UKWsUHmDg6GVzziSUYcT
-        VKd3mXDkhFYachveg5HTkmXyZ/F++NjJV6UHd9HmuFti3neAG2+3F593dZpMPTJt7u9CwI
-        bI7IfGgX8gcUcYdMdL+WwjWG75grfWs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-zSJ6v7QbN42_3vJ6y17AMg-1; Wed, 29 Sep 2021 11:58:09 -0400
-X-MC-Unique: zSJ6v7QbN42_3vJ6y17AMg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1343850AbhI2P6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:58:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244682AbhI2P6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:58:24 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E742362A7;
-        Wed, 29 Sep 2021 15:58:08 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C82E45C25D;
-        Wed, 29 Sep 2021 15:58:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <163292979744.4004896.11826056491597096493.stgit@warthog.procyon.org.uk>
-References: <163292979744.4004896.11826056491597096493.stgit@warthog.procyon.org.uk>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jeffrey Altman <jaltman@auristor.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] afs: Fix data corruptor in page laundering
+        by mail.kernel.org (Postfix) with ESMTPSA id A57E860EE2;
+        Wed, 29 Sep 2021 15:56:41 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 17:00:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Kevin Tsai <ktsai@capellamicro.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] iio: light: cm3605: Make use of the helper
+ function dev_err_probe()
+Message-ID: <20210929170035.619212d4@jic23-huawei>
+In-Reply-To: <20210928014156.1491-1-caihuoqing@baidu.com>
+References: <20210928014156.1491-1-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4006399.1632931085.1@warthog.procyon.org.uk>
-Date:   Wed, 29 Sep 2021 16:58:05 +0100
-Message-ID: <4006400.1632931085@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hmmm... for some reason stgit didn't use patch numbering.
+On Tue, 28 Sep 2021 09:41:52 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-David
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Hi Cai,
+
+This driver has some more cases where we should potentially do something
+like this.
+
+It handles the lack of availability of an IIO channel in line 199
+by converting an -ENODEV to an -EPROBE_DEFER.
+
+Also platform_get_irq() can return -EPROBE_DEFER and the driver
+isn't currently handling that properly.
+
+Both changes are of a more involved nature than the simple conversions you
+have here though, so perhaps a follow up patch?
+
+The parts you here look good to me.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/light/cm3605.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iio/light/cm3605.c b/drivers/iio/light/cm3605.c
+> index 4c83953672be..0b90564213e8 100644
+> --- a/drivers/iio/light/cm3605.c
+> +++ b/drivers/iio/light/cm3605.c
+> @@ -211,10 +211,10 @@ static int cm3605_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	cm3605->vdd = devm_regulator_get(dev, "vdd");
+> -	if (IS_ERR(cm3605->vdd)) {
+> -		dev_err(dev, "failed to get VDD regulator\n");
+> -		return PTR_ERR(cm3605->vdd);
+> -	}
+> +	if (IS_ERR(cm3605->vdd))
+> +		return dev_err_probe(dev, PTR_ERR(cm3605->vdd),
+> +				     "failed to get VDD regulator\n");
+> +
+>  	ret = regulator_enable(cm3605->vdd);
+>  	if (ret) {
+>  		dev_err(dev, "failed to enable VDD regulator\n");
+> @@ -223,8 +223,7 @@ static int cm3605_probe(struct platform_device *pdev)
+>  
+>  	cm3605->aset = devm_gpiod_get(dev, "aset", GPIOD_OUT_HIGH);
+>  	if (IS_ERR(cm3605->aset)) {
+> -		dev_err(dev, "no ASET GPIO\n");
+> -		ret = PTR_ERR(cm3605->aset);
+> +		ret = dev_err_probe(dev, PTR_ERR(cm3605->aset), "no ASET GPIO\n");
+>  		goto out_disable_vdd;
+>  	}
+>  
 
