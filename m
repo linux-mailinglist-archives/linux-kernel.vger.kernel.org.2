@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D125F41CF7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA0641CF87
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347246AbhI2WxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344976AbhI2WxJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:53:09 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F925C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:51:28 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id z11so4921714oih.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WU8/s6nJZiqD5ikoIrIIIMlSsQFbRRodZMrkDYnksts=;
-        b=hncdGne2BieVpABEtTAeJVqRRcRcM5dL1EKjajKjDPYP7c7AXe4zyINvFForPlku5s
-         MUs4BAfjombbizNyRC3Fg4vM2G1eOm6RB56RW+K8+3JM0cgWSMpBkwhpxl3TW+Rte4XT
-         vxCbpbgELHVVKfiDjCe6Z30AWbvCi4JKxjSXjuTjPzSIHmbE8LkCNHwrc1sdwcrwO8bz
-         AHZopxOYKz8vI4+dqtp9NB0zciG0m2s3yiQ7FussPTQigfB9QXhZbdipe57Apcg+NEp2
-         Vwq1vja1ihLb+9RrCeVSkmOE2MNVSj+lb/+qkZGsWXIRDtNBnq6r+nN0Fcc2vBd/iwHp
-         qfOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WU8/s6nJZiqD5ikoIrIIIMlSsQFbRRodZMrkDYnksts=;
-        b=FQ3MlA5szFXmm33wZQBBPXSat6UCwrxrTCzv9VlLC78QfyMDMZN/hhmfXS66LktY7Y
-         Fg38Aux3Q6+bFlYA/MsXghrCYj3wK4DPfk1jQeBRwVey7IGEPxOps/0uzFe3vW3vq9PD
-         qIKE1P4RmyU11QV4Havvr5pf/AGH4PEFkfgHDhLV+8a/n3qPqs7a3oHTk7gl5ELGQbNr
-         KsNVztlhxJd/++9vtWNQGdyoJCsjOAUMSTE1z4gt9sUjyfIiG73vdH8Tmwy8r/lbRkTX
-         rfcV9NuZQtQqn9K4zR0y3DLsCRJ30idStX6il8Dns36O5QkYOUDjxcKpj+n/MS4eGRdU
-         tpIQ==
-X-Gm-Message-State: AOAM533YJUXNaR6VOuOtH0zDN/cGcC3eLRBRS3bB15sVQucZCZDPR7nP
-        s56FyvVbEQ7Duvbw66eeBoNeQT6aT48kMFRISyEZPw==
-X-Google-Smtp-Source: ABdhPJxljSFAAfihTbRWBIHykA6XCaBVvncALTdtJO0lg7XDHGlWcEph7S3ncu9oyZVxNnbiqqzefo0HJiL7sI5kyHQ=
-X-Received: by 2002:a05:6808:1494:: with SMTP id e20mr109086oiw.28.1632955887226;
- Wed, 29 Sep 2021 15:51:27 -0700 (PDT)
+        id S1347170AbhI2W4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:56:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64658 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346922AbhI2W4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 18:56:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205204359"
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="205204359"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 15:54:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="707502845"
+Received: from ojefferi-mobl.ger.corp.intel.com (HELO ldmartin-desk2) ([10.212.173.172])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 15:54:34 -0700
+Date:   Wed, 29 Sep 2021 15:54:33 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] drm/i915/utils: do not depend on config being
+ defined
+Message-ID: <20210929225433.7z76swcouyas7upd@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20210929183357.1490204-1-lucas.demarchi@intel.com>
+ <CGME20210929183439eucas1p1de30c3fb5681a8c8d250f482954f92ed@eucas1p1.samsung.com>
+ <20210929183357.1490204-3-lucas.demarchi@intel.com>
+ <e1c58c0e-b0d5-48a4-f423-3c7e0ff9b765@samsung.com>
 MIME-Version: 1.0
-References: <20210929222426.1855730-1-seanjc@google.com> <20210929222426.1855730-2-seanjc@google.com>
-In-Reply-To: <20210929222426.1855730-2-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 29 Sep 2021 15:51:16 -0700
-Message-ID: <CALMp9eS4S1d-8nSdJDG8E1unemVB06=cb3_OWSaVivPJmk63PQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Swap order of CPUID entry "index" vs.
- "significant flag" checks
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com,
-        Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e1c58c0e-b0d5-48a4-f423-3c7e0ff9b765@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 3:24 PM Sean Christopherson <seanjc@google.com> wrote:
+On Wed, Sep 29, 2021 at 11:08:18PM +0200, Andrzej Hajda wrote:
 >
-> Check whether a CPUID entry's index is significant before checking for a
-> matching index to hack-a-fix an undefined behavior bug due to consuming
-> uninitialized data.  RESET/INIT emulation uses kvm_cpuid() to retrieve
-> CPUID.0x1, which does _not_ have a significant index, and fails to
-> initialize the dummy variable that doubles as EBX/ECX/EDX output _and_
-> ECX, a.k.a. index, input.
+>W dniu 29.09.2021 o 20:33, Lucas De Marchi pisze:
+>> Like the IS_ENABLED() counterpart, we can make IS_CONFIG_NONZERO() to
+>> return the right thing when the config is not defined rather than a
+>> build error, with the limitation that it can't be used on preprocessor
+>> context.
+>>
+>> The trick here is that macro names can't start with a number or dash, so
+>> we stringify the argument and check that the first char is a number != 0
+>> (or starting with a dash to cover negative numbers). Except for -O0
+>> builds the strings are all eliminated.
+>>
+>> Taking CONFIG_DRM_I915_REQUEST_TIMEOUT in
+>> drivers/gpu/drm/i915/gem/i915_gem_context.c as example, we have the
+>> following output of the preprocessor:
+>>
+>> old:
+>>   if (((20000) != 0) &&
+>> new:
+>>   if (( ("20000"[0] > '0' && "20000"[0] < '9') || "20000"[0] == '-' ) &&
+>>
+>> New one looks worse, but is also eliminated from the object:
+>>
+>> $ size drivers/gpu/drm/i915/gem/i915_gem_context.o.*
+>>     text    data     bss     dec     hex filename
+>>    52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.new
+>>    52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.old
+>>
+>> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+>> ---
+>>   drivers/gpu/drm/i915/i915_utils.h | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
+>> index 02bbfa4d68d3..436ce612c46a 100644
+>> --- a/drivers/gpu/drm/i915/i915_utils.h
+>> +++ b/drivers/gpu/drm/i915/i915_utils.h
+>> @@ -28,6 +28,7 @@
+>>   #include <linux/list.h>
+>>   #include <linux/overflow.h>
+>>   #include <linux/sched.h>
+>> +#include <linux/stringify.h>
+>>   #include <linux/types.h>
+>>   #include <linux/workqueue.h>
+>>
+>> @@ -469,6 +470,9 @@ static inline bool timer_expired(const struct timer_list *t)
+>>    *
+>>    * Returns 0 if @config is 0, 1 if set to any value.
+>>    */
+>> -#define IS_CONFIG_NONZERO(config) ((config) != 0)
+>> +#define IS_CONFIG_NONZERO(config) (						\
+>> +	(__stringify_1(config)[0] > '0' && __stringify_1(config)[0] < '9') ||	\
+>> +	__stringify_1(config)[0] == '-'						\
+>> +)
 >
-> Practically speaking, it's _extremely_  unlikely any compiler will yield
-> code that causes problems, as the compiler would need to inline the
-> kvm_cpuid() call to detect the uninitialized data, and intentionally hose
-> the kernel, e.g. insert ud2, instead of simply ignoring the result of
-> the index comparison.
 >
-> Although the sketchy "dummy" pattern was introduced in SVM by commit
-> 66f7b72e1171 ("KVM: x86: Make register state after reset conform to
-> specification"), it wasn't actually broken until commit 7ff6c0350315
-> ("KVM: x86: Remove stateful CPUID handling") arbitrarily swapped the
-> order of operations such that "index" was checked before the significant
-> flag.
+>Quite clever trick, but I see two issues:
 >
-> Avoid consuming uninitialized data by reverting to checking the flag
-> before the index purely so that the fix can be easily backported; the
-> offending RESET/INIT code has been refactored, moved, and consolidated
-> from vendor code to common x86 since the bug was introduced.  A future
-> patch will directly address the bad RESET/INIT behavior.
+>- gcc < 8.1 treats expressions with string indices (ex. "abc"[0]) as
+>non-constant expressions, so they cannot be used everywhere, for example
+>in global variable initializations,
+
+ugh, that would kill the idea - having the strings and additional
+runtime checks would not be good. Maybe if we check with
+__builtin_constant_p() and do the simpler expansion if it's not
+constant?
+
 >
-> The undefined behavior was detected by syzbot + KernelMemorySanitizer.
+>- it does not work with hex (0x1) or octal values (01)
+
+indeed, but I guess that would be fixable by checking (s[0] == '0' && s[1] == '\0')?
+However, it seems kconfig doesn't support setting int options to hex or
+octal.
+
+If I try an hex value in menuconfig it says "You have made an invalid entry."
+If I try editing .config or setting via scripts/config --set-val, it
+just gets reset when trying to generate include/generated/autoconf.h
+
+Lucas De Marchi
+
 >
->   BUG: KMSAN: uninit-value in cpuid_entry2_find arch/x86/kvm/cpuid.c:68
->   BUG: KMSAN: uninit-value in kvm_find_cpuid_entry arch/x86/kvm/cpuid.c:1103
->   BUG: KMSAN: uninit-value in kvm_cpuid+0x456/0x28f0 arch/x86/kvm/cpuid.c:1183
->    cpuid_entry2_find arch/x86/kvm/cpuid.c:68 [inline]
->    kvm_find_cpuid_entry arch/x86/kvm/cpuid.c:1103 [inline]
->    kvm_cpuid+0x456/0x28f0 arch/x86/kvm/cpuid.c:1183
->    kvm_vcpu_reset+0x13fb/0x1c20 arch/x86/kvm/x86.c:10885
->    kvm_apic_accept_events+0x58f/0x8c0 arch/x86/kvm/lapic.c:2923
->    vcpu_enter_guest+0xfd2/0x6d80 arch/x86/kvm/x86.c:9534
->    vcpu_run+0x7f5/0x18d0 arch/x86/kvm/x86.c:9788
->    kvm_arch_vcpu_ioctl_run+0x245b/0x2d10 arch/x86/kvm/x86.c:10020
+>It is probably OK for private macro, but it can hurt in kconfig.h,
+>especially the 2nd issue
 >
->   Local variable ----dummy@kvm_vcpu_reset created at:
->    kvm_vcpu_reset+0x1fb/0x1c20 arch/x86/kvm/x86.c:10812
->    kvm_apic_accept_events+0x58f/0x8c0 arch/x86/kvm/lapic.c:2923
 >
-> Reported-by: syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com
-> Reported-by: Alexander Potapenko <glider@google.com>
-> Fixes: 2a24be79b6b7 ("KVM: VMX: Set EDX at INIT with CPUID.0x1, Family-Model-Stepping")
-> Fixes: 7ff6c0350315 ("KVM: x86: Remove stateful CPUID handling")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+>Regards
+>
+>Andrzej
+>
+>>
+>>   #endif /* !__I915_UTILS_H */
