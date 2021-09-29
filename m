@@ -2,348 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B239B41BE7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 06:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3B941BE85
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 06:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244016AbhI2E5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 00:57:32 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:56633 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242323AbhI2E5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 00:57:31 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HK3wj5V1xz4xbL; Wed, 29 Sep 2021 14:55:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1632891349;
-        bh=j4IJARptHYsiuLRuyIgK0+MiDtR8ZH5cGfenXvO/Lsg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y0LPZwNlpB9G8ql9vsO06tGsfCZJryQyGg4+Zmb1Yx7WNTJOiQE1Z8PftrqquvEgQ
-         LW9YtgfsTDwLK9EZiVCTrs+WHfJSNx0DL0szmCoWAzMkJHQD7KD/wb6aumdFnYVpGm
-         /zU6Wq0un3M734iu/5xOfPFqD4IipRXxNcGQO+5s=
-Date:   Wed, 29 Sep 2021 14:55:41 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, jgg@nvidia.com, hch@lst.de,
-        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
-        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
-        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
-        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
- interfaces
-Message-ID: <YVPxzad5TYHAc1H/@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-7-yi.l.liu@intel.com>
+        id S244076AbhI2E6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 00:58:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44345 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242323AbhI2E6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 00:58:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="285875580"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="285875580"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 21:56:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="476522432"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga007.jf.intel.com with ESMTP; 28 Sep 2021 21:56:19 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 21:56:19 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 21:56:18 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Tue, 28 Sep 2021 21:56:18 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Tue, 28 Sep 2021 21:56:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V3StPj7osNp7V8aA838LyqQv3GplU52rB97gzoQPUErs63juEnWWrq6kIoVNslFyWAD31BaKysd3BFxqf1Qif8nHMsF7fdTbff5cRz3jmmT0Px9+jlDPRsGKeFnrUCTstueLYsG8QBra/IQF2gIrDcioh6Iccjr1r7wkL2R1smER93BxnFcSIQa9+ijxA2k2voiBCq/lGQ4vx7UL39xEfzRZOvoSrf8+aW54kswYYdLyuJOcFdIp3OZRGjYt40lZP/WQZ14oooTn+Ycqwr4ZXmN/S0NcBrWd7yBu7dNVn6aY9anzmjXymbC5HbayR5xscccyrg1AO19+NLHWXqR69A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=9eHoo2yJxHTj8c2iXwmSitMyZiEEpaIo8DeMZW12rL4=;
+ b=oQ5LOZ1hIIz+5uHLdFIGqoliUB/JrKt3Bkvvt1u6PA6y0CnWOYjD3QqWTtA0AtI30Llg159+6csYbw32tOztVoH/4kdJUBJMnJkjsiyBUSm9cCfSl+OSgHTpnCkePX5cXJSMVaTRi6jR0G7lCHgLi4miPt1SM6P1toLThp0KN6omXUutd/J1dzy63u2lvIjJiYJKAS/Htk1CCfwYWMQHx0Torzne5k1Qj4SZWidFDgXrW2Tmm6xuODZeWezTI0vjfVNfXRc7GJ085Ui81ytjLGDoAGdhW2zm1jBNBAhEvcihVa2airwZOUIsmCDIBXJ9jK1xu1VLHksMVhOCgMBEiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9eHoo2yJxHTj8c2iXwmSitMyZiEEpaIo8DeMZW12rL4=;
+ b=ax7ZcEirVFcuV/53WHJmuGXt4PrXVj4VzIMhu6eh5cZES9D5AxQO/P6s475nrH6uqQJSLPgymK9Xn4doN/qyFHy/Cwv4klqnnoHG/zx1Ja/qF9ETY5I9KligbYI71NWsD7a6YSLGAg8ySm2Tv9QbWjOtdLRTgiRL7jXH5ehUU24=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
+ by SJ0PR11MB4797.namprd11.prod.outlook.com (2603:10b6:a03:2d4::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Wed, 29 Sep
+ 2021 04:56:11 +0000
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::4167:f9ef:19b2:eaff]) by BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::4167:f9ef:19b2:eaff%3]) with mapi id 15.20.4544.021; Wed, 29 Sep 2021
+ 04:56:11 +0000
+Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
+To:     Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+CC:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Gayatri Kammela" <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-12-sohil.mehta@intel.com>
+ <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
+From:   Sohil Mehta <sohil.mehta@intel.com>
+Message-ID: <c6e83d0e-6551-4e16-0822-0abbc4d656c4@intel.com>
+Date:   Tue, 28 Sep 2021 21:56:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+In-Reply-To: <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: BYAPR02CA0025.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::38) To BYAPR11MB3320.namprd11.prod.outlook.com
+ (2603:10b6:a03:18::25)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LmpUe83dM2DcdbUy"
-Content-Disposition: inline
-In-Reply-To: <20210919063848.1476776-7-yi.l.liu@intel.com>
+Received: from [192.168.86.33] (73.222.31.188) by BYAPR02CA0025.namprd02.prod.outlook.com (2603:10b6:a02:ee::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend Transport; Wed, 29 Sep 2021 04:56:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 248e4fdd-4ce7-46b4-be2e-08d9830574d2
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB4797:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB4797C3E7A7ED90561FA6EE02E5A99@SJ0PR11MB4797.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hSrXa27At+7QeWj2J0gx6pgdZHiSU99I9jwNOmImPJhweKpwFf071Uzw8AxDH7dJJyXD4w+DgcTbdgJraz6F16eC7iyeumg5aZ4f0kpJjFI+K+wfpa+71bMaR7GFhwYPOjluvHuppISYnrT0/s1O0tpnXS3YJjAaSeo/dwcATVlL4OMW4HQjg/8HXx+LKiXMGVaDV6mEycPPd3p69pSp7xyK1JwQUjbPuyLk4QnLvMiNf7JKRxmdfT85apBYdkunAtoo/nUU/En4iq+d3rEfKEnN6boxFSo7pOxJ59T0y3UzhcIRb1Bihk5nXg8H7V6NDo56ILD/sNh8NNmO9npFMZPlLmSSJop9uRR3pHolwXfEBQGbLeQ52ibf+AW3GhnKJtHpGEPyAHY9zN3hiRMYjtLU9fCn6xEjqRkZQDfiyn2Fpf21quzqjrS7XLWuPw/h1GqjcvxwNREe3GhQtquBi6F/Kx/ptKk2CXLRtadxvK1DrYoOYr/2fAJ3krhmoNigvL7xXpdWC9FUgMf1MNiVEIZ4GEtSZ1dvgd1Quck20rhd4L1p1WflG6iy0Mo2O7zipOMRh5qJ7sQVTScObwr7ulDg/HTsO0g3skvqbnemyhJbmruy0cCe0O5Pvij7j5LKJGqFVPcs0VUgWiXNFD4SFMtFeA/TnT6OTBM+Yj5/n9Zu6ChUI5hP0zzXVRsviuUPE6BH+qjY5DFCGtidFHbPpDHQ0XlBsqDC8Sb9kMb45eXWbm+VXWbUH819t97G4WBk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(31696002)(2906002)(44832011)(7416002)(186003)(508600001)(8676002)(86362001)(36756003)(83380400001)(956004)(2616005)(16576012)(66476007)(316002)(66556008)(54906003)(110136005)(53546011)(26005)(66946007)(8936002)(4326008)(6486002)(31686004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bkZOUmhGNjMxWWJkT0pwZEdib292akx1MDVNNUltSXMzMUMxSTF3VHFJd3hx?=
+ =?utf-8?B?VEJMNXpYMWMyZThTOG44NXpINTM0VE1Hb2dvTHJia0g2UFhDNk1wNko2YkV5?=
+ =?utf-8?B?MGR2WXVOc2pTeFFSOG5HQ1BhemM4SnE5T0xGQUNFcFJxR3YrcTdGcVdCazFB?=
+ =?utf-8?B?djZFazV4UGIzbWU5MVNYbnJRQVBxNzAvRWpwc2hQeW1iSkdZem9SS0NiOURQ?=
+ =?utf-8?B?SXR1MktacnJHVUdhc0RJazRHdmpkeitZeGtON1EyOEpjU0IzVWU1cTJLMTNi?=
+ =?utf-8?B?akx2Q25UYkhhWm9STXk0KzRvcng0SVZZZUQ3bU1GZzhtUmJ5YkIzN0JlWU5j?=
+ =?utf-8?B?cnl1aVhPeWVzekU5NDJwU1hPTzJEQURVcVE1ZlNMeHk4VFNYWkVIQkNhT04w?=
+ =?utf-8?B?Vkx5UURZb1hsdVlYaXNDbWx4c1pLcGxSTGVIYml1UWdJSTU1RENkMHBoMTRJ?=
+ =?utf-8?B?NXFQUEpMZHI0TmF2cWNVOTFldm5pMTU0K2RpaVRacXk1U1V4TXpqUDhHQll5?=
+ =?utf-8?B?ZXVmc3NrVm91bGVJOHVYZDh3eWxpWEllSzd5cG1PczNsdzArQnYvTHJ1Q2ha?=
+ =?utf-8?B?NENId1NRcVZGSGUrSXdzRUg3bmRBVFhPVFVJTWNyMElYNE1rcDBSUEF4bmx0?=
+ =?utf-8?B?Zld0MjZPRW83QXJqSUNOdSsrUXBJYk5qZlN4bnhSK2theVNwWkdaYnM3UVpT?=
+ =?utf-8?B?Y0Z3dGppMHdkU3VrOWVOUlk4cjVYRkkxcUs2Yk5QdGgrVFY3N3lwUjd1cTVy?=
+ =?utf-8?B?Q2creUlQVkp2S2Q1OXhOUHdiMjVpR1NrVXVzbDRjcTNCSUxoeFUwYmpkeE9a?=
+ =?utf-8?B?N2cyRlBoQ2kvRnpLc0lVL1hzZy9POVZKdHpTYm15NVpNU2VHTDBIMkU1N2pK?=
+ =?utf-8?B?cEc2bnNjSExvV3pPUTBwTyt1VXhwbUxZVUNxL01Fa3hkdVdNSnU4bjB2Ynlm?=
+ =?utf-8?B?T25Ia0NWWHJ4d2ZvamNOdVVMb3E0UmVBVkRyRnJuZ09YcWhudnJlTnQvT2N1?=
+ =?utf-8?B?eVI5eGliY2JEa2h4ZHZkREZmNjUzUm5aOTJ0SnROd0F5allTRGUvNXE2dS9n?=
+ =?utf-8?B?V1BJYzNPRlJMVndBVlRtNUhrd285NUh5WHlXcys3cjlySmhpNjlBenZtaWk2?=
+ =?utf-8?B?L0xGWHNIbHFmSjNNY1FrUHFxYm1KTFBBSGxPamtRKzZ1NFVxb1RPVkcxWE5w?=
+ =?utf-8?B?bzQ3dktHT3hWcEc4TGZ5OWplQlh0SlZRR0g4ZmNxUW9TNHg4V0pXbE5jQ25u?=
+ =?utf-8?B?TTYzd2dHTG04R3k5TXNsZld3TktYdkpQWTQ4ZTNHRHFSMmVYSUVmNUxpNDNp?=
+ =?utf-8?B?NlE3YjcxTTAvN0NNcktkYmJMTWZSdkEvVVJCNVA5eWFCR2VzY0V3c05rVEts?=
+ =?utf-8?B?MWtvUyt6c0xVcE4vcmQ1R2ZkS3BRNEtwQXkyTHBuZjlWMEY3NjdmenJVSTlD?=
+ =?utf-8?B?NURuQks3S3p1Rmc4Y0NDK2JuQ0V0NG5EVDNFcElDRFVsdGN2NTNEZDM3alAx?=
+ =?utf-8?B?R3VaWDdZZ0Z4ZElWanpkdGpaRFlpdXlZd2M5c0RoWXRKQXJtQ0ZyamVQekFI?=
+ =?utf-8?B?OEhTRkhKbGcvaHR0UzFLYUJ0azBCSVV5ZHY5SXArMEhwYnpWdDIyaFFQWU9F?=
+ =?utf-8?B?TUFTeEd2ZW0rdWlRKzA5c2pBdFBkSjUwdmZXMjBGOFZ0YUJ3ZTdkN1RTVXQ1?=
+ =?utf-8?B?NC9BTnBRb1BQZ1g3UUV3c0F0NlVFOEErYS85aC9mZ0pkSjg0R0VxYzBpVmFx?=
+ =?utf-8?Q?ezgQY2hI2rydY46aXa/wMlZRsSGh4RCu9X6R4Sa?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 248e4fdd-4ce7-46b4-be2e-08d9830574d2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 04:56:11.0387
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pQ7RRFh6mxA8iStN3DA3AtLd2Oh/EG2ymdJhQpSJbZUzBWyu3zadWtWqbrrszHhP6EMwx+tb2gaH/qOQJAvrbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4797
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/28/2021 8:30 PM, Andy Lutomirski wrote:
+> On Mon, Sep 13, 2021, at 1:01 PM, Sohil Mehta wrote:
+>> Add a new system call to allow applications to block in the kernel and
+>> wait for user interrupts.
+>>
+> ...
+>
+>> When the application makes this syscall the notification vector is
+>> switched to a new kernel vector. Any new SENDUIPI will invoke the kernel
+>> interrupt which is then used to wake up the process.
+> Any new SENDUIPI that happens to hit the target CPU's ucode at a time when the kernel vector is enabled will deliver the interrupt.  Any new SENDUIPI that happens to hit the target CPU's ucode at a time when a different UIPI-using task is running will *not* deliver the interrupt, unless I'm missing some magic.  Which means that wakeups will be missed, which I think makes this whole idea a nonstarter.
+>
+> Am I missing something?
 
---LmpUe83dM2DcdbUy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 19, 2021 at 02:38:34PM +0800, Liu Yi L wrote:
-> From: Lu Baolu <baolu.lu@linux.intel.com>
->=20
-> This extends iommu core to manage security context for passthrough
-> devices. Please bear a long explanation for how we reach this design
-> instead of managing it solely in iommufd like what vfio does today.
->=20
-> Devices which cannot be isolated from each other are organized into an
-> iommu group. When a device is assigned to the user space, the entire
-> group must be put in a security context so that user-initiated DMAs via
-> the assigned device cannot harm the rest of the system. No user access
-> should be granted on a device before the security context is established
-> for the group which the device belongs to.
->=20
-> Managing the security context must meet below criteria:
->=20
-> 1)  The group is viable for user-initiated DMAs. This implies that the
->     devices in the group must be either bound to a device-passthrough
->     framework, or driver-less, or bound to a driver which is known safe
->     (not do DMA).
->=20
-> 2)  The security context should only allow DMA to the user's memory and
->     devices in this group;
->=20
-> 3)  After the security context is established for the group, the group
->     viability must be continuously monitored before the user relinquishes
->     all devices belonging to the group. The viability might be broken e.g.
->     when a driver-less device is later bound to a driver which does DMA.
->=20
-> 4)  The security context should not be destroyed before user access
->     permission is withdrawn.
->=20
-> Existing vfio introduces explicit container/group semantics in its uAPI
-> to meet above requirements. A single security context (iommu domain)
-> is created per container. Attaching group to container moves the entire
-> group into the associated security context, and vice versa. The user can
-> open the device only after group attach. A group can be detached only
-> after all devices in the group are closed. Group viability is monitored
-> by listening to iommu group events.
->=20
-> Unlike vfio, iommufd adopts a device-centric design with all group
-> logistics hidden behind the fd. Binding a device to iommufd serves
-> as the contract to get security context established (and vice versa
-> for unbinding). One additional requirement in iommufd is to manage the
-> switch between multiple security contexts due to decoupled bind/attach:
->=20
-> 1)  Open a device in "/dev/vfio/devices" with user access blocked;
+The current kernel implementation reserves 2 notification vectors (NV) 
+for the 2 states of a thread (running vs blocked).
 
-Probably worth clarifying that (1) must happen for *all* devices in
-the group before (2) happens for any device in the group.
+NV-1 – used only for tasks that are running. (results in a user 
+interrupt or a spurious kernel interrupt)
 
-> 2)  Bind the device to an iommufd with an initial security context
->     (an empty iommu domain which blocks dma) established for its
->     group, with user access unblocked;
->=20
-> 3)  Attach the device to a user-specified ioasid (shared by all devices
->     attached to this ioasid). Before attaching, the device should be first
->     detached from the initial context;
+NV-2 – used only for a tasks that are blocked in the kernel. (always 
+results in a kernel interrupt)
 
-So, this step can implicitly but observably change the behaviour for
-other devices in the group as well.  I don't love that kind of
-difficult to predict side effect, which is why I'm *still* not totally
-convinced by the device-centric model.
+The UPID.UINV bits are switched between NV-1 and NV-2 based on the state 
+of the task.
 
-> 4)  Detach the device from the ioasid and switch it back to the initial
->     security context;
+However, NV-1 is also programmed in the running task's MISC_MSR UINV 
+bits. This is what tells the ucode that the notification vector received 
+is for the user instead of the kernel.
 
-Same non-local side effect at this step, of course.
+NV-2 is never programmed in the MISC_MSR of a task. When NV-2 arrives on 
+any cpu there is never a possibility of it being detected as a User 
+Interrupt. It will always be delivered to the kernel.
 
-Btw, explicitly naming the "no DMA" context is probably a good idea,
-rather than referring to the "initial security context" (it's
-"initial" from the PoV of the iommufd, but not from the PoV of the
-device fd which was likely bound to the default kernel context before
-(2)).
+Does this help clarify the above?
 
-> 5)  Unbind the device from the iommufd, back to access blocked state and
->     move its group out of the initial security context if it's the last
->     unbound device in the group;
 
-Maybe worth clarifying that again (5) must happen for all devices in
-the group before rebiding any devices to regular kernel drivers.
->=20
-> (multiple attach/detach could happen between 2 and 5).
->=20
-> However existing iommu core has problem with above transition. Detach
-> in step 3/4 makes the device/group re-attached to the default domain
-> automatically, which opens the door for user-initiated DMAs to attack
-> the rest of the system. The existing vfio doesn't have this problem as
-> it combines 2/3 in one step (so does 4/5).
->=20
-> Fixing this problem requires the iommu core to also participate in the
-> security context management. Following this direction we also move group
-> viability check into the iommu core, which allows iommufd to stay fully
-> device-centric w/o keeping any group knowledge (combining with the
-> extension to iommu_at[de]tach_device() in a latter patch).
->=20
-> Basically two new interfaces are provided:
->=20
->         int iommu_device_init_user_dma(struct device *dev,
->                         unsigned long owner);
->         void iommu_device_exit_user_dma(struct device *dev);
->=20
-> iommufd calls them respectively when handling device binding/unbinding
-> requests.
->=20
-> The init_user_dma() for the 1st device in a group marks the entire group
-> for user-dma and establishes the initial security context (dma blocked)
-> according to aforementioned criteria. As long as the group is marked for
-> user-dma, auto-reattaching to default domain is disabled. Instead, upon
-> detaching the group is moved back to the initial security context.
->=20
-> The caller also provides an owner id to mark the ownership so inadvertent
-> attempt from another caller on the same device can be captured. In this
-> RFC iommufd will use the fd context pointer as the owner id.
->=20
-> The exit_user_dma() for the last device in the group clears the user-dma
-> mark and moves the group back to the default domain.
->=20
-> Signed-off-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 145 +++++++++++++++++++++++++++++++++++++++++-
->  include/linux/iommu.h |  12 ++++
->  2 files changed, 154 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 5ea3a007fd7c..bffd84e978fb 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -45,6 +45,8 @@ struct iommu_group {
->  	struct iommu_domain *default_domain;
->  	struct iommu_domain *domain;
->  	struct list_head entry;
-> +	unsigned long user_dma_owner_id;
+I just realized, we need to be careful when the notification vectors are 
+switched in the UPID. Any pending vectors detected after the switch 
+should abort the blocking call. The current code is wrong in a lot of 
+places where it touches the UPID.
 
-Using an opaque integer doesn't seem like a good idea.  I think you
-probably want a pointer to a suitable struct dma_owner or the like
-(you could have one embedded in each iommufd struct, plus a global
-static kernel_default_owner).
+Thanks,
+Sohil
 
-> +	refcount_t owner_cnt;
->  };
-> =20
->  struct group_device {
-> @@ -86,6 +88,7 @@ static int iommu_create_device_direct_mappings(struct i=
-ommu_group *group,
->  static struct iommu_group *iommu_group_get_for_dev(struct device *dev);
->  static ssize_t iommu_group_store_type(struct iommu_group *group,
->  				      const char *buf, size_t count);
-> +static bool iommu_group_user_dma_viable(struct iommu_group *group);
-> =20
->  #define IOMMU_GROUP_ATTR(_name, _mode, _show, _store)		\
->  struct iommu_group_attribute iommu_group_attr_##_name =3D		\
-> @@ -275,7 +278,11 @@ int iommu_probe_device(struct device *dev)
->  	 */
->  	iommu_alloc_default_domain(group, dev);
-> =20
-> -	if (group->default_domain) {
-> +	/*
-> +	 * If any device in the group has been initialized for user dma,
-> +	 * avoid attaching the default domain.
-> +	 */
-> +	if (group->default_domain && !group->user_dma_owner_id) {
->  		ret =3D __iommu_attach_device(group->default_domain, dev);
->  		if (ret) {
->  			iommu_group_put(group);
-> @@ -1664,6 +1671,17 @@ static int iommu_bus_notifier(struct notifier_bloc=
-k *nb,
->  		group_action =3D IOMMU_GROUP_NOTIFY_BIND_DRIVER;
->  		break;
->  	case BUS_NOTIFY_BOUND_DRIVER:
-> +		/*
-> +		 * FIXME: Alternatively the attached drivers could generically
-> +		 * indicate to the iommu layer that they are safe for keeping
-> +		 * the iommu group user viable by calling some function around
-> +		 * probe(). We could eliminate this gross BUG_ON() by denying
-> +		 * probe to non-iommu-safe driver.
-> +		 */
-> +		mutex_lock(&group->mutex);
-> +		if (group->user_dma_owner_id)
-> +			BUG_ON(!iommu_group_user_dma_viable(group));
-> +		mutex_unlock(&group->mutex);
->  		group_action =3D IOMMU_GROUP_NOTIFY_BOUND_DRIVER;
->  		break;
->  	case BUS_NOTIFY_UNBIND_DRIVER:
-> @@ -2304,7 +2322,11 @@ static int __iommu_attach_group(struct iommu_domai=
-n *domain,
->  {
->  	int ret;
-> =20
-> -	if (group->default_domain && group->domain !=3D group->default_domain)
-> +	/*
-> +	 * group->domain could be NULL when a domain is detached from the
-> +	 * group but the default_domain is not re-attached.
-> +	 */
-> +	if (group->domain && group->domain !=3D group->default_domain)
->  		return -EBUSY;
-> =20
->  	ret =3D __iommu_group_for_each_dev(group, domain,
-> @@ -2341,7 +2363,11 @@ static void __iommu_detach_group(struct iommu_doma=
-in *domain,
->  {
->  	int ret;
-> =20
-> -	if (!group->default_domain) {
-> +	/*
-> +	 * If any device in the group has been initialized for user dma,
-> +	 * avoid re-attaching the default domain.
-> +	 */
-> +	if (!group->default_domain || group->user_dma_owner_id) {
->  		__iommu_group_for_each_dev(group, domain,
->  					   iommu_group_do_detach_device);
->  		group->domain =3D NULL;
-> @@ -3276,3 +3302,116 @@ int iommu_device_get_info(struct device *dev, enu=
-m iommu_devattr attr, void *dat
->  	return ops->device_info(dev, attr, data);
->  }
->  EXPORT_SYMBOL_GPL(iommu_device_get_info);
-> +
-> +/*
-> + * IOMMU core interfaces for iommufd.
-> + */
-> +
-> +/*
-> + * FIXME: We currently simply follow vifo policy to mantain the group's
-> + * viability to user. Eventually, we should avoid below hard-coded list
-> + * by letting drivers indicate to the iommu layer that they are safe for
-> + * keeping the iommu group's user aviability.
-> + */
-> +static const char * const iommu_driver_allowed[] =3D {
-> +	"vfio-pci",
-> +	"pci-stub"
-> +};
-> +
-> +/*
-> + * An iommu group is viable for use by userspace if all devices are in
-> + * one of the following states:
-> + *  - driver-less
-> + *  - bound to an allowed driver
-> + *  - a PCI interconnect device
-> + */
-> +static int device_user_dma_viable(struct device *dev, void *data)
-
-I think this wants a "less friendly" more obviously local name.
-Really the only safe way to call this is via
-iommu_group_user_dma_viable(), which isn't obvious from this name.
-
-> +{
-> +	struct device_driver *drv =3D READ_ONCE(dev->driver);
-> +
-> +	if (!drv)
-> +		return 0;
-> +
-> +	if (dev_is_pci(dev)) {
-> +		struct pci_dev *pdev =3D to_pci_dev(dev);
-> +
-> +		if (pdev->hdr_type !=3D PCI_HEADER_TYPE_NORMAL)
-> +			return 0;
-> +	}
-> +
-> +	return match_string(iommu_driver_allowed,
-> +			    ARRAY_SIZE(iommu_driver_allowed),
-> +			    drv->name) < 0;
-> +}
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---LmpUe83dM2DcdbUy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFT8cgACgkQbDjKyiDZ
-s5LDshAAueFk7I7J9EQynn1R/ejHdu7L+tBXBss/9oKVXmWsxGISBfaRvRufwDfb
-HOTWvRLaACMqCl3m1wmx9yC2D3iULgMUtpHdr3IuQBAt5EYO9KnG+IPM4TrHtq4P
-8CXUeF8cXHd4v0TWjrTCPMixBFHEgda2/TFa0WFMM5kTYqiVaHOPmlAZG6zfMtKK
-/TmUzqHkQZgs2+XGW7nlKbgWqQ/ecSfv8GywlSOWsSl8sSp5DVqXEkAWdD92b0yM
-wtXTJigVmCGkM+AXAnwHY+K9upDiKqU4qSE4rRS/1gvB1Mum3L1TQOxSbJ9ROkCj
-u6Wnv4sZe10n4/zmmPtJrLinKFnvOdvHPjHOnPdz/5UlR12oo1NukIQ/6SCBWnoE
-jgyzjN5C53l9PUiqgRg7etLoY0LOdlNqPRgA5LbYewDRioK0qiUF8e6GYqN/cnO1
-v6kdUcnRj+kICfqZA0ngvZWHyL4uL6kVfcQsZtqNZTu6lAA4qpcyvqQ/ZiGAhM8Q
-4fBtG6mOJTvfsHsP+XJNOsh4/6uKXLP4XJZVFIZ84SFQbpPnu3tydGuS29ZuLwkP
-fETNAjRG9x3QtedeYKVus6a2MZney34LjGyCD2wT5b+sfrcNTmeq2bs20kJAZ9DJ
-xurKzUUsz6hL70Bc7cfqcBpvzf1OMvPC8z/G2m5f2pwI5oD2KzU=
-=w3D3
------END PGP SIGNATURE-----
-
---LmpUe83dM2DcdbUy--
