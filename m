@@ -2,296 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B8A41BF2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DD941BF9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244386AbhI2Gg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:36:57 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:57548 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244177AbhI2Gg4 (ORCPT
+        id S244535AbhI2HON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 03:14:13 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:52911 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244486AbhI2HOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:36:56 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18T6EPnn024057;
-        Wed, 29 Sep 2021 14:14:25 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 29 Sep
- 2021 14:35:10 +0800
-Message-ID: <8143a6aa-743f-f00e-482f-ea280969e0c6@aspeedtech.com>
-Date:   Wed, 29 Sep 2021 14:35:04 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [RESEND PATCH] media: aspeed: add debugfs
-Content-Language: en-US
-To:     Zev Weiss <zweiss@equinix.com>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        Wed, 29 Sep 2021 03:14:12 -0400
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HK6yQ59Mkz4xbQ; Wed, 29 Sep 2021 17:12:30 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1632899550;
+        bh=L08JZ1sawezeS015D9zgg+63/giIa2dhEn00NU5Gl9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kzcjZkVIb+59YwusaTa7TDofa176Y01SfMixfjEpvF52DXXtqMYoo/cnit3cVnrbz
+         FJpEABiRoF+LPSQAebuks5Y7LnwA+nuDbC3P74eseDZ6sXQrWSonXxWlTdus9grc8d
+         /fuzX/44k4p1mGzQ7m6ubwhzdVIm/+dkjaVtCTps=
+Date:   Wed, 29 Sep 2021 16:35:19 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>, "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-References: <20210929011652.1709-1-jammy_huang@aspeedtech.com>
- <20210929053049.GQ17315@packtop>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <20210929053049.GQ17315@packtop>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18T6EPnn024057
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
+ interfaces
+Message-ID: <YVQJJ/ZlRoJbAt0+@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-7-yi.l.liu@intel.com>
+ <YVPxzad5TYHAc1H/@yekko>
+ <BN9PR11MB5433E1BF538C7D3632F4C6188CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vlpAh7yLskJZWF4V"
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5433E1BF538C7D3632F4C6188CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zev,
 
-On 2021/9/29 下午 01:30, Zev Weiss wrote:
-> On Tue, Sep 28, 2021 at 06:16:53PM PDT, Jammy Huang wrote:
->> To show video real-time information as below:
->>
->>     Signal|           Resolution|       FRC
->>           |     Width     Height|
->>       Lock|      1920       1080|         0
->>
->>     Frame#|       Frame Duration|       FPS
->>           |    Now    Min    Max|
->>        496|     26     25     30|        40
->>
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->> ---
->> drivers/media/platform/aspeed-video.c | 100 ++++++++++++++++++++++++++
->> 1 file changed, 100 insertions(+)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 8b3939b8052d..5b98dc7b7b15 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -21,6 +21,8 @@
->> #include <linux/videodev2.h>
->> #include <linux/wait.h>
->> #include <linux/workqueue.h>
->> +#include <linux/debugfs.h>
->> +#include <linux/ktime.h>
->> #include <media/v4l2-ctrls.h>
->> #include <media/v4l2-dev.h>
->> #include <media/v4l2-device.h>
->> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
->> 	struct list_head link;
->> };
->>
->> +struct aspeed_video_perf {
->> +	ktime_t last_sample;
->> +	u32 totaltime;
->> +	u32 duration;
->> +	u32 duration_min;
->> +	u32 duration_max;
->> +};
->> +
->> #define to_aspeed_video_buffer(x) \
->> 	container_of((x), struct aspeed_video_buffer, vb)
->>
->> @@ -241,6 +251,8 @@ struct aspeed_video {
->> 	unsigned int frame_left;
->> 	unsigned int frame_right;
->> 	unsigned int frame_top;
->> +
->> +	struct aspeed_video_perf perf;
->> };
->>
->> #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
->> @@ -444,6 +456,18 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->> 		readl(video->base + reg));
->> }
->>
->> +static void update_perf(struct aspeed_video *v)
->> +{
->> +	v->perf.duration =
->> +		ktime_to_ms(ktime_sub(ktime_get(),  v->perf.last_sample));
->> +	v->perf.totaltime += v->perf.duration;
->> +
->> +	if (!v->perf.duration_max || v->perf.duration > v->perf.duration_max)
->> +		v->perf.duration_max = v->perf.duration;
-> How about
->
->    v->perf.duration_max = max(v->perf.duration, v->perf.duration_max);
->
-> instead of manually testing & branching?
-OK, this will be included in the next patch.
->> +	if (!v->perf.duration_min || v->perf.duration < v->perf.duration_min)
->> +		v->perf.duration_min = v->perf.duration;
-> And likewise with min(...) here.
->
-> As a minor style thing, I might suggest adding a variable declaration
-> like
->
->    struct aspeed_video_perf *p = &v->perf;
->
-> and using that in the rest of the function to cut down on the
-> verbosity/repetition a bit.  Or actually, since it looks like there
-> aren't any other members of struct aspeed_video accessed in this
-> function, maybe just make struct aspeed_video_perf be the parameter
-> instead?
-OK, this will be included in the next patch.
->
->> +}
->> +
->> static int aspeed_video_start_frame(struct aspeed_video *video)
->> {
->> 	dma_addr_t addr;
->> @@ -482,6 +506,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
->> 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
->> 			    VE_INTERRUPT_COMP_COMPLETE);
->>
->> +	video->perf.last_sample = ktime_get();
->> +
->> 	aspeed_video_update(video, VE_SEQ_CTRL, 0,
->> 			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
->>
->> @@ -600,6 +626,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->> 		u32 frame_size = aspeed_video_read(video,
->> 						   VE_JPEG_COMP_SIZE_READ_BACK);
->>
->> +		update_perf(video);
->> +
->> 		spin_lock(&video->lock);
->> 		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->> 		buf = list_first_entry_or_null(&video->buffers,
->> @@ -760,6 +788,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
->> 	det->width = MIN_WIDTH;
->> 	det->height = MIN_HEIGHT;
->> 	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
->> +	memset(&video->perf, 0, sizeof(video->perf));
->>
->> 	do {
->> 		if (tries) {
->> @@ -1517,6 +1546,71 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
->> 	.buf_queue =  aspeed_video_buf_queue,
->> };
->>
->> +#ifdef CONFIG_DEBUG_FS
->> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
->> +{
->> +	struct aspeed_video *v = s->private;
->> +
->> +	seq_printf(s, "%10s|%21s|%10s\n",
->> +		   "Signal", "Resolution", "FRC");
->> +	seq_printf(s, "%10s|%10s%11s|%10s\n",
->> +		   "", "Width", "Height", "");
->> +	seq_printf(s, "%10s|%10d%11d|%10d\n",
->> +		   v->v4l2_input_status ? "Unlock" : "Lock",
->> +		   v->pix_fmt.width, v->pix_fmt.height, v->frame_rate);
->> +
->> +	seq_puts(s, "\n");
->> +
->> +	seq_printf(s, "%10s|%21s|%10s\n",
->> +		   "Frame#", "Frame Duration", "FPS");
->> +	seq_printf(s, "%10s|%7s%7s%7s|%10s\n",
->> +		   "", "Now", "Min", "Max", "");
->> +	seq_printf(s, "%10d|%7d%7d%7d|%10d\n",
->> +		   v->sequence, v->perf.duration, v->perf.duration_min,
->> +		   v->perf.duration_max, 1000/(v->perf.totaltime/v->sequence));
->> +
-> This looks like a convenient format for eyeballing with 'cat', but also
-> like it would be kind of awkward to parse if you wanted to do any sort
-> of automated analysis of the performance data it provides.  Would a
-> key:value type format like
->
->    width: %d
->    height: %d
->    frame_rate: %d
->    frame_number: %d
->    # etc.
->
-> maybe provide a decent compromise?  (Easily parseable, almost as easily
-> readable.)
+--vlpAh7yLskJZWF4V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Your concern is reasonable, I will change the style to show information.
+On Wed, Sep 29, 2021 at 05:38:56AM +0000, Tian, Kevin wrote:
+> > From: David Gibson <david@gibson.dropbear.id.au>
+> > Sent: Wednesday, September 29, 2021 12:56 PM
+> >=20
+> > >
+> > > Unlike vfio, iommufd adopts a device-centric design with all group
+> > > logistics hidden behind the fd. Binding a device to iommufd serves
+> > > as the contract to get security context established (and vice versa
+> > > for unbinding). One additional requirement in iommufd is to manage the
+> > > switch between multiple security contexts due to decoupled bind/attac=
+h:
+> > >
+> > > 1)  Open a device in "/dev/vfio/devices" with user access blocked;
+> >=20
+> > Probably worth clarifying that (1) must happen for *all* devices in
+> > the group before (2) happens for any device in the group.
+>=20
+> No. User access is naturally blocked for other devices as long as they
+> are not opened yet.
 
-This will be included in the next patch.
+Uh... my point is that everything in the group has to be removed from
+regular kernel drivers before we reach step (2).  Is the plan that you
+must do that before you can even open them?  That's a reasonable
+choice, but then I think you should show that step in this description
+as well.
 
->
->> +	return 0;
->> +}
->> +
->> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
->> +{
->> +	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
->> +}
->> +
->> +static const struct file_operations aspeed_video_debugfs_ops = {
->> +	.owner   = THIS_MODULE,
->> +	.open    = aspeed_video_proc_open,
->> +	.read    = seq_read,
->> +	.llseek  = seq_lseek,
->> +	.release = single_release,
->> +};
->> +
->> +static struct dentry *debugfs_entry;
-> I don't know how realistic the odds are of a system ever having multiple
-> aspeed-video devices, but structurally would this make more sense as
-> part of struct aspeed_video instead of being a single global?
+> > > 2)  Bind the device to an iommufd with an initial security context
+> > >     (an empty iommu domain which blocks dma) established for its
+> > >     group, with user access unblocked;
+> > >
+> > > 3)  Attach the device to a user-specified ioasid (shared by all devic=
+es
+> > >     attached to this ioasid). Before attaching, the device should be =
+first
+> > >     detached from the initial context;
+> >=20
+> > So, this step can implicitly but observably change the behaviour for
+> > other devices in the group as well.  I don't love that kind of
+> > difficult to predict side effect, which is why I'm *still* not totally
+> > convinced by the device-centric model.
+>=20
+> which side-effect is predicted here? The user anyway needs to be
+> aware of such group restriction regardless whether it uses group
+> or nongroup interface.
 
-Since this is the driver for aspeed-video ip of SoC, it couldn't have 
-multiple devices.
+Yes, exactly.  And with a group interface it's obvious it has to
+understand it.  With the non-group interface, you can get to this
+stage in ignorance of groups.  It will even work as long as you are
+lucky enough only to try with singleton-group devices.  Then you try
+it with two devices in the one group and doing (3) on device A will
+implicitly change the DMA environment of device B.
 
->> +
->> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
->> +{
->> +	debugfs_remove_recursive(debugfs_entry);
->> +	debugfs_entry = NULL;
->> +}
->> +
->> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
->> +{
->> +	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
->> +						   video,
->> +						   &aspeed_video_debugfs_ops);
->> +	if (!debugfs_entry)
->> +		aspeed_video_debugfs_remove(video);
->> +
->> +	return debugfs_entry == NULL ? -EIO : 0;
->> +}
->> +#else
->> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
->> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
->> +{
->> +	return 0;
->> +}
->> +#endif /* CONFIG_DEBUG_FS */
->> +
->> static int aspeed_video_setup_video(struct aspeed_video *video)
->> {
->> 	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
->> @@ -1708,6 +1802,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
->> 		return rc;
->> 	}
->>
->> +	rc = aspeed_video_debugfs_create(video);
->> +	if (rc)
->> +		dev_err(video->dev, "debugfs create failed\n");
->> +
->> 	return 0;
->> }
->>
->> @@ -1719,6 +1817,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
->>
->> 	aspeed_video_off(video);
->>
->> +	aspeed_video_debugfs_remove(video);
->> +
->> 	clk_unprepare(video->vclk);
->> 	clk_unprepare(video->eclk);
->>
->> -- 
->> 2.25.1
->>
+(or at least, it will if they share a group because they don't have
+distinguishable RIDs.  That's not the only multi-device group case,
+but it's one of them).
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--vlpAh7yLskJZWF4V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFUCSUACgkQbDjKyiDZ
+s5Knfw//Rw2uKWKlVgUYBuPqXP7H/GPzP0d7Hg2xFwsv688tH/erKlqjFroLLZFv
+2Kh4rygO7LibaX6bR5U8t+Dr6xms44sDRhSmcEYqIh2WiE0BlLIAjSQg8YhxIb4J
+s6E3xJ0xgDTH/c2ebBZPckFg4jXFZsCtJ5YykxCMZOVZsO7Go236aE9JvIuscatR
+TqYIEd2CDV5EELOnRItwWqF/FjfrrbhfavYENVQZU3qdbjQ90Ii1OpWe+wd9jWcd
+pudHU2xLjlvchw391gxc2y8qkLEev6E5ZbfOSKa/f6N3aLb55PcN8rqi+zfne9Na
+lzs30Gy5TRtEhT/VwsHXHnGz71ueqYPQcLMCBX7J/KgMIxnRtuQtLvYCxM9fzLFb
+7DGIXfPpAqla94JMsp4Z6R27pH2QFJQmORJDjJBOkN2UbF3ZkTqFoYxYPbAXQfZH
+UPVM7mdAsGtUEKEszBBqAUJG0wQhJweg63WEeczQh4gPR1J6g+ye2l5rXK9Mtl0s
+O3DQdpqXkp+dnEjvi2Ybzv0uPvfUbc+pX00a/N0vPB/OO6UfQiYcXx1t5k/A8bO+
+8TCgk8WUVMu1z48IG2k6QqQHuO5rMs8NH2NEIs4IownQuZcOtSUDs5p6IwbuNMEv
+scg9c+qzutZvCv/flGStpYdrSHMs9iF9n46ce8v9eovGQ99Nubk=
+=uIA1
+-----END PGP SIGNATURE-----
+
+--vlpAh7yLskJZWF4V--
