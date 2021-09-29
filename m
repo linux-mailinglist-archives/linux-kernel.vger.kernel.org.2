@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C2E41C32A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B18741C330
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245641AbhI2LJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:09:48 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:35032
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243413AbhI2LJq (ORCPT
+        id S244820AbhI2LPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:15:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243377AbhI2LPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:09:46 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id DAF6B405B1;
-        Wed, 29 Sep 2021 11:08:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632913684;
-        bh=aX6lNt/v2bM3fOhUKFXaVJ5cGbOoFHK0cgvLwy/sgvM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=Y9GNT/Ozu5xpPI5SkDNEBzAjAJoeFYKkCEuXCar5Rm0+o8CHNwp3InBRgQrvq7jEj
-         QU5zTVsspxz0xh7Fshfla6ZqugwzKLuW0knZwSL8mFavVwLT73xfAY7GOGEF7PovBX
-         U+MfDH2fbswzilbJcSZJGlW2OI6gg/ikHu6Z7Sh4Gluilq5kMviKhp/DQXck+GKxjV
-         zer2SVAJSSjrKgi0VKimiuQE22/z1+3yCHpSGldVRn3CcQKwV4Hhw1U4t/n0wc3FFb
-         ZniyaHIoDsEG5HX3AgFEdZs2o6JKlgJPKZaEJ4JFg/xlOrgnA6eIEwMuB1iR1yDhI8
-         rehr0oWkqJu6A==
-From:   Colin King <colin.king@canonical.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/mdp4: Fix potential integer overflow on 32 bit multiply
-Date:   Wed, 29 Sep 2021 12:08:04 +0100
-Message-Id: <20210929110804.210725-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 29 Sep 2021 07:15:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632914006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dTZq+ux4mB9YNHTA5OTzVEdASfmrzoHTVqIYcJ0NyoY=;
+        b=C9vnBjKPJrEM7llD7zAyOTUdS0k3FPjeKsfQeEgoL+k+HgM8RQS3vi6VJEKMODvRD8BBQg
+        84DANab/ecUPzIlkt5uQV2I/qhpKN3BdZFbe3bnrCkir7NDo1cBKyQw0A7Kujp6v+Y0aUg
+        0+2GmGD8vKwJuz4khtPbgo54lmRgkFk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-LweKIMcoNhGFh3TMouD4qg-1; Wed, 29 Sep 2021 07:13:25 -0400
+X-MC-Unique: LweKIMcoNhGFh3TMouD4qg-1
+Received: by mail-ed1-f71.google.com with SMTP id ec14-20020a0564020d4e00b003cf5630c190so2062663edb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:13:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dTZq+ux4mB9YNHTA5OTzVEdASfmrzoHTVqIYcJ0NyoY=;
+        b=4OG8DNJcPwaGJYGa+g5lwAjRM3rUl6W0r4yVG+bMh01UzqXnuAi0B00rZCDtjw5YFM
+         OdROu/fBFcmJuGlW/9ISCzXXYhbUrABbzWUFd5xMo9/PjqFF99X6B/0hGeFxoS5qNqBn
+         b5m9yES7KTAcHAi4kXBu93sb64HOT/JfKVPlbTe5LPjrZebayY3Euij3i3bxGJ6h9kAc
+         DXI6iupuc+wV1nBXbQVOU/jx3vq/mfyZa78CGuHkcRmX4jHStBhNFmJm2mG9xgWNB0An
+         VbtHGVFZNs8UmBxynk5MJ4169BPR32frT0o87hZp0gfhH4nKR0ta95ICFY8BPH4nv09i
+         Zhag==
+X-Gm-Message-State: AOAM530MF4BWrCrOo/ga7VDyrrEtrkC50QUcydTVI57HoWO/UvFvo1sq
+        5jNOX1zCYErgVjD2D6JAocrstwy9P+xiqYBfghpMw8GPpFCRvmvTX7a1P2tRJfA4yFf5IJhrYBk
+        FSb+Ec+vCekDus1A22WtO38qA
+X-Received: by 2002:a17:906:3157:: with SMTP id e23mr13304317eje.29.1632914003982;
+        Wed, 29 Sep 2021 04:13:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJ8c5/66N3weJQN+Q75ZY2UDR73SjqQypZMhax7EeuFS93w2FyUhjDjm1n8+TpHXC55CuSLw==
+X-Received: by 2002:a17:906:3157:: with SMTP id e23mr13304286eje.29.1632914003709;
+        Wed, 29 Sep 2021 04:13:23 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c10sm1180946eje.37.2021.09.29.04.13.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 04:13:23 -0700 (PDT)
+Message-ID: <9aec9f47-3390-de0d-e125-c7cef14df894@redhat.com>
+Date:   Wed, 29 Sep 2021 13:13:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH 2/3] nSVM: introduce smv->nested.save to cache save
+ area fields
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210903102039.55422-1-eesposit@redhat.com>
+ <20210903102039.55422-3-eesposit@redhat.com>
+ <fbb40bb8c12715c0aa9d6a113784f8a21603e2b3.camel@redhat.com>
+ <82acae8f-6b27-928f-0c00-1df8fc9d26b8@redhat.com>
+ <YVOV7EucFzF5S6So@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YVOV7EucFzF5S6So@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 29/09/21 00:23, Sean Christopherson wrote:
+> On a related topic, this would be a good opportunity to resolve the naming
+> discrepancies between VMX and SVM.  VMX generally refers to vmcs12 as KVM's copy
+> of L1's VMCS, whereas SVM generally refers to vmcb12 as the "direct" mapping of
+> L1's VMCB.  I'd prefer to go with VMX's terminology, i.e. rework nSVM to refer to
+> the copy as vmcb12, but I'm more than a bit biased since I've spent so much time
+> in nVMX,
 
-In the case where clock is 2147485 or greater the 32 bit multiplication
-by 1000 will cause an integer overflow. Fix this by making the constant
-1000 a long to ensure a long multiply occurs to avoid the overflow
-before assigning the result to the long result in variable requested.
-Most probably a theoretical overflow issue, but worth fixing.
+I agree, and I think Emanuele's patches are a step in the right 
+direction.  Once we ensure that all state in svm->nested is cached 
+vmcb12 content, we can get rid of vmcb12 pointers in the functions.
 
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: 3e87599b68e7 ("drm/msm/mdp4: add LVDS panel support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-index 7288041dd86a..deada745d5b9 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-@@ -64,7 +64,7 @@ static int mdp4_lvds_connector_mode_valid(struct drm_connector *connector,
- 	struct drm_encoder *encoder = mdp4_lvds_connector->encoder;
- 	long actual, requested;
- 
--	requested = 1000 * mode->clock;
-+	requested = 1000L * mode->clock;
- 	actual = mdp4_lcdc_round_pixclk(encoder, requested);
- 
- 	DBG("requested=%ld, actual=%ld", requested, actual);
--- 
-2.32.0
+Paolo
 
