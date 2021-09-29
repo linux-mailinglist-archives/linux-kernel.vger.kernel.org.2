@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9F141C324
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C2E41C32A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245629AbhI2LG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244363AbhI2LG0 (ORCPT
+        id S245641AbhI2LJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:09:48 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:35032
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243413AbhI2LJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:06:26 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6018DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:04:45 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id h129so2581578iof.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
-        b=XLPZ73sO9dhVT2bbwHwMCvXSPeNtSy62+mZkkR1QY/Zbxrch90BJWL9KQJoB51crZH
-         ZNXtL/bVO1eNNkZdi180BqbYvMl9kmbF6KI2Q0Dj80ny6jV0gnJDMHBUeOqDcZiOS5lI
-         hJq/SMlk1YnOT5oQBVcuRxxMQt3u4JyZPUlAQlfho/FGIudGW7Maaz21VgazUth/LZnk
-         Lk3ShCeaImzxdi/zOrCR7lPuq2W44ytat4X2ZTG/kHiWDBqPK86rGj7wPbQ0BN7UQ2tb
-         tF+tUbDnikpbJFm1Zcc4b+UEej3qciw0GNR48DICYBtd9LY4iTUtyCJczUtkO4PkZWR+
-         yo2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
-        b=qNDARxTp89wcuZxDK88qgEmZQkp/qQshc+xP1Au69GfnomBHiuQtPgurhnERCwLK35
-         hTrZHFqvg6bJmd6XzU+Gk47XxnSyiMtQ/cRk/pSfPn1idLFezd/fQGkKALUr4SJ9oHyP
-         unwIIIRpjZ9xHL4IBH1qzTeCVID7D4lhGPNIZ9mZkN60/0b5bH4juLzNgnz4HrCUVZ0N
-         HtIur6wzvdaYVj83ut6PjcD9QeCPB9Rw77xVt5bwTlGFOwfQg5u+BpPlW2lNA9ehw2HZ
-         Tcsm9v/YDKK2lBU/QaBn1MWmbpnZEIKdlakhCqgRJFz8RQa2C1nS60Zn3oGJBmT8kzhO
-         jAkg==
-X-Gm-Message-State: AOAM533qNus3C0vqHvktrZ02V7lRQUHwxMurhGjLhxrKLk1C+r8/pW2A
-        s32Qw7gK649zCV9+uCtF+74BCeUccdVZLhpR+LM=
-X-Google-Smtp-Source: ABdhPJw+lmE1MggRj1GoWe5/x9aSm+DUzhVW4qaoHkJNpFXrm7JuNWGO4uOd4NO1RUPpl4y4eK8+v6m7A2a//hr8iXU=
-X-Received: by 2002:a02:aa8e:: with SMTP id u14mr9078817jai.24.1632913484777;
- Wed, 29 Sep 2021 04:04:44 -0700 (PDT)
+        Wed, 29 Sep 2021 07:09:46 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id DAF6B405B1;
+        Wed, 29 Sep 2021 11:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632913684;
+        bh=aX6lNt/v2bM3fOhUKFXaVJ5cGbOoFHK0cgvLwy/sgvM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=Y9GNT/Ozu5xpPI5SkDNEBzAjAJoeFYKkCEuXCar5Rm0+o8CHNwp3InBRgQrvq7jEj
+         QU5zTVsspxz0xh7Fshfla6ZqugwzKLuW0knZwSL8mFavVwLT73xfAY7GOGEF7PovBX
+         U+MfDH2fbswzilbJcSZJGlW2OI6gg/ikHu6Z7Sh4Gluilq5kMviKhp/DQXck+GKxjV
+         zer2SVAJSSjrKgi0VKimiuQE22/z1+3yCHpSGldVRn3CcQKwV4Hhw1U4t/n0wc3FFb
+         ZniyaHIoDsEG5HX3AgFEdZs2o6JKlgJPKZaEJ4JFg/xlOrgnA6eIEwMuB1iR1yDhI8
+         rehr0oWkqJu6A==
+From:   Colin King <colin.king@canonical.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/mdp4: Fix potential integer overflow on 32 bit multiply
+Date:   Wed, 29 Sep 2021 12:08:04 +0100
+Message-Id: <20210929110804.210725-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a05:6602:13c8:0:0:0:0 with HTTP; Wed, 29 Sep 2021 04:04:44
- -0700 (PDT)
-Reply-To: mrschantelhermans@gmail.com
-From:   Mrs Chantel Hermans <mrs.chantalhermans2002@gmail.com>
-Date:   Wed, 29 Sep 2021 04:04:44 -0700
-Message-ID: <CA+YEVv9NLRr0hUsRA2uX=AAQW4ZAkf7dCbCv5fKc_3V7yvUR=g@mail.gmail.com>
-Subject: ATTENTION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
+
+In the case where clock is 2147485 or greater the 32 bit multiplication
+by 1000 will cause an integer overflow. Fix this by making the constant
+1000 a long to ensure a long multiply occurs to avoid the overflow
+before assigning the result to the long result in variable requested.
+Most probably a theoretical overflow issue, but worth fixing.
+
+Addresses-Coverity: ("Unintentional integer overflow")
+Fixes: 3e87599b68e7 ("drm/msm/mdp4: add LVDS panel support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
+index 7288041dd86a..deada745d5b9 100644
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
+@@ -64,7 +64,7 @@ static int mdp4_lvds_connector_mode_valid(struct drm_connector *connector,
+ 	struct drm_encoder *encoder = mdp4_lvds_connector->encoder;
+ 	long actual, requested;
+ 
+-	requested = 1000 * mode->clock;
++	requested = 1000L * mode->clock;
+ 	actual = mdp4_lcdc_round_pixclk(encoder, requested);
+ 
+ 	DBG("requested=%ld, actual=%ld", requested, actual);
 -- 
+2.32.0
 
-
-ATTENTION
-
-
-
-You have been compensated with the sum of 6.9 million dollars in this
-United Nation the payment will be issue into ATM Visa Card,
-
-
-
-and send to you from the Santander Bank of Spain we need your
-Address,Passport and your whatsapp number.
-
-
-
-THANKS
-
-*Mrs Chantel Hermans*
