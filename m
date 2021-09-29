@@ -2,133 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C755041C12A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CC741C12B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244947AbhI2JAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:00:19 -0400
-Received: from mout.gmx.net ([212.227.15.19]:57751 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244764AbhI2JAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:00:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632905905;
-        bh=0LEmnNPhcWdihF2RjF95YJlRjy/VpEvhtUCClVkra3E=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=NoQ22YzDXYVc3sXRvJUxxZbTH7Tlh7bOQtkkk6SIFFsMXEXH0IU7OllhYyN/9nbAo
-         9z2naBmrgWWlrfEZjYAhIOsQZXKD+oejMQLhCaMM9qRQPw3a0tuHeHq4uKo+8obxkK
-         gkMOtNf+RSWaM3fhYbSoBpYFMS1a69TPSz/4kRNc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [87.130.101.138] ([87.130.101.138]) by web-mail.gmx.net
- (3c-app-gmx-bs21.server.lan [172.19.170.73]) (via HTTP); Wed, 29 Sep 2021
- 10:58:25 +0200
+        id S244949AbhI2JAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:00:41 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16620 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244764AbhI2JAk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:00:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632905939; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=lCRl9tb/bosLKkvyhrvHol20i0z076BczTy3dEuygxU=; b=ZmEXYVTdSuikDNWa+H2wYWdRcKLm6GUA+VBUzVvYcM1exaqPhwN0N9JKnAsunnRssC/rFkSp
+ 6FR64K7DaCv+D78Vb31qYGzcgxsotGMycC06iLiiNLoYrGIbBBwlKYwD9nv1qeRKIo+AVvBo
+ +21oY5Z8xihq+IwUBGeQIrxS268=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 61542ad1b62327f2cb24f957 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Sep 2021 08:58:57
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE30FC43616; Wed, 29 Sep 2021 08:58:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.109] (unknown [49.204.182.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6763DC4338F;
+        Wed, 29 Sep 2021 08:58:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6763DC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
+ <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
+ <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+ <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
+Date:   Wed, 29 Sep 2021 14:28:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <trinity-04f4aedd-514d-47bc-8622-cf6b1a264d52-1632905905528@3c-app-gmx-bs21>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, peterhuewe@gmx.de,
-        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: Re: [PATCH] tpm: fix potential NULL pointer access in
- tpm_del_char_device()
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 29 Sep 2021 10:58:25 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210924142032.GY3544071@ziepe.ca>
-References: <20210910180451.19314-1-LinoSanfilippo@gmx.de>
- <204a438b6db54060d03689389d6663b0d4ca815d.camel@kernel.org>
- <trinity-27f56ffd-504a-4c34-9cda-0953ccc459a3-1631566430623@3c-app-gmx-bs69>
- <c22d2878f9816000c33f5349e7256cadae22b400.camel@kernel.org>
- <50bd6224-0f01-ca50-af0e-f79b933e7998@gmx.de>
- <20210924133321.GX3544071@ziepe.ca>
- <b49f4b52-44c4-8cb8-a102-689e9f788177@gmx.de>
- <20210924142032.GY3544071@ziepe.ca>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:jxiYz/CfHteSo64qsJl+OFqt2ZEi7cgLLlu3QlsURDEaRf1qcf2836+rv8hUCuZubEcXY
- IOXBufYQQSASmDArS0/i4E2Npm5wTfyBbLtF8c7fHYKE2HnyuDG3BSBfjEsQtVyn5m9DwhEz+GKR
- VL37F+2X/7FRBU37VzZKlp2kUXmu9L7cnXSeT3uCScmv+QzWJbEVyUKYjbGnU3YfMYN29otDNmEl
- pZw+FfU1OI4uZYyOe8C/qGmaoPU4y7HeUOitF7lV0o6nkSaQ7bunYlUz4gSH1j9rkm9yoNY3r0cw
- Uw=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yQoCdAJcWJM=:pi5fuWIg9BPlVs+WOjM1Gi
- tRqUOlzFucYaLb8HvycKb40Lwear0svHybX7xRzYidSwelXeuxOatMaruV5mO1RfdPTyvuW8F
- c+GeHzXaSvTvdZnznqurSABvSnY1DJVBKDKzefeK47IED2VTNyGO8Mkgs/4FVNPQkNqPKbA4H
- CEQ5X/ADltCCDP3O8h6pg4VLzvEL9BylgfhKfR1wttX2fk2PoBfFNHMj7bSdxEGGbcFF1dyGo
- NbxtqDBPr0t8xgPBKV2s8KKRZhr69cAILvgMAW0Zz7uaG0r5JVa2c3Fl1X2a1yTaiyZK9Zq27
- cJAIbSyOFw6y/ZEUbmUu8uJLBAHGmWCOLFqv798Z0Mbp3B46i86aD3Tbv3/nSf8a0E9fbvCc8
- fGmBw506xZhbP01CF9OrUMaA0DI8xBZjaHhZQ+6N0sQiUu+MwICfeaUB3aTYL/PWceT09Gq2A
- Y/n491oRRQ9Zcxpf3U4EmOgFGlaM8S9ep5nE0sBwioNqSKA1aZ55PlzmLNSKdducUszns0CTd
- PfmN4FLgIVDgpjfHlKEjRmleZC4/fOKIs+XswuXhw8kJbErFZotC9Wbr3HvK4GgDpBX/jJcOG
- OrKMzD9xDZ4FAuD9SzJLVxSxL7JgueTRANN61t4CA9ghivBKufxt0qC89Unf+1wwg+xMvgK6k
- cNzHMv6qaD0hrKEb5dkZ47XNUy3dWit0jZmrS4vdZEgn1ayKJJb4yradQVg4e6lSO6OZrULwo
- tDjRnbrqOvdRP9jj0xOT+7qxi+A1Y7N3FA4iiaPGLHpq/Q9+h8Ij1yEvtXgdphyfPN6p24+YW
- n40VELY
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-> Gesendet: Freitag, 24. September 2021 um 16:20 Uhr
-> Von: "Jason Gunthorpe" <jgg@ziepe.ca>
-> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> Cc: "Jarkko Sakkinen" <jarkko@kernel.org>, peterhuewe@gmx.de, p.rosenber=
-ger@kunbus.com, linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.=
-org, stable@vger.kernel.org
-> Betreff: Re: [PATCH] tpm: fix potential NULL pointer access in tpm_del_c=
-har_device()
->
-> On Fri, Sep 24, 2021 at 04:17:52PM +0200, Lino Sanfilippo wrote:
-> > On 24.09.21 at 15:33, Jason Gunthorpe wrote:
-> > > On Fri, Sep 24, 2021 at 03:29:46PM +0200, Lino Sanfilippo wrote:
-> > >
-> > >> So this bug is triggered when the bcm2835 drivers shutdown() functi=
-on is called since this
-> > >> driver does something quite unusual: it unregisters the spi control=
-ler in its shutdown()
-> > >> handler.
-> > >
-> > > This seems wrong
-> > >
-> > > Jason
-> > >
-> >
-> >
-> > Unregistering the SPI controller during shutdown is only a side-effect=
- of calling
-> > bcm2835_spi_remove() in the shutdown handler:
-> >
-> > static void bcm2835_spi_shutdown(struct platform_device *pdev)
-> > {
-> > 	int ret;
-> >
-> > 	ret =3D bcm2835_spi_remove(pdev);
-> > 	if (ret)
-> > 		dev_err(&pdev->dev, "failed to shutdown\n");
-> > }
->
-> That's wrong, the shutdown handler is only supposed to make the HW
-> stop doing DMA and interrupts so we can have a clean transition to
-> kexec/etc
->
-> It should not be manipulating other state.
 
 
-I created another patch that fixes the issue in the BCM2835 driver instead
-(see https://marc.info/?l=3Dlinux-spi&m=3D163285906725366&w=3D2).
+On 9/28/2021 4:46 PM, David Hildenbrand wrote:
+> On 28.09.21 12:53, Faiyaz Mohammed wrote:
+>>
+>>
+>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
+>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
+>>>> For INITRD and initmem memory is reserved through "memblock_reserve"
+>>>> during boot up but it is free via "free_reserved_area" instead
+>>>> of "memblock_free".
+>>>> For example:
+>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>
+>>>> To get the start and end address of the above freed memory and to
+>>>> account
+>>>> proper memblock added memblock_dbg log in "free_reserved_area".
+>>>> After adding log:
+>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
+>>>> free_initrd_mem+0x20/0x28
+>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
+>>>> free_initmem+0x70/0xc8
+>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>
+>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>>>> ---
+>>>>    mm/page_alloc.c | 5 +++++
+>>>>    1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>> index b37435c..f85c3b2 100644
+>>>> --- a/mm/page_alloc.c
+>>>> +++ b/mm/page_alloc.c
+>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start,
+>>>> void *end, int poison, const char
+>>>>            pr_info("Freeing %s memory: %ldK\n",
+>>>>                s, pages << (PAGE_SHIFT - 10));
+>>>>    +#ifdef CONFIG_HAVE_MEMBLOCK
+>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
+>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>>>> +#endif
+>>>
+>>> IMHO, the "memblock_free" part is misleading. Something was allocated
+>>> early via memblock, then we transitioned to the buddy, now we're freeing
+>>> that early allocation via the buddy.
+>>> Yes, we're freeing the early allocation via buddy, but for proper
+>> memblock accounting we need this debug print.
+>>
+> 
+> What do you mean with "accounting" ? These are debug statements.
+> 
+> 
+Yes, these are debug statements, which help to know the a-b address
+belongs to x callsite. This info is required when memblock=debug is
+passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
 
-However I still think that the fix I proposed for TPM is valueable, becaus=
-e
-it saves us from any SPI controller driver that does not know/care about t=
-he
-issue that is caused in TPM by unregistering the controller in the shutdow=
-n
-handler. Note that the freescale DSPI driver is another candidate that beh=
-aves
-errorneous in this way.
-
-Regards,
-Lino
+Thanks,
+Mohammed Faiyaz
