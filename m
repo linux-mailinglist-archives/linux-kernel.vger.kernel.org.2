@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D6441BD9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB6541BD9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244038AbhI2DoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S244046AbhI2Dor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239755AbhI2DoV (ORCPT
+        with ESMTP id S239755AbhI2Doo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:44:21 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58238C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:42:41 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b15so4903634lfe.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:42:41 -0700 (PDT)
+        Tue, 28 Sep 2021 23:44:44 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CD2C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:43:04 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id h12so635138pjj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuNTL9gPvpWYsW3AwxYryKONOf4+S+yGJL4QxUsihbA=;
-        b=h7mvpzImaXE2WV7qwWKc2k5Jqj0LIXIZYtDyLIOOa7f0MYkXYYneJn5QWbqPgwBQxQ
-         bSiclPOqlt57iy3gVD8Q6aXV0R3mZs0DU421XL+PEBe9/UyURCMtA4Ux2VfU9AjuLnuL
-         dvu5KRMi2MZPbyVWgjqy7XGMiLfXKLHVOQCphKRcU7Ipe18W7J9z3+vFpTPPBhKWFTmA
-         aDB1WUxmKCqha1Paw/WytXLKfSPjuU772NfZv7P3hzhteJ6iJdoVt8abA9dBiQbFEnLL
-         LgFksSFjwAXKFOE0aYOBuX79a/qG7kTJsQvDZpmvm0CqetzfQXBXBg0vZ8lVKqL+xK+V
-         9V+g==
+        h=from:to:cc:subject:date:message-id;
+        bh=8EIDIG7He/WdJECyN2rIQHoUkf1zGI2sOfErvrjMF1g=;
+        b=kuWPmsoRK9qCOXQhyxXQGOqOvNquxsxoUC42Bng3blovL6sX9bC2bYDmImOj+8fTp/
+         MySsDJEShHHYqrJpRIpxiCoMuJFm4YwLZ3RXSyz98cml5KghqpxVtVU9x767bZtODKlq
+         lTF5sitYWDL+IZHFJFEVfVv4VdSNTKqwvZl3C4j3sSSAnD1M18Y0UF9B9g+IPmj/88+m
+         lniW+N1kDEJ9Ou2tSr4VYb4yJfEk8da52G9xjrF/lqM0ThI2ej4t7Pvz0lC6P6RrpaAB
+         d8zGgs1PGeTsTBGuzhgQyV9a4SFDxH0TUdfrDpk2UuKvP9c7Tpb68V90EaCqLwxA/QaL
+         fP8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuNTL9gPvpWYsW3AwxYryKONOf4+S+yGJL4QxUsihbA=;
-        b=40jkQfyfC8fXm/5nowwVtf+oBs8aGmEQ6VG0KSprHaR45Jdxovc2Ce3P03GlJhY7cQ
-         JCeX4pXiuz5BQx1jRbBXrfNigckko++cM3T4ZWM34wPElxEIdZDRhhZxdpZxX+Xwgftn
-         o3eX4SLkZv2Yy8BW/ATzu7yd8lLBE0D8aswxxwwScNXyR49PdHjZug00k2tCdgmI/mVL
-         /0dEiqqU4tjkKfRxAHEf7bpbipCngBjq7xxNrUADr0M24hwTkYdT+irjxvzfGzcjoe4L
-         INO0pR60Tu6brMAYOuviohWws0cGPNoFGCqJVObuY56XuYlDSqd7agKC47a2HeeWXas6
-         1pmA==
-X-Gm-Message-State: AOAM5328j5Uf8IeDZRplhQoCFiTYFFOpQM/IFJaTAFVmHH/eAL2OoE9I
-        lIlHmK4v4PUMd+w5tlest7PiMj8AQwjooZcyulslIA==
-X-Google-Smtp-Source: ABdhPJwflCbRIz99ZM3n81OZD0bcobRt+9ytyfnyFvFexD+UThys3zwr5ilEDOM1PEC9Bhei1U3vyqJMMda+w4ALBr4=
-X-Received: by 2002:a2e:83c5:: with SMTP id s5mr3615270ljh.515.1632886958477;
- Tue, 28 Sep 2021 20:42:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com> <20210928235635.1348330-3-willmcvicker@google.com>
-In-Reply-To: <20210928235635.1348330-3-willmcvicker@google.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 28 Sep 2021 20:42:27 -0700
-Message-ID: <CALAqxLUju1Bw0dDpi_oK6-eOiP6B2Xm1MV19G53WaRFm3Z_AWw@mail.gmail.com>
-Subject: Re: [PATCH v2 02/12] timekeeping: add API for getting timekeeping_suspended
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8EIDIG7He/WdJECyN2rIQHoUkf1zGI2sOfErvrjMF1g=;
+        b=5D3OcAdFYla1T368sbsLXyxVEgiCRUkH1a9VVJPHI2/mQPQjKjnIUWsY3heJxX4amH
+         lskB/2TdjPZtOFk6nBUlgmiE0IfRBfjXFi/69BEAqKe6tIJVSS3GF1HRTpqAHHjy12eA
+         eRyp1OaZU7fA2ZAPEhmPIZUnZSQ1vOm7Bsqa376G+L6HrBnMvXIoBqfC4lNjptQ+BcPq
+         ZK7ZwpM6yKMFPjEZN0CXGkiKpC/NSrOvpqFpul1ssZ9HdqxWFappLDA+sqnfD8uZ4tH+
+         pQtV0iYrWJFtfuXsxsWQyblJIj7ZFFw8vaG15EM2hOU1sA+S+Ks/5DaqeCiEglYL35dF
+         D/sQ==
+X-Gm-Message-State: AOAM532Ufti8pfrpxfLIB3eHUq2C/eIJuB718UwcatoLfZAacZHUjbEB
+        DVogHZgYR0TLh58dIiA/yZFqtg==
+X-Google-Smtp-Source: ABdhPJzUqMPiehVu2EGfrsf8/6nW/NInCCQQuRSrplizc06q+EfiDn320mU2cjaSW62oPRAff5W5Rg==
+X-Received: by 2002:a17:90b:2358:: with SMTP id ms24mr2404501pjb.1.1632886984179;
+        Tue, 28 Sep 2021 20:43:04 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id b7sm533032pfb.20.2021.09.28.20.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 20:43:03 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 00/10] Make Qualcomm QMP PHY dtbs_check warning free
+Date:   Wed, 29 Sep 2021 11:42:43 +0800
+Message-Id: <20210929034253.24570-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 4:56 PM Will McVicker <willmcvicker@google.com> wrote:
->
-> This allows modules to access the value of timekeeping_suspended without
-> giving them write access to the variable.
->
+As I recently add QMP USB3 PHY support for QCM2290 and touch the binding
+doc.  Rob's bot report a huge number of dtbs_check warnings on Qualcomm
+DTS files.  Although none of them is new warning introduced by my
+change, I decided to clean them up.
 
-It's important to cover "the why" not "the what" in these commit
-messages, so you might add a note as to what code will be the user of
-this (the samsung/clk-pll.c code changed later in this series).
+The first two patches are fixes on QMP PHY binding, and the reset are
+all fixes on Qualcomm DTS.  In the end, with this series, we are QMP PHY
+dtbs_check warning free!
 
-thanks
--john
+
+Shawn Guo (10):
+  dt-bindings: phy: qcom,qmp: '#clock-cells' is not required for parent
+    node
+  dt-bindings: phy: qcom,qmp: IPQ6018 and IPQ8074 PCIe PHY require no
+    supply
+  arm64: dts: qcom: msm8996: Move '#clock-cells' to QMP PHY child node
+  arm64: dts: qcom: Correct QMP PHY child node name
+  arm64: dts: qcom: Drop max-microamp and vddp-ref-clk properties from
+    QMP PHY
+  arm64: dts: qcom: Drop reg-names from QMP PHY nodes
+  arm64: dts: qcom: msm8998-clamshell: Add missing vdda supplies
+  arm64: dts: qcom: Fix IPQ8074 PCIe PHY nodes
+  arm64: dts: qcom: ipq8074-hk01: Add dummy supply for QMP USB3 PHY
+  ARM: dts: qcom: sdx55: Drop '#clock-cells' from QMP PHY node
+
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml | 57 +++++++++----------
+ arch/arm/boot/dts/qcom-sdx55.dtsi             |  1 -
+ arch/arm64/boot/dts/qcom/apq8096-ifc6640.dts  |  3 -
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi         |  2 +-
+ arch/arm64/boot/dts/qcom/ipq8074-hk01.dts     |  6 ++
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi         | 54 +++++++++++++-----
+ arch/arm64/boot/dts/qcom/msm8996.dtsi         | 14 ++---
+ .../boot/dts/qcom/msm8998-clamshell.dtsi      |  2 +
+ arch/arm64/boot/dts/qcom/msm8998-mtp.dtsi     |  4 --
+ .../boot/dts/qcom/msm8998-oneplus-common.dtsi |  4 --
+ arch/arm64/boot/dts/qcom/msm8998.dtsi         |  8 +--
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      |  2 -
+ arch/arm64/boot/dts/qcom/sa8155p-adp.dts      |  2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 11 ++--
+ arch/arm64/boot/dts/qcom/sm8150-hdk.dts       |  2 -
+ .../dts/qcom/sm8150-microsoft-surface-duo.dts |  2 -
+ arch/arm64/boot/dts/qcom/sm8150-mtp.dts       |  2 -
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          |  7 +--
+ arch/arm64/boot/dts/qcom/sm8250-hdk.dts       |  2 -
+ arch/arm64/boot/dts/qcom/sm8250-mtp.dts       |  2 -
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          | 10 ++--
+ arch/arm64/boot/dts/qcom/sm8350-hdk.dts       |  2 -
+ arch/arm64/boot/dts/qcom/sm8350-mtp.dts       |  2 -
+ arch/arm64/boot/dts/qcom/sm8350.dtsi          |  6 +-
+ 24 files changed, 102 insertions(+), 105 deletions(-)
+
+-- 
+2.17.1
+
