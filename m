@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4B641CD3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E8741CD43
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346569AbhI2UO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:14:56 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45050 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346005AbhI2UOw (ORCPT
+        id S1346597AbhI2UPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346434AbhI2UPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:14:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3A0DB36CF40;
-        Wed, 29 Sep 2021 16:13:10 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id QlOufg1cVnjN; Wed, 29 Sep 2021 16:13:09 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 70BA136CF3F;
-        Wed, 29 Sep 2021 16:13:09 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 70BA136CF3F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1632946389;
-        bh=BGR3IhMgvnr2C21lVOeoKeIDdeIwpKzGzllTJYFvrn8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=eyD4lQM2ftTh+7KXkE4RMV5SfVn3y6qTAqk/rs5QgzV+OVweBf2dnvnGZgy6uxMIL
-         ft496HKogEo+YBNBvr0cQaI8YdIwdC/2npBEiWYaJdmK1LIV5EHXvcx/QHBBjJn8b6
-         1yZ0UmU8hL8c68R+93wSezqSNzmQxV6tGtU/ovBLN+Kn6DYvhP9lMRHr/Fz6BKyEVf
-         BCqbsN8a88H7BWIJq++UMOrfxtOcd1QivaFfYxxGxTcjNJWDKdi/8Fnqqgob4m7JdM
-         YgoVNEYn7TcAGpoYGWyLlfncfeR8nqtW0jmdMEXacfvx9yGt1GDVzgw7/bYV6ujCb5
-         L7sf9VTJuWv6Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id i8VpYX5ZSU8M; Wed, 29 Sep 2021 16:13:09 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 5ABCB36D014;
-        Wed, 29 Sep 2021 16:13:09 -0400 (EDT)
-Date:   Wed, 29 Sep 2021 16:13:09 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Message-ID: <1587674056.44794.1632946389244.JavaMail.zimbra@efficios.com>
-In-Reply-To: <457755093.44604.1632945052335.JavaMail.zimbra@efficios.com>
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <CAHk-=wg23CqjGWjjxDQ7yxrb+eF5at2KFU03GZa18Znx=+Xvow@mail.gmail.com> <CAHk-=wjd_BJiJYZ99PAoc4mQ3QTiZrt-tRdznj3g9kU8-gYsAA@mail.gmail.com> <457755093.44604.1632945052335.JavaMail.zimbra@efficios.com>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+        Wed, 29 Sep 2021 16:15:30 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1463DC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:13:49 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id i30so4450970vsj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=X9zg5EGTn4Y0Q2ysEnfXXwSkcPVWnWS35aJnz4+nFKM=;
+        b=gLRKkB3iCQjeHDpBYytp2IM0FFa3sbuYIYfGD6qgHCR9qoMdjurXOupe5mEjqWnAGn
+         qzkGgrxFE8C5vRmpjl9RGp3Q7mwHy9xdyGh0D3ZHteGPvsXV4LVZgLFvIyXrPNSVuucr
+         ZPKz197EFxHKnwdD05F29cP/KozImCuwlfwC8QT5QVUKVmbE24XzzsK3XVGLo28+48nb
+         7+RatnzoYqAQ4BYhF5U+M3gcvJavEThRowgz1u3ea83wmQOMfXkyWZSiEs2Q58ARJ1//
+         /xSHJuhKXB4e7QvMJCbW6H/QPJtp+v9/LUWDSZhbjnEvMGtyZf46xfaQL7tiKK80er2K
+         5NsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=X9zg5EGTn4Y0Q2ysEnfXXwSkcPVWnWS35aJnz4+nFKM=;
+        b=m1pE3ur3h6+BXQP0hay2JiyD29Y6vH0S+JfAKhLLdUwtYn3wAtoS270yp8aIQLFQ68
+         /D5NMdIUYei0z/uuluVemBIWLcS91fcpXCEiWgdGldTl6Lj5+8fjwJw6cxMe7p+uBxW6
+         NSegd5pImDQxGPmogitvB3FEh41SXTBaiDbz/E7ZYeF1Se6S79L+sC1xILwpF72QrgRb
+         cF5JJzwuxgTT5cfruwoRaadnuY0IwSMR/r/5KCI6+RDx9t/vW2rEko9e5ZrkcB1FzzNW
+         QqoCosmQx2ppNg4VXgbJSlHv4sti8RNQYPgBNgpXr6L97BJnSnL0/L0DXOESCuvTJ2Zf
+         zifQ==
+X-Gm-Message-State: AOAM530A1A7XztvpaED2iNdAsoyoREcotXWzTSElAEfj0sWyQVqCR31K
+        glQujrX8E+7e+tb3v7jBuhs4LlL/8et8CIzynZA=
+X-Google-Smtp-Source: ABdhPJwkaXVKCpudMLe7yBRyNU1xKfXUyxYQEMh0QIeUxBCUBQPboN/UMiY4EWjJC08lnTqd3Ag+N6RZBfsRmba8O3E=
+X-Received: by 2002:a05:6102:1350:: with SMTP id j16mr2119009vsl.54.1632946427503;
+ Wed, 29 Sep 2021 13:13:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: LKMM: Add ctrl_dep() macro for control dependency
-Thread-Index: cL23+1Kw3cVad0ytZvNC6SLA16g8Tx674bOI
+Received: by 2002:a05:612c:10c5:b0:235:5ea8:dec0 with HTTP; Wed, 29 Sep 2021
+ 13:13:46 -0700 (PDT)
+Reply-To: robertblackettesq1@gmail.com
+From:   Robert Blackett <innocentobeji@gmail.com>
+Date:   Wed, 29 Sep 2021 21:13:46 +0100
+Message-ID: <CA+P_rvUJ19+4uqT4caWtyBtjkxHxzPN1hevaOqW45u+L81vjvw@mail.gmail.com>
+Subject: Awaiting your response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 29, 2021, at 3:50 PM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
+-This is a personal email directed to you and I request that it=E2=80=99s
+been treated as such.
 
-[...]
+I got your email from online directory; I would need your assistance
+in re-profiling
+funds belonging to my late client who shares similar surnames with you.
 
-> void fct(void)
-> {
->    int x;
-> 
->    if (refcount_dec_and_test()) {
->        var1 = 0;
+Contact me for more detailed information.
 
-in this example, this should be "var1 = 1;", so both legs are similar,
-otherwise we end up with a dependency on the load.
-
-Thanks,
-
-Mathieu
-
->        return;
->    }
->    __smp_rmb();
->    var1 = 1;
-> }
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Regards,
+Robert Blackett ESQ
+robertblackettesq1@gmail.com
