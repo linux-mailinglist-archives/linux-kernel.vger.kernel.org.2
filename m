@@ -2,221 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC5541BDC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A893741BDC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbhI2D4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:56:16 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34519 "EHLO
+        id S244079AbhI2D5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:57:06 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:43713 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244064AbhI2D4K (ORCPT
+        by vger.kernel.org with ESMTP id S243788AbhI2D5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:56:10 -0400
+        Tue, 28 Sep 2021 23:57:05 -0400
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 30E56580E57;
-        Tue, 28 Sep 2021 23:54:29 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9798C580E5F;
+        Tue, 28 Sep 2021 23:55:24 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 28 Sep 2021 23:54:29 -0400
+  by compute3.internal (MEProxy); Tue, 28 Sep 2021 23:55:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=/
-        fz2xDmGvnVOv6nmGoPaDrmEwWr82udufb63/AmiMe8=; b=YfDdo97RhokBFNvMz
-        ImWhirnQy0nIl1TaEPKmE1HRb9R1rMZu8yR2Q93McjWprNkNNr3EzfXcV5yOoI76
-        zNk02KygJKgfr9JtpsUnaVoPCZ974tSBbS8YfzyeN6Ph6CIwN53eLaJlcnVMrauj
-        hy2uvDNglliwdAkZ9154x4UfvhQTpg8QCDJEw0cmzGkxunCnYQEUDUv/MBEHLmNB
-        z1VX8+J0TqD5DdRmqOn4PhSPD886e8/tnDMKzEG3b51ln3hxrlQMmCNdraSnlSFE
-        XFO0dfo9epTcMG3jHtFh5gVGUbJ/J1VukF8RL+aHYNGSVPPwpeuHNq/CJ2XU8HfD
-        l5n/Q==
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=f
+        +KFVJLO4WVRmj/HTHjGnTK+KP5rTnlcIHm18veFkRI=; b=m+HXJv6/jdqHeg6Vr
+        lPZwV7tYpGmF/eWHXZJrqqXunRbH98Aimzm7PF6g7o7J7gR2+hAbqHPXMsmMCcMd
+        GXuU1T5ZoF04NDHtTLMJuiO4ho8+RcCCrB9BRRiKHKw1+6Sjb3uN2XlIF+N50ldr
+        t1djvAOlwMMzmpPZPy130gv9HziVBg7Jdb5fBEFzWXml3MkROpzMpqxUxRDVDkd1
+        V7xbl6GcYl2mwyWW14WBTgcfK4UzXSooZrCbrlToYfDp/B79iJyOvluZxX/Rvh2t
+        22tqHOZoqGvhV80Ll5zDZy5lAntiw64KP0/Z5zDgG9/ExOASkl9bAOwLoFp9yMLR
+        im3FQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:from:in-reply-to:message-id:mime-version:references
         :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=/fz2xDmGvnVOv6nmGoPaDrmEwWr82udufb63/AmiM
-        e8=; b=oup3cklh5OZrUL36ojjnMb5SRVL1GVBtY+Fx30n9bu7dVWrCwDZNwUz2R
-        BVz4huTwpafnlFN3Iqul/vUPVemG7hQ6MCKDtXHFeEUx+vM504FDd6JZ+OXcFZ56
-        pnVkBohD07XWG4vzquXtQzkpS3nPFWxRvO36V7iOeKNib39UrSqqkXJJdxrFrCCi
-        X14H3KM9MuNeVBPc8ok4QpNZtIqME6gnS8p/Ea3EFkaCmVeSYbc2VameVKfdElxF
-        EP7LnjW5x2EvSLmuslnAyw4DLKq8zScUwTvoymWY9HXCisme/NF8OeM/FI53VM+e
-        Jtwg77n5Zdl19Yz4+Z756r4M+CmVg==
-X-ME-Sender: <xms:dONTYQaxgontc6TT9gcWD_hpAW_bSY41ISXOJ0TUhTABwJQQy0qTRw>
-    <xme:dONTYbbfLqXfZGvH7IpnbrFTtokxbUS0Z-oM1rmwuhPxmc8Bb35aIUON4PhW_whoO
-    8OXmUw6poPJk6NXWg>
-X-ME-Received: <xmr:dONTYa8cG3mR_A429D2GJL949JFxtWO6dC_r4YFzdQKxMUl2mcj8jsh6gFYWUjXsVA8I1jbhDGppvpiXndisqZde2TDI74kE1-4ozuMjo70wb25V4pN-g4nvIQ>
+        :x-sasl-enc; s=fm3; bh=f+KFVJLO4WVRmj/HTHjGnTK+KP5rTnlcIHm18veFk
+        RI=; b=rqtHne48tOJpbGUUmnjX53hsDhMfm8ZQRHdQrGDQPNe/zd3OTMwK1EghK
+        ay2HlGnnA8FADp0VASaUsG/wz1vhSAjBhKtSDvFEFrnxbV2yTqqccCARwp/u9em/
+        nmwns7Km3JIuvXdWE46vi3xQUSHkpjBz52/31XfGVfalj08OhLByay/j44KZ3mEj
+        jaV9qgkikk4eUJbab6y/hXMKqUEcq4QdrvZa5RKT6Q+MPpI+gA5+3/KG7oLcM03k
+        4mwiCk/B+dFLlyRts83ZQwkpqa29rJbCL0TXrZbm8+GJgAm5FfnCAzbWxl+L+Q9O
+        LswREis7KWPefrv9Sy501GqkC0sQQ==
+X-ME-Sender: <xms:rONTYaECJA2UWWfWV57upeU_cHzpVKvfgVp-1Z7xghZBcrgMZEgIeg>
+    <xme:rONTYbXgE0UYDnkmUOQGkDWgB8VuqQ-ew4YQOQDBh2-q0y6mXjpSsdCC7isIfFjxf
+    kqkVUxZif482zibAg>
+X-ME-Received: <xmr:rONTYUKjlVnwsDVPEywzb5hYlS0y2TDQegJy2Ie6hsHqrfsNO4oicnRtBP98MIXoL0J1USwMMg_4dQsGWrF-GGviI3_oqPp8w2Sy0aJ9_oehD7AXaBaU9iCHmQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekuddgjeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
     vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+    uefgtedtgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
     homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:dONTYarch2QM-59eaZoBQB34aRxdWh0RNrBBI1msx5ectgeld_SkIQ>
-    <xmx:dONTYbp0FfM2rmkQaLm699JXCxLn2741Uqo0vNfHN2P6QhbiyjX3Wg>
-    <xmx:dONTYYRrYC83eLuYGF2DiEBRaupYSq7LoK-f1Y_XliuKzrDfKnRYtw>
-    <xmx:deNTYe17VXBKCbrCRwL5wWAtdx-9PmTwKqACewr1yfKZtgdCRjo-ag>
+X-ME-Proxy: <xmx:rONTYUE7H5d2Eqzo4jKRouGBpAWLhCfDnJXCUlAJD6TnooKaCgiwcA>
+    <xmx:rONTYQVluKHkdMah2xyT8K7Z6mTsK2HPWAJwumlH9149PzDKk4k5Ag>
+    <xmx:rONTYXMdyH31Hs9c_LQHkyrufSfYORWmUdulDeppD9YRWIVa_Kavug>
+    <xmx:rONTYRWE-dQ1utt4PqjrNlZUFTTYt3cmCr1yUD1zmJR4SOiJV5KiCA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 23:54:27 -0400 (EDT)
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
+ 28 Sep 2021 23:55:23 -0400 (EDT)
+Subject: Re: [PATCH v2 2/9] dt-bindings: rtc: sun6i: Add H616, R329, and D1
+ support
+To:     Rob Herring <robh@kernel.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210901053951.60952-1-samuel@sholland.org>
- <20210903145013.hn6dv7lfyvfys374@gilmour>
- <4a187add-462b-dfe4-868a-fdab85258b8d@sholland.org>
- <20210909084538.jeqltc7b3rtqvu4h@gilmour>
- <c910527d-e2d7-31ca-efd9-1915db62d85d@sholland.org>
- <20210928090625.rq3atiaejaq5kcbx@gilmour>
+        Chen-Yu Tsai <wens@csie.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-rtc@vger.kernel.org
+References: <20210928080335.36706-1-samuel@sholland.org>
+ <20210928080335.36706-3-samuel@sholland.org>
+ <1632832098.554951.963815.nullmailer@robh.at.kernel.org>
 From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [RFC PATCH 0/7] clk: sunxi-ng: Add a RTC CCU driver
-Message-ID: <bc338f11-9867-2394-ceaa-99314ff67660@sholland.org>
-Date:   Tue, 28 Sep 2021 22:54:26 -0500
+Message-ID: <6ae69109-d26b-f6b5-85a6-4ecca4133dfe@sholland.org>
+Date:   Tue, 28 Sep 2021 22:55:23 -0500
 User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210928090625.rq3atiaejaq5kcbx@gilmour>
+In-Reply-To: <1632832098.554951.963815.nullmailer@robh.at.kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-
-Thanks for your reply.
-
-On 9/28/21 4:06 AM, Maxime Ripard wrote:
-> On Tue, Sep 28, 2021 at 02:46:39AM -0500, Samuel Holland wrote:
->> On 9/9/21 3:45 AM, Maxime Ripard wrote:
->>> On Fri, Sep 03, 2021 at 10:21:13AM -0500, Samuel Holland wrote:
->>>> On 9/3/21 9:50 AM, Maxime Ripard wrote:
->>>>> And since we can register all those clocks at device probe time, we
->>>>> don't really need to split the driver in two (and especially in two
->>>>> different places). The only obstacle to this after your previous series
->>>>> is that we don't have of_sunxi_ccu_probe / devm_sunxi_ccu_probe
->>>>> functions public, but that can easily be fixed by moving their
->>>>> definition to include/linux/clk/sunxi-ng.h
->>>>
->>>> Where are you thinking the clock definitions would go? We don't export
->>>> any of those structures (ccu_mux, ccu_common) or macros
->>>> (SUNXI_CCU_GATE_DATA) in a public header either.
->>>
->>> Ah, right...
->>>
->>>> Would you want to export those? That seems like a lot of churn. Or would
->>>> we put the CCU descriptions in drivers/clk/sunxi-ng and export a
->>>> function that the RTC driver can call? (Or some other idea?)
->>>
->>> I guess we could export it. There's some fairly big headers in
->>> include/linux/clk already (tegra and ti), it's not uAPI and we do have
->>> reasons to do so, so I guess it's fine.
->>>
->>> I'd like to avoid having two drivers for the same device if possible,
->>> especially in two separate places. This creates some confusion since the
->>> general expectation is that there's only one driver per device. There's
->>> also the fact that this could lead to subtle bugs since the probe order
->>> is the link order (or module loading).
+On 9/28/21 7:28 AM, Rob Herring wrote:
+> On Tue, 28 Sep 2021 03:03:28 -0500, Samuel Holland wrote:
+>> These new RTC variants all have a single alarm, like the R40 variant.
 >>
->> I don't think there can be two "struct device"s for a single OF node.
-> 
-> That's not what I meant, there's indeed a single of_node for a single
-> struct device. If we dig a bit into the core framework, the most likely
-> scenario is that we would register both the RTC and clock driver at
-> module_init, and with the device already created with its of_node set
-> during the initial DT parsing.
-> 
-> We register our platform driver using module_platform_driver, which
-> expands to calling driver_register() at module_init(), setting the
-> driver bus to the platform_bus in the process (in
-> __platform_driver_register()).
-> 
-> After some sanity check, driver_register() calls bus_add_driver(), which
-> will call driver_attach() if drivers_autoprobe is set (which is the
-> default, set into bus_register()).
-> 
-> driver_attach() will, for each device on the platform bus, call
-> __driver_attach(). If there's a match between that device and our driver
-> (which is evaluated by platform_match() in our case), we'll call our
-> driver probe with that device through driver_probe_device(),
-> __driver_probe_device() and finally really_probe().
-> 
-> However, at no point in time there's any check about whether that device
-> has already been bound to a driver, nor does it create a new device for
-> each driver.
-
-I would expect this to hit the:
-
-	if (dev->driver)
-		return -EBUSY;
-
-in __driver_probe_device(), or fail the "if (!dev->driver)" check in
-__driver_attach() for the async case, once the first driver is bound.
-
-> So this means that, if you have two drivers that match the
-> same device (like our clock and RTC drivers), you'll have both probe
-> being called with the same device, and the probe order will be defined
-> by the link order. Worse, they would share the same driver_data, with
-> each driver not being aware of the other. This is incredibly fragile,
-> and hard to notice since it goes against the usual expectations.
-> 
->> So if the CCU part is in drivers/clk/sunxi-ng, the CCU "probe"
->> function would have to be called from the RTC driver.
-> 
-> No, it would be called by the core directly if there's a compatible to
-> match.
-> 
->> Since there has to be cooperation anyway, I don't think there would be
->> any ordering problems.
-> 
-> My initial point was that, with a direct function call, it's both
-> deterministic and obvious.
-
-I believe I did what you are suggesting for v2. From patch 7:
-
---- a/drivers/rtc/rtc-sun6i.c
-+++ b/drivers/rtc/rtc-sun6i.c
-@@ -683,6 +684,10 @@ static int sun6i_rtc_probe(struct platform_device
-*pdev)
- 		chip->base = devm_platform_ioremap_resource(pdev, 0);
- 		if (IS_ERR(chip->base))
- 			return PTR_ERR(chip->base);
-+
-+		ret = sun6i_rtc_ccu_probe(&pdev->dev, chip->base);
-+		if (ret)
-+			return ret;
- 	}
-
- 	platform_set_drvdata(pdev, chip);
-
->>> And synchronizing access to registers between those two drivers will be
->>> hard, while we could just share the same spin lock between the RTC and
->>> clock drivers if they are instanciated in the same place.
+>> For the new SoCs, start requiring a complete list of input clocks. The
+>> H616 has three required clocks. The R329 also has three required clocks
+>> (but one is different), plus an optional crystal oscillator input. The
+>> D1 RTC is identical to the one in the R329.
 >>
->> While the RTC driver currently shares a spinlock between the clock part
->> and the RTC part, there isn't actually any overlap in register usage
->> between the two. So there doesn't need to be any synchronization.
+>> And since these new SoCs will have a well-defined output clock order as
+>> well, they do not need the clock-output-names property.
+>>
+>> Signed-off-by: Samuel Holland <samuel@sholland.org>
+>> ---
+>> Changes since v1:
+>>   - Properly update the DT binding clocks and clock-names properties.
+>>
+>>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 72 ++++++++++++++++++-
+>>  include/dt-bindings/clock/sun6i-rtc.h         | 10 +++
+>>  2 files changed, 79 insertions(+), 3 deletions(-)
+>>  create mode 100644 include/dt-bindings/clock/sun6i-rtc.h
+>>
 > 
-> I know, but this was more of a social problem than a technical one. Each
-> contributor and reviewer in the future will have to know or remember
-> that it's there, and make sure that it's still the case after any change
-> they make or review.
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> This is again a fairly fragile assumption.
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:122:9: [error] duplication of key "minItems" in mapping (key-duplicates)
+> ./Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:150:9: [error] duplication of key "minItems" in mapping (key-duplicates)
 
-Yeah, I agree that having a lock that is only sometimes safe to use with
-certain registers is quite fragile.
+Whoops, I have a couple of minItems where I meant maxItems. Sorry, will
+fix for v3.
 
-Would splitting the spinlock in rtc-sun6i.c into "losc_lock" (for the
-clock provider) and "alarm_lock" (for the RTC driver) make this
-distinction clear enough?
-
-Eventually, I want to split up the struct between the clock provider and
-RTC driver so it's clear which members belong to whom, and there's no
-ugly global pointer use. Maybe I should do this first?
-
-Regards,
 Samuel
