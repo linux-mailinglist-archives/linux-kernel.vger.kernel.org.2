@@ -2,133 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B00741BF58
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7321E41BF5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244315AbhI2Gzk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Sep 2021 02:55:40 -0400
-Received: from mail4.swissbit.com ([176.95.1.100]:33800 "EHLO
-        mail4.swissbit.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhI2Gzj (ORCPT
+        id S244467AbhI2G5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhI2G5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:55:39 -0400
-Received: from mail4.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 5EAB712259E;
-        Wed, 29 Sep 2021 08:53:57 +0200 (CEST)
-Received: from mail4.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 4FAA4122566;
-        Wed, 29 Sep 2021 08:53:57 +0200 (CEST)
-X-TM-AS-ERS: 10.149.2.84-127.5.254.253
-X-TM-AS-SMTP: 1.0 ZXguc3dpc3NiaXQuY29t Y2xvZWhsZUBoeXBlcnN0b25lLmNvbQ==
-X-DDEI-TLS-USAGE: Used
-Received: from ex.swissbit.com (SBDEEX02.sbitdom.lan [10.149.2.84])
-        by mail4.swissbit.com (Postfix) with ESMTPS;
-        Wed, 29 Sep 2021 08:53:57 +0200 (CEST)
-Received: from sbdeex02.sbitdom.lan (10.149.2.84) by sbdeex02.sbitdom.lan
- (10.149.2.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.15; Wed, 29 Sep
- 2021 08:53:56 +0200
-Received: from sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74]) by
- sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74%8]) with mapi id
- 15.02.0792.015; Wed, 29 Sep 2021 08:53:56 +0200
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Jaehoon Chung <jh80.chung@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-CC:     "marten.lindahl@axis.com" <marten.lindahl@axis.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Thread-Topic: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Thread-Index: AQHXq5f2H1xcZooo4kGJdi3JsFt1D6uy2hoAgAfLcc8=
-Date:   Wed, 29 Sep 2021 06:53:56 +0000
-Message-ID: <cfe4476922584dff91bf0fdbec0c0843@hyperstone.com>
-References: <CGME20210917075050epcas1p1962cd1c7c388b20ad17cb841461dae1b@epcas1p1.samsung.com>
-        <bf19053cf6f547bcbb364975cda84c30@hyperstone.com>,<a8031e66-77a0-ae9b-d78d-daebc1d7dc47@samsung.com>
-In-Reply-To: <a8031e66-77a0-ae9b-d78d-daebc1d7dc47@samsung.com>
-Accept-Language: en-US, de-DE
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.154.1.4]
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        Wed, 29 Sep 2021 02:57:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0389EC06161C;
+        Tue, 28 Sep 2021 23:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vJnhZzHesizlzOdq1W43Xav44aVM2wENIbQ/nsFlymI=; b=Cy2EgRLEDgo0P9vw2aShtTeXSs
+        IHuAGK6bOhq2ej6lcZPWx/I8Bf8itVXDpzRwTkqSf25TjzpRrQQMQArgDV3rhu5ORhUloCTkFSz96
+        j97cFhOiB4b5ajnrqrlbUUsaLQpljoltvqlT8OTqG98in8fir/Zid0toRW2TW2evGSnWCPWRnkwF2
+        SQEjrGiVtMwtMpFGix1xZKLGbI7RuKR6Lo4j5fMsSoNApqCNI88/b0DgU3kbhEZ0wLHA1kARXXIMg
+        Ma6kxjb531khDUzeWwuricyGFZvumHIvbNf9Dj9EvRoZusqeZGZVDRUWiRJ33wdCDZ2IPLhdrRNHR
+        x8JGBkjA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVTTv-00Ba5N-PF; Wed, 29 Sep 2021 06:54:38 +0000
+Date:   Wed, 29 Sep 2021 07:54:19 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     tim@cyberelk.net, axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] pcd: capture error codes on pcd_probe() and
+ pf_probe()
+Message-ID: <YVQNmzv5RvjV5RK+@infradead.org>
+References: <1632897629-84965-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-X-TMASE-Version: DDEI-5.1-8.6.1018-26436.006
-X-TMASE-Result: 10--8.923600-10.000000
-X-TMASE-MatchedRID: 9M69yBZ2Ml7UL3YCMmnG4vGG8F2k2BBVyeUl7aCTy8hntCkewtW30NPW
-        omJfPYQZIMBvuronWr9dOsaQOyKqmhLwsVmbC9NrOGTV4fFD6yAlBKvI9NWIX2KBXlPtOqqX+Kc
-        0X1niQZ/Zw2EtavuoguktgXE4NG6+/N0WsxWI4Qc4zRqVgiL30+vWkvu/824/qr3CBdU3C2Dy71
-        Hqi5zuoEqna2uFlro8j0IvV7jlqDhyPzMTUSO1JKoXHZz/dXlxEf7F4CIBjrgHAA5cb5vjShpOM
-        U5lxqhiiAMSTyXyFbpYKJTez2dVw+A4UzWGh1IDqoeab9Xgz8/865QlVwxmG+D0a1g8E91Lpsmo
-        b0bsTdbi8zVgXoAltsILlqmfHjNKVnRXm1iHN1bEQdG7H66TyH4gKq42LRYkxE61TJzkcAdC0wa
-        nE9fdSCKvjz/0r1QsSnj98gYIwLl+3BndfXUhXQ==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-TMASE-XGENCLOUD: ef480ddb-5583-4819-a4e8-456c38ac6e8f-0-0-200-0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632897629-84965-1-git-send-email-yang.lee@linux.alibaba.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
-so more generally the timeout here can be 41954 up to 167783 ms.
-Is 42s too low to view it as invalid here?
-Would you prefer the patch exluding the specific timeout values instead of anything above
-41954?
-
-Regards,
-Christian
-
-
-
-
-From: Jaehoon Chung <jh80.chung@samsung.com>
-Sent: Friday, September 24, 2021 11:49 AM
-To: Christian Löhle; linux-kernel@vger.kernel.org; linux-mmc@vger.kernel.org
-Cc: marten.lindahl@axis.com; ulf.hansson@linaro.org
-Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-    
-Hi,
-
-On 9/17/21 4:50 PM, Christian Löhle wrote:
+On Wed, Sep 29, 2021 at 02:40:29PM +0800, Yang Li wrote:
+> No error code were being captured when pcd_probe() and
+> pf_probe() fail, capture them by assigning them to ret.
 > 
-> Set the limit to 1s if the register is at reset value.
+> Clean up smatch warning:
+> drivers/block/paride/pcd.c:939 pcd_init_unit() warn: missing error code
+> 'ret'
+> drivers/block/paride/pf.c:963 pf_init_unit() warn: missing error code
+> 'ret'
 > 
-> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-> ---
->  drivers/mmc/host/dw_mmc.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 6578cc64ae9e..cd9a6e0a7449 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -1983,6 +1983,14 @@ static void dw_mci_set_drto(struct dw_mci *host)
->        /* add a bit spare time */
->        drto_ms += 10;
->  
-> +     /*
-> +      * If TMOUT register still holds the reset value the above calculation
-> +      * would yield a timeout of over 167 seconds, limit it to 1000ms.
-> +      * Normal reads/writes should not take anywhere close to 120s.
-> +      */
-> +     if (drto_ms > 120000)
-> +             drto_ms = 1000;
-> +
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-If dtrt_ms is 167sec, it means that bus_hz should be 0 or 1.
-What value is your host->bus_hz?
-
-Best Regards,
-Jaehoon Chung
-
->        spin_lock_irqsave(&host->irq_lock, irqflags);
->        if (!test_bit(EVENT_DATA_COMPLETE, &host->pending_events))
->                mod_timer(&host->dto_timer,
-> 
-
-    =
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
-
+Please not.  I have a major rewrite of the paride probing pending,
+which Jens just wanted to make conditional on potentially dropping the
+drivers entirely.  So either we take the real series to clean this mess
+up or we drop the drivers, but we need to stop this sugarcoating of
+fundamentally bad code.
