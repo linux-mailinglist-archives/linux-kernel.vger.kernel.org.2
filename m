@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EC541CD06
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4762B41CD11
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344464AbhI2T7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:59:09 -0400
-Received: from ixit.cz ([94.230.151.217]:55350 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245758AbhI2T7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:59:08 -0400
-Received: from [192.168.43.127] (78-80-97-115.customers.tmcz.cz [78.80.97.115])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 8F60323B26;
-        Wed, 29 Sep 2021 21:57:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1632945445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qT1CJ3TMSHMj9mB3UfHXYaTVu0KzbPO6fnVovONq4TQ=;
-        b=K8O42v2KRm/48IvJj55+VyeHCpMQbZNTdE7nhWf2Tivun4HvsqmPUC9xwtVkyq6edIPwDy
-        lolz1SelsuZhi/lncBO7h7MRF6AlpDNXeOJXFFnbr5T3aRslk1dXj5Y6xaZmhQiT/0bHPo
-        RB4VMSqeio/7IpRumE0aARQ9MgrpeS0=
-Date:   Wed, 29 Sep 2021 21:56:01 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH] dt-bindings: add vendor prefix for asix
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <DPO70R.IGRAS5UQLITQ@ixit.cz>
-In-Reply-To: <20210929192619.111098-1-david@ixit.cz>
-References: <20210929192619.111098-1-david@ixit.cz>
-X-Mailer: geary/40.0
+        id S1344600AbhI2UDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245133AbhI2UDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 16:03:31 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE0FC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:01:49 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id dn26so12980588edb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QVoV53fmEUeXJCW4y56wBFPMYAfyeaHxeC0GyF+IsHY=;
+        b=WFb2peLCM29bT5fbZcRB1U1qwkmqtZpPMoiIUeVEM+cFVB1Pqfaa7JcXjT4vRxCxaE
+         JMZ+Y6UbyxD+/o6VARqaK7WDFv6cdUhWIDwb4YSQTVV4Xd4qJ1++jl7QlH3R3cN4Hhda
+         CMd3R4O/jkL8PK5rvcU5Sc8JC/tYvGThln9yHqwTqZ8MgExUKyFBya7UOiSX9fnjXNs/
+         3oQms6XsgLw5dZkH4QZ9aWd32To0Xf/9lPgvK2dRN1LZCdAULaNBTjcl+lpZ2sd75vff
+         fS0VJb3UJy4PvbIjpXj5Lrqinvu4UVhNYmfBmILb9ieH3ZIbeBqkCCcydiKrjYnKe0pZ
+         UIqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QVoV53fmEUeXJCW4y56wBFPMYAfyeaHxeC0GyF+IsHY=;
+        b=V5/AdYUPJDKXdHOKm8gRoA/otDn5Rfv8d5L5eie6g88sPDUhUlSunS5XJLkokK4Hh6
+         JbI1ut3Ni6WDc2AU76MBunwOPfhn+ANpm+2EKWngc8ncoIz2iW7Q6PT1h7HtcPKwQMga
+         OeVn/Q9qdL8RhtfFT5qAcOFKLHx7zTbBIJbxxnjV1yN57AbfrRtFEVEQuNmHjUX9idOT
+         S/1mrROxihAyHdxjUuwRIn6L0IjzM/GyaPWNhR9+pEf83HDn7p1rJe9BB1Sa2O7b488T
+         OmnO8LscLq8lD/FKPK5j7m+divj1PnTEjmuG0WgMzJJuxgAqE5m/1uWdjAwXVgjI8M6a
+         tQkg==
+X-Gm-Message-State: AOAM531F1KBRDZeXXuezKZy7l4XH6KK6aq9rFmyrAQ5hus+YH/50XOXH
+        l/8m3/S/wsbDvLaLtVmM7i9grOTvn3vIs0ho08NSGA==
+X-Google-Smtp-Source: ABdhPJxW/5c5Zm0f6VzlmAE5ubXryikV3fZZQv6MmG3s5nD+j3ke3SZ3s5Of1FQgOZu0GnjUf+fda8e2ZNlPw37L3uQ=
+X-Received: by 2002:a05:6402:1b8d:: with SMTP id cc13mr2169435edb.235.1632945707418;
+ Wed, 29 Sep 2021 13:01:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <20210928235635.1348330-3-willmcvicker@google.com> <CALAqxLUju1Bw0dDpi_oK6-eOiP6B2Xm1MV19G53WaRFm3Z_AWw@mail.gmail.com>
+In-Reply-To: <CALAqxLUju1Bw0dDpi_oK6-eOiP6B2Xm1MV19G53WaRFm3Z_AWw@mail.gmail.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Wed, 29 Sep 2021 13:01:31 -0700
+Message-ID: <CABYd82Z4pgJpYVhJEGjgbWgSQp7if_=Rf03VmTu+U9D3b=dVzA@mail.gmail.com>
+Subject: Re: [PATCH v2 02/12] timekeeping: add API for getting timekeeping_suspended
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sorry, typo got in. Please ignore.
+On Tue, Sep 28, 2021 at 8:42 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Tue, Sep 28, 2021 at 4:56 PM Will McVicker <willmcvicker@google.com> wrote:
+> >
+> > This allows modules to access the value of timekeeping_suspended without
+> > giving them write access to the variable.
+> >
+>
+> It's important to cover "the why" not "the what" in these commit
+> messages, so you might add a note as to what code will be the user of
+> this (the samsung/clk-pll.c code changed later in this series).
+>
+> thanks
+> -john
 
+Thanks John for the tip. I will try to be better at that in the followup.
 
-On Wed, Sep 29 2021 at 21:26:19 +0200, David Heidelberg <david@ixit.cz> 
-wrote:
-> Add vendor prefix for ASIX Electronics Corp.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml 
-> b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 18f3f3b286b7..a69fb7dc07d1 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -131,6 +131,8 @@ patternProperties:
->      description: Asahi Kasei Corp.
->    "^asc,.*":
->      description: All Sensors Corporation
-> +  "^asix,.*":
-> +    desription: ASIX Electronics Corp.
->    "^aspeed,.*":
->      description: ASPEED Technology Inc.
->    "^asus,.*":
-> --
-> 2.33.0
-> 
+For this specific patch, I am adding this new API because the Samsung
+PLL driver (drivers/clk/samsung/clk-pll.c) currently is using the
+variable 'timekeeping_suspended' to detect timeouts before the
+clocksource is initialized or timekeeping itself is suspended. My
+patch series aims to modularize the Samsung PLL driver. So to keep the
+driver's functionality intact, I need to add this additional API.
 
-
+--Will
