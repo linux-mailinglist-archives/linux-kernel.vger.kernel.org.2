@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B530141CBAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D9641CBB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345715AbhI2SUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S1345903AbhI2SVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343727AbhI2SUo (ORCPT
+        with ESMTP id S1343727AbhI2SVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:20:44 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E07AC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:19:03 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id b204-20020a1c80d5000000b0030cd967c674so338231wmd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GFzH5hITTRN1V5OZpNAVPp73YgNW/RpLchp3GtiSXo4=;
-        b=W1TUAZlaw/e8DQIF7edqAaicu+IQNIuf0gyontypngQe8+38JwnhEdZYOPXfDsr91B
-         9iEkIZ5zL59YTdyfuwChWIQItLAySgEpGmiIOiRzC2J5PYabyCCg8MvOAaTW90G+6bqm
-         5Ap5US6WbLQOjbM91roVUFwKzIKZsZI0a9YW5bVZhOHC4uZGCGwHXZL1i39v/s6ipJo4
-         lA2vCyYGrDlHZ8BkI3iceDFP+dAC+/CvCMf/AijKA2x62aEEpYCmPK8h5kkVa9PRvbCA
-         WgvQX50RSYQ3Htzu1dI/YD4NgWAyKFw6y+qEEOC2sAVVleVEF7DOvFQOebY/65ve39Ye
-         Jobw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GFzH5hITTRN1V5OZpNAVPp73YgNW/RpLchp3GtiSXo4=;
-        b=OVBGCC8nFVeA6E5Yfms4ilm1EsflLjQbQXPNz7hPVj3LYQ0fFDaqhV5LNkD+vBVAqV
-         6w4IBp6Tl730d8EMSnN9A4JGRNKzGhLVZR/7OT863+SOqGUFVXExM9QF8Sd3ioKtEAtS
-         0nLRQO+0ThES28nSvAUwWBT3YTWjkeDhM6HiwZTOxZ355hUkLifEQd/7epEmOFMYWcSY
-         Se+Wr5rZAhfi1jzUaz87LRmp6IEuFe6ElK4k4kh9CVic0al+nFMZ2D4kRALNuJRZjXB8
-         tv4EdWFfqP36ie55Ap6n0pCanrvfOrFr2wJjTMyoCZp6s12Ztd4yyuXsaROPmSbnX+QL
-         4aEQ==
-X-Gm-Message-State: AOAM532U9dPtHJLjFOvwt4ddG6AA72Upob6V8WJ61h1HZCVV/A8wlylX
-        L7Q0172hEndf0yn4j/CnWSc=
-X-Google-Smtp-Source: ABdhPJxHrE5APi8qWcepSYnhoXLeO3mw2C4m/dEVIjbr6POCv1tQ7PKeXKeXepotIdvv9g5VrgX3RQ==
-X-Received: by 2002:a1c:94:: with SMTP id 142mr7940052wma.116.1632939542071;
-        Wed, 29 Sep 2021 11:19:02 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id d24sm534998wmb.35.2021.09.29.11.19.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 11:19:01 -0700 (PDT)
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     linux@armlinux.org.uk, linus.walleij@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>
-Subject: [PATCH] ARM: handle CONFIG_CPU_ENDIAN_BE32 in arch/arm/kernel/head.S
-Date:   Wed, 29 Sep 2021 20:16:45 +0200
-Message-Id: <20210929181645.21855-1-clabbe.montjoie@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 29 Sep 2021 14:21:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88869C06161C;
+        Wed, 29 Sep 2021 11:19:30 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0bd10085b5178de8b08a0e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:d100:85b5:178d:e8b0:8a0e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 02A081EC085D;
+        Wed, 29 Sep 2021 20:19:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632939569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=O7rqBdueKVcv868vxhmTrVj9530r51QyHCjtnH4N2yw=;
+        b=YBeC8KzmokpHoM3sHCUpYrsqpmDKYWwohdWWv+BVMrKJKs6BhWST147oDSW/w60qa6JN1U
+        JUGhev5lMmPcvTnwL6N9kHEfMyltYmf3PDBlrL8dilFyE85armnZzSII5dfOB06zZfrHHQ
+        LuzApwYwXynEFO67+Ez4FgHu1lYHzKw=
+Date:   Wed, 29 Sep 2021 20:19:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 08/45] x86/fault: Add support to handle the RMP
+ fault for user address
+Message-ID: <YVSuMUk7Aq0hIl1h@zn.tnic>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-9-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820155918.7518-9-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My intel-ixp42x-welltech-epbx100 no longer boot since 4.14.
-This is due to commit 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel
-mapping regression")
-which forgot to handle CONFIG_CPU_ENDIAN_BE32 as possible BE config.
+On Fri, Aug 20, 2021 at 10:58:41AM -0500, Brijesh Singh wrote:
+> +static int handle_user_rmp_page_fault(struct pt_regs *regs, unsigned long error_code,
+> +				      unsigned long address)
+> +{
 
-Suggested-by: Krzysztof Hałasa <khalasa@piap.pl>
-Fixes: 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel mapping regression")
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/arm/kernel/head.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+#ifdef CONFIG_AMD_MEM_ENCRYPT
 
-diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-index 29070eb8df7d..3fc7f9750ce4 100644
---- a/arch/arm/kernel/head.S
-+++ b/arch/arm/kernel/head.S
-@@ -253,7 +253,7 @@ __create_page_tables:
- 	add	r0, r4, #KERNEL_OFFSET >> (SECTION_SHIFT - PMD_ORDER)
- 	ldr	r6, =(_end - 1)
- 	adr_l	r5, kernel_sec_start		@ _pa(kernel_sec_start)
--#ifdef CONFIG_CPU_ENDIAN_BE8
-+#if defined CONFIG_CPU_ENDIAN_BE8 || defined CONFIG_CPU_ENDIAN_BE32
- 	str	r8, [r5, #4]			@ Save physical start of kernel (BE)
- #else
- 	str	r8, [r5]			@ Save physical start of kernel (LE)
-@@ -266,7 +266,7 @@ __create_page_tables:
- 	bls	1b
- 	eor	r3, r3, r7			@ Remove the MMU flags
- 	adr_l	r5, kernel_sec_end		@ _pa(kernel_sec_end)
--#ifdef CONFIG_CPU_ENDIAN_BE8
-+#if defined CONFIG_CPU_ENDIAN_BE8 || defined CONFIG_CPU_ENDIAN_BE32
- 	str	r3, [r5, #4]			@ Save physical end of kernel (BE)
- #else
- 	str	r3, [r5]			@ Save physical end of kernel (LE)
+> +	int rmp_level, level;
+> +	pte_t *pte;
+> +	u64 pfn;
+> +
+> +	pte = lookup_address_in_mm(current->mm, address, &level);
+> +
+> +	/*
+> +	 * It can happen if there was a race between an unmap event and
+> +	 * the RMP fault delivery.
+> +	 */
+> +	if (!pte || !pte_present(*pte))
+> +		return 1;
+> +
+> +	pfn = pte_pfn(*pte);
+> +
+> +	/* If its large page then calculte the fault pfn */
+> +	if (level > PG_LEVEL_4K) {
+> +		unsigned long mask;
+> +
+> +		mask = pages_per_hpage(level) - pages_per_hpage(level - 1);
+
+Just use two helper variables named properly instead of this oneliner:
+
+		pages_level 	 = page_level_size(level) / PAGE_SIZE;
+		pages_prev_level = page_level_size(level - 1) / PAGE_SIZE;
+
+> +		pfn |= (address >> PAGE_SHIFT) & mask;
+> +	}
+> +
+> +	/*
+> +	 * If its a guest private page, then the fault cannot be resolved.
+> +	 * Send a SIGBUS to terminate the process.
+> +	 */
+> +	if (snp_lookup_rmpentry(pfn, &rmp_level)) {
+> +		do_sigbus(regs, error_code, address, VM_FAULT_SIGBUS);
+> +		return 1;
+> +	}
+> +
+> +	/*
+> +	 * The backing page level is higher than the RMP page level, request
+> +	 * to split the page.
+> +	 */
+> +	if (level > rmp_level)
+> +		return 0;
+> +
+> +	return 1;
+
+#else
+	WARN_ONONCE(1);
+	return -1;
+#endif
+
+and also handle that -1 negative value at the call site.
+
+Thx.
+
 -- 
-2.32.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
