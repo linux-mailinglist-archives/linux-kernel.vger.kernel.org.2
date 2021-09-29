@@ -2,221 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341D341CF56
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A804741CF5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347300AbhI2Wmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:42:32 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:46925 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245276AbhI2Wm2 (ORCPT
+        id S1347316AbhI2WqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:46:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50192 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345988AbhI2Wp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:42:28 -0400
-Received: by mail-oi1-f172.google.com with SMTP id s69so4824991oie.13;
-        Wed, 29 Sep 2021 15:40:46 -0700 (PDT)
+        Wed, 29 Sep 2021 18:45:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632955453;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yDnZg0/6giW9XllEqIndueSNzorfdQE2gNriGLCrs+s=;
+        b=PV7kY0JHbqRzJy5V0K5Y6wpr/SmJ8JQ6BKg+AaHZzxnKSNIyerDzyvf4JUWHX0FRRY2C9m
+        XfFMQHEIiz8XOyOpexXqszNUETFKD9z0aktvP0z8HwVHlAW7vYD2Lu+D6vuOsyKlwzgfO/
+        O0vHw6yfCNXELo9Pm5OpytuVaEPzzOE=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-H6HA30YbN-qtpXbn9wxV4w-1; Wed, 29 Sep 2021 18:44:12 -0400
+X-MC-Unique: H6HA30YbN-qtpXbn9wxV4w-1
+Received: by mail-oo1-f72.google.com with SMTP id p82-20020a4a2f55000000b002b584670618so3333774oop.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:44:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0k8QEGDkWOEZomdc31cmFkj67+dTtY4xDrRsR7/J3H4=;
-        b=Ey6zTCCMfvzeluMpe2umKCcuIq96uHgiY1lsKBkXDyPEBdFsHNnA1Dc5/FUOAW1giW
-         5VHkSqCfd0w7FaNzWmQIGCMYgLXYVAYyBD5xaQx7VZ5ltofM4Gopt/VoU8N4bIBP0Wd+
-         rV841Ajq4oRT/9YvcowvoETgeZ+xKBktqkpm1OAIOkl+LOf8D5bEsSCyw22e/snozr8l
-         DEp9a0q5RDnjynfYXvHLfuXxnRC5H8rY0HsbKy5565mxXgNjgXzJEfenlAqYmUOKlQRo
-         +UtYV1DZtIUsL4TCZNc27E/sz5FKRsaxZin3dANE6Ro3mNgeyxvk0nEsbd4LcdPxRw/m
-         gHWQ==
-X-Gm-Message-State: AOAM5314jsCyGtP7YCw2uVzVwGj+/tuned2nbTY4oge3DdDscckAwhcf
-        vMqBgeoC1LtYQsgLkuO+w4iavL98dA==
-X-Google-Smtp-Source: ABdhPJw8P4gHBGbTTp4HBgqGLki+VVFSC9EKFwccIS1oy4vwK8s9Ozm4KLc85vBzLDXc+qDVpPvKpw==
-X-Received: by 2002:aca:4285:: with SMTP id p127mr38975oia.117.1632955246173;
-        Wed, 29 Sep 2021 15:40:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h91sm214240otb.38.2021.09.29.15.40.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yDnZg0/6giW9XllEqIndueSNzorfdQE2gNriGLCrs+s=;
+        b=1m3xI99Bf1fu23zHqBCCH7/SXyO9hvxQGC4XGkZKOPJ5hwacpBV27z93bSwqVbCoRM
+         ldmMSe6B5ZAf8CU/uj8jUJAQIYDCRlNkOLjr+nR/A1qTwJEzwCB+n6xYg1GnLIlxTKDd
+         B/I+kEVt7aOoMIHa+F5AgmkjhFYhRIovxFhP3FuyApud+X1zzEhUB/dEHNEGOr9JF/dm
+         P5gVdJTONV0TZeQTSFvl6hZ5Yw0kBjbi/ph1uCvWHTAF7orzt7TcjkAm3YgyeyyrNawG
+         ZnqnZO1WbiPIPoF8ptbCmQBpvQDMLTXWuOP3H2EI39jRmtJ9rPdiPugZcq4CzCzPdLRe
+         Aiig==
+X-Gm-Message-State: AOAM530Pp1O4AfOkAd6ZkVExoksrksbeDQYxRJrrcxem6fCpe2Gp0ljm
+        XEdTq4+A7E0YQiC+avt+H/RUTwvfcitve2ShwvD28gCIrl0t6x9VeS+JE/WsbTPXm5t74XCKAKV
+        ooRqwUXAXC6LDXURsCVlHPVM3
+X-Received: by 2002:a05:6808:1595:: with SMTP id t21mr78459oiw.98.1632955451615;
+        Wed, 29 Sep 2021 15:44:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVU6jEU+ZG3AcZVTtnnVZT8dq+yX76s5pQMOm4ir4e1zUDW6chJsiIv463tHWR/ZUtQthMIQ==
+X-Received: by 2002:a05:6808:1595:: with SMTP id t21mr78446oiw.98.1632955451416;
+        Wed, 29 Sep 2021 15:44:11 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id d21sm229884ooh.43.2021.09.29.15.44.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 15:40:45 -0700 (PDT)
-Received: (nullmailer pid 359085 invoked by uid 1000);
-        Wed, 29 Sep 2021 22:40:44 -0000
-Date:   Wed, 29 Sep 2021 17:40:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com
-Subject: Re: [PATCH v5 4/4] dt-bindings: dsp: fsl: update binding document
- for remote proc driver
-Message-ID: <YVTrbPC4/ir974xs@robh.at.kernel.org>
-References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
- <1632625630-784-5-git-send-email-shengjiu.wang@nxp.com>
+        Wed, 29 Sep 2021 15:44:10 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 16:44:09 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210929164409.3c33e311.alex.williamson@redhat.com>
+In-Reply-To: <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
+References: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+        <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+        <20210927231239.GE3544071@ziepe.ca>
+        <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
+        <20210929063551.47590fbb.alex.williamson@redhat.com>
+        <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
+        <20210929075019.48d07deb.alex.williamson@redhat.com>
+        <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
+        <20210929091712.6390141c.alex.williamson@redhat.com>
+        <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
+        <20210929161433.GA1808627@ziepe.ca>
+        <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1632625630-784-5-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 11:07:10AM +0800, Shengjiu Wang wrote:
-> As there are two drivers for DSP on i.MX, one is for sound open
-> firmware, another is for remote processor framework. In order to
-> distinguish two kinds of driver, defining different compatible strings.
+On Thu, 30 Sep 2021 00:48:55 +0300
+Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+
+> On 9/29/2021 7:14 PM, Jason Gunthorpe wrote:
+> > On Wed, Sep 29, 2021 at 06:28:44PM +0300, Max Gurtovoy wrote:
+> >  
+> >>> So you have a device that's actively modifying its internal state,
+> >>> performing I/O, including DMA (thereby dirtying VM memory), all while
+> >>> in the _STOP state?  And you don't see this as a problem?  
+> >> I don't see how is it different from vfio-pci situation.  
+> > vfio-pci provides no way to observe the migration state. It isn't
+> > "000b"  
 > 
-> For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
-> are needed and the mailbox channel is different with SOF.
+> Alex said that there is a problem of compatibility.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
->  1 file changed, 75 insertions(+), 6 deletions(-)
+> I migration SW is not involved, nobody will read this migration state.
+
+The _STOP state has a specific meaning regardless of whether userspace
+reads the device state value.  I think what you're suggesting is that
+the device reports itself as _STOP'd but it's actually _RUNNING.  Is
+that the compatibility workaround, create a self inconsistency?
+
+We cannot impose on userspace to move a device from _STOP to _RUNNING
+simply because the device supports the migration region, nor should we
+report a device state that is inconsistent with the actual device state.
+
+> >> Maybe we need to rename STOP state. We can call it READY or LIVE or
+> >> NON_MIGRATION_STATE.  
+> > It was a poor choice to use 000b as stop, but it doesn't really
+> > matter. The mlx5 driver should just pre-init this readable to running.  
 > 
-> diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> index 7afc9f2be13a..51ea657f6d42 100644
-> --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
->  
->  maintainers:
->    - Daniel Baluta <daniel.baluta@nxp.com>
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
->  
->  description: |
->    Some boards from i.MX8 family contain a DSP core used for
-> @@ -19,6 +20,10 @@ properties:
->        - fsl,imx8qxp-dsp
->        - fsl,imx8qm-dsp
->        - fsl,imx8mp-dsp
-> +      - fsl,imx8qxp-hifi4
-> +      - fsl,imx8qm-hifi4
-> +      - fsl,imx8mp-hifi4
-> +      - fsl,imx8ulp-hifi4
->  
->    reg:
->      maxItems: 1
-> @@ -28,37 +33,63 @@ properties:
->        - description: ipg clock
->        - description: ocram clock
->        - description: core clock
-> +      - description: debug interface clock
-> +      - description: message unit clock
-> +    minItems: 3
-> +    maxItems: 5
-
-Don't need maxItems.
-
->  
->    clock-names:
->      items:
->        - const: ipg
->        - const: ocram
->        - const: core
-> +      - const: debug
-> +      - const: mu
-> +    minItems: 3
-> +    maxItems: 5
-
-ditto
-
->  
->    power-domains:
->      description:
->        List of phandle and PM domain specifier as documented in
->        Documentation/devicetree/bindings/power/power_domain.txt
-> +    minItems: 1
-
-This is curious. The h/w sometimes has fewer power domains?
-
->      maxItems: 4
->  
->    mboxes:
->      description:
->        List of <&phandle type channel> - 2 channels for TXDB, 2 channels for RXDB
-> +      or - 1 channel for TX, 1 channel for RX, 1 channel for RXDB
->        (see mailbox/fsl,mu.txt)
-> +    minItems: 3
->      maxItems: 4
->  
->    mbox-names:
-> -    items:
-> -      - const: txdb0
-> -      - const: txdb1
-> -      - const: rxdb0
-> -      - const: rxdb1
-> +    oneOf:
-> +      - items:
-> +          - const: txdb0
-> +          - const: txdb1
-> +          - const: rxdb0
-> +          - const: rxdb1
-> +      - items:
-> +          - const: tx
-> +          - const: rx
-> +          - const: rxdb
->  
->    memory-region:
->      description:
->        phandle to a node describing reserved memory (System RAM memory)
->        used by DSP (see bindings/reserved-memory/reserved-memory.txt)
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 4
-> +
-> +  firmware-name:
-> +    description: |
-> +      Default name of the firmware to load to the remote processor.
-> +
-> +  fsl,dsp-ctrl:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to syscon block which provide access for processor enablement
->  
->  required:
->    - compatible
-> @@ -91,3 +122,41 @@ examples:
->          mboxes = <&lsio_mu13 2 0>, <&lsio_mu13 2 1>, <&lsio_mu13 3 0>, <&lsio_mu13 3 1>;
->          memory-region = <&dsp_reserved>;
->      };
-> +  - |
-> +    #include <dt-bindings/clock/imx8mp-clock.h>
-> +    dsp_reserved: dsp@92400000 {
-> +      reg = <0x92400000 0x1000000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0vring0: vdev0vring0@942f0000 {
-> +      reg = <0x942f0000 0x8000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0vring1: vdev0vring1@942f8000 {
-> +      reg = <0x942f8000 0x8000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0buffer: vdev0buffer@94300000 {
-> +      compatible = "shared-dma-pool";
-> +      reg = <0x94300000 0x100000>;
-> +      no-map;
-> +    };
-> +
-> +    dsp: dsp@3b6e8000 {
-> +      compatible = "fsl,imx8mp-hifi4";
-> +      reg = <0x3B6E8000 0x88000>;
-> +      clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT>;
-> +      clock-names = "ipg", "ocram", "core", "debug";
-> +      firmware-name = "imx/dsp/hifi4.bin";
-> +      power-domains = <&audiomix_pd>;
-> +      mbox-names = "tx", "rx", "rxdb";
-> +      mboxes = <&mu2 0 0>,
-> +               <&mu2 1 0>,
-> +               <&mu2 3 0>;
-> +      memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
-> +                      <&dsp_vdev0vring1>, <&dsp_reserved>;
-> +      fsl,dsp-ctrl = <&audio_blk_ctrl>;
-> +    };
-> -- 
-> 2.17.1
+> I guess we can do it for this reason. There is no functional problem nor 
+> compatibility issue here as was mentioned.
 > 
+> But still we need the kernel to track transitions. We don't want to 
+> allow moving from RESUMING to SAVING state for example. How this 
+> transition can be allowed ?
 > 
+> In this case we need to fail the request from the migration SW...
+
+_RESUMING to _SAVING seems like a good way to test round trip migration
+without running the device to modify the state.  Potentially it's a
+means to update a saved device migration data stream to a newer format
+using an intermediate driver version.
+
+If a driver is written such that it simply sees clearing the _RESUME
+bit as an indicator to de-serialize the data stream to the device, and
+setting the _SAVING flag as an indicator to re-serialize that data
+stream from the device, then this is just a means to make use of
+existing data paths.
+
+The uAPI specifies a means for drivers to reject a state change, but
+that risks failing to support a transition which might find mainstream
+use cases.  I don't think common code should be responsible for
+filtering out viable transitions.  Thanks,
+
+Alex
+
