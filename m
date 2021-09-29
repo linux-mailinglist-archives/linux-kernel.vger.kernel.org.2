@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B7041C376
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22ED41C37B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245605AbhI2LcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:32:20 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36754
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229567AbhI2LcR (ORCPT
+        id S245617AbhI2Lcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:32:47 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:19520 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244822AbhI2Lcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:32:17 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C916F40CE4;
-        Wed, 29 Sep 2021 11:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632915036;
-        bh=0575VV0gt8/0gLoL9LJNlvK+sCPlYUgHHJ1GFfB2lcA=;
-        h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-         In-Reply-To:Content-Type;
-        b=MaVdgI8WyuMYZnCV4wdFIWTM6tbqcaI3W1d+Ki3AeTaZQK27vR/FZwUIQ+7/xxHSg
-         kTMgD/oN5Uizyvr/EpOd8N1kHBGqXoXO5wkwC36RTOQoxu8Gz/G3tsb2hRMyeeW3fs
-         vaZViRmlbU4UghsbofTXK1qMQGuadGumDlZXl9UkcYPj/TEpdds9va+XyOz56enZdz
-         Cu9u1Qadla0AvX0NyMoN7kY0/fqTsYpij26GBVrFyqkWVkDN+MOlDSkstbMlfWCBFR
-         FRZntP8+h11crjkTyhk0wTB0AJBkrJlKNdOHqDgtubR2Ag96OpDNc3vzo3mJDhAfc4
-         9gGM1nbYH89Tg==
-Message-ID: <14afe5d5-4c68-b1ca-da88-8951188ee9f9@canonical.com>
-Date:   Wed, 29 Sep 2021 12:30:35 +0100
+        Wed, 29 Sep 2021 07:32:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1632915065; x=1664451065;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7bnRKGYR4FJyMBwNxeaNWp8a3KIWMSfYvPSo+4dlHMc=;
+  b=JkHLzxqcNhbSxnJiwkktMlbOUzUhnHwMDQHAgqzHVOmZ3ar6pjUve5Y3
+   qS2ROoYqtvdKNImkjaCdiroy/zPGi7ZDCeH02NyvX8JUO02f2qHIFuBgp
+   JIHSIhkfdfWRJr12u9zZvdlsOSvDs4Nz7xvrfG1q8swHMa/TZzlZ5WYjx
+   N0b07fmiIcts1eM5lcXXv7mrJYcK3wDCpbMsgjRxR2HSK6d/mcJ+yVgj9
+   C1QJlaCp2llV50YW00klSuq+0TGabyGIJ9Kff7leCWKmHcY/3REduOKVj
+   GXQ4PoBBdlU7pZkK+GBsM1cB16cqGdSVuufKEl2Vi7qeb8j0RCQgz83aa
+   g==;
+IronPort-SDR: 0ejb7fv4bErAwKhTUcSOvt0qIsLs6oFkfHk+FAgzq2fTm3JvjVll0OS19C5T+GkdV+YLgNCeTz
+ An6JtKZLC08TM2uW2DE75hALdDZPe8hm5eyN5I72hHidXcSGWlaayIoI5HIjOqSDptraIMvSRk
+ aO64OKvTEOkd+NiAq5PoYx4+simFDPr9rdL8NVAY9YChc0LN7hah+CuW03TT1ftqGtxW1C6IJq
+ 4DevQCOvVvs+QsXYEOvwYln2u8nUbHm+8ayv4PmzuMnLbBS27twmI5fIQPx7jPycI5IKQCMOFk
+ cyS38Gr3zezKWpZD+pb6FAt/
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="133601691"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Sep 2021 04:31:04 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 29 Sep 2021 04:31:03 -0700
+Received: from CHE-LT-I17972LX.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 29 Sep 2021 04:30:58 -0700
+From:   LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
+To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <macro@orcam.me.uk>,
+        <zev@bewilderbeest.net>, <vigneshr@ti.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v1 0/3] serial:8250:Add driver support for MCHP PCI1XXXX UART module
+Date:   Wed, 29 Sep 2021 17:00:46 +0530
+Message-ID: <20210929113049.64557-1-LakshmiPraveen.Kopparthi@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: NAK: [PATCH] drm/msm/mdp4: Fix potential integer overflow on 32 bit
- multiply
-Content-Language: en-US
-From:   Colin Ian King <colin.king@canonical.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210929110804.210725-1-colin.king@canonical.com>
-In-Reply-To: <20210929110804.210725-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2021 12:08, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> In the case where clock is 2147485 or greater the 32 bit multiplication
-> by 1000 will cause an integer overflow. Fix this by making the constant
-> 1000 a long to ensure a long multiply occurs to avoid the overflow
-> before assigning the result to the long result in variable requested.
-> Most probably a theoretical overflow issue, but worth fixing.
-> 
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: 3e87599b68e7 ("drm/msm/mdp4: add LVDS panel support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-> index 7288041dd86a..deada745d5b9 100644
-> --- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-> +++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
-> @@ -64,7 +64,7 @@ static int mdp4_lvds_connector_mode_valid(struct drm_connector *connector,
->   	struct drm_encoder *encoder = mdp4_lvds_connector->encoder;
->   	long actual, requested;
->   
-> -	requested = 1000 * mode->clock;
-> +	requested = 1000L * mode->clock;
->   	actual = mdp4_lcdc_round_pixclk(encoder, requested);
->   
->   	DBG("requested=%ld, actual=%ld", requested, actual);
-> 
+PCI1XXXX UART is a PCIe to UART module. It has 5 SKUs, each is
+differentiated by the device IDs in the PCIe config space. Each
+SKU supports a maximum of 4 UART ports(UART0,1,2,3) with fixed 
+offests.Based on the sub device ID, the combinations of UART 
+ports shall be enumerated.
 
-NACK: there are a few more occurrences of this in the msm driver, I'll 
-fix them up for a V2.
+The UART port is compatible with the standard 16550A, but has some 
+modifications.The modifications includes a change in the baud rate
+settings,auto control of RTS signal for RS485 feature and an
+increase of TX & RX FIFO size to 256 Bytes.Also, it has a capability
+to wake up the CPU. 
 
+These patches adds the support to enumerate and exercise all the
+combinations of UART ports in all the SKUs.
+
+LakshmiPraveen Kopparthi (3):
+  Add basic driver support for MCHP PCI1XXXX UART
+  Add RS485 support for MCHP PCI1XXXX UART
+  Add non standard baudrate support for MCHP PCI1XXXX UART module
+
+ drivers/tty/serial/8250/8250_pci.c  | 384 ++++++++++++++++++++++++++++
+ drivers/tty/serial/8250/8250_port.c |   8 +
+ include/uapi/linux/serial_core.h    |   3 +
+ 3 files changed, 395 insertions(+)
+
+-- 
+2.25.1
 
