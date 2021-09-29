@@ -2,134 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38B041C6F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE4341C6FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344431AbhI2Ol0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244630AbhI2OlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:41:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FC061288;
-        Wed, 29 Sep 2021 14:39:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632926383;
-        bh=nnq87NutyIOGGif5N+QrkzjWO+6VWs0z6DZ46avoARs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eqiziXnfY6Gb8Aqa7QR6beBqHy27XIjRrNUvvAZpBe8wAWCnLdAtcFyomIe7AQOpr
-         4y5Asa4+B80UxnB1HHcJhWNrtHtO1xZ3wY/gSf+jYnf98cFaKFzj08VOrxUhrIW7Xl
-         WhtES6XqwCW5MPr95wOLYo64luS6u1zSPfI8WRAF7ohJTYNANFQJlfrV9MLvFa+BQB
-         qRGrx+33hqKztnR5yfNuHpe7tcbvP77g91NjW7WEy/hhDjv2PbU7F3vMSN5g+9a7XX
-         6BT/cH+dKXao9KYoRKv24DJNK8fNaz/UswWiMxA+XjskLExRXFjir7NSfinIiFeJQq
-         T9KesJYV0X2ng==
-Date:   Wed, 29 Sep 2021 07:39:40 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YVR0iKIRYDXQbD+o@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
-        <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YVR0iKIRYDXQbD+o@unreal>
+        id S1344489AbhI2Olr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:41:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344438AbhI2Olq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:41:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632926405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RTohnJEVaRgmsE21p0PUf/a8BihysPGpVmzSuoYF6Kc=;
+        b=ZNey48U3ErVudoMKDKBWkJh7JPLyksxg/VLHuGppgcKxXYdamo/KC7o7/7ma4d94EU17//
+        EGbJ4Gl6Nfc1JVH6tHkxuTldt1GmYxyxXIj01lxikIkKgQiHrARC7qDgicknxDBidi9bj6
+        agkOvhn1bRdoqhM+lYMY+nD2RXzi5xU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-zTAqi8taMcyjgA4f8DO2RA-1; Wed, 29 Sep 2021 10:40:03 -0400
+X-MC-Unique: zTAqi8taMcyjgA4f8DO2RA-1
+Received: by mail-wr1-f70.google.com with SMTP id k2-20020adfc702000000b0016006b2da9bso685203wrg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:40:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=RTohnJEVaRgmsE21p0PUf/a8BihysPGpVmzSuoYF6Kc=;
+        b=t6U1aAchXdl5liF9DBmToizRRN2kHnCcDFSpKRCCMf553la3hz+4YGpcEHZbggzsfW
+         uc9O4sO/GB55C9FG6iOEgTenGt2uk6kB+6owDazzIKIt/LXm5ZdkUJvwUTXu+x3ZGwLv
+         kJkkZ7EXswrQ9hqM+5PxkaHgaAMKxXlzAzoMEO/uWYcI/7vj/3a/RMHBJjj1SIktwUY/
+         2Hi5KfkfydlzkJIARGw7UZ82oP8vrEalkSPiRmKokfZO4lgL4PlI5rnmL991y1BXqyWI
+         /SE3w52AJnt8U6r4b4lx01M+rGOtgJxqL8IsUnsQt2V5phU7F4mOBp2TfFPtxZOoGy3x
+         MHFA==
+X-Gm-Message-State: AOAM5314EFfu+MHwgrHJ2O6pCKPmZH9J4H8G7hcDSpB0oSGGJ9qM53I0
+        WtgiJa9pvfeu/nX4KZCl/r8ElnjOqwGk1nqaT881E6ujnGevaW/vgl2j25XXRYQ0D20MRQXZjnw
+        DxFhsr56w7AmXP8EJe7E+DWUH
+X-Received: by 2002:a1c:7f11:: with SMTP id a17mr10831940wmd.166.1632926402159;
+        Wed, 29 Sep 2021 07:40:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzL+KrZvzNDfBushKo4he0hLbt3uOFSVXpNF30x8fkTZQ/hUEAzG4H0Yap4j9KgNoD3atKEHw==
+X-Received: by 2002:a1c:7f11:: with SMTP id a17mr10831921wmd.166.1632926401991;
+        Wed, 29 Sep 2021 07:40:01 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id n26sm1871649wmi.43.2021.09.29.07.40.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 07:40:01 -0700 (PDT)
+Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment >
+ 1
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ping Fang <pifang@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210908132727.16165-1-david@redhat.com>
+ <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
+ <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
+ <ea75df96-f381-6949-5627-1382a370dc71@redhat.com>
+ <20210916193403.GA1940@pc638.lan>
+ <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com>
+ <20210921221337.GA60191@pc638.lan>
+ <7f62d710-ca85-7d33-332a-25ff88b5452f@redhat.com>
+ <20210922104141.GA27011@pc638.lan>
+ <e378e60a-319b-e9aa-7e30-3e280c4431da@redhat.com>
+ <CA+KHdyWZ9T2GEuUENXD_OYHX1JxKfZuW5YzmDtqXUYSgkQd8fQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <953ea84a-aabb-f64b-b417-ba60928430e0@redhat.com>
+Date:   Wed, 29 Sep 2021 16:40:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CA+KHdyWZ9T2GEuUENXD_OYHX1JxKfZuW5YzmDtqXUYSgkQd8fQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:
-> On Wed, Sep 29, 2021 at 06:40:04AM -0700, Jakub Kicinski wrote:
-> > On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:  
-> > > This series starts from the fixing the bug introduced by implementing
-> > > devlink delayed notifications logic, where I missed some of the
-> > > notifications functions.
-> > > 
-> > > The rest series provides a way to dynamically set devlink ops that is
-> > > needed for mlx5 multiport device and starts cleanup by removing
-> > > not-needed logic.
-> > > 
-> > > In the next series, we will delete various publish API, drop general
-> > > lock, annotate the code and rework logic around devlink->lock.
-> > > 
-> > > All this is possible because driver initialization is separated from the
-> > > user input now.  
-> > 
-> > Swapping ops is a nasty hack in my book.
-> > 
-> > And all that to avoid having two op structures in one driver.
-> > Or to avoid having counters which are always 0?  
+On 29.09.21 16:30, Uladzislau Rezki wrote:
+>>
+>> So the idea is that once we run into a dead end because we took a left
+>> subtree, we rollback to the next possible rigth subtree and try again.
+>> If we run into another dead end, we repeat ... thus, this can now happen
+>> more than once.
+>>
+>> I assume the only implication is that this can now be slower in some
+>> corner cases with larger alignment, because it might take longer to find
+>> something suitable. Fair enough.
+>>
+> Yep, your understanding is correct regarding the tree traversal. If no
+> suitable block
+> is found in left sub-tree we roll-back and check right one. So it can
+> be(the scanning)
+> more than one time.
 > 
-> We don't need to advertise counters for feature that is not supported.
-> In multiport mlx5 devices, the reload functionality is not supported, so
-> this change at least make that device to behave like all other netdev
-> devices that don't support devlink reload.
+> I did some performance analyzing using vmalloc test suite to figure
+> out a performance
+> loss for allocations with specific alignment. On that syntactic test i
+> see approx. 30%
+> of degradation:
+
+How realistic is that test case? I assume most alignment we're dealing 
+with is:
+* 1/PAGE_SIZE
+* huge page size (for automatic huge page placing)
+
 > 
-> The ops structure is set very early to make sure that internal devlink
-> routines will be able access driver back during initialization (btw very
-> questionable design choice)
-
-Indeed, is this fixable? Or now that devlink_register() was moved to 
-the end of probe netdev can call ops before instance is registered?
-
-> and at that stage the driver doesn't know
-> yet which device type it is going to drive.
+> 2.225 microseconds vs 1.496 microseconds. That time includes both
+> vmalloc() and vfree()
+> calls. I do not consider it as a big degrade, but from the other hand
+> we can still adjust the
+> search length for alignments > one page:
 > 
-> So the answer is:
-> 1. Can't have two structures.
+> # add it on top of previous proposal and search length instead of size
+> length = align > PAGE_SIZE ? size + align:size;
 
-I still don't understand why. To be clear - swapping full op structures
-is probably acceptable if it's a pure upgrade (existing pointers match).
-Poking new ops into a structure (in alphabetical order if I understand
-your reply to Greg, not destructor-before-contructor) is what I deem
-questionable.
+That will not allow to place huge pages in the case of kasan. And I 
+consider that more important than optimizing a syntactic test :) My 2 cents.
 
-> 2. Same behaviour across all netdev devices.
+-- 
+Thanks,
 
-Unclear what this is referring to.
+David / dhildenb
+
