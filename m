@@ -2,83 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA55D41C44C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AE541C44E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343521AbhI2MJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:09:47 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:37557 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244801AbhI2MJo (ORCPT
+        id S1343537AbhI2MKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244801AbhI2MKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:09:44 -0400
-Received: by mail-ot1-f53.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so2557841otv.4;
-        Wed, 29 Sep 2021 05:08:03 -0700 (PDT)
+        Wed, 29 Sep 2021 08:10:02 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3941C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:08:20 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id x20so3835030wrg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:08:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iyf25v6ccH6pcjIZwVpHGzum+qBnQrA4I/SRUwhCtyo=;
+        b=T8zIfXgeaPrEEdWOzvwNTpI4xwVcEDwynYkx5VAeTJ7rV02Hb29+luk4+do/R4tlYM
+         WHxuynFzb2jIPamYr5joLM1NbqFkLNQ0oXsf3Cq1vMqmpxFgE+EvcDk2f7Ua7SsG6agX
+         W5014cw1JRdT8BGfZPqE1nw7yLc3PKzbdYCmg8bHyHxkqJIC7qlZAsC3mMiRPMmQ1Q6B
+         /n70Y9v5VrEqVNrQ4oRHi2obyy5TfM1Zz0e7jjuVuSsi1WBQAwvr1/X1uZYPwnsN9sCC
+         VxAv5M5BafhvPiWSTATDETbfoIlTsGYDjGkhoPQ0oWwEIQbt2gGpFvIj8HH9WyqbKgW3
+         VCtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lOD2JGNZk8v+mRUWU6qCnLPxFm8GKCd1aSiNdnVC1UI=;
-        b=FHQYjSxzrwaYU1HDc0bhjTGseA+05QJLQBAnmIu9ZSS+OZgNQo8YcU5Y2aTgUNKuZB
-         lUnF3S8q2YT1UYdKEXcG8kiQHK8mN5xhLxYAjpB+CCAE93BWIgY+LiHa+SskcduJCSAd
-         X2J09mC+VuQNpZYy+nCU6W8S9kLMbV3AXN9hZmqbSM/tVXDiV27I9WSWN7cLwtbZySKk
-         M3iS/Zdo1YJny8zF4H7cVRhbxDOmq6cECFLHZQV/dyQGOmjdJ8qGFM4uKTORnlesPWj5
-         RH+gPf2Cyy2VlgNAJAlf9jBPCsC355ansJ8lDjkB6YerZriqgauYeAOrak1ND6+3ihj4
-         HGvw==
-X-Gm-Message-State: AOAM530hltOVEEXPa/9A18qho6Q2PmiPjT9VKhzpDaGfVNtEvspkBIyn
-        mX68Kkq9eIHLP0FzbgY7HbNNZJN0ARvWneO+XEM=
-X-Google-Smtp-Source: ABdhPJxMVCyh+TLDn+QjO1ONDrrdMlbRvA0UkC+rzTXfgidJEc2fjRlS01Q/3WWpPPHZkX8qGU1k9FzfRNmCVT4nNBM=
-X-Received: by 2002:a05:6830:2784:: with SMTP id x4mr10087198otu.86.1632917283115;
- Wed, 29 Sep 2021 05:08:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iyf25v6ccH6pcjIZwVpHGzum+qBnQrA4I/SRUwhCtyo=;
+        b=5Io2vDsrUD8+GXijCSuM2559xjhFVKRXzwpygN/zMaNFCAEEYgnIaYvS5NWV+ZY0w0
+         XMZapvyPb4Wad0ABWXHl3+OLWZPkhlEkhc9xvncbZ4nBZdtWyMKhozhC3hYGFf1oH/+N
+         gX4iUQw5DE5w3LVIgL4lN9bHLuG20jRn0jKFGclhVyxg3VgSsJDWCxJ1BQ0zx7/U9iuq
+         z44KYKFcxr+lLlCGldHU+7tNzxWfKpIcMyA5tzQSgStNeT6DQQ8P4rPy+whq68Prj+N6
+         k7XwecVznfQ3NBBZENCDG5Tt7q9KxUHYYYjBAjhD81sdqME8q67jB9Jo2EFAV5gBqgar
+         YHJg==
+X-Gm-Message-State: AOAM531zowYIrQWYhxHJad3PaXu0yQGpgtpvGulqdyGLsC3C3R+Pt6Vt
+        PqQJTsge0aIWB1fbslLxejGTDw==
+X-Google-Smtp-Source: ABdhPJwTIS8HQpJZEByh3RukfaJyygW8l9IQlLTBVa0HSIUytOml9PkySYthSBAciSjRupn3Iw7g/g==
+X-Received: by 2002:adf:fe8c:: with SMTP id l12mr6440976wrr.210.1632917299207;
+        Wed, 29 Sep 2021 05:08:19 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id i27sm1502404wmb.40.2021.09.29.05.08.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 05:08:18 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 13:07:56 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>, "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 17/20] iommu/iommufd: Report iova range to userspace
+Message-ID: <YVRXHDwROV2ASnVJ@myrica>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-18-yi.l.liu@intel.com>
+ <YUtCYZI3oQcwKrUh@myrica>
+ <PH0PR11MB56580CB47CA2CF17C86CD0D0C3A99@PH0PR11MB5658.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210929104625.1112192-1-qtxuning1999@sjtu.edu.cn>
-In-Reply-To: <20210929104625.1112192-1-qtxuning1999@sjtu.edu.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 29 Sep 2021 14:07:51 +0200
-Message-ID: <CAJZ5v0jSpoEeL9vevWatiGJ6qbbaxSAoiPH1D4RaT1q0c7Sxmw@mail.gmail.com>
-Subject: Re: [PATCH] acpi/processor_idle.c: Fix kernel pointer leak
-To:     Guo Zhi <qtxuning1999@sjtu.edu.cn>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB56580CB47CA2CF17C86CD0D0C3A99@PH0PR11MB5658.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 12:56 PM Guo Zhi <qtxuning1999@sjtu.edu.cn> wrote:
->
-> Pointers should be printed with %p or %px rather than
-> cast to 'long' and pinted with %ld.
-> Change %ld to %p to print the secured pointer.
+On Wed, Sep 29, 2021 at 10:44:01AM +0000, Liu, Yi L wrote:
+> > From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > Sent: Wednesday, September 22, 2021 10:49 PM
+> > 
+> > On Sun, Sep 19, 2021 at 02:38:45PM +0800, Liu Yi L wrote:
+> > > [HACK. will fix in v2]
+> > >
+> > > IOVA range is critical info for userspace to manage DMA for an I/O address
+> > > space. This patch reports the valid iova range info of a given device.
+> > >
+> > > Due to aforementioned hack, this info comes from the hacked vfio type1
+> > > driver. To follow the same format in vfio, we also introduce a cap chain
+> > > format in IOMMU_DEVICE_GET_INFO to carry the iova range info.
+> > [...]
+> > > diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+> > > index 49731be71213..f408ad3c8ade 100644
+> > > --- a/include/uapi/linux/iommu.h
+> > > +++ b/include/uapi/linux/iommu.h
+> > > @@ -68,6 +68,7 @@
+> > >   *		   +---------------+------------+
+> > >   *		   ...
+> > >   * @addr_width:    the address width of supported I/O address spaces.
+> > > + * @cap_offset:	   Offset within info struct of first cap
+> > >   *
+> > >   * Availability: after device is bound to iommufd
+> > >   */
+> > > @@ -77,9 +78,11 @@ struct iommu_device_info {
+> > >  #define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU
+> > enforced snoop */
+> > >  #define IOMMU_DEVICE_INFO_PGSIZES	(1 << 1) /* supported page
+> > sizes */
+> > >  #define IOMMU_DEVICE_INFO_ADDR_WIDTH	(1 << 2) /*
+> > addr_wdith field valid */
+> > > +#define IOMMU_DEVICE_INFO_CAPS		(1 << 3) /* info
+> > supports cap chain */
+> > >  	__u64	dev_cookie;
+> > >  	__u64   pgsize_bitmap;
+> > >  	__u32	addr_width;
+> > > +	__u32   cap_offset;
+> > 
+> > We can also add vendor-specific page table and PASID table properties as
+> > capabilities, otherwise we'll need giant unions in the iommu_device_info
+> > struct. That made me wonder whether pgsize and addr_width should also
+> > be
+> > separate capabilities for consistency, but this way might be good enough.
+> > There won't be many more generic capabilities. I have "output address
+> > width"
+> 
+> what do you mean by "output address width"? Is it the output address
+> of stage-1 translation?
 
-In this particular case, id->driver_data represents a proper integer,
-not an address, although technically it is a pointer data type.  It
-shouldn't be printed with %p and the patch is incorrect.
+Yes, so the guest knows the size of GPA it can write into the page table.
+For Arm SMMU the GPA size is determined by both the SMMU implementation
+and the host kernel configuration. But maybe that could also be
+vendor-specific, if other architectures don't need to communicate it. 
 
->
-> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
-> ---
->  drivers/acpi/processor_idle.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index f37fba9e5ba0..a9f4ab072583 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -73,9 +73,9 @@ static int set_max_cstate(const struct dmi_system_id *id)
->         if (max_cstate > ACPI_PROCESSOR_MAX_POWER)
->                 return 0;
->
-> -       pr_notice("%s detected - limiting to C%ld max_cstate."
-> +       pr_notice("%s detected - limiting to C%p max_cstate."
->                   " Override with \"processor.max_cstate=%d\"\n", id->ident,
-> -                 (long)id->driver_data, ACPI_PROCESSOR_MAX_POWER + 1);
-> +               id->driver_data, ACPI_PROCESSOR_MAX_POWER + 1);
->
->         max_cstate = (long)id->driver_data;
->
-> --
-> 2.33.0
->
+> >
+> and "PASID width", the rest is specific to Arm and SMMU table
+> > formats.
+> 
+> When coming to nested translation support, the stage-1 related info are
+> likely to be vendor-specific, and will be reported in cap chain.
+
+Agreed
+
+Thanks,
+Jean
