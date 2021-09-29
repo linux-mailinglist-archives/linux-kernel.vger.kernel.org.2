@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BE341CAFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AF341CB00
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbhI2RXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:23:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344159AbhI2RXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:23:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E40260E08;
-        Wed, 29 Sep 2021 17:21:45 +0000 (UTC)
-Date:   Wed, 29 Sep 2021 18:21:42 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
-        james.morse@arm.com, vladimir.murzin@arm.com,
-        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
-        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
-        selindag@gmail.com, tyhicks@linux.microsoft.com,
-        kernelfans@gmail.com, akpm@linux-foundation.org,
-        madvenka@linux.microsoft.com
-Subject: Re: [PATCH v17 00/15] arm64: MMU enabled kexec relocation
-Message-ID: <YVSgplQLvPg1490d@arm.com>
-References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+        id S1343925AbhI2RYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:24:22 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:51057 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245157AbhI2RYV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:24:21 -0400
+Received: by mail-wm1-f45.google.com with SMTP id j27so2462516wms.0;
+        Wed, 29 Sep 2021 10:22:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/wYiStrhTYDyD6KyMsoACZjcHuOdOYLgD+s4ib2mjlk=;
+        b=7u3FDuO9W+kJdEglo2mSgk+XHe6n89v1c3X+3Drr8QA336yJYk+gAUP5RoQOd6cgQ3
+         jiYPfb60q4xS+AuDmJvbyjNi0sRzdNWRZC/770iqo5X+Zpkrq5hBbiqwq7gJF1b5iiZC
+         pIxZf/gWUQlfDHoUIkEOvE/JrahVBdpl14Bc5Lqp7sVhcc3iMNidAhm9U06v1EU1a1wN
+         ZvWV18Onz41uzUGNgbg3IbV0yBKlnrdju5fx5tGMcY21m6OXuXE0F4FtSdi9FNR3qtMz
+         89IjZythynPqWNlhyj/smdSH8TV8E7rIbzpaxKiUVmGtF7r8lokFWc/s2ik5bkvruWDW
+         0e9g==
+X-Gm-Message-State: AOAM533MDe9x77+FnKtHQun4TAHmx0NaZBSbUz+d7R/oZfaUOHvMlmR/
+        vu0ucaMuIBOgdKHhN9jvxWY=
+X-Google-Smtp-Source: ABdhPJwj+v6Ia/1ewRH90e4P1/TPFUvE8EwF6nwIW4OtRVbDIJFo8m6XaalECnXB7TPk8E2KUUOv5Q==
+X-Received: by 2002:a7b:cde8:: with SMTP id p8mr11667995wmj.178.1632936159413;
+        Wed, 29 Sep 2021 10:22:39 -0700 (PDT)
+Received: from msft-t490s.. (mob-31-159-120-132.net.vodafone.it. [31.159.120.132])
+        by smtp.gmail.com with ESMTPSA id n26sm2267502wmi.43.2021.09.29.10.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 10:22:38 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v5 0/3] riscv: optimized mem* functions
+Date:   Wed, 29 Sep 2021 19:22:31 +0200
+Message-Id: <20210929172234.31620-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 07:13:10PM -0400, Pasha Tatashin wrote:
-> Pasha Tatashin (15):
->   arm64: kernel: add helper for booted at EL2 and not VHE
->   arm64: trans_pgd: hibernate: Add trans_pgd_copy_el2_vectors
->   arm64: hibernate: abstract ttrb0 setup function
->   arm64: kexec: flush image and lists during kexec load time
->   arm64: kexec: skip relocation code for inplace kexec
->   arm64: kexec: Use dcache ops macros instead of open-coding
->   arm64: kexec: pass kimage as the only argument to relocation function
->   arm64: kexec: configure EL2 vectors for kexec
->   arm64: kexec: relocate in EL1 mode
->   arm64: kexec: use ld script for relocation function
->   arm64: kexec: install a copy of the linear-map
->   arm64: kexec: keep MMU enabled during kexec relocation
->   arm64: kexec: remove the pre-kexec PoC maintenance
->   arm64: kexec: remove cpu-reset.h
->   arm64: trans_pgd: remove trans_pgd_map_page()
+From: Matteo Croce <mcroce@microsoft.com>
 
-FWIW, I'm fine with this series. I think the only concern raised by
-James and not addressed is the possibility of the failure of the memory
-allocation for copying the page tables during kexec. If anyone will
-complain in the future, we can look into adding a fallback mechanism to
-do the relocation with the MMU off.
+Replace the assembly mem{cpy,move,set} with C equivalent.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Try to access RAM with the largest bit width possible, but without
+doing unaligned accesses.
+
+A further improvement could be to use multiple read and writes as the
+assembly version was trying to do.
+
+Tested on a BeagleV Starlight with a SiFive U74 core, where the
+improvement is noticeable.
+
+v4 -> v5:
+- call __memcpy() instead of memcpy() in memmove()
+
+v3 -> v4:
+- incorporate changes from proposed generic version:
+  https://lore.kernel.org/lkml/20210702123153.14093-1-mcroce@linux.microsoft.com/
+
+v2 -> v3:
+- alias mem* to __mem* and not viceversa
+- use __alias instead of a tail call
+
+v1 -> v2:
+- reduce the threshold from 64 to 16 bytes
+- fix KASAN build
+- optimize memset
+
+Matteo Croce (3):
+  riscv: optimized memcpy
+  riscv: optimized memmove
+  riscv: optimized memset
+
+ arch/riscv/include/asm/string.h |  18 ++--
+ arch/riscv/kernel/Makefile      |   1 -
+ arch/riscv/kernel/riscv_ksyms.c |  17 ----
+ arch/riscv/lib/Makefile         |   4 +-
+ arch/riscv/lib/memcpy.S         | 108 ----------------------
+ arch/riscv/lib/memmove.S        |  64 -------------
+ arch/riscv/lib/memset.S         | 113 -----------------------
+ arch/riscv/lib/string.c         | 154 ++++++++++++++++++++++++++++++++
+ 8 files changed, 164 insertions(+), 315 deletions(-)
+ delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
+ delete mode 100644 arch/riscv/lib/memcpy.S
+ delete mode 100644 arch/riscv/lib/memmove.S
+ delete mode 100644 arch/riscv/lib/memset.S
+ create mode 100644 arch/riscv/lib/string.c
+
+-- 
+2.31.1
+
