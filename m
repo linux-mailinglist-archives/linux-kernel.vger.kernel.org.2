@@ -2,360 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4DB41CAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D310541CAEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345347AbhI2ROL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:14:11 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:40148 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345228AbhI2ROK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:14:10 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HKNFq1cstz96;
-        Wed, 29 Sep 2021 19:11:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1632935504; bh=d2MUWMRLtXQKduZj9fkvX3eKtT9ZCiWQ1vARU5+7Rtg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dgy7kAjuAPTstCMGj2MQYnG5k4OtNZa+1RO2mle3ugBeTJIVNg42gbDBs7Rlg2mBY
-         nPiA4HUcgXgOT7o941EqMhI9yi2mIY9Um2XIPcraX6OX1RI8wkPJ5Gh1Hgdcuhqh8U
-         2Kw3v4N7RJFkZgzrmID1RGV49RgvsA7NK8IqLvCVASDo8MtjegFXkVTvtVxiLpWEVP
-         +v8M60KQ1+BJFrM/i1aZmj1Oz0zc5tG1GvmE3r741c4+wgKfI8Mzu6E1o4zlmqUchm
-         +qjCoROhVSWxClUTSFyynGh2wxQwMSd4LwXUpICigWqOIAJcpBJIxwMfSyIfwn6yyr
-         e0l2rAxvbLcmA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Wed, 29 Sep 2021 19:12:23 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-Cc:     wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        digetx@gmail.com, treding@nvidia.com, s.shtylyov@omp.ru,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v1 1/2] i2c:busses:Register PCI1XXXX adapter to I2C
- subsystem
-Message-ID: <YVSed/F9pk8n9O2P@qmqm.qmqm.pl>
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
- <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
+        id S1345434AbhI2RQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:16:17 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:53792 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345367AbhI2RQQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:16:16 -0400
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 18THEMVo006434;
+        Thu, 30 Sep 2021 02:14:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 18THEMVo006434
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1632935663;
+        bh=OL8JZsrUIzYFdiiHOMxxXsQhXzSq8R/oONEGPhj87dk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ueTWVa4y6ovk+occFXvy4rLzqfSRYxKeksUqFiq4tWxmfzW83DWyVbfyr08MPEwdh
+         Q6PvtyzrG5AQgHFoYn28kdg8tDm2KemQusr1xFl9oWUD4JI7UYE9SMlqtres69OQa4
+         JzA7rx5mbVY9n4+oXe2jXYdOuucVn7XzguFBMGr4l3BpRky7dwC1lzDItxMe6ECtMs
+         jTDLnMPJjo0dubrHJKOq7hw2MltGx9vMEcJ2FoQKznHoaFchMjodvqajfGanSexWcD
+         LESKmYxjDd4BXCU/7lNAeIcBckUXkmovc+De+Lt/a0bfLrD7m1Eee/J4Aa14LxxvYR
+         bKZkSnQfE+big==
+X-Nifty-SrcIP: [209.85.215.182]
+Received: by mail-pg1-f182.google.com with SMTP id k24so3415796pgh.8;
+        Wed, 29 Sep 2021 10:14:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530OKyZygudD5reJzeIp6MOeSNI9jidBhAth/lkxwnu99hUsMZWJ
+        bkyCRmM0ZrXRCgABhRcslvAR7Wt7MpKPqZJJzBQ=
+X-Google-Smtp-Source: ABdhPJz1BhVTEbliwGvv261pfXaFEshLQGUFPjpyDjxcyepRR7Dxz3wnWESIX1xJ1WgeiE8zpX34l/YamtUk9TQn3Js=
+X-Received: by 2002:a63:d64c:: with SMTP id d12mr950807pgj.186.1632935662224;
+ Wed, 29 Sep 2021 10:14:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
+References: <20210928140932.41432dff@canb.auug.org.au> <20210928051849.00000e99@garyguo.net>
+ <20210928155247.5220932c@canb.auug.org.au> <20210929093758.7af9e589@canb.auug.org.au>
+In-Reply-To: <20210929093758.7af9e589@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 30 Sep 2021 02:13:45 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARKydbF1rHhKoqO9hmokuy401vJbAKSGZn1J2uuzXHRuQ@mail.gmail.com>
+Message-ID: <CAK7LNARKydbF1rHhKoqO9hmokuy401vJbAKSGZn1J2uuzXHRuQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the rust tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        Richard Weinberger <richard@nod.at>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Yuki Okushi <jtitor@2k36.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:52:14AM +0530, LakshmiPraveen Kopparthi wrote:
-> Register the adapter to the I2C subsystem. Also the power management
-> routines are added.
-[...]
-> --- /dev/null
-> +++ b/drivers/i2c/busses/i2c-mchp-pci1xxxx.c
-> @@ -0,0 +1,616 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Microchip PCI1XXXX I2C adapter driver for PCIe Switch
-> + * which has I2C controller in one of its downstream functions
-> + *
-> + * * Copyright 2020-2021 Microchip Technology, Inc
-> + *
-> + * Author: LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-> + */
+On Wed, Sep 29, 2021 at 8:38 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi All,
+>
+> On Tue, 28 Sep 2021 15:52:47 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > On Tue, 28 Sep 2021 05:18:49 +0100 Gary Guo <gary@garyguo.net> wrote:
+> > >
+> > > On Tue, 28 Sep 2021 14:09:32 +1000
+> > > Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > > Hi all,
+> > > >
+> > > > After merging the rust tree, today's linux-next build (x86_64
+> > > > allmodconfig) failed like this:
+> > > >
+> > > > scripts/kconfig/confdata.c: In function 'rustc_cfg_print_symbol':
+> > > > scripts/kconfig/confdata.c:669:9: warning: implicit declaration of
+> > > > function 'sym_escape_string_value'; did you mean
+> > > > 'sym_set_string_value'? [-Wimplicit-function-declaration] 669 |   str
+> > > > = sym_escape_string_value(value); |         ^~~~~~~~~~~~~~~~~~~~~~~ |
+> > > >         sym_set_string_value scripts/kconfig/confdata.c:669:7:
+> > > > warning: assignment to 'const char *' from 'int' makes pointer from
+> > > > integer without a cast [-Wint-conversion] 669 |   str =
+> > > > sym_escape_string_value(value); |       ^ /usr/bin/ld:
+> > > > scripts/kconfig/confdata.o: in function `rustc_cfg_print_symbol':
+> > > > confdata.c:(.text+0x738): undefined reference to
+> > > > `sym_escape_string_value'
+> > > >
+> > > > Caused by commit
+> > > >
+> > > >   dc08d49444e9 ("Kbuild: add Rust support")
+> > > >
+> > > > interacting with commit
+> > > >
+> > > >   420a2bdbead2 ("kconfig: Refactor sym_escape_string_value")
+> > > >
+> > > > from the kbuild tree.
+> > > >
+> > > > I applied the following patch, but it doesn't seem quite right.
+> > >
+> > > That's indeed incorrect, if we have `CONFIG_FOO=bar` then sym here is
+> > > `FOO` and value is `bar`. I think to resolve the conflict, 420a2bdbead2
+> > > would have to be reverted.
+> >
+> > OK, I have done that for today.  (I needed to revert
+> > 16f3610168218ed5e2eafa6978bb7f10c175c7a9 as well).
+>
+> Today, I have applied the following patch to the kbuild tree.
+> Masahiro, would you consider adding this to the kbuild tree itself?  Or
+> is there a betters solution for what the rust tree wants to do?
 
-Is there a datasheet you can link to? Some register bits have cryptic names
-that might not be understandable without the DS.
 
-[...]
-> +#define BAR0    0
-> +#define BAR1    1
-> +#define BAR2    2
-> +#define BAR3    3
+I dropped those two offending commits from my tree for now
+(with a different reason).
 
-Those don't add much value and only BAR0 is actually used.
+I will try my best to avoid complex conflicts next time.
 
-[...]
-> +#define SMB_CORE_CTRL_ESO		(0x40)
-> +#define SMB_CORE_CTRL_FW_ACK		(0x10)
 
-Those parentheses are not needed.
 
-[...]
-> +#define I2C_FOD_EN		(0x10)
-> +#define I2C_PULL_UP_EN		(0x08)
-> +#define I2C_PULL_DOWN_EN	(0x04)
-> +#define I2C_INPUT_EN		(0x02)
-> +#define I2C_OUTPUT_EN		(0x01)
 
-I guess the HW can do pull-ups, but the driver doesn't support that. Is it
-on purpose?
 
-[...]
-> +#define PCI1XXXX_I2C_TIMEOUT	(msecs_to_jiffies(1000))
 
-Define the timeout (in ms) and add msecs_to_jiffies() at the use site 
-where needed. But... it doesn't seem to be used?
-
-[...]
-> +struct pci1xxxx_i2c {
-> +	struct i2c_adapter adap;
-> +	struct device *dev;
-
-I think you can use adap.dev.parent for this.
-
-[...]
-> +static irqreturn_t pci1xxxx_i2c_isr(int irq, void *dev)
+>
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 29 Sep 2021 09:30:02 +1000
+> Subject: [PATCH] kconfig: restore sym_escape_string_value()
+>
+> This function will be used by the rust tree.
+>
+> Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+> Cc: Gary Guo <gary@garyguo.net>
+> Cc: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  scripts/kconfig/lkc_proto.h |  1 +
+>  scripts/kconfig/symbol.c    | 11 +++++++----
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/scripts/kconfig/lkc_proto.h b/scripts/kconfig/lkc_proto.h
+> index 7ce4b666bba8..62e0ed773f41 100644
+> --- a/scripts/kconfig/lkc_proto.h
+> +++ b/scripts/kconfig/lkc_proto.h
+> @@ -18,6 +18,7 @@ extern struct symbol * symbol_hash[SYMBOL_HASHSIZE];
+>
+>  struct symbol * sym_lookup(const char *name, int flags);
+>  struct symbol * sym_find(const char *name);
+> +char *sym_escape_string_value(const char *in);
+>  char *sym_escape_string(struct symbol *sym);
+>  struct symbol ** sym_re_search(const char *pattern);
+>  const char * sym_type_name(enum symbol_type type);
+> diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+> index 2dc251b0930e..ca115569d497 100644
+> --- a/scripts/kconfig/symbol.c
+> +++ b/scripts/kconfig/symbol.c
+> @@ -872,15 +872,13 @@ struct symbol *sym_find(const char *name)
+>  }
+>
+>  /* The returned pointer must be freed on the caller side */
+> -char *sym_escape_string(struct symbol *sym)
+> +char *sym_escape_string_value(const char *in)
+>  {
+> -       const char *in, *p;
+> +       const char *p;
+>         size_t reslen;
+>         char *res;
+>         size_t l;
+>
+> -       in = sym_get_string_value(sym);
+> -
+>         reslen = strlen(in) + strlen("\"\"") + 1;
+>
+>         p = in;
+> @@ -917,6 +915,11 @@ char *sym_escape_string(struct symbol *sym)
+>         return res;
+>  }
+>
+> +char *sym_escape_string(struct symbol *sym)
 > +{
-> +	struct pci1xxxx_i2c *i2c = dev;
-> +	bool intr_handled = false;
-> +	unsigned long flags;
-> +	u16 regval;
-> +	u8 regval1;
-> +
-> +	spin_lock_irqsave(&i2c->lock, flags);
-
-This is hardirq context, so spin_lock() is enough. But, it looks like nothing
-else uses this lock so it's eithier superfluous or missing somewhere else.
-
-> +	/* Mask the interrupt */
-> +	regval = readw(i2c->i2c_base + SMBUS_GEN_INT_MASK_REG_OFF);
-> +	regval |= (SMBALERT_INTR_MASK | I2C_BUF_MSTR_INTR_MASK);
-> +	writew(regval, (i2c->i2c_base + SMBUS_GEN_INT_MASK_REG_OFF));
-
-No need to mask and unmask the interrupt as it will be blocked anyway
-until the ISR returns.
-
-> +	/*
-> +	 * Read the SMBus interrupt status register to see if the
-> +	 * DMA_TERM interrupt has caused this callback
-> +	 */
-> +	regval = readw(i2c->i2c_base + SMBUS_GEN_INT_STAT_REG_OFF);
-> +
-> +	if (regval & I2C_BUF_MSTR_INTR_MASK) {
-> +		regval1 = readb(i2c->i2c_base + SMBUS_INTR_STAT_REG_OFF);
-> +		if (regval1 & INTR_STAT_DMA_TERM) {
-> +			complete(&i2c->i2c_xfer_done);
-> +			intr_handled = true;
-> +			writeb(INTR_STAT_DMA_TERM,
-> +			       (i2c->i2c_base + SMBUS_INTR_STAT_REG_OFF));
-> +		}
-> +		/* ACK the high level interrupt */
-> +		writew(I2C_BUF_MSTR_INTR_MASK,
-> +		       (i2c->i2c_base + SMBUS_GEN_INT_STAT_REG_OFF));
-
-You already have pci1xxxx_ack_high_level_intr() - why not use or delete it?
-
-> +	}
-> +
-> +	if (regval & SMBALERT_INTR_MASK) {
-> +		intr_handled = true;
-> +		/* ACK the high level interrupt */
-> +		writew(SMBALERT_INTR_MASK,
-> +		       (i2c->i2c_base + SMBUS_GEN_INT_STAT_REG_OFF));
-
-Nothing is done with the interrupt here - why enable it, then?
-
-> +	}
-> +
-> +	regval = readw(i2c->i2c_base + SMBUS_GEN_INT_MASK_REG_OFF);
-> +	/* UnMask the interrupt */
-> +	regval &= ~(I2C_BUF_MSTR_INTR_MASK | SMBALERT_INTR_MASK);
-> +	writew(regval, (i2c->i2c_base + SMBUS_GEN_INT_MASK_REG_OFF));
-> +
-> +	spin_unlock_irqrestore(&i2c->lock, flags);
-> +
-> +	if (intr_handled)
-> +		return IRQ_HANDLED;
-> +	else
-> +		return IRQ_NONE;
-> +}
-[...]
-> +static void pci1xxxx_i2c_set_freq(struct pci1xxxx_i2c *i2c)
-> +{
-> +	/*
-> +	 * The SMB core needs specific values to be set in the BUS_CLK register
-> +	 * for the corresponding frequency
-> +	 */
-> +	switch (i2c->freq) {
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
-> +		writeb(SR_HOLD_TIME_100KHZ,
-> +		       (i2c->i2c_base + SMB_CORE_SR_HOLD_TIME_REG_OFF));
-> +		writel(SMB_IDLE_SCALING_100KHZ,
-> +		       (i2c->i2c_base + SMB_CORE_IDLE_SCALING_REG_OFF));
-> +		writew(BUS_CLK_100KHZ,
-> +		       (i2c->i2c_base + SMB_CORE_BUS_CLK_REG_OFF));
-> +		writel(CLK_SYNC_100KHZ,
-> +		       (i2c->i2c_base + SMB_CORE_CLK_SYNC_REG_OFF));
-> +		writel(DATA_TIMING_100KHZ,
-> +		       (i2c->i2c_base + SMB_CORE_DATA_TIMING_REG_OFF));
-> +		writel(TO_SCALING_100KHZ,
-> +		       (i2c->i2c_base + SMB_CORE_TO_SCALING_REG_OFF));
-> +		break;
-> +
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-[...]
-
-Is it necessary to limit the frequencies to the three specified? Can't the
-register values be calculated based on the exact frequency requested? It is
-sometimes needed to run the bus at a lower frequency due to electrical or
-chip design issues.
-
-[...]
-> +/*
-> + * We could have used I2C_FUNC_SMBUS_EMUL but that includes
-> + * SMBUS_QUICK as well.We dnt support SMBUS_QUICK hence the
-> + * need for a lengthy funcs callback
-> + */
-
-You could say: I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK. But
-there are also more missing bits like PEC. BTW, is the hardware
-not able to handle zero-sized transfer?
-
-> +static const struct i2c_adapter pci1xxxx_i2c_ops = {
-> +	.owner	= THIS_MODULE,
-> +	.name	= "Pci1xxxx I2c Adapter",
-
-I2C
-
-> +	.algo	= &pci1xxxx_i2c_algo,
-> +};
-> 
-> +static int pci1xxxx_i2c_suspend(struct device *dev)
-> +{
-> +	struct pci1xxxx_i2c *i2c = dev_get_drvdata(dev);
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	u32 regval;
-> +
-> +	i2c_mark_adapter_suspended(&i2c->adap);
-> +
-> +	pci1xxxx_ack_high_level_intr(i2c, ALL_HIGH_LAYER_INTR);
-
-There should be no active interrupt signals, unless they can wait until
-resume for servicing. Either way, acking them blankly looks suspicious.
-i2c_mark_adapter_suspended() should guarantee there are no transfers
-coming (or being serviced) after it returns.
-
-> +	pci1xxxx_i2c_config_high_level_intr(i2c, ALL_HIGH_LAYER_INTR, false);
-> +
-> +	/*
-> +	 * Enable the PERST_DIS bit to mask the PERST from
-> +	 * resetting the core regs
-> +	 */
-> +	regval = readl(i2c->i2c_base + SMBUS_RESET_REG);
-> +	regval |= PERI_SMBUS_D3_RESET_DIS;
-> +	writel(regval, i2c->i2c_base + SMBUS_RESET_REG);
-> +
-> +	return 0;
-> +}
-> 
-> +static int pci1xxxx_i2c_resume(struct device *dev)
-> +{
-> +	struct pci1xxxx_i2c *i2c = dev_get_drvdata(dev);
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	u32 regval;
-> +
-> +	i2c_mark_adapter_resumed(&i2c->adap);
-
-This should go at the end, after preparing the HW. BTW, the interrupt
-config is not restored.
-
-> +
-> +	regval = readl(i2c->i2c_base + SMBUS_RESET_REG);
-> +	regval &= ~PERI_SMBUS_D3_RESET_DIS;
-> +	writel(regval, i2c->i2c_base + SMBUS_RESET_REG);
-> +
-> +	return 0;
+> +       return sym_escape_string_value(sym_get_string_value(sym));
 > +}
 > +
-> +static SIMPLE_DEV_PM_OPS(pci1xxxx_i2c_pm_ops, pci1xxxx_i2c_suspend,
-> +			 pci1xxxx_i2c_resume);
-> +
-> +static int pci1xxxx_i2c_probe_pci(struct pci_dev *pdev,
-> +				  const struct pci_device_id *ent)
-> +{
-> +	struct pci1xxxx_i2c *i2c;
-> +	int ret;
-> +
-> +	i2c = devm_kzalloc(&pdev->dev, sizeof(*i2c), GFP_KERNEL);
-> +	if (!i2c)
-> +		return -ENOMEM;
-> +
-> +	i2c->dev = &pdev->dev;
-> +
-> +	pci_set_drvdata(pdev, i2c);
-> +	ret = pcim_enable_device(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = pci_request_regions(pdev, pci_name(pdev));
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * We are getting the base address of the SMB core. SMB core uses
-> +	 * BAR0 and 32K is the size here pci_resource_len returns 32K by
-> +	 * reading BAR0
-> +	 */
-> +
-> +	i2c->i2c_base = pcim_iomap(pdev, BAR0, pci_resource_len(pdev, BAR0));
+>  struct sym_match {
+>         struct symbol   *sym;
+>         off_t           so, eo;
+> --
+> 2.33.0
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-pcim_iomap_regions()
 
-> +	if (!i2c->i2c_base) {
-> +		ret = -ENOMEM;
-> +		goto err_free_region;
-> +	}
-> +
-> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
-> +	if (ret < 0)
-> +		goto err_free_region;
-> +
-> +	i2c->irq = pci_irq_vector(pdev, 0);
 
-'irq' field doesn't seem to be used past the request_irq(), so maybe can
-be removed?
-
-> +	/* Register the isr. we are not using any isr flags here */
-> +	ret = devm_request_irq(&pdev->dev, i2c->irq, pci1xxxx_i2c_isr,
-> +			       PCI1XXXX_IRQ_FLAGS,
-> +			       pci_name(pdev), i2c);
-> [...]
-> 
-> +	pci_set_master(pdev);
-> +
-> +	init_completion(&i2c->i2c_xfer_done);
-> +
-> +	spin_lock_init(&i2c->lock);
-> +
-> +	pci1xxxx_i2c_init(i2c);
-
-This all should be done before request_irq().
-
-> +	i2c->adap = pci1xxxx_i2c_ops;
-> +
-> +	i2c->adap.class = I2C_CLASS_SPD;
-> +	i2c->adap.dev.parent = &pdev->dev;
-> +
-> +	snprintf(i2c->adap.name, sizeof(i2c->adap.name),
-> +		 "MCHP PCI1xxxx i2c adapter at %s", pci_name(pdev));
-> +
-> +	i2c_set_adapdata(&i2c->adap, i2c);
-> +
-> +	ret = i2c_add_adapter(&i2c->adap);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "i2c add adapter failed = %d\n", ret);
-> +		goto err_free_region;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_free_region:
-> +	pci_release_regions(pdev);
-> +	return ret;
-> +}
-[...]
-
-It would be better to have the driver in one patch, than split in two.
-
+-- 
 Best Regards
-Micha³ Miros³aw
+Masahiro Yamada
