@@ -2,187 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C25741CCFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EC541CD06
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346108AbhI2T5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345870AbhI2T5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:57:03 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4391DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:55:22 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id u18so15450458lfd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zIP+fT3P6R0yvKNN26znulCvOf0uZzhNp76ydFE5KGM=;
-        b=oLH5VMnESFf8hDlXdhtVvTI4OPGgZPLti9/yUSFcghvqOFR8+1q15z4q6upS+kTSvk
-         K3BKlDD5vbLvfuGkR2znd52pJxoqID2YMqf24qVuId5hOO5io+aMo4+g4+HRMAu3dzsK
-         WQcvLHMd+wdKtmts8MHrukqHFaEGyCQNH12etPoANPb3jeEU5R8zMZcmYOIOL4hl7xdy
-         CpB+Vn7h9KkrmAa77QlZY8thzONOxPKcB4IRQJlb3BHdPdKW8OWixOY1zwrouOPXq2c0
-         noAeX2Yo54bebM4Tkd0sldYqTE5gbm9ZIjWf7tLIdntkLY/a8q4yXJQ/0+DST800MKRf
-         rUJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zIP+fT3P6R0yvKNN26znulCvOf0uZzhNp76ydFE5KGM=;
-        b=u/Imskqu0CBdcVo/YtcwQGQQJR8khGNwCIoLxSv5AwA1VZAX1LH6oPzBvFT46+49sE
-         MbrXt5uuLUwKU0imnRhC7n5VB6V/RcsXnUZ5r5g+xxFR5Myea5btELljuJKSruQK0UT9
-         2o0ldgKHRpAtx7rtl7VwTQ6RrbK5o/fqPxV4HHzouKAW2CEU6P9jBIDDB0Jyl7ClO9yz
-         zAB/ORxyqW5OrTno0oO+6T8fvMgMBzqLugQt+MR21RynHWD8X8DA+HQhS0CPrmVyKzrN
-         xQfvOL1qZPZabTQfpGjB3mbAiYLsnPKqmL9TqaeJqf81sAJK9/OFE1FIhBf8hj0t09AV
-         GG3A==
-X-Gm-Message-State: AOAM532og8DrMDBtNoQPTRxL0eYpSKzzc6I9mmZCx3T1Uc3PywftPZj0
-        s8gFapjWtBxZbyH0CHiP/cXebstCd6SrK1sE
-X-Google-Smtp-Source: ABdhPJw2NBeebkhp21q8eiztBXx7rEsS8aq9QKNrH06jaurbSofJowNctBm6Ot5kXUJjIgkgPboaVw==
-X-Received: by 2002:a05:6512:3f1a:: with SMTP id y26mr1524768lfa.372.1632945320615;
-        Wed, 29 Sep 2021 12:55:20 -0700 (PDT)
-Received: from [192.168.10.17] (88-112-130-172.elisa-laajakaista.fi. [88.112.130.172])
-        by smtp.gmail.com with ESMTPSA id z8sm94311lfq.284.2021.09.29.12.55.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 12:55:20 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] thermal/drivers/qcom/spmi-adc-tm5: Add support for
- HC variant
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
- <20210923212311.2877048-3-bjorn.andersson@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <04bbf390-9e17-08fb-24dd-f1d71288aaaa@linaro.org>
-Date:   Wed, 29 Sep 2021 22:55:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1344464AbhI2T7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:59:09 -0400
+Received: from ixit.cz ([94.230.151.217]:55350 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245758AbhI2T7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:59:08 -0400
+Received: from [192.168.43.127] (78-80-97-115.customers.tmcz.cz [78.80.97.115])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 8F60323B26;
+        Wed, 29 Sep 2021 21:57:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1632945445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qT1CJ3TMSHMj9mB3UfHXYaTVu0KzbPO6fnVovONq4TQ=;
+        b=K8O42v2KRm/48IvJj55+VyeHCpMQbZNTdE7nhWf2Tivun4HvsqmPUC9xwtVkyq6edIPwDy
+        lolz1SelsuZhi/lncBO7h7MRF6AlpDNXeOJXFFnbr5T3aRslk1dXj5Y6xaZmhQiT/0bHPo
+        RB4VMSqeio/7IpRumE0aARQ9MgrpeS0=
+Date:   Wed, 29 Sep 2021 21:56:01 +0200
+From:   David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH] dt-bindings: add vendor prefix for asix
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <DPO70R.IGRAS5UQLITQ@ixit.cz>
+In-Reply-To: <20210929192619.111098-1-david@ixit.cz>
+References: <20210929192619.111098-1-david@ixit.cz>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-In-Reply-To: <20210923212311.2877048-3-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+sorry, typo got in. Please ignore.
 
-On 9/24/21 12:23 AM, Bjorn Andersson wrote:
-> The variant of the ADC Thermal Monitor block found in e.g. PM8998 is
-> "HC", add support for this variant to the ADC TM5 driver in order to
-> support using VADC channels as thermal_zones on SDM845 et al.
+
+On Wed, Sep 29 2021 at 21:26:19 +0200, David Heidelberg <david@ixit.cz> 
+wrote:
+> Add vendor prefix for ASIX Electronics Corp.
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Changes since v1:
-> - New patch
-> 
->   drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 43 +++++++++++++++++++++++-
->   1 file changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> index 8494cc04aa21..7fe5cf28ae15 100644
-> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> @@ -82,6 +82,7 @@ struct adc_tm5_data {
->   	const u32	full_scale_code_volt;
->   	unsigned int	*decimation;
->   	unsigned int	*hw_settle;
-> +	bool		is_hc;
->   };
->   
->   enum adc_tm5_cal_method {
-> @@ -146,6 +147,14 @@ static const struct adc_tm5_data adc_tm5_data_pmic = {
->   					 64000, 128000 },
->   };
->   
-> +static const struct adc_tm5_data adc_tm_hc_data_pmic = {
-> +	.full_scale_code_volt = 0x70e4,
-> +	.decimation = (unsigned int []) { 256, 512, 1024 },
-> +	.hw_settle = (unsigned int []) { 0, 100, 200, 300, 400, 500, 600, 700,
-> +					 1000, 2000, 4000, 6000, 8000, 10000 },
-> +	.is_hc = true,
-> +};
-> +
->   static int adc_tm5_read(struct adc_tm5_chip *adc_tm, u16 offset, u8 *data, int len)
->   {
->   	return regmap_bulk_read(adc_tm->regmap, adc_tm->base + offset, data, len);
-> @@ -375,6 +384,31 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
->   	return 0;
->   }
->   
-> +static int adc_tm_hc_init(struct adc_tm5_chip *chip)
-> +{
-> +	unsigned int i;
-> +	u8 buf[2];
-> +	int ret;
-> +
-> +	for (i = 0; i < chip->nchannels; i++) {
-> +		if (chip->channels[i].channel >= ADC_TM5_NUM_CHANNELS) {
-> +			dev_err(chip->dev, "Invalid channel %d\n", chip->channels[i].channel);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	buf[0] = chip->decimation;
-> +	buf[1] = chip->avg_samples | ADC_TM5_FAST_AVG_EN;
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM5_ADC_DIG_PARAM, buf, sizeof(buf));
-> +	if (ret) {
-> +		dev_err(chip->dev, "block write failed: %d\n", ret);
-> +		return ret;
-> +	}
-
-	if (ret)
-		dev_err(chip->dev, "block write failed: %d\n", ret);
-
-above should be sufficient here and similarly in adc_tm5_init().
-
-> +
-> +	return ret;
-> +}
-> +
->   static int adc_tm5_init(struct adc_tm5_chip *chip)
->   {
->   	u8 buf[4], channels_available;
-> @@ -591,7 +625,10 @@ static int adc_tm5_probe(struct platform_device *pdev)
->   		return ret;
->   	}
->   
-> -	ret = adc_tm5_init(adc_tm);
-> +	if (adc_tm->data->is_hc)
-> +		ret = adc_tm_hc_init(adc_tm);
-> +	else
-> +		ret = adc_tm5_init(adc_tm);
->   	if (ret) {
->   		dev_err(dev, "adc-tm init failed\n");
->   		return ret;
-> @@ -612,6 +649,10 @@ static const struct of_device_id adc_tm5_match_table[] = {
->   		.compatible = "qcom,spmi-adc-tm5",
->   		.data = &adc_tm5_data_pmic,
->   	},
-> +	{
-> +		.compatible = "qcom,spmi-adc-tm-hc",
-> +		.data = &adc_tm_hc_data_pmic,
-> +	},
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(of, adc_tm5_match_table);
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml 
+> b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 18f3f3b286b7..a69fb7dc07d1 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -131,6 +131,8 @@ patternProperties:
+>      description: Asahi Kasei Corp.
+>    "^asc,.*":
+>      description: All Sensors Corporation
+> +  "^asix,.*":
+> +    desription: ASIX Electronics Corp.
+>    "^aspeed,.*":
+>      description: ASPEED Technology Inc.
+>    "^asus,.*":
+> --
+> 2.33.0
 > 
 
---
-Best wishes,
-Vladimir
+
