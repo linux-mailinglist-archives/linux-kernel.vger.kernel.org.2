@@ -2,125 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA4441CB84
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39DB41CB80
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345633AbhI2SJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344935AbhI2SJ1 (ORCPT
+        id S1345496AbhI2SIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:08:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31841 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344935AbhI2SIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:09:27 -0400
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DC9C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:07:45 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 8E8D270E4; Wed, 29 Sep 2021 20:07:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1632938853;
-        bh=a4hgCGqLnOw4G78VKKZ4rKp4IkCN+FVD1nc+E4fDymY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdS2bbQB9uPYAZo21xxdKc66KYqEP4/cqU1xWRvfIUmc+JSkrePKVBZE+33WnULTg
-         A092ivEz9xBe+QWnxKY/4Ogu/muIrZCYCbgy36rvMopygg8nh9DRLh2bNtYpfghtI9
-         8kUYzks+EfhGQPCAN2CEskpZdli/42er4qjDiMK6hjHjFfvBPk1FKHaDQxWJkL+Twm
-         COvgI658MLmREAFhFSV3u2IKDiTZU0NuXUnq+kkNwuKfF+G+o+tnBbQcHGaxbrw6jg
-         2EQ5p5LvRUnyGH/BbORo9seeLtk5feEdDPVs4l92W59WmrZJ1zUoLvyq6ZCDYb1Rrm
-         owuB5SqnMc/dSI/GQGogGY7sEBQDX3sRcEVXw8TgIo44PnxnNjoBHSX2/ckfpBu+iR
-         QdlYHFlvk+t0zSn+UZPvGDpYmH/BT6lYIDe4yKRXwQ/hQAYBM7adhrlbx9L4JCKk+G
-         2sjvn1vBCutEEDmzyt+f7l/mpNgvE0AHtsBdyABkGICg0RcCJ0hOcv+cJTI7VHcSu7
-         RWyonXgDD+udaOvuWHbNvskTOK7YV5+OCoiRntLDG61iyn/aecdWMVPPZloFM5/mQx
-         eKST4jGW8Y2MzhsooCSW45Nqi5tkDg5eCAgI9/3Kt0N6v+Ql4IL2alC+xdaDE9pLI5
-         bXpMPF7xYBWsUy/iLOICzMm4=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Subject: [PATCH v2] ocfs2: mount fails with buffer overflow in strlen
-Date:   Wed, 29 Sep 2021 20:06:54 +0200
-Message-Id: <20210929180654.32460-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1ab61ba3-8c9b-092c-7843-9c45b58e3987@linux.alibaba.com>
-References: <1ab61ba3-8c9b-092c-7843-9c45b58e3987@linux.alibaba.com>
+        Wed, 29 Sep 2021 14:08:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632938820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5fEUwAikCXlY0hPFc3Zca5cd4O3adbLSONrps+zhumI=;
+        b=BJRL6SjOCTRVgliVkMU89HH0FQjkLTfEaec/JDHfaAvchXkqS3R9SyfL0eJeVhF3dJfWtA
+        +nkXp8tPJZ1/4+oLycZ8/yXxhjTMSkKaffJDvR4voq2pgPS7eR/9LppsmhGQ+lyG/b5wAR
+        VnCHp+1eNEVwFei04iqQJj9p3gg5Fzc=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-nPzfmv0tOXiCYiRbkQMnkg-1; Wed, 29 Sep 2021 14:06:58 -0400
+X-MC-Unique: nPzfmv0tOXiCYiRbkQMnkg-1
+Received: by mail-ot1-f71.google.com with SMTP id x27-20020a9d705b000000b005470c0ed087so2456533otj.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:06:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5fEUwAikCXlY0hPFc3Zca5cd4O3adbLSONrps+zhumI=;
+        b=6vguwE6THJffn4Aunek5+Pol4IqwRA1kA1QgQuZuX+UVsDYeZKxIBQQNNIfRFhO6JR
+         KgKCjtU9/hd5mt3BWxuFMGjZXhs0GBfWDnFQOLbCbwy4vgVtfhZVLdEcAUKV+2bWfThW
+         3zNslXFLvBmoXp+1WfoqmeTZkbLwNlZy8D0LtN+TkCt684Hflz747SchnhsSY0EQWVfT
+         pt47l8X27ZWDm/X/69J9Gh1PcYUk9Xq+6a2NL8Ki49JIOB5EqipsNL1OCCSK+T0X4Rf4
+         G7QhOq/ZQaYP5UEaLKzL6oFCvh3ommRZAH/zHgNSfzeDyPw+4BjLrxMzGmmPVuVA+S7+
+         g/dA==
+X-Gm-Message-State: AOAM533TUMnuQtftKV42RQdInfk24G4D9JZGmJtV96BBQyGVEXZ/nquq
+        7kmDwnrk/5lS+1BAn+5MpG8nc5JRTjTZ0ORS4TpMcVTefgf34KLoJmPfbCKNaKF1G1Z2KLMhnAj
+        0OX9ClGj+9RfCjTb0CY6FHlFD
+X-Received: by 2002:a05:6808:243:: with SMTP id m3mr9254417oie.54.1632938817868;
+        Wed, 29 Sep 2021 11:06:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4GoRfgX2CpzdS8TMOhpWJSHyKfLJHdPDeL1Co6stqHQwtNdJYf2fM7V3Ug9pt3k4WTpNfQA==
+X-Received: by 2002:a05:6808:243:: with SMTP id m3mr9254391oie.54.1632938817587;
+        Wed, 29 Sep 2021 11:06:57 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id k1sm97828otr.43.2021.09.29.11.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 11:06:57 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 12:06:55 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210929120655.28e0b3a6.alex.williamson@redhat.com>
+In-Reply-To: <20210929161602.GA1805739@nvidia.com>
+References: <cover.1632305919.git.leonro@nvidia.com>
+        <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+        <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+        <20210927231239.GE3544071@ziepe.ca>
+        <20210928131958.61b3abec.alex.williamson@redhat.com>
+        <20210928193550.GR3544071@ziepe.ca>
+        <20210928141844.15cea787.alex.williamson@redhat.com>
+        <20210929161602.GA1805739@nvidia.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with kernel 5.11 built with CONFIG_FORTIFY_SOURCE mouting an
-ocfs2 filesystem with either o2cb or pcmk cluster stack fails with the
-trace below. Problem seems to be that strings for cluster stack and
-cluster name are not guaranteed to be null terminated in the disk
-representation, while strlcpy assumes that the source string is always
-null terminated. This causes a read outside of the source string
-triggering the buffer overflow detection.
+On Wed, 29 Sep 2021 13:16:02 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-detected buffer overflow in strlen
-------------[ cut here ]------------
-kernel BUG at lib/string.c:1149!
-invalid opcode: 0000 [#1] SMP PTI
-CPU: 1 PID: 910 Comm: mount.ocfs2 Not tainted 5.14.0-1-amd64 #1
-  Debian 5.14.6-2
-RIP: 0010:fortify_panic+0xf/0x11
-...
-Call Trace:
- ocfs2_initialize_super.isra.0.cold+0xc/0x18 [ocfs2]
- ocfs2_fill_super+0x359/0x19b0 [ocfs2]
- mount_bdev+0x185/0x1b0
- ? ocfs2_remount+0x440/0x440 [ocfs2]
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- path_mount+0x454/0xa20
- __x64_sys_mount+0x103/0x140
- do_syscall_64+0x3b/0xc0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+> On Tue, Sep 28, 2021 at 02:18:44PM -0600, Alex Williamson wrote:
+> > On Tue, 28 Sep 2021 16:35:50 -0300
+> > Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >   
+> > > On Tue, Sep 28, 2021 at 01:19:58PM -0600, Alex Williamson wrote:
+> > >   
+> > > > In defining the device state, we tried to steer away from defining it
+> > > > in terms of the QEMU migration API, but rather as a set of controls
+> > > > that could be used to support that API to leave us some degree of
+> > > > independence that QEMU implementation might evolve.    
+> > > 
+> > > That is certainly a different perspective, it would have been
+> > > better to not express this idea as a FSM in that case...
+> > > 
+> > > So each state in mlx5vf_pci_set_device_state() should call the correct
+> > > combination of (un)freeze, (un)quiesce and so on so each state
+> > > reflects a defined operation of the device?  
+> > 
+> > I'd expect so, for instance the implementation of entering the _STOP
+> > state presumes a previous state that where the device is apparently
+> > already quiesced.  That doesn't support a direct _RUNNING -> _STOP
+> > transition where I argued in the linked threads that those states
+> > should be reachable from any other state.  Thanks,  
+> 
+> If we focus on mlx5 there are two device 'flags' to manage:
+>  - Device cannot issue DMAs
+>  - Device internal state cannot change (ie cannot receive DMAs)
+> 
+> This is necessary to co-ordinate across multiple devices that might be
+> doing peer to peer DMA between them. The whole multi-device complex
+> should be moved to "cannot issue DMA's" then the whole complex would
+> go to "state cannot change" and be serialized.
 
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
----
-v2: update description, add comment, drop null termination
+Are you anticipating p2p from outside the VM?  The typical scenario
+here would be that p2p occurs only intra-VM, so all the devices would
+stop issuing DMA (modulo trying to quiesce devices simultaneously).
 
- fs/ocfs2/super.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+> The expected sequence at the device is thus
+> 
+> Resuming
+>  full stop -> does not issue DMAs -> full operation
+> Suspend
+>  full operation -> does not issue DMAs -> full stop
+> 
+> Further the device has two actions
+>  - Trigger serializating the device state
+>  - Trigger de-serializing the device state
+> 
+> So, what is the behavior upon each state:
+> 
+>  *  000b => Device Stopped, not saving or resuming
+>      Does not issue DMAs
+>      Internal state cannot change
+> 
+>  *  001b => Device running, which is the default state
+>      Neither flags
+> 
+>  *  010b => Stop the device & save the device state, stop-and-copy state
+>      Does not issue DMAs
+>      Internal state cannot change
+> 
+>  *  011b => Device running and save the device state, pre-copy state
+>      Neither flags
+>      (future, DMA tracking turned on)
+> 
+>  *  100b => Device stopped and the device state is resuming
+>      Does not issue DMAs
+>      Internal state cannot change
 
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index c86bd4e60e20..5c914ce9b3ac 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -2167,11 +2167,17 @@ static int ocfs2_initialize_super(struct super_block *sb,
- 	}
+cannot change... other that as loaded via migration region.
+
+>      
+>  *  110b => Error state
+>     ???
+> 
+>  *  101b => Invalid state
+>  *  111b => Invalid state
+> 
+>     ???
+> 
+> What should the ??'s be? It looks like mlx5 doesn't use these, so it
+> should just refuse to enter these states in the first place..
+
+_SAVING and _RESUMING are considered mutually exclusive, therefore any
+combination of both of them is invalid.  We've chosen to use the
+combination of 110b as an error state to indicate the device state is
+undefined, but not _RUNNING.  This state is only reachable by an
+internal error of the driver during a state transition.
+
+The expected protocol is that if the user write to the device_state
+register returns an errno, the user reevaluates the device_state to
+determine if the desired transition is unavailable (previous state
+value is returned) or generated a fault (error state value returned).
+Due to the undefined state of the device, the only exit from the error
+state is to re-initialize the device state via a reset.  Therefore a
+successful device reset should always return the device to the 001b
+state.
+
+The 111b state is also considered unreachable through normal means due
+to the _SAVING | _RESUMING conflict, but suggests the device is also
+_RUNNING in this undefined state.  This combination has no currently
+defined use case and should not be reachable.
+
+The 101b state indicates _RUNNING while _RESUMING, which is simply not
+a mode that has been spec'd at this time as it would require some
+mechanism for the device to fault in state on demand.
  
- 	if (ocfs2_clusterinfo_valid(osb)) {
-+		/*
-+		 * ci_stack and ci_cluster in ocfs2_cluster_info may not be null
-+		 * terminated, so make sure no overflow happens here by using
-+		 * memcpy. Destination strings will always be null terminated
-+		 * because osb is allocated using kzalloc.
-+		 */
- 		osb->osb_stackflags =
- 			OCFS2_RAW_SB(di)->s_cluster_info.ci_stackflags;
--		strlcpy(osb->osb_cluster_stack,
-+		memcpy(osb->osb_cluster_stack,
- 		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
--		       OCFS2_STACK_LABEL_LEN + 1);
-+		       OCFS2_STACK_LABEL_LEN);
- 		if (strlen(osb->osb_cluster_stack) != OCFS2_STACK_LABEL_LEN) {
- 			mlog(ML_ERROR,
- 			     "couldn't mount because of an invalid "
-@@ -2180,9 +2186,9 @@ static int ocfs2_initialize_super(struct super_block *sb,
- 			status = -EINVAL;
- 			goto bail;
- 		}
--		strlcpy(osb->osb_cluster_name,
-+		memcpy(osb->osb_cluster_name,
- 			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
--			OCFS2_CLUSTER_NAME_LEN + 1);
-+			OCFS2_CLUSTER_NAME_LEN);
- 	} else {
- 		/* The empty string is identical with classic tools that
- 		 * don't know about s_cluster_info. */
--- 
-2.30.2
+> The two actions:
+>  trigger serializing the device state
+>    Done when asked to go to 010b ?
+
+When the _SAVING bit is set.  The exact mechanics depends on the size
+and volatility of the device state.  A GPU might begin in pre-copy
+(011b) to transmit chunks of framebuffer data, recording hashes of
+blocks read by the user to avoid re-sending them during the
+stop-and-copy (010b) phase.  A device with a small internal state
+representation may choose to forgo providing data in the pre-copy phase
+and entirely serialize internal state at stop-and-copy.
+
+>  trigger de-serializing the device state
+>    Done when transition from 100b -> 000b ?
+
+100b -> 000b is not a required transition, generally this would be 100b
+-> 001b, ie. end state of _RUNNING vs _STOP.
+
+I think the requirement is that de-serialization is complete when the
+_RESUMING bit is cleared.  Whether the driver chooses to de-serialize
+piece-wise as each block of data is written to the device or in bulk
+from a buffer is left to the implementation.  In either case, the
+driver can fail the transition to !_RESUMING if the state is incomplete
+or otherwise corrupt.  It would again be the driver's discretion if
+the device enters the error state or remains in _RESUMING.  If the user
+has no valid state with which to exit the _RESUMING phase, a device
+reset should return the device to _RUNNING with a default initial state.
+
+> There is a missing state "Stop Active Transactions" which would be
+> only "does not issue DMAs". I've seen a proposal to add that.
+
+This would be to get all devices to stop issuing DMA while internal
+state can be modified to avoid the synchronization issue of trying to
+stop devices concurrently?  For PCI devices we obviously have the bus
+master bit to manage that, but I could see how a migration extension
+for such support (perhaps even just wired through to BM for PCI) could
+be useful.  Thanks,
+
+Alex
 
