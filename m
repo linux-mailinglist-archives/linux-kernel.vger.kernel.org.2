@@ -2,106 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E51341CE29
+	by mail.lfdr.de (Postfix) with ESMTP id 45BB041CE28
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244917AbhI2V3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
+        id S1347013AbhI2V3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347009AbhI2V3O (ORCPT
+        with ESMTP id S1346972AbhI2V3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 29 Sep 2021 17:29:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01908C061777
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:27:31 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i83-20020a252256000000b005b67a878f56so5206916ybi.17
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:27:30 -0700 (PDT)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B9BC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:27:33 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id b15so16245514lfe.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=08MMqZQxkHJyz/VF+8d0XPyGY6ToAo0OA/OmmtaYHyg=;
-        b=Xc0r7XDhQk/RWJL3VJzgIR6Z34QQY3yA7gfvyI2MR/G/ctI7q+99DthyY5LlcWg2e7
-         yNZKWxRGgPdrPrKcdjVGfuLYpgUyyaxc9QM+cEdXLZO7cGIBk81SomjCOBT5pFHhS50s
-         c6xbphtTxJebvIq+LQjYxHjM/EiPRt3x+0CttaNT3TVpxgt96Nx34le5hdAMHS1ggHKu
-         uoCMduNUutZNaLiuUGpfAGsoSYuT04gWEbTvHxWTQXG9vA1xAV4uphxEGXqqwOYkP7G9
-         Czl8saVkvd0Wswmv2h2fMTdekMv294gEiwyuHMbzXc/Mvk4eKvpBG3Q+5f1Pbd2ghoD/
-         m3kA==
+        bh=vjQP0/+z55MvzkQLmpO17f1ojfgarxRQxkpypeDCRYQ=;
+        b=P6d7v/ARFy2oAzNGlzkCFMmhuF0dw1E4Ty8/aKGGomT30aic5OSINMht/5eTnTjw+E
+         HVwG/Vb0f044xHEAedWSzxWElToMUBbgbJq2HpAC0E3cTqgTRqpyyvO/TxZlRGm7Knzd
+         g197vNwd2IHxhZjeaz4yRtAoxCOvziEh/yVbtU+3O8VuswsBr07x1VFM5xAtgWihuCkO
+         uaX1aUCJfdL12bZY+cJm7vPnn7R7kAZO2pzg6uXgoaCGHwkzYiXL2tUrJgQgg6Kyykb/
+         RcZANF9j+IZ5JhNrzRCHZVii00VULrEZwGuwD9dkVZiGUnoOdzpJdvJXgmdVANl52dPG
+         GeTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=08MMqZQxkHJyz/VF+8d0XPyGY6ToAo0OA/OmmtaYHyg=;
-        b=M8kUw0/+gBEsZ5EdmBDB1hOVFjnxt/eWsnbB32XEgiBa9+j+5kn9LKiPHplvPOT2Db
-         vS44LIviqjIukqFhDI++fhKn8167HOmOIzfzlq7Nemr2ttAuUxMX/9HUdpKkTN6ykyKi
-         HzY+3mUS0H4gyZeB/1SDhgJ+R+17umuvrnVuD72IGWgvy9gQ5+7tucmPuktZZ9/dLXmN
-         t2eA34j5WUZBtbq9o2NqqFuU3V9tX17+DnLSPEaQNB3jl4BqPd9FH9mjiC0xS5mADjhR
-         gNLHGLPFOeSTJy+dMD1fY01IL9sZ51L2kTUjkeWPWtKkMOzUvWM+G3l96isdOlURh5GF
-         EOrQ==
-X-Gm-Message-State: AOAM5331x88mrTCLDfs3CrLSFa2Bf2cI9dTJu3LNBvRglrPEEZ6kZ7e5
-        HOaJZq6NVNwi/XXPJ7TPOjyfehAKJnKR+uTOHWk2Vw==
-X-Google-Smtp-Source: ABdhPJydtA3evA/mok1g6x4rh7TZpUEjkOozHd/KU5sU/LKW6mja59yYtNHfsoGoBJBqAHbTDyWHKtYkEMdXaZ/OgKddcA==
-X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:83f4:ff43:90d6:efd3])
- (user=brendanhiggins job=sendgmr) by 2002:a25:1584:: with SMTP id
- 126mr2372236ybv.126.1632950850186; Wed, 29 Sep 2021 14:27:30 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 14:27:13 -0700
-In-Reply-To: <20210929212713.1213476-1-brendanhiggins@google.com>
-Message-Id: <20210929212713.1213476-6-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20210929212713.1213476-1-brendanhiggins@google.com>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH v2 5/5] bitfield: build kunit tests without structleak plugin
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     shuah@kernel.org, davidgow@google.com, arnd@arndb.de,
-        keescook@chromium.org, rafael@kernel.org, jic23@kernel.org,
-        lars@metafoo.de, ulf.hansson@linaro.org, andreas.noever@gmail.com,
-        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
-        YehezkelShB@gmail.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, ndesaulniers@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vjQP0/+z55MvzkQLmpO17f1ojfgarxRQxkpypeDCRYQ=;
+        b=A3MwV99EDV8CfeI7vIbwiw7bm3Tb8I9S7SviGIkoCe9te6XF9bRDbqAQ1RitTuxgAo
+         q48HHHooxz0LYhOrgSKmR13FGCA2RTsExXLHmqGJ2BmTjySSgJr13bGSr5fAMJos6X2r
+         CiDjWNySIRLl+ExqIwlh7J9qK9kN6iDaF25C5y6QFjMvL/QfsVqPQ3RdK5HeAEB4Q/oi
+         ukaeD6JsUOB002aT/usfiwTApgFkTa/ZHBZQ5RrsE9K47FY/uvCzuNUn+EpH+wJcE2oD
+         vH1C52Hk6paxYSW4Hk7F75MkKGw81v9gqZhtCk/9AVvwa1b2e62Oe71L6D4QDVvNa4kg
+         uXow==
+X-Gm-Message-State: AOAM530iauMRVeHaAzFZ64VtOrBu8Mh8/BNGmIOYDL9i9iy6BXDKd+uK
+        /V0BvLNoq5cWhaeN16JKcgxzhgjKn3gION5blb9H1Q==
+X-Google-Smtp-Source: ABdhPJxlRl2WWh8eZDcWokrINznDZYEeyO4HbV5UfIxRhCovDEAxjUhr3yg0Uy13hYjMGKtihX9SR8gKl3bzVxFYltc=
+X-Received: by 2002:a05:6512:ea5:: with SMTP id bi37mr1986548lfb.36.1632950851440;
+ Wed, 29 Sep 2021 14:27:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210910101218.1632297-1-maxime@cerno.tech>
+In-Reply-To: <20210910101218.1632297-1-maxime@cerno.tech>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 29 Sep 2021 14:27:19 -0700
+Message-ID: <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order consistent
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> We've encountered an issue with the RaspberryPi DSI panel that prevented the
+> whole display driver from probing.
+>
+> The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:
+> Only register our component once a DSI device is attached"), but the basic idea
+> is that since the panel is probed through i2c, there's no synchronization
+> between its probe and the registration of the MIPI-DSI host it's attached to.
+>
+> We initially moved the component framework registration to the MIPI-DSI Host
+> attach hook to make sure we register our component only when we have a DSI
+> device attached to our MIPI-DSI host, and then use lookup our DSI device in our
+> bind hook.
+>
+> However, all the DSI bridges controlled through i2c are only registering their
+> associated DSI device in their bridge attach hook, meaning with our change
+> above, we never got that far, and therefore ended up in the same situation than
+> the one we were trying to fix for panels.
+>
+> The best practice to avoid those issues is to register its functions only after
+> all its dependencies are live. We also shouldn't wait any longer than we should
+> to play nice with the other components that are waiting for us, so in our case
+> that would mean moving the DSI device registration to the bridge probe.
+>
+> I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
+> would be affected by this and wouldn't probe anymore after those changes.
+> Exynos and kirin seems to be simple enough for a mechanical change (that still
+> requires to be tested), but the changes in msm seemed to be far more important
+> and I wasn't confortable doing them.
 
-The structleak plugin causes the stack frame size to grow immensely:
 
-lib/bitfield_kunit.c: In function 'test_bitfields_constants':
-lib/bitfield_kunit.c:93:1: error: the frame size of 7440 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+Hey Maxime,
+  Sorry for taking so long to get to this, but now that plumbers is
+over I've had a chance to check it out on kirin
 
-Turn it off in this file.
+Rob Clark pointed me to his branch with some fixups here:
+   https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
-Changes since last revision:
- - Dropped -Wframe-larger-than=10240 from CFLAGS.
----
- lib/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But trying to boot hikey with that, I see the following loop indefinitely:
+[    4.632132] adv7511 2-0039: supply avdd not found, using dummy regulator
+[    4.638961] adv7511 2-0039: supply dvdd not found, using dummy regulator
+[    4.645741] adv7511 2-0039: supply pvdd not found, using dummy regulator
+[    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy regulator
+[    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy regulator
+[    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy regulator
+[    4.681898] adv7511 2-0039: failed to find dsi host
+[    4.688836] adv7511 2-0039: supply avdd not found, using dummy regulator
+[    4.695724] adv7511 2-0039: supply dvdd not found, using dummy regulator
+[    4.702583] adv7511 2-0039: supply pvdd not found, using dummy regulator
+[    4.709369] adv7511 2-0039: supply a2vdd not found, using dummy regulator
+[    4.716232] adv7511 2-0039: supply v3p3 not found, using dummy regulator
+[    4.722972] adv7511 2-0039: supply v1p2 not found, using dummy regulator
+[    4.738720] adv7511 2-0039: failed to find dsi host
 
-diff --git a/lib/Makefile b/lib/Makefile
-index 5efd1b435a37c..a841be5244ac6 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -351,7 +351,7 @@ obj-$(CONFIG_OBJAGG) += objagg.o
- obj-$(CONFIG_PLDMFW) += pldmfw/
- 
- # KUnit tests
--CFLAGS_bitfield_kunit.o := $(call cc-option,-Wframe-larger-than=10240)
-+CFLAGS_bitfield_kunit.o := $(DISABLE_STRUCTLEAK_PLUGIN)
- obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
- obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
- obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
--- 
-2.33.0.685.g46640cef36-goog
+I'll have to dig a bit to figure out what's going wrong, but wanted to
+give you the heads up that there seems to be a problem
 
+thanks
+-john
