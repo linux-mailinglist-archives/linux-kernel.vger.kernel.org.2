@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1F541C09E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5778741C092
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244835AbhI2IYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:24:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
+        id S244766AbhI2IYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:24:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244610AbhI2IYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A01C06140B;
-        Wed, 29 Sep 2021 08:22:54 +0000 (UTC)
+        id S244607AbhI2IYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 04:24:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C68961411;
+        Wed, 29 Sep 2021 08:22:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632903774;
-        bh=Tj1KoLbRx36Cai5tD6gjvLCZPUH6QNJdzsfNne47jbM=;
+        s=k20201202; t=1632903773;
+        bh=QLuW6v3Lic+9u3xvdpn5U7PciiFoV7G+AE18M57+JTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LxtUxqUIxvNSQH7KVq0de/WufXjk+XbKrKyMl+GdemC6zUKOH1PARCL5qXm5sWs0v
-         3A9+lxwyWeWFn9/cKrVZPk01PgL6p6CUiiMET9Mzhtyqz9xWIlRaf7f8qxXwjTCV9T
-         j28H2OPqXARaQtbXwQZZfIRHZDwkI9w6hRG5jl4EoNKBsu5Wwue2NWvA1nZtzMn0M7
-         lwQYWb8QgREw69UXD7JSN4dgZeznc1eeSWappTxEflnRoC4R5LnbwX6YWewGQ5mzBI
-         MaDpa5J3rQbTmzswvd0VMS7yLcFDOW8qGK0X7k92LpzCkU04Plw/PoJEpIBwT00Sdz
-         4FiVzOuspODbg==
+        b=SX8gUFLskGw/ZtkL7a/JgR6yGKhVapOJjmBkoOVDJlyOJeSTRa8Hc7E9RdmndDuDj
+         1uKi0cf6vmwLxmJVCcMgFkindzLpEohZZr6Cm+tIPx0TN7nvb9c5E5nIRgYCfGxUrX
+         WM+M8ocro39WSwPYTVYhVV2EJsFXCpI+rjC/lmaQ0uDKOvuNts1orzNG6GZ3vlMJp6
+         ZiBc38ImDgZkfaz1CY0s+J8lgwHd6OghBoxUQhdnBC2gnkLGDDE0TzdAWCImlq6neE
+         IfKWyBRTSZZf02xjzDP5VEG+7UpjhEui8ZvbkkbU5ExzBIR4Xk5DIPr29VyUmRFOee
+         vCdOEse7+7uLQ==
 Received: by pali.im (Postfix)
-        id B49F21F1C; Wed, 29 Sep 2021 10:22:52 +0200 (CEST)
+        id 35EB51FAF; Wed, 29 Sep 2021 10:22:53 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v6 4/6] dt-bindings: mvebu-uart: update information about UART clock
-Date:   Wed, 29 Sep 2021 10:20:32 +0200
-Message-Id: <20210929082034.15098-5-pali@kernel.org>
+Subject: [PATCH v6 5/6] arm64: dts: marvell: armada-37xx: add device node for UART clock and use it
+Date:   Wed, 29 Sep 2021 10:20:33 +0200
+Message-Id: <20210929082034.15098-6-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210929082034.15098-1-pali@kernel.org>
 References: <20210929082034.15098-1-pali@kernel.org>
@@ -51,48 +51,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device "marvell,armada-3700-uart" should use
-"marvell,armada-3700-uart-clock" compatible clock.
+This change defines DT node for UART clock "marvell,armada-3700-uart-clock"
+and use this UART clock as a base clock for all UART devices.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
----
- Documentation/devicetree/bindings/serial/mvebu-uart.txt | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/serial/mvebu-uart.txt b/Documentation/devicetree/bindings/serial/mvebu-uart.txt
-index 2d0dbdf32d1d..a062bbca532c 100644
---- a/Documentation/devicetree/bindings/serial/mvebu-uart.txt
-+++ b/Documentation/devicetree/bindings/serial/mvebu-uart.txt
-@@ -14,7 +14,10 @@ Required properties:
-       is provided (possible only with the "marvell,armada-3700-uart"
-       compatible string for backward compatibility), it will only work
-       if the baudrate was initialized by the bootloader and no baudrate
--      change will then be possible.
-+      change will then be possible. When provided it should be UART1-clk
-+      for standard variant of UART and UART2-clk for extended variant
-+      of UART. TBG clock (with UART TBG divisors d1=d2=1) or xtal clock
-+      should not be used and are supported only for backward compatibility.
- - interrupts:
-     - Must contain three elements for the standard variant of the IP
-       (marvell,armada-3700-uart): "uart-sum", "uart-tx" and "uart-rx",
-@@ -34,7 +37,7 @@ Example:
- 	uart0: serial@12000 {
- 		compatible = "marvell,armada-3700-uart";
- 		reg = <0x12000 0x18>;
--		clocks = <&xtalclk>;
-+		clocks = <&uartclk 0>;
- 		interrupts =
- 		<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
- 		<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
-@@ -45,7 +48,7 @@ Example:
- 	uart1: serial@12200 {
- 		compatible = "marvell,armada-3700-uart-ext";
- 		reg = <0x12200 0x30>;
--		clocks = <&xtalclk>;
-+		clocks = <&uartclk 1>;
- 		interrupts =
- 		<GIC_SPI 30 IRQ_TYPE_EDGE_RISING>,
- 		<GIC_SPI 31 IRQ_TYPE_EDGE_RISING>;
+---
+Changes in v6:
+* Do not disable uartclk by default
+* Rename node to clock-controller@12010
+---
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+index 9acc5d2b5a00..f9bfe73d8ec2 100644
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -132,10 +132,20 @@
+ 				reg = <0x11500 0x40>;
+ 			};
+ 
++			uartclk: clock-controller@12010 {
++				compatible = "marvell,armada-3700-uart-clock";
++				reg = <0x12010 0x4>, <0x12210 0x4>;
++				clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>,
++					<&tbg 3>, <&xtalclk>;
++				clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S",
++					"TBG-B-S", "xtal";
++				#clock-cells = <1>;
++			};
++
+ 			uart0: serial@12000 {
+ 				compatible = "marvell,armada-3700-uart";
+ 				reg = <0x12000 0x18>;
+-				clocks = <&xtalclk>;
++				clocks = <&uartclk 0>;
+ 				interrupts =
+ 				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+@@ -147,7 +157,7 @@
+ 			uart1: serial@12200 {
+ 				compatible = "marvell,armada-3700-uart-ext";
+ 				reg = <0x12200 0x30>;
+-				clocks = <&xtalclk>;
++				clocks = <&uartclk 1>;
+ 				interrupts =
+ 				<GIC_SPI 30 IRQ_TYPE_EDGE_RISING>,
+ 				<GIC_SPI 31 IRQ_TYPE_EDGE_RISING>;
 -- 
 2.20.1
 
