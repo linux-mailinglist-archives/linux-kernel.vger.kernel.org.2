@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71B841CAE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CE341CADE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345203AbhI2RKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:10:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:1355 "EHLO mga01.intel.com"
+        id S1345145AbhI2RJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344818AbhI2RKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:10:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="247522719"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="247522719"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 10:07:55 -0700
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="538924770"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 10:07:55 -0700
-Date:   Wed, 29 Sep 2021 10:07:54 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <YVSdauvwzs1HJlLz@agluck-desk2.amr.corp.intel.com>
-References: <20210920192349.2602141-5-fenghua.yu@intel.com>
- <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
- <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
- <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
- <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
- <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
- <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
- <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
- <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
- <308a72e4-6aa9-0c84-21e6-ee613eea35a8@kernel.org>
+        id S1343495AbhI2RJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:09:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D4D61288;
+        Wed, 29 Sep 2021 17:08:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632935287;
+        bh=4TDyXkm6HcwC6k6GyuEZvi2ohAEIeZOw8SSV0h8L20E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SE+b343AcXe0oP3G69lICNMkltnJJzCELhskvBsS2T0cyLD9/AjBSw1uNL6kIuic7
+         raDZ9rtMpsOVr1tKBoxUr2cwJysupdV7FKwFOJXnJMlqRmMz0UZVuFwJMZqIY8FBwz
+         a4xM0NL5Irdokqat6kDhSyZzfxuKQD41fruJsj46YKgnMfkvVUFoBPkHhEFCQBiJI0
+         BQDe1cqbahFwSb2m7p9n2WsL5+i2IQYtZiqjsN9DB3jfrIET0nCETIpgSaKq7mupaW
+         p/HTzTUEf3KwCK2wOCg5fPGRRHwl4J5Hl/bK+i93WEl040YVHH67yPIZm6Ts+teBld
+         b9f4IHslssTJg==
+Date:   Wed, 29 Sep 2021 12:08:04 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Zhangfei Gao <zhangfei.gao@linaro.org>
+Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device
+ properties
+Message-ID: <20210929170804.GA778424@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <308a72e4-6aa9-0c84-21e6-ee613eea35a8@kernel.org>
+In-Reply-To: <20210929133729.9427-2-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:58:22AM -0700, Andy Lutomirski wrote:
-> On 9/28/21 16:10, Luck, Tony wrote:
-> > Moving beyond pseudo-code and into compiles-but-probably-broken-code.
-> > 
-> > 
-> > The intent of the functions below is that Fenghua should be able to
-> > do:
-> > 
-> > void fpu__pasid_write(u32 pasid)
-> > {
-> > 	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
-> > 	struct ia32_pasid_state *addr;
-> > 
-> > 	addr = begin_update_one_xsave_feature(current, XFEATURE_PASID, true);
-> > 	addr->pasid = msr_val;
-> > 	finish_update_one_xsave_feature(current);
-> > }
-> > 
+[+cc Zhangfei, author of 8304a3a199ee ("PCI: Set dma-can-stall for
+HiSilicon chips"), which added this]
+
+On Wed, Sep 29, 2021 at 04:37:28PM +0300, Heikki Krogerus wrote:
+> Using device_create_managed_software_node() to inject the
+> properties in quirk_huawei_pcie_sva() instead of with the
+> old device_add_properties() API.
 > 
-> This gets gnarly because we would presumably like to optimize the case where
-> we can do the update directly in registers.  I wonder if we can do it with a
-> bit of macro magic in a somewhat generic way:
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Can we defere the optimizations until there is a use case that
-cares? The existing use case (fixing up the #GP fault by setting
-the PASID MSR) isn't performance critical.
+This is fine with me, but please update the subject line and commit
+log something like this:
 
-Let's just have something that is clear (or as clear as any xsave
-code can be) and correct.
+  PCI: Convert to device_create_managed_software_node()
 
--Tony
+  In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
+  instead of device_add_properties() to set the "dma-can-stall"
+  property.
+
+  This resolves a software node lifetime issue (see 151f6ff78cdf
+  ("software node: Provide replacement for device_add_properties()"))
+  and paves the way for removing device_add_properties() completely.
+
+Actually, 8304a3a199ee was merged during the v5.15 merge window, so if
+this does in fact fix a lifetime issue, I can merge this before
+v5.15-final.
+
+I know *this* quirk applies to AMBA devices, and I assume they cannot
+be removed, so there's no actual lifetime problem in this particular
+case, but in general it looks like a problem for PCI devices.
+
+> ---
+>  drivers/pci/quirks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index b6b4c803bdc94..fe5eedba47908 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -1850,7 +1850,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
+>  	 * can set it directly.
+>  	 */
+>  	if (!pdev->dev.of_node &&
+> -	    device_add_properties(&pdev->dev, properties))
+> +	    device_create_managed_software_node(&pdev->dev, properties, NULL))
+>  		pci_warn(pdev, "could not add stall property");
+>  }
+>  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
+> -- 
+> 2.33.0
+> 
