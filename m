@@ -2,202 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC52441BC93
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8221341BC92
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243726AbhI2CIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 22:08:02 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:49494 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242761AbhI2CIB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:08:01 -0400
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T20UbS010093;
-        Tue, 28 Sep 2021 19:05:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=subject : to : cc
- : references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=p00CPv95rBVU16C8uNZ8q6weqZzp4TdsdyjKjED9mak=;
- b=Ml/fOP6/LX81f/I+NW3TppWvIkoy4O6HvolffmPZwAPQLgrAHLjWl5pYKy/uT2KxXDqG
- 6CbB1UDxxXqParfIWrAHooNp5B3+q8/67ZnCIes8ShuP7j4HBUqNM8eofv70pn+RwSZ8
- g94o4vvVMO3oacuS6EQX7UXgyPTnmMFNT7I/gEGNBo6k/r1I9AlX6ARVvTQQlrEeTtaX
- 2Wx4PtUpgV5uowpIU34j2ZXmLqX/5hSDnka92RIyl52Gx7yQLsedSun8euC/KToQU9+S
- /llpsIpbARVO3ONdKXMEJlM3q+ialrRHANfVOSAERiVIHdV4MedoGpO9dsjm9P3/PA/7 IQ== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2171.outbound.protection.outlook.com [104.47.55.171])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3bcceqg3bx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 19:05:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j9kL8gRWsIFYHmFdgNMKJNycR144uZ/QW24L7iHbmWzewtU5W5Bi62vbR/XCeboFHNTEkHkrNq93n7Yj3cETaxQHOqW+RoD/kkj+X7WkLA1szDeAbQdJsVvGPGEilM/VfWrTOu01zNdYDCIJ+OQt3j9dID13CB+opL0k1+yfxHATvP2YS5KxB5nFIsJvSTVu2ZMmXQNhjRMl/6hPyZgcHn8LC4d3Puk1dwJ6Zy0RELqRXhKeiwiBtFf6YN3rpzgwW89EO649XAlkg586W1grNTOkIZChZURgZPotZ2zzvm2At6+Q3Tha0ZE4oeiGSnwolKkwMOcC7f6zKLrx9GYDCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=p00CPv95rBVU16C8uNZ8q6weqZzp4TdsdyjKjED9mak=;
- b=IeIwJn7h4iWje5/4XvjRzll9epB8bP8AABs7j8X903tNFeSOtt8Rn1FV2SaJzR3OIEoLXPzbX9ypgBLhkWChIDbSKcVgSn9ZfBurlQDPLJCxLspQr/qPcRnuCkgnRr4uTqciR6ByrSjDGDCPznfdfeQXRQfs76GfX3U9oS1rdMSLqrWPco1MTJuOdNsMR1hMYihoYoIGoJUv1IzL1KI8QzwijrsFXxyqt8Xu7SWl/m6V6bF/HCWggbAzqO5vRYbDFPhWcW9LKZACKlSLD+6AqpII0z3vn909iK8OkZAVwCxgdq4Bi14sVoUCc7qu7MrP9+dlmRAMVaDz/YW/a9dF5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM8PR11MB5734.namprd11.prod.outlook.com (2603:10b6:8:31::22) by
- DM6PR11MB3866.namprd11.prod.outlook.com (2603:10b6:5:199::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.13; Wed, 29 Sep 2021 02:05:52 +0000
-Received: from DM8PR11MB5734.namprd11.prod.outlook.com
- ([fe80::51b7:91e3:7c34:57a5]) by DM8PR11MB5734.namprd11.prod.outlook.com
- ([fe80::51b7:91e3:7c34:57a5%3]) with mapi id 15.20.4566.014; Wed, 29 Sep 2021
- 02:05:52 +0000
-Subject: Re: [PATCH] net: mdiobus: Fix memory leak in __mdiobus_register
-To:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        andrew@lunn.ch, hkallweit1@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, p.zabel@pengutronix.de,
-        syzbot <syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-References: <20210928092657.GI2048@kadam>
- <6f90fa0f-6d3b-0ca7-e894-eb971b3b69fa@gmail.com>
- <20210928103908.GJ2048@kadam>
- <63b18426-c39e-d898-08fb-8bfd05b7be9e@gmail.com>
- <20210928105943.GL2083@kadam>
- <283d01f0-d5eb-914e-1bd2-baae0420073c@gmail.com>
- <f587da4b-09dd-4c32-4ee4-5ec8b9ad792f@gmail.com>
- <20210928113055.GN2083@kadam> <YVMRWNDZDUOvQjHL@shell.armlinux.org.uk>
- <20210928135207.GP2083@kadam> <YVM3sFBIHzEnshvd@shell.armlinux.org.uk>
- <CAD-N9QXHcrv+6SJSOz3NyBkAnze2wVf_azYmjbGCVd5Ge_OQng@mail.gmail.com>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <bc07380e-54ae-1699-aaaf-3380f11c3eaf@windriver.com>
-Date:   Wed, 29 Sep 2021 10:05:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CAD-N9QXHcrv+6SJSOz3NyBkAnze2wVf_azYmjbGCVd5Ge_OQng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0012.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::17) To DM8PR11MB5734.namprd11.prod.outlook.com
- (2603:10b6:8:31::22)
-MIME-Version: 1.0
-Received: from [128.224.162.160] (60.247.85.82) by SJ0PR03CA0012.namprd03.prod.outlook.com (2603:10b6:a03:33a::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Wed, 29 Sep 2021 02:05:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a64656c3-aa1b-4484-cb87-08d982eda9d2
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3866:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB38667789DD968B85E5795AC0E4A99@DM6PR11MB3866.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H7Rhy89SrxngveC/nYIEqmKQkcp0xo3h0XU8GowHbMZdq2heM+rNyxG0ty5UxpGcvTWDCLsCVDoBYoPRzSm/jmK+JHAYlQ8OS6/ZoV+Wk/uX8yiZSGzKf+zjow1pZkfgYspSdST4TPMYQ97ql84qctM3Cz/tVn2SKfRWhnF7ejP63H3WTht3A3HH1V/xy7XraTF9TkfdWqtrRshFolfL/E/3JEs5AQSR9w2p5jbpE7UDyI0oh0fCeGFfEMpUklymBI008LVswwe637WO/iF6dpA8khi6aYmLTurWhvdrmAHMBsa9U3aDLCYfZBXPIo8uhH7La/uLD6ghrNP2qjv9KOn/vbAa8HbN2ca53x2O8r4er4P3sNUGR5u7ug1gWmFVI8cruXc1MjpDVU1XRMP6JjR9IA8NbTRr+ZrbssJdoOCE1ew63LpzrCxyMxYgeBDkYGAiUvgxj2Hz2IldUSVO0sh5w3NlY/Gb0ESEFMp5jqixAnJdaJjZi1ifcwvmXRLB0OJPffWjkfX5rbCqi/we+Z8ve1jVmqYxM8UIm7J8oGDld+db9ftA7nVPrSChTZxWO9nvxldSF7vHtvADShmy03lHe0xsYY93C4PS63H3c4iXSa361Z0Ya1EWdNSJGqrOObTftx4pUFyiekRde/bCpNtt+GKd5ZWuA1v+nlNzYJjzsWGkkp88WUUlwuUC+rTHz5QBrNTFLfcSlNvM053lPENCgKDRkzLSCcEoC52+sRMXtmGSWJ2ykmfsAxMggnB8pl84pqGSEFMgSzl7kAfo0CO3FO5dqWGm+2o+YUklULR/ZfRn+ycsb1k4mxvV7gbNNOd64fX5/uzhssnJqtJJl9xMe+lzRpeuJwCDFfs5KpMOBHWwJSBjafo6g2xF06TdDCIa7JAovlsDmMF0J3HhlA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(16576012)(54906003)(83380400001)(8936002)(26005)(2616005)(8676002)(38350700002)(6666004)(110136005)(38100700002)(5660300002)(316002)(4326008)(52116002)(6706004)(186003)(66556008)(956004)(7416002)(31696002)(6486002)(66946007)(2906002)(966005)(86362001)(66476007)(31686004)(508600001)(36756003)(99710200001)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGVONUtmNUlIN3VsYjAvMk1WY3o0eTVzZkxuWnp4dHRrODVZVWl3UHdKODkz?=
- =?utf-8?B?NTNldkxDcldLczc1bXpMRk1vaVZZQ2xlbDFnWUxaRjZMdXRIeEt6UUptOUJM?=
- =?utf-8?B?d0hxRmxGY0RpQXBzTVZxUmd1TmZQLzMwNTV6dXM0SUYzZUNhNk5lUFZHVXlr?=
- =?utf-8?B?WTAxUzFkOEc1NVhhNEZPY0FwLzR4c3J1d2NFclJQUUJ1VFU5N05xb2d5ODg5?=
- =?utf-8?B?bjlLelVvaXhOMGRTR2prZ3RpY2ROUWhVdXJLZ2QvbFJIRVRGaW9sVW1pL2Nq?=
- =?utf-8?B?K0JFQWc4Smt1ZjhCOG9oZEoyN0xYSTBDSTNpWGJlZFQxTzhkYWJMZVg5anFG?=
- =?utf-8?B?cWd3NXFRRzBnNWZOWDIybURscDBYdlg3SEd0Qm4yS1J3YnRhMXpBNlBXaExz?=
- =?utf-8?B?SlhsbVBaL3ZCMTY2WWpMOEprV1k4SEROK2VxTUlMTm05RG9jT2lIWGVGQVRD?=
- =?utf-8?B?UGxoRU56UE5JcTBrQThMemZEeE9UcjRzankyQVUxNDdBR0JwdGl3Zjk1cXFk?=
- =?utf-8?B?UGF6dndwaGRBMGQ5c2ZqUGhRVjMzNEVSU1pqcFd1MWwvTkVtaGtPK3A1M1Jv?=
- =?utf-8?B?OGhaYnlwekFXOTFRUHJGTDRwZXFQUjRFdjJyQm5OT1pIcnkzYlJRc2ZEcnlZ?=
- =?utf-8?B?SFcwVTFwUHhQN3ZkdW1Eem96UlV1TFRINGVjcE9qWHcyZU9mSFhNc0Q5S2hl?=
- =?utf-8?B?MDIvRXprNnN0aFpVL1duckVnZDBpR3ZvWlZ3UHFXMkFPWDVReEkxcGlrMnUv?=
- =?utf-8?B?UXhoWVpaK2FzZGorVW4zUWkxeFQxQlFvS0UyNkx2SWxHZnVZUW9OK3ZmYlhN?=
- =?utf-8?B?eTBwNGk2VkxJS1d0aDl3Uy9rTnBRL2lpblBQRGoxUy9RSVRiTVc3SU1jNUk4?=
- =?utf-8?B?aTdocmFYWXE3VDA2emRMdjQ0RVdncE52TEtMdkFvUUNlSEgrMy80K1J4L012?=
- =?utf-8?B?VG00Ulpza3M1MWlPcUw3aXA4Z3VzMWxINHp4Y0ticmZsLy9KRWI2UDRsSUtX?=
- =?utf-8?B?UUdWaWtudUhqVW5oY3BNOUlIR1pZOVhZSk00WmlZdGlwVHZWVWNkcUtkQVps?=
- =?utf-8?B?T0dSL0pDQjZ5MElTT0N3a094M0Q3czk1a09TSFBjbFNpbFIzdTBZaHBFZjlV?=
- =?utf-8?B?dWJvZnlqb1ZEQi9kWkx5cE9aRDN3S3FnUUh0WmtBUy9ocUpMVkttcFRCZklq?=
- =?utf-8?B?TUVQRXNSNkNSS3kwTHUzRXhITHVLY05mR2djWWNzcndpSmxTUSt5K1pGT0ll?=
- =?utf-8?B?RFFzMEJndm5tNlAzVGduak9mYnlsMSsvbDBxeVlhNHJqNjJ5T01iRU1FZWFw?=
- =?utf-8?B?VnNoR0FiVXpPaHBTWGFiMC9IcEJ1NnNYTXNTaEdua0luVExxZ2ZuUzl4K2Qx?=
- =?utf-8?B?VktkakZUSmg1Yk5PU0F2Vnl4Uys4Y1M0eWNQT203SFQ3cE9mNEpMdmJCVjJP?=
- =?utf-8?B?YXo4bDlWSnRnU1BiVlFkOHNCQUNyNi9pOHFCWUQreU1EbWNhRnhrVm1pN29s?=
- =?utf-8?B?MWR2c3c4QnBiV2UydWhmdm0yTkFKNEMyMnk1dzl0aUZNSHk3Nmlob29XaUJK?=
- =?utf-8?B?ZElJZU8vSUYxOGh6QXF0RmVYVU5xVFl2eWhGenNIQkl3K203OWxzaExUQUdE?=
- =?utf-8?B?ejMwTVVYTTlNdlBtM0ZINzBxY0hWUUJaY1MyakZyMmUrb2lnSUZhUXRDVG93?=
- =?utf-8?B?WXpzMkUyV2pIcFJ3ay9uTEJLYWtVbTYvNzdxdHRhVXkxdzl0QVdsVW50dHNY?=
- =?utf-8?Q?uqee7Vw81WxaHXZ60FrND/YnVcy7iX5TRO9bhjm?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a64656c3-aa1b-4484-cb87-08d982eda9d2
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 02:05:52.0746
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rDUrmbbZsQucP152rR8svXoWEQySM8kntAcGPZfcSiJ0cDm1YG4+johykrITeQI7tdvLsXtVk7vr/kJJQsIMmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3866
-X-Proofpoint-ORIG-GUID: f67eDul3iP8-6ogSEWo5LGfonStegE9Z
-X-Proofpoint-GUID: f67eDul3iP8-6ogSEWo5LGfonStegE9Z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_11,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 adultscore=0 clxscore=1011 malwarescore=0 bulkscore=0
- lowpriorityscore=0 mlxscore=0 impostorscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109290010
+        id S243694AbhI2CHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 22:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242761AbhI2CHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 22:07:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D0C5613DB;
+        Wed, 29 Sep 2021 02:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632881165;
+        bh=L4BncPA0KuDn0MSooglnIWjI+6wOfHw41at5dZ42I/E=;
+        h=Date:From:To:Subject:From;
+        b=wOp9dhyh07x+nRk1VJjHFScJXqxLy4pKiKj4Iv+44UK8OsKhdQGrY8l0aT4i/7VSU
+         XjSYmgGK74zXcHccWMqh0tokNl52l4s/xu4awbm2VcizZu5UMzpU9Y+zGTR1XH2Kku
+         CjL98Q1ByF4Bu+gzTgR101BMkv02ChVxb0n6kYvM=
+Date:   Tue, 28 Sep 2021 19:06:04 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2021-09-28-19-05 uploaded
+Message-ID: <20210929020604.DyNimbxao%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The mm-of-the-moment snapshot 2021-09-28-19-05 has been uploaded to
+
+   https://www.ozlabs.org/~akpm/mmotm/
+
+mmotm-readme.txt says
+
+README for mm-of-the-moment:
+
+https://www.ozlabs.org/~akpm/mmotm/
+
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
+
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
+
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
+
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
 
 
-On 9/28/21 11:48 PM, Dongliang Mu wrote:
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> On Tue, Sep 28, 2021 at 11:41 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
->>
->> On Tue, Sep 28, 2021 at 04:52:07PM +0300, Dan Carpenter wrote:
->>> On Tue, Sep 28, 2021 at 01:58:00PM +0100, Russell King (Oracle) wrote:
->>>>
->>>> This thread seems to be getting out of hand.
->>>
->>> The thread was closed.  We need to revert Yanfei's patch and apply
->>> Pavel's patch.  He's going to resend.
->>>
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
 
-Sorry for my patch, it is my bad. :( And thanks for Pavel's v2 which 
-help to revert mine.
+	https://github.com/hnaz/linux-mm
 
-Regards,
-Yanfei
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
 
->>>> So, I would suggest a simple fix is to set bus->state to
->>>> MDIOBUS_UNREGISTERED immediately _after_ the successful
->>>> device_register().
->>>
->>> Not after.  It has to be set to MDIOBUS_UNREGISTERED if device_register()
->>> fails, otherwise there will still be a leak.
->>
->> Ah yes, you are correct - the device name may not be freed. Also...
->>
->>   * NOTE: _Never_ directly free @dev after calling this function, even
->>   * if it returned an error! Always use put_device() to give up your
->>   * reference instead.
->>
->> So yes, we must set to MDIOBUS_UNREGISTERED even if device_register()
->> fails.
->>
-> 
-> So we have reached an agreement. Pavel's patch fixes the syzbot link
-> [1], other than Yanfei's patch. However, Yanfei's patch also fixes
-> another memory link nearby.
-> 
-> Right?
-> 
-> [1] https://syzkaller.appspot.com/bug?id=fa99459691911a0369622248e0f4e3285fcedd97
-> 
->> --
->> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
->> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
+
+
+
+This mmotm tree contains the following patches against 5.15-rc3:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* mm-userfaultfd-selftests-fix-memory-corruption-with-thp-enabled.patch
+* userfaultfd-fix-a-race-between-writeprotect-and-exit_mmap.patch
+* mm-migrate-optimize-hotplug-time-demotion-order-updates.patch
+* mm-migrate-add-cpu-hotplug-to-demotion-ifdef.patch
+* mm-vmalloc-fix-numa-spreading-for-large-hash-tables.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
+* scripts-spellingtxt-add-more-spellings-to-spellingtxt.patch
+* scripts-spellingtxt-fix-mistake-version-of-synchronization.patch
+* ocfs2-fix-handle-refcount-leak-in-two-exception-handling-paths.patch
+* ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+* posix-acl-avoid-wempty-body-warning.patch
+  mm.patch
+* mm-move-kvmalloc-related-functions-to-slabh.patch
+* mm-slub-fix-two-bugs-in-slab_debug_trace_open.patch
+* mm-slub-fix-mismatch-between-reconstructed-freelist-depth-and-cnt.patch
+* mm-slub-fix-potential-memoryleak-in-kmem_cache_open.patch
+* mm-slub-fix-potential-use-after-free-in-slab_debugfs_fops.patch
+* mm-slub-fix-incorrect-memcg-slab-count-for-bulk-free.patch
+* slub-add-back-check-for-free-nonslab-objects.patch
+* mm-dont-include-linux-daxh-in-linux-mempolicyh.patch
+* compiler-attributes-add-__alloc_size-for-better-bounds-checking.patch
+* compiler-attributes-add-__alloc_size-for-better-bounds-checking-fix.patch
+* checkpatch-add-__alloc_size-to-known-attribute.patch
+* slab-clean-up-function-declarations.patch
+* slab-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* mm-page_alloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* percpu-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* mm-vmalloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* rapidio-avoid-bogus-__alloc_size-warning.patch
+* mm-smaps-fix-shmem-pte-hole-swap-calculation.patch
+* mm-smaps-use-vma-vm_pgoff-directly-when-counting-partial-swap.patch
+* mm-smaps-simplify-shmem-handling-of-pte-holes.patch
+* mm-debug_vm_pgtable-dont-use-__p000-directly.patch
+* mm-remove-bogus-vm_bug_on.patch
+* vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
+* mm-gup-further-simplify-__gup_device_huge.patch
+* mm-swapfile-remove-needless-request_queue-null-pointer-check.patch
+* mm-memcg-drop-swp_entry_t-in-mc_handle_file_pte.patch
+* memcg-prohibit-unconditional-exceeding-the-limit-of-dying-tasks.patch
+* mm-mmapc-fix-a-data-race-of-mm-total_vm.patch
+* mm-use-__pfn_to_section-instead-of-open-coding-it.patch
+* mm-memory-avoid-unnecessary-kernel-user-pointer-conversion.patch
+* mm-shmem-unconditionally-set-pte-dirty-in-mfill_atomic_install_pte.patch
+* mm-clear-vmf-pte-after-pte_unmap_same-returns.patch
+* mm-drop-first_index-last_index-in-zap_details.patch
+* mm-add-zap_skip_check_mapping-helper.patch
+* mm-introduce-pmd_install-helper.patch
+* mm-remove-redundant-smp_wmb.patch
+* documentation-update-pagemap-with-shmem-exceptions.patch
+* lazy-tlb-introduce-lazy-mm-refcount-helper-functions.patch
+* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable.patch
+* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option.patch
+* powerpc-64s-enable-mmu_lazy_tlb_shootdown.patch
+* mm-mremap-dont-account-pages-in-vma_to_resize.patch
+* mm-vmalloc-repair-warn_allocs-in-__vmalloc_area_node.patch
+* mm-vmalloc-dont-allow-vm_no_guard-on-vmap.patch
+* kasan-test-add-memcpy-test-that-avoids-out-of-bounds-write.patch
+* lib-stackdepot-include-gfph.patch
+* lib-stackdepot-remove-unused-function-argument.patch
+* lib-stackdepot-introduce-__stack_depot_save.patch
+* kasan-common-provide-can_alloc-in-kasan_save_stack.patch
+* kasan-generic-introduce-kasan_record_aux_stack_noalloc.patch
+* workqueue-kasan-avoid-alloc_pages-when-recording-stack.patch
+* mm-large-system-hash-avoid-possible-null-deref-in-alloc_large_system_hash.patch
+* mm-page_allocc-remove-meaningless-vm_bug_on-in-pindex_to_order.patch
+* mm-page_allocc-simplify-the-code-by-using-macro-k.patch
+* mm-page_allocc-fix-obsolete-comment-in-free_pcppages_bulk.patch
+* mm-page_allocc-use-helper-function-zone_spans_pfn.patch
+* mm-page_allocc-avoid-allocating-highmem-pages-via-alloc_pages_exact.patch
+* mm-page_alloc-print-node-fallback-order.patch
+* mm-page_alloc-use-accumulated-load-when-building-node-fallback-list.patch
+* mm-move-node_reclaim_distance-to-fix-numa-without-smp.patch
+* mm-move-fold_vm_numa_events-to-fix-numa-without-smp.patch
+* mm-do-not-acquire-zone-lock-in-is_free_buddy_page.patch
+* mm-page_alloc-detect-allocation-forbidden-by-cpuset-and-bail-out-early.patch
+* mm-show-watermark_boost-of-zone-in-zoneinfo.patch
+* mm-create-a-new-system-state-and-fix-core_kernel_text.patch
+* mm-make-generic-arch_is_kernel_initmem_freed-do-what-it-says.patch
+* powerpc-use-generic-version-of-arch_is_kernel_initmem_freed.patch
+* s390-use-generic-version-of-arch_is_kernel_initmem_freed.patch
+* mm-fix-data-race-in-pagepoisoned.patch
+* mm-hugetlb-drop-__unmap_hugepage_range-definition-from-hugetlbh.patch
+* hugetlb-add-demote-hugetlb-page-sysfs-interfaces.patch
+* hugetlb-add-hpagecma-flag-and-code-to-free-non-gigantic-pages-in-cma.patch
+* hugetlb-add-demote-bool-to-gigantic-page-routines.patch
+* hugetlb-add-hugetlb-demote-page-support.patch
+* userfaultfd-selftests-fix-feature-support-detection.patch
+* userfaultfd-selftests-fix-calculation-of-expected-ioctls.patch
+* userfaultfd-selftests-dont-rely-on-gnu-extensions-for-random-numbers.patch
+* mm-page_isolation-fix-potential-missing-call-to-unset_migratetype_isolate.patch
+* mm-page_isolation-guard-against-possible-putback-unisolated-page.patch
+* mm-vmscanc-fix-wunused-but-set-variable-warning.patch
+* tools-vm-page_owner_sortc-count-and-sort-by-mem.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
+* mm-mark-the-oom-reaper-thread-as-freezable.patch
+* oom_kill-oom_score_adj-broken-for-processes-with-small-memory-usage.patch
+* mmhugetlb-remove-mlock-ulimit-for-shm_hugetlb.patch
+* hugetlbfs-extend-the-definition-of-hugepages-parameter-to-support-node-allocation.patch
+* mm-migrate-de-duplicate-migrate_reason-strings.patch
+* mm-nommu-kill-arch_get_unmapped_area.patch
+* selftest-vm-fix-ksm-selftest-to-run-with-different-numa-topologies.patch
+* mm-vmstat-annotate-data-race-for-zone-free_areanr_free.patch
+* mm-vmstat-annotate-data-race-for-zone-free_areanr_free-fix.patch
+* mm-memory_hotplug-add-static-qualifier-for-online_policy_to_str.patch
+* mm-memory_hotplug-make-hwpoisoned-dirty-swapcache-pages-unmovable.patch
+* mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
+* mm-disable-zsmalloc-on-preempt_rt.patch
+* mm-zsmallocc-close-race-window-between-zs_pool_dec_isolated-and-zs_unregister_migration.patch
+* mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch
+* mm-highmem-remove-deprecated-kmap_atomic.patch
+* zram_drv-allow-reclaim-on-bio_alloc.patch
+* zram-off-by-one-in-read_block_state.patch
+* zram-introduce-an-aged-idle-interface.patch
+* zram-introduce-an-aged-idle-interface-v5.patch
+* mm-remove-hardened_usercopy_fallback.patch
+* include-linux-mmh-move-nr_free_buffer_pages-from-swaph-to-mmh.patch
+* stacktrace-move-filter_irq_stacks-to-kernel-stacktracec.patch
+* kfence-count-unexpectedly-skipped-allocations.patch
+* kfence-move-saving-stack-trace-of-allocations-into-__kfence_alloc.patch
+* kfence-limit-currently-covered-allocations-when-pool-nearly-full.patch
+* kfence-limit-currently-covered-allocations-when-pool-nearly-full-fix.patch
+* kfence-add-note-to-documentation-about-skipping-covered-allocations.patch
+* kfence-test-use-kunit_skip-to-skip-tests.patch
+* mm-damon-grammar-s-works-work.patch
+* documentation-vm-move-user-guides-to-admin-guide-mm.patch
+* maintainers-update-seongjaes-email-address.patch
+* docs-vm-damon-remove-broken-reference.patch
+* include-linux-damonh-fix-kernel-doc-comments-for-damon_callback.patch
+* mm-damon-core-print-kdamond-start-log-in-debug-mode-only.patch
+* mm-damon-remove-unnecessary-do_exit-from-kdamond.patch
+* mm-damon-neednt-hold-kdamond_lock-to-print-pid-of-kdamond.patch
+* mm-damon-core-nullify-pointer-ctx-kdamond-with-a-null.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* lib-stackdepot-check-stackdepot-handle-before-accessing-slabs.patch
+* lib-stackdepot-add-helper-to-print-stack-entries.patch
+* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer.patch
+* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer-v2.patch
+* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer-v3.patch
+* const_structscheckpatch-add-a-few-sound-ops-structs.patch
+* binfmt_elf-reintroduce-using-map_fixed_noreplace.patch
+* ramfs-fix-mount-source-show-for-ramfs.patch
+* init-mainc-silence-some-wunused-parameter-warnings.patch
+* coda-avoid-null-pointer-dereference-from-a-bad-inode.patch
+* coda-check-for-async-upcall-request-using-local-state.patch
+* coda-remove-err-which-no-one-care.patch
+* coda-avoid-flagging-null-inodes.patch
+* coda-avoid-hidden-code-duplication-in-rename.patch
+* coda-avoid-doing-bad-things-on-inode-type-changes-during-revalidation.patch
+* coda-convert-from-atomic_t-to-refcount_t-on-coda_vm_ops-refcnt.patch
+* coda-use-vmemdup_user-to-replace-the-open-code.patch
+* coda-bump-module-version-to-72.patch
+* hfs-hfsplus-use-warn_on-for-sanity-check.patch
+* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
+* unshare-use-swap-to-make-code-cleaner.patch
+* sysv-use-build_bug_on-instead-of-runtime-check.patch
+* documentation-kcov-include-typesh-in-the-example.patch
+* documentation-kcov-define-ip-in-the-example.patch
+* kcov-allocate-per-cpu-memory-on-the-relevant-node.patch
+* kcov-avoid-enabledisable-interrupts-if-in_task.patch
+* kcov-replace-local_irq_save-with-a-local_lock_t.patch
+* kernel-resource-clean-up-and-optimize-iomem_is_exclusive.patch
+* kernel-resource-disallow-access-to-exclusive-system-ram-regions.patch
+* virtio-mem-disallow-mapping-virtio-mem-memory-via-dev-mem.patch
+* ipc-check-checkpoint_restore_ns_capable-to-modify-c-r-proc-files.patch
+* ipc-check-checkpoint_restore_ns_capable-to-modify-c-r-proc-files-fix.patch
+* ipc-ipc_sysctlc-remove-fallback-for-config_proc_sysctl.patch
+  linux-next.patch
+* mm-migrate-simplify-the-file-backed-pages-validation-when-migrating-its-mapping.patch
+* mm-unexport-folio_memcg_unlock.patch
+* mm-unexport-unlock_page_memcg.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
