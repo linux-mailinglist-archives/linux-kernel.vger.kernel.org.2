@@ -2,155 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF62B41C4F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BB641C4FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343926AbhI2M4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:56:33 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:23236 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343889AbhI2M4c (ORCPT
+        id S1343947AbhI2M5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:57:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343940AbhI2M5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:56:32 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HKGXP4W3Jz8tV5;
-        Wed, 29 Sep 2021 20:53:57 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 20:54:49 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 29 Sep 2021 20:54:49 +0800
-Subject: Re: [patch v8 0/7] handle unexpected message from server
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <ming.lei@redhat.com>,
-        <hch@infradead.org>
-CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20210916093350.1410403-1-yukuai3@huawei.com>
- <f56cc608-ac55-0eee-f3d0-19ba1a8c22ef@huawei.com>
-Message-ID: <37b222c1-d6b0-3e46-248a-2557db40ae92@huawei.com>
-Date:   Wed, 29 Sep 2021 20:54:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 29 Sep 2021 08:57:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632920155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oHHoz5hSfSYkAdHIHrMpSEd2w0Wf9S7kBxpqY6OLo4c=;
+        b=GjTMWOGfnnTEoU7HlpYXbY35QnE6qqWWwPHDh1GfCfFpYcAx2E2ZIH2MEvucbMWS2CUTRo
+        urwO+CvN0HvZBsi/FdHAPbJqaw3ZZhRQShXu0a8dLFtkkAPP0GvoZNeYvFt8nFHU+LseXE
+        fYmz8aPqbVdtJRTKbBW3S7K2swcDq9M=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-125-Kc-FvtodMuWyNB2Yo-fh7g-1; Wed, 29 Sep 2021 08:55:52 -0400
+X-MC-Unique: Kc-FvtodMuWyNB2Yo-fh7g-1
+Received: by mail-ed1-f72.google.com with SMTP id a7-20020a509e87000000b003da71d1b065so2332225edf.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:55:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oHHoz5hSfSYkAdHIHrMpSEd2w0Wf9S7kBxpqY6OLo4c=;
+        b=doUuxWHQTH1xkV9VvTM2ecmFl73r1N82jkgVFjbDxrl1D8hXrBLblmIvtrMrWzo17h
+         chJiUovvIZqUfJDnPPV+4A6kKwq74zN4mkndYKywPuKnZd22nY8yXT+ZQXB/5P54TSkS
+         hPR5ie5vPECSIbUOa+VZ5L85GQDHkgEIegCeJ+69yMm5A3L8Cr/wBFLEuqIN1HgrlLwd
+         pKBFrdAsPrnCNN6UnvbkCrzxCbuPYeMjZzdYZHjDLkn+YyOZ7yPIVEUL+x3yZNqhp6oy
+         YUHE1ZuVJVlM7zz6f3YaWQifZScfNzNDd8IcVQqqVh1A0nTMjZvXgUpAzpQ5cN1cimrG
+         MQAA==
+X-Gm-Message-State: AOAM533WQPxhNrDH/7yzvuPO7vQVfZX1lLJyrNxXpF4iuYfCxp5b63rB
+        s6J9Zjn5Rd4/TVCwqEjEZWzqiMibEtB9Dga2xydfFGzgXaM0pnUlJJNCFhDlJygB3mMjVcTveGS
+        ZH08H95RkeYQL/ReMgtsoG++h
+X-Received: by 2002:a50:da07:: with SMTP id z7mr14803663edj.301.1632920151488;
+        Wed, 29 Sep 2021 05:55:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnijlA+Suv1yZ7nvg6/PmlavVog5wCQhvw8hN3J1hEM8QAnQNFWgkO9hGUcLAsv1xKMPFzOQ==
+X-Received: by 2002:a50:da07:: with SMTP id z7mr14803641edj.301.1632920151269;
+        Wed, 29 Sep 2021 05:55:51 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dc8sm1518212edb.28.2021.09.29.05.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 05:55:50 -0700 (PDT)
+Message-ID: <3721a326-b728-787e-0ef7-a1925941b17b@redhat.com>
+Date:   Wed, 29 Sep 2021 14:55:49 +0200
 MIME-Version: 1.0
-In-Reply-To: <f56cc608-ac55-0eee-f3d0-19ba1a8c22ef@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 0/2] Cleanups for pointer usages in nVMX.
+Content-Language: en-US
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com,
+        vkuznets@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
+References: <20210929175154.11396-1-yu.c.zhang@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20210929175154.11396-1-yu.c.zhang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/23 21:33, yukuai (C) wrote:
-> On 2021/09/16 17:33, Yu Kuai wrote:
+On 29/09/21 19:51, Yu Zhang wrote:
+> Replace usages of "-1ull" with INVALID_GPA. And reset the vmxon_ptr
+> when emulating vmxoff.
 > 
-> Hi, jens
+> v2:
+>    Added patch to replace usages of "-1ull" with INVALID_GPA.
 > 
-> Any interest to apply this series?
+> Vitaly Kuznetsov (1):
+>    KVM: nVMX: Reset vmxon_ptr upon VMXOFF emulation.
+> 
+> Yu Zhang (1):
+>    KVM: nVMX: Use INVALID_GPA for pointers used in nVMX.
+> 
+>   arch/x86/kvm/vmx/nested.c | 61 ++++++++++++++++++++-------------------
+>   arch/x86/kvm/vmx/vmx.c    |  5 ++--
+>   2 files changed, 34 insertions(+), 32 deletions(-)
+> 
 
-friendly ping ...
-> 
-> Thanks,
-> Kuai
->> This patch set tries to fix that client might oops if nbd server send
->> unexpected message to client, for example, our syzkaller report a uaf
->> in nbd_read_stat():
->>
->> Call trace:
->>   dump_backtrace+0x0/0x310 arch/arm64/kernel/time.c:78
->>   show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
->>   __dump_stack lib/dump_stack.c:77 [inline]
->>   dump_stack+0x144/0x1b4 lib/dump_stack.c:118
->>   print_address_description+0x68/0x2d0 mm/kasan/report.c:253
->>   kasan_report_error mm/kasan/report.c:351 [inline]
->>   kasan_report+0x134/0x2f0 mm/kasan/report.c:409
->>   check_memory_region_inline mm/kasan/kasan.c:260 [inline]
->>   __asan_load4+0x88/0xb0 mm/kasan/kasan.c:699
->>   __read_once_size include/linux/compiler.h:193 [inline]
->>   blk_mq_rq_state block/blk-mq.h:106 [inline]
->>   blk_mq_request_started+0x24/0x40 block/blk-mq.c:644
->>   nbd_read_stat drivers/block/nbd.c:670 [inline]
->>   recv_work+0x1bc/0x890 drivers/block/nbd.c:749
->>   process_one_work+0x3ec/0x9e0 kernel/workqueue.c:2147
->>   worker_thread+0x80/0x9d0 kernel/workqueue.c:2302
->>   kthread+0x1d8/0x1e0 kernel/kthread.c:255
->>   ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:1174
->>
->> 1) At first, a normal io is submitted and completed with scheduler:
->>
->> internel_tag = blk_mq_get_tag -> get tag from sched_tags
->>   blk_mq_rq_ctx_init
->>    sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
->> ...
->> blk_mq_get_driver_tag
->>   __blk_mq_get_driver_tag -> get tag from tags
->>   tags->rq[tag] = sched_tag->static_rq[internel_tag]
->>
->> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
->> to the request: sched_tags->static_rq[internal_tag]. Even if the
->> io is finished.
->>
->> 2) nbd server send a reply with random tag directly:
->>
->> recv_work
->>   nbd_read_stat
->>    blk_mq_tag_to_rq(tags, tag)
->>     rq = tags->rq[tag]
->>
->> 3) if the sched_tags->static_rq is freed:
->>
->> blk_mq_sched_free_requests
->>   blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
->>    -> step 2) access rq before clearing rq mapping
->>    blk_mq_clear_rq_mapping(set, tags, hctx_idx);
->>    __free_pages() -> rq is freed here
->>
->> 4) Then, nbd continue to use the freed request in nbd_read_stat()
->>
->> Changes in v8:
->>   - add patch 5 to this series.
->>   - modify some words.
->> Changes in v7:
->>   - instead of exposing blk_queue_exit(), using percpu_ref_put()
->>   directly.
->>   - drop the ref right after nbd_handle_reply().
->> Changes in v6:
->>   - don't set cmd->status to error if request is completed before
->>   nbd_clear_req().
->>   - get 'q_usage_counter' to prevent accessing freed request through
->>   blk_mq_tag_to_rq(), instead of using blk_mq_find_and_get_req().
->> Changes in v5:
->>   - move patch 1 & 2 in v4 (patch 4 & 5 in v5) behind
->>   - add some comment in patch 5
->> Changes in v4:
->>   - change the name of the patchset, since uaf is not the only problem
->>   if server send unexpected reply message.
->>   - instead of adding new interface, use blk_mq_find_and_get_req().
->>   - add patch 5 to this series
->> Changes in v3:
->>   - v2 can't fix the problem thoroughly, add patch 3-4 to this series.
->>   - modify descriptions.
->>   - patch 5 is just a cleanup
->> Changes in v2:
->>   - as Bart suggested, add a new helper function for drivers to get
->>   request by tag.
->>
->> Yu Kuai (7):
->>    nbd: don't handle response without a corresponding request message
->>    nbd: make sure request completion won't concurrent
->>    nbd: check sock index in nbd_read_stat()
->>    nbd: don't start request if nbd_queue_rq() failed
->>    nbd: clean up return value checking of sock_xmit()
->>    nbd: partition nbd_read_stat() into nbd_read_reply() and
->>      nbd_handle_reply()
->>    nbd: fix uaf in nbd_handle_reply()
->>
->>   drivers/block/nbd.c | 135 +++++++++++++++++++++++++++++++-------------
->>   1 file changed, 96 insertions(+), 39 deletions(-)
->>
+Queued, thanks.
+
+Paolo
+
