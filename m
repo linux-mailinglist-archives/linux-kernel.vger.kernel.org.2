@@ -2,160 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750E841C615
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A7A41C627
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344358AbhI2NwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:52:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46562 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344274AbhI2NwF (ORCPT
+        id S244670AbhI2N5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244589AbhI2N5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:52:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632923423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FhEYkN6eSJLZP/cV07GjlQRPbO9M+hVC+ywwE/y96y8=;
-        b=gl7PIxOHnXveXEhqmHZ/sFQ962stFMlpM+TVhOzsI+RTkQpQWU5twg07D6lcl4aAlZtr0/
-        puj0zUBNjvHLm2KobPmcvyITiOwYzY9CsimohDTXbBO9LbMJB/cCWAfrbj504xZ/IrEcUS
-        iO3ipYfwt4CicWHo1xTT4fXUjxFCjro=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-8APSx4OKPm2n6vVJUDlzHA-1; Wed, 29 Sep 2021 09:50:22 -0400
-X-MC-Unique: 8APSx4OKPm2n6vVJUDlzHA-1
-Received: by mail-oi1-f199.google.com with SMTP id b11-20020aca220b000000b0027645eae849so1965995oic.12
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 06:50:22 -0700 (PDT)
+        Wed, 29 Sep 2021 09:57:49 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5152AC061768;
+        Wed, 29 Sep 2021 06:56:03 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id bd28so8968561edb.9;
+        Wed, 29 Sep 2021 06:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Sxcdm4+gr+uFVFw9+vfSgdTzx/pDv0j7O/Mzf1AStEw=;
+        b=FvFox01IyLQ/CP6zWAocb6ZVnsjejgL4SFAuP7CM4+SDbFKJJF9t6Tzg8A3I7FVnF7
+         Qb1MlTfkqOAw+JWVTXXGruMbbTZ3o3YYuIFwQ5UdTrh8yRXGBQKP16evuCLti6ibW6+t
+         XDuA0evO7X7Eh9VZ6D6oADz41SYEjEtNJtHssROd4ZWYkGqI95Zqb6YrXGe1P26s6PXn
+         WH4R1y8MD7Onj2njbhnvstgJbGfEGo5jj0Vt8lw3SHevvgnI/EWf/jmdHULAhXYiE1ad
+         CxwUqtjwCaOR+Dk7tFbjP6T9PYeHdUyhhlNsIX3laMQ9tSp8zH8QxeKLeGoKuFmABijF
+         XMqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=FhEYkN6eSJLZP/cV07GjlQRPbO9M+hVC+ywwE/y96y8=;
-        b=QzjH3Wa4/OpzAIRwa2KtBT2Ob8yWmlgTXsyDfvlU8PFkGjkwpdGE/f2uo3e6ZWBRXu
-         FGfn1ydfJPEb4F/Jq9BWSU6YxSIv+lAkEU4MjmZG/AHa+9dKkbHg0EtaHC0uDo8bXpsC
-         HAD0Qutgtoa4BpFZBg7VI3nQ593gM4SZaKTayu5K1E/G0vIJECuPIndcJMCzhcAXHjaC
-         aVyoH7nJsnX/Xy2/oEEqdCfYAMSGAbxA314tTXb1Zu8ytlc8egwI5MsCyyE1koKOPmL5
-         K4rq8wt+qZUuFJti7nbDYgugi9ziCZEB/Go4FjENE1Lu8OthvcqpqnS6e82XkMqx4Dvb
-         EKuA==
-X-Gm-Message-State: AOAM530E8oB8dNlhdxI9RmkjxHpGXvI4v7JXgidcZNO/luVUY9Jx8PoX
-        TGarq8b9vdgcOyLPOyqe+y1xX1ea0M6eVX0VURqxI5FAx5iqncnRYTj/pYMm+WZfMaaoATfGRZ9
-        7IjyqaFKvknlNcBjBLk6HVRww
-X-Received: by 2002:aca:adc5:: with SMTP id w188mr8119140oie.40.1632923421714;
-        Wed, 29 Sep 2021 06:50:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBuOrTDixbcm+glLpv+7QenclxccxJ6UkYSq7KtnLZB5CHTBD74Coi0b7Um+05XIgMwgd7Pg==
-X-Received: by 2002:aca:adc5:: with SMTP id w188mr8119119oie.40.1632923421462;
-        Wed, 29 Sep 2021 06:50:21 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id p8sm458585oti.15.2021.09.29.06.50.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sxcdm4+gr+uFVFw9+vfSgdTzx/pDv0j7O/Mzf1AStEw=;
+        b=DoqDzBzs4CJYtTn2F4IOuXhZDDOLhmIZ+Tt3N+jHt7Z7IGtef37DrR3FN0ZIrJ4HJ+
+         OLDaXy2vlLagsQWqI9HReGEPZjwEmOk68HwTVW5LzD+KDyDW1yDOj+RSeJ9N3pWJ+gBg
+         p/f3tEkVVWcBGYyHLiSktE0FQpLCH1nVauryyNE26QkhAgNNkdEM3qwJQd2nAinVKR1O
+         szWcw1DS//A/iNcpoIW/EChcUoxCdahTsQMikejGoN/WWI0/2mtjBUF7sV/YCfVePt+i
+         XNqErfpn/1D+NqO+5JhMB66sjUHxmzYLIKTgt3KXcZjiLEqFFyhX1gETxEyfKoIM83Rc
+         YAkA==
+X-Gm-Message-State: AOAM53004p0V2/h9trl5G7PJBzlojjHfv3syQ8R/KrHRCVLUZI3AMOVv
+        Dx1R78pQ8ZfYSf9Bx/TfHex/ZhmSbk2EMg==
+X-Google-Smtp-Source: ABdhPJyHRpbjQJBh+TdNwmm7dPCq8vMsaSopyGbXuk9BvP4vT/SsUAOKXoKX0BMTjADKl88UvVo+Og==
+X-Received: by 2002:a17:906:4310:: with SMTP id j16mr13967048ejm.48.1632923756586;
+        Wed, 29 Sep 2021 06:55:56 -0700 (PDT)
+Received: from anparri (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
+        by smtp.gmail.com with ESMTPSA id l10sm1618024edr.14.2021.09.29.06.55.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 06:50:21 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 07:50:19 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <20210929075019.48d07deb.alex.williamson@redhat.com>
-In-Reply-To: <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
-        <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
-        <20210927164648.1e2d49ac.alex.williamson@redhat.com>
-        <20210927231239.GE3544071@ziepe.ca>
-        <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
-        <20210929063551.47590fbb.alex.williamson@redhat.com>
-        <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 29 Sep 2021 06:55:56 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 15:55:48 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited
+ incoming packets
+Message-ID: <20210929135508.GA3258@anparri>
+References: <20210928163732.5908-1-parri.andrea@gmail.com>
+ <BN8PR21MB128430486E2F07EA71A7FCBDCAA89@BN8PR21MB1284.namprd21.prod.outlook.com>
+ <BN8PR21MB1284DC9279AC61FE0C267C5ACAA99@BN8PR21MB1284.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN8PR21MB1284DC9279AC61FE0C267C5ACAA99@BN8PR21MB1284.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 16:26:55 +0300
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+> > The patch looks good. But for readability, I'd suggested put the length
+> > checks together like this:
+> > 
+> > 	u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
+> > 		stor_device->vmscsi_size_delta : VSTOR_MIN_UNSOL_PKT_SIZE;
+> > 
+> > 	if (pktlen < minlen) {
+> > 		dev_err(&device->device,
+> > 			   "Invalid pkt: id=%llu, len=%u, minlen=%u\n",
+> > 			   rqst_id, pktlen, minlen);
+> > 		continue;
+> > 	}
+> > 
+> > Thanks.
+> > 
+> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> The tag was meant to be:
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
 
-> On 9/29/2021 3:35 PM, Alex Williamson wrote:
-> > On Wed, 29 Sep 2021 13:44:10 +0300
-> > Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> >  
-> >> On 9/28/2021 2:12 AM, Jason Gunthorpe wrote:  
-> >>> On Mon, Sep 27, 2021 at 04:46:48PM -0600, Alex Williamson wrote:  
-> >>>>> +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
-> >>>>> +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
-> >>>>> +		[VFIO_DEVICE_STATE_STOP] = {
-> >>>>> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
-> >>>>> +			[VFIO_DEVICE_STATE_RESUMING] = 1,
-> >>>>> +		},  
-> >>>> Our state transition diagram is pretty weak on reachable transitions
-> >>>> out of the _STOP state, why do we select only these two as valid?  
-> >>> I have no particular opinion on specific states here, however adding
-> >>> more states means more stuff for drivers to implement and more risk
-> >>> driver writers will mess up this uAPI.  
-> >> _STOP == 000b => Device Stopped, not saving or resuming (from UAPI).
-> >>
-> >> This is the default initial state and not RUNNING.
-> >>
-> >> The user application should move device from STOP => RUNNING or STOP =>
-> >> RESUMING.
-> >>
-> >> Maybe we need to extend the comment in the UAPI file.  
-> >
-> > include/uapi/linux/vfio.h:
-> > ...
-> >   *  +------- _RESUMING
-> >   *  |+------ _SAVING
-> >   *  ||+----- _RUNNING
-> >   *  |||
-> >   *  000b => Device Stopped, not saving or resuming
-> >   *  001b => Device running, which is the default state
-> >                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > ...
-> >   * State transitions:
-> >   *
-> >   *              _RESUMING  _RUNNING    Pre-copy    Stop-and-copy   _STOP
-> >   *                (100b)     (001b)     (011b)        (010b)       (000b)
-> >   * 0. Running or default state
-> >   *                             |
-> >                   ^^^^^^^^^^^^^
-> > ...
-> >   * 0. Default state of VFIO device is _RUNNING when the user application starts.
-> >        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >
-> > The uAPI is pretty clear here.  A default state of _STOP is not
-> > compatible with existing devices and userspace that does not support
-> > migration.  Thanks,  
-> 
-> Why do you need this state machine for userspace that doesn't support 
-> migration ?
+Thank you, Haiyang.  I'll update as suggested.
 
-For userspace that doesn't support migration, there's one state,
-_RUNNING.  That's what we're trying to be compatible and consistent
-with.  Migration is an extension, not a base requirement.
-
-> What is the definition of RUNNING state for a paused VM that is waiting 
-> for incoming migration blob ?
-
-A VM supporting migration of the device would move the device to
-_RESUMING to load the incoming data.  If the VM leaves the device in
-_RUNNING, then it doesn't support migration of the device and it's out
-of scope how it handles that device state.  Existing devices continue
-running regardless of whether the VM state is paused, it's only devices
-supporting migration where userspace could optionally have the device
-run state follow the VM run state.  Thanks,
-
-Alex
-
+  Andrea
