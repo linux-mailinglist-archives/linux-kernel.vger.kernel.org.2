@@ -2,171 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDC141CBAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D9541CBB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345682AbhI2SUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:20:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30629 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343639AbhI2SUE (ORCPT
+        id S1344188AbhI2SWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343727AbhI2SWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:20:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632939502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nnJZ7DpiogLpstvFiZH+ZlbBG07Zi0HLaCj48WwsBY8=;
-        b=jR85sGXSe3QwK6Tvxx2YhFXGUWZvX7YKWSD5ela2rIP2LJzTke6SVYxOefEgObQ8tRKF5s
-        Ho1kvpK5l4qb5gmMfHDsaxFT89MnsicCmtT1IJukakgmH3HU687lMPnWoU+LWtrjb3POpf
-        gB8Y6FwZ6oPOsLK9cJ/pGutZn5CB744=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-wd7hD-DWPf2CUXLQtgs_rA-1; Wed, 29 Sep 2021 14:18:18 -0400
-X-MC-Unique: wd7hD-DWPf2CUXLQtgs_rA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23556189CD1F;
-        Wed, 29 Sep 2021 18:18:17 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2115819C59;
-        Wed, 29 Sep 2021 18:18:16 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Ramji Jiyani <ramjiyani@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        oleg@redhat.com, hch@lst.de
-Subject: Re: [PATCH] aio: Add support for the POLLFREE
-References: <20210913183753.563103-1-ramjiyani@google.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Wed, 29 Sep 2021 14:20:08 -0400
-In-Reply-To: <20210913183753.563103-1-ramjiyani@google.com> (Ramji Jiyani's
-        message of "Mon, 13 Sep 2021 18:37:52 +0000")
-Message-ID: <x494ka39rc7.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 29 Sep 2021 14:22:32 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEC6C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:20:51 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id w14so2698722pfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AcBDvdqL3LtQBpR2ivVZmwmH8hSzSyiK0ro2WwzMMBA=;
+        b=Hbj598brnbLE9995IYxHYeuOe6iab8cbrGDh0JyU+h5eutFmdyWy/n0pq0ldQfuZo6
+         fazCfmwJjinUO83u+lEhCO1R9C1kf3ZeSd6MrMhFsK/ZKK1nRDYvfSIAa8oQEgvU+dxl
+         IldGiLQzPL3sMA9svoqnbA4vPcGmKnow1vIrg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AcBDvdqL3LtQBpR2ivVZmwmH8hSzSyiK0ro2WwzMMBA=;
+        b=uaksLyExx55ddxTdBWLbCjeg+UW506Kwn3MmO9ZlCa4gEfLi+cQCR0xZ5o8ASWIvPH
+         moofxo+T4WloMLinD43ee6ilYlDQBIqn5ARbnDVaxHauY2679bPB5K8sCPL1auWripzY
+         l47fwbvdEPRDYNUdmJ9Vzbl+wWbQEs6K0EUOsCRT0/f0fz8saRvXQOW+lHIgbzSmZpWR
+         dsV3wuOlq++4vsQ12Tpm43S16UUp5UW5qziwAkY3I1YP7Wi7B8+NDzAB/VhgNSRbGGBg
+         LyKj4oBUlOFDTMlk3Qq+EE+J6VzJgZNinuHi2ICQzMhm2/Pilg2QI7fy5Vy1XF2K4b2j
+         bpfA==
+X-Gm-Message-State: AOAM533V8+NCyFI7jmMQfeap6+XDHC/p5fe/AlCOPU7TyZR1uIH+2bQq
+        8X6DTN4wmH9ikFHrYMeNXVDFzg==
+X-Google-Smtp-Source: ABdhPJxtpQ8wBp3WrdpJOp0UQXZr0LR/dy5CHbH27T2hDP3QahKgcAca/ct6lKZbE+4nVTyCImN7pg==
+X-Received: by 2002:aa7:9f5e:0:b0:447:baeb:bc4e with SMTP id h30-20020aa79f5e000000b00447baebbc4emr34029pfr.64.1632939651091;
+        Wed, 29 Sep 2021 11:20:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v24sm453573pff.107.2021.09.29.11.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 11:20:50 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 11:20:49 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, pmladek@suse.com, peterz@infradead.org,
+        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        viro@zeniv.linux.org.uk, christian@brauner.io,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] kernel/kthread: show a warning if kthread's comm is
+ still trucated
+Message-ID: <202109291120.C37E6C9E6@keescook>
+References: <20210929115036.4851-1-laoar.shao@gmail.com>
+ <20210929115036.4851-6-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929115036.4851-6-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Oleg and Christoph.
+On Wed, Sep 29, 2021 at 11:50:36AM +0000, Yafang Shao wrote:
+> Show a warning if the ktrhead's comm is still trucated. Below is the
+> result of my test case -
+> 
+> __kthread_create_on_node:410: comm of pid 14 is truncated from "I-am-a-kthread-with-long-name" to "I-am-a-kthread-with-lon"
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-Ramji Jiyani <ramjiyani@google.com> writes:
+I like this check as a reasonable way to make kthread authors aware of
+the TASK_COMM_LEN limitation.
 
-> Commit f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread
-> exits.") fixed the use-after-free in eventpoll but aio still has the
-> same issue because it doesn't honor the POLLFREE flag.
->
-> Add support for the POLLFREE flag to force complete iocb inline in
-> aio_poll_wake(). A thread may use it to signal it's exit and/or request
-> to cleanup while pending poll request. In this case, aio_poll_wake()
-> needs to make sure it doesn't keep any reference to the queue entry
-> before returning from wake to avoid possible use after free via
-> poll_cancel() path.
+-Kees
 
-Is this an in-kernel user?  Can you explain more about how or when this
-happens?  Do you have a stack trace that shows the problem?  I'm not
-sure this use of POLLFREE exactly follows with the initial intention of
-the flag, but hopefully Oleg can comment on that.
-
-Thanks,
-Jeff
-
-> The POLLFREE flag is no more exclusive to the epoll and is being
-> shared with the aio. Remove comment from poll.h to avoid confusion.
-> Also enclosed the POLLFREE macro definition in parentheses to fix
-> checkpatch error.
->
-> Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
 > ---
->  fs/aio.c                        | 45 ++++++++++++++++++---------------
->  include/uapi/asm-generic/poll.h |  2 +-
->  2 files changed, 26 insertions(+), 21 deletions(-)
->
-> diff --git a/fs/aio.c b/fs/aio.c
-> index 51b08ab01dff..5d539c05df42 100644
-> --- a/fs/aio.c
-> +++ b/fs/aio.c
-> @@ -1674,6 +1674,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
->  {
->  	struct poll_iocb *req = container_of(wait, struct poll_iocb, wait);
->  	struct aio_kiocb *iocb = container_of(req, struct aio_kiocb, poll);
-> +	struct kioctx *ctx = iocb->ki_ctx;
->  	__poll_t mask = key_to_poll(key);
->  	unsigned long flags;
->  
-> @@ -1683,29 +1684,33 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
->  
->  	list_del_init(&req->wait.entry);
->  
-> -	if (mask && spin_trylock_irqsave(&iocb->ki_ctx->ctx_lock, flags)) {
-> -		struct kioctx *ctx = iocb->ki_ctx;
-> +	/*
-> +	 * Use irqsave/irqrestore because not all filesystems (e.g. fuse)
-> +	 * call this function with IRQs disabled and because IRQs have to
-> +	 * be disabled before ctx_lock is obtained.
-> +	 */
-> +	if (mask & POLLFREE) {
-> +		/* Force complete iocb inline to remove refs to deleted entry */
-> +		spin_lock_irqsave(&ctx->ctx_lock, flags);
-> +	} else if (!(mask && spin_trylock_irqsave(&ctx->ctx_lock, flags))) {
-> +		/* Can't complete iocb inline; schedule for later */
-> +		schedule_work(&req->work);
-> +		return 1;
-> +	}
->  
-> -		/*
-> -		 * Try to complete the iocb inline if we can. Use
-> -		 * irqsave/irqrestore because not all filesystems (e.g. fuse)
-> -		 * call this function with IRQs disabled and because IRQs
-> -		 * have to be disabled before ctx_lock is obtained.
-> -		 */
-> -		list_del(&iocb->ki_list);
-> -		iocb->ki_res.res = mangle_poll(mask);
-> -		req->done = true;
-> -		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
-> -			iocb = NULL;
-> -			INIT_WORK(&req->work, aio_poll_put_work);
-> -			schedule_work(&req->work);
-> -		}
-> -		spin_unlock_irqrestore(&ctx->ctx_lock, flags);
-> -		if (iocb)
-> -			iocb_put(iocb);
-> -	} else {
-> +	/* complete iocb inline */
-> +	list_del(&iocb->ki_list);
-> +	iocb->ki_res.res = mangle_poll(mask);
-> +	req->done = true;
-> +	if (iocb->ki_eventfd && eventfd_signal_allowed()) {
-> +		iocb = NULL;
-> +		INIT_WORK(&req->work, aio_poll_put_work);
->  		schedule_work(&req->work);
->  	}
-> +	spin_unlock_irqrestore(&ctx->ctx_lock, flags);
-> +	if (iocb)
-> +		iocb_put(iocb);
+>  kernel/kthread.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 6def951c605a..aa093f1f423a 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -404,7 +404,11 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+>  		 * task is already visible to other tasks, so updating
+>  		 * COMM must be protected.
+>  		 */
+> -		vsnprintf(name, sizeof(name), namefmt, args);
+> +		if (vsnprintf(name, KTHREAD_COMM_LEN, namefmt, args) >=
+> +		    KTHREAD_COMM_LEN)
+> +			pr_warn("%s:%d: comm of pid %d is truncated from \"%s\" to \"%s\"\n",
+> +				__func__, __LINE__, task->pid, namefmt, name);
 > +
->  	return 1;
->  }
->  
-> diff --git a/include/uapi/asm-generic/poll.h b/include/uapi/asm-generic/poll.h
-> index 41b509f410bf..35b1b69af729 100644
-> --- a/include/uapi/asm-generic/poll.h
-> +++ b/include/uapi/asm-generic/poll.h
-> @@ -29,7 +29,7 @@
->  #define POLLRDHUP       0x2000
->  #endif
->  
-> -#define POLLFREE	(__force __poll_t)0x4000	/* currently only for epoll */
-> +#define POLLFREE	((__force __poll_t)0x4000)
->  
->  #define POLL_BUSY_LOOP	(__force __poll_t)0x8000
+>  		set_task_comm(task, name);
+>  		/*
+>  		 * root may have changed our (kthreadd's) priority or CPU mask.
+> -- 
+> 2.17.1
+> 
 
+-- 
+Kees Cook
