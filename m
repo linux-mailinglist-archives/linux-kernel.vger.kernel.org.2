@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBF941CB73
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5F241CBA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344758AbhI2SHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:07:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52728 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244794AbhI2SHM (ORCPT
+        id S1346003AbhI2SR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:17:59 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:41846 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345830AbhI2SRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:07:12 -0400
-Received: from notapiano (unknown [IPv6:2804:14c:1a9:2434:b693:c9:5cb6:b688])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 29 Sep 2021 14:17:53 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 5d0b7b55353e48ca; Wed, 29 Sep 2021 20:16:10 +0200
+Received: from kreacher.localnet (unknown [213.134.161.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9C0951F44850;
-        Wed, 29 Sep 2021 19:05:27 +0100 (BST)
-Date:   Wed, 29 Sep 2021 15:05:22 -0300
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        Sandy Huang <hjc@rock-chips.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Thomas Hebb <tommyhebb@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] drm/rockchip: dsi: Reconfigure hardware on
- resume()
-Message-ID: <20210929180522.3zksg7mpwdut7tra@notapiano>
-References: <20210928213552.1001939-1-briannorris@chromium.org>
- <20210928143413.v3.2.I4e9d93aadb00b1ffc7d506e3186a25492bf0b732@changeid>
+        by v370.home.net.pl (Postfix) with ESMTPSA id E399466A71A;
+        Wed, 29 Sep 2021 20:16:09 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ferry Toth <fntoth@gmail.com>
+Cc:     Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v3 0/3] PCI: PM: Simplify and unify some helper functions
+Date:   Wed, 29 Sep 2021 20:05:37 +0200
+Message-ID: <7312660.EvYhyI6sBW@kreacher>
+In-Reply-To: <1800633.tdWV9SEqCh@kreacher>
+References: <1800633.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210928143413.v3.2.I4e9d93aadb00b1ffc7d506e3186a25492bf0b732@changeid>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.161.209
+X-CLIENT-HOSTNAME: 213.134.161.209
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekvddguddvudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepteeggfelteegudehueegieekveduleeuledvueefjeefffegfeejudfgteefhefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepvddufedrudefgedrudeiuddrvddtleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrdduiedurddvtdelpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhnthhothhhsehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdp
+ rhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:35:50PM -0700, Brian Norris wrote:
-> Since commit 43c2de1002d2, we perform most HW configuration in the
-> bind() function. This configuration may be lost on suspend/resume, so we
-> need to call it again. That may lead to errors like this after system
-> suspend/resume:
-> 
->   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
->   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
-> 
-> Tested on Acer Chromebook Tab 10 (RK3399 Gru-Scarlet).
-> 
-> Note that early mailing list versions of this driver borrowed Rockchip's
-> downstream/BSP solution, to do HW configuration in mode_set() (which
-> *is* called at the appropriate pre-enable() times), but that was
-> discarded along the way. I've avoided that still, because mode_set()
-> documentation doesn't suggest this kind of purpose as far as I can tell.
-> 
-> Fixes: 43c2de1002d2 ("drm/rockchip: dsi: move all lane config except LCDC mux to bind()")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+Hi All,
 
-Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+This series is on top of the linux-next branch from linux-pm.git:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+
+which should be included in linux-next.
+
+Two of the 3 patches in this series, [1-2/3], were included in the "PCI: ACPI:
+Get rid of struct pci_platform_pm_ops and clean up code" series:
+
+ https://lore.kernel.org/linux-acpi/1800633.tdWV9SEqCh@kreacher/
+
+and the remaining one, [3/3] is a new version of a problematic patch from that
+series.  The rest of that series is present in the git branch above.
+
+All of the 3 patches in this set need to be tested in order to verify that
+there are no more issues that need to be addressed in them.
+
+Ferry, please test!
+
+Thanks!
+
+
+
+
