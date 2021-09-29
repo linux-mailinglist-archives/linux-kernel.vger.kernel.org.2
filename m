@@ -2,151 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915D341D00B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6756341D00E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347597AbhI2Xha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
+        id S1347611AbhI2XiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347591AbhI2XhY (ORCPT
+        with ESMTP id S1347598AbhI2XiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:37:24 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A17C061769
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:35:42 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id 194so4030324qkj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:35:42 -0700 (PDT)
+        Wed, 29 Sep 2021 19:38:05 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34803C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:36:24 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id s75so4355893pgs.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Wzv2Y27ogc32S6oHMWAfyL0EMJPS0sYiDo6umdEuZ90=;
-        b=S4PKYlTphsjTeGSO6MfruYx4DLjFDyu6ZBDQXU7sgBQUZglbnWFts2iTn8upvshkwO
-         /dxY5MJJ3K9bbBOWdcCpUDQryqEQ6B6xsCI4XTkHAaouYDnzj48xV27k94PZY12XJM5q
-         EV90TNvBvPJrxWONr5qi4YLqPbT6TkJpX2ov+sLJirRsIUAvrOi36HyZfvihTjc8VRvy
-         y9qkzSc3lHxRJ2joe2EKnBI4kW39e2li3GiaMVt6OA83/KD9UTxgkGPf5QdOygqePR/u
-         RbANXP74mA2FQxLulY5GQdT3oKcIiqhjOBThg85Hi5BfdV/hy7RpkZ8VNDP3qSTgV52G
-         3oKw==
+        bh=HvaI2CnuZMRocUAuxkU7bar+LZuGwxIpo51W/3LktMo=;
+        b=IzZJtmb6XxyCwoSIO0qgrnxryeU2MYm1rpNv/ndfOQDtKcsnWAMrW4mZ3WsKGl/aG+
+         poBzt8xkzTPqt9azAVAO934HmwF8/0mnwV7qSaOADaUnNbiyuagGu6yF1uxWkp5L+eeF
+         vycTIH5/Xt8zjyHBmEpdDpkd64hX72U3gbFxc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Wzv2Y27ogc32S6oHMWAfyL0EMJPS0sYiDo6umdEuZ90=;
-        b=LhQxiuDrAcCgdPDCOLq0lyfBMncq7B9s1KfHNJHXcSb99ZgfNiwc1fpre/A9dnSyHr
-         4En1l/jfaM0sUaG1RPx/vZRcL8KbxwbX8JcZ+dtC8dx8IZg2w5Ahv41WJ7GH1uPXO7Z1
-         TpGW69GIa04P4bK3HvebBL7m4Uy5y3UocPk3F7Th0SluAueUI/GdAeTZwsKJVjr+YRPo
-         Bs1ZNTJjCCk+VORaVfubMgtGps0GIAjOxeerE1IWNkFdo0DVEHlCo6Fa0g0e02IpvyO7
-         cCQEt2AU4u1MMTUxJR8SK6Ajysup8EeenASVPkdbatZzd6e9gnUInGTDvlVMvUr3UQVH
-         DmYQ==
-X-Gm-Message-State: AOAM532aZe6Cfa/iUBKYtIc8LwxUhO9QCdgasDxrusQOlBBozfqd/FCg
-        Eo7FRXnw+vTaXOsR+h628aUxOA==
-X-Google-Smtp-Source: ABdhPJxG17Iq4sMkmS8x7eqi3cbKInix861xKtGJRezs+18cQeCiP6r35EC+3tlGMr1TedfVtU4v5g==
-X-Received: by 2002:a37:afc4:: with SMTP id y187mr2254066qke.520.1632958541600;
-        Wed, 29 Sep 2021 16:35:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id j184sm705904qkd.74.2021.09.29.16.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 16:35:41 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVj6y-007ivO-CU; Wed, 29 Sep 2021 20:35:40 -0300
-Date:   Wed, 29 Sep 2021 20:35:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20210929233540.GF3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-20-logang@deltatee.com>
- <20210928195518.GV3544071@ziepe.ca>
- <8d386273-c721-c919-9749-fc0a7dc1ed8b@deltatee.com>
- <20210929230543.GB3544071@ziepe.ca>
- <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
+        bh=HvaI2CnuZMRocUAuxkU7bar+LZuGwxIpo51W/3LktMo=;
+        b=klqOeTcULmB86K135PeB22kCdaKsx+ZOl9ZOBblLxG4mu/oGrMWvRuaMqVX/dAd98A
+         DvGoL/dYhYKSDRGCKB7s0Ul35g0/mnY4WRJdIF2m1sjDE8DNCQJY0CJ5DP4r0PQDEL5Q
+         TgfgeDfpD7gpprBtyzqCAUscxfDqxdwXcaMSS+dyVA+OqIqe040IOTf7JMPj6Cnj4hhi
+         sMs9/8PmBh119b3EQ0XwTSCg7ZugxEiLjRpKa/QQX7BDsRDora8pOiIXn61/pMxL87ze
+         Ba490OlIQMGge7QcrHCvGmb62liwKKiiq4G0f2XDPH17zXz9qPBRgosY6jxU+CGNE9Lq
+         /i1A==
+X-Gm-Message-State: AOAM533Sf14HWFcmiPmlI8dRvBYjPaZJ0ioddswfhC92OYycV86f192y
+        iUFxLN5LwFYAwwbxZdj1ZXjTtg==
+X-Google-Smtp-Source: ABdhPJye82JkSQN1O7fDsiSS5dX3XnisZ+GDoPSTfJmU1gPBVBfE/Kx8CJ6vRQBhUVApKr+eL1+l9A==
+X-Received: by 2002:a05:6a00:22cd:b0:43c:9b41:e650 with SMTP id f13-20020a056a0022cd00b0043c9b41e650mr1189646pfj.60.1632958583660;
+        Wed, 29 Sep 2021 16:36:23 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:2f10:2763:4825:1f01])
+        by smtp.gmail.com with UTF8SMTPSA id p16sm2949687pja.24.2021.09.29.16.36.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 16:36:23 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 16:36:21 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org, swboyd@chromium.org,
+        skakit@codeaurora.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: pmk8350: Make RTC disabled by default;
+ enable on sc7280-idp
+Message-ID: <YVT4dZHRcYlIXK7Q@google.com>
+References: <20210929153553.1.Ib44c2ac967833d7a3f51452d44d15b7b8d23c1f0@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
+In-Reply-To: <20210929153553.1.Ib44c2ac967833d7a3f51452d44d15b7b8d23c1f0@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 05:27:22PM -0600, Logan Gunthorpe wrote:
-
-> > finish_fault() should set the pte_devmap - eg by passing the
-> > PFN_DEV|PFN_MAP somehow through the vma->vm_page_prot to mk_pte() or
-> > otherwise signaling do_set_pte() that it should set those PTE bits
-> > when it creates the entry.
-> > 
-> > (or there should be a vmf_* helper for this special case, but using
-> > the vmf->page seems righter to me)
+On Wed, Sep 29, 2021 at 03:38:14PM -0700, Douglas Anderson wrote:
+> The RTC on the pmk8350 is not useful on all boards. Some boards may
+> not provide backup power to the PMIC but might have another RTC on the
+> board that does have backup power. In this case it's better to not use
+> the RTC on the PMIC.
 > 
-> I'm not opposed to this. Though I'm not sure what's best here.
+> At the moment, the only boards that includes this PMIC are sc7280-idp
+> and sc7280-idp2. On sc7280-idp I'm not aware of any other RTCs, but
+> sc7280-idp2 has a Chrome OS EC on it and this is intended to provide
+> the RTC for the AP.
 > 
-> >> If we don't set pte_devmap(), then every single page that GUP
-> >> processes needs to check if it's a ZONE_DEVICE page and also if it's
-> >> a P2PDMA page (thus dereferencing pgmap) in order to satisfy the
-> >> requirements of FOLL_PCI_P2PDMA.
-> > 
-> > Definately not suggesting not to set pte_devmap(), only that
-> > VM_MIXEDMAP should not be set on VMAs that only contain struct
-> > pages. That is an abuse of what it is intended for.
-> > 
-> > At the very least there should be a big comment above the usage
-> > explaining that this is just working around a limitation in
-> > finish_fault() where it cannot set the PFN_DEV|PFN_MAP bits today.
+> Let's do what we normally do for hardware that's not used by all
+> boards and set it to a default status of "disabled" and then enable it
+> on the boards that need it.
 > 
-> Is it? Documentation on vmf_insert_mixed() and VM_MIXEDMAP is not good
-> and the intention is not clear. I got the impression that mm people
-> wanted those interfaces used for users of pte_devmap().
+> NOTE: for sc7280-idp it's _possible_ we might also want to add
+> `allow-set-time;`. That could be the subject of a future patch if it
+> is indeed true.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-I thought VM_MIXEDMAP was quite clear:
-
-#define VM_MIXEDMAP	0x10000000	/* Can contain "struct page" and pure PFN pages */
-
-This VMA does not include PFN pages, so it should not be tagged
-VM_MIXEDMAP.
-
-Aside from enabling the special vmf_ API, it only controls some
-special behavior in vm_normal_page:
-
- * VM_MIXEDMAP mappings can likewise contain memory with or without "struct
- * page" backing, however the difference is that _all_ pages with a struct
- * page (that is, those where pfn_valid is true) are refcounted and considered
- * normal pages by the VM. The disadvantage is that pages are refcounted
- * (which can be slower and simply not an option for some PFNMAP users). The
- * advantage is that we don't have to follow the strict linearity rule of
- * PFNMAP mappings in order to support COWable mappings.
-
-Which again does not describe this case.
-
-> device-dax uses these interfaces and as far as I can see it also only
-> contains struct pages (or at least  dev_dax_huge_fault() calls
-> pfn_to_page() on every page when VM_FAULT_NOPAGE happens).
-
-hacky hacky :)
-
-I think DAX probably did it that way for the same reason you are
-doing it that way - no other choice without changing something
-
-Jason
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
