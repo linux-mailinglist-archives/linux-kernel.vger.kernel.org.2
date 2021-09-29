@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919A641C7DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E64C41C7E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345057AbhI2PJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
+        id S1345060AbhI2PLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:11:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24159 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345023AbhI2PJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:09:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F65261381;
-        Wed, 29 Sep 2021 15:07:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632928059;
-        bh=AJdCkz19tywpmnE6ujJZhJvh7reuETtJGcGdRabZHzU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=sSi0SwCzz8C8cKBXIeVi1NcyJcpU537ENlt8iQzOUSnqS8+ED615JqakwctIbkSgy
-         rZXaUQlzrjdBXkFpBsaHiehZhyH3I2Vb/Tq7yO2jedOSKY6N9B/dzxMrk0o8IiIh5V
-         O8f2t9SEgU1GTX763aihLZgzFGicGLLv0x7jntXqh33drGtu5YMw7c1HyiCD/PyC9T
-         PuM2yckWmapkQ1NlyzPERhk9NqVhDLC/nUr4ECZjGeRMsnIMoLBaEDGU4NwEsdb3GI
-         OYQCV+s7OfNLAdKq0t4LjKHXHkIvz31S6jM0r4JwG6l/s+09GS3T2iGWM2Sj+gJ4EB
-         fe9iWjqBF3U1g==
-Date:   Wed, 29 Sep 2021 10:07:37 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ferry Toth <fntoth@gmail.com>
-Subject: Re: [PATCH v2 0/7] PCI: ACPI: Get rid of struct pci_platform_pm_ops
- and clean up code
-Message-ID: <20210929150737.GA766999@bhelgaas>
+        id S1344834AbhI2PLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:11:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205109534"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="205109534"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:09:39 -0700
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="655526170"
+Received: from andrewds-mobl1.amr.corp.intel.com (HELO [10.212.171.7]) ([10.212.171.7])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:09:38 -0700
+Subject: Re: [PATCH v2 2/4] x86/mm/64: Flush global TLB on AP bringup
+To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+References: <20210929145501.4612-1-joro@8bytes.org>
+ <20210929145501.4612-3-joro@8bytes.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <9d1d3000-d4eb-eb6d-1a34-4b58fb0322e3@intel.com>
+Date:   Wed, 29 Sep 2021 08:09:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gr+o_AO7-EGRofU2UN_8aXivh5c-VQ9VKz7o4ZNq=VQw@mail.gmail.com>
+In-Reply-To: <20210929145501.4612-3-joro@8bytes.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:00:59PM +0200, Rafael J. Wysocki wrote:
-> On Wed, Sep 29, 2021 at 1:28 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > [+cc Ferry]
-> >
-> > On Mon, Sep 20, 2021 at 08:52:19PM +0200, Rafael J. Wysocki wrote:
-> > > Hi All,
-> > >
-> > > As explained in the changelog of patch [2/7], using struct pci_platform_pm_ops
-> > > for ACPI is not particularly beneficial, so it is better to get rid of it and
-> > > call the functions pointed to by it directly from the PCI core.
-> > >
-> > > However, struct pci_platform_pm_ops is also used by the Intel MID support code,
-> > > but it is actually better to call the MID PM function directly from the PCI
-> > > core either, which is done in patch [1/7].
-> > >
-> > > After these changes, patch [3/7] removes struct pci_platform_pm_ops and the
-> > > rest is just cleanups and some code consolidation on top of that.
-> >
-> > I like these a lot.  Not sure exactly where everything is after the
-> > conversation with Ferry.
-> 
-> It's mostly OK, the problem was in one of the "tail" patches that was
-> not rebased properly.
-> 
-> There will be a follow-up series to test for Ferry (later today).
-> 
-> >  Let me know if I should be doing anything.
-> 
-> I'm going to take this lot if that's not a problem.  If I need
-> anything from you, I'll let you know.
+On 9/29/21 7:54 AM, Joerg Roedel wrote:
+> The AP bringup code uses the trampoline_pgd page-table, which
+> establishes global mappings in the user range of the address space.
+> Flush the global TLB entries after CR4 is setup for the AP to make sure
+> no stale entries remain in the TLB.
+...
+> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+> index 0f8885949e8c..0f71ea2e5680 100644
+> --- a/arch/x86/kernel/cpu/common.c
+> +++ b/arch/x86/kernel/cpu/common.c
+> @@ -436,6 +436,12 @@ void cr4_init(void)
+>  
+>  	/* Initialize cr4 shadow for this CPU. */
+>  	this_cpu_write(cpu_tlbstate.cr4, cr4);
+> +
+> +	/*
+> +	 * Flush any global TLB entries that might be left from the
+> +	 * trampline_pgd.
+> +	 */
+> +	__flush_tlb_all();
+>  }
 
-Sounds good, thanks, Rafael!
-
-Bjorn
+Is there a reason to do this flush here as opposed to doing it closer to
+the CR3 write where we switch away from trampoline_pgd?  cr4_init()
+seems like an odd place.
