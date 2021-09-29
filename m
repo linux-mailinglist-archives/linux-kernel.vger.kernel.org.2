@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06B941CD74
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8380B41CD78
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346757AbhI2UhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:37:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60430 "EHLO mail.kernel.org"
+        id S1346766AbhI2UjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:39:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345611AbhI2UhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80722611C0;
-        Wed, 29 Sep 2021 20:35:27 +0000 (UTC)
+        id S1345611AbhI2UjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 16:39:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 028276136A;
+        Wed, 29 Sep 2021 20:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632947728;
-        bh=IH2/mcLbbTba4ogzth+XbUzMVfz5COKAcB5rIikRw94=;
+        s=k20201202; t=1632947851;
+        bh=k0jUlGJBK5TZDgDEi1+aE6n+zqLLo17WSv6MatuQbi0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dx5126F50lyQID/bfEVzqPq/BLzY11owVpezNFcSvXROFliqNeV2mje/rCsxyQ/+v
-         AJxnLUXx+kBHT2w9hX7qqk/Vc2eFOCMeTH5n7B6TUjBVtVpzLaLL8rOFNAFu9KaIOi
-         3aYKm9R4Qr6kufne7uDFsHywV/Eho/GekRU5f6fbPYRi8qhR9QRwTIHIV9ctR1MRbp
-         h9PjSjjLYz3I+WkGLYV4/JPbyyuG2f5Dw0GuEXaWRZDliAuwjLb9p9x7n3DcIOwuCZ
-         QFRtcpkBcHfYbGSrPEygmw2XH/Fc2Vq7RQHARnQ3+rdprkqinQOw8pTXlu/Gu/t0l6
-         Hu5eJ2jp4tm5g==
-Date:   Wed, 29 Sep 2021 22:35:25 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Sven Peter <sven@svenpeter.dev>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/10] Add Apple M1 support to PASemi i2c driver
-Message-ID: <YVTODUqwQM0Ciqi1@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sven Peter <sven@svenpeter.dev>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210926095847.38261-1-sven@svenpeter.dev>
- <CAK8P3a3Lt2QXk+aWLtXUXjjNhKJwNns6d9r=Yh5_aWETuvZTpQ@mail.gmail.com>
+        b=JuCF6D5ggy+fGhjTto+szT/BmUu6aecT3jeMLUu6NPvD+7Mg9IPH+/mnc6HdXfaKn
+         neDh28MFdhU495Kh2Qfpti0uaDv6HP0Q/yzPWNiMC2XQiF9pvvALKeUWYvdnnaICzx
+         t9V5guNuqASSMGOuxC64WbKzZQLZrDdpoLt+s/YWxPLQm5TPpL3gANhCFYdBkF9tRP
+         1LYeOeZXhJQhjZmzanBzrS/UQwOQfWTrSG5UYMs8iTcFkYbtCWRWvQ2fMRyohQ7c8O
+         8qUq6XhXQg6svWgQcCzRdsnwXw1L6S+taZNHwJWhyEgQobTi4XllQAgMyzgMQAEcVT
+         qZTtgEJSCY7qg==
+Date:   Wed, 29 Sep 2021 13:37:25 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Fangrui Song <maskray@google.com>,
+        Peter Smith <peter.smith@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Dave Martin <dave.martin@arm.com>,
+        Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v2] ARM: mm: proc-macros: ensure *_tlb_fns are 4B aligned
+Message-ID: <YVTOhRJ5Zx2kk/KN@archlinux-ax161>
+References: <CAKwvOdmjZ+QmjTJnQ-w5hLPJjow1gYnWTe6f8RBhQUJ2b3cYnw@mail.gmail.com>
+ <20210929192026.1604095-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CeaervSQYJjiQNT9"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3Lt2QXk+aWLtXUXjjNhKJwNns6d9r=Yh5_aWETuvZTpQ@mail.gmail.com>
+In-Reply-To: <20210929192026.1604095-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 12:20:24PM -0700, Nick Desaulniers wrote:
+> QEMU 6.1.0 is more correct about trapping on misaligned accesses. A
+> kernel built with CONFIG_THUMB2_KERNEL=y and using clang as the
+> assembler could generate non-naturally-aligned v7wbi_tlb_fns which
+> results in a boot failure. The original commit adding the macro missed
+> the .align directive on this data.
+> 
+> Fixes: 66a625a88174 ("ARM: mm: proc-macros: Add generic proc/cache/tlb struct definition macros")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1447
+> Link: https://lore.kernel.org/all/0699da7b-354f-aecc-a62f-e25693209af4@linaro.org/
+> Debugged-by: Ard Biesheuvel <ardb@kernel.org>
+> Debugged-by: Nathan Chancellor <nathan@kernel.org>
+> Debugged-by: Richard Henderson <richard.henderson@linaro.org>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
---CeaervSQYJjiQNT9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-
-> This looks all very good to me, I had one very minor comment.
->=20
-> Whole series
->=20
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks for the series and the review!
-
-Same here, looks good to me and I only had one minor comment.
-
-
---CeaervSQYJjiQNT9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFUzgwACgkQFA3kzBSg
-Kbbn5A//f+gdLy9AwaxACKw3vT7xnW7HMQLauduB3y1RJmPHcvIkbtxlg6IPP9nV
-Qbd1Tl7PuTtKHxadWeiIcgAh0UjJUAPPv2W4CResqMgRSHTC1Nk44zng53zmv97O
-v+p0hpOTzzb77rN2RFBZ6sfYP+aXJ0M8SLLzmjt57pxck+kV0dRdHKjPOa4ayi0U
-A2dQclLfceyEMU3Yi/DJpBZz6+wRbMqYQwsncS4exsTk7YAIubAL7w2NFq0lUKpD
-P7ghHyD5/9fXgG3MuKV6EKuUN7N4Uq7tk2P/wn+wGTCVoBcgqyIod+4uS6B/iTcG
-QPn5YPhe4N2Q9C3ODaffVvv95EY8+4Rt4uDylxGSGxuXndyIpi+rV8RdPxAUKpOd
-uKuGbdFn7bQ9tKktQp0SJhfSv1eO40G4opaWxgYp8X05OzXDScCocF4pEnLYJLNR
-JW1ZbZe+T47nTcjtougmxLHXfp2+tnERJALkZlfFHP22+RJdUx3296Mh4GUVzZ6g
-8Vbuo4kf1q8YuASb375/3YBxp2lnD409kk46iWhJ2ZTWjUquLNUYz+Owtg0JIMW0
-Nz9upxOiMhIR14ZFn8TVmXxnNUpIfEJugkjNmVoeJ9nDcyoL9KHtXvAZTSZHo/XU
-PwHOVJ5HbZ7vIkXcrxSweCTP2f9RXS9rxME6kzLrPx0o1AgFp3k=
-=AdDI
------END PGP SIGNATURE-----
-
---CeaervSQYJjiQNT9--
+> ---
+> Changes V1 -> V2:
+> * Drop accidentally committed Kconfig change.
+> * Pick up Ard's AB tag.
+> 
+>  arch/arm/mm/proc-macros.S | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/mm/proc-macros.S b/arch/arm/mm/proc-macros.S
+> index e2c743aa2eb2..d9f7dfe2a7ed 100644
+> --- a/arch/arm/mm/proc-macros.S
+> +++ b/arch/arm/mm/proc-macros.S
+> @@ -340,6 +340,7 @@ ENTRY(\name\()_cache_fns)
+>  
+>  .macro define_tlb_functions name:req, flags_up:req, flags_smp
+>  	.type	\name\()_tlb_fns, #object
+> +	.align 2
+>  ENTRY(\name\()_tlb_fns)
+>  	.long	\name\()_flush_user_tlb_range
+>  	.long	\name\()_flush_kern_tlb_range
+> 
+> base-commit: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
+> prerequisite-patch-id: 3edbe4a8485c7a75a61dbbe299e8ce1985d87ee0
+> -- 
+> 2.33.0.685.g46640cef36-goog
+> 
+> 
