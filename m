@@ -2,151 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E93541C3D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E7841C3DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245266AbhI2LyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:54:19 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:41739 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244263AbhI2LyQ (ORCPT
+        id S245567AbhI2Lzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:55:36 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51086
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244943AbhI2Lzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:54:16 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id E0EBE20000D;
-        Wed, 29 Sep 2021 11:52:30 +0000 (UTC)
-Date:   Wed, 29 Sep 2021 13:52:30 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] ARM: rtc: remove HAVE_S3C_RTC in favor of
- direct dependencies
-Message-ID: <YVRTfuoC8TxtFTEO@piout.net>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <20210928235635.1348330-13-willmcvicker@google.com>
+        Wed, 29 Sep 2021 07:55:35 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id CEB314060E;
+        Wed, 29 Sep 2021 11:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632916432;
+        bh=SA3MOhUQB8LiGeG2R1qfgrcRYehbqo7vhZPQxaRL3OU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=jtY1PiModmvCpOJ9on9ATR8EYWn4f0xjXLFdHz/GnD5zjepReEYx9+6JuzHeXnTNN
+         aXgW3N/Da0O0NbUV1k/P3scgIjJytZfrTddN9sj5di67DIkmrRSfVTgHOFLN1FHcbE
+         BFYBe5S8o5QVsI72uG3akFb5Y4m+J3iNfyub/RXPu4fXsR5ECTmUGYpOOTvKzVSH6m
+         LQEhzoYzeQL/MOdI5Pmn75MUuNfG7rd+Sg0S/W9OjD2mRC9nPv3I9aiJB9kjBzqdKJ
+         wadzjsHAiAVLeT7/u7n1JE+FBdN4C8NMlRmumkooFn+1IDPv89R3Vs6sB++vGRFIh0
+         KsS0uqJDv1plw==
+From:   Colin King <colin.king@canonical.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] drm/msm: Fix potential integer overflow on 32 bit multiply
+Date:   Wed, 29 Sep 2021 12:53:52 +0100
+Message-Id: <20210929115352.212849-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928235635.1348330-13-willmcvicker@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-I'd argue that the subject should be rtc: s3c: ...
+In the case where clock is 2147485 or greater the 32 bit multiplication
+by 1000 will cause an integer overflow. Fix this by making the constant
+1000 an unsigned long to ensure a long multiply occurs to avoid the
+overflow before assigning the result to the long result in variable
+requested.  Most probably a theoretical overflow issue, but worth fixing
+to clear up static analysis warnings.
 
-On 28/09/2021 23:56:29+0000, Will McVicker wrote:
-> The config HAVE_S3C_RTC is not really needed since we can simply just
-> add the dependencies directly to RTC_DRV_S3C. Also, one less config to
-> keep track of!
-> 
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Addresses-Coverity: ("Unintentional integer overflow")
+Fixes: c8afe684c95c ("drm/msm: basic KMS driver for snapdragon")
+Fixes: 3e87599b68e7 ("drm/msm/mdp4: add LVDS panel support")
+Fixes: 937f941ca06f ("drm/msm/dp: Use qmp phy for DP PLL and PHY")
+Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
+Fixes: a3376e3ec81c ("drm/msm: convert to drm_bridge")
 
-> ---
->  arch/arm/Kconfig              |  1 -
->  arch/arm/mach-exynos/Kconfig  |  1 -
->  arch/arm/mach-s5pv210/Kconfig |  1 -
->  arch/arm64/Kconfig.platforms  |  1 -
->  drivers/rtc/Kconfig           | 10 ++--------
->  5 files changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index fc196421b2ce..5ed6b5de981e 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -475,7 +475,6 @@ config ARCH_S3C24XX
->  	select GPIOLIB
->  	select GENERIC_IRQ_MULTI_HANDLER
->  	select HAVE_S3C2410_I2C if I2C
-> -	select HAVE_S3C_RTC if RTC_CLASS
->  	select NEED_MACH_IO_H
->  	select S3C2410_WATCHDOG
->  	select SAMSUNG_ATAGS
-> diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
-> index 2ad19a08bf06..8b72a70b6c43 100644
-> --- a/arch/arm/mach-exynos/Kconfig
-> +++ b/arch/arm/mach-exynos/Kconfig
-> @@ -19,7 +19,6 @@ menuconfig ARCH_EXYNOS
->  	select HAVE_ARM_ARCH_TIMER if ARCH_EXYNOS5
->  	select HAVE_ARM_SCU if SMP
->  	select HAVE_S3C2410_I2C if I2C
-> -	select HAVE_S3C_RTC if RTC_CLASS
->  	select PINCTRL
->  	select PM_GENERIC_DOMAINS if PM
->  	select S5P_DEV_MFC
-> diff --git a/arch/arm/mach-s5pv210/Kconfig b/arch/arm/mach-s5pv210/Kconfig
-> index 62b90dda571f..681823687018 100644
-> --- a/arch/arm/mach-s5pv210/Kconfig
-> +++ b/arch/arm/mach-s5pv210/Kconfig
-> @@ -12,7 +12,6 @@ config ARCH_S5PV210
->  	select CLKSRC_SAMSUNG_PWM
->  	select GPIOLIB
->  	select HAVE_S3C2410_I2C if I2C
-> -	select HAVE_S3C_RTC if RTC_CLASS
->  	select PINCTRL
->  	select SOC_SAMSUNG
->  	help
-> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-> index e44d5e9f5058..02c8637d3f09 100644
-> --- a/arch/arm64/Kconfig.platforms
-> +++ b/arch/arm64/Kconfig.platforms
-> @@ -91,7 +91,6 @@ config ARCH_BRCMSTB
->  
->  config ARCH_EXYNOS
->  	bool "ARMv8 based Samsung Exynos SoC family"
-> -	select HAVE_S3C_RTC if RTC_CLASS
->  	select PINCTRL
->  	select PM_GENERIC_DOMAINS if PM
->  	select SOC_SAMSUNG
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index e1bc5214494e..7208eeb8459a 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -1404,16 +1404,10 @@ config RTC_DRV_OMAP
->  	  This driver can also be built as a module, if so, module
->  	  will be called rtc-omap.
->  
-> -config HAVE_S3C_RTC
-> -	bool
-> -	help
-> -	  This will include RTC support for Samsung SoCs. If
-> -	  you want to include RTC support for any machine, kindly
-> -	  select this in the respective mach-XXXX/Kconfig file.
-> -
->  config RTC_DRV_S3C
->  	tristate "Samsung S3C series SoC RTC"
-> -	depends on ARCH_S3C64XX || HAVE_S3C_RTC || COMPILE_TEST
-> +	depends on ARCH_EXYNOS || ARCH_S3C64XX || ARCH_S3C24XX || ARCH_S5PV210 || \
-> +		   COMPILE_TEST
->  	help
->  	  RTC (Realtime Clock) driver for the clock inbuilt into the
->  	  Samsung S3C24XX series of SoCs. This can provide periodic
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+V2: Find and fix all unintentional integer overflows that match this
+    overflow pattern.
+---
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c    | 2 +-
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c   | 2 +-
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c | 2 +-
+ drivers/gpu/drm/msm/dp/dp_ctrl.c                    | 4 ++--
+ drivers/gpu/drm/msm/edp/edp_connector.c             | 2 +-
+ drivers/gpu/drm/msm/hdmi/hdmi_bridge.c              | 2 +-
+ drivers/gpu/drm/msm/hdmi/hdmi_connector.c           | 2 +-
+ 7 files changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c
+index 88645dbc3785..83140066441e 100644
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_dtv_encoder.c
+@@ -50,7 +50,7 @@ static void mdp4_dtv_encoder_mode_set(struct drm_encoder *encoder,
+ 
+ 	DBG("set mode: " DRM_MODE_FMT, DRM_MODE_ARG(mode));
+ 
+-	mdp4_dtv_encoder->pixclock = mode->clock * 1000;
++	mdp4_dtv_encoder->pixclock = mode->clock * 1000U;
+ 
+ 	DBG("pixclock=%lu", mdp4_dtv_encoder->pixclock);
+ 
+diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c
+index 10eb3e5b218e..d90dc0a39855 100644
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c
+@@ -225,7 +225,7 @@ static void mdp4_lcdc_encoder_mode_set(struct drm_encoder *encoder,
+ 
+ 	DBG("set mode: " DRM_MODE_FMT, DRM_MODE_ARG(mode));
+ 
+-	mdp4_lcdc_encoder->pixclock = mode->clock * 1000;
++	mdp4_lcdc_encoder->pixclock = mode->clock * 1000U;
+ 
+ 	DBG("pixclock=%lu", mdp4_lcdc_encoder->pixclock);
+ 
+diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
+index 7288041dd86a..a965e7962a7f 100644
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_lvds_connector.c
+@@ -64,7 +64,7 @@ static int mdp4_lvds_connector_mode_valid(struct drm_connector *connector,
+ 	struct drm_encoder *encoder = mdp4_lvds_connector->encoder;
+ 	long actual, requested;
+ 
+-	requested = 1000 * mode->clock;
++	requested = 1000U * mode->clock;
+ 	actual = mdp4_lcdc_round_pixclk(encoder, requested);
+ 
+ 	DBG("requested=%ld, actual=%ld", requested, actual);
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 62e75dc8afc6..6babeb79aeb0 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1316,7 +1316,7 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+ 	opts_dp->lanes = ctrl->link->link_params.num_lanes;
+ 	opts_dp->link_rate = ctrl->link->link_params.rate / 100;
+ 	dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+-					ctrl->link->link_params.rate * 1000);
++					ctrl->link->link_params.rate * 1000U);
+ 
+ 	phy_configure(phy, &dp_io->phy_opts);
+ 	phy_power_on(phy);
+@@ -1336,7 +1336,7 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
+ 	int ret = 0;
+ 
+ 	dp_ctrl_set_clock_rate(ctrl, DP_STREAM_PM, "stream_pixel",
+-					ctrl->dp_ctrl.pixel_rate * 1000);
++					ctrl->dp_ctrl.pixel_rate * 1000U);
+ 
+ 	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, true);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/msm/edp/edp_connector.c b/drivers/gpu/drm/msm/edp/edp_connector.c
+index 73cb5fd97a5a..837e7873141f 100644
+--- a/drivers/gpu/drm/msm/edp/edp_connector.c
++++ b/drivers/gpu/drm/msm/edp/edp_connector.c
+@@ -64,7 +64,7 @@ static int edp_connector_mode_valid(struct drm_connector *connector,
+ 	struct msm_kms *kms = priv->kms;
+ 	long actual, requested;
+ 
+-	requested = 1000 * mode->clock;
++	requested = 1000L * mode->clock;
+ 	actual = kms->funcs->round_pixclk(kms,
+ 			requested, edp_connector->edp->encoder);
+ 
+diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c b/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c
+index 6e380db9287b..e4c68a59772a 100644
+--- a/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c
++++ b/drivers/gpu/drm/msm/hdmi/hdmi_bridge.c
+@@ -209,7 +209,7 @@ static void msm_hdmi_bridge_mode_set(struct drm_bridge *bridge,
+ 
+ 	mode = adjusted_mode;
+ 
+-	hdmi->pixclock = mode->clock * 1000;
++	hdmi->pixclock = mode->clock * 1000U;
+ 
+ 	hstart = mode->htotal - mode->hsync_start;
+ 	hend   = mode->htotal - mode->hsync_start + mode->hdisplay;
+diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_connector.c b/drivers/gpu/drm/msm/hdmi/hdmi_connector.c
+index 58707a1f3878..ce116a7b1bba 100644
+--- a/drivers/gpu/drm/msm/hdmi/hdmi_connector.c
++++ b/drivers/gpu/drm/msm/hdmi/hdmi_connector.c
+@@ -385,7 +385,7 @@ static int msm_hdmi_connector_mode_valid(struct drm_connector *connector,
+ 	struct msm_kms *kms = priv->kms;
+ 	long actual, requested;
+ 
+-	requested = 1000 * mode->clock;
++	requested = 1000U * mode->clock;
+ 	actual = kms->funcs->round_pixclk(kms,
+ 			requested, hdmi_connector->hdmi->encoder);
+ 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.32.0
+
