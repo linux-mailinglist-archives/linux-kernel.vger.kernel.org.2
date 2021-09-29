@@ -2,315 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521FB41BF28
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6142F41BEEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244388AbhI2G3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244225AbhI2G3a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:29:30 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044F5C06161C;
-        Tue, 28 Sep 2021 23:27:50 -0700 (PDT)
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HK5yr2tQPz4xbP; Wed, 29 Sep 2021 16:27:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1632896868;
-        bh=jq2RpusWHbQmu4C255IjEuoWL2nlq46w37a5n3Getco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OlWwvFagh1rqSCOVTOisB2+Tc54K3wngEj09GsGl+QABR6dFisGGAAbOPmjikajsv
-         Jhcxd94fi7gfKScaavy0aVLY0ylDiGDa8fXjfeeQ3KR7oRYWzwM+1uCdefDE65x5dO
-         Su8cIQcsG+598a5C8JIB6AN+W6jxAaRxg30fTkA4=
-Date:   Wed, 29 Sep 2021 16:00:54 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, jgg@nvidia.com, hch@lst.de,
-        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
-        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
-        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
-        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 08/20] vfio/pci: Add VFIO_DEVICE_BIND_IOMMUFD
-Message-ID: <YVQBFgOa4fQRpwqN@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-9-yi.l.liu@intel.com>
+        id S244316AbhI2GFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:05:51 -0400
+Received: from mga14.intel.com ([192.55.52.115]:5360 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243377AbhI2GFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 02:05:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224523666"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="224523666"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 23:04:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="562981471"
+Received: from xuefeich-mobl1.ccr.corp.intel.com (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.215.118])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 23:04:06 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Keith Busch <kbusch@kernel.org>
+Subject: [PATCH -V3] mm/migrate: fix CPUHP state to update node demotion order
+Date:   Wed, 29 Sep 2021 14:03:51 +0800
+Message-Id: <20210929060351.7293-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/nD5aDiJP7H15fC3"
-Content-Disposition: inline
-In-Reply-To: <20210919063848.1476776-9-yi.l.liu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The node demotion order needs to be updated during CPU hotplug.
+Because whether a NUMA node has CPU may influence the demotion order.
+The update function should be called during CPU online/offline after
+the node_states[N_CPU] has been updated.  That is done in
+CPUHP_AP_ONLINE_DYN during CPU online and in CPUHP_MM_VMSTAT_DEAD
+during CPU offline.  But in commit 884a6e5d1f93 ("mm/migrate: update
+node demotion order on hotplug events"), the function to update node
+demotion order is called in CPUHP_AP_ONLINE_DYN during CPU
+online/offline.  This doesn't satisfy the order requirement.
 
---/nD5aDiJP7H15fC3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For example, there are 4 CPUs (P0, P1, P2, P3) in 2 sockets (P0, P1 in
+S0 and P2, P3 in S1), the demotion order is
 
-On Sun, Sep 19, 2021 at 02:38:36PM +0800, Liu Yi L wrote:
-> This patch adds VFIO_DEVICE_BIND_IOMMUFD for userspace to bind the vfio
-> device to an iommufd. No VFIO_DEVICE_UNBIND_IOMMUFD interface is provided
-> because it's implicitly done when the device fd is closed.
->=20
-> In concept a vfio device can be bound to multiple iommufds, each hosting
-> a subset of I/O address spaces attached by this device.
+- S0 -> NUMA_NO_NODE
+- S1 -> NUMA_NO_NODE
 
-I really feel like this many<->many mapping between devices is going
-to be super-confusing, and therefore make it really hard to be
-confident we have all the rules right for proper isolation.
+After P2 and P3 is offlined, because S1 has no CPU now, the demotion
+order should have been changed to
 
-That's why I was suggesting a concept like endpoints, to break this
-into two many<->one relationships.  I'm ok if that isn't visible in
-the user API, but I think this is going to be really hard to keep
-track of if it isn't explicit somewhere in the internals.
+- S0 -> S1
+- S1 -> NO_NODE
 
-> However as a
-> starting point (matching current vfio), only one I/O address space is
-> supported per vfio device. It implies one device can only be attached
-> to one iommufd at this point.
->=20
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> ---
->  drivers/vfio/pci/Kconfig            |  1 +
->  drivers/vfio/pci/vfio_pci.c         | 72 ++++++++++++++++++++++++++++-
->  drivers/vfio/pci/vfio_pci_private.h |  8 ++++
->  include/uapi/linux/vfio.h           | 30 ++++++++++++
->  4 files changed, 110 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-> index 5e2e1b9a9fd3..3abfb098b4dc 100644
-> --- a/drivers/vfio/pci/Kconfig
-> +++ b/drivers/vfio/pci/Kconfig
-> @@ -5,6 +5,7 @@ config VFIO_PCI
->  	depends on MMU
->  	select VFIO_VIRQFD
->  	select IRQ_BYPASS_MANAGER
-> +	select IOMMUFD
->  	help
->  	  Support for the PCI VFIO bus driver.  This is required to make
->  	  use of PCI drivers using the VFIO framework.
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 145addde983b..20006bb66430 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -552,6 +552,16 @@ static void vfio_pci_release(struct vfio_device *cor=
-e_vdev)
->  			vdev->req_trigger =3D NULL;
->  		}
->  		mutex_unlock(&vdev->igate);
-> +
-> +		mutex_lock(&vdev->videv_lock);
-> +		if (vdev->videv) {
-> +			struct vfio_iommufd_device *videv =3D vdev->videv;
-> +
-> +			vdev->videv =3D NULL;
-> +			iommufd_unbind_device(videv->idev);
-> +			kfree(videv);
-> +		}
-> +		mutex_unlock(&vdev->videv_lock);
->  	}
-> =20
->  	mutex_unlock(&vdev->reflck->lock);
-> @@ -780,7 +790,66 @@ static long vfio_pci_ioctl(struct vfio_device *core_=
-vdev,
->  		container_of(core_vdev, struct vfio_pci_device, vdev);
->  	unsigned long minsz;
-> =20
-> -	if (cmd =3D=3D VFIO_DEVICE_GET_INFO) {
-> +	if (cmd =3D=3D VFIO_DEVICE_BIND_IOMMUFD) {
-> +		struct vfio_device_iommu_bind_data bind_data;
-> +		unsigned long minsz;
-> +		struct iommufd_device *idev;
-> +		struct vfio_iommufd_device *videv;
-> +
-> +		/*
-> +		 * Reject the request if the device is already opened and
-> +		 * attached to a container.
-> +		 */
-> +		if (vfio_device_in_container(core_vdev))
+but it isn't changed, because the order updating callback for CPU
+hotplug doesn't see the new nodemask.  After that, if P1 is offlined,
+the demotion order is changed to the expected order as above.
 
-Usually one would do argument sanity checks before checks that
-actually depend on machine state.
+So in this patch, we added CPUHP_AP_MM_DEMOTION_ONLINE and
+CPUHP_MM_DEMOTION_DEAD to be called after CPUHP_AP_ONLINE_DYN and
+CPUHP_MM_VMSTAT_DEAD during CPU online and offline, and register the
+update function on them.
 
-> +			return -ENOTTY;
+Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug events")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Keith Busch <kbusch@kernel.org>
 
-This doesn't seem like the right error code.  It's a perfectly valid
-operation for this device - just not available right now.
+Changes:
 
-> +
-> +		minsz =3D offsetofend(struct vfio_device_iommu_bind_data, dev_cookie);
-> +
-> +		if (copy_from_user(&bind_data, (void __user *)arg, minsz))
-> +			return -EFAULT;
-> +
-> +		if (bind_data.argsz < minsz ||
-> +		    bind_data.flags || bind_data.iommu_fd < 0)
-> +			return -EINVAL;
-> +
-> +		mutex_lock(&vdev->videv_lock);
-> +		/*
-> +		 * Allow only one iommufd per device until multiple
-> +		 * address spaces (e.g. vSVA) support is introduced
-> +		 * in the future.
-> +		 */
-> +		if (vdev->videv) {
-> +			mutex_unlock(&vdev->videv_lock);
-> +			return -EBUSY;
-> +		}
-> +
-> +		idev =3D iommufd_bind_device(bind_data.iommu_fd,
-> +					   &vdev->pdev->dev,
-> +					   bind_data.dev_cookie);
-> +		if (IS_ERR(idev)) {
-> +			mutex_unlock(&vdev->videv_lock);
-> +			return PTR_ERR(idev);
-> +		}
-> +
-> +		videv =3D kzalloc(sizeof(*videv), GFP_KERNEL);
-> +		if (!videv) {
-> +			iommufd_unbind_device(idev);
-> +			mutex_unlock(&vdev->videv_lock);
-> +			return -ENOMEM;
-> +		}
-> +		videv->idev =3D idev;
-> +		videv->iommu_fd =3D bind_data.iommu_fd;
-> +		/*
-> +		 * A security context has been established. Unblock
-> +		 * user access.
-> +		 */
-> +		if (atomic_read(&vdev->block_access))
-> +			atomic_set(&vdev->block_access, 0);
-> +		vdev->videv =3D videv;
-> +		mutex_unlock(&vdev->videv_lock);
-> +
-> +		return 0;
-> +	} else if (cmd =3D=3D VFIO_DEVICE_GET_INFO) {
->  		struct vfio_device_info info;
->  		struct vfio_info_cap caps =3D { .buf =3D NULL, .size =3D 0 };
->  		unsigned long capsz;
-> @@ -2031,6 +2100,7 @@ static int vfio_pci_probe(struct pci_dev *pdev, con=
-st struct pci_device_id *id)
->  	mutex_init(&vdev->vma_lock);
->  	INIT_LIST_HEAD(&vdev->vma_list);
->  	init_rwsem(&vdev->memory_lock);
-> +	mutex_init(&vdev->videv_lock);
-> =20
->  	ret =3D vfio_pci_reflck_attach(vdev);
->  	if (ret)
-> diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_=
-pci_private.h
-> index f12012e30b53..bd784accac35 100644
-> --- a/drivers/vfio/pci/vfio_pci_private.h
-> +++ b/drivers/vfio/pci/vfio_pci_private.h
-> @@ -14,6 +14,7 @@
->  #include <linux/types.h>
->  #include <linux/uuid.h>
->  #include <linux/notifier.h>
-> +#include <linux/iommufd.h>
-> =20
->  #ifndef VFIO_PCI_PRIVATE_H
->  #define VFIO_PCI_PRIVATE_H
-> @@ -99,6 +100,11 @@ struct vfio_pci_mmap_vma {
->  	struct list_head	vma_next;
->  };
-> =20
-> +struct vfio_iommufd_device {
-> +	struct iommufd_device *idev;
+v3:
 
-Could this be embedded to avoid multiple layers of pointers?
+- Revise patch description per Andrew's comments.
 
-> +	int iommu_fd;
-> +};
-> +
->  struct vfio_pci_device {
->  	struct vfio_device	vdev;
->  	struct pci_dev		*pdev;
-> @@ -144,6 +150,8 @@ struct vfio_pci_device {
->  	struct list_head	vma_list;
->  	struct rw_semaphore	memory_lock;
->  	atomic_t		block_access;
-> +	struct mutex		videv_lock;
-> +	struct vfio_iommufd_device *videv;
->  };
-> =20
->  #define is_intx(vdev) (vdev->irq_type =3D=3D VFIO_PCI_INTX_IRQ_INDEX)
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index ef33ea002b0b..c902abd60339 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -190,6 +190,36 @@ struct vfio_group_status {
-> =20
->  /* --------------- IOCTLs for DEVICE file descriptors --------------- */
-> =20
-> +/*
-> + * VFIO_DEVICE_BIND_IOMMUFD - _IOR(VFIO_TYPE, VFIO_BASE + 19,
-> + *				struct vfio_device_iommu_bind_data)
-> + *
-> + * Bind a vfio_device to the specified iommufd
-> + *
-> + * The user should provide a device cookie when calling this ioctl. The
-> + * cookie is later used in iommufd for capability query, iotlb invalidat=
-ion
-> + * and I/O fault handling.
-> + *
-> + * User is not allowed to access the device before the binding operation
-> + * is completed.
-> + *
-> + * Unbind is automatically conducted when device fd is closed.
-> + *
-> + * Input parameters:
-> + *	- iommu_fd;
-> + *	- dev_cookie;
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +struct vfio_device_iommu_bind_data {
-> +	__u32	argsz;
-> +	__u32	flags;
-> +	__s32	iommu_fd;
-> +	__u64	dev_cookie;
-> +};
-> +
-> +#define VFIO_DEVICE_BIND_IOMMUFD	_IO(VFIO_TYPE, VFIO_BASE + 19)
-> +
->  /**
->   * VFIO_DEVICE_GET_INFO - _IOR(VFIO_TYPE, VFIO_BASE + 7,
->   *						struct vfio_device_info)
+v2:
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+- Revise state name to follow the naming convention per Thomas' comments.
 
---/nD5aDiJP7H15fC3
-Content-Type: application/pgp-signature; name="signature.asc"
+- Use cpuhp_setup_state() to initialize the initial order per Mika's comments.
+---
+ include/linux/cpuhotplug.h | 4 ++++
+ mm/migrate.c               | 8 +++++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 832d8a74fa59..991911048857 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -72,6 +72,8 @@ enum cpuhp_state {
+ 	CPUHP_SLUB_DEAD,
+ 	CPUHP_DEBUG_OBJ_DEAD,
+ 	CPUHP_MM_WRITEBACK_DEAD,
++	/* Must be after CPUHP_MM_VMSTAT_DEAD */
++	CPUHP_MM_DEMOTION_DEAD,
+ 	CPUHP_MM_VMSTAT_DEAD,
+ 	CPUHP_SOFTIRQ_DEAD,
+ 	CPUHP_NET_MVNETA_DEAD,
+@@ -240,6 +242,8 @@ enum cpuhp_state {
+ 	CPUHP_AP_BASE_CACHEINFO_ONLINE,
+ 	CPUHP_AP_ONLINE_DYN,
+ 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
++	/* Must be after CPUHP_AP_ONLINE_DYN for node_states[N_CPU] update */
++	CPUHP_AP_MM_DEMOTION_ONLINE,
+ 	CPUHP_AP_X86_HPET_ONLINE,
+ 	CPUHP_AP_X86_KVM_CLK_ONLINE,
+ 	CPUHP_AP_DTPM_CPU_ONLINE,
+diff --git a/mm/migrate.c b/mm/migrate.c
+index c14a55004fee..7769abac8aad 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -3284,9 +3284,8 @@ static int __init migrate_on_reclaim_init(void)
+ {
+ 	int ret;
+ 
+-	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "migrate on reclaim",
+-				migration_online_cpu,
+-				migration_offline_cpu);
++	ret = cpuhp_setup_state_nocalls(CPUHP_MM_DEMOTION_DEAD, "mm/demotion:offline",
++					NULL, migration_offline_cpu);
+ 	/*
+ 	 * In the unlikely case that this fails, the automatic
+ 	 * migration targets may become suboptimal for nodes
+@@ -3294,6 +3293,9 @@ static int __init migrate_on_reclaim_init(void)
+ 	 * rare case, do not bother trying to do anything special.
+ 	 */
+ 	WARN_ON(ret < 0);
++	ret = cpuhp_setup_state(CPUHP_AP_MM_DEMOTION_ONLINE, "mm/demotion:online",
++				migration_online_cpu, NULL);
++	WARN_ON(ret < 0);
+ 
+ 	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
+ 	return 0;
+-- 
+2.30.2
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFUARMACgkQbDjKyiDZ
-s5L4Jw/+NgsMPNvxtj3apjSyt0/aHAJwv8hcuQKR/Ge7fTVxTktX9jnWe75QBOp/
-IT1sp5+3SghyQr/BNedlP5/FBslC4xNhxW3PZcHh5tggPT6lMz18PD+Goqoww7DP
-c1yAIkOZ12Y1uirUNM6Gk+uj5MpRggT8LImcsAd2pL7RzjF7uGm09GMp5UoU7GMW
-ikdShKoEVBw7tnYry7iHK0F35Y8XRO5/qr37G2swxh6dXfa9EtRV7ZMrqR7VD4ky
-X4Li8ZeodCjWUwokeJ9mS474vw7dwcdrce9Dq6dv5I6k+bYv6G9LfYLoL5fvd/17
-QIdJKFMRyHlZFqlXujXV7g/Yc5G7C0CZhKlarh2QxHgHpNZ6lLBPMqX8awg05j6t
-9IE9gVCmva0HI2JXLKje650HWwz3rloIRvN+Ix48ZAWHYkVkHFFZmyl3Fi7vCiVF
-qQlr2eLim/Vxj0X/HDYmIzgHZjIVr8LzH+ZkNMjArskc+wU8q+kuIR4tIK4bu8ib
-PjTIAdN7oYlAt2tB74FRF/Hh253UQ0qFoFGPOrEfOmLNCYka1TUGxeCGqc273b9a
-bpkZr/1/SuOiLOmfwSkMsWeOd9AcXQAv5WZx1QCjpK/BuPMjwpuVG/WtTBk1plPM
-uM2HBrEYkizFX8bOlWZsVaTse6IzEIyJYv8kmfT8PXfYvhsc0eM=
-=XCRH
------END PGP SIGNATURE-----
-
---/nD5aDiJP7H15fC3--
