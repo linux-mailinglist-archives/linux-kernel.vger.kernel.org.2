@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5295941CC92
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E2941CC9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346579AbhI2T0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:26:24 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:33371 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343505AbhI2T0Y (ORCPT
+        id S1346637AbhI2T24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346463AbhI2T2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:26:24 -0400
-Received: by mail-ot1-f41.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so4296767otu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:24:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ddoEsfy4DqKh/acKTMkgvjiBMyX6ryO3FLycxiNxODw=;
-        b=YJFhMQjSLSigz7/9ZkWPBfDi/AQkxySjPjLst3XH8cxCOrIPziqU0ipJWh9V+S3tfd
-         /5lOy0gqWkjEvKhauDIau5xjWfZOk+mS+cg4risOZeAec5nKxzgW/6AdD1ciGREebDUK
-         9q0s+wBFNKK8vkgctH1ihuSuwdIgrsxzRtup5lJ3rsc85PnmiF8ZXHrlynzLK9VKRa2R
-         iqPU9xzCR5K+MYLYOSsLG7QV2hfkelgCtXt1whrzGEsOp/BCuoRw3sOsckA4GWyqjnZu
-         BxjFjdZUJnZ/l8LKBXrXHt/MXy6gPTgQq8Xr8nmTwtU6d4BFrdD1+3hH0qnyBVLg2mBb
-         Wx6A==
-X-Gm-Message-State: AOAM532h185eIgOPvJS9F2mrWAJHyqSu3JUWqQ+h6He5UXpDlndC7kDn
-        iRJ8ixGbW2zhHbbdf8ANNJnEX2PRrvmjnAfbC/A=
-X-Google-Smtp-Source: ABdhPJz9PEdLMcRgmeOSBAMuXT7UcQOx1/kwAdHVPve1jEwT0MKEcaZT9k2ho00klMI/sSWd91GUbPqOT0jjlO8mx7U=
-X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr1493220otr.301.1632943482516;
- Wed, 29 Sep 2021 12:24:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929190549.860541-1-saravanak@google.com>
-In-Reply-To: <20210929190549.860541-1-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
+        Wed, 29 Sep 2021 15:28:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F696C061765;
+        Wed, 29 Sep 2021 12:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WLQ1UteiuDxr5zMvOLEeFqf+m7DpN8OCufh9KBGNF3k=; b=lkXSqcXkuHl1H/ITAFrfgQe1P8
+        axZYThYtS+M8ROnfB/Nham1m61DeilgiEyW0VRh/9/h+bify1RjSZmIYYhZuOiqHeCPRSF8QiYtqC
+        ABtb7GXWx1Gq7wilJuEwvkuml4wpD6XlalwaPTCdr82OehK7VReeLI9zwxcjprgH73HfWUU/WO9HL
+        D37GTgtHrbODZgH2+YX74FJhvvUCV5Va9i3a2tzZ9r8w2kIW9hUDHTS402U9eABPbyCm7Xw2U9XE0
+        5Hxkk2Te5j52vz6eos4q3IaHDfWaiDnyIaW/lTaA2J8FlDf9jcpLldEFHVWKYc4mNAiw+65Eui2sU
+        RG3aV7kw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVfBw-00CA3k-2n; Wed, 29 Sep 2021 19:24:38 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A298C981431; Wed, 29 Sep 2021 21:24:31 +0200 (CEST)
 Date:   Wed, 29 Sep 2021 21:24:31 +0200
-Message-ID: <CAJZ5v0iumiYc3q0Z76XpU1vGbOR9iSPnJE2hdrW=V3THfYLbnA@mail.gmail.com>
-Subject: Re: [PATCH v2] driver core: Reject pointless SYNC_STATE_ONLY device links
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 08/11] context_tracking,rcu: Replace RCU dynticks
+ counter with context_tracking
+Message-ID: <20210929192431.GG5106@worktop.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.007420590@infradead.org>
+ <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210929191326.GZ4323@worktop.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929191326.GZ4323@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 9:05 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> SYNC_STATE_ONLY device links intentionally allow cycles because cyclic
-> sync_state() dependencies are valid and necessary.
->
-> However a SYNC_STATE_ONLY device link where the consumer and the supplier
-> are the same device is pointless because the device link would be deleted
-> as soon as the device probes (because it's also the consumer) and won't
-> affect when the sync_state() callback is called. It's a waste of CPU cycles
-> and memory to create this device link. So reject any attempts to create
-> such a device link.
->
-> Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-> Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+On Wed, Sep 29, 2021 at 09:13:26PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 29, 2021 at 11:37:01AM -0700, Paul E. McKenney wrote:
+> 
+> > And what happens to all of this in !CONFIG_CONTEXT_TRACKING kernels?
+> > Of course, RCU needs it unconditionally.  (There appear to be at least
+> > parts of it that are unconditionally available, but I figured that I
+> > should ask.  Especially given the !CONFIG_CONTEXT_TRACKING definition
+> > of the __context_tracking_cpu_seq() function.)
+> 
+> For !CONFIG_CONTEXT_TRACKING it goes *poof*.
+> 
+> Since the thing was called dynticks, I presumed it was actually dynticks
+> only, silly me (also, I didn't see any obvious !context_tracking usage
+> of it, i'll go audit it more carefully.
 
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Oh argh, it does idle too... damn. And I don't suppose having 2 counters
+is going to be nice :/
 
-> ---
-> v1 -> v2:
-> - Moved the check higher up in the function.
->
->  drivers/base/core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 15986cc2fe5e..249da496581a 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -687,7 +687,8 @@ struct device_link *device_link_add(struct device *consumer,
->  {
->         struct device_link *link;
->
-> -       if (!consumer || !supplier || flags & ~DL_ADD_VALID_FLAGS ||
-> +       if (!consumer || !supplier || consumer == supplier ||
-> +           flags & ~DL_ADD_VALID_FLAGS ||
->             (flags & DL_FLAG_STATELESS && flags & DL_MANAGED_LINK_FLAGS) ||
->             (flags & DL_FLAG_SYNC_STATE_ONLY &&
->              (flags & ~DL_FLAG_INFERRED) != DL_FLAG_SYNC_STATE_ONLY) ||
-> --
-> 2.33.0.685.g46640cef36-goog
->
+I'll go back to thinking about this.
