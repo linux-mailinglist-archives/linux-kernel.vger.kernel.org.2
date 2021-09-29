@@ -2,156 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF2841C114
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2434841C124
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244932AbhI2I4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244640AbhI2I4K (ORCPT
+        id S244950AbhI2I5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:57:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244957AbhI2I45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:56:10 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E33EC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:54:29 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mVVLB-0001rf-2C; Wed, 29 Sep 2021 10:53:25 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mVVLA-0004ip-CK; Wed, 29 Sep 2021 10:53:24 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mVVL3-0000Qz-47; Wed, 29 Sep 2021 10:53:17 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-pci@vger.kernel.org,
-        kernel@pengutronix.de, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Michael Buesch <m@bues.ch>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-crypto@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@corigine.com
-Subject: [PATCH v5 07/11] PCI: Replace pci_dev::driver usage that gets the driver name
-Date:   Wed, 29 Sep 2021 10:53:02 +0200
-Message-Id: <20210929085306.2203850-8-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210929085306.2203850-1-u.kleine-koenig@pengutronix.de>
-References: <20210929085306.2203850-1-u.kleine-koenig@pengutronix.de>
+        Wed, 29 Sep 2021 04:56:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632905716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yseANl8cz/oeon8Zy6PuBbVnHsn80AhKKFxnG1Ddc64=;
+        b=RDH8mOfUcDsrq+Pxyoh0OJxQDivbtoF4WYtnJ1L8iFMf/QVIVtqbnoNf/vy4tEameP9sLZ
+        cBMkc+XlvMrHagoSWOE54hWSHrxPpnwEUdOlqIVPNQZB4Wx3Ba2lJ/vL3LEqcdklqawWjL
+        qgJyUtoLmZikyOOBR4ERat1jgl6g06c=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-WyfKCkyVOfSmMHmik-gdXw-1; Wed, 29 Sep 2021 04:55:15 -0400
+X-MC-Unique: WyfKCkyVOfSmMHmik-gdXw-1
+Received: by mail-pf1-f199.google.com with SMTP id 3-20020a620603000000b0042aea40c2ddso1351045pfg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:55:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yseANl8cz/oeon8Zy6PuBbVnHsn80AhKKFxnG1Ddc64=;
+        b=q+ANggcxtyLjLJ0WFxaeCeFyKS3cRvVz20J8nP/WoYV/QxRjL7QAmViLY3wczmlOtX
+         fIS/hxkSp32n3itjd3tq7g7Bfolux1Y6DDezQVulNScxqy8IBFNzgrd20fay7RfrZ1JG
+         9TrO55e3hh5btL40Fm2bqUkc5yVDgcRizUK/Y9HvBBZx0dUW8jv8RVEK9VL2G+wQivY2
+         aXN9xuTp+h0tjI7+D+LX+V0Fu3bZkXJiOc+ko+4i+vtbMX6MOazsMkIBR5Go4uPeBFRm
+         l8Vp0UORZc6FPCuTsaZ0/WaKyD+5hI/uKKHHK8ITJ2N5rzhl6IHgHks1VH7GIWZzRWJ+
+         bwDA==
+X-Gm-Message-State: AOAM532tbrSj3MEjgHRrIVV2/mQU8ADdzun98UBQvHyz4rWBfy7ygzq1
+        XOqocdQ27GC5edeYoNhGNXtlEEbXhhEkulKe43a+HKv9C9CHomiiCFYq3XpLqBppIeArZaUYV9a
+        S7m6vKPGEEWr+3KvmTCnVfoVS3uvyjcjyMhtGHKfx
+X-Received: by 2002:a17:90a:4681:: with SMTP id z1mr5183991pjf.113.1632905713772;
+        Wed, 29 Sep 2021 01:55:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydUreqCR7ZXrQxa1ejm5Ws4DLk1ZdEDvtvnO4+uuq60yPu0mZeyc+UQwCz5Ni75631zxPLHFOTzFhdxTyuRMo=
+X-Received: by 2002:a17:90a:4681:: with SMTP id z1mr5183972pjf.113.1632905713412;
+ Wed, 29 Sep 2021 01:55:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=x5Y9j5QPtBpKPfcAJK/OT7BRgKvI7pSChd5/rmmq6Xw=; m=uiYraG79NtpzJXVYTkT2krJ2oKsGebV/4PDlvGFyew0=; p=P030KPvGBgn0wACiWmlhwa6Q6u7mafsHSYpCChEQFbg=; g=d855fa8a2569029e17368da8c0bf9fc2e6496586
-X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFUKVkACgkQwfwUeK3K7AnywQf/YyT M2KQv0iVpRpzsG16PpDNiEPC9rdggnY7dQr4kG+ZVuebrIwmozRFQNmzB3qStmdKmTYQNIYAN9aZT N57ua890gfP8RZLIdmzppS+R3scVm4qrAaYlrVQMLOeX1u2eGpoBbCFQhJt59S10BFpDe3yqXTeG7 iZw077F8icBm71e+fBqLbUTd8h46H1Isc4UskBU/VpSKdwyWHMVsmYfUi/f7m69IrYQ1eCV7PlNHH qk3a52EUxda9B6gfEYuy2qbSX57hIL5sXTW4dGuLi0d/xNs9Q/h8x4XpbnUV7b1/8xKnmYiy8qzZq Fx3d9cNhk25gOKOiAcc1UbnVl/xHP7Q==
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210928083906.43983-1-benjamin.tissoires@redhat.com>
+ <20210928083906.43983-3-benjamin.tissoires@redhat.com> <5a90b82581ded600971076c3d4d28caa5fc24c33.camel@devoid-pointer.net>
+In-Reply-To: <5a90b82581ded600971076c3d4d28caa5fc24c33.camel@devoid-pointer.net>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 29 Sep 2021 10:55:01 +0200
+Message-ID: <CAO-hwJJTYvDmyyVEuYPQ-M2kvoKndwH7JOAy7h5YVc3GGAHObw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] HID: lg4ff: do not return a value for deinit
+To:     =?UTF-8?B?TWljaGFsIE1hbMO9?= <madcatxster@devoid-pointer.net>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct pci_dev::driver holds (apart from a constant offset) the same
-data as struct pci_dev::dev->driver. With the goal to remove struct
-pci_dev::driver to get rid of data duplication replace getting the
-driver name by dev_driver_string() which implicitly makes use of struct
-pci_dev::dev->driver.
+On Wed, Sep 29, 2021 at 9:50 AM Michal Mal=C3=BD
+<madcatxster@devoid-pointer.net> wrote:
+>
+> On Tue, 2021-09-28 at 10:39 +0200, Benjamin Tissoires wrote:
+> > When removing a device, we can not do much if there is an error while
+> > removing it. Use the common pattern of returning void there so we are
+> > not tempted to check on the return value.
+> > And honestly, we were not looking at it, so why bother?
+> >
+> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > ---
+> >  drivers/hid/hid-lg4ff.c | 5 ++---
+> >  drivers/hid/hid-lg4ff.h | 4 ++--
+> >  2 files changed, 4 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/hid/hid-lg4ff.c b/drivers/hid/hid-lg4ff.c
+> > index 5e6a0cef2a06..ad75c86e0bf5 100644
+> > --- a/drivers/hid/hid-lg4ff.c
+> > +++ b/drivers/hid/hid-lg4ff.c
+> > @@ -1445,7 +1445,7 @@ int lg4ff_init(struct hid_device *hid)
+> >         return error;
+> >  }
+> >
+> > -int lg4ff_deinit(struct hid_device *hid)
+> > +void lg4ff_deinit(struct hid_device *hid)
+> >  {
+> >         struct lg4ff_device_entry *entry;
+> >         struct lg_drv_data *drv_data;
+> > @@ -1453,7 +1453,7 @@ int lg4ff_deinit(struct hid_device *hid)
+> >         drv_data =3D hid_get_drvdata(hid);
+> >         if (!drv_data) {
+> >                 hid_err(hid, "Error while deinitializing device, no
+> > private driver data.\n");
+> > -               return -1;
+> > +               return;
+> >         }
+> >         entry =3D drv_data->device_props;
+> >         if (!entry)
+> > @@ -1489,5 +1489,4 @@ int lg4ff_deinit(struct hid_device *hid)
+> >         kfree(entry);
+> >  out:
+> >         dbg_hid("Device successfully unregistered\n");
+> > -       return 0;
+> >  }
+> > diff --git a/drivers/hid/hid-lg4ff.h b/drivers/hid/hid-lg4ff.h
+> > index 25bc88cd877e..4440e4ea2267 100644
+> > --- a/drivers/hid/hid-lg4ff.h
+> > +++ b/drivers/hid/hid-lg4ff.h
+> > @@ -10,14 +10,14 @@ int lg4ff_adjust_input_event(struct hid_device
+> > *hid, struct hid_field *field,
+> >  int lg4ff_raw_event(struct hid_device *hdev, struct hid_report
+> > *report,
+> >                 u8 *rd, int size, struct lg_drv_data *drv_data);
+> >  int lg4ff_init(struct hid_device *hdev);
+> > -int lg4ff_deinit(struct hid_device *hdev);
+> > +void lg4ff_deinit(struct hid_device *hdev);
+> >  #else
+> >  static inline int lg4ff_adjust_input_event(struct hid_device *hid,
+> > struct hid_field *field,
+> >                                            struct hid_usage *usage, s32
+> > value, struct lg_drv_data *drv_data) { return 0; }
+> >  static inline int lg4ff_raw_event(struct hid_device *hdev, struct
+> > hid_report *report,
+> >                 u8 *rd, int size, struct lg_drv_data *drv_data) {
+> > return 0; }
+> >  static inline int lg4ff_init(struct hid_device *hdev) { return 0; }
+> > -static inline int lg4ff_deinit(struct hid_device *hdev) { return 0; }
+> > +static inline void lg4ff_deinit(struct hid_device *hdev) { return; }
+> >  #endif
+> >
+> >  #endif
+>
+> I'll try to dig up some lg4ff hardware to make sure but AFAICT skipping
+> the init routines will make all of the devices look like standard HID
+> stuff. Mind that disabling lg4ff disables more than just FF for the
+> affected Logitech wheels but that probably doesn't matter.
+>
+> Perhaps a bit better approach would be to remove the special handling
+> of these devices from the hid-lg driver altogether when the respective
+> submodules are switched off. That way the devices should be handled
+> just by the generic HID code and we won't need the dud functions at
+> all.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/crypto/hisilicon/qm.c                        | 2 +-
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c   | 2 +-
- drivers/net/ethernet/marvell/prestera/prestera_pci.c | 2 +-
- drivers/net/ethernet/mellanox/mlxsw/pci.c            | 2 +-
- drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c | 3 ++-
- 5 files changed, 6 insertions(+), 5 deletions(-)
+I'm OK with that approach. there are a few bits in the following code
+that need changes, see my replies inline.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 369562d34d66..8f361e54e524 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -3085,7 +3085,7 @@ static int qm_alloc_uacce(struct hisi_qm *qm)
- 	};
- 	int ret;
- 
--	ret = strscpy(interface.name, pdev->driver->name,
-+	ret = strscpy(interface.name, dev_driver_string(&pdev->dev),
- 		      sizeof(interface.name));
- 	if (ret < 0)
- 		return -ENAMETOOLONG;
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 7ea511d59e91..f279edfce3f1 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -606,7 +606,7 @@ static void hns3_get_drvinfo(struct net_device *netdev,
- 		return;
- 	}
- 
--	strncpy(drvinfo->driver, h->pdev->driver->name,
-+	strncpy(drvinfo->driver, dev_driver_string(&h->pdev->dev),
- 		sizeof(drvinfo->driver));
- 	drvinfo->driver[sizeof(drvinfo->driver) - 1] = '\0';
- 
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-index a250d394da38..a8f007f6dad2 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-@@ -720,7 +720,7 @@ static int prestera_fw_load(struct prestera_fw *fw)
- static int prestera_pci_probe(struct pci_dev *pdev,
- 			      const struct pci_device_id *id)
- {
--	const char *driver_name = pdev->driver->name;
-+	const char *driver_name = dev_driver_string(&pdev->dev);
- 	struct prestera_fw *fw;
- 	int err;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/pci.c b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-index 13b0259f7ea6..8f306364f7bf 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-@@ -1876,7 +1876,7 @@ static void mlxsw_pci_cmd_fini(struct mlxsw_pci *mlxsw_pci)
- 
- static int mlxsw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
--	const char *driver_name = pdev->driver->name;
-+	const char *driver_name = dev_driver_string(&pdev->dev);
- 	struct mlxsw_pci *mlxsw_pci;
- 	int err;
- 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
-index 0685ece1f155..1de076f55740 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
-@@ -202,7 +202,8 @@ nfp_get_drvinfo(struct nfp_app *app, struct pci_dev *pdev,
- {
- 	char nsp_version[ETHTOOL_FWVERS_LEN] = {};
- 
--	strlcpy(drvinfo->driver, pdev->driver->name, sizeof(drvinfo->driver));
-+	strlcpy(drvinfo->driver, dev_driver_string(&pdev->dev),
-+		sizeof(drvinfo->driver));
- 	nfp_net_get_nspinfo(app, nsp_version);
- 	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
- 		 "%s %s %s %s", vnic_version, nsp_version,
--- 
-2.30.2
+>
+> I only checked that this compiles. I can test this with real HW if you
+> find this acceptable.
+
+That would be great, I don't have the HW :)
+
+>
+> MM
+>
+> ---
+>
+> diff --git a/drivers/hid/hid-lg.c b/drivers/hid/hid-lg.c
+> index d40af911df63..f698c2f6e810 100644
+> --- a/drivers/hid/hid-lg.c
+> +++ b/drivers/hid/hid-lg.c
+> @@ -49,6 +49,19 @@
+>  #define FFG_RDESC_ORIG_SIZE    85
+>  #define FG_RDESC_ORIG_SIZE     82
+>
+> +#ifndef CONFIG_LOGITECH_FF
+> +static int lgff_init(struct hid_device *hid) { return 0; }
+> +#endif
+> +#ifndef CONFIG_LOGIRUMBLEPAD2_FF
+> +static int lg2ff_init(struct hid_device *hid) { return 0; }
+> +#endif
+> +#ifndef CONFIG_LOGIG940_FF
+> +static int lg3ff_init(struct hid_device *hid) { return 0; }
+> +#endif
+> +#ifndef CONFIG_LOGIWHEELS_FF
+> +static int lg4ff_init(struct hid_device *hid) { return 0; }
+> +#endif
+
+I would rather keep those definitions in hid-lg.h, not inlined in the code
+
+> +
+>  /* Fixed report descriptors for Logitech Driving Force (and Pro)
+>   * wheel controllers
+>   *
+> @@ -729,9 +742,11 @@ static int lg_event(struct hid_device *hdev, struct =
+hid_field *field,
+>                                 -value);
+>                 return 1;
+>         }
+> +#ifdef CONFIG_LOGIWHEELS_FF
+>         if (drv_data->quirks & LG_FF4) {
+>                 return lg4ff_adjust_input_event(hdev, field, usage, value=
+, drv_data);
+>         }
+> +#endif
+
+Let's not sprinkle the code with #ifdef. Just add an inline
+lg4ff_adjust_input_event() in hid-lg4ff.h that returns 0.
+
+>
+>         return 0;
+>  }
+> @@ -741,8 +756,10 @@ static int lg_raw_event(struct hid_device *hdev, str=
+uct hid_report *report,
+>  {
+>         struct lg_drv_data *drv_data =3D hid_get_drvdata(hdev);
+>
+> +#ifdef CONFIG_LOGIWHEELS_FF
+>         if (drv_data->quirks & LG_FF4)
+>                 return lg4ff_raw_event(hdev, report, rd, size, drv_data);
+> +#endif
+
+same here
+
+>
+>         return 0;
+>  }
+> @@ -844,8 +861,10 @@ static int lg_probe(struct hid_device *hdev, const s=
+truct hid_device_id *id)
+>  static void lg_remove(struct hid_device *hdev)
+>  {
+>         struct lg_drv_data *drv_data =3D hid_get_drvdata(hdev);
+> +#ifdef CONFIG_LOGIWHEELS_FF
+>         if (drv_data->quirks & LG_FF4)
+>                 lg4ff_deinit(hdev);
+> +#endif
+
+same here :)
+
+>         hid_hw_stop(hdev);
+>         kfree(drv_data);
+>  }
+> @@ -869,45 +888,54 @@ static const struct hid_device_id lg_devices[] =3D =
+{
+>                 .driver_data =3D LG_NOGET },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_D=
+UAL_ACTION),
+>                 .driver_data =3D LG_NOGET },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+HEEL),
+> -               .driver_data =3D LG_NOGET | LG_FF4 },
+> -
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_R=
+UMBLEPAD_CORD),
+> -               .driver_data =3D LG_FF2 },
+> +#ifdef CONFIG_LOGITECH_FF
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_R=
+UMBLEPAD),
+>                 .driver_data =3D LG_FF },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_R=
+UMBLEPAD2_2),
+>                 .driver_data =3D LG_FF },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G=
+29_WHEEL),
+> -               .driver_data =3D LG_FF4 },
+> +
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+INGMAN_F3D),
+>                 .driver_data =3D LG_FF },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_F=
+ORCE3D_PRO),
+>                 .driver_data =3D LG_FF },
+> +#endif
+> +#ifdef CONFIG_LOGIRUMBLEPAD2_FF
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_R=
+UMBLEPAD_CORD),
+> +               .driver_data =3D LG_FF2 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_V=
+IBRATION_WHEEL),
+> +               .driver_data =3D LG_FF2 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_R=
+UMBLEPAD2),
+> +               .driver_data =3D LG_NOGET | LG_FF2 },
+
+That's the part I was not entirely sure: I *think* not having NOGET
+when using the generic path is OK now, but having a real hardware test
+would be nice (if you still have this one).
+Worse case I should be able to get this tested through the RHEL bug,
+but that would take some time to get.
+
+> +#endif
+> +#ifdef CONFIG_LOGIG940_FF
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_F=
+LIGHT_SYSTEM_G940),
+> +               .driver_data =3D LG_FF3 },
+> +#endif
+> +#ifdef CONFIG_LOGIWHEELS_FF
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_M=
+OMO_WHEEL),
+>                 .driver_data =3D LG_NOGET | LG_FF4 },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_M=
+OMO_WHEEL2),
+>                 .driver_data =3D LG_FF4 },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_V=
+IBRATION_WHEEL),
+> -               .driver_data =3D LG_FF2 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+HEEL),
+> +               .driver_data =3D LG_NOGET | LG_FF4 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_D=
+FP_WHEEL),
+> +               .driver_data =3D LG_NOGET | LG_FF4 },
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G=
+27_WHEEL),
+> +               .driver_data =3D LG_FF4 },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G=
+25_WHEEL),
+>                 .driver_data =3D LG_FF4 },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_D=
+FGT_WHEEL),
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G=
+29_WHEEL),
+>                 .driver_data =3D LG_FF4 },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G=
+27_WHEEL),
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_D=
+FGT_WHEEL),
+>                 .driver_data =3D LG_FF4 },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_D=
+FP_WHEEL),
+> +       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+INGMAN_FFG),
+>                 .driver_data =3D LG_NOGET | LG_FF4 },
+> +#else  /* Wii wheel still needs a bit of special handling */
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+II_WHEEL),
+> -               .driver_data =3D LG_FF4 },
+> +               .driver_data =3D 0 },
+
+I am not sure about this bit. Can you expand on it a bit?
+
+> +#endif
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+INGMAN_FG),
+>                 .driver_data =3D LG_NOGET },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_W=
+INGMAN_FFG),
+> -               .driver_data =3D LG_NOGET | LG_FF4 },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_R=
+UMBLEPAD2),
+> -               .driver_data =3D LG_NOGET | LG_FF2 },
+> -       { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_F=
+LIGHT_SYSTEM_G940),
+> -               .driver_data =3D LG_FF3 },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_SPACENAVIG=
+ATOR),
+>                 .driver_data =3D LG_RDESC_REL_ABS },
+>         { HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_SPACETRAVE=
+LLER),
+> diff --git a/drivers/hid/hid-lg.h b/drivers/hid/hid-lg.h
+> index 3d8902ba1c6c..5bcb918f4741 100644
+> --- a/drivers/hid/hid-lg.h
+> +++ b/drivers/hid/hid-lg.h
+> @@ -9,20 +9,14 @@ struct lg_drv_data {
+>
+>  #ifdef CONFIG_LOGITECH_FF
+>  int lgff_init(struct hid_device *hdev);
+> -#else
+> -static inline int lgff_init(struct hid_device *hdev) { return -1; }
+>  #endif
+>
+>  #ifdef CONFIG_LOGIRUMBLEPAD2_FF
+>  int lg2ff_init(struct hid_device *hdev);
+> -#else
+> -static inline int lg2ff_init(struct hid_device *hdev) { return -1; }
+>  #endif
+>
+>  #ifdef CONFIG_LOGIG940_FF
+>  int lg3ff_init(struct hid_device *hdev);
+> -#else
+> -static inline int lg3ff_init(struct hid_device *hdev) { return -1; }
+>  #endif
+>
+>  #endif
+> diff --git a/drivers/hid/hid-lg4ff.h b/drivers/hid/hid-lg4ff.h
+> index e5c55d515ac2..c529135bba96 100644
+> --- a/drivers/hid/hid-lg4ff.h
+> +++ b/drivers/hid/hid-lg4ff.h
+> @@ -11,13 +11,6 @@ int lg4ff_raw_event(struct hid_device *hdev, struct hi=
+d_report *report,
+>                 u8 *rd, int size, struct lg_drv_data *drv_data);
+>  int lg4ff_init(struct hid_device *hdev);
+>  int lg4ff_deinit(struct hid_device *hdev);
+> -#else
+> -static inline int lg4ff_adjust_input_event(struct hid_device *hid, struc=
+t hid_field *field,
+> -                                          struct hid_usage *usage, s32 v=
+alue, struct lg_drv_data *drv_data) { return 0; }
+> -static inline int lg4ff_raw_event(struct hid_device *hdev, struct hid_re=
+port *report,
+> -               u8 *rd, int size, struct lg_drv_data *drv_data) { return =
+0; }
+> -static inline int lg4ff_init(struct hid_device *hdev) { return -1; }
+> -static inline int lg4ff_deinit(struct hid_device *hdev) { return -1; }
+>  #endif
+
+I would keep all of those static inline defines here, as mentioned above.
+
+This patch is also missing a change in hid-quirks.c: we need to remove
+them from the hid_have_special_driver[] list, or they will simply not
+bind to anything when they are plugged with the FF disabled.
+We could also add #ifdef in hid_have_special_driver[], but if it works
+without, that would be better actually.
+
+Cheers,
+Benjamin
+
+>
+>  #endif
+>
+>
 
