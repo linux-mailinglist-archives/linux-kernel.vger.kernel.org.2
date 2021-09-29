@@ -2,588 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A28341BF16
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99DB41BF1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244338AbhI2GZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:25:12 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:31905 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244320AbhI2GZK (ORCPT
+        id S244357AbhI2G0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:26:47 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:20458 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243959AbhI2G0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:25:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1632896609; x=1664432609;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=l+xWHsw01t2NaxZPyXk5r3foFcaGZrEMuYu0+ycZCxs=;
-  b=WNZ+61fMlH+b8wbTQyPX42iJc/rKKXp3vLZfnw70wmxkTx69q5NviRDb
-   Xz5d5oEHPr4X6xj+x/G50BmoIJyqGt6JIr6w9QkUwhxTUq/9SeEVbd94M
-   OXmrSTlyM+Vl9wSZJmNXbStkF0/++46wv2TIXE3OFg4Xk+G8A7HdHtzj3
-   PF9XgO2IzeONz3qBJAau46BJSePFK2KhwaY+BPdUk5kVyxrZBKpipg52W
-   OpH8URHBBKuhQ45mIiezMYECgTolyMPII3zJM9/9cjZrJJfU19tvmmKoC
-   4SLHKzylpukEnUj1ONneFmOOVZMifneeZc1TAfvGOeAZEU0JRpM0+5JA4
-   g==;
-IronPort-SDR: Q18k2Ip1dtP/QGjrrxdDaqWWnnvVc01VDNgth+diS018/Zh8ZiT46dcli0KclcbW2DH9koCqqW
- s9MZGSO7MhMWsqmk8WnCj2XCyRduHEBiocZilKln1R/Rpz/uQuwHwjgnYF7uSai6qXkrQ115qy
- rBp4Rs82TW1t9XLZnm7bU1fLdsBS/kijIho4YzR8TqoMuLeOuajk7WXOQDr2krznsoaMX7egw3
- FPv39mwaezLXPs8BX2Tl4D/GQMJulGSENUb4Fcvltm2uoG7vRfpvzhOluofpi1FRw66QSfJG5K
- PybzSdd2J9fERQytDYth3gKa
-X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
-   d="scan'208";a="138362179"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Sep 2021 23:23:28 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 28 Sep 2021 23:23:28 -0700
-Received: from CHE-LT-I17972LX.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 28 Sep 2021 23:23:22 -0700
-From:   LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-To:     <wsa@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <digetx@gmail.com>, <treding@nvidia.com>,
-        <mirq-linux@rere.qmqm.pl>, <s.shtylyov@omp.ru>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <UNGLinuxDriver@microchip.com>
-Subject: [PATCH v1 2/2] i2c:busses:Read and Write routines for PCI1XXXX I2C module
-Date:   Wed, 29 Sep 2021 11:52:15 +0530
-Message-ID: <20210929062215.23905-3-LakshmiPraveen.Kopparthi@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
+        Wed, 29 Sep 2021 02:26:46 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T4oQIK005976;
+        Wed, 29 Sep 2021 06:22:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=cTCm3wqcqo977+EdF0rR4gATOAWbx+Ocr1vcuZk1dPE=;
+ b=E33udLQ2bCU2i40f/oC/7Bb9BKnoeytehWr2IglThra+ZRVwWlarJnn/p3mEmchy53f7
+ NCYKJJbj9H9nVmVYgLp4YNLfMNijq2KzsEaoTUkIkunDHw85VLG9Y30nAZfhzSmS5Ibf
+ FSAX26Jl+5L/IGcUB3eiJo+tKy5fIAKf0TaIup9waRNW5pTJPuNYanNi8vFV2vsij8Ti
+ HUGa/yoEYSLP9PQQVmNcmAyCwVnAWVHzOjGKto4nFYrLXtYe9umQujU/6tC2ieYveeb5
+ sbfr2sv6TNZ979XY6xuXsNrZiWCvdWaQ6azq/12CH9cNJBzig4nU2xatQ+3buoq2A6T7 Tw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bchfkrc9x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Sep 2021 06:22:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18T6AQGv034629;
+        Wed, 29 Sep 2021 06:22:47 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by userp3030.oracle.com with ESMTP id 3bc3bjetmr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Sep 2021 06:22:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OsOrWLyEydcLLiLFfowVw6m7ze0fLpqUvZkYrezZidHDACkegxDwzlFzbGU3PqlYONI2KUfrR5FfPfzb4+oHlVzbDdEL8m50fPRbzkYsUzVfefQe7oqb9WrVY333TNWV88Ecn4+CE7BA9qPRqfzMt92vj9y6GXVnIIMUYZreptcXrkKy+osm9RQo1zAfLQYEnU8utehIdvmimkaz8aASki3tl5mXG1eUvam1kkIzDrySVOe+9uhGYnY7ivSZIBRZZX/IpalZEqXx3HhB2Z2bH4ECCjscCIomC4eL9BInkICw66CDYRvnrhsKCwemGYEVVe5jTFgRmuTbwI93OMLzgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=cTCm3wqcqo977+EdF0rR4gATOAWbx+Ocr1vcuZk1dPE=;
+ b=MeJ2Caw8ryd6tGVyg+c/Tas99Rsk5ppPQxcdFCwJwP3+UEzYHDvamOj+4Kk0KXTbAegPpQxNg2q+mpaZExBTKzWD9S7ymL6Wpg8ROyZVonqGwKbmqEWqI5Oba1sp5IiYDfxUf+iKtZGbCp0bJpXA7qjmTLGNotugryVVtgcltKaHIcAlGipCPZBAVMnCViFUcwLk881iGCv3IPR5NZfcHwsWbwAu+fkgAa90FGSAvogDZMTQg6lSq4NbXmLqRLKZIiRq/n5zN3Tu+s7/V0Ger5B0c/PvHKil/ZKFe3nRPYUhSciPmuZwOe+nNwuaxZd/J7lGVnBMsAmckxnoyVOxBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cTCm3wqcqo977+EdF0rR4gATOAWbx+Ocr1vcuZk1dPE=;
+ b=htifoA/WKRyFLuQ6F1Z+5WHwufcj9WQl+sJGbmw7t992gN3ETJxUqCOhSgl8f3PEUm+flsHTk++sjxOpjx7BKDGuW1p07OQAx5S4+le/juAjkh6deM1DDz2FRl6PUIWuSshYmalPglVMSDwCwj2y57waCntGFjud2ip6s7Eqlt4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO6PR10MB5571.namprd10.prod.outlook.com
+ (2603:10b6:303:146::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Wed, 29 Sep
+ 2021 06:22:45 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4544.021; Wed, 29 Sep 2021
+ 06:22:45 +0000
+Date:   Wed, 29 Sep 2021 09:22:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, buytenh@marvell.com,
+        afleming@freescale.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 2/2] phy: mdio: fix memory leak
+Message-ID: <20210929062226.GR2083@kadam>
+References: <2324212c8d0a713eba0aae3c25635b3ca5c5243f.1632861239.git.paskripkin@gmail.com>
+ <55e9785e2ae2eae03c4af850a07e3297c5a0b784.1632861239.git.paskripkin@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55e9785e2ae2eae03c4af850a07e3297c5a0b784.1632861239.git.paskripkin@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNXP275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::20)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Received: from kadam (62.8.83.99) by JNXP275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 06:22:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 247ac3ed-1719-4bfb-0d1c-08d983118ca9
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5571:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR10MB55715D584E733DFB083AC7558EA99@CO6PR10MB5571.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B5OeiulEMKLJ+tHUwpqerfR98q47eEm6Luw/FQp1KzvdFDQa5NN4RnOXzYaU6Elry+fsjducftg9ocxVw2EvkIHkOo5z+xUdd7Ts40tTiEBp8y7bZPxeGFR7y6AGTAeIHGEuuDjx13qMCt1Leysr7sP9LWKYATtP2jstq15LWQLhtJh0ZrK+EGbuNfFZ7HfmUTV/czzQP4j44fvdZfpTqUUM4Ahf4HBP4qUT6MDFyuNkvBhZnBYTn4QMmE4ReNgOfYnCz/wrx6nDUf7CiWv6GOT5q62frs7noq97ZjKSS+xbvtm/2CxXX7U4xm58h9ImWLDRX2w4Viz5Jj5hbiGQBzEzS5J/k3c7k5DVbdUXbeUdizCBgwlsucFLT9Fr7CxH2Zp0Oery+Uzj01noh5nhhxqo6af/IelCIaQAGy7xc2YEfivQWTX5fDzUMFsFju9KSyWNhEFKZQBPGyrkVtCubBExJACcIgM+6gLOQZleXv7Sv8R2LWHgj9muEl5G+wo6Ho60liXxppVBvEKgvVbMV5X71kDTIiXgLc0UD2tR/y9SarVGRwgn2EQiWaTr4E5jEPTlpVU11luGk7Hbz8Z/k/BwDT2QaLWQXPmXo2eMcaFhdeihTYn4fs+blp6TMyPCx/N5nj+5XUb3X3t7kQZs+oc/ZOJnV2qube3ihGruv7wVTMYl5YqiNqng52EE572qGyLiE2qlG58aHl4U8sn85/jV6UgoGGxLIU7DwBoCH9CYMPHO0r5cy0nrcmNpeHxQVu7f/e1d+qfEc2JMdE5jP1Q/jDvgZru73acMY7WsV4o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(6666004)(966005)(86362001)(8936002)(66556008)(8676002)(66946007)(956004)(9576002)(4326008)(33656002)(66476007)(52116002)(6496006)(38100700002)(38350700002)(1076003)(508600001)(9686003)(2906002)(83380400001)(7416002)(55016002)(33716001)(26005)(44832011)(5660300002)(6916009)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ESkR/2FaC8dshSDHpShN/MqW/55/4ldrn+REMGRzStJth1C1V6bFYT6H//fh?=
+ =?us-ascii?Q?QQOKRBuFBT2X1skOE5WUWtVPkv6BBg9kBRV1ImekVtHoZmRQmcIPr49o5HhB?=
+ =?us-ascii?Q?QkW4/o97mrt94tPAMm7KiUoWuTQXU/nYwUzrCjUvsyOMeOYfiPzsMibIGQsQ?=
+ =?us-ascii?Q?tvWsIZmu8eR0MbwFUX3Xd21/ma7LczfolGBTkcUGtO9d/TRBeZPHtkTqvuw/?=
+ =?us-ascii?Q?1p9gSmsssrs5gI8sosmIIS5Azt9rSK2g9kwoT5GXpwL8OEcbyWx549JoxUNM?=
+ =?us-ascii?Q?Vio3aOPysv+spC583KdZz0RmsGN8wTX7fFUpPXTKoiZfrn0zpnwTnEPyB1OK?=
+ =?us-ascii?Q?08rBA6gfpqGM3ORH6LcbckJmAB1vyARZOm7B/1nM93iXwghHeRDHbcKCVaE7?=
+ =?us-ascii?Q?+2cqm6FQ9hl8/cHhtX+WhdMsjmfKAC9eZmpj4ZuBSyUCAYexTBsbF3Gffyx6?=
+ =?us-ascii?Q?EnJFrtJXm5ia8FDjUYptO9cm0/DKXW66iyexs8PtFQCdoVzMRD8yDHsA4NYi?=
+ =?us-ascii?Q?LL8N783+h9u5yM2psWkKzeZsPgVjxkgifmKT+E8s3+lpAcbsDAfAmHeRn7yk?=
+ =?us-ascii?Q?7/Rq4WqOaoAfKDM9bWVZzEHgYfCVMoFpM5vgYO1e+CWhJj+8KOD2L8DbriUI?=
+ =?us-ascii?Q?qnxwFi8LtzrEfW2M4Rp0HMClta72ofnSAqYF9iKCucZJlpnGXT9tMp0kHx0j?=
+ =?us-ascii?Q?aGJ8YcuUMqW4aKW9TkQExeYclaFXKT3H3f8GOTUVy1MhS13lW3UiKNUEYSG5?=
+ =?us-ascii?Q?QAZhYBODVxy40KclbzaAnmZ1tZ2Tmt0s43aZu/q27p27gcbPdg5qOesUOH9i?=
+ =?us-ascii?Q?dnPu0+qbriHeF2YWCuRsz6NOqT29EGx1gvL8CVAQd/YTPSDs6OTHLCvNTUs0?=
+ =?us-ascii?Q?OpeENA/XzwYtsLdKAqNx494TO56Ff4aqNzDnSiUBnLXC6r3fd3SWARdIU7oV?=
+ =?us-ascii?Q?mgqxXOOA0S11LiyqSBFzlnJakhKlgu2I+/8WWYen3hPKoK1YL7T8dxdtZiWi?=
+ =?us-ascii?Q?OwKoW+I0E2ZHiw41AUGwYfbu61xnzngjsQMKgw/YWvHoE/6jRxSTe01Cu7/2?=
+ =?us-ascii?Q?xZFd1M+aRBp9hH/qr0BNMksPjNU43Vy2DOPwSiuykiFd/kXS2PVHOpubIGtA?=
+ =?us-ascii?Q?cT6eaN4kEadThnA5WVrqqePPHB3r04pEMaZ+EJHV2UEJz2Qnii7ru0LPqgD6?=
+ =?us-ascii?Q?sbmKMdSE5pugHv9NyB2e+HxkffefCoAYN8T7sqCb8B2yNrLc0jCOhh0PzwO9?=
+ =?us-ascii?Q?gg3fN+YTyCPUhASTC5OFE11xoMwo3XOGlIryQ3GGW0L122FDAm2PsVZXudkF?=
+ =?us-ascii?Q?txjuF32W399r1UPHz1Kc0jxI?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 247ac3ed-1719-4bfb-0d1c-08d983118ca9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 06:22:45.2014
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X0egyFbPT4tQNBC6Mre+4XwqvrJPrG9V4Jpm1tqCsSlvliUAHYSTU35YpD91k4jOLGn3QkboRV/+iVt3TYS3X0f+9R7VIRjuwmYxyoWsOO8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5571
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10121 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ mlxscore=0 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109290037
+X-Proofpoint-ORIG-GUID: TD63KVpMhPvADrFqekozpQtnKqzgUspl
+X-Proofpoint-GUID: TD63KVpMhPvADrFqekozpQtnKqzgUspl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Read and Write callbacks for PCI1XXXX I2C adapter is added.
+On Tue, Sep 28, 2021 at 11:40:15PM +0300, Pavel Skripkin wrote:
+> Syzbot reported memory leak in MDIO bus interface, the problem was in
+> wrong state logic.
+> 
+> MDIOBUS_ALLOCATED indicates 2 states:
+> 	1. Bus is only allocated
+> 	2. Bus allocated and __mdiobus_register() fails, but
+> 	   device_register() was called
+> 
+> In case of device_register() has been called we should call put_device()
+> to correctly free the memory allocated for this device, but mdiobus_free()
+> calls just kfree(dev) in case of MDIOBUS_ALLOCATED state
+> 
+> To avoid this behaviour we need to set bus->state to MDIOBUS_UNREGISTERED
+> _before_ calling device_register(), because put_device() should be
+> called even in case of device_register() failure.
+> 
+> Link: https://lore.kernel.org/netdev/YVMRWNDZDUOvQjHL@shell.armlinux.org.uk/ 
+> Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
+> Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Signed-off-by: LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
----
- drivers/i2c/busses/i2c-mchp-pci1xxxx.c | 485 +++++++++++++++++++++++++
- 1 file changed, 485 insertions(+)
+Thanks!
 
-diff --git a/drivers/i2c/busses/i2c-mchp-pci1xxxx.c b/drivers/i2c/busses/i2c-mchp-pci1xxxx.c
-index 5b51f20fe98e..0ac05a65a3e4 100644
---- a/drivers/i2c/busses/i2c-mchp-pci1xxxx.c
-+++ b/drivers/i2c/busses/i2c-mchp-pci1xxxx.c
-@@ -232,6 +232,147 @@ struct pci1xxxx_i2c {
- 	u32 flags;
- };
- 
-+static void pci1xxxx_i2c_send_start(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMB_CORE_CMD_REG_OFF1);
-+	regval |= SMB_CORE_CMD_START;
-+	writeb(regval, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF1));
-+}
-+
-+static void pci1xxxx_i2c_send_stop(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMB_CORE_CMD_REG_OFF1);
-+	regval |= SMB_CORE_CMD_STOP;
-+	writeb(regval, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF1));
-+}
-+
-+/*
-+ * when accessing the core control reg, we should not do a read modified write
-+ * as there are write '1' to clear bits. Hence do a write with the specific
-+ * bits that needs to be set
-+ */
-+static void pci1xxxx_i2c_set_clear_FW_ACK(struct pci1xxxx_i2c *i2c, bool set)
-+{
-+	u8 regval;
-+
-+	if (set)
-+		regval = SMB_CORE_CTRL_FW_ACK | SMB_CORE_CTRL_ESO;
-+	else
-+		regval = SMB_CORE_CTRL_ESO;
-+
-+	writeb(regval, (i2c->i2c_base + SMB_CORE_CTRL_REG_OFF));
-+}
-+
-+static void pci1xxxx_i2c_buffer_write(struct pci1xxxx_i2c *i2c, u8 slaveaddr,
-+				      u8 transferlen, unsigned char *buf)
-+{
-+	if (slaveaddr) {
-+		writeb(slaveaddr, i2c->i2c_base + SMBUS_MST_BUF);
-+		if (buf)
-+			memcpy_toio((i2c->i2c_base + SMBUS_MST_BUF + 1), buf, transferlen);
-+	} else {
-+		if (buf)
-+			memcpy_toio((i2c->i2c_base + SMBUS_MST_BUF), buf, transferlen);
-+	}
-+}
-+
-+/*
-+ * when accessing the core control reg, we should not do a read modified write
-+ * as there are write '1' to clear bits. Hence do a write with the
-+ * specific bits that needs to be set
-+ */
-+static void pci1xxxx_i2c_enable_ESO(struct pci1xxxx_i2c *i2c)
-+{
-+	writeb(SMB_CORE_CTRL_ESO, (i2c->i2c_base + SMB_CORE_CTRL_REG_OFF));
-+}
-+
-+static void pci1xxxx_i2c_reset_counters(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMBUS_CONTROL_REG_OFF);
-+	regval |= CTL_RESET_COUNTERS;
-+	writeb(regval, (i2c->i2c_base + SMBUS_CONTROL_REG_OFF));
-+}
-+
-+static void pci1xxxx_i2c_set_transfer_dir(struct pci1xxxx_i2c *i2c, u8 direction)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMBUS_CONTROL_REG_OFF);
-+	if (direction == I2C_DIR_WRITE)
-+		regval &= ~CTL_TRANSFER_DIR;
-+	else
-+		regval |= CTL_TRANSFER_DIR;
-+
-+	writeb(regval, (i2c->i2c_base + SMBUS_CONTROL_REG_OFF));
-+}
-+
-+static void pci1xxxx_i2c_set_mcu_count(struct pci1xxxx_i2c *i2c, u8 count)
-+{
-+	writeb(count, (i2c->i2c_base + SMBUS_MCU_COUNTER_REG_OFF));
-+}
-+
-+static void pci1xxxx_i2c_set_read_count(struct pci1xxxx_i2c *i2c, u8 readcount)
-+{
-+	writeb(readcount, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF3));
-+}
-+
-+static void pci1xxxx_i2c_set_write_count(struct pci1xxxx_i2c *i2c, u8 writecount)
-+{
-+	writeb(writecount, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF2));
-+}
-+
-+static void pci1xxxx_i2c_set_proceed(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMB_CORE_CMD_REG_OFF0);
-+	regval |= SMB_CORE_CMD_M_PROCEED;
-+	writeb(regval, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF0));
-+}
-+
-+static void pci1xxxx_i2c_set_DMA_run(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMBUS_CONTROL_REG_OFF);
-+	regval |= CTL_RUN;
-+	writeb(regval, (i2c->i2c_base + SMBUS_CONTROL_REG_OFF));
-+}
-+
-+static void pci1xxxx_i2c_set_mrun(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMB_CORE_CMD_REG_OFF0);
-+	regval |= SMB_CORE_CMD_M_RUN;
-+	writeb(regval, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF0));
-+}
-+
-+static void pci1xxxx_i2c_start_DMA(struct pci1xxxx_i2c *i2c)
-+{
-+	pci1xxxx_i2c_set_DMA_run(i2c);
-+	pci1xxxx_i2c_set_mrun(i2c);
-+	pci1xxxx_i2c_set_proceed(i2c);
-+}
-+
-+static void pci1xxxx_i2c_config_asr(struct pci1xxxx_i2c *i2c, bool enable)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMB_CORE_CONFIG_REG1);
-+	if (enable)
-+		regval |= SMB_CONFIG1_ASR;
-+	else
-+		regval &= ~SMB_CONFIG1_ASR;
-+	writeb(regval, i2c->i2c_base + SMB_CORE_CONFIG_REG1);
-+}
-+
- static irqreturn_t pci1xxxx_i2c_isr(int irq, void *dev)
- {
- 	struct pci1xxxx_i2c *i2c = dev;
-@@ -284,6 +425,47 @@ static irqreturn_t pci1xxxx_i2c_isr(int irq, void *dev)
- 		return IRQ_NONE;
- }
- 
-+static void pci1xxxx_i2c_set_count(struct pci1xxxx_i2c *i2c, u8 mcucount,
-+				   u8 writecount, u8 readcount)
-+{
-+	pci1xxxx_i2c_set_mcu_count(i2c, mcucount);
-+	pci1xxxx_i2c_set_write_count(i2c, writecount);
-+	pci1xxxx_i2c_set_read_count(i2c, readcount);
-+}
-+
-+static void pci1xxxx_i2c_set_readm(struct pci1xxxx_i2c *i2c, bool enable)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMB_CORE_CMD_REG_OFF1);
-+	if (enable)
-+		regval |= SMB_CORE_CMD_READM;
-+	else
-+		regval &= ~SMB_CORE_CMD_READM;
-+
-+	writeb(regval, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF1));
-+}
-+
-+static void pci1xxxx_ack_nw_layer_intr(struct pci1xxxx_i2c *i2c,
-+				       u8 ack_intr_msk)
-+{
-+	writeb(ack_intr_msk, (i2c->i2c_base + SMBUS_INTR_STAT_REG_OFF));
-+}
-+
-+static void pci1xxxx_config_nw_layer_intr(struct pci1xxxx_i2c *i2c,
-+					  u8 intr_msk, bool enable)
-+{
-+	u8 regval;
-+
-+	regval = readb(i2c->i2c_base + SMBUS_INTR_MSK_REG_OFF);
-+	if (enable)
-+		regval &= ~(intr_msk);
-+	else
-+		regval |= intr_msk;
-+
-+	writeb(regval, (i2c->i2c_base + SMBUS_INTR_MSK_REG_OFF));
-+}
-+
- static void pci1xxxx_i2c_config_padctrl(struct pci1xxxx_i2c *i2c, bool enable)
- {
- 	u8 regval;
-@@ -428,6 +610,308 @@ static void pci1xxxx_i2c_init(struct pci1xxxx_i2c *i2c)
- 	pci1xxxx_i2c_configure_core_reg(i2c, true);
- }
- 
-+static void pci1xxxx_i2c_clear_flags(struct pci1xxxx_i2c *i2c)
-+{
-+	u8 regval;
-+	/* Reset the internal buffer counters */
-+	pci1xxxx_i2c_reset_counters(i2c);
-+
-+	/* Clear low level interrupts */
-+	regval = (COMPLETION_MNAKX | COMPLETION_IDLE | COMPLETION_MDONE);
-+	writeb(regval, i2c->i2c_base + SMB_CORE_COMPLETION_REG_OFF3);
-+
-+	reinit_completion(&i2c->i2c_xfer_done);
-+	pci1xxxx_ack_nw_layer_intr(i2c, ALL_NW_LAYER_INTERRUPTS);
-+
-+	pci1xxxx_ack_high_level_intr(i2c, ALL_HIGH_LAYER_INTR);
-+}
-+
-+static int pci1xxxx_i2c_read(struct pci1xxxx_i2c *i2c, u8 slaveaddr,
-+			     unsigned char *buf, u16 total_len)
-+{
-+	unsigned long time_left;
-+	u16 remainingbytes;
-+	u8 transferlen;
-+	int retval = 0;
-+	u8 read_count;
-+	u32 regval;
-+	u16 count;
-+
-+	/* Enable I2C master by setting the ESO bit in the CONTROL REG */
-+	pci1xxxx_i2c_enable_ESO(i2c);
-+
-+	pci1xxxx_i2c_clear_flags(i2c);
-+
-+	pci1xxxx_config_nw_layer_intr(i2c, INTR_MSK_DMA_TERM, true);
-+
-+	pci1xxxx_i2c_config_high_level_intr(i2c, (I2C_BUF_MSTR_INTR_MASK),
-+					    true);
-+
-+	/*
-+	 * The i2c transfer could be for more thatn 128 bytes. Our Core is
-+	 * capable of only sending 128 at a time.
-+	 * As for as the I2C read is concerned, initailly send the
-+	 * read slave address along with the number of bytes to read in
-+	 * ReadCount. After sending the salve address the interrupt
-+	 * is generated. On seeing the ACK for the slave address, reverse the
-+	 * buffer direction and run the DMA to initiate Read from slave
-+	 */
-+	for (count = 0; count < total_len; count += transferlen) {
-+		/*
-+		 * before start of any transaction clear the existing
-+		 * START/STOP conditions
-+		 */
-+		writeb(0x00, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF1));
-+
-+		remainingbytes = total_len - count;
-+
-+		transferlen = min(remainingbytes, (u16)(SMBUS_MAST_BUF_MAX_SIZE));
-+
-+		/*
-+		 * See if this is last chunk in the transaction. IN that case
-+		 * send a STOP at the end.
-+		 * Also in case of reads > BUF_SIZE, for the first read,
-+		 * we should not send NACK for the last byte.
-+		 * Hence a bit FW_ACK is set for those.
-+		 * For the last chunk NACK should be sent.
-+		 * Hence FW_ACK is cleared for that.
-+		 * Send STOP only when I2C_FLAGS_STOP bit is set in the flags
-+		 * and  only for the last transaction.
-+		 */
-+
-+		if (transferlen < SMBUS_MAST_BUF_MAX_SIZE) {
-+			if (i2c->flags & I2C_FLAGS_STOP) {
-+				pci1xxxx_i2c_set_clear_FW_ACK(i2c, false);
-+				pci1xxxx_i2c_send_stop(i2c);
-+			} else {
-+				pci1xxxx_i2c_set_clear_FW_ACK(i2c, true);
-+			}
-+		}
-+
-+		/* if it is the starting of the transaction send START */
-+		if (count == 0) {
-+			pci1xxxx_i2c_set_transfer_dir(i2c, I2C_DIR_WRITE);
-+
-+			pci1xxxx_i2c_send_start(i2c);
-+
-+			/* write I2c buffer with just the slave addr */
-+			pci1xxxx_i2c_buffer_write(i2c, slaveaddr, 0, NULL);
-+
-+			/* Set the count. Readcount is the transfer bytes */
-+			pci1xxxx_i2c_set_count(i2c, 1, 1, transferlen);
-+
-+			/*
-+			 * Set the Auto_start_read bit so that the HW itself
-+			 * will take care of the read phase.
-+			 */
-+
-+			pci1xxxx_i2c_config_asr(i2c, true);
-+
-+			if (i2c->flags & I2C_FLAGS_SMB_BLK_READ)
-+				pci1xxxx_i2c_set_readm(i2c, true);
-+
-+		} else {
-+			/* Set the count */
-+			pci1xxxx_i2c_set_count(i2c, 0, 0, transferlen);
-+
-+			pci1xxxx_i2c_config_asr(i2c, false);
-+
-+			pci1xxxx_i2c_clear_flags(i2c);
-+
-+			pci1xxxx_i2c_set_transfer_dir(i2c, I2C_DIR_READ);
-+		}
-+
-+		/* Start the DMA */
-+		pci1xxxx_i2c_start_DMA(i2c);
-+
-+		/* wait for the DMA_TERM interrupt */
-+		time_left = wait_for_completion_timeout
-+				(&i2c->i2c_xfer_done,
-+				PCI1XXXX_I2C_TIMEOUT);
-+		if (time_left == 0) {
-+			/* Reset the I2C core to release the bus lock */
-+			pci1xxxx_i2c_init(i2c);
-+			retval = -ETIMEDOUT;
-+			goto cleanup;
-+		}
-+
-+		/* Read the completion reg to know the reason for DMA_TERM */
-+		regval = readb(i2c->i2c_base + SMB_CORE_COMPLETION_REG_OFF3);
-+		/* Slave did not respond */
-+		if (regval & COMPLETION_MNAKX) {
-+			writeb(COMPLETION_MNAKX, (i2c->i2c_base +
-+					SMB_CORE_COMPLETION_REG_OFF3));
-+			retval = -ETIMEDOUT;
-+			goto cleanup;
-+		}
-+
-+		if (i2c->flags & I2C_FLAGS_SMB_BLK_READ) {
-+			buf[0] = readb(i2c->i2c_base +
-+				      SMBUS_MST_BUF);
-+			read_count = buf[0];
-+			memcpy_fromio(&buf[1], (i2c->i2c_base +
-+						SMBUS_MST_BUF + 1),
-+						read_count);
-+		} else {
-+			memcpy_fromio(&buf[count], (i2c->i2c_base +
-+						SMBUS_MST_BUF), transferlen);
-+		}
-+	}
-+
-+cleanup:
-+	/* Disable all the interrupts */
-+	pci1xxxx_config_nw_layer_intr(i2c, INTR_MSK_DMA_TERM, false);
-+	pci1xxxx_i2c_config_high_level_intr(i2c, (I2C_BUF_MSTR_INTR_MASK),
-+					    false);
-+	pci1xxxx_i2c_config_asr(i2c, false);
-+	return retval;
-+}
-+
-+static int pci1xxxx_i2c_write(struct pci1xxxx_i2c *i2c, u8 slaveaddr,
-+			      unsigned char *buf, u16 total_len)
-+{
-+	unsigned long time_left;
-+	u16 remainingbytes;
-+	u8 actualwritelen;
-+	u8 transferlen;
-+	int retval = 0;
-+	u32 regval;
-+	u16 count;
-+
-+	/* Enable I2C master by setting the ESO bit in the CONTROL REG */
-+	pci1xxxx_i2c_enable_ESO(i2c);
-+
-+	/* Set the Buffer direction */
-+	pci1xxxx_i2c_set_transfer_dir(i2c, I2C_DIR_WRITE);
-+
-+	pci1xxxx_config_nw_layer_intr(i2c, INTR_MSK_DMA_TERM, true);
-+
-+	pci1xxxx_i2c_config_high_level_intr(i2c, (I2C_BUF_MSTR_INTR_MASK),
-+					    true);
-+
-+	/*
-+	 * The i2c transfer could be for more thatn 128 bytes. Our Core is
-+	 * capable of only sending 128 at a time.
-+	 */
-+	for (count = 0; count < total_len; count += transferlen) {
-+		/*
-+		 * before start of any transaction clear the existing
-+		 * START/STOP conditions
-+		 */
-+		writeb(0x00, (i2c->i2c_base + SMB_CORE_CMD_REG_OFF1));
-+
-+		pci1xxxx_i2c_clear_flags(i2c);
-+
-+		remainingbytes = total_len - count;
-+		/* if it is the starting of the transaction send START */
-+		if (count == 0) {
-+			pci1xxxx_i2c_send_start(i2c);
-+
-+			/* -1 for the slave address */
-+			transferlen = min((u16)(SMBUS_MAST_BUF_MAX_SIZE - 1),
-+					  remainingbytes);
-+			pci1xxxx_i2c_buffer_write(i2c, slaveaddr,
-+						  transferlen, &buf[count]);
-+
-+			/*
-+			 * the actual number of bytes written on the I2C bus
-+			 * is including the slave address
-+			 */
-+			actualwritelen = transferlen + 1;
-+
-+		} else {
-+			transferlen = min((u16)(SMBUS_MAST_BUF_MAX_SIZE),
-+					  remainingbytes);
-+			pci1xxxx_i2c_buffer_write(i2c, 0x00, transferlen,
-+						  &buf[count]);
-+			actualwritelen = transferlen;
-+		}
-+
-+		pci1xxxx_i2c_set_count(i2c, actualwritelen,
-+				       actualwritelen, 0x00);
-+
-+		/*
-+		 * Send STOP only when I2C_FLAGS_STOP bit is set in the flags and
-+		 * only for the last transaction.
-+		 */
-+
-+		if (remainingbytes <= transferlen && (i2c->flags &
-+							I2C_FLAGS_STOP))
-+			pci1xxxx_i2c_send_stop(i2c);
-+
-+		pci1xxxx_i2c_start_DMA(i2c);
-+
-+		/*
-+		 * wait for the DMA_TERM interrupt and if the timer expires, it means
-+		 * the transaction has failed due to some bus lock as we dint get
-+		 * the interrupt
-+		 */
-+		time_left = wait_for_completion_timeout
-+				(&i2c->i2c_xfer_done, PCI1XXXX_I2C_TIMEOUT);
-+
-+		if (time_left == 0) {
-+			/* Reset the I2C core to release the bus lock */
-+			pci1xxxx_i2c_init(i2c);
-+			retval = -ETIMEDOUT;
-+			goto cleanup;
-+		}
-+
-+		regval = readb(i2c->i2c_base + SMB_CORE_COMPLETION_REG_OFF3);
-+		if (regval & COMPLETION_MNAKX) {
-+			writeb(COMPLETION_MNAKX, (i2c->i2c_base +
-+						SMB_CORE_COMPLETION_REG_OFF3));
-+			retval = -ETIMEDOUT;
-+			goto cleanup;
-+		}
-+	}
-+cleanup:
-+	/* Disable all the interrupts */
-+	pci1xxxx_config_nw_layer_intr(i2c, INTR_MSK_DMA_TERM, false);
-+	pci1xxxx_i2c_config_high_level_intr(i2c, (I2C_BUF_MSTR_INTR_MASK),
-+					    false);
-+
-+	return retval;
-+}
-+
-+static int pci1xxxx_i2c_xfer(struct i2c_adapter *adap,
-+			     struct i2c_msg *msgs, int num)
-+{
-+	struct pci1xxxx_i2c *i2c = i2c_get_adapdata(adap);
-+	u8 slaveaddr;
-+	int retval;
-+	u32 i;
-+
-+	for (i = 0; i < num; i++) {
-+		slaveaddr = i2c_8bit_addr_from_msg(&msgs[i]);
-+
-+		/*
-+		 * Send STOP if it is the Last of the transfer or
-+		 * if the I2C_M_STOP flag is set
-+		 */
-+		if ((i == (num - 1)) || (msgs[i].flags & I2C_M_STOP))
-+			i2c->flags |= I2C_FLAGS_STOP;
-+		else
-+			i2c->flags &= ~I2C_FLAGS_STOP;
-+
-+		/* When the command is a block read command */
-+		if (msgs[i].flags & I2C_M_RECV_LEN)
-+			i2c->flags |= I2C_FLAGS_SMB_BLK_READ;
-+		else
-+			i2c->flags &= ~I2C_FLAGS_SMB_BLK_READ;
-+
-+		if (msgs[i].flags & I2C_M_RD)
-+			retval = pci1xxxx_i2c_read(i2c, slaveaddr,
-+						   msgs[i].buf, msgs[i].len);
-+		else
-+			retval = pci1xxxx_i2c_write(i2c, slaveaddr,
-+						    msgs[i].buf, msgs[i].len);
-+
-+		if (retval < 0)
-+			return retval;
-+	}
-+	return num;
-+}
-+
- /*
-  * We could have used I2C_FUNC_SMBUS_EMUL but that includes
-  * SMBUS_QUICK as well.We dnt support SMBUS_QUICK hence the
-@@ -448,6 +932,7 @@ static u32 pci1xxxx_i2c_get_funcs(struct i2c_adapter *adap)
- }
- 
- static const struct i2c_algorithm pci1xxxx_i2c_algo = {
-+	.master_xfer = pci1xxxx_i2c_xfer,
- 	.functionality = pci1xxxx_i2c_get_funcs,
- };
- 
--- 
-2.25.1
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+regards,
+dan carpenter
 
