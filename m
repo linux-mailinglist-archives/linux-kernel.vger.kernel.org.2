@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A7A41C627
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10E141C622
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244670AbhI2N5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244589AbhI2N5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:57:49 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5152AC061768;
-        Wed, 29 Sep 2021 06:56:03 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id bd28so8968561edb.9;
-        Wed, 29 Sep 2021 06:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sxcdm4+gr+uFVFw9+vfSgdTzx/pDv0j7O/Mzf1AStEw=;
-        b=FvFox01IyLQ/CP6zWAocb6ZVnsjejgL4SFAuP7CM4+SDbFKJJF9t6Tzg8A3I7FVnF7
-         Qb1MlTfkqOAw+JWVTXXGruMbbTZ3o3YYuIFwQ5UdTrh8yRXGBQKP16evuCLti6ibW6+t
-         XDuA0evO7X7Eh9VZ6D6oADz41SYEjEtNJtHssROd4ZWYkGqI95Zqb6YrXGe1P26s6PXn
-         WH4R1y8MD7Onj2njbhnvstgJbGfEGo5jj0Vt8lw3SHevvgnI/EWf/jmdHULAhXYiE1ad
-         CxwUqtjwCaOR+Dk7tFbjP6T9PYeHdUyhhlNsIX3laMQ9tSp8zH8QxeKLeGoKuFmABijF
-         XMqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Sxcdm4+gr+uFVFw9+vfSgdTzx/pDv0j7O/Mzf1AStEw=;
-        b=DoqDzBzs4CJYtTn2F4IOuXhZDDOLhmIZ+Tt3N+jHt7Z7IGtef37DrR3FN0ZIrJ4HJ+
-         OLDaXy2vlLagsQWqI9HReGEPZjwEmOk68HwTVW5LzD+KDyDW1yDOj+RSeJ9N3pWJ+gBg
-         p/f3tEkVVWcBGYyHLiSktE0FQpLCH1nVauryyNE26QkhAgNNkdEM3qwJQd2nAinVKR1O
-         szWcw1DS//A/iNcpoIW/EChcUoxCdahTsQMikejGoN/WWI0/2mtjBUF7sV/YCfVePt+i
-         XNqErfpn/1D+NqO+5JhMB66sjUHxmzYLIKTgt3KXcZjiLEqFFyhX1gETxEyfKoIM83Rc
-         YAkA==
-X-Gm-Message-State: AOAM53004p0V2/h9trl5G7PJBzlojjHfv3syQ8R/KrHRCVLUZI3AMOVv
-        Dx1R78pQ8ZfYSf9Bx/TfHex/ZhmSbk2EMg==
-X-Google-Smtp-Source: ABdhPJyHRpbjQJBh+TdNwmm7dPCq8vMsaSopyGbXuk9BvP4vT/SsUAOKXoKX0BMTjADKl88UvVo+Og==
-X-Received: by 2002:a17:906:4310:: with SMTP id j16mr13967048ejm.48.1632923756586;
-        Wed, 29 Sep 2021 06:55:56 -0700 (PDT)
-Received: from anparri (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
-        by smtp.gmail.com with ESMTPSA id l10sm1618024edr.14.2021.09.29.06.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 06:55:56 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 15:55:48 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: Re: [RFC PATCH] scsi: storvsc: Fix validation for unsolicited
- incoming packets
-Message-ID: <20210929135508.GA3258@anparri>
-References: <20210928163732.5908-1-parri.andrea@gmail.com>
- <BN8PR21MB128430486E2F07EA71A7FCBDCAA89@BN8PR21MB1284.namprd21.prod.outlook.com>
- <BN8PR21MB1284DC9279AC61FE0C267C5ACAA99@BN8PR21MB1284.namprd21.prod.outlook.com>
+        id S1344362AbhI2N5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244987AbhI2N5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:57:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93920613D1;
+        Wed, 29 Sep 2021 13:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632923752;
+        bh=40noVjUADcTFuL18AWlGlA5AqcgIKtJPa+QjlNndmaA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TXfiJIOjDYkjlTD+FmCDLSeBSzFecqoscMatnM7hRJz6j32y6GJB5hP8vfTt6JtQw
+         gn9IlvE39J2vPbTRVUjz/jaT1L06lP4uP3LB0zCIkKE19K7ZX7zpsQT4XmXdM9B3iy
+         n2nfvYiL7HU7s8inrnWIlJkpF247sn7mwN75YafcAT+/81FgXfryg4c2QAJFCt3D9j
+         ZSL6MbbLr8QpNIW+tnfQcnHcw8vhN2rd8/kZZ/1VvZZr/OQDqKCuAkkyMyIRCyYbsS
+         0inDhEXaYXr29LaGJbQDn0nEnUJH5BtJeJ6S5lwBpW7pky/dWO5mnEJNlMzLVnU0ir
+         pugj5/zEYMKlg==
+Date:   Wed, 29 Sep 2021 06:55:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 4/5] net/mlx5: Register separate reload
+ devlink ops for multiport device
+Message-ID: <20210929065549.43b13203@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <a8bf9a036fe0a590df830a77a31cc81c355f525d.1632916329.git.leonro@nvidia.com>
+References: <cover.1632916329.git.leonro@nvidia.com>
+        <a8bf9a036fe0a590df830a77a31cc81c355f525d.1632916329.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN8PR21MB1284DC9279AC61FE0C267C5ACAA99@BN8PR21MB1284.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > The patch looks good. But for readability, I'd suggested put the length
-> > checks together like this:
-> > 
-> > 	u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
-> > 		stor_device->vmscsi_size_delta : VSTOR_MIN_UNSOL_PKT_SIZE;
-> > 
-> > 	if (pktlen < minlen) {
-> > 		dev_err(&device->device,
-> > 			   "Invalid pkt: id=%llu, len=%u, minlen=%u\n",
-> > 			   rqst_id, pktlen, minlen);
-> > 		continue;
-> > 	}
-> > 
-> > Thanks.
-> > 
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> The tag was meant to be:
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+On Wed, 29 Sep 2021 15:00:45 +0300 Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+>=20
+> Mulitport slave device doesn't support devlink reload, so instead of
+> complicating initialization flow with devlink_reload_enable() which
+> will be removed in next patch, set specialized devlink ops callbacks
+> for reload operations.
+>=20
+> This fixes an error when reload counters exposed (and equal zero) for
+> the mode that is not supported at all.
+>=20
+> Fixes: d89ddaae1766 ("net/mlx5: Disable devlink reload for multi port sla=
+ve device")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/devlink.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/=
+net/ethernet/mellanox/mlx5/core/devlink.c
+> index 47c9f7f5bb79..e85eca6976a9 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> @@ -309,14 +309,17 @@ static struct devlink_ops mlx5_devlink_ops =3D {
+>  #endif
+>  	.flash_update =3D mlx5_devlink_flash_update,
+>  	.info_get =3D mlx5_devlink_info_get,
+> +	.trap_init =3D mlx5_devlink_trap_init,
+> +	.trap_fini =3D mlx5_devlink_trap_fini,
+> +	.trap_action_set =3D mlx5_devlink_trap_action_set,
+> +};
+> +
+> +static struct devlink_ops mlx5_devlink_reload =3D {
+>  	.reload_actions =3D BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+>  			  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE),
+>  	.reload_limits =3D BIT(DEVLINK_RELOAD_LIMIT_NO_RESET),
+>  	.reload_down =3D mlx5_devlink_reload_down,
+>  	.reload_up =3D mlx5_devlink_reload_up,
+> -	.trap_init =3D mlx5_devlink_trap_init,
+> -	.trap_fini =3D mlx5_devlink_trap_fini,
+> -	.trap_action_set =3D mlx5_devlink_trap_action_set,
+>  };
+> =20
+>  void mlx5_devlink_trap_report(struct mlx5_core_dev *dev, int trap_id, st=
+ruct sk_buff *skb,
+> @@ -791,6 +794,7 @@ static void mlx5_devlink_traps_unregister(struct devl=
+ink *devlink)
+> =20
+>  int mlx5_devlink_register(struct devlink *devlink)
+>  {
+> +	struct mlx5_core_dev *dev =3D devlink_priv(devlink);
+>  	int err;
+> =20
+>  	err =3D devlink_params_register(devlink, mlx5_devlink_params,
+> @@ -808,6 +812,9 @@ int mlx5_devlink_register(struct devlink *devlink)
+>  	if (err)
+>  		goto traps_reg_err;
+> =20
+> +	if (!mlx5_core_is_mp_slave(dev))
+> +		devlink_set_ops(devlink, &mlx5_devlink_reload);
 
-Thank you, Haiyang.  I'll update as suggested.
-
-  Andrea
+Does this work? Where do you make a copy of the ops? =F0=9F=A4=94 You can't=
+ modify
+the driver-global ops, to state the obvious.
