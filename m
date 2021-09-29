@@ -2,140 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0BA41C5B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1411841C5C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344223AbhI2Ne6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:34:58 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3889 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344184AbhI2Nez (ORCPT
+        id S1344286AbhI2Nin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:38:43 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50108
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344276AbhI2Nil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:34:55 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HKHL31CWlz67mcQ;
-        Wed, 29 Sep 2021 21:30:03 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 15:33:11 +0200
-Received: from [10.47.26.77] (10.47.26.77) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 29 Sep
- 2021 14:33:10 +0100
-Subject: Re: [PATCH v4 12/13] blk-mq: Use shared tags for shared sbitmap
- support
-From:   John Garry <john.garry@huawei.com>
-To:     Hannes Reinecke <hare@suse.de>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <ming.lei@redhat.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>
-References: <1632472110-244938-1-git-send-email-john.garry@huawei.com>
- <1632472110-244938-13-git-send-email-john.garry@huawei.com>
- <9dd771bb-9e45-ecd2-d8e4-93c6e9cb9b59@suse.de>
- <49947654-591f-c686-5908-7938ab653e6d@huawei.com>
-Message-ID: <202668f9-8cf8-1ad7-414f-463353115eda@huawei.com>
-Date:   Wed, 29 Sep 2021 14:36:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Wed, 29 Sep 2021 09:38:41 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 938D540264
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632922619;
+        bh=IJ3OurHG/eMoa5Ez3cxwk82+OEdomsIA6378FAznzbU=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Jgcjd3gzUNd9zvgicFXZyfLywA2NCZRDDkZNlb2PygLc8Ec9nYRiTYt2a/jrrOo3g
+         kwVf5ZCxCYApy/GLxXRCiAZN6/5NUH42DBwb65Cfg0nBXGZ+f393wvPzRCTZgPlqyT
+         ODpFTWYaHn6RQ2bE7y5lIyPajGF9RKcWjXA3vnRWot+wzMGYQjFblcTC7bGnuIc26J
+         z1ea8HokGuluH1QzfKTzNz+GBjaZsmq8TONoJBzMM9gX+UbQLFkzvi7sv6cgo7XAT2
+         9NtO+0AjczK5oyUM1BzbGN0j7RJY76ETMt2z1TMp4H36pR6bkFe4QVTiBVX3oTSUf4
+         9qLIMaZ5kl2Ew==
+Received: by mail-lf1-f72.google.com with SMTP id h27-20020a0565123c9b00b003fca9e11144so2374332lfv.19
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 06:36:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IJ3OurHG/eMoa5Ez3cxwk82+OEdomsIA6378FAznzbU=;
+        b=wRRe78ecLQo9RG19oACsNUfjzec3uiKY38/2QkULJ7LxnmBVcEnylDg1CLdH5Iig3h
+         JegbVnxXcdmSFBCWtOJSg/5f+iWRKbFD5JM/H+js3SwXPbcqTiAQrTkpid8/Lq+efi1F
+         BVe3UDdl+rN01NsOaybkhppcZbCSG6gBbulLhVfltXFeBQUFVned3qqJZgaHIUNnNMtJ
+         0gkZQdI5i6Pj0z6vpU3QVem65BERrqGfDjgrnPn2Cnen1ooqXQkLiZUAzGp38UlSrsb7
+         Kxdu2/pB9695djW8i8/EQkM8xhsN9YyNKBx5ev00QAohCuF1ym7pza8n8ayWhd3RkpYk
+         FlxA==
+X-Gm-Message-State: AOAM533DWAUxpshBWVoM+H5YmVQqlvqxcbx6WZVG7QiZCCY+qQuRZ9Us
+        /7sLpz4LTo7M3NbFvlpeiLa0ll7Oic1fhB4AtrDhOTrp2A2j4j1SyX9E1zpHEyBw5RGLzAdLBSW
+        4WCZBKKFyMiiwSDQkApfLT3DTGSscHE82QvXtcZwC1A==
+X-Received: by 2002:a05:6512:b0f:: with SMTP id w15mr11643582lfu.164.1632922618893;
+        Wed, 29 Sep 2021 06:36:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV4mq82/bhZJUlEzYmX1tokizPArBTUd0Xy49dVS7VRmuCrClBqisSQWT0uvmf1nzwqca1yA==
+X-Received: by 2002:a05:6512:b0f:: with SMTP id w15mr11643554lfu.164.1632922618705;
+        Wed, 29 Sep 2021 06:36:58 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id v26sm269056lja.22.2021.09.29.06.36.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 06:36:58 -0700 (PDT)
+To:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <20210928235635.1348330-12-willmcvicker@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 11/12] soc: samsung: pm_domains: modularize
+ EXYNOS_PM_DOMAINS
+Message-ID: <976e57f8-07ee-4698-b29d-dd854b79e570@canonical.com>
+Date:   Wed, 29 Sep 2021 15:36:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <49947654-591f-c686-5908-7938ab653e6d@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210928235635.1348330-12-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.26.77]
-X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2021 11:39, John Garry wrote:
-> + Kashyap
+On 29/09/2021 01:56, Will McVicker wrote:
+> Convert the Exynos PM Domains driver into a module. This includes
+> setting EXYNOS_PM_DOMAINS as tristate and removing it from being
+> auto-selected by ARCH_EXYNOS. Instead, the config will use
+> "default y if ARCH_EXYNOS" which allows us to set it to a module via the
+> defconfig now.
 > 
-> On 24/09/2021 11:23, Hannes Reinecke wrote:
->> On 9/24/21 10:28 AM, John Garry wrote:
->>> Currently we use separate sbitmap pairs and active_queues atomic_t for
->>> shared sbitmap support.
->>>
->>> However a full sets of static requests are used per HW queue, which is
->>> quite wasteful, considering that the total number of requests usable at
->>> any given time across all HW queues is limited by the shared sbitmap 
->>> depth.
->>>
->>> As such, it is considerably more memory efficient in the case of shared
->>> sbitmap to allocate a set of static rqs per tag set or request queue, 
->>> and
->>> not per HW queue.
->>>
->>> So replace the sbitmap pairs and active_queues atomic_t with a shared
->>> tags per tagset and request queue, which will hold a set of shared 
->>> static
->>> rqs.
->>>
->>> Since there is now no valid HW queue index to be passed to the 
->>> blk_mq_ops
->>> .init and .exit_request callbacks, pass an invalid index token. This
->>> changes the semantics of the APIs, such that the callback would need to
->>> validate the HW queue index before using it. Currently no user of shared
->>> sbitmap actually uses the HW queue index (as would be expected).
->>>
->>> Continue to use term "shared sbitmap" for now, as the meaning is known.
->>>
->>> Signed-off-by: John Garry <john.garry@huawei.com>
->>> ---
->>>   block/blk-mq-sched.c   | 82 ++++++++++++++++++-------------------
->>>   block/blk-mq-tag.c     | 61 ++++++++++------------------
->>>   block/blk-mq-tag.h     |  6 +--
->>>   block/blk-mq.c         | 91 +++++++++++++++++++++++-------------------
->>>   block/blk-mq.h         |  5 ++-
->>>   include/linux/blk-mq.h | 15 ++++---
->>>   include/linux/blkdev.h |  3 +-
->>>   7 files changed, 125 insertions(+), 138 deletions(-)
->>>
->> The overall idea to keep the full request allocation per queue was to 
->> ensure memory locality for the requests themselves.
->> When moving to a shared request structure we obviously loose that 
->> feature.
->>
->> But I'm not sure if that matters here; the performance impact might be 
->> too small to be measurable, seeing that we'll be most likely bound by 
->> hardware latencies anyway.
->>
->> Nevertheless: have you tested for performance regressions with this 
->> patchset?
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> ---
+>  arch/arm/mach-exynos/Kconfig     |  1 -
+>  arch/arm64/Kconfig.platforms     |  1 -
+>  drivers/soc/samsung/Kconfig      |  3 ++-
+>  drivers/soc/samsung/pm_domains.c | 12 +++++++-----
+>  4 files changed, 9 insertions(+), 8 deletions(-)
 > 
-> I have tested relatively lower rates, like ~450K IOPS, without any 
-> noticeable regression.
-> 
->> I'm especially thinking of Kashyaps high-IOPS megaraid setup; if there 
->> is a performance impact that'll be likely scenario where we can 
->> measure it.
->>
-> 
-> I can test higher rates, like 2M IOPS, when I get access to the HW.
-> 
-> @Kashyap, Any chance you can help test performance here?
-> 
->> But even if there is a performance impact this patchset might be 
->> worthwhile, seeing that it'll reduce the memory footprint massively.
-> 
-> Sure, I don't think that minor performance improvements can justify the 
-> excessive memory.
-> 
+> diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
+> index e97e1d8f7b00..2ad19a08bf06 100644
+> --- a/arch/arm/mach-exynos/Kconfig
+> +++ b/arch/arm/mach-exynos/Kconfig
+> @@ -15,7 +15,6 @@ menuconfig ARCH_EXYNOS
+>  	select EXYNOS_THERMAL
+>  	select EXYNOS_PMU_ARM
+>  	select EXYNOS_SROM
+> -	select EXYNOS_PM_DOMAINS if PM_GENERIC_DOMAINS
+>  	select GPIOLIB
+>  	select HAVE_ARM_ARCH_TIMER if ARCH_EXYNOS5
+>  	select HAVE_ARM_SCU if SMP
+> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+> index e5e4b9b2fb97..e44d5e9f5058 100644
+> --- a/arch/arm64/Kconfig.platforms
+> +++ b/arch/arm64/Kconfig.platforms
+> @@ -91,7 +91,6 @@ config ARCH_BRCMSTB
+>  
+>  config ARCH_EXYNOS
+>  	bool "ARMv8 based Samsung Exynos SoC family"
+> -	select EXYNOS_PM_DOMAINS if PM_GENERIC_DOMAINS
+>  	select HAVE_S3C_RTC if RTC_CLASS
+>  	select PINCTRL
+>  	select PM_GENERIC_DOMAINS if PM
+> diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
+> index fdf1162ec98b..e4743c29f73c 100644
+> --- a/drivers/soc/samsung/Kconfig
+> +++ b/drivers/soc/samsung/Kconfig
+> @@ -37,8 +37,9 @@ config EXYNOS_PMU_ARM
+>  	depends on ARCH_EXYNOS || (ARM && COMPILE_TEST)
+>  
+>  config EXYNOS_PM_DOMAINS
+> -	bool "Exynos PM domains" if COMPILE_TEST
+> +	tristate "Exynos PM domains"
 
-JFYI, with 6x SAS SSDs on my arm64 board, I see:
++Cc Arnd and Olof,
 
-Before (5.15-rc2 baseline):
-none: 445K IOPs, mq-deadline: 418K IOPs (fio read)
+Unlike in clocks and soc drivers changes, you mentioned the removal of
+"if", however it is not explained why you do it.
 
-After:
-none: 442K IOPs, mq-deadline: 407K IOPs (fio read)
+Why is the most important part of commit message, not "what". Because
+"What" we can easily see. But "why" is sometimes trickier.
 
-So only a marginal drop there for mq-deadline.
+Please also explain why Exynos is so special that we deviate from the
+policy for all SoC that critical SoC-related drivers have to be enabled
+(built-in or as module).
+https://lore.kernel.org/lkml/CAK8P3a1TY+XT1vF=wAh0XA5BXU5Z6Ab1d4DekXbVsN9aj3aL5w@mail.gmail.com/
 
-I'll try my 12x SAS SSD setup when I get a chance. Kashyap is kindly 
-also testing.
+We follow specific convention or policy and changing it requires some
+discussion, not silently under the "modularize" hood. It really looks
+like you want to sneak it in.
 
-Thanks
+P.S. I recommend also to Cc Soc maintainers, because their point of view
+here is crucial.
+
+>  	depends on (ARCH_EXYNOS && PM_GENERIC_DOMAINS) || COMPILE_TEST
+> +	default y if ARCH_EXYNOS
+
+
+Best regards,
+Krzysztof
