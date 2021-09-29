@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B327341CC94
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A164B41CC97
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346605AbhI2T2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
+        id S1346616AbhI2T2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346597AbhI2T2O (ORCPT
+        with ESMTP id S1345056AbhI2T2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:28:14 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2242C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:26:32 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id a73so815424pge.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:26:32 -0700 (PDT)
+        Wed, 29 Sep 2021 15:28:48 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90649C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:27:06 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id l8so13051400edw.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:27:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qyIj0uuuYD2n22GzyP1Tp1qkKngJHlSoFNMFwTLRsyo=;
-        b=IvkOeEHVGJn8g4QIoGZC5vJvMkA5is7yCkwEyLBjjfmXJVSDFA8w0vX4YiJxFjA7i4
-         klUZfu4GPqbcWaHx1Dtb7yBc/ZL6pq2CwDTZmCAslYr4EzPvMFGYDGnNSeU0eGyM5Yv3
-         7SXpxQbn3QwzsGeAaJoMYXHsmtw9YlKOLdthA=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y488e6CDLwLyyYkVkTYy429bQEA/xkkUxIrk51eKMFQ=;
+        b=B8Hid2T3zOSBobHK4/2b3MBnfmp50HXZypbsZsvwJ0G5HeSXfHCwjyepk+hlQuxqaM
+         G4dBioCuCVrFrLDDOC3tZcZBwpSdl8egDoOizvXmlmOQRd87m8lje6kxHee0i6O3Xiwb
+         /A38Hu5Rhry3IRk4EmXu4l7eOpDOZnessX2nr4O7PUbdNdg1glDuARR7+E1MEgaTruqo
+         YQEoai50XfrBNdeYxWDKxpX5kTn2SJk+5IOgaD4t6xF0eO6DxnmmlD8s30krfxCrZg2o
+         /Jn4dqzpoEiqNbvaVvJaAtXgyT81rgAjdwikK7XySZ8cMa3XWHNSt69MmTzLsZUPS/c9
+         ejdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qyIj0uuuYD2n22GzyP1Tp1qkKngJHlSoFNMFwTLRsyo=;
-        b=XHS/F6WQ99FZTbiZadxFLUoaE0KlcwJlonBK4nSCP8GOlf05FKJ3MfCzIK9q8kLmFa
-         FpHmutcZX2aEfpZlVhNdL1T1nEqBQKSrsCklv8SvZXxDY6vtkDTiWtNxYDezNfOazF/p
-         RfXD7nSYG/l2XIrgou+BcxUHts9j5rM1vVIpGgKDoqkQ1bdCKgndIsSsTNOmnZMh1V7M
-         IooAK1rkwquGKJ9hp7cAPkFtH8wiZWVYzCneWJNjPTAsZpMRy059fUdZmlvZX1RZ1KHq
-         gTQYXIweQ1A8AqXSs0meHUyDC2/ty/uxIPNpM/zluDGnVg7S/8IOLZTaIaGcpiJc7mcn
-         pFJg==
-X-Gm-Message-State: AOAM5332jf43iqtUnyxOQd3Kv1dCt7k7atnVi4hEtEfDYAMAzgs9P9dK
-        x4xlwOb1FeQ2wPA5t0xHHyO3rQ==
-X-Google-Smtp-Source: ABdhPJzpu7EKgHxN8BtF9vP2GWOOxpRr41KUz4wIy1cMVPxpf6sAaY3N3efZp44d3yxahyNaa6T8lA==
-X-Received: by 2002:a62:5297:0:b0:3f4:263a:b078 with SMTP id g145-20020a625297000000b003f4263ab078mr397109pfb.20.1632943592305;
-        Wed, 29 Sep 2021 12:26:32 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h3sm415376pju.33.2021.09.29.12.26.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y488e6CDLwLyyYkVkTYy429bQEA/xkkUxIrk51eKMFQ=;
+        b=Ne0f61432j1+Ztx6TNkXiL3v2xL/PZWyBwfJ8SvOQj8nQL1bwttK3utIv+DJgQ9JTZ
+         kvcZREFIDRWACa+FzgRysR/dWRSdSpKf8XK1HIwgYzLwQDddTi3b00eGMBxopWf3eAJS
+         IKs8g+gcRd0GBlC+PzUd+X46b64SersmMbugMbRIV/ylMW6pawkYmjkkpNemtHsOAz8C
+         f5ZGmlTd/UM2p4X2z4cmwgyCMpqMNlHuoyXRfsgwAv9ZpoxLeIR6oxkr/nrAqkxtGEQ2
+         uR3rjv/ZPGCBUbSyljZbIlyQzq7HIIZlhLfL4QK66zi2VriA55Fxico3hOyaI44a8Uj9
+         67Vg==
+X-Gm-Message-State: AOAM530L1jSQBfrkPeXcn8CuHKRM2oJ5imONG5u9WAEaqpgoF3ENZnT6
+        XZZQ4Qyo/9agalID5i2Xbi4=
+X-Google-Smtp-Source: ABdhPJx+psJXY9PhCGxcGtwgnSI+CYXay0ul45XOPMp/fo+7y+MBowaKa4fzL4PxouYpqZr8v4Os0A==
+X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr1924983ejo.430.1632943625192;
+        Wed, 29 Sep 2021 12:27:05 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::bfc8])
+        by smtp.gmail.com with ESMTPSA id f10sm449019edu.70.2021.09.29.12.27.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 12:26:31 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 12:26:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Jann Horn <jannh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
-Message-ID: <202109291224.8C538667@keescook>
-References: <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
- <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
- <202109231814.FD09DBAD3@keescook>
- <20210924135424.GA33573@C02TD0UTHF1T.local>
- <202109240716.A0792BE46@keescook>
- <20210927090337.GB1131@C02TD0UTHF1T.local>
- <202109271103.4E15FC0@keescook>
- <20210927205056.jjdlkof5w6fs5wzw@treble>
- <202109291152.681444A135@keescook>
- <20210929190042.GU4199@sirena.org.uk>
+        Wed, 29 Sep 2021 12:27:04 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 0/7] staging: r8188eu: remove some pointers from struct hal_ops
+Date:   Wed, 29 Sep 2021 21:26:50 +0200
+Message-Id: <20210929192657.9569-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929190042.GU4199@sirena.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 08:00:42PM +0100, Mark Brown wrote:
-> On Wed, Sep 29, 2021 at 11:54:55AM -0700, Kees Cook wrote:
-> > On Mon, Sep 27, 2021 at 01:50:56PM -0700, Josh Poimboeuf wrote:
-> 
-> > > Even with that patch, it doesn't lock the task's runqueue before reading
-> > > the stack, so there's still the possibility of the task running on
-> > > another CPU and the unwinder going off the rails a bit, which might be
-> > > used by an attacker in creative ways similar to the /proc/<pid>/stack
-> > > vulnerability Jann mentioned earlier.
-> 
-> > Since I think we're considering get_wchan() to be slow-path, can we just
-> > lock the runqueue and use arch_stack_walk_reliable()?
-> 
-> Unfortunately arch_stack_walk_reliable() is only available for powerpc,
-> s390 and x86 currently - work is in progress to implement it for arm64
-> as well but it's not there yet.
+This series removes some more pointers from struct hal_ops.
 
-Strictly speaking, we're only trying to fix this for x86+ORC. The other
-architectures (or non-ORC x86) already have their own non-ORC unwinders
-behind get_wchan(). They may have similar weaknesses (which should
-certainly be fixed), I think the first step here is to restore wchan
-under x86+ORC.
+Tested on x86_64 with Inter-Tech DMG-02.
+
+Michael Straube (7):
+  staging: r8188eu: remove SetHalDefVarHandler from struct hal_ops
+  staging: r8188eu: remove GetHalDefVarHandler from struct hal_ops
+  staging: r8188eu: remove init_xmit_priv from struct hal_ops
+  staging: r8188eu: remove init_recv_priv from struct hal_ops
+  staging: r8188eu: remove free_recv_priv from struct hal_ops
+  staging: r8188eu: remove inirp_init from struct hal_ops
+  staging: r8188eu: remove inirp_deinit from struct hal_ops
+
+ drivers/staging/r8188eu/core/rtw_cmd.c       |  2 +-
+ drivers/staging/r8188eu/core/rtw_mlme.c      | 14 ++---
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c  |  8 +--
+ drivers/staging/r8188eu/core/rtw_recv.c      |  7 +--
+ drivers/staging/r8188eu/core/rtw_xmit.c      |  2 +-
+ drivers/staging/r8188eu/hal/hal_intf.c       | 56 --------------------
+ drivers/staging/r8188eu/hal/usb_halinit.c    | 38 ++-----------
+ drivers/staging/r8188eu/include/hal_intf.h   | 33 ++----------
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 10 ++--
+ drivers/staging/r8188eu/os_dep/usb_intf.c    |  4 +-
+ 10 files changed, 34 insertions(+), 140 deletions(-)
 
 -- 
-Kees Cook
+2.33.0
+
