@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6DF41CF77
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7739241CF79
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347364AbhI2WuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S1347353AbhI2WvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347354AbhI2WuQ (ORCPT
+        with ESMTP id S1345332AbhI2WvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:50:16 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A77DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:48:34 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id 73so3968493qki.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:48:34 -0700 (PDT)
+        Wed, 29 Sep 2021 18:51:21 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B617DC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:49:39 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id k11-20020a4abd8b000000b002b5c622a4ddso1257573oop.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B0sV1qVbbjrF0PysKkzPgbfO3+Me62Wpz2WIVsVwuoE=;
-        b=P9N1xixIbU2CQZqPgthtCxabWVb1WaKJas+T5Bbtlr4fD7rztRWCIEl7HQ9hsYT8aF
-         41wF7TSRaJ3f9seP9f0KrtpHt8gvV/9kf7XUzRs3fIottSWd5Jos1b7FSN+JKsFTdWUh
-         cQmc0BxR1at5W66It0VtetEvP3kxr6TgFG71lefSWpCHrqHfP2E1T4XXYFzcdwOAnPpb
-         WlKs8E3Ae/btD+bQUn9uA6WCV6uRLRFmutfEb0Vg/FCMMltR8qwOKBC/i/xs0Mi5ciI7
-         QAuN+ydzCbvdhC6HuPboTTSd7wkOyLMNyDUAGQreZfH9ZakjqoboD9OYItawKLMdXBtS
-         NwMg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e2OTP9/Iaal3kA6JcGQMsrbP+LXgzXaNrRHpdP8nXFo=;
+        b=G28j7WE82ccu1R0Oh+3pL1ssp6lEJumdTGsQ3x7h/CpuqpyWf8R+WjqiopNkB1NB4/
+         Zra/3R/RSSJZllQnqZu1Xj+YQ0FxpcgBvNwEkTau1kpz6b68svJZ50NRQ//U0PLJUdQR
+         DkUQeMxkcoKtyVm2uxaqrjOAY9i3fC4SerMzZdZVZ9b0XAcmZpL1q6MC3nsv+g3i/jJs
+         KUGbfDfWoHVGdrsjpnAkUfMu6i7V5EoF5AJ9nKytt9GVAuQ6+mCdlkFiRcjc4VXFL2Od
+         WJfs3bsK32BycM4a0wL1xW5yBug97qJvppkZLkNMUAP6kdwie83+7r/nG3EqS7rGSwvI
+         i4/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B0sV1qVbbjrF0PysKkzPgbfO3+Me62Wpz2WIVsVwuoE=;
-        b=MXDtNyryNtcBmV7y5lM6erzjbGglBbeSxivSmTzG7qXh4L1QYlyA+EsaFnQjTVoUWj
-         cWX9VgDxUP2D6I/sp0DJ9GK8k6wslRSghMfaEEoHXtJHbOUy+xLl6slmoautzIAsgrbJ
-         hjCaYE6LplHm/kyt/oLE+yTJheUJd6Myo5UjUzzFzChF4+ND2/sbtG2D5SyFOCKI59TY
-         fyRem4cDmrO4YzWyQG+hWdHynWgMqRxsZZLE+fpsez085VUvH+8huqjzUl6YAcLBVUE6
-         nZHPiYlHiBHNy2JQtq1sUJUtg+Ds56xldAeJ7HrXbaNRlZACa1U5+jYZ1ce/SdZHm+yq
-         fFhw==
-X-Gm-Message-State: AOAM530KohacpsnhE5CVOQXCSTuvbOTWu+t7XbsKsB9wIfoUBwlGThT/
-        je5IbnoAzMzTnPrAO5zUpHBS7Q==
-X-Google-Smtp-Source: ABdhPJzspya2uDxnOQP6RHXKg0GJNOh86aMtX4Pki+BqPF0YRta2WtTuRpyPIif49H7Hs8Tu/MZ3xw==
-X-Received: by 2002:a37:8ec6:: with SMTP id q189mr2083152qkd.145.1632955713476;
-        Wed, 29 Sep 2021 15:48:33 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id q14sm748591qtw.82.2021.09.29.15.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 15:48:32 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mViNL-007i7c-U2; Wed, 29 Sep 2021 19:48:31 -0300
-Date:   Wed, 29 Sep 2021 19:48:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 14/20] mm: introduce FOLL_PCI_P2PDMA to gate getting
- PCI P2PDMA pages
-Message-ID: <20210929224831.GA3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-15-logang@deltatee.com>
- <20210928194707.GU3544071@ziepe.ca>
- <9c40347c-f9a8-af86-71a5-2156359e15ce@deltatee.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e2OTP9/Iaal3kA6JcGQMsrbP+LXgzXaNrRHpdP8nXFo=;
+        b=VgVeIzQCO73TLRHijlHiH3mQGhLTncfDupLFCYklM7WRpYRdyDqhzfWm9fjjYV7gRe
+         fpW2tpynkxZ23+BKAiCYtHt6HLniLtF7lDVx6WDH3ZhX4mqjnz0iEHgCkb1batCP+g7d
+         0SXuUNEdw+kz4B81BFZ6gcJYlaUfBfajYbnABoCGycMnoWJdhcWfbo94vR3/kYjEQvk1
+         89qrt2GtFYjpXaPBbfzGTsB/srrDkzCyvHT6flVAYTVGMXZ3ygvd4peQBCpvnYat/8uJ
+         gUWZba+SrHqjqFInOpLAlZ2hAD1oIeDmAk93QHa/fGRqIiBuWvquyANn4IzpS/P7J9QT
+         dreQ==
+X-Gm-Message-State: AOAM532dtRp1vyq2yxu/06SzO3Z3oRVF+P4FzSNiVKJsEuh+j/U6BsOj
+        zd3TO2M2qi+59TyiNYN26xsIMs/iINrVJtp7CXoKqw==
+X-Google-Smtp-Source: ABdhPJwfYZYVoJIZCIZZ0IzxjW4zfiQ4Yzrk0WBLtD+ahAtcf/rqByhKxVhje9lfN/nkWtK0vc3A9WW0Qv7Q8g8YFGM=
+X-Received: by 2002:a4a:de57:: with SMTP id z23mr2042527oot.70.1632955778679;
+ Wed, 29 Sep 2021 15:49:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c40347c-f9a8-af86-71a5-2156359e15ce@deltatee.com>
+References: <20210929222426.1855730-1-seanjc@google.com> <20210929222426.1855730-3-seanjc@google.com>
+In-Reply-To: <20210929222426.1855730-3-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 29 Sep 2021 15:49:27 -0700
+Message-ID: <CALMp9eQZH80_vWEz26OGr8cwhLEP4yoSt2UdSC_75Fy9sMxhhQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] KVM: x86: Manually retrieve CPUID.0x1 when getting
+ FMS for RESET/INIT
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com,
+        Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:34:22PM -0600, Logan Gunthorpe wrote:
-> 
-> 
-> 
-> On 2021-09-28 1:47 p.m., Jason Gunthorpe wrote:
-> > On Thu, Sep 16, 2021 at 05:40:54PM -0600, Logan Gunthorpe wrote:
-> >> Callers that expect PCI P2PDMA pages can now set FOLL_PCI_P2PDMA to
-> >> allow obtaining P2PDMA pages. If a caller does not set this flag
-> >> and tries to map P2PDMA pages it will fail.
-> >>
-> >> This is implemented by adding a flag and a check to get_dev_pagemap().
-> > 
-> > I would like to see the get_dev_pagemap() deleted from GUP in the
-> > first place.
-> > 
-> > Why isn't this just a simple check of the page->pgmap type after
-> > acquiring a valid page reference? See my prior note
-> 
-> It could be, but that will mean dereferencing the pgmap for every page
-> to determine the type of page and then comparing with FOLL_PCI_P2PDMA.
-
-It would be done under the pte devmap test and this is less expensive
-than the xarray search.
-
-Jason
+On Wed, Sep 29, 2021 at 3:24 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Manually look for a CPUID.0x1 entry instead of bouncing through
+> kvm_cpuid() when retrieving the Family-Model-Stepping information for
+> vCPU RESET/INIT.  This fixes a potential undefined behavior bug due to
+> kvm_cpuid() using the uninitialized "dummy" param as the ECX _input_,
+> a.k.a. the index.
+>
+> A more minimal fix would be to simply zero "dummy", but the extra work in
+> kvm_cpuid() is wasteful, and KVM should be treating the FMS retrieval as
+> an out-of-band access, e.g. same as how KVM computes guest.MAXPHYADDR.
+> Both Intel's SDM and AMD's APM describe the RDX value at RESET/INIT as
+> holding the CPU's FMS information, not as holding CPUID.0x1.EAX.  KVM's
+> usage of CPUID entries to get FMS is simply a pragmatic approach to avoid
+> having yet another way for userspace to provide inconsistent data.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
