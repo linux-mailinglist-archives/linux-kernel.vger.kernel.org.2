@@ -2,200 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B1041CCAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED9D41CCB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239919AbhI2TfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:35:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:41065 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhI2TfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:35:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="224680231"
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="224680231"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 12:33:39 -0700
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="554969057"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 12:33:39 -0700
-Date:   Wed, 29 Sep 2021 12:37:19 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Christoph Hellwig" <hch@infradead.org>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        mike.campin@intel.com, jacob.jun.pan@linux.intel.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Message-ID: <20210929123437.721991dc@jacob-builder>
-In-Reply-To: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S245156AbhI2Tj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:39:58 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46978 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229561AbhI2Tj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:39:57 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TDFdjA015804
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:38:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=kRho7jvlBA3v3mfuo2/5Zv3vqQCIR1aesPbevXnMkXA=;
+ b=hGFcOJMVOpTm8dGwLElR437/Pi986JbzRALPN4MwFR59FspxMTZVbz2OYO3hKKTqxbOf
+ rnkB9Anb7pA0GImwzuwtAoiPctplawtVNF4IvNA+u+PZ23sIwsuR5pQUzAeanTxzLi28
+ hhgGzFdPYbVSCIwfkNbY8NuPDUjllfY5+rE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bcrv634eu-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:38:15 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 29 Sep 2021 12:38:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K9RG/2djZfqMzzCmJv749jHwwaq15kFX8EUvPfyaADfOURek8FUS+20w1cajbthkGP7B/VqWvmOXn6PATPzf5qr6eSg8Ukyp2+7J+dxADgPBryxczDOhUppn6vq0AJwjnKJHIls05OGJ5yQMpJrXuMh3WDX2RBtIAeUcyo578j0NY3gAylimGsmyUQQla3gWDw4rKh4L9tPSFfmh3fUtJ22Bp2vQO6IJXKTbqDs8X8uy3QZhpRHVpUVs6+FHIS/rZElCO0fRRjqhLM3/F3s1dlTt33vxk3DmiHozC9hkchFSFaX6VOvR0gnmBjW1irE9urxisUkmCVTIyiVKCkkbjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=kRho7jvlBA3v3mfuo2/5Zv3vqQCIR1aesPbevXnMkXA=;
+ b=D2FUZWkF7OtfVyeyelGkhBlQySh6sFCExyXC3b3h2AtVcHqwWHEjZPFGRoekJSfg6Vh2IhM/TOVLQ4Bd9lfyT/oHNQ8Uegiuv1OH4+iAOHhS9MvOrrzSOj70hE5fQqwSrnQiv26mQgJfqYrH3gMHDhSZP4D+QMkoAcivK9P0M6aD97oQESrGF72+gy9yhGIcLsmPiOJZjACnRsBKsyKlQ858KnGjMKnjUHTiWss0uCstCoJ/uS1Pvyz6sRokmzBa+/ZAONnpYR0sIoYnRXZG++ci9RKoSWyPipnKgVw+ZrNYiW5PqFYFq6iC/ikUwlXO6xQfXE9EIJ0Gl4g6AieGmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB5078.namprd15.prod.outlook.com (2603:10b6:806:1dd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 29 Sep
+ 2021 19:38:12 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7d66:9b36:b482:af0f%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
+ 19:38:12 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Lucian Grijincu <lucian@fb.com>
+Subject: Re: [PATCH v2] perf/core: fix userpage->time_enabled of inactive
+ events
+Thread-Topic: [PATCH v2] perf/core: fix userpage->time_enabled of inactive
+ events
+Thread-Index: AQHXsON8cxUzcBLit0S7boefzLsslKu6xCKAgACtKYA=
+Date:   Wed, 29 Sep 2021 19:38:12 +0000
+Message-ID: <59D2F040-D16F-4ECE-9977-C5187127FB84@fb.com>
+References: <20210924012800.2461781-1-songliubraving@fb.com>
+ <YVQvYUuokUnev0tG@hirez.programming.kicks-ass.net>
+In-Reply-To: <YVQvYUuokUnev0tG@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 310be829-f9f0-4a12-3c5a-08d98380acc8
+x-ms-traffictypediagnostic: SA1PR15MB5078:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA1PR15MB507820D05A9C526553FF1E9AB3A99@SA1PR15MB5078.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: E/fWdkA/jAvuMLlFzpPY673F9HYFMFl1+3s71M7mqtx4GW7WhbOoEfu/EQigpP0LPgH9M1kON/lFe3HkiMSb9lk7DTJitsMxq2uMjQ+2oMLSfDTxba5KNj70HTm/DwpqK+T9rPnFLStDeLVepf4ehoEmg15jHCCYVML3N6zUXMItRm8MSBlOFriPvMQwQcS+mtrTwU4enD0M7PNGuBWCEr6+twcRBs9tIzWe8GGgwvXXTmGowiFgTxPiipE/HWoWGHv0YFuGE/f/D7oSZMa3s1YTP9Zh3DMaS8Ma3sqaM1w/5QxonT4lntgNkBgQiOduzIUE8Tv6TxLDmOvQS6h2KOB3lbpm2YG6Jz9BlrOQRVPDMlIXkrjO2g/oJMiK7KB9r+e1JcXDP7oe06p8Us0mqI3IXvCuoO78iqy1VULlFFlT8YpmddwNlkDT9A6btWWbz+mOEYKwZkeKEnBqXvikBhg6rlPpqcj0ErrWLEs/r5hQhO86SNg8/zfK3kipx5ZTKM13+7nly2d/wznFuRAPIkckkx2inWCi0lejy3MYyjz1hFnPxD5RXhPXHfPaR1QSWMvWQXN32zPSj3j34eCNCbr0QO9AC3Vyv3gXmZAT6NdE2l/v/HWBWaLe/QrJVVRt42SImOY0JkKIe54BeR5yTCRIplXYdah/lm3c2ktD5bHlb7NFEdnTT85P9Ue+tFAmssU98EpHxr/i1eQWXaQqhRjRBCH6eIvVXRYnK9FHhcVr7xicg3NrEAGBLnAkl1CB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66446008)(6486002)(54906003)(6506007)(122000001)(83380400001)(8936002)(8676002)(64756008)(2616005)(38100700002)(71200400001)(66946007)(316002)(53546011)(66476007)(66556008)(76116006)(91956017)(6916009)(186003)(6512007)(86362001)(2906002)(508600001)(33656002)(38070700005)(5660300002)(36756003)(4326008)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oU04qz3mIhnbmnozH4EE5rCbu238dGO6wcrtdGmShquVUXvU38Yw5YPAbMI6?=
+ =?us-ascii?Q?UX0WNchMdC+Hwt6uQBRwpYi5LyOaXJMrrUedIhMnWp0eY0z1ODXmCH/cC3Pc?=
+ =?us-ascii?Q?0y+WVXMRUDjnP9brSHFElIFdO1lLIQZvhr8TLaDOgmuWVDyMUHG1I4GyaW7l?=
+ =?us-ascii?Q?lmIwZd3e8lXfLo4hKeHf4qukSYjF+YBJ8zRIghAcWiWtw+f0betfLfxGEweQ?=
+ =?us-ascii?Q?VNQdYs9qa55SKC7RdiEnC9bU+rryPw485xb7z0TdzVsTHLOstkAJfSJjDoVk?=
+ =?us-ascii?Q?B/M/JX0d9RdB+f8DI+I2aKD3+3fxEiFnn4WKHbcSJ1cppQKsFOCChJq9Gcij?=
+ =?us-ascii?Q?EnN8QmqOwoCIFdCpBJ7rPXf8iDxPpXomImNc1UVSi6OaKB3xiNFJmJ9QZ6PA?=
+ =?us-ascii?Q?eju+CtZmgUp2rZ0ukRqXu9WqaaxUjKcxQ81TGur6uallcv2bMpxT8OvXmwpv?=
+ =?us-ascii?Q?/GJ4kLkyI8OoJvITK5bCpbN83z1BTfq4XbkSe2XtmmRLqe9Om4McBVt5M2fl?=
+ =?us-ascii?Q?A237gU/v4c0FO800R4advsjWID9KKFGQWsyqLQdCARkg0jGgQOe+yzN11IXK?=
+ =?us-ascii?Q?gmOCr/uV0jqxrM5kbwhBCfbx50JtArBEc47E0nfDrhqM+6IwS2xl5pw4dF4p?=
+ =?us-ascii?Q?0guBYjnn+KVKkB/hg0JSRfC0TNmpUovODljJYbKxPQA2j6z0n+qLFBrdJioA?=
+ =?us-ascii?Q?4cqRgA35SWRUvX141i82Xbu3w+2ttJfl6++cq7rMbgD8Ban/f9nV5N8IQRzI?=
+ =?us-ascii?Q?cKNxDljD4A7oLz915K21etk+Xj5lgWOJgfxRqWwSgKVIE/UHN3Vi4Pw/z1ob?=
+ =?us-ascii?Q?if+a0DwVUEdLh9SeBHcYIAxkiMGV5pDiLYjrQNhyLGx6Rex+DSapJvZAk8s2?=
+ =?us-ascii?Q?fv1+hg4oGvjinpxY0De5rFH2B9Jq3i0M28XnMc4ylV0tcD+Q/IFwWZt2zPrH?=
+ =?us-ascii?Q?eJs8iVFz7ua+cOzhCv9ZcSVI57swUOt6rPmivS9AJII2ja4IXBojy+TXZqYi?=
+ =?us-ascii?Q?jO++GN5W3frGw9ZDtVnIQFlNIa1DfOX8O4kNZXr6PwYYiaLCYABpRx7zcYc5?=
+ =?us-ascii?Q?fGQO6Fx5w+ZCUrC2bhPW4hHUcmHGPdjmI5X5zoPIZonFlU0fLs1Zf0y3xWJd?=
+ =?us-ascii?Q?+8C1xzZ0J/Ia8Ktl3Kj+yE8xo8ebeCCudfDVBG/taaoUNXolhKvfftTV9qwp?=
+ =?us-ascii?Q?xtCaz4pP0d93fVklKgmuMy/VvLi6+eHSncVFg5zSJkYyoQLX64VhStQaUiGd?=
+ =?us-ascii?Q?R3EoahWjq+Z97i4pRmFl6CxDnC9gV1gSMmV2FPIjjCxBmbqk4w4gtvWshM5y?=
+ =?us-ascii?Q?7gMVO7qIXNq06MqHsMIi+nrNNtyMWfS8ETZBu1b40VR3tLfcKda+1FI5MLGQ?=
+ =?us-ascii?Q?mE5jco8=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <639094499385C646B9549B1EC9278B43@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 310be829-f9f0-4a12-3c5a-08d98380acc8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 19:38:12.6068
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RVBbP3hclVe+audoAn6s1+xUbr749KPp4Vqha5aFcT9bvX6bj5qYDtMzkTOEN6Z9DtAk9FpKWiTvLqcjdRZcow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5078
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: nAxkosqRgAwo8db4OKP4yDz-wcKSIvdi
+X-Proofpoint-ORIG-GUID: nAxkosqRgAwo8db4OKP4yDz-wcKSIvdi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-29_08,2021-09-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ impostorscore=0 adultscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109290114
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Just to follow up on what we discussed during LPC VFIO/IOMMU/PCI MC.
-https://linuxplumbersconf.org/event/11/contributions/1021/
-The key takeaways are:
-1. Addressing mode selections (PA, IOVA, and KVA) should be a policy
-decision *not* to be made by device drivers. This implies that it is up to
-the platform code or user (via some sysfs knobs) to decide what is the best
-for each device. Drivers should not be aware of what addressing modes is
-returned by DMA API.
 
-2. DMA APIs can be extended to support DMA request with PASID. 
+> On Sep 29, 2021, at 2:18 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> On Thu, Sep 23, 2021 at 06:28:00PM -0700, Song Liu wrote:
+> 
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 1cb1f9b8392e2..d73f986eef7b3 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -3707,6 +3707,46 @@ static noinline int visit_groups_merge(struct perf_cpu_context *cpuctx,
+>> 	return 0;
+>> }
+>> 
+>> +static inline bool event_update_userpage(struct perf_event *event)
+>> +{
+>> +	/*
+>> +	 * Checking mmap_count to avoid unnecessary work. This does leave a
+>> +	 * corner case: if the event is enabled before mmap(), the first
+>> +	 * time the event gets scheduled is via:
+>> +	 *
+>> +	 *  __perf_event_enable (or __perf_install_in_context)
+>> +	 *      -> ctx_resched
+>> +	 *         -> perf_event_sched_in
+>> +	 *            -> ctx_sched_in
+>> +	 *
+>> +	 * with mmap_count of 0, so we will skip here. As a result,
+>> +	 * userpage->offset is not accurate after mmap and before the
+>> +	 * first rotation.
+>> +	 *
+>> +	 * To avoid the discrepancy of this window, the user space should
+>> +	 * mmap the event before enabling it.
+>> +	 */
+> 
+> It seems to me that writing that comment was more work than actually
+> fixing perf_mmap() to DTRT, no? AFAICT all we need is something like:
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index fd2ae70fa6c4..1e33c2e6b0dc 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6324,6 +6324,8 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
+> 
+> 		ring_buffer_attach(event, rb);
+> 
+> +		perf_event_update_time(event);
+> +		perf_set_shadow_time(event, event->ctx);
+> 		perf_event_init_userpage(event);
+> 		perf_event_update_userpage(event);
+> 	} else {
 
-3. Performance benefit of using KVA (shared) should be demonstrated. Though
-the saving of IOTLB flush over IOVA is conceivable.
-
-#1 could be done in platform IOMMU code when devices are attached to their
-default domains. E.g. if the device is trusted, it can operate at shared
-KVA mode.
-
-For #2, it seems we can store the kernel PASID in struct device. This will
-preserve the DMA API interface while making it PASID capable. Essentially,
-each PASID capable device would have two special global PASIDs: 
-	- PASID 0 for DMA request w/o PASID, aka RID2PASID
-	- PASID 1 (randomly selected) for in-kernel DMA request w/ PASID
-
-Both PASID 0 and 1 will always point to the same page table. I.e. same
-addressing mode, IOVA or KVA.
-
-For devices does not support PASID, there is no change. For devices can do
-both DMA w/ and w/o PASID, the IOTLB invalidation would include both PASIDs.
-
-By embedding PASID in struct device, it also avoided changes in upper level
-APIs. DMA engine API can continue to give out channels without knowing
-whether PASID is used or not. The accelerator drivers that does work
-submission can retrieve PASID from struct device.
-
-Thoughts?
-
-Thanks for the review and feedback at LPC!
-
-Jacob
-
-On Tue, 21 Sep 2021 13:29:34 -0700, Jacob Pan
-<jacob.jun.pan@linux.intel.com> wrote:
-
-> Hi Joerg/Jason/Christoph et all,
-> 
-> The current in-kernel supervisor PASID support is based on the SVM/SVA
-> machinery in sva-lib. Kernel SVA is achieved by extending a special flag
-> to indicate the binding of the device and a page table should be performed
-> on init_mm instead of the mm of the current process.Page requests and
-> other differences between user and kernel SVA are handled as special
-> cases.
-> 
-> This unrestricted binding with the kernel page table is being challenged
-> for security and the convention that in-kernel DMA must be compatible with
-> DMA APIs.
-> (https://lore.kernel.org/linux-iommu/20210511194726.GP1002214@nvidia.com/)
-> There is also the lack of IOTLB synchronization upon kernel page table
-> updates.
-> 
-> This patchset is trying to address these concerns by having an explicit
-> DMA API compatible model while continue to support in-kernel use of DMA
-> requests with PASID. Specifically, the following DMA-IOMMU APIs are
-> introduced:
-> 
-> int iommu_dma_pasid_enable/disable(struct device *dev,
-> 				   struct iommu_domain **domain,
-> 				   enum iommu_dma_pasid_mode mode);
-> int iommu_map/unmap_kva(struct iommu_domain *domain,
-> 			void *cpu_addr,size_t size, int prot);
-> 
-> The following three addressing modes are supported with example API usages
-> by device drivers.
-> 
-> 1. Physical address (bypass) mode. Similar to DMA direct where trusted
-> devices can DMA pass through IOMMU on a per PASID basis.
-> Example:
-> 	pasid = iommu_dma_pasid_enable(dev, NULL, IOMMU_DMA_PASID_BYPASS);
-> 	/* Use the returning PASID and PA for work submission */
-> 
-> 2. IOVA mode. DMA API compatible. Map a supervisor PASID the same way as
-> the PCI requester ID (RID)
-> Example:
-> 	pasid = iommu_dma_pasid_enable(dev, NULL, IOMMU_DMA_PASID_IOVA);
-> 	/* Use the PASID and DMA API allocated IOVA for work submission */
-> 
-> 3. KVA mode. New kva map/unmap APIs. Support fast and strict sub-modes
-> transparently based on device trustfulness.
-> Example:
-> 	pasid = iommu_dma_pasid_enable(dev, &domain, IOMMU_DMA_PASID_KVA);
-> 	iommu_map_kva(domain, &buf, size, prot);
-> 	/* Use the returned PASID and KVA to submit work */
-> Where:
-> 	Fast mode: Shared CPU page tables for trusted devices only
-> 	Strict mode: IOMMU domain returned for the untrusted device to
-> 	replicate KVA-PA mapping in IOMMU page tables.
-> 
-> On a per device basis, DMA address and performance modes are enabled by
-> the device drivers. Platform information such as trustability, user
-> command line input (not included in this set) could also be taken into
-> consideration (not implemented in this RFC).
-> 
-> This RFC is intended to communicate the API directions. Little testing is
-> done outside IDXD and DMA engine tests.
-> 
-> For PA and IOVA modes, the implementation is straightforward and tested
-> with Intel IDXD driver. But several opens remain in KVA fast mode thus
-> not tested: 1. Lack of IOTLB synchronization, kernel direct map alias can
-> be updated as a result of module loading/eBPF load. Adding kernel mmu
-> notifier? 2. The use of the auxiliary domain for KVA map, will aux domain
-> stay in the long term? Is there another way to represent sub-device granu
-> isolation? 3. Is limiting the KVA sharing to the direct map range
-> reasonable and practical for all architectures?
-> 
-> 
-> Many thanks to Ashok Raj, Kevin Tian, and Baolu who provided feedback and
-> many ideas in this set.
-> 
-> Thanks,
-> 
-> Jacob
-> 
-> Jacob Pan (7):
->   ioasid: reserve special PASID for in-kernel DMA
->   dma-iommu: Add API for DMA request with PASID
->   iommu/vt-d: Add DMA w/ PASID support for PA and IOVA
->   dma-iommu: Add support for DMA w/ PASID in KVA
->   iommu/vt-d: Add support for KVA PASID mode
->   iommu: Add KVA map API
->   dma/idxd: Use dma-iommu PASID API instead of SVA lib
-> 
->  drivers/dma/idxd/idxd.h                       |   4 +-
->  drivers/dma/idxd/init.c                       |  36 ++--
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |   2 +-
->  drivers/iommu/dma-iommu.c                     | 123 +++++++++++++-
->  drivers/iommu/intel/iommu.c                   | 154 +++++++++++++++++-
->  drivers/iommu/ioasid.c                        |   2 +
->  drivers/iommu/iommu-sva-lib.c                 |   1 +
->  drivers/iommu/iommu.c                         |  63 +++++++
->  include/linux/dma-iommu.h                     |  14 ++
->  include/linux/intel-iommu.h                   |   7 +-
->  include/linux/ioasid.h                        |   4 +
->  include/linux/iommu.h                         |  13 ++
->  12 files changed, 390 insertions(+), 33 deletions(-)
-> 
-
+Yeah, this does work. I will fold this in v3. 
 
 Thanks,
+Song
 
-Jacob
