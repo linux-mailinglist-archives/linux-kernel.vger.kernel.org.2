@@ -2,145 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE22D41C7A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A7241C79F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344911AbhI2PB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344912AbhI2PBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:01:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBECF613A6;
-        Wed, 29 Sep 2021 14:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632927575;
-        bh=VUb8Hz0/BpNdgps2xTkakpwXoPg5XQy5xf84s5JEXVw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OFBBzHkgQI9pM3LmRLhMl3lZk092dBuPGTLGeDbB7UXUbCAegu9SvLAB8mbtqxvBs
-         0WABJBws6oAJNxae2pQMr2F613WDHf8KuZBPs5Yqp9ZrRG0W9x7Rz6KIzmH1qV54vg
-         GrHUMVzw23yRVOr2QRE549jZ3XdM6vWw43F9B90Hm8aIv+sYURQ5IWB/2ZAyZ5RfiM
-         Q7u89y1ysxUuSz1bVvVBkpSNEBbn5qviU7HdodZgGVvWAz2OFbzJAp9u5RMj79/DZz
-         pvUQDdcnoXKq+lI9zgeCcIJFmOYnbwywVysIRKGvH/mBZ82RRRbVl7lnFqXM0d2Abb
-         qKUWIy5haa/0A==
-Received: by mail-ed1-f47.google.com with SMTP id v10so9866079edj.10;
-        Wed, 29 Sep 2021 07:59:35 -0700 (PDT)
-X-Gm-Message-State: AOAM533U7HQ/QkJ3NRvMdtdDHql46bx66x6Jq7eBgWTeLGTZLAhjxHQh
-        jnfxVrN5NgbhWHA043F7V7WmBluGW+RmkgeokQ==
-X-Google-Smtp-Source: ABdhPJxsD+TnDFNUqanlGBCypQs3xKOluvNlkE0i13YzaQBkJ7d4Ds18d5fx4ZdpNBIF8fQe7huJSOVXh7Nq7sEZVgI=
-X-Received: by 2002:a17:906:c10e:: with SMTP id do14mr231513ejc.84.1632927503293;
- Wed, 29 Sep 2021 07:58:23 -0700 (PDT)
+        id S1344900AbhI2PBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:01:12 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36035 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1344938AbhI2PA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:00:57 -0400
+Received: (qmail 429369 invoked by uid 1000); 29 Sep 2021 10:59:05 -0400
+Date:   Wed, 29 Sep 2021 10:59:05 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Patchwork Bot <patchwork-bot@kernel.org>
+Subject: Re: [PATCH v2] usb: ohci: add check for start frame in host
+ controller functional states
+Message-ID: <20210929145905.GA428239@rowland.harvard.edu>
+References: <1632910167-23554-1-git-send-email-zhuyinbo@loongson.cn>
 MIME-Version: 1.0
-References: <20210928201214.294737-1-trix@redhat.com> <CAL_JsqKMLu1Vm1x0rVGXf-RD2Mw65f3YPY3QL1mEB8=CQ9GMGw@mail.gmail.com>
-In-Reply-To: <CAL_JsqKMLu1Vm1x0rVGXf-RD2Mw65f3YPY3QL1mEB8=CQ9GMGw@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 29 Sep 2021 09:58:11 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJmcTPqopCcETeFUsgG=nDSUMVvVBAMMuCF_j-SzfoAEw@mail.gmail.com>
-Message-ID: <CAL_JsqJmcTPqopCcETeFUsgG=nDSUMVvVBAMMuCF_j-SzfoAEw@mail.gmail.com>
-Subject: Re: [PATCH] of: remove duplicate declaration of of_iomap()
-To:     trix@redhat.com
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632910167-23554-1-git-send-email-zhuyinbo@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 9:26 AM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Tue, Sep 28, 2021 at 3:12 PM <trix@redhat.com> wrote:
-> >
-> > From: Tom Rix <trix@redhat.com>
-> >
-> > A ranconfig produces this linker error
-> > irq-al-fic.c:252: undefined reference to `of_iomap'
-> >
-> > The declaration of of_iomap() is dependent on OF
-> > The definition of of_iomap() is dependent on OF_ADDRESS
-> > These should match.  There are duplicate declarations
-> > of of_iomap(), remove of_iomap() and the
-> > of_address_to_resource() duplicate.
-> >
-> > Signed-off-by: Tom Rix <trix@redhat.com>
-> > ---
-> >  include/linux/of_address.h | 8 +-------
-> >  1 file changed, 1 insertion(+), 7 deletions(-)
-> >
-> > diff --git a/include/linux/of_address.h b/include/linux/of_address.h
-> > index 45598dbec269..a190996b4b0b 100644
-> > --- a/include/linux/of_address.h
-> > +++ b/include/linux/of_address.h
-> > @@ -122,13 +122,7 @@ static inline bool of_dma_is_coherent(struct device_node *np)
-> >  {
-> >         return false;
-> >  }
-> > -#endif /* CONFIG_OF_ADDRESS */
-> >
-> > -#ifdef CONFIG_OF
-> > -extern int of_address_to_resource(struct device_node *dev, int index,
-> > -                                 struct resource *r);
-> > -void __iomem *of_iomap(struct device_node *node, int index);
->
-> This is going to break sparc which has !OF_ADDRESS and its own
-> of_iomap and of_address_to_resource implementations. I don't want to
-> add CONFIG_SPARC in here, so I think we should solve this in kconfig.
-> OF and !OF_ADDRESS is supposed to mean the arch provides these
-> functions.
->
-> I'd really like to do away with HAS_IOMEM. It doesn't serve much
-> purpose other than disabling a bunch of drivers.
+On Wed, Sep 29, 2021 at 06:09:27PM +0800, Yinbo Zhu wrote:
+> The pm states of ohci controller include UsbOperational, UsbReset, UsbSuspend
 
-Following UML (the only other arch with configurable HAS_IOMEM), I
-think dummy ioremap() implementations is the way to go here. UML added
-its own dummy functions, but it would be better if we can just do
-this:
+Those aren't really PM states.  The specification calls them "USB 
+states".
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index e93375c710b9..a9d02403b2fe 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -946,7 +946,7 @@ static inline void *phys_to_virt(unsigned long address)
-  * can provide stricter non-posted write semantics if the architecture
-  * implements them.
-  */
--#ifndef CONFIG_MMU
-+#if !defined(CONFIG_GENERIC_IOREMAP)
- #ifndef ioremap
- #define ioremap ioremap
- static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
-@@ -961,7 +961,7 @@ static inline void iounmap(void __iomem *addr)
- {
- }
- #endif
--#elif defined(CONFIG_GENERIC_IOREMAP)
-+#else /* CONFIG_GENERIC_IOREMAP */
- #include <linux/pgtable.h>
+> , and UsbResume. Among them, only the UsbOperational state supports launching
+--^
 
- void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot);
-@@ -972,7 +972,7 @@ static inline void __iomem *ioremap(phys_addr_t
-addr, size_t size)
-        /* _PAGE_IOREMAP needs to be supplied by the architecture */
-        return ioremap_prot(addr, size, _PAGE_IOREMAP);
- }
--#endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
-+#endif /* CONFIG_GENERIC_IOREMAP */
+This comma should come directly after the word "launching", with no 
+space in between.
 
- #ifndef ioremap_wc
- #define ioremap_wc ioremap
+> the start frame for host controller according the ohci protocol spec, but in
+> S3/S4 press test procedure, it may happen that the start frame was launched
 
+What is the S3/S4 press test?  I don't recall hearing of it before.
 
-Then we can apply the following patch:
+> in other pm states and cause ohci works abnormally then kernel will allways
+> report rcu CallTrace. This patch was to add check for start frame in host
+> controller functional states for fixing above issue.
 
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 3dfeae8912df..4a2453e4d4f3 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -64,7 +64,7 @@ config OF_DYNAMIC
+The patch doesn't check for start of frames, that is, it doesn't check 
+the INTR_SF bit in the intrstatus register.  Instead it checks whether 
+controller is in the UsbOperational state.  And the patch also sets 
+INTR_SF in the intrdisable register -- you do not mention this in the 
+description.
 
- config OF_ADDRESS
-        def_bool y
--       depends on !SPARC && (HAS_IOMEM || UML)
-+       depends on !SPARC
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+> Change in v2:
+> 		Revise the punctuation.	
+> 
+>  drivers/usb/host/ohci-hcd.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+> index 1f5e693..f0aeae5 100644
+> --- a/drivers/usb/host/ohci-hcd.c
+> +++ b/drivers/usb/host/ohci-hcd.c
+> @@ -881,6 +881,13 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>  	struct ohci_regs __iomem *regs = ohci->regs;
+>  	int			ints;
+>  
+> +	ints = ohci_readl(ohci, &regs->control);
+> +
+> +	if ((ints & OHCI_CTRL_HCFS) != OHCI_USB_OPER) {
+> +		ohci_writel(ohci, OHCI_INTR_SF, &regs->intrdisable);
+> +		(void)ohci_readl(ohci, &regs->intrdisable);
+> +	}
 
- config OF_IRQ
-        def_bool y
+The driver is already supposed to prevent this problem by writing the 
+OHCI_INTR_SF flag to the intrdisable register when start-of-frame 
+interrupts aren't needed.  Maybe what you should do is change this code 
+lower down in ohci_irq():
+
+	if ((ints & OHCI_INTR_SF) != 0 && !ohci->ed_rm_list
+			&& ohci->rh_state == OHCI_RH_RUNNING)
+		ohci_writel (ohci, OHCI_INTR_SF, &regs->intrdisable);
+
+by getting rid of the test for OHCI_RH_RUNNING.
+
+Alan Stern
+
+> +
+>  	/* Read interrupt status (and flush pending writes).  We ignore the
+>  	 * optimization of checking the LSB of hcca->done_head; it doesn't
+>  	 * work on all systems (edge triggering for OHCI can be a factor).
+> -- 
+> 1.8.3.1
+> 
