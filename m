@@ -2,61 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0124D41C74D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B88B41C756
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344733AbhI2OxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344676AbhI2OxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:53:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B01C16147F;
-        Wed, 29 Sep 2021 14:51:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632927083;
-        bh=h2Ut0RpsY0Vy22EuMRC3N3guJSVTVldToeqB+Q5HSIo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Yxk8hQCFMLPq/1qN6XNMErdivMeIe1mjgfBvk8aULjVOsboKj7Lc66i4/SoCYOv1C
-         Fkxgt4czSSmQwx5wPy5afwrasoZ+IsQcGt5gyFQeKWHjvAJTmpNSTKKhPo17topts9
-         PEz4YWo06BaAADADHHdcdSP5P4u74nkDM2lnx7Pns3i0BD4yjOZj8sJgkbQX6ttTBO
-         hxNqqoQh3oLxVwaEbHSgrw09P6pPhp2JVFufQUKcz8JqYOxpwoL9Ai8+0yMBMn0126
-         WyacdVrmsuIAG3aAO8/kRPgjSrLFpnL9bM/aSY7lN3X1/sY2nTVIGmEqZDZQ8ZckaX
-         wUmSvv4qCT0sA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A4F6C60A59;
-        Wed, 29 Sep 2021 14:51:23 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 5.15-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5hmtnvn96u.wl-tiwai@suse.de>
-References: <s5hmtnvn96u.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5hmtnvn96u.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.15-rc4
-X-PR-Tracked-Commit-Id: f2ff7147c6834f244b8ce636b12e71a3bd044629
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
-Message-Id: <163292708366.10457.3247531418616136301.pr-tracker-bot@kernel.org>
-Date:   Wed, 29 Sep 2021 14:51:23 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1344727AbhI2Oxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:53:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60644 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344721AbhI2Ox3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:53:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E66F320382;
+        Wed, 29 Sep 2021 14:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632927107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4W6UTLxm96vpPohd9vMhOIi/kpzDuPABhW49g4rRuuU=;
+        b=hpMG7z+DrMgDIhMrZrRUP57n36CKsvZjC1OMJHCqlMOglmtV8DqUf7f3MdnKAsPB6/XBFf
+        I6a3pvx3w4k2oxXppt+jKjXMWcEw+zUas6REFXOnwFSC+D4auexBU0Grszu4kMnRr4XBZ4
+        4qW/IIcdDNzaD2pUFV1/yGQ4To3VQFA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632927107;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4W6UTLxm96vpPohd9vMhOIi/kpzDuPABhW49g4rRuuU=;
+        b=U8WdBXvT0bGgFJ+yQpmd6dqVDsCVZzvNpa0LFfauTA0j47w/DBW9XLCv+qaQMtmf9wRWXg
+        sU5u8Zeat6bKy0Ag==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id D91E1A3B8F;
+        Wed, 29 Sep 2021 14:51:47 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 16:51:47 +0200
+Message-ID: <s5hzgrvl9j0.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     John Keeping <john@metanate.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: rawmidi: Fix potential UAF from sequencer destruction
+In-Reply-To: <20210929113620.2194847-1-john@metanate.com>
+References: <20210929113620.2194847-1-john@metanate.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 29 Sep 2021 09:16:09 +0200:
+On Wed, 29 Sep 2021 13:36:20 +0200,
+John Keeping wrote:
+> 
+> If the sequencer device outlives the rawmidi device, then
+> snd_rawmidi_dev_seq_free() will run after release_rawmidi_device() has
+> freed the snd_rawmidi structure.
+> 
+> This can easily be reproduced with CONFIG_DEBUG_KOBJECT_RELEASE.
+> 
+> Keep a reference to the rawmidi device until the sequencer has been
+> destroyed in order to avoid this.
+> 
+> Signed-off-by: John Keeping <john@metanate.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.15-rc4
+Thanks for the patch.  I wonder, though, how this could be triggered.
+Is this the case where the connected sequencer device is being used
+while the sound card gets released?  Or is it something else?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/02d5e016800d082058b3d3b7c3ede136cdc6ddcb
 
-Thank you!
+thanks,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Takashi
+
+> ---
+>  sound/core/rawmidi.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+> index 6f30231bdb88..b015f5f69175 100644
+> --- a/sound/core/rawmidi.c
+> +++ b/sound/core/rawmidi.c
+> @@ -1860,6 +1860,7 @@ static void snd_rawmidi_dev_seq_free(struct snd_seq_device *device)
+>  	struct snd_rawmidi *rmidi = device->private_data;
+>  
+>  	rmidi->seq_dev = NULL;
+> +	put_device(&rmidi->dev);
+>  }
+>  #endif
+>  
+> @@ -1936,6 +1937,9 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
+>  #if IS_ENABLED(CONFIG_SND_SEQUENCER)
+>  	if (!rmidi->ops || !rmidi->ops->dev_register) { /* own registration mechanism */
+>  		if (snd_seq_device_new(rmidi->card, rmidi->device, SNDRV_SEQ_DEV_ID_MIDISYNTH, 0, &rmidi->seq_dev) >= 0) {
+> +			/* Ensure we outlive the sequencer (see snd_rawmidi_dev_seq_free). */
+> +			get_device(&rmidi->dev);
+> +
+>  			rmidi->seq_dev->private_data = rmidi;
+>  			rmidi->seq_dev->private_free = snd_rawmidi_dev_seq_free;
+>  			sprintf(rmidi->seq_dev->name, "MIDI %d-%d", rmidi->card->number, rmidi->device);
+> -- 
+> 2.33.0
+> 
