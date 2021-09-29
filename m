@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFB341C78F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDD841C789
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344869AbhI2O7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:59:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344677AbhI2O7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:59:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A52C613A6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632927446;
-        bh=m2Q3ldX4i8hJz/lYMTrW/Tc7jkjEgA48T0avsrMIFb0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OS8/FZ05Bwuqc7c8Yy1ebTTrRtR/7Sh9oRAFWvlRbSE+GtdDhVhQbnVJIaynmoVWt
-         m4IAX3oh1iS08p/skrS1lSt6hHe2G6wCncmmwuqGK0ZgxHf+1Ygs72Y7fi/upjuMMa
-         gyZyOtJ2tbN5qyXOJBW7/Rf+T4AgEejImrVVaIrd1dmvdXSR3vxixr1yKFYsy0R2NZ
-         xjzDAevLhcKK0ozr8OsK2+G3i25e3qCEMf5fBPkWeBpjmp02C+mAxVAeMADaSK1fqx
-         2AzpH1jc2IwTfgbbpdXp84QfYdWhK29rTVjFi+2n6Wf24AFtCS9XdysC1gI5art90I
-         kn9etznjpw1gQ==
-Received: by mail-ed1-f45.google.com with SMTP id s17so9583808edd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:57:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530mhRTPMOSURKb6SoYwMYLCH+ENln8xSJV2PzqWJonxJOr4OgBp
-        wVERaZBVsEPbHonRbLQhQXpXpIbWYYTESlWUsw==
-X-Google-Smtp-Source: ABdhPJy2oIyAhlML1lKHkEI+GYb7Xf5WZ4jL2sSq+xZsFvjhx2y5gie/l/Dq825/3UzuJiV9rAUHrF0xKV//SQBZD0k=
-X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr178848ejo.430.1632927358007;
- Wed, 29 Sep 2021 07:55:58 -0700 (PDT)
+        id S1344861AbhI2O6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344836AbhI2O6J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:58:09 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C309AC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:56:27 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d26so4767658wrb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bfAo3cdVdjPUV6pEXL8FQsS7Ke/rTwTEvG/9aTqCFjY=;
+        b=bMjNCxXBUAuQEkuVxpP+AmnxM0sw8ckdBezCZ8qTLlBn7xb1DPzzOevOGtfB1HMQJ7
+         yNimKNFISVOCm/3nJn+xvys3x549D7c4bFt0jWsK+i9zC0XW8RccB6tp5k3PPM3fUFkh
+         IU60hYXMj0QNYBKOk+Da6B9gCo/DD4+4ahvVDvrKTqF/o+S6b9Qzp/lT6D3GFhmz78wY
+         BvD/1JEA0fijKi5iBCJT2xvQivNlCM6xWB/dbRUggt5II5vU73hOU8Sz1AUyylwt3ZHz
+         cjFNz+5roQMWk4bsIsilbf1k6ZSEayF4cRVHZal9xkjaxjzSmMpYBypenw9TfH3uEVk9
+         klcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=bfAo3cdVdjPUV6pEXL8FQsS7Ke/rTwTEvG/9aTqCFjY=;
+        b=IHuRzwXNaaqOFeFZ1OOAWNz2817SfMuHZ9bBB4u/ZolmikhrmmE96SsPFkn20gYvZs
+         ejPy3AdTtfeiVrM9MTE0TP79PZ5XKXIu3/YWKRHZ5VsoFC7otgiHxbDcg2T13g7ItdZ3
+         QqTq3LIgpRHSnxCIHa3MKaDmHfTcHUuZkTzTV29P6Q9/3pQsSBDsSPFX6dbprYGqWK5u
+         hFiFnbP7ydxk4iccIKw+nd6Z+oq6fCxcW1EppIb5rgcnJKkzadPgqMXHqAPGMzZlVw0c
+         e0EMbH8/eJyi86QUfjAug5YWjHd6cw8wIKVGW1JeocLWHflS8h0oyXKS9jbRIPQpWy1z
+         Rvfg==
+X-Gm-Message-State: AOAM5312aDWf6Lq5AcXT0XVfCXMnwdhhIQmTthz6T03iKLMw4xFIhFn1
+        U3f6ZLNN3cLrzHZo/19dGFXJlciuhQ592A==
+X-Google-Smtp-Source: ABdhPJyp/imGDT5ad6y9Nzq9hI1WPlBhRFpSPU8oRLnRL7KGv5egEUHPI/C1pJ7k2WtQkbv+biynMg==
+X-Received: by 2002:a5d:6a83:: with SMTP id s3mr346530wru.232.1632927386382;
+        Wed, 29 Sep 2021 07:56:26 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:784a:8d94:ffe2:2cdc? ([2a01:e0a:410:bb00:784a:8d94:ffe2:2cdc])
+        by smtp.gmail.com with ESMTPSA id o16sm148730wrx.11.2021.09.29.07.56.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 07:56:25 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH bpf-next 4/4] bpf: export bpf_jit_current
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210924095542.33697-1-lmb@cloudflare.com>
+ <20210924095542.33697-5-lmb@cloudflare.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <ba1a177b-f5ca-bf63-b7d1-43688f8ba9ec@6wind.com>
+Date:   Wed, 29 Sep 2021 16:56:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210929070235.4290-1-jason-jh.lin@mediatek.com> <20210929070235.4290-4-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210929070235.4290-4-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 29 Sep 2021 22:55:46 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__XmEYNbQJh0o-V-DS7F-_s1a9m54+FuOMwHGBCwx55Wg@mail.gmail.com>
-Message-ID: <CAAOTY__XmEYNbQJh0o-V-DS7F-_s1a9m54+FuOMwHGBCwx55Wg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] drm/mediatek: Fix cursor plane is not config when
- primary is updating
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210924095542.33697-5-lmb@cloudflare.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+Le 24/09/2021 à 11:55, Lorenz Bauer a écrit :
+> Expose bpf_jit_current as a read only value via sysctl.
+bpf_jit_current unit is 'pages' and bpf_jit_limit unit is bytes.
+Maybe exposing those values with the same unit will ease debugging.
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=882=
-9=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:02=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> If cursor plane has updated but primary plane config task is not
-> finished, mtk_drm_crtc_update_config will call mbox_flush() to clear
-> all task in current GCE thread and let cursor plane re-send a new
-> GCE task with cursor + primary plane config to replace the unfinished
-> GCE task.
->
-> So the plane config flag should not be cleared when mailbox callback
-> with a error status.
->
-> Fixes: 9efb16c2fdd6 ("drm/mediatek: Clear pending flag when cmdq packet i=
-s done")
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index 06342df2a0be..fb0d9424acec 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -281,6 +281,9 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void =
-*mssg)
->         struct mtk_crtc_state *state;
->         unsigned int i;
->
-> +       if (data->sta !=3D 0)
-
-data->sta is now the standard error code, so data->sta < 0 is an error.
 
 Regards,
-Chun-Kuang.
-
-> +               return;
-> +
->         state =3D to_mtk_crtc_state(mtk_crtc->base.state);
->
->         state->pending_config =3D false;
-> --
-> 2.18.0
->
+Nicolas
