@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6652D41CFFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8A941D000
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhI2Xbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347291AbhI2Xbh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:31:37 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1618EC061768
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:56 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so17363602lfa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3jxizxNlMd3y5kC30EDvr+i+pHVmPKgABz+DF4rjgKs=;
-        b=ZNn9Be9ICes2313BvgS80zA79N5Rq02S19oDdcxEx67Sx2rzL5Gn1xVnuu3/ukS6dh
-         RtjBsCpugu9twNEt/dyydKYUcEe//8cHEgNaSmNAM9JttRf66LomPN0bRf8t0UmYIH6J
-         bK8f/eh0Jg5jTt5RM3jaBwYLMr4tSVtsnJ6t1BL1Tx/sirWQuI/MN57Yvd5c3rj4jtCl
-         ufitWPMWyXCopRxWyRu6ONxWq+6kWNCJWoS0JMr6GptBK0Scan2mjbOH0RyRhmLURchN
-         u306sBL0XbZ8cbmzje+XWEYOAekY8Im+A2omYOA/XmPk+EYU7T6M4WCs3u8gTjLcBxXB
-         pLKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3jxizxNlMd3y5kC30EDvr+i+pHVmPKgABz+DF4rjgKs=;
-        b=ItR9n1Nl6+WbUv514wq4UCKRA9g9V0yWcSo3JwkWo1YYavl70840dq3q6AjjGQzCrS
-         I+bYT9knCLap/5Spnn8yBvrUOk+IH/kZB6dqTMS+3zy4YdnOuE9xh7wGSlM6RbZaqR9w
-         qv1L1jML1H5uW/C/8w/XVYp5Eha/owMpSTEqAP/wAwwbj53N4ZlX8eEvb05EHmulOWnS
-         xVyCrAOYPcCRDlcsVaTK2yMLUKf3JC1DC1daSZSmb1plqtUfKiy1HYU7q613hvSFKuaP
-         E0vtskNx8Iy0MlIfxd01V/ctQNfOcIIMwDu+CTmYy4owvgoNcNUpoK9GaHVg/rVOA61i
-         IMPg==
-X-Gm-Message-State: AOAM5330lfUNGhtGoqqLPxYNuaLvmytf3g8fmBxNYZV4rmwlyVCPiUpH
-        7PkE75lyBZpPqZnZTDnBybh/TztkzfbKOnl7kSZV1A==
-X-Google-Smtp-Source: ABdhPJxEKlQI/LHiS4pZSJWaQTK5azLO1ThGLFdst/S7wFdxgxStmC6elHJTeXAejJ+cfi1lHCUXfQO9r4xF0Yu/Cgs=
-X-Received: by 2002:a05:6512:ea5:: with SMTP id bi37mr2501644lfb.36.1632958194363;
- Wed, 29 Sep 2021 16:29:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210910101218.1632297-1-maxime@cerno.tech> <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
- <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com> <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
-In-Reply-To: <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 29 Sep 2021 16:29:42 -0700
-Message-ID: <CALAqxLW=dJSmfaHAL=BfYVVxZHQvzJWu4UjMixwgM=Nh85JVNw@mail.gmail.com>
-Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order consistent
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1347585AbhI2Xd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:33:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345134AbhI2Xd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:33:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E116135D;
+        Wed, 29 Sep 2021 23:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632958305;
+        bh=gDC8FeyWEK+m6y1oljAXM/J6NEZQW93X8rLKfj3knFM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NN3ijR4TISmoUJq81Zy37jY9PjgUYWr1BP/sBn1OfDNimXfNczZOTVlBRFYi7KdEr
+         RW3FtjLpG7VUwM3JHrL8iT/N71iEhCjuMHpQ9p1+bEiLpk/Yb7F3BjkQeuutBDFOuo
+         4y8StbCdPsAQAqoV6S/9tsLkZcjUHrmh5gA8n9kA=
+Date:   Wed, 29 Sep 2021 16:31:43 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     alex.popov@linux.com
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Garnier <thgarnie@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Laura Abbott <labbott@redhat.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, notify@kernel.org
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+Message-Id: <20210929163143.aa8b70ac9d5cf0b628823370@linux-foundation.org>
+In-Reply-To: <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+References: <20210929185823.499268-1-alex.popov@linux.com>
+        <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org> wrote:
-> > On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.org> wrote:
-> > > On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> wrote:
-> > > > The best practice to avoid those issues is to register its functions only after
-> > > > all its dependencies are live. We also shouldn't wait any longer than we should
-> > > > to play nice with the other components that are waiting for us, so in our case
-> > > > that would mean moving the DSI device registration to the bridge probe.
-> > > >
-> > > > I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
-> > > > would be affected by this and wouldn't probe anymore after those changes.
-> > > > Exynos and kirin seems to be simple enough for a mechanical change (that still
-> > > > requires to be tested), but the changes in msm seemed to be far more important
-> > > > and I wasn't confortable doing them.
-> > >
-> > >
-> > > Hey Maxime,
-> > >   Sorry for taking so long to get to this, but now that plumbers is
-> > > over I've had a chance to check it out on kirin
-> > >
-> > > Rob Clark pointed me to his branch with some fixups here:
-> > >    https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
-> > >
-> > > But trying to boot hikey with that, I see the following loop indefinitely:
-> > > [    4.632132] adv7511 2-0039: supply avdd not found, using dummy regulator
-> > > [    4.638961] adv7511 2-0039: supply dvdd not found, using dummy regulator
-> > > [    4.645741] adv7511 2-0039: supply pvdd not found, using dummy regulator
-> > > [    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy regulator
-> > > [    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy regulator
-> > > [    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy regulator
-> > > [    4.681898] adv7511 2-0039: failed to find dsi host
-> >
-> > I just realized Rob's tree is missing the kirin patch. My apologies!
-> > I'll retest and let you know.
->
-> Ok, just retested including the kirin patch and unfortunately I'm
-> still seeing the same thing.  :(
->
-> Will dig a bit and let you know when I find more.
+On Wed, 29 Sep 2021 22:01:33 +0300 Alexander Popov <alex.popov@linux.com> wrote:
 
-Hey Maxime!
-  I chased down the issue. The dsi probe code was still calling
-drm_of_find_panel_or_bridge() in order to succeed.
+> On 29.09.2021 21:58, Alexander Popov wrote:
+> > Currently, the Linux kernel provides two types of reaction to kernel
+> > warnings:
+> >  1. Do nothing (by default),
+> >  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
+> >     so panic_on_warn is usually disabled on production systems.
+> > 
+> > From a safety point of view, the Linux kernel misses a middle way of
+> > handling kernel warnings:
+> >  - The kernel should stop the activity that provokes a warning,
+> >  - But the kernel should avoid complete denial of service.
+> > 
+> > From a security point of view, kernel warning messages provide a lot of
+> > useful information for attackers. Many GNU/Linux distributions allow
+> > unprivileged users to read the kernel log, so attackers use kernel
+> > warning infoleak in vulnerability exploits. See the examples:
+> >   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+> >   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
+> > 
+> > Let's introduce the pkill_on_warn boot parameter.
+> > If this parameter is set, the kernel kills all threads in a process
+> > that provoked a kernel warning. This behavior is reasonable from a safety
+> > point of view described above. It is also useful for kernel security
+> > hardening because the system kills an exploit process that hits a
+> > kernel warning.
+> > 
+> > Signed-off-by: Alexander Popov <alex.popov@linux.com>
+> 
+> This patch was tested using CONFIG_LKDTM.
+> The kernel kills a process that performs this:
+>   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
+> 
+> If you are fine with this approach, I will prepare a patch adding the
+> pkill_on_warn sysctl.
 
-I've moved the logic that looks for the bridge into the bridge_init
-and with that it seems to work.
+Why do we need a boot parameter?  Isn't a sysctl all we need for this
+feature?
 
-Feel free (assuming it looks ok) to fold this change into your kirin patch:
-  https://git.linaro.org/people/john.stultz/android-dev.git/commit/?id=4a35ccc4d7a53f68d6d93da3b47e232a7c75b91d
+Also, 
 
-thanks
--john
+	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
+		do_group_exit(SIGKILL);
+
+- why do we care about system_state?  An explanatory code comment
+  seems appropriate.
+
+- do we really want to do this in states > SYSTEM_RUNNING?  If so, why?
