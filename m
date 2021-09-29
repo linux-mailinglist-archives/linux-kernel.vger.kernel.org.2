@@ -2,210 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B9641C53B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEBE41C53A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344063AbhI2NLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344040AbhI2NLF (ORCPT
+        id S1344056AbhI2NLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:11:07 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:48734
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344026AbhI2NLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:11:05 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7A1C06161C
+        Wed, 29 Sep 2021 09:11:04 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 215463F4BE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632920963;
+        bh=KsbVur2/qli+4fCqIZBdqDED21IaMcFYxs808+TH5nI=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=mpYcIE9MAMDMvArCyDVt6zal1SjxSyX8EldFAkgzHx8d/XrbExhRjfJEHyDh+JcWY
+         9oSARNIk5TM1FvFfmgKqPcZ51GiE+bjvBIh5pKGpv+Uwqi/iYb4FAIl2A9w8bsaElh
+         Hf1y5z6yhZD1u/1gu86/Uumdbtalc00YlFGqVvcbZsWvmejbHGnQQHCXzioLtMxcwI
+         3LzaQKlCIf744Ad4SAaEl+hJk2JiHkfZ5aEUMggU/ZsFT+aQMEIDImyS2T6/6KuOl2
+         x5af2w3eQMwsnhUypc+N6KRm7+NarBlwSaytxpyehiRcwTuUXdw269ZF9Xxc1G4dTO
+         vtIFL3hD7nGVg==
+Received: by mail-lf1-f72.google.com with SMTP id q4-20020ac25284000000b003fcebb305a6so2306910lfm.15
         for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 06:09:23 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id s20so3010542ioa.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 06:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XkEDSADHBvfevoxljJ4T1PZQMMJ1MoZGL9A5io5n/G4=;
-        b=l65l906OE79blcJYbrneuky2sOG6RNx0kOJ44MNaSCkQhaBp0BrjIQsfK4cSY99FTz
-         T/HvPXfhqpX5SDliwK1g0ge2M+XBiQ+rFsofcM2jrxF//j6T69DYNf1AiQF8f86tzjSC
-         w1K81Bdpet7IrVmc9CzrhehQFXuRcr6zGckCskXQ0IIYm5P/sFQHQHf4UQbScFpyeue5
-         H56ptcHwCkcuZ9uSjU0R1o12+rmmlGW3dAIwFsoyFM/QDaG7keH9e+OBanGPP1zghnFT
-         IkJHgGDZ5XhC4S2phbNquiS+Nr2SD9MAD19SkzM9f/fNU+r3g/8X3xIBrZAKTKhcxGa+
-         pTWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XkEDSADHBvfevoxljJ4T1PZQMMJ1MoZGL9A5io5n/G4=;
-        b=SjKwGsis0RoQzhi8YI+QWf8Nfblo3MgK+B624KGLubba5bPDKjMIqwTbKo199I9z6J
-         c5uOQo9j6O0A6isolRuzVTcffTx2NFN1dFmGvyNq6E9AwVVFGnDUFhB4EhNEOIzCpVZT
-         Ma3AsAY4YiBhqWEyKwyQKvOn4UJGAZzQcrJfKQWDeIWEVO/x4sRJtrePSR8opHMsNq1J
-         UxfJuN24hOY+0cEIXzo8vkyKuwkgPHcQvwit/aA69+hOoLqqgrtBtKy0T+5YXNq8UTnC
-         WMrfS7mTU1i3LqZzKdZMSG2+pVvE76rtWb0Jd/mrapHXndyOxykc84noPIa56CGgrdAH
-         vshw==
-X-Gm-Message-State: AOAM5330mpMgSQVJjLDmJOKcKcLAHrL8my8/ps+cgwHE4Z7Se5eCeO2/
-        cnRKqu/c/9LwwfCmZ1PZTC2iznUx1xBIPE44L5k=
-X-Google-Smtp-Source: ABdhPJwC6af02XyBX0i/Tzr7sRtlymOVBbUwIAl6sroM70zqX6pibqgFpX8Svqos+HIcdkrooSzFGbztwMFdKMgc1ZI=
-X-Received: by 2002:a05:6638:2722:: with SMTP id m34mr9515111jav.49.1632920963356;
- Wed, 29 Sep 2021 06:09:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KsbVur2/qli+4fCqIZBdqDED21IaMcFYxs808+TH5nI=;
+        b=7rjG4PT1tzrngp93tNnzlV1t69GVTuyxLIYaV5VhDJ3QxVDaxqOGgXgsOMg9c6Znw7
+         xxfXGgM93nSOy7Bfjk8G+kEwqz6bGoW2wG0fnnTRpVrTDUwDy/v7ugPaSaAxxyJQMV9z
+         r8e58fQPK+tX+Imjb6GOnSg/lQYGVU6+HVAnEfvSn/Cm3Gtr3RU6PrdbtrEISxmZsWk/
+         tOi2gxQyRfM/jDPwQcRFL/ItOFepplcUnxGHy4dyxMNhR4phpeYjH2f/BKuj7sXEQCTZ
+         YzHrOU/uk+k73e9ChUvRG1LY9Z0UYXF557V1saNVnwoK7O0T+JWJPq8EYFzwY22umuAE
+         9fnA==
+X-Gm-Message-State: AOAM530O2fOIHny+el9IDcgI8ilNKfUGF2S5dRbtIluectyFD4la0d/v
+        /4pl6OZa1bluhRuTh4mB5WLD3xx/PKzStyW83UVAT9xJv+9IIOKIznFVo2PbUdj6VTFWViLErKl
+        I7ssc2GGgfD+g3ZwYQE0Bx2iKoaSqRr/vWIzbzPuAGQ==
+X-Received: by 2002:ac2:59c7:: with SMTP id x7mr11996682lfn.662.1632920962440;
+        Wed, 29 Sep 2021 06:09:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKrXQMmrpXBJdFGfniYnh95CJW4r5XX/GOWAswOXl0aBJ33mQHCMYimiRr8Trj3H0MHLM7Ow==
+X-Received: by 2002:ac2:59c7:: with SMTP id x7mr11996657lfn.662.1632920962259;
+        Wed, 29 Sep 2021 06:09:22 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id b22sm241800lfs.27.2021.09.29.06.09.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 06:09:21 -0700 (PDT)
+Subject: Re: [PATCH v2 07/12] clk: samsung: set exynos arm64 clk driver as
+ tristate
+To:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <20210928235635.1348330-8-willmcvicker@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <ac328b6a-a8e2-873d-4015-814cb4f5588e@canonical.com>
+Date:   Wed, 29 Sep 2021 15:09:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-3-laoar.shao@gmail.com>
-In-Reply-To: <20210929115036.4851-3-laoar.shao@gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 29 Sep 2021 21:08:47 +0800
-Message-ID: <CALOAHbBy60ik+Crf0E8spTyCqth0mPO7+u=ZsQRsbsJS7n6fGA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] kernel/fork: allocate task->comm dynamicly
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210928235635.1348330-8-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 7:51 PM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> task->comm is defined as an array embedded in struct task_struct before.
-> This patch changes it to a char pointer. It will be allocated in the fork
-> and freed when the task is freed.
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  include/linux/sched.h |  2 +-
->  kernel/fork.c         | 19 +++++++++++++++++++
->  2 files changed, 20 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index e12b524426b0..b387b5943db4 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1051,7 +1051,7 @@ struct task_struct {
->          * - access it with [gs]et_task_comm()
->          * - lock it with task_lock()
->          */
-> -       char                            comm[TASK_COMM_LEN];
-> +       char                            *comm;
->
->         struct nameidata                *nameidata;
->
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 38681ad44c76..227aec240501 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -721,6 +721,20 @@ static void mmdrop_async(struct mm_struct *mm)
->         }
->  }
->
-> +static int task_comm_alloc(struct task_struct *p)
-> +{
-> +       p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
-> +       if (!p->comm)
-> +               return -ENOMEM;
-> +
-> +       return 0;
-> +}
-> +
-> +static void task_comm_free(struct task_struct *p)
-> +{
-> +       kfree(p->comm);
-> +}
-> +
->  static inline void free_signal_struct(struct signal_struct *sig)
->  {
->         taskstats_tgid_free(sig);
-> @@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
->         bpf_task_storage_free(tsk);
->         exit_creds(tsk);
->         delayacct_tsk_free(tsk);
-> +       task_comm_free(tsk);
->         put_signal_struct(tsk->signal);
->         sched_core_free(tsk);
->
-> @@ -2076,6 +2091,10 @@ static __latent_entropy struct task_struct *copy_process(
->         if (data_race(nr_threads >= max_threads))
->                 goto bad_fork_cleanup_count;
->
-> +       retval = task_comm_alloc(p);
-> +       if (retval)
-> +               goto bad_fork_cleanup_count;
-> +
->         delayacct_tsk_init(p);  /* Must remain after dup_task_struct() */
->         p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE | PF_NO_SETAFFINITY);
->         p->flags |= PF_FORKNOEXEC;
-> --
-> 2.17.1
->
+On 29/09/2021 01:56, Will McVicker wrote:
+> This sets the COMMON_CLK_SAMSUNG and EXYNOS_ARM64_COMMON_CLK drivers as
+> tristate so that we can compile them as modules.
 
-After sending the series, I find that I forget to move the
-task_comm_alloc() to the end of fork().  Below is the updated one,
+This is not the only thing you are doing. You are removing the enforced
+built-in and this must be here explained and tested. The policy so far
+was that all S3C, S5P and Exynos supported platforms select (enforce)
+necessary drivers. Please explain in commit msg reasoning why this is
+being changed and what's the impact (whether it actually works).
 
----
- include/linux/sched.h |  2 +-
- kernel/fork.c         | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+), 1 deletion(-)
+What is more, it seems you entirely ignored Geert's comments. I pointed
+attention to it last time and you just said you will send v2 instead of
+joining discussion.
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index e12b524426b0..b387b5943db4 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1051,7 +1051,7 @@ struct task_struct {
-         * - access it with [gs]et_task_comm()
-         * - lock it with task_lock()
-         */
--       char                            comm[TASK_COMM_LEN];
-+       char                            *comm;
+It's a NAK for this reason - ignoring what Geert brought: you just broke
+distro configs for Exynos.
 
-        struct nameidata                *nameidata;
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 38681ad44c76..d1e0c38464ed 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -721,6 +721,20 @@ static void mmdrop_async(struct mm_struct *mm)
-        }
- }
-
-+static int task_comm_alloc(struct task_struct *p)
-+{
-+       p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
-+       if (!p->comm)
-+               return -ENOMEM;
-+
-+       return 0;
-+}
-+
-+static void task_comm_free(struct task_struct *p)
-+{
-+       kfree(p->comm);
-+}
-+
- static inline void free_signal_struct(struct signal_struct *sig)
- {
-        taskstats_tgid_free(sig);
-@@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
-        bpf_task_storage_free(tsk);
-        exit_creds(tsk);
-        delayacct_tsk_free(tsk);
-+       task_comm_free(tsk);
-        put_signal_struct(tsk->signal);
-        sched_core_free(tsk);
-
-@@ -2352,6 +2367,10 @@ static __latent_entropy struct task_struct *copy_process(
-                goto bad_fork_cancel_cgroup;
-        }
-
-+       retval = task_comm_alloc(p);
-+       if (retval)
-+               goto bad_fork_cancel_cgroup;
-+
-        /* past the last point of failure */
-        if (pidfile)
-                fd_install(pidfd, pidfile);
-
-
--- 
-Thanks
-Yafang
+Best regards,
+Krzysztof
