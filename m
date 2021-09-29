@@ -2,263 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5783541CAB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2330041CAA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346129AbhI2Q5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345770AbhI2Q5c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:57:32 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E93DC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:55:51 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id j15so3614431ila.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I9u7CdhA82OTxhiNjh8zFGVUr+YVkwKJl8XJaXfF7/w=;
-        b=BHqBuXTTFAG0/Uo7tjBlKpHuoamjjqMPc9oxmBVteM1aCxv7dKtXvyjmCRWf7zCP8X
-         ZmUwHnNtF6Q5FQa571WYQktvZeuOU2nw8yyBgXa6dci8toUuKUVBrPxaibQ59riRmCWl
-         tIs25tTza3WOJE+q41ZAx5LswjcIcnjCEgM5JT8ifUc5Yyd2FUuEsIVo2QwTH9/f/vt9
-         NxXTFqKx3fIuHtJwJkmcP4QMsLjCstXef24T00HX8+384TGPSNVHaIo+IObKZxOSzMfq
-         DEBmrVi7U49wa81q9knGq4MJJZbqbB8mGQ1kvgqS+TJYjjnbRG1Pvt12IVaeajkOZmjH
-         H+bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I9u7CdhA82OTxhiNjh8zFGVUr+YVkwKJl8XJaXfF7/w=;
-        b=5GVN7OKyzhrtrOWD0FKd1Or8i2Gh076nm554vOPu+9Mt8pDtytW+OeSV1j6gdfecsp
-         17UGZsFIsovxrzLT0nbewJs4+Zx3dbp3myQVv1Ag/4zj5fZ+9HKcjU3nQG4i2ibHOype
-         VYuhGdl5rcUS+wus5TeRwz2R6rzAQSrKewiM89SLR7/ALNv2R4QWpcbFa3bOJh7oPif+
-         SBbYbOslCr0zUUD9JJ9yy4aDlJ1iBtsu0QHfjfGxU2AaWsr4JzEVb+tZOi+lRNTgbzFs
-         8dz3URYjApSC2vCNG8S84R18435kZxJh/h6EQ7usbd/8xmUFaRjdLeDawsDq+B5GoDOY
-         yZfw==
-X-Gm-Message-State: AOAM532vu1plczUPLLa4LS+39BCzCquIvdj6loXGIisjZeW8AfJWcTO4
-        nf43emD/Q4YhE1wj3HvrfEUJ3ypnyGlD21GYcCaqMQ==
-X-Google-Smtp-Source: ABdhPJz7UcccOWEBaJmnPyOL9Nqa48Gmrl5N34vyOIihW623wH6slZbZVT6p4sSRqjOgbCjRqwCBDAmEwoVesgG/hP4=
-X-Received: by 2002:a92:b301:: with SMTP id p1mr539248ilh.10.1632934550387;
- Wed, 29 Sep 2021 09:55:50 -0700 (PDT)
+        id S245746AbhI2Qxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245180AbhI2Qxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:53:43 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37C1361411;
+        Wed, 29 Sep 2021 16:51:57 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 17:55:51 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH v3 8/9] iio: adc: rockchip_saradc: Make use of the
+ helper function dev_err_probe()
+Message-ID: <20210929175551.7517b018@jic23-huawei>
+In-Reply-To: <20210928141956.2148-8-caihuoqing@baidu.com>
+References: <20210928141956.2148-1-caihuoqing@baidu.com>
+        <20210928141956.2148-8-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210928222926.1180749-1-dlatypov@google.com> <20210928222926.1180749-2-dlatypov@google.com>
- <CABVgOSmbROsRBgA+rfJGwTcsFCmgUmrEgLLVxxr7A-EKLvcj_Q@mail.gmail.com>
-In-Reply-To: <CABVgOSmbROsRBgA+rfJGwTcsFCmgUmrEgLLVxxr7A-EKLvcj_Q@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 29 Sep 2021 09:55:38 -0700
-Message-ID: <CAGS_qxpDACGJ=sW7-3ivVw5X92K7rrmoiLyj+SS-OdvGg0i1rg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] kunit: add 'kunit.action' param to allow listing
- out tests
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 9:38 PM David Gow <davidgow@google.com> wrote:
->
-> On Wed, Sep 29, 2021 at 6:29 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > Context:
-> > It's difficult to map a given .kunitconfig => set of enabled tests.
-> > Letting kunit.py figure that out would be useful.
-> >
-> > This patch:
-> > * is intended to be an implementation detail used only by kunit.py
-> > * adds a kunit.action module param with one valid non-null value, "list"
-> > * for the "list" action, it simply prints out "<suite>.<test>"
-> > * leaves the kunit.py changes to make use of this for another patch.
-> >
-> > Note: kunit.filter_glob is respected for this and all future actions.
-> >
-> > Hack: we print a TAP header and fake test plan to allow kunit.py to
-> > use the same code to pick up KUnit output that it does for normal tests.
-> > Since this is intended to be an implementation detail, it seems fine for
-> > now. Maybe in the future we ouptut each test as SKIPPED or the like.
->
-> I'm still a little uneasy using the "TAP version 14" header here, and
-> then proceeding to include a list of tests which, in and of itself,
-> isn't valid TAP.
-> I don't think we need to solve this perfectly now: we can always
-> change it if something comes out of, e.g., the KTAP standardisation,
-> but I'd rather we have something -- even something temporary -- which
-> is easily distinguishable from an actual TAP result.
->
-> Even if we had "TAP version 14 - test list" or something so that
+On Tue, 28 Sep 2021 22:19:54 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-Currently, the regex kunit_parser.py uses is anchored with $.
-So I'm not able to add anything at the end of the line.
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-We could potentially add a new line afterwards with "# KUnit Test
-List" or similar?
+In this driver, there is also a call to
+devm_reset_control_get_exclusive() which I think can return
+-EPROBE_DEFER
 
-I'd prefer not to since I'm not sure it matters _too_ much.
-Someone would have to go out of their way to print the list of tests,
-and if so, I'm not sure they should be trying to parse TAP output from
-it.
+There isn't a message printed on that particular patch, but it would
+be good to add something generic. Same for platform_get_irq()
 
-> kunit_tool picked up on it without further changes, that'd be fine,
-> though something like "KUnit Test List" would be better.
->
-> Also, I'd still rather we lose the "1..1" test suite list, though I
-> can live without if I have to, given that it is actually giving the
-> correct number of suites.
->
-> From the kernel side, all this should take is replacing the call to
-> kunit_print_tap_header() with a direct pr_info() call. Maybe there'd
-> need to be some minor kunit_tool changes in patch 3, too, but nothing
-> excessive.
+There are some devm_clk_get() calls as well which likewise probably
+want handling in a similar fashion as you have done in other patches.
 
-That's fair. I had mainly just wanted to avoid hard-copying a copy of
-the TAP version.
+Thanks,
 
-I've made the change so it doesn't print the test plan and it works.
+Jonathan
 
-The only change needed in patch 3 is
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index e7b92caba53d..ca4f877234c2 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -101,8 +101,7 @@ def _list_tests(linux:
-kunit_kernel.LinuxSourceTree, request: KunitExecRequest)
-                           filter_glob=request.filter_glob,
-                           build_dir=request.build_dir)
-        output = kunit_parser.extract_tap_lines(output)
--       # Hack! Drop the TAP version header and top-level test plan.
--       output.pop()
-+       # Hack! Drop the dummy TAP version header that the executor prints out.
-        output.pop()
-        return list(output)
 
->
-> Also, nit: "ouptut" should be "output"
+> ---
+> v1->v2: Remove the separate line of PTR_ERR().
+> 
+>  drivers/iio/adc/rockchip_saradc.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
+> index a56a0d7337ca..57419ccb3c70 100644
+> --- a/drivers/iio/adc/rockchip_saradc.c
+> +++ b/drivers/iio/adc/rockchip_saradc.c
+> @@ -392,11 +392,9 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	info->vref = devm_regulator_get(&pdev->dev, "vref");
+> -	if (IS_ERR(info->vref)) {
+> -		dev_err(&pdev->dev, "failed to get regulator, %ld\n",
+> -			PTR_ERR(info->vref));
+> -		return PTR_ERR(info->vref);
+> -	}
+> +	if (IS_ERR(info->vref))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(info->vref),
+> +				     "failed to get regulator\n");
+>  
+>  	if (info->reset)
+>  		rockchip_saradc_reset_controller(info->reset);
 
-Ah, fixed.
-
-> >
-> > Go with a more generic "action" param, since it seems like we might
-> > eventually have more modes besides just running or listing tests, e.g.
-> > * perhaps a benchmark mode that reruns test cases and reports timing
-> > * perhaps a deflake mode that reruns test cases that failed
-> > * perhaps a mode where we randomize test order to try and catch
-> >   hermeticity bugs like "test a only passes if run after test b"
-> >
-> > Tested:
-> > $ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
-> > ...
-> > TAP version 14
-> > 1..1
-> > example.example_simple_test
-> > example.example_skip_test
-> > example.example_mark_skipped_test
-> > reboot: System halted
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
->
-> Otherwise, I'm quite happy with this: it works well on my end, and the
-> implementation makes sense.
->
-> So this is:
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> (But I'd rather the TAP header bit change if possible...)
->
-> -- David
->
-> >  lib/kunit/executor.c | 45 +++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 40 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> > index bab3ab940acc..8b38c91b4fac 100644
-> > --- a/lib/kunit/executor.c
-> > +++ b/lib/kunit/executor.c
-> > @@ -15,9 +15,16 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
-> >  #if IS_BUILTIN(CONFIG_KUNIT)
-> >
-> >  static char *filter_glob_param;
-> > +static char *action_param;
-> > +
-> >  module_param_named(filter_glob, filter_glob_param, charp, 0);
-> >  MODULE_PARM_DESC(filter_glob,
-> >                 "Filter which KUnit test suites/tests run at boot-time, e.g. list* or list*.*del_test");
-> > +module_param_named(action, action_param, charp, 0);
-> > +MODULE_PARM_DESC(action,
-> > +                "Changes KUnit executor behavior, valid values are:\n"
-> > +                "<none>: run the tests like normal\n"
-> > +                "'list' to list test names instead of running them.\n");
-> >
-> >  /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
-> >  struct kunit_test_filter {
-> > @@ -196,9 +203,35 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
-> >         pr_info("1..%d\n", num_of_suites);
-> >  }
-> >
-> > -int kunit_run_all_tests(void)
-> > +static void kunit_exec_run_tests(struct suite_set *suite_set)
-> >  {
-> >         struct kunit_suite * const * const *suites;
-> > +
-> > +       kunit_print_tap_header(suite_set);
-> > +
-> > +       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> > +               __kunit_test_suites_init(*suites);
-> > +}
-> > +
-> > +static void kunit_exec_list_tests(struct suite_set *suite_set)
-> > +{
-> > +       unsigned int i;
-> > +       struct kunit_suite * const * const *suites;
-> > +       struct kunit_case *test_case;
-> > +
-> > +       /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
-> > +       kunit_print_tap_header(suite_set);
->
-> As noted, would rather this be something like
-> pr_info("KUnit Test List");
->
->
-> > +
-> > +       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> > +               for (i = 0; (*suites)[i] != NULL; i++) {
-> > +                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
-> > +                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
-> > +                       }
-> > +               }
-> > +}
-> > +
-> > +int kunit_run_all_tests(void)
-> > +{
-> >         struct suite_set suite_set = {
-> >                 .start = __kunit_suites_start,
-> >                 .end = __kunit_suites_end,
-> > @@ -207,10 +240,12 @@ int kunit_run_all_tests(void)
-> >         if (filter_glob_param)
-> >                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
-> >
-> > -       kunit_print_tap_header(&suite_set);
-> > -
-> > -       for (suites = suite_set.start; suites < suite_set.end; suites++)
-> > -               __kunit_test_suites_init(*suites);
-> > +       if (!action_param)
-> > +               kunit_exec_run_tests(&suite_set);
-> > +       else if (strcmp(action_param, "list") == 0)
-> > +               kunit_exec_list_tests(&suite_set);
-> > +       else
-> > +               pr_err("kunit executor: unknown action '%s'\n", action_param);
-> >
-> >         if (filter_glob_param) { /* a copy was made of each array */
-> >                 kunit_free_suite_set(suite_set);
-> > --
-> > 2.33.0.685.g46640cef36-goog
-> >
