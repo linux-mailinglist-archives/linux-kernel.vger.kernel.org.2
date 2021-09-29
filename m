@@ -2,209 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE7F41D01D
+	by mail.lfdr.de (Postfix) with ESMTP id 739CB41D01E
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347608AbhI2XnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346536AbhI2Xm7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:42:59 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78587C061768
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:41:16 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l11-20020a056902072b00b005a776eefb28so5723226ybt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=nAs4diGKDtFAK12cMvvKORrzgu/SgnuyHpoTrsBgHf0=;
-        b=rkewn6O/NTtnG8iBVIuyAV/KNUOigYTEy6zKzajF/GXAKeXSbKz2owq4KfVxBM4iJI
-         mdSZIAuD3dfe5z+OyR76kxGM7las2APwhVj+ypximmHWAp736kWQQUZmki8o8z3o485c
-         gJdM4xKpTAHfedctxvAschl/FDHgNo53BjFZiMlnsjnnOxp17ZkMmjiYL1KI1ou6W/dA
-         Fwt+hxzrf9X9O7lgKtWGAFXxKQhtA1Hthi7xw01WyMpJMautD3pNy1YAm1DyQDXAYIwi
-         Fa2E97HywCTs2qBwie5XlYctD53pXAav20tW9VSPkdmLNbUY4NudlGkRPprrnnH+aPCy
-         QEjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=nAs4diGKDtFAK12cMvvKORrzgu/SgnuyHpoTrsBgHf0=;
-        b=HBFIHQ2Dmmm+lYklNi/1Kr4sMV94e7lBmW1/+NxMXZuQFh+iyh95ExTWJAYf+PrbCi
-         8I3XYKiV8JYFUuST5oz/S5FGXWeuNzxgCXmr8/pnd8qsD1UNJJm8zdgTbWxWSIqGiv/o
-         arE5o5pBKbkTd60dPJnZy+Hlr3fGokgSEw+pgc7cWp+YjCWYoopdu7ZelChekmYP0ahr
-         GL6pQx5tVjj0klfEqrwttDy/BTvViraXIcgsNw5+PS4KWPPEzj4G9CpVXpD2SZPX4iGW
-         0WRqTk8S51hzPqARPvhjUFNZAMPdLGggN8IHdOwnHHRl5DmcwffAFuhckyItS7iMjfJm
-         IyNw==
-X-Gm-Message-State: AOAM531iOUXxctBaPiGcLIOSvi/jmmuw6VYi4DAR8VbOblNlEMfmQyeO
-        rrVBQ4t7rlQbmIUmB1TkvaqrwnJm6Go=
-X-Google-Smtp-Source: ABdhPJzvdrLFMq8dFIXDrn7bAJTwPfp+fXRZRsjWvC1WEwrk0u12e3Ny5QGfdZIPDY8H3hO+UtDqIevOxe0=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e777:43b7:f76f:da52])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1504:: with SMTP id
- q4mr3327370ybu.177.1632958875766; Wed, 29 Sep 2021 16:41:15 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 29 Sep 2021 16:41:12 -0700
-Message-Id: <20210929234112.1862848-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH] KVM: selftests: Ensure all migrations are performed when test
- is affined
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        Sean Christopherson <seanjc@google.com>
+        id S1347656AbhI2Xnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347524AbhI2Xnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:43:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C676126A
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632958921;
+        bh=otV9VV/sFcF022eYj5odI220EtLVp8iNHKDlnTKMYts=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MABys8Z/Y8aBZd0ydLplveETTesiDBeKHDu/pTycjplmN3OTjdf5osT6dFwgfjE9w
+         1WD/AJIsr+eO9oidOxUCby37TKrvZxRNssqyfuOBMe24rwl/4H9mjfe5MwX+0iwn8h
+         h8nGjt8UTvIJbeDF+Dqx0o1+Pi51ejS5s2BPEghw9h2J+SvQy2/Lm755RIkCNBcWmk
+         Q2rZroP9Rxrlp82/jswReK/kTomgAifBS4xkfyStPAwcPTnGwVdl6+8Hs6W5k/YrAZ
+         cWveMGgB50sEnWsZTOygQnAdXcmEna94kFfRFPzkoY/9R620kbQgxEOGllODea3sgD
+         qCX68asy4QjXw==
+Received: by mail-lf1-f47.google.com with SMTP id y26so17556058lfa.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:42:01 -0700 (PDT)
+X-Gm-Message-State: AOAM5318sK3n6YHiP/Y/w0PDfa0T19pR3ZqkQ/elEpMcj/F1LH9NJQnN
+        BGSIgYd3Wuf7eA6jhC3iNCi3qCgUSCr+Hpm8cEI=
+X-Google-Smtp-Source: ABdhPJxHqAjSpOeee9Gqzi1rY9sY5DM00t+Nr1XmoZToxp1W8xpUS2LPcFfuGRc/ndeFpb0W/nBQOoEpcB3X7s5V7cE=
+X-Received: by 2002:a2e:5442:: with SMTP id y2mr2794204ljd.436.1632958920169;
+ Wed, 29 Sep 2021 16:42:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210922070645.47345-2-rongwei.wang@linux.alibaba.com>
+ <YUsVcEDcQ2vEzjGg@casper.infradead.org> <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
+ <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com> <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com> <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
+ <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com> <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+ <YVSopxYWegtQJ3iD@casper.infradead.org>
+In-Reply-To: <YVSopxYWegtQJ3iD@casper.infradead.org>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 29 Sep 2021 16:41:48 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+Message-ID: <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page cache
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the CPU selection in the migration worker to ensure the specified
-number of migrations are performed when the test iteslf is affined to a
-subset of CPUs.  The existing logic skips iterations if the target CPU is
-not in the original set of possible CPUs, which causes the test to fail
-if too many iterations are skipped.
+On Wed, Sep 29, 2021 at 10:56 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+[...]
+> > Now, I am able to crash the system on
+> >     find_lock_entries () {
+> >      ...
+> >        VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+> >     }
+> > I guess it is related. I will test more.
+>
+> That's a bogus VM_BUG_ON.  I have a patch in my tree to delete it.
+> Andrew has it too, but for some reason, he hasn't sent it on to Linus.
+>
+> +++ b/mm/filemap.c
+> @@ -2093,7 +2093,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
+>                 if (!xa_is_value(page)) {
+>                         if (page->index < start)
+>                                 goto put;
+> -                       VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+>                         if (page->index + thp_nr_pages(page) - 1 > end)
+>                                 goto put;
+>                         if (!trylock_page(page))
 
-  ==== Test Assertion Failure ====
-  rseq_test.c:228: i > (NR_TASK_MIGRATIONS / 2)
-  pid=10127 tid=10127 errno=4 - Interrupted system call
-     1  0x00000000004018e5: main at rseq_test.c:227
-     2  0x00007fcc8fc66bf6: ?? ??:0
-     3  0x0000000000401959: _start at ??:?
-  Only performed 4 KVM_RUNs, task stalled too much?
+Yes, after removing this line, I am able to see the same bug.
 
-Calculate the min/max possible CPUs as a cheap "best effort" to avoid
-high runtimes when the test is affined to a small percentage of CPUs.
-Alternatively, a list or xarray of the possible CPUs could be used, but
-even in a horrendously inefficient setup, such optimizations are not
-needed because the runtime is completely dominated by the cost of
-migrating the task, and the absolute runtime is well under a minute in
-even truly absurd setups, e.g. running on a subset of vCPUs in a VM that
-is heavily overcommited (16 vCPUs per pCPU).
+Here is my finding so far:
 
-Fixes: 61e52f1630f5 ("KVM: selftests: Add a test for KVM_RUN+rseq to detect task migration bugs")
-Reported-by: Dongli Zhang <dongli.zhang@oracle.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- tools/testing/selftests/kvm/rseq_test.c | 69 +++++++++++++++++++++----
- 1 file changed, 59 insertions(+), 10 deletions(-)
+The issue is NOT caused by concurrent khugepaged:collapse_file() and
+truncate_pagecache(inode, 0). With some printks, we can see a clear
+time gap (>2 second )  between collapse_file() finishes, and
+truncate_pagecache() (which crashes soon). Therefore, my earlier
+suggestion that adds deny_write_access() to collapse_file() does NOT
+work.
 
-diff --git a/tools/testing/selftests/kvm/rseq_test.c b/tools/testing/selftests/kvm/rseq_test.c
-index c5e0dd664a7b..4158da0da2bb 100644
---- a/tools/testing/selftests/kvm/rseq_test.c
-+++ b/tools/testing/selftests/kvm/rseq_test.c
-@@ -10,6 +10,7 @@
- #include <signal.h>
- #include <syscall.h>
- #include <sys/ioctl.h>
-+#include <sys/sysinfo.h>
- #include <asm/barrier.h>
- #include <linux/atomic.h>
- #include <linux/rseq.h>
-@@ -39,6 +40,7 @@ static __thread volatile struct rseq __rseq = {
- 
- static pthread_t migration_thread;
- static cpu_set_t possible_mask;
-+static int min_cpu, max_cpu;
- static bool done;
- 
- static atomic_t seq_cnt;
-@@ -57,20 +59,37 @@ static void sys_rseq(int flags)
- 	TEST_ASSERT(!r, "rseq failed, errno = %d (%s)", errno, strerror(errno));
- }
- 
-+static int next_cpu(int cpu)
-+{
-+	/*
-+	 * Advance to the next CPU, skipping those that weren't in the original
-+	 * affinity set.  Sadly, there is no CPU_SET_FOR_EACH, and cpu_set_t's
-+	 * data storage is considered as opaque.  Note, if this task is pinned
-+	 * to a small set of discontigous CPUs, e.g. 2 and 1023, this loop will
-+	 * burn a lot cycles and the test will take longer than normal to
-+	 * complete.
-+	 */
-+	do {
-+		cpu++;
-+		if (cpu > max_cpu) {
-+			cpu = min_cpu;
-+			TEST_ASSERT(CPU_ISSET(cpu, &possible_mask),
-+				    "Min CPU = %d must always be usable", cpu);
-+			break;
-+		}
-+	} while (!CPU_ISSET(cpu, &possible_mask));
-+
-+	return cpu;
-+}
-+
- static void *migration_worker(void *ign)
- {
- 	cpu_set_t allowed_mask;
--	int r, i, nr_cpus, cpu;
-+	int r, i, cpu;
- 
- 	CPU_ZERO(&allowed_mask);
- 
--	nr_cpus = CPU_COUNT(&possible_mask);
--
--	for (i = 0; i < NR_TASK_MIGRATIONS; i++) {
--		cpu = i % nr_cpus;
--		if (!CPU_ISSET(cpu, &possible_mask))
--			continue;
--
-+	for (i = 0, cpu = min_cpu; i < NR_TASK_MIGRATIONS; i++, cpu = next_cpu(cpu)) {
- 		CPU_SET(cpu, &allowed_mask);
- 
- 		/*
-@@ -154,6 +173,36 @@ static void *migration_worker(void *ign)
- 	return NULL;
- }
- 
-+static int calc_min_max_cpu(void)
-+{
-+	int i, cnt, nproc;
-+
-+	if (CPU_COUNT(&possible_mask) < 2)
-+		return -EINVAL;
-+
-+	/*
-+	 * CPU_SET doesn't provide a FOR_EACH helper, get the min/max CPU that
-+	 * this task is affined to in order to reduce the time spent querying
-+	 * unusable CPUs, e.g. if this task is pinned to a small percentage of
-+	 * total CPUs.
-+	 */
-+	nproc = get_nprocs_conf();
-+	min_cpu = -1;
-+	max_cpu = -1;
-+	cnt = 0;
-+
-+	for (i = 0; i < nproc; i++) {
-+		if (!CPU_ISSET(i, &possible_mask))
-+			continue;
-+		if (min_cpu == -1)
-+			min_cpu = i;
-+		max_cpu = i;
-+		cnt++;
-+	}
-+
-+	return (cnt < 2) ? -EINVAL : 0;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int r, i, snapshot;
-@@ -167,8 +216,8 @@ int main(int argc, char *argv[])
- 	TEST_ASSERT(!r, "sched_getaffinity failed, errno = %d (%s)", errno,
- 		    strerror(errno));
- 
--	if (CPU_COUNT(&possible_mask) < 2) {
--		print_skip("Only one CPU, task migration not possible\n");
-+	if (calc_min_max_cpu()) {
-+		print_skip("Only one usable CPU, task migration not possible");
- 		exit(KSFT_SKIP);
- 	}
- 
--- 
-2.33.0.685.g46640cef36-goog
+The crash is actually caused by concurrent truncate_pagecache(inode, 0).
+If I change the number of write thread in stress_madvise_dso.c to one,
+(IOW, one thread_read and one thread_write), I cannot reproduce the
+crash anymore.
 
+I think this means we cannot fix this issue in collapse_file(), because it
+finishes long before the crash.
+
+Thanks,
+Song
