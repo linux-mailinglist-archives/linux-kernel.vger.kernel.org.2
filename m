@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5396841BCD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E4B41BCD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243863AbhI2CfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 22:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243849AbhI2CfS (ORCPT
+        id S243893AbhI2Cfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 22:35:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:22383 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243864AbhI2CfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:35:18 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF8FC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 19:33:38 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id r2so1119671pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 19:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ncVgCXT4Z1CIhR1u88HEHYmVpIWXoD+MY9qQieZl6fM=;
-        b=BnNXrs7L3mIdN4nBUghOyR1aiYFnymhBVsC3hBZb3jzWR+4uEv6x4GXD4oOmN/USYy
-         pdrOMcdzx1FXbnTbDmaX2dzbnXMmafc80Lq+Qa7vHz86WpWQi7CstZVXULvxOYNLAXb2
-         3NqnB3HlTxHveX784+oZREdLW9Z3IyZWxiyos=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ncVgCXT4Z1CIhR1u88HEHYmVpIWXoD+MY9qQieZl6fM=;
-        b=PxmIV3CiKlNS3p7lr/r/i66dnF2fj/D7dadFIA/4dEPe8aFyUFAuGgAHM+Gr47/knT
-         5tIB5uErRE5JNlnTM76iNtGbXP1QTnBCA8aKRtCDk8+0fiH4+9R9vbvsAs+FpgFj+fbc
-         WPpowQLB1jRPSBh5/FmRg/CHzBfqhMGqtJlX/bDzxY276ulQDVq5+ZFBekdCQD/BtCcS
-         Ff7ikM8XDdE/RDpD7WA9XFqjClEUfKU1/Q4+eM2ZAYW0N6dqMGlt8A5CaLcgaL/bkkO5
-         i1fvaUC2hlsRc4PpBGgDItGFhpxo3uQeItR2ROiJzsQ40lnERuMZX4hFHUVw2HOxxOAL
-         51Tw==
-X-Gm-Message-State: AOAM530+yWAt/Ug6U9rrg8HnICR7g0RnIt4mUR0CoGhj0paRyTkxRxg9
-        yPc1EBJyqMFfb2IMiybEns/LNQ==
-X-Google-Smtp-Source: ABdhPJxa5WFK6hbd7FlHUYRoJD1f7XQ8pIFVG+qn2L5VwqQEXX3JkmUoEZcxr9jOkCOYHy0n1iiPAQ==
-X-Received: by 2002:a62:3606:0:b0:445:38d5:98bf with SMTP id d6-20020a623606000000b0044538d598bfmr1003479pfa.4.1632882818209;
-        Tue, 28 Sep 2021 19:33:38 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:f818:368:93ef:fa36])
-        by smtp.gmail.com with UTF8SMTPSA id x19sm503568pgk.37.2021.09.28.19.33.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 19:33:37 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, Rajat Jain <rajatja@google.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH v8 7/7] dma-iommu: account for min_align_mask w/swiotlb
-Date:   Wed, 29 Sep 2021 11:33:00 +0900
-Message-Id: <20210929023300.335969-8-stevensd@google.com>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-In-Reply-To: <20210929023300.335969-1-stevensd@google.com>
-References: <20210929023300.335969-1-stevensd@google.com>
+        Tue, 28 Sep 2021 22:35:21 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HK0gl07wrzQjGq;
+        Wed, 29 Sep 2021 10:29:23 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 29 Sep 2021 10:33:40 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 29 Sep 2021 10:33:39 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-csky@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 0/3] Cleanup MAY_HAVE_SPARSE_IRQ
+Date:   Wed, 29 Sep 2021 10:35:19 +0800
+Message-ID: <20210929023522.57732-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+Most ARCHs support SPARSE_IRQ, the dynamical and statical irq
+description allocation are alternative.
 
-Pass the non-aligned size to __iommu_dma_map when using swiotlb bounce
-buffers in iommu_dma_map_page, to account for min_align_mask.
+The last user of MAY_HAVE_SPARSE_IRQ is sh/csky, but the sh use
+SPARSE_IRQ, MAY_HAVE_SPARSE_IRQ could be kill. and for csky, it
+uses statical allocation by default. 
 
-To deal with granule alignment, __iommu_dma_map maps iova_align(size +
-iova_off) bytes starting at phys - iova_off. If iommu_dma_map_page
-passes aligned size when using swiotlb, then this becomes
-iova_align(iova_align(orig_size) + iova_off). Normally iova_off will be
-zero when using swiotlb. However, this is not the case for devices that
-set min_align_mask. When iova_off is non-zero, __iommu_dma_map ends up
-mapping an extra page at the end of the buffer. Beyond just being a
-security issue, the extra page is not cleaned up by __iommu_dma_unmap.
-This causes problems when the IOVA is reused, due to collisions in the
-iommu driver.  Just passing the original size is sufficient, since
-__iommu_dma_map will take care of granule alignment.
+So MAY_HAVE_SPARSE_IRQ seems to be useless, no need to maintain a
+separate MAY_HAVE_SPARSE_IRQ config, kill it.
 
-Fixes: 1f221a0d0dbf ("swiotlb: respect min_align_mask")
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- drivers/iommu/dma-iommu.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Also cleanup the kernel/irq/Kconfig a little.
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 289c49ead01a..342359727a59 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -806,7 +806,6 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
- 	struct iommu_domain *domain = iommu_get_dma_domain(dev);
- 	struct iommu_dma_cookie *cookie = domain->iova_cookie;
- 	struct iova_domain *iovad = &cookie->iovad;
--	size_t aligned_size = size;
- 	dma_addr_t iova, dma_mask = dma_get_mask(dev);
- 
- 	/*
-@@ -815,7 +814,7 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
- 	 */
- 	if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | size)) {
- 		void *padding_start;
--		size_t padding_size;
-+		size_t padding_size, aligned_size;
- 
- 		aligned_size = iova_align(iovad, size);
- 		phys = swiotlb_tbl_map_single(dev, phys, size, aligned_size,
-@@ -840,7 +839,7 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
- 	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
- 		arch_sync_dma_for_device(phys, size, dir);
- 
--	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
-+	iova = __iommu_dma_map(dev, phys, size, prot, dma_mask);
- 	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(dev, phys))
- 		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
- 	return iova;
+v2: 
+- drop all the NR_IRQS suggested by Geert
+- don' use SPARSE_IRQ for csky by default, suggested by Guo.
+
+Kefeng Wang (3):
+  sh: Cleanup about SPARSE_IRQ
+  csky: Kill MAY_HAVE_SPARSE_IRQ
+  genirq: Cleanup Kconfig
+
+ arch/csky/Kconfig         |  1 -
+ arch/sh/Kconfig           |  1 -
+ arch/sh/include/asm/irq.h | 11 ---------
+ kernel/irq/Kconfig        | 50 ++++++++++++++++-----------------------
+ 4 files changed, 20 insertions(+), 43 deletions(-)
+
 -- 
-2.33.0.685.g46640cef36-goog
+2.26.2
 
