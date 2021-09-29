@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7421C41BCA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343E941BCA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243726AbhI2CRF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 22:17:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:63690 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243628AbhI2CRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:17:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="204994181"
-X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
-   d="scan'208";a="204994181"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 19:15:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
-   d="scan'208";a="554425552"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Sep 2021 19:15:09 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 28 Sep 2021 19:15:09 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 28 Sep 2021 19:15:08 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Tue, 28 Sep 2021 19:15:08 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Yu, Fenghua" <fenghua.yu@intel.com>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Thread-Topic: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Thread-Index: AQHXrlppUXtiT4Ul9UCq0y1lpkQn1quyuuKAgAWuhwCAAKRkgIAAyOqAgAB9aAD//53xAIAAfQEA//+wWACAAICAgP//j4cAABJzk4AADh9DwA==
-Date:   Wed, 29 Sep 2021 02:15:08 +0000
-Message-ID: <9e12eba3e78e4bc98d550943ff639ebe@intel.com>
-References: <20210920192349.2602141-5-fenghua.yu@intel.com>
- <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
- <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
- <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
- <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
- <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
- <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
- <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
- <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
- <YVOp60LOL+bfh3iT@otcwcpicx3.sc.intel.com>
- <YVOuYAFaTG6Khotb@agluck-desk2.amr.corp.intel.com>
- <840148c7b70f4358852c4f1ccbc5d567@intel.com>
-In-Reply-To: <840148c7b70f4358852c4f1ccbc5d567@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S243756AbhI2CWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 22:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243226AbhI2CWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 22:22:21 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04288C06161C;
+        Tue, 28 Sep 2021 19:20:41 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so1014960ota.6;
+        Tue, 28 Sep 2021 19:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/m3v6wHyU+gceCsGIGZQW1YYbgSsrVq1u5VD7Wq+RWY=;
+        b=bf8iVuGnsm91udbcvDyigQaau+zWTHvOV48qzQjwWUM9o7fSzCvX/zvHLCyAEseY+a
+         fTo7Snk0oXSgXYkOvn/xksR8uIdJESgFU+iy3yqSTlbk8CG1y5VyKDlFAoLPvYsYfNRx
+         HBtxV9mM7E4Q0CqmQhsRt6HtcvCMzeqs/vPeRjfc+NTxdK2+JnogFu7+MGSwRHkIHwEK
+         cM1saWqdOp3EPEUFneggP3sjPPVpLf0iKO37khA7a972EQk42XdmGcaIcHWeuTv4ddhn
+         PEhxz0YukqRjtmO/WBHw318COSpoViXwe2dXJ7YFQwWAjp8+yluQ6jj/ZME8KtARTlB1
+         sf7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/m3v6wHyU+gceCsGIGZQW1YYbgSsrVq1u5VD7Wq+RWY=;
+        b=ayz/Kxd194tSujNSziTmFfD3TE7nT2tx1ilGIMpKMfBQoDuL6c4sJ3B+e8jHihEHts
+         eYyT0qR7yJSqu2pHPTiKbgTySA09coccowu2x2kdpYwVKewikzg/Df+DY+Q0wC9qZPNX
+         pHNSnPTKBSJ+4Lgp4nDAIe5zU+zcYHmdxUSH+ZBGLauFjzUSrkiW/zN1/EpOig1Ac2/L
+         vM7qODWJxSl+ly0G3MxxWWefBf88LW8KTInBzvtKGvq1o4jRdKT2/uREpNZKH0LcEnOQ
+         6tNUfoc7X6U9fnDLxWMrJBXibqYVX8WcrKDZB9HSZk8zXGXW6C94Zq4ZqJ3KA5zoAq3B
+         Na2Q==
+X-Gm-Message-State: AOAM532EoQ2X622BZ/duH8QD2ZnJKCkDWxW/egxIU+7KOfDbkc30XVhT
+        aUHGCmcJ4PG21in/CzIk55pbkaZEyv/4AkjRUMs=
+X-Google-Smtp-Source: ABdhPJx1IMWZ/bsJWfzsNpMgmYvbhuD0LF11DiYOzktOGL+jMle4FLXwNSC2UIWIEYvahPBvQbTjH58u6SxFFZyowMk=
+X-Received: by 2002:a9d:6143:: with SMTP id c3mr8009609otk.124.1632882040342;
+ Tue, 28 Sep 2021 19:20:40 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210901101206.50274-1-kerneljasonxing@gmail.com>
+ <CAL+tcoCOnCpxLXLyAxb+BgumQBpo2PPqSQXY=Xvs-8R48Om=cw@mail.gmail.com> <a1ea0abaadc59bdbc6504a64bae594b059c26cdf.camel@intel.com>
+In-Reply-To: <a1ea0abaadc59bdbc6504a64bae594b059c26cdf.camel@intel.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Wed, 29 Sep 2021 10:20:02 +0800
+Message-ID: <CAL+tcoALdQQPy+9G_azrGqSugGcNjFfYqmf72aNRPahgggeeVA@mail.gmail.com>
+Subject: Re: [PATCH v7] ixgbe: let the xdpdrv work with more than 64 cpus
+To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "kafai@fb.com" <kafai@fb.com>, "hawk@kernel.org" <hawk@kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>, lkp <lkp@intel.com>,
+        "xingwanli@kuaishou.com" <xingwanli@kuaishou.com>,
+        "lishujin@kuaishou.com" <lishujin@kuaishou.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> 	if (!(xsave->header.xfeatures & fmask)) {
->> 		xsave->header.xfeatures |= fmask;	//<<<<<
->> 		xsaves(xsave, fmask);
->> 	}
+On Wed, Sep 29, 2021 at 6:17 AM Nguyen, Anthony L
+<anthony.l.nguyen@intel.com> wrote:
 >
-> I'm not sure why the FPU state is initialized here.
+> On Thu, 2021-09-16 at 14:41 +0800, Jason Xing wrote:
+> > Hello guys,
+> >
+> > any suggestions or comments on this v7 patch?
+> >
+> > Thanks,
+> > Jason
+> >
+> > On Wed, Sep 1, 2021 at 6:12 PM <kerneljasonxing@gmail.com> wrote:
+> > > From: Jason Xing <xingwanli@kuaishou.com>
+> > >
+> > > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if
+> > > the
+> > > server is equipped with more than 64 cpus online. So it turns out
+> > > that
+> > > the loading of xdpdrv causes the "NOMEM" failure.
+> > >
+> > > Actually, we can adjust the algorithm and then make it work through
+> > > mapping the current cpu to some xdp ring with the protect of
+> > > @tx_lock.
+> > >
+> > > Here're some numbers before/after applying this patch with xdp-
+> > > example
+> > > loaded on the eth0X:
+> > >
+> > > As client (tx path):
+> > >                      Before    After
+> > > TCP_STREAM send-64   734.14    714.20
+> > > TCP_STREAM send-128  1401.91   1395.05
+> > > TCP_STREAM send-512  5311.67   5292.84
+> > > TCP_STREAM send-1k   9277.40   9356.22 (not stable)
+> > > TCP_RR     send-1    22559.75  21844.22
+> > > TCP_RR     send-128  23169.54  22725.13
+> > > TCP_RR     send-512  21670.91  21412.56
+> > >
+> > > As server (rx path):
+> > >                      Before    After
+> > > TCP_STREAM send-64   1416.49   1383.12
+> > > TCP_STREAM send-128  3141.49   3055.50
+> > > TCP_STREAM send-512  9488.73   9487.44
+> > > TCP_STREAM send-1k   9491.17   9356.22 (not stable)
+> > > TCP_RR     send-1    23617.74  23601.60
+> > > ...
+> > >
+> > > Notice: the TCP_RR mode is unstable as the official document
+> > > explaines.
+> > >
+> > > I tested many times with different parameters combined through
+> > > netperf.
+> > > Though the result is not that accurate, I cannot see much influence
+> > > on
+> > > this patch. The static key is places on the hot path, but it
+> > > actually
+> > > shouldn't cause a huge regression theoretically.
+> > >
+> > > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
 >
-> For updating the PASID state, it's unnecessary to init the PASID state.
+> Hi Jason,
 >
-> Maybe it is necessary in other cases?
+> The patch doesn't have an explicit target of net or net-next. I assume
+> since you put a Fixes tag you're wanting it to go through net, however,
+> this seems more like an improvement that should go through net-next.
 
-Dave had suggested initializing feature state when it is unknown (could
-be garbage).  This is my attempt to follow that guidance. I'm not confident
-that my tests for "is the state in registers, in memory, or is garbage"
-really capture all the cases.
+Yes, it is like an improvement. At first I wanted to label it as net,
+but it isn't a fix as you said. So I agree with you and please help me
+send it to net-next.
 
--Tony
+thanks,
+Jason
+
+> Please let me know if you disagree, otherwise I will send to net-next.
+>
+> Thanks,
+> Tony
+>
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> > > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> > > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> >
