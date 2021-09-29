@@ -2,116 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B8641C0C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737F541C0C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244595AbhI2Ijz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:39:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244459AbhI2Ijq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:39:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632904686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/rI4ipp+6p4YsURf5SVEvaXl3JhZmp49Hm7auACiD3c=;
-        b=aGLrO075h6l3SS3vaxgxVQnxc2Iiq769tmBx4DHpw4NwRJHV7cCacdPyCn60njuSE25/5L
-        G4sP1Ih58rehmC0nGcr3ZAXQgsBluyZy8dp+YYGOZuyG3Ji0MeP511BweWTebKedGUY+8d
-        z80i/pyvyx2H224CBudR2P9R0VUSyYI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-219-p3JR88A9PYq4v8KvcgyT5w-1; Wed, 29 Sep 2021 04:38:04 -0400
-X-MC-Unique: p3JR88A9PYq4v8KvcgyT5w-1
-Received: by mail-wm1-f69.google.com with SMTP id r66-20020a1c4445000000b0030cf0c97157so882620wma.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:38:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/rI4ipp+6p4YsURf5SVEvaXl3JhZmp49Hm7auACiD3c=;
-        b=oAqBzE/inRGs8MVx7DSXagoIPDwNrvOD3vkhi2Tx1jMeaXZg2Fp5Af/QzWq+Uc2/sl
-         A/V/ny3uexCR1IFgI/PGlfD+p9A7UpW/6zoeZ7Bcg7X6vKMhbX1NlHla0Ep5QE02g5QA
-         TOCS127xqJORCpjsShgGUDRKSZkaioXvETizwkTwnckn1Ed0HSUh0raqBgYyRiKQ5e+w
-         a4czgyrYwaPkuGot+5Knu2mAKp46HpmCpGWA9VHxmJY1L3zcihyAus2b/NMuUCwSTwGv
-         sNgxnWwKKjXStbX1JbPBeSL7chl166snHgFVANGrNCgdSIq6gaUaIm1UaXOgx6D/P/Av
-         Zuyw==
-X-Gm-Message-State: AOAM530A3tOMp3/AtjOwguvpmbWLZR65RWpGgo4TJl6tYEZGnRPIBjRz
-        isUj1MQ4GSKISZ58WIgLPnniW4Rto62RkZg2Ib26VxdHRjB471qUWJZMAsj0V42w5BLzJymsksQ
-        sRtJHDs40W8b0lwbrcFw+CVJj
-X-Received: by 2002:a05:600c:3652:: with SMTP id y18mr8981999wmq.66.1632904683466;
-        Wed, 29 Sep 2021 01:38:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw1UYD13jo4zi2cV8ML8JLWg6MbDn1wfsjZAud8HZY/udqsA+Bzs8BSxqVjAL69LYYlXkKLHw==
-X-Received: by 2002:a05:600c:3652:: with SMTP id y18mr8981980wmq.66.1632904683305;
-        Wed, 29 Sep 2021 01:38:03 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
-        by smtp.gmail.com with ESMTPSA id f17sm1497220wrm.83.2021.09.29.01.38.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 01:38:02 -0700 (PDT)
-Subject: Re: [PATCH v1 8/8] virtio-mem: kdump mode to sanitize /proc/vmcore
- access
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
-        xen-devel@lists.xenproject.org,
-        virtualization@lists.linux-foundation.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210928182258.12451-1-david@redhat.com>
- <20210928182258.12451-9-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <e01cdc7f-cda8-3268-c971-1255a71fb8ac@redhat.com>
-Date:   Wed, 29 Sep 2021 10:38:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244809AbhI2Ikc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:40:32 -0400
+Received: from mout.gmx.net ([212.227.15.19]:58697 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244459AbhI2Ikb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 04:40:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632904717;
+        bh=69pRpa6l2Y08HczbwXoeIQeKFHMhbQLtr9C6GLFurWc=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=A9H+y8imr9orFbW6XtLfjHN39XTK2JNwDkvLn6vuSkUrWhXW2qtrH0CA/1iPqeNnf
+         qP3BRmG3eiJyctp1bVdBzDGW5FUrPsS+J0OFJIjeRoWX4y4CQ0dTvlvEVCHWZp9wws
+         uPYhHLtq3uHBZGu4QU+4ZtLGsdC+XqmYUTLJ8lLQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [87.130.101.138] ([87.130.101.138]) by web-mail.gmx.net
+ (3c-app-gmx-bs21.server.lan [172.19.170.73]) (via HTTP); Wed, 29 Sep 2021
+ 10:38:37 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210928182258.12451-9-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <trinity-4f6dfbb9-adbe-4569-a1de-1e6502eea309-1632904717666@3c-app-gmx-bs21>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, nsaenz@kernel.org,
+        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jgg@ziepe.ca, p.rosenberger@kunbus.com,
+        linux-integrity@vger.kernel.org, stable@vger.kernel.org
+Subject: Aw: Re: [PATCH] spi: bcm2835: do not unregister controller in
+ shutdown handler
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 29 Sep 2021 10:38:37 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20210928200843.GM4199@sirena.org.uk>
+References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
+ <20210928200843.GM4199@sirena.org.uk>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:b8hgkS5jXCfvegurMfbZnwGpqsyAAk/k9HKW4mOlU5AC0UBZUo9OkoB/WCdb6WkVevUY0
+ Ydyfk11n5YxknZnEGRxqV4qq+CUVg9k9jHjgUOIAJS6eiPDRuVxTbNmhJZBdZ70FbLZjgWqE+BTG
+ OeAbjUaKCmXBWjA+1K7H+KQ7+CJ7EjqOI9eZZNs0qEZhGS50N9qZp0JZk8T9i8zj/+k12IpKSRM/
+ JhkcAeegsUKui93HHopQtydG8mZhgkmqro1qcnilIZ2FO2AZefArxu9WMO0OtVdwj1kouxibqf0Q
+ /0=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0CB2d6rUfk4=:nNGEIyKajqtJJj6uXiCAXv
+ huiclZoRqXFelSqItT/tQ+jqyU1sOyyYoogxhYg/P3sL65KAg3b8cbziaUOZe7lmpKsoNBIn9
+ ENmYQjFlm3RQAxRmwUK4YleMjEy1yNfS199WCV9CyMX08WI/3A+aFGca+bbXPZbPu4pXGSHm4
+ IuoZY5k+LorE5kU6kIUc1HgJo3fd6oCky4ByVmUv0b9hDuH4viz4SD/5j4dI7pGBURLHB/UGw
+ TkqrkIKEsWOaiEXxxbzBf3IlfbmJOFLwhbhlpZLSuyxXuuMdAJ5QOLNpAFqO5ht/364+bMDdb
+ D/iTFbkYZQ9VGrnetBRqWsVsZHRCLNaluLcHbwpuFU7kbiV5mLaNtj18fVmr/32JJpthc64oS
+ GBQaSu0owx624wq/p4gMGWIPQtnc1nni0bSMRFZ0MTEHMPDnl/Lzlvh5sw6lcg3fgS2010kWL
+ mQiCtVeFvGhjm5J03l52UIt2GSEtiM+RuHaFqMhyDQQ2ZGuYBiQABfpAIIAhBmP2nadpBDINr
+ L0sWrK1VEpIAnGh/era1ytcVl2NuXJHvscg5spKJj5B5+kQu67YASEL3hB181Rsh+O/ZFi7+I
+ 3PojC8gvkzp0psq2weQuPZUUSRIhuPpBc3flxRnzctd5tEp1/6VgiIiV8yzh0nsPCVjiBLzzk
+ 17NmEJa0BBcHm/oh8tThWojofc+0ZOz1b1bwYAEYNVV+mUVwOm4D4l2fK2e9ZfYLNnUmGu314
+ krs9qJGZ7ZkQ7Zzp/6lEI5fx41ZqHhUe4FxpmCeZpd7KviZKPgzmCsM5k+vNIgVXyRJpU/kGE
+ nUUXupI
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
 
-> +
-> +static bool virtio_mem_vmcore_pfn_is_ram(struct vmcore_cb *cb,
-> +					 unsigned long pfn)
-> +{
-> +	struct virtio_mem *vm = container_of(cb, struct virtio_mem,
-> +					     vmcore_cb);
-> +	uint64_t addr = PFN_PHYS(pfn);
-> +	bool is_ram;
-> +	int rc;
-> +
-> +	if (!virtio_mem_contains_range(vm, addr, addr + PAGE_SIZE))
+Hi,
 
-Some more testing revealed that this has to be
+> Gesendet: Dienstag, 28. September 2021 um 22:08 Uhr
+> Von: "Mark Brown" <broonie@kernel.org>
+> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
+> Cc: f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com, bcm-=
+kernel-feedback-list@broadcom.com, nsaenz@kernel.org, linux-spi@vger.kerne=
+l.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infrad=
+ead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca, p.rosenberger@kunbus.=
+com, linux-integrity@vger.kernel.org, stable@vger.kernel.org
+> Betreff: Re: [PATCH] spi: bcm2835: do not unregister controller in shutd=
+own handler
+>
+> On Tue, Sep 28, 2021 at 09:56:57PM +0200, Lino Sanfilippo wrote:
+> > Do not unregister the SPI controller in the shutdown handler. The reas=
+on
+> > to avoid this is that controller unregistration results in the slave
+> > devices remove() handler being called which may be unexpected for slav=
+e
+> > drivers at system shutdown.
+> >
+> > One example is if the BCM2835 driver is used together with the TPM SPI
+> > driver:
+> > At system shutdown first the TPM chip devices (pre) shutdown handler
+> > (tpm_class_shutdown) is called, stopping the chip and setting an opera=
+tions
+> > pointer to NULL.
+> > Then since the BCM2835 shutdown handler unregisters the SPI controller=
+ the
+> > TPM SPI remove function (tpm_tis_spi_remove) is also called. In case o=
+f
+> > TPM 2 this function accesses the now nullified operations pointer,
+> > resulting in the following NULL pointer access:
+> >
+> > [  174.078277] 8<--- cut here ---
+> > [  174.078288] Unable to handle kernel NULL pointer dereference at vir=
+tual address 00000034
+> > [  174.078293] pgd =3D 557a5fc9
+> > [  174.078300] [00000034] *pgd=3D031cf003, *pmd=3D00000000
+> > [  174.078317] Internal error: Oops: 206 [#1] SMP ARM
+> > [  174.078323] Modules linked in: tpm_tis_spi tpm_tis_core tpm spidev =
+gpio_pca953x mcp320x rtc_pcf2127 industrialio regmap_i2c regmap_spi 8021q =
+garp stp llc ftdi_sio6
+>
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative (it often is
+> for search engines if nothing else) then it's usually better to pull out
+> the relevant sections.
+>
 
-if (!virtio_mem_contains_range(vm, addr, PAGE_SIZE))
+Thank you for the feedback, I will omit the stack trace in the next versio=
+n.
 
-
--- 
-Thanks,
-
-David / dhildenb
-
+Regards,
+Lino
