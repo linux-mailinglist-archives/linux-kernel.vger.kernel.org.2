@@ -2,70 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B7441CD41
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B104341CD50
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346591AbhI2UO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346475AbhI2UOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:14:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF386128C;
-        Wed, 29 Sep 2021 20:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632946394;
-        bh=RyKeFAgpxkweuswyRm0FenBC5z3yO2s3B2E+9+m39cc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pqd/LKe2ZUoJjX1ZvG6LVWdxMz9hgN2NeW0WtlK1ww5a8Vt7bcraqObvO1b0t+BR8
-         rCYkjl6fWQdY5zjvRgRmlR0D46+YLpZLmG0iGgbUSlwMFobFSEblj3z6ZjCYWN9cHV
-         d0Rq065wSLrJRaB1ARxTA6l+sNI4/BXhJvMGCXAfarlWO7UCxe82WtmoQYRuWujBuN
-         H+RL5jQSJSKm10jmQV+OnmJN4kgqy7g1QzT39e7zqrJAIdlTY/mfvOhORP6C01N7MG
-         +IQCaoB6BG8pVpyYW1q/q1aBm4gJPolL2ACsotSHLJcveUKofZ8vkQoALIjhOTRh3a
-         6FlqHCHfyeFXg==
-Date:   Wed, 29 Sep 2021 15:17:18 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stephen Hemminger <stephen@networkplumber.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] net: sched: Use struct_size() helper in kvmalloc()
-Message-ID: <20210929201718.GA342296@embeddedor>
+        id S1346639AbhI2UUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346369AbhI2UUx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 16:20:53 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62967C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:19:12 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id b16so3533139qtt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=02EXaRR/LNadeGaGEAJYu9eu7Tm3d0AkQIYMMcAXP4c=;
+        b=LE4/GyFbg6PDYrFzMabU3wOkVWt1bHu/gEgjJL5r//rlKzDS9g6ZiNQZLgEqE5952C
+         dhL0UwiqvNKYDPPQwubbwnqD9mpLnpOEj3bv8j2jO1T9MAE3sZYwQ6v4I0zIsPKYyZ4O
+         rdmxyzL/WT5dtPbI02l1h0ZBCIiueWXex102uRrAV0withKV6ROlvuDYxJP2cXQYBS2P
+         MiqX0CMENIKK+QG5J5hg8kAfOm4AOlfDXgGFEFmsQPmHc89hK9HHWbd0922OIa0ky0DK
+         +koVjJRzBZVdI1lt+yaJcdYnUZs9aEE637ZhmjvS56wbP/NlDDSnzSlUs5LBT01p5N49
+         lXxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=02EXaRR/LNadeGaGEAJYu9eu7Tm3d0AkQIYMMcAXP4c=;
+        b=5CwXTP+JJTGyBcyiOxlaRjbBl62O8d8Ypj0huRONxqovazE4XBXaITnTfUD2dPGhvH
+         JLrI/GU3Bx3LIrjWF5h/49jYME0gpyVtjCJqr+0IUYvsiN81E/720Oy7KsoStnXGZkdD
+         NPpOnk70NnWt9Pn3hPuODQ+wK9m0SM3mjHNvAvPS9Bx2oZ2r5ha7Pacp2meF4J4hfte7
+         cP+deKZSlMVWl1N7oWgz3LRgnQf+L7MiarRqYBAyF9bIhzCTjgeoVQIRx++KrWtKPDfk
+         jjntAiwPBpocbklC1XgPLAZ5auRVak5ug2WHNrBlqr508IdFiRjtewa1xWHtZxvxSjLB
+         MwVg==
+X-Gm-Message-State: AOAM533n9PaLxKteuBzxAR5Mr2lCm1+0BQfuDWn6nMok4LKGi3t3xu9+
+        +o4gKHCfjCQ2rfI7gLMZGVH5oA==
+X-Google-Smtp-Source: ABdhPJwtTleKCd4n65jPyiBJ5xy5JKPI3hEe5Ya8CJPORXD/cexXVJrGJWxaT2KgbAuRKQXmDeCx3Q==
+X-Received: by 2002:ac8:4243:: with SMTP id r3mr2223327qtm.187.1632946751266;
+        Wed, 29 Sep 2021 13:19:11 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id z10sm485338qtv.6.2021.09.29.13.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 13:19:10 -0700 (PDT)
+Subject: Re: [PATCH] nbd: use shifts rather than multiplies
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20210920232533.4092046-1-ndesaulniers@google.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <079a17e7-6cf1-7632-bf12-1df0edf4f93a@toxicpanda.com>
+Date:   Wed, 29 Sep 2021 16:19:09 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210920232533.4092046-1-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version,
-in order to avoid any potential type mistakes or integer overflows
-that, in the worst scenario, could lead to heap overflows.
+On 9/20/21 7:25 PM, Nick Desaulniers wrote:
+> commit fad7cd3310db ("nbd: add the check to prevent overflow in
+> __nbd_ioctl()") raised an issue from the fallback helpers added in
+> commit f0907827a8a9 ("compiler.h: enable builtin overflow checkers and
+> add fallback code")
+> 
+> ERROR: modpost: "__divdi3" [drivers/block/nbd.ko] undefined!
+> 
+> As Stephen Rothwell notes:
+>    The added check_mul_overflow() call is being passed 64 bit values.
+>    COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW is not set for this build (see
+>    include/linux/overflow.h).
+> 
+> Specifically, the helpers for checking whether the results of a
+> multiplication overflowed (__unsigned_mul_overflow,
+> __signed_add_overflow) use the division operator when
+> !COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW.  This is problematic for 64b
+> operands on 32b hosts.
+> 
+> This was fixed upstream by
+> commit 76ae847497bc ("Documentation: raise minimum supported version of
+> GCC to 5.1")
+> which is not suitable to be backported to stable.
+> 
+> Further, __builtin_mul_overflow() would emit a libcall to a
+> compiler-rt-only symbol when compiling with clang < 14 for 32b targets.
+> 
+> ld.lld: error: undefined symbol: __mulodi4
+> 
+> In order to keep stable buildable with GCC 4.9 and clang < 14, modify
+> struct nbd_config to instead track the number of bits of the block size;
+> reconstructing the block size using runtime checked shifts that are not
+> problematic for those compilers and in a ways that can be backported to
+> stable.
+> 
+> In nbd_set_size, we do validate that the value of blksize must be a
+> power of two (POT) and is in the range of [512, PAGE_SIZE] (both
+> inclusive).
+> 
+> This does modify the debugfs interface.
+> 
+> Cc: stable@vger.kernel.org
+> Cc: Arnd Bergmann <arnd@kernel.org>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1438
+> Link: https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
+> Link: https://lore.kernel.org/stable/CAHk-=whiQBofgis_rkniz8GBP9wZtSZdcDEffgSLO62BUGV3gg@mail.gmail.com/
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Suggested-by: Pavel Machek <pavel@ucw.cz>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Link: https://github.com/KSPP/linux/issues/160
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/sched/sch_netem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index 0c345e43a09a..ecbb10db1111 100644
---- a/net/sched/sch_netem.c
-+++ b/net/sched/sch_netem.c
-@@ -785,7 +785,7 @@ static int get_dist_table(struct Qdisc *sch, struct disttable **tbl,
- 	if (!n || n > NETEM_DIST_MAX)
- 		return -EINVAL;
- 
--	d = kvmalloc(sizeof(struct disttable) + n * sizeof(s16), GFP_KERNEL);
-+	d = kvmalloc(struct_size(d, table, n), GFP_KERNEL);
- 	if (!d)
- 		return -ENOMEM;
- 
--- 
-2.27.0
+Thanks,
 
+Josef
