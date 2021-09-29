@@ -2,228 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E3641CF93
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B5E41CF97
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347309AbhI2XAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
+        id S1347237AbhI2XCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347237AbhI2XAn (ORCPT
+        with ESMTP id S1344976AbhI2XCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:00:43 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79972C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:59:01 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id q24-20020ac84118000000b002a6d14f21e9so10216104qtl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:59:01 -0700 (PDT)
+        Wed, 29 Sep 2021 19:02:02 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6F6C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:00:21 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id d81-20020a251d54000000b005b55772ca97so5435832ybd.19
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Y0fyPdUie1iSxIBYtbb4DeMpLSWx01C9hO67e6l3dr0=;
-        b=nu9TcOGaSlq3xlUF2IUW3fpIATmfengtbYq6jTg23D+ETIyP5m/nduYBm7l/vJpGYr
-         8DzmfaTt5faVWB1feuN6nBQ1cOHlBRiyZ9CCTX3nUcR0hhK/wtStvbCAK3z3o9pNIb5r
-         DhhT5vtCfDC99AnWqpTgyAJ6dazpMq79FoXjZMFdZvxAJKyCNo7aTegex/7BEoFii9lH
-         WnZSnMPzxmndP/NYhtA/Acdi7WmJj2LPrge0l60K2BmT7yYyIXvt+0MM/vpzIiNC/VOD
-         cQ6g41MV4dyMjOlHx4iN207wQBcD5ghOBKN3dJeblTcpP0VStzlFHy9Wh43tHS9FBpRo
-         EauA==
+        bh=2C1roWzg0g1t9SJdsvhWjF7EJsfvlHyd4vOPAZE7CoI=;
+        b=O+MmupE8fI7/r7LR80gJgtKAawE3aHAvqlPZjba4TXr+3/ROlzQqWpdYQjufuNIvwa
+         CLrNA9c1X5+VvlGFyQWbz4gv7VMOLu7sUUu9/TWhTaQVor/CADKhgOAPA5WzOmAStNxR
+         sAtcVixKl9hMqHGfHOIb53dh1FHQDqfc0wEi8eKKMkhtAGQmefOH/406zex1NU7eqoH7
+         A4IU33wFhKluEKvhrztURWDQrddSjKDAgMr+x6HANgOc+C9Y+Bzp8rueUIRKfDi6Sd6C
+         QlIKfLcD36ZADHFLjtqc2E9gdKi/U72kIsvdLbAxkftbPkIBwfMYBUP7wPjFXDU62l+g
+         X2bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Y0fyPdUie1iSxIBYtbb4DeMpLSWx01C9hO67e6l3dr0=;
-        b=1UV7fiNGTyx7EtsQEFnGIhQ7Kc8z1Js4FdjISy20+09bMOrsieDnNkpaxBbPpMeTH+
-         2VwR18Wl7HtsgFp/xFNLdaHY+wrOdIh5mcC9mqHJVBL7AKZl0jBnZGl0muczbilejxeM
-         I2TqDV7zLeZe4W0JttWzgP/QTgpIuVEnocHJtwXLrITcFQgkmBSe+w8CS0Xt61SyBRc/
-         D4Q5SF0I3IB741sAv4X3PMliy7Nkp2sP8mbjqt9DPYnovYy6vRRLsV5jcO3I2EFFNMKj
-         Lc1nED0oOok/py/ecY3pGrUyb3F3k1uTdNkrOy/z80T6ugbeX4W8K/P7B7X0CjIAT7T7
-         7Low==
-X-Gm-Message-State: AOAM5308sKiiP2+0TsF2Hb1gHNq6dQRZwHj/9Jn5kIX4NcfBCmbmEyvA
-        RWoo0u6vE1BkyIiO7bnmbHpz1xQ72uZg4CX+nJM=
-X-Google-Smtp-Source: ABdhPJzsGtOgTGzcZeycB3hzn+zehXj8IMbUcTiceRrok8CcxB5CYI/qNsX46VPtqvOX/Y8MYnDtlPJx1tqGeu9QqUI=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:da31:1dfd:2e69:dc82])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:1022:: with SMTP id
- k2mr916562qvr.53.1632956340603; Wed, 29 Sep 2021 15:59:00 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 15:58:50 -0700
-Message-Id: <20210929225850.3889950-1-ndesaulniers@google.com>
+        bh=2C1roWzg0g1t9SJdsvhWjF7EJsfvlHyd4vOPAZE7CoI=;
+        b=CJx7QSlCAVQ7BMjEhnfuPQLfQya5sF5wPo2j7txxKDBta8CHP8EyfGidJ6+HDC+CDv
+         me/jfHeK2TwQdv7bbyfjVNbyn0kWOkbqQMZzOzWtgYPF3dTfrSvTpMmQGLSQ0mkP0lEi
+         K28Ml1nT/O/cDl9j/0S7qfU0dgMlwr96jt3ztiGPOJxdrUqy/S5t7dcpnNmRnC5FYwOy
+         fvshUpuoaxUaasZ8bTIkMG9tt4oYp1y3cY9fVvZVYHJGmHBfjAP+5rtu2Y0hDQaVjO4+
+         TJq9lUo1HaSCBx4g/NPTqxh4S035iQk6AXDfroIkGUHpn5YXKIx43D7YCPn6AvHGES60
+         PTBw==
+X-Gm-Message-State: AOAM530LhFoI8brK5tiQ1dHztBHOjvVbzzWrqK7mWrUwQHoGsGan/f/N
+        cV6D57Ffren++O2Vg6lsmMi93ZU2jcFg
+X-Google-Smtp-Source: ABdhPJzTf7z7tCB+PBeS7fuuzlbUSbpG8y8sOo1ZnIfLkNOe6rmfKSrRzOSOhMmGbx7AL/RMDXwLF+1q/idI
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:8a84:22eb:d7a2:bdba])
+ (user=amistry job=sendgmr) by 2002:a25:7452:: with SMTP id
+ p79mr2737243ybc.513.1632956420637; Wed, 29 Sep 2021 16:00:20 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 09:00:07 +1000
+Message-Id: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH] modpost: add allow list for llvm IPSCCP
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] drm/prime: Fix use after free in mmap with drm_gem_ttm_mmap
+From:   Anand K Mistry <amistry@google.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     nartemiev@google.com, Anand K Mistry <amistry@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modpost validation of calls from .text to .init sections relies on GCC's
-constant propagation renaming specialized functions being renamed to
-have .constprop.* suffixes. See the comment on Pattern 5 in
-scripts/mod/modpost.c:
+drm_gem_ttm_mmap() drops a reference to the gem object on success. If
+the gem object's refcount == 1 on entry to drm_gem_prime_mmap(), that
+drop will free the gem object, and the subsequent drm_gem_object_get()
+will be a UAF. Fix by grabbing a reference before calling the mmap
+helper.
 
-  GCC may optimize static inlines when fed constant arg(s) resulting
-  in functions like cpumask_empty() -- generating an associated symbol
-  cpumask_empty.constprop.3 that appears in the audit.  If the const that
-  is passed in comes from __init, like say nmi_ipi_mask, we get a
-  meaningless section warning.
+This issue was forseen when the reference dropping was adding in
+commit 9786b65bc61ac ("drm/ttm: fix mmap refcounting"):
+  "For that to work properly the drm_gem_object_get() call in
+  drm_gem_ttm_mmap() must be moved so it happens before calling
+  obj->funcs->mmap(), otherwise the gem refcount would go down
+  to zero."
 
-LLVM does similar optimizations (inter-procedural sparse conditional
-constant propagation; IPSCCP), but doesn't rename the specialized
-functions, so we still observe modpost warnings.
-
-Add checks in modpost to check if the .comment section contains that
-string "clang" (ie. was the object file built with clang?), and if so
-additionally check an allow list.
-
-Fixes the following modpost warnings observed on clang-13+:
-
-allmodconfig:
-WARNING: modpost: vmlinux.o(.text+0x*): Section mismatch in reference
-from the function
-  test_bit() to the variable .init.data:numa_nodes_parsed
-  __first_node() to the variable .init.data:numa_nodes_parsed
-  __next_node() to the variable .init.data:numa_nodes_parsed
-  __nodes_weight() to the variable .init.data:numa_nodes_parsed
-  early_get_smp_config() to the variable .init.data:x86_init
-defconfig:
-  __nodes_weight() to the variable .init.data:numa_nodes_parsed
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1302
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Anand K Mistry <amistry@google.com>
 ---
- scripts/mod/modpost.c | 56 ++++++++++++++++++++++++++++++++++++++-----
- scripts/mod/modpost.h |  2 ++
- 2 files changed, 52 insertions(+), 6 deletions(-)
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index cb8ab7d91d30..c3d0395315ef 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -865,6 +865,29 @@ static int match(const char *sym, const char * const pat[])
- 	return 0;
- }
+ drivers/gpu/drm/drm_prime.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index 2a54f86856af..e1854fd24bb0 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -719,11 +719,13 @@ int drm_gem_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma)
+ 	if (obj->funcs && obj->funcs->mmap) {
+ 		vma->vm_ops = obj->funcs->vm_ops;
  
-+struct secref_exception {
-+	const char * const fromsym, * const tosym;
-+};
-+
-+static const struct secref_exception secref_allowlist[] = {
-+	{ .fromsym = "__first_node", .tosym = "numa_nodes_parsed" },
-+	{ .fromsym = "__next_node", .tosym = "numa_nodes_parsed" },
-+	{ .fromsym = "__nodes_weight", .tosym = "numa_nodes_parsed" },
-+	{ .fromsym = "early_get_smp_config", .tosym = "x86_init" },
-+	{ .fromsym = "test_bit", .tosym = "numa_nodes_parsed" },
-+};
-+
-+static int match_allowlist(const char *fromsym, const char *tosym)
-+{
-+	int i = 0, e = ARRAY_SIZE(secref_allowlist);
-+
-+	for (; i != e; ++i)
-+		if (!strcmp(secref_allowlist[i].fromsym, fromsym) &&
-+		    !strcmp(secref_allowlist[i].tosym, tosym))
-+			return 1;
-+	return 0;
-+}
-+
- /* sections that we do not want to do full section mismatch check on */
- static const char *const section_white_list[] =
- {
-@@ -1204,6 +1227,8 @@ static const struct sectioncheck *section_mismatch(
-  *   tosec   = init section
-  *   fromsec = text section
-  *   refsymname = *.constprop.*
-+ *   LLVM will do similar constant propagation, but it will not rename the
-+ *   transformed callee.
-  *
-  * Pattern 6:
-  *   Hide section mismatch warnings for ELF local symbols.  The goal
-@@ -1216,7 +1241,8 @@ static const struct sectioncheck *section_mismatch(
-  **/
- static int secref_whitelist(const struct sectioncheck *mismatch,
- 			    const char *fromsec, const char *fromsym,
--			    const char *tosec, const char *tosym)
-+			    const char *tosec, const char *tosym,
-+			    _Bool isclang)
- {
- 	/* Check for pattern 1 */
- 	if (match(tosec, init_data_sections) &&
-@@ -1247,9 +1273,10 @@ static int secref_whitelist(const struct sectioncheck *mismatch,
++		drm_gem_object_get(obj);
+ 		ret = obj->funcs->mmap(obj, vma);
+-		if (ret)
++		if (ret) {
++			drm_gem_object_put(obj);
+ 			return ret;
++		}
+ 		vma->vm_private_data = obj;
+-		drm_gem_object_get(obj);
+ 		return 0;
+ 	}
  
- 	/* Check for pattern 5 */
- 	if (match(fromsec, text_sections) &&
--	    match(tosec, init_sections) &&
--	    match(fromsym, optim_symbols))
--		return 0;
-+	    match(tosec, init_sections))
-+		if (match(fromsym, optim_symbols) ||
-+		    (isclang && match_allowlist(fromsym, tosym)))
-+			return 0;
- 
- 	/* Check for pattern 6 */
- 	if (strstarts(fromsym, ".L"))
-@@ -1573,6 +1600,21 @@ static void report_sec_mismatch(const char *modname,
- 	fprintf(stderr, "\n");
- }
- 
-+static _Bool is_clang(struct elf_info *elf)
-+{
-+	Elf_Sym *sym;
-+
-+	for (sym = elf->symtab_start; sym < elf->symtab_stop; sym++) {
-+		if (is_shndx_special(sym->st_shndx))
-+			continue;
-+		if (strcmp(sec_name(elf, get_secindex(elf, sym)), ".comment") != 0)
-+			continue;
-+		return strstr(sym_get_data(elf, sym), "clang") != NULL;
-+	}
-+
-+	return false;
-+}
-+
- static void default_mismatch_handler(const char *modname, struct elf_info *elf,
- 				     const struct sectioncheck* const mismatch,
- 				     Elf_Rela *r, Elf_Sym *sym, const char *fromsec)
-@@ -1582,6 +1624,7 @@ static void default_mismatch_handler(const char *modname, struct elf_info *elf,
- 	Elf_Sym *from;
- 	const char *tosym;
- 	const char *fromsym;
-+	_Bool isclang;
- 
- 	from = find_elf_symbol2(elf, r->r_offset, fromsec);
- 	fromsym = sym_name(elf, from);
-@@ -1592,10 +1635,11 @@ static void default_mismatch_handler(const char *modname, struct elf_info *elf,
- 	tosec = sec_name(elf, get_secindex(elf, sym));
- 	to = find_elf_symbol(elf, r->r_addend, sym);
- 	tosym = sym_name(elf, to);
-+	isclang = is_clang(elf);
- 
- 	/* check whitelist - we may ignore it */
--	if (secref_whitelist(mismatch,
--			     fromsec, fromsym, tosec, tosym)) {
-+	if (secref_whitelist(mismatch, fromsec, fromsym, tosec, tosym,
-+			     isclang)) {
- 		report_sec_mismatch(modname, mismatch,
- 				    fromsec, r->r_offset, fromsym,
- 				    is_function(from), tosec, tosym,
-diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-index 0c47ff95c0e2..d8afc912fd92 100644
---- a/scripts/mod/modpost.h
-+++ b/scripts/mod/modpost.h
-@@ -214,3 +214,5 @@ void modpost_log(enum loglevel loglevel, const char *fmt, ...);
- #define warn(fmt, args...)	modpost_log(LOG_WARN, fmt, ##args)
- #define error(fmt, args...)	modpost_log(LOG_ERROR, fmt, ##args)
- #define fatal(fmt, args...)	modpost_log(LOG_FATAL, fmt, ##args)
-+
-+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 -- 
-2.33.0.685.g46640cef36-goog
+2.33.0.800.g4c38ced690-goog
 
