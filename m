@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DFD41C064
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8FC41C063
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244673AbhI2IPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:15:42 -0400
-Received: from egress-ip33a.ess.de.barracuda.com ([18.185.115.192]:37812 "EHLO
-        egress-ip33a.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244590AbhI2IPg (ORCPT
+        id S244627AbhI2IPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:15:38 -0400
+Received: from egress-ip33b.ess.de.barracuda.com ([18.185.115.237]:43172 "EHLO
+        egress-ip33b.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244580AbhI2IPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:15:36 -0400
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69]) by mx-outbound11-76.eu-central-1a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 29 Sep 2021 08:13:47 +0000
-Received: by mail-pj1-f69.google.com with SMTP id m9-20020a17090ade09b029017903cc8d6cso4579790pjv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:13:47 -0700 (PDT)
+        Wed, 29 Sep 2021 04:15:35 -0400
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197]) by mx-outbound45-61.eu-central-1c.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 29 Sep 2021 08:13:51 +0000
+Received: by mail-pg1-f197.google.com with SMTP id u5-20020a63d3450000b029023a5f6e6f9bso1601641pgi.21
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:13:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mistralsolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=L8MazRJC/UFdJ6inkSvyaSkOTKbg7uW4ICaCKt8HQWg=;
-        b=XuXkej7QqnC8RWkGjaaFg0MR8d4VtpfgyHekkw5yY7nuTx1zffy7NRfT0AL3AIkgAt
-         askII6lvssBO++WFi9Vq/m5usZ9atWx6r32tMfjP6ZOhFhzx0waqsxrB71k/Bv8mok6D
-         ly806GMJ4Hcl/FVA0eODFXjgdysxtJQkRyn90=
+        bh=CADHTdvtLJ92yE6kH5xNJLgqGvVfeE7EyHywTGMKl7c=;
+        b=dAZJr0kXiDVXl9ZtLi0E2XLsr+YdUgWVUgdC7MYWJPeSh45vzSRG9qGsD/v6azjzP0
+         XjC+/s9aGyHPP3MPVwNYjvOXvyeb9QfLfxN4BAUjuo1pXU7xeXK5P/vxwIoahy4e8CBA
+         29ukc19JD3I2JrE/dQBpIt+yAWkstvyHrEmD0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=L8MazRJC/UFdJ6inkSvyaSkOTKbg7uW4ICaCKt8HQWg=;
-        b=gihH7wnBPptoeGNWhXIZqJMwaqpNGfIUlbvY0DEGJUqMfxvFxaxwrDJqIkt8qrXrJK
-         6+I7YncP5tiPsy/mq32S79cuyOE0iKudLnNcEbfNlIL2glBCJ6i2l0dvSKmiiwVJsiPk
-         adHu5tVsNLX6VbF3JcENTBKZLHxJWbsDuaP0adL7VatFuTTNkdYNnftrwnS/gunQM6sU
-         a3sEVjfPnB8UiPVk79lYhhSI5F9YeKJqbhZKASAVKuTaoI3c3tdCD8Qw6OvoVSwzXPV/
-         Y5fCdkrfp0Hoz7WoLqWHu0mlW6ibKoJZJoT4vBp07osp3uzwUG3FIBtJZf5yQ263AQRh
-         i+Pw==
-X-Gm-Message-State: AOAM533Zp3g70tAY0xEonwRJYYPZ/LgsPOU4GV/wIWdFkiy9KOTnBaay
-        K0mG2Mjth66DK+C3tBg4+sSy0Cztgt6F7Lpa7utbH59wzhFYD2RRZNBmXIHH/lWojNZ0xkDj5Uf
-        edOGvDhOIytv/AVTsnvY6bccCY+0g91c3opH4qB30bgb8/8qeZQSph4GjChoL
-X-Received: by 2002:a17:902:8ec5:b0:13a:2789:cbb0 with SMTP id x5-20020a1709028ec500b0013a2789cbb0mr9140999plo.60.1632903226272;
-        Wed, 29 Sep 2021 01:13:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLCZOKQda9thwsb7v/vH7TZg+GFsB20LqbXn7MGuaW/EbqhMgFfXTUlQqWBIY5xehfRLCC6Q==
-X-Received: by 2002:a17:902:8ec5:b0:13a:2789:cbb0 with SMTP id x5-20020a1709028ec500b0013a2789cbb0mr9140985plo.60.1632903226041;
-        Wed, 29 Sep 2021 01:13:46 -0700 (PDT)
+        bh=CADHTdvtLJ92yE6kH5xNJLgqGvVfeE7EyHywTGMKl7c=;
+        b=WBJIsN/POChnBkea19ANlUKaOKYI9PKGQrlX6bAF3hvGngIuD0nGnLzGzeARm5QxYn
+         szdLMSqMpeA2VmEmQGuU4WjwthY4YbRRWEYZhVXJw99ILVjyBarzzxk1stj6BjbyncH6
+         RIbnx7sDnKXkxuwhdWF0Gba0oK4mza8tf9SATY47j+tXR3EfDAh+QteNn9o0r2hL/c9P
+         ZUV0QAdXw9hcauKOnjfKxn1fUB81xJwod+eGJIpM+rq2LQhm6JOa2WfxLE+Jp0ouGQtx
+         Uhb+hNL1Us93a2ZcFdnPzu9ar4ZzgpVShZTPpra16OiMNKMa5QztHn85qpb/Rjd3AX7m
+         m2OQ==
+X-Gm-Message-State: AOAM531YHMnpjBxNPgHGJiC0i5TXa/Y4P8wONHawKo7V4uZmkjKZwrJX
+        26GGNR1s39laquzNxtOEb74AZc/INzjgkHhJ4+7IOs2lRwu0oyPJFCqKOGYWiUVv3/kYWMGcwbP
+        aFg1JXOEYrSZa5Zn6AknwRVf3G/xFJaMM/r5WYl0Jkbk5k4kIdhqU+eELp2h7
+X-Received: by 2002:a65:64d7:: with SMTP id t23mr8402468pgv.237.1632903229558;
+        Wed, 29 Sep 2021 01:13:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIy+wdOMA7b6IspA5ySu2Wts7YlUrRaP5FnVnA+Qux9hi74mHcq+UXHdvxt3kX8n9IjSn7Rg==
+X-Received: by 2002:a65:64d7:: with SMTP id t23mr8402448pgv.237.1632903229185;
+        Wed, 29 Sep 2021 01:13:49 -0700 (PDT)
 Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id k14sm1152026pji.45.2021.09.29.01.13.43
+        by smtp.gmail.com with ESMTPSA id k14sm1152026pji.45.2021.09.29.01.13.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 01:13:45 -0700 (PDT)
+        Wed, 29 Sep 2021 01:13:48 -0700 (PDT)
 From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
 X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
@@ -53,21 +53,21 @@ To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
 Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Sinthu Raja <sinthu.raja@ti.com>
-Subject: [PATCH V3 1/4] dt-bindings: arm: ti: Add compatible for J721E SK
-Date:   Wed, 29 Sep 2021 13:43:30 +0530
-Message-Id: <20210929081333.26454-2-sinthu.raja@ti.com>
+Subject: [PATCH V3 2/4] arm64: dts: ti: Add support for J721E SK
+Date:   Wed, 29 Sep 2021 13:43:31 +0530
+Message-Id: <20210929081333.26454-3-sinthu.raja@ti.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210929081333.26454-1-sinthu.raja@ti.com>
 References: <20210929081333.26454-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1632903226-302892-1133-19169-1
+X-BESS-ID: 1632903230-311581-621-18958-1
 X-BESS-VER: 2019.1_20210928.1746
-X-BESS-Apparent-Source-IP: 209.85.216.69
+X-BESS-Apparent-Source-IP: 209.85.215.197
 X-BESS-Outbound-Spam-Score: 0.00
 X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.234800 [from 
-        cloudscan20-168.eu-central-1b.ess.aws.cudaops.com]
+        cloudscan11-115.eu-central-1a.ess.aws.cudaops.com]
         Rule breakdown below
          pts rule name              description
         ---- ---------------------- --------------------------------
@@ -81,36 +81,791 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sinthu Raja <sinthu.raja@ti.com>
 
-J721E Starter Kit (SK)[1] is a low cost, small form factor board
-designed for TI’s J721E SoC. Add j721e-sk into compatible enum.
+J721E Starter Kit (SK)[1] is a low cost, small form factor board designed
+for TI’s J721E SoC. TI’s J721E SoC comprises of dual core A72, high
+performance vision accelerators, video codec accelerators, latest C71x
+and C66x DSP, high bandwidth real-time IPs for capture and display, GPU,
+dedicated safety island and security accelerators. The SoC is power
+optimized to provide best in class performance for industrial and
+automotive applications.
 
-[1]https://www.ti.com/tool/SK-TDA4VM
+    J721E SK supports the following interfaces:
+    * 4 GB LPDDR4 RAM
+    * x1 Gigabit Ethernet interface
+    * x1 USB 3.0 Type-C port
+    * x3 USB 3.0 Type-A ports
+    * x1 PCIe M.2 E Key
+    * x1 PCIe M.2 M Key
+    * 512 Mbit OSPI flash
+    * x2 CSI2 Camera interface (RPi and TI Camera connector)
+    * 40-pin Raspberry Pi GPIO header
+
+Add basic support for J721E-SK.
+
+[1] https://www.ti.com/tool/SK-TDA4VM
 
 Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
 ---
 
 Changes in V3:
 * Addressed review comments.
-* Added Board URL to the commit description.
+* Included Board URL to the commit description.
 
-V2: https://lore.kernel.org/all/20210607093314.23909-2-sinthu.raja@ti.com/
-V1: https://lore.kernel.org/all/20210602182237.12632-2-sinthu.raja@ti.com/
+V2: https://lore.kernel.org/all/20210607093314.23909-3-sinthu.raja@ti.com/
+V1: https://lore.kernel.org/all/20210602182237.12632-3-sinthu.raja@ti.com/
 
- Documentation/devicetree/bindings/arm/ti/k3.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/ti/Makefile        |   1 +
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 729 +++++++++++++++++++++++++
+ 2 files changed, 730 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721e-sk.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documentation/devicetree/bindings/arm/ti/k3.yaml
-index 29ca364e8a76..d97af3f628d8 100644
---- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
-+++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
-@@ -31,6 +31,7 @@ properties:
-         items:
-           - enum:
-               - ti,j721e-evm
-+              - ti,j721e-sk
-           - const: ti,j721e
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index d56c742f5a10..38fd3967ab04 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -11,6 +11,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
  
-       - description: K3 J7200 SoC
+ dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
++dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
+ 
+ dtb-$(CONFIG_ARCH_K3) += k3-j7200-common-proc-board.dtb
+ 
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+new file mode 100644
+index 000000000000..2ca92ed12f03
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+@@ -0,0 +1,729 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com/
++ *
++ * J721E SK URL: https://www.ti.com/tool/SK-TDA4VM
++ */
++
++/dts-v1/;
++
++#include "k3-j721e.dtsi"
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/net/ti-dp83867.h>
++
++/ {
++	compatible = "ti,j721e-sk", "ti,j721e";
++	model = "Texas Instruments J721E SK";
++
++	chosen {
++		stdout-path = "serial2:115200n8";
++		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		/* 4G RAM */
++		reg = <0x00000000 0x80000000 0x00000000 0x80000000>,
++		      <0x00000008 0x80000000 0x00000000 0x80000000>;
++	};
++
++	vusb_main: fixedregulator-vusb-main5v0 {
++		/* USB MAIN INPUT 5V DC */
++		compatible = "regulator-fixed";
++		regulator-name = "vusb-main5v0";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vsys_3v3: fixedregulator-vsys3v3 {
++		/* Output of LM5141 */
++		compatible = "regulator-fixed";
++		regulator-name = "vsys_3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vusb_main>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vdd_mmc1: fixedregulator-sd {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&vdd_mmc1_en_pins_default>;
++		regulator-name = "vdd_mmc1";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		enable-active-high;
++		vin-supply = <&vsys_3v3>;
++		gpio = <&wkup_gpio0 8 GPIO_ACTIVE_HIGH>;
++	};
++
++	vdd_sd_dv_alt: gpio-regulator-tps659411 {
++		compatible = "regulator-gpio";
++		pinctrl-names = "default";
++		pinctrl-0 = <&vdd_sd_dv_alt_pins_default>;
++		regulator-name = "tps659411";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		vin-supply = <&vsys_3v3>;
++		gpios = <&wkup_gpio0 9 GPIO_ACTIVE_HIGH>;
++		states = <1800000 0x0>,
++			 <3300000 0x1>;
++	};
++
++	dp_pwr_3v3: fixedregulator-dp-prw {
++		compatible = "regulator-fixed";
++		regulator-name = "dp-pwr";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&dp_pwr_en_pins_default>;
++		gpio = <&main_gpio0 111 0>;	/* DP0_3V3 _EN */
++		enable-active-high;
++	};
++
++};
++
++&main_pmx0 {
++	main_mmc1_pins_default: main-mmc1-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x254, PIN_INPUT, 0) /* (R29) MMC1_CMD */
++			J721E_IOPAD(0x250, PIN_INPUT, 0) /* (P25) MMC1_CLK */
++			J721E_IOPAD(0x2ac, PIN_INPUT, 0) /* (P25) MMC1_CLKLB */
++			J721E_IOPAD(0x24c, PIN_INPUT, 0) /* (R24) MMC1_DAT0 */
++			J721E_IOPAD(0x248, PIN_INPUT, 0) /* (P24) MMC1_DAT1 */
++			J721E_IOPAD(0x244, PIN_INPUT, 0) /* (R25) MMC1_DAT2 */
++			J721E_IOPAD(0x240, PIN_INPUT, 0) /* (R26) MMC1_DAT3 */
++			J721E_IOPAD(0x258, PIN_INPUT, 0) /* (P23) MMC1_SDCD */
++		>;
++	};
++
++	main_uart0_pins_default: main-uart0-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x1f0, PIN_INPUT, 0) /* (AC2) UART0_CTSn */
++			J721E_IOPAD(0x1f4, PIN_OUTPUT, 0) /* (AB1) UART0_RTSn */
++			J721E_IOPAD(0x1e8, PIN_INPUT, 0) /* (AB2) UART0_RXD */
++			J721E_IOPAD(0x1ec, PIN_OUTPUT, 0) /* (AB3) UART0_TXD */
++		>;
++	};
++
++	main_i2c0_pins_default: main-i2c0-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x220, PIN_INPUT_PULLUP, 0) /* (AC5) I2C0_SCL */
++			J721E_IOPAD(0x224, PIN_INPUT_PULLUP, 0) /* (AA5) I2C0_SDA */
++		>;
++	};
++
++	main_i2c1_pins_default: main-i2c1-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x228, PIN_INPUT_PULLUP, 0) /* (Y6) I2C1_SCL */
++			J721E_IOPAD(0x22c, PIN_INPUT_PULLUP, 0) /* (AA6) I2C1_SDA */
++		>;
++	};
++
++	main_i2c3_pins_default: main-i2c3-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x270, PIN_INPUT_PULLUP, 4) /* (T26) MMC2_CLK.I2C3_SCL */
++			J721E_IOPAD(0x274, PIN_INPUT_PULLUP, 4) /* (T25) MMC2_CMD.I2C3_SDA */
++		>;
++	};
++
++	main_usbss0_pins_default: main-usbss0-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x290, PIN_OUTPUT, 0) /* (U6) USB0_DRVVBUS */
++			J721E_IOPAD(0x210, PIN_INPUT, 7) /* (W3) MCAN1_RX.GPIO1_3 */
++		>;
++	};
++
++	main_usbss1_pins_default: main-usbss1-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x214, PIN_OUTPUT, 4) /* (V4) MCAN1_TX.USB1_DRVVBUS */
++		>;
++	};
++
++	dp0_pins_default: dp0-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x1c4, PIN_INPUT, 5) /* SPI0_CS1.DP0_HPD */
++		>;
++	};
++
++	dp_pwr_en_pins_default: dp-pwr-en-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x1c0, PIN_INPUT, 7) /* (AA2) SPI0_CS0.GPIO0_111 */
++		>;
++	};
++
++	dss_vout0_pins_default: dss-vout0-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x58, PIN_OUTPUT, 10) /* (AE22) PRG1_PRU1_GPO0.VOUT0_DATA0 */
++			J721E_IOPAD(0x5c, PIN_OUTPUT, 10) /* (AG23) PRG1_PRU1_GPO1.VOUT0_DATA1 */
++			J721E_IOPAD(0x60, PIN_OUTPUT, 10) /* (AF23) PRG1_PRU1_GPO2.VOUT0_DATA2 */
++			J721E_IOPAD(0x64, PIN_OUTPUT, 10) /* (AD23) PRG1_PRU1_GPO3.VOUT0_DATA3 */
++			J721E_IOPAD(0x68, PIN_OUTPUT, 10) /* (AH24) PRG1_PRU1_GPO4.VOUT0_DATA4 */
++			J721E_IOPAD(0x6c, PIN_OUTPUT, 10) /* (AG21) PRG1_PRU1_GPO5.VOUT0_DATA5 */
++			J721E_IOPAD(0x70, PIN_OUTPUT, 10) /* (AE23) PRG1_PRU1_GPO6.VOUT0_DATA6 */
++			J721E_IOPAD(0x74, PIN_OUTPUT, 10) /* (AC21) PRG1_PRU1_GPO7.VOUT0_DATA7 */
++			J721E_IOPAD(0x78, PIN_OUTPUT, 10) /* (Y23) PRG1_PRU1_GPO8.VOUT0_DATA8 */
++			J721E_IOPAD(0x7c, PIN_OUTPUT, 10) /* (AF21) PRG1_PRU1_GPO9.VOUT0_DATA9 */
++			J721E_IOPAD(0x80, PIN_OUTPUT, 10) /* (AB23) PRG1_PRU1_GPO10.VOUT0_DATA10 */
++			J721E_IOPAD(0x84, PIN_OUTPUT, 10) /* (AJ25) PRG1_PRU1_GPO11.VOUT0_DATA11 */
++			J721E_IOPAD(0x88, PIN_OUTPUT, 10) /* (AH25) PRG1_PRU1_GPO12.VOUT0_DATA12 */
++			J721E_IOPAD(0x8c, PIN_OUTPUT, 10) /* (AG25) PRG1_PRU1_GPO13.VOUT0_DATA13 */
++			J721E_IOPAD(0x90, PIN_OUTPUT, 10) /* (AH26) PRG1_PRU1_GPO14.VOUT0_DATA14 */
++			J721E_IOPAD(0x94, PIN_OUTPUT, 10) /* (AJ27) PRG1_PRU1_GPO15.VOUT0_DATA15 */
++			J721E_IOPAD(0x30, PIN_OUTPUT, 10) /* (AF24) PRG1_PRU0_GPO11.VOUT0_DATA16 */
++			J721E_IOPAD(0x34, PIN_OUTPUT, 10) /* (AJ24) PRG1_PRU0_GPO12.VOUT0_DATA17 */
++			J721E_IOPAD(0x38, PIN_OUTPUT, 10) /* (AG24) PRG1_PRU0_GPO13.VOUT0_DATA18 */
++			J721E_IOPAD(0x3c, PIN_OUTPUT, 10) /* (AD24) PRG1_PRU0_GPO14.VOUT0_DATA19 */
++			J721E_IOPAD(0x40, PIN_OUTPUT, 10) /* (AC24) PRG1_PRU0_GPO15.VOUT0_DATA20 */
++			J721E_IOPAD(0x44, PIN_OUTPUT, 10) /* (AE24) PRG1_PRU0_GPO16.VOUT0_DATA21 */
++			J721E_IOPAD(0x24, PIN_OUTPUT, 10) /* (AJ20) PRG1_PRU0_GPO8.VOUT0_DATA22 */
++			J721E_IOPAD(0x28, PIN_OUTPUT, 10) /* (AG20) PRG1_PRU0_GPO9.VOUT0_DATA23 */
++			J721E_IOPAD(0x9c, PIN_OUTPUT, 10) /* (AC22) PRG1_PRU1_GPO17.VOUT0_DE */
++			J721E_IOPAD(0x98, PIN_OUTPUT, 10) /* (AJ26) PRG1_PRU1_GPO16.VOUT0_HSYNC */
++			J721E_IOPAD(0xa4, PIN_OUTPUT, 10) /* (AH22) PRG1_PRU1_GPO19.VOUT0_PCLK */
++			J721E_IOPAD(0xa0, PIN_OUTPUT, 10) /* (AJ22) PRG1_PRU1_GPO18.VOUT0_VSYNC */
++		>;
++	};
++
++	/* Reset for M.2 E Key slot on PCIe0  */
++	ekey_reset_pins_default: ekey-reset-pns-pins-default {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x124, PIN_INPUT, 7) /* (Y24) PRG0_PRU1_GPO9.GPIO0_72 */
++		>;
++	};
++};
++
++&wkup_pmx0 {
++	mcu_cpsw_pins_default: mcu-cpsw-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x84, PIN_INPUT, 0) /* (B24) MCU_RGMII1_RD0 */
++			J721E_WKUP_IOPAD(0x80, PIN_INPUT, 0) /* (A24) MCU_RGMII1_RD1 */
++			J721E_WKUP_IOPAD(0x7c, PIN_INPUT, 0) /* (D24) MCU_RGMII1_RD2 */
++			J721E_WKUP_IOPAD(0x78, PIN_INPUT, 0) /* (A25) MCU_RGMII1_RD3 */
++			J721E_WKUP_IOPAD(0x74, PIN_INPUT, 0) /* (C24) MCU_RGMII1_RXC */
++			J721E_WKUP_IOPAD(0x5c, PIN_INPUT, 0) /* (C25) MCU_RGMII1_RX_CTL */
++			J721E_WKUP_IOPAD(0x6c, PIN_OUTPUT, 0) /* (B25) MCU_RGMII1_TD0 */
++			J721E_WKUP_IOPAD(0x68, PIN_OUTPUT, 0) /* (A26) MCU_RGMII1_TD1 */
++			J721E_WKUP_IOPAD(0x64, PIN_OUTPUT, 0) /* (A27) MCU_RGMII1_TD2 */
++			J721E_WKUP_IOPAD(0x60, PIN_OUTPUT, 0) /* (A28) MCU_RGMII1_TD3 */
++			J721E_WKUP_IOPAD(0x70, PIN_OUTPUT, 0) /* (B26) MCU_RGMII1_TXC */
++			J721E_WKUP_IOPAD(0x58, PIN_OUTPUT, 0) /* (B27) MCU_RGMII1_TX_CTL */
++		>;
++	};
++
++	mcu_mdio_pins_default: mcu-mdio1-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x8c, PIN_OUTPUT, 0) /* (F23) MCU_MDIO0_MDC */
++			J721E_WKUP_IOPAD(0x88, PIN_INPUT, 0) /* (E23) MCU_MDIO0_MDIO */
++		>;
++	};
++
++	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x0, PIN_OUTPUT, 0) /* (E20) MCU_OSPI0_CLK */
++			J721E_WKUP_IOPAD(0x2c, PIN_OUTPUT, 0) /* (F19) MCU_OSPI0_CSn0 */
++			J721E_WKUP_IOPAD(0xc, PIN_INPUT, 0) /* (D20) MCU_OSPI0_D0 */
++			J721E_WKUP_IOPAD(0x10, PIN_INPUT, 0) /* (G19) MCU_OSPI0_D1 */
++			J721E_WKUP_IOPAD(0x14, PIN_INPUT, 0) /* (G20) MCU_OSPI0_D2 */
++			J721E_WKUP_IOPAD(0x18, PIN_INPUT, 0) /* (F20) MCU_OSPI0_D3 */
++			J721E_WKUP_IOPAD(0x1c, PIN_INPUT, 0) /* (F21) MCU_OSPI0_D4 */
++			J721E_WKUP_IOPAD(0x20, PIN_INPUT, 0) /* (E21) MCU_OSPI0_D5 */
++			J721E_WKUP_IOPAD(0x24, PIN_INPUT, 0) /* (B22) MCU_OSPI0_D6 */
++			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 0) /* (G21) MCU_OSPI0_D7 */
++			J721E_WKUP_IOPAD(0x8, PIN_INPUT, 0) /* (D21) MCU_OSPI0_DQS */
++		>;
++	};
++
++	vdd_mmc1_en_pins_default: vdd-mmc1-en-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0xd0, PIN_OUTPUT, 7) /* (G27) WKUP_GPIO0_8 */
++		>;
++	};
++
++	vdd_sd_dv_alt_pins_default: vdd-sd-dv-alt-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0xd4, PIN_OUTPUT, 7) /* (G26) WKUP_GPIO0_9 */
++		>;
++	};
++
++	wkup_i2c0_pins_default: wkup-i2c0-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0xf8, PIN_INPUT_PULLUP, 0) /* (J25) WKUP_I2C0_SCL */
++			J721E_WKUP_IOPAD(0xfc, PIN_INPUT_PULLUP, 0) /* (H24) WKUP_I2C0_SDA */
++		>;
++	};
++
++	/* Reset for M.2 M Key slot on PCIe1  */
++	mkey_reset_pins_default: mkey-reset-pns-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0xdc, PIN_INPUT, 7) /* (H27) WKUP_GPIO0_11 */
++		>;
++	};
++};
++
++&wkup_uart0 {
++	/* Wakeup UART is used by System firmware */
++	status = "reserved";
++};
++
++&main_uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_uart0_pins_default>;
++	/* Shared with ATF on this platform */
++	power-domains = <&k3_pds 146 TI_SCI_PD_SHARED>;
++};
++
++&main_uart2 {
++	/* Brought out on RPi header */
++	status = "disabled";
++};
++
++&main_uart3 {
++	/* UART not brought out */
++	status = "disabled";
++};
++
++&main_uart5 {
++	/* UART not brought out */
++	status = "disabled";
++};
++
++&main_uart6 {
++	/* UART not brought out */
++	status = "disabled";
++};
++
++&main_uart7 {
++	/* UART not brought out */
++	status = "disabled";
++};
++
++&main_uart8 {
++	/* UART not brought out */
++	status = "disabled";
++};
++
++&main_uart9 {
++	/* Brought out on M.2 E Key */
++	status = "disabled";
++};
++
++&main_sdhci0 {
++	/* Unused */
++	status = "disabled";
++};
++
++&main_sdhci1 {
++	/* SD Card */
++	vmmc-supply = <&vdd_mmc1>;
++	vqmmc-supply = <&vdd_sd_dv_alt>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mmc1_pins_default>;
++	ti,driver-strength-ohm = <50>;
++	disable-wp;
++};
++
++&main_sdhci2 {
++	/* Unused */
++	status = "disabled";
++};
++
++&ospi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0x0>;
++		spi-tx-bus-width = <8>;
++		spi-rx-bus-width = <8>;
++		spi-max-frequency = <25000000>;
++		cdns,tshsl-ns = <60>;
++		cdns,tsd2d-ns = <60>;
++		cdns,tchsh-ns = <60>;
++		cdns,tslch-ns = <60>;
++		cdns,read-delay = <4>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
++};
++
++&ospi1 {
++	/* Unused */
++	status = "disabled";
++};
++
++&main_i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c0_pins_default>;
++	clock-frequency = <400000>;
++
++	i2c-mux@71 {
++		compatible = "nxp,pca9543";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x71>;
++
++		/* PCIe1 M.2 M Key I2C */
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		/* PCIe0 M.2 E Key I2C */
++		i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++	};
++};
++
++&main_i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c1_pins_default>;
++	/* i2c1 is used for DVI DDC, so we need to use 100kHz */
++	clock-frequency = <100000>;
++};
++
++&main_i2c2 {
++	/* Unused */
++	status = "disabled";
++};
++
++&main_i2c3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c3_pins_default>;
++	clock-frequency = <400000>;
++
++	i2c-mux@70 {
++		compatible = "nxp,pca9543";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x70>;
++
++		/* CSI0 I2C */
++		i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		/* CSI1 I2C */
++		i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++	};
++};
++
++&main_i2c4 {
++	/* Unused */
++	status = "disabled";
++};
++
++&main_i2c5 {
++	/* Brought out on RPi Header */
++	status = "disabled";
++};
++
++&main_i2c6 {
++	/* Unused */
++	status = "disabled";
++};
++
++&main_gpio2 {
++	status = "disabled";
++};
++
++&main_gpio3 {
++	status = "disabled";
++};
++
++&main_gpio4 {
++	status = "disabled";
++};
++
++&main_gpio5 {
++	status = "disabled";
++};
++
++&main_gpio6 {
++	status = "disabled";
++};
++
++&main_gpio7 {
++	status = "disabled";
++};
++
++&wkup_gpio1 {
++	status = "disabled";
++};
++
++&main_r5fss0_core0{
++	firmware-name = "pdk-ipc/ipc_echo_test_mcu2_0_release_strip.xer5f";
++};
++
++&usb_serdes_mux {
++	idle-states = <1>, <1>; /* USB0 to SERDES3, USB1 to SERDES2 */
++};
++
++&serdes_ln_ctrl {
++	idle-states = <J721E_SERDES0_LANE0_PCIE0_LANE0>, <J721E_SERDES0_LANE1_IP4_UNUSED>,
++		      <J721E_SERDES1_LANE0_PCIE1_LANE0>, <J721E_SERDES1_LANE1_PCIE1_LANE1>,
++		      <J721E_SERDES2_LANE0_IP1_UNUSED>, <J721E_SERDES2_LANE1_USB3_1>,
++		      <J721E_SERDES3_LANE0_USB3_0_SWAP>, <J721E_SERDES3_LANE1_USB3_0>,
++		      <J721E_SERDES4_LANE0_EDP_LANE0>, <J721E_SERDES4_LANE1_EDP_LANE1>,
++		      <J721E_SERDES4_LANE2_EDP_LANE2>, <J721E_SERDES4_LANE3_EDP_LANE3>;
++};
++
++&serdes_wiz3 {
++	typec-dir-gpios = <&main_gpio1 3 GPIO_ACTIVE_HIGH>;
++	typec-dir-debounce-ms = <700>;	/* TUSB321, tCCB_DEFAULT 133 ms */
++};
++
++&serdes3 {
++	serdes3_usb_link: phy@0 {
++		reg = <0>;
++		cdns,num-lanes = <2>;
++		#phy-cells = <0>;
++		cdns,phy-type = <PHY_TYPE_USB3>;
++		resets = <&serdes_wiz3 1>, <&serdes_wiz3 2>;
++	};
++};
++
++&usbss0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_usbss0_pins_default>;
++	ti,vbus-divider;
++};
++
++&usb0 {
++	dr_mode = "otg";
++	maximum-speed = "super-speed";
++	phys = <&serdes3_usb_link>;
++	phy-names = "cdns3,usb3-phy";
++};
++
++&serdes2 {
++	serdes2_usb_link: phy@1 {
++		reg = <1>;
++		cdns,num-lanes = <1>;
++		#phy-cells = <0>;
++		cdns,phy-type = <PHY_TYPE_USB3>;
++		resets = <&serdes_wiz2 2>;
++	};
++};
++
++&usbss1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_usbss1_pins_default>;
++	ti,vbus-divider;
++};
++
++&usb1 {
++	dr_mode = "host";
++	maximum-speed = "super-speed";
++	phys = <&serdes2_usb_link>;
++	phy-names = "cdns3,usb3-phy";
++};
++
++&tscadc0 {
++	/* Unused */
++	status = "disabled";
++};
++
++&tscadc1 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcu_cpsw {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_cpsw_pins_default &mcu_mdio_pins_default>;
++};
++
++&davinci_mdio {
++	phy0: ethernet-phy@0 {
++		reg = <0>;
++		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
++		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
++	};
++};
++
++&cpsw_port1 {
++	phy-mode = "rgmii-rxid";
++	phy-handle = <&phy0>;
++};
++
++&dss {
++	pinctrl-names = "default";
++	pinctrl-0 = <&dss_vout0_pins_default>;
++
++	assigned-clocks = <&k3_clks 152 1>,	/* VP 1 pixel clock */
++			  <&k3_clks 152 4>,	/* VP 2 pixel clock */
++			  <&k3_clks 152 9>,	/* VP 3 pixel clock */
++			  <&k3_clks 152 13>;	/* VP 4 pixel clock */
++	assigned-clock-parents = <&k3_clks 152 2>,	/* PLL16_HSDIV0 */
++				 <&k3_clks 152 6>,	/* DPI0_EXT_CLKSEL_OUT0 */
++				 <&k3_clks 152 11>,	/* PLL18_HSDIV0 */
++				 <&k3_clks 152 18>;	/* DPI1_EXT_CLKSEL_OUT0 */
++};
++
++&mcasp0 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp1 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp2 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp3 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp4 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp5 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp6 {
++	/* Brought out on RPi header */
++	status = "disabled";
++};
++
++&mcasp7 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp8 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp9 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp10 {
++	/* Unused */
++	status = "disabled";
++};
++
++&mcasp11 {
++	/* Brought out on M.2 E Key */
++	status = "disabled";
++};
++
++&serdes0 {
++	serdes0_pcie_link: phy@0 {
++		reg = <0>;
++		cdns,num-lanes = <1>;
++		#phy-cells = <0>;
++		cdns,phy-type = <PHY_TYPE_PCIE>;
++		resets = <&serdes_wiz0 1>;
++	};
++};
++
++&serdes1 {
++	serdes1_pcie_link: phy@0 {
++		reg = <0>;
++		cdns,num-lanes = <2>;
++		#phy-cells = <0>;
++		cdns,phy-type = <PHY_TYPE_PCIE>;
++		resets = <&serdes_wiz1 1>, <&serdes_wiz1 2>;
++	};
++};
++
++&pcie0_rc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&ekey_reset_pins_default>;
++	reset-gpios = <&main_gpio0 72 GPIO_ACTIVE_HIGH>;
++
++	phys = <&serdes0_pcie_link>;
++	phy-names = "pcie-phy";
++	num-lanes = <1>;
++};
++
++&pcie1_rc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mkey_reset_pins_default>;
++	reset-gpios = <&wkup_gpio0 11 GPIO_ACTIVE_HIGH>;
++
++	phys = <&serdes1_pcie_link>;
++	phy-names = "pcie-phy";
++	num-lanes = <2>;
++};
++
++&pcie2_rc {
++	/* Unused */
++	status = "disabled";
++};
++
++&pcie0_ep {
++	status = "disabled";
++	phys = <&serdes0_pcie_link>;
++	phy-names = "pcie-phy";
++	num-lanes = <1>;
++};
++
++&pcie1_ep {
++	status = "disabled";
++	phys = <&serdes1_pcie_link>;
++	phy-names = "pcie-phy";
++	num-lanes = <2>;
++};
++
++&pcie2_ep {
++	/* Unused */
++	status = "disabled";
++};
++
++&pcie3_rc {
++	/* Unused */
++	status = "disabled";
++};
++
++&pcie3_ep {
++	/* Unused */
++	status = "disabled";
++};
++
++&dss {
++	status = "disabled";
++};
++
++&icssg0_mdio {
++	status = "disabled";
++};
++
++&icssg1_mdio {
++	status = "disabled";
++};
++
++&ufs_wrapper {
++	status = "disabled";
++};
 -- 
 2.31.1
 
