@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C424041C1A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A1641C1A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245080AbhI2Jcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:32:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhI2Jca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:32:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 254E661407;
-        Wed, 29 Sep 2021 09:30:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632907843;
-        bh=qoR8rruErp26ABUtn9zVAJkjQ5jP3VhXepiuJ2UQNmk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ndgJKFJwP4argBO0VBkwGMu0+iTZuaFSjDdcsQKSEiCvGJRN8PKkG8zxmv9LSczbc
-         1z+EsaHehi04q8Na0XF6Qy0/kMhDaKHOWbiH0LJ5dAN3Nf80dO4B4PYLON7Rn9DKTZ
-         /CrYI8QM1/iaqXSXq4ARUja5kddGdj+xzXmWrA74qqKDZfH54zj20fB77HPlfOSD43
-         0KRgmVtOOJxbEAuBJBWoxM77JOsKGnSIQ6tu35BjMYcEzKjFYwvvC4fLyhxxaRqcSf
-         sWMQfzw5gUiNLLOwDL82QEvig2FeFPpG0FLaPuRLZS0639gPexjBh3YKIRZ3fAtojj
-         fn6QETz5q9oiQ==
-Date:   Wed, 29 Sep 2021 12:30:39 +0300
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs fixes for 5.15-rc4
-Message-ID: <20210929093039.GA108003@ogabbay-vm2.habana-labs.com>
+        id S245088AbhI2Jd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245050AbhI2JdZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:33:25 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AEAC06161C;
+        Wed, 29 Sep 2021 02:31:44 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i19so5176806lfu.0;
+        Wed, 29 Sep 2021 02:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/UGSy92lBMO//Gz9RL9r0Z90ZEqI/HZ9DcXU2pm2WA=;
+        b=ThxTKH8UE/PEbqm5nMiArOtjD3zpEzB8+HfD6CI7jeQJqe8q7HIYMBrhSgU+LaAuto
+         smh8NC4aah7HbtZXgq3EkQ4pPfBs3gEt23lg7NITWTJmxZOAW/hW6BQx4cU6nyBxTHdS
+         4NJI0alZIqHjaPLhvaPbaqHdYt5dHTieCfMKI0iORFIVElhidD/TaMWptD3B30HuAwaf
+         xztX5EQ8GbEISHs27HfqDhHBi4u82UUJfWHELvgDD3Op5QokttLtCpAnbo9TmYn64Uwv
+         OR5aG4bPFDGuwGAhT8zdiVwcqrWgitZF+6luHiIytjfjqLtUhmxNVOQRki/vScQZGwsj
+         IdNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v/UGSy92lBMO//Gz9RL9r0Z90ZEqI/HZ9DcXU2pm2WA=;
+        b=SHwE9GMYQg1jJ242kjV3BAh7tmqbkFWc4uif+W7Vc7FxzVyBj9XS+fasZWIn1S+rn/
+         Iz/TpRaVW36xrfvudiKWCmGT0UlEspb3JIjVJZufT5HKHABtBadr8F7UDkd4gt1xrLsv
+         68/eJ6n9P8LDHEIhvcLRCJ0XJCM62AGN/dDC2d5ovywS/2LOLK80hpJl1CpmBF2sTplt
+         z0no3jDZaOq+y1HlBMEm3sp4ZQ45IDVbXi1kgGYu5Kme1Ejzygq5LwRyoCTHIKDHM1lG
+         5I1UnoV934S4n9/za1yChCtopNFLSvw2Un/qUGuN5qZQXlByq3C5chRCrO2wq2DX7wD1
+         7dXQ==
+X-Gm-Message-State: AOAM533nm3avm+kbXUYh4XTThDUkkDMGFIjoPUKWTJeD5w5+X3wiuOsU
+        NMd0HGIENMsLp680VbXAAR0Cniadkmc=
+X-Google-Smtp-Source: ABdhPJwW4/4zsW63VKddIGXUEAZY6myLvIRsXoZS6oK5Kniynr0ocbgfm+QATYDGdfGFM9XeHDO40Q==
+X-Received: by 2002:a2e:a22a:: with SMTP id i10mr4879367ljm.464.1632907902914;
+        Wed, 29 Sep 2021 02:31:42 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id a25sm181519lfk.63.2021.09.29.02.31.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 02:31:42 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] ASoC: ti: Constify static snd_soc_ops
+Date:   Wed, 29 Sep 2021 11:31:21 +0200
+Message-Id: <20210929093121.21253-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+These are only assigned to the ops field in the snd_soc_dai_link struct
+which is a pointer to const struct snd_soc_ops. Make them const to allow
+the compiler to put them in read-only memory.
 
-One important fix for the habanalabs driver for 5.15.
-It fixes an issue where we return -EINTR in the IOCTL that waits
-on command submission completion, and the user-space will try
-to immediately call that IOCTL again with the same
-arguments structure it used in the previous call. More details
-in the commit itself.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ sound/soc/ti/davinci-evm.c      | 2 +-
+ sound/soc/ti/omap-abe-twl6040.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Oded
+diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
+index b043a0070d20..68d69e32681a 100644
+--- a/sound/soc/ti/davinci-evm.c
++++ b/sound/soc/ti/davinci-evm.c
+@@ -73,7 +73,7 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops evm_ops = {
++static const struct snd_soc_ops evm_ops = {
+ 	.startup = evm_startup,
+ 	.shutdown = evm_shutdown,
+ 	.hw_params = evm_hw_params,
+diff --git a/sound/soc/ti/omap-abe-twl6040.c b/sound/soc/ti/omap-abe-twl6040.c
+index 2e3d1eea77c1..da809c7f25a4 100644
+--- a/sound/soc/ti/omap-abe-twl6040.c
++++ b/sound/soc/ti/omap-abe-twl6040.c
+@@ -96,7 +96,7 @@ static int omap_abe_dmic_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops omap_abe_dmic_ops = {
++static const struct snd_soc_ops omap_abe_dmic_ops = {
+ 	.hw_params = omap_abe_dmic_hw_params,
+ };
+ 
+-- 
+2.33.0
 
-The following changes since commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27:
-
-  ipack: ipoctal: fix module reference leak (2021-09-27 17:38:49 +0200)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-09-29
-
-for you to fetch changes up to 4ca57d5139a0be3cf76c1667a4c0afb16d4a3b02:
-
-  habanalabs: fix resetting args in wait for CS IOCTL (2021-09-29 12:18:48 +0300)
-
-----------------------------------------------------------------
-This tag contains the following fix for 5.15-rc4:
-
-- Prevent memset of ioctl arguments in case driver returns -EINTR
-
-----------------------------------------------------------------
-Rajaravi Krishna Katta (1):
-      habanalabs: fix resetting args in wait for CS IOCTL
-
- .../misc/habanalabs/common/command_submission.c    | 33 +++++++++++++---------
- include/uapi/misc/habanalabs.h                     |  6 ++--
- 2 files changed, 21 insertions(+), 18 deletions(-)
