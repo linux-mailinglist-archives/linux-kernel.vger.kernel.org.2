@@ -2,184 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CECEB41CCE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1403041CCF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345751AbhI2Twj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:52:39 -0400
-Received: from mail.efficios.com ([167.114.26.124]:37850 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345636AbhI2Twf (ORCPT
+        id S1344099AbhI2T41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237351AbhI2T4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:52:35 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5653536CAAF;
-        Wed, 29 Sep 2021 15:50:53 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id J39vdJ66HPaU; Wed, 29 Sep 2021 15:50:52 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 85EC236CB58;
-        Wed, 29 Sep 2021 15:50:52 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 85EC236CB58
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1632945052;
-        bh=WiwY1kiDvwRVHtpENMrogCkLtrldkOHJEToBV94K9Kc=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=IvbrHeK2un8t2ZPuiWyezyjxsxp+PNxfRMHi5sf0Ie3WqcOmlfSAGyYqisE9euvMU
-         ALVt/KFLRLDJVMCvvMfRbykAv6c1iNlgDQK85w6cV2e39PWEt1PleFDXoPmOEktO0f
-         9/P4omnGqYzW9fyFjq3aPYp4fcnhglQQQkDSg/C/aNqorfsjBqobE1ghHf5sUuzhvY
-         D3kH2es3cmcJginAS2ND4xeh5w7zIx9pfjEJxSWSb8YrL9NdAkWyFYIpJ4VKAh5ny0
-         Ly8MvK/7sLv6rqTwxErnyoUGHsVJWcXoglp8PW8b1MOOt6BTSAISipdgn3dmOb3uDI
-         C3Dfn/fp2fVNA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WniF562roqeL; Wed, 29 Sep 2021 15:50:52 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 6EB0736C55F;
-        Wed, 29 Sep 2021 15:50:52 -0400 (EDT)
-Date:   Wed, 29 Sep 2021 15:50:52 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Message-ID: <457755093.44604.1632945052335.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAHk-=wjd_BJiJYZ99PAoc4mQ3QTiZrt-tRdznj3g9kU8-gYsAA@mail.gmail.com>
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <CAHk-=wg23CqjGWjjxDQ7yxrb+eF5at2KFU03GZa18Znx=+Xvow@mail.gmail.com> <CAHk-=wjd_BJiJYZ99PAoc4mQ3QTiZrt-tRdznj3g9kU8-gYsAA@mail.gmail.com>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: LKMM: Add ctrl_dep() macro for control dependency
-Thread-Index: cL23+1Kw3cVad0ytZvNC6SLA16g8Tw==
+        Wed, 29 Sep 2021 15:56:25 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E78C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:54:44 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id s10-20020a05621406aa00b003821a333809so8748819qvz.21
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OiLVv+xlAY408jKup4fnR/QKBpKolunAgpCER+09La0=;
+        b=NVz31hGg+OiDBrChin3fOWkXkIWb3ISmobKjwkzs0XPlc28pv+wuq00CWHagraj773
+         zo3U/yk6XMMeIMJs2xYUJGGHz0uhr59tErdoYHAezMShRzTpFlOOswzlw/e+lJUMeWu9
+         +rVzvPIZWHnQnFU173saT2ILUVo9wigRlPWMZxm0ydxYTDLpRMKvGNGelx+4/Hj+CNr0
+         L+qDrKc5z6C8XdHySjQCvR75HnznMfvEmh6urSK7kzY67YeQE1xK81qNvIYHCDvbTnR8
+         v6Jugm8TQ1RHqxOpl0sGZHnYB7mSP5couet8WA/K3pmqi7UBDJ/iygBfJ42TJ7VZPJuP
+         d+pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OiLVv+xlAY408jKup4fnR/QKBpKolunAgpCER+09La0=;
+        b=ttj1Au5/6xiNi+ZKa8fo0YSQ4H96Ml4joMpD6qEuAtPvv2Ys0U8didRba0N27zcd/z
+         I86EhmWg/UhFnH/rMC5Bs8FAYJMMWHJiwxcogjj+JEW9EgtKslDM0mT8r4f3B3tRVJtb
+         zr+7Jhu4M582CObroG/FJbtx2LlAa5h0ayektgNz6YCRVV2Pgb5+LCdsaExF6RZR4zd7
+         cZ5G7nGl2FRiGImTv/K8KPeY5eB+lmjIEMiLKIL+VED7Ik8pdeTjkc0dPHoZdHGdr9j1
+         X0ihg/QjAnTxDr1NY7DGUr7VGdgycFFt2hPtXMnl9+jzsDtEC7Daapo//9PbpvRlOx+P
+         3v2g==
+X-Gm-Message-State: AOAM533jxeHRK3I2QSj6L32oEHC+qoC/KV+J040KCZ6pL58LWQ2/g7mL
+        M1KMv5WZ8Jaf/LUg5ko0o4YAdJ8w+iq0pQ==
+X-Google-Smtp-Source: ABdhPJyiigPPp4XqOmZYp9GJQy5+YfZfy+Mm5NDfc+aIOt8KOrP4lLxG7SliycGcOcw426+rX1fOQPhhvOIN8w==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:e473:7cd7:9986:85b7])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:1046:: with SMTP id
+ l6mr287892qvr.6.1632945283492; Wed, 29 Sep 2021 12:54:43 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 12:54:32 -0700
+Message-Id: <20210929195436.1405996-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+Subject: [PATCH v3 0/3] kunit: allow running test suites/cases individually
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 29, 2021, at 10:54 AM, Linus Torvalds torvalds@linux-foundation.org wrote:
+Allow running each suite or each test case alone per kernel boot.
+The motivation for this is to debug "test hermeticity" issues.
+This new --run_isolated flag would be a good first step to try and
+narrow down root causes.
 
-> On Wed, Sep 29, 2021 at 7:47 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> And if there *is* need ("look, we have that same store in both the if-
->> and the else-statement" or whatever), then say so, and state that
->> thing.
-> 
-> Side note: I'd also like the commit that introduces this to talk very
-> explicitly about the particular case that it is used doe and that it
-> fixes. No "this can happen". A "this happened, here's the _actual_
-> wrong code generation, and look how this new ctrl_dep() macro fixes
-> it".
-> 
-> When it's this subtle, I don't want theoretical arguments. I want
-> actual outstanding and real bugs.
-> 
-> Because I get the feeling that there were very few actual realistic
-> examples of this, only made-up theoretical cases that wouldn't ever
-> really be found in real code.
+Context: sometimes tests pass/fail depending on what ran before them.
+Memory corruption errors in particular might only cause noticeable
+issues later on. But you can also have the opposite, where "fixing" one
+test causes another to start failing.
 
-There is one particular scenario which concerns me in refcount_dec_and_test().
-It relies on smp_acquire__after_ctrl_dep() to promote the control
-dependency to an acquire barrier on success. Because it is exposed
-within a static inline function, it hides the fact that control dependencies
-are being used under the hood.
+Usage:
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test example
 
-I have not identified a specific instance of oddly generated code, but this is
-an accident waiting to happen. If we take this simplified refcount code
-into godbolt.org and compile it for RISC-V rv64gc clang 12.0.1:
+The last one would provide output like
+  ======== [PASSED] example ========
+  [PASSED] example_simple_test
+  ============================================================
+  Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
+  Starting KUnit Kernel (2/3)...
+  ============================================================
+  ======== [SKIPPED] example ========
+  [SKIPPED] example_skip_test # SKIP this test should be skipped
+  ============================================================
+  Testing complete. 1 tests run. 0 failed. 0 crashed. 1 skipped.
+  Starting KUnit Kernel (3/3)...
+  ============================================================
+  ======== [SKIPPED] example ========
+  [SKIPPED] example_mark_skipped_test # SKIP this test should be skipped
+  ============================================================
+  Testing complete. 1 tests run. 0 failed. 0 crashed. 1 skipped.
 
-#define RISCV_FENCE(p, s) \
-        __asm__ __volatile__ ("fence " #p "," #s : : : "memory")
-#define __smp_rmb()     RISCV_FENCE(r,r)
+See the last patch's description for a bit more detail.
 
-volatile int var1;
-volatile int refcount;
+Meta:
+The first patch is from another series with just a reworded commit
+message, https://lore.kernel.org/linux-kselftest/20210805235145.2528054-2-dlatypov@google.com/
 
-static inline bool refcount_dec_and_test(void)
-{
-    refcount--;
-    if (refcount == 0) {
-        __smp_rmb();    /* acquire after ctrl_dep */
-        return true;
-    }
-    return false;
-}
+This patch series is based on Shuah's kunit branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/?h=kunit
 
-void fct(void)
-{
-    int x;
+Changes:
+v1 -> v2: rebase onto Shuah's kunit branch, fix missing code in patch 1.
+v2 -> v3: fix mypy errors, drop test plan from output, fix pre-existing
+bug where kunit was not actually tracking test execution time (new patch 3).
 
-    if (refcount_dec_and_test()) {
-        var1 = 0;
-        return;
-    }
-    __smp_rmb();
-    var1 = 1;
-}
+Daniel Latypov (4):
+  kunit: add 'kunit.action' param to allow listing out tests
+  kunit: tool: factor exec + parse steps into a function
+  kunit: tool: actually track how long it took to run tests
+  kunit: tool: support running each suite/test separately
 
-We end up with:
+ lib/kunit/executor.c                   |  45 ++++++++-
+ tools/testing/kunit/kunit.py           | 129 +++++++++++++++++--------
+ tools/testing/kunit/kunit_tool_test.py |  40 ++++++++
+ 3 files changed, 169 insertions(+), 45 deletions(-)
 
-fct():                               # @fct()
-        lui     a0, %hi(refcount)
-        lw      a1, %lo(refcount)(a0)
-        addiw   a1, a1, -1
-        sw      a1, %lo(refcount)(a0)
-        lw      a0, %lo(refcount)(a0)
-        fence   r, r
-        snez    a0, a0
-        lui     a1, %hi(var1)
-        sw      a0, %lo(var1)(a1)
-        ret
 
-Which lacks the conditional branch, and where the "fence r,r" instruction
-does not properly order following stores after the refcount load.
-
-Adding ctrl_dep() around the refcount == 0 check fixes this:
-
-fct():                                # @fct()
-        lui     a0, %hi(refcount)
-        lw      a1, %lo(refcount)(a0)
-        addiw   a1, a1, -1
-        sw      a1, %lo(refcount)(a0)
-        lw      a0, %lo(refcount)(a0)
-        beqz    a0, .LBB0_2
-
-        fence   r, r
-        addi    a0, zero, 1
-        j       .LBB0_3
-.LBB0_2:
-
-        fence   r, r
-        mv      a0, zero
-.LBB0_3:
-        lui     a1, %hi(var1)
-        sw      a0, %lo(var1)(a1)
-        ret
-
-I admit that this is still a "made up" example, although it is similar to the actual
-implementation of refcount_dec_and_check(). But if we need to audit every user of this
-API for wrongly generated code, we may be looking for a needle in a haystack.
-
-Thanks,
-
-Mathieu
-
+base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.33.0.685.g46640cef36-goog
+
