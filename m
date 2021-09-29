@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7321E41BF5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3787141BF61
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244467AbhI2G5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhI2G5F (ORCPT
+        id S244472AbhI2G6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:58:14 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:45050 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229536AbhI2G6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:57:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0389EC06161C;
-        Tue, 28 Sep 2021 23:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vJnhZzHesizlzOdq1W43Xav44aVM2wENIbQ/nsFlymI=; b=Cy2EgRLEDgo0P9vw2aShtTeXSs
-        IHuAGK6bOhq2ej6lcZPWx/I8Bf8itVXDpzRwTkqSf25TjzpRrQQMQArgDV3rhu5ORhUloCTkFSz96
-        j97cFhOiB4b5ajnrqrlbUUsaLQpljoltvqlT8OTqG98in8fir/Zid0toRW2TW2evGSnWCPWRnkwF2
-        SQEjrGiVtMwtMpFGix1xZKLGbI7RuKR6Lo4j5fMsSoNApqCNI88/b0DgU3kbhEZ0wLHA1kARXXIMg
-        Ma6kxjb531khDUzeWwuricyGFZvumHIvbNf9Dj9EvRoZusqeZGZVDRUWiRJ33wdCDZ2IPLhdrRNHR
-        x8JGBkjA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVTTv-00Ba5N-PF; Wed, 29 Sep 2021 06:54:38 +0000
-Date:   Wed, 29 Sep 2021 07:54:19 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     tim@cyberelk.net, axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] pcd: capture error codes on pcd_probe() and
- pf_probe()
-Message-ID: <YVQNmzv5RvjV5RK+@infradead.org>
-References: <1632897629-84965-1-git-send-email-yang.lee@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1632897629-84965-1-git-send-email-yang.lee@linux.alibaba.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Wed, 29 Sep 2021 02:58:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Uq.dnIy_1632898588;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Uq.dnIy_1632898588)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 29 Sep 2021 14:56:29 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] intel: Simplify bool conversion
+Date:   Wed, 29 Sep 2021 14:56:26 +0800
+Message-Id: <1632898586-96655-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:40:29PM +0800, Yang Li wrote:
-> No error code were being captured when pcd_probe() and
-> pf_probe() fail, capture them by assigning them to ret.
-> 
-> Clean up smatch warning:
-> drivers/block/paride/pcd.c:939 pcd_init_unit() warn: missing error code
-> 'ret'
-> drivers/block/paride/pf.c:963 pf_init_unit() warn: missing error code
-> 'ret'
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Fix the following coccicheck warning:
+./drivers/net/ethernet/intel/i40e/i40e_xsk.c:229:35-40: WARNING:
+conversion to bool not needed here
+./drivers/net/ethernet/intel/ice/ice_xsk.c:399:35-40: WARNING:
+conversion to bool not needed here
 
-Please not.  I have a major rewrite of the paride probing pending,
-which Jens just wanted to make conditional on potentially dropping the
-drivers entirely.  So either we take the real series to clean this mess
-up or we drop the drivers, but we need to stop this sugarcoating of
-fundamentally bad code.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 6f85879..ea06e95 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -226,7 +226,7 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
+ 	rx_desc->wb.qword1.status_error_len = 0;
+ 	i40e_release_rx_desc(rx_ring, ntu);
+ 
+-	return count == nb_buffs ? true : false;
++	return count == nb_buffs;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 7682eaa..35b6e81 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -396,7 +396,7 @@ bool ice_alloc_rx_bufs_zc(struct ice_ring *rx_ring, u16 count)
+ 	rx_desc->wb.status_error0 = 0;
+ 	ice_release_rx_desc(rx_ring, ntu);
+ 
+-	return count == nb_buffs ? true : false;
++	return count == nb_buffs;
+ }
+ 
+ /**
+-- 
+1.8.3.1
+
