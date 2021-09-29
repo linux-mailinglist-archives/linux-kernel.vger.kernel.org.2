@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440B741C1B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D9D41C1D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245083AbhI2JjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        id S245079AbhI2Jmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245070AbhI2JjQ (ORCPT
+        with ESMTP id S245103AbhI2Jmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:39:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9408BC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:37:35 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632908253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B89tcA2zIRUY38M29xvDCozhHJ1KXo9Xns8L/CZPgPo=;
-        b=AJaLgDEF+x/Oan8EDhS8+LxyufOs4g4u2wkXyIx/S8ZQ4Gh3vJ7UzCD6JoxnZlUWl/RGRf
-        IhBKYYdATUBgz3ZWFCOBNaouGdvvnnucbgN7ttmHu17FqBvY754ETqJz2ut6KiL4gr6m/0
-        UrWoGQcjU5A3fiak9ZlS2uHSARRhvDa2w3pFs/CAoDUfZR7301zQ/RbgtxDsmQ9MIiDugM
-        M1/fq43iDFMiMjxMtrFvUE6WZNYMWbf5gS/JsNOwCwnT5AwD8076vyfej0Dgn5erveYY7q
-        qmbZATY5Pscpf6LAC3ZPSvSsq5corQIdMH7gs7rtw7oxr9aCuO1EMUkF7ZijAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632908253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B89tcA2zIRUY38M29xvDCozhHJ1KXo9Xns8L/CZPgPo=;
-        b=BzWzpf3f7t3kFOU9KaIRf/+RcLbSUZY25bz2BdcE8TnIuET/cQW0I2UfFqHI7agzkC1lfy
-        rQNp5ReX6pfBKUCA==
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Peter Oskolkov <posk@posk.io>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH v2] sched: Remove pointless preemption disable in
- sched_submit_work()
-In-Reply-To: <CAJhGHyBwVLpcWoizJaMvQUFhAO_rz4CBQ1=D8hZ2iAadruh7WQ@mail.gmail.com>
-References: <87sfxoai2l.ffs@tglx>
- <CAJhGHyBwVLpcWoizJaMvQUFhAO_rz4CBQ1=D8hZ2iAadruh7WQ@mail.gmail.com>
-Date:   Wed, 29 Sep 2021 11:37:32 +0200
-Message-ID: <8735pnafj7.ffs@tglx>
+        Wed, 29 Sep 2021 05:42:53 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864F1C06161C;
+        Wed, 29 Sep 2021 02:41:12 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id s55so410545pfw.4;
+        Wed, 29 Sep 2021 02:41:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JVxGaFjbux+FJULv7eg8f8YYNx7W05wA7ywVNP/pTwE=;
+        b=OqAYzH+r/5UkFiIWpYESP4E1UCc+QIgxUjmcz7eIVpahtk2znGK57pUa28VLmtGXuz
+         kdP8dr3bRFguyvWK4kNuJGRaS1pGjR+HirGZkaMJMucKvwoHd1H7+udkNoUxG7hi+ilN
+         C2qfuBQbN3fS2kbj6dOvP2SOQsSzQzJIoHxMa96bJSS4wf7hmSDJ7WvJwXgpQumOQ8fV
+         dSDRL2zkE2nraz9nuKLGLOLZ+GKOgDgsqc7DeB+Rwn4tXt/eVjzI5asyRG3HZw11EihP
+         R2AHWgMqtxTMluogh5T05YbRy//y7MKDc0Cfj37s7iOUWaIc0zQJqY57EWfpyO6jR6xl
+         9+FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JVxGaFjbux+FJULv7eg8f8YYNx7W05wA7ywVNP/pTwE=;
+        b=eh8QBVCux2uMVR+ZwY5E4+Xes0sc8VM33vCv4fl5V9QFzBz690w/fC4feruizuEX7K
+         N7TN+69YY4k3tBP8oYMR5sGJiJ9r22AVidOIrg+ASa9Z1GZKDNrjQd5x56O4os5fKZWQ
+         Iwc66fr53XfUEhJY8ULf0Z4QGsVs+JOHMj7P+vF5Nc1oSvENspwNL6NUKsxUM3wSI+4v
+         wM5Bhrui0o7/6NaUsphwPPOWz4lLa6JOhMfgh6yH7UyxUktMRxI31brV3N6l9wR7kgpC
+         A3aEVd245GwYv6ajyZNXobYPxNUDK30e+eSqpUBtW9tvIkdtgYBgFwlv42Vx3OB5dVee
+         UfoQ==
+X-Gm-Message-State: AOAM530Vxry1lGdsUUeUSxZiHICo/MXj2/OEdnP7J+Xf71HuHXjyG/zj
+        0EvGPRuMoLrtF3tXDDO/My8bQRr0E2lv4GqHoCuKIUyb
+X-Google-Smtp-Source: ABdhPJw2wkXH2l67O2YTPAun4bIXPqCvSGkiTo25+pme8IcUuQ7vpmKwYexxnWbdkZurQ2KUBW6fbCScVwLCYGtEd3U=
+X-Received: by 2002:a63:251:: with SMTP id 78mr8888760pgc.54.1632908472040;
+ Wed, 29 Sep 2021 02:41:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210928132902.1594277-1-aardelean@deviqon.com> <YVOKQwGj5/jR8Q5H@builder.lan>
+In-Reply-To: <YVOKQwGj5/jR8Q5H@builder.lan>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 29 Sep 2021 12:40:59 +0300
+Message-ID: <CA+U=Dsr=C4zT3gZ2HdKc5jmbJ6HAwOOBBFzb03GtrxOCZ3cynQ@mail.gmail.com>
+Subject: Re: [PATCH] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg
+ with no recipient
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-remoteproc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neither wq_worker_sleeping() nor io_wq_worker_sleeping() require to be invoked
-with preemption disabled:
+On Wed, Sep 29, 2021 at 12:33 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 28 Sep 08:29 CDT 2021, Alexandru Ardelean wrote:
+>
+> > From: Alexandru Ardelean <ardeleanalex@gmail.com>
+> >
+> > Even though it may be user-space's fault for this error (some application
+> > terminated or crashed without cleaning up it's endpoint), the rpmsg
+> > communication should not overflow the syslog with too many messages.
+> >
+> > A dev_warn_ratelimited() seems like a good alternative in case this can
+> > occur.
+> >
+>
+> Is there anything a user could/should do when they see this entry in
+> their log?
 
-  - The worker flag checks operations only need to be serialized against
-    the worker thread itself.
+Not really, no.
+The userspace application would need to respawn, or some systemd (or
+similar process manager) would need to respawn the application it
+should recover the state, and communication should resume normally.
+I think this message is good mostly as informative.
 
-  - The accounting and worker pool operations are serialized with locks.
+>
+> It doesn't look very actionable to me, should we perhaps degrade it
+> further to just a dev_dbg()?
 
-which means that disabling preemption has neither a reason nor a
-value. Remove it and update the stale comment.
+It's not actionable unfortunately.
+But I feel it is useful to have this message, until the application recovers.
+Mostly to be informative.
+A more robust mechanism would be to setup some counters, where we
+count the number of missed messages.
+And then access this counter via sysfs or something.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
----
-V2: Update comment as pointed out by Lai
----
- kernel/sched/core.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+The problem is that a high-rate of dev_warn() (during failure),
+temporarily increases system CPU usage & load-average, making the
+recovery a bit slower, because systemd-journald is processing these
+messages from the kernel.
+So, dev_dbg() would definitely help, but would also require us to bump
+the system log-level to see the messages.
+And if they occur and we don't see them, it causes more questions and
+debugging, because people won't know for sure what the issue is.
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6319,20 +6319,14 @@ static inline void sched_submit_work(str
- 
- 	task_flags = tsk->flags;
- 	/*
--	 * If a worker went to sleep, notify and ask workqueue whether
--	 * it wants to wake up a task to maintain concurrency.
--	 * As this function is called inside the schedule() context,
--	 * we disable preemption to avoid it calling schedule() again
--	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
--	 * requires it.
-+	 * If a worker goes to sleep, notify and ask workqueue whether it
-+	 * wants to wake up a task to maintain concurrency.
- 	 */
- 	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
--		preempt_disable();
- 		if (task_flags & PF_WQ_WORKER)
- 			wq_worker_sleeping(tsk);
- 		else
- 			io_wq_worker_sleeping(tsk);
--		preempt_enable_no_resched();
- 	}
- 
- 	if (tsk_is_pi_blocked(tsk))
+Ultimately, dev_dbg() or dev_warn_rate_limited() are both fine.
+The goal is to avoid the temporary increase in CPU load.
+I just wanted to state my arguments for dev_warn_ratelimite() :)
+
+Thank you
+Alex
+
+>
+> Regards,
+> Bjorn
+>
+> > Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> > ---
+> >  drivers/rpmsg/virtio_rpmsg_bus.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> > index 8e49a3bacfc7..546f0fb66f1d 100644
+> > --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> > +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> > @@ -749,7 +749,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+> >               /* farewell, ept, we don't need you anymore */
+> >               kref_put(&ept->refcount, __ept_release);
+> >       } else
+> > -             dev_warn(dev, "msg received with no recipient\n");
+> > +             dev_warn_ratelimited(dev, "msg received with no recipient\n");
+> >
+> >       /* publish the real size of the buffer */
+> >       rpmsg_sg_init(&sg, msg, vrp->buf_size);
+> > --
+> > 2.31.1
+> >
