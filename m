@@ -2,123 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1214D41C676
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBF241C67D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343777AbhI2OPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245475AbhI2OPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:15:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A87613A5;
-        Wed, 29 Sep 2021 14:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632924812;
-        bh=eTAv1pPSQ34h7VzKpHo4amccmSX8My0viltKfGFPAcs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a0WROnPxlwaBTjZsiibH7NJovqQtTcIp/K8ms+STDcB0ptV8A0iGu7jLOLUA/zrUB
-         INOdkTNqEr+HXCsQa1FZU+yqpPcoGYOARxzTUh4ePsGKUBDxazH19ImM81Ssee+Mva
-         nxmG8NM2AaOVNzG/J2UsGMAVksZFTUppR7ziA8M1mXemH97Vk+d8qoG0kYGWYdGish
-         B9Qy4lryafOY6AelPhxlIm1cVnoVDb/CTbTE2vOsJMA/xb1kJPJdpk1+5jbmmd2KC3
-         vu3OyQvXaUDO9c51VtuIqQLJ54Y/7pkwRb/Ky5I0hyfeuWwgf9qtylbgp9JyDEXnTB
-         kSVVs8i8WEI2Q==
-Date:   Wed, 29 Sep 2021 17:13:28 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
+        id S1343864AbhI2ORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343798AbhI2ORQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:17:16 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B14C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:15:35 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so3046593otb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1bOpTf6Jukz1rQn04/kh8ik747nwWUC8rE65lhqO1Xs=;
+        b=MLodxKDCjbPbVfHqmbcLc+lFz7Fm4nAzcqoQdx/1K7UeQ8nwYJyY9ZgA2Viz20B1Wf
+         FHqkYzOZFhsSWsnJyzin379oB7znNmpJnokdu8kAnQKBU1z0UmsmeSGDtWoZuzX2X8Fk
+         lJYSuwZwGQW0BhwNYWdBnNh4lKmHhHBKx3X3b5X9fBrRGdWjm/MeGfr0jJAwCMhE6DoP
+         DNQv24J1CTfdOSXLezlSaN00GTfkp2rpHcNAxUNxpBKFHdL3jRSaTXs2geRHaYhVDMuO
+         0YTHrb/j5JJfDzPIkXN+WMGpSKYtRpZvvGBWdf+KOnDRFnVY8mBeUnh0VzB3NX56xC8u
+         e4Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1bOpTf6Jukz1rQn04/kh8ik747nwWUC8rE65lhqO1Xs=;
+        b=fh+cGJpuOEI9mSFpy7xQtS6Nx8t05H2k+T4tISaYgOEmxLwXQoJaLMNGJCxL365H4u
+         sZgaSsx2KUEpLlkNGB6bLNHjZmB77Z5U5/b1kbhhD4l6/c7VNd1jMQjqtqk8J0a927pm
+         2IhqPN5UvFzr1qd7grSZ0TFjpUv5BiwkowSgz0lzGb353u98M0q4JHG25dZAuAPo96FP
+         WQWipwhKxcjVFFEqiBWYzuRoTGNgwVAdfUCk/bItrDpMQrgngBxmHWvpYJrMV9Rm2gKI
+         Smm/e4MJ2BznRdZISjP1r9Ztf225s5uGGpzxrovc1LgoACAXi9j4vX1C5hnAAXQSS4PT
+         cRFQ==
+X-Gm-Message-State: AOAM533vx07Mwd65iDm7JdN20H2mrvWLNLoan1nIQ12KmDn2aK4R5SKh
+        urHTAf2apT9Jgk7Kkw1S0gVKCA==
+X-Google-Smtp-Source: ABdhPJy89LkTd283QjwrvqhgJMbYUlI7RUIpOdWGGkYh7mMYYiT+wqNtJ9odI5KEX39BP+qpFI+L7A==
+X-Received: by 2002:a05:6830:455:: with SMTP id d21mr228973otc.300.1632924934665;
+        Wed, 29 Sep 2021 07:15:34 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s29sm468815otg.60.2021.09.29.07.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 07:15:34 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 09:15:31 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <YVR0iKIRYDXQbD+o@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH 1/2] firmware: include drivers/firmware/Kconfig
+ unconditionally
+Message-ID: <YVR1A18fEAuFfCoj@yoga>
+References: <20210928075216.4193128-1-arnd@kernel.org>
+ <20210928083751.GG9223@ediswmail.ad.cirrus.com>
+ <CAK8P3a11c6eLRWKvQeSqvEicc9bMDeEEGV5fygTidoRzYf9KnQ@mail.gmail.com>
+ <20210928092400.GH9223@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210928092400.GH9223@ediswmail.ad.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 06:40:04AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:
-> > This series starts from the fixing the bug introduced by implementing
-> > devlink delayed notifications logic, where I missed some of the
-> > notifications functions.
+On Tue 28 Sep 04:24 CDT 2021, Charles Keepax wrote:
+
+> On Tue, Sep 28, 2021 at 10:51:36AM +0200, Arnd Bergmann wrote:
+> > On Tue, Sep 28, 2021 at 10:37 AM Charles Keepax
+> > <ckeepax@opensource.cirrus.com> wrote:
+> > > I guess the question might be where else would said code go?
+> > > drivers/firmware seemed most obvious, all the other locations
+> > > I can think of don't really make sense. Can't really put it a bus
+> > > like spi/i2c etc. because we have parts on many buses. Can't
+> > > really put it in a functional subsystem (audio/input etc.) since
+> > > the whole idea was to try and get some independence from that so
+> > > we don't have parts including subsystems they don't use. Could
+> > > maybe put it in MFD, but no hard guarantee every part using it
+> > > will be an MFD device and I am fairly confident Lee will feel it
+> > > isn't MFD code as it doesn't relate to managing multiple devices.
+> > > Only other option I can think of would be to make some sort of
+> > > drivers/dsp or maybe drivers/cs_dsp, but not clear to me that is
+> > > obviously better than using drivers/firmware.
 > > 
-> > The rest series provides a way to dynamically set devlink ops that is
-> > needed for mlx5 multiport device and starts cleanup by removing
-> > not-needed logic.
+> > Other DSPs use the drivers/remoteproc/ subsystem, but that
+> > is more for general-purpose DSPs that can load application
+> > specific firmware rather than loading a single firmware blob
+> > as you'd normally do with the request_firmware() style interface.
 > > 
-> > In the next series, we will delete various publish API, drop general
-> > lock, annotate the code and rework logic around devlink->lock.
-> > 
-> > All this is possible because driver initialization is separated from the
-> > user input now.
+> > Not sure if that fits what you do. Can you point to a high-level
+> > description of what this DSP does besides audio, and how
+> > flexible it is? That might help find the right place for this.
 > 
-> Swapping ops is a nasty hack in my book.
+> Hm... wasn't aware of that one, we should probably investigate that
+> a little more at this end. From a quick look, seems a bit more like
+> it is designed for much larger more general purpose probably memory
+> mapped DSPs. I guess our code is a little more firmware parsing
+> and loading, and a bit less generic remote proceedure call stuff.
 > 
-> And all that to avoid having two op structures in one driver.
-> Or to avoid having counters which are always 0?
 
-We don't need to advertise counters for feature that is not supported.
-In multiport mlx5 devices, the reload functionality is not supported, so
-this change at least make that device to behave like all other netdev
-devices that don't support devlink reload.
+You're correct, remoteproc tends to situations where you have
+multi-function firmware; be it at a single point in time, or due to
+different firmware choices. Where you essentially boot some firmware on
+the remoteproc and from that instantiate one of more functional devices
+based on the loaded firmware.
 
-The ops structure is set very early to make sure that internal devlink
-routines will be able access driver back during initialization (btw very
-questionable design choice), and at that stage the driver doesn't know
-yet which device type it is going to drive.
-
-So the answer is:
-1. Can't have two structures.
-2. Same behaviour across all netdev devices.
-
+> I am not sure there is great deal available publically on the
+> DSP core. It is talked about in a few of our datasheets, see
+> section 4.4 in [1]. But a basic description might be it is a
+> signal processing focused, very small DSP core. If can be loaded
+> with different firmwares at runtime, and indeed might be doing say
+> echo cancellation in one use-case, or always on voice detect in
+> another. Functionally it is very unlikely to be used for anything
+> besides signal processing inside the device it is in, since it is
+> typically quite integrated with that hardware and will be sitting
+> behind a slow bus, like I2C or SPI.
 > 
-> Sorry, at the very least you need better explanation for this.
 
-Was it better explained now?
+To me it sounds like the main difference compared to above is that you
+have a single function that owns and controls the DSP and implements
+that function - i.e. the audio driver probes, boots the DSP, if there's
+a problem the audio driver will handle it etc.
+
+
+When it comes to firmware parsing, that might be a somewhat unrelated
+topic. E.g. in the Qualcomm case, the same customized ELF header is used
+in both for remoteproc devices and in function-specific devices. For
+this we extracted the relevant functions into a library of some common
+helpers, which can be found in drivers/soc/qcom/mdt_loader.c.
+
+Regards,
+Bjorn
+
+> Current users are all audio, planning to upstream some haptics
+> parts soon, with possible other uses in the future.
+> 
+> [1] https://statics.cirrus.com/pubs/proDatasheet/CS48L32_DS1219F4.pdf
+> 
+> Thanks,
+> Charles
