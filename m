@@ -2,158 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C78241C2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02F241C2AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245459AbhI2KYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:24:50 -0400
-Received: from mail-me3aus01on2059.outbound.protection.outlook.com ([40.107.108.59]:37431
-        "EHLO AUS01-ME3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245325AbhI2KYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:24:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zx07ujdz4oQnYdS98I31MgLyIbCB5UQwFfbOlLFUsy7egExVOCb9eYwaVyw7AV+7VuNANPU+BUx18JIEEcK+IKRtxBhCFMpLKYKgPgINpO9Jv61s4AsSYQBZ6e66SM1enJIGUAnbgdhAxS05aWOovXmtWG9HigHGZEPSyXrvDXfs/t7Aoi5ELURWppAjHV/1oM//nLmr4S9c7ejzuMkNlzvFA9zkhQc0K3XTCH4/d2oNO+KligW7laUSdZU4q1W7d9b+Z9jXQnHoQ9b/bH0kKLXUGA0Tq93RcM+FSYqCIldicGQFVGJvoAkN7WQLdVZdSRiMNrb9MhvuzmwxAFgZXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=uhNlL7aVhkSo+xLAI4DuWkX+a29R0/iA/AWSAQO1ehI=;
- b=AiPyRr1Hks6AOtcNQ2Wm0oHkg9odE6RbVJ8fI1veftD3Wd8N1ynR7FcWmWvqDPDOlL1gu2W2Qq66izudKzjY364+L1UV1dbhDC4+1dwOQmSc8FO5RkO/nbhaNqmMOOo/u7i+lVvw+aJUiiedRc3/rEVaFBGkAVhGdOc8sexUNentu3ecs7QK0eRdsqszBfHekOHlLD0lHllnzPGfBXabqDscnk7UEQT7BIm6krzhIySjHD+HuJLXV4AmbMAs28SFvhrbBDTRb2urgKQnM7HVmMg1fgxlIDJ30N7drHHSGu+8xSA4M2vL9UJvsEZnzc5TwlUUiF8kRv3M8VPlVzwRFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
- header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
+        id S245484AbhI2KZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245325AbhI2KZu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:25:50 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46548C06161C;
+        Wed, 29 Sep 2021 03:24:09 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id x7so6644659edd.6;
+        Wed, 29 Sep 2021 03:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector2-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uhNlL7aVhkSo+xLAI4DuWkX+a29R0/iA/AWSAQO1ehI=;
- b=LrH2XmtrzrgTnzCbC2AzYuVoMFcaUARbqq61dEEUsupu61aQPaF6hKIF8VSG7lexLUA5ASvTewnIRNzY72OfLg40ywG/+MX0N/wScCTik4Hm13y1KsJxmatpevZyWerZtvVo03EVScc9lH7KfY6KUztXkWuhy1xT8B3Sbm1a0i8=
-Received: from SYXPR01MB1918.ausprd01.prod.outlook.com (2603:10c6:0:2b::11) by
- SYBPR01MB5487.ausprd01.prod.outlook.com (2603:10c6:10:e3::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.15; Wed, 29 Sep 2021 10:23:04 +0000
-Received: from SYXPR01MB1918.ausprd01.prod.outlook.com
- ([fe80::416f:f98f:2ea:ecb3]) by SYXPR01MB1918.ausprd01.prod.outlook.com
- ([fe80::416f:f98f:2ea:ecb3%5]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
- 10:23:04 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>, Nick Terrell <terrelln@fb.com>
-CC:     "B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com" 
-        <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-Thread-Topic: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-Thread-Index: AQHXtMgiDdQ2ufD0GEKL41icVB6Wfau6OZgAgACQUoCAAAHpYA==
-Date:   Wed, 29 Sep 2021 10:23:03 +0000
-Message-ID: <SYXPR01MB1918E9CBD97CF904DDB4DC539EA99@SYXPR01MB1918.ausprd01.prod.outlook.com>
-References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com>
- <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
- <20210929100659.GK9286@twin.jikos.cz>
-In-Reply-To: <20210929100659.GK9286@twin.jikos.cz>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=pauljones.id.au;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 09be15f3-0ac3-4ed1-0ea4-08d983331f42
-x-ms-traffictypediagnostic: SYBPR01MB5487:
-x-microsoft-antispam-prvs: <SYBPR01MB548787F8ED838BFE69AEEF2E9EA99@SYBPR01MB5487.ausprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0Ot/tKJMNjfMUnHIfTvsIRFQE4d+EyZ7FCOMNEFNS82bpLjxRm+3ECa+GBkwCiqX4yEtGnjMfhhuZS0grs35zYLmB6KaqYR2eu0hZ87uJ8NeNX6Hq4/Eb7j2J2xoZxJF5FQcXeKzhHtHZyX2s6UsgWNwCNjRXet+VDQeNtCpDHf4pKH620aSO96/ixss9ryj9gKnrBphJyPdbspxqetvn1Qq6giWo5UiyR/RLqGM0I/o59WxAZLzYoPgH6TmsKEyvpez4izbdfkkPxkRQbAbcm1/03lfqudJO1yR0gOGglXEYpG2waC1EMLZZnjqca6T3kpa6EclQtoaBZBO2x3b77IKa3bagRyxn8DJP1u4JHQ6rcqC8kxO/oAILQwu/7iSU59WdKrLY2nzfC2kL9GKoVCPY1o4B0dXHUnP6JqRUB1wAGaNd8mCMnchN+k1jKokE0yjF33YRxFMknAn7vUPVgF+aOtbcvTUACwdNOFF5MtSyHJChNQrSA4gm7z6fQg8SVMgwzvDBocXJbRsyI2iybZa17ohhbyaC9urq+3dVfP7dWUQJzDIy74HKAWn3oXD2QglVRx75qIo35u9cqRRKe1XaU7KZFbN+8EbpUmztuGqBYKJyXtVsu1Yi5QrMus+WoLcadp7sETV6GKk6Zpk2zCjEk9xd9NV9UWHGxKYGxhVTK3Sz2ZO7c5Dw6rdn9lWrO8f+JApwxco6Si/57mk4A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYXPR01MB1918.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(366004)(396003)(346002)(136003)(376002)(52536014)(33656002)(110136005)(54906003)(5660300002)(4326008)(9686003)(55016002)(83380400001)(2906002)(186003)(316002)(122000001)(53546011)(38100700002)(8676002)(38070700005)(26005)(7696005)(76116006)(508600001)(71200400001)(8936002)(6506007)(86362001)(66556008)(64756008)(66446008)(66946007)(15650500001)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U0lyeURLemFqSjRod1I2TFlxTlNBV2U4MmJ6WjgrVVRnS1VIa2dmeDVmUFFk?=
- =?utf-8?B?ZkJ0UGwyeUF1WjRiOHcyOWJ0MVBtbmZCU1VhNzZkQy9OV2p0clMzWTFMNGRX?=
- =?utf-8?B?SnAvZ3QvRmNRTFpTM1ZtQ083eng1aTNCZXZVc09jTWc0cXl2bUlLeGEzcitJ?=
- =?utf-8?B?YmN2c1BNb3ZhMHA3SWl2RlpZSE8vSjNlNFgzRTlQb3dYWFVrYXZwa0FCVHhw?=
- =?utf-8?B?K2Z3cXFLRlBxU1JGMHg4N3Y0eGJFM1duMlZ1aHplR0FiSzR0dU9oYWE0YWNE?=
- =?utf-8?B?ZFF6MkIxZ2ZEMlNTVENQNVExOHRSMXlBcVRvWTlrbXB2UnovaGtMRDJhV3Q4?=
- =?utf-8?B?UkcyM1owbVpXWnBPdWY5WkxVTTFKblJYNHppOXN5eDN3aTZjcmZjTWlsSXpO?=
- =?utf-8?B?MnFibkJFRDVSQ1F5Y01CSSs5VzNiVzExbWlSMGdzUksyR3c1TDVuRnY4LzVh?=
- =?utf-8?B?STlMd3RlYUdpQ05kRUJYaXhyUFF3UU9WZE5TQitTNExyRjNJSHh1ZFU0YXlC?=
- =?utf-8?B?bXNFeEdBTGRmVWtJU2pibm1uZ0Y2ays3Uysza0pWT0lEZDhtcWRmWS9lWlNy?=
- =?utf-8?B?eXAvTHJXWHhhd2xiQ3JqNit0WU1QVFpJSEFnaTFmUkVVQUZERlFBTGdxSEVL?=
- =?utf-8?B?cVVXR1gvdytzQVg1aUZzWGJqUFhVWlhRUGtBS2VTR1hsUDVoYjAwUFFMd0I0?=
- =?utf-8?B?c1RDWnpzbE0vNEpOVS9zbE9wT3hwSWhyaERlM2Z1WS94dldZdnlsdUFNTTFu?=
- =?utf-8?B?MEFnNWVxZll3bTlMQUtPWitMTGV3QXpBNzZUZ2k4aXJ4N0J1TERLZ0NjSGoz?=
- =?utf-8?B?SEFuYXViMDBpeEhhSGdScEdjSi9JS2U0N0syak9qZ3dpeDd0eHg0TU11SDBG?=
- =?utf-8?B?d2RiMVFIWTJqMzhVUnlqVVhkbjVjS0tnSkFRQ0NEWnZ4bUg4MUxKOVFOQWxn?=
- =?utf-8?B?ME5pWGYyV0ZvWG8vQklWNTVvR1lLZnI2cUhKUHpwcVRtZVJ6ekZYNXJiYlh4?=
- =?utf-8?B?TXkzRWtiZ2ZWNm5qd3pnUnNIMFFRUjNKcXpYcTRNb2tHeDdWenAxOXY2UE9q?=
- =?utf-8?B?cXJMMTA1MHczSmJIb0NHdHJQMXp5UXVYeVR4QlpDV29lUjZ5aC9xMkNiNjRI?=
- =?utf-8?B?TmlORFZ5QzdqK083dzNnUjY4YlN3cW5OeGV3a0ZzQVBoNm1sdW1yMmNsSCtC?=
- =?utf-8?B?SEtqSkJwNnZIK05DYTdrUFZ6UmVFcEJVaGg2UFNBbC9VQVQ0WHJXMWlMQkZL?=
- =?utf-8?B?RVJmRjVoOGUrV3MzdlFVZUZYSUJkRG00Vk5MTVJXQmFuT2lpYkh4eUhtdHhK?=
- =?utf-8?B?eTAwc0YvaTlnelg5SklyUGlCRndvYjB3bFdCSlFRTWFhLzREUDRvVDFIMVkz?=
- =?utf-8?B?aXUwdUZxL2JvSndwK0JpY1RFZTJSVkVWL2MxcnpWRE0xckdHSVhMemw5bkZH?=
- =?utf-8?B?WlhoNjNTMFZNRXIzNXpoY3dFQmhjMUxEWm9yTnczQmV5Sk1sU01nNmhKY01I?=
- =?utf-8?B?Qi9OT1IyN3drQTRoYm1qU3kyQUFzRGRWVFNaamhYRi90MnBEZlZrQnV3M016?=
- =?utf-8?B?RXlnOHpFWHBkZTB5Q2hNeWRwY3JZTUg1NFlJUlZuVEVZRm1mNVJPSU1NWkpi?=
- =?utf-8?B?SkR5TkY3eEU4WjR3S3FYejdVK3p6M0ZUT2JjODNQczNhK3NxR0YreFJXc3lE?=
- =?utf-8?B?dTJMazBlbGI1RFRNWitiTjNsRTM4dGhVdFVCV3hhRFRrdWVUUmttZnFwNmxm?=
- =?utf-8?Q?IpFweYjyXaT8yKp5EU=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JhKUer31n+qbgtT3+NjW3VfpyAlVd0vh/K+LV/OlnC0=;
+        b=jSphoSBJrNAGxP46hTwTkPJ+4SUeOjCSlvf6lHPnYVcIC2Sp9CIctgkr/4C25tDF4Y
+         3pNnH15BJv95ZySDXwNuhU0gj3WxUA4LvlvjK2qj6zpN505D96/NoD80xA8NFR3dqwp9
+         bhZI6vR8M1TvuakHkXKD3eN5qcPlKtog7x9T59p4Lsfe5rJW6xX8g57yAqwVN05+FtiZ
+         ctmYeh+gpPNaenfir8Hip2wUdy2nUwU11ZWgtRieT91IYcPk6TPOT8MoNSvTxweao2PG
+         ukPFxyd4k/x60OrMfQ5ThSqQSTwYxJ/8gEcsTv4Kvh9xpuYb8kh3xPB55xUTK3QzQNvP
+         HePw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JhKUer31n+qbgtT3+NjW3VfpyAlVd0vh/K+LV/OlnC0=;
+        b=cptjrHhRXebv+Hvm4r5MjGC48ClJAdtbndRr4k4rhX8FrKhHlxeEq6B2PYYdcWfsht
+         AHLS3pLdckhb/PKZI4J6kfaqzhsveDt/vedxCp9bEz+nkd2/85i6cebtE/zQzXrOx0el
+         etv4Icd8H0rFUFuRhNc28WaavpLUyyVtGd2YkUqo8bILVALIbe6mch1AovYIu+1ZMmc9
+         g5p2h9XJPpqTQoC7i2ZDhIFxmxO0GOYZF8oov1T2PNKl+ufPCpkgFY4nmGOfvo6PnEEx
+         PWvdSrTWRGSGRVN+pYtCms9q7fOdA3Slcalf+LIMsMib8lL0llxn5cRMH4YUPRtNwsWi
+         V4nQ==
+X-Gm-Message-State: AOAM530Rd4K8sxihbUJ3j5+3wfqTYChU+oFuSyvbyJIPoZYSrV0ydUsN
+        6PEHunUQ1Of5OfrkpuFj0uQ6x66J38M=
+X-Google-Smtp-Source: ABdhPJyAjbsIYBh97/f406c0qcVrYdyUoTN8xMbO1QoYXsFSFUYZEeqAOKwoJXyMeaeWqO/jOFfldA==
+X-Received: by 2002:a17:906:b884:: with SMTP id hb4mr1341395ejb.376.1632911047229;
+        Wed, 29 Sep 2021 03:24:07 -0700 (PDT)
+Received: from [192.168.0.108] ([176.228.98.2])
+        by smtp.gmail.com with ESMTPSA id my11sm1096098ejc.80.2021.09.29.03.24.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 03:24:06 -0700 (PDT)
+Subject: Re: [PATCH][net-next] net/mlx4: Use array_size() helper in
+ copy_to_user()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210928201733.GA268467@embeddedor>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <283d239b-9af9-d3a3-72be-9138c032ef63@gmail.com>
+Date:   Wed, 29 Sep 2021 13:24:05 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SYXPR01MB1918.ausprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09be15f3-0ac3-4ed1-0ea4-08d983331f42
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 10:23:03.9819
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uPJosa4LVz7z9qB4Hv/q815gnhepoteZq8nQpJlGcy3bxvKvBsC7dLOcprYzmg2zzEchBXe8GHlmw54NgDyZMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBPR01MB5487
+In-Reply-To: <20210928201733.GA268467@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYXZpZCBTdGVyYmEgPGRzdGVy
-YmFAc3VzZS5jej4NCj4gU2VudDogV2VkbmVzZGF5LCAyOSBTZXB0ZW1iZXIgMjAyMSA4OjA3IFBN
-DQo+IFRvOiBOaWNrIFRlcnJlbGwgPHRlcnJlbGxuQGZiLmNvbT4NCj4gQ2M6IEIwOTNCODU5LTUz
-Q0MtNDgxOC04Q0MzLUEzMTdGNDg3MkFENkBmYi5jb207IGxpbnV4LQ0KPiBidHJmc0B2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtH
-SVQgUFVMTF1bUEFUQ0ggdjExIDAvNF0gVXBkYXRlIHRvIHpzdGQtMS40LjEwDQo+IA0KPiBPbiBX
-ZWQsIFNlcCAyOSwgMjAyMSBhdCAwMTozMDoyNkFNICswMDAwLCBOaWNrIFRlcnJlbGwgd3JvdGU6
-DQo+ID4gPiBPbiBTZXAgMjgsIDIwMjEsIGF0IDU6MjIgUE0sIFRvbSBTZWV3YWxkIDx0c2Vld2Fs
-ZEBnbWFpbC5jb20+DQo+IHdyb3RlOg0KPiA+ID4gSGFzIHRoaXMgYmVlbiBhYmFuZG9uZWQgb3Ig
-d2lsbCB0aGVyZSBiZSBmdXR1cmUgYXR0ZW1wdHMgYXQgc3luY2luZw0KPiA+ID4gdGhlIGluLWtl
-cm5lbCB6c3RkIHdpdGggdGhlIHVwc3RyZWFtIHByb2plY3Q/DQo+ID4NCj4gPiBTb3JyeSBmb3Ig
-dGhlIGxhY2sgb2YgYWN0aW9uLCBidXQgdGhpcyBoYXMgbm90IGJlZW4gYWJhbmRvbmVkLiBJ4oCZ
-dmUNCj4gPiBqdXN0IGJlZW4gcHJlcGFyaW5nIGEgcmViYXNlZCBwYXRjaC1zZXQgbGFzdCB3ZWVr
-LCBzbyBleHBlY3QgdG8gc2VlIHNvbWUNCj4gYWN0aW9uIHNvb24uDQo+ID4gU2luY2Ugd2XigJly
-ZSBub3QgaW4gYSBtZXJnZSB3aW5kb3csIEnigJltIHVuc3VyZSBpZiBpdCBpcyBiZXN0IHRvIHNl
-bmQNCj4gPiBvdXQgdGhlIHVwZGF0ZWQgcGF0Y2hlcyBub3csIG9yIHdhaXQgdW50aWwgdGhlIG1l
-cmdlIHdpbmRvdyBpcyBvcGVuLA0KPiA+IGJ1dCBJ4oCZbSBhYm91dCB0byBwb3NlIHRoYXQgcXVl
-c3Rpb24gdG8gdGhlIExLTUwuDQo+IA0KPiBJZiB5b3Ugc2VuZCBpdCBvbmNlIG1lcmdlIHdpbmRv
-dyBpcyBvcGVuIGl0J3MgdW5saWtlbHkgdG8gYmUgbWVyZ2VkLiBUaGUNCj4gY29kZSBtdXN0IGJl
-IHJlYWR5IGJlZm9yZSBpdCBvcGVucyBhbmQgcGFydCBvZiBsaW51eC1uZXh0IGZvciBhIHdlZWsg
-YXQgbGVhc3QNCj4gaWYgbm90IG1vcmUuDQo+IA0KPiA+IFRoaXMgd29yayBoYXMgYmVlbiBvbiBt
-eSBiYWNrIGJ1cm5lciwgYmVjYXVzZSBJ4oCZdmUgYmVlbiBidXN5IHdpdGggd29yaw0KPiA+IG9u
-IFpzdGQgYW5kIG90aGVyIHByb2plY3RzLCBhbmQgaGF2ZSBoYWQgYSBoYXJkIHRpbWUganVzdGlm
-eWluZyB0bw0KPiA+IG15c2VsZiBzcGVuZGluZyB0b28gbXVjaCB0aW1lIG9uIHRoaXMsIHNpbmNl
-IHByb2dyZXNzIGhhcyBiZWVuIHNvIHNsb3cuDQo+IA0KPiBXaGF0IG5lZWRzIHRvIGJlIGRvbmUg
-ZnJvbSBteSBQT1Y6DQo+IA0KPiAtIHJlZnJlc2ggdGhlIHBhdGNoZXMgb24gdG9wIG9mIGN1cnJl
-bnQgbWFpbmxpbmUsIGVnLiB2NS4xNS1yYzMNCj4gDQo+IC0gbWFrZSBzdXJlIGl0IGNvbXBpbGVz
-IGFuZCB3b3JrcyB3aXRoIGN1cnJlbnQgaW4ta2VybmVsIHVzZXJzIG9mIHpzdGQsDQo+ICAgaWUu
-IHdpdGggYnRyZnMgaW4gcGFydGljdWxhciwgSSBjYW4gZG8gc29tZSB0ZXN0cyB0b28NCg0KSSBo
-YXZlIGJlZW4gcnVubmluZyB0aGlzIHBhdGNoc2V0IHdpdGggYnRyZnMgb24gdGhlIGxhdGVzdCBz
-dGFibGUga2VybmVscyAoNS4xMi0xNCksIGFuZCBoYXZlIG5vdCBlbmNvdW50ZXJlZCBhbnkgaXNz
-dWVzIGF0IGFsbC4NCkZvciBBTUQ2NCBhbmQgQUFSQ0g2NCB5b3UgY2FuIGFkZCBteQ0KVGVzdGVk
-LWJ5OiBQYXVsIEpvbmVzIDxwYXVsQHBhdWxqb25lcy5pZC5hdT4NCg0KIA0KPiAtIHB1c2ggdGhl
-IHBhdGNoZXMgdG8gYSBwdWJsaWMgYnJhbmNoIGVnLiBvbiBrLm9yZyBvciBnaXRodWINCj4gDQo+
-IC0gYXNrIGZvciBhZGRpbmcgdGhlIGJyYW5jaCB0byBsaW51eC1uZXh0DQo+IA0KPiAtIHRyeSB0
-byBnZXQgc29tZSBmZWVkYmFjayBmcm9tIHBlb3BsZSB0aGF0IHdlcmUgb2JqZWN0aW5nIGluIHRo
-ZSBwYXN0LA0KPiAgIGFuZCBvZiBjb3Vyc2UgZ2F0aGVyIGFja3Mgb3Igc3VwcG9ydGl2ZSBmZWVk
-YmFjaw0KPiANCj4gLSBvbmNlIG1lcmdlIHdpbmRvdyBvcGVucywgc2VuZCBhIHB1bGwgcmVxdWVz
-dCB0byBMaW51cywgd3JpdGUgdGhlDQo+ICAgcmF0aW9uYWxlIHdoeSB3ZSB3YW50IHRoaXMgY2hh
-bmdlIGFuZCBzdW1tYXJpemUgdGhlIGV2b2x1dGlvbiBvZiB0aGUNCj4gICBwYXRjaHNldCBhbmQg
-d2h5IHRoZSBmdWxsIHZlcnNpb24gdXBkYXRlIGlzIHBlcmhhcHMgdGhlIHdheSBmb3J3YXJkDQo=
+
+
+On 9/28/2021 11:17 PM, Gustavo A. R. Silva wrote:
+> Use array_size() helper instead of the open-coded version in
+> copy_to_user(). These sorts of multiplication factors need
+> to be wrapped in array_size().
+> 
+> Link: https://github.com/KSPP/linux/issues/160
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/cq.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+> index f7053a74e6a8..4d4f9cf9facb 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/cq.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+> @@ -314,7 +314,8 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+>   			buf += PAGE_SIZE;
+>   		}
+>   	} else {
+> -		err = copy_to_user((void __user *)buf, init_ents, entries * cqe_size) ?
+> +		err = copy_to_user((void __user *)buf, init_ents,
+> +				   array_size(entries, cqe_size)) ?
+>   			-EFAULT : 0;
+>   	}
+>   
+> 
+
+Thanks for your patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
