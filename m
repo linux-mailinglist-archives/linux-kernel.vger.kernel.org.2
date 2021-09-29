@@ -2,158 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AE541C44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4059541C44F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343537AbhI2MKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244801AbhI2MKC (ORCPT
+        id S1343565AbhI2MK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:10:28 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:46349 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343584AbhI2MKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:10:02 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3941C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:08:20 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id x20so3835030wrg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iyf25v6ccH6pcjIZwVpHGzum+qBnQrA4I/SRUwhCtyo=;
-        b=T8zIfXgeaPrEEdWOzvwNTpI4xwVcEDwynYkx5VAeTJ7rV02Hb29+luk4+do/R4tlYM
-         WHxuynFzb2jIPamYr5joLM1NbqFkLNQ0oXsf3Cq1vMqmpxFgE+EvcDk2f7Ua7SsG6agX
-         W5014cw1JRdT8BGfZPqE1nw7yLc3PKzbdYCmg8bHyHxkqJIC7qlZAsC3mMiRPMmQ1Q6B
-         /n70Y9v5VrEqVNrQ4oRHi2obyy5TfM1Zz0e7jjuVuSsi1WBQAwvr1/X1uZYPwnsN9sCC
-         VxAv5M5BafhvPiWSTATDETbfoIlTsGYDjGkhoPQ0oWwEIQbt2gGpFvIj8HH9WyqbKgW3
-         VCtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iyf25v6ccH6pcjIZwVpHGzum+qBnQrA4I/SRUwhCtyo=;
-        b=5Io2vDsrUD8+GXijCSuM2559xjhFVKRXzwpygN/zMaNFCAEEYgnIaYvS5NWV+ZY0w0
-         XMZapvyPb4Wad0ABWXHl3+OLWZPkhlEkhc9xvncbZ4nBZdtWyMKhozhC3hYGFf1oH/+N
-         gX4iUQw5DE5w3LVIgL4lN9bHLuG20jRn0jKFGclhVyxg3VgSsJDWCxJ1BQ0zx7/U9iuq
-         z44KYKFcxr+lLlCGldHU+7tNzxWfKpIcMyA5tzQSgStNeT6DQQ8P4rPy+whq68Prj+N6
-         k7XwecVznfQ3NBBZENCDG5Tt7q9KxUHYYYjBAjhD81sdqME8q67jB9Jo2EFAV5gBqgar
-         YHJg==
-X-Gm-Message-State: AOAM531zowYIrQWYhxHJad3PaXu0yQGpgtpvGulqdyGLsC3C3R+Pt6Vt
-        PqQJTsge0aIWB1fbslLxejGTDw==
-X-Google-Smtp-Source: ABdhPJwTIS8HQpJZEByh3RukfaJyygW8l9IQlLTBVa0HSIUytOml9PkySYthSBAciSjRupn3Iw7g/g==
-X-Received: by 2002:adf:fe8c:: with SMTP id l12mr6440976wrr.210.1632917299207;
-        Wed, 29 Sep 2021 05:08:19 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id i27sm1502404wmb.40.2021.09.29.05.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 05:08:18 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 13:07:56 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>
-Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 17/20] iommu/iommufd: Report iova range to userspace
-Message-ID: <YVRXHDwROV2ASnVJ@myrica>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-18-yi.l.liu@intel.com>
- <YUtCYZI3oQcwKrUh@myrica>
- <PH0PR11MB56580CB47CA2CF17C86CD0D0C3A99@PH0PR11MB5658.namprd11.prod.outlook.com>
+        Wed, 29 Sep 2021 08:10:17 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Md6V3-1n5i9R2Lsh-00aIRr for <linux-kernel@vger.kernel.org>; Wed, 29 Sep
+ 2021 14:08:34 +0200
+Received: by mail-wr1-f52.google.com with SMTP id t18so3955844wrb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:08:34 -0700 (PDT)
+X-Gm-Message-State: AOAM5317NhO7rJO23dqORS6u5aznnqEmoQMrhQF7WwQ5Y1fYw2JnmSA1
+        O424SPeJb3DNRKGVRKEmcPcSadEFSV8EC4i3+wo=
+X-Google-Smtp-Source: ABdhPJwujhvSCWneL2b8EFkSV0fXIWDHq8QtEYMDRcnY/D6i7dyv+jcvb15fjui4Dj3KPHQQCR5pjkwF2cvD7H9X7ho=
+X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr6276909wrz.369.1632917314213;
+ Wed, 29 Sep 2021 05:08:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB56580CB47CA2CF17C86CD0D0C3A99@PH0PR11MB5658.namprd11.prod.outlook.com>
+References: <20210929094442.46383-1-eli.billauer@gmail.com>
+In-Reply-To: <20210929094442.46383-1-eli.billauer@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 29 Sep 2021 14:08:18 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0n7iJDrrn42KA9jPCTKMzW1pxFxP+38-7Viv5hnny79Q@mail.gmail.com>
+Message-ID: <CAK8P3a0n7iJDrrn42KA9jPCTKMzW1pxFxP+38-7Viv5hnny79Q@mail.gmail.com>
+Subject: Re: [PATCH v2] char: xillybus: Eliminate redundant wrappers to DMA
+ related calls
+To:     Eli Billauer <eli.billauer@gmail.com>
+Cc:     gregkh <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:WVsqfSpCCnEY+duubj/1BK9nI0N+RvrIUNtYxi2kklqYPwHzqeY
+ ukIDhgMZupoXaIJbfGXAPURuldB4p1E3xyuSb/cErTebrVrYAnCdDHwm8XX5fv49JDXFjMv
+ Faan535S2iyYApYDl4pMgEHDAIQIPYPSZhU7PqGd2bAZY6jFYAMxbFEzuLy6J8Wo65niRja
+ oXih5u37MGNDZ4k2+P/Gg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SxLPokYcn+g=:Qtqoar/jNcPawDklADAeqi
+ aMuqOjzFUpblFFcwbCMZx2ehDQvSJZdzRB8U/zw+KU5aQZk8qCw+RZ5AoETLhvqy8/cPPc1ZZ
+ H2kgRzHx2IPT3+DKbI4l+jJrejHmQVgGTWULa9n37qFmgH4/VI0F6M4aDf4pCDWXK61nflI1A
+ +/sceOQ2eAzeEa+Qqbg8h4khhBhkaqwTOtQmMDJJSGeeNH2DIkfQ4bkGu96czRZv2/T5Mpd9z
+ 4eAqwBii+2OZLShOBzUPezOiYWvBuAqIs2znQa/+sQWvfTeqWVeuS0RkM8co/Rdhz4SwgoNkw
+ ueLeXaQjKQ6+1iSPTPtd/2edUcXByDhvGtCLhqlN83FxMVNKuR1XLqiuMfg4D9iOkuFm3PMTa
+ z6ltQtk3h27gcHGPxHAD8Bj5yu98JL2bfqAhstoO+yiMFnryH2OTbqrQSbM6fwRnkheshnMyx
+ BCIWT1+Wj5PsS83y9H/JNl0aIyeOR/PbgngqqXbNzrGOQhR2H95QVgOcZKWEO2jT38LAZqnOn
+ wPAASNCQ0u8YLebiL5j35xW6ctU5NcKyflMCT1QE6oxlZ0ga4RL4bu/TVA4V6itg4GKEw/4ta
+ eVEuA+sIDzBJbf90LB7kn7h1w4L9evrETkN7u5nXSV4YSTOfV4o/E97502PTkkib3qOYEXFHy
+ cjwZxCubWE3MPCtfgV9QJZVz4Zw8+87HXKTfpOAJ1urbStlgJUnqatG1x/72gWa6qlCtK8sqU
+ QSxVZB2KoMi1ZS3uCU/vWeXXD+Ei6+ZHGeuv9A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:44:01AM +0000, Liu, Yi L wrote:
-> > From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > Sent: Wednesday, September 22, 2021 10:49 PM
-> > 
-> > On Sun, Sep 19, 2021 at 02:38:45PM +0800, Liu Yi L wrote:
-> > > [HACK. will fix in v2]
-> > >
-> > > IOVA range is critical info for userspace to manage DMA for an I/O address
-> > > space. This patch reports the valid iova range info of a given device.
-> > >
-> > > Due to aforementioned hack, this info comes from the hacked vfio type1
-> > > driver. To follow the same format in vfio, we also introduce a cap chain
-> > > format in IOMMU_DEVICE_GET_INFO to carry the iova range info.
-> > [...]
-> > > diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> > > index 49731be71213..f408ad3c8ade 100644
-> > > --- a/include/uapi/linux/iommu.h
-> > > +++ b/include/uapi/linux/iommu.h
-> > > @@ -68,6 +68,7 @@
-> > >   *		   +---------------+------------+
-> > >   *		   ...
-> > >   * @addr_width:    the address width of supported I/O address spaces.
-> > > + * @cap_offset:	   Offset within info struct of first cap
-> > >   *
-> > >   * Availability: after device is bound to iommufd
-> > >   */
-> > > @@ -77,9 +78,11 @@ struct iommu_device_info {
-> > >  #define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU
-> > enforced snoop */
-> > >  #define IOMMU_DEVICE_INFO_PGSIZES	(1 << 1) /* supported page
-> > sizes */
-> > >  #define IOMMU_DEVICE_INFO_ADDR_WIDTH	(1 << 2) /*
-> > addr_wdith field valid */
-> > > +#define IOMMU_DEVICE_INFO_CAPS		(1 << 3) /* info
-> > supports cap chain */
-> > >  	__u64	dev_cookie;
-> > >  	__u64   pgsize_bitmap;
-> > >  	__u32	addr_width;
-> > > +	__u32   cap_offset;
-> > 
-> > We can also add vendor-specific page table and PASID table properties as
-> > capabilities, otherwise we'll need giant unions in the iommu_device_info
-> > struct. That made me wonder whether pgsize and addr_width should also
-> > be
-> > separate capabilities for consistency, but this way might be good enough.
-> > There won't be many more generic capabilities. I have "output address
-> > width"
-> 
-> what do you mean by "output address width"? Is it the output address
-> of stage-1 translation?
+On Wed, Sep 29, 2021 at 11:44 AM <eli.billauer@gmail.com> wrote:
+>
+> From: Eli Billauer <eli.billauer@gmail.com>
+>
+> The driver was originally written with the assumption that a different
+> API must be used for DMA-related functions if the device is PCIe based
+> or if not. Since Xillybus' driver supports devices on a PCIe bus (with
+> xillybus_pcie) as well as connected directly to the processor (with
+> xillybus_of), it originally used wrapper functions that ensure that
+> a different API is used for each.
+>
+> This patch eliminates the said wrapper functions, as all use the same
+> dma_* API now. This is most notable by the code deleted in xillybus_pcie.c
+> and xillybus_of.c.
+>
+> It also eliminates the OF driver's check for a "dma-coherent" attribute
+> in the device's OF entry, since this is taken care of by the kernel's
+> implementation of dma_sync_single_for_*().
+>
+> There is however still need for one wrapper function, which is merged
+> from xillybus_pcie.c and xillybus_of.c into xillybus_core.c: The call to
+> dma_map_single() is wrapped by a function that uses the Managed Device
+> (devres) framework, in the absence of a relevant function in the current
+> kernel's API.
+>
+> Suggested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
 
-Yes, so the guest knows the size of GPA it can write into the page table.
-For Arm SMMU the GPA size is determined by both the SMMU implementation
-and the host kernel configuration. But maybe that could also be
-vendor-specific, if other architectures don't need to communicate it. 
-
-> >
-> and "PASID width", the rest is specific to Arm and SMMU table
-> > formats.
-> 
-> When coming to nested translation support, the stage-1 related info are
-> likely to be vendor-specific, and will be reported in cap chain.
-
-Agreed
-
-Thanks,
-Jean
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
