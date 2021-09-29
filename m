@@ -2,87 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3709941C0F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033AE41C0EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244896AbhI2Ire (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:47:34 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:39841 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244764AbhI2Irc (ORCPT
+        id S244883AbhI2Irb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:47:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244764AbhI2Ir3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:47:32 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M1HmE-1mYG6m4BKc-002r16 for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021
- 10:45:51 +0200
-Received: by mail-wm1-f53.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso1162771wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:45:50 -0700 (PDT)
-X-Gm-Message-State: AOAM530NsF/NbkTjcMEIxgqDA7oiIRgp66PuRDKl6NLIGcPMp1vmW1Hw
-        IACKlyLcbHMpA9MKjsaSkyXLu8lEtkttlzX1Dbo=
-X-Google-Smtp-Source: ABdhPJzqCwKl127cz2QAIug9k52aEJ4YFVJl10H5ExaqWrNYDMbabj08uEdj8WGiI+vahIxKZLPvws0pQjSbmc21pfc=
-X-Received: by 2002:a05:600c:22d4:: with SMTP id 20mr9258111wmg.82.1632905150672;
- Wed, 29 Sep 2021 01:45:50 -0700 (PDT)
+        Wed, 29 Sep 2021 04:47:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632905148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gvu4L83YOBGLGvWqLGUuGEaO/DEUZyEQ1rFR5bn6b8M=;
+        b=JX8sXbowIGFwf7cZnZnH3wolVvbBg/04UwcHDM4LArKbK7y5RdnLF7GKBfNlCIqxj7WeYb
+        EJQIzjv+Oko8xuDDKM8M1tO52KUIC4K0DaVpqAhlyP0JmqIwixnUFtYcSt5jJSOtPXDc77
+        LK4n2WibCqgob34LQwQqKU6A/2Ads4g=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-pIse04O-ONC7fIlFfR5meg-1; Wed, 29 Sep 2021 04:45:47 -0400
+X-MC-Unique: pIse04O-ONC7fIlFfR5meg-1
+Received: by mail-wm1-f71.google.com with SMTP id c77-20020a1c9a50000000b0030d06638a56so1988399wme.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:45:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Gvu4L83YOBGLGvWqLGUuGEaO/DEUZyEQ1rFR5bn6b8M=;
+        b=dkOI81gzprHvw5+syo7nzJ0+Uy5cj74cbqAE7D5z82RBFypxkETnwstXzakMGRmUmL
+         R12mpbb3XZt7RGloxqd9OhncR4z6UO4ozHXOjMW/2C2v3Ml9yo7srpvOlUG9qeorX/sl
+         OyRYORt6WhA6p0P1jeINIwQgRz/BBawsY6yA7PhTM0YpBmsTjh2tJ7EPtVRIeIrW16/Z
+         t0fgcibCDdr6a/P6tQ/SUYJf0Ncw3wtH02vZcp2WOMJSBPZr04ktXp/uElMlEWn7VGu9
+         0L1i1XRB9ZKreU+c9yqbR6wiojO4St9DMZiGptkwiKwCUID9rbSUK4yzyxZdqk5QHG9J
+         malw==
+X-Gm-Message-State: AOAM532vp9EwEDl1jiOyC1dJEjpbWGzuy/bBZ2loWHEeWr7KTfbTkA9B
+        tjvi9ihx7uvVQhxRx7ujjZ9D+rSddXoDGTcZSvwvYf7rJpt/wIuJU2f1WCL55s3851GiUILJSR0
+        iraXVSbTVXi3TGWzPRlPqLGiw
+X-Received: by 2002:a1c:7c0f:: with SMTP id x15mr8734498wmc.149.1632905146272;
+        Wed, 29 Sep 2021 01:45:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaikWIkzzrJGqHValULa/ZmnNfg4rl1LyjKqzMWVt+gz9mbskxaXhni5v3m042+vSd753h3g==
+X-Received: by 2002:a1c:7c0f:: with SMTP id x15mr8734485wmc.149.1632905146123;
+        Wed, 29 Sep 2021 01:45:46 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id t126sm893773wma.4.2021.09.29.01.45.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 01:45:45 -0700 (PDT)
+Subject: Re: [PATCH v1 2/8] x86/xen: simplify xen_oldmem_pfn_is_ram()
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        virtualization@lists.linux-foundation.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210928182258.12451-1-david@redhat.com>
+ <20210928182258.12451-3-david@redhat.com>
+ <4ab2f8c2-c3d5-30b3-a670-a8b38e218b6e@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <bfe72f46-9a0d-1a87-64bd-4b03999edd1e@redhat.com>
+Date:   Wed, 29 Sep 2021 10:45:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-2-arnd@kernel.org>
- <CAK8P3a2mrVOXHzNKnLuHsdNCR3uVePE9W-Yn2CmW3nDpE8J7iA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2mrVOXHzNKnLuHsdNCR3uVePE9W-Yn2CmW3nDpE8J7iA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 29 Sep 2021 10:45:34 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Mxmqj7t4TtYjzae-iCRPs2YtVMR=7v1vvUG-ixuKAtw@mail.gmail.com>
-Message-ID: <CAK8P3a3Mxmqj7t4TtYjzae-iCRPs2YtVMR=7v1vvUG-ixuKAtw@mail.gmail.com>
-Subject: Re: [PATCH 01/14] ARM: RiscPC needs older gcc version
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:QA/13Ne4Ax/rFXcU9a2RIi9+4sC4riwY35rwqim1buKJxZ3S/mP
- yyYGM17Izkxy+a/C1QTetCNj8BHY23+JXBQk2DPqDNX3Jlnp5Ao42o0+f768bn97rOWRH7J
- Z+llexkrDWNtp7ithch/6AHUPUfyTWmk+tMDheJ1pIXdx9rIyVy7cEBSG+wy3+XEfcGOXvr
- mGWSsd/cAIBZ2Cv5SHY3A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dhM5ATZET0Q=:wh70nHNClgy3U33TIgVCNU
- 132ChYRRPzzpErY6WOL4jMzYAxFNgCUWvsbrIoKwTfYGGF9ezBm0NvU2LSCoJtXpn5BifZ4nt
- jzFRYJe9aiKw4vkZkc8DL3438lhZ2GPQhIylxyvEVl967T3qSx/r4xACOhYY1XdEAxhneKBta
- IHW/zlvch6kYWHPh6VOTrpWjkKAckMAMrlJjk8tE9NqATFP789kgzC9xjKrQ+QwzpVS9qT40r
- iYtzU6iIbOXNgG6BxbJOzCQ1fNLISVtAtleA/u0MfT3C64EuaJXDbfGBTKaTWwMYQ83VMTCVG
- EKn+V130PU2J4nSMh2w84VoPkbAyVnfZ2oUHLalLooSWw8yGa37ZfM9aQt8onJCjR+w9rZoHe
- eKBtc2PAM1lR2X7J8e3ExGXSwuheciT5Z7fqgmqh4dMi4wf4WNB1YuMeqM1g8/LdAZ0wuQ56/
- kwjPeq3OYXLTd6af0BEngHpuzj4Zyw4+WEjjmignpTPPDEIY3g4hCRcdTtk4/vothH/+H+3H6
- NgQK1oGd0UO4IgqkYSRKi/U8eq2XF96TCze16C/7OX8aRDFdAgFC4HJy5c/LwYJQzaD7bs2gr
- ENJffDPw3oZaBdHQP+1ylNRhFxThy/0JaJUKKPqnkiE1Q5DmHRLKccvmNG6Dnim+g9kYmaslb
- y2vm3reGRDh/zxFg82VqQ41EnwOnityS5kATGP73C8CfhrIa8c2A05W87wUGhuRsx1MbmztZ1
- ku8l9Tz1errpwFz3Uv/4ikHI0Yx6R0AEq5yXQ+P7U98Ceplgd0O+UrCYhWe9TvFXmukg8S7So
- u8eU6R1qG05nCsQySm6gU42JbRbCGfHiqxqikEQh5EfrDQj0AeYZYAxc1fqsIYrt6mdZ2mEOL
- S2WpJq7omw0iPClWzsfA==
+In-Reply-To: <4ab2f8c2-c3d5-30b3-a670-a8b38e218b6e@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 6:03 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Sep 28, 2021 at 5:42 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> > index fc196421b2ce..12a0bd4b315d 100644
-> > --- a/arch/arm/Kconfig
-> > +++ b/arch/arm/Kconfig
-> > @@ -431,7 +431,7 @@ config ARCH_PXA
-> >
-> >  config ARCH_RPC
-> >         bool "RiscPC"
-> > -       depends on MMU
->
-> This line was a botched rebase, it obviously has to stay here.
->
-> > +       depends on !CC_IS_CLANG || GCC_VERSION < 90100
+> 
+> How about
+> 
+>      return a.mem_type != HVMMEM_mmio_dm;
+> 
 
-This line is also wrong, it needs to be '&&', not '||'.
+Ha, how could I have missed that :)
 
-        Arnd
+> 
+> Result should be promoted to int and this has added benefit of not requiring changes in patch 4.
+> 
+
+Can we go one step further and do
+
+
+@@ -20,24 +20,11 @@ static int xen_oldmem_pfn_is_ram(unsigned long pfn)
+         struct xen_hvm_get_mem_type a = {
+                 .domid = DOMID_SELF,
+                 .pfn = pfn,
++               .mem_type = HVMMEM_ram_rw,
+         };
+-       int ram;
+  
+-       if (HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a))
+-               return -ENXIO;
+-
+-       switch (a.mem_type) {
+-       case HVMMEM_mmio_dm:
+-               ram = 0;
+-               break;
+-       case HVMMEM_ram_rw:
+-       case HVMMEM_ram_ro:
+-       default:
+-               ram = 1;
+-               break;
+-       }
+-
+-       return ram;
++       HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a);
++       return a.mem_type != HVMMEM_mmio_dm;
+  }
+  #endif
+
+
+Assuming that if HYPERVISOR_hvm_op() fails that
+.mem_type is not set to HVMMEM_mmio_dm.
+
+-- 
+Thanks,
+
+David / dhildenb
+
