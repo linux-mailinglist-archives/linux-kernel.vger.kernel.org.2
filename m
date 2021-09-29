@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8887541C887
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2A841C88E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345300AbhI2Pgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345157AbhI2Pgf (ORCPT
+        id S1345318AbhI2PiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:38:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31548 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345157AbhI2PiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:36:35 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52665C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:34:54 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id i4so12608912lfv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7Hf7pY/JKZgLnfEiK9B7AO8BfkN+o8wWy5PQX3tSxfI=;
-        b=ED57SacT6G9Zh2FZj/sQBvo0yWX9FiJ2AHQXdcorOXTBVcZFVhH/UBxjSfoXFlsePR
-         9GebQE2KgsGjDqpW9BhzlIiPv/mnDz2uOi6JkQNwT5oroX+H0Nospb/4IflYiomfPK/H
-         2jHUlkqBsDsgvr8g+804bkii8ftU7evwT79LDNKcisZtfM1kgmSxoPUxJ1yr4uG3lltg
-         Rj7SR76wni+f08sd1c7DTn/YfCh/axcJgRFIcssVkbW0e3JNnMJlo0080eQ77JqeKIMX
-         sr5HFMI3PBJnn1oWF1jnZ4ryKHtbzTq9JJTLl7XagopNYqjuUdtF7bJ93ThQHJ1pyZ+R
-         0KnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7Hf7pY/JKZgLnfEiK9B7AO8BfkN+o8wWy5PQX3tSxfI=;
-        b=tHliqkI3jK/3l36cEqq0wM62pif3RgUhlu4/fgxDvNaq72nhEgcalU7I49rUpXBAcC
-         nmcfFwOuDlaMcDXhJSJHmFIGI36UgP2b724B7bRb4VisFirdtGz+iOaSQoy4MdVipcfn
-         9nTv3+qCErsiGXf+egGFH5Ic1QlUdFmTvj+i6p5q1dkVa0ollcWVe1UiQLpO5k3ZOhb6
-         OhlcYr5jmT5iehmziO6sxNlkPYDABUJw4evO9mZmGstAs4XvCVY8Jo7QF5u5cOc4N7wj
-         guVCaq4CWzlwudr7/vpQNW9nu/VW85e2j5XNxMscuhUb2W8iWjeIo1V2ZZ6VJ/7IXwcG
-         L4eA==
-X-Gm-Message-State: AOAM533XrU3ytmrJJhc3wgg+j5EKpwQ+OtSdlTTmX45DIXx9uylNb8uj
-        S7B8Q7U9Mw8miSNvOtqiVUg=
-X-Google-Smtp-Source: ABdhPJzb/8IBk1qVl/MHapOnC7+dTumhtP53xdwWj3NytelUd5jPq1UYo7GgT0PXgiLNYJwTfa0Efw==
-X-Received: by 2002:a05:6512:3caa:: with SMTP id h42mr295998lfv.349.1632929692673;
-        Wed, 29 Sep 2021 08:34:52 -0700 (PDT)
-Received: from grain.localdomain ([5.18.253.97])
-        by smtp.gmail.com with ESMTPSA id i21sm23383lfo.248.2021.09.29.08.34.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 08:34:51 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id DA04D5A001E; Wed, 29 Sep 2021 18:34:50 +0300 (MSK)
-Date:   Wed, 29 Sep 2021 18:34:50 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] prctl: PR_SET_MM - unify copying of user's auvx
-Message-ID: <YVSHmu0Wtin/2pXN@grain>
-References: <YFpmdGXmGQ6IetoX@grain>
- <202109292307.smDkJddi-lkp@intel.com>
+        Wed, 29 Sep 2021 11:38:07 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TFISb4012258;
+        Wed, 29 Sep 2021 11:36:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=8y8HFu3P9T/ieEDDDn+jonJUF4zXuLC4cmPBiCu8V7I=;
+ b=MyPtMixPvK/aFhHNOZgIIODljKk/mm1pwf5ShAnhxXi9cRCglUuSOj4+A4tNON11vdCU
+ HDIVC2kNjkzk9UT4pEHcYCHZg/2LFRRMzC7VTV9fUTcmGuHQV2q5jcUhpUAAwkI+e1r2
+ nZZWRSr4Y6dNtfVUgDQ1dx+pMDYWAtq5IdHCOCcgbRzH42WJTypEObcAf9BTdOfk+7TD
+ fdVLSPEL3KGCnrBMN/84ckwHJUJczNqUTYd8OXV3nJw9aASgX8KO/gMC8buf+oN32Hdc
+ VkGp430HBxZY5O+At4mVYvoeeU7KHKcEkJox/KM9zyPwTNkCRCKFHHYm404rt2OgZPGI PQ== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bcshj2ng8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 11:36:10 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18TFHwEG015056;
+        Wed, 29 Sep 2021 15:36:09 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma04wdc.us.ibm.com with ESMTP id 3b9udbkxmb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 15:36:09 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18TFa8La5112660
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Sep 2021 15:36:08 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C6CDAC060;
+        Wed, 29 Sep 2021 15:36:08 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE2F1AC06B;
+        Wed, 29 Sep 2021 15:36:07 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.163.24.144])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Sep 2021 15:36:07 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux@roeck-us.net
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH] hwmon: (occ) Fix P10 VRM temp sensors
+Date:   Wed, 29 Sep 2021 10:36:04 -0500
+Message-Id: <20210929153604.14968-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109292307.smDkJddi-lkp@intel.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: d63kv8mGayhE17DdKepbvsjve20gDAI0
+X-Proofpoint-ORIG-GUID: d63kv8mGayhE17DdKepbvsjve20gDAI0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-29_06,2021-09-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109290092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:20:23PM +0800, kernel test robot wrote:
-...
-> sparse warnings: (new ones prefixed by >>)
-> >> kernel/sys.c:1997:58: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void const [noderef] __user *addr @@     got unsigned long long [usertype] *[addressable] auxv @@
->    kernel/sys.c:1997:58: sparse:     expected void const [noderef] __user *addr
->    kernel/sys.c:1997:58: sparse:     got unsigned long long [usertype] *[addressable] auxv
->    kernel/sys.c:1068:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
->    kernel/sys.c:1068:32: sparse:     expected struct task_struct *p1
->    kernel/sys.c:1068:32: sparse:     got struct task_struct [noderef] __rcu *real_parent
->    kernel/sys.c: note: in included file (through include/linux/rcuwait.h, include/linux/percpu-rwsem.h, include/linux/fs.h, ...):
->    include/linux/sched/signal.h:710:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
->    include/linux/sched/signal.h:710:37: sparse:     expected struct spinlock [usertype] *lock
->    include/linux/sched/signal.h:710:37: sparse:     got struct spinlock [noderef] __rcu *
-> 
-> vim +1997 kernel/sys.c
+The P10 (temp sensor version 0x10) doesn't do the same VRM status
+reporting that was used on P9. It just reports the temperature, so
+drop the check for VRM fru type in the sysfs show function, and don't
+set the name to "alarm".
 
-Thanks for report! I happen to miss Dima's reply in first place as well :(
-I'll take a look on this patch. The issie itself is implicit type conversion,
-shouldn't be a bug in general but need to address as well. Will do.
+Fixes: db4919ec86 ("hwmon: (occ) Add new temperature sensor type")
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+---
+ drivers/hwmon/occ/common.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/hwmon/occ/common.c b/drivers/hwmon/occ/common.c
+index 0d68a78be980..ae664613289c 100644
+--- a/drivers/hwmon/occ/common.c
++++ b/drivers/hwmon/occ/common.c
+@@ -340,18 +340,11 @@ static ssize_t occ_show_temp_10(struct device *dev,
+ 		if (val == OCC_TEMP_SENSOR_FAULT)
+ 			return -EREMOTEIO;
+ 
+-		/*
+-		 * VRM doesn't return temperature, only alarm bit. This
+-		 * attribute maps to tempX_alarm instead of tempX_input for
+-		 * VRM
+-		 */
+-		if (temp->fru_type != OCC_FRU_TYPE_VRM) {
+-			/* sensor not ready */
+-			if (val == 0)
+-				return -EAGAIN;
++		/* sensor not ready */
++		if (val == 0)
++			return -EAGAIN;
+ 
+-			val *= 1000;
+-		}
++		val *= 1000;
+ 		break;
+ 	case 2:
+ 		val = temp->fru_type;
+@@ -886,7 +879,7 @@ static int occ_setup_sensor_attrs(struct occ *occ)
+ 					     0, i);
+ 		attr++;
+ 
+-		if (sensors->temp.version > 1 &&
++		if (sensors->temp.version == 2 &&
+ 		    temp->fru_type == OCC_FRU_TYPE_VRM) {
+ 			snprintf(attr->name, sizeof(attr->name),
+ 				 "temp%d_alarm", s);
+-- 
+2.27.0
+
