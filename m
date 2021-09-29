@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131AC41CC3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5562D41CC40
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343664AbhI2TDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345276AbhI2TDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:03:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C94A961452;
-        Wed, 29 Sep 2021 19:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632942092;
-        bh=9BZ9SSNsunYXKIbF+mdQMEB+a7jO8KRnYCiZ9joa8Kw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ByqA7vIURnm2UsOZu2n0iL0xlzT0yi80z6jgMGuxYEqGCH0zXDvI6R1U0qBAfdIKf
-         mvm55L8qEXRhYLRnAo/xnvZk88WT3ihqdM7wzWzxzmAUvVmF7XPWpdZdrVMCm7kz0v
-         JNF1LiRbKiZztxduPw91K44Mg1QcybzLj87Dtw0T1a3L8LpUcdvtwi61dEaEpWLh0R
-         mNFmWK+uPoDh4AV4G+3h3EbzPHPxPazjmxBT7uAUBxdxaIZ/QqnUsEJzN/P1kKwArp
-         czJvKoCKbo0uSN92OmrSI74V/u89rF0mcDU0FXPXKWmCFvWNX3OYBp7Fmq6nwiANeJ
-         TWlsJvmH339pA==
-Date:   Wed, 29 Sep 2021 20:00:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Jann Horn <jannh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
-Message-ID: <20210929190042.GU4199@sirena.org.uk>
-References: <20210923234917.pqrxwoq7yqnvfpwu@shells.gnugeneration.com>
- <CAG48ez0Rtv5kqHWw368Ym3GkKodPA+JETOAN+=c2KPa3opENSA@mail.gmail.com>
- <20210924002230.sijoedia65hf5bj7@shells.gnugeneration.com>
- <202109231814.FD09DBAD3@keescook>
- <20210924135424.GA33573@C02TD0UTHF1T.local>
- <202109240716.A0792BE46@keescook>
- <20210927090337.GB1131@C02TD0UTHF1T.local>
- <202109271103.4E15FC0@keescook>
- <20210927205056.jjdlkof5w6fs5wzw@treble>
- <202109291152.681444A135@keescook>
+        id S1345895AbhI2TD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345276AbhI2TD0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:03:26 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A710FC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:01:44 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id z5so7678155ybj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S1HrOgnHYMt6/j5z86XsX78v2f2V6qyrrlkiNPoh4Xo=;
+        b=AEjByFqc2whHkx+eeZQZlR569mQhX0vVW1jO4vxy70+jtSZlVyJceQ/hEduBi/xI7h
+         dbka8h8jShnd0qhwSkURayRW3kCpn3AG4BAcGX/9YXHAX9sAHXZFMWkxHyh6ESYRUfZl
+         ZBTz2lYLIeGnRzkniDPMwuUsEf+O1kndfSQGt7XXn2t1AtW7PxAAtWSWD6uG50k4NcmC
+         H8019WXqwqKqANZA01uLbZwGZJ20+dsz3wBtq02DOVXFnFzBTUPBuWfhRApsOwpCs3DE
+         QtJwORB/4H5r7AjQmBBOx7bkkzrEabge5tIX0Z7X25KeruKmz3zSNnzI/DMnEhBT6aqH
+         28BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S1HrOgnHYMt6/j5z86XsX78v2f2V6qyrrlkiNPoh4Xo=;
+        b=7vVm+zrKA1N2S+koggceaKQULikMZPFfcZtGe5wnFHZ65h6JVXTY4Ky1+0zW2Cm/G9
+         w8PqbRZO1INHzOi8jRikbUmKFKt415vAFfU2TRwC9HbUwO25k3FZ30eEAq/zkFkWVRXb
+         d/GzHQt/fCBzDqC7Q3ZLMHKUlV3crKmOrO8fyuEtOoqDYmqC1uhseIK2f0ETPcR8fCkz
+         j7nxaw2nVryi/s0iKdm/swLxfpodcUtc2YWvZrwnKDoWP/tTTK+hPEc5/nC4oJQIfd8m
+         BZIUVlf5DHik2MRHfG08AdtASh3OllAy9CBTOe8j0Yy4keop3u7G1Qf1vljgxA+9g4qJ
+         kBvw==
+X-Gm-Message-State: AOAM533qYCmq6ZdWT/pL4lLWI3P3SwSPZ+pgJGujMxc06W8HYpsHGm+A
+        mkIJJtHV7U3qLESsegeLwPMafQLeq2FCFcvK0wrSeg==
+X-Google-Smtp-Source: ABdhPJyMfbkO1GE+TnZ1h+PquDmNgg9khTPescylLKR/RobKDu3KEe7quLxrZEP/ej0z7H5y6152FSe2CunSpCPDKGQ=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr1768829ybq.328.1632942103708;
+ Wed, 29 Sep 2021 12:01:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pzbqGaOtRNiVr7w4"
-Content-Disposition: inline
-In-Reply-To: <202109291152.681444A135@keescook>
-X-Cookie: 98% lean.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210929005103.698172-1-saravanak@google.com> <CAJZ5v0juFEy-7HPAVyL6qibzhF48tH_qgzh9Kjj32iEY2j0Q9Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0juFEy-7HPAVyL6qibzhF48tH_qgzh9Kjj32iEY2j0Q9Q@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 29 Sep 2021 12:01:07 -0700
+Message-ID: <CAGETcx--z9VSyEuxE6nc7SWA+z-y9L7CQhTj2ZMdSRZdYqkCgw@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Reject pointless SYNC_STATE_ONLY device links
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 5:12 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Wed, Sep 29, 2021 at 2:51 AM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > SYNC_STATE_ONLY device links intentionally allow cycles because cyclic
+> > sync_state() dependencies are valid and necessary.
+> >
+> > However a SYNC_STATE_ONLY device link where the consumer and the supplier
+> > are the same device is pointless because the device link would be deleted
+> > as soon as the device probes (because it's also the consumer) and won't
+> > affect when the sync_state() callback is called. It's a waste of CPU cycles
+> > and memory to create this device link. So reject any attempts to create
+> > such a device link.
+> >
+> > Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+> > Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/base/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 15986cc2fe5e..eed27933ac4d 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -716,7 +716,7 @@ struct device_link *device_link_add(struct device *consumer,
+> >          * SYNC_STATE_ONLY link, we don't check for reverse dependencies
+> >          * because it only affects sync_state() callbacks.
+> >          */
+> > -       if (!device_pm_initialized(supplier)
+> > +       if (!device_pm_initialized(supplier) || consumer == supplier
+>
+> Why do we need to get all the way down to here in order to return NULL
+> in the consumer == supplier case?
 
---pzbqGaOtRNiVr7w4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is where it used to be checked before the "Fixes commit" so I
+added it back here. But sure, I can move it up there.
 
-On Wed, Sep 29, 2021 at 11:54:55AM -0700, Kees Cook wrote:
-> On Mon, Sep 27, 2021 at 01:50:56PM -0700, Josh Poimboeuf wrote:
+-Saravana
 
-> > Even with that patch, it doesn't lock the task's runqueue before reading
-> > the stack, so there's still the possibility of the task running on
-> > another CPU and the unwinder going off the rails a bit, which might be
-> > used by an attacker in creative ways similar to the /proc/<pid>/stack
-> > vulnerability Jann mentioned earlier.
-
-> Since I think we're considering get_wchan() to be slow-path, can we just
-> lock the runqueue and use arch_stack_walk_reliable()?
-
-Unfortunately arch_stack_walk_reliable() is only available for powerpc,
-s390 and x86 currently - work is in progress to implement it for arm64
-as well but it's not there yet.
-
---pzbqGaOtRNiVr7w4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFUt9kACgkQJNaLcl1U
-h9BfJgf+O3xANtFrCZ5ZmvugZNPSBKmFmwXYza30TbY2cow+hwARTUCHPxRCDxq3
-xHnib4kJ43GPqzw/CGZzdzYMv9JY6Uxk7o0v/4bemkoH5hywwVC0vefRVeFCsX9b
-Wq7NwpmwbKz9hL3fRnlWL5Y8MGWieuOo+QgK5eOe82h9Z9BjzxLTY2hIKk09AlQA
-NGouW/lSLQPyfN5SyD2LKETG1y2SlY3GwYEZIDSCScY/9JnlF40pgByIudz+Xi5O
-xIZUR6UpeCQAAFf6f6VgoUWVAdVgLKMq/wnBmajicvzj+p8QFi3krttH2H8ZwVX6
-v2RVJaXwOmj/g/llVWW6WgZqgxcz2Q==
-=nUIA
------END PGP SIGNATURE-----
-
---pzbqGaOtRNiVr7w4--
+>
+> IMO this should be checked at the beginning along with !consumer and !supplier.
+>
+> >             || (!(flags & DL_FLAG_SYNC_STATE_ONLY) &&
+> >                   device_is_dependent(consumer, supplier))) {
+> >                 link = NULL;
+> > --
+> > 2.33.0.685.g46640cef36-goog
+> >
