@@ -2,123 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8ED41CB96
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A20841CBB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345610AbhI2SRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:17:04 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:40659 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhI2SRC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:17:02 -0400
-Received: by mail-pg1-f173.google.com with SMTP id h3so3573642pgb.7;
-        Wed, 29 Sep 2021 11:15:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qHhbFlZc6GWNDrVsz7/iKe9Me4ufngLpqsND1YltOzM=;
-        b=UOPXV9/LYeO2n1N73OwWkI4bEVGuHx+/FuiyURBc1ycXQzMedrq43KWny7AAj+/5Cx
-         SZFTaRx5dihaXUz7dTM0FIbDWfEWWpYGc7LD/69H8LRSi4D6tmKu5L1nl14Uekh5aC8E
-         fpYS4kablVM3V2DHNxU1ziM5yzUeQ/br0sQUWleoH5Wi+VxJV7B6OLii41tFLd5RwBgP
-         HL7kOZrQYAovgTbas5Qw2hlRdSV78RCxLdy4cyN1TBb9IVllAFHFS7ZhJJa82qcNJXD0
-         /9CXtpcbPMtk2VxoWYKRRuo/V7gkELw/sbGHJlMoGwLjMUNoloAZAaqQ+8rp2Qo46RYX
-         PB0w==
-X-Gm-Message-State: AOAM532KqrgNC1sRcsV5MGmIDak7vA3m49WwkxQGhXzYGJXFCG1PjXL3
-        oplwpYDFyWmTdgCK7rNN/oVucrRYvBM=
-X-Google-Smtp-Source: ABdhPJyLyLHa6wGVqdVcHF8Eo7FMzmROjehCaN44Z2qGkC/h/n95Yl5YWtDj4Oayg3mlJANLcy91IA==
-X-Received: by 2002:a63:f356:: with SMTP id t22mr1160846pgj.18.1632939320446;
-        Wed, 29 Sep 2021 11:15:20 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:f36:4e58:55a1:b506])
-        by smtp.gmail.com with ESMTPSA id n26sm491703pfo.19.2021.09.29.11.15.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 11:15:19 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: Fix a possible dead lock in clock scaling
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
- <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
- <fbc4d03a07f03fe4fbe697813111471f@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <644dcd92-25ae-e951-d9f3-607306a02370@acm.org>
-Date:   Wed, 29 Sep 2021 11:15:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1345984AbhI2SXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:23:31 -0400
+Received: from mga02.intel.com ([134.134.136.20]:60388 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343727AbhI2SXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 14:23:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212265500"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="212265500"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 11:21:48 -0700
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="457137080"
+Received: from lucas-s2600cw.jf.intel.com ([10.165.21.202])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 11:21:48 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     gfx-internal-devel@eclists.intel.com
+Cc:     Daniel Vetter <daniel.vetter@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Rename IS_ACTIVE() and move to kconfig.h
+Date:   Wed, 29 Sep 2021 11:16:29 -0700
+Message-Id: <20210929181632.1489847-1-lucas.demarchi@intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <fbc4d03a07f03fe4fbe697813111471f@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 8:31 PM, Can Guo wrote:
-> On 2021-09-18 01:27, Bart Van Assche wrote:
->> On 9/16/21 6:51 PM, Can Guo wrote:
->>> Assume a scenario where task A and B call ufshcd_devfreq_scale()
->>> simultaneously. After task B calls downgrade_write() [1], but before it
->>> calls down_read() [3], if task A calls down_write() [2], when task B calls
->>> down_read() [3], it will lead to dead lock.
->>
->> Something is wrong with the above description. The downgrade_write() call is
->> not followed by down_read() but by up_read(). Additionally, I don't see how
->> concurrent calls of ufshcd_devfreq_scale() could lead to a deadlock.
-> 
-> As mentioned in the commit msg, the down_read() [3] is from ufshcd_wb_ctrl().
-> 
-> Task A -
-> down_write [2]
-> ufshcd_clock_scaling_prepare
-> ufshcd_devfreq_scale
-> ufshcd_clkscale_enable_store
-> 
-> Task B -
-> down_read [3]
-> ufshcd_exec_dev_cmd
-> ufshcd_query_flag
-> ufshcd_wb_ctrl
-> downgrade_write [1]
-> ufshcd_devfreq_scale
-> ufshcd_devfreq_target
-> devfreq_set_target
-> update_devfreq
-> devfreq_performance_handler
-> governor_store
-> 
-> 
->> If one thread calls downgrade_write() and another thread calls down_write()
->> immediately, that down_write() call will block until the other thread has called up_read()
->> without triggering a deadlock.
-> 
-> Since the down_write() caller is blocked, the down_read() caller, which comes after
-> down_write(), is blocked too, no? downgrade_write() keeps lock owner as it is, but
-> it does not change the fact that readers and writers can be blocked by each other.
+As we try to reduce our i915-only helpers, let's try to improve
+IS_ACTIVE() logic and move to kconfig.h.
 
-Please use the upstream function names when posting upstream patches. I think that
-ufshcd_wb_ctrl() has been renamed into ufshcd_wb_toggle().
+I'm not 100% happy with the name, but it's the best I could come up
+with, hopefully a little better than trying to add IS_ACTIVE() to be
+used broadly.
 
-So the deadlock is caused by nested locking - one task holding a reader lock, another
-task calling down_write() and next the first task grabbing the reader lock recursively?
-I prefer one of the following two solutions above the patch that has been posted since
-I expect that both alternatives will result in easier to maintain UFS code:
-- Fix the down_read() implementation. Making down_read() wait in case of nested locking
-   seems wrong to me.
-- Modify the UFS driver such that it does not lock hba->clk_scaling_lock recursively.
+Lucas De Marchi (3):
+  drm/i915: rename IS_ACTIVE
+  drm/i915/utils: do not depend on config being defined
+  Move IS_CONFIG_NONZERO() to kconfig.h
 
-Thanks,
+ drivers/gpu/drm/i915/gem/i915_gem_context.c      |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_mman.c         |  2 +-
+ drivers/gpu/drm/i915/gt/intel_engine.h           |  4 ++--
+ drivers/gpu/drm/i915/gt/intel_engine_heartbeat.c |  2 +-
+ drivers/gpu/drm/i915/gt/intel_engine_types.h     |  2 +-
+ .../gpu/drm/i915/gt/intel_execlists_submission.c |  2 +-
+ .../gpu/drm/i915/gt/selftest_engine_heartbeat.c  |  4 ++--
+ drivers/gpu/drm/i915/gt/selftest_execlists.c     | 14 +++++++-------
+ drivers/gpu/drm/i915/i915_config.c               |  2 +-
+ drivers/gpu/drm/i915/i915_request.c              |  2 +-
+ drivers/gpu/drm/i915/i915_utils.h                | 13 -------------
+ include/linux/kconfig.h                          | 16 ++++++++++++++--
+ 12 files changed, 32 insertions(+), 33 deletions(-)
 
-Bart.
+-- 
+2.33.0
+
