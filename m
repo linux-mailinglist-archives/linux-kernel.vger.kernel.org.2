@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCF641C850
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0160C41C865
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345209AbhI2P06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
+        id S1345294AbhI2PbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:31:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344945AbhI2P05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:26:57 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89FD661440;
-        Wed, 29 Sep 2021 15:25:11 +0000 (UTC)
-Date:   Wed, 29 Sep 2021 16:29:05 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        bcousson@baylibre.com, Tony Lindgren <tony@atomide.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Ryan Barnett <ryan.barnett@collins.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jason Reeder <jreeder@ti.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 25/48] mfd: ti_am335x_tscadc: Use the new HZ_PER_MHZ
- macro
-Message-ID: <20210929162905.5fc771c5@jic23-huawei>
-In-Reply-To: <20210928133143.157329-26-miquel.raynal@bootlin.com>
-References: <20210928133143.157329-1-miquel.raynal@bootlin.com>
-        <20210928133143.157329-26-miquel.raynal@bootlin.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1345289AbhI2Pa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:30:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF1D96147F;
+        Wed, 29 Sep 2021 15:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632929355;
+        bh=oELRdwNFqn1gSQWVrhAyuj7wmonefirYRjoL+Xb7EG8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jbil2RVDJYBlvywb+uhzaZxZLOXIPc1pwC+4v/18WdvpjPoSEXbxwXb/SjEuD7tdW
+         OD4TBx8KvIgCiWv9dSd4yXuMFYNbj4uTS9fiYHnKSisEDZagbKdC73F4S+OfzGAeQy
+         Wm/LbyHGc5H8lYaT53akm4yBTnVIxDupZhN0MzO9IW8UDuUi/iwLhc0CEoubZt5YrT
+         EBtsg4ZkbmhurXuVObOMOufrB9r+bHfwUfivb6DSPomf0+xodaj9G6pD/mS0n72wR+
+         3DwMdsFy1sJn6mjbH5CpPN7WoAK+fVBpot6pmgBdm3Ql+KIZ/b7jbCiWsVKIrlEqUG
+         fYvtMhong6aqw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7BB5D5C04F3; Wed, 29 Sep 2021 08:29:15 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 08:29:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, sfr@canb.auug.org.au,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] rcu,sched: noinstr fixes
+Message-ID: <20210929152915.GU880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210928084020.819856223@infradead.org>
+ <20210928181559.GD880162@paulmck-ThinkPad-P17-Gen-1>
+ <YVQmJqTiplH+/0qL@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVQmJqTiplH+/0qL@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 15:31:20 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> Before adding another frequency with even more zeroes, use the
-> HZ_PER_MHZ macro to clarify the number.
+On Wed, Sep 29, 2021 at 10:39:02AM +0200, Peter Zijlstra wrote:
+> On Tue, Sep 28, 2021 at 11:15:59AM -0700, Paul E. McKenney wrote:
+> > On Tue, Sep 28, 2021 at 10:40:20AM +0200, Peter Zijlstra wrote:
+> > > A few noinstr fixes.. I'll stick the sched one in sched/urgent, Paul could you pick up the other two?
+> > 
+> > I queued those two, thank you!  I am guessing that you are looking for
+> > me to send them ASAP.  If so, not a problem, but please confirm.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-You missed tag I gave on v3.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-Thanks,
-
-> ---
->  include/linux/mfd/ti_am335x_tscadc.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Either way works, but given syzcaller could potentially trigger these
+> holes (it did find a whole bunch of 'interesting' problems in the early
+> noinstr days) I'd prefer them earlier rather than later.
 > 
-> diff --git a/include/linux/mfd/ti_am335x_tscadc.h b/include/linux/mfd/ti_am335x_tscadc.h
-> index 893c474c1f8c..a85643677bef 100644
-> --- a/include/linux/mfd/ti_am335x_tscadc.h
-> +++ b/include/linux/mfd/ti_am335x_tscadc.h
-> @@ -9,6 +9,7 @@
->  #define __LINUX_TI_AM335X_TSCADC_MFD_H
->  
->  #include <linux/mfd/core.h>
-> +#include <linux/units.h>
->  
->  #define REG_RAWIRQSTATUS	0x024
->  #define REG_IRQSTATUS		0x028
-> @@ -133,7 +134,7 @@
->  #define SEQ_STATUS		BIT(5)
->  #define CHARGE_STEP		0x11
->  
-> -#define ADC_CLK			3000000
-> +#define ADC_CLK			(3 * HZ_PER_MHZ)
->  #define TOTAL_STEPS		16
->  #define TOTAL_CHANNELS		8
->  #define FIFO1_THRESHOLD		19
+> OTOH, the objtool patches that keep triggering them all over the place
+> are still in objtool/core for the next cycle.
 
+OK, let's split the difference, then.  Instead of the default v5.17
+merge window, I will submit them to the upcoming v5.16 merge window.
+
+							Thanx, Paul
