@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88F141C5D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CC941C5E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344255AbhI2Nlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:41:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54822 "EHLO mail.kernel.org"
+        id S245310AbhI2NpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:45:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344186AbhI2Nls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:41:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 632EC6137A;
-        Wed, 29 Sep 2021 13:40:05 +0000 (UTC)
+        id S243959AbhI2NpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:45:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B4296140F;
+        Wed, 29 Sep 2021 13:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632922807;
-        bh=HRxvn3IUjfecEGEfskFUy3y0BDqwSgrQjWLQzEOJJgw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RTPVEKKDWu8xLuOVgrWyDppGS6t0eE5njBJgD1i3idYi2+uHPuZa5cxEcjeFQ3cZe
-         6NABzyvWfwl476XJU0PdI98Izs20RoC9vvAoAveJEZuCn+cAfihiwiMabw0KRLU2e+
-         TjWVzaCDWGdqoHQJP8rzeE3N3fWPyiTmO527AagTY9mO2loOHnXdQV7WiMI4gLE6vU
-         ul6sdJZ8l6+2P15LTHORFb07eoWaQztgWFnh43dsVGZ4Hd/JzdNsuR4airw1rBFwB3
-         v8FM8IQp926Dnl24p7J95hZj1aT8hWczKBdj0YqITOJZkMf+W5a/5yeHOFVImIQmNU
-         0lw8wtPminwVw==
-Date:   Wed, 29 Sep 2021 06:40:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <cover.1632916329.git.leonro@nvidia.com>
-References: <cover.1632916329.git.leonro@nvidia.com>
+        s=k20201202; t=1632923016;
+        bh=R6yoV0khFy81tUH1THfIPp6FLThss8lF2bIHISDUfns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M/qJsMvb6ZU3ZdOS1gYaSjrYedCwW5clkK/GRa6XdcAXEuQ5swT2JhrHGss2sz0kg
+         Pg3T1zSKj5CBnS0m8gI3+y7J5Qnr0wvLZxKIDatJdZF/kxguCOaEVX4JwVD0KZr0Er
+         dPUXORbYTtNo7tp23PuYRA+hOr2y+OQnGMwAHkRTygJxH/XYzbJrXzaVBo7FkTPjdB
+         df6EUZ4aJoaRWvKP3Eqnw4JQ83WTKHp5PnMUx+GfsJLnVBnUaHcpDr7ahtX5gwrX4F
+         W4x7zM/4EOkkTzr/V2C1g7cKMX0XVzp7BsWxFBIi3RF9Xyg2m8JL7xf/zDClxzVbkV
+         WHtkj9iGSDXrQ==
+Date:   Wed, 29 Sep 2021 14:42:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: maxim,max77686: convert to
+ dtschema
+Message-ID: <20210929134247.GP4199@sirena.org.uk>
+References: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
+ <20210928141353.112619-2-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ga5bsqHr1s/xcZEm"
+Content-Disposition: inline
+In-Reply-To: <20210928141353.112619-2-krzysztof.kozlowski@canonical.com>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:
-> This series starts from the fixing the bug introduced by implementing
-> devlink delayed notifications logic, where I missed some of the
-> notifications functions.
-> 
-> The rest series provides a way to dynamically set devlink ops that is
-> needed for mlx5 multiport device and starts cleanup by removing
-> not-needed logic.
-> 
-> In the next series, we will delete various publish API, drop general
-> lock, annotate the code and rework logic around devlink->lock.
-> 
-> All this is possible because driver initialization is separated from the
-> user input now.
 
-Swapping ops is a nasty hack in my book.
+--ga5bsqHr1s/xcZEm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And all that to avoid having two op structures in one driver.
-Or to avoid having counters which are always 0?
+On Tue, Sep 28, 2021 at 04:13:52PM +0200, Krzysztof Kozlowski wrote:
+> Convert the regulators of Maxim MAX77686 PMIC to DT schema format.
 
-Sorry, at the very least you need better explanation for this.
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--ga5bsqHr1s/xcZEm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFUbVYACgkQJNaLcl1U
+h9DloAf/XFL4fnS0kNxZrXMTIQh5zPSsMx3LQzMGl90gsHctETvhyqUMnHhoJ0jW
+0RclV/+kabp0erM6VmYMuSDU7qz4b6Fx9vfBPStagxVjTxabY2Kqc9XSBxaC4v6b
+0Jn4fv+/WMZSgRUz5mHcnAWI6NaOjuFROLAhQHULwUaW03ZbUKX7X3E0ZUFJj60f
+NCtZSLJfzxtbBi4495DKnh33bynY0J6dY+aaLh3WiParPhpZBDBBHwIa1JCDP9N9
+fLQ3fKIQnrfkI8DWVy+wPAoS14Qpa881JykDk0K1BoFZ9Cgrndzf4zmzO1F8EBWx
+nfwsxR3pVWKoJOAA21mD4DfljTN/GQ==
+=QwUs
+-----END PGP SIGNATURE-----
+
+--ga5bsqHr1s/xcZEm--
