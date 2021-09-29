@@ -2,147 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF57141C8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FBC41C826
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345546AbhI2P7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        id S1345141AbhI2PTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344245AbhI2P7n (ORCPT
+        with ESMTP id S1345123AbhI2PTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:59:43 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1ED8C061768;
-        Wed, 29 Sep 2021 08:58:01 -0700 (PDT)
+        Wed, 29 Sep 2021 11:19:42 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BD2C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:18:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=yH0ZIl3D+WnPvufmIHy/BePePeS6TTn7IaJYYr7glWg=; b=lPOfxrqxQN89DUvxvt8UWhflu3
-        tkeWFEG80WT05t44aEQYdeBQhnCNbAmvRlZqLZotLwHx6pDxlZnaoWf5hF8dmxBUT1AMXJ23bkSYV
-        s//l1W/3ubVZ9BJHSTWX3R184iFk/aAMBsYBKSnqGF3FbMV3TRNj0ZWhIb2aKqJ5hbdkPcqS1Ruhw
-        drNgNy9hKIeq29bqRn5+YEeE+QkF1NMk4ocN1fG4b9bTrvwksTXtkiMedC6tyy/ZYEy7Z/uFC4Xs9
-        1xyl45yWzoW7wDhp/KyJzH7aZSo2T+gyFDLyw/QwfbPohRQ5FvILk4nLisaYOKEvElNujTGeqzGY9
-        CsaKcH/A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVbxk-006jow-AR; Wed, 29 Sep 2021 15:57:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D95A9302A2C;
-        Wed, 29 Sep 2021 17:57:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 564112C905DAC; Wed, 29 Sep 2021 17:57:37 +0200 (CEST)
-Message-ID: <20210929152429.186930629@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 29 Sep 2021 17:17:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync() vs NOHZ_FULL
-References: <20210929151723.162004989@infradead.org>
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
+        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
+        :Content-Description; bh=rjLdat9yjq8HJiW+J7pr/WIptZGdEDDoclvqwXbUkQY=; b=3CEN
+        o1UUUnLZKR38/86YRTizDTxRbVFFPrXI8QuzlwgwFG60+HuKuUzGMEWzwqmRiLPAfHlVxVpIs/28F
+        OcFPYiZqfv+3WYXY/yR26RjOyrhOMtrf8Co+ZSgn9XdCjMtotAwuMfccE0M/5hzvJ3Lya5hdRXnqK
+        Xz7787w1WfNKf0k9kH54dBk8ME6xdqsPTc/aEkOCUnbbeAGd4YAJkZD61ZMNxIFAVrQhrfTemHlj+
+        ufFUDyDV7kdbBxIpj10AG0SgxJoT2NW/mJCkyjpufd8rutsVfoJ3xYM4G8Uf/+tbsPziLWIDw2jUa
+        agETGjBFi+l6mtv7OhdH4Z8oBO1vkw==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mVbLL-0005pI-2d; Wed, 29 Sep 2021 16:17:59 +0100
+Date:   Wed, 29 Sep 2021 16:17:58 +0100
+From:   John Keeping <john@metanate.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] ALSA: rawmidi: Fix potential UAF from sequencer
+ destruction
+Message-ID: <20210929161758.49ce947f.john@metanate.com>
+In-Reply-To: <s5hzgrvl9j0.wl-tiwai@suse.de>
+References: <20210929113620.2194847-1-john@metanate.com>
+        <s5hzgrvl9j0.wl-tiwai@suse.de>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new context_tracking infrastructure to avoid disturbing
-userspace tasks when we rewrite kernel code.
+On Wed, 29 Sep 2021 16:51:47 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-XXX re-audit the entry code to make sure only the context_tracking
-static_branch is before hitting this code.
+> On Wed, 29 Sep 2021 13:36:20 +0200,
+> John Keeping wrote:
+> > 
+> > If the sequencer device outlives the rawmidi device, then
+> > snd_rawmidi_dev_seq_free() will run after release_rawmidi_device() has
+> > freed the snd_rawmidi structure.
+> > 
+> > This can easily be reproduced with CONFIG_DEBUG_KOBJECT_RELEASE.
+> > 
+> > Keep a reference to the rawmidi device until the sequencer has been
+> > destroyed in order to avoid this.
+> > 
+> > Signed-off-by: John Keeping <john@metanate.com>  
+> 
+> Thanks for the patch.  I wonder, though, how this could be triggered.
+> Is this the case where the connected sequencer device is being used
+> while the sound card gets released?  Or is it something else?
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/sync_core.h |    2 ++
- arch/x86/kernel/alternative.c    |    8 +++++++-
- include/linux/context_tracking.h |    1 +
- kernel/context_tracking.c        |   12 ++++++++++++
- 4 files changed, 22 insertions(+), 1 deletion(-)
+I'm not sure if it's possible to trigger via the ALSA API; I haven't
+found a route that can trigger it, but that doesn't mean there isn't
+one :-)
 
---- a/arch/x86/include/asm/sync_core.h
-+++ b/arch/x86/include/asm/sync_core.h
-@@ -87,6 +87,8 @@ static inline void sync_core(void)
- 	 */
- 	iret_to_self();
- }
-+#define sync_core sync_core
-+
- 
- /*
-  * Ensure that a core serializing instruction is issued before returning
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -18,6 +18,7 @@
- #include <linux/mmu_context.h>
- #include <linux/bsearch.h>
- #include <linux/sync_core.h>
-+#include <linux/context_tracking.h>
- #include <asm/text-patching.h>
- #include <asm/alternative.h>
- #include <asm/sections.h>
-@@ -924,9 +925,14 @@ static void do_sync_core(void *info)
- 	sync_core();
- }
- 
-+static bool do_sync_core_cond(int cpu, void *info)
-+{
-+	return !context_tracking_set_cpu_work(cpu, CT_WORK_SYNC);
-+}
-+
- void text_poke_sync(void)
- {
--	on_each_cpu(do_sync_core, NULL, 1);
-+	on_each_cpu_cond(do_sync_core_cond, do_sync_core, NULL, 1);
- }
- 
- struct text_poke_loc {
---- a/include/linux/context_tracking.h
-+++ b/include/linux/context_tracking.h
-@@ -11,6 +11,7 @@
- 
- enum ct_work {
- 	CT_WORK_KLP = 1,
-+	CT_WORK_SYNC = 2,
- };
- 
- /*
---- a/kernel/context_tracking.c
-+++ b/kernel/context_tracking.c
-@@ -51,6 +51,10 @@ static __always_inline void context_trac
- 	__this_cpu_dec(context_tracking.recursion);
- }
- 
-+#ifndef sync_core
-+static inline void sync_core(void) { }
-+#endif
-+
- /* CT_WORK_n, must be noinstr, non-blocking, NMI safe and deal with spurious calls */
- static noinstr void ct_exit_user_work(struct context_tracking *ct)
- {
-@@ -64,6 +68,14 @@ static noinstr void ct_exit_user_work(struct
- 		arch_atomic_andnot(CT_WORK_KLP, &ct->work);
- 	}
- 
-+	if (work & CT_WORK_SYNC) {
-+		/* NMI happens here and must still do/finish CT_WORK_n */
-+		sync_core();
-+
-+		smp_mb__before_atomic();
-+		arch_atomic_andnot(CT_WORK_SYNC, &ct->work);
-+	}
-+
- 	smp_mb__before_atomic();
- 	arch_atomic_andnot(CT_SEQ_WORK, &ct->seq);
- }
+Mostly this is useful to make CONFIG_DEBUG_KOBJECT_RELEASE cleaner.
 
+
+Regards,
+John
+
+> > ---
+> >  sound/core/rawmidi.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+> > index 6f30231bdb88..b015f5f69175 100644
+> > --- a/sound/core/rawmidi.c
+> > +++ b/sound/core/rawmidi.c
+> > @@ -1860,6 +1860,7 @@ static void snd_rawmidi_dev_seq_free(struct snd_seq_device *device)
+> >  	struct snd_rawmidi *rmidi = device->private_data;
+> >  
+> >  	rmidi->seq_dev = NULL;
+> > +	put_device(&rmidi->dev);
+> >  }
+> >  #endif
+> >  
+> > @@ -1936,6 +1937,9 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
+> >  #if IS_ENABLED(CONFIG_SND_SEQUENCER)
+> >  	if (!rmidi->ops || !rmidi->ops->dev_register) { /* own registration mechanism */
+> >  		if (snd_seq_device_new(rmidi->card, rmidi->device, SNDRV_SEQ_DEV_ID_MIDISYNTH, 0, &rmidi->seq_dev) >= 0) {
+> > +			/* Ensure we outlive the sequencer (see snd_rawmidi_dev_seq_free). */
+> > +			get_device(&rmidi->dev);
+> > +
+> >  			rmidi->seq_dev->private_data = rmidi;
+> >  			rmidi->seq_dev->private_free = snd_rawmidi_dev_seq_free;
+> >  			sprintf(rmidi->seq_dev->name, "MIDI %d-%d", rmidi->card->number, rmidi->device);
+> > -- 
+> > 2.33.0
+> >   
 
