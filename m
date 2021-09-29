@@ -2,63 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338D741C6F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38B041C6F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245350AbhI2OlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244630AbhI2OlJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:41:09 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD8DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:39:28 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id r1so5812932ybo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D0Oc7XLkL1a5rG+g4cEPln6FVEfUnfUyvrff+87caWk=;
-        b=qMCZLgpOhiT0PYqammbVkwH89TFzBaYxIzfN+TmRegJpNVSX9m+hkgQSy9vVPch8d6
-         EVzF2t/Ary5OYYz38syhKY2vbqBIcohZZLml6N71qTY24xqPIqjeXIz0n62SqihlxDrX
-         m2+4ayVA2lg8Appu4HYfxspncA7RgoT9JcaPfsLJhmipW3az81ettnFABPqsOxYK/Q1I
-         C/VxJjfW1rPfiaLMbb8wmNPvtPkhFeIs1nImb2Ya8k3lNgRfdExObqnYN0+0Ms+3OsfT
-         7vFfk19BEMtffkQuV+Ch3E/cIZHn/v7g+WhHmJA2IpmqAZL84h7i8KAAeWYvXbfdChvT
-         0IzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D0Oc7XLkL1a5rG+g4cEPln6FVEfUnfUyvrff+87caWk=;
-        b=4NPN9cC2EEINePBP+sLJ8hhrAs1hJu04GY2ZPtl/j+RnhM7Y2Qa0NTJa5ojXbpwVv2
-         jLCq0Pky8o0HV3kyLGcawtDHQszMguRvyX1+Zv7/b14Ji5rNJQ5tjSXgHteNb1yKH781
-         5cNb6bffXwaU6xEJZcQNTQ1yU6TRpQu6xHquS08glVgv+Yaz5wkHVdVLWxW+TfU+G6oO
-         fb+hc0t9g6L1cwxEtiBvtP44zDLI6eWSx6WENUYCIxIwGZ9tfIyiRlL+WsiTj47vn1Gn
-         Fo/0s6e79ey2LPV3jfylQkWG3WNKAEIrFKA2Jtc0vb/3kDmIHE3EbF1bxCtkADs2lx+S
-         Ih7w==
-X-Gm-Message-State: AOAM532X4U2oYjLXCP2AEZdNBPNqJCvG/YhXSInom880lijlCd0p0B+Z
-        YqlElk8cKFbW+McONCKVOwQdFgx1QMSwe8pTPKk=
-X-Google-Smtp-Source: ABdhPJwTazNBuAxSjIgGBRln2F6fP1EeJe/c+Mi620JFD2Ydb79Y+Jb5XMqKWxNqIrlJWs4jTdr7+9GwXLM7nb+b/pI=
-X-Received: by 2002:a25:9b46:: with SMTP id u6mr197617ybo.39.1632926367892;
- Wed, 29 Sep 2021 07:39:27 -0700 (PDT)
+        id S1344431AbhI2Ol0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244630AbhI2OlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:41:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FC061288;
+        Wed, 29 Sep 2021 14:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632926383;
+        bh=nnq87NutyIOGGif5N+QrkzjWO+6VWs0z6DZ46avoARs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eqiziXnfY6Gb8Aqa7QR6beBqHy27XIjRrNUvvAZpBe8wAWCnLdAtcFyomIe7AQOpr
+         4y5Asa4+B80UxnB1HHcJhWNrtHtO1xZ3wY/gSf+jYnf98cFaKFzj08VOrxUhrIW7Xl
+         WhtES6XqwCW5MPr95wOLYo64luS6u1zSPfI8WRAF7ohJTYNANFQJlfrV9MLvFa+BQB
+         qRGrx+33hqKztnR5yfNuHpe7tcbvP77g91NjW7WEy/hhDjv2PbU7F3vMSN5g+9a7XX
+         6BT/cH+dKXao9KYoRKv24DJNK8fNaz/UswWiMxA+XjskLExRXFjir7NSfinIiFeJQq
+         T9KesJYV0X2ng==
+Date:   Wed, 29 Sep 2021 07:39:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
+ fix
+Message-ID: <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YVR0iKIRYDXQbD+o@unreal>
+References: <cover.1632916329.git.leonro@nvidia.com>
+        <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVR0iKIRYDXQbD+o@unreal>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:52c3:0:0:0:0 with HTTP; Wed, 29 Sep 2021 07:39:27
- -0700 (PDT)
-Reply-To: michellegoodman45@gmail.com
-From:   Shayma <shaymamarwan04@gmail.com>
-Date:   Wed, 29 Sep 2021 15:39:27 +0100
-Message-ID: <CAFyUfoP8AaPK9qvvus9W6T8MXXn9qxaX6SPcQxWL4EP6AMfUSQ@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht bekommen.
-Ich brauche schnelle Antworten
-viele
-Vielen Dank.
-Michelle
+On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:
+> On Wed, Sep 29, 2021 at 06:40:04AM -0700, Jakub Kicinski wrote:
+> > On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:  
+> > > This series starts from the fixing the bug introduced by implementing
+> > > devlink delayed notifications logic, where I missed some of the
+> > > notifications functions.
+> > > 
+> > > The rest series provides a way to dynamically set devlink ops that is
+> > > needed for mlx5 multiport device and starts cleanup by removing
+> > > not-needed logic.
+> > > 
+> > > In the next series, we will delete various publish API, drop general
+> > > lock, annotate the code and rework logic around devlink->lock.
+> > > 
+> > > All this is possible because driver initialization is separated from the
+> > > user input now.  
+> > 
+> > Swapping ops is a nasty hack in my book.
+> > 
+> > And all that to avoid having two op structures in one driver.
+> > Or to avoid having counters which are always 0?  
+> 
+> We don't need to advertise counters for feature that is not supported.
+> In multiport mlx5 devices, the reload functionality is not supported, so
+> this change at least make that device to behave like all other netdev
+> devices that don't support devlink reload.
+> 
+> The ops structure is set very early to make sure that internal devlink
+> routines will be able access driver back during initialization (btw very
+> questionable design choice)
+
+Indeed, is this fixable? Or now that devlink_register() was moved to 
+the end of probe netdev can call ops before instance is registered?
+
+> and at that stage the driver doesn't know
+> yet which device type it is going to drive.
+> 
+> So the answer is:
+> 1. Can't have two structures.
+
+I still don't understand why. To be clear - swapping full op structures
+is probably acceptable if it's a pure upgrade (existing pointers match).
+Poking new ops into a structure (in alphabetical order if I understand
+your reply to Greg, not destructor-before-contructor) is what I deem
+questionable.
+
+> 2. Same behaviour across all netdev devices.
+
+Unclear what this is referring to.
