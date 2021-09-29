@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA0641CF87
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBDB41CF8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347170AbhI2W4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:56:18 -0400
-Received: from mga17.intel.com ([192.55.52.151]:64658 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346922AbhI2W4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:56:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205204359"
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="205204359"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 15:54:34 -0700
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="707502845"
-Received: from ojefferi-mobl.ger.corp.intel.com (HELO ldmartin-desk2) ([10.212.173.172])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 15:54:34 -0700
-Date:   Wed, 29 Sep 2021 15:54:33 -0700
-From:   Lucas De Marchi <lucas.demarchi@intel.com>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] drm/i915/utils: do not depend on config being
- defined
-Message-ID: <20210929225433.7z76swcouyas7upd@ldmartin-desk2>
-X-Patchwork-Hint: comment
-References: <20210929183357.1490204-1-lucas.demarchi@intel.com>
- <CGME20210929183439eucas1p1de30c3fb5681a8c8d250f482954f92ed@eucas1p1.samsung.com>
- <20210929183357.1490204-3-lucas.demarchi@intel.com>
- <e1c58c0e-b0d5-48a4-f423-3c7e0ff9b765@samsung.com>
+        id S1347213AbhI2W6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:58:25 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:60068 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345988AbhI2W6Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 18:58:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=gyI1iWTgaQxXLC0uh18K74XDfJOQ35Yd/0UtBH7oL2Y=; b=VyEMo1To4bpq3hE/xr6uacN63S
+        sFo8JLN2lg3Nt7NjJD/RyCHJ3xIMnFvvWyJQJDzNwEv5i2F31KL273mFPxjWpXsi8VJB7W8aU8iuX
+        UhU9U05GQuc4pdzxedOdf9TAaZLqlqelpLTq2C+UtXnoObaPYB2yfaH1YLeAfoLoxcX8gTb/p0aCT
+        164B3Y/N5rl7w8PhlikTl4aQ4jNqsb1jJoT2BUjjfIZtVih+GwnXuoh5B3mbUqiLvXqgCmdNOOLxt
+        Cw4AtoX4dmjtYkv8q48FbqX8M5k1KxfxuoejCgFSCUcvy99IFnZpCWPQA7rx4nIKKrpUNT13PyREe
+        /6e6C7DQ==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mViV2-0007a2-MS; Wed, 29 Sep 2021 16:56:29 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-13-logang@deltatee.com>
+ <20210928194325.GS3544071@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <e7bbe021-9a0c-1999-0a2a-ba249578c9c7@deltatee.com>
+Date:   Wed, 29 Sep 2021 16:56:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e1c58c0e-b0d5-48a4-f423-3c7e0ff9b765@samsung.com>
+In-Reply-To: <20210928194325.GS3544071@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v3 12/20] RDMA/rw: use dma_map_sgtable()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:08:18PM +0200, Andrzej Hajda wrote:
->
->W dniu 29.09.2021 o 20:33, Lucas De Marchi pisze:
->> Like the IS_ENABLED() counterpart, we can make IS_CONFIG_NONZERO() to
->> return the right thing when the config is not defined rather than a
->> build error, with the limitation that it can't be used on preprocessor
->> context.
->>
->> The trick here is that macro names can't start with a number or dash, so
->> we stringify the argument and check that the first char is a number != 0
->> (or starting with a dash to cover negative numbers). Except for -O0
->> builds the strings are all eliminated.
->>
->> Taking CONFIG_DRM_I915_REQUEST_TIMEOUT in
->> drivers/gpu/drm/i915/gem/i915_gem_context.c as example, we have the
->> following output of the preprocessor:
->>
->> old:
->>   if (((20000) != 0) &&
->> new:
->>   if (( ("20000"[0] > '0' && "20000"[0] < '9') || "20000"[0] == '-' ) &&
->>
->> New one looks worse, but is also eliminated from the object:
->>
->> $ size drivers/gpu/drm/i915/gem/i915_gem_context.o.*
->>     text    data     bss     dec     hex filename
->>    52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.new
->>    52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.old
->>
->> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
->> ---
->>   drivers/gpu/drm/i915/i915_utils.h | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
->> index 02bbfa4d68d3..436ce612c46a 100644
->> --- a/drivers/gpu/drm/i915/i915_utils.h
->> +++ b/drivers/gpu/drm/i915/i915_utils.h
->> @@ -28,6 +28,7 @@
->>   #include <linux/list.h>
->>   #include <linux/overflow.h>
->>   #include <linux/sched.h>
->> +#include <linux/stringify.h>
->>   #include <linux/types.h>
->>   #include <linux/workqueue.h>
->>
->> @@ -469,6 +470,9 @@ static inline bool timer_expired(const struct timer_list *t)
->>    *
->>    * Returns 0 if @config is 0, 1 if set to any value.
->>    */
->> -#define IS_CONFIG_NONZERO(config) ((config) != 0)
->> +#define IS_CONFIG_NONZERO(config) (						\
->> +	(__stringify_1(config)[0] > '0' && __stringify_1(config)[0] < '9') ||	\
->> +	__stringify_1(config)[0] == '-'						\
->> +)
->
->
->Quite clever trick, but I see two issues:
->
->- gcc < 8.1 treats expressions with string indices (ex. "abc"[0]) as
->non-constant expressions, so they cannot be used everywhere, for example
->in global variable initializations,
 
-ugh, that would kill the idea - having the strings and additional
-runtime checks would not be good. Maybe if we check with
-__builtin_constant_p() and do the simpler expansion if it's not
-constant?
 
->
->- it does not work with hex (0x1) or octal values (01)
 
-indeed, but I guess that would be fixable by checking (s[0] == '0' && s[1] == '\0')?
-However, it seems kconfig doesn't support setting int options to hex or
-octal.
-
-If I try an hex value in menuconfig it says "You have made an invalid entry."
-If I try editing .config or setting via scripts/config --set-val, it
-just gets reset when trying to generate include/generated/autoconf.h
-
-Lucas De Marchi
-
->
->It is probably OK for private macro, but it can hurt in kconfig.h,
->especially the 2nd issue
->
->
->Regards
->
->Andrzej
->
+On 2021-09-28 1:43 p.m., Jason Gunthorpe wrote:
+> On Thu, Sep 16, 2021 at 05:40:52PM -0600, Logan Gunthorpe wrote:
+>> dma_map_sg() now supports the use of P2PDMA pages so pci_p2pdma_map_sg()
+>> is no longer necessary and may be dropped.
 >>
->>   #endif /* !__I915_UTILS_H */
+>> Switch to the dma_map_sgtable() interface which will allow for better
+>> error reporting if the P2PDMA pages are unsupported.
+>>
+>> The change to sgtable also appears to fix a couple subtle error path
+>> bugs:
+>>
+>>   - In rdma_rw_ctx_init(), dma_unmap would be called with an sg
+>>     that could have been incremented from the original call, as
+>>     well as an nents that was not the original number of nents
+>>     called when mapped.
+>>   - Similarly in rdma_rw_ctx_signature_init, both sg and prot_sg
+>>     were unmapped with the incorrect number of nents.
+> 
+> Those bugs should definately get fixed.. I might extract the sgtable
+> conversion into a stand alone patch to do it.
+
+Yes. I can try to split it off myself and send a patch later this week.
+
+Logan
