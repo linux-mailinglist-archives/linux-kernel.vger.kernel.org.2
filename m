@@ -2,59 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C5E41BECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 07:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10F541BED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 07:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244289AbhI2FlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 01:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244147AbhI2FlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 01:41:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98394613C8;
-        Wed, 29 Sep 2021 05:39:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632893966;
-        bh=IGnWJOyuv2q27b9eXT2nQLtV7eTJr66xH+o8rgdvwMg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tEyHVAPC6Bpkoyc3EE10uMwg0WPjRcT6XICSSMu39ikuzmDkFinERPqS0qcBBBrW8
-         I9clDCFowfwE3OYa8xp2NsfwJuxPqex4uyfsuw0rZQmHCpdGBXiQacVV1QEUsLP435
-         ZgZqKW0/hOMnMY/XvGqUfoUO/QWW8xqxCUPDeX3g=
-Date:   Wed, 29 Sep 2021 07:39:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     hallblazzar <hallblazzar@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH] staging: r8188eu: Fix misspelling in comment
-Message-ID: <YVP8CYJ6MpWCjRB0@kroah.com>
-References: <5174112d-d0a5-e908-aee8-7d494914e89b@gmail.com>
+        id S244275AbhI2Frb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 01:47:31 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46560 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243585AbhI2Fr3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 01:47:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B0AB1FD8E;
+        Wed, 29 Sep 2021 05:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632894348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9dS3pKrH9tIElFltXULjwBVW0jJRE0pVrJdjPgg+l+E=;
+        b=XbL3ujQ3fdlQpIlvtXc2AngxfRAtihnbZCB97SdpjlLMKb19am+VHiRJdaa1MUx7Q7xNOd
+        G6rdPHRRG4ft5aAXIuamcz70GgebYrnbA+hhc3tDpy2oCj0wYpi86o4fMs6q2LAiIOyX/I
+        LXsucskLpXV3yFKJ6EDbO3VpQDaaJKI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E004013A81;
+        Wed, 29 Sep 2021 05:45:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id d2a2M4v9U2GpPwAAMHmgww
+        (envelope-from <jgross@suse.com>); Wed, 29 Sep 2021 05:45:47 +0000
+Subject: Re: [PATCH 7/9] xen/x86: hook up xen_banner() also for PVH
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <5af11027-cf9d-cf78-9f48-b2ce2edd6e62@suse.com>
+ <2ded8c58-b9c3-89dc-6883-1794d1c4126a@suse.com>
+ <d9b6e98c-4e75-73f3-1e6d-42df300cfd49@suse.com>
+ <89cb2d39-2bfc-dccf-8e92-39e4e952750d@suse.com>
+ <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
+ <e095eec1-f35b-ca35-9ad1-54c817e61408@suse.com>
+ <1bcb3b62-8327-7da8-abdb-65ee965714a7@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <86a4d837-5603-39d0-4643-c31597d524df@suse.com>
+Date:   Wed, 29 Sep 2021 07:45:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5174112d-d0a5-e908-aee8-7d494914e89b@gmail.com>
+In-Reply-To: <1bcb3b62-8327-7da8-abdb-65ee965714a7@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="lhXQsMPmsgWmJyuKUUGOejYSBwDkhwWna"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 06:49:48PM +0100, hallblazzar wrote:
-> As format check raised by scripts/checkpatch.pl, comment in the rtw_ap.c
-> looks misspelled by accident. Help fix it.
-> 
-> The original error is as below shows:
-> 
-> CHECK: 'followign' may be misspelled - perhaps 'following'?
-> +Set to 0 (HT pure) under the followign conditions
-> 
-> Signed-off-by: Siou-Jhih, Guo <hallblazzar@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_ap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--lhXQsMPmsgWmJyuKUUGOejYSBwDkhwWna
+Content-Type: multipart/mixed; boundary="GjTgUdmNpyn9pBSNTzNGE4ZYXvbDrmkf1";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <86a4d837-5603-39d0-4643-c31597d524df@suse.com>
+Subject: Re: [PATCH 7/9] xen/x86: hook up xen_banner() also for PVH
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <5af11027-cf9d-cf78-9f48-b2ce2edd6e62@suse.com>
+ <2ded8c58-b9c3-89dc-6883-1794d1c4126a@suse.com>
+ <d9b6e98c-4e75-73f3-1e6d-42df300cfd49@suse.com>
+ <89cb2d39-2bfc-dccf-8e92-39e4e952750d@suse.com>
+ <f613a83c-2b29-23eb-ca78-a8a75a67f651@suse.com>
+ <e095eec1-f35b-ca35-9ad1-54c817e61408@suse.com>
+ <1bcb3b62-8327-7da8-abdb-65ee965714a7@suse.com>
+In-Reply-To: <1bcb3b62-8327-7da8-abdb-65ee965714a7@suse.com>
 
-Your subject line has "Subject:" in it twice for some reason :(
+--GjTgUdmNpyn9pBSNTzNGE4ZYXvbDrmkf1
+Content-Type: multipart/mixed;
+ boundary="------------9D5EF408F6473EEBABC4A4D3"
+Content-Language: en-US
 
-Please fix up and send a v2.
+This is a multi-part message in MIME format.
+--------------9D5EF408F6473EEBABC4A4D3
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On 23.09.21 17:31, Jan Beulich wrote:
+> On 23.09.2021 17:25, Juergen Gross wrote:
+>> On 23.09.21 17:19, Jan Beulich wrote:
+>>> On 23.09.2021 17:15, Juergen Gross wrote:
+>>>> On 23.09.21 17:10, Jan Beulich wrote:
+>>>>> On 23.09.2021 16:59, Juergen Gross wrote:
+>>>>>> On 07.09.21 12:11, Jan Beulich wrote:
+>>>>>>> This was effectively lost while dropping PVHv1 code. Move the fun=
+ction
+>>>>>>> and arrange for it to be called the same way as done in PV mode. =
+Clearly
+>>>>>>> this then needs re-introducing the XENFEAT_mmu_pt_update_preserve=
+_ad
+>>>>>>> check that was recently removed, as that's a PV-only feature.
+>>>>>>>
+>>>>>>> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+>>>>>>>
+>>>>>>> --- a/arch/x86/xen/enlighten.c
+>>>>>>> +++ b/arch/x86/xen/enlighten.c
+>>>>>>> @@ -261,6 +261,18 @@ int xen_vcpu_setup(int cpu)
+>>>>>>>      	return ((per_cpu(xen_vcpu, cpu) =3D=3D NULL) ? -ENODEV : 0)=
+;
+>>>>>>>      }
+>>>>>>>     =20
+>>>>>>> +void __init xen_banner(void)
+>>>>>>> +{
+>>>>>>> +	unsigned version =3D HYPERVISOR_xen_version(XENVER_version, NUL=
+L);
+>>>>>>> +	struct xen_extraversion extra;
+>>>>>>
+>>>>>> Please add a blank line here.
+>>>>>
+>>>>> Oops.
+>>>>>
+>>>>>>> +	HYPERVISOR_xen_version(XENVER_extraversion, &extra);
+>>>>>>> +
+>>>>>>> +	pr_info("Booting paravirtualized kernel on %s\n", pv_info.name)=
+;
+>>>>>>
+>>>>>> Is this correct? I don't think the kernel needs to be paravirtuali=
+zed
+>>>>>> with PVH (at least not to the same extend as for PV).
+>>>>>
+>>>>> What else do you suggest the message to say? Simply drop
+>>>>> "paravirtualized"? To some extent it is applicable imo, further
+>>>>> qualified by pv_info.name. And that's how it apparently was with
+>>>>> PVHv1.
+>>>>
+>>>> The string could be selected depending on CONFIG_XEN_PV.
+>>>
+>>> Hmm, now I'm confused: Doesn't this setting control whether the kerne=
+l
+>>> can run in PV mode? If so, that functionality being present should ha=
+ve
+>>> no effect on the functionality of the kernel when running in PVH mode=
+=2E
+>>> So what you suggest would end up in misleading information imo.
+>>
+>> Hmm, yes, I mixed "paravirtualized" with "capable to run
+>> paravirtualized".
+>>
+>> So the string should depend on xen_pv_domain().
+>=20
+> But that's already expressed by pv_info.name then being "Xen PV".
 
-greg k-h
+True. Okay, I'm fine with just dropping "paravirtualized".
+
+
+Juergen
+
+--------------9D5EF408F6473EEBABC4A4D3
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------9D5EF408F6473EEBABC4A4D3--
+
+--GjTgUdmNpyn9pBSNTzNGE4ZYXvbDrmkf1--
+
+--lhXQsMPmsgWmJyuKUUGOejYSBwDkhwWna
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFT/YsFAwAAAAAACgkQsN6d1ii/Ey+D
+AQf/cSwoaFn4oE5iEPPrrvbW0sl3fdd0HlAXrpDZloMtgQDevpgrqj920qo6w/wMOfaBYrh/P1Et
+BMXih3QQHaB3vmLWTN4CQ9YY6PLXTEOBsJrOE2RSIfDVgiSaG5s7lcqxF8Jplt0G779/BcRg15oT
+gzPyOA0u+pB2W+dBnRgZn1opMQWjIwvXwgVGj5fQ5PoDxNBhjCws/cnTI9DSspYFs03kOORxIYcY
+Gd1HfOFMY0cvxSgfupIIcCjHfIjQdB1uCZe+wg56FIcai0/WyyauOdtvVDH7aS+Ulhb9O3AqPpMd
+rv6ZgwqolCVuutQlgqFa9Nr0xG8yLCpzAbvEiQzWMw==
+=ezIX
+-----END PGP SIGNATURE-----
+
+--lhXQsMPmsgWmJyuKUUGOejYSBwDkhwWna--
