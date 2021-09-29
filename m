@@ -2,202 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB5341BB9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5B341BB9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243398AbhI2AJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 20:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243374AbhI2AJZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 20:09:25 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E382C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:07:45 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id bi20-20020a05620a319400b0045df2735d63so3246774qkb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=pkFTuk+TNQNm+gOgPOs6LK/YFjb2sUYttyn3WHOqJrE=;
-        b=Shkn2BNqy0Z/1QlOaPNVHfGvNL2ujb+W4/KsDcUnxjOImmY0e6EvSbte/WgKpzf0G0
-         MQJItXxtQkS3OOLRbjBi0NDTbqGG4qZ0j/ySUwTAKw6tmUsDbU07fUu1FX8x6GuhfQ58
-         0CLtmE3kgKQxORVv9PBN22k18Ulkb+j6GTQMzbNVUV6YXSslUxSIhc4hsa9YjFkNkz93
-         HaH86K/xcVXCcbxRPRBwYQ45RA8Kev/Md3eQcx+CEnajY2rlvU2yVjWXwhi664QVGb/j
-         LkB21ATwKA9dg2/KR3bZc6ucPWb5iv1E35ofbgEk2cxDIRJhUNtbwZyKXOo3dt0RNvaQ
-         HcwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=pkFTuk+TNQNm+gOgPOs6LK/YFjb2sUYttyn3WHOqJrE=;
-        b=zK6wJP2R85a9LbWtNVdLJf354/+o5u8y7fk84WNdL+oGUpJNx18brym1nc5IX8n/ef
-         o3pzu3T2Afm7quX73vCuPQAkCK/57Shb7W0qThFZwXunwtNUWQY768Wl4+wkKS6XNaLu
-         tMbGD1W/UnWJ+2sFgSvlcmvhi3cNHFVpifQ5NnAy68Wf7FQuY0dFjZDannM+urFtYqpI
-         c/fugYDB87Lgdn5Mq/aSYJmH7/4/rVMsUH9+ZVEkQ8/uHNRIadIRSj/fsHBzI4YQm6wT
-         8W6uX150J4gGZ05KoUzD7rtVz+S346R+8V6Jitf2f1kyreK+bV0TH32NEfRjDaloZXT+
-         bU4A==
-X-Gm-Message-State: AOAM5310z1Q0wpS9+8VLv182iPXVDA/S9qy3Cwh1XgM2bR37TA4xpIru
-        XjRz6KgDzi00DhaaxeFW76toTMxDYfjAJhw=
-X-Google-Smtp-Source: ABdhPJxKqfXo3iQNgHrvCi7VnP8x5LUCg5ZseTj4zS2VOEiSyA3rRupZVRg7ZXrdqS1hqlyo3hFdXgX8bZj5Q+g=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:5241:a7e9:90c9:9c91])
- (user=saravanak job=sendgmr) by 2002:a05:6214:406:: with SMTP id
- z6mr8713464qvx.34.1632874064532; Tue, 28 Sep 2021 17:07:44 -0700 (PDT)
-Date:   Tue, 28 Sep 2021 17:07:34 -0700
-In-Reply-To: <20210929000735.585237-1-saravanak@google.com>
-Message-Id: <20210929000735.585237-3-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210929000735.585237-1-saravanak@google.com>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
-From:   Saravana Kannan <saravanak@google.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        id S243386AbhI2AJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 20:09:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35948 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243331AbhI2AJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 20:09:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224899512"
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="224899512"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 17:08:02 -0700
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="486731358"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 17:08:02 -0700
+Date:   Tue, 28 Sep 2021 17:08:00 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Message-ID: <YVOuYAFaTG6Khotb@agluck-desk2.amr.corp.intel.com>
+References: <20210920192349.2602141-5-fenghua.yu@intel.com>
+ <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
+ <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
+ <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
+ <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
+ <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
+ <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
+ <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+ <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
+ <YVOp60LOL+bfh3iT@otcwcpicx3.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVOp60LOL+bfh3iT@otcwcpicx3.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The simple-pm-bus driver is mandatory for CONFIG_OF based platforms to work
-with fw_devlink. So, always compile it in for CONFIG_OF and delete the
-config since it's no longer necessary.
+On Tue, Sep 28, 2021 at 11:50:37PM +0000, Fenghua Yu wrote:
+> If xfeatures's feature bit is 0, xsaves will not write its init value to the
+> memory due to init optimization. So the xsaves will do nothing and the
+> state is not initialized and may have random data.
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- arch/arm/configs/multi_v7_defconfig |  1 -
- arch/arm/configs/oxnas_v6_defconfig |  1 -
- arch/arm/configs/shmobile_defconfig |  1 -
- arch/arm/mach-omap2/Kconfig         |  1 -
- arch/arm64/configs/defconfig        |  1 -
- drivers/bus/Kconfig                 | 12 ------------
- drivers/bus/Makefile                |  2 +-
- drivers/soc/canaan/Kconfig          |  1 -
- 8 files changed, 1 insertion(+), 19 deletions(-)
+> Setting TIF_NEED_FPU_LOAD cannot guaranteed to execute XRSTORS on exiting
+> to user. In fpregs_restore_userregs():
+> 	if (!fpregs_state_valid(fpu, cpu)) {
+> 		...
+>                 __restore_fpregs_from_fpstate(&fpu->state, mask);
+> 		...
+> 	}
+> 
+> fpregs state should be invalid to get the XRSTROS executed.
+> 
+> So setting TIF_NEED_FPU_LOAD may get the FPU register unchanged on exiting
+> to user.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index d9abaae118dd..362720ae8d65 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -196,7 +196,6 @@ CONFIG_PCI_EPF_TEST=m
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_OMAP_OCP2SCP=y
--CONFIG_SIMPLE_PM_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
-diff --git a/arch/arm/configs/oxnas_v6_defconfig b/arch/arm/configs/oxnas_v6_defconfig
-index cae0db6b4eaf..de37f7e90999 100644
---- a/arch/arm/configs/oxnas_v6_defconfig
-+++ b/arch/arm/configs/oxnas_v6_defconfig
-@@ -46,7 +46,6 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_DMA_CMA=y
- CONFIG_CMA_SIZE_MBYTES=64
--CONFIG_SIMPLE_PM_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_BLOCK=y
-diff --git a/arch/arm/configs/shmobile_defconfig b/arch/arm/configs/shmobile_defconfig
-index d9a27e4e0914..18d2a960b2d2 100644
---- a/arch/arm/configs/shmobile_defconfig
-+++ b/arch/arm/configs/shmobile_defconfig
-@@ -40,7 +40,6 @@ CONFIG_PCI_RCAR_GEN2=y
- CONFIG_PCIE_RCAR_HOST=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
--CONFIG_SIMPLE_PM_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
-diff --git a/arch/arm/mach-omap2/Kconfig b/arch/arm/mach-omap2/Kconfig
-index 7df8f5276ddf..02f2f3157f07 100644
---- a/arch/arm/mach-omap2/Kconfig
-+++ b/arch/arm/mach-omap2/Kconfig
-@@ -112,7 +112,6 @@ config ARCH_OMAP2PLUS
- 	select PM_GENERIC_DOMAINS
- 	select PM_GENERIC_DOMAINS_OF
- 	select RESET_CONTROLLER
--	select SIMPLE_PM_BUS
- 	select SOC_BUS
- 	select TI_SYSC
- 	select OMAP_IRQCHIP
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index f423d08b9a71..474b1f2e3f06 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -245,7 +245,6 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_FW_LOADER_USER_HELPER=y
- CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
- CONFIG_HISILICON_LPC=y
--CONFIG_SIMPLE_PM_BUS=y
- CONFIG_FSL_MC_BUS=y
- CONFIG_TEGRA_ACONNECT=m
- CONFIG_GNSS=m
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-index e7f7eee6ee9a..dc3801369488 100644
---- a/drivers/bus/Kconfig
-+++ b/drivers/bus/Kconfig
-@@ -141,18 +141,6 @@ config QCOM_EBI2
- 	  Interface 2, which can be used to connect things like NAND Flash,
- 	  SRAM, ethernet adapters, FPGAs and LCD displays.
- 
--config SIMPLE_PM_BUS
--	tristate "Simple Power-Managed Bus Driver"
--	depends on OF && PM
--	help
--	  Driver for transparent busses that don't need a real driver, but
--	  where the bus controller is part of a PM domain, or under the control
--	  of a functional clock, and thus relies on runtime PM for managing
--	  this PM domain and/or clock.
--	  An example of such a bus controller is the Renesas Bus State
--	  Controller (BSC, sometimes called "LBSC within Bus Bridge", or
--	  "External Bus Interface") as found on several Renesas ARM SoCs.
--
- config SUN50I_DE2_BUS
- 	bool "Allwinner A64 DE2 Bus Driver"
- 	  default ARM64
-diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-index 397e35392bff..86aacd36a56d 100644
---- a/drivers/bus/Makefile
-+++ b/drivers/bus/Makefile
-@@ -26,7 +26,7 @@ obj-$(CONFIG_OMAP_OCP2SCP)	+= omap-ocp2scp.o
- obj-$(CONFIG_QCOM_EBI2)		+= qcom-ebi2.o
- obj-$(CONFIG_SUN50I_DE2_BUS)	+= sun50i-de2.o
- obj-$(CONFIG_SUNXI_RSB)		+= sunxi-rsb.o
--obj-$(CONFIG_SIMPLE_PM_BUS)	+= simple-pm-bus.o
-+obj-$(CONFIG_OF)		+= simple-pm-bus.o
- obj-$(CONFIG_TEGRA_ACONNECT)	+= tegra-aconnect.o
- obj-$(CONFIG_TEGRA_GMI)		+= tegra-gmi.o
- obj-$(CONFIG_TI_PWMSS)		+= ti-pwmss.o
-diff --git a/drivers/soc/canaan/Kconfig b/drivers/soc/canaan/Kconfig
-index 8179b69518b4..853096b7e84c 100644
---- a/drivers/soc/canaan/Kconfig
-+++ b/drivers/soc/canaan/Kconfig
-@@ -5,7 +5,6 @@ config SOC_K210_SYSCTL
- 	depends on RISCV && SOC_CANAAN && OF
- 	default SOC_CANAAN
-         select PM
--        select SIMPLE_PM_BUS
-         select SYSCON
-         select MFD_SYSCON
- 	help
--- 
-2.33.0.685.g46640cef36-goog
+Does this help?
+Changed lines marked with //<<<<<
 
+-Tony
+
+void *begin_update_one_xsave_feature(struct task_struct *tsk,
+				     enum xfeature xfeature, bool full)
+{
+	struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
+	struct xregs_state *xinit = &init_fpstate.xsave;
+	u64 fmask = 1ull << xfeature;
+	void *addr;
+
+	BUG_ON(!(xsave->header.xcomp_bv & fmask));
+
+	fpregs_lock();
+
+	addr = __raw_xsave_addr(xsave, xfeature);
+
+	if (full || tsk != current) {
+		memcpy(addr, __raw_xsave_addr(xinit, xfeature), xstate_sizes[xfeature]);
+		goto out;
+	}
+
+	if (!(xsave->header.xfeatures & fmask)) {
+		xsave->header.xfeatures |= fmask;	//<<<<<
+		xsaves(xsave, fmask);
+	}
+
+out:
+	xsave->header.xfeatures |= fmask;
+	return addr;
+}
+
+void finish_update_one_xsave_feature(struct task_struct *tsk)
+{
+	set_ti_thread_flag(task_thread_info(tsk), TIF_NEED_FPU_LOAD);
+	if (tsk == current)				//<<<<<
+		__cpu_invalidate_fpregs_state();	//<<<<<
+	fpregs_unlock();
+}
