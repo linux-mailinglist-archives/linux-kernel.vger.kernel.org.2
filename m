@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EF241BBF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD7741BBF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243546AbhI2A6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 20:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243530AbhI2A6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 20:58:07 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCD9C06161C;
-        Tue, 28 Sep 2021 17:56:27 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id f133so1562905yba.11;
-        Tue, 28 Sep 2021 17:56:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JnBQzRHZjX1jX9ZbaPy19bZuVBx4MFAmGk8JgFG5HPw=;
-        b=VJ4hiovrOYc7P9u3DdHn+eFVOFUOVStsOQJQwKvE9R6kVwt5k1RF4RfVAZg+cz4vzp
-         5NMev1uO3W2x4W59M8BF99xExe6FrqZZUzjbSgFfSkTeEXpy5QWtgvU3O0nFWKeg/kqz
-         G25wXrMLeI2NLEkf/osfe223+XWHLwHyuP+EWYRzbQTrno5UvL/2RvReCNdpmffp2Btr
-         vNdHgm0VhpikRifXuWjOTgRfgHFMjDyu3qWsomrp2veRMSPRb4/QdDbwC/RCTY5dmjlZ
-         W7ozAnuZpGssPxXb9fGxacbySUmLgEMceCSOf1RLm8C/Ou0SNy9p1zAaQeyr+zCefU2s
-         PY/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JnBQzRHZjX1jX9ZbaPy19bZuVBx4MFAmGk8JgFG5HPw=;
-        b=rIGzI1JsS9KeSzoBWocbZLnbaKawYleChV/FgEEU8suW6GJglAx3Yy7FCL2xH9Wtf0
-         AciwCb4pV/aMdmxWZKgcm/x2wenIOIgyfFGQUC4aSPq23JDXQ2DIErU0lYxA030ESOrP
-         5LEzgQeEzbsgzCXoIky49CqzQ9lj3LI2H6S/Njcaas0yTYrWlp+0t4GrjGa+ZSo5WnvH
-         1Qf+DjlBdso5jp2r6qNmKxMXp9iy5X0YXNCqbVK/dvhQ4sSXYX5aFbQlEMSER3lyWHTu
-         9nRJ+pLAbH0Tiwjwp0TeTdyYRB7eGEx7iY5DZIFYv4+43DdhjlwyWUyNcWxAUUnKZ6dN
-         TiUQ==
-X-Gm-Message-State: AOAM530JB0JU6pTdxy80gkcL2Ax7Ye5cNPMXxyp0UZxaG1Y0CSiH2QMC
-        G3+u7v0fceuiEwQqVv4EBs6SuX76b2tRTLsfVncPZoSIv88=
-X-Google-Smtp-Source: ABdhPJzTkzx02hXT1Mb5vSin3ht3uGdDzRgjkWEWzVfn06Zb2X6N/A1DGvNDAFEGOt6rjvODfDLEbQDjRQd9Tiv6lZo=
-X-Received: by 2002:a25:2255:: with SMTP id i82mr9736362ybi.203.1632876986478;
- Tue, 28 Sep 2021 17:56:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com>
-In-Reply-To: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Tue, 28 Sep 2021 20:55:50 -0400
-Message-ID: <CAEg-Je95-T6AGodk7tyUnN8sw+sdVbHd18w1AnY-6hdBJ+5wtw@mail.gmail.com>
-Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-To:     B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        terrelln@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S243525AbhI2A6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 20:58:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242694AbhI2A56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 20:57:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9BBBB613D1;
+        Wed, 29 Sep 2021 00:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632876978;
+        bh=gXOrLl0XVSljc9cDH2RdYW+Hd305HHntfoljlnUsx7Y=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=KhxCn8e3lhNxnRDGNE3DA+bzDKBxzmWYMuBWIuVUyb5aRJS/O6RXsxdTgrVXHwrH1
+         BF+Vt3/NbuzZZxuAwKWiPOwF8DY8yndJwuBaPknfYfZtFOi4R1l/2+mwxcjetfDFTl
+         16ua4w5wckH/OW7M8/5+4RbR7PuSPNk8NfKPSIRliTQ4Ef819fdqFa25uVXGcBMhFB
+         +WRM4ywi7wvJZTkJvL4A8tX2MCjGfl3S82ckailS3POzPsfz7mzeVKgLwQQkR38VmI
+         eeP+WiFQf60vGmuL85AASPM75lcebBBGmc0/sDNi4nElmEcXouEn/ngYjkeWYdZxv2
+         iNzwoH53NsY6A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88DC8608FE;
+        Wed, 29 Sep 2021 00:56:18 +0000 (UTC)
+Subject: Re: [GIT PULL] pin control fixes for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CACRpkdYa_patWBGC=gnVHkPQeo5BtvKrG2hzNKi3vZGvo5bKQA@mail.gmail.com>
+References: <CACRpkdYa_patWBGC=gnVHkPQeo5BtvKrG2hzNKi3vZGvo5bKQA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdYa_patWBGC=gnVHkPQeo5BtvKrG2hzNKi3vZGvo5bKQA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.15-2
+X-PR-Tracked-Commit-Id: 28406a21999152ff7faa30b194f734565bdd8e0d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a4e6f95a891ac08bd09d62e3e6dae239b150f4c1
+Message-Id: <163287697855.31747.10921981462418607901.pr-tracker-bot@kernel.org>
+Date:   Wed, 29 Sep 2021 00:56:18 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 8:24 PM Tom Seewald <tseewald@gmail.com> wrote:
->
-> Hi,
->
-> Has this been abandoned or will there be future attempts at syncing the
-> in-kernel zstd with the upstream project?
->
+The pull request you sent on Wed, 29 Sep 2021 00:11:13 +0200:
 
-With the kind of crap that Nick has been getting from everyone, I'd be
-surprised if he takes it up again anytime soon. As a bystander, I've been
-incredibly disappointed with how this has "progressed" (read: stalled)
-even though Nick is the developer and maintainer of zstd code.
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.15-2
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a4e6f95a891ac08bd09d62e3e6dae239b150f4c1
 
+Thank you!
 
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
