@@ -2,208 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00CE41C9D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7866841C9D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345784AbhI2QLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
+        id S1345776AbhI2QMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345474AbhI2QLd (ORCPT
+        with ESMTP id S1345953AbhI2QLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:11:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2316C06129F;
-        Wed, 29 Sep 2021 09:04:58 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id EB1D91F4469C
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v7 11/11] media: hantro: Support NV12 on the G2 core
-Date:   Wed, 29 Sep 2021 18:04:39 +0200
-Message-Id: <20210929160439.6601-12-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210929160439.6601-1-andrzej.p@collabora.com>
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
+        Wed, 29 Sep 2021 12:11:55 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9C7C0A8853
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:05:42 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id s16so2408052pfk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iPZWDAx0qWwZzHFVEm3VSfYd1Fg6OsO8uQ8mpVALYQU=;
+        b=AXrVwPojIE4uuzG7pPTAKD3WXTkIW7u8otsUFj+JRd4GoZvtN/YQthTvdooEZbcZo7
+         aHywxGXY5hlm4zvz9jQa+9ggg80V44AKmst/0zbHFY9+CJtQBjSKd9WVrXoYgWsQG26z
+         tgAjdSm5Q1n2kkrehCHUTZo4hOmdCAvGPBoMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iPZWDAx0qWwZzHFVEm3VSfYd1Fg6OsO8uQ8mpVALYQU=;
+        b=MpKekeA9owo4GM4rp8KB8fYQ+/eJtndyiLa7pgUrLW++tPI8MKlSVTiubcOECNvSFS
+         XCA88MBDCrHEOdMLzvpHwZXok1DpWDZvQqAGjGkHVTpfcENHAYiKeq1I5QG0Fz6OjBoR
+         V40OWuMrLwaHCiljQlKhPs+fbiVxKm02R8jU0hE77imbmxmyiBLuQ82NHFFtJ6RJZFud
+         5VQDWCQuf++gW1Ix5PCSftHPJLUX0aQZop/eg4NJtphpbEi1FtyBTU1a2kDaZceBp/01
+         D8KDfFozfmV2UKGEoFQw8/OF/Fs1rc8wPgdce6k7eNzyLQ7OuxDhqmfma5Usy9F4OWUf
+         60cA==
+X-Gm-Message-State: AOAM530NIguHqZpD33SRbj61eGUPMhOYTSefpc3r5kcvYB/ZF+NR2qo/
+        StXW1L5/Wf4EVD3ynXoEyl1S7Hhkd+Kn3Q==
+X-Google-Smtp-Source: ABdhPJwYQb4hg5NWlIAGORTVH1GszFgHnOpA6V9qlo0sosJpSk16u7/1gK7AbpU2wJpHAI1HFMGQzA==
+X-Received: by 2002:a62:1943:0:b0:444:f894:e19d with SMTP id 64-20020a621943000000b00444f894e19dmr659672pfz.36.1632931541989;
+        Wed, 29 Sep 2021 09:05:41 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:2f10:2763:4825:1f01])
+        by smtp.gmail.com with UTF8SMTPSA id x9sm2479313pjp.50.2021.09.29.09.05.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 09:05:41 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 09:05:40 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: core: Fix a build failure due to
+ psy_has_property() definition location
+Message-ID: <YVSO1NYeegW/trvr@google.com>
+References: <20210929130218.26598-1-sj@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210929130218.26598-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
-Enable the G2 post-processor block, in order to produce regular NV12.
+Hi SeongJae,
 
-The logic in hantro_postproc.c is leveraged to take care of allocating
-the extra buffers and configure the post-processor, which is
-significantly simpler than the one on the G1.
+thanks for the fix!
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
- drivers/staging/media/hantro/hantro_hw.h      |  1 +
- .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
- drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
- 4 files changed, 46 insertions(+), 3 deletions(-)
+Geert sent a similar patch earlier:
 
-diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-index 7f827b9f0133..1a26be72c878 100644
---- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-@@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
- 	hantro_reg_write(ctx->dev, &g2_output_format, 0);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, G2_OUT_LUMA_ADDR, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) / dst->vp9.width);
- 	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) / dst->vp9.height);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
- 	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params->golden_frame_ts);
- 	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
- 
--	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf, 0) +
-+	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
- 		  mv_offset(ctx, dec_params);
- 	hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
- 
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 2961d399fd60..3d4a5dc1e6d5 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -274,6 +274,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
- extern const struct hantro_variant sama5d4_vdec_variant;
- 
- extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
-+extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
- 
- extern const u32 hantro_vp8_dec_mc_filter[8][6];
- 
-diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
-index 4549aec08feb..79a66d001738 100644
---- a/drivers/staging/media/hantro/hantro_postproc.c
-+++ b/drivers/staging/media/hantro/hantro_postproc.c
-@@ -11,6 +11,7 @@
- #include "hantro.h"
- #include "hantro_hw.h"
- #include "hantro_g1_regs.h"
-+#include "hantro_g2_regs.h"
- 
- #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
- { \
-@@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
- }
- 
-+static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	struct vb2_v4l2_buffer *dst_buf;
-+	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
-+	dma_addr_t dst_dma;
-+
-+	dst_buf = hantro_get_dst_buf(ctx);
-+	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-+
-+	hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
-+	hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma + chroma_offset);
-+	hantro_reg_write(vpu, &g2_out_rs_e, 1);
-+}
-+
- void hantro_postproc_free(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
- 	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
- 		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
- 						ctx->dst_fmt.height);
-+	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
-+		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
-+					       ctx->dst_fmt.height);
- 
- 	for (i = 0; i < num_buffers; ++i) {
- 		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
-@@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
- }
- 
-+static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+
-+	hantro_reg_write(vpu, &g2_out_rs_e, 0);
-+}
-+
- void hantro_postproc_disable(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops = {
- 	.enable = hantro_postproc_g1_enable,
- 	.disable = hantro_postproc_g1_disable,
- };
-+
-+const struct hantro_postproc_ops hantro_g2_postproc_ops = {
-+	.enable = hantro_postproc_g2_enable,
-+	.disable = hantro_postproc_g2_disable,
-+};
-diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-index 455a107ffb02..1a43f6fceef9 100644
---- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-+++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-@@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
- 	},
- };
- 
-+static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
-+	{
-+		.fourcc = V4L2_PIX_FMT_NV12,
-+		.codec_mode = HANTRO_MODE_NONE,
-+		.postprocessed = true,
-+	},
-+};
-+
- static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
- 	{
- 		.fourcc = V4L2_PIX_FMT_NV12_4L4,
-@@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
- 	.dec_offset = 0x0,
- 	.dec_fmts = imx8m_vpu_g2_dec_fmts,
- 	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-+	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
-+	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
-+	.postproc_ops = &hantro_g2_postproc_ops,
- 	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
- 	.codec_ops = imx8mq_vpu_g2_codec_ops,
- 	.init = imx8mq_vpu_hw_init,
--- 
-2.17.1
+https://patchwork.kernel.org/project/linux-pm/patch/7b35a74f2c2ad19c8dc1ca60c59e48a14288677f.1632830348.git.geert+renesas@glider.be/
 
+On Wed, Sep 29, 2021 at 01:02:18PM +0000, SeongJae Park wrote:
+> Commit 9ba533eb99bb ("power: supply: core: Add psy_has_property()") in -next
+> tree defines 'psy_has_property()' when 'CONFIG_THERMAL' is set.  But, it is
+> also called from '__power_supply_register()', which is defined even if
+> 'CONFIG_THERMAL' is unset.  As a result, the build fails when 'CONFIG_THERMAL'
+> is undefined as below.
+> 
+>     .../drivers/power/supply/power_supply_core.c: In function '__power_supply_register':
+>     .../drivers/power/supply/power_supply_core.c:1137:6: error: implicit declaration of function 'psy_has_property' [-Werror=implicit-function-declaration]
+>      1137 |  if (psy_has_property(desc, POWER_SUPPLY_PROP_USB_TYPE) &&
+>           |      ^~~~~~~~~~~~~~~~
+>     cc1: some warnings being treated as errors
+>     .../scripts/Makefile.build:288: recipe for target 'drivers/power/supply/power_supply_core.o' failed
+>     make[4]: *** [drivers/power/supply/power_supply_core.o] Error 1
+> 
+> This commit fixes the issue by moving the definition out of the '#ifdef' block.
+> 
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+>  drivers/power/supply/power_supply_core.c | 32 ++++++++++++------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
+> index 75575ea45f21..fc12a4f407f4 100644
+> --- a/drivers/power/supply/power_supply_core.c
+> +++ b/drivers/power/supply/power_supply_core.c
+> @@ -951,6 +951,22 @@ void power_supply_unreg_notifier(struct notifier_block *nb)
+>  }
+>  EXPORT_SYMBOL_GPL(power_supply_unreg_notifier);
+>  
+> +static bool psy_has_property(const struct power_supply_desc *psy_desc,
+> +			     enum power_supply_property psp)
+> +{
+> +	bool found = false;
+> +	int i;
+> +
+> +	for (i = 0; i < psy_desc->num_properties; i++) {
+> +		if (psy_desc->properties[i] == psp) {
+> +			found = true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return found;
+> +}
+> +
+>  #ifdef CONFIG_THERMAL
+>  static int power_supply_read_temp(struct thermal_zone_device *tzd,
+>  		int *temp)
+> @@ -975,22 +991,6 @@ static struct thermal_zone_device_ops psy_tzd_ops = {
+>  	.get_temp = power_supply_read_temp,
+>  };
+>  
+> -static bool psy_has_property(const struct power_supply_desc *psy_desc,
+> -			     enum power_supply_property psp)
+> -{
+> -	bool found = false;
+> -	int i;
+> -
+> -	for (i = 0; i < psy_desc->num_properties; i++) {
+> -		if (psy_desc->properties[i] == psp) {
+> -			found = true;
+> -			break;
+> -		}
+> -	}
+> -
+> -	return found;
+> -}
+> -
+>  static int psy_register_thermal(struct power_supply *psy)
+>  {
+>  	int ret;
+> -- 
+> 2.17.1
+> 
