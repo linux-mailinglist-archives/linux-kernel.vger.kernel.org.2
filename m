@@ -2,326 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B309441C068
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E048D41C06C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244615AbhI2IPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:15:46 -0400
-Received: from egress-ip33a.ess.de.barracuda.com ([18.185.115.192]:38100 "EHLO
-        egress-ip33a.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244524AbhI2IPk (ORCPT
+        id S244635AbhI2IPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:15:49 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44994 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244639AbhI2IPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:15:40 -0400
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197]) by mx-outbound11-76.eu-central-1a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 29 Sep 2021 08:13:56 +0000
-Received: by mail-pl1-f197.google.com with SMTP id n2-20020a1709026a8200b0013e2253d774so883146plk.14
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mistralsolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GCkhqC8f/n95orai+QOQsJrJloASjkEjLiHcFYdwic8=;
-        b=kpAPS/ZNjeK/yA48lLJ4G1i05D3HawQXqyejH3gQi1Yqa/ab9j/rf/ja+yRbiyUWTf
-         vN3kXj4J6tG4rcvFSw6L7Kg5hP8BUwfmLkLcP0ITDbaOVP+QJT9wlmzADh1WKSxvaWJj
-         V/hs0qhfQol0CQ/hlqJgWoGkddIyxsI8AdC00=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GCkhqC8f/n95orai+QOQsJrJloASjkEjLiHcFYdwic8=;
-        b=hWHI5rD7BWZLDAaZxemN6iBUvLRHZKQ1D20uTPUOQduNgcytiX9NHZa51Gov4Wt8Xc
-         WSthW4aSaC/DoiqRogkFnHE+9zVO+dIvj+Z9PwxJjUmKyo9oM3sCLMxEbq2mzLnSItma
-         qaqAOkLNLRliLF1IREb8BUvqsahfhuJSDsJ1Qz8iV7V/mJzQcTQk4/qp+JMqsg9xSchw
-         7jPqDXu2nuvmkwqfvUNLKob7bxkurELbCm8xLVC2/y9wOi1a1SkVN3mITv4OvJGdQ7t/
-         OKgEzReT11C7s0yrPEuwH905ZekgKit9NmVSp/oacgiIU31zuQklcP7rqhdnqKQ67TBc
-         qftw==
-X-Gm-Message-State: AOAM532JZ7oJ4D0u+PjgLmieB1mqkQVMXiW/oQKh8/SHRU8M4iodTsAg
-        xt/09CJrnJ6vz/L7MwX1h72s34wBZBgWhV2ZmnqBy2FcwC1geoIfQUuY1prNB0ELA6zqii3pS2J
-        90SY2MNgpb4tR5rc3WCHg29Xtj52xwAtRtrFgVWU6WkjJvaPOWQYpLm1IjH3U
-X-Received: by 2002:aa7:82ce:0:b0:44b:436b:b171 with SMTP id f14-20020aa782ce000000b0044b436bb171mr2103575pfn.21.1632903235238;
-        Wed, 29 Sep 2021 01:13:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4yfWXtVv9xyy4yPj06w0kfeDerpfVwhmc185e1yBjxC5hDPb11qWVmKk7cyTidjrjsX5m+g==
-X-Received: by 2002:aa7:82ce:0:b0:44b:436b:b171 with SMTP id f14-20020aa782ce000000b0044b436bb171mr2103563pfn.21.1632903234994;
-        Wed, 29 Sep 2021 01:13:54 -0700 (PDT)
-Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id k14sm1152026pji.45.2021.09.29.01.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 01:13:54 -0700 (PDT)
-From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
-X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sinthu Raja <sinthu.raja@ti.com>
-Subject: [PATCH V3 4/4] arm64: dts: ti: k3-j721e-sk: Add DDR carveout memory nodes
-Date:   Wed, 29 Sep 2021 13:43:33 +0530
-Message-Id: <20210929081333.26454-5-sinthu.raja@ti.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210929081333.26454-1-sinthu.raja@ti.com>
-References: <20210929081333.26454-1-sinthu.raja@ti.com>
+        Wed, 29 Sep 2021 04:15:46 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C6A5E1FFCE;
+        Wed, 29 Sep 2021 08:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632903244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QUXHeKGLLCQvV+djGJ6fIeizZaKNDi61Zv1KFJVrKWg=;
+        b=Js6bl4C+C/obXQ53mMVdXW0gGWUCq0cWozJSelYmcOpMjhVmT+ar/wOAQEirVxaLcIExjE
+        Pss3iKK57HRkpcsyENOYheAl0XN160DXJGMK///Z80mh4TnFNTwxSsw7kskjNc89lL8UCQ
+        uRJhr0UT7aXyrPAjU02XtZAocojQJ24=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632903244;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QUXHeKGLLCQvV+djGJ6fIeizZaKNDi61Zv1KFJVrKWg=;
+        b=eBxF+ZSdAVpJKiIFWYFhBqY5GrVXpX+U6LGFRZe4Y8If2mWoneYjaU4nu9g2Z7OTvtrE0I
+        EwH8fGshT0uBD4CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D35213A81;
+        Wed, 29 Sep 2021 08:14:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xbZxHUwgVGHqDAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 29 Sep 2021 08:14:04 +0000
+Message-ID: <0bfebc7c-b723-7f87-453d-123d77a49cca@suse.de>
+Date:   Wed, 29 Sep 2021 10:14:03 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1632903235-302892-1133-19177-1
-X-BESS-VER: 2019.1_20210928.1746
-X-BESS-Apparent-Source-IP: 209.85.214.197
-X-BESS-Outbound-Spam-Score: 0.40
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.234800 [from 
-        cloudscan11-115.eu-central-1a.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.40 BSF_SC0_SA085b         META: Custom Rule SA085b 
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
-X-BESS-Outbound-Spam-Status: SCORE=0.40 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_SC0_SA085b, BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
-X-BESS-BRTS-Status: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] [SUBMITTED 20210721] fbdev: simplefb: fix Kconfig
+ dependencies
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+References: <20210928145243.1098064-1-arnd@kernel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20210928145243.1098064-1-arnd@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------jIOv0DVcltLz15eqCTrGX94A"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sinthu Raja <sinthu.raja@ti.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------jIOv0DVcltLz15eqCTrGX94A
+Content-Type: multipart/mixed; boundary="------------L8E2vaOnit16sZhAVdaZ4yvl";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>, Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Maxime Ripard <maxime@cerno.tech>
+Cc: Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Message-ID: <0bfebc7c-b723-7f87-453d-123d77a49cca@suse.de>
+Subject: Re: [PATCH] [SUBMITTED 20210721] fbdev: simplefb: fix Kconfig
+ dependencies
+References: <20210928145243.1098064-1-arnd@kernel.org>
+In-Reply-To: <20210928145243.1098064-1-arnd@kernel.org>
 
-Two carveout reserved memory nodes each have been added for each of the
-other remote processors devices within the MAIN domain on the TI J721E
-SK boards. These nodes are assigned to the respective rproc device nodes
-as well. The first region will be used as the DMA pool for the rproc
-devices, and the second region will furnish the static carveout regions
-for the firmware memory.
+--------------L8E2vaOnit16sZhAVdaZ4yvl
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-An additional reserved memory node is also added to reserve a portion of
-the DDR memory to be used for performing inter-processor communication
-between all the remote processors running RTOS or baremetal firmwares.
-8 MB of memory is reserved for this purpose, and this accounts for all
-the vrings and vring buffers between all the possible pairs of remote
-processors.
+SGkNCg0KQW0gMjguMDkuMjEgdW0gMTY6NTIgc2NocmllYiBBcm5kIEJlcmdtYW5uOg0KPiBG
+cm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gQ29uZmlndXJhdGlv
+bnMgd2l0aCBib3RoIENPTkZJR19GQl9TSU1QTEU9eSBhbmQgQ09ORklHX0RSTV9TSU1QTEVE
+Uk09bQ0KPiBhcmUgYWxsb3dlZCBieSBLY29uZmlnIGJlY2F1c2UgdGhlICdkZXBlbmRzIG9u
+ICFEUk1fU0lNUExFRFJNJyBkZXBlbmRlbmN5DQo+IGRvZXMgbm90IGRpc2FsbG93IEZCX1NJ
+TVBMRSBhcyBsb25nIGFzIFNJTVBMRURSTSBpcyBub3QgYnVpbHQtaW4uIFRoaXMNCj4gY2Fu
+IGhvd2V2ZXIgcmVzdWx0IGluIGEgYnVpbGQgZmFpbHVyZSB3aGVuIGNmYl9maWxscmVjdCgp
+IGV0YyBhcmUgdGhlbg0KPiBhbHNvIGluIGxvYWRhYmxlIG1vZHVsZXM6DQo+IA0KPiB4ODZf
+NjQtbGludXgtbGQ6IGRyaXZlcnMvdmlkZW8vZmJkZXYvc2ltcGxlZmIubzooLnJvZGF0YSsw
+eDFmOCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYGNmYl9maWxscmVjdCcNCj4geDg2XzY0
+LWxpbnV4LWxkOiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L3NpbXBsZWZiLm86KC5yb2RhdGErMHgy
+MDApOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBjZmJfY29weWFyZWEnDQo+IHg4Nl82NC1s
+aW51eC1sZDogZHJpdmVycy92aWRlby9mYmRldi9zaW1wbGVmYi5vOigucm9kYXRhKzB4MjA4
+KTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgY2ZiX2ltYWdlYmxpdCcNCj4gDQo+IFRvIHdv
+cmsgYXJvdW5kIHRoaXMsIGNoYW5nZSBGQl9TSU1QTEUgdG8gYmUgYSAndHJpc3RhdGUnIHN5
+bWJvbCwNCj4gd2hpY2ggc3RpbGwgYWxsb3dzIGJvdGggdG8gYmUgPW0gdG9nZXRoZXIsIGJ1
+dCBub3Qgb25lIG9mIHRoZW0gdG8NCj4gYmUgPXkgaWYgdGhlIG90aGVyIG9uZSBpcyA9bS4g
+SWYgYSBkaXN0cm8ga2VybmVsIHBpY2tzIHRoaXMNCj4gY29uZmlndXJhdGlvbiwgaXQgY2Fu
+IGJlIGRldGVybWluZWQgYnkgbG9jYWwgcG9saWN5IHdoaWNoIG9mDQo+IHRoZSB0d28gbW9k
+dWxlcyBnZXRzIGxvYWRlZC4gVGhlICdvZl9jaG9zZW4nIGV4cG9ydCBpcyBuZWVkZWQNCj4g
+YXMgdGhpcyBpcyB0aGUgZmlyc3QgbG9hZGFibGUgbW9kdWxlIHJlZmVyZW5jaW5nIGl0Lg0K
+PiANCj4gQWx0ZXJuYXRpdmVseSwgdGhlIEtjb25maWcgZGVwZW5kZW5jeSBjb3VsZCBiZSBj
+aGFuZ2VkIHRvDQo+ICdkZXBlbmRzIG9uIERSTV9TSU1QTEVEUk09bicsIHdoaWNoIHdvdWxk
+IGZvcmJpZCB0aGUgY29uZmlndXJhdGlvbg0KPiB3aXRoIGJvdGggZHJpdmVycy4NCj4gDQo+
+IEZpeGVzOiAxMWU4ZjVmZDIyM2IgKCJkcm06IEFkZCBzaW1wbGVkcm0gZHJpdmVyIikNCj4g
+QWNrZWQtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+ICMgZm9yIGRyaXZlcnMv
+b2YvDQo+IExpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIxMDcyMTE1MTgz
+OS4yNDg0MjQ1LTEtYXJuZEBrZXJuZWwub3JnLw0KPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJl
+cmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KDQpJJ3ZlIGFkZGVkIGEgZmV3IENDIHRhZ3MgYW5k
+IG1lcmdlZCB0aGUgcGF0Y2ggaW50byBkcm0tbWlzYy1maXhlcy4gDQpUaGFua3MgZm9yIHlv
+dXIgcGF0aWVuY2UgYW5kIHBlcnNldmVyYW5jZS4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMN
+Cg0KPiAtLS0NCj4gICBkcml2ZXJzL29mL2Jhc2UuYyAgICAgICAgICAgfCAxICsNCj4gICBk
+cml2ZXJzL3ZpZGVvL2ZiZGV2L0tjb25maWcgfCA1ICsrKy0tDQo+ICAgMiBmaWxlcyBjaGFu
+Z2VkLCA0IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9vZi9iYXNlLmMgYi9kcml2ZXJzL29mL2Jhc2UuYw0KPiBpbmRleCBmNzIw
+YzBkMjQ2ZjIuLjBhYzE3MjU2MjU4ZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9vZi9iYXNl
+LmMNCj4gKysrIGIvZHJpdmVycy9vZi9iYXNlLmMNCj4gQEAgLTM2LDYgKzM2LDcgQEAgTElT
+VF9IRUFEKGFsaWFzZXNfbG9va3VwKTsNCj4gICBzdHJ1Y3QgZGV2aWNlX25vZGUgKm9mX3Jv
+b3Q7DQo+ICAgRVhQT1JUX1NZTUJPTChvZl9yb290KTsNCj4gICBzdHJ1Y3QgZGV2aWNlX25v
+ZGUgKm9mX2Nob3NlbjsNCj4gK0VYUE9SVF9TWU1CT0wob2ZfY2hvc2VuKTsNCj4gICBzdHJ1
+Y3QgZGV2aWNlX25vZGUgKm9mX2FsaWFzZXM7DQo+ICAgc3RydWN0IGRldmljZV9ub2RlICpv
+Zl9zdGRvdXQ7DQo+ICAgc3RhdGljIGNvbnN0IGNoYXIgKm9mX3N0ZG91dF9vcHRpb25zOw0K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92aWRlby9mYmRldi9LY29uZmlnIGIvZHJpdmVycy92
+aWRlby9mYmRldi9LY29uZmlnDQo+IGluZGV4IGIyNmI3OWRmY2FjOS4uNmVkNWU2MDhkZDA0
+IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L0tjb25maWcNCj4gKysrIGIv
+ZHJpdmVycy92aWRlby9mYmRldi9LY29uZmlnDQo+IEBAIC0yMTkzLDggKzIxOTMsOSBAQCBj
+b25maWcgRkJfSFlQRVJWDQo+ICAgCSAgVGhpcyBmcmFtZWJ1ZmZlciBkcml2ZXIgc3VwcG9y
+dHMgTWljcm9zb2Z0IEh5cGVyLVYgU3ludGhldGljIFZpZGVvLg0KPiAgIA0KPiAgIGNvbmZp
+ZyBGQl9TSU1QTEUNCj4gLQlib29sICJTaW1wbGUgZnJhbWVidWZmZXIgc3VwcG9ydCINCj4g
+LQlkZXBlbmRzIG9uIChGQiA9IHkpICYmICFEUk1fU0lNUExFRFJNDQo+ICsJdHJpc3RhdGUg
+IlNpbXBsZSBmcmFtZWJ1ZmZlciBzdXBwb3J0Ig0KPiArCWRlcGVuZHMgb24gRkINCj4gKwlk
+ZXBlbmRzIG9uICFEUk1fU0lNUExFRFJNDQo+ICAgCXNlbGVjdCBGQl9DRkJfRklMTFJFQ1QN
+Cj4gICAJc2VsZWN0IEZCX0NGQl9DT1BZQVJFQQ0KPiAgIAlzZWxlY3QgRkJfQ0ZCX0lNQUdF
+QkxJVA0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERl
+dmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxk
+c3RyLiA1LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJu
+YmVyZykNCkdlc2Now6RmdHNmw7xocmVyOiBGZWxpeCBJbWVuZMO2cmZmZXINCg==
 
-The current carveout addresses and sizes are defined statically for each
-rproc device. The R5F processors do not have an MMU, and as such require
-the exact memory used by the firmwares to be set-aside. The C71x DSP
-processor does support a MMU called CMMU, but is not currently supported
-and as such requires the exact memory used by the firmware to be
-set-aside. The firmware images do not require any RSC_CARVEOUT entries
-in their resource tables to allocate the memory for firmware memory
-segments
+--------------L8E2vaOnit16sZhAVdaZ4yvl--
 
-Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
----
+--------------jIOv0DVcltLz15eqCTrGX94A
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-The following new warnings are introduced. Please refer to the ongoing discussion [1]
+-----BEGIN PGP SIGNATURE-----
 
-arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
-/reserved-memory/r5f-dma-memory@a0000000: failed to match any schema
-with compatible: ['shared-dma-pool']
-arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
-/reserved-memory/r5f-memory@a0100000: failed to match any schema with
-compatible: ['shared-dma-pool']
-arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
-/reserved-memory/r5f-dma-memory@a1000000: failed to match any schema
-with compatible: ['shared-dma-pool']
-arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
-/reserved-memory/r5f-memory@a1100000: failed to match any schema with
-compatible: ['shared-dma-pool']
-arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
-/reserved-memory/r5f-dma-memory@a2000000: failed to match any schema
-with compatible: ['shared-dma-pool']
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFUIEsFAwAAAAAACgkQlh/E3EQov+B2
+SQ//RXF5axAXGddeKOgymTLnqV/PHW/B2rmaInibjotBM4NyAO2+wcF10P1BkQE3vX2x5F59AqPy
+UWJfXVdEb1Dr0nfILECEviK4YZ9UCRnrGTJ5eY8akGR+OzSb58y8V/BnSeGNg5PSz3SxTItRKvFk
+xqURIeCjolNBlzj6A2tGXHF30RspF3YrKW+XjtBVn5T6agRvQWA8oDgfGsq4bEgwM0IKIL8sbt8h
+/MDBQEq9QIygBw7pFQj2Tu0UWcdUa7DKYnxQ6fsawx9/UPDJRg6zwxx6seQ+X7Z316QQgkqzrv23
+PVrUhmzzZpvTUxeIbOiOuy/TOiGCEN1m5xUE2sJCZdT8V0Ch7RtvG6N7kpakJ7R+OonFKCl9w2Yf
+bl6ywg45jRushme00sge7sNhzO3Kf81j7OCQe4irVeUzdlwrzEB07rwu+t9dF9oGPZKzyUId53C3
+YszN/+Xhr6S5jHDd7HUdbJ9aMdlhBeGQlkqjnyNThF2VEkruJbi0Zv4Vm/RmxuBSrl8PO6PDgI/6
+jmWO/zFkaBzxmcuoim8/Aeodc6bmdAjtTNG5usi4TtQUiZJBrsuLebBGmZErsmwXGXXDLn0rebuC
+TymqgKkLHDg+B9hhEvliG4mCxq9sFzgNKTpqWIxU4OnFmkkhIkmgah4KxFcVcnkx7gi5zGVfuF26
+mZo=
+=zSdW
+-----END PGP SIGNATURE-----
 
-[1] https://lore.kernel.org/linux-devicetree/20210423163234.3651547-2-thierry.reding@gmail.com/
-
- arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 144 +++++++++++++++++++++++++
- 1 file changed, 144 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-index 7816aa9b06f0..b726310d867c 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-@@ -28,6 +28,132 @@ memory@80000000 {
- 		      <0x00000008 0x80000000 0x00000000 0x80000000>;
- 	};
- 
-+	reserved_memory: reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		secure_ddr: optee@9e800000 {
-+			reg = <0x00 0x9e800000 0x00 0x01800000>;
-+			alignment = <0x1000>;
-+			no-map;
-+		};
-+
-+		mcu_r5fss0_core0_dma_memory_region: r5f-dma-memory@a0000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa0000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		mcu_r5fss0_core0_memory_region: r5f-memory@a0100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa0100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		mcu_r5fss0_core1_dma_memory_region: r5f-dma-memory@a1000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa1000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		mcu_r5fss0_core1_memory_region: r5f-memory@a1100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa1100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core0_dma_memory_region: r5f-dma-memory@a2000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa2000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core0_memory_region: r5f-memory@a2100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa2100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core1_dma_memory_region: r5f-dma-memory@a3000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa3000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core1_memory_region: r5f-memory@a3100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa3100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core0_dma_memory_region: r5f-dma-memory@a4000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa4000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core0_memory_region: r5f-memory@a4100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa4100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core1_dma_memory_region: r5f-dma-memory@a5000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa5000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core1_memory_region: r5f-memory@a5100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa5100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		c66_1_dma_memory_region: c66-dma-memory@a6000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa6000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		c66_0_memory_region: c66-memory@a6100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa6100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		c66_0_dma_memory_region: c66-dma-memory@a7000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa7000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		c66_1_memory_region: c66-memory@a7100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa7100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		c71_0_dma_memory_region: c71-dma-memory@a8000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa8000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		c71_0_memory_region: c71-memory@a8100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa8100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		rtos_ipc_memory_region: ipc-memories@aa000000 {
-+			reg = <0x00 0xaa000000 0x00 0x01c00000>;
-+			alignment = <0x1000>;
-+			no-map;
-+		};
-+	};
-+
- 	vusb_main: fixedregulator-vusb-main5v0 {
- 		/* USB MAIN INPUT 5V DC */
- 		compatible = "regulator-fixed";
-@@ -823,36 +949,54 @@ &mailbox0_cluster11 {
- 
- &mcu_r5fss0_core0 {
- 	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core0>;
-+	memory-region = <&mcu_r5fss0_core0_dma_memory_region>,
-+			<&mcu_r5fss0_core0_memory_region>;
- };
- 
- &mcu_r5fss0_core1 {
- 	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core1>;
-+	memory-region = <&mcu_r5fss0_core1_dma_memory_region>,
-+			<&mcu_r5fss0_core1_memory_region>;
- };
- 
- &main_r5fss0_core0 {
- 	mboxes = <&mailbox0_cluster1 &mbox_main_r5fss0_core0>;
-+	memory-region = <&main_r5fss0_core0_dma_memory_region>,
-+			<&main_r5fss0_core0_memory_region>;
- };
- 
- &main_r5fss0_core1 {
- 	mboxes = <&mailbox0_cluster1 &mbox_main_r5fss0_core1>;
-+	memory-region = <&main_r5fss0_core1_dma_memory_region>,
-+			<&main_r5fss0_core1_memory_region>;
- };
- 
- &main_r5fss1_core0 {
- 	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss1_core0>;
-+	memory-region = <&main_r5fss1_core0_dma_memory_region>,
-+			<&main_r5fss1_core0_memory_region>;
- };
- 
- &main_r5fss1_core1 {
- 	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss1_core1>;
-+	memory-region = <&main_r5fss1_core1_dma_memory_region>,
-+			<&main_r5fss1_core1_memory_region>;
- };
- 
- &c66_0 {
- 	mboxes = <&mailbox0_cluster3 &mbox_c66_0>;
-+	memory-region = <&c66_0_dma_memory_region>,
-+			<&c66_0_memory_region>;
- };
- 
- &c66_1 {
- 	mboxes = <&mailbox0_cluster3 &mbox_c66_1>;
-+	memory-region = <&c66_1_dma_memory_region>,
-+			<&c66_1_memory_region>;
- };
- 
- &c71_0 {
- 	mboxes = <&mailbox0_cluster4 &mbox_c71_0>;
-+	memory-region = <&c71_0_dma_memory_region>,
-+			<&c71_0_memory_region>;
- };
--- 
-2.31.1
-
+--------------jIOv0DVcltLz15eqCTrGX94A--
