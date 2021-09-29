@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A9E41C366
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B904B41C371
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244409AbhI2L0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:26:46 -0400
-Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:44226 "EHLO
-        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhI2L0p (ORCPT
+        id S245356AbhI2Laq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhI2Lap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:26:45 -0400
-Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
-        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 9E7231008CBCD;
-        Wed, 29 Sep 2021 19:25:03 +0800 (CST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 831DC200BC2D9;
-        Wed, 29 Sep 2021 19:25:03 +0800 (CST)
-X-Virus-Scanned: amavisd-new at 
-Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jqi84HosEhSJ; Wed, 29 Sep 2021 19:25:03 +0800 (CST)
-Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
-        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 80FC42007EB3E;
-        Wed, 29 Sep 2021 19:24:55 +0800 (CST)
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-To:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guo Zhi <qtxuning1999@sjtu.edu.cn>, linux-kernel@vger.kernel.org
-Subject: [PATCH] dirvers/lkdtm: Fix kernel pointer leak
-Date:   Wed, 29 Sep 2021 19:24:45 +0800
-Message-Id: <20210929112446.1115555-1-qtxuning1999@sjtu.edu.cn>
-X-Mailer: git-send-email 2.33.0
+        Wed, 29 Sep 2021 07:30:45 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA688C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:29:04 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id v127so1540390wme.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=uFr7uJ6KTmQJHmnmWVFZMG4UoPxJgzcyn7oJlR9xeQQ=;
+        b=Exknt2Km+rOM24URy9Y39g26h2kaTHwcxVisGHzVDjAJ7Vf8/upcldVViHRyeMClU2
+         nmdmI39qk6t5WV3WNYa+uQnRDsywFT6jzgfMqpJrH3IsbhXRlabKklsYpVto/x48KdtY
+         z8ZhbDHKXaHMhm4xC/I/6BU+RnZQjrIToyfumbUE03iIKKYYdTjKS3ZOWp2Ol//fO16Q
+         nizCSIhcbvPcYzhhffyPZ9QMHJiA5kdWp9bPKPGgmZb4jpvATaG3uQd56mYL9u0IikEp
+         sbfUWIeAuHRBjdnA3OWNAWVbJYH/CcUthyRvsqPlhFYAEJBl44zXbmqDiI2qsmbDmEzp
+         8Deg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=uFr7uJ6KTmQJHmnmWVFZMG4UoPxJgzcyn7oJlR9xeQQ=;
+        b=QSBBbDbWCp0nvB8x+XcPbyq5+fJ2riE/QfvdgVNWpFFSLtt6oxz+27Hu1/vDQwqfQT
+         6Wp19pJTk/g+ZzgFl70J+ufdNvEqjYrztBQDsB4XQGurH/OBBN0cvc4bIgs3cu48D5Ui
+         G47IFUMnkK/JE9IJka6zcXv8h0H7sHeqWlmWq3f8uUJMEng2R+1Wu0E+nYfC8vG4aLr3
+         C1Ylz4O3uF+/gXFZvrroQjKakSAf/j9Md6XhpkOmc9VMcEXhVy+8n3GHm5beD7oIQeGY
+         cZTU1XJ9AiijlcTT53e5IUKjlrig0A8nb19C+ARBcZKXMTN9kop6OsXe+TYrN5HCJb94
+         5WzQ==
+X-Gm-Message-State: AOAM531PHh4b3V1xRC1nVVN9xLvnjPK+obiSHvMirbztkA4jFvzuA+WJ
+        2YD5sU7/Mcurj58VmPGbg52ZULSSCccgIalT
+X-Google-Smtp-Source: ABdhPJywcrVgiD8Y+ZTWWUhoN9oSXmGDrjkJ9TwTYfQdV2oskhgQdVd4Q9KSswaIr3YzdnQO5grqqg==
+X-Received: by 2002:a1c:1f10:: with SMTP id f16mr9837890wmf.179.1632914942977;
+        Wed, 29 Sep 2021 04:29:02 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:20c7:8d80:b92e:b532:3d37:f10b? ([2a02:8084:20c7:8d80:b92e:b532:3d37:f10b])
+        by smtp.gmail.com with ESMTPSA id j5sm2095159wrw.39.2021.09.29.04.29.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 04:29:02 -0700 (PDT)
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+From:   hallblazzar <hallblazzar@gmail.com>
+Subject: [PATCH v2] staging: r8188eu: Fix misspelling in comment
+Message-ID: <7bc392d5-11e4-7ad0-dab6-295ccadf63b9@gmail.com>
+Date:   Wed, 29 Sep 2021 12:29:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointers should be printed with %p rather than %px
-which printed kernel pointer directly.
-Change %px to %p to print the secured pointer.
+As format check raised by scripts/checkpatch.pl, comment in the rtw_ap.c
+looks misspelled by accident. Help fix it.
 
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+The original error is as below shows:
+
+CHECK: 'followign' may be misspelled - perhaps 'following'?
++Set to 0 (HT pure) under the followign conditions
+
+Signed-off-by: Siou-Jhih, Guo <hallblazzar@gmail.com>
 ---
- drivers/misc/lkdtm/perms.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/staging/r8188eu/core/rtw_ap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-index 2dede2ef658f..ceff8668877a 100644
---- a/drivers/misc/lkdtm/perms.c
-+++ b/drivers/misc/lkdtm/perms.c
-@@ -47,7 +47,7 @@ static noinline void execute_location(void *dst, bool write)
- {
- 	void (*func)(void) = dst;
- 
--	pr_info("attempting ok execution at %px\n", do_nothing);
-+	pr_info("attempting ok execution at %p\n", do_nothing);
- 	do_nothing();
- 
- 	if (write == CODE_WRITE) {
-@@ -55,7 +55,7 @@ static noinline void execute_location(void *dst, bool write)
- 		flush_icache_range((unsigned long)dst,
- 				   (unsigned long)dst + EXEC_SIZE);
- 	}
--	pr_info("attempting bad execution at %px\n", func);
-+	pr_info("attempting bad execution at %p\n", func);
- 	func();
- 	pr_err("FAIL: func returned\n");
- }
-@@ -67,14 +67,14 @@ static void execute_user_location(void *dst)
- 	/* Intentionally crossing kernel/user memory boundary. */
- 	void (*func)(void) = dst;
- 
--	pr_info("attempting ok execution at %px\n", do_nothing);
-+	pr_info("attempting ok execution at %p\n", do_nothing);
- 	do_nothing();
- 
- 	copied = access_process_vm(current, (unsigned long)dst, do_nothing,
- 				   EXEC_SIZE, FOLL_WRITE);
- 	if (copied < EXEC_SIZE)
- 		return;
--	pr_info("attempting bad execution at %px\n", func);
-+	pr_info("attempting bad execution at %p\n", func);
- 	func();
- 	pr_err("FAIL: func returned\n");
- }
-@@ -84,7 +84,7 @@ void lkdtm_WRITE_RO(void)
- 	/* Explicitly cast away "const" for the test and make volatile. */
- 	volatile unsigned long *ptr = (unsigned long *)&rodata;
- 
--	pr_info("attempting bad rodata write at %px\n", ptr);
-+	pr_info("attempting bad rodata write at %p\n", ptr);
- 	*ptr ^= 0xabcd1234;
- 	pr_err("FAIL: survived bad write\n");
- }
-@@ -103,7 +103,7 @@ void lkdtm_WRITE_RO_AFTER_INIT(void)
- 		return;
- 	}
- 
--	pr_info("attempting bad ro_after_init write at %px\n", ptr);
-+	pr_info("attempting bad ro_after_init write at %p\n", ptr);
- 	*ptr ^= 0xabcd1234;
- 	pr_err("FAIL: survived bad write\n");
- }
-@@ -116,7 +116,7 @@ void lkdtm_WRITE_KERN(void)
- 	size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
- 	ptr = (unsigned char *)do_overwritten;
- 
--	pr_info("attempting bad %zu byte write at %px\n", size, ptr);
-+	pr_info("attempting bad %zu byte write at %p\n", size, ptr);
- 	memcpy((void *)ptr, (unsigned char *)do_nothing, size);
- 	flush_icache_range((unsigned long)ptr, (unsigned long)(ptr + size));
- 	pr_err("FAIL: survived bad write\n");
-@@ -195,12 +195,12 @@ void lkdtm_ACCESS_USERSPACE(void)
- 
- 	ptr = (unsigned long *)user_addr;
- 
--	pr_info("attempting bad read at %px\n", ptr);
-+	pr_info("attempting bad read at %p\n", ptr);
- 	tmp = *ptr;
- 	tmp += 0xc0dec0de;
- 	pr_err("FAIL: survived bad read\n");
- 
--	pr_info("attempting bad write at %px\n", ptr);
-+	pr_info("attempting bad write at %p\n", ptr);
- 	*ptr = tmp;
- 	pr_err("FAIL: survived bad write\n");
- 
-@@ -212,12 +212,12 @@ void lkdtm_ACCESS_NULL(void)
- 	unsigned long tmp;
- 	volatile unsigned long *ptr = (unsigned long *)NULL;
- 
--	pr_info("attempting bad read at %px\n", ptr);
-+	pr_info("attempting bad read at %p\n", ptr);
- 	tmp = *ptr;
- 	tmp += 0xc0dec0de;
- 	pr_err("FAIL: survived bad read\n");
- 
--	pr_info("attempting bad write at %px\n", ptr);
-+	pr_info("attempting bad write at %p\n", ptr);
- 	*ptr = tmp;
- 	pr_err("FAIL: survived bad write\n");
- }
+diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
+index 94e02aad96b7..205168f960f6 100644
+--- a/drivers/staging/r8188eu/core/rtw_ap.c
++++ b/drivers/staging/r8188eu/core/rtw_ap.c
+@@ -744,7 +744,7 @@ void update_beacon(struct adapter *padapter, u8 ie_id, u8 *oui, u8 tx)
+ 
+ /*
+ op_mode
+-Set to 0 (HT pure) under the followign conditions
++Set to 0 (HT pure) under the following conditions
+     - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
+     - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
+ Set to 1 (HT non-member protection) if there may be non-HT STAs
 -- 
-2.33.0
+2.25.1
 
