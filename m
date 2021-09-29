@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081CF41CC4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A2E41CC4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346410AbhI2THt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51588 "EHLO
+        id S1346388AbhI2THi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346389AbhI2THh (ORCPT
+        with ESMTP id S244887AbhI2THh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 29 Sep 2021 15:07:37 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1231FC061764
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08675C06161C
         for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:56 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id b15so14797007lfe.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p20-20020a25d814000000b005b6a75a370cso4737453ybg.14
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ny2+77Uus4H/nPXbEE4fOfi5YTib/j8MfG7t5iU/Qjk=;
-        b=u6OGwlgD9IMdZ2HdoL8lkGBaqUb5DoK6/ym/uunK23jP7PeZNuys4OF0DfZjcc71mS
-         wSaga3Tz+eoQfYV0I77DEE+PbtHypvTZ/hqRMk541PeMfXxMoxuGqlNVo6GKIhgqBbtm
-         w4CE6GxIgsoXcTdf0P78xhEPcZsN2n4qskMRL9Pso9qTEa0nE66xFL/I5iPwRYB5XEyZ
-         ZI8Rbt2eumS1xSR4toHy0Z7Aqwi84+S12v0eY3n9N7BiGO3yEUodzVmc6BbfSI3q3Syx
-         EhFNtc07A3S93kgvOonDkfZaLwDimfeSFWceB/mxA5hxY8a6ldJ3f52N3kCwWFaHdbDI
-         bpLQ==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=dGvsdehaCfU+q8mM5gCc9rOf0ufeFm/BjPG12OnT8ao=;
+        b=nxryhbopP8wCQGLugzS4weXpMDdfM0hbU4s3GPu6Jhv6OBVZtQxqRdPxWTna1CI6i1
+         0jfwzAZZb5H5MQackBSm92VrbxhRVwTFWBkA6Z8Srx0G3WiRzCILW9fHEeT94aknCu0m
+         ESp5Ousi9x7PaVzYXGr2h1KPsJV0UuUv1ELr0AsHzV6LWxkEh5O06rgE/Ej73cOncrbg
+         PMkjAe8gKQSFtco9y5jzbzAX6/0SZyk112cdjwBOHW5uvW0elqEbTxpWUR1oir2FfMX6
+         7vsvAvbAgiGmDGtwCXIt3ULLQrlE6p5DqPJJVErbAdL7Lb1gwxGPvZlE3rMHmYaElOr9
+         GYug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ny2+77Uus4H/nPXbEE4fOfi5YTib/j8MfG7t5iU/Qjk=;
-        b=bSytmqyHnz/2yliw6ukbMRsRyIKGEDPy2nUCVjv9gGvCnNKYRCj/8u3hssSqKGD+c1
-         RAVeVdatfxiVpTOiopMJUla7PbcZbxHIsuG6UP/Mkhu8ZkHBPnfC/FwSu/yhledvcKbE
-         1iYy4EI0WBdJghCli1SLO+K7zwTrWl7DEYeg5Z1iEaHVY/6yKroTJNEkxqztVVSyVdt+
-         viB8IIDW3P1T3v67tJEe5qGKXngqE7Boe6jBhrQ3k+LFb5SnDE46hl04FmvN2qZ4tMtN
-         P7lo48NJ2wCSAbqZn+vZiW6t5zA9mBjgvvhXa/AIvauJ0vqRfXulCN9c5iDKKLMs6sJU
-         PRmQ==
-X-Gm-Message-State: AOAM53075QLLnRKxmNRLaw/byxdKMBMDDKDi7h5Er5IdyZsnp5ermien
-        RwiqRDUBj7Jk1qQYebA1qOBwaUTrhgJaa2ojnYeM3A==
-X-Google-Smtp-Source: ABdhPJyqcID0Rhrbbe0OvfTzDp/RzSDgD4HnmlSaEBRo17fjtzsvHgiue0dF/BTOtdBw+Qj5ZU01/pfPX32AilRT4+s=
-X-Received: by 2002:a2e:8011:: with SMTP id j17mr1513715ljg.145.1632942354388;
- Wed, 29 Sep 2021 12:05:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929163847.2807812-1-maz@kernel.org> <20210929163847.2807812-11-maz@kernel.org>
-In-Reply-To: <20210929163847.2807812-11-maz@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 29 Sep 2021 21:05:42 +0200
-Message-ID: <CACRpkdaXbrmvoQQNRdyv6rJ+dHYAKMN+J_sc-3_c1d6D2dsfbQ@mail.gmail.com>
-Subject: Re: [PATCH v5 10/14] arm64: apple: Add pinctrl nodes
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Hector Martin <marcan@marcan.st>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Android Kernel Team <kernel-team@android.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=dGvsdehaCfU+q8mM5gCc9rOf0ufeFm/BjPG12OnT8ao=;
+        b=qjDjKq/2lsbCbd6zXgSD+lFpxXFCMFplGjd7UEMba0zHhza/JN+2NOTvPWbHyR5Vp2
+         hJ+XKnaL7Na0Vw43fgHscZOoF/eGVBLjGt0aH/GYxPh4MQBsRfTFKXhnOBxRzFf6rnPF
+         PCdD1vPrMpWpuBhdR6MNQOdSKnDy4tg8iCaw6A2Lph/zc7fs7Vw5GaLAJVB5rubkpNMI
+         atSYS5c0j2vbnMEqq6RZlNMFla/zPhMlC9FKV2nq0R27Ri5nBYN/FCj+qv1Wh/iXhrRg
+         UnlbzaKRE6Tw6vAXjJYatQNxOwVK06SreQW1JLDPYUiyRqVPs1TEdV+e2yUT1VJq4pqY
+         zTOw==
+X-Gm-Message-State: AOAM531Bn/Cq31CtqVhQyqY8vWVRdae8tt4IjdHIBmlIANDvT2b63UGB
+        SSKOuUzvCVQtu86OIfk1wHcpI4lXmjRW+Qk=
+X-Google-Smtp-Source: ABdhPJwsnFWoD2ZJtHWFRv11jrueWzuCt2Dl/3t78BcWP6WQaMsROvMdZUTEv9JC4sMHxNJ+A2ojIK1zNl2WZys=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:1dea:d6fb:56d7:8fff])
+ (user=saravanak job=sendgmr) by 2002:a25:b11b:: with SMTP id
+ g27mr1704690ybj.13.1632942355211; Wed, 29 Sep 2021 12:05:55 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 12:05:49 -0700
+Message-Id: <20210929190549.860541-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+Subject: [PATCH v2] driver core: Reject pointless SYNC_STATE_ONLY device links
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 6:56 PM Marc Zyngier <maz@kernel.org> wrote:
+SYNC_STATE_ONLY device links intentionally allow cycles because cyclic
+sync_state() dependencies are valid and necessary.
 
-> From: Mark Kettenis <kettenis@openbsd.org>
->
-> Add pinctrl nodes corresponding to the gpio,t8101 nodes in the
-> Apple device tree for the Mac mini (M1, 2020).
->
-> Clock references are left out at the moment and will be added once
-> the appropriate bindings have been settled upon.
->
-> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Link: https://lore.kernel.org/r/20210520171310.772-3-mark.kettenis@xs4all.nl
-(...)
-> +               pinctrl_ap: pinctrl@23c100000 {
-> +                       compatible = "apple,t8103-pinctrl", "apple,pinctrl";
-> +                       reg = <0x2 0x3c100000 0x0 0x100000>;
-> +
-> +                       gpio-controller;
-> +                       #gpio-cells = <2>;
-> +                       gpio-ranges = <&pinctrl_ap 0 0 212>;
+However a SYNC_STATE_ONLY device link where the consumer and the supplier
+are the same device is pointless because the device link would be deleted
+as soon as the device probes (because it's also the consumer) and won't
+affect when the sync_state() callback is called. It's a waste of CPU cycles
+and memory to create this device link. So reject any attempts to create
+such a device link.
 
-In other discussions it turns out that the driver is abusing these gpio-ranges
-to find out how many pins are in each pinctrl instance. This is not the
-idea with gpio-ranges, these can be multiple and map different sets,
-so we need something like
+Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+v1 -> v2:
+- Moved the check higher up in the function.
 
-apple,npins = <212>;
-(+ bindings)
+ drivers/base/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-or so...
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 15986cc2fe5e..249da496581a 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -687,7 +687,8 @@ struct device_link *device_link_add(struct device *consumer,
+ {
+ 	struct device_link *link;
+ 
+-	if (!consumer || !supplier || flags & ~DL_ADD_VALID_FLAGS ||
++	if (!consumer || !supplier || consumer == supplier ||
++	    flags & ~DL_ADD_VALID_FLAGS ||
+ 	    (flags & DL_FLAG_STATELESS && flags & DL_MANAGED_LINK_FLAGS) ||
+ 	    (flags & DL_FLAG_SYNC_STATE_ONLY &&
+ 	     (flags & ~DL_FLAG_INFERRED) != DL_FLAG_SYNC_STATE_ONLY) ||
+-- 
+2.33.0.685.g46640cef36-goog
 
-Yours,
-Linus Walleij
