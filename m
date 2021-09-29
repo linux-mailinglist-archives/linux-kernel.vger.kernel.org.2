@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA36041CE42
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD1541CE45
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346702AbhI2VgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:36:20 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:59044 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345930AbhI2VgS (ORCPT
+        id S1346738AbhI2VhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345402AbhI2VhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:36:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=Bs8bMhC7bQAuNPOpZEH0zniuEdm9NW/YrFeZImeIfOA=; b=I2EoSXtUtxxE6I7rRXNlaQi1Cr
-        26y7kb5TT5Pm2pY5KxdBM9XFbLlCc1/rp6B788hVTB6/j0GiBnouY+POEQdum7NZv9aXHc5gg45iF
-        yDAL1n2pfsNdyOEb90H2C4R4SoWew8wSXqeMJiwcAExoJRoh6co1C/CZ0YGaO2ofnpKtpl9BhvsIt
-        n2teiyqjsDdWHRe3V8sdAM1Oxu9gQupPSVaReSA3KUwu7+sZf+t5nMdzuSACvG6+2YM5krqC8RIUR
-        dFiVhA4xErhytJnA9uXt2A1tDoLp4et4Tm1Ld8W02rwrG6hBlPYYC+mPAn/D7qJpK5zLNDI85nLXB
-        zO+aoKCA==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mVhDc-0006Oe-EH; Wed, 29 Sep 2021 15:34:25 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-15-logang@deltatee.com>
- <20210928194707.GU3544071@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <9c40347c-f9a8-af86-71a5-2156359e15ce@deltatee.com>
-Date:   Wed, 29 Sep 2021 15:34:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 29 Sep 2021 17:37:23 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C242BC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:35:41 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id j5so11636867lfg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EyTnMzYq/vCo9+ZlAi5FiLa7VQj9CHwqWbGroqQ1q+g=;
+        b=p92tfDwcgAZ97KGfoC1Yt4fwYfXl7WZMfcSALcMasWs3c8GRxC6wenhVIFzdL9Wsq2
+         NXFzv6kwgIou6n9BdeQrNdb7Vb5IJ6tsD//eu9ahYDhr8ZoSIgAYx9PfVHDWOaUshbfm
+         DPd3pWGX5Emsn8QKCpFGY/fDKYRj+Zne9vEoPAK5pD/d0im1rHsEIn2zQahSyosaTv/h
+         xEib4h13Q0fO1GaHVfLW9PFvtPC7yrZtbBgFSdcVihg8bC80WUKAwZsJOWTgUgOWXQnc
+         c+hFNmVePqKEht1VIhoJD8WtTSaPAmw3DUVyNnYxdHre3ZIr5RJqcd+fE+e5j3BFShm1
+         Y6yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EyTnMzYq/vCo9+ZlAi5FiLa7VQj9CHwqWbGroqQ1q+g=;
+        b=R6mvJJkoGqXKduVeeIH8kSSd04w6s+5S6TWLJ+R9nxTo10yah7/AcsKtPTUxx17PdP
+         Uprw9/+VzGea3ssrUVXxBEeiS8ofwptm4KJTrVT/jVn/9KEGvb9Z5KZA4DcQ9q8ETbOF
+         SkpDueNNQlRpa0JVEeZECH5BFauwwKL432YYm4Ou1awkM+bracTuj3+0KvnwkAiRxox2
+         SvqlWVnZa3G5Wo9zr9BWw0iEeeBqn/rqAK7XR5IzywVwgRrlH5IX0ljoruXyNndux3ty
+         DsMG/b9OUUO9V4zOXZuBQBxGqUF+0YrZ5781EOJ7Lox3njsABTiPH9XwgGBk8pDHugMS
+         +ibg==
+X-Gm-Message-State: AOAM5326eDaBeL52LqxxC5xICXPMCBfhaTbBk0mCefuYlQisttjrIIrp
+        mIevGtn+iltJRSkTxlf+yWbttA==
+X-Google-Smtp-Source: ABdhPJwkFWv34OpeQwSZYEXZsWF0YpaEoXfonGOz6oBsU4nBLcZpAQkDAYhGFtZSP9NZioVjB+JrpA==
+X-Received: by 2002:a05:6512:3d0e:: with SMTP id d14mr1932784lfv.20.1632951340130;
+        Wed, 29 Sep 2021 14:35:40 -0700 (PDT)
+Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id x11sm124016lfq.95.2021.09.29.14.35.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 14:35:39 -0700 (PDT)
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH] clk: renesas: r8a779[56]x: add MLP clock
+Date:   Thu, 30 Sep 2021 00:34:32 +0300
+Message-Id: <20210929213431.5275-1-nikita.yoush@cogentembedded.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210928194707.GU3544071@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v3 14/20] mm: introduce FOLL_PCI_P2PDMA to gate getting
- PCI P2PDMA pages
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 
+Add clocks for MLP module on Renesas H3 and M3.
 
+Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+---
+ drivers/clk/renesas/r8a7795-cpg-mssr.c  | 1 +
+ drivers/clk/renesas/r8a7796-cpg-mssr.c  | 1 +
+ drivers/clk/renesas/r8a77965-cpg-mssr.c | 1 +
+ 3 files changed, 3 insertions(+)
 
-On 2021-09-28 1:47 p.m., Jason Gunthorpe wrote:
-> On Thu, Sep 16, 2021 at 05:40:54PM -0600, Logan Gunthorpe wrote:
->> Callers that expect PCI P2PDMA pages can now set FOLL_PCI_P2PDMA to
->> allow obtaining P2PDMA pages. If a caller does not set this flag
->> and tries to map P2PDMA pages it will fail.
->>
->> This is implemented by adding a flag and a check to get_dev_pagemap().
-> 
-> I would like to see the get_dev_pagemap() deleted from GUP in the
-> first place.
-> 
-> Why isn't this just a simple check of the page->pgmap type after
-> acquiring a valid page reference? See my prior note
+diff --git a/drivers/clk/renesas/r8a7795-cpg-mssr.c b/drivers/clk/renesas/r8a7795-cpg-mssr.c
+index c32d2c678046..d6b1d0148bfd 100644
+--- a/drivers/clk/renesas/r8a7795-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a7795-cpg-mssr.c
+@@ -229,6 +229,7 @@ static struct mssr_mod_clk r8a7795_mod_clks[] __initdata = {
+ 	DEF_MOD("lvds",			 727,	R8A7795_CLK_S0D4),
+ 	DEF_MOD("hdmi1",		 728,	R8A7795_CLK_HDMI),
+ 	DEF_MOD("hdmi0",		 729,	R8A7795_CLK_HDMI),
++	DEF_MOD("mlp",			 802,	R8A7795_CLK_S2D1),
+ 	DEF_MOD("vin7",			 804,	R8A7795_CLK_S0D2),
+ 	DEF_MOD("vin6",			 805,	R8A7795_CLK_S0D2),
+ 	DEF_MOD("vin5",			 806,	R8A7795_CLK_S0D2),
+diff --git a/drivers/clk/renesas/r8a7796-cpg-mssr.c b/drivers/clk/renesas/r8a7796-cpg-mssr.c
+index 41593c126faf..9c22977e42c2 100644
+--- a/drivers/clk/renesas/r8a7796-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a7796-cpg-mssr.c
+@@ -207,6 +207,7 @@ static struct mssr_mod_clk r8a7796_mod_clks[] __initdata = {
+ 	DEF_MOD("du0",			 724,	R8A7796_CLK_S2D1),
+ 	DEF_MOD("lvds",			 727,	R8A7796_CLK_S2D1),
+ 	DEF_MOD("hdmi0",		 729,	R8A7796_CLK_HDMI),
++	DEF_MOD("mlp",			 802,	R8A7796_CLK_S2D1),
+ 	DEF_MOD("vin7",			 804,	R8A7796_CLK_S0D2),
+ 	DEF_MOD("vin6",			 805,	R8A7796_CLK_S0D2),
+ 	DEF_MOD("vin5",			 806,	R8A7796_CLK_S0D2),
+diff --git a/drivers/clk/renesas/r8a77965-cpg-mssr.c b/drivers/clk/renesas/r8a77965-cpg-mssr.c
+index bc1be8bcbbe4..52c5da26b756 100644
+--- a/drivers/clk/renesas/r8a77965-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a77965-cpg-mssr.c
+@@ -205,6 +205,7 @@ static const struct mssr_mod_clk r8a77965_mod_clks[] __initconst = {
+ 	DEF_MOD("lvds",			727,	R8A77965_CLK_S2D1),
+ 	DEF_MOD("hdmi0",		729,	R8A77965_CLK_HDMI),
+ 
++	DEF_MOD("mlp",			802,	R8A77965_CLK_S2D1),
+ 	DEF_MOD("vin7",			804,	R8A77965_CLK_S0D2),
+ 	DEF_MOD("vin6",			805,	R8A77965_CLK_S0D2),
+ 	DEF_MOD("vin5",			806,	R8A77965_CLK_S0D2),
+-- 
+2.30.2
 
-It could be, but that will mean dereferencing the pgmap for every page
-to determine the type of page and then comparing with FOLL_PCI_P2PDMA.
-
-Probably not terrible to go this way.
-
-Logan
