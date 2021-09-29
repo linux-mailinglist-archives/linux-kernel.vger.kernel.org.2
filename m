@@ -2,84 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F8341CB55
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7343341CB5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345459AbhI2R4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245726AbhI2Rz6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:55:58 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D263BC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 10:54:13 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ce20-20020a17090aff1400b0019f13f6a749so4519498pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 10:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NsM0QYbB2vUeU6XpTENYRxMtFbeMZ3QJUEScRtQsMSU=;
-        b=A43brtOAGWdbiGMmjU/KjDyojLXi0Q4ZBFDfw88tTfcdHmvg2RxbOQQfAhy6nBMZ3/
-         AhrmNzsGT32VeaAd44VjOcfneFf+TbuLjoOlqmfVY0mxoSHPdHupGgJPD8y+X+odsHkd
-         XykxJvUdi1cJ9QcUXOmc6ro4N00DG+F8FRWnE8L8lKw6e+b9LJdQVJyBhv0iLzonOqar
-         a6XQ3fD6knY4a3+BWHNsODfQjEiz8NtkZxfzGqHSmNl/ZWQ9iVzn5vsRfszDepTihK4Y
-         cKE+73mayyq1slTd7cwzV6+OWQ6xSrnjOaSWf8Y3dEkJbzs46a+hxXZix7CLNapxfr+/
-         qk8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NsM0QYbB2vUeU6XpTENYRxMtFbeMZ3QJUEScRtQsMSU=;
-        b=7UtwKGKCHsYddIkKApnb+n6hOyR/a0AspTqt4x8exeBRXCdQ/3Z02jGpcgoXHQn6WN
-         3yCbxLAHAK4xFC0RDKPy+CCyisns4DBKsb6jHwe9Wz4T3odBWsKOjdUmVTlQNvvCk+St
-         hJUu+vctgykwxTBLdfzVRIEXxjqXE2sWwbfn3pOfPcvKXB+XA6xhha14zMPmPPjdVWBq
-         xmosJ3coz9AM9QRvaSZlTCu9XEqNMF+JhCFAeOsoHO6EzjuBuDB6B5Nz16/ttqldy9vR
-         Mu/UnXmmWhg4f9roghGSkCHBi9nQoz95+ZLCE9S0KGor/jh0NOeFNCaCkEdQO7iYt1mo
-         o45Q==
-X-Gm-Message-State: AOAM531YNCPJ36eKDq3WGTg3UVTE38e28Jz8KX0bwgkaRneJrFtCk30s
-        ry1qQpgzzYzx9b05yySDcZ5gNQ==
-X-Google-Smtp-Source: ABdhPJzp40tu/G9HqnvotUw/jMzwx9XNCWus/4f0EXr5sSTYTeNKg2Zwh/1URL4JStL4NZqRMJ5Zrg==
-X-Received: by 2002:a17:90a:307:: with SMTP id 7mr1316264pje.176.1632938053093;
-        Wed, 29 Sep 2021 10:54:13 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a27sm409833pfk.192.2021.09.29.10.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 10:54:12 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 17:54:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        pbonzini@redhat.com, shuah@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] selftests: KVM: set affinity of VM to right CPUs
-Message-ID: <YVSoQD+yuQzlKLoM@google.com>
-References: <20210924233037.4329-1-dongli.zhang@oracle.com>
- <YVIZ/67cfjk18mbe@google.com>
- <5b0a16a9-e98e-368f-4ecd-359c58ae34c4@oracle.com>
+        id S1345518AbhI2R5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343675AbhI2R5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:57:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F91561406;
+        Wed, 29 Sep 2021 17:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632938139;
+        bh=Wdm5mZ9EIzamcCpNJ3f6wNkVlDGhsWErQpSRyqfdzvM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ScXxN8A83d1IhIwCquDkP/qeTHZqGJC3TLJ3FOxV2L1FoyPI6FHkUTH5yPMPNyPCU
+         qXNzAifxJbHiPiO6nCkLMX7EPPaCyVhggywKQdGI6k8u/r+CShy6MDG1j6rLZglgcu
+         igUym4bjnU1v9ZjB1vxlcRgu37WILOCSCsdSB7qn+EfYCWZE2anMLTjBSeGeEFXWkM
+         3EFSdkCUq1Todb5f+rX39drvyu8P8oZbA71z5YJJrjTkSrwr8bAk+DD5P0nKyaIpe8
+         CZpJTpp26nY4u4AUdYCrZiXjAbecEVDKi6gIbth+hYcnzqvJaDY5F6RZD0/6MUJuBl
+         Z889Vw81JzPKg==
+Date:   Wed, 29 Sep 2021 10:55:37 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
+ fix
+Message-ID: <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YVSG55i75awUpAmn@unreal>
+References: <cover.1632916329.git.leonro@nvidia.com>
+        <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVR0iKIRYDXQbD+o@unreal>
+        <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVSG55i75awUpAmn@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b0a16a9-e98e-368f-4ecd-359c58ae34c4@oracle.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021, Dongli Zhang wrote:
+On Wed, 29 Sep 2021 18:31:51 +0300 Leon Romanovsky wrote:
+> On Wed, Sep 29, 2021 at 07:39:40AM -0700, Jakub Kicinski wrote:
+> > On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:  
+> > > We don't need to advertise counters for feature that is not supported.
+> > > In multiport mlx5 devices, the reload functionality is not supported, so
+> > > this change at least make that device to behave like all other netdev
+> > > devices that don't support devlink reload.
+> > > 
+> > > The ops structure is set very early to make sure that internal devlink
+> > > routines will be able access driver back during initialization (btw very
+> > > questionable design choice)  
+> > 
+> > Indeed, is this fixable? Or now that devlink_register() was moved to 
+> > the end of probe netdev can call ops before instance is registered?
+> >   
+> > > and at that stage the driver doesn't know
+> > > yet which device type it is going to drive.
+> > > 
+> > > So the answer is:
+> > > 1. Can't have two structures.  
+> > 
+> > I still don't understand why. To be clear - swapping full op structures
+> > is probably acceptable if it's a pure upgrade (existing pointers match).
+> > Poking new ops into a structure (in alphabetical order if I understand
+> > your reply to Greg, not destructor-before-contructor) is what I deem
+> > questionable.  
 > 
-> On 9/27/21 12:22 PM, Sean Christopherson wrote:
-> Perhaps a linked list is more suitable to here (when there are 1024 cpus and the
-> task is bound to both 1 and 1022) ... to pre-save the possible cpus in a list
-> and to only move to next cpu in the list for each iteration.
+> It is sorted simply for readability and not for any other technical
+> reason.
 > 
-> However, I think min_cpu/max_cpu is good enough for selttests case.
+> Regarding new ops, this is how we are setting callbacks in RDMA based on
+> actual device support. It works like a charm.
+> 
+> > > 2. Same behaviour across all netdev devices.  
+> > 
+> > Unclear what this is referring to.  
+> 
+> If your device doesn't support devlink reload, it won't print any
+> reload counters at all. It is not the case for the multiport mlx5
+> device. It doesn't support, but still present these counters.
 
-Yeah, it's annoying that there's no CPU_SET_FOR_EACH so that x86 could optimize
-it to use BSF :-/
+There's myriad ways you can hide features.
 
-> Would you please let me know if you would like to send above with my
-> Reported-by, or if you would like me to send with your Suggested-by.
-
-If you don't mind, I'll send a patch, I want to fiddle with the migration loop to
-see if I can make it less magical/ugly.
+Swapping ops is heavy handed and prone to data races, I don't like it.
