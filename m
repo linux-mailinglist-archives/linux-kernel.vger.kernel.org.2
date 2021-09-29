@@ -2,107 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05B141CACB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DC941CAD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344781AbhI2RAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52820 "EHLO mail.kernel.org"
+        id S1344963AbhI2RBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344809AbhI2RAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:00:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5ACF613DA;
-        Wed, 29 Sep 2021 16:58:23 +0000 (UTC)
+        id S1344809AbhI2RBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:01:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A36DD61462
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632934704;
-        bh=q4dgtgHH+SOQqblaZiTZK7wKV7b2yiFarg51sd83ckI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JcY9Y8FqBZERBzXPm3S4fXyN6inna8kb+CnU5IpBO0rxpRiFjiv3r65E/tMIEUrY2
-         LqMxp5k8j2KAyf5NIHvM6jcpCVkjhto8pBaq7kQI2j2scrj8vKcywTGw428dJi3STO
-         vbwVmDgF8Uz7X6NWclc/SiTRwi22WKwM4zkVc0mtAsJB9dP84lXxnmo4V8g5N5abjE
-         asN1CEN8yku11KWfT/n/0NkVl8Hf9pZQDU4cByXDROlTPmCZQGngn82j2s0o6dHW6L
-         YIaij5UxY5T/ugctGR5WzTcQOEGk+dzMci29bxBUqMmk338T2axaQJsC9DeanwKCSA
-         cfBPVnZ+aDpkQ==
-Message-ID: <308a72e4-6aa9-0c84-21e6-ee613eea35a8@kernel.org>
-Date:   Wed, 29 Sep 2021 09:58:22 -0700
+        s=k20201202; t=1632934791;
+        bh=EM1oXwkdc2lgGvdOkjq5hSe3UNtKYKWdDP9Ix+9b/d8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f9Eg02YREiHs9+AdY2ZpeuRGLnZV48f6GND3ljqh8puIc2nxefDL5C5SPVGzLF0hR
+         io4/uuJfqYCZuPlKMVl3cFXo20eZx/n2vsh3y27Db2Ww0JoKs7ylM6IU71tH945CC7
+         8cofs5YTVVkI17NkDWfoUq653na5HI25Y1lpaEJ7tbkMZzbhWKqKkx+Xw0LT9lPo+f
+         qwHc5AnOHiGkktP09leBlm4T/+PnIcM/FoZsFOiksQQvIit9+ueqDXcz/VBXH5VLcs
+         t29SOOHt86P6+/yWDOlorUmCPhbg6XrtYqypZfHVCD8+21zz8hf6+z5jvm0PdQxTUh
+         u0SJBr3BzXstg==
+Received: by mail-lf1-f45.google.com with SMTP id i25so13556005lfg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:59:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532mGHOG7AKX2aSk2xduZOzz2Ki5ed5TYxAtTJ4oi+MmhzValfU9
+        B8QCGcbbJyfCT2uFFbJZa2uZT4iOq/pyc8+60T8=
+X-Google-Smtp-Source: ABdhPJw7hQ1nuxxV8XvyPSjdABcYtydwuRR3hMTfgc+jtUjuq++mjj2jboz18aXRR16M79QbHWzcj6v8qymZOr/YAIs=
+X-Received: by 2002:a2e:321a:: with SMTP id y26mr1031724ljy.234.1632934789801;
+ Wed, 29 Sep 2021 09:59:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Content-Language: en-US
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
- <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
- <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
- <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
- <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
- <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
- <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
- <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20210922070645.47345-2-rongwei.wang@linux.alibaba.com> <YUsVcEDcQ2vEzjGg@casper.infradead.org>
+ <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com> <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com> <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com> <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
+ <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
+In-Reply-To: <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 29 Sep 2021 09:59:38 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+Message-ID: <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page cache
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 16:10, Luck, Tony wrote:
-> Moving beyond pseudo-code and into compiles-but-probably-broken-code.
-> 
-> 
-> The intent of the functions below is that Fenghua should be able to
-> do:
-> 
-> void fpu__pasid_write(u32 pasid)
-> {
-> 	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
-> 	struct ia32_pasid_state *addr;
-> 
-> 	addr = begin_update_one_xsave_feature(current, XFEATURE_PASID, true);
-> 	addr->pasid = msr_val;
-> 	finish_update_one_xsave_feature(current);
+On Wed, Sep 29, 2021 at 12:50 AM Rongwei Wang
+<rongwei.wang@linux.alibaba.com> wrote:
+>
+>
+>
+> On 9/29/21 3:14 PM, Song Liu wrote:
+> > On Tue, Sep 28, 2021 at 9:20 AM Rongwei Wang
+> > <rongwei.wang@linux.alibaba.com> wrote:
+> >>
+> >>
+> >>
+> >> On 9/28/21 6:24 AM, Song Liu wrote:
+> >>> On Fri, Sep 24, 2021 at 12:12 AM Rongwei Wang
+> >>> <rongwei.wang@linux.alibaba.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 9/24/21 10:43 AM, Andrew Morton wrote:
+> >>>>> On Thu, 23 Sep 2021 01:04:54 +0800 Rongwei Wang <rongwei.wang@linux=
+.alibaba.com> wrote:
+> >>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>>> On Sep 22, 2021, at 7:37 PM, Matthew Wilcox <willy@infradead.org>=
+ wrote:
+> >>>>>>>
+> >>>>>>> On Wed, Sep 22, 2021 at 03:06:44PM +0800, Rongwei Wang wrote:
+> >>>>>>>> Transparent huge page has supported read-only non-shmem files. T=
+he file-
+> >>>>>>>> backed THP is collapsed by khugepaged and truncated when written=
+ (for
+> >>>>>>>> shared libraries).
+> >>>>>>>>
+> >>>>>>>> However, there is race in two possible places.
+> >>>>>>>>
+> >>>>>>>> 1) multiple writers truncate the same page cache concurrently;
+> >>>>>>>> 2) collapse_file rolls back when writer truncates the page cache=
+;
+> >>>>>>>
+> >>>>>>> As I've said before, the bug here is that somehow there is a writ=
+able fd
+> >>>>>>> to a file with THPs.  That's what we need to track down and fix.
+> >>>>>> Hi, Matthew
+> >>>>>> I am not sure get your means. We know =E2=80=9Cmm, thp: relax the =
+VM_DENYWRITE constraint on file-backed THPs"
+> >>>>>> Introduced file-backed THPs for DSO. It is possible {very rarely} =
+for DSO to be opened in writeable way.
+> >>>>>>
+> >>>>>> ...
+> >>>>>>
+> >>>>>>> https://lore.kernel.org/linux-mm/YUdL3lFLFHzC80Wt@casper.infradea=
+d.org/
+> >>>>>> All in all, what you mean is that we should solve this race at the=
+ source?
+> >>>>>
+> >>>>> Matthew is being pretty clear here: we shouldn't be permitting
+> >>>>> userspace to get a writeable fd for a thp-backed file.
+> >>>>>
+> >>>>> Why are we permitting the DSO to be opened writeably?  If there's a
+> >>>>> legitimate case for doing this then presumably "mm, thp: relax the
+> >>>> There is a use case to stress file-backed THP within attachment.
+> >>>> I test this case in a system which has enabled CONFIG_READ_ONLY_THP_=
+FOR_FS:
+> >>>>
+> >>>> $ gcc -Wall -g -o stress_madvise_dso stress_madvise_dso.c
+> >>>> $ ulimit -s unlimited
+> >>>> $ ./stress_madvise_dso 10000 <libtest.so>
+> >>>>
+> >>>> the meaning of above parameters:
+> >>>> 10000: the max test time;
+> >>>> <libtest.so>: the DSO that will been mapped into file-backed THP by
+> >>>> madvise. It recommended that the text segment of DSO to be tested is
+> >>>> greater than 2M.
+> >>>>
+> >>>> The crash will been triggered at once in the latest kernel. And this
+> >>>> case also can used to trigger the bug that mentioned in our another =
+patch.
+> >>>
+> >>> Hmm.. I am not able to use the repro program to crash the system. Not
+> >>> sure what I did wrong.
+> >>>
+> >> Hi
+> >> I have tried to check my test case again. Can you make sure the DSO th=
+at
+> >> you test have THP mapping?
+> >>
+> >> If you are willing to try again, I can send my libtest.c which is used
+> >> to test by myself (actually, it shouldn't be target DSO problem).
+> >>
+> >> Thanks very much!
+> >>> OTOH, does it make sense to block writes within khugepaged, like:
+> >>>
+> >>> diff --git i/mm/khugepaged.c w/mm/khugepaged.c
+> >>> index 045cc579f724e..ad7c41ec15027 100644
+> >>> --- i/mm/khugepaged.c
+> >>> +++ w/mm/khugepaged.c
+> >>> @@ -51,6 +51,7 @@ enum scan_result {
+> >>>           SCAN_CGROUP_CHARGE_FAIL,
+> >>>           SCAN_TRUNCATED,
+> >>>           SCAN_PAGE_HAS_PRIVATE,
+> >>> +       SCAN_BUSY_WRITE,
+> >>>    };
+> >>>
+> >>>    #define CREATE_TRACE_POINTS
+> >>> @@ -1652,6 +1653,11 @@ static void collapse_file(struct mm_struct *mm=
+,
+> >>>           /* Only allocate from the target node */
+> >>>           gfp =3D alloc_hugepage_khugepaged_gfpmask() | __GFP_THISNOD=
+E;
+> >>>
+> >>> +       if (deny_write_access(file)) {
+> >>> +               result =3D SCAN_BUSY_WRITE;
+> >>> +               return;
+> >>> +       }
+> >>> +
+> >> This can indeed avoid some possible races from source.
+> >>
+> >> But, I am thinking about whether this will lead to DDoS attack?
+> >> I remember the reason of DSO has ignored MAP_DENYWRITE in kernel
+> >> is that DDoS attack. In addition, 'deny_write_access' will change
+> >> the behavior, such as user will get 'Text file busy' during
+> >> collapse_file. I am not sure whether the behavior changing is acceptab=
+le
+> >> in user space.
+> >>
+> >> If it is acceptable, I am very willing to fix the races like your way.
+> >
+> > I guess we should not let the write get ETXTBUSY for khugepaged work.
+> >
+> > I am getting some segfault on stress_madvise_dso. And it doesn't really
+> > generate the bug stack in my vm (qemu-system-x86_64). Is there an newer
+> Hi, I can sure I am not update the stress_madvise_dso.c.
+>
+> My test environment is vm (qemu-system-aarch64, 32 cores). And I can
+> think of the following possibilities:
+>
+> (1) in thread_read()
+>
+> printf("read %s\n", dso_path);
+> d =3D open(dso_path, O_RDONLY);
+> /* The start addr must be alignment with 2M */
+> void *p =3D mmap((void *)0x40000dc00000UL, 0x800000, PROT_READ |
+> PROT_EXEC,MAP_PRIVATE, fd, 0);
+> if (p =3D=3D MAP_FAILED) {
+>         perror("mmap");
+>         goto out;
 > }
-> 
+>
+> 0x40000dc00000 is random setting by myself. I am not sure this address
+> is available in your vm.
+>
+> (2) in thread_write()
+> int fd =3D open(dso_path, O_RDWR);
+> p =3D mmap(NULL, 0x800000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> if (p =3D=3D MAP_FAILED) {
+>         perror("mmap");
+>          goto out; /* fail */
+> }
+>
+> because of I am sure the DSO is bigger than 0x800000, so directly map
+> the DSO using 0x800000. Maybe I had use '-z max-page-size=3D0x200000' to
+> compile the DSO? likes:
+> $ gcc -z max-page-size=3D0x200000 -o libtest.so -shared libtest.o
+>
+> If you don't mind, you can send the segment fault log to me. And I will
+> find x86 environment to test.
 
-This gets gnarly because we would presumably like to optimize the case 
-where we can do the update directly in registers.  I wonder if we can do 
-it with a bit of macro magic in a somewhat generic way:
+I fixed the segfault with
+1. malloc buf (as it is too big for stack) in thread_read
+2. reduce memcpy() size in thread_read.
 
-typedef fpu__pasid_type u32;
+Now, I am able to crash the system on
+    find_lock_entries () {
+     ...
+       VM_BUG_ON_PAGE(page->index !=3D xas.xa_index, page);
+    }
+I guess it is related. I will test more.
 
-static inline void fpu__set_pasid_in_register(const u32 *value)
-{
-	wrmsr(...);
-}
-
-#define DEFINE_FPU_HELPER(name) \
-static inline void fpu__set_##name(const fpu__##name##_type *val) \
-{ \
-	fpregs_lock(); \
-	if (should write in memory) { \
-		->xfeatures |= XFEATURE_##name; \
-		ptr = get_xsave_addr(...); \
-		memcpy(ptr, val, sizeof(*val)); \
-		__fpu_invalidate_fpregs_state(...); \
-	} else { \
-		fpu__set_##name##_in_register(val); \
-	} \
-}
+Thanks,
+Song
