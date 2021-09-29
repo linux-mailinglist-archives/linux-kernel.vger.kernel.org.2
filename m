@@ -2,229 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314E841C8D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D7041C8D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345454AbhI2Pzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:55:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11068 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345440AbhI2Pzl (ORCPT
+        id S245408AbhI2P6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244682AbhI2P56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:55:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632930840; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=mD8/cVzeUyAM6c/UabO55pm1CfQiL17d4b03cqAJbm8=;
- b=ZiZNAKOowOnvCmyahYVZ33Ls4jvT3BaspkfEygXuB2Za4t4io6Vbsrncg6f++3pE1jso4UDe
- Xlh7E55w1Jp4wY/jKkh3wNnZ3HdwUk9s7K9pcpKHU6clpScwHiJWvoXKAQhuVsVx5gbVI62g
- Usv1mjvwc2FgRXPKY7WDLLh0z/Y=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 61548c17713d5d6f962ffaf6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Sep 2021 15:53:59
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1A7DEC43617; Wed, 29 Sep 2021 15:53:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 671A2C4360C;
-        Wed, 29 Sep 2021 15:53:56 +0000 (UTC)
+        Wed, 29 Sep 2021 11:57:58 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D465FC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:56:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id c4so1841820pls.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QXqhrOe99SMkwy7xOUQxSfO26TmAo7lLUFFlJf608N0=;
+        b=Tv8zIpJ1xnCFM6xhqdlL4/vIvDrFT70hpY7YZvbNRnBVFOG4552p58wruczMQgdZKK
+         eeSXc9vgKvRWFa2wZKncJtuoLccB/SQD0lZb373whHXgP0hN/syk+1YESmAJ6Ckzumcc
+         NhvyhMJ3gxZLYVgkzClSHDzRrlf9ZGze6PJb4Rjp/jG+ril8oNOXTXLsWT1pRrkPtmqL
+         4PUV0yFNHSQKSen8HonJ/GYpFyC1hMu/UjTjUXDwstRpbzIuCAqm2crgOGwYwr7WvZkG
+         XmVQ1BpAVbDup/q/pmVYh+eI2ZnBlN5C050/HolusT4O+D/tiDJeb9Jde5hqcWLG1a89
+         ivNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QXqhrOe99SMkwy7xOUQxSfO26TmAo7lLUFFlJf608N0=;
+        b=tsP1bzaQrBDXArSjIhM7qvWdzdjAJIHYLqt21p7+8C72cCzLcmjr9YM7MzjlYCEZHh
+         /5im/8seC8e2PKyw6dDee0B0Q5bm8GCY7htHMZBq8BruhgZ2+9797U65Tm5GBf83bNTL
+         feW0veynu5rtfV5HXCkExyG8aY63+RCkmoU+O8oG41AVfZIAW+7tm7mXh8UXJwZPD1OF
+         PQ46JIp+mx1NS+o29jUArNz14Mpq9nHipPIbrb+u6NdnGu3m7nzuugqSKmRttW9mByYY
+         h33pdQH1pa7jKDzd7+4iyRvkoghXhYY3S10ic8dCvR1q3DKx3re5alosG8EvwThiWFbs
+         P2dg==
+X-Gm-Message-State: AOAM530RhZvRl7tb++wKMm2ZFOeKo8yDaMX7dJOMujhQzAkkv+e6oy+e
+        lHohR2Mie8/nRyzp//WLF31Fyw==
+X-Google-Smtp-Source: ABdhPJyyJ63l3Jgn/wkbO4utLpV1s4Zsct68SOclwmSTKlsnuKe6K74rJe7GIbs8jNqvwhk7Zjw+fQ==
+X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr423618pjn.216.1632930977189;
+        Wed, 29 Sep 2021 08:56:17 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p16sm242556pfq.95.2021.09.29.08.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 08:56:16 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 15:56:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] KVM: arm64: Depend on HAVE_KVM => OF instead of
+ directly on OF
+Message-ID: <YVSMnE8vJFdj7J+N@google.com>
+References: <20210921222231.518092-1-seanjc@google.com>
+ <20210921222231.518092-3-seanjc@google.com>
+ <20210929155328.GD22029@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 29 Sep 2021 21:23:55 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
-        manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH v9 3/4] arm64: dts: qcom: sc7280: Add PCIe nodes for IDP
- board
-In-Reply-To: <CAE-0n52G7=PFrPGr5Zwq43q55CWBSkaEm7HpC+C4r2+Gjv3JQg@mail.gmail.com>
-References: <1632837350-12100-1-git-send-email-pmaliset@codeaurora.org>
- <1632837350-12100-4-git-send-email-pmaliset@codeaurora.org>
- <CAE-0n52G7=PFrPGr5Zwq43q55CWBSkaEm7HpC+C4r2+Gjv3JQg@mail.gmail.com>
-Message-ID: <92e500fa87f726791383d1b6a2532699@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929155328.GD22029@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-29 02:22, Stephen Boyd wrote:
-> Quoting Prasad Malisetty (2021-09-28 06:55:49)
->> Enable PCIe controller and PHY for sc7280 IDP board.
->> Add specific NVMe GPIO entries for SKU1 and SKU2 support.
->> 
->> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dts  |  9 ++++++
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 54 
->> ++++++++++++++++++++++++++++++++
->>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 ++++++
->>  3 files changed, 72 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> index 64fc22a..1562386 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> @@ -61,6 +61,15 @@
->>         modem-init;
->>  };
->> 
->> +&nvme_pwren_pin {
->> +       pins = "gpio19";
->> +};
+On Wed, Sep 29, 2021, Will Deacon wrote:
+> On Tue, Sep 21, 2021 at 03:22:31PM -0700, Sean Christopherson wrote:
+> > Select HAVE_KVM if the KVM dependency is met (OF / Open Firmware), and
+> > make KVM depend on HAVE_KVM instead of directly on OF.  This fixes the
+> > oddity where arm64 configs can end up with KVM=y and HAVE_KVM=n, and will
+> > hopefully prevent breakage if there are future users of HAVE_KVM.
+> > 
+> > Note, arm64 unconditionally selects OF, and has always done so (see
+> > commit 8c2c3df31e3b ("arm64: Build infrastructure").  Keep the somewhat
+> > pointless HAVE_KVM dependency on OF to document that KVM requires Open
+> > Firmware support.
+> > 
+> > No functional change intended.
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/arm64/Kconfig     | 1 +
+> >  arch/arm64/kvm/Kconfig | 2 +-
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index b5b13a932561..38c0f36a5ed4 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -187,6 +187,7 @@ config ARM64
+> >  	select HAVE_GCC_PLUGINS
+> >  	select HAVE_HW_BREAKPOINT if PERF_EVENTS
+> >  	select HAVE_IRQ_TIME_ACCOUNTING
+> > +	select HAVE_KVM if OF
 > 
-> This should move to the bottom in the "pinctrl" section.
-> 
->> +
->> +&nvme_3v3_regulators {
->> +       gpio = <&tlmm 19 GPIO_ACTIVE_HIGH>;
->> +       enable-active-high;
-> 
-> The enable-active-high can be in the idp.dtsi file? That doesn't seem 
-> to
-> change.
-> 
->> +};
->> +
->>  &pmk8350_vadc {
->>         pmr735a_die_temp {
->>                 reg = <PMR735A_ADC7_DIE_TEMP>;
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> index def22ff..5b5505f 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> @@ -31,6 +31,17 @@
->>                         linux,can-disable;
->>                 };
->>         };
->> +
->> +       nvme_3v3_regulators: nvme-3v3-regulators {
-> 
-> Why plural? Isn't it a single regulator?
-> 
->> +               compatible = "regulator-fixed";
->> +               regulator-name = "VLDO_3V3";
->> +
->> +               regulator-min-microvolt = <3300000>;
->> +               regulator-max-microvolt = <3300000>;
->> +
->> +               pinctrl-names = "default";
->> +               pinctrl-0 = <&nvme_pwren_pin>;
->> +       };
->>  };
->> 
->>  &apps_rsc {
->> @@ -220,6 +231,42 @@
->>         modem-init;
->>  };
->> 
->> +&pcie1 {
->> +       status = "okay";
->> +       perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
->> +
->> +       vddpe-3v3-supply = <&nvme_3v3_regulators>;
->> +
->> +       pinctrl-names = "default";
->> +       pinctrl-0 = <&pcie1_default_state>;
->> +};
->> +
->> +&pcie1_phy {
->> +       status = "okay";
->> +
->> +       vdda-phy-supply = <&vreg_l10c_0p8>;
->> +       vdda-pll-supply = <&vreg_l6b_1p2>;
->> +};
->> +
->> +&pcie1_default_state {
-> 
-> I thought the node would be split into a reset config node and a wake
-> config node. Is that not being done for some reason? The pinctrl-0 
-> would
-> look like
-> 
-> 	pinctrl-0 = <&pcie1_default_state>, <&pcie1_reset_n>, <&pcie1_wake_n>;
-> 
->> +       reset-n {
->> +               pins = "gpio2";
->> +               function = "gpio";
->> +
->> +               drive-strength = <16>;
->> +               output-low;
->> +               bias-disable;
->> +       };
->> +
->> +       wake-n {
->> +               pins = "gpio3";
->> +               function = "gpio";
->> +
->> +               drive-strength = <2>;
->> +               bias-pull-up;
->> +       };
->> +};
->> +
->>  &pmk8350_vadc {
->>         pmk8350_die_temp {
->>                 reg = <PMK8350_ADC7_DIE_TEMP>;
->> @@ -489,3 +536,10 @@
->>                 bias-pull-up;
->>         };
->>  };
->> +
->> +&tlmm {
->> +       nvme_pwren_pin: nvme-pwren-pin {
->> +               function = "gpio";
->> +               bias-pull-up;
->> +       };
->> +};
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> index 1fc2add..0548cb6 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> @@ -21,3 +21,12 @@
->>                 stdout-path = "serial0:115200n8";
->>         };
->>  };
->> +
->> +&nvme_pwren_pin {
->> +       pins = "gpio51";
->> +};
-> 
-> The pin config can go to a pinctrl section at the bottom of this file?
-> 
-Hi Stephen,
+> Honestly, I'd just drop the 'if OF' here. We select it unconditionally a
+> few lines below and so I think it's more confusing to have the check.
 
-Thanks for the review and comments.
+Work for me.  I all but flipped a coin when deciding whether or not to keep the
+OF dependency.
 
-Sure, I will address all the comments and incorporate the changes in 
-next version series.
-
-Thanks
--Prasad
->> +
->> +&nvme_3v3_regulators {
->> +       gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
->> +       enable-active-high;
->> +};
+Thanks!
