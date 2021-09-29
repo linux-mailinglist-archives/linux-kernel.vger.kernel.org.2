@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68FA41BD6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAF841BD71
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244005AbhI2Daq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:30:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35196 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243975AbhI2Dan (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:30:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632886142;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ypu7lSHLqUrP/H0+g4r3QAtlIt7DSpEMHZQnw4kUfiM=;
-        b=Q5US/XUjUjKuRyODjblovUWUaV/iWUM5R7CU1CK0HLrzRmDJzP7gKfLonifdPXdsI1RD7F
-        qIJ4V35ikNaGMvesnHl6+Ae06wXsFGpSYPG/EIT9u0KHvTDYW9eO109m/g6bAdycpl8k9y
-        Xg1mRFvKr/AVwc9W6YWPoxdHGh0gc3g=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-fGvSZfvXND2YT9CdW0DR6w-1; Tue, 28 Sep 2021 23:28:59 -0400
-X-MC-Unique: fGvSZfvXND2YT9CdW0DR6w-1
-Received: by mail-wm1-f69.google.com with SMTP id p63-20020a1c2942000000b0030ccf0767baso2076538wmp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:28:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ypu7lSHLqUrP/H0+g4r3QAtlIt7DSpEMHZQnw4kUfiM=;
-        b=4m6m3uMmekkNRylFC7d+sIYEm7yEKEIe2GZfkQUFmQJ6987BkJmge/IyhDEQ4fOYfn
-         ++pgQi1IY1ygTFm4kMaHkPXfTzht2jS1dMGsiTaYDtWGWZH8d5PQ85DNKTkxaHE+E71P
-         fTfTNtAM/9vfDXKwCryF7tGHW1HxbRGBdBMOrAwjcQRte+HdtNVVyioltP+Y37srZIZR
-         rtQo2VXdExhJkZmCER11NbA28epUSXcha1RVwQW9JrgTFHze18rcT1t1vVJ1yJGk8pw2
-         GlCRB+3L7MCHQjZ6W1G8Hc6p4G1mEg/zJvjZPge3Tck3lUmeqxZ49EtYwnrRY5VgmkWs
-         WWFw==
-X-Gm-Message-State: AOAM5318lt66xFRpG9upOY/blCFU3amHRgvXzfNjvmG7U09pTF7JHOrb
-        dvYMAK51NnVmpLiSpPMgDf5wkr4zXIzHbteZTpTn7i+texMkhSG60RzScGUy0AOEh+P3dNZF2Rr
-        KG4Y/SW8rpNWdgvHPB2ooLYP9x3ZPbN7fTnrLJ1RP
-X-Received: by 2002:a05:600c:4991:: with SMTP id h17mr8150571wmp.74.1632886138162;
-        Tue, 28 Sep 2021 20:28:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6FKlEbCVhn+zhHA/mzkU4owvOyJWUbP+zvqJr/PTgo0iMkgM659VzGx/wX8Umvr4GJinRuUX0AjYIjW/UQVU=
-X-Received: by 2002:a05:600c:4991:: with SMTP id h17mr8150552wmp.74.1632886137916;
- Tue, 28 Sep 2021 20:28:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928222513.GA294575@embeddedor>
-In-Reply-To: <20210928222513.GA294575@embeddedor>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 29 Sep 2021 05:28:47 +0200
-Message-ID: <CACO55tsD98dNzw8fP=CiKLsdbnn2Vg78+wTRM90kutHtv1RZ5A@mail.gmail.com>
-Subject: Re: [PATCH][next] nouveau/svm: Use kvcalloc() instead of kvzalloc()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S244012AbhI2Dby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243349AbhI2Dbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 23:31:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DADA6136A;
+        Wed, 29 Sep 2021 03:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632886212;
+        bh=lAsZkVWCgtK9MeeRJYwB3NBoT+2DxJthR4/1O1TAIes=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dfVjJrubYTO47quRVYblsuacimy4FdB01c/nTYORGfFL1JUqj7Gjssp7j1DflRu19
+         DcZ6fguLWly3Lnj/eMqi4Cvk4LUTap0e9stLMmvC17RZxhUlHcPjGyoeqcfCrO0y4F
+         gBEkAfZBr2ag37SjeuamGob5UZM6VN4l8mYqaQXw=
+Date:   Tue, 28 Sep 2021 20:30:11 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v2 2/4] mm: Make generic arch_is_kernel_initmem_freed()
+ do what it says
+Message-Id: <20210928203011.da1f059b72be9ada7d67fe35@linux-foundation.org>
+In-Reply-To: <ec69cc95a98548c862c22b742936244fdb0c7984.1632813331.git.christophe.leroy@csgroup.eu>
+References: <ffa99e8e91e756b081427b27e408f275b7d43df7.1632813331.git.christophe.leroy@csgroup.eu>
+        <ec69cc95a98548c862c22b742936244fdb0c7984.1632813331.git.christophe.leroy@csgroup.eu>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lack of documentation inside Linux here is a bit annoying, but do I
-understand it correctly, that the main (and probably only) difference
-is that kvcalloc checks whether the multiplication overflows and
-returns NULL in this case?
+On Tue, 28 Sep 2021 09:15:35 +0200 Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
 
-On Wed, Sep 29, 2021 at 12:21 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> Use 2-factor argument form kvcalloc() instead of kvzalloc().
->
-> Link: https://github.com/KSPP/linux/issues/162
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_svm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> index b0c3422cb01f..1a896a24288a 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> @@ -992,7 +992,7 @@ nouveau_svm_fault_buffer_ctor(struct nouveau_svm *svm, s32 oclass, int id)
->         if (ret)
->                 return ret;
->
-> -       buffer->fault = kvzalloc(sizeof(*buffer->fault) * buffer->entries, GFP_KERNEL);
-> +       buffer->fault = kvcalloc(sizeof(*buffer->fault), buffer->entries, GFP_KERNEL);
->         if (!buffer->fault)
->                 return -ENOMEM;
->
-> --
-> 2.27.0
->
+> Commit 7a5da02de8d6 ("locking/lockdep: check for freed initmem in
+> static_obj()") added arch_is_kernel_initmem_freed() which is supposed
+> to report whether an object is part of already freed init memory.
+> 
+> For the time being, the generic version of arch_is_kernel_initmem_freed()
+> always reports 'false', allthough free_initmem() is generically called
+> on all architectures.
+> 
+> Therefore, change the generic version of arch_is_kernel_initmem_freed()
+> to check whether free_initmem() has been called. If so, then check
+> if a given address falls into init memory.
+> 
+> In order to use function init_section_contains(), the fonction is
+> moved at the end of asm-generic/section.h
+
+i386 allmodconfig:
+
+In file included from arch/x86/platform/intel-quark/imr.c:28:
+./include/asm-generic/sections.h: In function 'arch_is_kernel_initmem_freed':
+./include/asm-generic/sections.h:171:6: error: 'system_state' undeclared (first use in this function)
+  171 |  if (system_state < SYSTEM_FREEING_INITMEM)
+      |      ^~~~~~~~~~~~
+./include/asm-generic/sections.h:171:6: note: each undeclared identifier is reported only once for each function it appears in
+./include/asm-generic/sections.h:171:21: error: 'SYSTEM_FREEING_INITMEM' undeclared (first use in this function)
+  171 |  if (system_state < SYSTEM_FREEING_INITMEM)
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+
+
+I don't think it would be a good idea to include kernel.h from
+sections.h - it's unclear to me which is the "innermost" of those two. 
+It would be better to uninline arch_is_kernel_initmem_freed().  Surely
+there's no real reason for inlining it?
+
+Anyway, I'll drop the series for now.
 
