@@ -2,151 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2195A41CDF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB47341CDFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346418AbhI2V0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhI2V0C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:26:02 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AF7C06161C;
-        Wed, 29 Sep 2021 14:24:21 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e7so4061500pgk.2;
-        Wed, 29 Sep 2021 14:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fpo01N+lyyScDWgq92D1/O48N99YsmZj4WQK3k5r6Mo=;
-        b=HM4oHczu6gs2h9KK3RI3VcgQwjbssZtyx7Vv2BcE3kGpF4b1QJ0oRybxE9aBl2GH1x
-         /w43iWh5gjuSTpKtS8sxxcG9Nx1wNNO85Qtxd5GGBEa/2A2cjwEOni8csuVK8ApBzBN7
-         kcxxhWAMjMt2ooGQ/7ZnOuMcCK7C46xyz4lCqBfF52Ejh88yWXA+xBfTqPqT0/dW+PG3
-         bQFC3uszdafIr55L58NftLtzImjQfyIUEWtjQDdW8NYZYz4etC4EQ67Ze1hEImGxVg2A
-         bkf6prnLYNE30FAdNKNU1zCSJ9zwkwQ9qh2FgxfoaemFCoKNbtsNS/X8reqnf8LZObtt
-         p8qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fpo01N+lyyScDWgq92D1/O48N99YsmZj4WQK3k5r6Mo=;
-        b=Z2o1r0B8rpGehp5xZoU874etkbQezOM54I/mrOFGvtDTpUYESiQVb6CBfRT5snagQg
-         WC/ifWY7WmVsepgIotxuzjXpsGFCUqKkS1WuLiKb8Fhee1ClJ28Q3De12ZXwvwaRGYDE
-         +PhINpoD9/j0kWvOtlWw47ocQuPagrbzMI6Q/XoDeyYjiZFV2bJ7Jp8jXFlCCVCQjsSz
-         oncrndIsj/P7wPbQRf2c9rUWvv/5Utjpg1pSqFlYTDdlClx7lZeV7o9LqnwwvcSQs8x9
-         kF9qary1Vv2vX1mJY2qfkK5JUxpAukK3Ks3KpBmkyJOq4xsw1BqvXAK2UlcCgy6N+i7b
-         K82A==
-X-Gm-Message-State: AOAM530mB8HyTVYyxto/YBQRt3mjB+8zZoCh+bntmKiGjb+2QZT2Nauo
-        Cl3I+ZGdejzpeZ8b9X7uysA=
-X-Google-Smtp-Source: ABdhPJz+Twh3I6xWm488muRPTJARlQ/8j0JckJWLWy34bu13dAChLYGq4WwFW2WNKGjs5i0N0T5qew==
-X-Received: by 2002:a63:fb58:: with SMTP id w24mr1718437pgj.327.1632950660735;
-        Wed, 29 Sep 2021 14:24:20 -0700 (PDT)
-Received: from nuc10.aws.cis.local (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
-        by smtp.gmail.com with ESMTPSA id i5sm2689322pjk.47.2021.09.29.14.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 14:24:20 -0700 (PDT)
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     djwong@kernel.org, linux-xfs@vger.kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        gregkh@linuxfoundation.org, Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
-Date:   Wed, 29 Sep 2021 14:23:47 -0700
-Message-Id: <20210929212347.1139666-1-rkovhaev@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S1346904AbhI2V12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:27:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232425AbhI2V11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 17:27:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA12A615E0;
+        Wed, 29 Sep 2021 21:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632950746;
+        bh=/uohdsS46RoeYWV3Wuhg+CaUifSJS3kMzk3c77rNVMg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=eVXGDv79IHof2T2KJbcPGS8o6/QleOYNvaSoPHLVkKfiliYVCl4rbzQ5yxKQFhBjK
+         B4BHPHZnA61MT01eMZHQVYF4vh1+EwLEc2hXh9MyBMlkuCtl0eqK61s1N9P86Y77m6
+         ucFWf7plzgkpHVU3PeSB38LM/0T2jH7jjZ72wiMS8aCVnREtElqmUcgHzc0Sv/ypUJ
+         ULPB6rYS6+5I0Vb6EEk6jjqEUQAUFNHrWV1McFMu523E8jslPsZ2NXbht2vIVcYtPS
+         uGqfYe4gH//0TFcF7gotEr9yar+AclWgiWk438ACf+RB+yq53JWLG2mNq8vLOLsTYm
+         ipDtkpa68q3sA==
+Date:   Wed, 29 Sep 2021 16:25:44 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     bhelgaas@google.com, Guenter Roeck <linux@roeck-us.net>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] PCI: Reinstate "PCI: Coalesce host bridge contiguous
+ apertures"
+Message-ID: <20210929212544.GA808906@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210713125007.1260304-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For kmalloc() allocations SLOB prepends the blocks with a 4-byte header,
-and it puts the size of the allocated blocks in that header.
-Blocks allocated with kmem_cache_alloc() allocations do not have that
-header.
+On Tue, Jul 13, 2021 at 08:50:07PM +0800, Kai-Heng Feng wrote:
+> Built-in graphics on HP EliteDesk 805 G6 doesn't work because graphics
+> can't get the BAR it needs:
+>   pci_bus 0000:00: root bus resource [mem 0x10020200000-0x100303fffff window]
+>   pci_bus 0000:00: root bus resource [mem 0x10030400000-0x100401fffff window]
+> 
+>   pci 0000:00:08.1:   bridge window [mem 0xd2000000-0xd23fffff]
+>   pci 0000:00:08.1:   bridge window [mem 0x10030000000-0x100401fffff 64bit pref]
+>   pci 0000:00:08.1: can't claim BAR 15 [mem 0x10030000000-0x100401fffff 64bit pref]: no compatible bridge window
+>   pci 0000:00:08.1: [mem 0x10030000000-0x100401fffff 64bit pref] clipped to [mem 0x10030000000-0x100303fffff 64bit pref]
+>   pci 0000:00:08.1:   bridge window [mem 0x10030000000-0x100303fffff 64bit pref]
+>   pci 0000:07:00.0: can't claim BAR 0 [mem 0x10030000000-0x1003fffffff 64bit pref]: no compatible bridge window
+>   pci 0000:07:00.0: can't claim BAR 2 [mem 0x10040000000-0x100401fffff 64bit pref]: no compatible bridge window
+> 
+> However, the root bus has two contiguous apertures that can contain the
+> child resource requested.
+> 
+> Coalesce contiguous apertures so we can allocate from the entire contiguous
+> region.
+> 
+> This is the second take of commit 65db04053efe ("PCI: Coalesce host
+> bridge contiguous apertures"). The original approach sorts the apertures
+> by address, but that makes NVMe stop working on QEMU ppc:sam460ex:
+>   PCI host bridge to bus 0002:00
+>   pci_bus 0002:00: root bus resource [io  0x0000-0xffff]
+>   pci_bus 0002:00: root bus resource [mem 0xd80000000-0xdffffffff] (bus address [0x80000000-0xffffffff])
+>   pci_bus 0002:00: root bus resource [mem 0xc0ee00000-0xc0eefffff] (bus address [0x00000000-0x000fffff])
+> 
+> After the offending commit:
+>   PCI host bridge to bus 0002:00
+>   pci_bus 0002:00: root bus resource [io  0x0000-0xffff]
+>   pci_bus 0002:00: root bus resource [mem 0xc0ee00000-0xc0eefffff] (bus address [0x00000000-0x000fffff])
+>   pci_bus 0002:00: root bus resource [mem 0xd80000000-0xdffffffff] (bus address [0x80000000-0xffffffff])
+> 
+> Since the apertures on HP EliteDesk 805 G6 are already in ascending
+> order, doing a precautious sorting is not necessary.
+> 
+> Remove the sorting part to avoid the regression on ppc:sam460ex.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212013
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-SLOB explodes when you allocate memory with kmem_cache_alloc() and then
-try to free it with kfree() instead of kmem_cache_free().
-SLOB will assume that there is a header when there is none, read some
-garbage to size variable and corrupt the adjacent objects, which
-eventually leads to hang or panic.
+Applied to pci/resource for v5.16, thanks!
 
-Let's make XFS work with SLOB by using proper free function.
-
-Fixes: 9749fee83f38 ("xfs: enable the xfs_defer mechanism to process extents to free")
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
----
- fs/xfs/xfs_extfree_item.c | 6 +++---
- mm/slob.c                 | 6 ++++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/fs/xfs/xfs_extfree_item.c b/fs/xfs/xfs_extfree_item.c
-index 3f8a0713573a..a4b8caa2c601 100644
---- a/fs/xfs/xfs_extfree_item.c
-+++ b/fs/xfs/xfs_extfree_item.c
-@@ -482,7 +482,7 @@ xfs_extent_free_finish_item(
- 			free->xefi_startblock,
- 			free->xefi_blockcount,
- 			&free->xefi_oinfo, free->xefi_skip_discard);
--	kmem_free(free);
-+	kmem_cache_free(xfs_bmap_free_item_zone, free);
- 	return error;
- }
- 
-@@ -502,7 +502,7 @@ xfs_extent_free_cancel_item(
- 	struct xfs_extent_free_item	*free;
- 
- 	free = container_of(item, struct xfs_extent_free_item, xefi_list);
--	kmem_free(free);
-+	kmem_cache_free(xfs_bmap_free_item_zone, free);
- }
- 
- const struct xfs_defer_op_type xfs_extent_free_defer_type = {
-@@ -564,7 +564,7 @@ xfs_agfl_free_finish_item(
- 	extp->ext_len = free->xefi_blockcount;
- 	efdp->efd_next_extent++;
- 
--	kmem_free(free);
-+	kmem_cache_free(xfs_bmap_free_item_zone, free);
- 	return error;
- }
- 
-diff --git a/mm/slob.c b/mm/slob.c
-index 74d3f6e60666..d2d859ded5f8 100644
---- a/mm/slob.c
-+++ b/mm/slob.c
-@@ -389,7 +389,6 @@ static void slob_free(void *block, int size)
- 
- 	if (unlikely(ZERO_OR_NULL_PTR(block)))
- 		return;
--	BUG_ON(!size);
- 
- 	sp = virt_to_page(block);
- 	units = SLOB_UNITS(size);
-@@ -556,6 +555,7 @@ void kfree(const void *block)
- 	if (PageSlab(sp)) {
- 		int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
- 		unsigned int *m = (unsigned int *)(block - align);
-+		BUG_ON(!*m || *m > (PAGE_SIZE - align));
- 		slob_free(m, *m + align);
- 	} else {
- 		unsigned int order = compound_order(sp);
-@@ -649,8 +649,10 @@ EXPORT_SYMBOL(kmem_cache_alloc_node);
- 
- static void __kmem_cache_free(void *b, int size)
- {
--	if (size < PAGE_SIZE)
-+	if (size < PAGE_SIZE) {
-+		BUG_ON(!size);
- 		slob_free(b, size);
-+	}
- 	else
- 		slob_free_pages(b, get_order(size));
- }
--- 
-2.30.2
-
+> ---
+> v2:
+>  - Bring back the original commit message.
+> 
+>  drivers/pci/probe.c | 31 +++++++++++++++++++++++++++----
+>  1 file changed, 27 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 79177ac37880..5de157600466 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -877,11 +877,11 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
+>  static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>  {
+>  	struct device *parent = bridge->dev.parent;
+> -	struct resource_entry *window, *n;
+> +	struct resource_entry *window, *next, *n;
+>  	struct pci_bus *bus, *b;
+> -	resource_size_t offset;
+> +	resource_size_t offset, next_offset;
+>  	LIST_HEAD(resources);
+> -	struct resource *res;
+> +	struct resource *res, *next_res;
+>  	char addr[64], *fmt;
+>  	const char *name;
+>  	int err;
+> @@ -961,11 +961,34 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>  	if (nr_node_ids > 1 && pcibus_to_node(bus) == NUMA_NO_NODE)
+>  		dev_warn(&bus->dev, "Unknown NUMA node; performance will be reduced\n");
+>  
+> +	/* Coalesce contiguous windows */
+> +	resource_list_for_each_entry_safe(window, n, &resources) {
+> +		if (list_is_last(&window->node, &resources))
+> +			break;
+> +
+> +		next = list_next_entry(window, node);
+> +		offset = window->offset;
+> +		res = window->res;
+> +		next_offset = next->offset;
+> +		next_res = next->res;
+> +
+> +		if (res->flags != next_res->flags || offset != next_offset)
+> +			continue;
+> +
+> +		if (res->end + 1 == next_res->start) {
+> +			next_res->start = res->start;
+> +			res->flags = res->start = res->end = 0;
+> +		}
+> +	}
+> +
+>  	/* Add initial resources to the bus */
+>  	resource_list_for_each_entry_safe(window, n, &resources) {
+> -		list_move_tail(&window->node, &bridge->windows);
+>  		offset = window->offset;
+>  		res = window->res;
+> +		if (!res->end)
+> +			continue;
+> +
+> +		list_move_tail(&window->node, &bridge->windows);
+>  
+>  		if (res->flags & IORESOURCE_BUS)
+>  			pci_bus_insert_busn_res(bus, bus->number, res->end);
+> -- 
+> 2.31.1
+> 
