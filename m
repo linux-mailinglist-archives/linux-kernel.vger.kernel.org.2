@@ -2,160 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E62F41CE00
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8587A41CE08
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346913AbhI2V2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:28:08 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:58868 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhI2V2H (ORCPT
+        id S1346923AbhI2V3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346531AbhI2V3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:28:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=nHl0IFgZgGpHvQgDpFAFAHI5VsGy7jlQRmnLx5A/xGM=; b=MCqUG28cCMzBbE1ij1ryNHEwuG
-        vmZLEFq36tbkkbW136PBApl58FA1BmBPgQBO7Vy0W5ociLCy71GucZmvTbS4ZuGIJP9zwEllXw+LA
-        UGWft03gK6gOYJgiD+dsK/1kgwTomHkZqRxsyNczjso4P1gx3Ij1JXLnu2IapCBmayItQTHeNpkS/
-        DC6lggy8f7brCrKZtAqlb9CtUK1brfum4Ak2xaHEFeqKv/j0gS2y0/htYjsguEkp+SDSmGZN8QDmG
-        6sMtXlUKlXg7yhYmw6GAdVCKl32z3ozsNy2BN4wHpD3K1QOk50H6mu+nC38p2AFa0sDw+7jDyE4cU
-        jR2cdMMg==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mVh5f-0006Ii-Sf; Wed, 29 Sep 2021 15:26:13 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-5-logang@deltatee.com>
- <20210928185552.GL3544071@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <907b0cd9-84b7-c6ef-30b3-3f52f2e0e5ba@deltatee.com>
-Date:   Wed, 29 Sep 2021 15:26:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210928185552.GL3544071@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v3 04/20] PCI/P2PDMA: introduce helpers for dma_map_sg
- implementations
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+        Wed, 29 Sep 2021 17:29:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA8DC061769
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:27:19 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b5-20020a251b05000000b005b575f23711so5300210ybb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=oaKjuITVzkj2Qb5C8VeYUJh+GxytCEG91RtCHmRUgUo=;
+        b=aYLBI+7qpTgLqWMUPfV2X3MEo3QpZEc79CzHk89ZGkXNd45lel2buwx8o2q666/KQV
+         2ZaM8dutb7qhZ/3+bdz1VfpLzGUEXZ+bv0Dl3Uoh2Dn1O07218OMFXWFOzD5oU0Hkpo9
+         oPEOISvU+4IM601ulUpn2/nJ3Lx5tSyiYudZkFEfzmGF7l8OGuG6IIKbfKMksAKfg5dw
+         7kgWkDHM6ixXqpE3iXcXozEQMvkWEFlxqyiXHIiwf+zhwmbseTZjJWAigY9+C+fsluZl
+         pG17mR+io6MQSF9c7K3xH2O1YNYQiGSarZaISDuzq/ymmrx0EUKg2rkkogiJ8J7n3MCi
+         9ifQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=oaKjuITVzkj2Qb5C8VeYUJh+GxytCEG91RtCHmRUgUo=;
+        b=HAv9V2penUobfS4VGKmV0I59/oDyxL0XrTUMFhT+UTAlSRZOtdm3w3u2U2li1Yy5/I
+         VRBTVmR7CAGuvreFjBAJNJJd5EBE/oRr7TINwRwtBZvr+irhxFFtSzNEueUjVNVoFVZV
+         wIdSY9f514MnZ09l9deA2qtfIDwZBMKHyQLwpvL6tTkxiw+C4g0c0XeyPoic5q0pF3vh
+         QjakIQxOAdSCNvoFy78af9iSQYVDeYpCReGGfjzZehZTtiN59L6HkLH81UFLveqHtpl1
+         hbXiRVmE7YvB5SIXWEN/FtdkH1KGbSh/vzMMXgnFbCs7/IgDEat2Nf9U2+9eC1vJ+Qna
+         gAnQ==
+X-Gm-Message-State: AOAM532Rb0+YpnsChS6+4FwuYNqEosY1D9K7kCbv3OGIHNvnOFhfSiQO
+        wtiXeKI9Jp14ltJJaUpYwveNeLuavHYqrM9n+ajWJA==
+X-Google-Smtp-Source: ABdhPJxob3PJoIWLWrTvOmc+Cw/ya/24fHRPixkoF437CQ3Bflt+Hxb5Oq54sFhW94+CNAO25RtEW+bWL0JUQHPyKm1DBA==
+X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:83f4:ff43:90d6:efd3])
+ (user=brendanhiggins job=sendgmr) by 2002:a25:59c6:: with SMTP id
+ n189mr2309691ybb.335.1632950839128; Wed, 29 Sep 2021 14:27:19 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 14:27:08 -0700
+Message-Id: <20210929212713.1213476-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+Subject: [PATCH v2 0/5] kunit: build kunit tests without structleak plugin
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     shuah@kernel.org, davidgow@google.com, arnd@arndb.de,
+        keescook@chromium.org, rafael@kernel.org, jic23@kernel.org,
+        lars@metafoo.de, ulf.hansson@linaro.org, andreas.noever@gmail.com,
+        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
+        YehezkelShB@gmail.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, ndesaulniers@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The structleak plugin causes the stack frame size to grow immensely when
+used with KUnit; this is caused because KUnit allocates lots of
+moderately sized structs on the stack as part of its assertion macro
+implementation. For most tests with small to moderately sized tests
+cases there are never enough KUnit assertions to be an issue at all;
+even when a single test cases has many KUnit assertions, the compiler
+should never put all these struct allocations on the stack at the same
+time since the scope of the structs is so limited; however, the
+structleak plugin does not seem to respect the compiler doing the right
+thing and will still warn of excessive stack size in some cases.
+
+These patches are not a permanent solution since new tests can be added
+with huge test cases, but this serves as a stop gap to stop structleak
+from being used on KUnit tests which will currently result in excessive
+stack size.
+
+Please see the discussion thread here[1] for more context.
+
+Changes since last revision:
+ - Dropped mmc: sdhci-of-aspeed patch since it was not a pure test and I
+   could not reproduce the stack size warning anyway.
+ - Removed Wframe-larger-than=10240 warning from the bitfield kunit
+   test.
+ - All other patches are the same except with updated
+   reviewers/contributor commit footers.
+
+[1] https://lore.kernel.org/linux-arm-kernel/CAFd5g44udqkDiYBWh+VeDVJ=ELXeoXwunjv0f9frEN6HJODZng@mail.gmail.com/
+
+Arnd Bergmann (1):
+  bitfield: build kunit tests without structleak plugin
+
+Brendan Higgins (4):
+  gcc-plugins/structleak: add makefile var for disabling structleak
+  iio/test-format: build kunit tests without structleak plugin
+  device property: build kunit tests without structleak plugin
+  thunderbolt: build kunit tests without structleak plugin
+
+ drivers/base/test/Makefile   | 2 +-
+ drivers/iio/test/Makefile    | 1 +
+ drivers/thunderbolt/Makefile | 1 +
+ lib/Makefile                 | 2 +-
+ scripts/Makefile.gcc-plugins | 4 ++++
+ 5 files changed, 8 insertions(+), 2 deletions(-)
 
 
-On 2021-09-28 12:55 p.m., Jason Gunthorpe wrote:
-> On Thu, Sep 16, 2021 at 05:40:44PM -0600, Logan Gunthorpe wrote:
->> Add pci_p2pdma_map_segment() as a helper for simple dma_map_sg()
->> implementations. It takes an scatterlist segment that must point to a
->> pci_p2pdma struct page and will map it if the mapping requires a bus
->> address.
->>
->> The return value indicates whether the mapping required a bus address
->> or whether the caller still needs to map the segment normally. If the
->> segment should not be mapped, -EREMOTEIO is returned.
->>
->> This helper uses a state structure to track the changes to the
->> pgmap across calls and avoid needing to lookup into the xarray for
->> every page.
->>
->> Also add pci_p2pdma_map_bus_segment() which is useful for IOMMU
->> dma_map_sg() implementations where the sg segment containing the page
->> differs from the sg segment containing the DMA address.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->>  drivers/pci/p2pdma.c       | 59 ++++++++++++++++++++++++++++++++++++++
->>  include/linux/pci-p2pdma.h | 21 ++++++++++++++
->>  2 files changed, 80 insertions(+)
->>
->> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
->> index b656d8c801a7..58c34f1f1473 100644
->> +++ b/drivers/pci/p2pdma.c
->> @@ -943,6 +943,65 @@ void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
->>  }
->>  EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
->>  
->> +/**
->> + * pci_p2pdma_map_segment - map an sg segment determining the mapping type
->> + * @state: State structure that should be declared outside of the for_each_sg()
->> + *	loop and initialized to zero.
->> + * @dev: DMA device that's doing the mapping operation
->> + * @sg: scatterlist segment to map
->> + *
->> + * This is a helper to be used by non-iommu dma_map_sg() implementations where
->> + * the sg segment is the same for the page_link and the dma_address.
->> + *
->> + * Attempt to map a single segment in an SGL with the PCI bus address.
->> + * The segment must point to a PCI P2PDMA page and thus must be
->> + * wrapped in a is_pci_p2pdma_page(sg_page(sg)) check.
->> + *
->> + * Returns the type of mapping used and maps the page if the type is
->> + * PCI_P2PDMA_MAP_BUS_ADDR.
->> + */
->> +enum pci_p2pdma_map_type
->> +pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state, struct device *dev,
->> +		       struct scatterlist *sg)
->> +{
->> +	if (state->pgmap != sg_page(sg)->pgmap) {
->> +		state->pgmap = sg_page(sg)->pgmap;
->> +		state->map = pci_p2pdma_map_type(state->pgmap, dev);
->> +		state->bus_off = to_p2p_pgmap(state->pgmap)->bus_offset;
->> +	}
-> 
-> Is this safe? I was just talking with Joao about this,
-> 
->  https://lore.kernel.org/r/20210928180150.GI3544071@ziepe.ca
-> 
+base-commit: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
+-- 
+2.33.0.685.g46640cef36-goog
 
-I agree that taking the extra reference on the pagemap seems
-unnecessary. However, it was convenient for the purposes of this
-patchset to not have to check the page type for every page and only on
-every new page map. But if we need to add a check directly to gup,
-that'd probably be fine too.
-
-> API wise I absolutely think this should be safe as written, but is it
-> really?
-> 
-> Does pgmap ensure that a positive refcount struct page always has a
-> valid pgmap pointer (and thus the mess in gup can be deleted) or does
-> this need to get the pgmap as well to keep it alive?
-
-Yes, the P2PDMA code ensures that the pgmap will not be deleted if there
-is a positive refcount on any struct page.
-
-LOgan
