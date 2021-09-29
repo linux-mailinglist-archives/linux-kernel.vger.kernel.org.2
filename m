@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02D741BBE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17D241BBEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 02:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242694AbhI2Aum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 20:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243496AbhI2Aue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 20:50:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F352613D0;
-        Wed, 29 Sep 2021 00:48:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632876534;
-        bh=yTz5TNa3t2fIBCUxzcLoT09IrftJw4w0gXRpSbpynDg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IJ3UQgabPIIutrZtizJtzC7hN8/7Tn2GHjpe9rP9AqAvoHup8seeIED1eBGK94rg8
-         o3cB9HWrZo9Zvy9Z7ujl3HWx2KcZ2LouQNcAnnysSuWsSWi6iqJAGZbDkb9JDxI/JO
-         h5m3XTsF7CTgRNyHl6SuA+3HTTp7bHuGgX5y/iZqB8/2xwUX3kX/2VvUG4hAdTKc4X
-         HjYwn1aPF+SExV6DHZlM/3U1XpY3ewhP1YJanJXdl6OU4OSR0c2WHPm/X8hZrORKJC
-         i8XHbHTimOZCanFx0qba76g0+lNwPkkXRlm1N7C6QadB1vbVcYNwFIapiIQbm9yixw
-         eu2pzBftHxDIA==
-Date:   Tue, 28 Sep 2021 17:48:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toms Atteka <cpp.code.lv@gmail.com>
-Cc:     netdev@vger.kernel.org, pshelar@ovn.org, davem@davemloft.net,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6] net: openvswitch: IPv6: Add IPv6 extension
- header support
-Message-ID: <20210928174853.06fe8e66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
-References: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S243510AbhI2Aws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 20:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243501AbhI2Awr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 20:52:47 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D866C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:51:07 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id 61-20020aed2143000000b002a6a0f52ce7so3184942qtc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 17:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=0fbgzU17/L6gCSctp5uafuGxGxUSFOjn6R3vNJQW8SI=;
+        b=GfkC/QnM0arXkNMHt73wpj2b2QOkl6k8E8l9xDDjT4vKjuEtJv7mzYmWmsz5yldmRO
+         UnX5dyhPB4u5A3k1y7o2/Eeaf/V0WiB7+wmAr9yST1HkkEape0U5CjHC5vrajomJdfk+
+         Oz/3OatMJcG5MfzinSbIEebyyszmlHLj345yZPvHYyTWHIxkZZa+81Nf193JlPnGRmbo
+         CSSw5QGKRytyXZWCw4VlCJ8pldXa9T+4uF4fvDgRjooxpJG61R3bVXt2+deZdtM0uAJ2
+         0ge9TzgUFyUgetZXR2pNmo8PZXYzuI413PANn19xtnROVnnVX3lMAGln1Zg2xrGfzTVD
+         cvYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=0fbgzU17/L6gCSctp5uafuGxGxUSFOjn6R3vNJQW8SI=;
+        b=evllcxhSrIKhnhHFQnVvYBfe7zE93Z7gx6/lVwGeULFFRYpyLSE/reeS2RxGWruMUc
+         wN/MBaiGVuppIWTptCyqcSXPBSh1hyZHmir/eCpRiQCJq4IR08asAP8LQMxj5/Dnartp
+         KOEgFovYXpGOr0L2xHGr9Ayl/+9kyEJn9u2546mmwt1Z3DkOtuFgDv4roXsdFWxvtoqF
+         z0dTOuqk60MVnZyh90qEy2V0fbnjJ0D6iU10qLjBVLPy+Xe8kUSh/YukZQZSkNLkSzzL
+         XJaBawPt0I+EOxGpp8R4PuDieYQoRk7NqrGykEkRjf5sMchiZ0C5sd92pG5EjfT/dQ2r
+         GaqA==
+X-Gm-Message-State: AOAM533a9ign2sVTvFmKDH5oklcG89B5WqAph91qqH5bvItG/HFiAEBx
+        gnKY2dOERnnlwtB2S4o6tMtH1dbN3EGcqVM=
+X-Google-Smtp-Source: ABdhPJyjfKK7fxOV+7Ngi9SQrqA9b0TnYQPSv0g73SlQF0G+JamXVey1jXdRafQ4zNsm7kLZLsBWXjzX63R7KB0=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:5241:a7e9:90c9:9c91])
+ (user=saravanak job=sendgmr) by 2002:a0c:e1ce:: with SMTP id
+ v14mr8752533qvl.28.1632876666449; Tue, 28 Sep 2021 17:51:06 -0700 (PDT)
+Date:   Tue, 28 Sep 2021 17:51:02 -0700
+Message-Id: <20210929005103.698172-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+Subject: [PATCH v1] driver core: Reject pointless SYNC_STATE_ONLY device links
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 12:47:27 -0700 Toms Atteka wrote:
-> diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/openvswitch.h
-> index a87b44cd5590..dc6eb5f6399f 100644
-> --- a/include/uapi/linux/openvswitch.h
-> +++ b/include/uapi/linux/openvswitch.h
-> @@ -346,6 +346,13 @@ enum ovs_key_attr {
->  #ifdef __KERNEL__
->  	OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
->  #endif
-> +
-> +#ifndef __KERNEL__
+SYNC_STATE_ONLY device links intentionally allow cycles because cyclic
+sync_state() dependencies are valid and necessary.
 
-#else
+However a SYNC_STATE_ONLY device link where the consumer and the supplier
+are the same device is pointless because the device link would be deleted
+as soon as the device probes (because it's also the consumer) and won't
+affect when the sync_state() callback is called. It's a waste of CPU cycles
+and memory to create this device link. So reject any attempts to create
+such a device link.
 
-> +	PADDING,  /* Padding so kernel and non kernel field count would match */
+Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The name PADDING seems rather risky, collisions will be likely.
-OVS_KEY_ATTR_PADDING maybe?
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 15986cc2fe5e..eed27933ac4d 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -716,7 +716,7 @@ struct device_link *device_link_add(struct device *consumer,
+ 	 * SYNC_STATE_ONLY link, we don't check for reverse dependencies
+ 	 * because it only affects sync_state() callbacks.
+ 	 */
+-	if (!device_pm_initialized(supplier)
++	if (!device_pm_initialized(supplier) || consumer == supplier
+ 	    || (!(flags & DL_FLAG_SYNC_STATE_ONLY) &&
+ 		  device_is_dependent(consumer, supplier))) {
+ 		link = NULL;
+-- 
+2.33.0.685.g46640cef36-goog
 
-But maybe we don't need to define this special value and bake it into
-the uAPI, why can't we add something like this to the kernel header
-(i.e. include/linux/openvswitch.h):
-
-/* Insert a kernel only KEY_ATTR */
-#define OVS_KEY_ATTR_TUNNEL_INFO	__OVS_KEY_ATTR_MAX
-#undef OVS_KEY_ATTR_MAX
-#define OVS_KEY_ATTR_MAX		__OVS_KEY_ATTR_MAX
-
-> +#endif
