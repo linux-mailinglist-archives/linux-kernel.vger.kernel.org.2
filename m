@@ -2,152 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCCC41C4C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7129541C4CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343819AbhI2MdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:33:03 -0400
-Received: from mail-dm6nam08on2058.outbound.protection.outlook.com ([40.107.102.58]:39681
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        id S1343843AbhI2MeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:34:22 -0400
+Received: from mail-eopbgr1310124.outbound.protection.outlook.com ([40.107.131.124]:24370
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1343628AbhI2MdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:33:02 -0400
+        id S1343839AbhI2MeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:34:20 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZgWpw2tFxOEqvcJiRoQOl7Svoult/1dvR62/DMr/4u/ZSMyJHyZ6oKsQfU5b4A62gxdcnyySKhLElRP/k8ZZRBfcKgiYM/Q6+buOIOc5t5RTQqQmaDZBkoX5hExyqh8f2KBS75tQRJecJBw+TfsEQZ0EQ6y0eRNt/KMkhm/3psAsVjefR00f4rvxqYyG4XiyIFWBmuoi4/gSmJI9o5551Em2Wr6KSm4xS7uLerZzJHQ1atWFqBY9+Hp1udsHyEwWU9TkFcFkVkWy7y+iayQMvMHOkGbJageg7S6MvS1e/UysYV/I3VLMbqxi+/3uWPraO91Xnlfm7uLmFr83wUQTQw==
+ b=HpaEcd8U1058vDJ9QMch/LaKUE7G5EZKirt+dcSOGMEbczJyH6erarYIOHzs6vxV2kM4g0zRJoiemyx8kyGfa/inaPCcCRnrNjEMy6Vp+cSPHnrLn/1LnLRMZsE2Q1LoWl6rJlg65US8AftHaMoXEwgZe3Iv03mTyHaCrjwNBdmhj7rTNEHg8oV2nWLCmgwvmtY8gXOR7bXkmNO9YFXlcMElxYPfEsFcMyss8PJcBO9QrPH1HzNozEAJRFQeNK0KiSyrE6MZ1gquVq5TE1f92+QQJnKaOGlVT+NQi0lhwksa5fQ5VoIBz3mw099OTAY/qPeTwnD+GhcKNSsei9diRQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=yJdC3kvDR4LVeVqs8inz+w4UUzH8FxZdZ9+fCMTaCaQ=;
- b=jJfuHa9CQ9kqcPXPgVuVTq+pnU4cHiwKthkVq559fzu3BFQUT1LCmL6iv6tqBaM5WvLWdIHQwbKza5HCJtfAHkpnV2KeskV6nbPLMaQOiR1KfsE73/k+rMveak7Efsu6mk9VktrQyEg7Hcc/LFPd1DwD6DkQHhXLO96iY6uPO9s7KjjlTHIyvUFFdukWJF+YCcFWlg3KMn87WXq5Y9pwuvbTDEb9oHndJiUq8qJnoSG6AT8SA0oTp4ufPxawDjBkUlI7JWvbBQnctrolW6Kd1tIy11ovWlcomKhDmp9ZFz0n+8n8HyIBf4KwyEmfekSMrPNk0mDWAUgZI27tH1OWEA==
+ bh=nQ7h0dUFMgNwmTWPuSgrJRwTaGumITXenfdhbjo10PI=;
+ b=LiDJuGhjRfRxYOUmLa9prmIgIkhH1352st/NFXOHeN8ZpBa8A81BaG9QdEaiaBOdI3p9LiEWzdHOBr7qJtjUeadAP4sRuSxIiMpc9ibxJSzHc2Gn4Q7MhKqDHPW7MQ3aeoEcXhu3SonJlN7J+lDATeo2K7StXAIdaiooZ2SAHEYV08hwfP3SQa731Ct2Hmzt9XfD67akpAhCH0rp5y4ZDjsNLuaMkwDnmsx6WsNqFhOJFKqoTIPxEYVU6VljGNQEd54Byc01ic8H6ksz9DUWBUvQtW0HMo+Iu5XS2XeahNMe2BzrT5Qzx+a2R5sKaJeaAEnM5o4b9FNEZQ+EA+KUwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yJdC3kvDR4LVeVqs8inz+w4UUzH8FxZdZ9+fCMTaCaQ=;
- b=dqNA7Z36qnUelY/lBi8U/F/+6CZ/eF15RkjjvmUhJTAVLATIuK3B7LkV1ipjGBnMkeon3Ysy5Qy8ldNZphCDJDo5dIlPDkRIpF3EzIg9oJfRpnZprWOwTVQX8DMYgtXJ8Tl42J+ALNyiNJF3x6Zv74RT5mIfqn4ZoQshoByCyBaLTtp2N7iYXwzWGO0d1+j1b4SCqvSVSEsySFTWWQovsGTIRZfRwb4B4+HBH3HUvwspngQxfKEaBiHpOeXxod9P+0amziWl8drjdGB0h8/fLX80EbGm9nf9pC/gIQUyd0R9WaMbRU/5Lw7yAKvY8IFXTAGVmH5Otv+g2K0VQHQhLw==
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5377.namprd12.prod.outlook.com (2603:10b6:208:31f::21) with
+ bh=nQ7h0dUFMgNwmTWPuSgrJRwTaGumITXenfdhbjo10PI=;
+ b=kLUWpHby1WTw3BqoqFRYlFjcK57t/FrkDO2U9Af23n1IAlkcTZUbrhjMHjUxVNosigfatSq/NXG2HcWB6nTiRTO2WqvsSliOhNKzqPqi8zv09KQdvsU5+oIiyS/8cHr80PUt1VWw6kiFMiCoQIf1nzYkKQLOnLC+Vm7N/Oebz98=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com (2603:1096:202:2f::10)
+ by HK2PR06MB3283.apcprd06.prod.outlook.com (2603:1096:202:3c::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Wed, 29 Sep
- 2021 12:31:19 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 12:31:19 +0000
-Date:   Wed, 29 Sep 2021 09:31:18 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 17/20] iommu/iommufd: Report iova range to userspace
-Message-ID: <20210929123118.GR964074@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-18-yi.l.liu@intel.com>
- <YUtCYZI3oQcwKrUh@myrica>
- <PH0PR11MB56580CB47CA2CF17C86CD0D0C3A99@PH0PR11MB5658.namprd11.prod.outlook.com>
- <YVRXHDwROV2ASnVJ@myrica>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVRXHDwROV2ASnVJ@myrica>
-X-ClientProxiedBy: BL0PR03CA0031.namprd03.prod.outlook.com
- (2603:10b6:208:2d::44) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Wed, 29 Sep
+ 2021 12:32:36 +0000
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::80d9:d4e4:300f:3156]) by HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::80d9:d4e4:300f:3156%5]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
+ 12:32:35 +0000
+From:   Guo Zhengkui <guozhengkui@vivo.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, Guo Zhengkui <guozhengkui@vivo.com>
+Subject: [PATCH] ASoC: wm_adsp: remove a repeated including
+Date:   Wed, 29 Sep 2021 20:32:15 +0800
+Message-Id: <20210929123217.5240-1-guozhengkui@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0185.apcprd02.prod.outlook.com
+ (2603:1096:201:21::21) To HK2PR06MB3492.apcprd06.prod.outlook.com
+ (2603:1096:202:2f::10)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR03CA0031.namprd03.prod.outlook.com (2603:10b6:208:2d::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 12:31:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVYk2-007Ykt-FM; Wed, 29 Sep 2021 09:31:18 -0300
+Received: from localhost.localdomain (203.90.234.87) by HK2PR02CA0185.apcprd02.prod.outlook.com (2603:1096:201:21::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend Transport; Wed, 29 Sep 2021 12:32:35 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 253fd489-8e72-410c-cbac-08d983450a03
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5377:
+X-MS-Office365-Filtering-Correlation-Id: 52bddf69-36d3-4dfd-7048-08d98345377e
+X-MS-TrafficTypeDiagnostic: HK2PR06MB3283:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53771574423B51F9F0B116BDC2A99@BL1PR12MB5377.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <HK2PR06MB3283625D3EAA48D06C3BAA83C7A99@HK2PR06MB3283.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:207;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 42eloFLqDSJBidcWd3U7NjgQNsj+E0ZAaM9MhcTNvLa4k6tauVh4Wyp4sViZwBG6rFR3jY8WZhwVtZkznT7qvVx9RtQoD8kVz8oLtwC2Z5iK7q/xizgJPNv0RgNYsQPzUnt2NNbCgBkVTShly/kD1h1x3+U7sULlIZNYdxrrh4VnKSyUA2hfptpatMim85/Nnvlj6TUl8RAMVsVXHT7cia14YI8Dj4vsYAvOgz5phwnDEviUSuhNP1pQArazU2zaw5GiE9MtMLzbJHU5buxQMj1dicm++uRCT7p2C2s+3AVSOjCrhc62dxPGPob7Bbg3rfoJylMA2x66uKYYGICOSXaJFAzeOGqEYftdXWkKhfTYM8IQuBMv11UstwMntAkox2R2+8nS0ymibpkS6xcNGU6mppV8yR4vzpws4VwYG/sRrxqZj/ZyVarf5VOI7+v191/3ncucejZjLQ81RHn3Qowx8zUiGQZZYW57FX2Pwc0YoeI+urB+MVnyeWOFP6N622VLC5DXFd4oq5X+wXfGtaiKidxNOLzwR43xmjf4ZCbyh1rCZl6+O86pMXeWZoQvXYhw9qqA7mbQrY0t0sguKt9nS1RhuDH8znF6/bpBkz11yLPA1TsungwB0/A141ab6DQ6fRhoeXOnpunbriJ7BeN1+kK9XtABniiAcN9Kqmlta2R76WVR38HIGqL0xWz9w+97OYmo5sBagqlny7W+8Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(38100700002)(54906003)(1076003)(6916009)(8936002)(508600001)(66556008)(426003)(36756003)(5660300002)(4326008)(2906002)(4744005)(8676002)(107886003)(66946007)(33656002)(66476007)(9746002)(86362001)(186003)(2616005)(26005)(316002)(9786002)(27376004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: XsOoUw/AV+naxZUq8rgMIaBK0shzCqNXQfsiPg3txwPPUCeEIXEqN49gc6IFYHBXvwayvIFjKKRdXGnzt9DjiF4vperQaG7J6imrJoY571jexExH/qbLIvUEdtFGBl1c3EkrAcVdtvqawPCfAM7QBWumVoMeU6+miCrBq/B+UwXa4NYd+UmU27bfaDFeU/9NqFVNiDvnl/HNp7yLb+F7jrgU/+aIRZF3V9p0bEFQLNd/ZNPp8fX3bs1mr1d2Sggn+NYjMZC1svAvpQyqFCIbMVqy3k7kz9WMAij5xbiM38RG8iaP/f2nMrnpa0tHnWEwdwxuprsxIIULnlwuwDEza2o4A6bInwXAYUsuiHklZk3Kc5mRHrV0OpTzQDsHnm4jr9j1igKuiuAmljqomBnTQJHRYwVqKsCkCsVknd7Y9Iwt4se4mS/Ma7ZF0l1Fst65K+YcqyHjnXxZQ/DoAsCCYFQrZBGf6X2vtB8d0ODBAjxIqMWhbsuGqBz1EGtYAp0Y8cYjkuXayZ4Vw+Aegx4wloDYw/y5/hQwX99ggO6R0v8NMsA1jQ/hIYOraLQQF5vuPI2bR9adKXpqQ9AFBgb9iEPijrvJT5aIFFsfoo5GBsyuLni1ez4EP1natymz3peBTUFJEkxluRmg1GyqAjjaT+6/acvFLRB4vggGWqyg6e7VraZ/MrA02YWJzdX+Kt5pe1t0fgzBHK5SrPsS8HtUfpFEKV08Taz6pSEiwz/LZKc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3492.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(316002)(4744005)(110136005)(1076003)(2906002)(7416002)(36756003)(4326008)(508600001)(5660300002)(66476007)(66556008)(38350700002)(38100700002)(921005)(186003)(956004)(6486002)(107886003)(26005)(2616005)(86362001)(6506007)(8676002)(83380400001)(52116002)(6512007)(8936002)(66946007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?duv435sLnUY6rosf3QqF3X3GsMj7f5i1ybrpPWyEpsnPhbmwaG8PJGt3mNJq?=
- =?us-ascii?Q?kjiGV60jRjk1W+eo1qMPhSdfukwTWs29AV17Q6lG5y8E3vXiGfzE0dmPi+eL?=
- =?us-ascii?Q?HRdh2j7UmDeR1WjqMdlsv5cfLV5a6nntOMr3n7Lkxk/btDt8XSuZc7DGEqbq?=
- =?us-ascii?Q?XjyCStRCLrvzXVIox82PdQP3BK4MEgVUxxeoSzza0sc952KSQRU0tqoESlSz?=
- =?us-ascii?Q?OTj+jb+BzENna+rCD1JCcsf2tLuGhmyA3q4qUXgcPPe9FlBCV0IwK3dGL3UJ?=
- =?us-ascii?Q?V2pMQdZK8ubAJjVxW8uK8t7bvkx3349f5LQUUQ1E67AVbWKAU5hgH6JLbPUI?=
- =?us-ascii?Q?kbhyBGd/Y1WmPscasidDNGYVijYHMu97nkswDwUNZ6PxG/4oVUDTzhsiJsdg?=
- =?us-ascii?Q?gj6+9Jsd8F1Lxhxe1fhliB9jkDDntV7GV3oxLGvr/Pxlk6c6NQ6Do/OdmyX0?=
- =?us-ascii?Q?J2HFtL82Ur/3lLB1ErDdSJ30OBnKA8JqcKedRKzboud9IFv0En+g0r0FCo6W?=
- =?us-ascii?Q?TRDRCiYbzjJJFEfzYl1ELb6QKuteb8n1vV7tPaKOfltDt7/sKcAlnEfBYHLr?=
- =?us-ascii?Q?w2e0QaLlXOevMZBEH1ELHi4jewC2h6RQJMaM2oDfAI8xu+AzbqgALNqh2K3/?=
- =?us-ascii?Q?4VxTtLIMrVQJYXGmQnEiNtfw/EPaqbpSFZUstsD/h6syWD+8XE4YwTvDRpRM?=
- =?us-ascii?Q?qlLIUVNjQDaqrXM1iHXPDXPiS6EnMagDKYm2sibVH38BiwFxj0khwUgiTHTD?=
- =?us-ascii?Q?oTytaHpYICdjXfNpEOAAlqODZDZqpNPCc+2LT/EaGy8XKfjJLpD3pbn61K+/?=
- =?us-ascii?Q?QBXd2yF2ewL2xZj/yOjGLm1VEQNuR83fDEurinUgj3ASNJDFaGuwJcM8rN6g?=
- =?us-ascii?Q?bdBRqT5MTidTgXmx1ql6bXKbvov6S+5P1pRV5IQfK+rc9HJGXxPrywKeQ/PZ?=
- =?us-ascii?Q?wqeXl3tkfEJJuqqnRYAwB1T5sXLPXyA5yivTyQkep32bSZKFvWip+fONx6rB?=
- =?us-ascii?Q?bdHeHl2/lxHdp+twH0wEiROvwQEbreovaLOGLfLeC/0ruJemvEONqS/ssG49?=
- =?us-ascii?Q?jHluoLF0nYgETRzOjiopKTafA1qmDNvzl13XhDv4TCFmTP8YAbQ39Yco9+44?=
- =?us-ascii?Q?bBtAI3dC5jGJ5sQUsfamEuIGOFJNbQkZah6jjXhHR6VTJAFJ2TwNLRYDdAQP?=
- =?us-ascii?Q?tvOwZAiXHx0qaDcCIJj89qs5MeYx7NInuCmFdvHAjAddJ0FOXmjy75GEJV/z?=
- =?us-ascii?Q?lUXIdYHitCLiXTytAQTuGqxyKTfGNU9fB1Pkppie3TH8ow/taeWeJr+McYvM?=
- =?us-ascii?Q?vq6sdI9z5t4Y/0Qm2v+XT7WK?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 253fd489-8e72-410c-cbac-08d983450a03
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qplReyKVEKw9flKppKQbG/Xs7IvOYFI6P3kcw29GqX0zU3HQKB/7BJR+1CLy?=
+ =?us-ascii?Q?jv7J8zNVvt4aBGAHUGbn+LcAPgNzWDK29/9hJdvzz3TQ1JrZG63kEMDG4MnD?=
+ =?us-ascii?Q?cHmSY9E2DGOqWWQZKkjo8auwbP7R6FcpXsqR886RR2usU1COCyuNsPl2C0lM?=
+ =?us-ascii?Q?cGzU8gWTZwAP1uBF5qS0HQE4YRVB8quW5RvdMpkJN4xBRAdC03cH6/jV7E2u?=
+ =?us-ascii?Q?xsXlMl0cCJcYx6RObrlYCta1IBlyLVXDDE2jOw+JPLaEpu0bfWTNDHalghTN?=
+ =?us-ascii?Q?jW0kbakKlIgyu+137tkuvSXuNjAf6dRZI/+QUd9DueCd97Fa6/J/rugwspyZ?=
+ =?us-ascii?Q?re/fkc0hYFbuvQaHWBDXikV8IeA8lF/uMwMF/Oq03/GGYWtGgxN4N/chSeep?=
+ =?us-ascii?Q?0BhXBh+ijFOmQD7BoKvaIUk6fbUllKuaccKD7Qnzkl0aJtPNJjfq74ed+A/H?=
+ =?us-ascii?Q?V+FliTDZo2CZBOBLLYNGjTckB0RfX/qInnjK8tw0PiAuRniXl/hUa7lWjMXe?=
+ =?us-ascii?Q?IJXFU9sH8eUOiO2AW0Q5ZVhMEeaaEMJY7o+bzKjXixSpn6uTYItDYwFZFKyj?=
+ =?us-ascii?Q?pQo/xgCvkqWSZThTri1lVQDaSBrKgIQt5HoVVMbJIBE0Qy1YkWIBEPqtrMQ/?=
+ =?us-ascii?Q?RWvR1A1zYhIgll2au9TLABJ4yxX59ubEJ/YNjz+HgeuVyv1XE2J/xVZzh5Vs?=
+ =?us-ascii?Q?z87KS1ln4lTkAsDGw9FPkkoUZLk4EEyRmXD85qFux50ywWQki3VzcoVKMvfk?=
+ =?us-ascii?Q?bYn7M3Pzk+eNMWqqtdim/GyaP51c1TLpy/NcV78CvIeZT2M7JlZHrSDvxidI?=
+ =?us-ascii?Q?tM09h3XTOsJYL82yM6h+ITiCqoKfDkxEM9jkQ5iyHUYgrwQPaUZDErXdsQZx?=
+ =?us-ascii?Q?yTz3jCTwnBMg10Hew+ZzaNQrnksAzh5eDmieqWg2SvBz2FvUtIMqHzGm65Xn?=
+ =?us-ascii?Q?p4ns0acY+A7J/DhDLALBwpaUcuJemQFogdaHC9zFcazwLAgp7K8xf8tfmHYc?=
+ =?us-ascii?Q?K5xnWgoqUE94BqdIzNj0+yvASemeAz2MTQwpo6XO1kyc2lXyt/Sr/f8d7y7f?=
+ =?us-ascii?Q?pYaKcX2JZT6OnAxP6PL37eTO0dGM9jeC/7oFQ0ND1YsqkTVFyJfUabuy7TnW?=
+ =?us-ascii?Q?YooG4GRpzXX6ILLC2ajqyHOPHa4IWoJ7J/nGG/h/Qih94ruhiky1jNAAWiBb?=
+ =?us-ascii?Q?A9wkrQsp2831X8MEBsnVtt87lKoCKnxHiBh9QYPfx4Gb0Gmf6xkWfDy0MdcB?=
+ =?us-ascii?Q?2vykZKRsDnQwFbWUwE8iSQTWqYIa6XF/+oEy+58Moc4kNeTdCpcETS+ePnxf?=
+ =?us-ascii?Q?riziTBdL1XnRpQTA5mXkWzyB?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52bddf69-36d3-4dfd-7048-08d98345377e
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3492.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 12:31:19.5789
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 12:32:35.8310
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UhQOR/jKrdkFpp8HyCi2zGnF5B/KZXfuzyZBoFNZLseiSo4sODpDZ8VKgcmlu8O1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5377
+X-MS-Exchange-CrossTenant-UserPrincipalName: q1YRF9aL7XFtzdwc4FeePPFVTh6YcUNpodU0sb/V6KsXuFvwQxORlSEOpUzw90Umjmyrzr1NN7Di2EG+kSge2Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3283
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 01:07:56PM +0100, Jean-Philippe Brucker wrote:
+Remove a repeated "#include <linux/firmware.h>" in line 32.
 
-> Yes, so the guest knows the size of GPA it can write into the page table.
-> For Arm SMMU the GPA size is determined by both the SMMU implementation
-> and the host kernel configuration. But maybe that could also be
-> vendor-specific, if other architectures don't need to communicate it. 
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+---
+ sound/soc/codecs/wm_adsp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I think there should be a dedicated query to return HW specific
-parmaters for a user page table format. Somehow I think there will be
-a lot of these.
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 6c5d55b3b311..b9fb4f547d5e 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -29,7 +29,6 @@
+ #include <sound/jack.h>
+ #include <sound/initval.h>
+ #include <sound/tlv.h>
+-#include <linux/firmware.h>
+ 
+ #include "wm_adsp.h"
+ 
+-- 
+2.20.1
 
-So 'user page table format arm smmu v1' can be queried to return its
-own unique struct that has everything needed to operate that format of
-page table.
-
-Userspace already needs to know how to form that specific HW PTEs,
-so processing a HW specific query is not a problem.
-
-Jason
