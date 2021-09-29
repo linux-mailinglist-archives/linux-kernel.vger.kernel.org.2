@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D351441C43E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1047141C43F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbhI2MDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:03:07 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:44010 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343687AbhI2MCw (ORCPT
+        id S245570AbhI2MFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245233AbhI2MFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:02:52 -0400
-Received: by mail-oi1-f177.google.com with SMTP id q16so2538026oiw.10;
-        Wed, 29 Sep 2021 05:01:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hkqbVi86S7yRX44LH10zaUFULfl6o47U8MBszhuGD14=;
-        b=ZJETC+kAh5NO6mpMS9GHZ1MH2ie4ZEjwSKLMH3kFpmV81VFc9K62v2Rv1JQ6qqvPQ5
-         z14PE6PHzMjgZ/Le5WIn3F+7OoIVs7giRsjb92Wpp5I3iEYZripGc7OzPei2TkavEV5z
-         tqtJGVIJntDJJrIaIgM/IXoNumCnWFc92qcLVoQE3LZD/Gqk8BP62OhmoxW881iyH1uH
-         SxScQLj1tJOaA99UPIe/kcwFNCaAigJlS9X3FYi97LQputnQGJ7oM0vM4dm/17JCFwph
-         8SJMmA7tX5Vp80pcdum8Ci7uxOyqZ2xtlwPNjyGfBIwP5M/chEz6LKPitZEEMSSpDftp
-         uC9A==
-X-Gm-Message-State: AOAM532znh6ZJXdDTEMu39U/L0sE5RWzPsYNoCMObHVduSs1xhAgQrym
-        h7nt87q5BaaKCO2rpBgWSIr2p0wHtzFIRl0CrPw=
-X-Google-Smtp-Source: ABdhPJzqBNszuxNRS1MHW5un/eHAOQLNAv1pTp/wTZ5+hlLtyH/wRTYHcac9owjxwHyr9TrOaPV6rYw2ZU6Zu8it9z0=
-X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr7487019oib.69.1632916871234;
- Wed, 29 Sep 2021 05:01:11 -0700 (PDT)
+        Wed, 29 Sep 2021 08:05:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA7AC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:03:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nxuwC5keF0YAJ+9TMPm1V+6kgV73HkecEcFmN5syikc=; b=nMHFn74Swm87dMOfle191PVisj
+        0Lh3EaxCXloFduk+daCTxkB9sWcSMm+jGZV7x7VbmkYMzwglq1YbL7oHd0XP9OWcO0z5h81ThRoe7
+        dryaYuJThyza5xOFdHA7XCl2VEQHdOvSgLV0wONQQD35G0Pr0rZxceLZZsdUEb2PpQvON97a9dWm4
+        OV0My/2pazSC20DOP9mVpRsPtn6hrXLdV6p7mouW8t8elc9SNzWptk7mSO5gr13aHqU1pT7olr4AQ
+        a22cTBQwg4lNnLmclEIa5PuC1q6GSeec5LwJsLfMrEqegMxtEJobiWeMdYAX3sZqUoQgsEEJSPQy5
+        fynIP/Qg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVYIE-00Bo62-WF; Wed, 29 Sep 2021 12:02:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EA8D30026F;
+        Wed, 29 Sep 2021 14:02:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 320FA2DCC564E; Wed, 29 Sep 2021 14:02:34 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 14:02:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch 5/5] sched: Move mmdrop to RCU on RT
+Message-ID: <YVRV2jhVIbGxd+JB@hirez.programming.kicks-ass.net>
+References: <20210928122339.502270600@linutronix.de>
+ <20210928122411.648582026@linutronix.de>
 MIME-Version: 1.0
-References: <1800633.tdWV9SEqCh@kreacher> <20210928232823.GA748352@bhelgaas>
-In-Reply-To: <20210928232823.GA748352@bhelgaas>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 29 Sep 2021 14:00:59 +0200
-Message-ID: <CAJZ5v0gr+o_AO7-EGRofU2UN_8aXivh5c-VQ9VKz7o4ZNq=VQw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] PCI: ACPI: Get rid of struct pci_platform_pm_ops
- and clean up code
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ferry Toth <fntoth@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928122411.648582026@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 1:28 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Ferry]
->
-> On Mon, Sep 20, 2021 at 08:52:19PM +0200, Rafael J. Wysocki wrote:
-> > Hi All,
-> >
-> > As explained in the changelog of patch [2/7], using struct pci_platform_pm_ops
-> > for ACPI is not particularly beneficial, so it is better to get rid of it and
-> > call the functions pointed to by it directly from the PCI core.
-> >
-> > However, struct pci_platform_pm_ops is also used by the Intel MID support code,
-> > but it is actually better to call the MID PM function directly from the PCI
-> > core either, which is done in patch [1/7].
-> >
-> > After these changes, patch [3/7] removes struct pci_platform_pm_ops and the
-> > rest is just cleanups and some code consolidation on top of that.
->
-> I like these a lot.  Not sure exactly where everything is after the
-> conversation with Ferry.
+On Tue, Sep 28, 2021 at 02:24:32PM +0200, Thomas Gleixner wrote:
 
-It's mostly OK, the problem was in one of the "tail" patches that was
-not rebased properly.
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -49,6 +49,26 @@ static inline void mmdrop(struct mm_stru
+>  		__mmdrop(mm);
+>  }
+>  
+> +#ifdef CONFIG_PREEMPT_RT
+> +extern void __mmdrop_delayed(struct rcu_head *rhp);
+> +
+> +/*
+> + * Invoked from finish_task_switch(). Delegates the heavy lifting on RT
+> + * kernels via RCU.
+> + */
+> +static inline void mmdrop_sched(struct mm_struct *mm)
+> +{
+> +	/* Provides a full memory barrier. See mmdrop() */
+> +	if (atomic_dec_and_test(&mm->mm_count))
+> +		call_rcu(&mm->delayed_drop, __mmdrop_delayed);
+> +}
+> +#else
+> +static inline void mmdrop_sched(struct mm_struct *mm)
+> +{
+> +	mmdrop(mm);
+> +}
+> +#endif
+> +
+>  /**
+>   * mmget() - Pin the address space associated with a &struct mm_struct.
+>   * @mm: The address space to pin.
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -708,6 +708,19 @@ void __mmdrop(struct mm_struct *mm)
+>  }
+>  EXPORT_SYMBOL_GPL(__mmdrop);
+>  
+> +#ifdef CONFIG_PREEMPT_RT
+> +/*
+> + * RCU callback for delayed mm drop. Not strictly RCU, but call_rcu() is
+> + * by far the least expensive way to do that.
+> + */
+> +void __mmdrop_delayed(struct rcu_head *rhp)
+> +{
+> +	struct mm_struct *mm = container_of(rhp, struct mm_struct, delayed_drop);
+> +
+> +	__mmdrop(mm);
+> +}
+> +#endif
 
-There will be a follow-up series to test for Ferry (later today).
+Would you mind terribly if I fold this into mm.h as a static inline ?
 
->  Let me know if I should be doing anything.
+The only risk that carries is that if mmdrop_sched() is called from
+multiple translation units (it is not) we get multiple instances of this
+function, but possibly even !LTO linkers can fix that for us.
 
-I'm going to take this lot if that's not a problem.  If I need
-anything from you, I'll let you know.
