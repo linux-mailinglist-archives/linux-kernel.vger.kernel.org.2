@@ -2,158 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF3641C72B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A2441C730
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344627AbhI2OsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344577AbhI2OsM (ORCPT
+        id S1344655AbhI2Ote (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:49:34 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:42918 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1344650AbhI2Otd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:48:12 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A37AC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:46:31 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so3216249otu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JgcoX77LyqJgFfCrFyyxOmmlaV13zT4pyPZ6+xdzSpA=;
-        b=spTZQ2DbWP0psTWqELtDKdf3ctbS0vkigNQvxkRIwhOKUH8KugD69eFtioiLkoK3Gy
-         wtqV+fvcjNiD9+cDbUIXJF+qCw7Y3d8YdkSsHI7IVobxU9CSf3vqhqyWu/Oq2SRFBdHo
-         neDrQGuVYezgzLNIKMm1q/0+ChFeu07DQsXdVBLPC5Qj84WxDssil2uJW+0l+TPuEHxn
-         Ll6FKrKdGbGmGBGxLGRQmQdKBljtf5QtFgK2eTl3cDvLsBHoaJmId4Ifl7rnnbvBhn0D
-         LTj441MSq8B+PPi3TmUJ+3vz8OX7s4Ovl41Aj0dWJafRLB3UbpVpcLmdU8ARwxFqFRiP
-         nSKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JgcoX77LyqJgFfCrFyyxOmmlaV13zT4pyPZ6+xdzSpA=;
-        b=Aq/cOicORau4iL4bosFbhtlHBeDp6xPXLhK0RgYKo4egfDcaNTeWTfgJMCPm9JxdYV
-         UEgoSlsp7Y5TB4Gw/r1tEI7riOeWMDo+Iu4U/P8JPgAHfAPe87XLtUHnDRtEzY7eFRk6
-         Mu5CaGlZkt3xyWACu01rXQx0hFwf1zlMnL7fz8wwL+PLG7ptQ3eHRcRkOTjg781QbZFX
-         ax25m/98pcqpWO2Okqv6MxqQ9UKoXmjVbGG2dDwl8JCSRtda2BQqYGx8FYJDQA6RaIu1
-         cIc5Vq+pYzDvDIyFCwXLuli0kS5XCsl46tWZoEBPq0qe8s1SBsWrpnnmMiHP6JPNqx/8
-         b4xg==
-X-Gm-Message-State: AOAM533P0PH1pMOwPrhAL808q3Wm3r+ybndwui3/mCixVI49hf2vS2Sq
-        B+qHsSJVcu3sXRDUeIDOOm8xAQ==
-X-Google-Smtp-Source: ABdhPJy1xutLgHZ1k75FBuuFr8v0/9rSKe4U8iMaiX+gLlBxKTV+rJxW6+Z2BJ3/QZooCn7GiUFhFA==
-X-Received: by 2002:a9d:6254:: with SMTP id i20mr324075otk.349.1632926790406;
-        Wed, 29 Sep 2021 07:46:30 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v14sm5473ook.2.2021.09.29.07.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 07:46:29 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 09:46:27 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
-Message-ID: <YVR8Q7LO0weiFin+@yoga>
-References: <20210927152412.2900928-1-arnd@kernel.org>
- <20210929095107.GA21057@willie-the-truck>
- <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
+        Wed, 29 Sep 2021 10:49:33 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T9qXi0002957;
+        Wed, 29 Sep 2021 09:47:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ references : in-reply-to : subject : date : message-id : mime-version :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=CxUQIokPqP+S4DsPpXxO1OV616fdP6M9szOHlDqKOtc=;
+ b=WGL0i6AJ3+YTYsWUAHpV57/hw5HGy1lw5S0FDeDHA3Cd2OJoo9e37SQLz6PtSSSK4fiG
+ OY+pimiUxxNBScwOtTMi8kF7wAXwDP6DJirm2u0VdzZekAlkZPQMvEodVGetgryL9FE4
+ r1+zoPb6uh+p9OVOqjlkQGZl3uudhPHJTr5CtqRIYeoW2910XWXXUeI96w/Ao59vysuw
+ YmhPxpgx59gKAgf/v9yTa/5nxY5069Kc5I4yfTKsRBAscBFJGumFIuhenmmN+qMvjYxH
+ LeXK2/dyTZoEXocWTpk4QAMzKXE1R0LI3A47nfVKbaDeDpeYnB+OzsawldU01WBWKZJM cQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3bc6be1fk6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 29 Sep 2021 09:47:04 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 29 Sep
+ 2021 15:47:02 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Wed, 29 Sep 2021 15:47:02 +0100
+Received: from LONN13613Z2 (unknown [198.90.238.180])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 63036B13;
+        Wed, 29 Sep 2021 14:47:01 +0000 (UTC)
+From:   Simon Trimmer <simont@opensource.cirrus.com>
+To:     'Guo Zhengkui' <guozhengkui@vivo.com>,
+        'Liam Girdwood' <lgirdwood@gmail.com>,
+        'Mark Brown' <broonie@kernel.org>,
+        'Jaroslav Kysela' <perex@perex.cz>,
+        'Takashi Iwai' <tiwai@suse.com>,
+        'Charles Keepax' <ckeepax@opensource.cirrus.com>,
+        'Richard Fitzgerald' <rf@opensource.cirrus.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <kernel@vivo.com>
+References: <20210929123217.5240-1-guozhengkui@vivo.com>
+In-Reply-To: <20210929123217.5240-1-guozhengkui@vivo.com>
+Subject: RE: [PATCH] ASoC: wm_adsp: remove a repeated including
+Date:   Wed, 29 Sep 2021 15:47:01 +0100
+Message-ID: <001001d7b540$dd169ca0$9743d5e0$@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKSXDI3vuTgErK6XFa2Eat9tY11+apFyTPg
+Content-Language: en-us
+X-Proofpoint-ORIG-GUID: d4-kMTQG5hXM4qsnekmm7yNhRwHJqimO
+X-Proofpoint-GUID: d4-kMTQG5hXM4qsnekmm7yNhRwHJqimO
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29 Sep 05:04 CDT 2021, Arnd Bergmann wrote:
-
-> On Wed, Sep 29, 2021 at 11:51 AM Will Deacon <will@kernel.org> wrote:
-> > On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
-> > >
-> > > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> > > index 124c41adeca1..989c83acbfee 100644
-> > > --- a/drivers/iommu/Kconfig
-> > > +++ b/drivers/iommu/Kconfig
-> > > @@ -308,7 +308,7 @@ config APPLE_DART
-> > >  config ARM_SMMU
-> > >       tristate "ARM Ltd. System MMU (SMMU) Support"
-> > >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> > > -     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> > > +     select QCOM_SCM
-> > >       select IOMMU_API
-> > >       select IOMMU_IO_PGTABLE_LPAE
-> > >       select ARM_DMA_USE_IOMMU if ARM
-> >
-> > I don't want to get in the way of this patch because I'm also tired of the
-> > randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
-> > a wide variety of (non-qcom) SoCs and so it seems a shame to require the
-> > QCOM_SCM code to be included for all of those when it's not strictly needed
-> > at all.
+On Wednesday, September 29, 2021 1:32 PM, Guo Zhengkui wrote:
+> Remove a repeated "#include <linux/firmware.h>" in line 32.
 > 
-> Good point, I agree that needs to be fixed. I think this additional
-> change should do the trick:
-> 
+> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+> ---
 
-ARM_SMMU and QCOM_IOMMU are two separate implementations and both uses
-QCOM_SCM. So both of them should select QCOM_SCM.
+Acked-by: Simon Trimmer <simont@opensource.cirrus.com>
 
-"Unfortunately" the Qualcomm portion of ARM_SMMU is builtin
-unconditionally, so going with something like select QCOM_SCM if
-ARCH_QCOM would still require the stubs in qcom_scm.h.
+Thanks,
+Simon
 
-Regards,
-Bjorn
-
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -308,7 +308,6 @@ config APPLE_DART
->  config ARM_SMMU
->         tristate "ARM Ltd. System MMU (SMMU) Support"
->         depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> -       select QCOM_SCM
->         select IOMMU_API
->         select IOMMU_IO_PGTABLE_LPAE
->         select ARM_DMA_USE_IOMMU if ARM
-> @@ -438,7 +437,7 @@ config QCOM_IOMMU
->         # Note: iommu drivers cannot (yet?) be built as modules
->         bool "Qualcomm IOMMU Support"
->         depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> -       depends on QCOM_SCM=y
-> +       select QCOM_SCM
->         select IOMMU_API
->         select IOMMU_IO_PGTABLE_LPAE
->         select ARM_DMA_USE_IOMMU
-> 
-> I'll see if that causes any problems for the randconfig builds.
-> 
->        Arnd
