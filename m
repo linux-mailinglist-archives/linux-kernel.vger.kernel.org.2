@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3A641C87B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8887541C887
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345339AbhI2Pdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345178AbhI2Pdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87BE661159;
-        Wed, 29 Sep 2021 15:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632929515;
-        bh=HXwoS1HjJA1S0yfWFpWczWoEmqeqJ8/hI4qGlsQfiLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a8sMw03Rp6PGGokI/cGFo4lnq8A92MECDtnNRH0qAYiC9K1Vj5DaLvJfztY1rEwx2
-         J3FjihL9ii52e8Zfc1LoVAXfQPLIFtkcWyusSyw6hrLPxYhHTnB49JgfL17mN5pY50
-         8YPYUUzVPu6Gkd6TA90y1EU7fcrWlEMBwJGhL7hOX7n7IYjBvJbjvmnzc7myNa6TOJ
-         xOL0M+HYncEtqnaVZr7i4ot3tZbMpp7lbMxXHKZaRL6OYsWT1I2t1Q0jXuKcshj3+i
-         EhRojJsY7u7SHu6Llx2j3/ql9Ac0a4DTztxk62AfY9CPj7ePahwroyGlhgI7Xfabug
-         yDOSXw/s46Y1Q==
-Date:   Wed, 29 Sep 2021 18:31:51 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <YVSG55i75awUpAmn@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR0iKIRYDXQbD+o@unreal>
- <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1345300AbhI2Pgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345157AbhI2Pgf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:36:35 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52665C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:34:54 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i4so12608912lfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:34:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7Hf7pY/JKZgLnfEiK9B7AO8BfkN+o8wWy5PQX3tSxfI=;
+        b=ED57SacT6G9Zh2FZj/sQBvo0yWX9FiJ2AHQXdcorOXTBVcZFVhH/UBxjSfoXFlsePR
+         9GebQE2KgsGjDqpW9BhzlIiPv/mnDz2uOi6JkQNwT5oroX+H0Nospb/4IflYiomfPK/H
+         2jHUlkqBsDsgvr8g+804bkii8ftU7evwT79LDNKcisZtfM1kgmSxoPUxJ1yr4uG3lltg
+         Rj7SR76wni+f08sd1c7DTn/YfCh/axcJgRFIcssVkbW0e3JNnMJlo0080eQ77JqeKIMX
+         sr5HFMI3PBJnn1oWF1jnZ4ryKHtbzTq9JJTLl7XagopNYqjuUdtF7bJ93ThQHJ1pyZ+R
+         0KnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7Hf7pY/JKZgLnfEiK9B7AO8BfkN+o8wWy5PQX3tSxfI=;
+        b=tHliqkI3jK/3l36cEqq0wM62pif3RgUhlu4/fgxDvNaq72nhEgcalU7I49rUpXBAcC
+         nmcfFwOuDlaMcDXhJSJHmFIGI36UgP2b724B7bRb4VisFirdtGz+iOaSQoy4MdVipcfn
+         9nTv3+qCErsiGXf+egGFH5Ic1QlUdFmTvj+i6p5q1dkVa0ollcWVe1UiQLpO5k3ZOhb6
+         OhlcYr5jmT5iehmziO6sxNlkPYDABUJw4evO9mZmGstAs4XvCVY8Jo7QF5u5cOc4N7wj
+         guVCaq4CWzlwudr7/vpQNW9nu/VW85e2j5XNxMscuhUb2W8iWjeIo1V2ZZ6VJ/7IXwcG
+         L4eA==
+X-Gm-Message-State: AOAM533XrU3ytmrJJhc3wgg+j5EKpwQ+OtSdlTTmX45DIXx9uylNb8uj
+        S7B8Q7U9Mw8miSNvOtqiVUg=
+X-Google-Smtp-Source: ABdhPJzb/8IBk1qVl/MHapOnC7+dTumhtP53xdwWj3NytelUd5jPq1UYo7GgT0PXgiLNYJwTfa0Efw==
+X-Received: by 2002:a05:6512:3caa:: with SMTP id h42mr295998lfv.349.1632929692673;
+        Wed, 29 Sep 2021 08:34:52 -0700 (PDT)
+Received: from grain.localdomain ([5.18.253.97])
+        by smtp.gmail.com with ESMTPSA id i21sm23383lfo.248.2021.09.29.08.34.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 08:34:51 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id DA04D5A001E; Wed, 29 Sep 2021 18:34:50 +0300 (MSK)
+Date:   Wed, 29 Sep 2021 18:34:50 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrey Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] prctl: PR_SET_MM - unify copying of user's auvx
+Message-ID: <YVSHmu0Wtin/2pXN@grain>
+References: <YFpmdGXmGQ6IetoX@grain>
+ <202109292307.smDkJddi-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <202109292307.smDkJddi-lkp@intel.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 07:39:40AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:
-> > On Wed, Sep 29, 2021 at 06:40:04AM -0700, Jakub Kicinski wrote:
-> > > On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:  
-> > > > This series starts from the fixing the bug introduced by implementing
-> > > > devlink delayed notifications logic, where I missed some of the
-> > > > notifications functions.
-> > > > 
-> > > > The rest series provides a way to dynamically set devlink ops that is
-> > > > needed for mlx5 multiport device and starts cleanup by removing
-> > > > not-needed logic.
-> > > > 
-> > > > In the next series, we will delete various publish API, drop general
-> > > > lock, annotate the code and rework logic around devlink->lock.
-> > > > 
-> > > > All this is possible because driver initialization is separated from the
-> > > > user input now.  
-> > > 
-> > > Swapping ops is a nasty hack in my book.
-> > > 
-> > > And all that to avoid having two op structures in one driver.
-> > > Or to avoid having counters which are always 0?  
-> > 
-> > We don't need to advertise counters for feature that is not supported.
-> > In multiport mlx5 devices, the reload functionality is not supported, so
-> > this change at least make that device to behave like all other netdev
-> > devices that don't support devlink reload.
-> > 
-> > The ops structure is set very early to make sure that internal devlink
-> > routines will be able access driver back during initialization (btw very
-> > questionable design choice)
+On Wed, Sep 29, 2021 at 11:20:23PM +0800, kernel test robot wrote:
+...
+> sparse warnings: (new ones prefixed by >>)
+> >> kernel/sys.c:1997:58: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void const [noderef] __user *addr @@     got unsigned long long [usertype] *[addressable] auxv @@
+>    kernel/sys.c:1997:58: sparse:     expected void const [noderef] __user *addr
+>    kernel/sys.c:1997:58: sparse:     got unsigned long long [usertype] *[addressable] auxv
+>    kernel/sys.c:1068:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+>    kernel/sys.c:1068:32: sparse:     expected struct task_struct *p1
+>    kernel/sys.c:1068:32: sparse:     got struct task_struct [noderef] __rcu *real_parent
+>    kernel/sys.c: note: in included file (through include/linux/rcuwait.h, include/linux/percpu-rwsem.h, include/linux/fs.h, ...):
+>    include/linux/sched/signal.h:710:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+>    include/linux/sched/signal.h:710:37: sparse:     expected struct spinlock [usertype] *lock
+>    include/linux/sched/signal.h:710:37: sparse:     got struct spinlock [noderef] __rcu *
 > 
-> Indeed, is this fixable? Or now that devlink_register() was moved to 
-> the end of probe netdev can call ops before instance is registered?
-> 
-> > and at that stage the driver doesn't know
-> > yet which device type it is going to drive.
-> > 
-> > So the answer is:
-> > 1. Can't have two structures.
-> 
-> I still don't understand why. To be clear - swapping full op structures
-> is probably acceptable if it's a pure upgrade (existing pointers match).
-> Poking new ops into a structure (in alphabetical order if I understand
-> your reply to Greg, not destructor-before-contructor) is what I deem
-> questionable.
+> vim +1997 kernel/sys.c
 
-It is sorted simply for readability and not for any other technical
-reason.
-
-Regarding new ops, this is how we are setting callbacks in RDMA based on
-actual device support. It works like a charm.
-
-> 
-> > 2. Same behaviour across all netdev devices.
-> 
-> Unclear what this is referring to.
-
-If your device doesn't support devlink reload, it won't print any
-reload counters at all. It is not the case for the multiport mlx5
-device. It doesn't support, but still present these counters.
-
-Thanks
+Thanks for report! I happen to miss Dima's reply in first place as well :(
+I'll take a look on this patch. The issie itself is implicit type conversion,
+shouldn't be a bug in general but need to address as well. Will do.
