@@ -2,178 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346E741CBDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA8F41CBDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346172AbhI2Scc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:32:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345707AbhI2Scb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:32:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8816F61527;
-        Wed, 29 Sep 2021 18:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632940249;
-        bh=gjF28VMTIug2m1bl/FU/M9snQ4rR61AFv5fVsRKalNI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CISl9Rl7R+M6haM6b37hM8Y55j2HAbcMi0eojp8x2X5LO3rMaVS5sudmIbZDpY2Fa
-         v3jkZlxqIQsgk7xdc/KNDPDNwnRYggSWDCUgB/s/FiZxlhlKX24dWHVpR7Wt0mlN/7
-         mhK6ym9B69BkMQdp4WI4pKJ+rr90hmai+tmZp9rhMJtK7ONWh9AhmLAFD2pHKhaUG3
-         HMRbEb2CCpVxIrKjjd6yE6ttU5SikyGGITOLPKJu1L7QFLNrx8p43TXVkgBvbCSBJk
-         HoUf+R5uDfbywO7AlRlXS5uX8pbpj5u56JSH5+uMScUwkPlS/zeQ1/1lCIAk541NMv
-         d88464bdH/fHQ==
-Received: by mail-wr1-f46.google.com with SMTP id s21so5795619wra.7;
-        Wed, 29 Sep 2021 11:30:49 -0700 (PDT)
-X-Gm-Message-State: AOAM533mlJSocCVOo/4P9J4qQuKiBP7NH/xEdDD9UUrSLsaNSwbRmlJY
-        BB6Hiwg8DRcMl0JsnYHnxRYjLAvza1+qy4aCjik=
-X-Google-Smtp-Source: ABdhPJznh64DeD5YLkqLyCdpGZrw2eJDCFhsGINcOBsXO/6p1u7dAzpxKDez727ElHRBigRMgHpji/X6aGMkMR1n8h4=
-X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr1607418wrz.369.1632940247984;
- Wed, 29 Sep 2021 11:30:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927152412.2900928-1-arnd@kernel.org> <20210929095107.GA21057@willie-the-truck>
- <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com> <YVR8Q7LO0weiFin+@yoga>
-In-Reply-To: <YVR8Q7LO0weiFin+@yoga>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 29 Sep 2021 20:30:30 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2Kk6Y1Hs98z2UFEis8cWekREFt8YKg2Nbu3G5WQJ7Fag@mail.gmail.com>
-Message-ID: <CAK8P3a2Kk6Y1Hs98z2UFEis8cWekREFt8YKg2Nbu3G5WQJ7Fag@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        id S1346230AbhI2SdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346178AbhI2SdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 14:33:09 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD37C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:31:28 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id h3so3614921pgb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:31:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=EDxWKrkBNuwtscCUnWnrQX4z1oFAsXag7E5OmQf8Q0Y=;
+        b=BPOF37dk+fGPzpRboMeMfINxNYQelW6JxCrXGIklsY6hPBFAJe9fT2GA3DVXyjNtny
+         ipg045baJHE0iOJJHykXUcRSiDc8t1rXzLJC0IuD+wt+Mg1zoWRvSOy9AKwfR2ikq0fD
+         zkQ+aSKC9CSRu6/yJwYkw5S/Fr1/y+aaeTNX2cbUACJK5JQVYn+B2OR1AEJV59d8n6P/
+         /AM3gZaBU4zt3Uk1LUpxommmIoLQUQlbqJxJ3ErtWEIn2umyXdXbS3yYdIi33vom0KhX
+         kyYLPFR8sJppnhNbUE8KLwtfFO3Spu4FNjkY8RYqBcNYitj0vh8xyDKxOBINt5Nny/9i
+         lXWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=EDxWKrkBNuwtscCUnWnrQX4z1oFAsXag7E5OmQf8Q0Y=;
+        b=R9P2YcKAEqkDrbK11SzE84GVC5qfMcdiWsq4NtwNcYJdOStiYL8l13OcWFbuZLxOdl
+         WH8Cb1KVNTbZ5PzJjHMO27ysenQ86U59DvHwyx/hLdOUPoXttqaZeEDXzju8UVD5M1w9
+         0/r5oQJkrAdE91vVCMMktmvQLjnUhIbNTmRqHJL7b5Gw5Y7BiAWiFE3/KNsb3HmonI3t
+         tDc7HyX2ptMqVL5PLLvOuQFeHhHfXZ15w5IyqVoR8iGAnPBoB6bU4R0jM1Cn6KGzsJo0
+         IJUvlH6FrYQma88L0sPJ17xPtrsttq3OFukaqJDsCJAd3ddy1jgoBXHk2Bwr3KIP91VC
+         YEzA==
+X-Gm-Message-State: AOAM533CDRGFob6TgfgaXpFuj1b/KIc2t6bLgqWJxHluNleFWRmab3f3
+        DGmHarNP1zhwpIgc4ZW0r/4=
+X-Google-Smtp-Source: ABdhPJyCqaL3em1P1e20gZVMndRpFUW6agFVdrsWYmXSByskDXDqy1BM+fIb9uyCzX0XFrjx7X3a0g==
+X-Received: by 2002:a63:f4b:: with SMTP id 11mr1176984pgp.189.1632940287330;
+        Wed, 29 Sep 2021 11:31:27 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id z10sm470758pfn.70.2021.09.29.11.31.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Sep 2021 11:31:26 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YVQbMREcRaCbUaUv@dhcp22.suse.cz>
+Date:   Wed, 29 Sep 2021 11:31:25 -0700
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E8456D5C-4FCD-46E4-B6F8-771076243D7E@gmail.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+ <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
+ <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
+ <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
+ <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
+ <0FC3F99A-9F77-484A-899B-EDCBEFBFAC5D@gmail.com>
+ <YVQbMREcRaCbUaUv@dhcp22.suse.cz>
+To:     Michal Hocko <mhocko@suse.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 4:46 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 29 Sep 05:04 CDT 2021, Arnd Bergmann wrote:
->
-> > On Wed, Sep 29, 2021 at 11:51 AM Will Deacon <will@kernel.org> wrote:
-> > > On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
-> > > >
-> > > > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> > > > index 124c41adeca1..989c83acbfee 100644
-> > > > --- a/drivers/iommu/Kconfig
-> > > > +++ b/drivers/iommu/Kconfig
-> > > > @@ -308,7 +308,7 @@ config APPLE_DART
-> > > >  config ARM_SMMU
-> > > >       tristate "ARM Ltd. System MMU (SMMU) Support"
-> > > >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> > > > -     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> > > > +     select QCOM_SCM
-> > > >       select IOMMU_API
-> > > >       select IOMMU_IO_PGTABLE_LPAE
-> > > >       select ARM_DMA_USE_IOMMU if ARM
-> > >
-> > > I don't want to get in the way of this patch because I'm also tired of the
-> > > randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
-> > > a wide variety of (non-qcom) SoCs and so it seems a shame to require the
-> > > QCOM_SCM code to be included for all of those when it's not strictly needed
-> > > at all.
-> >
-> > Good point, I agree that needs to be fixed. I think this additional
-> > change should do the trick:
-> >
->
-> ARM_SMMU and QCOM_IOMMU are two separate implementations and both uses
-> QCOM_SCM. So both of them should select QCOM_SCM.
-
-Right, I figured that out later as well.
-
-> "Unfortunately" the Qualcomm portion of ARM_SMMU is builtin
-> unconditionally, so going with something like select QCOM_SCM if
-> ARCH_QCOM would still require the stubs in qcom_scm.h.
-
-Yes, sounds good. I also noticed that I still need one hack in there
-if I do this:
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 55690af1b25d..36c304a8fc9b 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -427,6 +427,9 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct
-arm_smmu_device *smmu)
- {
-        const struct device_node *np = smmu->dev->of_node;
-
-+       if (!IS_ENABLED(CONFIG_QCOM_SCM))
-+               return ERR_PTR(-ENXIO);
-+
- #ifdef CONFIG_ACPI
-        if (np == NULL) {
-                /* Match platform for ACPI boot */
 
 
-Otherwise it still breaks with ARM_SMMU=y and QCOM_SCM=m.
+> On Sep 29, 2021, at 12:52 AM, Michal Hocko <mhocko@suse.com> wrote:
+>=20
+> On Mon 27-09-21 12:12:46, Nadav Amit wrote:
+>>=20
+>>> On Sep 27, 2021, at 5:16 AM, Michal Hocko <mhocko@suse.com> wrote:
+>>>=20
+>>> On Mon 27-09-21 05:00:11, Nadav Amit wrote:
+>>> [...]
+>>>> The manager is notified on memory regions that it should monitor
+>>>> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these =
+regions
+>>>> using the remote-userfaultfd that you saw on the second thread. =
+When it wants
+>>>> to reclaim (anonymous) memory, it:
+>>>>=20
+>>>> 1. Uses UFFD-WP to protect that memory (and for this matter I got a =
+vectored
+>>>>  UFFD-WP to do so efficiently, a patch which I did not send yet).
+>>>> 2. Calls process_vm_readv() to read that memory of that process.
+>>>> 3. Write it back to =E2=80=9Cswap=E2=80=9D.
+>>>> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
+>>>=20
+>>> Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
+>>=20
+>> Providing hints to the kernel takes you so far to a certain extent.
+>> The kernel does not want to (for a good reason) to be completely
+>> configurable when it comes to reclaim and prefetch policies. Doing
+>> so from userspace allows you to be fully configurable.
+>=20
+> I am sorry but I do not follow. Your scenario is describing a user
+> space driven reclaim. Something that MADV_{COLD,PAGEOUT} have been
+> designed for. What are you missing in the existing functionality?
 
-Splitting out the qualcomm portion of the arm_smmu driver using
-a separate 'bool' symbol should also work, if  you prefer that
-and can suggest a name and help text for that symbol. It would
-look like
+Using MADV_COLD/MADV_PAGEOUT does not allow userspace to control
+many aspects of paging out memory:
 
-diff --git a/drivers/iommu/arm/arm-smmu/Makefile
-b/drivers/iommu/arm/arm-smmu/Makefile
-index e240a7bcf310..b0cc01aa20c9 100644
---- a/drivers/iommu/arm/arm-smmu/Makefile
-+++ b/drivers/iommu/arm/arm-smmu/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_QCOM_IOMMU) += qcom_iommu.o
- obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
--arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o arm-smmu-qcom.o
-+arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o
-+arm_smmu-$(CONFIG_ARM_SMMU_QCOM) += arm-smmu-qcom.o
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-index 9f465e146799..2c25cce38060 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-@@ -215,7 +215,8 @@ struct arm_smmu_device *arm_smmu_impl_init(struct
-arm_smmu_device *smmu)
-            of_device_is_compatible(np, "nvidia,tegra186-smmu"))
-                return nvidia_smmu_impl_init(smmu);
+1. Writeback: writeback ahead of time, dynamic clustering, etc.
+2. Batching (regardless, MADV_PAGEOUT does pretty bad batching job
+   on non-contiguous memory).
+3. No guarantee the page is actually reclaimed (e.g., writeback)
+   and the time it takes place.
+4. I/O stack for swapping - you must use kernel I/O stack (FUSE
+   as non-performant as it is cannot be used for swap AFAIK).
+5. Other operations (e.g., locking, working set tracking) that
+   might not be necessary or interfere.
 
--       smmu = qcom_smmu_impl_init(smmu);
-+       if (IS_ENABLED(CONFIG_ARM_SMMU_QCOM))
-+               smmu = qcom_smmu_impl_init(smmu);
+In addition, the use of MADV_COLD/MADV_PAGEOUT prevents the use
+of userfaultfd to trap page-faults and react accordingly, so you
+are also prevented from:
 
-        if (of_device_is_compatible(np, "marvell,ap806-smmu-500"))
-                smmu->impl = &mrvl_mmu500_impl;
+6. Having your own custom prefetching policy in response to #PF.
 
+There are additional use-cases I can try to formalize in which
+MADV_COLD/MADV_PAGEOUT is insufficient. But the main difference
+is pretty clear, I think: one is a hint that only applied to
+page reclamation. The other enables the direct control of
+userspace over (almost) all aspects of paging.
 
+As I suggested before, if it is preferred, this can be a UFFD
+IOCTL instead of process_madvise() behavior, thereby lowering
+the risk of a misuse.
 
-       Arnd
+I would emphasize that this feature (i.e.,=20
+process_madvise(MADV_DONTNEED) or a similar new UFFD feature)
+has little to no effect on the kernel robustness, complexity,
+security or API changes. So the impact on the kernel is
+negligible.
+
