@@ -2,173 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A559341C534
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B9641C53B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344049AbhI2NJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242801AbhI2NJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:09:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B56C613DA;
-        Wed, 29 Sep 2021 13:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632920872;
-        bh=Yukjau1sHLA6B/N3xjvNRV9Olu/CU/SlHx+B5dO3Emw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cCEGI93aXv71iUXZzEJTr2TRq+w3ofeLRCnVE3mfUAwTgmo43LOO/x8xfal4Yn1Ze
-         5X71y4uQ8YRh7OnS2bZh3zt5QGH/d+GE6zboUgNaYqlOLi52ms5UVyyxV39ka0MEOc
-         Czm7DZiGEiitUVSNqCGOAnAaUcGcngUKxn7fUwdUbP4McZrhBmNWkEdjvdPSpoJgij
-         Op8x6hXOiS0e+qrOEdpoSZZBHRkELZgQJCbCuJYraJ3HdQU2dXmtZGQZ7z6+pf+E9p
-         00gA9nJxmMWYATc3ehdXmsvfP3HTePMl+KEh7MA/OvrjrQdLZyAiE5oQqMPds3v/pB
-         D+ilhSmpvuSsQ==
-Date:   Wed, 29 Sep 2021 16:07:49 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>,
-        "drivers@pensando.io" <drivers@pensando.io>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "GR-everest-linux-l2@marvell.com" <GR-everest-linux-l2@marvell.com>,
-        "GR-Linux-NIC-Dev@marvell.com" <GR-Linux-NIC-Dev@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manish Chopra <manishc@marvell.com>,
-        M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "oss-drivers@corigine.com" <oss-drivers@corigine.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Subject: Re: [PATCH net-next v1 21/21] net: dsa: Move devlink registration to
- be last devlink command
-Message-ID: <YVRlJagqFInXCgGZ@unreal>
-References: <cover.1632565508.git.leonro@nvidia.com>
- <66dd7979b44ac307711c382054f428f9287666a8.1632565508.git.leonro@nvidia.com>
- <20210929130226.j53fcztm6utpt3tu@skbuf>
+        id S1344063AbhI2NLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344040AbhI2NLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:11:05 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7A1C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 06:09:23 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id s20so3010542ioa.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 06:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XkEDSADHBvfevoxljJ4T1PZQMMJ1MoZGL9A5io5n/G4=;
+        b=l65l906OE79blcJYbrneuky2sOG6RNx0kOJ44MNaSCkQhaBp0BrjIQsfK4cSY99FTz
+         T/HvPXfhqpX5SDliwK1g0ge2M+XBiQ+rFsofcM2jrxF//j6T69DYNf1AiQF8f86tzjSC
+         w1K81Bdpet7IrVmc9CzrhehQFXuRcr6zGckCskXQ0IIYm5P/sFQHQHf4UQbScFpyeue5
+         H56ptcHwCkcuZ9uSjU0R1o12+rmmlGW3dAIwFsoyFM/QDaG7keH9e+OBanGPP1zghnFT
+         IkJHgGDZ5XhC4S2phbNquiS+Nr2SD9MAD19SkzM9f/fNU+r3g/8X3xIBrZAKTKhcxGa+
+         pTWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XkEDSADHBvfevoxljJ4T1PZQMMJ1MoZGL9A5io5n/G4=;
+        b=SjKwGsis0RoQzhi8YI+QWf8Nfblo3MgK+B624KGLubba5bPDKjMIqwTbKo199I9z6J
+         c5uOQo9j6O0A6isolRuzVTcffTx2NFN1dFmGvyNq6E9AwVVFGnDUFhB4EhNEOIzCpVZT
+         Ma3AsAY4YiBhqWEyKwyQKvOn4UJGAZzQcrJfKQWDeIWEVO/x4sRJtrePSR8opHMsNq1J
+         UxfJuN24hOY+0cEIXzo8vkyKuwkgPHcQvwit/aA69+hOoLqqgrtBtKy0T+5YXNq8UTnC
+         WMrfS7mTU1i3LqZzKdZMSG2+pVvE76rtWb0Jd/mrapHXndyOxykc84noPIa56CGgrdAH
+         vshw==
+X-Gm-Message-State: AOAM5330mpMgSQVJjLDmJOKcKcLAHrL8my8/ps+cgwHE4Z7Se5eCeO2/
+        cnRKqu/c/9LwwfCmZ1PZTC2iznUx1xBIPE44L5k=
+X-Google-Smtp-Source: ABdhPJwC6af02XyBX0i/Tzr7sRtlymOVBbUwIAl6sroM70zqX6pibqgFpX8Svqos+HIcdkrooSzFGbztwMFdKMgc1ZI=
+X-Received: by 2002:a05:6638:2722:: with SMTP id m34mr9515111jav.49.1632920963356;
+ Wed, 29 Sep 2021 06:09:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929130226.j53fcztm6utpt3tu@skbuf>
+References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-3-laoar.shao@gmail.com>
+In-Reply-To: <20210929115036.4851-3-laoar.shao@gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 29 Sep 2021 21:08:47 +0800
+Message-ID: <CALOAHbBy60ik+Crf0E8spTyCqth0mPO7+u=ZsQRsbsJS7n6fGA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] kernel/fork: allocate task->comm dynamicly
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 01:02:27PM +0000, Vladimir Oltean wrote:
-> Hi Leon,
-> 
-> On Sat, Sep 25, 2021 at 02:23:01PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > This change prevents from users to access device before devlink
-> > is fully configured.
-> >
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  net/dsa/dsa2.c | 10 ++++------
-> >  1 file changed, 4 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
-> > index a020339e1973..8ca6a1170c9d 100644
-> > --- a/net/dsa/dsa2.c
-> > +++ b/net/dsa/dsa2.c
-> > @@ -848,7 +848,6 @@ static int dsa_switch_setup(struct dsa_switch *ds)
-> >  	dl_priv = devlink_priv(ds->devlink);
-> >  	dl_priv->ds = ds;
-> >
-> > -	devlink_register(ds->devlink);
-> >  	/* Setup devlink port instances now, so that the switch
-> >  	 * setup() can register regions etc, against the ports
-> >  	 */
-> > @@ -874,8 +873,6 @@ static int dsa_switch_setup(struct dsa_switch *ds)
-> >  	if (err)
-> >  		goto teardown;
-> >
-> > -	devlink_params_publish(ds->devlink);
-> > -
-> >  	if (!ds->slave_mii_bus && ds->ops->phy_read) {
-> >  		ds->slave_mii_bus = mdiobus_alloc();
-> >  		if (!ds->slave_mii_bus) {
-> > @@ -891,7 +888,7 @@ static int dsa_switch_setup(struct dsa_switch *ds)
-> >  	}
-> >
-> >  	ds->setup = true;
-> > -
-> > +	devlink_register(ds->devlink);
-> >  	return 0;
-> >
-> >  free_slave_mii_bus:
-> > @@ -906,7 +903,6 @@ static int dsa_switch_setup(struct dsa_switch *ds)
-> >  	list_for_each_entry(dp, &ds->dst->ports, list)
-> >  		if (dp->ds == ds)
-> >  			dsa_port_devlink_teardown(dp);
-> > -	devlink_unregister(ds->devlink);
-> >  	devlink_free(ds->devlink);
-> >  	ds->devlink = NULL;
-> >  	return err;
-> > @@ -919,6 +915,9 @@ static void dsa_switch_teardown(struct dsa_switch *ds)
-> >  	if (!ds->setup)
-> >  		return;
-> >
-> > +	if (ds->devlink)
-> > +		devlink_unregister(ds->devlink);
-> > +
-> >  	if (ds->slave_mii_bus && ds->ops->phy_read) {
-> >  		mdiobus_unregister(ds->slave_mii_bus);
-> >  		mdiobus_free(ds->slave_mii_bus);
-> > @@ -934,7 +933,6 @@ static void dsa_switch_teardown(struct dsa_switch *ds)
-> >  		list_for_each_entry(dp, &ds->dst->ports, list)
-> >  			if (dp->ds == ds)
-> >  				dsa_port_devlink_teardown(dp);
-> > -		devlink_unregister(ds->devlink);
-> >  		devlink_free(ds->devlink);
-> >  		ds->devlink = NULL;
-> >  	}
-> > --
-> > 2.31.1
-> >
-> 
-> Sorry, I did not have time to review/test this change earlier.
-> I now see this WARN_ON being triggered when I boot a board:
+On Wed, Sep 29, 2021 at 7:51 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> task->comm is defined as an array embedded in struct task_struct before.
+> This patch changes it to a char pointer. It will be allocated in the fork
+> and freed when the task is freed.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  include/linux/sched.h |  2 +-
+>  kernel/fork.c         | 19 +++++++++++++++++++
+>  2 files changed, 20 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index e12b524426b0..b387b5943db4 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1051,7 +1051,7 @@ struct task_struct {
+>          * - access it with [gs]et_task_comm()
+>          * - lock it with task_lock()
+>          */
+> -       char                            comm[TASK_COMM_LEN];
+> +       char                            *comm;
+>
+>         struct nameidata                *nameidata;
+>
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 38681ad44c76..227aec240501 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -721,6 +721,20 @@ static void mmdrop_async(struct mm_struct *mm)
+>         }
+>  }
+>
+> +static int task_comm_alloc(struct task_struct *p)
+> +{
+> +       p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
+> +       if (!p->comm)
+> +               return -ENOMEM;
+> +
+> +       return 0;
+> +}
+> +
+> +static void task_comm_free(struct task_struct *p)
+> +{
+> +       kfree(p->comm);
+> +}
+> +
+>  static inline void free_signal_struct(struct signal_struct *sig)
+>  {
+>         taskstats_tgid_free(sig);
+> @@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
+>         bpf_task_storage_free(tsk);
+>         exit_creds(tsk);
+>         delayacct_tsk_free(tsk);
+> +       task_comm_free(tsk);
+>         put_signal_struct(tsk->signal);
+>         sched_core_free(tsk);
+>
+> @@ -2076,6 +2091,10 @@ static __latent_entropy struct task_struct *copy_process(
+>         if (data_race(nr_threads >= max_threads))
+>                 goto bad_fork_cleanup_count;
+>
+> +       retval = task_comm_alloc(p);
+> +       if (retval)
+> +               goto bad_fork_cleanup_count;
+> +
+>         delayacct_tsk_init(p);  /* Must remain after dup_task_struct() */
+>         p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE | PF_NO_SETAFFINITY);
+>         p->flags |= PF_FORKNOEXEC;
+> --
+> 2.17.1
+>
 
-Sorry about that, it was missed in one of my rebases.
-The fix was posted here.
-https://lore.kernel.org/all/2ed1159291f2a589b013914f2b60d8172fc525c1.1632916329.git.leonro@nvidia.com
+After sending the series, I find that I forget to move the
+task_comm_alloc() to the end of fork().  Below is the updated one,
 
+---
+ include/linux/sched.h |  2 +-
+ kernel/fork.c         | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index e12b524426b0..b387b5943db4 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1051,7 +1051,7 @@ struct task_struct {
+         * - access it with [gs]et_task_comm()
+         * - lock it with task_lock()
+         */
+-       char                            comm[TASK_COMM_LEN];
++       char                            *comm;
+
+        struct nameidata                *nameidata;
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 38681ad44c76..d1e0c38464ed 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -721,6 +721,20 @@ static void mmdrop_async(struct mm_struct *mm)
+        }
+ }
+
++static int task_comm_alloc(struct task_struct *p)
++{
++       p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
++       if (!p->comm)
++               return -ENOMEM;
++
++       return 0;
++}
++
++static void task_comm_free(struct task_struct *p)
++{
++       kfree(p->comm);
++}
++
+ static inline void free_signal_struct(struct signal_struct *sig)
+ {
+        taskstats_tgid_free(sig);
+@@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
+        bpf_task_storage_free(tsk);
+        exit_creds(tsk);
+        delayacct_tsk_free(tsk);
++       task_comm_free(tsk);
+        put_signal_struct(tsk->signal);
+        sched_core_free(tsk);
+
+@@ -2352,6 +2367,10 @@ static __latent_entropy struct task_struct *copy_process(
+                goto bad_fork_cancel_cgroup;
+        }
+
++       retval = task_comm_alloc(p);
++       if (retval)
++               goto bad_fork_cancel_cgroup;
++
+        /* past the last point of failure */
+        if (pidfile)
+                fd_install(pidfd, pidfile);
+
+
+-- 
 Thanks
+Yafang
