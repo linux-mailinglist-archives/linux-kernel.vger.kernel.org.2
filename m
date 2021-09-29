@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279A041C9C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314D441C9D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345680AbhI2QKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:10:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344611AbhI2QKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:10:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8329F615A7;
-        Wed, 29 Sep 2021 16:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632931742;
-        bh=dijA/w5Ov8JsJ92OsBZBg2039bqDhk6Rb6AyNDbPn44=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F/l734se74TwmNKqonr45ks6Q850RYvThvXxxdhTyJf3RZw1rzmHm3f7Rq9l4TUbH
-         fCysjvBQWOc0oroYUgIl8V24IheYEjz/xul/maQHbKIuA3dZbOEHR2gT16yODw6rm1
-         zPYdjJjh+cZ/tQsX2hXR4jU27EPuJG0V8gOdWwXEZ6enjVntGut2AW04aaIAv5b1sU
-         rEZ2oJjqzcqpRmnxCPLNc7xqE3BifgIvrvORJApCCs674vkO5pDWID5V24/iPO7OWm
-         /X5UYk8JAvcdEZojKGLgFtk+TI+8C06JdmyrCjjdItiybmC3AKcCoVNIoSE7EJKq2l
-         4IZZ5MbZW1gkw==
-Received: by mail-ed1-f41.google.com with SMTP id bd28so10484450edb.9;
-        Wed, 29 Sep 2021 09:09:02 -0700 (PDT)
-X-Gm-Message-State: AOAM533VDs/brX/1UDJ0JEbcn63icQo4cgetb+gUo5rQGcJ2Zcb8YfxR
-        +RxXsVTEeWD4bEWTRHky/uE1ozeKjLJu+o/Liw==
-X-Google-Smtp-Source: ABdhPJzrMbYO0rSYnqgmEqL2Di5ODf2KFSFLA0nJG3BUUjFxO4DRvWKc4rYXRSAUryn3020YRQn63vQqdkNzIXSPDII=
-X-Received: by 2002:a17:906:7250:: with SMTP id n16mr562242ejk.147.1632931694940;
- Wed, 29 Sep 2021 09:08:14 -0700 (PDT)
+        id S1345886AbhI2QMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345674AbhI2QMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:12:33 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD60C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:09:23 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id y35so10721461ede.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uaWtDAo3kQSYCQrNbQm2HCi7HuCaEOju1rd0rKAU9dQ=;
+        b=WfDFN+AjqSMPvMlMCOsJcFYl1uex3whdvbM9klc0hcheDieIqdAFIQJhsnsXfizDQt
+         h5uqgLQsafVDIkFEkSDmfSXEcyaIudmJrpA7xh5gbPs+cRKygnx5eW22JA1UjDLiw4fZ
+         H1dMOEu0rF/3q4tBVa29T+wyCKLINjeOFZU020y4uxgIaUrDdYOhWtvH3D8xDG6dvboM
+         GCfdOFaIr+0eK94U/rRJ0pcjpDnKF666XnxzBgMuxgl/YvtDi+IACNfnr0p9frdCw6Dr
+         9RsSqc346jaQJxeGCddmUzKqZnBtmL4rbk5SDvCf3XRCG1okZvYHQNc2zmG4v0fqRSmQ
+         MHyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uaWtDAo3kQSYCQrNbQm2HCi7HuCaEOju1rd0rKAU9dQ=;
+        b=kDKgxH41do/cDV6RL6WxJedvdzEtxUhD3TUK0nba+s2diwtJL3bYuAEGtDTFZkDqjM
+         LymiELc75dykNQ5TTnMREjwE8I50JQkLhb3pG6tK7YShzOQkPS/EMdCyuxzBeW8FvAn3
+         J2E1/SE/rbc74sVZ59DVCIF64VSEMrufYYVj9BDmDKvRsn9cxJJrMhpxTXCvmZyP5l7y
+         JNC/uYgc+1zpAQLMtTzyDmF0zfB/BESTW4AE3qdeYpghBckxxoVp26iAk4qsPkH8o2qT
+         8MJ8H2blNYIjjj2XK0GJ9hSdvQywBiOz9F2DvRbLc1Qfq0LGPqchwRPp9xRqP/svU9dy
+         1zqA==
+X-Gm-Message-State: AOAM530aNulPVTCxBMpaV71O5iqPJkDQwNRc3e31S6We507y5DLK5RSW
+        NbAMreeXwNZBxouR8fXLYbaYd/c3cuUJk7QTKIk=
+X-Google-Smtp-Source: ABdhPJyrMM22bNMGflNyc+y8rA206GxgP0Bp7Ld+WDu3Hp9kybxMvtdUCZ9+WUrD0DIV6jTyeV3C1mpV667nLwdSIsc=
+X-Received: by 2002:aa7:c4d0:: with SMTP id p16mr787607edr.71.1632931717974;
+ Wed, 29 Sep 2021 09:08:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929115409.21254-1-zev@bewilderbeest.net>
-In-Reply-To: <20210929115409.21254-1-zev@bewilderbeest.net>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 29 Sep 2021 11:08:03 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJH+b5oFuSP+KBLBsN5QTA6xASuqXJWXUaDkHhugXPpnQ@mail.gmail.com>
-Message-ID: <CAL_JsqJH+b5oFuSP+KBLBsN5QTA6xASuqXJWXUaDkHhugXPpnQ@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Dynamic aspeed-smc flash chips via "reserved" DT status
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>
+References: <20210908132727.16165-1-david@redhat.com> <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
+ <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
+ <ea75df96-f381-6949-5627-1382a370dc71@redhat.com> <20210916193403.GA1940@pc638.lan>
+ <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com> <20210921221337.GA60191@pc638.lan>
+ <7f62d710-ca85-7d33-332a-25ff88b5452f@redhat.com> <20210922104141.GA27011@pc638.lan>
+ <e378e60a-319b-e9aa-7e30-3e280c4431da@redhat.com> <CA+KHdyWZ9T2GEuUENXD_OYHX1JxKfZuW5YzmDtqXUYSgkQd8fQ@mail.gmail.com>
+ <953ea84a-aabb-f64b-b417-ba60928430e0@redhat.com> <CA+KHdyWFjtoVqGd=7-yp33G-5WcZCtf80BaAk+3jx2bW5FCfWA@mail.gmail.com>
+ <689b7c24-623d-c01e-6c0f-ad430f1fa3ae@redhat.com>
+In-Reply-To: <689b7c24-623d-c01e-6c0f-ad430f1fa3ae@redhat.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Wed, 29 Sep 2021 18:08:26 +0200
+Message-ID: <CA+KHdyVC1KCP2r2st_TmfmXaPZ49ym0gyN31CwLZfE=ipLGjmA@mail.gmail.com>
+Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment > 1
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ping Fang <pifang@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 6:54 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+> > Could you please to be more specific? I mean how is it connected with huge
+> > pages mappings? Huge-pages are which have order > 0. Or you mean that
+> > a special alignments are needed for mapping huge pages?
 >
-> Hello,
+> Let me try to clarify:
 >
-> This patch series aims to improve a scenario that arises in OpenBMC
-> and which isn't handled very well at the moment.  Certain devices, the
-> example at hand being the flash chip used to store the host's firmware
-> (e.g. the BIOS), may be shared between the BMC and the host system but
-> only available to one or the other at any given time.  The device may
-> thus be effectively off-limits to the BMC when it boots, and only
-> usable after userspace performs the necessary steps to coordinate
-> appropriately with the host (tracking its power state, twiddling
-> GPIOs, sending IPMI commands, etc.).
 >
-> Neither the "okay" nor the "disabled" device-tree status values works
-> nicely for the flash device this case -- an "okay" device gets probed
-> automatically as soon as the device and a driver for it are available,
-> and a "disabled" one gets forgotten about entirely, whereas we want
-> the BMC's kernel to be aware of the existence of the device, but not
-> try to actually do anything with it (i.e. probe it) until explicitly
-> requested to do so by userspace.
-
-While Linux treats 'disabled' as gone forever, that's not exactly what
-the spec says. Either disabled or reserved could change in theory. But
-I do agree 'reserved' is the right choice for your use.
-
-> However, while there's no support for it currently in the kernel tree,
-> the device-tree spec [0] also lists "reserved" as a possible status
-> value, and its description seems like a fairly reasonable fit for this
-> situation:
+> KASAN does an exact allocation when onlining a memory block,
+> __vmalloc_node_range() will try placing huge pages first, increasing the
+> alignment to e.g., "1 << PMD_SHIFT".
 >
->   Indicates that the device is operational, but should not be used.
->   Typically this is used for devices that are controlled by another
->   software component, such as platform firmware.
+> If we increase the search length in find_vmap_lowest_match(), that
+> search will fail if the exact allocation is surrounded by other
+> allocations. In that case, we won't place a huge page although we could
+> -- because find_vmap_lowest_match() would be imprecise for alignments >
+> PAGE_SIZE.
 >
-> These patches start making use of this status value in the aspeed-smc
-> driver.  The first patch adds a companion routine to
-> of_device_is_available() that checks for a "reserved" status instead
-> of "okay".  The second patch is a small MTD adjustment to allow an
-> unregistered device to be cleanly re-registered.  Patches 3 through 5
-> modify the aspeed-smc driver to allow individual chips to be attached
-> and detached at runtime, and to avoid automatically attaching any
-> marked as reserved.  Finally, patch 6 employs the newly-supported
-> status in adding support for the BIOS flash device to the ASRock Rack
-> e3c246d4i BMC.
+>
+> Memory blocks we online/offline on x86 are at least 128MB. The KASAN
+> "overhead" we have to allocate is 1/8 of that -- 16 MB, so essentially 8
+> huge pages.
+>
+> __vmalloc_node_range() will increase the alignment to 2MB to try placing
+> huge pages first. find_vmap_lowest_match() will search within the given
+> exact 16MB are a 18MB area (size + align), which won't work. So
+> __vmalloc_node_range() will fallback to the original PAGE_SIZE alignment
+> and shift=PAGE_SHIFT.
+>
+> __vmalloc_area_node() will set the set_vm_area_page_order effectively to
+> 0 --  small pages.
+>
+> Does that make sense or am I missing something?
+>
+Thank you for clarification. OK, we come back anyway to the "problem" with fixed
+range and an exact allocation plus a special alignment > PAGE_SIZE. Thus the
+KASAN will not make use of huge pages mappings and go with regular instead
+as a fallback path. But we would like to utilize huge-mappings for KASAN.
 
-I'm not sure this should be MTD specific. There's other cases where we
-may want devices to become available. So the question is whether there
-should be a more generic mechanism rather than each subsystem coming
-up with their own thing.
+I will send the patch you tested and add your "tested-by" tag. Does it
+sound good?
 
-There's out of tree support for applying overlays which could be used
-here. The issue with it is we don't want it to be unconstrained where
-an overlay can make any change anywhere in a DT.
-
-Another possibility is making 'status' writeable from userspace. It is
-just a sysfs file. That too may need to be opt-in.
-
-Rob
+--
+Uladzislau Rezki
