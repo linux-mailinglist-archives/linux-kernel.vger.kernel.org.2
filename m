@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBDB41CF8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9301141CF86
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347213AbhI2W6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:58:25 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:60068 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345988AbhI2W6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:58:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=gyI1iWTgaQxXLC0uh18K74XDfJOQ35Yd/0UtBH7oL2Y=; b=VyEMo1To4bpq3hE/xr6uacN63S
-        sFo8JLN2lg3Nt7NjJD/RyCHJ3xIMnFvvWyJQJDzNwEv5i2F31KL273mFPxjWpXsi8VJB7W8aU8iuX
-        UhU9U05GQuc4pdzxedOdf9TAaZLqlqelpLTq2C+UtXnoObaPYB2yfaH1YLeAfoLoxcX8gTb/p0aCT
-        164B3Y/N5rl7w8PhlikTl4aQ4jNqsb1jJoT2BUjjfIZtVih+GwnXuoh5B3mbUqiLvXqgCmdNOOLxt
-        Cw4AtoX4dmjtYkv8q48FbqX8M5k1KxfxuoejCgFSCUcvy99IFnZpCWPQA7rx4nIKKrpUNT13PyREe
-        /6e6C7DQ==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mViV2-0007a2-MS; Wed, 29 Sep 2021 16:56:29 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-13-logang@deltatee.com>
- <20210928194325.GS3544071@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <e7bbe021-9a0c-1999-0a2a-ba249578c9c7@deltatee.com>
-Date:   Wed, 29 Sep 2021 16:56:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1346602AbhI2WzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:55:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:55656 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344976AbhI2WzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 18:55:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="224714675"
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="224714675"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 15:53:40 -0700
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="588270949"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 15:53:40 -0700
+Date:   Wed, 29 Sep 2021 15:57:20 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        mike.campin@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+Message-ID: <20210929155720.794b6e65@jacob-builder>
+In-Reply-To: <20210929193953.GX964074@nvidia.com>
+References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20210929123437.721991dc@jacob-builder>
+        <20210929193953.GX964074@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210928194325.GS3544071@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v3 12/20] RDMA/rw: use dma_map_sgtable()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jason,
 
+On Wed, 29 Sep 2021 16:39:53 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-
-On 2021-09-28 1:43 p.m., Jason Gunthorpe wrote:
-> On Thu, Sep 16, 2021 at 05:40:52PM -0600, Logan Gunthorpe wrote:
->> dma_map_sg() now supports the use of P2PDMA pages so pci_p2pdma_map_sg()
->> is no longer necessary and may be dropped.
->>
->> Switch to the dma_map_sgtable() interface which will allow for better
->> error reporting if the P2PDMA pages are unsupported.
->>
->> The change to sgtable also appears to fix a couple subtle error path
->> bugs:
->>
->>   - In rdma_rw_ctx_init(), dma_unmap would be called with an sg
->>     that could have been incremented from the original call, as
->>     well as an nents that was not the original number of nents
->>     called when mapped.
->>   - Similarly in rdma_rw_ctx_signature_init, both sg and prot_sg
->>     were unmapped with the incorrect number of nents.
+> On Wed, Sep 29, 2021 at 12:37:19PM -0700, Jacob Pan wrote:
+>  
+> > For #2, it seems we can store the kernel PASID in struct device. This
+> > will preserve the DMA API interface while making it PASID capable.
+> > Essentially, each PASID capable device would have two special global
+> > PASIDs: 
+> > 	- PASID 0 for DMA request w/o PASID, aka RID2PASID
+> > 	- PASID 1 (randomly selected) for in-kernel DMA request w/
+> > PASID  
 > 
-> Those bugs should definately get fixed.. I might extract the sgtable
-> conversion into a stand alone patch to do it.
+> This seems reasonable, I had the same thought. Basically just have the
+> driver issue some trivial call:
+>   pci_enable_pasid_dma(pdev, &pasid)
+That would work, but I guess it needs to be an iommu_ call instead of pci_?
 
-Yes. I can try to split it off myself and send a patch later this week.
+Or, it can be done by the platform IOMMU code where system PASID is
+automatically enabled for PASID capable devices during boot and stored in
+struct device. Device drivers can retrieve the PASID from struct device.
 
-Logan
+I think your suggestion is more precise, in case the driver does not want
+to do DMA w/ PASID, we can do less IOTLB flush (PASID 0 only).
+
+> And then DMA tagged with the PASID will be handled equivilant to
+> untagged DMA. Basically PASID and no PASID point to the exact same IO
+> page table and the DMA API manipulates that single page table.
+> 
+> Having multiple RID's pointing at the same IO page table is something
+> we expect iommufd to require so the whole thing should ideally fall
+> out naturally.
+That would be the equivalent of attaching multiple devices to the same
+IOMMU domain. right?
+
+> Jason
+
+
+Thanks,
+
+Jacob
