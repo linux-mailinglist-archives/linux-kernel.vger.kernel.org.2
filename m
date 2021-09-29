@@ -2,99 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C721C41C57F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5395541C585
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344158AbhI2N0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:26:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242801AbhI2N0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:26:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F78861407;
-        Wed, 29 Sep 2021 13:24:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632921866;
-        bh=GLt7VhAYc3+Bn7horZOtUw2Z07v1yUgEk1KG/o2u/SI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pj4/sQqa/LQxfTtZWbZu55CJBbFO7vLy1gx7I3r3W5KRNY3naMRp23xoTDTe6ElXA
-         ISCWmiPeFyG493Garv3lou+laNSAIVW0nxw2doPD47spv/mCpgXyLcUMBKrHAW6VqH
-         9QnsWxjizrYqCDgQCh6UFuChYoNVoKjjYCc0abe5V2xENBZ6ZFTCg/uE6c8V/zdUR0
-         5P23yKlnD8HwItgZqaXWAV2JmmMmRu5Mb0hKx1g8TdcCgZlYVGF2K8ccncJIU0Qa04
-         TjfxFr3Jr6uNCfZwA90lKhbrOhiUf1apQufovMQYbceIqbIuSjp5UwYwJHkylzrPjr
-         p09pjTNWruWYg==
-Received: by mail-ed1-f54.google.com with SMTP id dn26so8574046edb.13;
-        Wed, 29 Sep 2021 06:24:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530EUKe7bv5YeZN2nXgcLx4wZpUfcr1WfTu3E1oZTLyMxDBA0kF4
-        NUKZfmcd/13Q4k/RT3nGG7hcMJYqE566biiwRA==
-X-Google-Smtp-Source: ABdhPJwq2f2qqfxXyFWkrWV3iifrJPv7KPWiqgVnZABgA1XBRfQrTxVeJvSAOJe1XySYmstxhXFKpr+rq0wzORzGlmI=
-X-Received: by 2002:a17:906:7217:: with SMTP id m23mr13411369ejk.466.1632921849241;
- Wed, 29 Sep 2021 06:24:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927103321.v4kod7xfiv5sreet@lony.xyz> <20210927153128.GA646260@bhelgaas>
-In-Reply-To: <20210927153128.GA646260@bhelgaas>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 29 Sep 2021 08:23:57 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLjpe94EGx2fmVmcoXniRMnQ16+RKcYATub4cm0TPF0gw@mail.gmail.com>
-Message-ID: <CAL_JsqLjpe94EGx2fmVmcoXniRMnQ16+RKcYATub4cm0TPF0gw@mail.gmail.com>
-Subject: Re: About the "__refdata" tag in pci-keystone.c
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Sergio M. Iglesias" <sergio@lony.xyz>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1344169AbhI2N1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:27:19 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:20489 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242801AbhI2N1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:27:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632921905;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=iXnkGBjUJ/lD8Seg+3/qoiXxZlA8cp27UXC2S8pwhhE=;
+    b=LKr/APoVDaPodsHvLUwFwZdabISWBDYx7ojmMJKUlP3z+sgzhD748oTXc2WmfcIoiZ
+    1szZPCEho16UYScbl2z+dDlVLQwqXiro/m9UeJtTKzO6e5vuakfdM2oPGCf1rh36vCwk
+    AoaYxSczLNmY5pj7K/B+m3lu2zaPLzL2ffYVRMAgE+LyvIDthiTtzCLvSD4hpIQJS7cp
+    npEX43lPiBRxLMr2D5WE80Tz2lsDwbaIplqLcFXRMG7wprx0EJmg5X4zaC72omlf/sRX
+    HQQSBtm844e+cumiuLExMB7MAD07ZvNcdTKDg6CXAjjMGAsXDPXwyX9iJ+TQfNV9AdXG
+    BheQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43qmio="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
+    with ESMTPSA id I01f74x8TDP3k6X
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 29 Sep 2021 15:25:03 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v4 02/10] drm/ingenic: Add support for JZ4780 and HDMI
+ output
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <17BF1D7A-2057-448B-9FD2-907DE0EFD281@goldelico.com>
+Date:   Wed, 29 Sep 2021 15:25:02 +0200
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3D436929-570A-43FA-A388-27A183ECF703@goldelico.com>
+References: <cover.1632761067.git.hns@goldelico.com>
+ <68cca888be1894ce45f1a93cfabeb5aa1f88c20a.1632761067.git.hns@goldelico.com>
+ <OA150R.JLKJBJP8V7FJ2@crapouillou.net>
+ <1E10A04A-4A78-4B47-B0FB-1E8C99456DA1@goldelico.com>
+ <17BF1D7A-2057-448B-9FD2-907DE0EFD281@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:31 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Mon, Sep 27, 2021 at 12:33:21PM +0200, Sergio M. Iglesias wrote:
-> > Hello!
-> >
-> > I have checked the "__refdata" tag that appears in the file
-> > "drivers/pci/controller/dwc/pci-keystone.c" and it is needed. The tag has
-> > been there since the creation of the file on commit 6e0832fa432e and
-> > nothing has changed since that would make it redundant.
-> >
-> > The reason it is needed is because the struct references "ks_pcie_probe",
-> > which is a function tagged as "__init", so the compiler will most likely
-> > complain about the "__refdata" being removed.
-> >
-> > Should I send a patch to add a comment explaining why it is a necessary
-> > tag as recommended in "include/linux/init.h"?
-> > > [...] so optimally document why the __ref is needed and why it's OK).
->
-> Thanks a lot for looking into this.
->
-> I'm not yet convinced that either the __init or the __refdata is
-> necessary.  If there is a reason, it would not be "to silence a
-> compiler complaint"; it would be something like "the keystone platform
-> is different from all the other platforms because the other platforms
-> support X but keystone does not."
->
-> Also, there are a couple other .probe() functions that are marked
-> __init:
->
->   $ git grep "static int .*_pci.*_probe" drivers/pci | grep __init
->   drivers/pci/controller/dwc/pci-keystone.c:static int __init ks_pcie_probe(struct platform_device *pdev)
->   drivers/pci/controller/dwc/pci-layerscape-ep.c:static int __init ls_pcie_ep_probe(struct platform_device *pdev)
->   drivers/pci/controller/mobiveil/pcie-layerscape-gen4.c:static int __init ls_pcie_g4_probe(struct platform_device *pdev)
->   drivers/pci/controller/pci-ixp4xx.c:static int __init ixp4xx_pci_probe(struct platform_device *pdev)
->
-> and their platform_driver structs are not marked __refdata:
->
->   $ git grep "static struct platform_driver" drivers/pci | grep __refdata
->   drivers/pci/controller/dwc/pci-keystone.c:static struct platform_driver ks_pcie_driver __refdata = {
->
-> I think this should all be more consistent: either all these __init
-> and __refdata annotations should be removed, or they should be used by
-> many more drivers.
+Hi Paul,
 
-__init should definitely be removed. There's no guarantee that probe
-completes before init memory is freed even for built-in drivers.
 
-Rob
+> Am 28.09.2021 um 14:06 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
+>=20
+> Hi Paul,
+>=20
+>> Am 28.09.2021 um 12:21 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
+>>=20
+>>>> @@ -1492,10 +1555,16 @@ static int ingenic_drm_init(void)
+>>>> {
+>>>> 	int err;
+>>>> +	if (IS_ENABLED(CONFIG_DRM_INGENIC_DW_HDMI)) {
+>>>> +		err =3D =
+platform_driver_register(ingenic_dw_hdmi_driver_ptr);
+>>>> +		if (err)
+>>>> +			return err;
+>>>> +	}
+>>>=20
+>>> I don't see why you need to register the ingenic-dw-hdmi driver =
+here. Just register it in the ingenic-dw-hdmi driver.
+>>=20
+>> Ok, I never though about this (as the code was not from me). We =
+apparently just followed the IPU code pattern (learning by example).
+>>=20
+>> It indeed looks not necessary and would also avoid the =
+ingenic_dw_hdmi_driver_ptr dependency.
+>>=20
+>> But: what is ingenic_ipu_driver_ptr then good for?
+>>=20
+>> If we can get rid of this as well, we can drop patch 1/10 =
+("drm/ingenic: Fix drm_init error path if IPU was registered") =
+completely.
+>=20
+> A quick test shows that it *is* required. At least if I configure =
+everything as modules.
+> But like you I can't explain why.
+>=20
+> Well, just a very rough idea (may be wrong): the bridge chain is not =
+like an i2c bus and
+> clients are not automatically loaded/probed if linked in the device =
+tree. Therefore the
+> consumer (ingenic_drm_drv) must register the "clients" like IPU and =
+HDMI.
+
+Any suggestion how to proceed here for v5?
+
+BR,
+Nikolaus
+
