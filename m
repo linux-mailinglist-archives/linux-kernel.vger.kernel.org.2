@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78C141C6C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB85A41C6C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344387AbhI2OhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343496AbhI2OhK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:37:10 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9A2C06161C;
-        Wed, 29 Sep 2021 07:35:29 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id x27so11749117lfu.5;
-        Wed, 29 Sep 2021 07:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d2YTnDgoR24F1yuMZN9skVYxWk5/aXABL1u136srtfs=;
-        b=E5wQkpl5HTStrjVQfZxwnoOPCSwr11KdXa+CsjADAX+Lo8pQ+SNYN8inM/jAkDv529
-         tIN4SjLFLbETQdFGHd7AoNU+K21+n3nXoCqd6ikmtZ6gJPRgfkKJXelibNtPWL2P58Fs
-         4vcfBgSGRhe46kcNR+Vws9j44u+tvagAxys68mb/ZUGp3XlOA6n3eQyBF45Os7Emrswn
-         ixOJXPJNNx33R8sHEauKRauN49Jk4mCPaTOh4oQ+smiyWYEweNM8r65kM+U6eXPXecC1
-         qNNL+gvFV2J/f1ivcyGA33oiza1Favc/VtNA525G8vneQCLTLkIRqgPunxxuLBCh8jtI
-         CvAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d2YTnDgoR24F1yuMZN9skVYxWk5/aXABL1u136srtfs=;
-        b=LmcaWu7IowxII6Eg/dpRH2krDLrYRv4kO0mIEB54jpP5lbrnL2X6e3khOsRq5MJP6b
-         h0BJlwVknXhjcmxlg75ibBSPxYJFrconorhlNcAcfRhR2lQp1lOjWf+1yhFbPZLzCa+o
-         9FvjWUPHpDpIcHBHPyKdgtA6McybMCRvEbu7sMyjooRu1Qne9lL3O/BLxM15MG47eRf9
-         xZ7UsFtewhrfx1CRnYl0y09nlTYh2coPEEbS9KhRq2+cqW0ivijzQ72N6VXYT21SBm0Y
-         PSH1yyegnc9Oylkquz2U/1ZHHvV9jsaGYvNSbRLoVzovo2NJeJj8PJd1O8RNHGt9hcfP
-         Dpyw==
-X-Gm-Message-State: AOAM531RegS0ZOe/L1funJ8YJ7YE38ace5BvlR2mxt85i1ghf4dPeJMX
-        6Lufb3Z2m8AnzXv8GTYrFtBHgkXPHzE=
-X-Google-Smtp-Source: ABdhPJw09WyOTBJbLbJEvvfHardkMvGhwKbMdt5i4c+5abfRgQaERclT6eZ/k+Zm9K8gWtHtapqb+A==
-X-Received: by 2002:a2e:9e83:: with SMTP id f3mr243862ljk.309.1632926128146;
-        Wed, 29 Sep 2021 07:35:28 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
-        by smtp.googlemail.com with ESMTPSA id s12sm9994lfr.76.2021.09.29.07.35.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 07:35:27 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] i2c:busses:Register PCI1XXXX adapter to I2C
- subsystem
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>,
-        wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        treding@nvidia.com, mirq-linux@rere.qmqm.pl, s.shtylyov@omp.ru,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     UNGLinuxDriver@microchip.com
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
- <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
- <d39e99ff-6498-e532-e833-1c65861d566f@gmail.com>
-Message-ID: <775e00e3-e204-7138-9648-7551098968b8@gmail.com>
-Date:   Wed, 29 Sep 2021 17:35:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1343496AbhI2Ohf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:37:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344420AbhI2Ohe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:37:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB27613CE;
+        Wed, 29 Sep 2021 14:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632926153;
+        bh=c2z5RikRkWc79lNu5V12ksP4gbK0MSOCGyzavGzUgOU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CB+pgkC8GS0awLozfiCqGuWzrfQ4/5Ly6BzLnykAmBTxGsFusXpzzR20GjxhGi7sx
+         X0mEfe/YNQpUwtPq4/WeSaWZIJr1mtxs5C8HSHbMmtH6D6rL5R+24DLfFCZxR9+kiV
+         5kL/80cyjQeN1U+2tNrgb12+CkD9O2ZKaMtEw90mN6eXroR3Aj99dQwPqhO7KjHKKm
+         m8jOeYzlX63uBTd1Gh1M7SYpbqrdBt1FTMOZmBPlP1qFR38NOqg/xOIiJ9jOFHOvSt
+         JV6WkTMUJFlHPg8pz0c2Ih12wfe0VHYO/sNp/q70yp/ySorb0gGC8cPU869lXmoDu6
+         OFRv+Ndrj3Z/Q==
+Date:   Wed, 29 Sep 2021 07:35:51 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 4/5] net/mlx5: Register separate reload
+ devlink ops for multiport device
+Message-ID: <20210929073551.16dd2267@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YVR4qDxiQw95jaWK@unreal>
+References: <cover.1632916329.git.leonro@nvidia.com>
+        <a8bf9a036fe0a590df830a77a31cc81c355f525d.1632916329.git.leonro@nvidia.com>
+        <20210929065549.43b13203@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVR1PKQjsBfvUTPU@unreal>
+        <20210929072631.437ffad9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVR4qDxiQw95jaWK@unreal>
 MIME-Version: 1.0
-In-Reply-To: <d39e99ff-6498-e532-e833-1c65861d566f@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.09.2021 10:18, Dmitry Osipenko пишет:
-> +static void pci1xxxx_i2c_remove_pci(struct pci_dev *pdev)
-> +{
-> +	struct pci1xxxx_i2c *i2c = pci_get_drvdata(pdev);
-> +
-> +	pci1xxxx_i2c_shutdown(i2c);
-> +	i2c_del_adapter(&i2c->adap);
+On Wed, 29 Sep 2021 17:31:04 +0300 Leon Romanovsky wrote:
+> On Wed, Sep 29, 2021 at 07:26:31AM -0700, Jakub Kicinski wrote:
+> > On Wed, 29 Sep 2021 17:16:28 +0300 Leon Romanovsky wrote:  
+> > > devlink_ops pointer is not constant at this stage, so why can't I copy
+> > > reload_* pointers to the "main" devlink ops?
+> > > 
+> > > I wanted to avoid to copy all pointers.  
+> > 
+> > Hm. I must be missing a key piece here. IIUC you want to have different
+> > ops based on some device property. But there is only one
+> > 
+> > static struct devlink_ops mlx5_devlink_ops;
+> > 
+> > so how can two devlink instances in the system use that and have
+> > different ops without a copy?  
+> 
+> No, I have two:
+> * Base ops - mlx5_devlink_ops
+> * Extra reload commands - mlx5_devlink_reload
 
-The order is wrong. Adapter must be removed first, then hardware can be
-disabled.
+Still those are global for the driver, no?
 
-> +}
-
+What if you have multiple NICs or whatever.
