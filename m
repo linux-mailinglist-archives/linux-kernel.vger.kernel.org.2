@@ -2,195 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1C441D036
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4C741D039
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347755AbhI2X6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:58:30 -0400
-Received: from mail-bn8nam11on2063.outbound.protection.outlook.com ([40.107.236.63]:32898
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1347184AbhI2X63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:58:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jrQoouJ3pLRTenAB8ORV/RZ3EELXGVNtxmFWCz3w7Y4CrciDRtAOrTMBdHSLjjdcly0q4kQv8ZU4euOGTFmJYImuUoeUk33r5wJhH13ynnaQ7AmCrODmspj9/CVbBJf2Y37Eyd4rMNLU/mfzcsfUs9CkzrTWJ6xfXm7nL+49hFjqI5VhVQYyqK22lvSiTNM3fSEZrwHLSzaYb3/JiM7IAOLf1+Y5tDRMJDRsXZmT6rQwEfooQ9EZFme2px8Jp3ZzI/2hTU2CAslCLQqwurTA9xAgpV0cTFJJ9Nl2ZS3NfuCX6oj5TxnnFhOb06AAWelz+xQRqU7gXu5G7n1KWelWFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=n5ecuy6gJHU/5InFpJeKsXOCg825jYAfWrwgKu/0t2Y=;
- b=EYAy/+DGApK7MIxhxE3R6QPfB3dHSAotd6z7eoHK1BpOAx+2ZjcAfTnobKI6+ub2pW5kDgjai89AVGghQtQa5bLLC9xhlcliS1/4FCkZT7ar1/tYbd7ZW4VX9O5qMJvXvYJGVCZ7W3xcBgG9QPisTCCxtRZ5lQzqB/ATt0N9rtIun7z1I3VS/4i6qq9H8gUpMIKBAbHLEtp060qASWzKeT2ZF75l6DjOhhocV52WSUp5JQKBzJaymxPwl0TySdUDZ/5FF/VcqecGJvLJfN7fIAOSHSuTZltnKcMG6smeiwETI3nbJ1i1VBCp/bcRRSh0lY9Jnp+fgQch3W6tr5Ujnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n5ecuy6gJHU/5InFpJeKsXOCg825jYAfWrwgKu/0t2Y=;
- b=Yy9+lEhiq9z6crzK3RcOt6pYsKn4MxwqcDC+V92ujjTPQic42mKK2tdsHfswV3IvO6ptg3FHJbW5GMru7mH95DHr44PGnzQ5rLCgePkRxB6TKTOU3/mHV0p06x0pvI2LkvCe7/88EGVvAqdbu8OTF6NVFNSnZV+F3T+usN4OMNULeagMu4FYfAlFQHmmHR3HMgw0fAVVTwpH0Lbh3izkYF3JXuaJWwsaMOygkHYAGcX3I+/Aq5muxGAFrT3Ft8zqGhWZ9JFmZVvRa6VrCGWo6DqWjMYnBKJqqeprLap5lM5y2DSqK+msuqT+PhN12/5mWFO/T/3jscHr8Arg0TcBgQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5079.namprd12.prod.outlook.com (2603:10b6:208:31a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
- 2021 23:56:45 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 23:56:45 +0000
-Date:   Wed, 29 Sep 2021 20:56:43 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Mark Zhang <markzhang@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 06/11] RDMA/nldev: Add support to get status
- of all counters
-Message-ID: <20210929235643.GD964074@nvidia.com>
-References: <cover.1631660727.git.leonro@nvidia.com>
- <86b8a508d7e782b003d60acb06536681f0d4c721.1631660727.git.leonro@nvidia.com>
- <20210927173001.GD1529966@nvidia.com>
- <d812f553-1fc5-f228-18cb-07dce02eeb85@nvidia.com>
- <20210928115217.GI964074@nvidia.com>
- <YVRbcXJL/LBaSLLJ@unreal>
+        id S1347760AbhI2X6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347021AbhI2X6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:58:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC8760EE4;
+        Wed, 29 Sep 2021 23:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632959820;
+        bh=u/f62+IedkJJ1rM8oM6PYSLQeoq90oK5VgySaRMYS04=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CtIxkqWtBHqoEQL1QTZ5Mt4pYlJmxf4pB1viCOsHQDqUlD1dYNoYFXBogNo/XNIbP
+         HlYhq1CzBbba3d3wF/hD/wlYAJv3FXYft5+sYcL+3+2IMNFQToUfY1lsggZpMgwEAW
+         RNN/OTBfR47Y0IvNjF6GCI2XCCW6N5YjRzkPfg8+CKefpbtEN2Il+9BWWt4hbdcJCB
+         vVK1fJUIG3LTzw2MGc0ZEI99q+XvfMbH0C6v6ru9/xjUL7r4W3GCTLtsxtJHzHZlOf
+         FYr2SRyKpweTf2w/eXYEKV9rY0rw3tFoVrpRPozDJz249TvTsDzf0mFxAF2lvIvRxv
+         Y/165HehXOJZA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3037D5C1308; Wed, 29 Sep 2021 16:57:00 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 16:57:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        will@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+Message-ID: <20210929235700.GF880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+ <20210929214703.GG22689@gate.crashing.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVRbcXJL/LBaSLLJ@unreal>
-X-ClientProxiedBy: MN2PR22CA0016.namprd22.prod.outlook.com
- (2603:10b6:208:238::21) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR22CA0016.namprd22.prod.outlook.com (2603:10b6:208:238::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 23:56:45 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVjRL-007jGd-Ef; Wed, 29 Sep 2021 20:56:43 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3886cbff-0e68-4406-9423-08d983a4cae0
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5079:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5079858FD5A56B15F7D4EE6EC2A99@BL1PR12MB5079.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BE1kujPgoKCWnjodTN60ruu1Rl4RDpSv0o1nXIF08PUDNf5TFqTdNLkwexlP8hwMeaFpEri/2z16eKQdXjrAeBvfgP/2w0VXlgeCrcZ+EX45KUIrLyWdp+5THB5VDzEVAa5FGdqkT0YP1LEVqThv7wgnAB4HTN+xD+Q9PVCT/JLo9JEERrdYHC0skuC5+aGouhjnSge6unLuF7HOhl1Ln7epITWjqZUkca7THOKzusJStx5O54lzPn5LOckBUL/VV+R/onynLucLRszkxSTE0EgCGFwZm+PpO2+iYpUJ9tnlyRYxsOFbV+2XPBwBWf2fZep7UqmEg8Qwg6wtutOZikV40PgE6iODtFZtD6mcU58nQRQLfeZqxac1gTdymNA2wD3VdjZ7Fj75nG+0C2ZMIQleyLpOju21/+DLgDb4bNRCz5Y7cGrHoUnb+U2ARH7tILeJS+GPx7OVylaJCU8G+MvfY9nQRSTyGQYp+ZY9TFnemVW4H78+aWcvS9NAUC/+wXoMbVnN/rt3Wm8XN+9jhy+fTQ3+g5BZyftHsbG2BxLAFsHttkSjwcpUOvMuAnhcAtDOllXsmfb/QR/VBUo+ugD2qxSlGSCfw+vWxWpsQwdTkY62qNpoHQ8lWCZ0GAjqv0drssmzYEgT1QHBqo+mWnm4AdhST0fAM2YJyS6oE1FmXkNSDzFE6v+iC7la9Tm2+iIFu96Ay0L3YVs7cXElaQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(1076003)(426003)(7416002)(54906003)(186003)(53546011)(8676002)(316002)(6916009)(9786002)(9746002)(2616005)(4326008)(26005)(2906002)(8936002)(66556008)(66476007)(86362001)(66946007)(33656002)(36756003)(38100700002)(5660300002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hrVRN/n+XQy8OtiL9V+74NcX4nsxjftWp7EjarjpPZvwrtisRc0O2hrRFJUW?=
- =?us-ascii?Q?+PWJwYJ2jLZ8C76jJeAW8ilzDs/eYZVmBw5qh0xIZ8MiL0qoOEIqZInDh5tM?=
- =?us-ascii?Q?By5B8br4lJRmZug2msCtpXl2DBe5IejzSu97OiWb3fe9RYQetArgUTZRA8Xm?=
- =?us-ascii?Q?rdo7qhlolnhT/5iDo9CcdzcEtU48LnDzXMMeRnqSZQkkXURXcNOAWMWzUgbc?=
- =?us-ascii?Q?2mZ37OMzPJV4In7FYFTRmoF8Utl2SEzOo6okYg3fQBW3MwO8kQtJtIG6XnJf?=
- =?us-ascii?Q?/q8zG8vTerby/ei/UbBcK4w7NgY2exjlB9MMjxRX6wqDvTZEPGvNhmtJ4bfw?=
- =?us-ascii?Q?NSTty8u0Zj4u5F3EH4FyseuIASJu3trBv0AYg3FyRoCfHdbMVf3l32i0+v5E?=
- =?us-ascii?Q?a4zi9tf+i8DCPma3RG9cOYvBIu59T2jm3FELzbBlPNYPoGJyTrR2HAd5mz9P?=
- =?us-ascii?Q?Bjbtxhau26FOqtdznI7yQ1jHIdq/aPPl5OBsdARKsS22ZlfBwL6mmLXZn/Vz?=
- =?us-ascii?Q?0fxuKBLbEG7W1hoRP/V1F51WkUzTYZ93DetJhSnL18S9N9HCglDYfUYrpdn3?=
- =?us-ascii?Q?06VjmO4W5uZ/ddSwyoDjM6h18Bi3Nq1vHLz6hSH57Jc93aNNGH+dSDTE9N2s?=
- =?us-ascii?Q?AzHA5hiP+CCjfXI7oys4e9Tf1yW3ZQ2Cy3OAwLMQg2McZaFa3F6Ivxeng5Wd?=
- =?us-ascii?Q?9EBCfLskDXisGsno72dOAnJDefoEDUBPngMbXrlLQU66NFalXMhNDY0Z6nns?=
- =?us-ascii?Q?/7hwZxSanGBnSQ0cJhllcH0jPTJjGCF3yV0ovwh0JoyowZLnd2kCVmd+2In4?=
- =?us-ascii?Q?HRztSzteevroJjbqq6PzFHPRLb/Lj7pHlknEmcnwrouPQkK/G2lPoJKUH6V3?=
- =?us-ascii?Q?+VAlpkxiEqWMjJBjf/Bpjr3MYlTgeKZdVDfKzfVwtp7rCMsyc+y4PW3aLikw?=
- =?us-ascii?Q?y6lh9PaxBScjSUVkLSD7QKMEImj1fWWycUMqP6x9PJApMo+1O4rz8UJ2HI0r?=
- =?us-ascii?Q?1Ryw+zwRwl70wcFQOyxuK22gs4belPdb0CYAN7jYAMEZKtjd8SYau4GjfA3G?=
- =?us-ascii?Q?2NxQRfrfsCIv8LKQCKWEzpIe4vgC8H4l6cLeMGvbRwWxXeal0mPunqaYjfz1?=
- =?us-ascii?Q?TXd4tWZOjBSzVLymyLhtpQc+s3Ba1fTBOczuDo3I57lU+QW4y+pOGl25c/Th?=
- =?us-ascii?Q?lOKeSAFVJckAapULk7Ia1IT3QepfoCc7xzJRVR80mA9hv6107xEmu6ZjdbCa?=
- =?us-ascii?Q?PYJAXTB/lkmBf0/Hvo2cjKHN4b3/6z8fM9/CbR2BmukoWv8xfa9mgFNZqQAw?=
- =?us-ascii?Q?p1t6ZMnoA1bFmmpzbX9XKDxD?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3886cbff-0e68-4406-9423-08d983a4cae0
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 23:56:45.3078
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0Rp9yyufKGMxRMq73d7I9JP7HsaC1vKxLv/WsoIdNKigvsCOFAkNfiiiSrUYilnH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5079
+In-Reply-To: <20210929214703.GG22689@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:26:25PM +0300, Leon Romanovsky wrote:
-> On Tue, Sep 28, 2021 at 08:52:17AM -0300, Jason Gunthorpe wrote:
-> > On Tue, Sep 28, 2021 at 05:12:39PM +0800, Mark Zhang wrote:
-> > > On 9/28/2021 1:30 AM, Jason Gunthorpe wrote:
-> > > > On Wed, Sep 15, 2021 at 02:07:25AM +0300, Leon Romanovsky wrote:
-> > > > > +static int stat_get_doit_default_counter(struct sk_buff *skb,
-> > > > > +					 struct nlmsghdr *nlh,
-> > > > > +					 struct netlink_ext_ack *extack,
-> > > > > +					 struct nlattr *tb[])
-> > > > > +{
-> > > > > +	struct rdma_hw_stats *stats;
-> > > > > +	struct ib_device *device;
-> > > > > +	u32 index, port;
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-> > > > > +	device = ib_device_get_by_index(sock_net(skb->sk), index);
-> > > > > +	if (!device)
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-> > > > > +	if (!rdma_is_port_valid(device, port)) {
-> > > > > +		ret = -EINVAL;
-> > > > > +		goto end;
-> > > > > +	}
-> > > > > +
-> > > > > +	stats = ib_get_hw_stats_port(device, port);
-> > > > > +	if (!stats) {
-> > > > > +		ret = -EINVAL;
-> > > > > +		goto end;
-> > > > > +	}
-> > > > > +
-> > > > > +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
-> > > > > +		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
-> > > > > +					       device, port, stats);
-> > > > > +	else
-> > > > > +		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
-> > > > > +						 port, stats);
-> > > > 
-> > > > This seems strange, why is the output of a get contingent on a ignored
-> > > > input attribute? Shouldn't the HWCOUNTER_DYNAMIC just always be
-> > > > emitted?
-> > > 
-> > > The CMD_STAT_GET is originally used to get the default hwcounter statistic
-> > > (the value of all hwstats), now we also want to use this command to get a
-> > > list of counters (just name and status), so kernel differentiates these 2
-> > > cases based on HWCOUNTER_DYNAMIC attr.
-> > 
-> > Don't do that, it is not how netlink works. Either the whole attribute
-> > should be returned or you need a new get command
+On Wed, Sep 29, 2021 at 04:47:03PM -0500, Segher Boessenkool wrote:
+> Hi!
 > 
-> The netlink way is to be independent on returned parameter, if it not
-> supported, this parameter won't be available at all. This makes HWCOUNTER_DYNAMIC
-> to work exactly as netlink would do.
+> On Tue, Sep 28, 2021 at 05:15:07PM -0400, Mathieu Desnoyers wrote:
+> > C99 describes that accessing volatile objects are side-effects, and that
+> > "at certain specified points in the execution sequence called sequence
+> > points, all side effects of previous evaluations shall be complete
+> > and no side effects of subsequent evaluations shall have taken
+> > place". [2]
+> 
+> But note that the kernel explicitly uses C89 (with GNU extensions).
+> Side effects are largely equal there though.
+> 
+> Also note that there may no place in the generated machine code that
+> corresponds exactly to some sequence point.  Sequence points are a
+> concept that applies to the source program and how that executes on the
+> abstract machine.
 
-The issue is making the output dependent on the input:
+Plus the "as if" rule rears its ugly head in many of these situations.
 
- +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
+> > +Because ctrl_dep emits distinct asm volatile within each leg of the if
+> > +statement, the compiler cannot transform the two writes to 'b' into a
+> > +conditional-move (cmov) instruction, thus ensuring the presence of a
+> > +conditional branch.  Also because the ctrl_dep emits asm volatile within
+> > +each leg of the if statement, the compiler cannot move the write to 'c'
+> > +before the conditional branch.
+> 
+> I think your reasoning here misses some things.  So many that I don't
+> know where to start to list them, every "because" and "thus" here does
+> not follow, and even the statements of fact are not a given.
+> 
+> Why do you want a conditional branch insn at all, anyway?  You really
+> want something else as far as I can see.
 
-Setting HWCOUNTER_DYNAMIC as an input flag to get the GET to return a
-completely different output format is not netlinky
+Because at the assembly language level on some architectures, a
+conditional branch instruction provides weak but very real and very
+useful memory-ordering properties.  Such a branch orders all loads
+whose return values feed into the branch condition before any stores
+that execute after the branch does (regardless of whether or not the
+branch was taken).  And this is all the ordering that is required for
+the use cases that Mathieu is worried about.
 
-Either always return HWCOUNTER_DYNAMIC or make another query to get it
+Yes, you can use explicit memory-barrier or acquire-load instructions,
+but those incur more overhead on some types of hardware.  The code in
+question is on a hotpath and is thus performance-critical.
 
-Jason
+It would be nice to be able to somehow tell the compiler exactly
+what the ordering constraints are ("this particular load must be
+ordered before these particular stores") and then let it (1) figure
+out that a conditional branch will do the trick and (2) generate the
+code accordingly.  But last I checked, this was not going to happen any
+time soon.  So for the time being, we have to live within the current
+capability of the tools that are available to us.
+
+Linus points out that in all the actual control-dependent code in
+the Linux kernel, the compiler is going to be hard-pressed to fail
+to emit the required branch.  (Or in the case of ARMv8, the required
+conditional-move instruction.)
+
+Mathieu, for his part, recently read the relevant portions of
+memory-barriers.txt (reproduced below) and would like to simplify these
+coding guidlines, which, speaking as the author of those guidelines,
+would be an extremely good thing.  His patches are attempting to move
+us in that direction.
+
+Alternatives include: (1) Using acquire loads or memory barriers
+and accepting the loss in performance, but giving the compiler much
+less leeway, (2) Ripping all of the two-legged "if" examples from
+memory-barriers.txt and restricting control dependencies to else-less
+"if" statements, again giving the compiler less leeway, and (3) Your
+ideas here.
+
+Does that help, or am I missing your point?
+
+> It is essential here that there is a READ_ONCE and the WRITE_ONCE.
+> Those things might make it work the way you want, but as Linus says this
+> is all way too subtle.  Can you include the *_ONCE into the primitive
+> itself somehow?
+
+Actually, if the store is not involved in a data race, the WRITE_ONCE()
+is not needed.  And in that case, the compiler is much less able to
+fail to provide the needed ordering.  (No, the current documentation
+does not reflect this.)  But if there is a data race, then your point
+is right on the mark -- that WRITE_ONCE() cannot be safely omitted.
+
+But you are absolutely right that the READ_ONCE() or equivalent is not
+at all optional.  An example of an acceptable equivalent is an atomic
+read-modify-write operation such as atomic_xchg_relaxed().
+
+The question about whether the READ_ONCE() and WRITE_ONCE() can be
+incorporated into the macro I leave to Mathieu.  I can certainly see
+serious benefits from this approach, at least from a compiler viewpoint.
+I must reserve judgment on usability until I see a proposal.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+Relevant excerpt from memory-barriers.txt
+------------------------------------------------------------------------
+
+CONTROL DEPENDENCIES
+--------------------
+
+Control dependencies can be a bit tricky because current compilers do
+not understand them.  The purpose of this section is to help you prevent
+the compiler's ignorance from breaking your code.
+
+A load-load control dependency requires a full read memory barrier, not
+simply a data dependency barrier to make it work correctly.  Consider the
+following bit of code:
+
+	q = READ_ONCE(a);
+	if (q) {
+		<data dependency barrier>  /* BUG: No data dependency!!! */
+		p = READ_ONCE(b);
+	}
+
+This will not have the desired effect because there is no actual data
+dependency, but rather a control dependency that the CPU may short-circuit
+by attempting to predict the outcome in advance, so that other CPUs see
+the load from b as having happened before the load from a.  In such a
+case what's actually required is:
+
+	q = READ_ONCE(a);
+	if (q) {
+		<read barrier>
+		p = READ_ONCE(b);
+	}
+
+However, stores are not speculated.  This means that ordering -is- provided
+for load-store control dependencies, as in the following example:
+
+	q = READ_ONCE(a);
+	if (q) {
+		WRITE_ONCE(b, 1);
+	}
+
+Control dependencies pair normally with other types of barriers.
+That said, please note that neither READ_ONCE() nor WRITE_ONCE()
+are optional! Without the READ_ONCE(), the compiler might combine the
+load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(),
+the compiler might combine the store to 'b' with other stores to 'b'.
+Either can result in highly counterintuitive effects on ordering.
+
+Worse yet, if the compiler is able to prove (say) that the value of
+variable 'a' is always non-zero, it would be well within its rights
+to optimize the original example by eliminating the "if" statement
+as follows:
+
+	q = a;
+	b = 1;  /* BUG: Compiler and CPU can both reorder!!! */
+
+So don't leave out the READ_ONCE().
+
+It is tempting to try to enforce ordering on identical stores on both
+branches of the "if" statement as follows:
+
+	q = READ_ONCE(a);
+	if (q) {
+		barrier();
+		WRITE_ONCE(b, 1);
+		do_something();
+	} else {
+		barrier();
+		WRITE_ONCE(b, 1);
+		do_something_else();
+	}
+
+Unfortunately, current compilers will transform this as follows at high
+optimization levels:
+
+	q = READ_ONCE(a);
+	barrier();
+	WRITE_ONCE(b, 1);  /* BUG: No ordering vs. load from a!!! */
+	if (q) {
+		/* WRITE_ONCE(b, 1); -- moved up, BUG!!! */
+		do_something();
+	} else {
+		/* WRITE_ONCE(b, 1); -- moved up, BUG!!! */
+		do_something_else();
+	}
+
+Now there is no conditional between the load from 'a' and the store to
+'b', which means that the CPU is within its rights to reorder them:
+The conditional is absolutely required, and must be present in the
+assembly code even after all compiler optimizations have been applied.
+Therefore, if you need ordering in this example, you need explicit
+memory barriers, for example, smp_store_release():
+
+	q = READ_ONCE(a);
+	if (q) {
+		smp_store_release(&b, 1);
+		do_something();
+	} else {
+		smp_store_release(&b, 1);
+		do_something_else();
+	}
+
+In contrast, without explicit memory barriers, two-legged-if control
+ordering is guaranteed only when the stores differ, for example:
+
+	q = READ_ONCE(a);
+	if (q) {
+		WRITE_ONCE(b, 1);
+		do_something();
+	} else {
+		WRITE_ONCE(b, 2);
+		do_something_else();
+	}
+
+The initial READ_ONCE() is still required to prevent the compiler from
+proving the value of 'a'.
+
+In addition, you need to be careful what you do with the local variable 'q',
+otherwise the compiler might be able to guess the value and again remove
+the needed conditional.  For example:
+
+	q = READ_ONCE(a);
+	if (q % MAX) {
+		WRITE_ONCE(b, 1);
+		do_something();
+	} else {
+		WRITE_ONCE(b, 2);
+		do_something_else();
+	}
+
+If MAX is defined to be 1, then the compiler knows that (q % MAX) is
+equal to zero, in which case the compiler is within its rights to
+transform the above code into the following:
+
+	q = READ_ONCE(a);
+	WRITE_ONCE(b, 2);
+	do_something_else();
+
+Given this transformation, the CPU is not required to respect the ordering
+between the load from variable 'a' and the store to variable 'b'.  It is
+tempting to add a barrier(), but this does not help.  The conditional
+is gone, and the barrier won't bring it back.  Therefore, if you are
+relying on this ordering, you should make sure that MAX is greater than
+one, perhaps as follows:
+
+	q = READ_ONCE(a);
+	BUILD_BUG_ON(MAX <= 1); /* Order load from a with store to b. */
+	if (q % MAX) {
+		WRITE_ONCE(b, 1);
+		do_something();
+	} else {
+		WRITE_ONCE(b, 2);
+		do_something_else();
+	}
+
+Please note once again that the stores to 'b' differ.  If they were
+identical, as noted earlier, the compiler could pull this store outside
+of the 'if' statement.
+
+You must also be careful not to rely too much on boolean short-circuit
+evaluation.  Consider this example:
+
+	q = READ_ONCE(a);
+	if (q || 1 > 0)
+		WRITE_ONCE(b, 1);
+
+Because the first condition cannot fault and the second condition is
+always true, the compiler can transform this example as following,
+defeating control dependency:
+
+	q = READ_ONCE(a);
+	WRITE_ONCE(b, 1);
+
+This example underscores the need to ensure that the compiler cannot
+out-guess your code.  More generally, although READ_ONCE() does force
+the compiler to actually emit code for a given load, it does not force
+the compiler to use the results.
+
+In addition, control dependencies apply only to the then-clause and
+else-clause of the if-statement in question.  In particular, it does
+not necessarily apply to code following the if-statement:
+
+	q = READ_ONCE(a);
+	if (q) {
+		WRITE_ONCE(b, 1);
+	} else {
+		WRITE_ONCE(b, 2);
+	}
+	WRITE_ONCE(c, 1);  /* BUG: No ordering against the read from 'a'. */
+
+It is tempting to argue that there in fact is ordering because the
+compiler cannot reorder volatile accesses and also cannot reorder
+the writes to 'b' with the condition.  Unfortunately for this line
+of reasoning, the compiler might compile the two writes to 'b' as
+conditional-move instructions, as in this fanciful pseudo-assembly
+language:
+
+	ld r1,a
+	cmp r1,$0
+	cmov,ne r4,$1
+	cmov,eq r4,$2
+	st r4,b
+	st $1,c
+
+A weakly ordered CPU would have no dependency of any sort between the load
+from 'a' and the store to 'c'.  The control dependencies would extend
+only to the pair of cmov instructions and the store depending on them.
+In short, control dependencies apply only to the stores in the then-clause
+and else-clause of the if-statement in question (including functions
+invoked by those two clauses), not to code following that if-statement.
+
+
+Note well that the ordering provided by a control dependency is local
+to the CPU containing it.  See the section on "Multicopy atomicity"
+for more information.
+
+
+In summary:
+
+  (*) Control dependencies can order prior loads against later stores.
+      However, they do -not- guarantee any other sort of ordering:
+      Not prior loads against later loads, nor prior stores against
+      later anything.  If you need these other forms of ordering,
+      use smp_rmb(), smp_wmb(), or, in the case of prior stores and
+      later loads, smp_mb().
+
+  (*) If both legs of the "if" statement begin with identical stores to
+      the same variable, then those stores must be ordered, either by
+      preceding both of them with smp_mb() or by using smp_store_release()
+      to carry out the stores.  Please note that it is -not- sufficient
+      to use barrier() at beginning of each leg of the "if" statement
+      because, as shown by the example above, optimizing compilers can
+      destroy the control dependency while respecting the letter of the
+      barrier() law.
+
+  (*) Control dependencies require at least one run-time conditional
+      between the prior load and the subsequent store, and this
+      conditional must involve the prior load.  If the compiler is able
+      to optimize the conditional away, it will have also optimized
+      away the ordering.  Careful use of READ_ONCE() and WRITE_ONCE()
+      can help to preserve the needed conditional.
+
+  (*) Control dependencies require that the compiler avoid reordering the
+      dependency into nonexistence.  Careful use of READ_ONCE() or
+      atomic{,64}_read() can help to preserve your control dependency.
+      Please see the COMPILER BARRIER section for more information.
+
+  (*) Control dependencies apply only to the then-clause and else-clause
+      of the if-statement containing the control dependency, including
+      any functions that these two clauses call.  Control dependencies
+      do -not- apply to code following the if-statement containing the
+      control dependency.
+
+  (*) Control dependencies pair normally with other types of barriers.
+
+  (*) Control dependencies do -not- provide multicopy atomicity.  If you
+      need all the CPUs to see a given store at the same time, use smp_mb().
+
+  (*) Compilers do not understand control dependencies.  It is therefore
+      your job to ensure that they do not break your code.
