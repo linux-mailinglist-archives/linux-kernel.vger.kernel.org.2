@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E89741C9F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF7941C9EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345822AbhI2QTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
+        id S1345740AbhI2QSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344020AbhI2QTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:19:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D10C961353;
-        Wed, 29 Sep 2021 16:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632932289;
-        bh=S79irzCLmLoJh10SJfq3xLHcqmeiQCHBKW/lpibZeMQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BV5dpfjjsRh40sZ4XGQS9X8JtH2bEOtQKcU9Ad7mgyAuJ7aesYKqHesSXtiuZoeOC
-         qC5O9+PbQWg3gHA8/h52PRYAP1f1bcnKroIs5gW4EVVmtJTv2iVvmzE9K9WmcfxMa2
-         faluT3+ZfHuM7ocAMObsykSeG2tK5C4q7v/Tm34ZdtzDJxb8mDPth8hvy90VF9/Frg
-         kRw/ivDWzyLinnl6V3JlNaURxyxd7aQAvfjWN9eNl3M5Aprs7+Zndh9XfdJ8YyIPkh
-         cWuAL7dYxq5pqYgpvClvdM7PshzwHXMrToEQ2fUEtctDPEqRfCXdxzoPm85DXQ08Tb
-         8A+pEzjq69Qeg==
-Date:   Wed, 29 Sep 2021 17:18:04 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/4] bpf: define bpf_jit_alloc_exec_limit for
- arm64 JIT
-Message-ID: <20210929161804.GF22029@willie-the-truck>
-References: <20210924095542.33697-1-lmb@cloudflare.com>
- <20210924095542.33697-3-lmb@cloudflare.com>
+        id S233501AbhI2QSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:18:14 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DDEB6159A;
+        Wed, 29 Sep 2021 16:16:27 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 17:20:21 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH v3 1/9] iio: adc: ab8500-gpadc: Make use of the helper
+ function dev_err_probe()
+Message-ID: <20210929172021.4b797990@jic23-huawei>
+In-Reply-To: <20210928141956.2148-1-caihuoqing@baidu.com>
+References: <20210928141956.2148-1-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924095542.33697-3-lmb@cloudflare.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 10:55:40AM +0100, Lorenz Bauer wrote:
-> Expose the maximum amount of useable memory from the arm64 JIT.
+On Tue, 28 Sep 2021 22:19:47 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
+
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
 > 
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+
+I believe we could in theory get an -EPROBE_DEFER from
+platform_get_irq_by_name() so we should handle that one similarly.
+
+I have no idea if can actually happen on this platform, but seems to me
+that we should be thorough given how easy it is to do here.
+
+Thanks,
+
+Jonathan
+
 > ---
->  arch/arm64/net/bpf_jit_comp.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> v1->v2: Remove the separate line of PTR_ERR().
 > 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 41c23f474ea6..803e7773fa86 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -1136,6 +1136,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->  	return prog;
->  }
+>  drivers/iio/adc/ab8500-gpadc.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ab8500-gpadc.c b/drivers/iio/adc/ab8500-gpadc.c
+> index 7b5212ba5501..c58d0e2ae538 100644
+> --- a/drivers/iio/adc/ab8500-gpadc.c
+> +++ b/drivers/iio/adc/ab8500-gpadc.c
+> @@ -1146,11 +1146,9 @@ static int ab8500_gpadc_probe(struct platform_device *pdev)
 >  
-> +u64 bpf_jit_alloc_exec_limit(void)
-> +{
-> +	return BPF_JIT_REGION_SIZE;
-> +}
+>  	/* The VTVout LDO used to power the AB8500 GPADC */
+>  	gpadc->vddadc = devm_regulator_get(dev, "vddadc");
+> -	if (IS_ERR(gpadc->vddadc)) {
+> -		ret = PTR_ERR(gpadc->vddadc);
+> -		dev_err(dev, "failed to get vddadc\n");
+> -		return ret;
+> -	}
+> +	if (IS_ERR(gpadc->vddadc))
+> +		return dev_err_probe(dev, PTR_ERR(gpadc->vddadc),
+> +				     "failed to get vddadc\n");
+>  
+>  	ret = regulator_enable(gpadc->vddadc);
+>  	if (ret) {
 
-Looks like this won't result in a functional change, as we happen to return
-SZ_128M anyway thanks to the way in which the modules area is constructed.
-
-But making this explicit is definitely better, so:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-(I'm assuming this will go via the bpf tree, but please shout if I should
-take it via arm64 instead)
-
-Will
