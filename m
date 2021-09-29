@@ -2,112 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7031C41C7DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4172E41C7D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345034AbhI2PJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:09:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:21178 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345023AbhI2PJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:09:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="288616847"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="288616847"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:07:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="655525579"
-Received: from andrewds-mobl1.amr.corp.intel.com (HELO [10.212.171.7]) ([10.212.171.7])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:07:12 -0700
-Subject: Re: [PATCH v2 3/4] x86/mm: Flush global TLB when switching to
- trampoline page-table
-To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
+        id S1345026AbhI2PI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:08:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344941AbhI2PI5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:08:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632928035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gapF6Q7MxbKj+/Jpg0HNCHa+0ngI63VYNLFNHFDInM4=;
+        b=LhgWWRM1iezTsTbyUR0RtFUrGC/j9CAkX9XNLkr26OzJ0jzngXIVrJF8SNuHREeS62SorG
+        grdPpCCVlxAKIK7wd6VSRyO/nJC1x12+3E+HeHD8exYmlE9MnyiAy+Nd9zpHxCnqS3NrRI
+        k6aF7ceeafd+YR3eQZqEfJTwbyfUP/8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-EHDs65w8OiS0oNt3rXd86A-1; Wed, 29 Sep 2021 11:07:14 -0400
+X-MC-Unique: EHDs65w8OiS0oNt3rXd86A-1
+Received: by mail-wm1-f71.google.com with SMTP id x23-20020a05600c21d700b0030d23749278so609243wmj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:07:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=gapF6Q7MxbKj+/Jpg0HNCHa+0ngI63VYNLFNHFDInM4=;
+        b=Xx0YXqXb4aWiXS1f56AZjK8fKsBgz/M5XT3uzL7b+XpT5lEUO9t7GIsnBX5WX0hdld
+         3BQPWPY9rNVsdo362p4h6xL+y3QPtkgOTjIJAX/oDdR1lyzhFl0tPBkpcxC/UjWbykPq
+         M8MjjwtjdWCksjR9TqLwArniofkOpumYlC/Urm26Tz1+cfitO0nlhhEY+GBET/JTEiZA
+         aYcq9Sewdu0CxynVPudZtl28uOHLoHih5aTRayLQ+iNAeyknIpsBardxy22LI7NwqLxE
+         WjYodKynf+RcVvfm3E6BedCIsXZDG5vR68Xt6FWNSsBzXmf3GhEFGc5bWJQErxh7Rny7
+         DdqQ==
+X-Gm-Message-State: AOAM533Vbp5z4kaUJ6nTJwac1z+An4vckaMOQ0kam+MR+KbSpC8nF7yA
+        L65m05iM5RHHhwpL42ajtnnXw6Wrkj4lYTH/9jAlOlK/Qe93Ut4imj6Qz1RtZMOt/L66ZuRd/jB
+        pl0zpAiCynG18ELwZHlBVqkqo
+X-Received: by 2002:a5d:4e4e:: with SMTP id r14mr378687wrt.147.1632928032837;
+        Wed, 29 Sep 2021 08:07:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxo/OiD1pi8Vj8uvbtvhFWxk5A000qCxnhsR/1CMHH5asTCVBPsn8x+8H3lxRFK4haIMhJq1A==
+X-Received: by 2002:a5d:4e4e:: with SMTP id r14mr378630wrt.147.1632928032598;
+        Wed, 29 Sep 2021 08:07:12 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id f8sm177044wrx.15.2021.09.29.08.07.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 08:07:12 -0700 (PDT)
+Subject: Re: [PATCH v1 2/8] x86/xen: simplify xen_oldmem_pfn_is_ram()
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         linux-kernel@vger.kernel.org
-References: <20210929145501.4612-1-joro@8bytes.org>
- <20210929145501.4612-4-joro@8bytes.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <18be825f-b3f3-3e05-1b14-82712d9a6c0d@intel.com>
-Date:   Wed, 29 Sep 2021 08:07:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        virtualization@lists.linux-foundation.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210928182258.12451-1-david@redhat.com>
+ <20210928182258.12451-3-david@redhat.com>
+ <4ab2f8c2-c3d5-30b3-a670-a8b38e218b6e@oracle.com>
+ <bfe72f46-9a0d-1a87-64bd-4b03999edd1e@redhat.com>
+ <e9a230f9-85cb-d4c1-8027-508b7c344d94@redhat.com>
+ <3b935aa0-6d85-0bcd-100e-15098add3c4c@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <e6ace8c8-8a2d-9bf7-e65b-91d0037c4d08@redhat.com>
+Date:   Wed, 29 Sep 2021 17:07:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210929145501.4612-4-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <3b935aa0-6d85-0bcd-100e-15098add3c4c@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/21 7:55 AM, Joerg Roedel wrote:
-> +	/*
-> +	 * Flush global TLB entries to catch any bugs where code running on the
-> +	 * trampoline_pgd uses memory not mapped into the trampoline page-table.
-> +	 */
-> +	__flush_tlb_all();
-> +}
+On 29.09.21 16:22, Boris Ostrovsky wrote:
+> 
+> On 9/29/21 5:03 AM, David Hildenbrand wrote:
+>> On 29.09.21 10:45, David Hildenbrand wrote:
+>>>>
+>>> Can we go one step further and do
+>>>
+>>>
+>>> @@ -20,24 +20,11 @@ static int xen_oldmem_pfn_is_ram(unsigned long pfn)
+>>>            struct xen_hvm_get_mem_type a = {
+>>>                    .domid = DOMID_SELF,
+>>>                    .pfn = pfn,
+>>> +               .mem_type = HVMMEM_ram_rw,
+>>>            };
+>>> -       int ram;
+>>>     -       if (HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a))
+>>> -               return -ENXIO;
+>>> -
+>>> -       switch (a.mem_type) {
+>>> -       case HVMMEM_mmio_dm:
+>>> -               ram = 0;
+>>> -               break;
+>>> -       case HVMMEM_ram_rw:
+>>> -       case HVMMEM_ram_ro:
+>>> -       default:
+>>> -               ram = 1;
+>>> -               break;
+>>> -       }
+>>> -
+>>> -       return ram;
+>>> +       HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a);
+>>> +       return a.mem_type != HVMMEM_mmio_dm;
+> 
+> 
+> I was actually thinking of asking you to add another patch with pr_warn_once() here (and print error code as well). This call failing is indication of something going quite wrong and it would be good to know about this.
 
-This comment took me a minute to parse.  How about a bit more info, like:
+Will include a patch in v2, thanks!
 
-	/*
-	 * The CR3 writes above may not flush global TLB entries.
-	 * Stale, global entries from previous sets of page tables may
-	 * still be present.  Flush those stale entries.
-	 *
-	 * This ensures that memory accessed while running with
-	 * trampoline_pgd is *actually* mapped into trampoline_pgd.
-	 */
+
+-- 
+Thanks,
+
+David / dhildenb
 
