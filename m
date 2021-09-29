@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8273A41C23D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB5D41C243
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245281AbhI2KHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245248AbhI2KGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:06:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3326B61439;
-        Wed, 29 Sep 2021 10:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632909914;
-        bh=Xxn9/SD1dYhlDwttos3PuGBQ5U/2yCNeeOkyqW/lvMU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ORjEaY8oVoBe/kc1cZJj2pdtkHjlj8HbwEZxZTWQ2RJxE3GmpxNBmdNmOnphEgvSX
-         ZOxvvBYGhy3vPJuqA7LfPTEfGfZd04jb5pa8GODKkdyshK6wcZoWwPGMWC+MS9U+hB
-         xbVhK4m/Jq2Iwa6W/3givlEv93HsBHlrwK8xareW519JavUdMcvSDsFayE2ZD0oN8U
-         pIltEb8rvFoy0z9I8Y2vMLwBlDucBVUKGTbifrVUXnBcQOBZxHm/pShHiIlrwCdByI
-         22paW8ns7SMXCobLPJLkLp0xaLAaB7vuo8aCGQL+Oy4kg80h0CJMOIrD0tYnYvfS9M
-         gE71ALaohzM2g==
-Received: by mail-wm1-f54.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so4803714wmc.0;
-        Wed, 29 Sep 2021 03:05:14 -0700 (PDT)
-X-Gm-Message-State: AOAM532yZxt2Ugc20fx35XlU9lIw+2q6Dr19g/YRF6FloXm4Uy/5/Wnj
-        SBExSeBq1sMLRQCFM4vh42Bvw3zFo4f0jCdPZvo=
-X-Google-Smtp-Source: ABdhPJxj45zzIMnN/HHyq+6nU2KpFjlg3Tr2+Q2ZpxFzEZguNBmccSscTdNWt05AmI9I9AwUnU3a/laQUUwcLa8ETFA=
-X-Received: by 2002:a05:600c:896:: with SMTP id l22mr9378065wmp.173.1632909912585;
- Wed, 29 Sep 2021 03:05:12 -0700 (PDT)
+        id S245297AbhI2KI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:08:58 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41016 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245226AbhI2KI5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:08:57 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0A50A22503;
+        Wed, 29 Sep 2021 10:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632910036;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=31qJYULf0mtvOzYO/C8cDU+A4t0jzws0kc+NYRd8yqo=;
+        b=yOO7FF4fGaXeo/kXkydmlAd9kk2mUaWAy/YtzGQOgSQ1ghOjnWeZ04FeFkwN37qMVz7ycJ
+        jAfBGx51bFdXo1MJg+vRRr3jZdFX3jw/x0C0tOKhYszPnlw7Ylar7+p/fxv8OozvoJDH8X
+        ZTmwChi6hek/s5MF1NWn2m0SIJ3Bfro=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632910036;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=31qJYULf0mtvOzYO/C8cDU+A4t0jzws0kc+NYRd8yqo=;
+        b=rvQvOrzG5ef9rNV6DCdccBTDmUhj/QL+TQiyMU4NA8lgOgiXXxxixasSaduMRQW9spC2aX
+        TyzMbPFm7Er66nCQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id 02C7325D50;
+        Wed, 29 Sep 2021 10:07:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BC5C7DA7A9; Wed, 29 Sep 2021 12:06:59 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 12:06:59 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     "B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com" 
+        <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+Message-ID: <20210929100659.GK9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nick Terrell <terrelln@fb.com>,
+        "B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com" <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com>
+ <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
 MIME-Version: 1.0
-References: <20210927152412.2900928-1-arnd@kernel.org> <20210929095107.GA21057@willie-the-truck>
-In-Reply-To: <20210929095107.GA21057@willie-the-truck>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 29 Sep 2021 12:04:55 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
-Message-ID: <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
-To:     Will Deacon <will@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:51 AM Will Deacon <will@kernel.org> wrote:
-> On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
-> >
-> > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> > index 124c41adeca1..989c83acbfee 100644
-> > --- a/drivers/iommu/Kconfig
-> > +++ b/drivers/iommu/Kconfig
-> > @@ -308,7 +308,7 @@ config APPLE_DART
-> >  config ARM_SMMU
-> >       tristate "ARM Ltd. System MMU (SMMU) Support"
-> >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> > -     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> > +     select QCOM_SCM
-> >       select IOMMU_API
-> >       select IOMMU_IO_PGTABLE_LPAE
-> >       select ARM_DMA_USE_IOMMU if ARM
->
-> I don't want to get in the way of this patch because I'm also tired of the
-> randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
-> a wide variety of (non-qcom) SoCs and so it seems a shame to require the
-> QCOM_SCM code to be included for all of those when it's not strictly needed
-> at all.
+On Wed, Sep 29, 2021 at 01:30:26AM +0000, Nick Terrell wrote:
+> > On Sep 28, 2021, at 5:22 PM, Tom Seewald <tseewald@gmail.com> wrote:
+> > Has this been abandoned or will there be future attempts at syncing the
+> > in-kernel zstd with the upstream project?
+> 
+> Sorry for the lack of action, but this has not been abandoned. I’ve just been
+> preparing a rebased patch-set last week, so expect to see some action soon.
+> Since we’re not in a merge window, I’m unsure if it is best to send out the
+> updated patches now, or wait until the merge window is open, but I’m about to
+> pose that question to the LKML.
 
-Good point, I agree that needs to be fixed. I think this additional
-change should do the trick:
+If you send it once merge window is open it's unlikely to be merged. The
+code must be ready before it opens and part of linux-next for a week at
+least if not more.
 
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -308,7 +308,6 @@ config APPLE_DART
- config ARM_SMMU
-        tristate "ARM Ltd. System MMU (SMMU) Support"
-        depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
--       select QCOM_SCM
-        select IOMMU_API
-        select IOMMU_IO_PGTABLE_LPAE
-        select ARM_DMA_USE_IOMMU if ARM
-@@ -438,7 +437,7 @@ config QCOM_IOMMU
-        # Note: iommu drivers cannot (yet?) be built as modules
-        bool "Qualcomm IOMMU Support"
-        depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
--       depends on QCOM_SCM=y
-+       select QCOM_SCM
-        select IOMMU_API
-        select IOMMU_IO_PGTABLE_LPAE
-        select ARM_DMA_USE_IOMMU
+> This work has been on my back burner, because I’ve been busy with work on
+> Zstd and other projects, and have had a hard time justifying to myself spending
+> too much time on this, since progress has been so slow.
 
-I'll see if that causes any problems for the randconfig builds.
+What needs to be done from my POV:
 
-       Arnd
+- refresh the patches on top of current mainline, eg. v5.15-rc3
+
+- make sure it compiles and works with current in-kernel users of zstd,
+  ie. with btrfs in particular, I can do some tests too
+
+- push the patches to a public branch eg. on k.org or github
+
+- ask for adding the branch to linux-next
+
+- try to get some feedback from people that were objecting in the past,
+  and of course gather acks or supportive feedback
+
+- once merge window opens, send a pull request to Linus, write the
+  rationale why we want this change and summarize the evolution of the
+  patchset and why the full version update is perhaps the way forward
