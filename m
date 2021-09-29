@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4059541C44F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0035D41C453
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343565AbhI2MK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:10:28 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:46349 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343584AbhI2MKR (ORCPT
+        id S1343577AbhI2MLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:11:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245453AbhI2MLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:10:17 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1Md6V3-1n5i9R2Lsh-00aIRr for <linux-kernel@vger.kernel.org>; Wed, 29 Sep
- 2021 14:08:34 +0200
-Received: by mail-wr1-f52.google.com with SMTP id t18so3955844wrb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:08:34 -0700 (PDT)
-X-Gm-Message-State: AOAM5317NhO7rJO23dqORS6u5aznnqEmoQMrhQF7WwQ5Y1fYw2JnmSA1
-        O424SPeJb3DNRKGVRKEmcPcSadEFSV8EC4i3+wo=
-X-Google-Smtp-Source: ABdhPJwujhvSCWneL2b8EFkSV0fXIWDHq8QtEYMDRcnY/D6i7dyv+jcvb15fjui4Dj3KPHQQCR5pjkwF2cvD7H9X7ho=
-X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr6276909wrz.369.1632917314213;
- Wed, 29 Sep 2021 05:08:34 -0700 (PDT)
+        Wed, 29 Sep 2021 08:11:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632917380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m4DcsmdERvwEayP8lS8c/q6o204OALA6BwCBR3wwYSU=;
+        b=hakrYV94LaND7pizWDCZsAW/JrKQ1HiUGVYd3+CVFXYqDrDn/ByAbvf7OZsRwdhWJvycrW
+        rFsRKi+UGxS2jMXHt1iGfRqtFfYBqKSOvUv6JMIXic+9lMut5JQUG40YAu7EahBER0Z806
+        A1h607qvOBu3vt8y9UTMH3ckOntCQb0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-L2GZLPetM9GsfeP1MTU-ag-1; Wed, 29 Sep 2021 08:09:38 -0400
+X-MC-Unique: L2GZLPetM9GsfeP1MTU-ag-1
+Received: by mail-wr1-f71.google.com with SMTP id r7-20020a5d6947000000b0015e0f68a63bso518571wrw.22
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:09:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=m4DcsmdERvwEayP8lS8c/q6o204OALA6BwCBR3wwYSU=;
+        b=vp01oH/aWc7yFhv807goKBDpi4VliC6QdKmfIVSjUMbP7CvjgWgiuen7xVzMeDOZux
+         fsCA0fu01A3kbuvAdJ3Atl3ZftV56CjQVs8ToeWYEgH/hMR9OX2mfH4y3PP1D2Huyhp7
+         X4uNutJ1dVCGhPXgpvkUX8G2GgUcbuPW7vdu8+/UEV39ZV68gzyA6pyPCus0gBd8ztuX
+         5xPAgGAi1cW/AKhoHS74o8jPwC/NtStEDVdKDBKa5FuHjan4XfVsn6RHbXDEDDvJx+iw
+         Nk1BkEAQo0r69Nd+++8cDk7wmROauep9WdOrGdP8UStv+C3WyVgKwlHzX0wB/FxTQgbQ
+         tzvw==
+X-Gm-Message-State: AOAM530g+sJTA9sWH/DW6ymeskGb8nn7pNVK52w3JwZDqFZEjzHOwx8v
+        kl5zD1Qpqkmgs3auijjfrFDxcWJfMlhn1luRjzWmj725Icg550dD3XBy1wC0sGo4cwS4a1khboZ
+        S+H2YQAYX80/YvxLKqHFmF27R
+X-Received: by 2002:a7b:c1d6:: with SMTP id a22mr9983252wmj.146.1632917377437;
+        Wed, 29 Sep 2021 05:09:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEQO6IjIjiX7wFN2+HDTboYoYk/OTp98F2ya3lRO8pW+OuQGAUAEkqR2bTjtD2aDDY3KEI+g==
+X-Received: by 2002:a7b:c1d6:: with SMTP id a22mr9983226wmj.146.1632917377186;
+        Wed, 29 Sep 2021 05:09:37 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id u1sm1391208wmc.29.2021.09.29.05.09.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 05:09:36 -0700 (PDT)
+To:     Will Deacon <will@kernel.org>
+Cc:     Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
+ <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
+ <20210929101028.GB21057@willie-the-truck>
+ <13f56b37-afc7-bf6f-d544-8d6433588bf9@redhat.com>
+ <20210929104241.GA21395@willie-the-truck>
+ <b0717829-c8dd-c7c0-47bb-5392ed22f700@redhat.com>
+ <20210929110339.GA21510@willie-the-truck>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC] arm64: mm: update max_pfn after memory hotplug
+Message-ID: <130a50d7-92fd-31fa-261e-f73dadcb4fcf@redhat.com>
+Date:   Wed, 29 Sep 2021 14:09:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210929094442.46383-1-eli.billauer@gmail.com>
-In-Reply-To: <20210929094442.46383-1-eli.billauer@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 29 Sep 2021 14:08:18 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0n7iJDrrn42KA9jPCTKMzW1pxFxP+38-7Viv5hnny79Q@mail.gmail.com>
-Message-ID: <CAK8P3a0n7iJDrrn42KA9jPCTKMzW1pxFxP+38-7Viv5hnny79Q@mail.gmail.com>
-Subject: Re: [PATCH v2] char: xillybus: Eliminate redundant wrappers to DMA
- related calls
-To:     Eli Billauer <eli.billauer@gmail.com>
-Cc:     gregkh <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:WVsqfSpCCnEY+duubj/1BK9nI0N+RvrIUNtYxi2kklqYPwHzqeY
- ukIDhgMZupoXaIJbfGXAPURuldB4p1E3xyuSb/cErTebrVrYAnCdDHwm8XX5fv49JDXFjMv
- Faan535S2iyYApYDl4pMgEHDAIQIPYPSZhU7PqGd2bAZY6jFYAMxbFEzuLy6J8Wo65niRja
- oXih5u37MGNDZ4k2+P/Gg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SxLPokYcn+g=:Qtqoar/jNcPawDklADAeqi
- aMuqOjzFUpblFFcwbCMZx2ehDQvSJZdzRB8U/zw+KU5aQZk8qCw+RZ5AoETLhvqy8/cPPc1ZZ
- H2kgRzHx2IPT3+DKbI4l+jJrejHmQVgGTWULa9n37qFmgH4/VI0F6M4aDf4pCDWXK61nflI1A
- +/sceOQ2eAzeEa+Qqbg8h4khhBhkaqwTOtQmMDJJSGeeNH2DIkfQ4bkGu96czRZv2/T5Mpd9z
- 4eAqwBii+2OZLShOBzUPezOiYWvBuAqIs2znQa/+sQWvfTeqWVeuS0RkM8co/Rdhz4SwgoNkw
- ueLeXaQjKQ6+1iSPTPtd/2edUcXByDhvGtCLhqlN83FxMVNKuR1XLqiuMfg4D9iOkuFm3PMTa
- z6ltQtk3h27gcHGPxHAD8Bj5yu98JL2bfqAhstoO+yiMFnryH2OTbqrQSbM6fwRnkheshnMyx
- BCIWT1+Wj5PsS83y9H/JNl0aIyeOR/PbgngqqXbNzrGOQhR2H95QVgOcZKWEO2jT38LAZqnOn
- wPAASNCQ0u8YLebiL5j35xW6ctU5NcKyflMCT1QE6oxlZ0ga4RL4bu/TVA4V6itg4GKEw/4ta
- eVEuA+sIDzBJbf90LB7kn7h1w4L9evrETkN7u5nXSV4YSTOfV4o/E97502PTkkib3qOYEXFHy
- cjwZxCubWE3MPCtfgV9QJZVz4Zw8+87HXKTfpOAJ1urbStlgJUnqatG1x/72gWa6qlCtK8sqU
- QSxVZB2KoMi1ZS3uCU/vWeXXD+Ei6+ZHGeuv9A==
+In-Reply-To: <20210929110339.GA21510@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:44 AM <eli.billauer@gmail.com> wrote:
->
-> From: Eli Billauer <eli.billauer@gmail.com>
->
-> The driver was originally written with the assumption that a different
-> API must be used for DMA-related functions if the device is PCIe based
-> or if not. Since Xillybus' driver supports devices on a PCIe bus (with
-> xillybus_pcie) as well as connected directly to the processor (with
-> xillybus_of), it originally used wrapper functions that ensure that
-> a different API is used for each.
->
-> This patch eliminates the said wrapper functions, as all use the same
-> dma_* API now. This is most notable by the code deleted in xillybus_pcie.c
-> and xillybus_of.c.
->
-> It also eliminates the OF driver's check for a "dma-coherent" attribute
-> in the device's OF entry, since this is taken care of by the kernel's
-> implementation of dma_sync_single_for_*().
->
-> There is however still need for one wrapper function, which is merged
-> from xillybus_pcie.c and xillybus_of.c into xillybus_core.c: The call to
-> dma_map_single() is wrapped by a function that uses the Managed Device
-> (devres) framework, in the absence of a relevant function in the current
-> kernel's API.
->
-> Suggested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
+On 29.09.21 13:03, Will Deacon wrote:
+> On Wed, Sep 29, 2021 at 12:49:58PM +0200, David Hildenbrand wrote:
+>> On 29.09.21 12:42, Will Deacon wrote:
+>>> On Wed, Sep 29, 2021 at 12:29:32PM +0200, David Hildenbrand wrote:
+>>>> On 29.09.21 12:10, Will Deacon wrote:
+>>>>> On Thu, Sep 23, 2021 at 03:54:48PM -0700, Chris Goldsworthy wrote:
+>>>>>> From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+>>>>>>
+>>>>>> After new memory blocks have been hotplugged, max_pfn and max_low_pfn
+>>>>>> needs updating to reflect on new PFNs being hot added to system.
+>>>>>>
+>>>>>> Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+>>>>>> Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+>>>>>> ---
+>>>>>>     arch/arm64/mm/mmu.c | 5 +++++
+>>>>>>     1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>>>>>> index cfd9deb..fd85b51 100644
+>>>>>> --- a/arch/arm64/mm/mmu.c
+>>>>>> +++ b/arch/arm64/mm/mmu.c
+>>>>>> @@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>>>>>>     	if (ret)
+>>>>>>     		__remove_pgd_mapping(swapper_pg_dir,
+>>>>>>     				     __phys_to_virt(start), size);
+>>>>>> +	else {
+>>>>>> +		max_pfn = PFN_UP(start + size);
+>>>>>> +		max_low_pfn = max_pfn;
+>>>>>> +	}
+>>>>>
+>>>>> We use 'max_pfn' as part of the argument to set_max_mapnr(). Does that need
+>>>>> updating as well?
+>>>>>
+>>>>> Do we have sufficient locking to ensure nobody is looking at max_pfn or
+>>>>> max_low_pfn while we update them?
+>>>>
+>>>> Only the write side is protected by memory hotplug locking. The read side is
+>>>> lockless -- just like all of the other pfn_to_online_page() machinery.
+>>>
+>>> Hmm. So the readers can see one of the variables updated but the other one
+>>> stale?
+>>
+>> Yes, just like it has been on x86-64 for a long time:
+>>
+>> arch/x86/mm/init_64.c:update_end_of_memory_vars()
+>>
+>> Not sure if anyone really cares about slightly delayed updates while memory
+>> is getting hotplugged. The users that I am aware of don't care.
+> 
+> Thanks, I'd missed that x86 also updates max_low_pfn. So at least we're not
+> worse off in that respect.
+> 
+> Looking at set_max_mapnr(), I'm wondering why we need to call that at all
+> on arm64 as 'max_mapnr' only seems to be used for nommu.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+I think max_mapnr is only helpful without SPARSE, I can spot the most 
+prominent consumer being simplistic pfn_valid() implementation.
+
+MEMORY_HOTPLUG on arm64 implies SPARSE. ... and I recall that FLATMEM is 
+no longer possible on arm64. So most probably the arm64 call of 
+set_max_mapnr() can just be dropped.
+
+-- 
+Thanks,
+
+David / dhildenb
+
