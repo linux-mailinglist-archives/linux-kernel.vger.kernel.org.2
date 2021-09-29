@@ -2,187 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD7541CDD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC5441CDD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346847AbhI2VM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:12:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346833AbhI2VMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9AA1615A2;
-        Wed, 29 Sep 2021 21:10:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632949837;
-        bh=VkVtr9ff3pqbOeduk4fdcTSzfp8pXb56OBTnBgAb4WU=;
+        id S1346859AbhI2VOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346685AbhI2VNz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 17:13:55 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799B8C06161C;
+        Wed, 29 Sep 2021 14:12:13 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 7A2467046; Wed, 29 Sep 2021 17:12:11 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 7A2467046
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1632949931;
+        bh=aNCVSUe1ezHP04FGaabkWlAzsR9PWbBgUjVbZnmPnEY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eWB9cS59SsFDc0zmb7fXgonZKcb7B83lHRffii/ir603DzT/SAiS9kg1gOmrGeV2T
-         mC6vOLD0ZvEPkzMiBTSG9pxLSQgT9H2XxOKIZWOEjTGxUOzlds/j5P8ZF2BIorfbjs
-         /Qw6psYLTMhiFBU4gCONMzvZQ/+2/++iPtOqfvGIrRYgHvrGCCN2AnQrKJ5EBT8Rp7
-         C9s7Ds+un6PDRDkDLPyjiM0j2RxP8NYX04GSbLBJ4Q24cny8muRGiegdoAAQaFDmFO
-         vAk8ofTUISNTgxTyKEvfmxtot+aP+eQKxYHWH8Tje6HCqInbsrPTi31oYUbqxe6Kas
-         zrX956LLdMNyA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0ECD5410A1; Wed, 29 Sep 2021 18:10:34 -0300 (-03)
-Date:   Wed, 29 Sep 2021 18:10:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     linux-perf-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf tests vmlinux-kallsyms: ignore hidden symbols
-Message-ID: <YVTWSXjThbbZbE0L@kernel.org>
-References: <20210922152706.23655-1-mpetlan@redhat.com>
- <CAP-5=fUN_fYmgm69ruBvp6E+nkLKsTvZwHqGzaRd471MhMRykA@mail.gmail.com>
+        b=WrbW5KlXsi7AXwMiVw+KlMNteT7mz8SGIoElqbTcWay/Zqg8nMzswdS4PIHG5mVEG
+         f9zVpwVFZ4zbOnM+wFnZySrN4TwiF3hCDfera4Zlyyft79q61n3KjCBAfkKo7CP5mj
+         0wTiw8ZztvDwgvMymGZLkamKQ/2cLLE3MouXI044=
+Date:   Wed, 29 Sep 2021 17:12:11 -0400
+From:   "bfields@fieldses.org" <bfields@fieldses.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "neilb@suse.com" <neilb@suse.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "tyhicks@canonical.com" <tyhicks@canonical.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wanghai38@huawei.com" <wanghai38@huawei.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "dsahern@gmail.com" <dsahern@gmail.com>,
+        "timo@rothenpieler.org" <timo@rothenpieler.org>,
+        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
+        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
+        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
+        "kolga@netapp.com" <kolga@netapp.com>
+Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
+ rpcsec_gss_exit_net when use-gss-proxy==1
+Message-ID: <20210929211211.GC20707@fieldses.org>
+References: <20210928031440.2222303-1-wanghai38@huawei.com>
+ <20210928031440.2222303-3-wanghai38@huawei.com>
+ <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
+ <20210928134952.GA25415@fieldses.org>
+ <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
+ <20210928141718.GC25415@fieldses.org>
+ <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
+ <20210928145747.GD25415@fieldses.org>
+ <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
+ <20210928154300.GE25415@fieldses.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUN_fYmgm69ruBvp6E+nkLKsTvZwHqGzaRd471MhMRykA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210928154300.GE25415@fieldses.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 22, 2021 at 09:36:11AM -0700, Ian Rogers escreveu:
-> On Wed, Sep 22, 2021 at 8:27 AM Michael Petlan <mpetlan@redhat.com> wrote:
-> >
-> > Certain kernel symbols are purposely hidden from kallsyms. The function
-> > is_ignored_symbol() from scripts/kallsyms.c decides if a symbol should
-> > be hidden or not.
-> >
-> > The perf test "vmlinux symtab matches kallsyms" fails in case perf finds
-> > some of the hidden symbols in its machine image and can't match them to
-> > kallsyms.
-> >
-> > Let's add a filter to check if a symbol not found isn't one of these
-> > before failing the test.
-> >
-> > The function is_ignored_symbol() has been copied from scripts/kallsyms.c
-> > and needs to be updated along with the original.
-> >
-> > Signed-off-by: Michael Petlan <mpetlan@redhat.com>
+On Tue, Sep 28, 2021 at 11:43:00AM -0400, bfields@fieldses.org wrote:
+> On Tue, Sep 28, 2021 at 03:36:58PM +0000, Trond Myklebust wrote:
+> > What is the use case here? Starting the gssd daemon or knfsd in
+> > separate chrooted environments? We already know that they have to be
+> > started in the same net namespace, which pretty much ensures it has to
+> > be the same container.
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+> Somehow I forgot that knfsd startup is happening in some real process's
+> context too (not just a kthread).
 > 
-> It is a shame this can't be a library to ensure the function is kept in sync.
+> OK, great, I agree, that sounds like it should work.
 
-We can adapt :-)
+Wang Hai, do you want to try that, or should I?
 
-⬢[acme@toolbox perf]$ sed -n -e '/static bool is_ignored_symbol.*/,/^}.*/ p' scripts/kallsyms.c > original
-⬢[acme@toolbox perf]$ sed -n -e '/static bool is_ignored_symbol.*/,/^}.*/ p' tools/perf/tests/vmlinux-kallsyms.c > copy
-⬢[acme@toolbox perf]$ diff -u original copy
-⬢[acme@toolbox perf]$
-
-⬢[acme@toolbox perf]$ sed -n -e '/static bool is_ignored_symbol.*/,/^}.*/ p' scripts/kallsyms.c 
-static bool is_ignored_symbol(const char *name, char type)
-{
-	/* Symbol names that exactly match to the following are ignored.*/
-	static const char * const ignored_symbols[] = {
-		/*
-		 * Symbols which vary between passes. Passes 1 and 2 must have
-		 * identical symbol lists. The kallsyms_* symbols below are
-		 * only added after pass 1, they would be included in pass 2
-		 * when --all-symbols is specified so exclude them to get a
-		 * stable symbol list.
-		 */
-		"kallsyms_addresses",
-		"kallsyms_offsets",
-		"kallsyms_relative_base",
-		"kallsyms_num_syms",
-		"kallsyms_names",
-		"kallsyms_markers",
-		"kallsyms_token_table",
-		"kallsyms_token_index",
-		/* Exclude linker generated symbols which vary between passes */
-		"_SDA_BASE_",		/* ppc */
-		"_SDA2_BASE_",		/* ppc */
-		NULL
-	};
-
-	/* Symbol names that begin with the following are ignored.*/
-	static const char * const ignored_prefixes[] = {
-		"$",			/* local symbols for ARM, MIPS, etc. */
-		".LASANPC",		/* s390 kasan local symbols */
-		"__crc_",		/* modversions */
-		"__efistub_",		/* arm64 EFI stub namespace */
-		"__kvm_nvhe_",		/* arm64 non-VHE KVM namespace */
-		"__AArch64ADRPThunk_",	/* arm64 lld */
-		"__ARMV5PILongThunk_",	/* arm lld */
-		"__ARMV7PILongThunk_",
-		"__ThumbV7PILongThunk_",
-		"__LA25Thunk_",		/* mips lld */
-		"__microLA25Thunk_",
-		NULL
-	};
-
-	/* Symbol names that end with the following are ignored.*/
-	static const char * const ignored_suffixes[] = {
-		"_from_arm",		/* arm */
-		"_from_thumb",		/* arm */
-		"_veneer",		/* arm */
-		NULL
-	};
-
-	/* Symbol names that contain the following are ignored.*/
-	static const char * const ignored_matches[] = {
-		".long_branch.",	/* ppc stub */
-		".plt_branch.",		/* ppc stub */
-		NULL
-	};
-
-	const char * const *p;
-
-	for (p = ignored_symbols; *p; p++)
-		if (!strcmp(name, *p))
-			return true;
-
-	for (p = ignored_prefixes; *p; p++)
-		if (!strncmp(name, *p, strlen(*p)))
-			return true;
-
-	for (p = ignored_suffixes; *p; p++) {
-		int l = strlen(name) - strlen(*p);
-
-		if (l >= 0 && !strcmp(name + l, *p))
-			return true;
-	}
-
-	for (p = ignored_matches; *p; p++) {
-		if (strstr(name, *p))
-			return true;
-	}
-
-	if (type == 'U' || type == 'u')
-		return true;
-	/* exclude debugging symbols */
-	if (type == 'N' || type == 'n')
-		return true;
-
-	if (toupper(type) == 'A') {
-		/* Keep these useful absolute symbols */
-		if (strcmp(name, "__kernel_syscall_via_break") &&
-		    strcmp(name, "__kernel_syscall_via_epc") &&
-		    strcmp(name, "__kernel_sigtramp") &&
-		    strcmp(name, "__gp"))
-			return true;
-	}
-
-	return false;
-}
-⬢[acme@toolbox perf]$
-
-This should be added to tools/perf/check-headers.sh as a new
-function_check() function that receives three parameters:
-
-	function_check scripts/kallsyms.c tools/perf/tests/vmlinux-kallsyms.c is_ignored_symbol
-
-The regexps can also be tightened up a bit.
-
-Michael, can you cook up a patch for this?
-
-Thanks,
-
-- Arnaldo
+--b.
