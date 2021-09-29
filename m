@@ -2,139 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E61741C708
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3935041C70E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344410AbhI2OoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:44:03 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:11554 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244630AbhI2OoD (ORCPT
+        id S1344445AbhI2OpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:45:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245396AbhI2OpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:44:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632926532;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Rj5wPC+azbPBOEQyEt5RY3pzQQCBfq403oUX1dL3sm4=;
-    b=gPH4BJs8MqjMX2JVCsFF1BpAZiX4EfShZ1czC02Kv/8L5GkslP0h4qbXMb583yFClW
-    EDzGhKfmT5N96txqBDVDWv0n/J+pSY3UB+uWQiVa8wUNimefPakFLbiavsFCpaIH1Uyf
-    lRcqEQ9IoCxt7kRdfBu4ozNvlXIEjNLVpX+/0KfJ/SJFkgflYXrWyotwoLtw/Cafct9O
-    XCDaqKvlZ+HUHAFkJnHvAcCpsS62bxM9Vs8776psp/yy6fSe50vd+Hl2MpKu+deVszpn
-    WjrhGvDK6BFLTaavEcJTivgQvo6TMg5TOtzKzWgH0oGUdaKs5ZrBdYIaaOue/qwrSnLO
-    tOeA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43qmio="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8TEgAkV0
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Wed, 29 Sep 2021 16:42:10 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v4 02/10] drm/ingenic: Add support for JZ4780 and HDMI
- output
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <VM970R.TLCBMNA67DOI2@crapouillou.net>
-Date:   Wed, 29 Sep 2021 16:42:10 +0200
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1E592756-C57C-4C9B-BCF2-EC10DB6E3234@goldelico.com>
-References: <cover.1632761067.git.hns@goldelico.com>
- <68cca888be1894ce45f1a93cfabeb5aa1f88c20a.1632761067.git.hns@goldelico.com>
- <OA150R.JLKJBJP8V7FJ2@crapouillou.net>
- <1E10A04A-4A78-4B47-B0FB-1E8C99456DA1@goldelico.com>
- <17BF1D7A-2057-448B-9FD2-907DE0EFD281@goldelico.com>
- <VM970R.TLCBMNA67DOI2@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Wed, 29 Sep 2021 10:45:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632926607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=k2mLc/radmqh34XgUWy+HwWaMs9PrqhstK/RW+oNKnc=;
+        b=hs5mKGQpv5TsD2uWcnCEtb68+6p7Vb0iJ9soH+KInBz2DkiwXXGiMMyzmxEuTezF59IB7s
+        NzKvcgmK4uk4xf/OgHdDbJSu345ctVu81KX5aeKfVjDP8zxP5CgeJu6HkPp6w2FifeeEcS
+        FBC+Voqe8KEFsSQeEtOI9pB0ktv0XLs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-yY6d50MPNzqq9ntTG_In9g-1; Wed, 29 Sep 2021 10:43:25 -0400
+X-MC-Unique: yY6d50MPNzqq9ntTG_In9g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7065518414A6;
+        Wed, 29 Sep 2021 14:43:24 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.195.135])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B69319C59;
+        Wed, 29 Sep 2021 14:43:22 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v1] x86/Kconfig: select ARCH_SELECT_MEMORY_MODEL only if FLATMEM and SPARSEMEM are possible
+Date:   Wed, 29 Sep 2021 16:43:21 +0200
+Message-Id: <20210929144321.50411-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On x86-64 we really only support CONFIG_SPARSEMEM; there is nothing users
+can select. So enable the memory model selection (via
+CONFIG_ARCH_SELECT_MEMORY_MODEL) only if both, SPARSEMEM and FLATMEM are
+possible, which isn't the case on x86-64.
 
-> Am 29.09.2021 um 16:30 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> Hi,
->=20
-> Le mar., sept. 28 2021 at 14:06:03 +0200, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> Hi Paul,
->>> Am 28.09.2021 um 12:21 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->>>>> @@ -1492,10 +1555,16 @@ static int ingenic_drm_init(void)
->>>>> {
->>>>> 	int err;
->>>>> +	if (IS_ENABLED(CONFIG_DRM_INGENIC_DW_HDMI)) {
->>>>> +		err =3D =
-platform_driver_register(ingenic_dw_hdmi_driver_ptr);
->>>>> +		if (err)
->>>>> +			return err;
->>>>> +	}
->>>> I don't see why you need to register the ingenic-dw-hdmi driver =
-here. Just register it in the ingenic-dw-hdmi driver.
->>> Ok, I never though about this (as the code was not from me). We =
-apparently just followed the IPU code pattern (learning by example).
->>> It indeed looks not necessary and would also avoid the =
-ingenic_dw_hdmi_driver_ptr dependency.
->>> But: what is ingenic_ipu_driver_ptr then good for?
->=20
-> It's done this way because ingenic-drm-drv.c and ingenic-ipu.c are =
-both compiled within the same module ingenic-drm.
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: x86@kernel.org
+Cc: linux-mm@kvack.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ah, I see. Hadn't checked this.
-
-> I'm not sure this is still required, maybe ingenic-ipu.c can be its =
-own module now.
-
-What I have seen is that it has its own compatible record. So there =
-could be load-on-demand by DTS.
-
->=20
->>> If we can get rid of this as well, we can drop patch 1/10 =
-("drm/ingenic: Fix drm_init error path if IPU was registered") =
-completely.
->> A quick test shows that it *is* required. At least if I configure =
-everything as modules.
->> But like you I can't explain why.
->=20
-> Well, a quick test here shows that it is not required, at least when =
-configuring with everything built-in.
-
-IMHO the hdmi driver (module) should be loaded on demand. Not everyone =
-wants to have it.
-
-Well, that is the problem that needs to be solved...
-
-BR and thanks,
-Nikolaus
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index ab83c22d274e..50f98dc02ad4 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1611,7 +1611,7 @@ config ARCH_SPARSEMEM_DEFAULT
+ 
+ config ARCH_SELECT_MEMORY_MODEL
+ 	def_bool y
+-	depends on ARCH_SPARSEMEM_ENABLE
++	depends on ARCH_SPARSEMEM_ENABLE && ARCH_FLATMEM_ENABLE
+ 
+ config ARCH_MEMORY_PROBE
+ 	bool "Enable sysfs memory/probe interface"
+-- 
+2.31.1
 
