@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE33941CCD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CBA41CCD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344943AbhI2Trk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244887AbhI2Tri (ORCPT
+        id S1345062AbhI2Tsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:48:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48660 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344896AbhI2Tsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:47:38 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A403C06161C;
-        Wed, 29 Sep 2021 12:45:56 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id m3so15155247lfu.2;
-        Wed, 29 Sep 2021 12:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0jw4ZRW3ctdo5FxQCX2AL0tjYqO94oYLsTMDqJb1BIM=;
-        b=GUXGpD+Kgbrf51cGzaLT7nAik7Xle0udM7FNC048Xg2svSZ5DuNjE6DSTvyJ94apyJ
-         o7N2ef9Kuz+UjvNqkUvm3YP4mqjY3mvFFL/aEHxh+eFjyW9dzIbYt0xn39r9pQjxSKY9
-         Hq919SDEEZkMRwRXq5RDLGQD4njnC+ZnxgqwJHzrbCKIKc+ZEa/+HwjlzWKozsiI5QSV
-         YGrYhVSu4pmFZc9TQukWzmWW7+nsILvCZGrmrSe8hRTXntmJgvLK17KxXZ9wUvTY1bKj
-         ZgWEGSVCxxacoJ8beGIJ8qItejqNnpyeIWBJ66jz2rK2V78th2Qs1T2i3vpizHEeBG7Z
-         ytsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0jw4ZRW3ctdo5FxQCX2AL0tjYqO94oYLsTMDqJb1BIM=;
-        b=7p+NDMAygHU8399cI9hAdNttvv4+iQzdvy5d7kap4GRj2PNxdpqk+oYehxfisuD8lc
-         lM0nFM24L2k6FYfoBkTOlgpMZbKYmw6k3C4z8PnbSBf3vHEaptvBK40BvQSUDS8R5L3M
-         W5Y6xkzCXyKvDV99t/s9lfEOcuBJWwBQyeUrFmcOtAY+hY/tg+b4wUYAsvCg+wO+RtK9
-         bh38gyilBVaG8jq0NZ8eQR5I6lVzhx6VH0WNvYc3xQr7Qlo2tHgT99ysC3ML9NyVAfMV
-         txPTeeubEjMiZv5E89eils2EXdjKrweYi4BTBMuusxgvPMjVIlkFwSj/SaipXZQL+ecx
-         iX1w==
-X-Gm-Message-State: AOAM53328/d3JJFBY1sA7mSlg72XERLr0mEUz5sgJnE70FzvhuqoSAI4
-        s2a6pA3RYRTdrFfyHt3ExRrNFyICGtj54A==
-X-Google-Smtp-Source: ABdhPJw0iXqTgig+CAb+nMux4k/IGOk4KbPcZRIjGDk0zQ1niY8nKJlDzXnj9ebWcZ19JbxlfiT9Jg==
-X-Received: by 2002:a2e:b7c8:: with SMTP id p8mr1856198ljo.154.1632944754694;
-        Wed, 29 Sep 2021 12:45:54 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id v27sm104607lfp.0.2021.09.29.12.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 12:45:54 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Junlin Yang <yangjunlin@yulong.com>, linux-usb@vger.kernel.org,
+        Wed, 29 Sep 2021 15:48:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632944818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OphKSRDSZgdX5nhZl6LEkHup1MlwE4E4ChnXI2KmIUo=;
+        b=UDXto2Ah/noGnkp4NPHmAMnqzhKrMQhTY9M1+ncroZ2xioqATyksXzOWSqxx1K8bjhKnDA
+        L/RWx+qfFVb7vwL9zetIGXvOF70aEztly4GD/ayiIxVXti0Vk8me5f+Birnkokf7LYe8Fy
+        DjoA6nnQspLGmLlRsfiCNhhYg84mNCE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-236-HILN_C1ROwGuqXDAIOZcMQ-1; Wed, 29 Sep 2021 15:46:55 -0400
+X-MC-Unique: HILN_C1ROwGuqXDAIOZcMQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3E09801E72;
+        Wed, 29 Sep 2021 19:46:52 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D24D45C1C5;
+        Wed, 29 Sep 2021 19:46:48 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        will@kernel.org, paulmck@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH V2 2/2] usb: cdc-wdm: Constify static struct wwan_port_ops
-Date:   Wed, 29 Sep 2021 21:45:47 +0200
-Message-Id: <20210929194547.46954-3-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210929194547.46954-1-rikard.falkeborn@gmail.com>
-References: <20210929194547.46954-1-rikard.falkeborn@gmail.com>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+        <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
+        <20210929174146.GF22689@gate.crashing.org>
+Date:   Wed, 29 Sep 2021 21:46:47 +0200
+In-Reply-To: <20210929174146.GF22689@gate.crashing.org> (Segher Boessenkool's
+        message of "Wed, 29 Sep 2021 12:41:46 -0500")
+Message-ID: <877dez5fmg.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of wdm_wwan_port_ops is to pass its address to
-wwan_create_port() which takes a pointer to const wwan_port_ops as
-argument. Make it const to allow the compiler to put it in read-only
-memory.
+* Segher Boessenkool:
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
-Changes:
-V1->V2: No changes
+> Hi!
+>
+> On Wed, Sep 29, 2021 at 02:28:37PM +0200, Florian Weimer wrote:
+>> If you need a specific instruction emitted, you need a compiler
+>> intrinsic or inline assembly.
+>
+> Not an intrinsic.  Builtins (like almost all other code) do not say
+> "generate this particular machine code", they say "generate code that
+> does <this>".  That is one reason why builtins are more powerful than
+> inline assembler (another related reason is that they tell the compiler
+> exactly what behaviour is expected).
 
- drivers/usb/class/cdc-wdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I meant that if the object code has to contain a specific instruction
+sequence involving a conditional, it needs some form of compiler
+support.  Adding some volatile here and some form of a compiler barrier
+there is very brittle.
 
-diff --git a/drivers/usb/class/cdc-wdm.c b/drivers/usb/class/cdc-wdm.c
-index fdf79bcf7eb0..7f2c83f299d3 100644
---- a/drivers/usb/class/cdc-wdm.c
-+++ b/drivers/usb/class/cdc-wdm.c
-@@ -911,7 +911,7 @@ static int wdm_wwan_port_tx(struct wwan_port *port, struct sk_buff *skb)
- 	return rv;
- }
- 
--static struct wwan_port_ops wdm_wwan_port_ops = {
-+static const struct wwan_port_ops wdm_wwan_port_ops = {
- 	.start = wdm_wwan_port_start,
- 	.stop = wdm_wwan_port_stop,
- 	.tx = wdm_wwan_port_tx,
--- 
-2.33.0
+>> I don't think it's possible to piggy-back this on something else.
+>
+> Unless we get a description of what this does in term of language
+> semantics (instead of generated machine code), there is no hope, even.
+
+True.  For example, if the argument contains a sequence point, what does
+that even mean?
+
+Thanks,
+Florian
 
