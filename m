@@ -2,184 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4426141CBC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9E441CBCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346085AbhI2SZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:25:15 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:24448 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244341AbhI2SZH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:25:07 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TIGbqp013612;
-        Wed, 29 Sep 2021 18:23:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=UuwSj9V523tYqF3PQqm5hUeONVdytSjTb35/1gFMdIE=;
- b=YgojOVOpw+qztxhFeBuVhy67EjHjBgEn2mMMgfhapHY9t36tmNuG3vecCHMzjuqpWyW3
- YJZdmDL0QFGG9YQh5kp7BCT2ZqxhMKhY0G6g2oCE+Yj3CcQp36RUOfYiTKkEMMCkcjpM
- Zkfmxm0O6LORVujOCyCTb210k1BAvKsAlGjkIWne8ED7WD90Nqaz5J3kgUSzN0xZ1Tke
- aCb5Pi5ZK3IrehLyNZrK0S/ak+m5f0QLJsDujVRV2dbxXGp83jZgF+E7eldpoQGMp/AM
- 763eJiwj4RVgsgGwClCO9FpmQn+KOHm/MIrEoKYwPi7rZscUacbHB8ajywdCLkuQxTyu HA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bcf6cwx8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 18:23:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18TIAB69005014;
-        Wed, 29 Sep 2021 18:23:03 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by userp3020.oracle.com with ESMTP id 3bc3cenu3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 18:23:03 +0000
+        id S1346113AbhI2S23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:28:29 -0400
+Received: from mail-dm6nam10on2078.outbound.protection.outlook.com ([40.107.93.78]:52417
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244341AbhI2S21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 14:28:27 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BJUS5puJhicBXYx3OqVuImr8xJze978FveS64/UPYT3+DdEkgFp4MRXRciKIu/07Kb0XqKFjoZaEVq+oeskNTHtVZfc0t5jjx42FnAV91j6T9Ye9+ZCToZisz0HOdsJKcLcoVs1KFy8yLq/jsMdD1e9aoC8124eM3KvPfQChs1gxhGDR6mjyEFeGiKPYe7NFO5h7BNTxXkcP/GEYvxcq7jz7L+tIhNK8y4AOw8apgRiyRf1vYcSKz5k885w0UcfQahzFuwPECPhfcuQdC4DWsOnBMCwYN0pAErISERs2qOFnw/jGm778zimi6bgdDCKXN2vn/OvOUWf7OBsIYfX0QA==
+ b=VZxtCazgrGicd0BO3DU+g4nGW7tSSAYtLQzTz3KBE+fvAItAz9a56JHi3ac4ZIMKpr9FweflqVJJvWtwMJHdeg/gf6K+ILvAS6FEDzrf3re7j7oh8GHBABTfMhJQh02Xq+6jMMH4ZBZNR9TOf8CkJRt9I5LIINKJcfFlPMy/z/baYDEs1ytc65oOfneWo6GG+0Y9BkrNhv2iamS5D0Zw/VTpR7xRvUdv5GVKh37gVhZlDpi9adA0etimZrClXOv9rr/1fQuTUcuE1wUD2p2PXzGI2KVyT9haAC+UW0FSdmbwyeTC4hAyI9hyAz7EFd/lpcBPGFW67vHkh+7yp6Nq0w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=UuwSj9V523tYqF3PQqm5hUeONVdytSjTb35/1gFMdIE=;
- b=IAdamRxN5MiGFB9gDw4aHUyzOcGIuhsEN3ciPmpo9ue5KLyn5I3WzmRwHwEUpwUqm9gAwqED8qRo+1vWXaTvQ2QoY6+WdYJrAh9v6/Sf6ZoKnWD1ycxePoeNjBuke6Xlb9u5Aquv70Ex+ghujNXo4wyMZ/T7BIL0CDwXz1s/E5g5N1/IvgE5ehVv7x93Wrwcicmyix8w3VxB8aXnu9QEb1CJXJOO4kRI2L8TwJ0xXylAV0ZbDzBt8AHloPzxRM5oaX004ynD6rzMv3LSAxNYPNYIwzJIW3QKOHmVUJm7xd35abWt3h0gvepsvpEdNenxoZ5wle+40Knx6vQtm4ymqA==
+ bh=+unT1saw24HGZctLPemyH5FTXidrSoVe8MnnmqM/uFQ=;
+ b=KoAgsFibIgY1cr1gR0A8mf37QFU1d+HRRfjfO3hVPEGd+bhqHQjEjn9STQlw01QIVL3U6uhNZHjcVch0j9llPgSTXDWklNsv32Qay/f8DsbGYbPzKf4CdhD0kugEYosXuoUCmtXjQM6/EpM3k7AI/qvAytJrmA9PUTIOLE2Tgxq30Revlm4HKATWdUIiBAu4gfhfH6kayMBtgnmNxnVhkZPbGYNzS0TDLcWxYo2ZUkQbSn+KxL5oFSA/yDPbUdIpqfXcq05EfOUk3OT6+QwlmE3CRlddIsNXBbF8h2wV66U5JedTyRiQlYcMgRmUHn2eg635aKg/JY3RIOs1aktijQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UuwSj9V523tYqF3PQqm5hUeONVdytSjTb35/1gFMdIE=;
- b=zmuFLPVs/N9zGpLiCnZmEnxKwBtoKLrXntIbeQ/j0m2DoAWqvbEFBLVCmRFbnBv7sohlue9GgwEqCyZPzTg2KzSqElNj87JI+UqPPvHmU+wmZ2OF29rSW2VlfDSfhLL7KT2ZYoej//BgNW5LFL1wcfFl9kahKKKaQX8xtZ8k+oM=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BY5PR10MB3908.namprd10.prod.outlook.com (2603:10b6:a03:1b0::26) with
+ bh=+unT1saw24HGZctLPemyH5FTXidrSoVe8MnnmqM/uFQ=;
+ b=rt1O9BM0MrW+790SKvOx6e/LkijFC2AVKFyduEfCpHwHwCTVkPuAOJsZT57vF/YvyC/HNXlB/YyJ2TWtIqPbtkPf/+kbRQ06XKReR9fB7D1q0uqWGh0SUgd20daumgd+jtK57YmhwDodi3n2kixNUE+xejls/04VsMVWt8Sb7VC/DKK59Lj0h88LDp4XjtGaFWSDbn3C3d/WLEKccEffTiZAgQHbtYIh32O0KMSt/6a9D4n1fZXCrFpavAXI48mAvXfemwpbvTsCFEQvAHljS0v43DwoiEJbCrrpO9UKlSqnOYPUIkIQ49p3U26l8egxIE1/g7Xkj8gDzAt4J8XzUg==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5207.namprd12.prod.outlook.com (2603:10b6:208:318::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
- 2021 18:23:01 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::a4a2:56de:e8db:9f2b]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::a4a2:56de:e8db:9f2b%9]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
- 18:23:01 +0000
-Subject: Re: [PATCH v2 1/4] hugetlb: add demote hugetlb page sysfs interfaces
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210923175347.10727-1-mike.kravetz@oracle.com>
- <20210923175347.10727-2-mike.kravetz@oracle.com>
- <878rzma1se.fsf@linux.ibm.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <8a50e26f-5d4b-1a52-fe96-8b01917120ae@oracle.com>
-Date:   Wed, 29 Sep 2021 11:22:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <878rzma1se.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0359.namprd04.prod.outlook.com
- (2603:10b6:303:8a::34) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+ 2021 18:26:43 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
+ 18:26:43 +0000
+Date:   Wed, 29 Sep 2021 15:26:42 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210929182642.GV964074@nvidia.com>
+References: <cover.1632305919.git.leonro@nvidia.com>
+ <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+ <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+ <20210927231239.GE3544071@ziepe.ca>
+ <20210928131958.61b3abec.alex.williamson@redhat.com>
+ <20210928193550.GR3544071@ziepe.ca>
+ <20210928141844.15cea787.alex.williamson@redhat.com>
+ <20210929161602.GA1805739@nvidia.com>
+ <20210929120655.28e0b3a6.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929120655.28e0b3a6.alex.williamson@redhat.com>
+X-ClientProxiedBy: MN2PR18CA0016.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::21) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Received: from [192.168.2.123] (50.38.35.18) by MW4PR04CA0359.namprd04.prod.outlook.com (2603:10b6:303:8a::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 18:23:00 +0000
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR18CA0016.namprd18.prod.outlook.com (2603:10b6:208:23c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Wed, 29 Sep 2021 18:26:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVeHy-007dsJ-6j; Wed, 29 Sep 2021 15:26:42 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a8ce506c-e883-421b-0940-08d983762b73
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3908:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3908BC3842EDB5B311590168E2A99@BY5PR10MB3908.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 5a23037b-c773-41f4-a13b-08d98376b02e
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5207:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52072F63A0685C50F7B0BC7EC2A99@BL1PR12MB5207.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CNCctxIJ201Nge4/IdI+HvsGB4QawEyvyjU+HFoC/VNDrEgcrbYKM65FMnyiYq56EM059crUfyHu36oBWstXgibvxw8jMWEokXlAsPslb//gy7pXmVKY9ZMs0P0um6kzjXcWwDCdsKeBAbCnwaXfQY3gPGCBn+bp/X/+042yVMXmOi8tzy3fnlm2vH6HlV3HstkZ4D9uPUFKcq7VCbNBeOdS1hLXBgGlkdu6D4Xu70Lvt6ja7Gov0h1PtoLaWoUinOQI5aJ7kvtkhZ/tgFKBlTpAXrWytIrcK/fMYX+V509M1rn8wdQfhYs5M3tZhIKrDmUUIBUPOk43nmW1L4ob6i9+MYX+98n3hgRFEM6cxerAvMAxjSiIFm52ctyNHivTS636bUinB9BFwaU59nVwppEGlKuRxBcwykeWn0JtUecW9F3zCE5P81uteHkooOv6d+iljZHa/8UxmfCXfxm6ZbBWebe9CEGwGjeb42FERUPoZk0SdVTfFSrtXIOWKlb6x+VQuNU+PYS09yfI36I2rWxOrVeEi5GNJuyGbgxwokqWaECbdlfh3i4qMnrBxYZWxc86ZhQ10CZuF2g2KAc6Khidf64UHbZDqQaZUT1FqYdkMY7NLHDEt2WLnpVbjklHPfzQLpoOeq/Fikm2cngT6aWk/9iX7nWeA5lCR/IE2sOgFrZJ3rvoUVtu1McLJPjnmUhaAp03CgAqnsmR4xKLqF10Dl+Hs5MPKtTolcjlb9lf6drVoj28gO0yzNPpavYAS3YsZoW5pxsrG/tR1pig6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(2616005)(66946007)(2906002)(956004)(8676002)(7416002)(66476007)(66556008)(36756003)(8936002)(6486002)(508600001)(86362001)(316002)(54906003)(16576012)(26005)(6666004)(4326008)(5660300002)(53546011)(44832011)(52116002)(31686004)(38350700002)(186003)(38100700002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: vZBJJiUpZ15g9ncFRwmvW8SgSlu2vdNiMhSE4kDrDcRbgW5iYiVcdLQnaZHfaU+5lvFXQlVmo80Ftp4a11x8iVVdHXv4136YufKq7kdYu1PiLmb8c2zLr6NosamD4I6p8ezoUkikNWa5fgXogCsNZIWJnMg8jTPVOTnuOINC/2d9UUJHmFuOHwtAzaJnQ308kS6CPhGTGw6jne+fwD+P2RNU4QeWJ/HLk9PZU/gKCytDtcxc8pUq8+I3pUd5S73mgnjHMbo3xtiFY8yYDaaaC0/xGe/QijwQOTp06OWHLBYC/VCxkSYzZb4Wip34lsyOQFbs4oxR5eOTha3MCnvCIN+TXJjvdafnO0jDjkpFQ8LwzgA5eaNRCEjtNWxkhc2yDQJBg4/3457nDVTj10LJ7OEMSA/B8pFyrvYAST1bhC1HgKXJ7pRZE6lauwSF9ZdHuud0FKStstqckfVzratsEZ1+FBeDgxXOQlj6E9eQpEEQ3GE395vQzORHhsw8SzqcEyCRnNnAIh5W2t0Zwl17VRiDAgDM5VvdQ9RNVLCqFXvfV2BAeO76qqAma3t+JsuO9lP2Qx4Ck1vRrniJRRmW9pFq/6XQ/we8ugBsW3NdCnDg96gI0YnENY0cBnPltSfmYSH8R9zIUsg5EtFn76uepsrzyOQOn9PpTm54wli4sidpsPqEZLqy2SwLbRQfuQKI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(7416002)(6916009)(86362001)(83380400001)(508600001)(36756003)(1076003)(9786002)(33656002)(9746002)(186003)(426003)(38100700002)(26005)(4326008)(54906003)(316002)(8676002)(66946007)(2906002)(66556008)(66476007)(8936002)(5660300002)(27376004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WUdFREVxUjRCRU1rbmJLWHNJcFdSVDI4M2RrOHdqUzU3aVJKdm9CNWc2NlJV?=
- =?utf-8?B?dk5NWTI0UmF5ci9QbmNteFpCTmdRTkF4dXZRa1FFL04wN3VTL3dUYUZvWVpQ?=
- =?utf-8?B?OHB5VUltNm1Sb3A2RHlOWGJXRjZkMERCcGw2MzhRT1Z3MDVoM201T0NybTht?=
- =?utf-8?B?VU1ERXhrS3hXNS9mL2hYTW9nN3FxRUl6Q05keGhNcmhqSDVEbEQrZXFwcm1O?=
- =?utf-8?B?MnQzRjU2ZXJPWStuaTJMbjRXUXc4TkZjdThUTEplTXV2ODJDdk5Uend6NDVy?=
- =?utf-8?B?Q0ttSHFlRXdWVWwxN0x1UkYzakZUUVQ0MGVXRTZ3ZjNEaThvb0xjeThBMWxO?=
- =?utf-8?B?bFlJMkxrZDFmMGt0bnRYMFZ5M0tuTWdCMElWaWprWmlkUGxEcWYwNll5bURR?=
- =?utf-8?B?cGFkTXNjTUZIK1YyVFBpbTk1OU0vd0dnYlA2Zmw2QUJOUFF1Z1dqRFBja1NS?=
- =?utf-8?B?NlBYdVNWNlFQekJBbSs0eUh1QjdDTFQxNzhhZE8rcFluREEwNW90dUFDUzU5?=
- =?utf-8?B?NUtUY1VWZThNd2tqdDYySTlPU0t1MmxrZkYyZHBDUUlEZW50ZUxNK1Izcmxh?=
- =?utf-8?B?YmVPNEJnbVN5OVRmVkZIWE1WdGk5R0lYSE0zeHpzNHIzaWszVTArU1JPcXNQ?=
- =?utf-8?B?aHA1c1ZYWTcrMkprZHdyQTVIL1VaZDZPVGg3RnM5UjJjSUtzbXQvWmh2dWNm?=
- =?utf-8?B?WWlOb2YwTG9WdmVVMHpJRE82cFBXejVuZlFFSG5YMmZxUmJ6dWZRVHpiaHhB?=
- =?utf-8?B?UUpHL2pRdmU2L1MxUXV2RTVraWZMNkk3ZTNiTUcvazladzI4VndHa3dYTldB?=
- =?utf-8?B?T29pT1V0bTRsNmQwSGttc1ovbkNLZndIQzFEZGl0THlLaVVJckpuUWdpVDFr?=
- =?utf-8?B?ZktKMXhEamFPRXRWQjFYV1dTRHVFZEFQQWNrMTY1MHVNWWZCeHZCMjFMVHI0?=
- =?utf-8?B?SVp2Y2Y3ZkpsWk1jUEJnVVhyRHFtS1c5ZkJQYS9PNEFCUFFEbVR5MWZ5MXl0?=
- =?utf-8?B?ZnFtTWNKN2lhTHkwbllaTG4wQ3lBUHhwTlp6NjR0cmNUYWJLZ3J4QTU5TUdX?=
- =?utf-8?B?bW5LUE5oWXdqTG1NeEFySm5zL24yakRZWEx5QlR6YndCWWJEemt5aThGeGww?=
- =?utf-8?B?SEpXYUMzTGJlY2M0QXNrN0IxcENEaTUzV0ltSVZGUE1zV3BiVGlJendIWEpw?=
- =?utf-8?B?OVMxMGR2MWJqYTlPMlFvRzN2QVRoSy82dTM4VXdEaGVEUnBFUW5nOVJteGVB?=
- =?utf-8?B?ZnliSGVZMSszVmd5MVkxK2ZSRU81M3pXYk10K2x2SisyNlZQQjJqVFp5L2tv?=
- =?utf-8?B?SFZoL3ZUQU9XdmJGd2paZ05OQllELy9ibWxjTXJWTVNFdmYwWTJyREpiMDI4?=
- =?utf-8?B?RERkOG03ZFB5Rm0rTGJBWXVFRUlKUVNWTkQ2SXVRRlN0RkV2S21RSmNCZFhM?=
- =?utf-8?B?c1I4clQ1aFY1UzJYMXNNa3czaFdVSDYyZXdiMis1dXc1bHNnOXd0RXh1cFZa?=
- =?utf-8?B?cXZPUDV5YzJoa1JMT091WWRDME9SV3FsQTdGVUF5Q2RCSUJ4TFNKeHA1ZlR6?=
- =?utf-8?B?cnVsclI0TVhyaGhzWHRLMDZ0dVcwZlFHSDhYMGF4eW4xbEthMUVlTXlzVk5u?=
- =?utf-8?B?cTlsSTV4ZjlVUnVwUng0YUpWQkwxK2hvVzYremFJVGlPc3NEQXNpQWI0VWtv?=
- =?utf-8?B?UXBRckpMWDU5dlFlRUpkNE9aaTJQdXRzK0sybkp0VWdiblV1U1BQT3hwVmVt?=
- =?utf-8?Q?INbuKPR/G1c55z1ydOQzH4sVWFSGd1RxJl6euXk?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8ce506c-e883-421b-0940-08d983762b73
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uoB6jI/WzW6+wd+IWRE8fTkD9g7tnzeRj+dKl+vtOD3eszdSt6W45gPOCPb6?=
+ =?us-ascii?Q?9LHsGFAmoRjtWLoRIqLciazINR14WQOWBueIPbcCdVPaCsgdoTrztlpMUPHj?=
+ =?us-ascii?Q?vNc6mnopiiYgw3pBi5Rhc14Kj/hfuF3jHiuBgK2f9CCExEme5ozZkQage35L?=
+ =?us-ascii?Q?zKwFEoxNpZUUJ/m7B8u5hi7i05yx4xYP1Np6u087x6TP7CT2eIxjtWClcAdP?=
+ =?us-ascii?Q?JdgCYEokUNYr69Eb5uB/vT0SOfYfKz8jaeT/L8ZV6yok8fBp3UarE2dKE/dQ?=
+ =?us-ascii?Q?6k5IYQxNB+FlcyakhRq3TxosPEwILEGMM3FnKbLMgqX7WpdoJ4R/JLrKQdVM?=
+ =?us-ascii?Q?IkXDYMxH/HZANIUYImZrEe0sapX/OPg2f+TlMhggrhXAObOn2PzEL14JIECF?=
+ =?us-ascii?Q?oOtxWEnjDoSmzTr/3LSq/gdesxR64NhHiasw0YeroKHf73w7wa1myzAt9zDS?=
+ =?us-ascii?Q?PxfNDU6wpPCuE1Jtj+0PbCs2+j7w0nNZWeVYXWLnYg+1t5nWV/S2/fTLmDt8?=
+ =?us-ascii?Q?xEtwSLoSt4aShFpyP962+W1wdUXc1eCu0R2jDlvn/to9QOGOLuCR35EA2Dvy?=
+ =?us-ascii?Q?JMF484OAGvSiE7Bu1YrWwa0hylhVVEznxbAXdG/iOi00G8CjABQ1x5Hy9ZvI?=
+ =?us-ascii?Q?y1uZGevfHoeuFZX/vc/Ms5AECcxTdRKcAyV74eedATEDqFNhvMx5A0NCODgf?=
+ =?us-ascii?Q?LL7Xse4Qh3KPsDoxUg50lK/DeyvQ0NtEz1WtJhbhurn2TZpiXITDT5SljVFY?=
+ =?us-ascii?Q?pG9BWpjDqkPn33hPS1ChsyRK0tCApkoNqZPo4zmbkbVVpfgbBnbzamshFa+K?=
+ =?us-ascii?Q?8pkptL2kkb+8+g9tT0uBnki6OPE2C54lhsJU4wTW5tzFZwe16Qzq5QLaeNfn?=
+ =?us-ascii?Q?wHwSm91ojfkB3keQ7+XbXYFrK40vjOxGTV8FlbDAftkyF99O/S4yPBuTdOtd?=
+ =?us-ascii?Q?kcu1HetYPE1HxPZcjOWtQJTZ03pKgFuiCwh7wt7iF+JegU7LSwxw2plyKaXl?=
+ =?us-ascii?Q?nB/8NlSCvA03U7KJyTtpMawylcNjaivjm/OpDLawEN3j9l4EXZTQjT0uZYJ4?=
+ =?us-ascii?Q?aQh7ac9s3PkQbOjpNW8HOuVW75KsRonjlvtvvaCrjWOkIHGmUKjzCzb/kv9a?=
+ =?us-ascii?Q?aAvrhQrcWZ7qyjAN0Y8tpuuTmCdOhFX6VTOG7IAZpoO/yFFyXt4GWujfWs7z?=
+ =?us-ascii?Q?JPi1CPAd7aoAqm2rDpYHtd4WkX+nFXdTCwxi3gVOSE614L+DzQGTOikoFZjS?=
+ =?us-ascii?Q?4gd4YSPd04/bbKSh4VH+nS1WLSi1d28xavwjEik3rKcRfWC3fvLowcaokLcH?=
+ =?us-ascii?Q?cvsRL1oii6UeTzgGyygpeYE0?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a23037b-c773-41f4-a13b-08d98376b02e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 18:23:00.9458
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 18:26:43.6673
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xQSKmEMMQ8ElNQBZAhcP+xIy10jiVNAenztjXHO0di6H9qfX/c4CD8kFtzQ4Ld3n7+1B8CU2Tg27e4xUkprjYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3908
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10122 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2109290105
-X-Proofpoint-GUID: M0a8TZurdIjmbcmutCBko4ZugiLf5Bf3
-X-Proofpoint-ORIG-GUID: M0a8TZurdIjmbcmutCBko4ZugiLf5Bf3
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9mv2YyptJMLikFD+jyFFgmJlKPXXgufo5uVfAZJaXoIbbUAbqzmTrjOaUkBQBLwn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/21 12:08 AM, Aneesh Kumar K.V wrote:
-> Mike Kravetz <mike.kravetz@oracle.com> writes:
+On Wed, Sep 29, 2021 at 12:06:55PM -0600, Alex Williamson wrote:
+> On Wed, 29 Sep 2021 13:16:02 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
 > 
->> Two new sysfs files are added to demote hugtlb pages.  These files are
->> both per-hugetlb page size and per node.  Files are:
->>   demote_size - The size in Kb that pages are demoted to. (read-write)
->>   demote - The number of huge pages to demote. (write-only)
->>
->> By default, demote_size is the next smallest huge page size.  Valid huge
->> page sizes less than huge page size may be written to this file.  When
->> huge pages are demoted, they are demoted to this size.
->>
->> Writing a value to demote will result in an attempt to demote that
->> number of hugetlb pages to an appropriate number of demote_size pages.
->>
->> NOTE: Demote interfaces are only provided for huge page sizes if there
->> is a smaller target demote huge page size.  For example, on x86 1GB huge
->> pages will have demote interfaces.  2MB huge pages will not have demote
->> interfaces.
+> > On Tue, Sep 28, 2021 at 02:18:44PM -0600, Alex Williamson wrote:
+> > > On Tue, 28 Sep 2021 16:35:50 -0300
+> > > Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >   
+> > > > On Tue, Sep 28, 2021 at 01:19:58PM -0600, Alex Williamson wrote:
+> > > >   
+> > > > > In defining the device state, we tried to steer away from defining it
+> > > > > in terms of the QEMU migration API, but rather as a set of controls
+> > > > > that could be used to support that API to leave us some degree of
+> > > > > independence that QEMU implementation might evolve.    
+> > > > 
+> > > > That is certainly a different perspective, it would have been
+> > > > better to not express this idea as a FSM in that case...
+> > > > 
+> > > > So each state in mlx5vf_pci_set_device_state() should call the correct
+> > > > combination of (un)freeze, (un)quiesce and so on so each state
+> > > > reflects a defined operation of the device?  
+> > > 
+> > > I'd expect so, for instance the implementation of entering the _STOP
+> > > state presumes a previous state that where the device is apparently
+> > > already quiesced.  That doesn't support a direct _RUNNING -> _STOP
+> > > transition where I argued in the linked threads that those states
+> > > should be reachable from any other state.  Thanks,  
+> > 
+> > If we focus on mlx5 there are two device 'flags' to manage:
+> >  - Device cannot issue DMAs
+> >  - Device internal state cannot change (ie cannot receive DMAs)
+> > 
+> > This is necessary to co-ordinate across multiple devices that might be
+> > doing peer to peer DMA between them. The whole multi-device complex
+> > should be moved to "cannot issue DMA's" then the whole complex would
+> > go to "state cannot change" and be serialized.
 > 
-> Should we also check if the platform allows for
-> gigantic_page_runtime_supported() ? 
-> 
+> Are you anticipating p2p from outside the VM?  The typical scenario
+> here would be that p2p occurs only intra-VM, so all the devices would
+> stop issuing DMA (modulo trying to quiesce devices simultaneously).
 
-Yes, thanks!
+Inside the VM.
 
-Looks like this may only be an issue for giganitc pages on power managed
-by firmware.  Still, needs to be checked.  Will update.
+Your 'modulo trying to quiesce devices simultaneously' is correct -
+this is a real issue that needs to be solved.
+
+If we put one device in a state where it's internal state is immutable
+it can no longer accept DMA messages from the other devices. So there
+are two states in the HW model - do not generate DMAs and finally the
+immutable internal state where even external DMAs are refused.
+
+> > The expected sequence at the device is thus
+> > 
+> > Resuming
+> >  full stop -> does not issue DMAs -> full operation
+> > Suspend
+> >  full operation -> does not issue DMAs -> full stop
+> > 
+> > Further the device has two actions
+> >  - Trigger serializating the device state
+> >  - Trigger de-serializing the device state
+> > 
+> > So, what is the behavior upon each state:
+> > 
+> >  *  000b => Device Stopped, not saving or resuming
+> >      Does not issue DMAs
+> >      Internal state cannot change
+> > 
+> >  *  001b => Device running, which is the default state
+> >      Neither flags
+> > 
+> >  *  010b => Stop the device & save the device state, stop-and-copy state
+> >      Does not issue DMAs
+> >      Internal state cannot change
+> > 
+> >  *  011b => Device running and save the device state, pre-copy state
+> >      Neither flags
+> >      (future, DMA tracking turned on)
+> > 
+> >  *  100b => Device stopped and the device state is resuming
+> >      Does not issue DMAs
+> >      Internal state cannot change
+> 
+> cannot change... other that as loaded via migration region.
+
+Yes
+
+> The expected protocol is that if the user write to the device_state
+> register returns an errno, the user reevaluates the device_state to
+> determine if the desired transition is unavailable (previous state
+> value is returned) or generated a fault (error state value
+> returned).
+
+Hmm, interesting, mlx5 should be doing this as well. Eg resuming with
+corrupt state should fail and cannot be recovered except via reset.
+
+> The 101b state indicates _RUNNING while _RESUMING, which is simply not
+> a mode that has been spec'd at this time as it would require some
+> mechanism for the device to fault in state on demand.
+
+So lets error on these requests since we don't know what state to put
+the device into.
+
+> > The two actions:
+> >  trigger serializing the device state
+> >    Done when asked to go to 010b ?
+> 
+> When the _SAVING bit is set.  The exact mechanics depends on the size
+> and volatility of the device state.  A GPU might begin in pre-copy
+> (011b) to transmit chunks of framebuffer data, recording hashes of
+> blocks read by the user to avoid re-sending them during the
+> stop-and-copy (010b) phase.  
+
+Here I am talking specifically about mlx5 which does not have a state
+capture in pre-copy. So mlx5 should capture state on 010b only, and
+the 011b is a NOP.
+
+> >  trigger de-serializing the device state
+> >    Done when transition from 100b -> 000b ?
+> 
+> 100b -> 000b is not a required transition, generally this would be 100b
+> -> 001b, ie. end state of _RUNNING vs _STOP.
+
+Sorry, I typo'd it, yes to _RUNNING
+
+> I think the requirement is that de-serialization is complete when the
+> _RESUMING bit is cleared.  Whether the driver chooses to de-serialize
+> piece-wise as each block of data is written to the device or in bulk
+> from a buffer is left to the implementation.  In either case, the
+> driver can fail the transition to !_RESUMING if the state is incomplete
+> or otherwise corrupt.  It would again be the driver's discretion if
+> the device enters the error state or remains in _RESUMING.  If the user
+> has no valid state with which to exit the _RESUMING phase, a device
+> reset should return the device to _RUNNING with a default initial state.
+
+That makes sense enough.
+
+> > There is a missing state "Stop Active Transactions" which would be
+> > only "does not issue DMAs". I've seen a proposal to add that.
+> 
+> This would be to get all devices to stop issuing DMA while internal
+> state can be modified to avoid the synchronization issue of trying to
+> stop devices concurrently?  
+
+Yes, as above
+
+> For PCI devices we obviously have the bus master bit to manage that,
+> but I could see how a migration extension for such support (perhaps
+> even just wired through to BM for PCI) could be useful.  Thanks,
+
+I'm nervous to override the BM bit for something like this, the BM bit
+isn't a gentle "please coherently stop what you are doing" it is a
+hanbrake the OS pulls to ensure any PCI device becomes quiet.
 
 Thanks,
--- 
-Mike Kravetz
+Jason
