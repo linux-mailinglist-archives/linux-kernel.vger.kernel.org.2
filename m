@@ -2,236 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A1041CB64
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3363C41CB5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345562AbhI2R7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244878AbhI2R7K (ORCPT
+        id S1343675AbhI2R6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:58:04 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:55894 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245152AbhI2R6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:59:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3CAC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 10:57:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=PBrItrWYc4exfbDaKqyby4f2f1oZNsNLet5vMQY77Po=; b=SsDrPhn3Ek/0gG58GnPT0RGdtb
-        t2lZlMA1e2ZxEjK7xX0YIK/91Rld17n3pmw8hNS9Tr7I0MnZHbFad9H8GDwGo4wO64u3E17G1EQ4d
-        CSHh1GIcZ6MM2+tcvF3q+ol1dCOVzzBX2LwJNnzy21boWeloHpn6EVvHE3QLJ9J8A9rzgwuc1LmKr
-        FbhtBAqttUz0CdWiGIR3Xu4MtrDGwaGeVmu0JYazQd/aMez5nJ+4fbF6kndcQhp2a2b8L4QglGJbQ
-        +F3jp6w6B6oq1F1jmk8RTxc5XW/8zgudI7ZT8wduRCiGQvwA4Kxf3s158kVziu+vcRpQsMFZk0Je9
-        fMAjc/oA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVdo7-00C5Pm-EU; Wed, 29 Sep 2021 17:56:06 +0000
-Date:   Wed, 29 Sep 2021 18:55:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
- cache
-Message-ID: <YVSopxYWegtQJ3iD@casper.infradead.org>
-References: <20210922070645.47345-2-rongwei.wang@linux.alibaba.com>
- <YUsVcEDcQ2vEzjGg@casper.infradead.org>
- <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
- <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
- <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
- <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
- <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
- <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
- <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
- <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+        Wed, 29 Sep 2021 13:58:02 -0400
+Received: by mail-il1-f197.google.com with SMTP id c11-20020a928e0b000000b0024eb114af51so3153091ild.22
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 10:56:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8EkP+0NB8mdZ019aGNAgeV/WzYJeLcjm5TRKX1/Ca/Y=;
+        b=mrUe2landoU7vfTkD+yMacCTz/yDv3KikTjYsbaDlFdKBA1RY6hcGG9YXRBiCQxzHH
+         GUj3ZKdyekVuX/gDJUaj97q4x3eHyfEci/BM0zBSeeQ1Y9jq4nQ3Km5rK7YPkW2ipzpN
+         eD5hhpx7mcXJMe2JIhhCJ/q87lzReWJ1Jopm5zsh0rVmoLfAc87d+KPDR0Mq51ScAKLB
+         mp8aq0jWX62Sv1dOkLC5TJaNLrywoA7nuEjuOj8XW0fPhGUgSsdP4AKuQd/4Djo20ga4
+         Rdio/6x+Qoemhc5E+pMXBgCxqnNulgg7DQKrz6F14dR7y5I9nV0yRFzElWnPRJUgKbzz
+         A6ng==
+X-Gm-Message-State: AOAM532SdxGqcDvVcECIXXh7dXqIFs9ZllTAr3oLAOi/4clXzgRiEIHP
+        A1CvENfxUNA5FEZL8vyrZ62sEG+Fw7+04a9HtHOj1dfQ9u94
+X-Google-Smtp-Source: ABdhPJxUHoL5xvF2va6rKr2jDyegz+Do0jKBNzgXgYqC13RdD+FG2aN7OXGu9w34driWjQusArCJTbbQsjBYKxSPDBowFKfSVkUG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+X-Received: by 2002:a5e:c00e:: with SMTP id u14mr776832iol.13.1632938180630;
+ Wed, 29 Sep 2021 10:56:20 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 10:56:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000325b0905cd260c86@google.com>
+Subject: [syzbot] WARNING: kmalloc bug in hash_netportnet_create
+From:   syzbot <syzbot+60c1bad54e53f88e8c4f@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:59:38AM -0700, Song Liu wrote:
-> On Wed, Sep 29, 2021 at 12:50 AM Rongwei Wang
-> <rongwei.wang@linux.alibaba.com> wrote:
-> >
-> >
-> >
-> > On 9/29/21 3:14 PM, Song Liu wrote:
-> > > On Tue, Sep 28, 2021 at 9:20 AM Rongwei Wang
-> > > <rongwei.wang@linux.alibaba.com> wrote:
-> > >>
-> > >>
-> > >>
-> > >> On 9/28/21 6:24 AM, Song Liu wrote:
-> > >>> On Fri, Sep 24, 2021 at 12:12 AM Rongwei Wang
-> > >>> <rongwei.wang@linux.alibaba.com> wrote:
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>> On 9/24/21 10:43 AM, Andrew Morton wrote:
-> > >>>>> On Thu, 23 Sep 2021 01:04:54 +0800 Rongwei Wang <rongwei.wang@linux.alibaba.com> wrote:
-> > >>>>>
-> > >>>>>>
-> > >>>>>>
-> > >>>>>>> On Sep 22, 2021, at 7:37 PM, Matthew Wilcox <willy@infradead.org> wrote:
-> > >>>>>>>
-> > >>>>>>> On Wed, Sep 22, 2021 at 03:06:44PM +0800, Rongwei Wang wrote:
-> > >>>>>>>> Transparent huge page has supported read-only non-shmem files. The file-
-> > >>>>>>>> backed THP is collapsed by khugepaged and truncated when written (for
-> > >>>>>>>> shared libraries).
-> > >>>>>>>>
-> > >>>>>>>> However, there is race in two possible places.
-> > >>>>>>>>
-> > >>>>>>>> 1) multiple writers truncate the same page cache concurrently;
-> > >>>>>>>> 2) collapse_file rolls back when writer truncates the page cache;
-> > >>>>>>>
-> > >>>>>>> As I've said before, the bug here is that somehow there is a writable fd
-> > >>>>>>> to a file with THPs.  That's what we need to track down and fix.
-> > >>>>>> Hi, Matthew
-> > >>>>>> I am not sure get your means. We know “mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs"
-> > >>>>>> Introduced file-backed THPs for DSO. It is possible {very rarely} for DSO to be opened in writeable way.
-> > >>>>>>
-> > >>>>>> ...
-> > >>>>>>
-> > >>>>>>> https://lore.kernel.org/linux-mm/YUdL3lFLFHzC80Wt@casper.infradead.org/
-> > >>>>>> All in all, what you mean is that we should solve this race at the source?
-> > >>>>>
-> > >>>>> Matthew is being pretty clear here: we shouldn't be permitting
-> > >>>>> userspace to get a writeable fd for a thp-backed file.
-> > >>>>>
-> > >>>>> Why are we permitting the DSO to be opened writeably?  If there's a
-> > >>>>> legitimate case for doing this then presumably "mm, thp: relax the
-> > >>>> There is a use case to stress file-backed THP within attachment.
-> > >>>> I test this case in a system which has enabled CONFIG_READ_ONLY_THP_FOR_FS:
-> > >>>>
-> > >>>> $ gcc -Wall -g -o stress_madvise_dso stress_madvise_dso.c
-> > >>>> $ ulimit -s unlimited
-> > >>>> $ ./stress_madvise_dso 10000 <libtest.so>
-> > >>>>
-> > >>>> the meaning of above parameters:
-> > >>>> 10000: the max test time;
-> > >>>> <libtest.so>: the DSO that will been mapped into file-backed THP by
-> > >>>> madvise. It recommended that the text segment of DSO to be tested is
-> > >>>> greater than 2M.
-> > >>>>
-> > >>>> The crash will been triggered at once in the latest kernel. And this
-> > >>>> case also can used to trigger the bug that mentioned in our another patch.
-> > >>>
-> > >>> Hmm.. I am not able to use the repro program to crash the system. Not
-> > >>> sure what I did wrong.
-> > >>>
-> > >> Hi
-> > >> I have tried to check my test case again. Can you make sure the DSO that
-> > >> you test have THP mapping?
-> > >>
-> > >> If you are willing to try again, I can send my libtest.c which is used
-> > >> to test by myself (actually, it shouldn't be target DSO problem).
-> > >>
-> > >> Thanks very much!
-> > >>> OTOH, does it make sense to block writes within khugepaged, like:
-> > >>>
-> > >>> diff --git i/mm/khugepaged.c w/mm/khugepaged.c
-> > >>> index 045cc579f724e..ad7c41ec15027 100644
-> > >>> --- i/mm/khugepaged.c
-> > >>> +++ w/mm/khugepaged.c
-> > >>> @@ -51,6 +51,7 @@ enum scan_result {
-> > >>>           SCAN_CGROUP_CHARGE_FAIL,
-> > >>>           SCAN_TRUNCATED,
-> > >>>           SCAN_PAGE_HAS_PRIVATE,
-> > >>> +       SCAN_BUSY_WRITE,
-> > >>>    };
-> > >>>
-> > >>>    #define CREATE_TRACE_POINTS
-> > >>> @@ -1652,6 +1653,11 @@ static void collapse_file(struct mm_struct *mm,
-> > >>>           /* Only allocate from the target node */
-> > >>>           gfp = alloc_hugepage_khugepaged_gfpmask() | __GFP_THISNODE;
-> > >>>
-> > >>> +       if (deny_write_access(file)) {
-> > >>> +               result = SCAN_BUSY_WRITE;
-> > >>> +               return;
-> > >>> +       }
-> > >>> +
-> > >> This can indeed avoid some possible races from source.
-> > >>
-> > >> But, I am thinking about whether this will lead to DDoS attack?
-> > >> I remember the reason of DSO has ignored MAP_DENYWRITE in kernel
-> > >> is that DDoS attack. In addition, 'deny_write_access' will change
-> > >> the behavior, such as user will get 'Text file busy' during
-> > >> collapse_file. I am not sure whether the behavior changing is acceptable
-> > >> in user space.
-> > >>
-> > >> If it is acceptable, I am very willing to fix the races like your way.
-> > >
-> > > I guess we should not let the write get ETXTBUSY for khugepaged work.
-> > >
-> > > I am getting some segfault on stress_madvise_dso. And it doesn't really
-> > > generate the bug stack in my vm (qemu-system-x86_64). Is there an newer
-> > Hi, I can sure I am not update the stress_madvise_dso.c.
-> >
-> > My test environment is vm (qemu-system-aarch64, 32 cores). And I can
-> > think of the following possibilities:
-> >
-> > (1) in thread_read()
-> >
-> > printf("read %s\n", dso_path);
-> > d = open(dso_path, O_RDONLY);
-> > /* The start addr must be alignment with 2M */
-> > void *p = mmap((void *)0x40000dc00000UL, 0x800000, PROT_READ |
-> > PROT_EXEC,MAP_PRIVATE, fd, 0);
-> > if (p == MAP_FAILED) {
-> >         perror("mmap");
-> >         goto out;
-> > }
-> >
-> > 0x40000dc00000 is random setting by myself. I am not sure this address
-> > is available in your vm.
-> >
-> > (2) in thread_write()
-> > int fd = open(dso_path, O_RDWR);
-> > p = mmap(NULL, 0x800000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-> > if (p == MAP_FAILED) {
-> >         perror("mmap");
-> >          goto out; /* fail */
-> > }
-> >
-> > because of I am sure the DSO is bigger than 0x800000, so directly map
-> > the DSO using 0x800000. Maybe I had use '-z max-page-size=0x200000' to
-> > compile the DSO? likes:
-> > $ gcc -z max-page-size=0x200000 -o libtest.so -shared libtest.o
-> >
-> > If you don't mind, you can send the segment fault log to me. And I will
-> > find x86 environment to test.
-> 
-> I fixed the segfault with
-> 1. malloc buf (as it is too big for stack) in thread_read
-> 2. reduce memcpy() size in thread_read.
-> 
-> Now, I am able to crash the system on
->     find_lock_entries () {
->      ...
->        VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
->     }
-> I guess it is related. I will test more.
+Hello,
 
-That's a bogus VM_BUG_ON.  I have a patch in my tree to delete it.
-Andrew has it too, but for some reason, he hasn't sent it on to Linus.
+syzbot found the following issue on:
 
-+++ b/mm/filemap.c
-@@ -2093,7 +2093,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
-                if (!xa_is_value(page)) {
-                        if (page->index < start)
-                                goto put;
--                       VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
-                        if (page->index + thp_nr_pages(page) - 1 > end)
-                                goto put;
-                        if (!trylock_page(page))
+HEAD commit:    0513e464f900 Merge tag 'perf-tools-fixes-for-v5.15-2021-09..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1567e17f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=60c1bad54e53f88e8c4f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15403413300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15041b5b300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+60c1bad54e53f88e8c4f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6527 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
+Modules linked in:
+CPU: 0 PID: 6527 Comm: syz-executor600 Not tainted 5.15.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
+Code: 01 00 00 00 4c 89 e7 e8 ad 18 0d 00 49 89 c5 e9 69 ff ff ff e8 f0 98 d0 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 df 98 d0 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 c6
+RSP: 0018:ffffc900011ef288 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc900011ef3a0 RCX: 0000000000000000
+RDX: ffff88801c058000 RSI: ffffffff81a56291 RDI: 0000000000000003
+RBP: 0000000000400dc0 R08: 000000007fffffff R09: ffff8880b9c32a0b
+R10: ffffffff81a5624e R11: 000000000000001f R12: 0000000080000018
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff88801b33d000
+FS:  000055555632e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f13792ab6c0 CR3: 0000000071744000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ hash_netportnet_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
+ ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
+ nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fd5133b21c9
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe43b70828 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd5133b21c9
+RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000003
+RBP: 00007fd5133761b0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000004 R11: 0000000000000246 R12: 00007fd513376240
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
