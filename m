@@ -2,119 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3186141BC18
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F7C41BC1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243619AbhI2BQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 21:16:16 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:23226 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242636AbhI2BQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 21:16:15 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HJz0N3bb1z8tWb;
-        Wed, 29 Sep 2021 09:13:40 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 09:14:32 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 09:14:31 +0800
-Message-ID: <e4042e21-1952-582c-99a3-88742ed5f82a@huawei.com>
-Date:   Wed, 29 Sep 2021 09:14:30 +0800
+        id S243622AbhI2BRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 21:17:52 -0400
+Received: from mga11.intel.com ([192.55.52.93]:50798 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242636AbhI2BRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 21:17:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="221632191"
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="221632191"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 18:16:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,330,1624345200"; 
+   d="scan'208";a="562791541"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 18:16:09 -0700
+Date:   Wed, 29 Sep 2021 01:16:08 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Message-ID: <YVO+WAqroakEYI/D@otcwcpicx3.sc.intel.com>
+References: <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
+ <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
+ <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
+ <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
+ <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+ <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
+ <YVOp60LOL+bfh3iT@otcwcpicx3.sc.intel.com>
+ <YVOuYAFaTG6Khotb@agluck-desk2.amr.corp.intel.com>
+ <ae7a12650d2741f9970449a08721a28e@intel.com>
+ <a60c365c7bca4c84942086939fd988d1@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3 9/9] powerpc/mm: Use is_kernel_text() and
- is_kernel_inittext() helper
-Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>, <arnd@arndb.de>,
-        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <rostedt@goodmis.org>,
-        <mingo@redhat.com>, <davem@davemloft.net>, <ast@kernel.org>,
-        <ryabinin.a.a@gmail.com>, <akpm@linux-foundation.org>
-CC:     <bpf@vger.kernel.org>, <paulus@samba.org>
-References: <20210926072048.190336-1-wangkefeng.wang@huawei.com>
- <20210926072048.190336-10-wangkefeng.wang@huawei.com>
- <c5895fa8-ed3d-74c7-1d71-4d90dee9ea4b@csgroup.eu>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <c5895fa8-ed3d-74c7-1d71-4d90dee9ea4b@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a60c365c7bca4c84942086939fd988d1@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Tony,
 
+On Tue, Sep 28, 2021 at 06:06:52PM -0700, Luck, Tony wrote:
+> >> 	fpregs_lock();
+> >
+> > I'm afraid we may hit the same locking issue when we send IPI to notify another task to modify its
+> > PASID state. Here the API is called to modify another running task's PASID state as well without a right lock.
+> > fpregs_lock() is not enough to deal with this, I'm afraid.
+> 
+> We don't send IPI any more to change PASID state. The only place that the
+> current patch series touches the PASID MSR is in the #GP fault handler.
 
-On 2021/9/29 1:51, Christophe Leroy wrote:
-> 
-> 
-> Le 26/09/2021 à 09:20, Kefeng Wang a écrit :
->> Use is_kernel_text() and is_kernel_inittext() helper to simplify code,
->> also drop etext, _stext, _sinittext, _einittext declaration which
->> already declared in section.h.
->>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   arch/powerpc/mm/pgtable_32.c | 7 ++-----
->>   1 file changed, 2 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
->> index dcf5ecca19d9..13c798308c2e 100644
->> --- a/arch/powerpc/mm/pgtable_32.c
->> +++ b/arch/powerpc/mm/pgtable_32.c
->> @@ -33,8 +33,6 @@
->>   #include <mm/mmu_decl.h>
->> -extern char etext[], _stext[], _sinittext[], _einittext[];
->> -
->>   static u8 early_fixmap_pagetable[FIXMAP_PTE_SIZE] __page_aligned_data;
->>   notrace void __init early_ioremap_init(void)
->> @@ -104,14 +102,13 @@ static void __init __mapin_ram_chunk(unsigned 
->> long offset, unsigned long top)
->>   {
->>       unsigned long v, s;
->>       phys_addr_t p;
->> -    int ktext;
->> +    bool ktext;
->>       s = offset;
->>       v = PAGE_OFFSET + s;
->>       p = memstart_addr + s;
->>       for (; s < top; s += PAGE_SIZE) {
->> -        ktext = ((char *)v >= _stext && (char *)v < etext) ||
->> -            ((char *)v >= _sinittext && (char *)v < _einittext);
->> +        ktext = (is_kernel_text(v) || is_kernel_inittext(v));
-> 
-> I think we could use core_kernel_next() instead.
-Indead. oops, sorry for the build error, will update, thanks.
+It's safe for the helpers to handle the PASID case (modifying the current task's
+PASID state in #GP).
 
-> 
-> Build failure on mpc885_ads_defconfig
-> 
-> arch/powerpc/mm/pgtable_32.c: In function '__mapin_ram_chunk':
-> arch/powerpc/mm/pgtable_32.c:111:26: error: implicit declaration of 
-> function 'is_kernel_text'; did you mean 'is_kernel_inittext'? 
-> [-Werror=implicit-function-declaration]
->    111 |                 ktext = (is_kernel_text(v) || 
-> is_kernel_inittext(v));
->        |                          ^~~~~~~~~~~~~~
->        |                          is_kernel_inittext
-> cc1: all warnings being treated as errors
-> make[2]: *** [scripts/Makefile.build:277: arch/powerpc/mm/pgtable_32.o] 
-> Error 1
-> make[1]: *** [scripts/Makefile.build:540: arch/powerpc/mm] Error 2
-> make: *** [Makefile:1868: arch/powerpc] Error 2
-> 
-> 
-> .
+But the helpers seem to be generic. They take "task" as a parameter and
+handle the task as non-current case. So the helpers are not for PASID only.
+They may be used by others to modify a running task's FPU state. But
+It's not safe to do so.
+
+At least need some comments/restriction for the helpers to be used on
+a running task?
+
+Thanks.
+
+-Fenghua
