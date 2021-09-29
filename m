@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C705E41CB0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D3F41CB10
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344687AbhI2R1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
+        id S1344620AbhI2R1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244721AbhI2R1G (ORCPT
+        with ESMTP id S244721AbhI2R1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:27:06 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AC1C061760;
-        Wed, 29 Sep 2021 10:25:25 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bd10085b5178de8b08a0e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:d100:85b5:178d:e8b0:8a0e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EFE231EC085D;
-        Wed, 29 Sep 2021 19:25:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632936324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=y/YSVKPz9O6La4nqgfOZhSPntZc7BllBHBJbPD+DgVw=;
-        b=LxeHHdcNffy35LFdD96qNzM49vE6teo3umfP4ix8VPJapVr0lpiTVaY+CxmAC3nk8Gj3Tc
-        MKiExWcSc3wL9YjiOMT3ty//UnaFWs/4uNI5zspIUZjUhkmh1xtLs7uDygniu+JpaWPoTs
-        XNxJ/6bbGghvOxtnHXpgwgRFPZRAnek=
-Date:   Wed, 29 Sep 2021 19:25:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 07/45] x86/traps: Define RMP violation #PF error
- code
-Message-ID: <YVSheQCk2FvXvBwO@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-8-brijesh.singh@amd.com>
+        Wed, 29 Sep 2021 13:27:32 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F0CC06161C;
+        Wed, 29 Sep 2021 10:25:51 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id z184so4124332iof.5;
+        Wed, 29 Sep 2021 10:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uo5wdJ8tx91k6K+DQc3R4uUM/2lDe3STxWI2pnba17U=;
+        b=iJ129/aov0nIqZFamxuJI7mJgmJBAfoum+Qn/kk6TykHWPUrtc14DgykBQAJdHFDV5
+         XvjK1UC0J8L1BKGOr6N3taLXft9EyPvcvgqBPW7ksc16KOB0wTiYuNymoZ8ALMCEsidc
+         VCO2miR8FZ8hEL6eQa837HgZZn6AEqT4k8IiHUwncEflJDhFBPVSfiyvdBCV02sajv2+
+         V/d4ZXUP6DR0mI9SU3018yCiPL01SOYImRFkvcUtZwKJ+zJxaqJH0fLiXEohx41n3hsk
+         /zVmTtUpLE4WnYqhwp9NRCkGIiRrNsViDCdrM8Gc6EVB13cCrJpkPfShYP3v7cMDoaQ1
+         Rf3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uo5wdJ8tx91k6K+DQc3R4uUM/2lDe3STxWI2pnba17U=;
+        b=8M/usWVziDsbzkE9F3kQKFi7Eg2m/Ls/cB2Lak0a3Pqv2xsObwSEJKRxTZFujAPur5
+         dRXwcFQnY4W+Jxms2eAkwk0O1pHpinBSE9sOZShJfmdJ8qDuXOvffuqSEkNxJnliKmRo
+         1vbu6q1/GgjhIu6N/O4Tjv5buEsVDLe8keZnDbcF5iBdA/CHhicb5jmtDhWHP91WF4Tk
+         45vA6dxfDF7QSmyU5vr5K06uSnnNqQ8HvLZRuOhIvpXrni7uqRdCdLam4/sEJBvUIHOV
+         5Y65pqtj9kNNRRFqenp5l62t++4arTDhcULbfDKcot6io1cEoYO+pYa3oQKy+gm+N0NA
+         hPLw==
+X-Gm-Message-State: AOAM531/IUxDw2LEZsncFKm0huE3wgYAAI6HiIw8uB0EzgCOhwcgT0yW
+        vtMYMP+TBWCgY3yEyeM+QkhdMWjYeUnhhT1u6HY=
+X-Google-Smtp-Source: ABdhPJxHjaDT8w89zUg3jVpR9+G7WpkM+ROb+WNCdC2U7BMn2xokhYELmFSWrtOPd1naZNGHmrREUJ5dlYdy9SVllOk=
+X-Received: by 2002:a5d:9cd4:: with SMTP id w20mr727907iow.172.1632936351043;
+ Wed, 29 Sep 2021 10:25:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-8-brijesh.singh@amd.com>
+References: <20210928140932.41432dff@canb.auug.org.au> <20210928051849.00000e99@garyguo.net>
+ <20210928155247.5220932c@canb.auug.org.au> <20210929093758.7af9e589@canb.auug.org.au>
+ <CAK7LNARKydbF1rHhKoqO9hmokuy401vJbAKSGZn1J2uuzXHRuQ@mail.gmail.com>
+In-Reply-To: <CAK7LNARKydbF1rHhKoqO9hmokuy401vJbAKSGZn1J2uuzXHRuQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 29 Sep 2021 19:25:39 +0200
+Message-ID: <CANiq72mcK_7JDRJy7aDDLVvYTHaUhbH=Pfaf_fG9FKp9Ckp8Og@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the rust tree
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Gary Guo <gary@garyguo.net>,
+        Richard Weinberger <richard@nod.at>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Yuki Okushi <jtitor@2k36.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:58:40AM -0500, Brijesh Singh wrote:
->  enum x86_pf_error_code {
-> -	X86_PF_PROT	=		1 << 0,
-> -	X86_PF_WRITE	=		1 << 1,
-> -	X86_PF_USER	=		1 << 2,
-> -	X86_PF_RSVD	=		1 << 3,
-> -	X86_PF_INSTR	=		1 << 4,
-> -	X86_PF_PK	=		1 << 5,
-> -	X86_PF_SGX	=		1 << 15,
-> +	X86_PF_PROT	=		BIT_ULL(0),
-> +	X86_PF_WRITE	=		BIT_ULL(1),
-> +	X86_PF_USER	=		BIT_ULL(2),
-> +	X86_PF_RSVD	=		BIT_ULL(3),
-> +	X86_PF_INSTR	=		BIT_ULL(4),
-> +	X86_PF_PK	=		BIT_ULL(5),
-> +	X86_PF_SGX	=		BIT_ULL(15),
-> +	X86_PF_RMP	=		BIT_ULL(31),
+On Wed, Sep 29, 2021 at 7:14 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> I dropped those two offending commits from my tree for now
+> (with a different reason).
+>
+> I will try my best to avoid complex conflicts next time.
 
-Those are tested against error_code mostly, which is unsigned long so it
-looks like you wanna use _BITUL() here. Not that it matters on x86-64
-but if we want to be precise...
+Thanks Masahiro -- let me know if you need anything from my side or if
+you prefer another solution etc.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Cheers,
+Miguel
