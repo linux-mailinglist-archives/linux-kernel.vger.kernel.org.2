@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66A541C770
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C904841C777
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344793AbhI2O4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344674AbhI2O4Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:56:16 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171FAC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:54:35 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id b15so11753546lfe.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aNDg8rH1IqsEJHwICt9FxmmYGgFjw33LIv8Cr+MhvCs=;
-        b=VFYPi4rv9wgyl4t8uz6CJR4Q7ZjHLJ2oS8yeRT8WjzQvB5Mm4tn4CqGiZi6Lcxt2FT
-         Oym7hvM8rN6crEe6JMre7ZZUqaGTGI0QWaK+jC3F8ZIIwuXQ0zvyEw9PXsP/dvonGW+t
-         jyPb4DeHtEtasd42m/XYhIm1KCy7sPuk6ShXk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aNDg8rH1IqsEJHwICt9FxmmYGgFjw33LIv8Cr+MhvCs=;
-        b=dU56Q6crbSp7bjLiOVMvRu9LhnzhTmqgBxH/KUJ/idz9tA0VdwSfiAtpsqbEhQ/slS
-         97kqcztXgQwslOOgpyWH+CxGOi3qTTKpYFPFjazAslaGi1Wd+bs+aPlkLejEbFLSzH5x
-         7+UVa4Eh31XtGJtNmFx4vRpbLdVInI1wS7+lXDdoVbtuZLZ5lP71Z8mtx9i1Zpprs9u7
-         A07FWmnH4dT0rxvxvnZfaD0PF7wXkcQtJFzzlJy61L0wzuRj8Xi+xLsJmv2CLZhFtMMU
-         Ea9k3NfRag8/l+UXOtwNsqtOdwxwbZkHhYlHTgDygBUmRzwqdITcpOg7rY2u2FRGWq22
-         ZsPQ==
-X-Gm-Message-State: AOAM5328KGcBFvs9q4HuW03JHu5h93ymKdoCB56+YlRmLnmEAOUGqOch
-        /Afv3XOPG8ocgsTacQg/QVUAIEK4bd+gqMSX
-X-Google-Smtp-Source: ABdhPJxCP0jfedY0aWmaTwXImYAVfrLayYUgd6MU/1eDclRRDWjV2AVs7yO0ZV64XKG+9jeuYCT3Wg==
-X-Received: by 2002:a19:6544:: with SMTP id c4mr152950lfj.130.1632927271980;
-        Wed, 29 Sep 2021 07:54:31 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id t18sm12851lfl.219.2021.09.29.07.54.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 07:54:31 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id u18so11839078lfd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:54:30 -0700 (PDT)
-X-Received: by 2002:a2e:5815:: with SMTP id m21mr329675ljb.95.1632927270683;
- Wed, 29 Sep 2021 07:54:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <CAHk-=wg23CqjGWjjxDQ7yxrb+eF5at2KFU03GZa18Znx=+Xvow@mail.gmail.com>
-In-Reply-To: <CAHk-=wg23CqjGWjjxDQ7yxrb+eF5at2KFU03GZa18Znx=+Xvow@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 29 Sep 2021 07:54:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjd_BJiJYZ99PAoc4mQ3QTiZrt-tRdznj3g9kU8-gYsAA@mail.gmail.com>
-Message-ID: <CAHk-=wjd_BJiJYZ99PAoc4mQ3QTiZrt-tRdznj3g9kU8-gYsAA@mail.gmail.com>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        id S1344790AbhI2O5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:57:08 -0400
+Received: from 8bytes.org ([81.169.241.247]:41112 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344781AbhI2O5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:57:07 -0400
+Received: from cap.home.8bytes.org (p4ff2b5b0.dip0.t-ipconnect.de [79.242.181.176])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id C4178100E;
+        Wed, 29 Sep 2021 16:55:21 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Joerg Roedel <jroedel@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] x86/mm: Fix some issues with using trampoline_pgd
+Date:   Wed, 29 Sep 2021 16:54:57 +0200
+Message-Id: <20210929145501.4612-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 7:47 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> And if there *is* need ("look, we have that same store in both the if-
-> and the else-statement" or whatever), then say so, and state that
-> thing.
+From: Joerg Roedel <jroedel@suse.de>
 
-Side note: I'd also like the commit that introduces this to talk very
-explicitly about the particular case that it is used doe and that it
-fixes. No "this can happen". A "this happened, here's the _actual_
-wrong code generation, and look how this new ctrl_dep() macro fixes
-it".
+Hi,
 
-When it's this subtle, I don't want theoretical arguments. I want
-actual outstanding and real bugs.
+here are a couple of fixes and documentation improvements for the
+kernels use of the trampoline_pgd. The first patch adds a comment to
+document that the trampoline_pgd aliases kernel page-tables in the
+user address range, establishing global TLB entries for these
+addresses.
 
-Because I get the feeling that there were very few actual realistic
-examples of this, only made-up theoretical cases that wouldn't ever
-really be found in real code.
+The next two patches add global TLB flushes when switching to and from
+the trampoline_pgd. The last patch extends the trampoline_pgd to cover
+the whole kernel address range. This is needed to make sure the stack
+and the real_mode_header don't get unmapped when switching to the
+trampoline_pgd.
 
-                Linus
+Please review.
+
+Thanks,
+
+	Joerg
+
+Joerg Roedel (4):
+  x86/realmode: Add comment for Global bit usage in trampline_pgd
+  x86/mm/64: Flush global TLB on AP bringup
+  x86/mm: Flush global TLB when switching to trampoline page-table
+  x86/64/mm: Map all kernel memory into trampoline_pgd
+
+ arch/x86/include/asm/realmode.h |  1 +
+ arch/x86/kernel/cpu/common.c    |  6 ++++++
+ arch/x86/kernel/reboot.c        | 12 ++----------
+ arch/x86/mm/init.c              |  5 +++++
+ arch/x86/realmode/init.c        | 31 ++++++++++++++++++++++++++++++-
+ 5 files changed, 44 insertions(+), 11 deletions(-)
+
+
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+-- 
+2.33.0
+
