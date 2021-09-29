@@ -2,245 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC6D41CC0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA1F41CC0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346288AbhI2SmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        id S1346292AbhI2Snj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244341AbhI2SmV (ORCPT
+        with ESMTP id S244341AbhI2Sni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:42:21 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45168C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:40:40 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h12so2342867pjj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:40:40 -0700 (PDT)
+        Wed, 29 Sep 2021 14:43:38 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12B1C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:41:56 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z5so7563066ybj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4jwM7sobvyC/yr53MKLR0xpqrIrHAxpL22WbxQS8Ssk=;
-        b=BO4+2wrBhpWuCNj60xpuPgO7J50jiinFUZAkXTz6DPCNbk/I5aD11OhFxHjNtyFxYf
-         RvbtY17gJxHrUyr27wF6UBUJhxcBqQjmphC31JZ64+fNg3H8Bwg86zMp615PKpLSaL3v
-         mAQ9BTwki3iV5apUvUPYwTeH/26Af/6eh1ChA=
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SFBNphSzefupqMOU/FsZmobfn4DHEGh119C5ZxnfiGU=;
+        b=oMLjATvPGSpioTo7Narm2EOrCji/7AFatopBvAuzGkFWwdEXXNuZ1hZbw5aONHH3Tj
+         LLzhzQ8GV75CJj5F0TS7kJu2urizG6ykARntXihNeOyWRlHzmO76u4TRMJirLvNjpJjq
+         PMQ2U9icPf23CzpmrsroakFFWWnssLXJjTaM6uCeYmoRZ00VamCh7RQM8F0YMhybPDPl
+         drN/2bFYh7ofR/j/0AZK5q0cGHa2NNaYzIPcKUK+AZxS8cYOYvXQ/Jwlr9PmjthptdHU
+         W7QjCMgV3pxrefEXRXJqlWzbItMAPEJ6cd0DVOeogFLqjmqCHoKeFNDlwBYmZzdHwHci
+         WAvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4jwM7sobvyC/yr53MKLR0xpqrIrHAxpL22WbxQS8Ssk=;
-        b=8FJZ5J0FlfHn/QpYhl/0fOPtZo88iUeP/fi3TojKftRYI2+t942a1yA4Io/qMdCujI
-         VklU3ir87s1r5BEcag0uJ8UROu2lmjar8nZKykOuNuHdObPJ87eTrhdKsSGnx0GLI533
-         auz4eSk51LJBJdNH1Bex5e5P92xiNNcLnW1nGS8O+RKTEHetPmqwcdS4DKsYQecxHY2t
-         MxwJcqt9NBdvTCNWxUbLikZ5e+akIqBM5Gy7ZrWNcKCHRuI27MCmiIBjFRsooQ1r7HbH
-         oaPE02eePriS3BRY0Ezq5px47cx/lm1typh9e/cU04qjQgHoVlWi1rECTxitGkRtLQTN
-         kHQA==
-X-Gm-Message-State: AOAM5332INLso5PetcZ4z3hRHmjFRYgYKtWhZLX7BbKaTv4+6OVuK1AI
-        voZ1ESs2fEtfTlJqvw8/q7H/OQ==
-X-Google-Smtp-Source: ABdhPJyU6YGAnOeNMh7OS1RrgoT3QJ2xKwQz0u5IBYHVhIbWpHqBeKoWjIxxse5LTwLah0AAs5Kibw==
-X-Received: by 2002:a17:90b:2385:: with SMTP id mr5mr1478243pjb.189.1632940839770;
-        Wed, 29 Sep 2021 11:40:39 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:2f10:2763:4825:1f01])
-        by smtp.gmail.com with UTF8SMTPSA id c9sm425983pfi.212.2021.09.29.11.40.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 11:40:39 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 11:40:37 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sdm845: mtp: Add vadc channels
- and thermal zones
-Message-ID: <YVSzJZ8G43CLml3L@google.com>
-References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
- <20210923212311.2877048-5-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SFBNphSzefupqMOU/FsZmobfn4DHEGh119C5ZxnfiGU=;
+        b=72K7yiB+bB/lL4gj1vDxxkE1eIozcurcKZ/v9qJJnV85pjW/WMoNFK1vkFMvCgp2wD
+         3D17W9DZ4Z4upXsysgcBBZSGAh7QsaVq0sgFr4uM1deBhl/lhLXQQ+exDmueMvO071dy
+         ZgofxN5CpU6jqhbo4s8culefLarnUzSB16QPdo0ldiWGcdd/fEbFieGV6jGyPfAhyv05
+         1FddyhvhsvCpRG4PPulUabPkrgee6D4LWwkBHyt0BAHkw19ISmsR9xJYc6cVyD6cXkwb
+         A9bFg7kZY4jN7pu4J/g7W1pPmkpJEsBUBi9lqlK6TLePMybDmKJjG3v1nFJuCZAFeEnz
+         4rNg==
+X-Gm-Message-State: AOAM532UInDoBnqdHNKUI+Mvp4SE3+MZjZyMS/FqM6SHqimQd2QdYQST
+        Nsfs7PGeGTMrf88kXcrgVe/Kbo7eDPQNr9xSOERCIo1S9jk=
+X-Google-Smtp-Source: ABdhPJwNmyLL1Vwcs1z7Otw9xiAbBHCqdUBRaIm6Ff1TN2FnEmGLp4rH35K82AHKVwUCmUznS8VNwGyvHPzRqlWGD78=
+X-Received: by 2002:a25:14d6:: with SMTP id 205mr1568573ybu.93.1632940915963;
+ Wed, 29 Sep 2021 11:41:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210923212311.2877048-5-bjorn.andersson@linaro.org>
+References: <20210923172215.18376-1-nikita.yoush@cogentembedded.com>
+In-Reply-To: <20210923172215.18376-1-nikita.yoush@cogentembedded.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 29 Sep 2021 20:41:45 +0200
+Message-ID: <CAMpxmJUy6_Yb_2622TAjTxD1bged25LsOOkvafCzj-e1d=UTTg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: pca953x: do not ignore i2c errors
+To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 02:23:11PM -0700, Bjorn Andersson wrote:
-> Downstream defines four ADC channels related to thermal sensors external
-> to the PM8998 and two channels for internal voltage measurements.
-> 
-> Add these to the upstream SDM845 MTP, describe the thermal monitor
-> channels and add thermal_zones for these.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Thu, Sep 23, 2021 at 7:22 PM Nikita Yushchenko
+<nikita.yoush@cogentembedded.com> wrote:
+>
+> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+>
+> Per gpio_chip interface, error shall be proparated to the caller.
+>
+> Attempt to silent diagnostics by returning zero (as written in the
+> comment) is plain wrong, because the zero return can be interpreted by
+> the caller as the gpio value.
+>
+> Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 > ---
-> 
-> In addition to the iio channels exposed by v1, Daniel wanted thermal_zones...
-> 
-> Changes since v1:
-> - Enable the pm8998_adc_tm and describe the ADC channels
-> - Add thermal-zones for the new channels
-> 
->  arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 128 ++++++++++++++++++++++++
->  1 file changed, 128 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> index 52dd7a858231..e3b40daef801 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> @@ -10,6 +10,8 @@
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->  #include "sdm845.dtsi"
-> +#include "pm8998.dtsi"
-> +#include "pmi8998.dtsi"
->  
->  / {
->  	model = "Qualcomm Technologies, Inc. SDM845 MTP";
-> @@ -46,6 +48,68 @@ vreg_s4a_1p8: pm8998-smps4 {
->  
->  		vin-supply = <&vph_pwr>;
->  	};
-> +
-> +	thermal-zones {
-> +		xo_thermal: xo-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&pm8998_adc_tm 1>;
-> +
-> +			trips {
-> +				trip-point {
-> +					temperature = <125000>;
-> +					hysteresis = <10000>;
-> +					type = "passive";
-> +				};
-> +			};
-> +		};
-> +
-> +		msm_thermal: msm-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&pm8998_adc_tm 2>;
-> +
-> +			trips {
-> +				trip-point {
-> +					temperature = <125000>;
-> +					hysteresis = <10000>;
-> +					type = "passive";
-> +				};
-> +			};
-> +		};
-> +
-> +		pa_thermal: pa-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&pm8998_adc_tm 3>;
-> +
-> +			trips {
-> +				trip-point {
-> +					temperature = <125000>;
-> +					hysteresis = <10000>;
-> +					type = "passive";
-> +				};
-> +			};
-> +		};
-> +
-> +		quiet_thermal: quiet-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&pm8998_adc_tm 4>;
-> +
-> +			trips {
-> +				trip-point {
-> +					temperature = <125000>;
-> +					hysteresis = <10000>;
-> +					type = "passive";
-> +				};
-> +			};
-> +		};
-> +	};
->  };
->  
->  &adsp_pas {
-> @@ -469,6 +533,70 @@ &mss_pil {
->  	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
->  };
->  
-> +&pm8998_adc {
-> +	adc-chan@4c {
-> +		reg = <ADC5_XO_THERM_100K_PU>;
-> +		label = "xo_therm";
-> +	};
-> +
-> +	adc-chan@4d {
-> +		reg = <ADC5_AMUX_THM1_100K_PU>;
-> +		label = "msm_therm";
-> +	};
-> +
-> +	adc-chan@4f {
-> +		reg = <ADC5_AMUX_THM3_100K_PU>;
-> +		label = "pa_therm1";
-> +	};
-> +
-> +	adc-chan@51 {
-> +		reg = <ADC5_AMUX_THM5_100K_PU>;
-> +		label = "quiet_therm";
-> +	};
-> +
-> +	adc-chan@83 {
-> +		reg = <ADC5_VPH_PWR>;
-> +		label = "vph_pwr";
-> +	};
-> +
-> +	adc-chan@85 {
-> +		reg = <ADC5_VCOIN>;
-> +		label = "vcoin";
-> +	};
-> +};
-> +
-> +&pm8998_adc_tm {
-> +	status = "okay";
-> +
-> +	xo-thermistor@1 {
-> +		reg = <1>;
-> +		io-channels = <&pm8998_adc ADC5_XO_THERM_100K_PU>;
-> +		qcom,ratiometric;
-> +		qcom,hw-settle-time-us = <200>;
-> +	};
-> +
-> +	msm-thermistor@2 {
-> +		reg = <2>;
-> +		io-channels = <&pm8998_adc ADC5_AMUX_THM1_100K_PU>;
-> +		qcom,ratiometric;
-> +		qcom,hw-settle-time-us = <200>;
-> +	};
-> +
-> +	pa-thermistor@3 {
-> +		reg = <3>;
-> +		io-channels = <&pm8998_adc ADC5_AMUX_THM3_100K_PU>;
-> +		qcom,ratiometric;
-> +		qcom,hw-settle-time-us = <200>;
-> +	};
-> +
-> +	quiet-thermistor@4 {
-> +		reg = <4>;
-> +		io-channels = <&pm8998_adc ADC5_AMUX_THM5_100K_PU>;
-> +		qcom,ratiometric;
-> +		qcom,hw-settle-time-us = <200>;
-> +	};
-> +};
-> +
+>  drivers/gpio/gpio-pca953x.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+> index f5cfc0698799..8ebf369b3ba0 100644
+> --- a/drivers/gpio/gpio-pca953x.c
+> +++ b/drivers/gpio/gpio-pca953x.c
+> @@ -468,15 +468,8 @@ static int pca953x_gpio_get_value(struct gpio_chip *gc, unsigned off)
+>         mutex_lock(&chip->i2c_lock);
+>         ret = regmap_read(chip->regmap, inreg, &reg_val);
+>         mutex_unlock(&chip->i2c_lock);
+> -       if (ret < 0) {
+> -               /*
+> -                * NOTE:
+> -                * diagnostic already emitted; that's all we should
+> -                * do unless gpio_*_value_cansleep() calls become different
+> -                * from their nonsleeping siblings (and report faults).
+> -                */
+> -               return 0;
+> -       }
+> +       if (ret < 0)
+> +               return ret;
+>
+>         return !!(reg_val & bit);
+>  }
+> --
+> 2.30.2
+>
 
-The example in the 'qcom,spmi-adc-tm5' binding specifies 'qcom,ratiometric'
-and 'qcom,hw-settle-time-us' for both the ADC and the thermal monitor, so do
-several board files (e.g. sm8250-mtp.dts and qrb5165-rb5.dts). This apparent
-redundancy bothered me earlier, it's not really clear to me whether it's
-needed/recommended or not. Do you happen to have any insights on this?
+Applied, thanks!
+
+Bart
