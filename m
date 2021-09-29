@@ -2,118 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E7441C6B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F4D41C6C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344477AbhI2Ocu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:32:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
+        id S1344417AbhI2OgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:36:13 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52556 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245632AbhI2Oct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:32:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 125FC610CC;
-        Wed, 29 Sep 2021 14:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632925867;
-        bh=5J9i/PjQ6jdxK2kOImSO+oQGMSYmdpfWzCpwuVBY2d0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vB3ka2ZOtDpsOdBe8FXBPJmSoNh8GSWrL0prJW6U3i/f7lX+X3AoVF5PHb8HZeOUK
-         GoD/Qzf9Z3yZQKIaT6lcRYeT3sIxm/S+c9PP4S75v/Z3s55+mQGFuqTdMeKLDrmfKM
-         +DRF2ViEmEPJquHp5DZYk8BhsDfoXlmMDdvOuo6KFrgnMWqq8O2LcPqpBHwf+/nzi2
-         rHDahLDcWWa0Tne7Z4jjLPHNC9Ad9UeEvHrboot81a0p4i4wzJVOXuZ12uZApMX1Ua
-         zh+sR1ZnumyxcwjxXLndgN5mtewH3aref/5V7dtV7d9nIJDAmMdjXp9DwGhEE0coPQ
-         eTzrFGTNxPsxg==
-Date:   Wed, 29 Sep 2021 17:31:04 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 4/5] net/mlx5: Register separate reload
- devlink ops for multiport device
-Message-ID: <YVR4qDxiQw95jaWK@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <a8bf9a036fe0a590df830a77a31cc81c355f525d.1632916329.git.leonro@nvidia.com>
- <20210929065549.43b13203@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR1PKQjsBfvUTPU@unreal>
- <20210929072631.437ffad9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S245348AbhI2OgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:36:11 -0400
+Received: from zn.tnic (p200300ec2f0bd10038530ecc14d583ae.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:d100:3853:ecc:14d5:83ae])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 507141EC0814;
+        Wed, 29 Sep 2021 16:34:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632926069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QEjtvugqBhl7avNSjLLykeMqMn1pT0fAYHoaCtxwC5g=;
+        b=MJo8kK7EEisTu1gSO8tYOUFR16AEjm3UOf6KENNVp/6jifrPD0u/+Qt776B+Japu3N9iQD
+        ZT6LtQ5jo1Mc2o/H3GZcZ6tCcc8PaER5x1Meb0gImR+qXsi1u2RomCSKiP3kydsb/BXhZR
+        ZR/sGDuV/wVyW4a+UDkQ7NYR6prpmXk=
+Date:   Wed, 29 Sep 2021 16:34:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 06/45] x86/sev: Invalid pages from direct map
+ when adding it to RMP table
+Message-ID: <YVR5cOQOJxy12DcR@zn.tnic>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-7-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210929072631.437ffad9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210820155918.7518-7-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 07:26:31AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 17:16:28 +0300 Leon Romanovsky wrote:
-> > > > @@ -808,6 +812,9 @@ int mlx5_devlink_register(struct devlink *devlink)
-> > > >  	if (err)
-> > > >  		goto traps_reg_err;
-> > > >  
-> > > > +	if (!mlx5_core_is_mp_slave(dev))
-> > > > +		devlink_set_ops(devlink, &mlx5_devlink_reload);  
-> > > 
-> > > Does this work? Where do you make a copy of the ops? 🤔 You can't modify
-> > > the driver-global ops, to state the obvious.  
-> > 
-> > devlink_ops pointer is not constant at this stage, so why can't I copy
-> > reload_* pointers to the "main" devlink ops?
-> > 
-> > I wanted to avoid to copy all pointers.
-> 
-> Hm. I must be missing a key piece here. IIUC you want to have different
-> ops based on some device property. But there is only one
-> 
-> static struct devlink_ops mlx5_devlink_ops;
-> 
-> so how can two devlink instances in the system use that and have
-> different ops without a copy?
+On Fri, Aug 20, 2021 at 10:58:39AM -0500, Brijesh Singh wrote:
+> Subject: Re: [PATCH Part2 v5 06/45] x86/sev: Invalid pages from direct map when adding it to RMP table
 
-No, I have two:
-* Base ops - mlx5_devlink_ops
-* Extra reload commands - mlx5_devlink_reload
+That subject needs to have a verb. I think that verb should be
+"Invalidate".
 
-Thanks
+> The integrity guarantee of SEV-SNP is enforced through the RMP table.
+> The RMP is used with standard x86 and IOMMU page tables to enforce memory
+> restrictions and page access rights. The RMP check is enforced as soon as
+> SEV-SNP is enabled globally in the system. When hardware encounters an
+> RMP checks failure, it raises a page-fault exception.
+> 
+> The rmp_make_private() and rmp_make_shared() helpers are used to add
+> or remove the pages from the RMP table.
+
+> Improve the rmp_make_private() to
+> invalid state so that pages cannot be used in the direct-map after its
+> added in the RMP table, and restore to its default valid permission after
+> the pages are removed from the RMP table.
+
+That sentence needs rewriting into proper english.
+
+The more important thing is, though, this doesn't talk about *why*
+you're doing this: you want to remove pages from the direct map when
+they're in the RMP table because something might modify the page and
+then the RMP check will fail?
+
+Also, set_direct_map_invalid_noflush() simply clears the Present and RW
+bit of a pte.
+
+So what's up?
+
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kernel/sev.c | 61 ++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 60 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index 8627c49666c9..bad41deb8335 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -2441,10 +2441,42 @@ int psmash(u64 pfn)
+>  }
+>  EXPORT_SYMBOL_GPL(psmash);
+>  
+> +static int restore_direct_map(u64 pfn, int npages)
+
+restore_pages_in_direct_map()
+
+> +{
+> +	int i, ret = 0;
+> +
+> +	for (i = 0; i < npages; i++) {
+> +		ret = set_direct_map_default_noflush(pfn_to_page(pfn + i));
+> +		if (ret)
+> +			goto cleanup;
+> +	}
+
+So this is looping over a set of virtually contiguous pages, I presume,
+and if so, you should add a function called
+
+	set_memory_p_rw()
+
+to arch/x86/mm/pat/set_memory.c which does
+
+	return change_page_attr_set(&addr, numpages, __pgprot(_PAGE_PRESENT | _PAGE_RW), 0);
+
+so that you can do all pages in one go.
+
+> +
+> +cleanup:
+> +	WARN(ret > 0, "Failed to restore direct map for pfn 0x%llx\n", pfn + i);
+> +	return ret;
+> +}
+> +
+> +static int invalid_direct_map(unsigned long pfn, int npages)
+
+invalidate_pages_in_direct_map()
+
+or so.
+
+> +{
+> +	int i, ret = 0;
+> +
+> +	for (i = 0; i < npages; i++) {
+> +		ret = set_direct_map_invalid_noflush(pfn_to_page(pfn + i));
+
+Same as above but that helper should do the reverse:
+
+set_memory_np_ro()
+{
+	return change_page_attr_clear(&addr, numpages, __pgprot(_PAGE_PRESENT | _PAGE_RW), 0);
+}
+
+Btw, please add those helpers in a separate patch.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
