@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B1341C8B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C294641C8AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345393AbhI2Prr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245736AbhI2Prp (ORCPT
+        id S245655AbhI2PrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:47:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47063 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245666AbhI2Pqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:47:45 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC45C06161C;
-        Wed, 29 Sep 2021 08:46:04 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id dj4so10734587edb.5;
-        Wed, 29 Sep 2021 08:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vSb1TNpNZzqVv8bS20GQ0eXTwvtkrrxT72wlhx2kJsk=;
-        b=HPqnK0r7WgoPGzlJ4lz13MjJBztLXPj9CKhdgCPzIMoSodqahafgW2OulNd/Ah7PEu
-         MnvOyiVSAvYaS2U/JO+Y/kAsf4ZrNzN+Idxl8+UMLyrqfgwYzw8zEOSy85mvgEaFQmuG
-         eREHsU2rKtG1+L0FLbCXwaisy3eIKeX7Q3tRRDhiJzUQRnmSE4Xd9z3igd225jp91iN2
-         EMsytxSOIf2oi3F1uN0YrX+7O5c1K8kt7Nub0VsCvMWqZzY39anwD3OBVLGV6OjS9Ewb
-         XvpfThzSM59JnKEoaTQcCYvg6guJjXVQQixtxh2LgGm1qzsi/JRNrt05UGMipO1HzgQE
-         G4/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vSb1TNpNZzqVv8bS20GQ0eXTwvtkrrxT72wlhx2kJsk=;
-        b=nlxskcTpwe4UFzw2Xv60pHRJ9FFhMWtNZeW2SsYETdVU3nAcbECkTuSfec6SkrwRgm
-         ldSRsboB5349d3ETlYjkQVFFLuA0G3ZgJsXgD1sE9cgNcvq9K5GAF51oIfUcP7cgFUk7
-         1zirXdJSIjiEjK5RihZMSr6MeSH+YNLcFVkDmSi4Z48H5gAidmLrxsJzNN0wNr3iF4ip
-         yTfEIaNuxhJPs46EYCw0GXLx+sEvXj6si2zm5HB9gAqrtenmOnVw/rQmC3O6yEUVoq9o
-         RhxH5ujAoCjtdIrlKFVoChOwG6TrDzEi2S+HR/Py8x2YX1W6TpoR7ixWo4VQAihssQKh
-         W7ow==
-X-Gm-Message-State: AOAM532zWsq83dXHiD9OddyvLVX0qSqx7/0hZnRNukAaVLRmGJSPSnK1
-        CLgec1LUg8rXmEAf0/vPJ8JDQWat1sszgD46SN8=
-X-Google-Smtp-Source: ABdhPJwog2XFbZkmx6aqnESTHTZwapBu+Pl0+rooI9Sd+aZgi/waJZeS9/S0RCwbBDE5MuNm3hEmxqmSNHg3QxPQrg4=
-X-Received: by 2002:a50:e142:: with SMTP id i2mr651916edl.107.1632930306381;
- Wed, 29 Sep 2021 08:45:06 -0700 (PDT)
+        Wed, 29 Sep 2021 11:46:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632930311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YD/JzDwhuk7rGKkEzFS8gH/oiqrA2eu324rL5fdp0h4=;
+        b=NRuD8HkEofbvJj09h00/2DJOUDZ5/NfmHRNvvk6wbmoXms3cekK5UmvqlBzMsZghOzo/5T
+        DMWYhL1aLXvMqBcwQanzHHG5EigBYXZbQAaKijRNNkEwXEhYTw62nzlM3pXvkqdgefWXHF
+        OphwKtKDZplTKYPURGKYUWKPYHVsDuM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-RydRWjxQMwK58uTqWu6Ekw-1; Wed, 29 Sep 2021 11:45:08 -0400
+X-MC-Unique: RydRWjxQMwK58uTqWu6Ekw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CAB1006AA3;
+        Wed, 29 Sep 2021 15:45:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 51DD86A900;
+        Wed, 29 Sep 2021 15:45:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210927200708.GI9286@twin.jikos.cz>
+References: <20210927200708.GI9286@twin.jikos.cz> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+To:     dsterba@suse.cz
+Cc:     dhowells@redhat.com
+Cc:     willy@infradead.org, Chris Mason <clm@fb.com>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Ilya Dryomov <idryomov@gmail.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
 MIME-Version: 1.0
-References: <20210929133729.9427-1-heikki.krogerus@linux.intel.com>
-In-Reply-To: <20210929133729.9427-1-heikki.krogerus@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 29 Sep 2021 18:44:29 +0300
-Message-ID: <CAHp75VeShObZoLO_P5ZFYvR-4wr2Fpfpc9gojJB5a4LQne3pPg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] device property: Remove device_add_properties()
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4005661.1632930302.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 29 Sep 2021 16:45:02 +0100
+Message-ID: <4005662.1632930302@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 5:18 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> Hi,
->
-> There is one user left for the API, so converting that to use software
-> node API instead, and removing the function.
+David Sterba <dsterba@suse.cz> wrote:
 
-All look good to me, thank you for removing the old API!
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > There are additional patches to get rid of noop_direct_IO and replace =
+it
+> > with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use=
+ the
+> > new ->swap_rw method and thence remove the direct BIO submission paths=
+ from
+> > swap.
+> > =
 
-> thanks,
+> > I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure =
+if
+> > that's necessary, but it seems accounting related.
 >
-> Heikki Krogerus (2):
->   PCI: Use software node API with additional device properties
->   device property: Remove device_add_properties() API
->
->  drivers/base/core.c      |  1 -
->  drivers/base/property.c  | 48 ----------------------------------------
->  drivers/pci/quirks.c     |  2 +-
->  include/linux/property.h |  4 ----
->  4 files changed, 1 insertion(+), 54 deletions(-)
+> There was probably some step missing. The file must not have holes, so
+> either do 'dd' to the right size or use fallocate (which is recommended
+> in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
+> exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
+> could try that without having to set up the swapfile manually.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Yeah.  As advised elsewhere, I removed the file and recreated it, doing th=
+e
+chattr before extending the file.  At that point swapon worked.  It didn't
+work though, and various userspace programs started dying.  I'm guessing m=
+y
+btrfs_swap_rw() is wrong somehow.
+
+David
+
