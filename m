@@ -2,207 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0B241BD54
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6B641BD27
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243944AbhI2D0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:26:10 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:40711 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243931AbhI2D0J (ORCPT
+        id S243873AbhI2DRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:17:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230022AbhI2DRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:26:09 -0400
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210929032427epoutp033f0f27a6b6bbde771c89e61915f21a0e~pLQt8TnEw2789427894epoutp03J
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 03:24:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210929032427epoutp033f0f27a6b6bbde771c89e61915f21a0e~pLQt8TnEw2789427894epoutp03J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632885867;
-        bh=IaMYQS1lqoNxu3W1BOxesvck03z7/43KHkhq9l1WpTk=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=N+e4WwvI+KkOMku49feu08OCDBYmfYrk2rRPYfJQatTnMoar+imwTiJC49A+fd6Jj
-         /cqCK+F30dgx/votTGMIWDsmygR7EgCgvFI+T3JFPeK9aZ5GvNXKPmgessLTrSf6D5
-         V1phgh5YooP7WeqgRxPaR2nk+G2M6NnASK/iVm9k=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20210929032426epcas5p32aeb9274eb68bcde0990c062eac424fa~pLQtfTBDu0995609956epcas5p3y;
-        Wed, 29 Sep 2021 03:24:26 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4HK1v916j1z4x9QM; Wed, 29 Sep
-        2021 03:24:21 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        40.F1.59762.15CD3516; Wed, 29 Sep 2021 12:24:01 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210929031358epcas5p2bcc25bd81a117ddb35e053ddea0606a1~pLHkBF2982380823808epcas5p2W;
-        Wed, 29 Sep 2021 03:13:58 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210929031358epsmtrp2e56fc0d37baa0db2ad4ca2c126a566c2~pLHj-jUuU1008010080epsmtrp2b;
-        Wed, 29 Sep 2021 03:13:58 +0000 (GMT)
-X-AuditID: b6c32a49-125ff7000000e972-fa-6153dc510563
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        75.76.08750.5F9D3516; Wed, 29 Sep 2021 12:13:58 +0900 (KST)
-Received: from alimakhtar03 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210929031355epsmtip2836ddd52a5aa308a920324f5575a5d05~pLHh2dAs-2133521335epsmtip2G;
-        Wed, 29 Sep 2021 03:13:55 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Bao D. Nguyen'" <nguyenb@codeaurora.org>, <cang@codeaurora.org>,
-        <asutoshd@codeaurora.org>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>
-Cc:     <linux-arm-msm@vger.kernel.org>,
-        "'Avri Altman'" <avri.altman@wdc.com>,
-        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
-        "'Bean Huo'" <beanhuo@micron.com>,
-        "'Stanley Chu'" <stanley.chu@mediatek.com>,
-        "'Bart Van Assche'" <bvanassche@acm.org>,
-        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
-        "'Adrian Hunter'" <adrian.hunter@intel.com>,
-        "'Keoseong Park'" <keosung.park@samsung.com>,
-        "'open list'" <linux-kernel@vger.kernel.org>
-In-Reply-To: <a29bfdd0c8f1d1a3e5fb69e43ea277c97a7f0cb6.1632818942.git.nguyenb@codeaurora.org>
-Subject: RE: [PATCH v2 1/2] scsi: ufs: export hibern8 entry and exit
-Date:   Wed, 29 Sep 2021 08:43:54 +0530
-Message-ID: <00f801d7b4e0$0acfe630$206fb290$@samsung.com>
+        Tue, 28 Sep 2021 23:17:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632885325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VYUwZTajBKG73N6boXA2eLFqYW6+o4P9ejOOh0bWbFg=;
+        b=ET73G2qCnst0nmmX3AH9O7U/jWwbZuxNKq1vh9seY1o4vJMAkghZQEcuiLNRNTHVx4Y5iG
+        TlxvqhmT+IuE/XZtst2vdNq5CsvOkEYjEH7x+ZGIJVrFI4Ty/mtYVv7CX9xEvt+ksquoMt
+        ArH/ruR5Diz7CcLK70/B2eIKg3Q8nB4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-4BAQyUcGPhy24kJMwOxdew-1; Tue, 28 Sep 2021 23:15:22 -0400
+X-MC-Unique: 4BAQyUcGPhy24kJMwOxdew-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EEBE1084687;
+        Wed, 29 Sep 2021 03:15:20 +0000 (UTC)
+Received: from piliu.users.ipa.redhat.com (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 45EE060583;
+        Wed, 29 Sep 2021 03:15:13 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 11:15:09 +0800
+From:   Pingfan Liu <piliu@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 3/5] kernel/irq: make irq_{enter,exit}() in
+ handle_domain_irq() arch optional
+Message-ID: <YVPaPf/rREkvZkok@piliu.users.ipa.redhat.com>
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924132837.45994-4-kernelfans@gmail.com>
+ <20210928085500.GC1924@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJbPZpAqiweWuut4hQb/UQ8HpO3kgIzDpUNAWSkPZSqlocLkA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrAJsWRmVeSWpSXmKPExsWy7bCmlm7gneBEg5Y3RhYnn6xhs9jbdoLd
-        4uXPq2wWBx92slhM+/CT2eLT+mWsFk/Wz2K2WHRjG5PF8ZPvGC0m7j/LbnF51xw2i+7rO9gs
-        lh//x2TxsWs2o8XSrTcZHfg9Ll/x9rjc18vksXjPSyaPTas62TwmLDrA6NFycj+Lx/f1HWwe
-        H5/eYvHo27KK0ePzJjmP9gPdTAHcUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW
-        5koKeYm5qbZKLj4Bum6ZOUC/KCmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKTAr0
-        ihNzi0vz0vXyUkusDA0MjEyBChOyM468fM1c0ClV8bD/EWsD4y2xLkZODgkBE4lZny4xdzFy
-        cQgJ7GaUOD55MRuE84lRoufOenYI5zOjxKY/b1hgWnoPnGMFsYUEdjFKNGyzgih6ySjROfUJ
-        M0iCTUBXYsfiNrBRIgILgBIXQDq4OJgFVjNLvDk6kx2kilMgVmL95plAHRwcwgIuEvdvy4OE
-        WQRUJbqv/WMDsXkFLCVuXX3FCmELSpyc+QTsCmYBeYntb+cwQ1ykIPHz6TKwGhEBJ4k9PRDX
-        MQuIS7w8egTsBQmBdk6Jc5feM0E0uEic79wB9Y6wxKvjW9ghbCmJz+/2soHcIyGQLdGzyxgi
-        XCOxdN4xqHJ7iQNX5rCAlDALaEqs36UPEZaVmHpqHRPEWj6J3t9PoDbxSuyYB2OrSjS/uwo1
-        RlpiYnc36wRGpVlIPpuF5LNZSD6YhbBtASPLKkbJ1ILi3PTUYtMCw7zUcniEJ+fnbmIEJ3Ut
-        zx2Mdx980DvEyMTBeIhRgoNZSYT3h3hwohBvSmJlVWpRfnxRaU5q8SFGU2BwT2SWEk3OB+aV
-        vJJ4QxNLAxMzMzMTS2MzQyVx3o+vLROFBNITS1KzU1MLUotg+pg4OKUamCLubgxZHdBbsIvZ
-        4PPb4PJe9VqWsJpbFxZtiJV0dtp5LW+WtOPphwdTl+wKXu2k1JdouHJy0eKeWom11gtEA7Ly
-        zgXPm8AnPOnIkaaPokf//s85tflLfPjq0g+7Kvrv7rgr4ta44HmfRLytplvWySWP53hGJyf1
-        WN19r/rZRmirfOzWqsPR8T8clLWcLm1i3hM14+8eh2Md7CJXmewZ+kvbrfet3lD381ax8r6J
-        FVdtyxcvZxIuSN/2eOqVwFUqW+sC36bZzWWVLn2YwaCWbn36ecer3BeHN6pkrpim+zx/0YnW
-        HpEUfdGr/Fwltgb9l61fyL51OqX82XCfCPO9Wy4pYnbJFTO8StO2hs2RU2Ipzkg01GIuKk4E
-        ALGqSX9zBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsWy7bCSvO63m8GJBk8uM1mcfLKGzWJv2wl2
-        i5c/r7JZHHzYyWIx7cNPZotP65exWjxZP4vZYtGNbUwWx0++Y7SYuP8su8XlXXPYLLqv72Cz
-        WH78H5PFx67ZjBZLt95kdOD3uHzF2+NyXy+Tx+I9L5k8Nq3qZPOYsOgAo0fLyf0sHt/Xd7B5
-        fHx6i8Wjb8sqRo/Pm+Q82g90MwVwR3HZpKTmZJalFunbJXBlHHn5mrmgU6riYf8j1gbGW2Jd
-        jJwcEgImEr0HzrF2MXJxCAnsYJSYd/4XC0RCWuL6xgnsELawxMp/z8FsIYHnjBI7d9uA2GwC
-        uhI7FrexgTSLCCxhlHi0/jITiMMssJlZoul5FzPE2DuMEjOPPGMCaeEUiJVYv3kmUIKDQ1jA
-        ReL+bXmQMIuAqkT3tX9sIDavgKXErauvWCFsQYmTM5+wgJQzC+hJtG1kBAkzC8hLbH87hxni
-        OAWJn0+XgZWLCDhJ7Ok5xwpRIy7x8ugR9gmMwrOQTJqFMGkWkkmzkHQsYGRZxSiZWlCcm55b
-        bFhglJdarlecmFtcmpeul5yfu4kRHNdaWjsY96z6oHeIkYmD8RCjBAezkgjvD/HgRCHelMTK
-        qtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYgkNCuIzay0K+nng6
-        ofSd4drVXEH7U6b+kVSPW/Tiz8Kz4YoCERrcMbkBAdmHLlacDd/sUlb/quRc2NOFSdu9vC/8
-        bFxksn7R+w12TV6MPMVpwZuVVX/5zXPffKCHMUD5zdM7Kq1TJCsjPPujd9mEMax8oDnnbmmR
-        1oWoWIWfVT+Oc4n8ba0s9Pdo+tWavqt6qqrdRiYhu/n8yhHh5w6mJlSpbd36I8PTUvpSxE79
-        tF43g6sqK44wqS9gCHi39p6h4Hle6zW6V2Y9C5tx5dOtO7uVJEsak/I0vqw2Xvu3aPe8gtP3
-        4+6Wl+0NiV4ywULj5vqoY43rRRRzd0w+oy10NG1BiJ7cLz3Pg92fhTuVWIozEg21mIuKEwHD
-        2aIeWgMAAA==
-X-CMS-MailID: 20210929031358epcas5p2bcc25bd81a117ddb35e053ddea0606a1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210928090634epcas5p149638a0e4d0cc009d1c068dcb7a18b44
-References: <cover.1632818942.git.nguyenb@codeaurora.org>
-        <CGME20210928090634epcas5p149638a0e4d0cc009d1c068dcb7a18b44@epcas5p1.samsung.com>
-        <a29bfdd0c8f1d1a3e5fb69e43ea277c97a7f0cb6.1632818942.git.nguyenb@codeaurora.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928085500.GC1924@C02TD0UTHF1T.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 28, 2021 at 09:55:00AM +0100, Mark Rutland wrote:
+> On Fri, Sep 24, 2021 at 09:28:35PM +0800, Pingfan Liu wrote:
+> > handle_domain_irq() contains two major parts:
+> >   -1. irq_enter()/irq_exit(), which serves as hooks for rcu and trace etc.
+> >   -2. irq mapping and dispatching
+> > 
+> > After the introduction of irqentry_enter()/irqentry_exit() and arch
+> > specific counterpart (e.g. arm64), roughly speaking, rcu_irq_enter() has
+> > already been called.  Hence here comes requirement to move
+> > irq_enter/irq_exit out of handle_domain_irq(). And arches should handle
+> > about irq_enter_rcu()/irq_exit_rcu() by themself.
+> > 
+> > Since there is still arches, which does not adopt irqentry_enter(), let
+> > irq_enter()/irq_exit() arch optional in handle_domain_irq().
+> 
+> The patch below looks good to me, but the commit message is a little
+> hard to follow. How about:
+> 
+>   When an IRQ is taken, some accounting needs to be performed to enter
+>   and exit IRQ context around the IRQ handler. Historically arch code
+>   would leave this to the irqchip or core IRQ code, but these days we
+>   want this to happen in exception entry code, and architectures such as
+>   arm64 do this.
+> 
+>   Currently handle_domain_irq() performs this entry/exit accounting, and
+>   if used on an architecture where the entry code also does this, the
+>   entry/exit accounting will be performed twice per IRQ. This is
+>   problematic as core RCU code such as rcu_is_cpu_rrupt_from_idle()
+>   depends on this happening once per IRQ, and will not detect quescent
+>   periods correctly, leading to stall warnings.
+> 
+>   As irqchip drivers which use handle_domain_irq() need to work on
+>   architectures with or without their own entry/exit accounting, this
+>   patch makes handle_domain_irq() conditionally perform the entry
+>   accounting depending on a new HAVE_ARCH_IRQENTRY Kconfig symbol that
+>   architectures can select if they perform this entry accounting
+>   themselves.
+> 
+>   For architectures which do not select the symbol. there should be no
+>   functional change as a result of this patch.
+> 
+Thanks for your precious time to improve the log. It looks great, and I
+will use it in V2. I will keep learning to improve my level of log.
 
-Hello,
+> With that commit message:
+> 
+>   Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> 
+Thanks,
 
->-----Original Message-----
->From: nguyenb=codeaurora.org@mg.codeaurora.org
->[mailto:nguyenb=codeaurora.org@mg.codeaurora.org] On Behalf Of Bao D.
->Nguyen
->Sent: Tuesday, September 28, 2021 2:36 PM
->To: cang@codeaurora.org; asutoshd@codeaurora.org;
->martin.petersen@oracle.com; linux-scsi@vger.kernel.org
->Cc: linux-arm-msm@vger.kernel.org; Bao D . Nguyen
-><nguyenb@codeaurora.org>; Alim Akhtar <alim.akhtar@samsung.com>; Avri
->Altman <avri.altman@wdc.com>; James E.J. Bottomley <jejb@linux.ibm.com>;
->Bean Huo <beanhuo@micron.com>; Stanley Chu <stanley.chu@mediatek.com>;
->Bart Van Assche <bvanassche@acm.org>; Jaegeuk Kim <jaegeuk@kernel.org>;
->Adrian Hunter <adrian.hunter@intel.com>; Keoseong Park
-><keosung.park@samsung.com>; open list <linux-kernel@vger.kernel.org>
->Subject: [PATCH v2 1/2] scsi: ufs: export hibern8 entry and exit
->
->From: Asutosh Das <asutoshd@codeaurora.org>
->
->Qualcomm controllers need to be in hibern8 before scaling up or down the
->clocks. Hence, export the hibern8 entry and exit functions.
->
->Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
->---
-
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-
-> drivers/scsi/ufs/ufshcd.c | 4 ++--
-> drivers/scsi/ufs/ufshcd.h | 1 +
-> 2 files changed, 3 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c index
->3841ab49..f3aad32 100644
->--- a/drivers/scsi/ufs/ufshcd.c
->+++ b/drivers/scsi/ufs/ufshcd.c
->@@ -227,7 +227,6 @@ static void ufshcd_hba_exit(struct ufs_hba *hba);
-static
->int ufshcd_clear_ua_wluns(struct ufs_hba *hba);  static int
->ufshcd_probe_hba(struct ufs_hba *hba, bool async);  static int
->ufshcd_setup_clocks(struct ufs_hba *hba, bool on); -static int
->ufshcd_uic_hibern8_enter(struct ufs_hba *hba);  static inline void
->ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);  static int
->ufshcd_host_reset_and_restore(struct ufs_hba *hba);  static void
->ufshcd_resume_clkscaling(struct ufs_hba *hba); @@ -4116,7 +4115,7 @@ int
->ufshcd_link_recovery(struct ufs_hba *hba)  }
->EXPORT_SYMBOL_GPL(ufshcd_link_recovery);
->
->-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
->+int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
-> {
-> 	int ret;
-> 	struct uic_command uic_cmd = {0};
->@@ -4138,6 +4137,7 @@ static int ufshcd_uic_hibern8_enter(struct ufs_hba
->*hba)
->
-> 	return ret;
-> }
->+EXPORT_SYMBOL_GPL(ufshcd_uic_hibern8_enter);
->
-> int ufshcd_uic_hibern8_exit(struct ufs_hba *hba)  { diff --git
->a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h index
-52ea6f3..124f50b
->100644
->--- a/drivers/scsi/ufs/ufshcd.h
->+++ b/drivers/scsi/ufs/ufshcd.h
->@@ -1001,6 +1001,7 @@ int ufshcd_init(struct ufs_hba *, void __iomem *,
->unsigned int);  int ufshcd_link_recovery(struct ufs_hba *hba);  int
->ufshcd_make_hba_operational(struct ufs_hba *hba);  void
-ufshcd_remove(struct
->ufs_hba *);
->+int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
-> int ufshcd_uic_hibern8_exit(struct ufs_hba *hba);  void
->ufshcd_delay_us(unsigned long us, unsigned long tolerance);  int
->ufshcd_wait_for_register(struct ufs_hba *hba, u32 reg, u32 mask,
->--
->The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a
->Linux Foundation Collaborative Project
-
+	Pingfan
 
