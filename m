@@ -2,169 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D220541BF2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B8A41BF2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244410AbhI2GhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:37:00 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:41806 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244177AbhI2Gg7 (ORCPT
+        id S244386AbhI2Gg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:36:57 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:57548 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244177AbhI2Gg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:36:59 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T5vW9Z010449;
-        Wed, 29 Sep 2021 06:33:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=subject : to : cc
- : references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=YfVbQUmiC/MvOnaUX6SzFJRiUDcK//GSKnh2UNCOT00=;
- b=cAdQiaRgYMHs9brXTj+57xxzDzxIVHrGv9wso2JZt19BTCfUYKmvcE0DF+vozvx5fiY4
- BlFYx5QLPgXsTSjL07ndwXgTEg2zK4BPw1SvTkwpAc5j6C2ly7e+LAjp9QB+BmTnCHWw
- oxJ6v+VZhQnoCBgUwD8ZA3FxODzGkZcvWunYMp5RzSUGTsUOP1v4j7sblIwbnsFpZxam
- DTKC2FBFxet3vZ9AfHyxl5qxZj6JDixfrP8PTtyaC7YsFnhzXiHWdlMbmIMp6CoWvYaY
- lb1NOABU2c+rBZwVIIVXy9GwRy91TomAI4FpiZVSkGVX8OPEUzL6a9aC/yDZwX3jVQZJ Bw== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3bc6rc0m3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Sep 2021 06:33:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mUZBfhuCU8k0k8LjvzhD8ub9EUtBFC9905d+uLApUAxX6s4hamvP32q5GHES2R1guVVYxC4dFvYRZ9aEHeQy6fKGXt7MntkFKOQGicW7TPNgueGjPhR18C1XUctMVb9Y02BiJpYitinC/ZmCcWen983t8u2cSk6fkdwsxJL5S1Ws73X4Bm5h+ziseu/P90z2if3bJO9eXnJtAuALX6u80EdqmfF/ctOCWuRcFTmy70MtQ81ahzwyUTXmKKiEppVW33oQit8KxEY39wF4VCK27ypz5Ws1F3CAkJNgU8tEpXrYS+og+vL+mjEsY2gaj3NFY0FqxZbEGqSvlmiv3cW9MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=YfVbQUmiC/MvOnaUX6SzFJRiUDcK//GSKnh2UNCOT00=;
- b=jELOrRnitt2AFUkMEk72JaKAMwW3NNSSJVnbDHb804NDs6ABhGgsa9sHsPopyQMB9vaUOr5WqcOTdp/+p2F9v29yis6wyt0AmetfESNtH2ICWtSuRvpRDw454e+aPmnVC4AC6pZXYul+5YeuFWPlgmD14dVv1/VuWhGKb+FS7AMKnhmnyeXoMhYJ6HNpCqMKgygKVMTE3ykfelIAwVCyVG93Ydb9w3NjbAvqnxih6wBYlgt0ISXUF1UUPUVWaz51rODRNYymbYFw1klHchabDhfEkS/Bxlx9gC/Wh2frIbAZQv2r56/YgyZRboUCPw7bPWvsDPV2b/UJhXTRoX0CkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM8PR11MB5734.namprd11.prod.outlook.com (2603:10b6:8:31::22) by
- DM6PR11MB4692.namprd11.prod.outlook.com (2603:10b6:5:2aa::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.14; Wed, 29 Sep 2021 06:32:59 +0000
-Received: from DM8PR11MB5734.namprd11.prod.outlook.com
- ([fe80::51b7:91e3:7c34:57a5]) by DM8PR11MB5734.namprd11.prod.outlook.com
- ([fe80::51b7:91e3:7c34:57a5%3]) with mapi id 15.20.4566.014; Wed, 29 Sep 2021
- 06:32:59 +0000
-Subject: Re: [PATCH v2 1/2] Revert "net: mdiobus: Fix memory leak in
- __mdiobus_register"
-To:     Pavel Skripkin <paskripkin@gmail.com>, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, buytenh@marvell.com, afleming@freescale.com,
-        dan.carpenter@oracle.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210927112017.19108-1-paskripkin@gmail.com>
- <2324212c8d0a713eba0aae3c25635b3ca5c5243f.1632861239.git.paskripkin@gmail.com>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <cf252f69-bc42-3d4d-3967-3f58f8607e93@windriver.com>
-Date:   Wed, 29 Sep 2021 14:32:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <2324212c8d0a713eba0aae3c25635b3ca5c5243f.1632861239.git.paskripkin@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT1PR01CA0052.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2e::21) To DM8PR11MB5734.namprd11.prod.outlook.com
- (2603:10b6:8:31::22)
+        Wed, 29 Sep 2021 02:36:56 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 18T6EPnn024057;
+        Wed, 29 Sep 2021 14:14:25 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 29 Sep
+ 2021 14:35:10 +0800
+Message-ID: <8143a6aa-743f-f00e-482f-ea280969e0c6@aspeedtech.com>
+Date:   Wed, 29 Sep 2021 14:35:04 +0800
 MIME-Version: 1.0
-Received: from [128.224.162.160] (60.247.85.82) by YT1PR01CA0052.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 06:32:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 18afbf62-4a0d-4510-f57c-08d98312fab8
-X-MS-TrafficTypeDiagnostic: DM6PR11MB4692:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB4692A10768DD6A5B72B42AF3E4A99@DM6PR11MB4692.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Pwa4nf6FrO6srxxRk0U9zmfFdY6gOQgcEOTupW7gu19syLdjzIMcwLSsl4OOsK1JczDiWu5+vRCRvECDzEtCuyI/7u2XYAoXlSkpQyobsaGXBwAdXYccfSC1mE7A3QHJlk4UbvdtJjzkxeeWbO2w+g3kySjpmHJxSAx2hKyJTQXG39SdnPO0LmGwcRJQpz0mGPZu2wlWMoO+tiVoeTiCWP9cseadKPzgmJWSO12gEO3MJWKMLh3+BLZ53owL+3gG1gFDOMBZPrwasyOzi57Yr/HO6mhrcgaQ079AvjhTyTbX2yUqVxqRlTteyGuWIqjWF744VT3PRGVY/icv8a388D7zbnieXkHhEhNKuulKVhcOlEIGWLS6vR58cD5vyfGxCfG2WvReawO0Xl+aAW4C+iEOZFygsmGTnlTiqA7YVEkylvNSOi9MbVpQziQkg4wXgikHdVHslZox75yh5sTw7XJwWQQ4yWC18XezhkLx/d0o83bgf4qENDDPBguEWdVcefBk6mzfn4wKFe2sXc92qwMloCnmB0K9fCc6qhXdkCRSITj0JYpxsORQX6xWwfGt9vUqXUE0oLXl1VQDxWs32FN44zDfFG5vR6pPDNHE/nXLKmCscYV/UjfLhlETNOtUug5s/9w2zBGrUxrnVKNIU17MkPDy+8nkEUsdiKSM+0mKZ1yUW1ilRKgeP4LAnlbCWpYilbA6umAJjASNyqsisaaYVyrRzqHrAP2y/68fxq1Pe0L3eXkZXJF1sPMRfNZOwEh5Kx1LOoSEdL+rUiKHRGOfCdEOk1Cu2w5b7A5E6TFf5q/AyZQPt7GtA1/+onNRs23EPzCWeN2Pa2TD8RrQjGVTFvk0fTOg3Klu7P8yB1Apdmz2YcNuGgvn2TsUz24z
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52116002)(6486002)(2616005)(956004)(8676002)(31686004)(4326008)(186003)(53546011)(2906002)(31696002)(26005)(86362001)(8936002)(508600001)(4744005)(7416002)(16576012)(316002)(6706004)(83380400001)(36756003)(6666004)(66556008)(66946007)(66476007)(38350700002)(38100700002)(5660300002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TXFta1Y1NG50VzN6WjRCVVJJcUt6TVhUaTh3UzROVm1kYnh0elc3RjRsOEhk?=
- =?utf-8?B?cUdqRmxIVXFKbGFDalV4QnpLTFNEVGpVNmlLWDBxOEx1UUZ1aDFxb3JyRGNH?=
- =?utf-8?B?TW1pbWJvcWpBdDRGeDRYV2VuR24wUU91MFRZUFFuY3Flc0kvSFIzR3JXdmRm?=
- =?utf-8?B?WUkwWC9pbXIzcE9pdlh4NFdFMWpIdFhwZlJCVUNHdWhDY2VzNVM2QWxCWWVM?=
- =?utf-8?B?Q0lFL0FGeGltYXNjK1I2dE5UQmRrRk5OSGFSQVdRdmZzRHZVb1VtcVc1THU4?=
- =?utf-8?B?MkxNQnFJcVdnYXZVVUlUTERuWm5VbGNSYVhERVNzMlowN0M4YStDSmFWQ2pN?=
- =?utf-8?B?MHdnTkRxeloycmlTbVdkdkZiYmVBLy9FMGwySmd5VFpiaGFFWjRmck9HS3NR?=
- =?utf-8?B?UTB0SHpXSTVOVE1sNitnTWNmcTROTithYjNVNkYvN0hrb3AxamlYSGVTSGYr?=
- =?utf-8?B?TVNrUHBLQVp2TDNqaHhRVG43eitaR1Y3bnNjZW1JcElDNWNmYXNkdEZsc0ZO?=
- =?utf-8?B?bVFFQ3dMN3E5cDB0V1VXV3NVdWxLdkhlVDRyU0pJQTZOd0hybGpHWnNXTTRK?=
- =?utf-8?B?Y2pmV0pXT1BQV2VqY2RCL3pXY1YxbU5Gd3JXTzlXZXVXSzRub2Fza0Y5SEFx?=
- =?utf-8?B?MlJ4YVhFc25lMzl3Z2VndkVQYndYU2xTU05Yd2dUWWlLamVYU0pGK3lOTU04?=
- =?utf-8?B?U2VPNGYvOTIyN3NZSGQ3ckloTGRZNkRhdmNxdVlKbTFoRXZrcFNkZDIwWCtR?=
- =?utf-8?B?OFVONU95czMzenNlSndqa3Q4eUpuNEg0M0lRN3k3a0VwZThPVWFPU2N3dXQw?=
- =?utf-8?B?RUwwRVVzWEVJL0Zmb1RxN3ZGSlEyaWthcEwvc0FJaHBPU3lrei9Ka0srbmVG?=
- =?utf-8?B?YTZZaG5iTFRYSVBVVUhFOU5GL1J2VXAvK0xxSERmMERQUTJtMVl0VG1WMC9v?=
- =?utf-8?B?UGV4SFFqQ0crY1NHdE1zNjlmd01YYXJWZzRGZklJNUJ1bzl1TEhiSHQrQ3I2?=
- =?utf-8?B?OG01aXZ5blJFZFl4Nml5emlEVTd5ZFVacXg1eEt5LzE5ZFVjQ2MzME9Vd2Jl?=
- =?utf-8?B?RHhFbVgyemhMNkt0U0RveFRRekFhZ05yeklZRXNYQ2MrYWRRWnRESU5TWkNm?=
- =?utf-8?B?SmRTN1Z5cy9jOTBWajJaanhwdFoxRTc4d3NPcWdOM3NIdFkzWXl3dU4zcDlw?=
- =?utf-8?B?YXRKOVJsMVNjVDBib3RvUnNsV3hST0RaeFNrS3Jydno1NGdkLzk4VHh6STM5?=
- =?utf-8?B?VW11S25vdklPdEdxVU56K1hvWW9uSlFKL0VuR2VCZEdhMThkOUQ3OHFDbUlw?=
- =?utf-8?B?WXo5SGtVWWxlc0JmV01Jb05GSktsUk1ibjhIV0x0NUtaSlF4YWxaRmtCOTdN?=
- =?utf-8?B?c24ra08zK0ZJWkRiNFp4bmRJZ1h3YmlZUTM4K2szckg2TGdNQWlKSzVaWSsx?=
- =?utf-8?B?MFoxa3prU3hnSUFwMW5MNWJZelZ2ZzNxaFBZQW1HRElwL25Sa3NyOFYrbWNB?=
- =?utf-8?B?VVV2Q2hMWElhVUsrdFRXV0hVb09ucjY5c29keWRPZTY0bFZYQ0JSOXVodUhm?=
- =?utf-8?B?RDdEWkZDT1c3QXdIQXNON3AvTkFvdmVhVk8xSTdsaWpBdXNSMlpyZUlCdlFR?=
- =?utf-8?B?V0N6R0ZNYWU0Vmw0SXFjTDROTjhpb001blM0emJwYmNQUjh1UW5vVkhKaHk0?=
- =?utf-8?B?bHdFaWhCb1hyNHNBY1NienF4V29UbXNyNW1tcHc3eGszUHo3WXdUNEtISUtH?=
- =?utf-8?Q?CIdnidWdirllvZe0k3KUkJs6jrHNXaJpvLQ3gdv?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18afbf62-4a0d-4510-f57c-08d98312fab8
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 06:32:58.9726
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0dlhFwF2JqKWg3iCqV6xdlXyo0G8tZnV7lVdMFzYSPBirSsVO8dqYnVlMA0+xlgEEFzCmv6/H930cWMAMulNCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4692
-X-Proofpoint-GUID: yS-XlynpM6IEKPMH-9BmUhD2mNck-qd6
-X-Proofpoint-ORIG-GUID: yS-XlynpM6IEKPMH-9BmUhD2mNck-qd6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-29_02,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 suspectscore=0 mlxlogscore=911 adultscore=0
- phishscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109290038
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [RESEND PATCH] media: aspeed: add debugfs
+Content-Language: en-US
+To:     Zev Weiss <zweiss@equinix.com>
+CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+References: <20210929011652.1709-1-jammy_huang@aspeedtech.com>
+ <20210929053049.GQ17315@packtop>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <20210929053049.GQ17315@packtop>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 18T6EPnn024057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Zev,
 
+On 2021/9/29 下午 01:30, Zev Weiss wrote:
+> On Tue, Sep 28, 2021 at 06:16:53PM PDT, Jammy Huang wrote:
+>> To show video real-time information as below:
+>>
+>>     Signal|           Resolution|       FRC
+>>           |     Width     Height|
+>>       Lock|      1920       1080|         0
+>>
+>>     Frame#|       Frame Duration|       FPS
+>>           |    Now    Min    Max|
+>>        496|     26     25     30|        40
+>>
+>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>> ---
+>> drivers/media/platform/aspeed-video.c | 100 ++++++++++++++++++++++++++
+>> 1 file changed, 100 insertions(+)
+>>
+>> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+>> index 8b3939b8052d..5b98dc7b7b15 100644
+>> --- a/drivers/media/platform/aspeed-video.c
+>> +++ b/drivers/media/platform/aspeed-video.c
+>> @@ -21,6 +21,8 @@
+>> #include <linux/videodev2.h>
+>> #include <linux/wait.h>
+>> #include <linux/workqueue.h>
+>> +#include <linux/debugfs.h>
+>> +#include <linux/ktime.h>
+>> #include <media/v4l2-ctrls.h>
+>> #include <media/v4l2-dev.h>
+>> #include <media/v4l2-device.h>
+>> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
+>> 	struct list_head link;
+>> };
+>>
+>> +struct aspeed_video_perf {
+>> +	ktime_t last_sample;
+>> +	u32 totaltime;
+>> +	u32 duration;
+>> +	u32 duration_min;
+>> +	u32 duration_max;
+>> +};
+>> +
+>> #define to_aspeed_video_buffer(x) \
+>> 	container_of((x), struct aspeed_video_buffer, vb)
+>>
+>> @@ -241,6 +251,8 @@ struct aspeed_video {
+>> 	unsigned int frame_left;
+>> 	unsigned int frame_right;
+>> 	unsigned int frame_top;
+>> +
+>> +	struct aspeed_video_perf perf;
+>> };
+>>
+>> #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
+>> @@ -444,6 +456,18 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>> 		readl(video->base + reg));
+>> }
+>>
+>> +static void update_perf(struct aspeed_video *v)
+>> +{
+>> +	v->perf.duration =
+>> +		ktime_to_ms(ktime_sub(ktime_get(),  v->perf.last_sample));
+>> +	v->perf.totaltime += v->perf.duration;
+>> +
+>> +	if (!v->perf.duration_max || v->perf.duration > v->perf.duration_max)
+>> +		v->perf.duration_max = v->perf.duration;
+> How about
+>
+>    v->perf.duration_max = max(v->perf.duration, v->perf.duration_max);
+>
+> instead of manually testing & branching?
+OK, this will be included in the next patch.
+>> +	if (!v->perf.duration_min || v->perf.duration < v->perf.duration_min)
+>> +		v->perf.duration_min = v->perf.duration;
+> And likewise with min(...) here.
+>
+> As a minor style thing, I might suggest adding a variable declaration
+> like
+>
+>    struct aspeed_video_perf *p = &v->perf;
+>
+> and using that in the rest of the function to cut down on the
+> verbosity/repetition a bit.  Or actually, since it looks like there
+> aren't any other members of struct aspeed_video accessed in this
+> function, maybe just make struct aspeed_video_perf be the parameter
+> instead?
+OK, this will be included in the next patch.
+>
+>> +}
+>> +
+>> static int aspeed_video_start_frame(struct aspeed_video *video)
+>> {
+>> 	dma_addr_t addr;
+>> @@ -482,6 +506,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>> 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+>> 			    VE_INTERRUPT_COMP_COMPLETE);
+>>
+>> +	video->perf.last_sample = ktime_get();
+>> +
+>> 	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+>> 			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
+>>
+>> @@ -600,6 +626,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>> 		u32 frame_size = aspeed_video_read(video,
+>> 						   VE_JPEG_COMP_SIZE_READ_BACK);
+>>
+>> +		update_perf(video);
+>> +
+>> 		spin_lock(&video->lock);
+>> 		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+>> 		buf = list_first_entry_or_null(&video->buffers,
+>> @@ -760,6 +788,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>> 	det->width = MIN_WIDTH;
+>> 	det->height = MIN_HEIGHT;
+>> 	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
+>> +	memset(&video->perf, 0, sizeof(video->perf));
+>>
+>> 	do {
+>> 		if (tries) {
+>> @@ -1517,6 +1546,71 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
+>> 	.buf_queue =  aspeed_video_buf_queue,
+>> };
+>>
+>> +#ifdef CONFIG_DEBUG_FS
+>> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+>> +{
+>> +	struct aspeed_video *v = s->private;
+>> +
+>> +	seq_printf(s, "%10s|%21s|%10s\n",
+>> +		   "Signal", "Resolution", "FRC");
+>> +	seq_printf(s, "%10s|%10s%11s|%10s\n",
+>> +		   "", "Width", "Height", "");
+>> +	seq_printf(s, "%10s|%10d%11d|%10d\n",
+>> +		   v->v4l2_input_status ? "Unlock" : "Lock",
+>> +		   v->pix_fmt.width, v->pix_fmt.height, v->frame_rate);
+>> +
+>> +	seq_puts(s, "\n");
+>> +
+>> +	seq_printf(s, "%10s|%21s|%10s\n",
+>> +		   "Frame#", "Frame Duration", "FPS");
+>> +	seq_printf(s, "%10s|%7s%7s%7s|%10s\n",
+>> +		   "", "Now", "Min", "Max", "");
+>> +	seq_printf(s, "%10d|%7d%7d%7d|%10d\n",
+>> +		   v->sequence, v->perf.duration, v->perf.duration_min,
+>> +		   v->perf.duration_max, 1000/(v->perf.totaltime/v->sequence));
+>> +
+> This looks like a convenient format for eyeballing with 'cat', but also
+> like it would be kind of awkward to parse if you wanted to do any sort
+> of automated analysis of the performance data it provides.  Would a
+> key:value type format like
+>
+>    width: %d
+>    height: %d
+>    frame_rate: %d
+>    frame_number: %d
+>    # etc.
+>
+> maybe provide a decent compromise?  (Easily parseable, almost as easily
+> readable.)
 
-On 9/29/21 4:39 AM, Pavel Skripkin wrote:
-> This reverts commit ab609f25d19858513919369ff3d9a63c02cd9e2e.
-> 
-> This patch is correct in the sense that we_should_  call device_put() in
-> case of device_register() failure, but the problem in this code is more
-> vast.
-> 
-> We need to set bus->state to UNMDIOBUS_REGISTERED before calling
-> device_register() to correctly release the device in mdiobus_free().
-> This patch prevents us from doing it, since in case of device_register()
-> failure put_device() will be called 2 times and it will cause UAF or
-> something else.
-> 
-> Also, Reported-by: tag in revered commit was wrong, since syzbot
-> reported different leak in same function.
-> 
-> Link:https://lore.kernel.org/netdev/20210928092657.GI2048@kadam/
-> Cc: Yanfei Xu<yanfei.xu@windriver.com>
-> Signed-off-by: Pavel Skripkin<paskripkin@gmail.com>
-> ---
-> 
-> Changes in v2:
->          Added this revert
+Your concern is reasonable, I will change the style to show information.
 
+This will be included in the next patch.
 
-Acked-by: Yanfei Xu<yanfei.xu@windriver.com>
+>
+>> +	return 0;
+>> +}
+>> +
+>> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
+>> +{
+>> +	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
+>> +}
+>> +
+>> +static const struct file_operations aspeed_video_debugfs_ops = {
+>> +	.owner   = THIS_MODULE,
+>> +	.open    = aspeed_video_proc_open,
+>> +	.read    = seq_read,
+>> +	.llseek  = seq_lseek,
+>> +	.release = single_release,
+>> +};
+>> +
+>> +static struct dentry *debugfs_entry;
+> I don't know how realistic the odds are of a system ever having multiple
+> aspeed-video devices, but structurally would this make more sense as
+> part of struct aspeed_video instead of being a single global?
 
-Thanks,
-Yanfei
+Since this is the driver for aspeed-video ip of SoC, it couldn't have 
+multiple devices.
+
+>> +
+>> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
+>> +{
+>> +	debugfs_remove_recursive(debugfs_entry);
+>> +	debugfs_entry = NULL;
+>> +}
+>> +
+>> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
+>> +{
+>> +	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
+>> +						   video,
+>> +						   &aspeed_video_debugfs_ops);
+>> +	if (!debugfs_entry)
+>> +		aspeed_video_debugfs_remove(video);
+>> +
+>> +	return debugfs_entry == NULL ? -EIO : 0;
+>> +}
+>> +#else
+>> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
+>> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
+>> +{
+>> +	return 0;
+>> +}
+>> +#endif /* CONFIG_DEBUG_FS */
+>> +
+>> static int aspeed_video_setup_video(struct aspeed_video *video)
+>> {
+>> 	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
+>> @@ -1708,6 +1802,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
+>> 		return rc;
+>> 	}
+>>
+>> +	rc = aspeed_video_debugfs_create(video);
+>> +	if (rc)
+>> +		dev_err(video->dev, "debugfs create failed\n");
+>> +
+>> 	return 0;
+>> }
+>>
+>> @@ -1719,6 +1817,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
+>>
+>> 	aspeed_video_off(video);
+>>
+>> +	aspeed_video_debugfs_remove(video);
+>> +
+>> 	clk_unprepare(video->vclk);
+>> 	clk_unprepare(video->eclk);
+>>
+>> -- 
+>> 2.25.1
+>>
