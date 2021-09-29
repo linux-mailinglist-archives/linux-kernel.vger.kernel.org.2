@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4714841BD76
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B0441BD78
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244017AbhI2Dci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243349AbhI2Dch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:32:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 188596136A;
-        Wed, 29 Sep 2021 03:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632886256;
-        bh=WCjXIv7h+cvI30x4kcTCUOWtS0sTzxXS+pms9WS2R5w=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=pT1r5SFiZQttdoly5ySvJ0wy9GKMU6NNZ2hQ7mllvAOTYvb/8AjrLZwqiDb6OLq1/
-         d4AkfvdeD7WHIx5vt8YEtfyGHi1CIV79T7L7bJfU5o2UFs9lNtwpGpBWQGO3Z+oJ1O
-         7Da4vhkxb+EuXfc4mdAhFFQBYwaecYP1y9g6JLy/0dqUT3qQMY/M+i4eMv0OxbzIxK
-         PqB484m6pD9MkVptjCWWoHJvpiWONqlpwPL4DdIRe7Y9r5qOF0kRef/lgWmzYBWBl4
-         w0rObQEDEdeTTDoCRTbQRi7hKjcRTCX4eSE+tDOrtyFkoowFd873kkicHWxSdVIuNO
-         Wkm87Gcu4oNjA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 23E2E27C0054;
-        Tue, 28 Sep 2021 23:30:54 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Tue, 28 Sep 2021 23:30:54 -0400
-X-ME-Sender: <xms:7d1TYcpBynFjX9dwv5ETADwstKZVMRQnpcJ86Sig_u94lANjdzB60Q>
-    <xme:7d1TYSqbZ0So3QXRgAdXGZHu18vAuOcO1B0YJ9Y7LaLJzRvnccGYrieAYJEEom7jh
-    i_zRa0S0xW2dbS_HUc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekuddgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
-    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:7d1TYRMlnaMhYK8KveqmK6msef7i_1-WAFahc39gefVObWR8pwFEng>
-    <xmx:7d1TYT5Hn8VPeyxtz_yhSxipRPsNR0xXg0i7dRtqo_O2KqQ5OQUGdg>
-    <xmx:7d1TYb7NPuxikq6JUHVmkIRqaQ3-9aFVFy8f-wOO9L2gNCWByyf4vQ>
-    <xmx:7t1TYSJo-17mOdkG5LkTQegSlGgERPCKxteWdjcOXwA8FVr3eBlqRSeCJ4o>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 29AC621E0063; Tue, 28 Sep 2021 23:30:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1303-gb2406efd75-fm-20210922.002-gb2406efd
-Mime-Version: 1.0
-Message-Id: <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
-In-Reply-To: <20210913200132.3396598-12-sohil.mehta@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-12-sohil.mehta@intel.com>
-Date:   Tue, 28 Sep 2021 20:30:27 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Sohil Mehta" <sohil.mehta@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Cc:     "Tony Luck" <tony.luck@intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Jens Axboe" <axboe@kernel.dk>,
-        "Christian Brauner" <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Shuah Khan" <shuah@kernel.org>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj Ashok" <ashok.raj@intel.com>,
-        "Jacob Pan" <jacob.jun.pan@linux.intel.com>,
-        "Gayatri Kammela" <gayatri.kammela@intel.com>,
-        "Zeng Guang" <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Randy E Witt" <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Ramesh Thomas" <ramesh.thomas@intel.com>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
-Content-Type: text/plain
+        id S244027AbhI2DdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:33:00 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32597 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244005AbhI2Dc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 23:32:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632886279; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=CoZyHdEs+PveTvKhyIyzpXsUxE/2MwN2b0M04LT0gio=;
+ b=lPnDxp7cayOrYN+jw8/Xc7dmfZsuD43DOUzu51+4KElw9UBvdxRGnmmtQF+JPL4yhqqwQ1Va
+ 0KxKYvLdi2MdFL8aCD60wlDU5BYEYDzxhNCO6U3SJK6fI/WYBqTJBMf4HfgZbWiwYTlArhJp
+ xCQQHB6DO/7lcAgtl+/pWctGlGI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6153de06713d5d6f9692e915 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Sep 2021 03:31:18
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62214C43619; Wed, 29 Sep 2021 03:31:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A1A1C4338F;
+        Wed, 29 Sep 2021 03:31:16 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 29 Sep 2021 11:31:16 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: Fix a possible dead lock in clock scaling
+In-Reply-To: <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
+References: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
+ <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
+Message-ID: <fbc4d03a07f03fe4fbe697813111471f@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021, at 1:01 PM, Sohil Mehta wrote:
-> Add a new system call to allow applications to block in the kernel and
-> wait for user interrupts.
->
+Hi Bart,
 
-...
+On 2021-09-18 01:27, Bart Van Assche wrote:
+> On 9/16/21 6:51 PM, Can Guo wrote:
+>> Assume a scenario where task A and B call ufshcd_devfreq_scale()
+>> simultaneously. After task B calls downgrade_write() [1], but before 
+>> it
+>> calls down_read() [3], if task A calls down_write() [2], when task B 
+>> calls
+>> down_read() [3], it will lead to dead lock.
+> 
+> Something is wrong with the above description. The downgrade_write() 
+> call is
+> not followed by down_read() but by up_read(). Additionally, I don't see 
+> how
+> concurrent calls of ufshcd_devfreq_scale() could lead to a deadlock.
 
->
-> When the application makes this syscall the notification vector is
-> switched to a new kernel vector. Any new SENDUIPI will invoke the kernel
-> interrupt which is then used to wake up the process.
+As mentioned in the commit msg, the down_read() [3] is from 
+ufshcd_wb_ctrl().
 
-Any new SENDUIPI that happens to hit the target CPU's ucode at a time when the kernel vector is enabled will deliver the interrupt.  Any new SENDUIPI that happens to hit the target CPU's ucode at a time when a different UIPI-using task is running will *not* deliver the interrupt, unless I'm missing some magic.  Which means that wakeups will be missed, which I think makes this whole idea a nonstarter.
+Task A -
+down_write [2]
+ufshcd_clock_scaling_prepare
+ufshcd_devfreq_scale
+ufshcd_clkscale_enable_store
 
-Am I missing something?
+Task B -
+down_read [3]
+ufshcd_exec_dev_cmd
+ufshcd_query_flag
+ufshcd_wb_ctrl
+downgrade_write [1]
+ufshcd_devfreq_scale
+ufshcd_devfreq_target
+devfreq_set_target
+update_devfreq
+devfreq_performance_handler
+governor_store
+
+
+> If one thread calls downgrade_write() and another thread calls 
+> down_write()
+> immediately, that down_write() call will block until the other thread 
+> has called up_read()
+> without triggering a deadlock.
+
+Since the down_write() caller is blocked, the down_read() caller, which 
+comes after
+down_write(), is blocked too, no? downgrade_write() keeps lock owner as 
+it is, but
+it does not change the fact that readers and writers can be blocked by 
+each other.
+
+> 
+> Thanks,
+> 
+> Bart.
+
+Thanks,
+
+Can.
