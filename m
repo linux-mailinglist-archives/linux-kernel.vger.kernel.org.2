@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1869841C9F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E89741C9F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345729AbhI2QTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:19:05 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20622 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345491AbhI2QTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:19:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632932243; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=NZF3/95G8ydfWP4E8Tlviqhl539BTdjyutBy9YAK7qA=; b=T9PYgFPcRQaar5vdm4fIPUdHgyKgW1hDVwopXSPvbkmv7nQlAscevooMDrOkIZDbI5jIwOIs
- nOTe3muUmGQbE6G4bs1AZaO+OPW1sbyyE7XC+ifgeETX00mtvymm3O12mli8akuP3gdVVBeO
- ETQsW0TjcIgq8XhJOvuJymaN7m8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 61549188519bd8dcf0140f68 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Sep 2021 16:17:12
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D8DDC4338F; Wed, 29 Sep 2021 16:17:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98D13C4338F;
-        Wed, 29 Sep 2021 16:17:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 98D13C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        id S1345822AbhI2QTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344020AbhI2QTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:19:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D10C961353;
+        Wed, 29 Sep 2021 16:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632932289;
+        bh=S79irzCLmLoJh10SJfq3xLHcqmeiQCHBKW/lpibZeMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BV5dpfjjsRh40sZ4XGQS9X8JtH2bEOtQKcU9Ad7mgyAuJ7aesYKqHesSXtiuZoeOC
+         qC5O9+PbQWg3gHA8/h52PRYAP1f1bcnKroIs5gW4EVVmtJTv2iVvmzE9K9WmcfxMa2
+         faluT3+ZfHuM7ocAMObsykSeG2tK5C4q7v/Tm34ZdtzDJxb8mDPth8hvy90VF9/Frg
+         kRw/ivDWzyLinnl6V3JlNaURxyxd7aQAvfjWN9eNl3M5Aprs7+Zndh9XfdJ8YyIPkh
+         cWuAL7dYxq5pqYgpvClvdM7PshzwHXMrToEQ2fUEtctDPEqRfCXdxzoPm85DXQ08Tb
+         8A+pEzjq69Qeg==
+Date:   Wed, 29 Sep 2021 17:18:04 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/msm/dp: only signal audio when disconnected detected at dp_pm_resume
-Date:   Wed, 29 Sep 2021 09:17:04 -0700
-Message-Id: <1632932224-25102-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Subject: Re: [PATCH bpf-next 2/4] bpf: define bpf_jit_alloc_exec_limit for
+ arm64 JIT
+Message-ID: <20210929161804.GF22029@willie-the-truck>
+References: <20210924095542.33697-1-lmb@cloudflare.com>
+ <20210924095542.33697-3-lmb@cloudflare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924095542.33697-3-lmb@cloudflare.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there is audio not working problem after system resume from suspend
-if hdmi monitor stay plugged in at DUT. However this problem does not happen
-at normal operation but at a particular test case. The root cause is DP driver
-signal audio with connected state at resume which trigger audio trying to setup
-audio data path through DP main link but failed due to display port is not setup
-and enabled by upper layer framework yet. This patch only have DP driver signal
-audio only when DP is in disconnected state so that audio option shows correct
-state after system resume. DP driver will not signal audio with connected state
-until display enabled executed by upper layer framework where display port is
-setup completed and main link is running.
+On Fri, Sep 24, 2021 at 10:55:40AM +0100, Lorenz Bauer wrote:
+> Expose the maximum amount of useable memory from the arm64 JIT.
+> 
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  arch/arm64/net/bpf_jit_comp.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 41c23f474ea6..803e7773fa86 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -1136,6 +1136,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  	return prog;
+>  }
+>  
+> +u64 bpf_jit_alloc_exec_limit(void)
+> +{
+> +	return BPF_JIT_REGION_SIZE;
+> +}
 
-Changes in V2:
--- add details commit text
+Looks like this won't result in a functional change, as we happen to return
+SZ_128M anyway thanks to the way in which the modules area is constructed.
 
-Fixes: 078867ce04ed ("drm/msm/dp: signal audio plugged change at dp_pm_resume")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+But making this explicit is definitely better, so:
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0e543a03..6f13008 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1356,14 +1356,14 @@ static int dp_pm_resume(struct device *dev)
- 	 * can not declared display is connected unless
- 	 * HDMI cable is plugged in and sink_count of
- 	 * dongle become 1
-+	 * also only signal audio when disconnected
- 	 */
--	if (dp->link->sink_count)
-+	if (dp->link->sink_count) {
- 		dp->dp_display.is_connected = true;
--	else
-+	} else {
- 		dp->dp_display.is_connected = false;
--
--	dp_display_handle_plugged_change(g_dp_display,
--				dp->dp_display.is_connected);
-+		dp_display_handle_plugged_change(g_dp_display, false);
-+	}
- 
- 	DRM_DEBUG_DP("After, sink_count=%d is_connected=%d core_inited=%d power_on=%d\n",
- 			dp->link->sink_count, dp->dp_display.is_connected,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Acked-by: Will Deacon <will@kernel.org>
 
+(I'm assuming this will go via the bpf tree, but please shout if I should
+take it via arm64 instead)
+
+Will
