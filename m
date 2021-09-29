@@ -2,73 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D45541C262
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645D541C26A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245407AbhI2KOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:14:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24124 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245330AbhI2KOW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:14:22 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HKBwn0xvHz1DHQr;
-        Wed, 29 Sep 2021 18:11:21 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 18:12:39 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 18:12:37 +0800
-Message-ID: <37778b13-aa03-c885-f78c-da50ac9fa602@huawei.com>
-Date:   Wed, 29 Sep 2021 18:12:38 +0800
+        id S245358AbhI2KS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245281AbhI2KSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:18:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCB2461246;
+        Wed, 29 Sep 2021 10:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632910604;
+        bh=qFw7P+hcQO8gyog1G00tPfDMkEj0DfJDAtYJY+PxoXw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cbvOltDAkYA38s+2BT60i6dhPXyjFnohHHO0GecqYsMKg5aor5jao+3l8IUt4UdZ7
+         oi8hqdbIO1yW8eci7z6Pvfs9PT742Ys1obggWu2qRy3zfy6e8nhmNbpBelWPUGhGvs
+         d1gD6u19l2hxY11Eyqi6d+hhzizNGu9MLfE4v6VOTBNJgxZ9tGPDRedn5HR1jZgTVN
+         BOMVNOw9DIWvF5YWMB68X6iUxxjJnQfAqxISyqvKDu8B9OKZH5MxWzZ3mw0tZ/rMEd
+         xNyUveZbgz+EO5FATa5of/5+WbJ0wrAmaAl4ae9v+j0vN68YE5MyakJr2/CWVHlz+1
+         bPb7UHb61PA4w==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: [PATCH net-next 0/5] Devlink reload and missed notifications fix
+Date:   Wed, 29 Sep 2021 13:16:34 +0300
+Message-Id: <cover.1632909221.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH -next v3 0/3] riscv: Fix two vdso issue
-Content-Language: en-US
-To:     Tong Tiangen <tongtiangen@huawei.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, <abdulras@google.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20210901024621.2528797-1-tongtiangen@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20210901024621.2528797-1-tongtiangen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer, could this patchset be merged into v5.15, it fixes the
-serious problems about the basic time api.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Sergey[1] does meet same issue too. Thanks.
+Hi,
 
-[1] 
-https://patchwork.kernel.org/project/linux-riscv/patch/20210829094708.169037-1-cerg2010cerg2010@mail.ru/
+This series starts from the fixing the bug introduced by implementing
+devlink delayed notifications logic, where I missed some of the
+notifications functions.
 
-On 2021/9/1 10:46, Tong Tiangen wrote:
-> v3->v2:
->    Adapt to the latest code.
-> 
-> v2->v1:
->    Add patch "Refactor asm/vdso.h" to avoid vdso.lds syntax error if
->    CONFIG_GENERIC_TIME_VSYSCALL=n.
-> 
-> 1) Move vdso data page up front and introduce enum vvar_pages, This makes it
-> easier to introduce new feature TIME_NS.
-> 
-> 2) In arch_setup_additional_pages(), make Wait for the lock in the killable mode
-> and return with EINTR if the task got killed while waiting.
+The rest series provides a way to dynamically set devlink ops that is
+needed for mlx5 multiport device and starts cleanup by removing
+not-needed logic.
 
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+In the next series, we will delete various publish API, drop general
+lock, annotate the code and rework logic around devlink->lock.
+
+All this is possible because driver initialization is separated from the
+user input now.
+
+Thanks
+
+Leon Romanovsky (5):
+  devlink: Add missed notifications iterators
+  devlink: Allow modification of devlink ops
+  devlink: Allow set specific ops callbacks dynamically
+  net/mlx5: Register separate reload devlink ops for multiport device
+  devlink: Delete reload enable/disable interface
+
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |   6 +-
+ .../net/ethernet/cavium/liquidio/lio_main.c   |   2 +-
+ .../freescale/dpaa2/dpaa2-eth-devlink.c       |   2 +-
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     |   5 +-
+ .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |   5 +-
+ .../net/ethernet/huawei/hinic/hinic_devlink.c |   2 +-
+ drivers/net/ethernet/intel/ice/ice_devlink.c  |   2 +-
+ .../marvell/octeontx2/af/rvu_devlink.c        |   2 +-
+ .../marvell/prestera/prestera_devlink.c       |   2 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |  15 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   3 -
+ .../mellanox/mlx5/core/sf/dev/driver.c        |   5 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  12 +-
+ drivers/net/ethernet/mscc/ocelot.h            |   2 +-
+ drivers/net/ethernet/mscc/ocelot_net.c        |   2 +-
+ .../net/ethernet/netronome/nfp/nfp_devlink.c  |   2 +-
+ drivers/net/ethernet/netronome/nfp/nfp_main.h |   2 +-
+ .../ethernet/pensando/ionic/ionic_devlink.c   |   2 +-
+ drivers/net/ethernet/qlogic/qed/qed_devlink.c |   2 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |   2 +-
+ drivers/net/ethernet/ti/cpsw_new.c            |   2 +-
+ drivers/net/netdevsim/dev.c                   |   5 +-
+ drivers/ptp/ptp_ocp.c                         |   2 +-
+ drivers/staging/qlge/qlge_main.c              |   2 +-
+ include/net/devlink.h                         |  15 +-
+ net/core/devlink.c                            | 155 ++++++++++--------
+ net/dsa/dsa2.c                                |   2 +-
+ 28 files changed, 131 insertions(+), 133 deletions(-)
+
+-- 
+2.31.1
+
