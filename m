@@ -2,76 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169D941C670
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1214D41C676
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343650AbhI2OOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:14:42 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:41823 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245475AbhI2OOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:14:42 -0400
-Received: from [192.168.0.3] (ip5f5aef97.dynamic.kabel-deutschland.de [95.90.239.151])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A8D5D61E6478B;
-        Wed, 29 Sep 2021 16:12:58 +0200 (CEST)
-Subject: Re: [smartpqi updates PATCH V2 00/11] smartpqi updates
-To:     Don.Brace@microchip.com
-Cc:     Kevin.Barnett@microchip.com, Scott.Teel@microchip.com,
-        Justin.Lindley@microchip.com, Scott.Benesh@microchip.com,
-        Gerry.Morong@microchip.com, Mahesh.Rajashekhara@microchip.com,
-        Mike.McGowen@microchip.com, Murthy.Bhat@microchip.com,
-        Balsundar.P@microchip.com, joseph.szczypek@hpe.com,
-        jeff@canonical.com, POSWALD@suse.com, john.p.donnelly@oracle.com,
-        mwilck@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
-        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        linux-scsi@vger.kernel.org
-References: <20210928235442.201875-1-don.brace@microchip.com>
- <dfea334a-5d37-bb14-1959-51bf7287197b@molgen.mpg.de>
- <SN6PR11MB2848FE480F24EF105E473F4EE1A99@SN6PR11MB2848.namprd11.prod.outlook.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <99b812a8-6ade-0b29-bcb4-a0e4575ea550@molgen.mpg.de>
-Date:   Wed, 29 Sep 2021 16:12:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1343777AbhI2OPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:15:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245475AbhI2OPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:15:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A87613A5;
+        Wed, 29 Sep 2021 14:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632924812;
+        bh=eTAv1pPSQ34h7VzKpHo4amccmSX8My0viltKfGFPAcs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a0WROnPxlwaBTjZsiibH7NJovqQtTcIp/K8ms+STDcB0ptV8A0iGu7jLOLUA/zrUB
+         INOdkTNqEr+HXCsQa1FZU+yqpPcoGYOARxzTUh4ePsGKUBDxazH19ImM81Ssee+Mva
+         nxmG8NM2AaOVNzG/J2UsGMAVksZFTUppR7ziA8M1mXemH97Vk+d8qoG0kYGWYdGish
+         B9Qy4lryafOY6AelPhxlIm1cVnoVDb/CTbTE2vOsJMA/xb1kJPJdpk1+5jbmmd2KC3
+         vu3OyQvXaUDO9c51VtuIqQLJ54Y/7pkwRb/Ky5I0hyfeuWwgf9qtylbgp9JyDEXnTB
+         kSVVs8i8WEI2Q==
+Date:   Wed, 29 Sep 2021 17:13:28 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
+ fix
+Message-ID: <YVR0iKIRYDXQbD+o@unreal>
+References: <cover.1632916329.git.leonro@nvidia.com>
+ <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <SN6PR11MB2848FE480F24EF105E473F4EE1A99@SN6PR11MB2848.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Don,
+On Wed, Sep 29, 2021 at 06:40:04AM -0700, Jakub Kicinski wrote:
+> On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:
+> > This series starts from the fixing the bug introduced by implementing
+> > devlink delayed notifications logic, where I missed some of the
+> > notifications functions.
+> > 
+> > The rest series provides a way to dynamically set devlink ops that is
+> > needed for mlx5 multiport device and starts cleanup by removing
+> > not-needed logic.
+> > 
+> > In the next series, we will delete various publish API, drop general
+> > lock, annotate the code and rework logic around devlink->lock.
+> > 
+> > All this is possible because driver initialization is separated from the
+> > user input now.
+> 
+> Swapping ops is a nasty hack in my book.
+> 
+> And all that to avoid having two op structures in one driver.
+> Or to avoid having counters which are always 0?
 
+We don't need to advertise counters for feature that is not supported.
+In multiport mlx5 devices, the reload functionality is not supported, so
+this change at least make that device to behave like all other netdev
+devices that don't support devlink reload.
 
-Am 29.09.21 um 16:08 schrieb Don.Brace@microchip.com:
-> -----Original Message-----
-> From: Paul Menzel [mailto:pmenzel@molgen.mpg.de]
-> Subject: Re: [smartpqi updates PATCH V2 00/11] smartpqi updates
-> 
-> Dear Don,
-> 
-> 
-> Just a small nit regarding most patches in the patch queue.
-> 
-> It’d be great if the full text width of 75 characters could be used in the commit message bodies. Currently they are well below that, and therefore take more lines than necessary and are harder to read for me.
-> 
-> 
-> Kind regards,
-> 
-> Paul
-> ---
-> I can re-word and re-send if you like.
+The ops structure is set very early to make sure that internal devlink
+routines will be able access driver back during initialization (btw very
+questionable design choice), and at that stage the driver doesn't know
+yet which device type it is going to drive.
 
-If you sent V3 due to other reasons, then yes. Otherwise, please just 
-keep it in mind for the future.
+So the answer is:
+1. Can't have two structures.
+2. Same behaviour across all netdev devices.
 
+> 
+> Sorry, at the very least you need better explanation for this.
 
-Kind regards,
-
-Paul
+Was it better explained now?
