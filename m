@@ -2,87 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA9F41C6FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5CB41C6EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344500AbhI2OmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:42:05 -0400
-Received: from mxout02.lancloud.ru ([45.84.86.82]:54440 "EHLO
-        mxout02.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344537AbhI2OmD (ORCPT
+        id S1344602AbhI2Ojd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:39:33 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3890 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344564AbhI2Ojc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:42:03 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru 2EA65236520F
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH] drivers/ata: Fix kernel pointer leak
-To:     Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210929121618.1157415-1-qtxuning1999@sjtu.edu.cn>
-Organization: Open Mobile Platform
-Message-ID: <563011b8-52cd-3bae-a6f6-4611ab5863da@omp.ru>
-Date:   Wed, 29 Sep 2021 17:40:07 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 29 Sep 2021 10:39:32 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HKJnF5lv1z67d0C;
+        Wed, 29 Sep 2021 22:35:13 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 29 Sep 2021 16:37:48 +0200
+Received: from [10.47.26.77] (10.47.26.77) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 29 Sep
+ 2021 15:37:47 +0100
+Subject: Re: [PATCH V3 5/7] genirq/affinity: move group_cpus_evenly() into
+ lib/
+To:     Ming Lei <ming.lei@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Jens Axboe" <axboe@kernel.dk>
+CC:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        "Christoph Hellwig" <hch@lst.de>
+References: <20210928005558.243352-1-ming.lei@redhat.com>
+ <20210928005558.243352-6-ming.lei@redhat.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <74bcc75e-0b68-1d6b-b7f6-4681ec754257@huawei.com>
+Date:   Wed, 29 Sep 2021 15:40:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20210929121618.1157415-1-qtxuning1999@sjtu.edu.cn>
+In-Reply-To: <20210928005558.243352-6-ming.lei@redhat.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1907.lancloud.ru (fd00:f066::207)
+X-Originating-IP: [10.47.26.77]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> +/**
+> + * group_cpus_evenly - Group all CPUs evenly per NUMA/CPU locality
+> + * @numgrps: number of groups
+> + *
+> + * Return: cpumask array if successful, NULL otherwise. And each element
+> + * includes CPUs assigned to this group
+> + *
+> + * Try to put close CPUs from viewpoint of CPU and NUMA locality into
+> + * same group, and run two-stage grouping:
+> + *	1) allocate present CPUs on these groups evenly first
+> + *	2) allocate other possible CPUs on these groups evenly
+> + *
+> + * We guarantee in the resulted grouping that all CPUs are covered, and
+> + * no same CPU is assigned to different groups
 
-On 29.09.2021 15:16, Guo Zhi wrote:
+nit: I'd have "no same CPU is assigned to multiple groups"
 
-    I'd recommend the subject prefix to be just "pata_atp867x: "...
+> + */
+> +struct cpumask *group_cpus_evenly(unsigned int numgrps)
 
-> Pointers should be printed with %p or %px rather than cast to
-> 'unsigned long' and pinted with %lx
+nit: The name group_cpus_evenly() would imply an action on some cpus, 
+when it's just calculating some masks - I think "masks" should be at 
+least included in the name
 
-    Printed.
+> +{
+> +	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
+> +	cpumask_var_t *node_to_cpumask;
+> +	cpumask_var_t nmsk, npresmsk;
+> +	int ret = -ENOMEM;
+> +	struct cpumask *masks = NULL;
+> +
+> +	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
+> +		return NULL;
+> +
+> +	if (!zalloc_cpumask_var(&npresmsk, GFP_KERNEL))
+> +		goto fail_nmsk;
+> +
+> +	node_to_cpumask = alloc_node_to_cpumask();
+> +	if (!node_to_cpumask)
+> +		goto fail_npresmsk;
+> +
+> +	masks = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
+> +	if (!masks)
+> +		goto fail_node_to_cpumask;
+> +
+> +	/* Stabilize the cpumasks */
+> +	cpus_read_lock();
+> +	build_node_to_cpumask(node_to_cpumask);
+> +
+> +	/* grouping present CPUs first */
+> +	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> +				  cpu_present_mask, nmsk, masks);
+> +	if (ret < 0)
+> +		goto fail_build_affinity;
+> +	nr_present = ret;
+> +
+> +	/*
+> +	 * Allocate non present CPUs starting from the next group to be
+> +	 * handled. If the grouping of present CPUs already exhausted the
+> +	 * group space, assign the non present CPUs to the already
+> +	 * allocated out groups.
+> +	 */
+> +	if (nr_present >= numgrps)
+> +		curgrp = 0;
+> +	else
+> +		curgrp = nr_present;
+> +	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
+> +	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> +				  npresmsk, nmsk, masks);
+> +	if (ret >= 0)
+> +		nr_others = ret;
+> +
+> + fail_build_affinity:
 
-> Change %lx to %p to print the secured pointer.
+nit: Strange that success path goes through "fail" labels. Current code 
+is this way, so feel free to ignore.
+
+> +	cpus_read_unlock();
+> +
+> +	if (ret >= 0)
+> +		WARN_ON(nr_present + nr_others < numgrps);
+> +
+> + fail_node_to_cpumask:
+> +	free_node_to_cpumask(node_to_cpumask);
+> +
+> + fail_npresmsk:
+> +	free_cpumask_var(npresmsk);
+> +
+> + fail_nmsk:
+> +	free_cpumask_var(nmsk);
+> +	if (ret < 0) {
+> +		kfree(masks);
+> +		return NULL;
+> +	}
+> +	return masks;
+> +}
+> +EXPORT_SYMBOL_GPL(group_cpus_evenly);
+
+Are there any users which are available as modules? As I see, the only 
+users are blk-mq-cpumap.c and irq/affinity.c, which I guess aren't 
+available as modules.
+
 > 
-> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
-> ---
->   drivers/ata/pata_atp867x.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/ata/pata_atp867x.c b/drivers/ata/pata_atp867x.c
-> index 2bc5fc81efe3..c32b95f48e50 100644
-> --- a/drivers/ata/pata_atp867x.c
-> +++ b/drivers/ata/pata_atp867x.c
-> @@ -447,11 +447,11 @@ static int atp867x_ata_pci_sff_init_host(struct ata_host *host)
->   #ifdef	ATP867X_DEBUG
->   		atp867x_check_ports(ap, i);
->   #endif
-> -		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
-> -			(unsigned long)ioaddr->cmd_addr,
-> -			(unsigned long)ioaddr->ctl_addr);
-> -		ata_port_desc(ap, "bmdma 0x%lx",
-> -			(unsigned long)ioaddr->bmdma_addr);
-> +		ata_port_desc(ap, "cmd 0x%p ctl 0x%p",
-> +			ioaddr->cmd_addr,
 
-    This line shouldn't be broken up, it's not long at all.
+Thanks,
+John
 
-> +			ioaddr->ctl_addr);
-> +		ata_port_desc(ap, "bmdma 0x%p",
-> +			ioaddr->bmdma_addr);
-
-    Hmm, I've looked at the driver and got an imperession it only uses the I/O 
-ports, not MMIO...
-
-[...]
-
-MBR, Sergey
