@@ -2,122 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4105141C84A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D069E41C855
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345189AbhI2P0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:26:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344945AbhI2P03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:26:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 604FF61440;
-        Wed, 29 Sep 2021 15:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632929088;
-        bh=xBRRX1rYjiTzPEoPMHw1rL24TvrnK+689UnwZagbnsQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aP/SzhecYqJ59hW7NpP/05VpI6etnlUtWV51qr4Sjrsj7iIglusLMXx2XNaO0fT0M
-         RyFp76HRYmy1cib0bH0hsp/eVZnogcmCelT/ZwaymqsJegIyZJRgdg5tNKJsghh0RX
-         h735xxlR9XptIYNPpeHPeVEIWeiC9Q4ek0t3XMoih4QzIJ1mz04rG59BZZLxMrAzht
-         MHpF9eFzGaB22t5a325IB+YbBszRNGWukMKfRmsCWK+zMzKR3DD/rQmxK4ETBnoB+G
-         hvBLRT6RtSXZYMSVRvFbB12XrLiTkxZUMC0ZQ7vldriFuDLP8cPBDmDxWn6bw8TPTP
-         TWgYqiOk6HtYQ==
-Date:   Wed, 29 Sep 2021 18:24:44 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 4/5] net/mlx5: Register separate reload
- devlink ops for multiport device
-Message-ID: <YVSFPNq+IDUlZAeI@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <a8bf9a036fe0a590df830a77a31cc81c355f525d.1632916329.git.leonro@nvidia.com>
- <20210929065549.43b13203@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR1PKQjsBfvUTPU@unreal>
- <20210929072631.437ffad9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR4qDxiQw95jaWK@unreal>
- <20210929073551.16dd2267@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1345226AbhI2P2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345175AbhI2P2p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:28:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD622C06161C;
+        Wed, 29 Sep 2021 08:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/HT/mG+FA+pI9TQTgmsOZU/RKX7YzZZpwunc3gLz0oU=; b=UIsWQEN8qUvNd0ZtpytLaAb7qU
+        JXACadCVmiOzTEg1qDV31k654zAx2rlHewxRfWNISei80ZDdWVG6wFND7If1xQgCrkwUXoDdk7G6E
+        gMsV1M/fHjAHkdATbGzKkhEL6O8eixg+gYdN+QYSp6go6it9A09bjU93afpUdOqT4qhKMppil0rQE
+        ivpfmtIaTc7n5vag6owKrjgm5TTrC4OCgZPQJQ/IH0YWSHcTxpJ9n2PS7pfnonS9ObwOVX9WbDbEw
+        zjtVNcQLqj581CoqF9TSIUrthlm511e7UWyXeCn3Lz/KDC+wMRG8XhWtb53rQsTFEjzKvfEscPaeR
+        zzBj6TIA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVbS3-00BxYi-AM; Wed, 29 Sep 2021 15:25:04 +0000
+Date:   Wed, 29 Sep 2021 16:24:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <YVSFRx0SVW3YeA3C@casper.infradead.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpaTBJ/Jhz15S6a@casper.infradead.org>
+ <20210923004515.GD3053272@iweiny-DESK2.sc.intel.com>
+ <YUv3UEE9JZgD+A/D@casper.infradead.org>
+ <20210923221241.GG3053272@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929073551.16dd2267@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210923221241.GG3053272@iweiny-DESK2.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 07:35:51AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 17:31:04 +0300 Leon Romanovsky wrote:
-> > On Wed, Sep 29, 2021 at 07:26:31AM -0700, Jakub Kicinski wrote:
-> > > On Wed, 29 Sep 2021 17:16:28 +0300 Leon Romanovsky wrote:  
-> > > > devlink_ops pointer is not constant at this stage, so why can't I copy
-> > > > reload_* pointers to the "main" devlink ops?
-> > > > 
-> > > > I wanted to avoid to copy all pointers.  
+On Thu, Sep 23, 2021 at 03:12:41PM -0700, Ira Weiny wrote:
+> On Thu, Sep 23, 2021 at 04:41:04AM +0100, Matthew Wilcox wrote:
+> > On Wed, Sep 22, 2021 at 05:45:15PM -0700, Ira Weiny wrote:
+> > > On Tue, Sep 21, 2021 at 11:18:52PM +0100, Matthew Wilcox wrote:
+> > > > +/**
+> > > > + * page_slab - Converts from page to slab.
+> > > > + * @p: The page.
+> > > > + *
+> > > > + * This function cannot be called on a NULL pointer.  It can be called
+> > > > + * on a non-slab page; the caller should check is_slab() to be sure
+> > > > + * that the slab really is a slab.
+> > > > + *
+> > > > + * Return: The slab which contains this page.
+> > > > + */
+> > > > +#define page_slab(p)		(_Generic((p),				\
+> > > > +	const struct page *:	(const struct slab *)_compound_head(p), \
+> > > > +	struct page *:		(struct slab *)_compound_head(p)))
+> > > > +
+> > > > +static inline bool is_slab(struct slab *slab)
+> > > > +{
+> > > > +	return test_bit(PG_slab, &slab->flags);
+> > > > +}
+> > > > +
 > > > 
-> > > Hm. I must be missing a key piece here. IIUC you want to have different
-> > > ops based on some device property. But there is only one
+> > > I'm sorry, I don't have a dog in this fight and conceptually I think folios are
+> > > a good idea...
 > > > 
-> > > static struct devlink_ops mlx5_devlink_ops;
-> > > 
-> > > so how can two devlink instances in the system use that and have
-> > > different ops without a copy?  
+> > > But for this work, having a call which returns if a 'struct slab' really is a
+> > > 'struct slab' seems odd and well, IMHO, wrong.  Why can't page_slab() return
+> > > NULL if there is no slab containing that page?
 > > 
-> > No, I have two:
-> > * Base ops - mlx5_devlink_ops
-> > * Extra reload commands - mlx5_devlink_reload
+> > No, this is a good question.
+> > 
+> > The way slub works right now is that if you ask for a "large" allocation,
+> > it does:
+> > 
+> >         flags |= __GFP_COMP;
+> >         page = alloc_pages_node(node, flags, order);
+> > 
+> > and returns page_address(page) (eventually; the code is more complex)
+> > So when you call kfree(), it uses the PageSlab flag to determine if the
+> > allocation was "large" or not:
+> > 
+> >         page = virt_to_head_page(x);
+> >         if (unlikely(!PageSlab(page))) {
+> >                 free_nonslab_page(page, object);
+> >                 return;
+> >         }
+> >         slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+> > 
+> > Now, you could say that this is a bad way to handle things, and every
+> > allocation from slab should have PageSlab set,
 > 
-> Still those are global for the driver, no?
-
-Ugh, yes
-
+> Yea basically.
 > 
-> What if you have multiple NICs or whatever.
+> So what makes 'struct slab' different from 'struct page' in an order 0
+> allocation?  Am I correct in deducing that PG_slab is not set in that case?
 
-I missed it and always tested with one device L(.
+You might mean a couple of different things by that question, so let
+me say some things which are true (on x86) but might not answer your
+question:
 
-I'll add copy-all-ops code.
+If you kmalloc(4095) bytes, it comes from a slab.  That slab would usually
+be an order-3 allocation.  If that order-3 allocation fails, slab might
+go as low as an order-0 allocation, but PageSlab will always be set on
+that head/base page because the allocation is smaller than two pages.
 
-Thanks
+If you kmalloc(8193) bytes, slub throws up its hands and does an
+allocation from the page allocator.  So it allocates an order-2 page,
+does not set PG_slab on it, but PG_head is set on the head page and
+PG_tail is set on all three tail pages.
+
+> > and it should use one of
+> > the many other bits in page->flags to indicate whether it's a large
+> > allocation or not.
+> 
+> Isn't the fact that it is a compound page enough to know that?
+
+No -- regular slab allocations have PG_head set.  But it could use,
+eg, slab->slab_cache == NULL to distinguish page allocations
+from slab allocations.
+
+> > I may have feelings in that direction myself.
+> > But I don't think I should be changing that in this patch.
+> > 
+> > Maybe calling this function is_slab() is the confusing thing.
+> > Perhaps it should be called SlabIsLargeAllocation().  Not sure.
+> 
+> Well that makes a lot more sense to me from an API standpoint but checking
+> PG_slab is still likely to raise some eyebrows.
+
+Yeah.  Here's what I have right now:
+
++static inline bool SlabMultiPage(const struct slab *slab)
++{
++       return test_bit(PG_head, &slab->flags);
++}
++
++/* Did this allocation come from the page allocator instead of slab? */
++static inline bool SlabPageAllocation(const struct slab *slab)
++{
++       return !test_bit(PG_slab, &slab->flags);
++}
+
+> Regardless I like the fact that the community is at least attempting to fix
+> stuff like this.  Because adding types like this make it easier for people like
+> me to understand what is going on.
+
+Yes, I dislike that 'struct page' is so hard to understand, and so easy
+to misuse.  It's a very weak type.
