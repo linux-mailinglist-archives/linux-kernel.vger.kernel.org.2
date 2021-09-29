@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAC441C06E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B309441C068
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244735AbhI2IPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:15:52 -0400
-Received: from egress-ip33b.ess.de.barracuda.com ([18.185.115.237]:54144 "EHLO
-        egress-ip33b.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244708AbhI2IPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S244615AbhI2IPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 29 Sep 2021 04:15:46 -0400
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69]) by mx-outbound23-192.eu-central-1b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 29 Sep 2021 08:14:04 +0000
-Received: by mail-qv1-f69.google.com with SMTP id dk6-20020a056214092600b0038289c1fc44so6786689qvb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:14:04 -0700 (PDT)
+Received: from egress-ip33a.ess.de.barracuda.com ([18.185.115.192]:38100 "EHLO
+        egress-ip33a.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244524AbhI2IPk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 04:15:40 -0400
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197]) by mx-outbound11-76.eu-central-1a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 29 Sep 2021 08:13:56 +0000
+Received: by mail-pl1-f197.google.com with SMTP id n2-20020a1709026a8200b0013e2253d774so883146plk.14
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mistralsolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Fh8BHUuInQoe2F9epgF7MvMEhb7N+5ayCx0fHuFmNm8=;
-        b=NZ9XqcdFjN/ho7Ut6woyOgRGX0X0ogrVLw9xsyuCo6MNyPPQw6BjEf6q4atZEFYSYi
-         Pgw+rrQymMHHMYDWYdrznj3OzmxFLReFFIo08j1v0nSnwBQHoYYCJP6DMLvWzIn/bOjT
-         hcDszxm/XNroap7vpygWZ2zI4V9Ejc1tFe9Hs=
+        bh=GCkhqC8f/n95orai+QOQsJrJloASjkEjLiHcFYdwic8=;
+        b=kpAPS/ZNjeK/yA48lLJ4G1i05D3HawQXqyejH3gQi1Yqa/ab9j/rf/ja+yRbiyUWTf
+         vN3kXj4J6tG4rcvFSw6L7Kg5hP8BUwfmLkLcP0ITDbaOVP+QJT9wlmzADh1WKSxvaWJj
+         V/hs0qhfQol0CQ/hlqJgWoGkddIyxsI8AdC00=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Fh8BHUuInQoe2F9epgF7MvMEhb7N+5ayCx0fHuFmNm8=;
-        b=DdBkBmC9F5Qg3XY5EqO8ljc7s9dMHYB9mxCxlr7bv+jydB4+UN4DluZ+ykNsDN+EeA
-         ARkuNL2zAjTxZ1Vh7UeSsn8zvpjeF2vYoaxx3w1StOllQR3ctiAAq5GjcveHeLYgQJZT
-         f1AGwUPvq2S+E5RvwliFmJsqgOa9/sxVV9NwVJ9g+kg9qNmosSOcU8VRK+XjRDcUYIn+
-         nKcwyOefa6STGpfSHelyY5a8/CFAtRpOaJmfyP4Aei4AtqpK6PuIndisrdTff8KuYG4A
-         Dcvh6gaoO3eFDplpjP/iuUxw5j7mc04da0fMq4c5+HSc2Atq5TrVfjvHPfJFtRonG3dN
-         n1Qw==
-X-Gm-Message-State: AOAM5319ap+GHiliRAFk1WefP8+YDW7MyH/dotzgu+ZDFO/aGMfKZ2Zb
-        D1p6CB4dqpBKkB1EpppzC6Kuj1Snep7ot+QHefTwRn2keAdSmigsX6gOyryMjfcoR9slFT7qVSI
-        TYTsUORr1DGSxNhVNgnULHcwW+MpbKaJqujV/hV6tLyH4Y8b1pb0l9QSut5nJ
-X-Received: by 2002:a62:5e05:0:b0:44b:34af:af0d with SMTP id s5-20020a625e05000000b0044b34afaf0dmr10007804pfb.54.1632903232284;
-        Wed, 29 Sep 2021 01:13:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz+hOv2B6BbiuZ6iZaaqbuPwaOq6prHXjkKQEI/bgInuAZKqFJ5byuiC5HbTcvOxpEYibf6pQ==
-X-Received: by 2002:a62:5e05:0:b0:44b:34af:af0d with SMTP id s5-20020a625e05000000b0044b34afaf0dmr10007785pfb.54.1632903232054;
-        Wed, 29 Sep 2021 01:13:52 -0700 (PDT)
+        bh=GCkhqC8f/n95orai+QOQsJrJloASjkEjLiHcFYdwic8=;
+        b=hWHI5rD7BWZLDAaZxemN6iBUvLRHZKQ1D20uTPUOQduNgcytiX9NHZa51Gov4Wt8Xc
+         WSthW4aSaC/DoiqRogkFnHE+9zVO+dIvj+Z9PwxJjUmKyo9oM3sCLMxEbq2mzLnSItma
+         qaqAOkLNLRliLF1IREb8BUvqsahfhuJSDsJ1Qz8iV7V/mJzQcTQk4/qp+JMqsg9xSchw
+         7jPqDXu2nuvmkwqfvUNLKob7bxkurELbCm8xLVC2/y9wOi1a1SkVN3mITv4OvJGdQ7t/
+         OKgEzReT11C7s0yrPEuwH905ZekgKit9NmVSp/oacgiIU31zuQklcP7rqhdnqKQ67TBc
+         qftw==
+X-Gm-Message-State: AOAM532JZ7oJ4D0u+PjgLmieB1mqkQVMXiW/oQKh8/SHRU8M4iodTsAg
+        xt/09CJrnJ6vz/L7MwX1h72s34wBZBgWhV2ZmnqBy2FcwC1geoIfQUuY1prNB0ELA6zqii3pS2J
+        90SY2MNgpb4tR5rc3WCHg29Xtj52xwAtRtrFgVWU6WkjJvaPOWQYpLm1IjH3U
+X-Received: by 2002:aa7:82ce:0:b0:44b:436b:b171 with SMTP id f14-20020aa782ce000000b0044b436bb171mr2103575pfn.21.1632903235238;
+        Wed, 29 Sep 2021 01:13:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4yfWXtVv9xyy4yPj06w0kfeDerpfVwhmc185e1yBjxC5hDPb11qWVmKk7cyTidjrjsX5m+g==
+X-Received: by 2002:aa7:82ce:0:b0:44b:436b:b171 with SMTP id f14-20020aa782ce000000b0044b436bb171mr2103563pfn.21.1632903234994;
+        Wed, 29 Sep 2021 01:13:54 -0700 (PDT)
 Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id k14sm1152026pji.45.2021.09.29.01.13.49
+        by smtp.gmail.com with ESMTPSA id k14sm1152026pji.45.2021.09.29.01.13.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 01:13:51 -0700 (PDT)
+        Wed, 29 Sep 2021 01:13:54 -0700 (PDT)
 From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
 X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
@@ -53,26 +53,27 @@ To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
 Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Sinthu Raja <sinthu.raja@ti.com>
-Subject: [PATCH V3 3/4] arm64: dts: ti: k3-j721e-sk: Add IPC sub-mailbox nodes
-Date:   Wed, 29 Sep 2021 13:43:32 +0530
-Message-Id: <20210929081333.26454-4-sinthu.raja@ti.com>
+Subject: [PATCH V3 4/4] arm64: dts: ti: k3-j721e-sk: Add DDR carveout memory nodes
+Date:   Wed, 29 Sep 2021 13:43:33 +0530
+Message-Id: <20210929081333.26454-5-sinthu.raja@ti.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210929081333.26454-1-sinthu.raja@ti.com>
 References: <20210929081333.26454-1-sinthu.raja@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1632903243-306080-1426-21520-1
+X-BESS-ID: 1632903235-302892-1133-19177-1
 X-BESS-VER: 2019.1_20210928.1746
-X-BESS-Apparent-Source-IP: 209.85.219.69
-X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Apparent-Source-IP: 209.85.214.197
+X-BESS-Outbound-Spam-Score: 0.40
 X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.234800 [from 
-        cloudscan12-37.eu-central-1a.ess.aws.cudaops.com]
+        cloudscan11-115.eu-central-1a.ess.aws.cudaops.com]
         Rule breakdown below
          pts rule name              description
         ---- ---------------------- --------------------------------
+        0.40 BSF_SC0_SA085b         META: Custom Rule SA085b 
         0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
         0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
+X-BESS-Outbound-Spam-Status: SCORE=0.40 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_SC0_SA085b, BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
 X-BESS-BRTS-Status: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -80,165 +81,247 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sinthu Raja <sinthu.raja@ti.com>
 
-Add the sub-mailbox nodes that are used to communicate between MPU and
-various remote processors present in the J721E SoCs to the J721E EAIK
-board. These include the R5F remote processors in the dual-R5F cluster
-(MCU_R5FSS0) in the MCU domain and the two dual-R5F clusters
-(MAIN_R5FSS0 & MAIN_R5FSS1) in the MAIN domain; the two C66x DSP remote
-processors and the single C71x DSP remote processor in the MAIN domain.
-These sub-mailbox nodes utilize the System Mailbox clusters 0 through 4.
-All the remaining mailbox clusters are currently not used on A72 core,
-and are hence disabled.
+Two carveout reserved memory nodes each have been added for each of the
+other remote processors devices within the MAIN domain on the TI J721E
+SK boards. These nodes are assigned to the respective rproc device nodes
+as well. The first region will be used as the DMA pool for the rproc
+devices, and the second region will furnish the static carveout regions
+for the firmware memory.
 
-The sub-mailbox nodes added match the hard-coded mailbox configuration
-used within the TI RTOS IPC software packages. The R5F processor
-sub-systems are assumed to be running in Split mode, so a sub-mailbox
-node is used by each of the R5F cores. Only the sub-mailbox node for
-the first R5F core in each cluster is used in case of a Lockstep mode
-for that R5F cluster.
+An additional reserved memory node is also added to reserve a portion of
+the DDR memory to be used for performing inter-processor communication
+between all the remote processors running RTOS or baremetal firmwares.
+8 MB of memory is reserved for this purpose, and this accounts for all
+the vrings and vring buffers between all the possible pairs of remote
+processors.
+
+The current carveout addresses and sizes are defined statically for each
+rproc device. The R5F processors do not have an MMU, and as such require
+the exact memory used by the firmwares to be set-aside. The C71x DSP
+processor does support a MMU called CMMU, but is not currently supported
+and as such requires the exact memory used by the firmware to be
+set-aside. The firmware images do not require any RSC_CARVEOUT entries
+in their resource tables to allocate the memory for firmware memory
+segments
 
 Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 129 +++++++++++++++++++++++++
- 1 file changed, 129 insertions(+)
+
+The following new warnings are introduced. Please refer to the ongoing discussion [1]
+
+arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
+/reserved-memory/r5f-dma-memory@a0000000: failed to match any schema
+with compatible: ['shared-dma-pool']
+arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
+/reserved-memory/r5f-memory@a0100000: failed to match any schema with
+compatible: ['shared-dma-pool']
+arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
+/reserved-memory/r5f-dma-memory@a1000000: failed to match any schema
+with compatible: ['shared-dma-pool']
+arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
+/reserved-memory/r5f-memory@a1100000: failed to match any schema with
+compatible: ['shared-dma-pool']
+arch/arm64/boot/dts/ti/k3-j721e-sk.dt.yaml:0:0:
+/reserved-memory/r5f-dma-memory@a2000000: failed to match any schema
+with compatible: ['shared-dma-pool']
+
+[1] https://lore.kernel.org/linux-devicetree/20210423163234.3651547-2-thierry.reding@gmail.com/
+
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 144 +++++++++++++++++++++++++
+ 1 file changed, 144 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-index 2ca92ed12f03..7816aa9b06f0 100644
+index 7816aa9b06f0..b726310d867c 100644
 --- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
 +++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-@@ -727,3 +727,132 @@ &icssg1_mdio {
- &ufs_wrapper {
- 	status = "disabled";
+@@ -28,6 +28,132 @@ memory@80000000 {
+ 		      <0x00000008 0x80000000 0x00000000 0x80000000>;
+ 	};
+ 
++	reserved_memory: reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		secure_ddr: optee@9e800000 {
++			reg = <0x00 0x9e800000 0x00 0x01800000>;
++			alignment = <0x1000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core0_dma_memory_region: r5f-dma-memory@a0000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa0000000 0x00 0x100000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core0_memory_region: r5f-memory@a0100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa0100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core1_dma_memory_region: r5f-dma-memory@a1000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa1000000 0x00 0x100000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core1_memory_region: r5f-memory@a1100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa1100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		main_r5fss0_core0_dma_memory_region: r5f-dma-memory@a2000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa2000000 0x00 0x100000>;
++			no-map;
++		};
++
++		main_r5fss0_core0_memory_region: r5f-memory@a2100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa2100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		main_r5fss0_core1_dma_memory_region: r5f-dma-memory@a3000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa3000000 0x00 0x100000>;
++			no-map;
++		};
++
++		main_r5fss0_core1_memory_region: r5f-memory@a3100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa3100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		main_r5fss1_core0_dma_memory_region: r5f-dma-memory@a4000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa4000000 0x00 0x100000>;
++			no-map;
++		};
++
++		main_r5fss1_core0_memory_region: r5f-memory@a4100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa4100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		main_r5fss1_core1_dma_memory_region: r5f-dma-memory@a5000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa5000000 0x00 0x100000>;
++			no-map;
++		};
++
++		main_r5fss1_core1_memory_region: r5f-memory@a5100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa5100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		c66_1_dma_memory_region: c66-dma-memory@a6000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa6000000 0x00 0x100000>;
++			no-map;
++		};
++
++		c66_0_memory_region: c66-memory@a6100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa6100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		c66_0_dma_memory_region: c66-dma-memory@a7000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa7000000 0x00 0x100000>;
++			no-map;
++		};
++
++		c66_1_memory_region: c66-memory@a7100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa7100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		c71_0_dma_memory_region: c71-dma-memory@a8000000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa8000000 0x00 0x100000>;
++			no-map;
++		};
++
++		c71_0_memory_region: c71-memory@a8100000 {
++			compatible = "shared-dma-pool";
++			reg = <0x00 0xa8100000 0x00 0xf00000>;
++			no-map;
++		};
++
++		rtos_ipc_memory_region: ipc-memories@aa000000 {
++			reg = <0x00 0xaa000000 0x00 0x01c00000>;
++			alignment = <0x1000>;
++			no-map;
++		};
++	};
++
+ 	vusb_main: fixedregulator-vusb-main5v0 {
+ 		/* USB MAIN INPUT 5V DC */
+ 		compatible = "regulator-fixed";
+@@ -823,36 +949,54 @@ &mailbox0_cluster11 {
+ 
+ &mcu_r5fss0_core0 {
+ 	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core0>;
++	memory-region = <&mcu_r5fss0_core0_dma_memory_region>,
++			<&mcu_r5fss0_core0_memory_region>;
  };
-+
-+&mailbox0_cluster0 {
-+	interrupts = <436>;
-+
-+	mbox_mcu_r5fss0_core0: mbox-mcu-r5fss0-core0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_mcu_r5fss0_core1: mbox-mcu-r5fss0-core1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
-+};
-+
-+&mailbox0_cluster1 {
-+	interrupts = <432>;
-+
-+	mbox_main_r5fss0_core0: mbox-main-r5fss0-core0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_main_r5fss0_core1: mbox-main-r5fss0-core1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
-+};
-+
-+&mailbox0_cluster2 {
-+	interrupts = <428>;
-+
-+	mbox_main_r5fss1_core0: mbox-main-r5fss1-core0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_main_r5fss1_core1: mbox-main-r5fss1-core1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
-+};
-+
-+&mailbox0_cluster3 {
-+	interrupts = <424>;
-+
-+	mbox_c66_0: mbox-c66-0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_c66_1: mbox-c66-1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
-+};
-+
-+&mailbox0_cluster4 {
-+	interrupts = <420>;
-+
-+	mbox_c71_0: mbox-c71-0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+};
-+
-+&mailbox0_cluster5 {
-+	status = "disabled";
-+};
-+
-+&mailbox0_cluster6 {
-+	status = "disabled";
-+};
-+
-+&mailbox0_cluster7 {
-+	status = "disabled";
-+};
-+
-+&mailbox0_cluster8 {
-+	status = "disabled";
-+};
-+
-+&mailbox0_cluster9 {
-+	status = "disabled";
-+};
-+
-+&mailbox0_cluster10 {
-+	status = "disabled";
-+};
-+
-+&mailbox0_cluster11 {
-+	status = "disabled";
-+};
-+
-+&mcu_r5fss0_core0 {
-+	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core0>;
-+};
-+
-+&mcu_r5fss0_core1 {
-+	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core1>;
-+};
-+
-+&main_r5fss0_core0 {
-+	mboxes = <&mailbox0_cluster1 &mbox_main_r5fss0_core0>;
-+};
-+
-+&main_r5fss0_core1 {
-+	mboxes = <&mailbox0_cluster1 &mbox_main_r5fss0_core1>;
-+};
-+
-+&main_r5fss1_core0 {
-+	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss1_core0>;
-+};
-+
-+&main_r5fss1_core1 {
-+	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss1_core1>;
-+};
-+
-+&c66_0 {
-+	mboxes = <&mailbox0_cluster3 &mbox_c66_0>;
-+};
-+
-+&c66_1 {
-+	mboxes = <&mailbox0_cluster3 &mbox_c66_1>;
-+};
-+
-+&c71_0 {
-+	mboxes = <&mailbox0_cluster4 &mbox_c71_0>;
-+};
+ 
+ &mcu_r5fss0_core1 {
+ 	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core1>;
++	memory-region = <&mcu_r5fss0_core1_dma_memory_region>,
++			<&mcu_r5fss0_core1_memory_region>;
+ };
+ 
+ &main_r5fss0_core0 {
+ 	mboxes = <&mailbox0_cluster1 &mbox_main_r5fss0_core0>;
++	memory-region = <&main_r5fss0_core0_dma_memory_region>,
++			<&main_r5fss0_core0_memory_region>;
+ };
+ 
+ &main_r5fss0_core1 {
+ 	mboxes = <&mailbox0_cluster1 &mbox_main_r5fss0_core1>;
++	memory-region = <&main_r5fss0_core1_dma_memory_region>,
++			<&main_r5fss0_core1_memory_region>;
+ };
+ 
+ &main_r5fss1_core0 {
+ 	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss1_core0>;
++	memory-region = <&main_r5fss1_core0_dma_memory_region>,
++			<&main_r5fss1_core0_memory_region>;
+ };
+ 
+ &main_r5fss1_core1 {
+ 	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss1_core1>;
++	memory-region = <&main_r5fss1_core1_dma_memory_region>,
++			<&main_r5fss1_core1_memory_region>;
+ };
+ 
+ &c66_0 {
+ 	mboxes = <&mailbox0_cluster3 &mbox_c66_0>;
++	memory-region = <&c66_0_dma_memory_region>,
++			<&c66_0_memory_region>;
+ };
+ 
+ &c66_1 {
+ 	mboxes = <&mailbox0_cluster3 &mbox_c66_1>;
++	memory-region = <&c66_1_dma_memory_region>,
++			<&c66_1_memory_region>;
+ };
+ 
+ &c71_0 {
+ 	mboxes = <&mailbox0_cluster4 &mbox_c71_0>;
++	memory-region = <&c71_0_dma_memory_region>,
++			<&c71_0_memory_region>;
+ };
 -- 
 2.31.1
 
