@@ -2,203 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86BD41BD40
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E14041BD57
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243941AbhI2DSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243940AbhI2DSr (ORCPT
+        id S243950AbhI2D0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:26:15 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:34928 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243954AbhI2D0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:18:47 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A825EC061745;
-        Tue, 28 Sep 2021 20:17:07 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id q23so744270pfs.9;
-        Tue, 28 Sep 2021 20:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D1ZJzVM7lwJIUvFTpSkZIOwRXzMuWD16wO01xh/53mc=;
-        b=Eap6CAx4EhjI17O4riTzd8BatbHAQKJB3td5qsGjzQ1P2WBoaf53W+uLGS/2vlqd9p
-         /JMv9dQ1rp79u970Xn8+sCOSa+G1vJWRN5vEghw5kefCO9Y4w4nd48EIg2FcgUpsiUxx
-         GSXJv/NCbwtq6rFSjWyvL9EM23hMYaQzTerE2EtIKp5ArkT28UQKh9hsp2itYlLWVaue
-         uTWufBMICftRLLNBabw1FQ8frXvVugTWj6XDNRHf87TjOy/va0Y7uFF5IA03qWSTLFUM
-         OCqs+CYcA6U6v5cGFwEbWb5hzTUK4UGPcq0bGZIEFKtbVT+sgH7Wr20eOmj42juBeMOM
-         H0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D1ZJzVM7lwJIUvFTpSkZIOwRXzMuWD16wO01xh/53mc=;
-        b=L9CjGCirjZoJ45NdhqVrf4As/B4A+/okSuNx+VjYSpSVi+ld7ijk8GcV28/6y5ItMx
-         OcK+oXJljJqriqAeEJoWojj4KxF+VGFsdvPB78doPGvuDv7eOmVlUWDE/WlZJC5G4XC9
-         HBnAvLX+mZYNFq3xzjACr96puriKXIPyFpAw9zKq2oaJjt7oRMGq5Pyzh2P9mD8NFvEm
-         DQ3YyrgRl+yeeJ7mGB5h9Iy5R6uauEl5zLAeQ1HEZ4cmyzxM5Nzqg7KI7a59nG2eEPox
-         qL6upZmS56Y7wZztoJVvxG5cJPt9CgHfQINYRwYhQujER/CBUxbvlcTLGgqlzanMB7+E
-         OxtA==
-X-Gm-Message-State: AOAM530MRO3QBNzgL0QRveMECUei1UlUwqq+SOLQdM1dD746A23brndu
-        zj9XcP/A+S/Ebc8sIt24Cr4=
-X-Google-Smtp-Source: ABdhPJzPOon/US/vY5mpbcPMrdaNb7yZ3ehfzoCcxEbVYLiWOpSPKQNhzQrPBmsjbjU/cfDaTG3/PQ==
-X-Received: by 2002:a63:8c4d:: with SMTP id q13mr7544469pgn.92.1632885427237;
-        Tue, 28 Sep 2021 20:17:07 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id 65sm464203pfv.210.2021.09.28.20.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 20:17:06 -0700 (PDT)
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v17 6/9] counter: Implement *_component_id sysfs attributes
-Date:   Wed, 29 Sep 2021 12:16:03 +0900
-Message-Id: <8961a11edbb882fc689e468194f5be75f572443e.1632884256.git.vilhelm.gray@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1632884256.git.vilhelm.gray@gmail.com>
-References: <cover.1632884256.git.vilhelm.gray@gmail.com>
+        Tue, 28 Sep 2021 23:26:13 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210929032429epoutp04283004f1457af65982c6120a9508d7bf~pLQwFcmqO1578215782epoutp043
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 03:24:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210929032429epoutp04283004f1457af65982c6120a9508d7bf~pLQwFcmqO1578215782epoutp043
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632885869;
+        bh=WrNCUbpSw207ejXs3q+o/xLoyNlILDn60SbqLv/Idhg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=EAMQcV/O3AfeAouqlia8w1Pe/PoAsBOVK6vawTofneAbUG7cu+oum7nD44hujJnJl
+         7vkpEuqAWiRTkYkJcBrrrPVulQrKrlN/9v6dbFGfG5cLTUglw6lRjYk51iD1KtEywX
+         BH8fdksLfJ5JVge5WTg+j3rfe/pVippR7f7N069Q=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20210929032428epcas5p2dba1e2bad56e314b58ef07665cf79130~pLQvUGj4v1274512745epcas5p2W;
+        Wed, 29 Sep 2021 03:24:28 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.181]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HK1vC42Jnz4x9Q2; Wed, 29 Sep
+        2021 03:24:23 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A2.F1.59762.45CD3516; Wed, 29 Sep 2021 12:24:05 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210929031607epcas5p21aa4f12860d68a6db8ae2df0df35d776~pLJcwbhCh2437324373epcas5p28;
+        Wed, 29 Sep 2021 03:16:07 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210929031607epsmtrp1be665762c79eadf7a7168cc9d9d700df~pLJcvpw4x2768827688epsmtrp1W;
+        Wed, 29 Sep 2021 03:16:07 +0000 (GMT)
+X-AuditID: b6c32a49-125ff7000000e972-02-6153dc54e7e7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3F.96.08750.77AD3516; Wed, 29 Sep 2021 12:16:07 +0900 (KST)
+Received: from alimakhtar03 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210929031605epsmtip1c5bf0f3d77ea563326d70442d813fbbd~pLJbF4Sua1283012830epsmtip1U;
+        Wed, 29 Sep 2021 03:16:05 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Bao D. Nguyen'" <nguyenb@codeaurora.org>, <cang@codeaurora.org>,
+        <asutoshd@codeaurora.org>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+Cc:     <linux-arm-msm@vger.kernel.org>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'Avri Altman'" <avri.altman@wdc.com>,
+        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
+        "'open list'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <212b7aaf6d834c4a8c682fdac4a59b84013ed573.1632818942.git.nguyenb@codeaurora.org>
+Subject: RE: [PATCH v2 2/2] scsi: ufs-qcom: enter and exit hibern8 during
+ clock scaling
+Date:   Wed, 29 Sep 2021 08:46:04 +0530
+Message-ID: <00f901d7b4e0$581ae2f0$0850a8d0$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJbPZpAqiweWuut4hQb/UQ8HpO3kgL954syAtigKhaqhJCvIA==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmpm7oneBEgxsbGC3OPf7NYrG37QS7
+        xcufV9ksTu9/x2Lxaf0yVotFN7YxWUzcf5bd4vKuOWwW3dd3sFksP/6PyeJj12xGB26Py329
+        TB6bVnWyedy5tofNY8KiA4weH5/eYvH4vEnOo/1AN1MAe1S2TUZqYkpqkUJqXnJ+SmZeuq2S
+        d3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QkUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM
+        /OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7Ixfq34xF3QJV0x49Zu1gfEpfxcj
+        J4eEgInE9z/vWUFsIYHdjBJXz8p1MXIB2Z8YJXpfNrBDOJ8ZJVpuN7LBdKx7/5IdomMXo8ST
+        g/EQRS8ZJZb+/coEkmAT0JXYsbiNDSQhIrCAUaLzwjlWEIdZoJlJ4tWxT2DtnAKxEhdebQBb
+        LiwQKXFh/z1mEJtFQFXi7/adjCA2r4ClxI9zZ5kgbEGJkzOfsIDYzALyEtvfzmGGOElB4ufT
+        ZWBzRAScJB7emcMIUSMu8fLoEbAfJAROcEg87ToLdBIHkOMisX2TIkSvsMSr41vYIWwpiZf9
+        bewQJdkSPbuMIcI1EkvnHWOBsO0lDlyZwwJSwiygKbF+lz5EWFZi6ql1TBBb+SR6fz9hgojz
+        SuyYB2OrSjS/uwo1RlpiYnc36wRGpVlIHpuF5LFZSB6YhbBtASPLKkbJ1ILi3PTUYtMCw7zU
+        cnh8J+fnbmIEJ2Etzx2Mdx980DvEyMTBeIhRgoNZSYT3h3hwohBvSmJlVWpRfnxRaU5q8SFG
+        U2BoT2SWEk3OB+aBvJJ4QxNLAxMzMzMTS2MzQyVx3o+vLROFBNITS1KzU1MLUotg+pg4OKUa
+        mJbOma135sbDB8eVb4ssvWu1v3pt92nOt76Hnu2W7pjdGa2bfWk9R9YXyW25/1qaCrh6d14O
+        fCd9uOlxjKKmixVvqW3TDDPztvLE30tv1DvdXfbt8M+NKcd9/v2YqrHI78jJ1+6bBV/EMIUc
+        2BOVU/BhmuKBb4UG3/aJfNeZ7tXTzVUqZhXGx7tf4lVDcURrvYnNctbJ7z82M2yYctFl3dYf
+        /UZ7/hcEvrEWXcnD+f3RlK4Uk6wXXy+nLfopPdVFy7jt8xPJHu9jdxdvMF5WoXAhI7hdWOYS
+        +5pP/fFanInrfnnwfFY/erpy2opKNlvBj73Gv4q13Gy3+YRtqBJgk8jX9rb6EJ6UbJjjkxNT
+        qcRSnJFoqMVcVJwIAKy73idLBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsWy7bCSnG75reBEgz1/VC3OPf7NYrG37QS7
+        xcufV9ksTu9/x2Lxaf0yVotFN7YxWUzcf5bd4vKuOWwW3dd3sFksP/6PyeJj12xGB26Py329
+        TB6bVnWyedy5tofNY8KiA4weH5/eYvH4vEnOo/1AN1MAexSXTUpqTmZZapG+XQJXxq9Vv5gL
+        uoQrJrz6zdrA+JS/i5GTQ0LARGLd+5fsXYxcHEICOxglNjRvYYNISEtc3ziBHcIWllj57zlU
+        0XNGid9PzzKCJNgEdCV2LG5jA0mICCxhlHi0/jITiMMs0M4k0XvnKRNEyx1Gid2XnrCAtHAK
+        xEpceLWBFcQWFgiXaJ06gQnEZhFQlfi7fSfYWF4BS4kf584yQdiCEidngvRyAE3Vk2jbCFbC
+        LCAvsf3tHGaI8xQkfj5dBjZSRMBJ4uGdOVA14hIvjx5hn8AoPAvJpFkIk2YhmTQLSccCRpZV
+        jJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjB0ailtYNxz6oPeocYmTgYDzFKcDArifD+
+        EA9OFOJNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoGJi+fF
+        e6HaoqgHhc8LP6a8Mdgs+CHrzFfvU1PPH6+5WBGgt7RTr9f46bvXP9h+Wql9mdl15La/W1rK
+        3dKEtyFnuZouahtXJkoo1xSozY8pZLiv+vrR5xtNT34HMj2Xk5O+7b/7nuKGoIdP+p7+tHiS
+        az4hU27Sal8n7nQbvVeTq4saZt/6mT//ytyvGrM95ht0f/d8zn5hx/xS887CkPOGaeszujnb
+        NVijebeG3tV8tlKAbRtb3fO7Xt+OLev1CijplNN8z3r457XFCuULerUXLfOs0lz2vcajslPr
+        nN5On5wp9ldnPyg2r5lxsClXucWS4eCFP+V9gR8PlZSxMFUbluzabFrVZNzjr5n4nk2JpTgj
+        0VCLuag4EQAB0L99NQMAAA==
+X-CMS-MailID: 20210929031607epcas5p21aa4f12860d68a6db8ae2df0df35d776
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210928090645epcas5p497488b7f231454f99e91d1a56e9bd219
+References: <cover.1632818942.git.nguyenb@codeaurora.org>
+        <CGME20210928090645epcas5p497488b7f231454f99e91d1a56e9bd219@epcas5p4.samsung.com>
+        <212b7aaf6d834c4a8c682fdac4a59b84013ed573.1632818942.git.nguyenb@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Generic Counter chrdev interface expects users to supply component
-IDs in order to select extensions for requests. In order for users to
-know what component ID belongs to which extension this information must
-be exposed. The *_component_id attribute provides a way for users to
-discover what component ID belongs to which respective extension.
+Hello,
 
-Cc: David Lechner <david@lechnology.com>
-Cc: Gwendal Grignou <gwendal@chromium.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
- Documentation/ABI/testing/sysfs-bus-counter | 16 +++++++++-
- drivers/counter/counter-sysfs.c             | 33 +++++++++++++++++----
- 2 files changed, 42 insertions(+), 7 deletions(-)
+>-----Original Message-----
+>From: nguyenb=codeaurora.org@mg.codeaurora.org
+>[mailto:nguyenb=codeaurora.org@mg.codeaurora.org] On Behalf Of Bao D.
+>Nguyen
+>Sent: Tuesday, September 28, 2021 2:36 PM
+>To: cang@codeaurora.org; asutoshd@codeaurora.org;
+>martin.petersen@oracle.com; linux-scsi@vger.kernel.org
+>Cc: linux-arm-msm@vger.kernel.org; Bao D . Nguyen
+><nguyenb@codeaurora.org>; Andy Gross <agross@kernel.org>; Bjorn Andersson
+><bjorn.andersson@linaro.org>; Alim Akhtar <alim.akhtar@samsung.com>; Avri
+>Altman <avri.altman@wdc.com>; James E.J. Bottomley <jejb@linux.ibm.com>;
+>open list <linux-kernel@vger.kernel.org>
+>Subject: [PATCH v2 2/2] scsi: ufs-qcom: enter and exit hibern8 during clock
+scaling
+>
+>From: Asutosh Das <asutoshd@codeaurora.org>
+>
+>Qualcomm controller needs to be in hibern8 before scaling clocks.
+>This change puts the controller in hibern8 state before scaling and brings
+it out
+>after scaling of clocks.
+>
+>Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+>---
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
-index aa2cd3c10d74..0ce16669157e 100644
---- a/Documentation/ABI/testing/sysfs-bus-counter
-+++ b/Documentation/ABI/testing/sysfs-bus-counter
-@@ -203,12 +203,26 @@ Description:
- 		both edges:
- 			Any state transition.
- 
-+What:		/sys/bus/counter/devices/counterX/countY/ceiling_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/floor_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/count_mode_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/direction_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/enable_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/error_noise_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/prescaler_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/preset_component_id
-+What:		/sys/bus/counter/devices/counterX/countY/preset_enable_component_id
- What:		/sys/bus/counter/devices/counterX/countY/signalZ_action_component_id
-+What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_component_id
-+What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_enable_component_id
-+What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_component_id
-+What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_component_id
-+What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_component_id
- KernelVersion:	5.16
- Contact:	linux-iio@vger.kernel.org
- Description:
- 		Read-only attribute that indicates the component ID of the
--		respective Synapse of Count Y for Signal Z.
-+		respective extension or Synapse.
- 
- What:		/sys/bus/counter/devices/counterX/countY/spike_filter_ns
- KernelVersion:	5.14
-diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
-index ee7ff1cde454..97d8d7c2a2b6 100644
---- a/drivers/counter/counter-sysfs.c
-+++ b/drivers/counter/counter-sysfs.c
-@@ -586,6 +586,7 @@ static int counter_signal_attrs_create(struct counter_device *const counter,
- 	int err;
- 	struct counter_comp comp;
- 	size_t i;
-+	struct counter_comp *ext;
- 
- 	/* Create main Signal attribute */
- 	comp = counter_signal_comp;
-@@ -601,8 +602,14 @@ static int counter_signal_attrs_create(struct counter_device *const counter,
- 
- 	/* Create an attribute for each extension */
- 	for (i = 0; i < signal->num_ext; i++) {
--		err = counter_attr_create(dev, cattr_group, signal->ext + i,
--					  scope, signal);
-+		ext = &signal->ext[i];
-+
-+		err = counter_attr_create(dev, cattr_group, ext, scope, signal);
-+		if (err < 0)
-+			return err;
-+
-+		err = counter_comp_id_attr_create(dev, cattr_group, ext->name,
-+						  i);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -693,6 +700,7 @@ static int counter_count_attrs_create(struct counter_device *const counter,
- 	int err;
- 	struct counter_comp comp;
- 	size_t i;
-+	struct counter_comp *ext;
- 
- 	/* Create main Count attribute */
- 	comp = counter_count_comp;
-@@ -717,8 +725,14 @@ static int counter_count_attrs_create(struct counter_device *const counter,
- 
- 	/* Create an attribute for each extension */
- 	for (i = 0; i < count->num_ext; i++) {
--		err = counter_attr_create(dev, cattr_group, count->ext + i,
--					  scope, count);
-+		ext = &count->ext[i];
-+
-+		err = counter_attr_create(dev, cattr_group, ext, scope, count);
-+		if (err < 0)
-+			return err;
-+
-+		err = counter_comp_id_attr_create(dev, cattr_group, ext->name,
-+						  i);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -782,6 +796,7 @@ static int counter_sysfs_attr_add(struct counter_device *const counter,
- 	struct device *const dev = &counter->dev;
- 	int err;
- 	size_t i;
-+	struct counter_comp *ext;
- 
- 	/* Add Signals sysfs attributes */
- 	err = counter_sysfs_signals_add(counter, cattr_group);
-@@ -814,8 +829,14 @@ static int counter_sysfs_attr_add(struct counter_device *const counter,
- 
- 	/* Create an attribute for each extension */
- 	for (i = 0; i < counter->num_ext; i++) {
--		err = counter_attr_create(dev, cattr_group, counter->ext + i,
--					  scope, NULL);
-+		ext = &counter->ext[i];
-+
-+		err = counter_attr_create(dev, cattr_group, ext, scope, NULL);
-+		if (err < 0)
-+			return err;
-+
-+		err = counter_comp_id_attr_create(dev, cattr_group, ext->name,
-+						  i);
- 		if (err < 0)
- 			return err;
- 	}
--- 
-2.33.0
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+
+> drivers/scsi/ufs/ufs-qcom.c | 12 +++++++++++-
+> 1 file changed, 11 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index
+>92d4c61..92f5bb4 100644
+>--- a/drivers/scsi/ufs/ufs-qcom.c
+>+++ b/drivers/scsi/ufs/ufs-qcom.c
+>@@ -1212,24 +1212,34 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba
+>*hba,
+> 	int err = 0;
+>
+> 	if (status == PRE_CHANGE) {
+>+		err = ufshcd_uic_hibern8_enter(hba);
+>+		if (err)
+>+			return err;
+> 		if (scale_up)
+> 			err = ufs_qcom_clk_scale_up_pre_change(hba);
+> 		else
+> 			err = ufs_qcom_clk_scale_down_pre_change(hba);
+>+		if (err)
+>+			ufshcd_uic_hibern8_exit(hba);
+>+
+> 	} else {
+> 		if (scale_up)
+> 			err = ufs_qcom_clk_scale_up_post_change(hba);
+> 		else
+> 			err = ufs_qcom_clk_scale_down_post_change(hba);
+>
+>-		if (err || !dev_req_params)
+>+
+>+		if (err || !dev_req_params) {
+>+			ufshcd_uic_hibern8_exit(hba);
+> 			goto out;
+>+		}
+>
+> 		ufs_qcom_cfg_timers(hba,
+> 				    dev_req_params->gear_rx,
+> 				    dev_req_params->pwr_rx,
+> 				    dev_req_params->hs_rate,
+> 				    false);
+>+		ufshcd_uic_hibern8_exit(hba);
+> 	}
+>
+> out:
+>--
+>The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a
+>Linux Foundation Collaborative Project
+
 
