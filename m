@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8575F41CD58
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473E141CD5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346683AbhI2UZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:25:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59630 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346361AbhI2UZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:25:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632947019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=l9h1XTy2+9znaKOPv2jvvVkbR7Fsg4CSbp1LYA7ZS1o=;
-        b=bjU5qdai10MsH7ssHdiI/fNWAqTHm1IFotF6wdC3aZ20T64BYtnDBjTE3HyZwaz9y7CGsL
-        wCcPOQTicE/lcgmfm3cWbVL2QYJO48fe3YtQs22oDM1goS3/C4z/XUDl+LdNN9c0EwOAa1
-        p1a2jXoe1WFx/OPnHbgnrteV71q/JGY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-1l0GWO55N1e1UR2lZCemeQ-1; Wed, 29 Sep 2021 16:23:38 -0400
-X-MC-Unique: 1l0GWO55N1e1UR2lZCemeQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78A30101AFA7;
-        Wed, 29 Sep 2021 20:23:36 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B201419729;
-        Wed, 29 Sep 2021 20:23:34 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] procfs: Do not list TID 0 in /proc/<pid>/task
-Date:   Wed, 29 Sep 2021 22:23:32 +0200
-Message-ID: <8735pn5dx7.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S1346704AbhI2U0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:26:34 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39554 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346361AbhI2U0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 16:26:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Lh+F5ZjCx0bOA0ZJvvdGRxDGTO4CVU+5ejZ1orJFARo=; b=MUWnnwDTA13YTmHBToqcVGDNT5
+        ePCd5dqFdM8DbuueNSvx9nvtXef2xRllw5xAQodxwVgSP22IWwn95jfAu9MY5mjXm9tczXEM+7wi5
+        fLdgN9nLR2ly4pwjSQgu4+siBw1mWaxFZfmDlbTr8cBJQkGWuVNAcjPhvYO8ya8Hc7oQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mVg8E-008qF0-Kf; Wed, 29 Sep 2021 22:24:46 +0200
+Date:   Wed, 29 Sep 2021 22:24:46 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        David Thompson <davthompson@nvidia.com>
+Subject: Re: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YVTLjp1RSPGNZlUJ@lunn.ch>
+References: <20210923202216.16091-1-asmaa@nvidia.com>
+ <20210923202216.16091-2-asmaa@nvidia.com>
+ <YU26lIUayYXU/x9l@lunn.ch>
+ <CACRpkdbUJF6VUPk9kCMPBvjeL3frJAbHq+h0-z7P-a1pSU+fiw@mail.gmail.com>
+ <CH2PR12MB38951F2326196AB5B573A73DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <YVHQQcv2M6soJR6u@lunn.ch>
+ <CH2PR12MB389585F7D5EFE5E2453593DBD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <YVHbo/cJcHzxUk+d@lunn.ch>
+ <CH2PR12MB389530F4A65840FE04DC8628D7A89@CH2PR12MB3895.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH2PR12MB389530F4A65840FE04DC8628D7A89@CH2PR12MB3895.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a task exits concurrently, task_pid_nr_ns may return 0.
+> In KSZ9031, Register MII_KSZPHY_INTCS=0x1B reports all interrupt events and
+> clear on read. So if there are 4 different interrupts, once it is read once, all 4 clear at once.
+> The micrel.c driver has defined ack_interrupt to read the above reg and is called every time the
+> interrupt handler phy_interrupt is called. So in this case, we should be good.
+> The code flow in our case would look like this:
+> - 2 interrupt sources (for example, link down followed by link up) set in MII_KSZPHY_INTCS
+> - interrupt handler (phy_interrupt) reads MII_KSZPHY_INT which automatically clears both
+> interrupts
+> - another internal source triggers and sets the register.
+> - The second edge will be caught accordingly by the GPIO.
 
-Signed-off-by: Florian Weimer <fweimer@redhat.com>
----
- fs/proc/base.c | 3 +++
- 1 file changed, 3 insertions(+)
+I still think there is a small race window. You product manager needs
+to decide if that is acceptable, or if you should poll the PHY.
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 533d5836eb9a..54f29399088f 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3800,6 +3800,9 @@ static int proc_task_readdir(struct file *file, struct dir_context *ctx)
- 		char name[10 + 1];
- 		unsigned int len;
- 		tid = task_pid_nr_ns(task, ns);
-+		if (!tid)
-+			/* The task has just exited. */
-+			continue;
- 		len = snprintf(name, sizeof(name), "%u", tid);
- 		if (!proc_fill_cache(file, ctx, name, len,
- 				proc_task_instantiate, task, NULL)) {
--- 
-2.31.1
+Anyway, it is clear the hardware only does level interrupts, so the
+GPIO driver should only accept level interrupts. -EINVAL otherwise.
 
+I also assume you have a ACPI blob which indicates what sort of
+interrupts that should be used, level low, falling edge etc. Since
+that is outside of the kernel, i will never know what you decide to
+put there. Ideally, until the hardware is fixed, you should not list
+any interrupt and fallback to polling.
+
+    Andrew
