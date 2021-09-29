@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6756341D00E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66D641D012
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347611AbhI2XiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S1347652AbhI2XiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347598AbhI2XiF (ORCPT
+        with ESMTP id S1347608AbhI2XiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:38:05 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34803C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:36:24 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id s75so4355893pgs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:36:24 -0700 (PDT)
+        Wed, 29 Sep 2021 19:38:09 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48BCC061769
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:36:26 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id j13so4021301qtq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:36:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=HvaI2CnuZMRocUAuxkU7bar+LZuGwxIpo51W/3LktMo=;
-        b=IzZJtmb6XxyCwoSIO0qgrnxryeU2MYm1rpNv/ndfOQDtKcsnWAMrW4mZ3WsKGl/aG+
-         poBzt8xkzTPqt9azAVAO934HmwF8/0mnwV7qSaOADaUnNbiyuagGu6yF1uxWkp5L+eeF
-         vycTIH5/Xt8zjyHBmEpdDpkd64hX72U3gbFxc=
+        bh=p44CKw5NqI0dRYxuOA5K9AcDSEZdsWaIBA8jXRcCw5I=;
+        b=BPbV7Ye4Bg5a1ZTPc0nR9KOXAhWl4vBzAsDP0t40qxFSH4OCK6/MQKoFgPTEuzSC9v
+         9WzoiGlY1hhlhin2gZEWJVK42YbLrmi7f51aphr87IllDIDa/mW2TlwOq98Zvj0JRk6r
+         inxpNiGI/a0tzZNBGtrfuGtkApxUXeOUvY5k07EjRTxe3FM8zYJRfjjEr2wiowyupIsP
+         pguKaqLo4Vxp8H1+LxCZCv8O7UiZItzZkw/1xqVdmL+zc9QUl9vc75MtsgPZmJ4AEECN
+         dBdxRWVA8aWYCV8FKdHpO9CE7a3VgpFt7E/hUggJ2cfyrdgPqy3taLCfKIMAeO9CnW6s
+         e4ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HvaI2CnuZMRocUAuxkU7bar+LZuGwxIpo51W/3LktMo=;
-        b=klqOeTcULmB86K135PeB22kCdaKsx+ZOl9ZOBblLxG4mu/oGrMWvRuaMqVX/dAd98A
-         DvGoL/dYhYKSDRGCKB7s0Ul35g0/mnY4WRJdIF2m1sjDE8DNCQJY0CJ5DP4r0PQDEL5Q
-         TgfgeDfpD7gpprBtyzqCAUscxfDqxdwXcaMSS+dyVA+OqIqe040IOTf7JMPj6Cnj4hhi
-         sMs9/8PmBh119b3EQ0XwTSCg7ZugxEiLjRpKa/QQX7BDsRDora8pOiIXn61/pMxL87ze
-         Ba490OlIQMGge7QcrHCvGmb62liwKKiiq4G0f2XDPH17zXz9qPBRgosY6jxU+CGNE9Lq
-         /i1A==
-X-Gm-Message-State: AOAM533Sf14HWFcmiPmlI8dRvBYjPaZJ0ioddswfhC92OYycV86f192y
-        iUFxLN5LwFYAwwbxZdj1ZXjTtg==
-X-Google-Smtp-Source: ABdhPJye82JkSQN1O7fDsiSS5dX3XnisZ+GDoPSTfJmU1gPBVBfE/Kx8CJ6vRQBhUVApKr+eL1+l9A==
-X-Received: by 2002:a05:6a00:22cd:b0:43c:9b41:e650 with SMTP id f13-20020a056a0022cd00b0043c9b41e650mr1189646pfj.60.1632958583660;
-        Wed, 29 Sep 2021 16:36:23 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:2f10:2763:4825:1f01])
-        by smtp.gmail.com with UTF8SMTPSA id p16sm2949687pja.24.2021.09.29.16.36.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 16:36:23 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 16:36:21 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     bjorn.andersson@linaro.org, vkoul@kernel.org, swboyd@chromium.org,
-        skakit@codeaurora.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: pmk8350: Make RTC disabled by default;
- enable on sc7280-idp
-Message-ID: <YVT4dZHRcYlIXK7Q@google.com>
-References: <20210929153553.1.Ib44c2ac967833d7a3f51452d44d15b7b8d23c1f0@changeid>
+        bh=p44CKw5NqI0dRYxuOA5K9AcDSEZdsWaIBA8jXRcCw5I=;
+        b=g3VsVkQgJR0bPTFoo5s7bdNicvLect1UY/XRsRuqfjwMkNvAx8JHzO/cEzpV3+aSkV
+         gAGvfhZleDHTWDvjWN0+iYO4FgvWvDyny5mzlGwVmUNw1BJf1DekaXJARNcGX1cH2+9g
+         uI2rkY7Mlagqdsam4DF73iBMyHmwO2TQ8ezhGv5ADGnQpsZ8Y4xk9SET4dvY5m6MLVaC
+         U4Gcn7OEJsQv5tyOe4gHTiqeUIpiZ5MGolbksxR60BtYFa5xd2fUpfybwEthDRMvA++n
+         NROrY2XqOLxZR+cn4gW7scCqV6vmaSTZAdsjwhzPmN8ZSpOtlmFLw5aMk6fw64mWnjGq
+         hLfA==
+X-Gm-Message-State: AOAM5333u2LfmVHT39PA+d/EMdpgsGRSRzLpx2PYMtcqx3a/zH3NDVsp
+        MSWu4ryPgSLbTAY32ntFbujHmg==
+X-Google-Smtp-Source: ABdhPJyCMb0x8UTP251JMzz7qx/fZLPDIyTJit8sJRFPeoPnTFgHskOtgm8FIWQl2/TGWg7M25xovg==
+X-Received: by 2002:a05:622a:492:: with SMTP id p18mr3159519qtx.282.1632958586146;
+        Wed, 29 Sep 2021 16:36:26 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id f5sm706662qtp.44.2021.09.29.16.36.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 16:36:25 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVj7g-007iwP-Pe; Wed, 29 Sep 2021 20:36:24 -0300
+Date:   Wed, 29 Sep 2021 20:36:24 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 00/20] Userspace P2PDMA with O_DIRECT NVMe devices
+Message-ID: <20210929233624.GG3544071@ziepe.ca>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210928200216.GW3544071@ziepe.ca>
+ <06d75fcb-ce8b-30a5-db36-b6c108460d3d@deltatee.com>
+ <20210929232147.GD3544071@ziepe.ca>
+ <93f56919-03ee-8326-10ee-8fbd9078b8e0@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929153553.1.Ib44c2ac967833d7a3f51452d44d15b7b8d23c1f0@changeid>
+In-Reply-To: <93f56919-03ee-8326-10ee-8fbd9078b8e0@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:38:14PM -0700, Douglas Anderson wrote:
-> The RTC on the pmk8350 is not useful on all boards. Some boards may
-> not provide backup power to the PMIC but might have another RTC on the
-> board that does have backup power. In this case it's better to not use
-> the RTC on the PMIC.
+On Wed, Sep 29, 2021 at 05:28:38PM -0600, Logan Gunthorpe wrote:
 > 
-> At the moment, the only boards that includes this PMIC are sc7280-idp
-> and sc7280-idp2. On sc7280-idp I'm not aware of any other RTCs, but
-> sc7280-idp2 has a Chrome OS EC on it and this is intended to provide
-> the RTC for the AP.
 > 
-> Let's do what we normally do for hardware that's not used by all
-> boards and set it to a default status of "disabled" and then enable it
-> on the boards that need it.
+> On 2021-09-29 5:21 p.m., Jason Gunthorpe wrote:
+> > On Wed, Sep 29, 2021 at 03:50:02PM -0600, Logan Gunthorpe wrote:
+> >>
+> >>
+> >> On 2021-09-28 2:02 p.m., Jason Gunthorpe wrote:
+> >>> On Thu, Sep 16, 2021 at 05:40:40PM -0600, Logan Gunthorpe wrote:
+> >>>> Hi,
+> >>>>
+> >>>> This patchset continues my work to add userspace P2PDMA access using
+> >>>> O_DIRECT NVMe devices. My last posting[1] just included the first 13
+> >>>> patches in this series, but the early P2PDMA cleanup and map_sg error
+> >>>> changes from that series have been merged into v5.15-rc1. To address
+> >>>> concerns that that series did not add any new functionality, I've added
+> >>>> back the userspcae functionality from the original RFC[2] (but improved
+> >>>> based on the original feedback).
+> >>>
+> >>> I really think this is the best series yet, it really looks nice
+> >>> overall. I know the sg flag was a bit of a debate at the start, but it
+> >>> serves an undeniable purpose and the resulting standard DMA APIs 'just
+> >>> working' is really clean.
+> >>
+> >> Actually, so far, nobody has said anything negative about using the SG flag.
+> >>
+> >>> There is more possible here, we could also pass the new GUP flag in the
+> >>> ib_umem code..
+> >>
+> >> Yes, that would be very useful.
+> > 
+> > You might actually prefer to do that then the bio changes to get the
+> > infrastructur merged as it seems less "core"
 > 
-> NOTE: for sc7280-idp it's _possible_ we might also want to add
-> `allow-set-time;`. That could be the subject of a future patch if it
-> is indeed true.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> I'm a little bit more concerned about my patch set growing too large.
+> It's already at 20 patches and I think I'll need to add a couple more
+> based on the feedback you've already provided. So I'm leaning toward
+> pushing more functionality as future work.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+I mean you could postpone the three block related patches and use a
+single ib_umem patch instead as the consumer.
+
+Jason
