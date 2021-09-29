@@ -2,240 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6BD41CFA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B258341CFA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347411AbhI2XCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:02:36 -0400
-Received: from mga09.intel.com ([134.134.136.24]:47376 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347378AbhI2XCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:02:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="225097220"
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="225097220"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 16:00:32 -0700
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="617768043"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.255.230.76])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 16:00:31 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v17 5/5] fpga: image-load: enable cancel of image upload
-Date:   Wed, 29 Sep 2021 16:00:25 -0700
-Message-Id: <20210929230025.68961-6-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210929230025.68961-1-russell.h.weight@intel.com>
-References: <20210929230025.68961-1-russell.h.weight@intel.com>
+        id S1347442AbhI2XCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:02:43 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:60144 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347402AbhI2XCi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:02:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=Px58k/yNGvaEATkxAQjKyG3Zpeo9iJVoUPzZvebpH+s=; b=CBRPzpf/uyhi04VMy2l9L8WMNh
+        TgzA3jF5tP3k7RIYMTsKQ+kaQuWqK+fsqMIeNHQV0H7x3YkzdYGrSqJptc4KuEy4cKPP92gGjT1QC
+        MhGeYzPuOy/x5jJvOgdL/FQhThwVb7fOG/JD9g3GdcgQgd0CmorrBCMdBGHOz5INZa7hrPQmozKSx
+        rXnVyACjxxSq1C34L7pJg0qw1RZZJkqbjDQBiWSqep8px/eapbxM6kywVM1Cr+nPk8HYxEojwAonO
+        ANp/tKEvGxxHbTYm0x8c8OvD5ce8rk+zDidcCuKPVgEcFAqftgIKvYj4u2fND0UE/JeeoO7Xu6oAL
+        veDztxbQ==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mViZA-0007dT-Rp; Wed, 29 Sep 2021 17:00:45 -0600
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-5-logang@deltatee.com>
+ <20210928220502.GA1738588@nvidia.com>
+ <91469404-fd20-effa-2e01-aa79d9d4b9b5@deltatee.com>
+ <20210929224653.GZ964074@nvidia.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <fb678f5e-b477-0bd0-334b-a57e771eedc9@deltatee.com>
+Date:   Wed, 29 Sep 2021 17:00:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210929224653.GZ964074@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@nvidia.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v3 4/20] PCI/P2PDMA: introduce helpers for dma_map_sg
+ implementations
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the FPGA Image Load framework to include a cancel IOCTL that can be
-used to request that an image upload be canceled. The IOCTL may return
-EBUSY if it cannot be canceled by software or ENODEV if there is no update
-in progress.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
-v17:
- - Documentation cleanup for cancelling.
- - Removed the request_cancel flag and handling from the class driver
-   including the fpga_image_prog_transition() function.
- - The cancel system call now directly calls the cancel() op of the
-   lower-level driver. 
- - Changed the cancel() op to return void.
-v16:
- - This was previously patch 6/6
- - Amend fpga_image_load_release() to request cancellation of an ongoing
-   update when possible.
-v15:
- - Compare to previous patch:
-     [PATCH v14 6/6] fpga: sec-mgr: enable cancel of secure update
- - Changed file, symbol, and config names to reflect the new driver name
- - Cancel is now initiated by IOCT instead of sysfs
- - Removed signed-off/reviewed-by tags
-v14:
- - Updated ABI documentation date and kernel version
-v13:
-  - No change
-v12:
-  - Updated Date and KernelVersion fields in ABI documentation
-v11:
-  - No change
-v10:
-  - Rebased to 5.12-rc2 next
-  - Updated Date and KernelVersion in ABI documentation
-v9:
-  - Updated Date and KernelVersion in ABI documentation
-v8:
-  - No change
-v7:
-  - Changed Date in documentation file to December 2020
-v6:
-  - No change
-v5:
-  - No change
-v4:
-  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
-    and removed unnecessary references to "Intel".
-  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-v3:
-  - No change
-v2:
-  - Bumped documentation date and version
-  - Minor code cleanup per review comments
----
- Documentation/fpga/fpga-image-load.rst | 13 +++++++++++--
- drivers/fpga/fpga-image-load.c         | 26 +++++++++++++++++++++++---
- include/linux/fpga/fpga-image-load.h   |  4 ++++
- include/uapi/linux/fpga-image-load.h   |  2 ++
- 4 files changed, 40 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
-index f64f5ee473b8..3997b3bcd7ec 100644
---- a/Documentation/fpga/fpga-image-load.rst
-+++ b/Documentation/fpga/fpga-image-load.rst
-@@ -18,8 +18,9 @@ open
- 
- An fpga_image_load device is opened exclusively to control an image upload.
- The device must remain open throughout the duration of the image upload.
--An attempt to close the device while an upload is in progress will block
--until the image upload is complete.
-+An attempt to close the device while an upload is in progress will cause
-+the upload to be cancelled. If unable to cancel the image upload, the close
-+system call will block until the image upload is complete.
- 
- ioctl
- -----
-@@ -39,3 +40,11 @@ FPGA_IMAGE_LOAD_STATUS:
- Collect status for an on-going image upload. The status returned includes
- how much data remains to be transferred, the progress of the image upload,
- and error information in the case of a failure.
-+
-+FPGA_IMAGE_LOAD_CANCEL:
-+
-+Request that an on-going image upload be cancelled. This IOCTL will return
-+ENODEV if there is no update in progress. Depending on the implementation
-+of the lower-level driver, the cancellation may take affect immediately.
-+In other cases, the cancellation request may be blocked until a critical
-+operation such as a FLASH is safely completed.
-diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
-index 58373b9e8c02..239943d7f321 100644
---- a/drivers/fpga/fpga-image-load.c
-+++ b/drivers/fpga/fpga-image-load.c
-@@ -159,7 +159,6 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
- 	imgld->err_code = 0;
- 	imgld->progress = FPGA_IMAGE_PROG_STARTING;
- 	queue_work(system_long_wq, &imgld->work);
--
- 	return 0;
- 
- exit_free:
-@@ -184,11 +183,21 @@ static int fpga_image_load_ioctl_status(struct fpga_image_load *imgld,
- 	return 0;
- }
- 
-+static int fpga_image_load_ioctl_cancel(struct fpga_image_load *imgld,
-+					unsigned long arg)
-+{
-+	if (imgld->progress == FPGA_IMAGE_PROG_IDLE)
-+		return -ENODEV;
-+
-+	imgld->ops->cancel(imgld);
-+	return 0;
-+}
-+
- static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
- 				  unsigned long arg)
- {
- 	struct fpga_image_load *imgld = filp->private_data;
--	int ret = -ENOTTY;
-+	int ret = 0;
- 
- 	mutex_lock(&imgld->lock);
- 
-@@ -199,6 +208,12 @@ static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
- 	case FPGA_IMAGE_LOAD_STATUS:
- 		ret = fpga_image_load_ioctl_status(imgld, arg);
- 		break;
-+	case FPGA_IMAGE_LOAD_CANCEL:
-+		ret = fpga_image_load_ioctl_cancel(imgld, arg);
-+		break;
-+	default:
-+		ret = -ENOTTY;
-+		break;
- 	}
- 
- 	mutex_unlock(&imgld->lock);
-@@ -229,6 +244,8 @@ static int fpga_image_load_release(struct inode *inode, struct file *filp)
- 		goto close_exit;
- 	}
- 
-+	imgld->ops->cancel(imgld);
-+
- 	mutex_unlock(&imgld->lock);
- 	flush_work(&imgld->work);
- 
-@@ -263,7 +280,8 @@ fpga_image_load_register(struct device *parent,
- 	struct fpga_image_load *imgld;
- 	int ret;
- 
--	if (!ops || !ops->prepare || !ops->write || !ops->poll_complete) {
-+	if (!ops || !ops->cancel || !ops->prepare ||
-+	    !ops->write || !ops->poll_complete) {
- 		dev_err(parent, "Attempt to register without all required ops\n");
- 		return ERR_PTR(-ENOMEM);
- 	}
-@@ -342,6 +360,8 @@ void fpga_image_load_unregister(struct fpga_image_load *imgld)
- 		goto unregister;
- 	}
- 
-+	imgld->ops->cancel(imgld);
-+
- 	mutex_unlock(&imgld->lock);
- 	flush_work(&imgld->work);
- 
-diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
-index 366111d090fb..6baf45072bdb 100644
---- a/include/linux/fpga/fpga-image-load.h
-+++ b/include/linux/fpga/fpga-image-load.h
-@@ -26,6 +26,9 @@ struct fpga_image_load;
-  *			    written.
-  * @poll_complete:	    Required: Check for the completion of the
-  *			    HW authentication/programming process.
-+ * @cancel:		    Required: Request cancellation of update. This op
-+ *			    is called from the context of a different kernel
-+ *			    thread, so race conditions need to be considered.
-  * @cleanup:		    Optional: Complements the prepare()
-  *			    function and is called at the completion
-  *			    of the update, whether success or failure,
-@@ -36,6 +39,7 @@ struct fpga_image_load_ops {
- 	s32 (*write)(struct fpga_image_load *imgld, const u8 *data,
- 		     u32 offset, u32 size);
- 	u32 (*poll_complete)(struct fpga_image_load *imgld);
-+	void (*cancel)(struct fpga_image_load *imgld);
- 	void (*cleanup)(struct fpga_image_load *imgld);
- };
- 
-diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
-index 1b91343961df..5bf8a8a57757 100644
---- a/include/uapi/linux/fpga-image-load.h
-+++ b/include/uapi/linux/fpga-image-load.h
-@@ -69,4 +69,6 @@ struct fpga_image_status {
- 
- #define FPGA_IMAGE_LOAD_STATUS	_IOR(FPGA_IMAGE_LOAD_MAGIC, 1, struct fpga_image_status)
- 
-+#define FPGA_IMAGE_LOAD_CANCEL	_IO(FPGA_IMAGE_LOAD_MAGIC, 2)
-+
- #endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
--- 
-2.25.1
 
+On 2021-09-29 4:46 p.m., Jason Gunthorpe wrote:
+> On Wed, Sep 29, 2021 at 03:30:42PM -0600, Logan Gunthorpe wrote:
+>> On 2021-09-28 4:05 p.m., Jason Gunthorpe wrote:
+>> No, that's not a correct reading of the code. Every time there is a new
+>> pagemap, this code calculates the mapping type and bus offset. If a page
+>> comes along with a different page map,f it recalculates. This just
+>> reduces the overhead so that the calculation is done only every time a
+>> page with a different pgmap comes along and not doing it for every
+>> single page.
+> 
+> Each 'struct scatterlist *sg' refers to a range of contiguous pfns
+> starting at page_to_pfn(sg_page()) and going for approx sg->length/PAGE_SIZE
+> pfns long.
+> 
+
+Ugh, right. A bit contrived for consecutive pages to have different
+pgmaps and still be next to each other in a DMA transaction. But I guess
+it is technically possible and should be protected against.
+
+> sg_page() returns the first page, but nothing says that sg_page()+1
+> has the same pgmap.
+> 
+> The code in this patch does check the first page of each sg in a
+> larger sgl.
+> 
+>>> At least sg_alloc_append_table_from_pages() and probably something in
+>>> the block world should be updated to not combine struct pages with
+>>> different pgmaps, and this should be documented in scatterlist.*
+>>> someplace.
+>>
+>> There's no sane place to do this check. The code is designed to support
+>> mappings with different pgmaps.
+> 
+> All places that generate compound sg's by aggregating multiple pages
+> need to include this check along side the check for physical
+> contiguity. There are not that many places but
+> sg_alloc_append_table_from_pages() is one of them:
+
+Yes. The block layer also does this. I believe a check in
+page_is_mergable() will be sufficient there.
+
+> @@ -470,7 +470,8 @@ int sg_alloc_append_table_from_pages(struct sg_append_table *sgt_append,
+>  
+>                 /* Merge contiguous pages into the last SG */
+>                 prv_len = sgt_append->prv->length;
+> -               while (n_pages && page_to_pfn(pages[0]) == paddr) {
+> +               while (n_pages && page_to_pfn(pages[0]) == paddr &&
+> +                      sg_page(sgt_append->prv)->pgmap == pages[0]->pgmap) {
+
+I don't think it's correct to use pgmap without first checking if it is
+a zone device page. But your point is taken. I'll try to address this.
+
+Logan
