@@ -2,70 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0503541BC02
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4A841BC0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242636AbhI2BBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 21:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243521AbhI2BBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 21:01:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 62206613D0;
-        Wed, 29 Sep 2021 01:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632877207;
-        bh=4ntuuqobgpC4pwkcswEOHa5njU23sxBo1ci+pXNHnNU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rOz9XTIHgDA9kjXbFQsV6JPgRpKll/oYUYqys0Nwx9e2nV6F33n3nf0C0ZGaezSYZ
-         ybDcZxeDDSo8gNbNgJy11GOLDesjkIIGgWRslSy2QJg36ZVNKIvIXqkrokKeMGKKAc
-         M5+7Ubz88QHDYt4Knw73GBi+7K13w0gQJxNN294HtXmOU5GcWTcZSRLsASRSbtrqPZ
-         d+9gz7Q3lBoYv/t0J1HVc7P0CvzkH3wJIVDE7vwQIR37w+wrxFtjMc2xxk3SewUA9R
-         zAl86Ltrf9cjhSyISn3I5uTdVGqnYHJjcTsqV3LIUqIirz/s2ookflpZiA3j3lvrPd
-         5Hrag1yqyH+SA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 573CE608FE;
-        Wed, 29 Sep 2021 01:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: qrtr: combine nameservice into main module
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163287720735.1190.7481361805015480385.git-patchwork-notify@kernel.org>
-Date:   Wed, 29 Sep 2021 01:00:07 +0000
-References: <20210928171156.6353-1-luca@z3ntu.xyz>
-In-Reply-To: <20210928171156.6353-1-luca@z3ntu.xyz>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     linux-arm-msm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, mani@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S243547AbhI2BHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 21:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243507AbhI2BHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 21:07:54 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F171C06161C;
+        Tue, 28 Sep 2021 18:06:14 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id y186so979548pgd.0;
+        Tue, 28 Sep 2021 18:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=4u5jHWkphS+4/JlRddhWTaO63sDbl3kV/Zg7ml3V04s=;
+        b=I9d9KlQDlyulIcRQZFDav5vMjJwO5wqdXf4y6ziRYo8UGLIVaFFHhlfUfp3xUp/A8f
+         /LQoXcB+iuwx+jbbVZHoB3WtI/2RoQvyy1CBmVaPK2QE/+eF1NV8wuR/xFDld3tWYHZy
+         eL/EJksWaKMh44tYjh6bSmMCOtgZAQqb2c+SRuSqqHxr9LhBSZ/hiw/Ka4l0g3e1gHEX
+         KY4E2rywN3yNC40qRIQFXdBn3KOENP7eMzePVP1I6w4L2FjDWiOlE6cGbNyyFQi2cYPD
+         gOSRq2KvbYzvjORdJvfsqNqEABnVBUCgphOgyDO2tpfIy46eR+U1Smy7g5FymGoNDZvz
+         JgZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=4u5jHWkphS+4/JlRddhWTaO63sDbl3kV/Zg7ml3V04s=;
+        b=1Tt+9O5ha5QXvagDKyq2lnn5tUk0FVNjEZlFVoVBo9R+/CBrXTSWv1sN1HRjVPPtYL
+         SlSDqOTjj0POd3q+uOVsi702R50v/uHXiMRBvBkHos/QXaNj+92jzzhOzWf3Z2tJeTeH
+         XrPg+n9Q54JTRjPY8GiSEcExujSZiqUilPe9uoDow35jMSJkzsvOyNnimudAJLxaOZ45
+         wTm5j+ZsGVl+TEBji87FS7wb0XQRYQFQ0yYAFXutZAgX2yTH5qL04ML2QScNKsRhDPdT
+         Lki6RfgFB3Tdb5buerxk2nA6CAB/whTPG+H/x8F1m/T05CflM5mq6o1eitcvRKiIS/fN
+         U0bA==
+X-Gm-Message-State: AOAM530/cBHpjAxraxuZcs2OYMvUossnX7Xzgmj2Am9eoFHFoY8sbvHH
+        K3KaTKz8DNZMwVbAJc3ynb/S2vV2IcFMIKvwQpg=
+X-Google-Smtp-Source: ABdhPJygO4MpCJirEcablYOpzJJCF5P2kD1/CTA7agqVzJX+ZlvQ5CetqEX/GZnW+RsW7H/ak6ub1A==
+X-Received: by 2002:a63:b54b:: with SMTP id u11mr7212880pgo.163.1632877572951;
+        Tue, 28 Sep 2021 18:06:12 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id p3sm301429pfq.67.2021.09.28.18.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 18:06:12 -0700 (PDT)
+Message-ID: <6153bc04.1c69fb81.8a6de.1dd4@mx.google.com>
+Date:   Tue, 28 Sep 2021 18:06:12 -0700 (PDT)
+X-Google-Original-Date: Wed, 29 Sep 2021 01:06:11 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210928071741.331837387@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 000/102] 5.10.70-rc2 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 28 Sep 2021 19:11:57 +0200 you wrote:
-> Previously with CONFIG_QRTR=m a separate ns.ko would be built which
-> wasn't done on purpose and should be included in qrtr.ko.
+On Tue, 28 Sep 2021 09:18:56 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.70 release.
+> There are 102 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Rename qrtr.c to af_qrtr.c so we can build a qrtr.ko with both af_qrtr.c
-> and ns.c.
+> Responses should be made by Thu, 30 Sep 2021 07:17:22 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.70-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> [...]
+> thanks,
+> 
+> greg k-h
+> 
 
-Here is the summary with links:
-  - net: qrtr: combine nameservice into main module
-    https://git.kernel.org/netdev/net-next/c/a365023a76f2
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+5.10.70-rc2 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
