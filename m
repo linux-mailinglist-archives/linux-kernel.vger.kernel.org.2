@@ -2,81 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9362441CDD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3D341CDC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346844AbhI2VNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:13:12 -0400
-Received: from sauhun.de ([88.99.104.3]:55134 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346355AbhI2VNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:13:11 -0400
-X-Greylist: delayed 595 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Sep 2021 17:13:10 EDT
-Received: from localhost (p5486ce57.dip0.t-ipconnect.de [84.134.206.87])
-        by pokefinder.org (Postfix) with ESMTPSA id E78CD2C015D;
-        Wed, 29 Sep 2021 23:01:30 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 23:01:30 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: update my email address
-Message-ID: <YVTUKgXTUVIFPDFw@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <20210920072842.30889-1-brgl@bgdev.pl>
+        id S1345059AbhI2VGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345032AbhI2VGY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 17:06:24 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1172AC061769
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:04:42 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so5105326pjv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FurABvQrnW7SVwUVRUJVf5Azv+RVGAv+gR3wBDsauaI=;
+        b=rpuh4Cn9psRPurHAZOwfwzZdIMhLn3EI2hZI6OkxWUQ9wr7PoYy17LA/S2hdC0molh
+         x7naFVL8ORxyHvk6XU8Urpy4rEKfbkzmh/bHAXpJKlxN4aNQc9RA3Qz8rhTFdCkXHK11
+         6nHk0J9aEvF0lxamc/+wIh6SCR984r4cRANMeCx8ff/uH+27rSh6w7khjk1zI0WTGwvG
+         eGJMmselLZ/VfaB1jkfuvALphegy0dJH9YWLozgw9tnU+rXQwegYkIkgiBnPsyPIYdbf
+         Qyw7am/MQOgdU7U/vre/ki6YRt0cJ8Lp5QBk+d21tZ0+8atwOc3EPdtZNcc3cJBo1pkr
+         m1hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FurABvQrnW7SVwUVRUJVf5Azv+RVGAv+gR3wBDsauaI=;
+        b=zo8hDTAe8lRHdrMKSjTuDOonPf8DcWHce6ICdvRUpizWq7yt0wYB1v4tOFGiZfJsqv
+         wQVeufjAGU2t6pLXGjto/yTBs/DJVvh/A6If9HpeN7Z0CeYvR2bfnKYANZfniZzux0VU
+         sOO/28QigiX9V89YnJIZ1XtCEEhhlEAsstJKpS+hHjpll4stAJxXbAq4qrmrWbGBmlZo
+         nOSMLwaRvh+4BwII7AVIGQuuIr+rxzlWMGiiqsmHd0DTHyMRkvpl2BYG15qH70W/VKox
+         FHPzdZelN+/OHiUdzC/O3X5mTdXtSoZAF5ZITJEcpId6+ybnxJvo69YIkGFjL5Lkx1ex
+         kEFg==
+X-Gm-Message-State: AOAM531nYyxxLYvAMRaAX7ylu6gnrMvXe87xZiGBwdksqCrpnTWheYdA
+        D4Avht12I55NlDHDPRHZ8lJMwlCut6iquNPW5bGSnA==
+X-Google-Smtp-Source: ABdhPJzOhQy/gGu8lMtKb8M0sjvDqwDEJ/je0DS9bogbfQiprbFdAgdaZ7mgV7duq5hHM60hS4aDncf0veJTFvsVTxc=
+X-Received: by 2002:a17:90b:3108:: with SMTP id gc8mr8437024pjb.63.1632949481073;
+ Wed, 29 Sep 2021 14:04:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="H23KkeOpPGGMhDW8"
-Content-Disposition: inline
-In-Reply-To: <20210920072842.30889-1-brgl@bgdev.pl>
+References: <20210917061104.2680133-1-brendanhiggins@google.com>
+ <20210917061104.2680133-7-brendanhiggins@google.com> <CAK8P3a21j9yJe_X=kU6v2YgOnrhunRbPv+O6STSH71qTb7xnfg@mail.gmail.com>
+In-Reply-To: <CAK8P3a21j9yJe_X=kU6v2YgOnrhunRbPv+O6STSH71qTb7xnfg@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 29 Sep 2021 14:04:30 -0700
+Message-ID: <CAFd5g46KzHbm_mneJPJ00Dk2mi-rrs2bX1tWix8pX7uL0=TibA@mail.gmail.com>
+Subject: Re: [PATCH v1 6/6] bitfield: build kunit tests without structleak plugin
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Shuah Khan <shuah@kernel.org>, David Gow <davidgow@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>, andreas.noever@gmail.com,
+        michael.jamet@intel.com,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        yehezkelshb@gmail.com, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        gregkh <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 17, 2021 at 12:22 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Sep 17, 2021 at 8:11 AM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The structleak plugin causes the stack frame size to grow immensely:
+> >
+> > lib/bitfield_kunit.c: In function 'test_bitfields_constants':
+> > lib/bitfield_kunit.c:93:1: error: the frame size of 7440 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+> >
+> > Turn it off in this file.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> > ---
+> >  lib/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index 5efd1b435a37c..c93c4b59af969 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -351,7 +351,7 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+> >  obj-$(CONFIG_PLDMFW) += pldmfw/
+> >
+> >  # KUnit tests
+> > -CFLAGS_bitfield_kunit.o := $(call cc-option,-Wframe-larger-than=10240)
+> > +CFLAGS_bitfield_kunit.o := $(call cc-option,-Wframe-larger-than=10240) $(DISABLE_STRUCTLEAK_PLUGIN)
+>
+> I think the  $(call cc-option,-Wframe-larger-than=10240) needs to be dropped
+> here. This was not in my original patch and it is definitely broken on
 
---H23KkeOpPGGMhDW8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, someone else put that there, so I just left it, but I can drop it.
 
-On Mon, Sep 20, 2021 at 09:28:42AM +0200, Bartosz Golaszewski wrote:
-> My professional situation changes soon. Update my email address.
->=20
-> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> all architectures
+> with 8KB stack size or less if the function needs that much. What is the amount
+> of actual stack usage you observe without this?
 
-Shall I take this via I2C?
+Well STRUCTLEAK claims 7440 bytes, but I don't entirely believe that.
+Regardless, it is definitely less than 8KB.
 
+> If we still get a warning, then
+> I think this needs to be fixed in the code.
+>
+>        Arnd
 
---H23KkeOpPGGMhDW8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFU1CoACgkQFA3kzBSg
-KbbuVw/+NrrHxvP3FzFvYN0B88/7Fd/YOG4nWPi1XfvXj7qNMfc8xSXHbwp3FOqE
-dYyOhWpC6iQ7kSd/SJQ2nH1fc+UtA6OGZbsO4jrhQwKHthGwomEZR+0RPs1ASrcr
-KbI4h+NfsVQrTX5IlKn/L0vJ7/B7qXkUyfA+ddmOuKf6bHcpCH03L5XduDQc/kjM
-883Bylfnp9pdjchU57JfgJ+x9UduirEQ3h8zPnpIVYXB+I1KTzAfCSCEuNqH4WuY
-E6cb2OR6z4ZSavIJYpRGfzevpIOr1Bof5OJjCVS158ttdHj0hUE5/6xxQv2SiqfE
-cV8zmySnIDkO+g8rLZ2gIQJV+XbYBrtAEaqy5bRA32ZyPxNAJt6OE0Hb2e2SbdYX
-EurpnR1IkzDh0kn7VDZIZ3Rx69jOdKtSI/bzSrCPaAvh+lczjIgXGYflV5urcCyK
-BQT3NFVJKBTWBIhMb9xqfUCqoOxOC1peafVDEfdYjATohxviY3PT0QPLI8dNd4JS
-8ujJ/563hiwXP3nE0eR9aaerL+LvQcH5p/VPrDrs23qT1lOhF7+yBzgoy3ouy5T9
-kq1EKsi2f63GzInbIVlztsQ+nbmXITLkKUXrqZ0nqfTCjtrcUkfAbKBNK0AixcMK
-z8KLRzehne0CbNVEMaQ5Q0EHX8+0cyAQsFfgr27oKnfTSc9mZeA=
-=mnA6
------END PGP SIGNATURE-----
-
---H23KkeOpPGGMhDW8--
+Cheers
