@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C156D41CFF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC5141CFFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347104AbhI2Xag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:30:36 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:60536 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245025AbhI2Xaf (ORCPT
+        id S1347547AbhI2Xan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347291AbhI2Xam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:30:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=NYyTaf27EInHhX60ljYBoeATyLjSGs1NVod8tkafPeY=; b=EWozigDhXaXheIOw3+nHDtN4G6
-        eFSOZ5q8F/2nZpK2IzAxIYKC4S9LDPF19Ym9gqJ8EQH2CYYB0eZPhBVZFPNgllppCzKBbLElzRGxI
-        mjOi6SpfbjHBdpYGGFSewfSUDyh7wanUxSZDj+03pzSkYeqm/aIZoPsTswsfEkqn0df+fg2/B8ZNP
-        eLLZtU513+UpUEKzyBAWGXBYdkvhYZyf3h7NVOsMnsbHERQjNOXVhBo5XV1nMbOTXEnvBbdqySQqu
-        xIv45bM6TtjludpPxa83ejx2eBYBOoqqEyohv4QngbqSVtzDM3nLZqpla5/bYOnKPfhp+diVGMaME
-        v4VgN3yw==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mVj0C-0008Eg-58; Wed, 29 Sep 2021 17:28:41 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210928200216.GW3544071@ziepe.ca>
- <06d75fcb-ce8b-30a5-db36-b6c108460d3d@deltatee.com>
- <20210929232147.GD3544071@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <93f56919-03ee-8326-10ee-8fbd9078b8e0@deltatee.com>
-Date:   Wed, 29 Sep 2021 17:28:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 29 Sep 2021 19:30:42 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81ED0C061769
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:00 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so17356522lfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wu7M9DqJBeP0nkRCi2RNd2jpALrZarew4V0B2j/Hy5M=;
+        b=bhHpZyvcnjj667ISJMLub0celi+kt+zVqfIzcCPfZukUu5XefTPXRfdWC8knj6kXPc
+         jgMg2WV5OIO31aRDSyVX4N6krkVbNHuqKLNa4W/V101X8LhdVflUZwttL6myDyzVAHJM
+         XI3kq/uqBUUwVKgeHOH6PKPwESm35JtMrexfU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wu7M9DqJBeP0nkRCi2RNd2jpALrZarew4V0B2j/Hy5M=;
+        b=W8/TNYPpWyI7uNHSfeL0wZSvaGajbJsLI0nRxesv77xt43OPFyqzcE4lVOzD5FREm+
+         VFNoh2rg9g+qHRaSB5dujpq+KSqEemMV7d9PWXrizXmBxAMFWucFCh818nQibCXsPTQp
+         dIxJCzpccWvHOTGNYlZONcKMKs9TMYdmbG0j0l2+xC1vsM7B3OQiJ6mzIMwXClv5zZSY
+         sZYOSIrssPM98R0CFDXxh5txYAX0EApSSa6RQV+vqErzzEdvdUJmPpmHnUgtEzx/QUcD
+         bbkRZGAeXC7meJcB0ldhPX/uqmX+XsZaS9IG7SKp4jsUd19OtszD3PhCFI94aYujv4Kq
+         c7nw==
+X-Gm-Message-State: AOAM533DE+hZD55XUXm21yPSPqwcLMQdLYCxn3uH3mZLbkbHykkreKjT
+        u7kFUAufvUqnHJj6dAGKiNkEOl68Fqm8FsdYqbg=
+X-Google-Smtp-Source: ABdhPJxh01XFs8jHpR9gd6wbe/jWPpc3PfPHHt8MSj+3H7zXIUKlxTmV+Ia1gV99bekfQ3I3OHRLyQ==
+X-Received: by 2002:a05:6512:238b:: with SMTP id c11mr2336815lfv.321.1632958138499;
+        Wed, 29 Sep 2021 16:28:58 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id a11sm153079lfo.5.2021.09.29.16.28.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 16:28:57 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id e15so17450748lfr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:28:56 -0700 (PDT)
+X-Received: by 2002:a2e:4e01:: with SMTP id c1mr2701754ljb.31.1632958136150;
+ Wed, 29 Sep 2021 16:28:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210929232147.GD3544071@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v3 00/20] Userspace P2PDMA with O_DIRECT NVMe devices
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20210929225850.3889950-1-ndesaulniers@google.com>
+In-Reply-To: <20210929225850.3889950-1-ndesaulniers@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 29 Sep 2021 16:28:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com>
+Message-ID: <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com>
+Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 3:59 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> +static const struct secref_exception secref_allowlist[] = {
+> +       { .fromsym = "__first_node", .tosym = "numa_nodes_parsed" },
+> +       { .fromsym = "__next_node", .tosym = "numa_nodes_parsed" },
+> +       { .fromsym = "__nodes_weight", .tosym = "numa_nodes_parsed" },
+> +       { .fromsym = "early_get_smp_config", .tosym = "x86_init" },
+> +       { .fromsym = "test_bit", .tosym = "numa_nodes_parsed" },
+> +};
 
+This list is basically made-up and random.
 
-On 2021-09-29 5:21 p.m., Jason Gunthorpe wrote:
-> On Wed, Sep 29, 2021 at 03:50:02PM -0600, Logan Gunthorpe wrote:
->>
->>
->> On 2021-09-28 2:02 p.m., Jason Gunthorpe wrote:
->>> On Thu, Sep 16, 2021 at 05:40:40PM -0600, Logan Gunthorpe wrote:
->>>> Hi,
->>>>
->>>> This patchset continues my work to add userspace P2PDMA access using
->>>> O_DIRECT NVMe devices. My last posting[1] just included the first 13
->>>> patches in this series, but the early P2PDMA cleanup and map_sg error
->>>> changes from that series have been merged into v5.15-rc1. To address
->>>> concerns that that series did not add any new functionality, I've added
->>>> back the userspcae functionality from the original RFC[2] (but improved
->>>> based on the original feedback).
->>>
->>> I really think this is the best series yet, it really looks nice
->>> overall. I know the sg flag was a bit of a debate at the start, but it
->>> serves an undeniable purpose and the resulting standard DMA APIs 'just
->>> working' is really clean.
->>
->> Actually, so far, nobody has said anything negative about using the SG flag.
->>
->>> There is more possible here, we could also pass the new GUP flag in the
->>> ib_umem code..
->>
->> Yes, that would be very useful.
-> 
-> You might actually prefer to do that then the bio changes to get the
-> infrastructur merged as it seems less "core"
+Why did those functions not get inlined? Wouldn't it be better to make
+them always-inline?
 
-I'm a little bit more concerned about my patch set growing too large.
-It's already at 20 patches and I think I'll need to add a couple more
-based on the feedback you've already provided. So I'm leaning toward
-pushing more functionality as future work.
+Or, like in at least the early_get_smp_config() case, just make it be
+marked __init, so that if it doesn't get inlined it gets the right
+section?
 
-Logan
+It seems silly to add random source mappings to a checking program.
+
+It was bad for the gcc constprop hack, but at least there it was a
+clear case of "this inlining failed". This ad-hoc list has cases of
+things that are clearly wrong in general ("test_bit()" must not use
+initdata), and that "ok, the function just doesn't have the right
+section marker.
+
+(All of get_smp_config/early_get_smp_config/find_smp_config should be
+__init, since they most definitely cannot work after __init time - but
+why a compiler doesn't just inline them when they are one single
+indirect call, I don't really get)
+
+         Linus
