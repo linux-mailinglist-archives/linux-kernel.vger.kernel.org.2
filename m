@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA88F41CD6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B0C41CD6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346742AbhI2U3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345611AbhI2U3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:29:46 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCD7C06161C;
-        Wed, 29 Sep 2021 13:28:05 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r18so13093908edv.12;
-        Wed, 29 Sep 2021 13:28:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J2V+0wEgeD7lT0xH2iRvYoAMRMB8Rih+S3umYr80bkA=;
-        b=YzVsCcHzoF/aScj9HsJJYSEkpCvzZnq0uazoZ0ocJZkSzgcY5N4DocHbYI9FwsRyjc
-         9ywW4Olfyc4pMvop2jjnGPnHfx62fQsFAPDw3MSRW43w6fBCTjRq3XuqJplRuRt2sDp8
-         jUIiGbooYNcFUcb+CFdShk1W2wtaqyWuEMkRaZmFal8sDI7q4+2g7BAVdPDJoZg7R274
-         1dc7uLIyiXvmUTQ87yORlx+Tg8VCJamv4fsLgYNRtcH4ovpj/oNyV97PGzICIbekt1Jy
-         A3VVrNznUHgoSqPWagt7o76D8Dg4E9e6hWM8Gn552dUugFoSJV9vMKTzV/v9v0Kw+pT+
-         kQSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=J2V+0wEgeD7lT0xH2iRvYoAMRMB8Rih+S3umYr80bkA=;
-        b=cPSiaCI1XfcG0CU8NRWNJlBnt35wQWpjBMFcEJPM+T//FafyyUQ8wB4JC+eWqSPcov
-         51fEW8YiKG0Mt/wEsSFCTzTCO55ofWiUsWf+EE5kvN8iX7yQJCIO1yAsqQdE+p2nyvnF
-         KAtuILZx8y3sqIEoG5ca4OEIjq1XfjT6gE+Odc9DGCMj1mTTifbo2hZrSESO3SXeUurL
-         xkfpKF9qUwY+XO7TrqkAMhyUCyIVV4MiXFMyTmNqgmMl8jMTTAFAkXrl4K2XB73msTgK
-         ANI8NErXJwM4QpcUBRGM6oF90vrHgQBEeqlAI+S25j3Vz0al1+h81koGFZ75pIhFLnOG
-         2kxA==
-X-Gm-Message-State: AOAM53028e3muljpO+RGK78llJ+OMzNGOuxR6lhCA4P1wTTxH4GtMP7W
-        3WPbj+Abc81JK1rxjiAgADQG8OST54DeWA==
-X-Google-Smtp-Source: ABdhPJwVteYVAFVnmBHhr9mV8s0pycQsBx57CbNO3f1nG5VsEiOTs064v7/M/o40Jj8CqzFMz3iMQA==
-X-Received: by 2002:aa7:db85:: with SMTP id u5mr2317084edt.234.1632947283710;
-        Wed, 29 Sep 2021 13:28:03 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id l25sm517819eda.36.2021.09.29.13.28.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 13:28:03 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Wed, 29 Sep 2021 22:28:02 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH] Partially revert "usb: Kconfig: using select for
- USB_COMMON dependency"
-Message-ID: <YVTMUp7UUKUbsKwn@eldamar.lan>
-References: <20210921143442.340087-1-carnil@debian.org>
+        id S1346724AbhI2Uf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345611AbhI2Uf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 16:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5B261214;
+        Wed, 29 Sep 2021 20:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632947625;
+        bh=WhIOdO1kGw77Ewr1D3r2Fuf1SftvNF+jqwjULDSyJRw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NwaW0+YxmxXBlG5e0Wg083UOBAXIHEOfj8bi8S7bxFd5JrNukFQZuW2lhhdbWtZL7
+         ROy2pBQAnQwPT2NHAAS0mu4DYWCIPVgaRlKGngnrSfkM/nfnmdC5J9xjQPSZ+jknVr
+         XjEBcMXNh9WERP4XlVdDWt+ml+JMFvYLENA9wXqwovAuJ+nVwddSJ8ZeKK5T9hAZlM
+         VGeU9wxupu7XPwGGtck81CEzOsG29eY37sav+eXwkXcR6yAhTrOt/gY2o+O/77YggX
+         HwTvZPo/glGuuDy19nzkPlggdSGJOtY2Naiz8ThCA4HeI553u1Atf8S2l2g5aAC9Pr
+         IElxuYt/1AFKg==
+Date:   Wed, 29 Sep 2021 22:33:42 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/10] i2c: pasemi: Add Apple platform driver
+Message-ID: <YVTNpt/vOeZI5P+L@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>, Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210926095847.38261-1-sven@svenpeter.dev>
+ <20210926095847.38261-10-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Abt4sC3J3qWpCcYx"
 Content-Disposition: inline
-In-Reply-To: <20210921143442.340087-1-carnil@debian.org>
+In-Reply-To: <20210926095847.38261-10-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On Tue, Sep 21, 2021 at 04:34:42PM +0200, Salvatore Bonaccorso wrote:
-> From: Ben Hutchings <ben@decadent.org.uk>
-> 
-> This reverts commit cb9c1cfc86926d0e86d19c8e34f6c23458cd3478 for
-> USB_LED_TRIG.  This config symbol has bool type and enables extra code
-> in usb_common itself, not a separate driver.  Enabling it should not
-> force usb_common to be built-in!
-> 
-> Fixes: cb9c1cfc8692 ("usb: Kconfig: using select for USB_COMMON dependency")
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
-> ---
->  drivers/usb/common/Kconfig | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
-> index 5e8a04e3dd3c..b856622431a7 100644
-> --- a/drivers/usb/common/Kconfig
-> +++ b/drivers/usb/common/Kconfig
-> @@ -6,8 +6,7 @@ config USB_COMMON
->  
->  config USB_LED_TRIG
->  	bool "USB LED Triggers"
-> -	depends on LEDS_CLASS && LEDS_TRIGGERS
-> -	select USB_COMMON
-> +	depends on LEDS_CLASS && USB_COMMON && LEDS_TRIGGERS
->  	help
->  	  This option adds LED triggers for USB host and/or gadget activity.
+--Abt4sC3J3qWpCcYx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Sorry for bothering you again. Is this patch now ok, or do you need me
-to change something else? Or do I miss something?
 
-Regards,
-Salvatore
+>  drivers/i2c/busses/i2c-pasemi-apple.c | 122 ++++++++++++++++++++++++++
+
+Can't we name it 'i2c-pasemi-platform.c' instead? Makes more sense to me
+because the other instance is named -pci.
+
+
+--Abt4sC3J3qWpCcYx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFUzaYACgkQFA3kzBSg
+KbbIGxAAh1Nhm33vkf+55YJVzuykGVhjXJqAR9GAq2GGbu78lsZehwAAPp0SUGvO
+aLPxI1nxlgvoMggZARhM4uMzQjF92GGsQyv0HR8vZRrPS2qWwVoN76RI8Qq3n3oh
+FheNQhW/lWImFFd1WQ7HyKEK7KKJJwyOBcSKqUtGy/B+Z/4NmSpFgM3vMKoszBoR
+sff9SQ8ebdLnI5IdAyGunxc7qmF5Wvg+2Njapv36GcX9lDid4eRsoH4MUk+Kr9rV
+kdaa6rs+RHvfAHV5r09k+aWeZorR69k5iqynoEiFQpXGXyNwKjlAAdXNyBSAATe0
+KzYVcKQkmsS+um1Cw9TXRUdKgO4TRG7rBcsgwhvY560Q96gCsPh7yxnHFXPNnyNK
+v68guAIQTPeo6azA8JO2UrIs14JgJGiTD0Yi0lylTueBO8z3dEooT7dzHJl9qnsC
+HTl8DwSFjYVsACpMKNAQI4AnQ8vy2mXY6kfvTOGGancUPF4CEA95lvHlBV0AWWhS
+YGa9IALzCdeklLkpN1TYHtXatD8kqij940UL+hJH4O9SjCfMXUukoT6z2+ZIJfME
+WvqUG2NMMazDNb/Idx4aHAEPVIe6j+iU/SOgdmYpuFTnNOUMyQnHjsMFmo5t77Vd
+Hj9BWpHL3eyDQj6Y71Apps/jRZoU5kXXinuFBVkHtZojBpFd5rE=
+=l4Nn
+-----END PGP SIGNATURE-----
+
+--Abt4sC3J3qWpCcYx--
