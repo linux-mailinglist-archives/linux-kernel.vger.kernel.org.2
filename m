@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFD941CC48
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081CF41CC4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345276AbhI2THI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:07:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244887AbhI2THH (ORCPT
+        id S1346410AbhI2THt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346389AbhI2THh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:07:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632942325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=85NOeq9kRcTFRqNT/gP4PrOFWq1cbQJO0LsYgy0Arqs=;
-        b=Hm2HGl/9kWRnGkFEFQbmXmy/Etsd+FpVD7+K6PrAJlqaruG/OVZXCC9H8q+JRY7dJaURKw
-        mm9931Ck5zRMn1GzBNRmbd7seuSLIRiqYgpc6N318zBZyHCo/msTvAdwatHCs1IJ7w1IPC
-        meHKIZyi9hqXWQWt8hYMYaCs53qUVtU=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-lZ0_XGNbPdW1C0K9pS3dgQ-1; Wed, 29 Sep 2021 15:05:24 -0400
-X-MC-Unique: lZ0_XGNbPdW1C0K9pS3dgQ-1
-Received: by mail-oi1-f199.google.com with SMTP id y5-20020aca3205000000b0027644481fe7so2551705oiy.10
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:24 -0700 (PDT)
+        Wed, 29 Sep 2021 15:07:37 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1231FC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:56 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id b15so14797007lfe.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ny2+77Uus4H/nPXbEE4fOfi5YTib/j8MfG7t5iU/Qjk=;
+        b=u6OGwlgD9IMdZ2HdoL8lkGBaqUb5DoK6/ym/uunK23jP7PeZNuys4OF0DfZjcc71mS
+         wSaga3Tz+eoQfYV0I77DEE+PbtHypvTZ/hqRMk541PeMfXxMoxuGqlNVo6GKIhgqBbtm
+         w4CE6GxIgsoXcTdf0P78xhEPcZsN2n4qskMRL9Pso9qTEa0nE66xFL/I5iPwRYB5XEyZ
+         ZI8Rbt2eumS1xSR4toHy0Z7Aqwi84+S12v0eY3n9N7BiGO3yEUodzVmc6BbfSI3q3Syx
+         EhFNtc07A3S93kgvOonDkfZaLwDimfeSFWceB/mxA5hxY8a6ldJ3f52N3kCwWFaHdbDI
+         bpLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=85NOeq9kRcTFRqNT/gP4PrOFWq1cbQJO0LsYgy0Arqs=;
-        b=5TvAVwdN/VyHks1Yw3f5yXKKxgwTXObmhFut6BumpYeCFKWydVoKUDF7IxJKZkLwIq
-         C5WWEXARKavYQn6NzYSsIiW/H1TKjS7rkkzjIC1MscPPkS9dy+aUSrShD41JZ6q29UEb
-         sT7USkJ6XKIQTEHHppde6maFU6xOuL7VtUclIeq7CIzrwDY+I2UuMCDyc47UKxivCsVY
-         PsEtMWMsnc6bjuzO7QhNDGpz/XYw6/4mv8tNzE7Ns28+PSx8eVjobIvvt//dF/jAJBNg
-         pLRiMy9rGe+FMQmkxwt9+fGEaSaIS0RxwKimHwHem4IXNsMDgeGzFQbcda9hSL7gDafH
-         7RQQ==
-X-Gm-Message-State: AOAM532kDrX8HysBD2PEVBdauCaIavrAwtNc+YKbdmvbWXrA7bObTlcA
-        9bQQITc/8NH6LZJQ2Vmd/CzuTJRzw9WYoR1fDgQHcy2p328lc0pDapouUOpEIyjYLHC9iMJq8e6
-        d4OywFGsITXZUoNi4zPdV7u0s
-X-Received: by 2002:a9d:4705:: with SMTP id a5mr1401103otf.237.1632942323858;
-        Wed, 29 Sep 2021 12:05:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+KGp/sh/UihDrTdyYD4Z3RDCBe5RWKG52xsBpGNBpcqEB4R141NFhp0vsmLjZ8H3+PuwzlA==
-X-Received: by 2002:a9d:4705:: with SMTP id a5mr1401070otf.237.1632942323621;
-        Wed, 29 Sep 2021 12:05:23 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id p9sm111523ots.66.2021.09.29.12.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 12:05:23 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 13:05:21 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Liu Yi L <yi.l.liu@intel.com>, jgg@nvidia.com, hch@lst.de,
-        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
-        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
-        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
-        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
-Message-ID: <20210929130521.738c56ed.alex.williamson@redhat.com>
-In-Reply-To: <YVPKu/F3IpPMtGCh@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
-        <20210919063848.1476776-3-yi.l.liu@intel.com>
-        <YVPKu/F3IpPMtGCh@yekko>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ny2+77Uus4H/nPXbEE4fOfi5YTib/j8MfG7t5iU/Qjk=;
+        b=bSytmqyHnz/2yliw6ukbMRsRyIKGEDPy2nUCVjv9gGvCnNKYRCj/8u3hssSqKGD+c1
+         RAVeVdatfxiVpTOiopMJUla7PbcZbxHIsuG6UP/Mkhu8ZkHBPnfC/FwSu/yhledvcKbE
+         1iYy4EI0WBdJghCli1SLO+K7zwTrWl7DEYeg5Z1iEaHVY/6yKroTJNEkxqztVVSyVdt+
+         viB8IIDW3P1T3v67tJEe5qGKXngqE7Boe6jBhrQ3k+LFb5SnDE46hl04FmvN2qZ4tMtN
+         P7lo48NJ2wCSAbqZn+vZiW6t5zA9mBjgvvhXa/AIvauJ0vqRfXulCN9c5iDKKLMs6sJU
+         PRmQ==
+X-Gm-Message-State: AOAM53075QLLnRKxmNRLaw/byxdKMBMDDKDi7h5Er5IdyZsnp5ermien
+        RwiqRDUBj7Jk1qQYebA1qOBwaUTrhgJaa2ojnYeM3A==
+X-Google-Smtp-Source: ABdhPJyqcID0Rhrbbe0OvfTzDp/RzSDgD4HnmlSaEBRo17fjtzsvHgiue0dF/BTOtdBw+Qj5ZU01/pfPX32AilRT4+s=
+X-Received: by 2002:a2e:8011:: with SMTP id j17mr1513715ljg.145.1632942354388;
+ Wed, 29 Sep 2021 12:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210929163847.2807812-1-maz@kernel.org> <20210929163847.2807812-11-maz@kernel.org>
+In-Reply-To: <20210929163847.2807812-11-maz@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 29 Sep 2021 21:05:42 +0200
+Message-ID: <CACRpkdaXbrmvoQQNRdyv6rJ+dHYAKMN+J_sc-3_c1d6D2dsfbQ@mail.gmail.com>
+Subject: Re: [PATCH v5 10/14] arm64: apple: Add pinctrl nodes
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 12:08:59 +1000
-David Gibson <david@gibson.dropbear.id.au> wrote:
+On Wed, Sep 29, 2021 at 6:56 PM Marc Zyngier <maz@kernel.org> wrote:
 
-> On Sun, Sep 19, 2021 at 02:38:30PM +0800, Liu Yi L wrote:
-> > This patch introduces a new interface (/dev/vfio/devices/$DEVICE) for
-> > userspace to directly open a vfio device w/o relying on container/group
-> > (/dev/vfio/$GROUP). Anything related to group is now hidden behind
-> > iommufd (more specifically in iommu core by this RFC) in a device-centric
-> > manner.
-> > 
-> > In case a device is exposed in both legacy and new interfaces (see next
-> > patch for how to decide it), this patch also ensures that when the device
-> > is already opened via one interface then the other one must be blocked.
-> > 
-> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>  
-> [snip]
-> 
-> > +static bool vfio_device_in_container(struct vfio_device *device)
-> > +{
-> > +	return !!(device->group && device->group->container);  
-> 
-> You don't need !! here.  && is already a logical operation, so returns
-> a valid bool.
-> 
-> > +}
-> > +
-> >  static int vfio_device_fops_release(struct inode *inode, struct file *filep)
-> >  {
-> >  	struct vfio_device *device = filep->private_data;
-> > @@ -1560,7 +1691,16 @@ static int vfio_device_fops_release(struct inode *inode, struct file *filep)
-> >  
-> >  	module_put(device->dev->driver->owner);
-> >  
-> > -	vfio_group_try_dissolve_container(device->group);
-> > +	if (vfio_device_in_container(device)) {
-> > +		vfio_group_try_dissolve_container(device->group);
-> > +	} else {
-> > +		atomic_dec(&device->opened);
-> > +		if (device->group) {
-> > +			mutex_lock(&device->group->opened_lock);
-> > +			device->group->opened--;
-> > +			mutex_unlock(&device->group->opened_lock);
-> > +		}
-> > +	}
-> >  
-> >  	vfio_device_put(device);
-> >  
-> > @@ -1613,6 +1753,7 @@ static int vfio_device_fops_mmap(struct file *filep, struct vm_area_struct *vma)
-> >  
-> >  static const struct file_operations vfio_device_fops = {
-> >  	.owner		= THIS_MODULE,
-> > +	.open		= vfio_device_fops_open,
-> >  	.release	= vfio_device_fops_release,
-> >  	.read		= vfio_device_fops_read,
-> >  	.write		= vfio_device_fops_write,
-> > @@ -2295,6 +2436,52 @@ static struct miscdevice vfio_dev = {
-> >  	.mode = S_IRUGO | S_IWUGO,
-> >  };
-> >  
-> > +static char *vfio_device_devnode(struct device *dev, umode_t *mode)
-> > +{
-> > +	return kasprintf(GFP_KERNEL, "vfio/devices/%s", dev_name(dev));  
-> 
-> Others have pointed out some problems with the use of dev_name()
-> here.  I'll add that I think you'll make things much easier if instead
-> of using one huge "devices" subdir, you use a separate subdir for each
-> vfio sub-driver (so, one for PCI, one for each type of mdev, one for
-> platform, etc.).  That should make avoiding name conflicts a lot simpler.
+> From: Mark Kettenis <kettenis@openbsd.org>
+>
+> Add pinctrl nodes corresponding to the gpio,t8101 nodes in the
+> Apple device tree for the Mac mini (M1, 2020).
+>
+> Clock references are left out at the moment and will be added once
+> the appropriate bindings have been settled upon.
+>
+> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link: https://lore.kernel.org/r/20210520171310.772-3-mark.kettenis@xs4all.nl
+(...)
+> +               pinctrl_ap: pinctrl@23c100000 {
+> +                       compatible = "apple,t8103-pinctrl", "apple,pinctrl";
+> +                       reg = <0x2 0x3c100000 0x0 0x100000>;
+> +
+> +                       gpio-controller;
+> +                       #gpio-cells = <2>;
+> +                       gpio-ranges = <&pinctrl_ap 0 0 212>;
 
-It seems like this is unnecessary if we use the vfioX naming approach.
-Conflicts are trivial to ignore if we don't involve dev_name() and
-looking for the correct major:minor chardev in the correct subdirectory
-seems like a hassle for userspace.  Thanks,
+In other discussions it turns out that the driver is abusing these gpio-ranges
+to find out how many pins are in each pinctrl instance. This is not the
+idea with gpio-ranges, these can be multiple and map different sets,
+so we need something like
 
-Alex
+apple,npins = <212>;
+(+ bindings)
 
+or so...
+
+Yours,
+Linus Walleij
