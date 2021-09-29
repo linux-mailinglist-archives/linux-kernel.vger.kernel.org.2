@@ -2,105 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B5E41CF97
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA6C41CF9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347237AbhI2XCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344976AbhI2XCC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:02:02 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6F6C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:00:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d81-20020a251d54000000b005b55772ca97so5435832ybd.19
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:00:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=2C1roWzg0g1t9SJdsvhWjF7EJsfvlHyd4vOPAZE7CoI=;
-        b=O+MmupE8fI7/r7LR80gJgtKAawE3aHAvqlPZjba4TXr+3/ROlzQqWpdYQjufuNIvwa
-         CLrNA9c1X5+VvlGFyQWbz4gv7VMOLu7sUUu9/TWhTaQVor/CADKhgOAPA5WzOmAStNxR
-         sAtcVixKl9hMqHGfHOIb53dh1FHQDqfc0wEi8eKKMkhtAGQmefOH/406zex1NU7eqoH7
-         A4IU33wFhKluEKvhrztURWDQrddSjKDAgMr+x6HANgOc+C9Y+Bzp8rueUIRKfDi6Sd6C
-         QlIKfLcD36ZADHFLjtqc2E9gdKi/U72kIsvdLbAxkftbPkIBwfMYBUP7wPjFXDU62l+g
-         X2bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=2C1roWzg0g1t9SJdsvhWjF7EJsfvlHyd4vOPAZE7CoI=;
-        b=CJx7QSlCAVQ7BMjEhnfuPQLfQya5sF5wPo2j7txxKDBta8CHP8EyfGidJ6+HDC+CDv
-         me/jfHeK2TwQdv7bbyfjVNbyn0kWOkbqQMZzOzWtgYPF3dTfrSvTpMmQGLSQ0mkP0lEi
-         K28Ml1nT/O/cDl9j/0S7qfU0dgMlwr96jt3ztiGPOJxdrUqy/S5t7dcpnNmRnC5FYwOy
-         fvshUpuoaxUaasZ8bTIkMG9tt4oYp1y3cY9fVvZVYHJGmHBfjAP+5rtu2Y0hDQaVjO4+
-         TJq9lUo1HaSCBx4g/NPTqxh4S035iQk6AXDfroIkGUHpn5YXKIx43D7YCPn6AvHGES60
-         PTBw==
-X-Gm-Message-State: AOAM530LhFoI8brK5tiQ1dHztBHOjvVbzzWrqK7mWrUwQHoGsGan/f/N
-        cV6D57Ffren++O2Vg6lsmMi93ZU2jcFg
-X-Google-Smtp-Source: ABdhPJzTf7z7tCB+PBeS7fuuzlbUSbpG8y8sOo1ZnIfLkNOe6rmfKSrRzOSOhMmGbx7AL/RMDXwLF+1q/idI
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:8a84:22eb:d7a2:bdba])
- (user=amistry job=sendgmr) by 2002:a25:7452:: with SMTP id
- p79mr2737243ybc.513.1632956420637; Wed, 29 Sep 2021 16:00:20 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 09:00:07 +1000
-Message-Id: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH] drm/prime: Fix use after free in mmap with drm_gem_ttm_mmap
-From:   Anand K Mistry <amistry@google.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     nartemiev@google.com, Anand K Mistry <amistry@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        id S1347377AbhI2XCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:02:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:47376 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347352AbhI2XCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:02:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="225097210"
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="225097210"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 16:00:30 -0700
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="617768021"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.255.230.76])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 16:00:29 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
+Date:   Wed, 29 Sep 2021 16:00:20 -0700
+Message-Id: <20210929230025.68961-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_gem_ttm_mmap() drops a reference to the gem object on success. If
-the gem object's refcount == 1 on entry to drm_gem_prime_mmap(), that
-drop will free the gem object, and the subsequent drm_gem_object_get()
-will be a UAF. Fix by grabbing a reference before calling the mmap
-helper.
+The FPGA Image Load framework provides an API to upload image
+files to an FPGA device. Image files are self-describing. They could
+contain FPGA images, BMC images, Root Entry Hashes, or other device
+specific files. It is up to the lower-level device driver and the
+target device to authenticate and disposition the file data.
 
-This issue was forseen when the reference dropping was adding in
-commit 9786b65bc61ac ("drm/ttm: fix mmap refcounting"):
-  "For that to work properly the drm_gem_object_get() call in
-  drm_gem_ttm_mmap() must be moved so it happens before calling
-  obj->funcs->mmap(), otherwise the gem refcount would go down
-  to zero."
+The n3000bmc-sec-update driver is the first driver to use the FPGA Image
+Load Framework. This driver was previously submitted in the same patch
+set, but was split into a separate patch set starting with v2.
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
----
+Changelog v16 -> v17:
+ - Documentation cleanup with clarification for changes to how cancellation
+   is handled.
+ - Removed the FPGA_IMAGE_ERR_NONE macro in favor of returning zero. The
+   constant name made sense when we were using enum data types, but is no
+   longer necessary.
+ - Changed the syntax of the write_blk() function and renamed it to
+   write().
+   It now returns a positive size or a negative error number.
+ - Removed the default block size for write_block(). The lower-level driver
+   must choose a block size.
+ - Changed the prepare() and write() ops to pass in elements of the
+   fpga_image_load data structure instead of having the op functions access
+   them directly via imgld.
+ - Changed work queue from system_unbound_wq to system_long_wq.
+ - Removed calls to cond_resched(). The lower-level driver must manage
+   any scheduler issues.
+ - Removed the request_cancel flag and handling from the class driver
+   including the fpga_image_prog_transition() function.
+ - The cancel system call now directly calls the cancel() op of the
+   lower-level driver. 
+ - Changed the cancel() op to return void.
 
- drivers/gpu/drm/drm_prime.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Changelog v15 -> v16:
+ - Remove previous patch #5: fpga: image-load: create status sysfs node
+ - Change device name from "fpga_image%d" to "fpga_image_load%d"
+ - Shift from "Driver" terminology to "Framework" in comments and
+   documentation
+ - Some cleanup of documentation for the FPGA_IMAGE_LOAD_WRITE IOCTL.
+ - Rename lops to ops for structure member and local variables
+ - Change the write_blk() definition to pass in *blk_size (a pointer to
+   a default block size of WRITE_BLOCK_SIZE=0x4000) and max_size (the
+   the maximum block size to stay within the limit of the data buffer).
+   The write_blk() op may use the default *blk_size or modify it to a
+   more optimal number for the given device, subject to the max_size limit.
+ - All enum values for progress and errors are changed to macros, because
+   they are included in the uapi header. This is done to maintain consistency
+   amongst the DFL related IOCTL header files. All references to the enum
+   types are changed to u32.
+ - Bail out early in fpga_image_do_load() if imgld->driver_unload is true.
+ - Add a call to cond_resched() in the write_blk() loop to ensure that
+   we yield to higher priority tasks during long data transfers.
+ - Switch to the system_unbound_wq to enable calls to cond_resched().
+ - Switch from test_and_set_bit() to atomic_cmpxchg() to manage
+   imgld->opened.
+ - Change fpga_image_load_release() cancel an ongoing image upload when
+   possible and to block when cancellation is not possible.
+ - Remove the completion object, imgld->update_done, in favor of calling
+   flush_work(&imgld->work);
 
-diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-index 2a54f86856af..e1854fd24bb0 100644
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -719,11 +719,13 @@ int drm_gem_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma)
- 	if (obj->funcs && obj->funcs->mmap) {
- 		vma->vm_ops = obj->funcs->vm_ops;
- 
-+		drm_gem_object_get(obj);
- 		ret = obj->funcs->mmap(obj, vma);
--		if (ret)
-+		if (ret) {
-+			drm_gem_object_put(obj);
- 			return ret;
-+		}
- 		vma->vm_private_data = obj;
--		drm_gem_object_get(obj);
- 		return 0;
- 	}
- 
+Changelog v14 -> v15:
+ - Changed the driver name from FPGA Security Manager to FPGA Image Load
+ - Changed file, symbol, and config names to reflect the new driver name
+ - Rewrote documentation.
+ - Removed all sysfs files except for "status", which has moved to the
+   parent directory.
+ - Implemented FPGA_IMAGE_LOAD_WRITE, FPGA_IMAGE_LOAD_STATUS, and
+   FPGA_IMAGE_LOAD_CANCEL IOCTLs to initiate, monitor, and cancel image
+   uploads.
+ - Fixed some error return values in fpga_image_load_register()
+ - Added an eventfd which is signalled upon completion of an image load.
+ - Minor changes to locking to accommodate the FPGA_IMAGE_LOAD_STATUS IOCTL
+ - Removed signed-off/reviewed-by tags. Please resend as appropriate.
+
+Changelog v13 -> v14:
+ - Dropped the patch: fpga: sec-mgr: expose hardware error info
+ - Updated copyrights to 2021
+ - Updated ABI documentation date and kernel version
+ - Removed the name sysfs entry from the class driver
+ - Use xa_alloc() instead of ida_simple_get()
+ - Rename dev to parent for parent devices
+ - Remove fpga_sec_mgr_create(), devm_fpga_sec_mgr_create(), and
+   fpga_sec_mgr_free() functions and update the fpga_sec_mgr_register()
+   function to both create and register a new security manager.
+ - Populate the fpga_sec_mgr_dev_release() function.
+ - Added MAINTAINERS reference for
+   Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+
+Changelog v12 -> v13:
+  - Change "if (count == 0 || " to "if (!count || "
+  - Improve error message: "Attempt to register without all required ops\n"
+  - Change set_error() to fpga_sec_set_error()
+  - Change set_hw_errinfo() to fpga_sec_set_hw_errinfo()
+
+Changelog v11 -> v12:
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Removed size parameter from write_blk() op - it is now up to
+    the lower-level driver to determine the appropriate size and
+    to update smgr->remaining_size accordingly.
+  - Changed syntax of sec_mgr_prog_str[] and sec_mgr_err_str array definitions
+    from:
+	"idle",			/* FPGA_SEC_PROG_IDLE */
+    to:
+	[FPGA_SEC_PROG_IDLE]	    = "idle",
+
+Changelog v10 -> v11:
+  - Fixed a spelling error in a comment
+  - Initialize smgr->err_code and smgr->progress explicitly in
+    fpga_sec_mgr_create() instead of accepting the default 0 value.
+
+Changelog v9 -> v10:
+  - Rebased to 5.12-rc2 next
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v8 -> v9:
+  - Rebased patches for 5.11-rc2
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v7 -> v8:
+  - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
+
+Changelog v6 -> v7:
+  - Changed dates in documentation file to December 2020
+  - Changed filename_store() to use kmemdup_nul() instead of
+    kstrndup() and changed the count to not assume a line-return.
+
+Changelog v5 -> v6:
+  - Removed sysfs support and documentation for the display of the
+    flash count, root entry hashes, and code-signing-key cancellation
+    vectors from the class driver. This information can vary by device
+    and will instead be displayed by the device-specific parent driver.
+
+Changelog v4 -> v5:
+  - Added the devm_fpga_sec_mgr_unregister() function, following recent
+    changes to the fpga_manager() implementation.
+  - Changed most of the *_show() functions to use sysfs_emit()
+    instead of sprintf(
+  - When checking the return values for functions of type enum
+    fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
+
+Changelog v3 -> v4:
+  - This driver is generic enough that it could be used for non Intel
+    FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
+    Security Manager" and removed unnecessary references to "Intel".
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+    Note that this also affects some filenames.
+
+Changelog v2 -> v3:
+  - Use dev_err() to report invalid progress in sec_progress()
+  - Use dev_err() to report invalid error code in sec_error()
+  - Modified sysfs handler check in check_sysfs_handler() to make
+    it more readable.
+  - Removed unnecessary "goto done"
+  - Added a comment to explain imgr->driver_unload in
+    ifpga_sec_mgr_unregister()
+
+Changelog v1 -> v2:
+  - Separated out the MAX10 BMC Security Engine to be submitted in
+    a separate patch-set.
+  - Bumped documentation dates and versions
+  - Split ifpga_sec_mgr_register() into create() and register() functions
+  - Added devm_ifpga_sec_mgr_create()
+  - Added Documentation/fpga/ifpga-sec-mgr.rst 
+  - Changed progress state "read_file" to "reading"
+  - Added sec_error() function (similar to sec_progress())
+  - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+  - Removed typedefs for imgr ops
+  - Removed explicit value assignments in enums
+  - Other minor code cleanup per review comments 
+
+Russ Weight (5):
+  fpga: image-load: fpga image load framework
+  fpga: image-load: enable image uploads
+  fpga: image-load: signal eventfd when complete
+  fpga: image-load: add status ioctl
+  fpga: image-load: enable cancel of image upload
+
+ Documentation/fpga/fpga-image-load.rst |  50 +++
+ Documentation/fpga/index.rst           |   1 +
+ MAINTAINERS                            |   9 +
+ drivers/fpga/Kconfig                   |  10 +
+ drivers/fpga/Makefile                  |   3 +
+ drivers/fpga/fpga-image-load.c         | 416 +++++++++++++++++++++++++
+ include/linux/fpga/fpga-image-load.h   |  69 ++++
+ include/uapi/linux/fpga-image-load.h   |  74 +++++
+ 8 files changed, 632 insertions(+)
+ create mode 100644 Documentation/fpga/fpga-image-load.rst
+ create mode 100644 drivers/fpga/fpga-image-load.c
+ create mode 100644 include/linux/fpga/fpga-image-load.h
+ create mode 100644 include/uapi/linux/fpga-image-load.h
+
 -- 
-2.33.0.800.g4c38ced690-goog
+2.25.1
 
