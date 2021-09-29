@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 611D541CAA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37C841CAA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343687AbhI2QxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:53:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245753AbhI2QxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:53:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 710FA6142A;
-        Wed, 29 Sep 2021 16:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632934286;
-        bh=emBPpoiw27wreF76TyqicFzW982o12rjgMyP5kO42rQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pxwKyz8gPmIzOLiLqCVhtLRuZhUFLFpuejkT2FSar8qtdo+EOspSUF6MFYjbP1cEU
-         9OrAuvMhv5RmFhegeZNdChTObQDdNTil49ty6Fpc9RTM6GnJ4M8VSeWBjUB1g/rnOm
-         jaPuyn1fc2pEVGBoojpnBbKctDtxAVUGahfFa2ggmSM3XiZlgQCjNKNuxywJbdJgWm
-         a2xNdAhonrkQeEG45Dg6sTEwrqIag4oVl69TI4lmNdzgF4srBD4lFiqaU0DM33LVeF
-         wQK9rNgbNzyFG1UbBU83rWoTi+hAGJFw0TOlCoTW7eO8SVISPK+lCUr0Ly+3z+lmuc
-         DeNksLN6t8dCg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 66EAD410A1; Wed, 29 Sep 2021 13:51:23 -0300 (-03)
-Date:   Wed, 29 Sep 2021 13:51:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.garry@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>, Paul Clarke <pc@us.ibm.com>,
-        kajoljain <kjain@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>
-Subject: Re: [PATCH v9 00/13] Don't compute events that won't be used in a
- metric.
-Message-ID: <YVSZi3PhwsNl3LdE@kernel.org>
-References: <20210923074616.674826-1-irogers@google.com>
- <00eb6280-fad0-66c4-b957-a4d27dffd0da@huawei.com>
- <CAP-5=fXcq6Npio0n9y8znknNUGJ4ovtbi=hHr4jWG6H38=BzSA@mail.gmail.com>
+        id S1344225AbhI2Qxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:53:49 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:54942 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245180AbhI2Qxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:53:47 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id E0238439;
+        Wed, 29 Sep 2021 19:52:03 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1632934323;
+        bh=2mXerm+ntjAzyd/w9co5vN3ZT9BXIi3I1zZtobTYYQ4=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=uf3kBVLwEAZjl9qX9C6WSvBN5qv0M6MAA59Bm+a7eX2085/7/RpN+fSAmfgLKtu89
+         ckAkM7IyHZZHTCm1wDaLN62i51xsoJAxWsvc94ltB8xn2yHjc7YtoMRS7HMNBPr6sh
+         Utb4AnWyk6QwWrAFhWC6ATgtX4k8ItXsoB5k5FAI=
+Received: from [192.168.211.131] (192.168.211.131) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 29 Sep 2021 19:52:03 +0300
+Message-ID: <36fd67ba-bb05-890d-3ace-f75a8d5d2c64@paragon-software.com>
+Date:   Wed, 29 Sep 2021 19:52:02 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXcq6Npio0n9y8znknNUGJ4ovtbi=hHr4jWG6H38=BzSA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: [PATCH v3 3/3] fs/ntfs3: Refactoring of ntfs_set_ea
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <kari.argillander@gmail.com>
+References: <1514c7ce-9b2c-fc12-75c4-3b4cfd2639a5@paragon-software.com>
+In-Reply-To: <1514c7ce-9b2c-fc12-75c4-3b4cfd2639a5@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.131]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 29, 2021 at 09:09:24AM -0700, Ian Rogers escreveu:
-> On Wed, Sep 29, 2021 at 8:16 AM John Garry <john.garry@huawei.com> wrote:
-> >
-> > On 23/09/2021 08:46, Ian Rogers wrote:
-> > > For a metric like:
-> > >    EVENT1 if #smt_on else EVENT2
-> > >
-> > > currently EVENT1 and EVENT2 will be measured and then when the metric
-> > > is reported EVENT1 or EVENT2 will be printed depending on the value
-> > > from smt_on() during the expr parsing. Computing both events is
-> > > unnecessary and can lead to multiplexing as discussed in this thread:
-> > > https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
-> > >
-> > > This change modifies expression parsing so that constants are
-> > > considered when building the set of ids (events) and only events not
-> > > contributing to a constant value are measured.
-> >
-> > Based on some testing on my arm64 platform, no regression seen, so:
-> >
-> > Tested-by: John Garry <john.garry@huawei.com>
-> 
-> Awesome, much thanks Jiri, John, Andi for the reviews and testing!
+Make code more readable.
+Don't try to read zero bytes.
+Add warning when size of exteneded attribute exceeds limit.
 
-Thanks, applied.
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/xattr.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-- Arnaldo
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 29f571b53083..cdc01877227a 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -75,6 +75,7 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
+ 			size_t add_bytes, const struct EA_INFO **info)
+ {
+ 	int err;
++	struct ntfs_sb_info *sbi = ni->mi.sbi;
+ 	struct ATTR_LIST_ENTRY *le = NULL;
+ 	struct ATTRIB *attr_info, *attr_ea;
+ 	void *ea_p;
+@@ -99,10 +100,10 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
+ 
+ 	/* Check Ea limit. */
+ 	size = le32_to_cpu((*info)->size);
+-	if (size > ni->mi.sbi->ea_max_size)
++	if (size > sbi->ea_max_size)
+ 		return -EFBIG;
+ 
+-	if (attr_size(attr_ea) > ni->mi.sbi->ea_max_size)
++	if (attr_size(attr_ea) > sbi->ea_max_size)
+ 		return -EFBIG;
+ 
+ 	/* Allocate memory for packed Ea. */
+@@ -110,15 +111,16 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
+ 	if (!ea_p)
+ 		return -ENOMEM;
+ 
+-	if (attr_ea->non_res) {
++	if (!size) {
++		;
++	} else if (attr_ea->non_res) {
+ 		struct runs_tree run;
+ 
+ 		run_init(&run);
+ 
+ 		err = attr_load_runs(attr_ea, ni, &run, NULL);
+ 		if (!err)
+-			err = ntfs_read_run_nb(ni->mi.sbi, &run, 0, ea_p, size,
+-					       NULL);
++			err = ntfs_read_run_nb(sbi, &run, 0, ea_p, size, NULL);
+ 		run_close(&run);
+ 
+ 		if (err)
+@@ -366,21 +368,22 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
+ 	new_ea->name[name_len] = 0;
+ 	memcpy(new_ea->name + name_len + 1, value, val_size);
+ 	new_pack = le16_to_cpu(ea_info.size_pack) + packed_ea_size(new_ea);
+-
+-	/* Should fit into 16 bits. */
+-	if (new_pack > 0xffff) {
+-		err = -EFBIG; // -EINVAL?
+-		goto out;
+-	}
+ 	ea_info.size_pack = cpu_to_le16(new_pack);
+-
+ 	/* New size of ATTR_EA. */
+ 	size += add;
+-	if (size > sbi->ea_max_size) {
++	ea_info.size = cpu_to_le32(size);
++
++	/*
++	 * 1. Check ea_info.size_pack for overflow.
++	 * 2. New attibute size must fit value from $AttrDef
++	 */
++	if (new_pack > 0xffff || size > sbi->ea_max_size) {
++		ntfs_inode_warn(
++			inode,
++			"The size of extended attributes must not exceed 64KiB");
+ 		err = -EFBIG; // -EINVAL?
+ 		goto out;
+ 	}
+-	ea_info.size = cpu_to_le32(size);
+ 
+ update_ea:
+ 
+-- 
+2.33.0
+
 
