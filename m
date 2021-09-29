@@ -2,107 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC5141CFFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6652D41CFFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347547AbhI2Xan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S233612AbhI2Xbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347291AbhI2Xam (ORCPT
+        with ESMTP id S1347291AbhI2Xbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:30:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81ED0C061769
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:00 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x27so17356522lfa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:00 -0700 (PDT)
+        Wed, 29 Sep 2021 19:31:37 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1618EC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:56 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x27so17363602lfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wu7M9DqJBeP0nkRCi2RNd2jpALrZarew4V0B2j/Hy5M=;
-        b=bhHpZyvcnjj667ISJMLub0celi+kt+zVqfIzcCPfZukUu5XefTPXRfdWC8knj6kXPc
-         jgMg2WV5OIO31aRDSyVX4N6krkVbNHuqKLNa4W/V101X8LhdVflUZwttL6myDyzVAHJM
-         XI3kq/uqBUUwVKgeHOH6PKPwESm35JtMrexfU=
+        bh=3jxizxNlMd3y5kC30EDvr+i+pHVmPKgABz+DF4rjgKs=;
+        b=ZNn9Be9ICes2313BvgS80zA79N5Rq02S19oDdcxEx67Sx2rzL5Gn1xVnuu3/ukS6dh
+         RtjBsCpugu9twNEt/dyydKYUcEe//8cHEgNaSmNAM9JttRf66LomPN0bRf8t0UmYIH6J
+         bK8f/eh0Jg5jTt5RM3jaBwYLMr4tSVtsnJ6t1BL1Tx/sirWQuI/MN57Yvd5c3rj4jtCl
+         ufitWPMWyXCopRxWyRu6ONxWq+6kWNCJWoS0JMr6GptBK0Scan2mjbOH0RyRhmLURchN
+         u306sBL0XbZ8cbmzje+XWEYOAekY8Im+A2omYOA/XmPk+EYU7T6M4WCs3u8gTjLcBxXB
+         pLKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wu7M9DqJBeP0nkRCi2RNd2jpALrZarew4V0B2j/Hy5M=;
-        b=W8/TNYPpWyI7uNHSfeL0wZSvaGajbJsLI0nRxesv77xt43OPFyqzcE4lVOzD5FREm+
-         VFNoh2rg9g+qHRaSB5dujpq+KSqEemMV7d9PWXrizXmBxAMFWucFCh818nQibCXsPTQp
-         dIxJCzpccWvHOTGNYlZONcKMKs9TMYdmbG0j0l2+xC1vsM7B3OQiJ6mzIMwXClv5zZSY
-         sZYOSIrssPM98R0CFDXxh5txYAX0EApSSa6RQV+vqErzzEdvdUJmPpmHnUgtEzx/QUcD
-         bbkRZGAeXC7meJcB0ldhPX/uqmX+XsZaS9IG7SKp4jsUd19OtszD3PhCFI94aYujv4Kq
-         c7nw==
-X-Gm-Message-State: AOAM533DE+hZD55XUXm21yPSPqwcLMQdLYCxn3uH3mZLbkbHykkreKjT
-        u7kFUAufvUqnHJj6dAGKiNkEOl68Fqm8FsdYqbg=
-X-Google-Smtp-Source: ABdhPJxh01XFs8jHpR9gd6wbe/jWPpc3PfPHHt8MSj+3H7zXIUKlxTmV+Ia1gV99bekfQ3I3OHRLyQ==
-X-Received: by 2002:a05:6512:238b:: with SMTP id c11mr2336815lfv.321.1632958138499;
-        Wed, 29 Sep 2021 16:28:58 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id a11sm153079lfo.5.2021.09.29.16.28.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 16:28:57 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id e15so17450748lfr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:28:56 -0700 (PDT)
-X-Received: by 2002:a2e:4e01:: with SMTP id c1mr2701754ljb.31.1632958136150;
- Wed, 29 Sep 2021 16:28:56 -0700 (PDT)
+        bh=3jxizxNlMd3y5kC30EDvr+i+pHVmPKgABz+DF4rjgKs=;
+        b=ItR9n1Nl6+WbUv514wq4UCKRA9g9V0yWcSo3JwkWo1YYavl70840dq3q6AjjGQzCrS
+         I+bYT9knCLap/5Spnn8yBvrUOk+IH/kZB6dqTMS+3zy4YdnOuE9xh7wGSlM6RbZaqR9w
+         qv1L1jML1H5uW/C/8w/XVYp5Eha/owMpSTEqAP/wAwwbj53N4ZlX8eEvb05EHmulOWnS
+         xVyCrAOYPcCRDlcsVaTK2yMLUKf3JC1DC1daSZSmb1plqtUfKiy1HYU7q613hvSFKuaP
+         E0vtskNx8Iy0MlIfxd01V/ctQNfOcIIMwDu+CTmYy4owvgoNcNUpoK9GaHVg/rVOA61i
+         IMPg==
+X-Gm-Message-State: AOAM5330lfUNGhtGoqqLPxYNuaLvmytf3g8fmBxNYZV4rmwlyVCPiUpH
+        7PkE75lyBZpPqZnZTDnBybh/TztkzfbKOnl7kSZV1A==
+X-Google-Smtp-Source: ABdhPJxEKlQI/LHiS4pZSJWaQTK5azLO1ThGLFdst/S7wFdxgxStmC6elHJTeXAejJ+cfi1lHCUXfQO9r4xF0Yu/Cgs=
+X-Received: by 2002:a05:6512:ea5:: with SMTP id bi37mr2501644lfb.36.1632958194363;
+ Wed, 29 Sep 2021 16:29:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929225850.3889950-1-ndesaulniers@google.com>
-In-Reply-To: <20210929225850.3889950-1-ndesaulniers@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 29 Sep 2021 16:28:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com>
-Message-ID: <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com>
-Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
+References: <20210910101218.1632297-1-maxime@cerno.tech> <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+ <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com> <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+In-Reply-To: <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 29 Sep 2021 16:29:42 -0700
+Message-ID: <CALAqxLW=dJSmfaHAL=BfYVVxZHQvzJWu4UjMixwgM=Nh85JVNw@mail.gmail.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order consistent
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 3:59 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> wrote:
 >
-> +static const struct secref_exception secref_allowlist[] = {
-> +       { .fromsym = "__first_node", .tosym = "numa_nodes_parsed" },
-> +       { .fromsym = "__next_node", .tosym = "numa_nodes_parsed" },
-> +       { .fromsym = "__nodes_weight", .tosym = "numa_nodes_parsed" },
-> +       { .fromsym = "early_get_smp_config", .tosym = "x86_init" },
-> +       { .fromsym = "test_bit", .tosym = "numa_nodes_parsed" },
-> +};
+> On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org> wrote:
+> > On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.org> wrote:
+> > > On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > The best practice to avoid those issues is to register its functions only after
+> > > > all its dependencies are live. We also shouldn't wait any longer than we should
+> > > > to play nice with the other components that are waiting for us, so in our case
+> > > > that would mean moving the DSI device registration to the bridge probe.
+> > > >
+> > > > I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
+> > > > would be affected by this and wouldn't probe anymore after those changes.
+> > > > Exynos and kirin seems to be simple enough for a mechanical change (that still
+> > > > requires to be tested), but the changes in msm seemed to be far more important
+> > > > and I wasn't confortable doing them.
+> > >
+> > >
+> > > Hey Maxime,
+> > >   Sorry for taking so long to get to this, but now that plumbers is
+> > > over I've had a chance to check it out on kirin
+> > >
+> > > Rob Clark pointed me to his branch with some fixups here:
+> > >    https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
+> > >
+> > > But trying to boot hikey with that, I see the following loop indefinitely:
+> > > [    4.632132] adv7511 2-0039: supply avdd not found, using dummy regulator
+> > > [    4.638961] adv7511 2-0039: supply dvdd not found, using dummy regulator
+> > > [    4.645741] adv7511 2-0039: supply pvdd not found, using dummy regulator
+> > > [    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy regulator
+> > > [    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy regulator
+> > > [    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy regulator
+> > > [    4.681898] adv7511 2-0039: failed to find dsi host
+> >
+> > I just realized Rob's tree is missing the kirin patch. My apologies!
+> > I'll retest and let you know.
+>
+> Ok, just retested including the kirin patch and unfortunately I'm
+> still seeing the same thing.  :(
+>
+> Will dig a bit and let you know when I find more.
 
-This list is basically made-up and random.
+Hey Maxime!
+  I chased down the issue. The dsi probe code was still calling
+drm_of_find_panel_or_bridge() in order to succeed.
 
-Why did those functions not get inlined? Wouldn't it be better to make
-them always-inline?
+I've moved the logic that looks for the bridge into the bridge_init
+and with that it seems to work.
 
-Or, like in at least the early_get_smp_config() case, just make it be
-marked __init, so that if it doesn't get inlined it gets the right
-section?
+Feel free (assuming it looks ok) to fold this change into your kirin patch:
+  https://git.linaro.org/people/john.stultz/android-dev.git/commit/?id=4a35ccc4d7a53f68d6d93da3b47e232a7c75b91d
 
-It seems silly to add random source mappings to a checking program.
-
-It was bad for the gcc constprop hack, but at least there it was a
-clear case of "this inlining failed". This ad-hoc list has cases of
-things that are clearly wrong in general ("test_bit()" must not use
-initdata), and that "ok, the function just doesn't have the right
-section marker.
-
-(All of get_smp_config/early_get_smp_config/find_smp_config should be
-__init, since they most definitely cannot work after __init time - but
-why a compiler doesn't just inline them when they are one single
-indirect call, I don't really get)
-
-         Linus
+thanks
+-john
