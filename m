@@ -2,174 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BEE41C4D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04F741C4DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343788AbhI2MiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:38:22 -0400
-Received: from mail-bn1nam07on2082.outbound.protection.outlook.com ([40.107.212.82]:47246
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1343735AbhI2MiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:38:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N1cWYwXyLYitO594W/B7Is1W1TCWMSuAt+qBSaKrqmVId/LnnNDzeTZs4UAMDqxqNF866XMUM7wExDFOcCH0EuHzmMQ9CieE2qebSAf9+bctSo8xCD6/5lCD+2dXh1eDwUfJnDrHlV/FN2J0R8j3oNk/TxSambpp1/HRh0Reo7xvNoFPNPo58kx5x+lmiGdgmi8H3kpM9XXgQRNMzuxDwl3xyJRV0PMkHsQOvI0s9ngyADmJRRBiN8CUvWGQ6jZYPOs9ulwIzd1Dq/P7cNEx3ICDdVVRY6fvhh3H8avwWgoRNaOUflENpvXyMlSx6z7isSX4vipewncWrZ1834NurA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=JN6Tk5td2lELhMxpIl3HP+nlNCorx3rXpx4DDhaujmE=;
- b=hDfDPMiNYxKiahfv77WCIEUKxeTfLJyMMk2uvGI0kAbLn7MQ5vj44Fck3+bIm+GP+sZyvJ5vRB5Lx/fT1RWJsupsG4yttjg+c+iXAQ4IdwiILgnz5MOb0tk/XJCwAzU+XrhOKlZjbeK2S5pztfPccBF+LzVb102Fx2IbH7SI1n2bMI3QgRO1mYRrgbNMig7AylojfaB/BRNLRldBwT3oUIEX3vLmFPsJIfwtsQVTgxU9RGkkV0BCBwLYjn+9ujpaad4rMzPeltU8ajNRzuzZYcDchCGEm8XhenXCtzK+QAY2LXpEwYkcgBK9fF07rvWHFbyKzj6Wx6FB7vyEA03Bbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JN6Tk5td2lELhMxpIl3HP+nlNCorx3rXpx4DDhaujmE=;
- b=qEklV87csCBpa8K6uDTXV4exiPPHglQQv/wQI0FuOIDCAwt1VDwmDlwLOX9MDqff3PauKbWEGscwLtoEKJdLEahUbetWQBeQSQwQQFCLgDARuLqsyuKSRRINPh3fVEcy6HSc9ECEY0O6HUKm6/Rzl62KX0U7TtpKi+AawioNJQq6UUF79NhGHFeNQX78dsEz3DFp+j6aXBDIwtkv4UK4KeQ8wsnXJvS1LnS457YnDzDgScHw86uG3p5PLn+7zi7G++qnL6tMkq7UKyoymR6jTa138aeg1XqEE+R27hHcY6KSZ3nW0c1Ecxfg0Ke8rblF8ML3pb63I2AOwi4BKr4Z1Q==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5361.namprd12.prod.outlook.com (2603:10b6:208:31f::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Wed, 29 Sep
- 2021 12:36:33 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 12:36:33 +0000
-Date:   Wed, 29 Sep 2021 09:36:30 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
-Message-ID: <20210929123630.GS964074@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-11-yi.l.liu@intel.com>
- <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
- <20210922234954.GB964074@nvidia.com>
- <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YUxTvCt1mYDntO8z@myrica>
- <20210923112716.GE964074@nvidia.com>
- <BN9PR11MB5433BCFCF3B0CB657E9BFE898CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210923122220.GL964074@nvidia.com>
- <BN9PR11MB5433D75C09C6FDA01C2B7CF48CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5433D75C09C6FDA01C2B7CF48CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL0PR02CA0083.namprd02.prod.outlook.com
- (2603:10b6:208:51::24) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S1343869AbhI2Mj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:39:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:21285 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343735AbhI2Mj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:39:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="285944712"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="285944712"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 05:38:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="707248480"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Sep 2021 05:38:13 -0700
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210917172727.26834-1-huobean@gmail.com>
+ <20210917172727.26834-3-huobean@gmail.com>
+ <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+ <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+ <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
+ <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+ <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
+ <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
+ <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
+ <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
+ <32b753ff-6702-fa51-2df2-32ff1d955a23@intel.com>
+ <296607ef57f3fb632107997f4edca99a5722beab.camel@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b7fd4a22-65f6-d1c4-675c-5930452a1fea@intel.com>
+Date:   Wed, 29 Sep 2021 15:38:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0083.namprd02.prod.outlook.com (2603:10b6:208:51::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 12:36:33 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVYp4-007Yrq-F1; Wed, 29 Sep 2021 09:36:30 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 99713c66-2496-4e2d-b383-08d98345c519
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5361:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53615FC9BA46B7BD1850DA8EC2A99@BL1PR12MB5361.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:923;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KWRZpLvQD3aTySOGTBoluUrrdoZIaE+3uxtpy/CW9n0qvQ1th4GDEcAQRc5H1lU3GPUVVyrDaN1D8SK1zXQ85UuoyrrYYU5Bn2SJ+rH4/r7VFscxsCaaF+r2nqixA6Lg3TnwR83B30YGrcJryDnUQu3rwVsqVUM1p3oqCcpx9GZ1mRlPmUttAi/1/7/P8/61Jn9OQo8fyNLIIgNjZwd/ouHJBAkm84zyDsIpNKRxRUcpnbzSF+iBKlyY2Qz0FA4dlQaOn1oYlA8+Z2JupPNZWhtOG4NdPRouuDKkTVcmtiva019Olt0V578sv9dB7eoR4laXvLdxj2Uf7bSexdVugIcIvcFfUcSb/BJi7ZSURGTQ3ZzQngSyVl0vFnMUeQ8NV7ZaJubP67n+UyZnaVstlxhtreydWZqy/G/R3EoVyFMq6sitSP2iQoq1BRS8a65RS6e5ZAbUBrvV7ElHu5ufzHNdDwjaVV0HQFsOyQhYpCYQFFvBZ77JNfKMqrNYUX2psP0yrVkQddperWqtIHkZU7UvmX2Q7chBxbqRPMwoYsxzLZb87+9alyfgn0ZmBxjgWsx6TI8N0OVuj0X5wc9XZ1Ap7IdCCx7Sf3Ph5TakmSMX8J+PcyVYjrj5DrrujdEaNI/h3Z6dZq6xaJmhndRHnMMAXhw8tNaYaCsrj7jj+qPZEJBtlbzQpKZlVDFtTLrXWkLDB/O7E6syDrOw1DVd3w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(5660300002)(508600001)(316002)(38100700002)(36756003)(66946007)(1076003)(86362001)(54906003)(6916009)(107886003)(186003)(7416002)(4326008)(426003)(66556008)(66476007)(83380400001)(8676002)(8936002)(9746002)(9786002)(2616005)(2906002)(33656002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1ltVQi/7HrfGlpt9iohhNY7Lj2mktRs/xuz08e9CK6+WcxQfY8LKUyAr/sZM?=
- =?us-ascii?Q?TJG79U3ybOWxkBSAtO2EclK71WrQtYwovmE4SvhelsQv4cKrBCVgXC9uEQxj?=
- =?us-ascii?Q?dyXpUGjqEl81rKGhzVfLgCzLzJZ3lANzEwY1cuJ1BTEFGOI7nbdZ4562vsOG?=
- =?us-ascii?Q?CetsBbpMrFWKPmNa3YrDMqfQ9R2sWvHRR1lO/FYDAuUhAjpjf6lWixy0rfnL?=
- =?us-ascii?Q?A5aCDoVH11mnEwwFhJkMq9eiaLBEcfN3UUSHGEiTzsJBKkuAmZE0oWTNCKdX?=
- =?us-ascii?Q?Als+j2Jm15dFnGa8tMvQFj2i+sSjdqfA5Nlt124oeHa3iK0jje8cDgvaxrvk?=
- =?us-ascii?Q?zioP6cNJjP3pyKr4aVTz7sOJfz7ncuM8Z9r8rTpd2bQP0QrVPYOI9zBqZirS?=
- =?us-ascii?Q?xufioGmxw54NaH4UA2suk+oP5qfEA9x0Gki3p136WDBs1E9sUC05Vau4TOoF?=
- =?us-ascii?Q?LPpG2zzOyHoWt5BNA3v5BhavWCCcYgQhTtkYs0T4eeOE9mQDF6uzMKAuFznf?=
- =?us-ascii?Q?HVfa2P88oBO5Zyl/FDTK/xLq71nDmHY8QRxG5aZ9WG6aYwxXfk7w2hl3s8mB?=
- =?us-ascii?Q?cGi1nOPgLGHYMatKg3FdW2ueN2VTs0g/y0kFvL07av8uIbAxmMEQrHqpIFH7?=
- =?us-ascii?Q?Lfnk0rHDy7rsO6ZTG2TvOsHiECFallJpv1qE4oH3GZObEI1LDrsLZkaEc5kL?=
- =?us-ascii?Q?zf2UEzj/rbiJCIJehhZckKYpEDzLQwKizIly94wweR6VWvfitqO+qk8FyC4s?=
- =?us-ascii?Q?OK5cXdOEJykXkeWFHkq+WNC5qVkHqyFCiX3wPo5Mnx5RFwiSqaM8xW7RwThP?=
- =?us-ascii?Q?e+zZ73PMxT2XV8axgZPlhR2viU0/37dCMbHzGfzJMo5EU7khpxCy8ufdCpB+?=
- =?us-ascii?Q?ZGcwIqSPKbp+sBhvwMrEIqyixPUwzt4EPsAX3r4Avdjbr+Szz9ae2qblxgPr?=
- =?us-ascii?Q?0mdq0/8eyquFnFEBPhs5y3YIQsTsvqh2rd6GvQM3lTMc961qbT+dEJR249yf?=
- =?us-ascii?Q?vHNx1kx+vhemg5fyXfC3cDVgGpAajPtphz0uvzstN+MbMa9WIHpPk05fy117?=
- =?us-ascii?Q?9VQc1MAQgBagiSZazsoIE2UMYdq/b4PDsuuJnP/q6BcMgQJMep8eEBaDR0mr?=
- =?us-ascii?Q?cuKWGOhJmmzPm8bG2BSlMDAqsTu5YhEP9AUhDYkLUCEZR5PCUKCVMwljYqMQ?=
- =?us-ascii?Q?pPUM+mA6cIJAzhtgEgnGao/+qca/bKW1qtKMb8OkJFTMWzev04rroPqiQ4zG?=
- =?us-ascii?Q?bKfrFRedpedMBfEZIKGMdGKusZxsW0thhEqyYyBRinAT+huoIB6lxSqeG8FN?=
- =?us-ascii?Q?c9bjqX0ZHESBgGQcSH91cygp?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99713c66-2496-4e2d-b383-08d98345c519
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 12:36:33.4534
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kqzQuS6ojnJD+XPGcJO6vdmRDBRavTl2DIUYV8AxM8VxUsIllRyaT6wfNi4zf7dR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5361
+In-Reply-To: <296607ef57f3fb632107997f4edca99a5722beab.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 08:48:28AM +0000, Tian, Kevin wrote:
-
-> ARM:
->     - set to snoop format if IOMMU_CACHE
->     - set to nonsnoop format if !IOMMU_CACHE
-> (in both cases TLP snoop bit is ignored?)
-
-Where do you see this? I couldn't even find this functionality in the
-ARM HW manual??
- 
-What I saw is ARM linking the IOMMU_CACHE to a IO PTE bit that causes
-the cache coherence to be disabled, which is not ignoring no snoop.
-
-> I didn't identify the exact commit for above meaning change.
+On 29/09/2021 13:49, Bean Huo wrote:
+> Hi Adrian,
 > 
-> Robin, could you help share some thoughts here?
+> On Tue, 2021-09-28 at 13:18 +0300, Adrian Hunter wrote:
+>> On 25/09/2021 00:33, Bean Huo wrote:
+>>> On Fri, 2021-09-24 at 16:26 +0300, Adrian Hunter wrote:
+>>>> On 24/09/21 4:08 pm, Bean Huo wrote:
+>>>>> On Fri, 2021-09-24 at 15:17 +0300, Adrian Hunter wrote:
+>>>>>>>>>          sdhci_writeb(host, count,
+>>>>>>>>> SDHCI_TIMEOUT_CONTROL);
+>>>>>>>>> }
+>>>>>>>>> The driver has detected that the hardware timer cannot
+>>>>>>>>> meet
+>>>>>>>>> the
+>>>>>>>>> timeout
+>>>>>>>>> requirements of the device, but we still use the
+>>>>>>>>> hardware
+>>>>>>>>> timer,
+>>>>>>>>> which will
+>>>>>>>>> allow potential timeout issuea . Rather than allowing a
+>>>>>>>>> potential
+>>>>>>>>> problem to exist, why can’t software timing be used to
+>>>>>>>>> avoid
+>>>>>>>>> this
+>>>>>>>>> problem?
+>>>>>>>> Timeouts aren't that accurate.  The maximum is assumed
+>>>>>>>> still
+>>>>>>>> to
+>>>>>>>> work.
+>>>>>>>> mmc->max_busy_timeout is used to tell the core what the
+>>>>>>>> maximum
+>>>>>>>> is.
+>>>>>>> mmc->max_busy_timeout is still a representation of Host HW
+>>>>>>> timer
+>>>>>>> maximum timeout count, isn't it? 
+>>>>>>
+>>>>>> Not necessarily.  For SDHCI_QUIRK2_DISABLE_HW_TIMEOUT it
+>>>>>> would be
+>>>>>>
+>>>>>> set to zero to indicate no maximum.
+>>>>>
+>>>>> yes, this is the purpose of the patch, for the host controller
+>>>>> without
+>>>>> quirk SDHCI_QUIRK2_DISABLE_HW_TIMEOUT, if the timeout count
+>>>>> required by
+>>>>> device is beyond the HW timer max count, we choose SW timer to
+>>>>> avoid the HW timer timeout IRQ.
+>>>>>
+>>>>> I don't know if I get it correctly.
+>>>>
+>>>> Why can't drivers that want the behaviour just set the quirk?
+>>>>
+>>>> Drivers that do not work with the quirk, do not have to set it.
+>>>
+>>> Adrian,
+>>>
+>>> We cannot add this quirk to every host driver.
+>>
+>> I was suggesting only the ones for which it works.
+>>
+>>>  This is the difference
+>>> on the device side.
+>>
+>> It is the host controller that has the problem, not the device.
+>> Hence the quirk.
+>>
+>>> In addition, I don't know what the maximum hardware
+>>> timer budget for each host is.
+>>
+>> mmc->max_busy_timeout is calculated by sdhci.c, or the driver can
+>> override the maximum count via ->get_max_timeout_count() or the
+>> driver
+>> can override mmc->max_busy_timeout.
+>>
+>> With the quirk, sdhci.c will usually set mmc->max_busy_timeout to
+>> zero.
+>> That allows timeouts greater than the hardware can support, and then,
+>> with the quirk, the driver will switch to a software timeout when
+>> needed.
+>>
+> 
+> 
+> According to your above statement, do you mean that the eMMC host
+> controller does not support the scenario where the data transmission
+> timeout value required by the eMMC device is greater than the capacity
+> of the eMMC host hardware data transmission timer? Unless the eMMC host
+> vendor accepts their eMMC host accepts the use of SW timers in this
+> case (adding quirks)?
 
-It is this:
+Yes
 
-static int dma_info_to_prot(enum dma_data_direction dir, bool coherent,
-		     unsigned long attrs)
-{
-	int prot = coherent ? IOMMU_CACHE : 0;
+>> However, that won't work for every host controller, because some do
+>> not
+>> provide a completion interrupt after the timeout, even if the timeout
+>> interrupt is disabled.  
+> 
+> Do you mean that if we disable the hardware timer/timeout interrupt and
+> use the software timer, the eMMC host controller will not trigger a
+> completion interrupt?
 
-Which sets IOMMU_CACHE based on:
+Yes.  On some hardware, if the timeout interrupt is disabled, and the
+operation takes longer than the hardware timeout value, then there is
+no completion interrupt.  It is as if the timeout "happens" even if the
+interrupt is disabled.
 
-static void *iommu_dma_alloc(struct device *dev, size_t size,
-		dma_addr_t *handle, gfp_t gfp, unsigned long attrs)
-{
-	bool coherent = dev_is_dma_coherent(dev);
-	int ioprot = dma_info_to_prot(DMA_BIDIRECTIONAL, coherent, attrs); 
+> Even before the SW timer expires, the data
+> transfer between the host and the eMMC device is complete? Is this what
+> you mean?
 
-Driving IOMMU_CACHE from dev_is_dma_coherent() has *NOTHING* to do
-with no-snoop TLPs and everything to do with the arch cache
-maintenance API
+I'm not 100% sure about what happens if the operation completes
+before the hardware timeout value, but I think it gets a completion
+interrupt same as normal.
 
-Jason
+> 
+> 
+>> That means they should set mmc->max_busy_timeout
+>> to the hardware value.  Hence the quirk is needed to tell the
+>> difference.
+>>
+> 
+> This means this quirk is for eMMC host can privode the completion
+> interrupt in case HW timer is disabled?  
+
+Yes
+
+>>> Even if you use the same SOC, the
+>>> maximum time budget on different platforms may be different.
+>>
+>> The mmc core calculates timeouts based on the relevant standards and
+>> values provided by the device itself.
+> 
+> 
+> Yes, but the eMMC standard does not define the maximum timeout value.
+> Different eMMC will have different timeout values.
+> 
+>>
+>>> Assume that the maximum timeout time supported by the hardware
+>>> timer is
+>>> 100 milliseconds
+>>
+>> I realise it is an example, but 100 milliseconds is a bit low. Legacy
+>> host controllers have always had to deal with standard SD card and
+>> MMC card timeouts.  SD card write timeout of 500 milliseconds for
+>> instance.
+> 
+> 
+> Yes, this is just an example. I have several platforms, they are TI,
+> NXP, Intel and Qcom. The timeout time of the hardware timer is
+> different, the greatest one is 1.3s, some are less than 500ms.
+> 
+>>
+>>> but the maximum data transmission time required by
+>>> the device is 150 milliseconds. In most cases, data transfer will
+>>> not
+>>> take so long. 150 is the maximum time under extreme conditions.
+>>> This
+>>> means that the device just needs to complete a data transfer within
+>>>> 100ms and keep the data line busy. If we still use the HW timer,
+>>>> it
+>>> will trigger a DATA LINE timeout interrupt.
+>>>
+>>> This patch does not affect scenarios where the hardware timer meets
+>>> the
+>>> max data transmission time requirements of the device. It will
+>>> still
+>>> use the hardware timer. Only when the device changes, will it
+>>> switch to
+>>> using the SW timer.
+>>
+>> Which is what the quirk does.  So I am very confused why the quirk is
+>> no goo
+> 
+> Because I don't know what the maximum volume of the real hardware timer
+> of each host controller is.> And different hosts have different timer
+> capacities.
+> Meanwhile, the eMMC devices have different data
+> transmission timeout between the different density/series as well.
+> 
+> Would you please confirm your three points above? If they are true, I
+> agree we cannot disable hardware timers and use SW tiner on some
+> platforms.
+
+Yes, I expect the quirk will do what you need.  Have you tried it?
