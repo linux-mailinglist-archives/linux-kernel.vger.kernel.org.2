@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D6B41CB70
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBF941CB73
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344274AbhI2SFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:05:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245613AbhI2SE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:04:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4624661406;
-        Wed, 29 Sep 2021 18:03:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632938598;
-        bh=eql6yhbPlBH5tPqTT53mKEmOi18SpoRI4mOYctOI/jQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=W2snQrx8gdJB/cKZd3PkOquuT1K5kzzQHXU3uFXco+jdBPR05q9WxLVycTOQLPAYO
-         HZ5g5whd8GZ+vOILbZnBvF3Qe7u2eQMSw7Epri5ipFdSYrZUNLZP0HxuEvZHsXU1+x
-         B2rDp3UBGZzhrLT5dn9yNu/YrwcdfoaD25z9bhzzGqJjOWvPA7h58AbbTTKUjwzGEa
-         EkmQE28atMZd/lJ09/6UfFTE/Axe5aAldPvtZjT+in6BhjiBEJjIeFtZdt97viG3py
-         QVxX3Z9gSy8fIOe6jBf7UHZqiIAxzICrj7g8Vkl4KGi2Jn27XIsCI4zgsV2sKGatx2
-         5Y5E2B6HQQI0g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 140015C06B9; Wed, 29 Sep 2021 11:03:18 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 11:03:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [PATCH v2 00/11] sched,rcu,context_tracking,livepatch: Improve
- livepatch task transitions for idle and NOHZ_FULL
-Message-ID: <20210929180318.GX880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210929151723.162004989@infradead.org>
+        id S1344758AbhI2SHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:07:13 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52728 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244794AbhI2SHM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 14:07:12 -0400
+Received: from notapiano (unknown [IPv6:2804:14c:1a9:2434:b693:c9:5cb6:b688])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9C0951F44850;
+        Wed, 29 Sep 2021 19:05:27 +0100 (BST)
+Date:   Wed, 29 Sep 2021 15:05:22 -0300
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        Sandy Huang <hjc@rock-chips.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Thomas Hebb <tommyhebb@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] drm/rockchip: dsi: Reconfigure hardware on
+ resume()
+Message-ID: <20210929180522.3zksg7mpwdut7tra@notapiano>
+References: <20210928213552.1001939-1-briannorris@chromium.org>
+ <20210928143413.v3.2.I4e9d93aadb00b1ffc7d506e3186a25492bf0b732@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210929151723.162004989@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210928143413.v3.2.I4e9d93aadb00b1ffc7d506e3186a25492bf0b732@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 05:17:23PM +0200, Peter Zijlstra wrote:
-> Hi,
+On Tue, Sep 28, 2021 at 02:35:50PM -0700, Brian Norris wrote:
+> Since commit 43c2de1002d2, we perform most HW configuration in the
+> bind() function. This configuration may be lost on suspend/resume, so we
+> need to call it again. That may lead to errors like this after system
+> suspend/resume:
 > 
-> One series in two parts; the first part (patches 1-5) should be in reasonable
-> shape and ought to fix the original issues that got this whole thing started.
+>   dw-mipi-dsi-rockchip ff968000.mipi: failed to write command FIFO
+>   panel-kingdisplay-kd097d04 ff960000.mipi.0: failed write init cmds: -110
 > 
-> The second part (patches 6-11) are still marked RFC and do scary things to try
-> and make NOHZ_FULL work better.
+> Tested on Acer Chromebook Tab 10 (RK3399 Gru-Scarlet).
 > 
-> Please consider..
+> Note that early mailing list versions of this driver borrowed Rockchip's
+> downstream/BSP solution, to do HW configuration in mode_set() (which
+> *is* called at the appropriate pre-enable() times), but that was
+> discarded along the way. I've avoided that still, because mode_set()
+> documentation doesn't suggest this kind of purpose as far as I can tell.
 > 
-> PS. Paul, I did do break RCU a bit and I'm not sure about the best way to put
-> it back together, please see patch 8 for details.
+> Fixes: 43c2de1002d2 ("drm/rockchip: dsi: move all lane config except LCDC mux to bind()")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
 
-Hey, wait!!!  Breaking RCU is -my- job!!!  ;-)
-
-							Thanx, Paul
+Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
