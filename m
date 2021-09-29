@@ -2,407 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745BD41BE51
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 06:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977A541BE55
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 06:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243986AbhI2Ek5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 00:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243377AbhI2Ekz (ORCPT
+        id S243959AbhI2Eoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 00:44:39 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:36619 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229452AbhI2Eoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 00:40:55 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328A6C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 21:39:15 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id x20so1962065wrg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 21:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=67mqzM9vkgGjQwhQ1XaY1buxYWbfE9oewimMqvpjnjY=;
-        b=oAUtFakPxOAeyXjiARVDm4a+qRjFw0DIxSyCyhcPJvTtCqb5wL0xIHi0XItyJKhTNP
-         CDpMh+j2yfN7OgTiWsGUhp4bdk7cGiSTv1r6yfwi1yYOs9zXA/vN3W2YOwYE8Lbvrnqq
-         k1Ac9Q9dsKqAqSiCvu2oKKs3G/LqWuLYYA8vQ+1jiN/bEbz2N0JHG0gzXjnewWq9ZxBR
-         fKvQd0tKoD4PdYscHonUgq7EXn5CMimNI6GinAWDMAsC8tZ1qwKbmzafNe5rl6zP8arm
-         WMSfh10cWiciLgoQrh1ol6Xe3+wd4AI9A6PPdSDAAJO/1mX/aJOFaOxiPPXGuHcx/1Dy
-         iIjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=67mqzM9vkgGjQwhQ1XaY1buxYWbfE9oewimMqvpjnjY=;
-        b=6sB4jZ/L95D8tlhVhUV+iB5mH7n+KS+CLES4DMsCNlcjLXUA6oLfS8qflkH7chjTaI
-         D9LrTVbtrPqNYrMmoIizlwReyK3OJ5SteBETurD6vSmzDdoe4jAnH0yom2M3rDlspzPh
-         e6juDTmTvCc2qXW6zDiOqfFGTemqGiQFo3XqdLYisouB5bvFH04XVX3ILfQP0tL+PQxt
-         EDxrgSOlRte7xvbukIGdvXzTj+oPkap/ZfF+cD4IZHsyEKzm8aE9Agx1HjDWtS7FV5/K
-         ou/foWDS7wimck08foffvf2ozfFc9U2kH4+jutzE8YZfssUXtaP/SXL2GxAbHn5TqJPp
-         BuOg==
-X-Gm-Message-State: AOAM532nqU6qCzShn01PJQcBSzyhqevNAiQ0mCF458boGh6KOTGvgCEm
-        awe6O6VbXBhnrYD9AMNotlvNNKaNjFW4zXWZmMtqkw==
-X-Google-Smtp-Source: ABdhPJx4z7MW8k8uAepJDfu9i9g/UQ6c+5S1WRToTTl750jH0eNddEGo+v+1xagOiYxT6cfd3cdU4H/sZc0XAFAhmbM=
-X-Received: by 2002:adf:dd8a:: with SMTP id x10mr2575172wrl.200.1632890353478;
- Tue, 28 Sep 2021 21:39:13 -0700 (PDT)
+        Wed, 29 Sep 2021 00:44:37 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8DE53580B80;
+        Wed, 29 Sep 2021 00:42:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 29 Sep 2021 00:42:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=qs7rOkinBPHpqLW6M5nctLByUA
+        e3O8t6z/LIIxVOeT0=; b=BZo0nvQBMEZY2FhpSC+3qwC3o8M8Ih6AFsHZp10rbI
+        fdzF+vOInI3kiawzF0xd1lg0gMKKpaGoGItV9XnZAuIIn3tk7jYy66thxHFs7WUZ
+        Ka3hgIB++X0U4KQ5YorXU0s77Bb8q+tr0Q3Z9J/kfv354YBDSMrGMFCJCmi5Qb7e
+        6jqMzaNtDFtH7j2UPgPVtp9U7/ZxFPld3MKjSR0q0C0YKjBo/mjXwiwHk6fENSGO
+        k9EiAThDYODKgYK8gdsh/OU+FzRREh/Z/2vrGe8/rar4qY9WgdU1VmiJmhmwoFro
+        saMbm/ZRfSMr6wbE5ErUdZ9kwl3Y0cLT3ffZNAaZuluQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qs7rOkinBPHpqLW6M
+        5nctLByUAe3O8t6z/LIIxVOeT0=; b=bXM4T2TL4EziCSFpBz82vTbxmaDuWxk83
+        IOlYaghKYUqbeMVa62bPfbNrd1Xzvj4j83mItyrE9RFhhwRsWO1aN78GJ4bO6Y8m
+        wFBhcLLz1YGWc3Q+Ds6kN+zAuuUiTPK8SlufLtf8yVvH37nHpfHnhEjVXRq6GKKw
+        jhz582ubWfjzAkfsfmcwBKjH57ZNL1GtkebrlZv3mE6nADEQuKmKS5WUAVBYQ+pB
+        n9FWQ72t0ssVxt7G7imXHFDPbm0CChlDVGiI0OdDIncMkWJ4LSeTucNjlxXcyl/3
+        Z1MibOy02LeaestPqrw/nFFWRuca2zHtUyXJ+ABL4cqptI9Sd4lOQ==
+X-ME-Sender: <xms:z-5TYQgFyAXG3ROp4qQnEmSlZK1GM2u86wOpMk7QWjRZtfc1R9Nn8g>
+    <xme:z-5TYZBwBQbGQFoPS99gdlR-NK3BdI_y0EgkgxabJMmyZRTDNMUpWkJG8bM_FDr_x
+    3EgVylAnnGnSlRLvQ>
+X-ME-Received: <xmr:z-5TYYGlkg9zTFoYcSwAe8ZXs353FvM8lB_rW0DBYl3tPcXVWhZqqrQHvBBkSzHoyfLVqVXJlT92pwM4OTZkl_ZXAmgcnb4UKAWnHhHM2RGfmci742X0vI9eU41eQbTtuwHX2g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekuddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:z-5TYRTK8ReBOmu_ex1QYi6GUCL_FuMHN5Dds77zQIqoegk6G-g1Rw>
+    <xmx:z-5TYdzGNEy6R5LVyKw2WtHczO20KXlsZfvF_81mKOFNEk0tDQjC9A>
+    <xmx:z-5TYf7v2HiznDzWxqbEHyZsozCzi01EvlMavLFTHVxmAeZ-fBtQxA>
+    <xmx:0O5TYdiTGWxcKumawvrH54CQiMFIp0cdTw6LjP6iQxskWjNbZarujw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 29 Sep 2021 00:42:55 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 00/10] DRAM devfreq support for Allwinner A64/H5
+Date:   Tue, 28 Sep 2021 23:42:44 -0500
+Message-Id: <20210929044254.38301-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210928222926.1180749-1-dlatypov@google.com> <20210928222926.1180749-4-dlatypov@google.com>
-In-Reply-To: <20210928222926.1180749-4-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 29 Sep 2021 12:39:02 +0800
-Message-ID: <CABVgOSnx+x1HmVWZi_Dc2HwNS8LeBX2W=0=j-jMkB+6EZhFvew@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] kunit: tool: support running each suite/test separately
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 6:29 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> The new --run_isolated flag makes the tool boot the kernel once per
-> suite or test, preventing leftover state from one suite to impact the
-> other. This can be useful as a starting point to debugging test
-> hermeticity issues.
->
-> Note: it takes a lot longer, so people should not use it normally.
->
-> Consider the following very simplified example:
->
->   bool disable_something_for_test = false;
->   void function_being_tested() {
->     ...
->     if (disable_something_for_test) return;
->     ...
->   }
->
->   static void test_before(struct kunit *test)
->   {
->     disable_something_for_test = true;
->     function_being_tested();
->     /* oops, we forgot to reset it back to false */
->   }
->
->   static void test_after(struct kunit *test)
->   {
->     /* oops, now "fixing" test_before can cause test_after to fail! */
->     function_being_tested();
->   }
->
-> Presented like this, the issues are obvious, but it gets a lot more
-> complicated to track down as the amount of test setup and helper
-> functions increases.
->
-> Another use case is memory corruption. It might not be surface as an
-Nit: "might not be surfaced" or "might not surface"
+This series adds a new devfreq driver for the MBUS/DRAM controller in
+some Allwinner SoCs, and enables it for the A64 and H5.
 
-> failure/crash in the test case or suite that caused it. I've noticed in
-> kunit's own unit tests, the 3rd suite after might be the one to finally
-> crash after an out-of-bounds write, for example.
->
-> Example usage:
->
-> Per suite:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
-> ...
-> Starting KUnit Kernel (1/7)...
-> ============================================================
-> ======== [PASSED] kunit_executor_test ========
-> ....
-> Testing complete. 5 tests run. 0 failed. 0 crashed. 0 skipped.
-> Starting KUnit Kernel (2/7)...
-> ============================================================
-> ======== [PASSED] kunit-try-catch-test ========
-> ...
->
-> Per test:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
-> Starting KUnit Kernel (1/23)...
-> ============================================================
-> ======== [PASSED] kunit_executor_test ========
-> [PASSED] parse_filter_test
-> ============================================================
-> Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
-> Starting KUnit Kernel (2/23)...
-> ============================================================
-> ======== [PASSED] kunit_executor_test ========
-> [PASSED] filter_subsuite_test
-> ...
->
-> It works with filters as well:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite example
-> ...
-> Starting KUnit Kernel (1/1)...
-> ============================================================
-> ======== [PASSED] example ========
-> ...
->
-> It also handles test filters, '*.*skip*' runs these 3 tests:
->   kunit_status.kunit_status_mark_skipped_test
->   example.example_skip_test
->   example.example_mark_skipped_test
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
+The first four patches make some improvements to the devfreq core to
+support drivers without any OPPs in the DT. They could be merged
+independently. (Since this driver controls only a divider, and can only
+slow down the DRAM clock, it works with most any base DRAM frequency.)
 
-Really glad to finally have this feature.
+Then the binding and DTs are updated in patches 5-9. The MBUS nodes
+already existed, but were not bound to any driver before; they were only
+used for their dma-ranges property.
 
-A few minor comments below (mostly mypy issues, though one of them
-seems to be a real bug). Otherwise, the main concern I have is that
-there's no final total of the tests run/passed/failed. That may be
-easier to implement post the parser rework patch, though, so I don't
-think we should hold this up for it:
-https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
+Finally, the driver is added in patch 10.
 
-Also, if we changed the TAP header stuff in patch 1, there'd need to
-be a couple of minor changes here to support it.
+I am not 100% sure the best way to handle DRAM register access -- as a
+separate reg property, a separate node, or simply enlarging the MBUS
+register range. While the DRAM controller is a separate IP block, the
+MBUS hardware has the ability to double-buffer certain DRAM controller
+registers, and the hardware MDFS process writes to some DRAM controller
+registers as well. So they are rather tightly integrated.
 
-Minor issues below aside, this is
-Reviewed-by: David Gow <davidgow@google.com>
+Like the patch 10 description says, this driver could support additional
+SoCs: at least A33, A83T, and H3. I can send follow-up patches for
+these, but I cannot test A33 or A83T.
 
-Cheers,
--- David
+Samuel Holland (10):
+  PM / devfreq: strengthen check for freq_table
+  PM / devfreq: Do not require devices to have OPPs
+  PM / devfreq: Drop code for descending freq_table
+  PM / devfreq: Add a recommended frequency helper
+  dt-bindings: clock: sunxi: Export CLK_DRAM for devfreq
+  dt-bindings: arm: sunxi: Expand MBUS binding
+  dt-bindings: arm: sunxi: Add H5 MBUS compatible
+  ARM: dts: sunxi: h3/h5: Update MBUS node
+  arm64: dts: allwinner: a64: Update MBUS node
+  PM / devfreq: Add a driver for the sun8i/sun50i MBUS
 
->  tools/testing/kunit/kunit.py           | 91 ++++++++++++++++++++------
->  tools/testing/kunit/kunit_tool_test.py | 40 +++++++++++
->  2 files changed, 112 insertions(+), 19 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index 31eec9f6ecc3..e7b92caba53d 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
->
->  from collections import namedtuple
->  from enum import Enum, auto
-> -from typing import Iterable
-> +from typing import Iterable, List
->
->  import kunit_config
->  import kunit_json
-> @@ -31,13 +31,13 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
->                                ['jobs', 'build_dir', 'alltests',
->                                 'make_options'])
->  KunitExecRequest = namedtuple('KunitExecRequest',
-> -                              ['timeout', 'build_dir', 'alltests',
-> -                               'filter_glob', 'kernel_args'])
-> +                             ['timeout', 'build_dir', 'alltests',
-> +                              'filter_glob', 'kernel_args', 'run_isolated'])
->  KunitParseRequest = namedtuple('KunitParseRequest',
->                                ['raw_output', 'build_dir', 'json'])
->  KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
->                                            'build_dir', 'alltests', 'filter_glob',
-> -                                          'kernel_args', 'json', 'make_options'])
-> +                                          'kernel_args', 'run_isolated', 'json', 'make_options'])
->
->  KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
->
-> @@ -91,21 +91,66 @@ def build_tests(linux: kunit_kernel.LinuxSourceTree,
->                            'built kernel successfully',
->                            build_end - build_start)
->
-> -def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
-> -              parse_request: KunitParseRequest) -> KunitResult:
-> -       kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
-> -       test_start = time.time()
-> -       run_result = linux.run_kernel(
-> -               args=request.kernel_args,
-> -               timeout=None if request.alltests else request.timeout,
-> -               filter_glob=request.filter_glob,
-> -               build_dir=request.build_dir)
-> +def _list_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest) -> List[str]:
-> +       args = ['kunit.action=list']
-> +       if request.kernel_args:
-> +               args.extend(request.kernel_args)
-> +
-> +       output = linux.run_kernel(args=args,
-> +                          timeout=None if request.alltests else request.timeout,
-> +                          filter_glob=request.filter_glob,
-> +                          build_dir=request.build_dir)
-> +       output = kunit_parser.extract_tap_lines(output)
+ .../arm/sunxi/allwinner,sun4i-a10-mbus.yaml   |  77 ++-
+ arch/arm/boot/dts/sun8i-h3.dtsi               |   4 +
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  11 +-
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  10 +-
+ arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi  |   4 +
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.h         |   2 -
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.h           |   2 -
+ drivers/devfreq/Kconfig                       |   8 +
+ drivers/devfreq/Makefile                      |   1 +
+ drivers/devfreq/devfreq.c                     |  77 ++-
+ drivers/devfreq/sun8i-a33-mbus.c              | 482 ++++++++++++++++++
+ include/dt-bindings/clock/sun50i-a64-ccu.h    |   2 +-
+ include/dt-bindings/clock/sun8i-h3-ccu.h      |   2 +-
+ include/linux/devfreq.h                       |   2 +
+ 14 files changed, 644 insertions(+), 40 deletions(-)
+ create mode 100644 drivers/devfreq/sun8i-a33-mbus.c
 
-mypy gives an error here:
-tools/testing/kunit/kunit.py:103: error: Incompatible types in
-assignment (expression has type "LineStream", variable has type
-"Iterator[str]")
-tools/testing/kunit/kunit.py:103: note: 'LineStream' is missing
-following 'Iterator' protocol member:
-tools/testing/kunit/kunit.py:103: note:     __next__
+-- 
+2.31.1
 
-> +       # Hack! Drop the TAP version header and top-level test plan.
-> +       output.pop()
-> +       output.pop()
-
-Similarly, mypy is complaining that:
-tools/testing/kunit/kunit.py:105: error: "Iterator[str]" has no attribute "pop"
-tools/testing/kunit/kunit.py:106: error: "Iterator[str]" has no attribute "pop"
-
-Also, we could get rid of one of these output.pop() lines if we
-removed the test plan in Patch 1.
-
-> +       return list(output)
-> +
-> +def _suites_from_test_list(tests: List[str]) -> List[str]:
-> +       """Extracts all the suites from an ordered list of tests."""
-> +       suites = []  # type: List[str]
-> +       for t in tests:
-> +               parts = t.split('.', maxsplit=2)
-> +               if len(parts) != 2:
-> +                       raise ValueError(f'internal KUnit error, test name should be of the form "<suite>.<test>", got "{t}"')
-> +               suite, case = parts
-> +               if not suites or suites[-1] != suite:
-> +                       suites.append(suite)
-> +       return suites
-> +
->
-> -       test_end = time.time()
-> -       exec_time = test_end - test_start
->
-> -       # Named tuples are immutable, so we rebuild them here manually
-> -       result = parse_tests(parse_request, run_result)
-> +def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
-> +              parse_request: KunitParseRequest) -> KunitResult:
-> +       filter_globs = [request.filter_glob]
-> +       if request.run_isolated:
-> +               tests = _list_tests(linux, request)
-> +               if request.run_isolated == 'test':
-> +                       filter_globs = tests
-> +               if request.run_isolated == 'suite':
-> +                       filter_globs = _suites_from_test_list(tests)
-> +                       # Apply the test-part of the user's glob, if present.
-> +                       if '.' in request.filter_glob:
-> +                               test_glob = request.filter_glob.split('.', maxsplit=2)[1]
-> +                               filter_globs = [g + '.'+ test_glob for g in filter_globs]
-> +
-> +       overall_status = kunit_parser.TestStatus.SUCCESS
-> +       exec_time = 0
-
-This doesn't seem to work. My test run, for example, gave:
-Elapsed time: 71.706s total, 0.001s configuring, 3.241s building, 0.001s running
-
-The 0.001s running time seems way too small here.
-
-Digging into this, it might be related to this mypy warning:
-tools/testing/kunit/kunit.py:150: error: Incompatible types in
-assignment (expression has type "float", variable has type "int")
-
-Should it be exec_time = 0.0 or similar?
-
-
-> +       for i, filter_glob in enumerate(filter_globs):
-> +               kunit_parser.print_with_timestamp('Starting KUnit Kernel ({}/{})...'.format(i+1, len(filter_globs)))
-> +
-> +               test_start = time.time()
-> +               run_result = linux.run_kernel(
-> +                       args=request.kernel_args,
-> +                       timeout=None if request.alltests else request.timeout,
-> +                       filter_glob=filter_glob,
-> +                       build_dir=request.build_dir)
-> +
-> +               test_end = time.time()
-> +               exec_time += test_end - test_start
-> +
-> +               result = parse_tests(parse_request, run_result)
-> +               overall_status = kunit_parser.max_status(overall_status, result.status)
->
->         return KunitResult(status=result.status, result=result.result, elapsed_time=exec_time)
->
-> @@ -166,7 +211,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
->
->         exec_request = KunitExecRequest(request.timeout, request.build_dir,
->                                  request.alltests, request.filter_glob,
-> -                                request.kernel_args)
-> +                                request.kernel_args, request.run_isolated)
->         parse_request = KunitParseRequest(request.raw_output,
->                                           request.build_dir,
->                                           request.json)
-> @@ -250,6 +295,12 @@ def add_exec_opts(parser) -> None:
->         parser.add_argument('--kernel_args',
->                             help='Kernel command-line parameters. Maybe be repeated',
->                              action='append')
-> +       parser.add_argument('--run_isolated', help='If set, boot the kernel for each '
-> +                           'individual suite/test. This is can be useful for debugging '
-> +                           'a non-hermetic test, one that might pass/fail based on '
-> +                           'what ran before it.',
-> +                           type=str,
-> +                           choices=['suite', 'test']),
->
->  def add_parse_opts(parser) -> None:
->         parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
-> @@ -323,6 +374,7 @@ def main(argv, linux=None):
->                                        cli_args.alltests,
->                                        cli_args.filter_glob,
->                                        cli_args.kernel_args,
-> +                                      cli_args.run_isolated,
->                                        cli_args.json,
->                                        cli_args.make_options)
->                 result = run_tests(linux, request)
-> @@ -378,7 +430,8 @@ def main(argv, linux=None):
->                                                 cli_args.build_dir,
->                                                 cli_args.alltests,
->                                                 cli_args.filter_glob,
-> -                                               cli_args.kernel_args)
-> +                                               cli_args.kernel_args,
-> +                                               cli_args.run_isolated)
->                 parse_request = KunitParseRequest(cli_args.raw_output,
->                                                   cli_args.build_dir,
->                                                   cli_args.json)
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 619c4554cbff..bcfdc6664c9d 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -477,6 +477,46 @@ class KUnitMainTest(unittest.TestCase):
->                       args=['a=1','b=2'], build_dir='.kunit', filter_glob='', timeout=300)
->                 self.print_mock.assert_any_call(StrContains('Testing complete.'))
->
-> +       def test_list_tests(self):
-> +               want = ['suite.test1', 'suite.test2', 'suite2.test1']
-> +               self.linux_source_mock.run_kernel.return_value = ['TAP version 14', '1..0'] + want
-> +
-> +               got = kunit._list_tests(self.linux_source_mock,
-> +                                    kunit.KunitExecRequest(300, '.kunit', False, 'suite*', None, 'suite'))
-> +
-> +               self.assertEqual(got, want)
-> +               # Should respect the user's filter glob when listing tests.
-> +               self.linux_source_mock.run_kernel.assert_called_once_with(
-> +                       args=['kunit.action=list'], build_dir='.kunit', filter_glob='suite*', timeout=300)
-> +
-> +
-> +       @mock.patch.object(kunit, '_list_tests')
-> +       def test_run_isolated_by_suite(self, mock_tests):
-> +               mock_tests.return_value = ['suite.test1', 'suite.test2', 'suite2.test1']
-> +               kunit.main(['exec', '--run_isolated=suite', 'suite*.test*'], self.linux_source_mock)
-> +
-> +               # Should respect the user's filter glob when listing tests.
-> +               mock_tests.assert_called_once_with(mock.ANY,
-> +                                    kunit.KunitExecRequest(300, '.kunit', False, 'suite*.test*', None, 'suite'))
-> +               self.linux_source_mock.run_kernel.assert_has_calls([
-> +                       mock.call(args=None, build_dir='.kunit', filter_glob='suite.test*', timeout=300),
-> +                       mock.call(args=None, build_dir='.kunit', filter_glob='suite2.test*', timeout=300),
-> +               ])
-> +
-> +       @mock.patch.object(kunit, '_list_tests')
-> +       def test_run_isolated_by_test(self, mock_tests):
-> +               mock_tests.return_value = ['suite.test1', 'suite.test2', 'suite2.test1']
-> +               kunit.main(['exec', '--run_isolated=test', 'suite*'], self.linux_source_mock)
-> +
-> +               # Should respect the user's filter glob when listing tests.
-> +               mock_tests.assert_called_once_with(mock.ANY,
-> +                                    kunit.KunitExecRequest(300, '.kunit', False, 'suite*', None, 'test'))
-> +               self.linux_source_mock.run_kernel.assert_has_calls([
-> +                       mock.call(args=None, build_dir='.kunit', filter_glob='suite.test1', timeout=300),
-> +                       mock.call(args=None, build_dir='.kunit', filter_glob='suite.test2', timeout=300),
-> +                       mock.call(args=None, build_dir='.kunit', filter_glob='suite2.test1', timeout=300),
-> +               ])
-> +
->
->  if __name__ == '__main__':
->         unittest.main()
-> --
-> 2.33.0.685.g46640cef36-goog
->
