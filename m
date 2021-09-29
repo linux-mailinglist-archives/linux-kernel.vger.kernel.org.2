@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D55441BC7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF11941BC7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 03:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243628AbhI2Br5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 21:47:57 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:5721 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229505AbhI2Bry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 21:47:54 -0400
-X-UUID: 8d05abe29758415bbce17ee48fe25889-20210929
-X-CPASD-INFO: 6b6349986de84f728a4f271d00d95921@f7JwU2FrZ2hihKeEg6mCbFiSZJZiY1G
-        zcmqEaWNpXlGVhH5xTWJsXVKBfG5QZWNdYVN_eGpQYl9gZFB5i3-XblBgXoZgUZB3haRwU2RnaQ==
-X-CPASD-FEATURE: 0.0
-X-CLOUD-ID: 6b6349986de84f728a4f271d00d95921
-X-CPASD-SUMMARY: SIP:-1,APTIP:-2.0,KEY:0.0,FROMBLOCK:1,EXT:0.0,OB:0.0,URL:-5,T
-        VAL:168.0,ESV:0.0,ECOM:-5.0,ML:0.0,FD:0.0,CUTS:269.0,IP:-2.0,MAL:0.0,ATTNUM:0
-        .0,PHF:-5.0,PHC:-5.0,SPF:4.0,EDMS:-3,IPLABEL:4480.0,FROMTO:0,AD:0,FFOB:0.0,CF
-        OB:0.0,SPC:0.0,SIG:-5,AUF:6,DUF:15199,ACD:56,DCD:158,SL:0,AG:0,CFC:0.929,CFSR
-        :0.016,UAT:0,RAF:2,VERSION:2.3.4
-X-CPASD-ID: 8d05abe29758415bbce17ee48fe25889-20210929
-X-CPASD-BLOCK: 1000
-X-CPASD-STAGE: 1, 1
-X-UUID: 8d05abe29758415bbce17ee48fe25889-20210929
-X-User: lizhenneng@kylinos.cn
-Received: from [172.20.108.41] [(116.128.244.169)] by nksmu.kylinos.cn
-        (envelope-from <lizhenneng@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-        with ESMTP id 1789522792; Wed, 29 Sep 2021 09:43:19 +0800
-Subject: Re: [PATCH] PCI/sysfs: add write attribute for boot_vga
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210928233721.GA748816@bhelgaas>
-From:   =?UTF-8?B?5p2O55yf6IO9?= <lizhenneng@kylinos.cn>
-Message-ID: <1ff8fdfa-754b-312d-cb52-a5c31e3b3792@kylinos.cn>
-Date:   Wed, 29 Sep 2021 09:45:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S243682AbhI2B6G convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Sep 2021 21:58:06 -0400
+Received: from mga09.intel.com ([134.134.136.24]:3995 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243661AbhI2B6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Sep 2021 21:58:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224881061"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="224881061"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2021 18:56:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="655329177"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga005.jf.intel.com with ESMTP; 28 Sep 2021 18:56:24 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 18:56:24 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 28 Sep 2021 18:56:23 -0700
+Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
+ ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.2242.012;
+ Tue, 28 Sep 2021 18:56:23 -0700
+From:   "Yu, Fenghua" <fenghua.yu@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     "Hansen, Dave" <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Thread-Topic: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Thread-Index: AQHXrlpps8sdI0y1ikyhBinC7AfU6auyuuKAgAYjzwCAAC8cgIABPj0AgAAIFQCAABNJgIAAB6kAgAAlrYD//5XdAIAAeikA//+nYIA=
+Date:   Wed, 29 Sep 2021 01:56:23 +0000
+Message-ID: <840148c7b70f4358852c4f1ccbc5d567@intel.com>
+References: <20210920192349.2602141-5-fenghua.yu@intel.com>
+ <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
+ <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
+ <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
+ <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
+ <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
+ <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
+ <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+ <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
+ <YVOp60LOL+bfh3iT@otcwcpicx3.sc.intel.com>
+ <YVOuYAFaTG6Khotb@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <YVOuYAFaTG6Khotb@agluck-desk2.amr.corp.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20210928233721.GA748816@bhelgaas>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Tony,
 
-在 2021/9/29 上午7:37, Bjorn Helgaas 写道:
-> On Mon, Sep 27, 2021 at 11:45:59AM +0800, 李真能 wrote:
->> 在 2021/9/27 上午4:20, Bjorn Helgaas 写道:
->>> On Sun, Sep 26, 2021 at 03:15:39PM +0800, Zhenneng Li wrote:
->>>> Add writing attribute for boot_vga sys node,
->>>> so we can config default video display
->>>> output dynamically when there are two video
->>>> cards on a machine.
->>>>
->>>> Xorg server will determine running on which
->>>> video card based on boot_vga node's value.
->>> When you repost this, please take a look at the git commit log history
->>> and make yours similar.  Specifically, the subject should start with a
->>> capital letter, and the body should be rewrapped to fill 75
->>> characters.
->>>
->>> Please contrast this with the existing VGA arbiter.  See
->>> Documentation/gpu/vgaarbiter.rst.  It sounds like this may overlap
->>> with the VGA arbiter functionality, so this should explain why we need
->>> both and how they interact.
->> "Some "legacy" VGA devices implemented on PCI typically have the same
->> hard-decoded addresses as they did on ISA. When multiple PCI devices are
->> accessed at same time they need some kind of coordination. ", this is the
->> explain of config VGA_ARB, that is to say, some legacy vga devices need use
->> the same pci bus address, if user app(such as xorg) want access card A, but
->> card A and card B have same bus address,  then VGA agaarbiter will determine
->> will card to be accessed.
-> Yes.  I think the arbiter also provides an interface for controlling
-> the routing of these legacy resources.
->
-> Your patch changes the kernel's idea of the default VGA device, but
-> doesn't affect the resource routing, AFAICT.
->
->> And xorg will read boot_vga to determine which graphics card is the primary
->> graphics output device.
-> Doesn't xorg also have its own mechanism for selecting which graphics
-> device to use?
->
-> Is the point here that you want to write the sysfs file to select the
-> device instead of changing the xorg configuration?  If it's possible
-> to configure xorg directly to use different devices, my inclination
-> would be to use that instead of doing it via sysfs.
-Thanks for reminding, Xorg has the config option "PrimaryGPU", it has 
-the same func as boot_vga.
->
->> That is the difference about boot_vga and vgaarbiter.
->>
->>>> Signed-off-by: Zhenneng Li <lizhenneng@kylinos.cn>
->>>> ---
->>>>    drivers/pci/pci-sysfs.c | 24 +++++++++++++++++++++++-
->>>>    1 file changed, 23 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
->>>> index 7bbf2673c7f2..a6ba19ce7adb 100644
->>>> --- a/drivers/pci/pci-sysfs.c
->>>> +++ b/drivers/pci/pci-sysfs.c
->>>> @@ -664,7 +664,29 @@ static ssize_t boot_vga_show(struct device *dev, struct device_attribute *attr,
->>>>    			  !!(pdev->resource[PCI_ROM_RESOURCE].flags &
->>>>    			     IORESOURCE_ROM_SHADOW));
->>>>    }
->>>> -static DEVICE_ATTR_RO(boot_vga);
->>>> +
->>>> +static ssize_t boot_vga_store(struct device *dev, struct device_attribute *attr,
->>>> +			      const char *buf, size_t count)
->>>> +{
->>>> +	unsigned long val;
->>>> +	struct pci_dev *pdev = to_pci_dev(dev);
->>>> +	struct pci_dev *vga_dev = vga_default_device();
->>>> +
->>>> +	if (kstrtoul(buf, 0, &val) < 0)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (val != 1)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (!capable(CAP_SYS_ADMIN))
->>>> +		return -EPERM;
->>>> +
->>>> +	if (pdev != vga_dev)
->>>> +		vga_set_default_device(pdev);
->>>> +
->>>> +	return count;
->>>> +}
->>>> +static DEVICE_ATTR_RW(boot_vga);
->>>>    static ssize_t pci_read_config(struct file *filp, struct kobject *kobj,
->>>>    			       struct bin_attribute *bin_attr, char *buf,
->>>> -- 
->>>> 2.25.1
->>>>
->>>>
->>>> No virus found
->>>> 		Checked by Hillstone Network AntiVirus
+> void *begin_update_one_xsave_feature(struct task_struct *tsk,
+> 				     enum xfeature xfeature, bool full) {
+> 	struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
+> 	struct xregs_state *xinit = &init_fpstate.xsave;
+> 	u64 fmask = 1ull << xfeature;
+> 	void *addr;
+> 
+> 	BUG_ON(!(xsave->header.xcomp_bv & fmask));
+> 
+> 	fpregs_lock();
+> 
+> 	addr = __raw_xsave_addr(xsave, xfeature);
+> 
+> 	if (full || tsk != current) {
+> 		memcpy(addr, __raw_xsave_addr(xinit, xfeature),
+> xstate_sizes[xfeature]);
+> 		goto out;
+> 	}
+> 
+> 	if (!(xsave->header.xfeatures & fmask)) {
+> 		xsave->header.xfeatures |= fmask;	//<<<<<
+> 		xsaves(xsave, fmask);
+> 	}
+
+I'm not sure why the FPU state is initialized here.
+
+For updating the PASID state, it's unnecessary to init the PASID state.
+
+Maybe it is necessary in other cases?
+
+> 
+> out:
+> 	xsave->header.xfeatures |= fmask;
+
+Setting the xfeatures bit plus updating the PASID state is enough
+to restore the PASID state to the IA32_PASID MSR.
+
+> 	return addr;
+> }
+> 
+> void finish_update_one_xsave_feature(struct task_struct *tsk) {
+> 	set_ti_thread_flag(task_thread_info(tsk), TIF_NEED_FPU_LOAD);
+> 	if (tsk == current)				//<<<<<
+> 		__cpu_invalidate_fpregs_state();	//<<<<<
+> 	fpregs_unlock();
+> }
+
+Thanks.
+
+-Fenghua
