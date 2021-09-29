@@ -2,102 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D541C22D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8273A41C23D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245259AbhI2KBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:01:49 -0400
-Received: from www381.your-server.de ([78.46.137.84]:52692 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245245AbhI2KBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:01:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=1WjBcHbtUHWwynb8HCYwJabWRtgbg4lrsK8hlGVcLMI=; b=f1evM4TI1bcX9clqH5czWYaIgd
-        k3LQLnxdvJqhmvWCfCXt/ioxAOA67GoC/wZe4uYWHgV7J2qIm8uvGa3mD3wiafscpj9losoih54I3
-        LA1qT6bOilB5TFWLsAhFwG5UOt6IOK/ngiwVUCD3qovwoJhBNhiTUZvVsgRWrQDisBWBD1fW9UAMi
-        VfNLNgnnVJ0fTyJyOkaC9Q+J0pESTGkMpYM+Kx354SulHYCnHhT3odFfDPfs0GxYkNy5fgVe0FBYh
-        tiyna+k21z9SGlIkpexEn31zzoF4e8zv7Ht25jIX7B3mnJv7zbrS5KvWAuIEQOc5NToBf/TeQ1ulh
-        b/2RDeiw==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mVWNc-0001Nh-Ev; Wed, 29 Sep 2021 12:00:00 +0200
-Received: from [82.135.83.152] (helo=[192.168.178.20])
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mVWNc-000Rpa-55; Wed, 29 Sep 2021 12:00:00 +0200
-Subject: Re: [PATCH] iio: dac: ad5446: Fix ad5622_write() return value
-To:     Pekka Korpinen <pekka.korpinen@iki.fi>
-Cc:     Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210928195548.17846-1-pekka.korpinen@iki.fi>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <20d11fbb-ba93-802c-1abc-60d7f5ec0c0c@metafoo.de>
-Date:   Wed, 29 Sep 2021 11:59:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S245281AbhI2KHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:07:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245248AbhI2KGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:06:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3326B61439;
+        Wed, 29 Sep 2021 10:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632909914;
+        bh=Xxn9/SD1dYhlDwttos3PuGBQ5U/2yCNeeOkyqW/lvMU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ORjEaY8oVoBe/kc1cZJj2pdtkHjlj8HbwEZxZTWQ2RJxE3GmpxNBmdNmOnphEgvSX
+         ZOxvvBYGhy3vPJuqA7LfPTEfGfZd04jb5pa8GODKkdyshK6wcZoWwPGMWC+MS9U+hB
+         xbVhK4m/Jq2Iwa6W/3givlEv93HsBHlrwK8xareW519JavUdMcvSDsFayE2ZD0oN8U
+         pIltEb8rvFoy0z9I8Y2vMLwBlDucBVUKGTbifrVUXnBcQOBZxHm/pShHiIlrwCdByI
+         22paW8ns7SMXCobLPJLkLp0xaLAaB7vuo8aCGQL+Oy4kg80h0CJMOIrD0tYnYvfS9M
+         gE71ALaohzM2g==
+Received: by mail-wm1-f54.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so4803714wmc.0;
+        Wed, 29 Sep 2021 03:05:14 -0700 (PDT)
+X-Gm-Message-State: AOAM532yZxt2Ugc20fx35XlU9lIw+2q6Dr19g/YRF6FloXm4Uy/5/Wnj
+        SBExSeBq1sMLRQCFM4vh42Bvw3zFo4f0jCdPZvo=
+X-Google-Smtp-Source: ABdhPJxj45zzIMnN/HHyq+6nU2KpFjlg3Tr2+Q2ZpxFzEZguNBmccSscTdNWt05AmI9I9AwUnU3a/laQUUwcLa8ETFA=
+X-Received: by 2002:a05:600c:896:: with SMTP id l22mr9378065wmp.173.1632909912585;
+ Wed, 29 Sep 2021 03:05:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210928195548.17846-1-pekka.korpinen@iki.fi>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26306/Tue Sep 28 11:05:37 2021)
+References: <20210927152412.2900928-1-arnd@kernel.org> <20210929095107.GA21057@willie-the-truck>
+In-Reply-To: <20210929095107.GA21057@willie-the-truck>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 29 Sep 2021 12:04:55 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
+Message-ID: <CAK8P3a2QnJkYCoEWhziYYXQusb-25_wUhA5ZTGtBsyfFx3NWzQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] qcom_scm: hide Kconfig symbol
+To:     Will Deacon <will@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joerg Roedel <joro@8bytes.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 9:55 PM, Pekka Korpinen wrote:
-> On success i2c_master_send() returns the number of bytes written. The
-> call from iio_write_channel_info(), however, expects the return value to
-> be zero on success.
+On Wed, Sep 29, 2021 at 11:51 AM Will Deacon <will@kernel.org> wrote:
+> On Mon, Sep 27, 2021 at 05:22:13PM +0200, Arnd Bergmann wrote:
+> >
+> > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> > index 124c41adeca1..989c83acbfee 100644
+> > --- a/drivers/iommu/Kconfig
+> > +++ b/drivers/iommu/Kconfig
+> > @@ -308,7 +308,7 @@ config APPLE_DART
+> >  config ARM_SMMU
+> >       tristate "ARM Ltd. System MMU (SMMU) Support"
+> >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+> > -     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
+> > +     select QCOM_SCM
+> >       select IOMMU_API
+> >       select IOMMU_IO_PGTABLE_LPAE
+> >       select ARM_DMA_USE_IOMMU if ARM
 >
-> Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
-> ---
-> This bug causes incorrect consumption of the sysfs buffer in
-> iio_write_channel_info(). When writing more than two characters to
-> out_voltage0_raw, the ad5446 write handler is called multiple times
-> causing unexpected behavior.
+> I don't want to get in the way of this patch because I'm also tired of the
+> randconfig failures caused by QCOM_SCM. However, ARM_SMMU is applicable to
+> a wide variety of (non-qcom) SoCs and so it seems a shame to require the
+> QCOM_SCM code to be included for all of those when it's not strictly needed
+> at all.
 
-I'd put this into the commit message itself. This is useful information 
-that should be part of the commit log.
+Good point, I agree that needs to be fixed. I think this additional
+change should do the trick:
 
->
-> A similar fix was applied for ad5064.c in 2015 - commit 03fe472ef33b
-> ("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
->
->   drivers/iio/dac/ad5446.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
-> index 488ec69967d6..dfd541bbde5b 100644
-> --- a/drivers/iio/dac/ad5446.c
-> +++ b/drivers/iio/dac/ad5446.c
-> @@ -531,8 +531,13 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
->   {
->   	struct i2c_client *client = to_i2c_client(st->dev);
->   	__be16 data = cpu_to_be16(val);
-> +	int ret;
-> +
-> +	ret = i2c_master_send(client, (char *)&data, sizeof(data));
-> +	if (ret < 0)
-> +		return ret;
-Like you wrote in the commit message the function returns the number of 
-bytes written. We should check that this matches the number of bytes we 
-wanted to send and return an error (EIO) otherwise.
->   
-> -	return i2c_master_send(client, (char *)&data, sizeof(data));
-> +	return 0;
->   }
->   
->   /*
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -308,7 +308,6 @@ config APPLE_DART
+ config ARM_SMMU
+        tristate "ARM Ltd. System MMU (SMMU) Support"
+        depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+-       select QCOM_SCM
+        select IOMMU_API
+        select IOMMU_IO_PGTABLE_LPAE
+        select ARM_DMA_USE_IOMMU if ARM
+@@ -438,7 +437,7 @@ config QCOM_IOMMU
+        # Note: iommu drivers cannot (yet?) be built as modules
+        bool "Qualcomm IOMMU Support"
+        depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+-       depends on QCOM_SCM=y
++       select QCOM_SCM
+        select IOMMU_API
+        select IOMMU_IO_PGTABLE_LPAE
+        select ARM_DMA_USE_IOMMU
 
+I'll see if that causes any problems for the randconfig builds.
 
+       Arnd
