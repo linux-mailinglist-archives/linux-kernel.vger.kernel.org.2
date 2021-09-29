@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8734941C17F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA1141C182
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245036AbhI2JUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhI2JUQ (ORCPT
+        id S245040AbhI2JWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:22:10 -0400
+Received: from [119.249.100.165] ([119.249.100.165]:15915 "EHLO
+        mx423.baidu.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229487AbhI2JWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:20:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D9CC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MxJHOOZw60MsFdeldAnHQy5aiHiHdVrAze6Zxk22Um8=; b=URHV/Z6dwxREK0Nk/cvbzT4nTD
-        DBKVDDiMJlHfKECPz9ElH+pMuaWoKhgzWgNt5uQVRVCBaKJNDFMGaMnt0jBZognhn87G6UxgCFHcP
-        ajtVRjyktLnDfTm49uVYcCm2blKPRJEsrwTwROOdCiKgoj+EceBQqCNqmgBpsG20Yk6Ru9zV0apHd
-        n1EwdEl+bpL1YaWEA+c43HTYmmMWm9MX7omMJ2aeW4RJiyS4JOofRQBjaXjZSAqnVOC8dWexiuHwX
-        mQxzRcV9/BUw7Qfdqh70JBHfSSyaHGZGPqLt1tjXvqM2dBJf1zz84nC+WCK6jaOpWk8iRsavWQMSY
-        AqYsrHPQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVVjO-006gFV-Pp; Wed, 29 Sep 2021 09:18:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23FB3300056;
-        Wed, 29 Sep 2021 11:18:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 061FD29AD1D57; Wed, 29 Sep 2021 11:18:25 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 11:18:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, acme@kernel.org, mingo@redhat.com,
-        kernel-team@fb.com, eranian@google.com,
-        Lucian Grijincu <lucian@fb.com>
-Subject: Re: [PATCH v2] perf/core: fix userpage->time_enabled of inactive
- events
-Message-ID: <YVQvYUuokUnev0tG@hirez.programming.kicks-ass.net>
-References: <20210924012800.2461781-1-songliubraving@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924012800.2461781-1-songliubraving@fb.com>
+        Wed, 29 Sep 2021 05:22:09 -0400
+Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by mx423.baidu.com (Postfix) with ESMTP id D45D316E01154;
+        Wed, 29 Sep 2021 17:20:14 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id CCAC4D9932;
+        Wed, 29 Sep 2021 17:20:14 +0800 (CST)
+From:   Li RongQing <lirongqing@baidu.com>
+To:     lirongqing@baidu.com, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Subject: [PATCH] KVM: Micro-optimize pvclock_clocksource_read
+Date:   Wed, 29 Sep 2021 17:20:14 +0800
+Message-Id: <1632907214-29633-1-git-send-email-lirongqing@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 06:28:00PM -0700, Song Liu wrote:
+Compare the return of atomic64_cmpxchg with previous save for last,
+to reduce the number of while-loop iterations with atomic operations
+from two to one in the most common situation
 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 1cb1f9b8392e2..d73f986eef7b3 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -3707,6 +3707,46 @@ static noinline int visit_groups_merge(struct perf_cpu_context *cpuctx,
->  	return 0;
->  }
->  
-> +static inline bool event_update_userpage(struct perf_event *event)
-> +{
-> +	/*
-> +	 * Checking mmap_count to avoid unnecessary work. This does leave a
-> +	 * corner case: if the event is enabled before mmap(), the first
-> +	 * time the event gets scheduled is via:
-> +	 *
-> +	 *  __perf_event_enable (or __perf_install_in_context)
-> +	 *      -> ctx_resched
-> +	 *         -> perf_event_sched_in
-> +	 *            -> ctx_sched_in
-> +	 *
-> +	 * with mmap_count of 0, so we will skip here. As a result,
-> +	 * userpage->offset is not accurate after mmap and before the
-> +	 * first rotation.
-> +	 *
-> +	 * To avoid the discrepancy of this window, the user space should
-> +	 * mmap the event before enabling it.
-> +	 */
+Original patch at:
+https://kvm.vger.kernel.narkive.com/WraXedaQ/patch-kvm-pvclock-clocksource-read-while-loop-optimization
 
-It seems to me that writing that comment was more work than actually
-fixing perf_mmap() to DTRT, no? AFAICT all we need is something like:
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+---
+ arch/x86/kernel/pvclock.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index fd2ae70fa6c4..1e33c2e6b0dc 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6324,6 +6324,8 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
+diff --git a/arch/x86/kernel/pvclock.c b/arch/x86/kernel/pvclock.c
+index eda37df..98d106f 100644
+--- a/arch/x86/kernel/pvclock.c
++++ b/arch/x86/kernel/pvclock.c
+@@ -67,8 +67,8 @@ u8 pvclock_read_flags(struct pvclock_vcpu_time_info *src)
+ u64 pvclock_clocksource_read(struct pvclock_vcpu_time_info *src)
+ {
+ 	unsigned version;
++	u64 last, save;
+ 	u64 ret;
+-	u64 last;
+ 	u8 flags;
  
- 		ring_buffer_attach(event, rb);
+ 	do {
+@@ -104,8 +104,9 @@ u64 pvclock_clocksource_read(struct pvclock_vcpu_time_info *src)
+ 	do {
+ 		if (ret < last)
+ 			return last;
++		save = last;
+ 		last = atomic64_cmpxchg(&last_value, last, ret);
+-	} while (unlikely(last != ret));
++	} while (unlikely(last != save));
  
-+		perf_event_update_time(event);
-+		perf_set_shadow_time(event, event->ctx);
- 		perf_event_init_userpage(event);
- 		perf_event_update_userpage(event);
- 	} else {
+ 	return ret;
+ }
+-- 
+1.7.1
 
