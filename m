@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F8141BFD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F041C02A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244625AbhI2HZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 03:25:56 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13390 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244620AbhI2HZy (ORCPT
+        id S244369AbhI2HyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 03:54:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38890 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244241AbhI2Hx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 03:25:54 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HK76Y2sKcz8yht;
-        Wed, 29 Sep 2021 15:19:33 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 15:24:11 +0800
-Received: from huawei.com (10.175.113.32) by kwepemm600003.china.huawei.com
- (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 29 Sep
- 2021 15:24:10 +0800
-From:   Nanyong Sun <sunnanyong@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>
-CC:     <suzuki.poulose@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <james.morse@arm.com>, <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v4.4 v4.9 v4.14] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
-Date:   Wed, 29 Sep 2021 15:52:10 +0800
-Message-ID: <20210929075210.819396-1-sunnanyong@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Wed, 29 Sep 2021 03:53:59 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4FCAA1FFD5;
+        Wed, 29 Sep 2021 07:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632901938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nKJATqPQedgRX5cal1JGI6obKkcGL2h8yUla7SJy7q0=;
+        b=iv2c9afdPj+6JUZRul0C2M5dm763OJMphokNYaCglmBOODSydDJhJLnhe9+JCVRGEOLzay
+        Jykvm0RGzK+S1GUMktE39PiLhRyNuMosnt0dRav3nsBBZWhTnHwvIpMOnFaAaaNK+o4GNo
+        QwNihs3cuG1J2MQ4/X5xZSywHcXjb6o=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id CD9B325D4F;
+        Wed, 29 Sep 2021 07:52:17 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 09:52:17 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+Message-ID: <YVQbMREcRaCbUaUv@dhcp22.suse.cz>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+ <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
+ <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
+ <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
+ <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
+ <0FC3F99A-9F77-484A-899B-EDCBEFBFAC5D@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0FC3F99A-9F77-484A-899B-EDCBEFBFAC5D@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Mon 27-09-21 12:12:46, Nadav Amit wrote:
+> 
+> > On Sep 27, 2021, at 5:16 AM, Michal Hocko <mhocko@suse.com> wrote:
+> > 
+> > On Mon 27-09-21 05:00:11, Nadav Amit wrote:
+> > [...]
+> >> The manager is notified on memory regions that it should monitor
+> >> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these regions
+> >> using the remote-userfaultfd that you saw on the second thread. When it wants
+> >> to reclaim (anonymous) memory, it:
+> >> 
+> >> 1. Uses UFFD-WP to protect that memory (and for this matter I got a vectored
+> >>   UFFD-WP to do so efficiently, a patch which I did not send yet).
+> >> 2. Calls process_vm_readv() to read that memory of that process.
+> >> 3. Write it back to “swap”.
+> >> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
+> > 
+> > Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
+> 
+> Providing hints to the kernel takes you so far to a certain extent.
+> The kernel does not want to (for a good reason) to be completely
+> configurable when it comes to reclaim and prefetch policies. Doing
+> so from userspace allows you to be fully configurable.
 
-commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
+I am sorry but I do not follow. Your scenario is describing a user
+space driven reclaim. Something that MADV_{COLD,PAGEOUT} have been
+designed for. What are you missing in the existing functionality?
 
-The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
-we apply the work around for r0p0 - r1p0. Unfortunately this
-won't be fixed for the future revisions for the CPU. Thus
-extend the work around for all versions of A55, to cover
-for r2p0 and any future revisions.
+> > MADV_DONTNEED on a remote process has been proposed in the past several
+> > times and it has always been rejected because it is a free ticket to all
+> > sorts of hard to debug problems as it is just a free ticket for a remote
+> > memory corruption. An additional capability requirement might reduce the
+> > risk to some degree but I still do not think this is a good idea.
+> 
+> I would argue that there is nothing bad that remote MADV_DONTNEED can do
+> that process_vm_writev() cannot do as well (putting aside ptrace).
 
-Cc: stable@vger.kernel.org #v4.4 v4.9 v4.14
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
-[will: Update Kconfig help text]
-Signed-off-by: Will Deacon <will@kernel.org>
-[Nanyon: adjust for stable version below v4.16, which set TCR_HD earlier
-in assembly code]
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
----
- arch/arm64/Kconfig   | 2 +-
- arch/arm64/mm/proc.S | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I am not arguing this would be the first syscall to allow tricky and
+hard to debug corruptions if used without care.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e296ae3e20f4..e76f74874a42 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -450,7 +450,7 @@ config ARM64_ERRATUM_1024718
- 	help
- 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
- 
--	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
-+	  Affected Cortex-A55 cores (all revisions) could cause incorrect
- 	  update of the hardware dirty bit when the DBM/AP bits are updated
- 	  without a break-before-make. The work around is to disable the usage
- 	  of hardware DBM locally on the affected cores. CPUs not affected by
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index ecbc060807d2..a9ff7fb41832 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -455,8 +455,8 @@ ENTRY(__cpu_setup)
- 	cmp	x9, #2
- 	b.lt	1f
- #ifdef CONFIG_ARM64_ERRATUM_1024718
--	/* Disable hardware DBM on Cortex-A55 r0p0, r0p1 & r1p0 */
--	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(1, 0), x1, x2, x3, x4
-+	/* Disable hardware DBM on Cortex-A55 all versions */
-+	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(0xf, 0xf), x1, x2, x3, x4
- 	cbnz	x1, 1f
- #endif
- 	orr	x10, x10, #TCR_HD		// hardware Dirty flag update
+> process_vm_writev() is checking:
+> 
+> 	mm = mm_access(task, PTRACE_MODE_ATTACH_REALCREDS)
+> 
+> Wouldn't adding such a condition suffice?
+
+This would be a minimum requirement. Another one is a sensible usecase
+that is not covered by an existing functionality.
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
