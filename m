@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F12541CF74
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6DF41CF77
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347349AbhI2WuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
+        id S1347364AbhI2WuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347339AbhI2WuO (ORCPT
+        with ESMTP id S1347354AbhI2WuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:50:14 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E76C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:48:32 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id h25-20020a0cab19000000b0037a49d15c93so9242346qvb.22
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:48:32 -0700 (PDT)
+        Wed, 29 Sep 2021 18:50:16 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A77DC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:48:34 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 73so3968493qki.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:48:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=mFpUuvuBysqSnfHqvwDvzANzBcF7cW/0AhHxyq0yb1s=;
-        b=Xxllz9r3zQ7FdUefiuUS5kevHpMWap6f7+0JlD4MKmf0vYLOLs8VBSHFqjD4OumEaD
-         RDYBm8Jy09Ot4eBxC8XZ2evmtT/TUnNRfKWWxgfbvvLLLw6Y5CdRYIuHAtiPSSdz2ypp
-         0mX8FBiJoz3+zzwvyoM+OW99mqENXsgT/YZh52LKZXPENBF9oG9Lm4/KzRj8hq168pB3
-         J3LxLTZoccMlTP5bkJeYeD83tJO0+3RfRMCVT5TAK2ItacCStU4+4Xu3gp1SEjR9W4/3
-         ihxpjvO21LGKWM8m4B0VRNh7L20IHZw43CTz8IT/i5EGqFETOjFrNxTv0BSNuoLAFSVO
-         tLjg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B0sV1qVbbjrF0PysKkzPgbfO3+Me62Wpz2WIVsVwuoE=;
+        b=P9N1xixIbU2CQZqPgthtCxabWVb1WaKJas+T5Bbtlr4fD7rztRWCIEl7HQ9hsYT8aF
+         41wF7TSRaJ3f9seP9f0KrtpHt8gvV/9kf7XUzRs3fIottSWd5Jos1b7FSN+JKsFTdWUh
+         cQmc0BxR1at5W66It0VtetEvP3kxr6TgFG71lefSWpCHrqHfP2E1T4XXYFzcdwOAnPpb
+         WlKs8E3Ae/btD+bQUn9uA6WCV6uRLRFmutfEb0Vg/FCMMltR8qwOKBC/i/xs0Mi5ciI7
+         QAuN+ydzCbvdhC6HuPboTTSd7wkOyLMNyDUAGQreZfH9ZakjqoboD9OYItawKLMdXBtS
+         NwMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=mFpUuvuBysqSnfHqvwDvzANzBcF7cW/0AhHxyq0yb1s=;
-        b=4byKpe+wngkp+JCPFbPxlbW5NXD+dx/cGzP87oi64CYEv+qG9apuWkpCHsOQDq5Kwf
-         m9IVjL1TMlklSoLgVIsePYDHhuvhoqTxYYAJT5NocgK9NHm46OYHw1/cUVYQIeIfcZ/v
-         We6JzAU/Ol+AMTyzcC2lJyuLAhpLelTj44joh0q7C//x21iIV4Khul4O/MIO+rEthW3d
-         4BW76WeZ2yVNrOPlmRH9tQs8/zndwfNXpp49eQ26GO9p63qeiD0EsBBK7pr1EbDPJLTl
-         bWLhJJYuxzxKg0aNLYrEYu7SUBfMTgj6ItDeFx1aRaz5QKSpXEe6y2Begms933pDM00N
-         8BUQ==
-X-Gm-Message-State: AOAM532Ru2ISIU6c/xWoy1QrdwFZqVG7sUqeoYvJQytUJOAUgl/NYq88
-        0siFOErRtJnhC0hXcYfIx95pO13KTQYL
-X-Google-Smtp-Source: ABdhPJygHQnglVl5yNrmZd8JNAstsl85b+1dCuzHHaOIhfPNgsUwoZudN05/VWdUigVG1DEnAP/66jrp3aib
-X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:d512:b04f:25a7:c7f])
- (user=rajatja job=sendgmr) by 2002:a05:6214:122e:: with SMTP id
- p14mr2344816qvv.37.1632955711698; Wed, 29 Sep 2021 15:48:31 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 15:48:23 -0700
-In-Reply-To: <20210929224823.556943-1-rajatja@google.com>
-Message-Id: <20210929224823.556943-2-rajatja@google.com>
-Mime-Version: 1.0
-References: <20210929224823.556943-1-rajatja@google.com>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH 2/2] usb: hub: Mark devices downstream a removable hub, as removable
-From:   Rajat Jain <rajatja@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rajat Jain <rajatja@google.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     levinale@google.com, bleung@google.com, rajatxjain@gmail.com,
-        jsbarnes@google.com, pmalani@google.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B0sV1qVbbjrF0PysKkzPgbfO3+Me62Wpz2WIVsVwuoE=;
+        b=MXDtNyryNtcBmV7y5lM6erzjbGglBbeSxivSmTzG7qXh4L1QYlyA+EsaFnQjTVoUWj
+         cWX9VgDxUP2D6I/sp0DJ9GK8k6wslRSghMfaEEoHXtJHbOUy+xLl6slmoautzIAsgrbJ
+         hjCaYE6LplHm/kyt/oLE+yTJheUJd6Myo5UjUzzFzChF4+ND2/sbtG2D5SyFOCKI59TY
+         fyRem4cDmrO4YzWyQG+hWdHynWgMqRxsZZLE+fpsez085VUvH+8huqjzUl6YAcLBVUE6
+         nZHPiYlHiBHNy2JQtq1sUJUtg+Ds56xldAeJ7HrXbaNRlZACa1U5+jYZ1ce/SdZHm+yq
+         fFhw==
+X-Gm-Message-State: AOAM530KohacpsnhE5CVOQXCSTuvbOTWu+t7XbsKsB9wIfoUBwlGThT/
+        je5IbnoAzMzTnPrAO5zUpHBS7Q==
+X-Google-Smtp-Source: ABdhPJzspya2uDxnOQP6RHXKg0GJNOh86aMtX4Pki+BqPF0YRta2WtTuRpyPIif49H7Hs8Tu/MZ3xw==
+X-Received: by 2002:a37:8ec6:: with SMTP id q189mr2083152qkd.145.1632955713476;
+        Wed, 29 Sep 2021 15:48:33 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id q14sm748591qtw.82.2021.09.29.15.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 15:48:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mViNL-007i7c-U2; Wed, 29 Sep 2021 19:48:31 -0300
+Date:   Wed, 29 Sep 2021 19:48:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 14/20] mm: introduce FOLL_PCI_P2PDMA to gate getting
+ PCI P2PDMA pages
+Message-ID: <20210929224831.GA3544071@ziepe.ca>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-15-logang@deltatee.com>
+ <20210928194707.GU3544071@ziepe.ca>
+ <9c40347c-f9a8-af86-71a5-2156359e15ce@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c40347c-f9a8-af86-71a5-2156359e15ce@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a usb device sits below a removable hub, mark the device also as
-removable. This helps with devices inserted on a standard removable hub or
-also thunderbold docks, to be shown as removable.
+On Wed, Sep 29, 2021 at 03:34:22PM -0600, Logan Gunthorpe wrote:
+> 
+> 
+> 
+> On 2021-09-28 1:47 p.m., Jason Gunthorpe wrote:
+> > On Thu, Sep 16, 2021 at 05:40:54PM -0600, Logan Gunthorpe wrote:
+> >> Callers that expect PCI P2PDMA pages can now set FOLL_PCI_P2PDMA to
+> >> allow obtaining P2PDMA pages. If a caller does not set this flag
+> >> and tries to map P2PDMA pages it will fail.
+> >>
+> >> This is implemented by adding a flag and a check to get_dev_pagemap().
+> > 
+> > I would like to see the get_dev_pagemap() deleted from GUP in the
+> > first place.
+> > 
+> > Why isn't this just a simple check of the page->pgmap type after
+> > acquiring a valid page reference? See my prior note
+> 
+> It could be, but that will mean dereferencing the pgmap for every page
+> to determine the type of page and then comparing with FOLL_PCI_P2PDMA.
 
-Signed-off-by: Rajat Jain <rajatja@google.com>
----
- drivers/usb/core/hub.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+It would be done under the pte devmap test and this is less expensive
+than the xarray search.
 
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 45d1c81b121d..901d74bcdbd9 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -2449,6 +2449,13 @@ static void set_usb_port_removable(struct usb_device *udev)
- 		if (udev->dev.parent && dev_is_removable(udev->dev.parent))
- 			dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
- 		return;
-+	} else if (dev_is_removable(&hdev->dev)) {
-+		/*
-+		 * If this USB device sits downstream a removable hub, then mark
-+		 * this device also as removable.
-+		 */
-+		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
-+		return;
- 	}
- 
- 	hub = usb_hub_to_struct_hub(udev->parent);
--- 
-2.33.0.685.g46640cef36-goog
-
+Jason
