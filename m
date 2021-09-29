@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A4A41C4F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2FF41C501
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343921AbhI2M4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343889AbhI2M4P (ORCPT
+        id S1343919AbhI2M60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:58:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34860 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343889AbhI2M6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:56:15 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF713C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:54:34 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id f126so424125vke.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zfQ5dM+Ri1P9r/ui3gb3SorhujmtF4JU4NTdcKikmrY=;
-        b=Bsb7ycsZA74HsDPL09ZQAQzDgROsLRCu95Hc6OF0nBRCNlpFqOEl7hBm5n1R5n+GxS
-         DY57YA9QCGz0DcHNnzyH8eenAa47pYdR9FLLRm9K7+sO4Y14fI7RCyHBToxJaDIhz0cc
-         ozkSrY4d/0ZoSX99+wPd+DDkFDbf68V2vK3iI=
+        Wed, 29 Sep 2021 08:58:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632920204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7IhsKr72AkHWnSlS1NFhAKch0JRdHqQulQ0Y+w3psvc=;
+        b=XhEMpKhj6cBCn7FrVMqsweNeZqXrBwI7c6yyVddxrlU5Yr69jUUPiAHfmoVefMt9InWBtj
+        TI/th0wcceh2fOQhxYP6YnOrPCPMLs0bQ6S87Z5G7dsqHF2sL+KB2bmyNFiydjKFtGHaQw
+        16xIeiYBkwLNXulkTpHAC9C/2Q/XVzA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-AGoD1mIlMVC-sGk-_i83aQ-1; Wed, 29 Sep 2021 08:56:42 -0400
+X-MC-Unique: AGoD1mIlMVC-sGk-_i83aQ-1
+Received: by mail-ed1-f69.google.com with SMTP id b7-20020a50e787000000b003d59cb1a923so2328880edn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:56:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zfQ5dM+Ri1P9r/ui3gb3SorhujmtF4JU4NTdcKikmrY=;
-        b=Bvz1OmZWjK8fCfBw+yerLlmyR4REX/ZZNgKBJXRbeVetmXNmOpbOP/Sx94KRjQx9F9
-         /pxiamBvXU2rluAYwuX+d9kYImCOoiIzuubRyd30YI8iJDL9QEnEkccXBCW9nipvP3j3
-         9qB9307KDxhbM/NRNhWqKQqyS2e/agJYEJl78SgpCorI73jewEjWyuwi9r9c6TUF3a21
-         6f9We5D1fYs6ei855kIQvpOlaGcf+ADMi7qug1f6FORNmOL4UngWDpCyy854YhOpbBie
-         B6AluJBjwJ4t4ziqeKtP7T8NLz+s5JEaQLYg2Zd6s3GEYYtNbulkbz5bGjuOaul+/IPf
-         /O+Q==
-X-Gm-Message-State: AOAM530EnATmDDy5CnT0gH0JvVylRwBAf3tqAz3bHZiXdFnnJtYTn9B9
-        ccNr4toRH0OKLH4mGrsnnEk6iX0BVW10KaZxidIiUfeSO5Y=
-X-Google-Smtp-Source: ABdhPJzASCAh1IQGYf0Z3+LmFUl4XjYjTnybbVYyzQweEYSBjlUQemy10vtzR3hPvQY3k1Ypz3X3t1Ghxi70+l2QGFs=
-X-Received: by 2002:a1f:f203:: with SMTP id q3mr8867332vkh.1.1632920073828;
- Wed, 29 Sep 2021 05:54:33 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7IhsKr72AkHWnSlS1NFhAKch0JRdHqQulQ0Y+w3psvc=;
+        b=y3XeYs11UixA3dvfUBR+WM7aQJJdw/s1llHhz2Cjl42SIQLJnCuFWdnuEKJbrW7ghq
+         415hNy00mhAOkb2bNcEdFixM3Gtp4fGah0BGX1W4pCRPnuKpt8RM/w6QHhXEA5FZ45Pv
+         U8ZJzzMB8tgGXnDCokrYmLzDdq2s6OFfHPpbwo4+ubbECelEZinIp3jn63HIISVblPtp
+         +3ixihn5zwxXegb+C38woatchoDnU1/354GTFoqG0IR6dDlF64AIHzqo45xa9IHYtwrR
+         GX42CUkdmpu8Kjrjukkg8yW4BWGYEMr2RLTd4DZTVsgPTHh8+P8xOMFzsd92u9HtMD44
+         wssg==
+X-Gm-Message-State: AOAM531ctLJB57Ymm8zwJvZSx75F0B1aWmet5IGTmr5CQtD86cZVE0ar
+        4yP/HszZExd0MaDl1zGf+I++CZzcvm+mQVDPxiHqMvoczo85H/+76PVZ0Q/jx3HWvkzmE9TTtbv
+        jScShDQS+DGMTCPokRqQajx5g
+X-Received: by 2002:a17:906:ad5:: with SMTP id z21mr11870814ejf.109.1632920201620;
+        Wed, 29 Sep 2021 05:56:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/pS49tyZl0DHErTrVe+A0+278VsjucPdVAQ3tGX6C+RNYeGLP+q79eyjCO3u7V/ZEd5RHwg==
+X-Received: by 2002:a17:906:ad5:: with SMTP id z21mr11870783ejf.109.1632920201379;
+        Wed, 29 Sep 2021 05:56:41 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f10sm1544971edu.70.2021.09.29.05.56.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 05:56:40 -0700 (PDT)
+Message-ID: <e19a07aa-e0a5-3be7-602c-a17963a7e307@redhat.com>
+Date:   Wed, 29 Sep 2021 14:56:36 +0200
 MIME-Version: 1.0
-References: <20210928123906.988813-1-colin.king@canonical.com>
- <CAFr9PXnMXPmuaUnfr-VwaZDX1hY8ZDtp1+UxOau6DKpUP9FdzQ@mail.gmail.com> <CABgxDoLPTcRbZZgAdJ9+=9OG+a=F59x9SQ9HvQkVvGmkDjO6-A@mail.gmail.com>
-In-Reply-To: <CABgxDoLPTcRbZZgAdJ9+=9OG+a=F59x9SQ9HvQkVvGmkDjO6-A@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Wed, 29 Sep 2021 21:56:36 +0900
-Message-ID: <CAFr9PXna7YsYnfdtu1jvJhkVSX0SiyixYr_bTsx3tDepeHqcMg@mail.gmail.com>
-Subject: Re: [PATCH][next] rtc: msc313: Fix unintentional sign extension issue
- on left shift of a u16
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-rtc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH -next] KVM: use vma_pages() helper
+Content-Language: en-US
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1632900526-119643-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <1632900526-119643-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
+On 29/09/21 09:28, Yang Li wrote:
+> Use vma_pages function on vma object instead of explicit computation.
+> 
+> Fix the following coccicheck warning:
+> ./virt/kvm/kvm_main.c:3526:29-35: WARNING: Consider using vma_pages
+> helper on vma
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   virt/kvm/kvm_main.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 7851f3a..8f0e9ea 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3523,7 +3523,7 @@ static vm_fault_t kvm_vcpu_fault(struct vm_fault *vmf)
+>   static int kvm_vcpu_mmap(struct file *file, struct vm_area_struct *vma)
+>   {
+>   	struct kvm_vcpu *vcpu = file->private_data;
+> -	unsigned long pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+> +	unsigned long pages = vma_pages(vma);
+>   
+>   	if ((kvm_page_in_dirty_ring(vcpu->kvm, vma->vm_pgoff) ||
+>   	     kvm_page_in_dirty_ring(vcpu->kvm, vma->vm_pgoff + pages - 1)) &&
+> 
 
-On Tue, 28 Sept 2021 at 22:55, Romain Perier <romain.perier@gmail.com> wrot=
-e:
->
-> Hi,
->
-> Le mar. 28 sept. 2021 =C3=A0 15:31, Daniel Palmer <daniel@0x0f.com> a =C3=
-=A9crit :
-> The crazy stuff being, I ran rtctest from selftests and rtc-range (1)
-> that tests a variety
-> of dates including 2038 and 2106 for example. Both tests passed :) (proba=
-bly
-> because *this case* specifically did not happen while running the test)
+Queued, thanks.
 
-I suspect it works because for reading the time because seconds is a
-u32 not unsigned long like the other functions.
-So if the high word of the register is read, is promoted to a wider
-type and sign extended it doesn't actually matter because it gets
-truncated to 32 bits so the sign extended part is gone.
+Paolo
 
-Cheers,
-
-Daniel
