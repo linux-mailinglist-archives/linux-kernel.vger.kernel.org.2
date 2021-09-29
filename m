@@ -2,113 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABF341CE50
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3C641CE55
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346901AbhI2Vnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345966AbhI2Vnk (ORCPT
+        id S1347115AbhI2Vn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:43:58 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:59160 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345966AbhI2Vn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:43:40 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288B5C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:41:59 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id s11so4066373pgr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=abMqKB2u9rMv7oTMhh3m+4tF/IOseMheczHvshPya7I=;
-        b=m2TpfLPcLu9QNlpl9HdlKoBc8s1yHlw4a109KsDKLctrx7o8muqZD1eHvNnSMFttA4
-         fG/Qr03uUF4rZlyD2y5we7iu/kBHcB7kAcgNqqFQxqqdqXM4LcSJU7E1Kk2EQDquxze3
-         ukoem9hVnnoq3QW4dNuZ5rJ+R/K06pjADNQPM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=abMqKB2u9rMv7oTMhh3m+4tF/IOseMheczHvshPya7I=;
-        b=rnPuugXiy85OFHOsN0CxvR+p9KJneSiUYh4WauVc/0IiBM/00974WdOpAx6lT2FAvX
-         NJkcwuqZP9NFfJLAv6vQrn0trWK0r50GajSPKXn2xZZn7pSDhWs5oC7s0/6RWZFIx7M8
-         FP5oJ2shhfhuQ3sMoMTR9PHYquXDUgQ2xDAm98Ee679+8+3BYWCwXhHfRWkpffRpEuOj
-         l3+iACbiglerxrUmNQf1gezhCvl6p6c2dKEd2hSQSIq/yrrjhJRBBn1W4adOC7+5HfQc
-         nlRpsazKOiLOScOQoZoMjFyCz5mfbHdiJ6i3VjRkf2X0REvim6OKz1R85u0dBgNQ1eOi
-         TXZw==
-X-Gm-Message-State: AOAM533LBT/fq1uYSQGspLGfQ4LbFbovI5rb9VPgau3U9KP6FjxrjtXQ
-        T/TpRgdCu4ND0vMtaK0MYVSI2w==
-X-Google-Smtp-Source: ABdhPJz6ktUCSGWMztTH+AFVhmEQXYShJtqGc2SK/UWNTJBqVnMthbvvG3CKCGzYVePbkfPuK8YC7Q==
-X-Received: by 2002:a63:1d5c:: with SMTP id d28mr1797415pgm.143.1632951718606;
-        Wed, 29 Sep 2021 14:41:58 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:1bde:f4ad:4338:e765])
-        by smtp.gmail.com with UTF8SMTPSA id p9sm698691pfo.153.2021.09.29.14.41.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 14:41:57 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        stable@vger.kernel.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: [PATCH] drm/brdige: analogix_dp: Grab runtime PM reference for DP-AUX
-Date:   Wed, 29 Sep 2021 14:41:03 -0700
-Message-Id: <20210929144010.1.I773a08785666ebb236917b0c8e6c05e3de471e75@changeid>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+        Wed, 29 Sep 2021 17:43:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=3WA1KpyUg4a9gkCdh4NdRSTCNhCxgDrQHUyIFuEcPKQ=; b=YQ7Pgy3UA4s4WDhJgR56ldVLZa
+        aarTUnhSWeZoaQ9XqoPtb8J4kCHbW5DZWtfpd6kiFewgouwOGQmyuMkSarYIcMeXLTQt4tDJSPf4a
+        s3Cles1vcGAIVK5HH+sKtExXol+X/LJ0ITXpylU2RUjtAfnFitq7egHhPN+vnbLfsjBT727eeJJYW
+        H7b2kX4EmNJ56lcfRB71Eg53F9hf8LVdioB4nnhm6Gm5kaDhd+o1XSlQkhJU859u9pc2Kf8Ej5LEB
+        QjScyz4JhjwVsjawSaxV3AQfZ0qXHixKZL72zEfKVQ17MznS+q5nLDZ+sbw85NHk2exob1mrzGBrY
+        X59623ew==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mVhL0-0006W2-Fd; Wed, 29 Sep 2021 15:42:03 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-20-logang@deltatee.com>
+ <20210928195518.GV3544071@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <8d386273-c721-c919-9749-fc0a7dc1ed8b@deltatee.com>
+Date:   Wed, 29 Sep 2021 15:42:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210928195518.GV3544071@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the display is not enable()d, then we aren't holding a runtime PM
-reference here. Thus, it's easy to accidentally cause a hang, if user
-space is poking around at /dev/drm_dp_aux0 at the "wrong" time.
 
-Let's get the panel and PM state right before trying to talk AUX.
 
-Fixes: 0d97ad03f422 ("drm/bridge: analogix_dp: Remove duplicated code")
-Cc: <stable@vger.kernel.org>
-Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
+On 2021-09-28 1:55 p.m., Jason Gunthorpe wrote:
+> On Thu, Sep 16, 2021 at 05:40:59PM -0600, Logan Gunthorpe wrote:
+>> +int pci_mmap_p2pmem(struct pci_dev *pdev, struct vm_area_struct *vma)
+>> +{
+>> +	struct pci_p2pdma_map *pmap;
+>> +	struct pci_p2pdma *p2pdma;
+>> +	int ret;
+>> +
+>> +	/* prevent private mappings from being established */
+>> +	if ((vma->vm_flags & VM_MAYSHARE) != VM_MAYSHARE) {
+>> +		pci_info_ratelimited(pdev,
+>> +				     "%s: fail, attempted private mapping\n",
+>> +				     current->comm);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	pmap = pci_p2pdma_map_alloc(pdev, vma->vm_end - vma->vm_start);
+>> +	if (!pmap)
+>> +		return -ENOMEM;
+>> +
+>> +	rcu_read_lock();
+>> +	p2pdma = rcu_dereference(pdev->p2pdma);
+>> +	if (!p2pdma) {
+>> +		ret = -ENODEV;
+>> +		goto out;
+>> +	}
+>> +
+>> +	ret = simple_pin_fs(&pci_p2pdma_fs_type, &pci_p2pdma_fs_mnt,
+>> +			    &pci_p2pdma_fs_cnt);
+>> +	if (ret)
+>> +		goto out;
+>> +
+>> +	ihold(p2pdma->inode);
+>> +	pmap->inode = p2pdma->inode;
+>> +	rcu_read_unlock();
+>> +
+>> +	vma->vm_flags |= VM_MIXEDMAP;
+> 
+> Why is this a VM_MIXEDMAP? Everything fault sticks in here has a
+> struct page, right?
 
- .../gpu/drm/bridge/analogix/analogix_dp_core.c  | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Yes. This decision is not so simple, I tried a few variations before
+settling on this.
 
-diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-index b7d2e4449cfa..a1b553904b85 100644
---- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-+++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-@@ -1632,8 +1632,23 @@ static ssize_t analogix_dpaux_transfer(struct drm_dp_aux *aux,
- 				       struct drm_dp_aux_msg *msg)
- {
- 	struct analogix_dp_device *dp = to_dp(aux);
-+	int ret, ret2;
- 
--	return analogix_dp_transfer(dp, msg);
-+	ret = analogix_dp_prepare_panel(dp, true, false);
-+	if (ret) {
-+		DRM_DEV_ERROR(dp->dev, "Failed to prepare panel (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	pm_runtime_get_sync(dp->dev);
-+	ret = analogix_dp_transfer(dp, msg);
-+	pm_runtime_put(dp->dev);
-+
-+	ret2 = analogix_dp_prepare_panel(dp, false, false);
-+	if (ret2)
-+		DRM_DEV_ERROR(dp->dev, "Failed to unprepare panel (%d)\n", ret2);
-+
-+	return ret;
- }
- 
- struct analogix_dp_device *
--- 
-2.33.0.685.g46640cef36-goog
+The main reason is probably this: if we don't use VM_MIXEDMAP, then we
+can't set pte_devmap(). If we don't set pte_devmap(), then every single
+page that GUP processes needs to check if it's a ZONE_DEVICE page and
+also if it's a P2PDMA page (thus dereferencing pgmap) in order to
+satisfy the requirements of FOLL_PCI_P2PDMA.
 
+I didn't think other developers would go for that kind of performance
+hit. With VM_MIXEDMAP we hide the performance penalty behind the
+existing check. And with the current pgmap code as is, we only need to
+do that check once for every new pgmap pointer.
+
+Logan
