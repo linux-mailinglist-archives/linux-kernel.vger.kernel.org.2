@@ -2,170 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D069E41C855
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D149D41C853
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345226AbhI2P2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        id S1345220AbhI2P2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345175AbhI2P2p (ORCPT
+        with ESMTP id S1345252AbhI2P2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:28:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD622C06161C;
-        Wed, 29 Sep 2021 08:27:04 -0700 (PDT)
+        Wed, 29 Sep 2021 11:28:10 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E657C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 08:26:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/HT/mG+FA+pI9TQTgmsOZU/RKX7YzZZpwunc3gLz0oU=; b=UIsWQEN8qUvNd0ZtpytLaAb7qU
-        JXACadCVmiOzTEg1qDV31k654zAx2rlHewxRfWNISei80ZDdWVG6wFND7If1xQgCrkwUXoDdk7G6E
-        gMsV1M/fHjAHkdATbGzKkhEL6O8eixg+gYdN+QYSp6go6it9A09bjU93afpUdOqT4qhKMppil0rQE
-        ivpfmtIaTc7n5vag6owKrjgm5TTrC4OCgZPQJQ/IH0YWSHcTxpJ9n2PS7pfnonS9ObwOVX9WbDbEw
-        zjtVNcQLqj581CoqF9TSIUrthlm511e7UWyXeCn3Lz/KDC+wMRG8XhWtb53rQsTFEjzKvfEscPaeR
-        zzBj6TIA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVbS3-00BxYi-AM; Wed, 29 Sep 2021 15:25:04 +0000
-Date:   Wed, 29 Sep 2021 16:24:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YVSFRx0SVW3YeA3C@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpaTBJ/Jhz15S6a@casper.infradead.org>
- <20210923004515.GD3053272@iweiny-DESK2.sc.intel.com>
- <YUv3UEE9JZgD+A/D@casper.infradead.org>
- <20210923221241.GG3053272@iweiny-DESK2.sc.intel.com>
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=/znKiqRAA5nssyHjnnwpXVbV4dhtUWZwr25Taw3gmtA=; b=DA
+        K0c27CZL1tR517EhMM+AkhG78Q3il56KYyfDWVXQizUAMoX3nklIjfrsQPLEDt9w9y04wyo3JK5kI
+        vUcTHVJeokHdUjWOpRT7i6IaDSkNFbbfGfG6BTwOVa+flyzJVEKVvV3wkDFnoQqTsbO7nsDYzhn9o
+        FqT6CbsL32YWUAV/CONuy5FcWdP6FPLXILBcPR3HtPFHy388kAxHAED2LqI+6ApgRaHGC9Xrxp6zG
+        w4Y6hUcYBhHzhmYH4xLMYQfpF3HUJM17gOfCEhYsHuriWJBkbizKI2T8RiyuMx/yu1Rgt+2VK3bRW
+        jJRiTJreq12PLwnudrK3JkAg09ey2K3A==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mVbTX-0005w5-If; Wed, 29 Sep 2021 16:26:27 +0100
+From:   John Keeping <john@metanate.com>
+To:     linux-input@vger.kernel.org
+Cc:     John Keeping <john@metanate.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: st1232 - increase "wait ready" timeout
+Date:   Wed, 29 Sep 2021 16:26:08 +0100
+Message-Id: <20210929152609.2421483-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923221241.GG3053272@iweiny-DESK2.sc.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 03:12:41PM -0700, Ira Weiny wrote:
-> On Thu, Sep 23, 2021 at 04:41:04AM +0100, Matthew Wilcox wrote:
-> > On Wed, Sep 22, 2021 at 05:45:15PM -0700, Ira Weiny wrote:
-> > > On Tue, Sep 21, 2021 at 11:18:52PM +0100, Matthew Wilcox wrote:
-> > > > +/**
-> > > > + * page_slab - Converts from page to slab.
-> > > > + * @p: The page.
-> > > > + *
-> > > > + * This function cannot be called on a NULL pointer.  It can be called
-> > > > + * on a non-slab page; the caller should check is_slab() to be sure
-> > > > + * that the slab really is a slab.
-> > > > + *
-> > > > + * Return: The slab which contains this page.
-> > > > + */
-> > > > +#define page_slab(p)		(_Generic((p),				\
-> > > > +	const struct page *:	(const struct slab *)_compound_head(p), \
-> > > > +	struct page *:		(struct slab *)_compound_head(p)))
-> > > > +
-> > > > +static inline bool is_slab(struct slab *slab)
-> > > > +{
-> > > > +	return test_bit(PG_slab, &slab->flags);
-> > > > +}
-> > > > +
-> > > 
-> > > I'm sorry, I don't have a dog in this fight and conceptually I think folios are
-> > > a good idea...
-> > > 
-> > > But for this work, having a call which returns if a 'struct slab' really is a
-> > > 'struct slab' seems odd and well, IMHO, wrong.  Why can't page_slab() return
-> > > NULL if there is no slab containing that page?
-> > 
-> > No, this is a good question.
-> > 
-> > The way slub works right now is that if you ask for a "large" allocation,
-> > it does:
-> > 
-> >         flags |= __GFP_COMP;
-> >         page = alloc_pages_node(node, flags, order);
-> > 
-> > and returns page_address(page) (eventually; the code is more complex)
-> > So when you call kfree(), it uses the PageSlab flag to determine if the
-> > allocation was "large" or not:
-> > 
-> >         page = virt_to_head_page(x);
-> >         if (unlikely(!PageSlab(page))) {
-> >                 free_nonslab_page(page, object);
-> >                 return;
-> >         }
-> >         slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
-> > 
-> > Now, you could say that this is a bad way to handle things, and every
-> > allocation from slab should have PageSlab set,
-> 
-> Yea basically.
-> 
-> So what makes 'struct slab' different from 'struct page' in an order 0
-> allocation?  Am I correct in deducing that PG_slab is not set in that case?
+I have a ST1633 touch controller which fails to probe due to a timeout
+waiting for the controller to become ready.  Increasing the minimum
+delay to 100ms ensures that the probe sequence completes successfully.
 
-You might mean a couple of different things by that question, so let
-me say some things which are true (on x86) but might not answer your
-question:
+The ST1633 datasheet says nothing about the maximum delay here and the
+ST1232 I2C protocol document says "wait until" with no notion of a
+timeout.
 
-If you kmalloc(4095) bytes, it comes from a slab.  That slab would usually
-be an order-3 allocation.  If that order-3 allocation fails, slab might
-go as low as an order-0 allocation, but PageSlab will always be set on
-that head/base page because the allocation is smaller than two pages.
+Since this only runs once during probe, being generous with the timout
+seems reasonable and most likely the device will become ready
+eventually.
 
-If you kmalloc(8193) bytes, slub throws up its hands and does an
-allocation from the page allocator.  So it allocates an order-2 page,
-does not set PG_slab on it, but PG_head is set on the head page and
-PG_tail is set on all three tail pages.
+(It may be worth noting that I saw this issue with a PREEMPT_RT patched
+kernel which probably has tighter wakeups from usleep_range() than other
+preemption models.)
 
-> > and it should use one of
-> > the many other bits in page->flags to indicate whether it's a large
-> > allocation or not.
-> 
-> Isn't the fact that it is a compound page enough to know that?
+Fixes: f605be6a57b4 ("Input: st1232 - wait until device is ready before reading resolution")
+Signed-off-by: John Keeping <john@metanate.com>
+---
+ drivers/input/touchscreen/st1232.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No -- regular slab allocations have PG_head set.  But it could use,
-eg, slab->slab_cache == NULL to distinguish page allocations
-from slab allocations.
+diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
+index 6abae665ca71..9d1dea6996a2 100644
+--- a/drivers/input/touchscreen/st1232.c
++++ b/drivers/input/touchscreen/st1232.c
+@@ -92,7 +92,7 @@ static int st1232_ts_wait_ready(struct st1232_ts_data *ts)
+ 	unsigned int retries;
+ 	int error;
+ 
+-	for (retries = 10; retries; retries--) {
++	for (retries = 100; retries; retries--) {
+ 		error = st1232_ts_read_data(ts, REG_STATUS, 1);
+ 		if (!error) {
+ 			switch (ts->read_buf[0]) {
+-- 
+2.33.0
 
-> > I may have feelings in that direction myself.
-> > But I don't think I should be changing that in this patch.
-> > 
-> > Maybe calling this function is_slab() is the confusing thing.
-> > Perhaps it should be called SlabIsLargeAllocation().  Not sure.
-> 
-> Well that makes a lot more sense to me from an API standpoint but checking
-> PG_slab is still likely to raise some eyebrows.
-
-Yeah.  Here's what I have right now:
-
-+static inline bool SlabMultiPage(const struct slab *slab)
-+{
-+       return test_bit(PG_head, &slab->flags);
-+}
-+
-+/* Did this allocation come from the page allocator instead of slab? */
-+static inline bool SlabPageAllocation(const struct slab *slab)
-+{
-+       return !test_bit(PG_slab, &slab->flags);
-+}
-
-> Regardless I like the fact that the community is at least attempting to fix
-> stuff like this.  Because adding types like this make it easier for people like
-> me to understand what is going on.
-
-Yes, I dislike that 'struct page' is so hard to understand, and so easy
-to misuse.  It's a very weak type.
