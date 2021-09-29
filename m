@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF48041C4EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C20441C4F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343894AbhI2Mrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:47:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54449 "EHLO mga18.intel.com"
+        id S1343896AbhI2Mut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:50:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343839AbhI2Mrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:47:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="212014767"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="212014767"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 05:46:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="617491565"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 05:46:04 -0700
-Received: by lahna (sSMTP sendmail emulation); Wed, 29 Sep 2021 15:46:01 +0300
-Date:   Wed, 29 Sep 2021 15:46:01 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] pinctrl: intel: Kconfig: Add configuration menu to
- Intel pin control
-Message-ID: <YVRgCTua9ZCDRJPJ@lahna>
-References: <20210918054630.18544-1-caihuoqing@baidu.com>
- <CACRpkdY+AmyhSDMM2hgcnv16+reLJornsQMemd+=8b-jSd8AKg@mail.gmail.com>
+        id S1343839AbhI2Mus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:50:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C94E7611C7;
+        Wed, 29 Sep 2021 12:49:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632919747;
+        bh=JeiSEjK+SVcwZshRvvopfOY5oWfNI5hLbqGqWH3MFz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mjkeT+NC0Hzhi7/EtJDr+GvHTtXTRKZZ7zBx2Vo067HE3plkIstwQ3i4AmUsPmC8x
+         tLL4ot4I3dlnXbyZNEBfhVS98Wabx4EH9RdN2BvRnJx8EUtr+GvyXOQW6BR2x3BX2a
+         ZUPQucVolNPKYKcyU/UPEpJHjQECed0diUyd5Wo0l29KJR0VW4P264+QqQHq4jPWvG
+         Oav5qB5Zrg1QOg+kd+YEorGlyWM+BoyDpffWPtRc8XFiG2PLgSz3wEwV8Flqt2iNn4
+         RMaLBoKsewgq/Vf8DxOHRTOtdWH4C3fjzlabWSqSYPB3+yMEtG/LUPwiulkLHWbrQP
+         ul+9P54I2Fdyg==
+Date:   Wed, 29 Sep 2021 13:49:00 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        james.morse@arm.com, vladimir.murzin@arm.com,
+        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
+        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
+        selindag@gmail.com, tyhicks@linux.microsoft.com,
+        kernelfans@gmail.com, akpm@linux-foundation.org,
+        madvenka@linux.microsoft.com
+Subject: Re: [PATCH v17 00/15] arm64: MMU enabled kexec relocation
+Message-ID: <20210929124900.GE21631@willie-the-truck>
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdY+AmyhSDMM2hgcnv16+reLJornsQMemd+=8b-jSd8AKg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:56:58PM +0200, Linus Walleij wrote:
-> On Sat, Sep 18, 2021 at 7:46 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
-> 
-> > Adding a configuration menu to hold many Intel pin control drivers
-> > helps to make the display more concise.
-> >
-> > Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> > v1->v2: Revert to "select PINCTRL_INTE" for PINCTRL_TIGERLAKE config.
-> > v2->v3: Update commit message.
-> 
-> Looks good to me, I expect Andy to queue this and send it to me.
+On Thu, Sep 16, 2021 at 07:13:10PM -0400, Pasha Tatashin wrote:
+> Changelog:
+> v17:
+> 	- Merged with 5.15-rc1 as requested by Catalin Marinas
+> 	- Added Tested-by: Pingfan Liu <piliu@redhat.com>
 
-I applied it now as Andy is still on vacation. We will send this to you
-along with (possible) other stuff before next merge window opens.
+This looks pretty good to me. I've left some minor comments on a few of the
+patches, but other than those I'd like to try getting these queued for
+5.16.
+
+Will
