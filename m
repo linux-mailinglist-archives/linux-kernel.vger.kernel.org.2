@@ -2,142 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68BA41CC45
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFD941CC48
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346373AbhI2TFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:05:24 -0400
-Received: from mga05.intel.com ([192.55.52.43]:36149 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245025AbhI2TFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:05:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="310565092"
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="310565092"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 12:03:40 -0700
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="655602812"
-Received: from andrewds-mobl1.amr.corp.intel.com (HELO [10.212.171.7]) ([10.212.171.7])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 12:03:39 -0700
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-To:     Alexander Popov <alex.popov@linux.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Garnier <thgarnie@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Laura Abbott <labbott@redhat.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     notify@kernel.org
-References: <20210929185823.499268-1-alex.popov@linux.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <323d0784-249d-7fef-6c60-e8426d35b083@intel.com>
-Date:   Wed, 29 Sep 2021 12:03:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1345276AbhI2THI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:07:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33827 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244887AbhI2THH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:07:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632942325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=85NOeq9kRcTFRqNT/gP4PrOFWq1cbQJO0LsYgy0Arqs=;
+        b=Hm2HGl/9kWRnGkFEFQbmXmy/Etsd+FpVD7+K6PrAJlqaruG/OVZXCC9H8q+JRY7dJaURKw
+        mm9931Ck5zRMn1GzBNRmbd7seuSLIRiqYgpc6N318zBZyHCo/msTvAdwatHCs1IJ7w1IPC
+        meHKIZyi9hqXWQWt8hYMYaCs53qUVtU=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-lZ0_XGNbPdW1C0K9pS3dgQ-1; Wed, 29 Sep 2021 15:05:24 -0400
+X-MC-Unique: lZ0_XGNbPdW1C0K9pS3dgQ-1
+Received: by mail-oi1-f199.google.com with SMTP id y5-20020aca3205000000b0027644481fe7so2551705oiy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:05:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=85NOeq9kRcTFRqNT/gP4PrOFWq1cbQJO0LsYgy0Arqs=;
+        b=5TvAVwdN/VyHks1Yw3f5yXKKxgwTXObmhFut6BumpYeCFKWydVoKUDF7IxJKZkLwIq
+         C5WWEXARKavYQn6NzYSsIiW/H1TKjS7rkkzjIC1MscPPkS9dy+aUSrShD41JZ6q29UEb
+         sT7USkJ6XKIQTEHHppde6maFU6xOuL7VtUclIeq7CIzrwDY+I2UuMCDyc47UKxivCsVY
+         PsEtMWMsnc6bjuzO7QhNDGpz/XYw6/4mv8tNzE7Ns28+PSx8eVjobIvvt//dF/jAJBNg
+         pLRiMy9rGe+FMQmkxwt9+fGEaSaIS0RxwKimHwHem4IXNsMDgeGzFQbcda9hSL7gDafH
+         7RQQ==
+X-Gm-Message-State: AOAM532kDrX8HysBD2PEVBdauCaIavrAwtNc+YKbdmvbWXrA7bObTlcA
+        9bQQITc/8NH6LZJQ2Vmd/CzuTJRzw9WYoR1fDgQHcy2p328lc0pDapouUOpEIyjYLHC9iMJq8e6
+        d4OywFGsITXZUoNi4zPdV7u0s
+X-Received: by 2002:a9d:4705:: with SMTP id a5mr1401103otf.237.1632942323858;
+        Wed, 29 Sep 2021 12:05:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+KGp/sh/UihDrTdyYD4Z3RDCBe5RWKG52xsBpGNBpcqEB4R141NFhp0vsmLjZ8H3+PuwzlA==
+X-Received: by 2002:a9d:4705:: with SMTP id a5mr1401070otf.237.1632942323621;
+        Wed, 29 Sep 2021 12:05:23 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id p9sm111523ots.66.2021.09.29.12.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 12:05:23 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 13:05:21 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Liu Yi L <yi.l.liu@intel.com>, jgg@nvidia.com, hch@lst.de,
+        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
+        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
+        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
+        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
+        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
+        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
+        robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        nicolinc@nvidia.com
+Subject: Re: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
+Message-ID: <20210929130521.738c56ed.alex.williamson@redhat.com>
+In-Reply-To: <YVPKu/F3IpPMtGCh@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+        <20210919063848.1476776-3-yi.l.liu@intel.com>
+        <YVPKu/F3IpPMtGCh@yekko>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210929185823.499268-1-alex.popov@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/21 11:58 AM, Alexander Popov wrote:
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -53,6 +53,7 @@ static int pause_on_oops_flag;
->  static DEFINE_SPINLOCK(pause_on_oops_lock);
->  bool crash_kexec_post_notifiers;
->  int panic_on_warn __read_mostly;
-> +int pkill_on_warn __read_mostly;
->  unsigned long panic_on_taint;
->  bool panic_on_taint_nousertaint = false;
->  
-> @@ -610,6 +611,9 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
->  
->  	print_oops_end_marker();
->  
-> +	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
-> +		do_group_exit(SIGKILL);
-> +
->  	/* Just a warning, don't kill lockdep. */
->  	add_taint(taint, LOCKDEP_STILL_OK);
->  }
+On Wed, 29 Sep 2021 12:08:59 +1000
+David Gibson <david@gibson.dropbear.id.au> wrote:
 
-Doesn't this tie into the warning *printing* code?  That's better than
-nothing, for sure.  But, if we're doing this for hardening, I think we
-would want to kill anyone provoking a warning, not just the first one
-that triggered *printing* the warning.
+> On Sun, Sep 19, 2021 at 02:38:30PM +0800, Liu Yi L wrote:
+> > This patch introduces a new interface (/dev/vfio/devices/$DEVICE) for
+> > userspace to directly open a vfio device w/o relying on container/group
+> > (/dev/vfio/$GROUP). Anything related to group is now hidden behind
+> > iommufd (more specifically in iommu core by this RFC) in a device-centric
+> > manner.
+> > 
+> > In case a device is exposed in both legacy and new interfaces (see next
+> > patch for how to decide it), this patch also ensures that when the device
+> > is already opened via one interface then the other one must be blocked.
+> > 
+> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>  
+> [snip]
+> 
+> > +static bool vfio_device_in_container(struct vfio_device *device)
+> > +{
+> > +	return !!(device->group && device->group->container);  
+> 
+> You don't need !! here.  && is already a logical operation, so returns
+> a valid bool.
+> 
+> > +}
+> > +
+> >  static int vfio_device_fops_release(struct inode *inode, struct file *filep)
+> >  {
+> >  	struct vfio_device *device = filep->private_data;
+> > @@ -1560,7 +1691,16 @@ static int vfio_device_fops_release(struct inode *inode, struct file *filep)
+> >  
+> >  	module_put(device->dev->driver->owner);
+> >  
+> > -	vfio_group_try_dissolve_container(device->group);
+> > +	if (vfio_device_in_container(device)) {
+> > +		vfio_group_try_dissolve_container(device->group);
+> > +	} else {
+> > +		atomic_dec(&device->opened);
+> > +		if (device->group) {
+> > +			mutex_lock(&device->group->opened_lock);
+> > +			device->group->opened--;
+> > +			mutex_unlock(&device->group->opened_lock);
+> > +		}
+> > +	}
+> >  
+> >  	vfio_device_put(device);
+> >  
+> > @@ -1613,6 +1753,7 @@ static int vfio_device_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+> >  
+> >  static const struct file_operations vfio_device_fops = {
+> >  	.owner		= THIS_MODULE,
+> > +	.open		= vfio_device_fops_open,
+> >  	.release	= vfio_device_fops_release,
+> >  	.read		= vfio_device_fops_read,
+> >  	.write		= vfio_device_fops_write,
+> > @@ -2295,6 +2436,52 @@ static struct miscdevice vfio_dev = {
+> >  	.mode = S_IRUGO | S_IWUGO,
+> >  };
+> >  
+> > +static char *vfio_device_devnode(struct device *dev, umode_t *mode)
+> > +{
+> > +	return kasprintf(GFP_KERNEL, "vfio/devices/%s", dev_name(dev));  
+> 
+> Others have pointed out some problems with the use of dev_name()
+> here.  I'll add that I think you'll make things much easier if instead
+> of using one huge "devices" subdir, you use a separate subdir for each
+> vfio sub-driver (so, one for PCI, one for each type of mdev, one for
+> platform, etc.).  That should make avoiding name conflicts a lot simpler.
+
+It seems like this is unnecessary if we use the vfioX naming approach.
+Conflicts are trivial to ignore if we don't involve dev_name() and
+looking for the correct major:minor chardev in the correct subdirectory
+seems like a hassle for userspace.  Thanks,
+
+Alex
+
