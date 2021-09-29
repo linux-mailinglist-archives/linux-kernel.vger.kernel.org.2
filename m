@@ -2,102 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CB641CC18
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02CD41CC1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241618AbhI2StQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:49:16 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:39922 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235814AbhI2StH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:49:07 -0400
-Received: by mail-ot1-f44.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so4103610ota.6;
-        Wed, 29 Sep 2021 11:47:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0gh0/D+JLfsfJlqH0a917kdEGhqFFQged7ZchtYxclU=;
-        b=xCtQUXGy4FV2eInUnDP7rXdgijsd9XUPGj4SjMQM0Abmz9o/POO0ishbCsGPehLCu5
-         Lin22uDj/LGRt3dog3Jzqywmb5vVjf1ehqU9EErSpm6kv3DFPP80g7RAU6pbnY6KtTiD
-         n+0LFQ1bsC15EjFyWFDQNqUi7816zzvLdsPrQlObm1zinSaVSL6X7PWJCpVsgUMyVO/M
-         MnK21Nr5MA7JQEMu9FVt7EJbe6cSDgdg4VrqLLQ1W+zI77iuaIZnzSdbZKjdATFlwFgA
-         sG01JuUmQR9lYhTI7zKAHFlh2lXJK4F/JsQ+ZNSAh4BuUThpmmKZHFgJ0TIr9bC+TOCp
-         DhxQ==
-X-Gm-Message-State: AOAM531bOqT0N5hWdNFH4rylYPZK+ZTsaOkyCsOGCPuHwAXohOwj7qj2
-        bCuEBa4qR2PkvGJBsWrIkYWdTvEESc8wUpoAqHSkC1Au
-X-Google-Smtp-Source: ABdhPJxH+pTTbk0IZjcDwThSOx5Jir6Y4UsNlmDuGsgVm/HkIDtlTJgQC59U2XUxYN6Z5+bFQKX+f2eMjXJsAaV2l/U=
-X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr1348976otr.301.1632941245560;
- Wed, 29 Sep 2021 11:47:25 -0700 (PDT)
+        id S1346341AbhI2SuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:50:19 -0400
+Received: from mga02.intel.com ([134.134.136.20]:62449 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346078AbhI2SuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 14:50:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212270450"
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="212270450"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 11:48:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="479374879"
+Received: from ojefferi-mobl.ger.corp.intel.com (HELO ldmartin-desk2) ([10.212.173.172])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 11:48:32 -0700
+Date:   Wed, 29 Sep 2021 11:48:31 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-modules@vger.kernel.org, live-patching@vger.kernel.org,
+        fstests@vger.kernel.org, linux-block@vger.kernel.org, hare@suse.de,
+        dgilbert@interlog.com, jeyu@kernel.org, osandov@fb.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] libkmod-module: add support for a patient module
+ removal option
+Message-ID: <20210929184810.adrqpsvlfybnc5qt@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20210810051602.3067384-1-mcgrof@kernel.org>
+ <20210810051602.3067384-4-mcgrof@kernel.org>
+ <20210923085156.scmf5wxr2phc356b@ldmartin-desk2>
+ <YVJyIGXN/TR8zdU9@bombadil.infradead.org>
 MIME-Version: 1.0
-References: <20210927121338.938994-1-arnd@kernel.org>
-In-Reply-To: <20210927121338.938994-1-arnd@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 29 Sep 2021 20:47:14 +0200
-Message-ID: <CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: avoid NULL pointer arithmetic
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YVJyIGXN/TR8zdU9@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 2:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Mon, Sep 27, 2021 at 06:38:40PM -0700, Luis Chamberlain wrote:
+>On Thu, Sep 23, 2021 at 01:51:56AM -0700, Lucas De Marchi wrote:
+>> On Mon, Aug 09, 2021 at 10:16:02PM -0700, Luis Chamberlain wrote:
+>> The story was not kind like that. It wasn't removed "in favor for a 10
+>> second sleep" in the sense that the sleep would replace the wait.
+>>
+>> It was actually for "this wait logic in the kernel is complex and
+>> buggy, let's try to remove it". So we decided to deprecate it and add
+>> a sleep rmmod to see if anyone complained. 1 year later of no complains
+>> we removed it from kernel. This was all after noticing we had never
+>> implemented the wait logic in modprobe - it was only done in rmmod.
 >
-> From: Arnd Bergmann <arnd@arndb.de>
+>OK fixed the commit log thanks!
 >
-> There are some very old macros for doing an open-coded offsetof() and
-> cast between pointer and integer in ACPI headers. clang-14 now complains
-> about these:
+>> > --- a/libkmod/libkmod-module.c
+>> > +++ b/libkmod/libkmod-module.c
+>> > @@ -30,6 +30,9 @@
+>> > #include <stdlib.h>
+>> > #include <string.h>
+>> > #include <unistd.h>
+>> > +#include <poll.h>
+>> > +#include <time.h>
+>> > +#include <math.h>
+>> > #include <sys/mman.h>
+>> > #include <sys/stat.h>
+>> > #include <sys/syscall.h>
+>> > @@ -802,6 +805,143 @@ KMOD_EXPORT int kmod_module_remove_module(struct kmod_module *mod,
+>> > 	return err;
+>> > }
+>> >
+>> > +static int timespec_to_ms(struct timespec *t)
+>> > +{
+>> > +	return (t->tv_sec * 1000) + lround(t->tv_nsec / 1000000);
+>> > +}
+>> > +
+>> > +static int time_delta_ms(struct timespec *before, struct timespec *after)
+>> > +{
+>> > +	if (!before || !after)
+>> > +		return 0;
+>> > +	return timespec_to_ms(after) - timespec_to_ms(before);
+>> > +}
+>>
+>> we have a similar thing in util.[ch]
 >
-> drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
->          ACPI_FADT_OFFSET(pm_timer_block),
->          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSET'
->  #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi_table_fadt, f)
->                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
->  #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
->                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
->  #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u8, (a)) - ACPI_CAST_PTR (u8, (b))))
->                                                                               ^ ~~~~~~~~~~~~~~~~~~~~~~~
-> Convert them to the modern equivalents.
+>Alright, this OK?
 >
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/acpi/actypes.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>diff --git a/shared/util.c b/shared/util.c
+>index b487b5f..b911e63 100644
+>--- a/shared/util.c
+>+++ b/shared/util.c
+>@@ -466,6 +466,19 @@ unsigned long long ts_usec(const struct timespec *ts)
+> 	       (unsigned long long) ts->tv_nsec / NSEC_PER_USEC;
+> }
 >
-> diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
-> index 92c71dfce0d5..285bc7b73de3 100644
-> --- a/include/acpi/actypes.h
-> +++ b/include/acpi/actypes.h
-> @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
->  /* Pointer/Integer type conversions */
+>+unsigned long long ts_msec(const struct timespec *ts)
+>+{
+>+	return ts_usec(ts) * 1000;
+>+}
+>+
+>+unsigned long long ts_delta_ms(const struct timespec *before,
+>+			       const struct timespec *after)
+>+{
+>+	if (!before || !after)
+>+		return 0;
+>+	return ts_msec(after) - ts_msec(before);
+>+}
+>+
+> unsigned long long stat_mstamp(const struct stat *st)
+> {
+> #ifdef HAVE_STRUCT_STAT_ST_MTIM
+>diff --git a/shared/util.h b/shared/util.h
+>index c6a31df..f8c28e7 100644
+>--- a/shared/util.h
+>+++ b/shared/util.h
+>@@ -43,6 +43,9 @@ int mkdir_p(const char *path, int len, mode_t mode);
+> int mkdir_parents(const char *path, mode_t mode);
+> unsigned long long stat_mstamp(const struct stat *st);
+> unsigned long long ts_usec(const struct timespec *ts);
+>+unsigned long long ts_msec(const struct timespec *ts);
+>+unsigned long long ts_delta_ms(const struct timespec *before,
+>+			       const struct timespec *after);
 >
->  #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_size) (i))
-> -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
-> -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
-> +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
-> +#define ACPI_OFFSET(d, f)               offsetof(d, f)
->  #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
->  #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
+> /* endianess and alignments                                                 */
+> /* ************************************************************************ */
 >
-> --
+>> > +/**
+>> > + * kmod_module_remove_module_wait:
+>> > + * @mod: kmod module
+>> > + * @flags: flags to pass to Linux kernel when removing the module. The only valid flag is
+>> > + * KMOD_REMOVE_FORCE: force remove module regardless if it's still in
+>> > + * use by a kernel subsystem or other process;
+>> > + * KMOD_REMOVE_NOWAIT is always enforced, causing us to pass O_NONBLOCK to
+>> > + * delete_module(2). We do the waiting in userspace, if a wait was desired.
+>> > + *
+>> > + * Remove a module from Linux kernel patiently.
+>> > + *
+>> > + * Returns: 0 on success or < 0 on failure.
+>> > + */
+>> > +KMOD_EXPORT int kmod_module_remove_module_wait(struct kmod_module *mod,
+>> > +					       unsigned int flags,
+>> > +					       bool wait)
+>>
+>> why do you have kmod_get_refcnt_timeout/kmod_set_refcnt_timeout instead
+>> of just doing s/bool wait/unsigned int wait_msec/)?
+>
+>Because it lets us do a smaller change on the respetive tools:
+>
+>tools/modprobe.c-               flags |= KMOD_REMOVE_FORCE;
+>tools/modprobe.c-
+>tools/modprobe.c:       err = kmod_module_remove_module_wait(mod, flags, do_remove_patient);
+>tools/modprobe.c-       if (err == -EEXIST) {
+>tools/modprobe.c-               if (!first_time)
+>--
+>tools/remove.c-         goto unref;
+>tools/remove.c-
+>tools/remove.c: err = kmod_module_remove_module_wait(mod, 0, do_remove_patient);
+>tools/remove.c- if (err < 0)
+>tools/remove.c-         goto unref;
+>--
+>tools/rmmod.c-          }
+>tools/rmmod.c-
+>tools/rmmod.c:          err = kmod_module_remove_module_wait(mod, flags,
+>tools/rmmod.c- do_remove_patient);
+>tools/rmmod.c-          if (err < 0) {
+>
+>That is, the timeout is contextual of the context.
+>
+>> > +		if ((refcnt <= 0) || (refcnt > 0 && !wait)) {
+>> > +			NOTICE(mod->ctx, "%s refcnt is %d\n", mod->name, (int) refcnt);
+>> > +			err_time = clock_gettime(CLOCK_MONOTONIC, &t2);
+>> > +			if (err_time != 0)
+>> > +				kmod_set_removal_timeout(mod->ctx, 0);
+>>
+>> I don't follow why kmod_module_get_refcnt_wait() is setting the removal
+>> timeout at all. This seems to be doing it behind users back.
+>
+>Because if clock_gettime() returns something other than 0 then
+>your clock is messed up and you should not be using a timeout, so
+>yes, we correct that then. We can scream loud, or use a default.
+>
+>I figured not using one would be better in that case.
+>
+>> The idea of using the refcnt fd was actually that then
+>> users could integrate it on their mainloops (probably using epoll). And
+>> then the same impl could be shared by kmod_module_remove_module_wait(),
+>> which would do a select().
+>>
+>> This seems more like a kmod_module_refcnt_wait_zero() using poll()
+>> + adjusting the timeout
+>
+>Sorry don't follow. And since I have one day before vacation, I suppose
+>I won't get to this until I get back. But I'd be happy if you massage
+>it as you see fit as you're used to the code base and I'm sure have
+>a better idea of what likely is best for the library.
 
-Queued up as 5.16 material, converted into an upstream ACPICA pull
-request and submitted, thanks!
+
+sure, np. I will take a look as time permits.
+
+thanks
+Lucas De Marchi
+
+>
+>> > +	ret = kmod_module_get_refcnt_wait(mod, do_remove_patient);
+>>
+>> for tool implementation, shouldn't we just ignore
+>> kmod_module_get_refcnt() and proceed to
+>> kmod_module_remove_module_wait()?
+>
+>I'll let you decide. Otherwise this will have to wait until I get back
+>from vacation.
+>
+>  Luis
