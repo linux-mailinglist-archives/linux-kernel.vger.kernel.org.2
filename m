@@ -2,194 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8473441C5B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371C941C5B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 15:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344219AbhI2NdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 09:33:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:41266 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344248AbhI2NdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:33:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33FC16D;
-        Wed, 29 Sep 2021 06:31:40 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CD8F3F70D;
-        Wed, 29 Sep 2021 06:31:38 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 14:31:31 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Jia He <justin.he@arm.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>,
-        Will Deacon <will@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, tony.luck@intel.com
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Message-ID: <20210929133131.GA20191@lpieralisi>
-References: <20210910122820.26886-1-justin.he@arm.com>
- <20210910143223.6705-1-justin.he@arm.com>
- <20210922163336.GA24633@lpieralisi>
- <56147a0b8b9fba46@bloch.sibelius.xs4all.nl>
- <20210923094031.GA6454@lpieralisi>
- <CAJZ5v0g+OVbhuUUDrLUCfX_mVqY_e8ubgLTU98=jfjTeb4t+Pw@mail.gmail.com>
- <56147c6e73afe9f6@bloch.sibelius.xs4all.nl>
- <CAJZ5v0j7=EGbtGw+FOMwyNWoyRoaeT1cvu6si7nPVVFh307J0g@mail.gmail.com>
- <20210924090409.GA26089@lpieralisi>
- <44f20f07-257b-a1a5-23d9-ffd66bf45887@intel.com>
+        id S1344240AbhI2Nf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 09:35:28 -0400
+Received: from mail-eopbgr20040.outbound.protection.outlook.com ([40.107.2.40]:43394
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344171AbhI2NfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:35:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mQOCwPYfVAh+j1Hswkwgprcq+S99lMroMcOWTPQm1qd7ebkPlaVfEe2xZf0atFpfeVL6YCkTTQMUTo/IGvcfpC0SwK2d7PMTZpwdWxZdKKBh88TivI/pzlfEfWr75AaMEizaRnY/VX8I41UjCcVaCqrWM3tkPdxUvU65nX4vJPkoCaGoG6szF9v7sr+vHk4Tn2onTJ2Fq+WhzsKrOGlbcHaPvZijCun4L+kEKJcz7RwCNA4sKAe+t/vufbmIN69ZRPcBanuzauMZrpi+19kMr3YJxAaxMShAUqztCVjw319rFzfh/eVTm/P/W3GemVR+xIkPYNnVww9KmTslOVKtyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=f4QNJz5o4AItzyVO6GcpS1y5117GXjoOLJgNa2i25R8=;
+ b=JlgUgpRBriRnFD7qtvI5luuxnqASd8nfnAgvvZ4qmRPvqGyXCT/09rq6q6eVX/KhBUJZQDZecEvzqWLDysyQkqxzpaZtfMTPqTMGmbVsUmwKo7UViOzxuWJEYYGAZyoXQa7EfV3/tIZn6aJezLRk7/YHL2m+vDMSvrII7YK7Og5cNRgaI0jFSFNtoIdwLcsYYcO/3oRm3EdcG9ii27i45fCuSqGkx50HC54SNd0q6p5mo4Hju4YjLyttpSv3w0AxhszK/mt/yJlRQpX0+h2+IEszTwSKbHcqwskgd8ZDEs757YeoBGXAiYyYGIwf7XqG2i0STplsWtvUIw7RwUJLlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f4QNJz5o4AItzyVO6GcpS1y5117GXjoOLJgNa2i25R8=;
+ b=YM4NHRfE3x7efcAPhmxSwSlr04SBynCySa1X7XL2ihii0R6iTwtf0FPG0m7DUenlA8SO1Ad8Mku64+lT6juxZn7rrgRtWANfCX8jvjtaaCH3UWS1vmngA7nv7HkGFwCBf9o7iVRQfhDpTIqhG2vB4KC68FRnNKVfbspJvMYp2CU=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB6PR10MB1845.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:6:39::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.16; Wed, 29 Sep
+ 2021 13:33:37 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dc0f:9e52:6dbb:1144]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dc0f:9e52:6dbb:1144%7]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
+ 13:33:37 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+CC:     Support Opensource <Support.Opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
+Thread-Topic: [PATCH] drivers: mfd: da9063: Add restart notifier
+ implementation
+Thread-Index: AQHXrqpI0LoFC+MHc0+B+6k9QHIUIauzTVswgAAUm4CAB616wA==
+Date:   Wed, 29 Sep 2021 13:33:37 +0000
+Message-ID: <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
+ <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
+In-Reply-To: <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5e5e29b6-e591-4140-848a-08d9834dbe2b
+x-ms-traffictypediagnostic: DB6PR10MB1845:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR10MB18454965308C3A553C362786A7A99@DB6PR10MB1845.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5HRygqZ/oSt9GFbp8wtX73/33OIZfYQUdDct88QScSL1AcXS0Y8HkoeEmaOLT+fdSIHfiJOQ8zuf+ltVb7joNeoM/DsUuOU6TfOA6I8CX/iuFO620vJ6Zp5emi13ZlkWG5+mC2xyauksYLJbVeomHCwOMrjGAyn2znF9aTiz9dBKhXZQcG3R8ldOF4m29p5t5NhAL/9PrlynDAflIjaw+xsl5LKczReVDCS6VMTDgmsWunlx0XyxjSPIVC7GumKH8rKjPnmGCkcJd12ug6kli2tciVjG8ev65OXDVGprDc9Sm6WXD25nP7j81vdSqQUiovUIL6+nCCUydnGB1LUwKgDkJWWvUeCA6hG2u8OkGAVtm/vUb763YUk+iNwwChVFPjeL+DoJDhGXLQLjomdLM5ZxcEtUoI2JA+nGN8mLiGV9fwkeW3do+/1yuqANlBiSpOaI25jIn9pzrYYJP/LWDfz2/kjYZB91T1/zl7HOqSTFU43AK7FwzrqKTGzAYdrT01/FbWRgMbnHT4NrcarnYm+S3VcumszZb7/a6QPK3uINOaVrl7QyfdDZQYoOLTm3yMA7cxwh+sZwxpT1m947sAbYZqV3rtmyc7JQnV6BSwBGQksjiX/koZd4VSqSA6ZTC58I9xE74GKFZANg/+vLGP5oVAmO8rKYdRWEIogjeFtab5WkdQV+zluNktLsSSiAAruG3yL6J6NYkhDS/s8LD0OL1KmpsyCVyyV3Hptu7YtIyCuGp+2nMQK7j976wFWTpAS4voWozNXTTTJWrEwkvRaupsiNFxvjPaVntMxnhSU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(9686003)(71200400001)(4326008)(186003)(83380400001)(2906002)(122000001)(33656002)(55016002)(5660300002)(86362001)(316002)(76116006)(8936002)(7696005)(52536014)(38070700005)(54906003)(66946007)(66446008)(66556008)(110136005)(64756008)(66476007)(8676002)(26005)(6506007)(53546011)(508600001)(966005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TXlOSG9BckR3Uk9mNjllaHJ6TW5MOGc0eFlpMkMwSy9XS2RRZ0h2NGN0TlNw?=
+ =?utf-8?B?SVdyNFRIVzBQdDVlSEp5cmxKTGQ2elRSSE8xa1c3SDNPZzZzY3k5enJwV3oz?=
+ =?utf-8?B?RVhJSGR5ZkhtQlZPTjNwM004cTVxMy92QzdlM3JCb2lXWXpxbHY3dW1wa1h2?=
+ =?utf-8?B?bnJHYkc2OFFXRU9LWnB4SW5POU9MVDRhNXhFdVFBM2FkdWNuS1pTUG9vSmpM?=
+ =?utf-8?B?Slg5T3FNc1psYWJnT1p4SzZPdHA1d0dKQWhlUWJpcVg0NlpQUmdTNkcvdDI2?=
+ =?utf-8?B?blBDbzFFZGtkYW42V1FuUXhzQmY3S2d4QmY4ZkpqV1ZWVEJkejd1eVJlbEw1?=
+ =?utf-8?B?eHpGUCt1RXFIWUJodldXcWdLZnNRbmVRUVA0c1BRTy9aakhudnVCVUhaZndO?=
+ =?utf-8?B?N0R4dzZ2bWNqZGhiNC9aRGpoSDJkQ1I1VmhNTFQraU03N2NXTmJWV0hUcUxY?=
+ =?utf-8?B?MStydk44Wi83OWwwUUp3WlZOckh0TitHbnpQRHNTazlBYWVUZXR6TzVPUmw3?=
+ =?utf-8?B?NzhCeGQvQ05vTUE2VHFhYXFCSXpXSyt2TGRveC9oVnBRYW5zbi85RzFRZFVY?=
+ =?utf-8?B?aUwvekZ2VTBLSWRyUTVMczNyZEhpcnlZNGhBVHdhM3dpdjAyMXdKYkhOVHRW?=
+ =?utf-8?B?L2tuM204S2ZkWTV5cDF0aXdEMGUraGVYTDhBMHJyRU5taXAzMjRIb011YldO?=
+ =?utf-8?B?N2NObWI0elZJeC8ySGFLdFhPTkMxcEVZOWljOG5EWnZtMS9wVHh0Tk9XTGF3?=
+ =?utf-8?B?bFlyaXNreXd1Z2ZFelRxN3JUbENadzd1Z3g1T2xQREZ6SzlTZEZIQUpqWTkw?=
+ =?utf-8?B?K2JxRmVzMC91QUhRSldRck1iRXZkRHVoRGV3cCthdHl4U3ZYM1VzVm9yR1NR?=
+ =?utf-8?B?aEg1QktwbGZSRkM5OE1TOVpnNUNOYlQvOWZRRHhvZWpYZ3gvY0Z5M085VWdL?=
+ =?utf-8?B?SWFEMmt3RW9jVHVka1dxMmloRTJvaWQ4a0l6bXZVRVBwRk95RzZNRWJnck5R?=
+ =?utf-8?B?U056ZHZaVUhIbSt5MDF3L3dtZUF6eDltYUo3dVM3TUtEMldXYzZMcmp5SVoy?=
+ =?utf-8?B?SGM2STlFL3RwOFNHcjFFejF1Zy9RQ0k4dFY1WFZqUXJJT20zQkVsMWl3YjlN?=
+ =?utf-8?B?eE42TE5GQlZ0Z0kxRjlURG43dnZoWUVidUtiajI0cjJ4NjJDRTBhNk9VVVRF?=
+ =?utf-8?B?emlzVDZHUFBpY0FFY0dnT3E5UWZOVytUTndDR3o1Z2QyeUlXVGZGMzhZaGVm?=
+ =?utf-8?B?QXVEQ2ViVWFWbXFWVDRjNzV5RFF5bzc2NlJkUEFEUStWVEZpbVEzY2ZiK29G?=
+ =?utf-8?B?S1ljZUlFWmtXdEU1WU9qWW1ZcGxOcVQrbnZJTThDMFcxN2dzNUg3WktJVVE0?=
+ =?utf-8?B?c05ILzRKUGRpemdhSzlrd0pQQ1VFOEJXSUdISHl1TE95WnlyYkFDdmxzeCtS?=
+ =?utf-8?B?K0lXN0xNdlJFUDc5M0N1eTRQMlIvbVRiVjR2M0VCSDhZc2ZOZzd1TmhNZHpR?=
+ =?utf-8?B?VE1jaE1IR1NHWlZ5UngvbGFrWU10YlZxSTRnZWxtTDBCRWc5dGp3RXhISEZO?=
+ =?utf-8?B?QkFZejVkbExCRFNXQUthUWcrY3kvRU5Ibm5JNXVGUEpLdE1MTHRLRW4xVlhZ?=
+ =?utf-8?B?NHA3WDlPMVRKSktrNHQwN3JzNTNrRFNFL1FFalhpNURRQkdBUXU3OVkvd3lZ?=
+ =?utf-8?B?dzBBZzdxd2NDSm1FT2dOVCs2Zm1HSWZDNnB0cjNsT3FyNElFTXB1VlhsN0Fz?=
+ =?utf-8?Q?/8ZEPuJD2qQ/t0LmKAnJjyTA/yRBYJXnxcEqC9Q?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44f20f07-257b-a1a5-23d9-ffd66bf45887@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e5e29b6-e591-4140-848a-08d9834dbe2b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 13:33:37.4515
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: si+0rVaZQKmY9IAHLytb89UQv3uldX7H/iexI5lLzO38zHtGzH1iRD3SdjNjUTA2oagWau6M0bFVCBRiZoH+ZfvbHoiFqu0/IpcTPbxb5oE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR10MB1845
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Tony]
-
-On Tue, Sep 28, 2021 at 07:26:52PM +0200, Rafael J. Wysocki wrote:
-> On 9/24/2021 11:04 AM, Lorenzo Pieralisi wrote:
-> > On Thu, Sep 23, 2021 at 02:54:52PM +0200, Rafael J. Wysocki wrote:
-> > > On Thu, Sep 23, 2021 at 2:26 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> > > > > From: "Rafael J. Wysocki" <rafael@kernel.org>
-> > > > > Date: Thu, 23 Sep 2021 13:05:05 +0200
-> > > > > 
-> > > > > On Thu, Sep 23, 2021 at 11:40 AM Lorenzo Pieralisi
-> > > > > <lorenzo.pieralisi@arm.com> wrote:
-> > > > > > On Thu, Sep 23, 2021 at 01:09:58AM +0200, Mark Kettenis wrote:
-> > > > > > > > Date: Wed, 22 Sep 2021 17:33:36 +0100
-> > > > > > > > From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > > > > > > > 
-> > > > > > > > On Fri, Sep 10, 2021 at 10:32:23PM +0800, Jia He wrote:
-> > > > > > > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> > > > > > > > > 
-> > > > > > > > > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > > > > > > > > with call trace as follows:
-> > > > > > > > >   Internal error: synchronous external abort: 96000410 [#1] SMP
-> > > > > > > > >   Modules linked in:
-> > > > > > > > >   CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> > > > > > > > >   Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
-> > > > > > > > >   pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > > > > > > > [...snip...]
-> > > > > > > > >   Call trace:
-> > > > > > > > >    acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> > > > > > > > >    acpi_ev_address_space_dispatch+0x228/0x2c4
-> > > > > > > > >    acpi_ex_access_region+0x114/0x268
-> > > > > > > > >    acpi_ex_field_datum_io+0x128/0x1b8
-> > > > > > > > >    acpi_ex_extract_from_field+0x14c/0x2ac
-> > > > > > > > >    acpi_ex_read_data_from_field+0x190/0x1b8
-> > > > > > > > >    acpi_ex_resolve_node_to_value+0x1ec/0x288
-> > > > > > > > >    acpi_ex_resolve_to_value+0x250/0x274
-> > > > > > > > >    acpi_ds_evaluate_name_path+0xac/0x124
-> > > > > > > > >    acpi_ds_exec_end_op+0x90/0x410
-> > > > > > > > >    acpi_ps_parse_loop+0x4ac/0x5d8
-> > > > > > > > >    acpi_ps_parse_aml+0xe0/0x2c8
-> > > > > > > > >    acpi_ps_execute_method+0x19c/0x1ac
-> > > > > > > > >    acpi_ns_evaluate+0x1f8/0x26c
-> > > > > > > > >    acpi_ns_init_one_device+0x104/0x140
-> > > > > > > > >    acpi_ns_walk_namespace+0x158/0x1d0
-> > > > > > > > >    acpi_ns_initialize_devices+0x194/0x218
-> > > > > > > > >    acpi_initialize_objects+0x48/0x50
-> > > > > > > > >    acpi_init+0xe0/0x498
-> > > > > > > > > 
-> > > > > > > > > As mentioned by Lorenzo:
-> > > > > > > > >    "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> > > > > > > > >    eMAG does not like at all and I'd need to understand why. It looks
-> > > > > > > > >    like the issue happen in SystemMemory Opregion handler."
-> > > > > > > > > 
-> > > > > > > > > Hence just revert it before everything is clear.
-> > > > > > > > > 
-> > > > > > > > > Fixes: 437b38c51162 ("ACPI: Add memory semantics to acpi_os_map_memory()")
-> > > > > > > > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > > > > > > > > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > > > > Cc: Hanjun Guo <guohanjun@huawei.com>
-> > > > > > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > > > > > > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > > > > > > Cc: Harb Abdulhamid <harb@amperecomputing.com>
-> > > > > > > > > 
-> > > > > > > > > Signed-off-by: Jia He <justin.he@arm.com>
-> > > > > > > > Rewrote the commit log, please take the patch below and repost
-> > > > > > > > it as a v3.
-> > > > > > > > 
-> > > > > > > > It would still be great if Ampere can help us understand why
-> > > > > > > > the NormalNC attributes trigger a sync abort on the opregion
-> > > > > > > > before merging it.
-> > > > > > > To be honest, I don't think you really need an explanation from Ampere
-> > > > > > > here.  Mapping a part of the address space that doesn't provide memory
-> > > > > > > semantics with NormalNC attributes is wrong and triggering a sync
-> > > > > > > abort in that case is way better than silently ignoring the access.
-> > > > > > That's understood and that's what I explained in the revert commit
-> > > > > > log, no question about it.
-> > > > > > 
-> > > > > > I was just asking to confirm if that's what's actually happening.
-> > > > > > 
-> > > > > > > Putting my OpenBSD hat on (where we have our own ACPI OSPM
-> > > > > > > implementation) I must say that we always interpreted SystemMemory as
-> > > > > > > memory mapped IO and I think that is a logical choice as SystemIO is
-> > > > > > > used for (non-memory mapped) IO.  And I'd say that the ACPI OSPM code
-> > > > > > > should make sure that it uses properly aligned access to any Field
-> > > > > > > object that doesn't use AnyAcc as its access type.  Even on x86!  And
-> > > > > > > I'd say that AML that uses AnyAcc fields for SystemMemory OpRegions on
-> > > > > > > arm64 is buggy.
-> > > > > > > 
-> > > > > > > But maybe relaxing this when the EFI memory map indicates that the
-> > > > > > > address space in question does provide memory semantics does make
-> > > > > > > sense.  That should defenitely be documented in the ACPI standard
-> > > > > > > though.
-> > > > > > Mapping SystemMemory Opregions as "memory" does not make sense
-> > > > > > at all to me. Still, that's what Linux ACPICA code does (*if*
-> > > > > > that's what acpi_os_map_memory() is supposed to mean).
-> > > > > > 
-> > > > > > https://lore.kernel.org/linux-acpi/20210916160827.GA4525@lpieralisi
-> > > > > It doesn't need to do that, though, if there are good enough arguments
-> > > > > to change the current behavior (and the argument here is that it may
-> > > > > be an MMIO region, so mapping it as memory doesn't really work, but it
-> > > > > also may be a region in memory - there is no rule in the spec by which
-> > > > > SystemMemory Opregions cannot be "memory" AFAICS) and if that change
-> > > > > doesn't introduce regressions in the installed base.
-> > > > > 
-> > > > > > Where do we go from here, to be defined, we still have a bug
-> > > > > > to fix after the revert is applied.
-> > > > > > 
-> > > > > > drivers/acpi/sysfs.c
-> > > > > > 
-> > > > > > maps BERT error regions with acpi_os_map_memory().
-> > > > > That mechanism is basically used for exporting ACPI tables to user
-> > > > > space and they are known to reside in memory.  Whether or not BERT
-> > > > > regions should be mapped in the same way is a good question.
-> > > > It is not inconceivable that BERT regions actually live in memory of
-> > > > the BMC that is exposed over a bus that doesn't implement memory
-> > > > semantics is it?
-> > > No, it isn't, which is why I think that mapping them as RAM may not be
-> > > a good idea in general.
-> > Should I patch acpi_data_show() to map BERT error regions (well, that's
-> > what acpi_data_show() is used on at the moment) as MMIO and use the
-> > related memcpy routine to read them then :) ?
-> 
-> It actually would be good to clean it up so it is clear that this is only
-> used for BERT.
-> 
-> And then there is this question: if this is not RAM (so effectively it is
-> device memory), should it be exposed directly to user space?
-
-Do you mean from a security standpoint ? I believe there might be users
-out there so if we want to remove that sysfs entry it may be
-problematic.
-
-Maybe Tony has more insights into this than I do:
-
-commit 7dae6326ed76 ("ACPI / sysfs: Extend ACPI sysfs to provide access to boot error region")
-
-Thanks,
-Lorenzo
+T24gMjQgU2VwdGVtYmVyIDIwMjEgMTc6MTcsIEFsZXhhbmRyZSBHaGl0aSB3cm90ZToNCg0KPiA+
+ID4gK3N0YXRpYyBpbnQgZGE5MDYzX3Jlc3RhcnRfbm90aWZ5KHN0cnVjdCBub3RpZmllcl9ibG9j
+ayAqdGhpcywNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBs
+b25nIG1vZGUsIHZvaWQgKmNtZCkNCj4gPiA+ICt7DQo+ID4gPiArICAgICBzdHJ1Y3QgZGE5MDYz
+ICpkYTkwNjMgPSBjb250YWluZXJfb2YodGhpcywgc3RydWN0IGRhOTA2MywNCj4gPiA+IHJlc3Rh
+cnRfaGFuZGxlcik7DQo+ID4gPiArDQo+ID4gPiArICAgICByZWdtYXBfd3JpdGUoZGE5MDYzLT5y
+ZWdtYXAsIERBOTA2M19SRUdfUEFHRV9DT04sIDB4MDApOw0KPiA+ID4gKyAgICAgcmVnbWFwX3dy
+aXRlKGRhOTA2My0+cmVnbWFwLCBEQTkwNjNfUkVHX0NPTlRST0xfRiwgMHgwNCk7DQo+ID4gPiAr
+ICAgICByZWdtYXBfd3JpdGUoZGE5MDYzLT5yZWdtYXAsIERBOTA2M19SRUdfQ09OVFJPTF9BLCAw
+eDY4KTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIHJldHVybiBOT1RJRllfRE9ORTsNCj4gPiA+ICt9
+DQo+ID4NCj4gPiBJIHdpbGwgdGFsayB3aXRoIG91ciBIVyB0ZWFtIHRvIGNsYXJpZnksIGJ1dCB0
+aGlzIHNlcXVlbmNlIGxvb2tzIHRvIGJlIHZlcnkNCj4gPiBzcGVjaWZpYyB0byB0aGUgbmVlZHMg
+b2YgdGhlIHBsYXRmb3JtIGluIHF1ZXN0aW9uIHdoaWNoIGRvZXNuJ3QgZmVlbCByaWdodCB0bw0K
+PiA+IG1lLiBBcyB3YXMgbWVudGlvbmVkIG9uIGFub3RoZXIgdGhyZWFkIGFzIHdlbGwsIHRoZSB3
+YXRjaGRvZyBkcml2ZXIgYWxyZWFkeQ0KPiBoYXMNCj4gPiBhIHJlc3RhcnQgZnVuY3Rpb24gdG8g
+cmVzZXQgdGhlIGRldmljZSAoYW5kIHRodXMgdGhlIHN5c3RlbSksIHNvIEkgZG9uJ3QgYmVsaWV2
+ZQ0KPiA+IHdlIHNob3VsZCBoYXZlIG11bHRpcGxlIG9mIHRoZXNlLg0KPiANCj4gRnJvbSB0aGUg
+ZGlzY3Vzc2lvbiB0aGF0IGhhcHBlbmVkIGhlcmUNCj4gaHR0cHM6Ly93d3cuZGlhbG9nLXNlbWlj
+b25kdWN0b3IuY29tL3Byb2R1Y3RzL3BtaWNzP3Bvc3RfaWQ9MTAwNTIjdGFiLQ0KPiBzdXBwb3J0
+X3RhYl9jb250ZW50LA0KPiBpdCBkb2VzIG5vdCBzZWVtIHBvc3NpYmxlIHRvIHVzZSB0aGUgd2F0
+Y2hkb2cgb24gYSBjaGlwIHdob3NlIE9UUCBkb2VzDQo+IG5vdCBzZXQgQVVUT0JPT1QuIEJ1dCBh
+bnl3YXksIEknbSBsb29raW5nIGZvcndhcmQgdG8gaGVhcmluZyBmcm9tIHRoZQ0KPiBIVyB0ZWFt
+IDopDQoNClNvIEkndmUgZGlzY3Vzc2VkIHRoaXMgaW50ZXJuYWxseSBhbmQgc28gZmFyIGl0J3Mg
+bm90IGNvbXBsZXRlbHkgY2xlYXIgaG93IHRoZQ0Kc2VxdWVuY2UgeW91IHByb3ZpZGVkIGFjdHVh
+bGx5IHBlcmZvcm1zIHRoZSByZXNldCBhcyB5b3Ugc3VnZ2VzdC4gSXQgY2VydGFpbmx5DQpkb2Vz
+bid0IGxvb2sgbGlrZSBpdCBzaG91bGQsIHNvIG1heWJlIHRoaXMgcmVsYXRlcyB0byBhbiBleHRl
+cm5hbCBwaW4gc29tZWhvdw0KdHJpZ2dlcmluZyB0aGUgcmVzdGFydCBpbiB0aGlzIHBhcnRpY3Vs
+YXIgc2NlbmFyaW8/IEknZCBiZSBpbnRlcmVzdGVkIHRvDQp1bmRlcnN0YW5kIHdoaWNoIGV2ZW50
+IGJpdHMgYXJlIHNldCB3aGVuIHRoZSBib2FyZCBkb2VzIHJlc3RhcnQgdG8gdW5kZXJzdGFuZA0K
+d2hhdCBkaWQgYWN0dWFsbHkgdHJpZ2dlciB0aGUgYm9vdC11cC4NCg0KUmVnYXJkbGVzcyBvZiB0
+aGlzIHRob3VnaCwgdGhlIGNvbnNlbnN1cyByaWdodCBub3cgd291bGQgYmUgdG8gdXNlIHRoZSBS
+VEMgYXMgYQ0Kd2FrZSBldmVudCB0byByZXN0YXJ0IHRoZSBwbGF0Zm9ybS4gQW4gYWxhcm0gY2Fu
+IGJlIHNldCBmb3IgYSBjb3VwbGUgb2Ygc2Vjb25kcw0KaW50byB0aGUgZnV0dXJlIChvciBsb25n
+ZXIgaWYgcmVxdWlyZWQpIGFuZCB0aGF0IHdvdWxkIHByb3ZpZGUgdGhlIGV2ZW50DQpyZXF1aXJl
+ZCB0byBjb21lIHVwIGZyb20gcG93ZXJkb3duL3NodXRkb3duLCBpbiB0aGUgYWJzZW5jZSBvZiBB
+VVRPQk9PVCBiZWluZw0Kc2V0IGluIE9UUC4gSSBiZWxpZXZlIHRoaXMgd291bGQgYmUgdGhlIHNh
+ZmVzdCByb3V0ZSB0byB0YWtlIGluIHRoaXMgY2FzZS4gWW91DQpjYW4gdGhlbiBqdXN0IHVzZSB0
+aGUgU0hVVERPV04gYml0IG9uIENPTlRST0xfRiB0byB0YWtlIGRvd24gdGhlIGJvYXJkLg0KDQpU
+byByZWl0ZXJhdGUsIEkgYmVsaWV2ZSB0aGlzIHNob3VsZCBiZSBtYWRlIGEgYm9hcmQgc3BlY2lm
+aWMgcXVpcmssIHJhdGhlciB0aGFuDQphcyBwYXJ0IG9mIHRoZSBnZW5lcmljIE1GRCBjb3JlIG9m
+IERBOTA2MywgYXMgdGhlIHRpbWluZ3MgbWF5IHZhcnkgZm9yIG90aGVyDQpwbGF0Zm9ybXMuDQo=
