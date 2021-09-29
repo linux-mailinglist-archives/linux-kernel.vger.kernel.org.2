@@ -2,50 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B44C41CDF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFAB41CDEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346899AbhI2VVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:21:31 -0400
-Received: from ixit.cz ([94.230.151.217]:59878 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232258AbhI2VVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:21:30 -0400
-Received: from [192.168.43.127] (78-80-97-115.customers.tmcz.cz [78.80.97.115])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id BFB3623B26;
-        Wed, 29 Sep 2021 23:19:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1632950386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=XdD4z8tJzQeXmWMRITRvTyCwu8N9yjjNeHgeazkXRqY=;
-        b=Itr0+U1WJl97CkalbLnh9Feq2GYAgCM5MQ3nDBEPtOWFyJS0ypZ/w+jOl8ajH8oR6zmSwZ
-        6o8yVIv2Q4LKam65BRWMGPQXl8oS672Dv7KXiEz7xiy/y6b+IItuB1Sw9hvl24pN8Qzl8n
-        YQhfyLSJKQ+ZNdHeGRqBvQNt6PtUzDY=
-Date:   Wed, 29 Sep 2021 23:18:21 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH] ASoC: dt-bindings: rt5682s: fix the device-tree schema
- errors
-To:     derek.fang@realtek.com
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
-        oder_chiou@realtek.com, jack.yu@realtek.com, shumingf@realtek.com
-Message-Id: <LIS70R.CEFK42MUM5NG1@ixit.cz>
-X-Mailer: geary/40.0
+        id S1346896AbhI2VUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232258AbhI2VUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 17:20:14 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD56C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:18:33 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id w14so3074275pfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ob6Q0H2Q1UIKTHBSM2eFI4wZOKPIJ6fWx83Tj6pqkNo=;
+        b=eh+1iOVD9AVJG7gkBj9ezlgvqonUNLBovN6I0rL3wpojAapIu9hSuunEhhTFjdOCJl
+         I9CxSStcu1pVmuRDDYqTv0ypu+aFYyZv3vBgo71Nge5SoTv74Jfg092oyFgtBmVFeB3N
+         fyPVdmUCV7k/7thT75NPlHEQBNnwhxS1N812Xa0XohxvJhvTDt0yPZ6EemtSOT397c2Y
+         CklZIAy98ogMEWnWqKsXGVZpdGS+PUFXnGGkfEqwp5At3WaqoRZNGPzI1DwHBXj8+qiK
+         81LDnjAtDDXeqwETttAgi5Wvnp/5eabgAPC0DgsmGB31ZCp3bsjNNdfSDCsYe2aIAb99
+         6uZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ob6Q0H2Q1UIKTHBSM2eFI4wZOKPIJ6fWx83Tj6pqkNo=;
+        b=CTtgQTOCAnagCt4KcGcbuFgCZrimUhZeXvRf4iCpwuCzKO0sVodvoAJlDhWZtjgAX0
+         +i5zGpLtISLoCjDYge/BZmdus/bRQdmWkE+mjeUxI+wsVCqFeg4HJaUFcqMP127QkoBF
+         S97jaK9S0B9HWRSv3CB8AH80ojLISiZ/DYXqbFTlVxS4dL08OhYh6lk0Gi5EAuGa736/
+         OM9d9WWUVY1CYLm51JpuqPumIw6Ah8YxfTQXO3+n8xwznmO0mbw5mES+d4/a+1YBpqy9
+         cXC0z6ZJAyTqfkopMlydPs412qUKzSQyskxjoqjdHxJM4CSSEPG+oMHeVRTWTtpMFUf+
+         DlWA==
+X-Gm-Message-State: AOAM5324Aaaz4UR37qzJ0+3/EnYttJlYELeyiuQEy+KLyhA3zfCyJuZ8
+        p0aTQSYl+LefF0mIShD9eOwLJKidONXiUFQTtX4=
+X-Google-Smtp-Source: ABdhPJx/Pbjv2fyN8SlD3WJnnWVFClC400LRJHcc2MdtPH6sgOBW7jngCBWDQEJ+3mcpGzHiUhnCr0o/6JhCVu1hQw0=
+X-Received: by 2002:a63:374c:: with SMTP id g12mr1782927pgn.35.1632950313227;
+ Wed, 29 Sep 2021 14:18:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <YVF/Q5pA9h9S+wS9@kev-VirtualBox>
+In-Reply-To: <YVF/Q5pA9h9S+wS9@kev-VirtualBox>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 29 Sep 2021 14:18:22 -0700
+Message-ID: <CAADnVQ+ouHoqT4jj-BYTVC_uQkEWLnLLakUrCQzZ446J9C1vsA@mail.gmail.com>
+Subject: Re: [PATCH] Trivial: docs: correct some English grammar and spelling
+To:     Kev Jackson <foamdino@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our CI seems to be happy again. Thanks
+On Mon, Sep 27, 2021 at 1:22 AM Kev Jackson <foamdino@gmail.com> wrote:
+>
+> Header DOC on include/net/xdp.h contained a few English
+>  grammer and spelling errors.
+>
+> Signed-off-by: Kev Jackson <foamdino@gmail.com>
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
-Best regards
-David Heidelberg
-
-
+Pls collect the Ack and resend cc-ing bpf@vger.
+Also please use [PATCH bpf-next] as the subj.
