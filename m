@@ -2,99 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468A541CAB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5783541CAB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344587AbhI2Q46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:56:58 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:57487 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245276AbhI2Q45 (ORCPT
+        id S1346129AbhI2Q5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345770AbhI2Q5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:56:57 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 34BE58230F;
-        Wed, 29 Sep 2021 19:55:15 +0300 (MSK)
+        Wed, 29 Sep 2021 12:57:32 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E93DC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:55:51 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id j15so3614431ila.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632934515;
-        bh=G7Wdg9mT0Ns3YgyIT6a7j3pJ2ql5Pkil3NxCMgX2PUY=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=bZDHKNLK0RwZuWiV2SSec8AvXv/aZUBdQwHdsTIUbxV55nqeJ73Bbzehl+5s+nVGa
-         Rrzt/FOjBcJm7KX4hTd+jCzQ1wwndTaY5PWU88V8hn7k5UdgzPMYVuQ3EYaBAbjivy
-         3opOWrCO7rEto/BLTMuBnq3XHgTPpnJTKyHvccV0=
-Received: from [192.168.211.131] (192.168.211.131) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 29 Sep 2021 19:55:14 +0300
-Message-ID: <9b37cc1a-2951-77fa-9932-6052555ceca9@paragon-software.com>
-Date:   Wed, 29 Sep 2021 19:55:14 +0300
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I9u7CdhA82OTxhiNjh8zFGVUr+YVkwKJl8XJaXfF7/w=;
+        b=BHqBuXTTFAG0/Uo7tjBlKpHuoamjjqMPc9oxmBVteM1aCxv7dKtXvyjmCRWf7zCP8X
+         ZmUwHnNtF6Q5FQa571WYQktvZeuOU2nw8yyBgXa6dci8toUuKUVBrPxaibQ59riRmCWl
+         tIs25tTza3WOJE+q41ZAx5LswjcIcnjCEgM5JT8ifUc5Yyd2FUuEsIVo2QwTH9/f/vt9
+         NxXTFqKx3fIuHtJwJkmcP4QMsLjCstXef24T00HX8+384TGPSNVHaIo+IObKZxOSzMfq
+         DEBmrVi7U49wa81q9knGq4MJJZbqbB8mGQ1kvgqS+TJYjjnbRG1Pvt12IVaeajkOZmjH
+         H+bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I9u7CdhA82OTxhiNjh8zFGVUr+YVkwKJl8XJaXfF7/w=;
+        b=5GVN7OKyzhrtrOWD0FKd1Or8i2Gh076nm554vOPu+9Mt8pDtytW+OeSV1j6gdfecsp
+         17UGZsFIsovxrzLT0nbewJs4+Zx3dbp3myQVv1Ag/4zj5fZ+9HKcjU3nQG4i2ibHOype
+         VYuhGdl5rcUS+wus5TeRwz2R6rzAQSrKewiM89SLR7/ALNv2R4QWpcbFa3bOJh7oPif+
+         SBbYbOslCr0zUUD9JJ9yy4aDlJ1iBtsu0QHfjfGxU2AaWsr4JzEVb+tZOi+lRNTgbzFs
+         8dz3URYjApSC2vCNG8S84R18435kZxJh/h6EQ7usbd/8xmUFaRjdLeDawsDq+B5GoDOY
+         yZfw==
+X-Gm-Message-State: AOAM532vu1plczUPLLa4LS+39BCzCquIvdj6loXGIisjZeW8AfJWcTO4
+        nf43emD/Q4YhE1wj3HvrfEUJ3ypnyGlD21GYcCaqMQ==
+X-Google-Smtp-Source: ABdhPJz7UcccOWEBaJmnPyOL9Nqa48Gmrl5N34vyOIihW623wH6slZbZVT6p4sSRqjOgbCjRqwCBDAmEwoVesgG/hP4=
+X-Received: by 2002:a92:b301:: with SMTP id p1mr539248ilh.10.1632934550387;
+ Wed, 29 Sep 2021 09:55:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2 1/3] fs/ntfs3: Fix memory leak if fill_super failed
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>
-CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>
-References: <a7c2e6d3-68a1-25f7-232e-935ae9e5f6c8@paragon-software.com>
- <5ee2a090-1709-5ca0-1e78-8db1f3ded973@paragon-software.com>
- <20210928174423.z7a6chrjmmyezlsp@kari-VirtualBox>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210928174423.z7a6chrjmmyezlsp@kari-VirtualBox>
+References: <20210928222926.1180749-1-dlatypov@google.com> <20210928222926.1180749-2-dlatypov@google.com>
+ <CABVgOSmbROsRBgA+rfJGwTcsFCmgUmrEgLLVxxr7A-EKLvcj_Q@mail.gmail.com>
+In-Reply-To: <CABVgOSmbROsRBgA+rfJGwTcsFCmgUmrEgLLVxxr7A-EKLvcj_Q@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 29 Sep 2021 09:55:38 -0700
+Message-ID: <CAGS_qxpDACGJ=sW7-3ivVw5X92K7rrmoiLyj+SS-OdvGg0i1rg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] kunit: add 'kunit.action' param to allow listing
+ out tests
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.131]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 28, 2021 at 9:38 PM David Gow <davidgow@google.com> wrote:
+>
+> On Wed, Sep 29, 2021 at 6:29 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > Context:
+> > It's difficult to map a given .kunitconfig => set of enabled tests.
+> > Letting kunit.py figure that out would be useful.
+> >
+> > This patch:
+> > * is intended to be an implementation detail used only by kunit.py
+> > * adds a kunit.action module param with one valid non-null value, "list"
+> > * for the "list" action, it simply prints out "<suite>.<test>"
+> > * leaves the kunit.py changes to make use of this for another patch.
+> >
+> > Note: kunit.filter_glob is respected for this and all future actions.
+> >
+> > Hack: we print a TAP header and fake test plan to allow kunit.py to
+> > use the same code to pick up KUnit output that it does for normal tests.
+> > Since this is intended to be an implementation detail, it seems fine for
+> > now. Maybe in the future we ouptut each test as SKIPPED or the like.
+>
+> I'm still a little uneasy using the "TAP version 14" header here, and
+> then proceeding to include a list of tests which, in and of itself,
+> isn't valid TAP.
+> I don't think we need to solve this perfectly now: we can always
+> change it if something comes out of, e.g., the KTAP standardisation,
+> but I'd rather we have something -- even something temporary -- which
+> is easily distinguishable from an actual TAP result.
+>
+> Even if we had "TAP version 14 - test list" or something so that
 
+Currently, the regex kunit_parser.py uses is anchored with $.
+So I'm not able to add anything at the end of the line.
 
-On 28.09.2021 20:44, Kari Argillander wrote:
-> On Tue, Sep 28, 2021 at 08:17:29PM +0300, Konstantin Komarov wrote:
->> Restore fc->s_fs_info to free memory allocated in ntfs_init_fs_context.
->>
->> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
->> ---
->>  fs/ntfs3/super.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
->> index 800897777eb0..aff90f70e7bf 100644
->> --- a/fs/ntfs3/super.c
->> +++ b/fs/ntfs3/super.c
->> @@ -1242,6 +1242,10 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->>  	return 0;
->>  out:
->>  	iput(inode);
->> +
->> +	/* Restore fc->s_fs_info to free memory allocated in ntfs_init_fs_context. */
->> +	fc->s_fs_info = sbi;
->> +
-> 
-> Nack. fc->s_fs_info is already pointing to sbi. We null this just before
-> we exit so it is impossible to be anything else in failure case.
-> 
+We could potentially add a new line afterwards with "# KUnit Test
+List" or similar?
 
-We have seen memory leak once, but looking at the code of function
-I can't point where it was caused. Will try to reproduce again.
-For now will commit only 
-"Reject mount if boot's cluster size < media sector size" and
-"Refactoring of ntfs_init_from_boot".
+I'd prefer not to since I'm not sure it matters _too_ much.
+Someone would have to go out of their way to print the list of tests,
+and if so, I'm not sure they should be trying to parse TAP output from
+it.
 
-> 	fc->fs_private = NULL;
-> 	fc->s_fs_info = NULL;
-> 
-> 	return 0;
-> out:
-> 	iput(inode);
-> 
->>  	return err;
->>  }
->>  
->> -- 
->> 2.33.0
->>
->>
+> kunit_tool picked up on it without further changes, that'd be fine,
+> though something like "KUnit Test List" would be better.
+>
+> Also, I'd still rather we lose the "1..1" test suite list, though I
+> can live without if I have to, given that it is actually giving the
+> correct number of suites.
+>
+> From the kernel side, all this should take is replacing the call to
+> kunit_print_tap_header() with a direct pr_info() call. Maybe there'd
+> need to be some minor kunit_tool changes in patch 3, too, but nothing
+> excessive.
+
+That's fair. I had mainly just wanted to avoid hard-copying a copy of
+the TAP version.
+
+I've made the change so it doesn't print the test plan and it works.
+
+The only change needed in patch 3 is
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index e7b92caba53d..ca4f877234c2 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -101,8 +101,7 @@ def _list_tests(linux:
+kunit_kernel.LinuxSourceTree, request: KunitExecRequest)
+                           filter_glob=request.filter_glob,
+                           build_dir=request.build_dir)
+        output = kunit_parser.extract_tap_lines(output)
+-       # Hack! Drop the TAP version header and top-level test plan.
+-       output.pop()
++       # Hack! Drop the dummy TAP version header that the executor prints out.
+        output.pop()
+        return list(output)
+
+>
+> Also, nit: "ouptut" should be "output"
+
+Ah, fixed.
+
+> >
+> > Go with a more generic "action" param, since it seems like we might
+> > eventually have more modes besides just running or listing tests, e.g.
+> > * perhaps a benchmark mode that reruns test cases and reports timing
+> > * perhaps a deflake mode that reruns test cases that failed
+> > * perhaps a mode where we randomize test order to try and catch
+> >   hermeticity bugs like "test a only passes if run after test b"
+> >
+> > Tested:
+> > $ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
+> > ...
+> > TAP version 14
+> > 1..1
+> > example.example_simple_test
+> > example.example_skip_test
+> > example.example_mark_skipped_test
+> > reboot: System halted
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+>
+> Otherwise, I'm quite happy with this: it works well on my end, and the
+> implementation makes sense.
+>
+> So this is:
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> (But I'd rather the TAP header bit change if possible...)
+>
+> -- David
+>
+> >  lib/kunit/executor.c | 45 +++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 40 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> > index bab3ab940acc..8b38c91b4fac 100644
+> > --- a/lib/kunit/executor.c
+> > +++ b/lib/kunit/executor.c
+> > @@ -15,9 +15,16 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
+> >  #if IS_BUILTIN(CONFIG_KUNIT)
+> >
+> >  static char *filter_glob_param;
+> > +static char *action_param;
+> > +
+> >  module_param_named(filter_glob, filter_glob_param, charp, 0);
+> >  MODULE_PARM_DESC(filter_glob,
+> >                 "Filter which KUnit test suites/tests run at boot-time, e.g. list* or list*.*del_test");
+> > +module_param_named(action, action_param, charp, 0);
+> > +MODULE_PARM_DESC(action,
+> > +                "Changes KUnit executor behavior, valid values are:\n"
+> > +                "<none>: run the tests like normal\n"
+> > +                "'list' to list test names instead of running them.\n");
+> >
+> >  /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
+> >  struct kunit_test_filter {
+> > @@ -196,9 +203,35 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
+> >         pr_info("1..%d\n", num_of_suites);
+> >  }
+> >
+> > -int kunit_run_all_tests(void)
+> > +static void kunit_exec_run_tests(struct suite_set *suite_set)
+> >  {
+> >         struct kunit_suite * const * const *suites;
+> > +
+> > +       kunit_print_tap_header(suite_set);
+> > +
+> > +       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> > +               __kunit_test_suites_init(*suites);
+> > +}
+> > +
+> > +static void kunit_exec_list_tests(struct suite_set *suite_set)
+> > +{
+> > +       unsigned int i;
+> > +       struct kunit_suite * const * const *suites;
+> > +       struct kunit_case *test_case;
+> > +
+> > +       /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
+> > +       kunit_print_tap_header(suite_set);
+>
+> As noted, would rather this be something like
+> pr_info("KUnit Test List");
+>
+>
+> > +
+> > +       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> > +               for (i = 0; (*suites)[i] != NULL; i++) {
+> > +                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
+> > +                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
+> > +                       }
+> > +               }
+> > +}
+> > +
+> > +int kunit_run_all_tests(void)
+> > +{
+> >         struct suite_set suite_set = {
+> >                 .start = __kunit_suites_start,
+> >                 .end = __kunit_suites_end,
+> > @@ -207,10 +240,12 @@ int kunit_run_all_tests(void)
+> >         if (filter_glob_param)
+> >                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
+> >
+> > -       kunit_print_tap_header(&suite_set);
+> > -
+> > -       for (suites = suite_set.start; suites < suite_set.end; suites++)
+> > -               __kunit_test_suites_init(*suites);
+> > +       if (!action_param)
+> > +               kunit_exec_run_tests(&suite_set);
+> > +       else if (strcmp(action_param, "list") == 0)
+> > +               kunit_exec_list_tests(&suite_set);
+> > +       else
+> > +               pr_err("kunit executor: unknown action '%s'\n", action_param);
+> >
+> >         if (filter_glob_param) { /* a copy was made of each array */
+> >                 kunit_free_suite_set(suite_set);
+> > --
+> > 2.33.0.685.g46640cef36-goog
+> >
