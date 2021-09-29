@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDEA41C77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFB341C78F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344830AbhI2O5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:57:17 -0400
-Received: from 8bytes.org ([81.169.241.247]:41198 "EHLO theia.8bytes.org"
+        id S1344869AbhI2O7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:59:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344808AbhI2O5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:57:12 -0400
-Received: from cap.home.8bytes.org (p4ff2b5b0.dip0.t-ipconnect.de [79.242.181.176])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 8AD32105D;
-        Wed, 29 Sep 2021 16:55:24 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v2 4/4] x86/64/mm: Map all kernel memory into trampoline_pgd
-Date:   Wed, 29 Sep 2021 16:55:01 +0200
-Message-Id: <20210929145501.4612-5-joro@8bytes.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210929145501.4612-1-joro@8bytes.org>
-References: <20210929145501.4612-1-joro@8bytes.org>
+        id S1344677AbhI2O7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:59:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A52C613A6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632927446;
+        bh=m2Q3ldX4i8hJz/lYMTrW/Tc7jkjEgA48T0avsrMIFb0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OS8/FZ05Bwuqc7c8Yy1ebTTrRtR/7Sh9oRAFWvlRbSE+GtdDhVhQbnVJIaynmoVWt
+         m4IAX3oh1iS08p/skrS1lSt6hHe2G6wCncmmwuqGK0ZgxHf+1Ygs72Y7fi/upjuMMa
+         gyZyOtJ2tbN5qyXOJBW7/Rf+T4AgEejImrVVaIrd1dmvdXSR3vxixr1yKFYsy0R2NZ
+         xjzDAevLhcKK0ozr8OsK2+G3i25e3qCEMf5fBPkWeBpjmp02C+mAxVAeMADaSK1fqx
+         2AzpH1jc2IwTfgbbpdXp84QfYdWhK29rTVjFi+2n6Wf24AFtCS9XdysC1gI5art90I
+         kn9etznjpw1gQ==
+Received: by mail-ed1-f45.google.com with SMTP id s17so9583808edd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:57:26 -0700 (PDT)
+X-Gm-Message-State: AOAM530mhRTPMOSURKb6SoYwMYLCH+ENln8xSJV2PzqWJonxJOr4OgBp
+        wVERaZBVsEPbHonRbLQhQXpXpIbWYYTESlWUsw==
+X-Google-Smtp-Source: ABdhPJy2oIyAhlML1lKHkEI+GYb7Xf5WZ4jL2sSq+xZsFvjhx2y5gie/l/Dq825/3UzuJiV9rAUHrF0xKV//SQBZD0k=
+X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr178848ejo.430.1632927358007;
+ Wed, 29 Sep 2021 07:55:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210929070235.4290-1-jason-jh.lin@mediatek.com> <20210929070235.4290-4-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210929070235.4290-4-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 29 Sep 2021 22:55:46 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__XmEYNbQJh0o-V-DS7F-_s1a9m54+FuOMwHGBCwx55Wg@mail.gmail.com>
+Message-ID: <CAAOTY__XmEYNbQJh0o-V-DS7F-_s1a9m54+FuOMwHGBCwx55Wg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] drm/mediatek: Fix cursor plane is not config when
+ primary is updating
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+Hi, Jason:
 
-The trampoline_pgd only maps the 0xfffffff000000000-0xffffffffffffffff
-range of kernel memory (with 4-level paging). This range contains the
-kernels text+data+bss mappings and the module mapping space, but not the
-direct mapping and the vmalloc area.
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=882=
+9=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:02=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> If cursor plane has updated but primary plane config task is not
+> finished, mtk_drm_crtc_update_config will call mbox_flush() to clear
+> all task in current GCE thread and let cursor plane re-send a new
+> GCE task with cursor + primary plane config to replace the unfinished
+> GCE task.
+>
+> So the plane config flag should not be cleared when mailbox callback
+> with a error status.
+>
+> Fixes: 9efb16c2fdd6 ("drm/mediatek: Clear pending flag when cmdq packet i=
+s done")
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index 06342df2a0be..fb0d9424acec 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -281,6 +281,9 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void =
+*mssg)
+>         struct mtk_crtc_state *state;
+>         unsigned int i;
+>
+> +       if (data->sta !=3D 0)
 
-This is enough to get an application processors out of real-mode, but
-for code that switches back to real-mode the trampoline_pgd is missing
-important parts of the address space. For example, consider this code
-from arch/x86/kernel/reboot.c, function machine_real_restart() for a
-64-bit kernel:
+data->sta is now the standard error code, so data->sta < 0 is an error.
 
-	#ifdef CONFIG_X86_32
-		load_cr3(initial_page_table);
-	#else
-		write_cr3(real_mode_header->trampoline_pgd);
+Regards,
+Chun-Kuang.
 
-		/* Exiting long mode will fail if CR4.PCIDE is set. */
-		if (boot_cpu_has(X86_FEATURE_PCID))
-			cr4_clear_bits(X86_CR4_PCIDE);
-	#endif
-
-		/* Jump to the identity-mapped low memory code */
-	#ifdef CONFIG_X86_32
-		asm volatile("jmpl *%0" : :
-			     "rm" (real_mode_header->machine_real_restart_asm),
-			     "a" (type));
-	#else
-		asm volatile("ljmpl *%0" : :
-			     "m" (real_mode_header->machine_real_restart_asm),
-			     "D" (type));
-	#endif
-
-The code switches to the trampoline_pgd, which unmaps the direct mapping
-and also the kernel stack. The call to cr4_clear_bits() will find no
-stack and crash the machine. The real_mode_header pointer below points
-into the direct mapping, and dereferencing it also causes a crash.
-
-The reason this does not crash always is only that kernel mappings are
-global and the CR3 switch does not flush those mappings. But if theses
-mappings are not in the TLB already, the above code will crash before it
-can jump to the real-mode stub.
-
-Extend the trampoline_pgd to contain all kernel mappings to prevent
-these crashes and to make code which runs on this page-table more
-robust.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/realmode/init.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 0cfe1046cec9..792cb9ca9b29 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -91,6 +91,7 @@ static void __init setup_real_mode(void)
- #ifdef CONFIG_X86_64
- 	u64 *trampoline_pgd;
- 	u64 efer;
-+	int i;
- #endif
- 
- 	base = (unsigned char *)real_mode_header;
-@@ -147,8 +148,17 @@ static void __init setup_real_mode(void)
- 	trampoline_header->flags = 0;
- 
- 	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
-+
-+	/*
-+	 * Map all of kernel memory into the trampoline PGD so that it includes
-+	 * the direct mapping and vmalloc space. This is needed to keep the
-+	 * stack and real_mode_header mapped when switching to this page table.
-+	 */
-+	for (i = pgd_index(__PAGE_OFFSET); i < PTRS_PER_PGD; i++)
-+		trampoline_pgd[i] = init_top_pgt[i].pgd;
-+
-+	/* Map the real mode stub as virtual == physical */
- 	trampoline_pgd[0] = trampoline_pgd_entry.pgd;
--	trampoline_pgd[511] = init_top_pgt[511].pgd;
- #endif
- 
- 	sme_sev_setup_real_mode(trampoline_header);
--- 
-2.33.0
-
+> +               return;
+> +
+>         state =3D to_mtk_crtc_state(mtk_crtc->base.state);
+>
+>         state->pending_config =3D false;
+> --
+> 2.18.0
+>
