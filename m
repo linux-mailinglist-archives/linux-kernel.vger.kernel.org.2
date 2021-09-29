@@ -2,148 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8236B41C13C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389A941C145
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244972AbhI2JE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:04:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26352 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244898AbhI2JEy (ORCPT
+        id S244981AbhI2JGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244958AbhI2JGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:04:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632906193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7W9Fc0fF86WyXYecPV/lI8dmSptGKk8vSEWO1VbX84s=;
-        b=VgUT5Wkwz6V88ZQWns3PibHMln4HGhgp//Lqv9xtWWLTUU31B+jaqn1HXLjgQC/QydaJh8
-        NDkadZGDpMr/7/xCagBYELPHCNxaXtcFe2exkJT+esc+RwifmAL59hZ6W7hNVbT8JgYUIs
-        S8u2Og2LtVssz/7JezgZKEYnn+I6IDY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-j5gX-FlrNEa_X-s5qUg9ww-1; Wed, 29 Sep 2021 05:03:12 -0400
-X-MC-Unique: j5gX-FlrNEa_X-s5qUg9ww-1
-Received: by mail-wr1-f70.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso383514wrb.20
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:03:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=7W9Fc0fF86WyXYecPV/lI8dmSptGKk8vSEWO1VbX84s=;
-        b=EqQmJS2a/7hfAJAiMG9GQax3whgIM4iHbaBRgyA8wPMTQNidhQ9UIqPlC5T9KdxWVL
-         sGL3Zcq2elmrgXuYYI70DfRjCHsWL/6UiVjZoAmAq/mkc5C1WA1rHLAKMNoGHqf2TeTP
-         K3MRjEJ717hmh4xlbrkm6Gt3rRHbo03gOkM1bsuMPcHxlMua5TajVaTvCrzZaOKdZNbl
-         lv4qvXXeVN/QcWRQLgkYVFflIKtwLQC3+s8810r81K86A9zV6c6lWSHzg0gcLRYD81F7
-         JMI57rmoq+9BaU0qTK+swm3mvYTC3CRpJXCST8sW/Z4qJea2ZrzunxdqTtCJC2picqQz
-         vjQQ==
-X-Gm-Message-State: AOAM531xMPLc3cAwXbbs3G+oxYB7hkfKZwwcAzUgyZwOIaW0TfwcMn64
-        KZpSIcnaVn1hDBXO8aM+LwFL4rKLCf52m0eBtlYKhrDHDh9Z3X2EBK8f/7+6Gm0iKA5xjE2nfl8
-        IP0bHdAEf2JVDSe0jevZn43od
-X-Received: by 2002:a7b:c219:: with SMTP id x25mr9238899wmi.125.1632906190953;
-        Wed, 29 Sep 2021 02:03:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAVvczz8jUTCdMNZ0BC5qvezoqKUBOcf5OajF0CWmKLmPAPf0K3OR8WEfpMUG5vsV5dclhgg==
-X-Received: by 2002:a7b:c219:: with SMTP id x25mr9238872wmi.125.1632906190770;
-        Wed, 29 Sep 2021 02:03:10 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
-        by smtp.gmail.com with ESMTPSA id t11sm1548498wrz.65.2021.09.29.02.03.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 02:03:10 -0700 (PDT)
-Subject: Re: [PATCH v1 2/8] x86/xen: simplify xen_oldmem_pfn_is_ram()
-From:   David Hildenbrand <david@redhat.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
-        xen-devel@lists.xenproject.org,
-        virtualization@lists.linux-foundation.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210928182258.12451-1-david@redhat.com>
- <20210928182258.12451-3-david@redhat.com>
- <4ab2f8c2-c3d5-30b3-a670-a8b38e218b6e@oracle.com>
- <bfe72f46-9a0d-1a87-64bd-4b03999edd1e@redhat.com>
-Organization: Red Hat
-Message-ID: <e9a230f9-85cb-d4c1-8027-508b7c344d94@redhat.com>
-Date:   Wed, 29 Sep 2021 11:03:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 29 Sep 2021 05:06:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53766C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:04:41 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVVVX-0003JP-91; Wed, 29 Sep 2021 11:04:07 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVVVS-0004kK-3w; Wed, 29 Sep 2021 11:04:02 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVVVS-0000V5-1n; Wed, 29 Sep 2021 11:04:02 +0200
+Date:   Wed, 29 Sep 2021 11:04:01 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Simon Horman <simon.horman@corigine.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        oss-drivers@corigine.com, Paul Mackerras <paulus@samba.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Ido Schimmel <idosch@nvidia.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Vadym Kochan <vkochan@marvell.com>, Michael Buesch <m@bues.ch>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Oliver O'Halloran <oohall@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v4 4/8] PCI: replace pci_dev::driver usage that gets the
+ driver name
+Message-ID: <20210929090401.qvpjng3jne76o6kw@pengutronix.de>
+References: <20210927204326.612555-1-uwe@kleine-koenig.org>
+ <20210927204326.612555-5-uwe@kleine-koenig.org>
+ <20210928100127.GA16801@corigine.com>
+ <20210928103129.c3gcbnfbarezr3mm@pengutronix.de>
+ <20210929080541.GA13506@corigine.com>
 MIME-Version: 1.0
-In-Reply-To: <bfe72f46-9a0d-1a87-64bd-4b03999edd1e@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ey4ikhdxthigr5cx"
+Content-Disposition: inline
+In-Reply-To: <20210929080541.GA13506@corigine.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.09.21 10:45, David Hildenbrand wrote:
->>
->> How about
->>
->>       return a.mem_type != HVMMEM_mmio_dm;
->>
-> 
-> Ha, how could I have missed that :)
-> 
->>
->> Result should be promoted to int and this has added benefit of not requiring changes in patch 4.
->>
-> 
-> Can we go one step further and do
-> 
-> 
-> @@ -20,24 +20,11 @@ static int xen_oldmem_pfn_is_ram(unsigned long pfn)
->           struct xen_hvm_get_mem_type a = {
->                   .domid = DOMID_SELF,
->                   .pfn = pfn,
-> +               .mem_type = HVMMEM_ram_rw,
->           };
-> -       int ram;
->    
-> -       if (HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a))
-> -               return -ENXIO;
-> -
-> -       switch (a.mem_type) {
-> -       case HVMMEM_mmio_dm:
-> -               ram = 0;
-> -               break;
-> -       case HVMMEM_ram_rw:
-> -       case HVMMEM_ram_ro:
-> -       default:
-> -               ram = 1;
-> -               break;
-> -       }
-> -
-> -       return ram;
-> +       HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a);
-> +       return a.mem_type != HVMMEM_mmio_dm;
->    }
->    #endif
-> 
-> 
-> Assuming that if HYPERVISOR_hvm_op() fails that
-> .mem_type is not set to HVMMEM_mmio_dm.
-> 
 
-Okay we can't, due to "__must_check" ...
+--ey4ikhdxthigr5cx
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
+Hello Simon,
 
-David / dhildenb
+On Wed, Sep 29, 2021 at 10:05:42AM +0200, Simon Horman wrote:
+> On Tue, Sep 28, 2021 at 12:31:29PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Sep 28, 2021 at 12:01:28PM +0200, Simon Horman wrote:
+> > > On Mon, Sep 27, 2021 at 10:43:22PM +0200, Uwe Kleine-K=F6nig wrote:
+> > > > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > > >=20
+> > > > struct pci_dev::driver holds (apart from a constant offset) the same
+> > > > data as struct pci_dev::dev->driver. With the goal to remove struct
+> > > > pci_dev::driver to get rid of data duplication replace getting the
+> > > > driver name by dev_driver_string() which implicitly makes use of st=
+ruct
+> > > > pci_dev::dev->driver.
+> > > >=20
+> > > > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > >=20
+> > > ...
+> > >=20
+> > > > diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c b=
+/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+> > > > index 0685ece1f155..23dfb599c828 100644
+> > > > --- a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+> > > > +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+> > > > @@ -202,7 +202,7 @@ nfp_get_drvinfo(struct nfp_app *app, struct pci=
+_dev *pdev,
+> > > >  {
+> > > >  	char nsp_version[ETHTOOL_FWVERS_LEN] =3D {};
+> > > > =20
+> > > > -	strlcpy(drvinfo->driver, pdev->driver->name, sizeof(drvinfo->driv=
+er));
+> > > > +	strlcpy(drvinfo->driver, dev_driver_string(&pdev->dev), sizeof(dr=
+vinfo->driver));
+> > >=20
+> > > I'd slightly prefer to maintain lines under 80 columns wide.
+> > > But not nearly strongly enough to engage in a long debate about it.
+> >=20
+> > :-)
+> >=20
+> > Looking at the output of
+> >=20
+> > 	git grep strlcpy.\*sizeof
+> >=20
+> > I wonder if it would be sensible to introduce something like
+> >=20
+> > 	#define strlcpy_array(arr, src) (strlcpy(arr, src, sizeof(arr)) + __mu=
+st_be_array(arr))
+> >=20
+> > but not sure this is possible without a long debate either (and this
+> > line is over 80 chars wide, too :-).
+>=20
+> My main motivation for the 80 char limit in nfp_net_ethtool.c is
+> not that I think 80 char is universally a good limit (although that is tr=
+ue),
+> but rather that I expect that is the prevailing style in nfp_net_ethtool.=
+c.
 
+I sent out v5 with an additional line break now.
+=20
+> So a macro more than 80 car wide somewhere else is fine by me.
+>=20
+> However, when running checkpatch --strict over the patch it told me:
+>=20
+>     WARNING: Prefer strscpy over strlcpy - see: https://lore.kernel.org/r=
+/CAHk-=3DwgfRnXz0W3D37d01q3JFkr_i_uTL=3DV6A6G1oUZcprmknw@mail.gmail.com/
+>     #276: FILE: drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c:205:
+>     +	strlcpy(drvinfo->driver, dev_driver_string(&pdev->dev), sizeof(drvi=
+nfo->driver));
+>=20
+>     total: 0 errors, 1 warnings, 0 checks, 80 lines checked
+>=20
+> (Amusingly, more text wider than 80 column, perhaps suggesting the folly =
+of
+>  my original comment, but lets move on from that.)
+>=20
+> As your patch doesn't introduce the usage of strlcpy() I was considering a
+> follow-up patch to change it to strscpy(). And in general the email at the
+> link above suggests all usages of strlcpy() should do so. So perhaps
+> creating strscpy_array is a better idea?
+
+What I read about strscpy() is that conversions for the sake of the
+conversion are not welcome. When such a conversion comes from someone
+involved with the driver that is also tested this is probably fine.
+=20
+> I have not thought about this much, and probably this just leads us to a
+> deeper part of the rabbit hole.
+
+I assume so, too.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ey4ikhdxthigr5cx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFUK/8ACgkQwfwUeK3K
+7AlkTwf/dkfubvexEL8hKb2Rh3bCdHj1QQgkHxBsDLSNCo4lhj+H8iJlt8IyS3H8
++XjgTjDp2XDrOSbFVQug/BYE5Wk94BoOdy/6cprREtPJZ4oI3QgdaaikCtG1CdwW
+KzFBUgIiRQlfUsxTM/xz9zGA40xpfydtliziKS7R4Kwn1dqfSB0Cl3hm97kC5DEA
+O42j5CvC58tvuAmEV02PSFRtt8xMb20mgqTN43Q9kzPHM2ziW4g0R9U999fyNqmT
+0vHgrGgXXdRc5+VU3Jd1ZCnrTVzWJMpaKoOCzGZVBO47gcB/7/mH6iFzMVACIYKV
+f5p890vGJmfiOE9WD2VDNGj7w2NU/A==
+=vlM1
+-----END PGP SIGNATURE-----
+
+--ey4ikhdxthigr5cx--
