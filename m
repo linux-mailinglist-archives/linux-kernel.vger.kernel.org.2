@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3935041C70E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6910A41C711
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344445AbhI2OpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:45:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24587 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245396AbhI2OpI (ORCPT
+        id S1344533AbhI2Oqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244878AbhI2Oqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:45:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632926607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=k2mLc/radmqh34XgUWy+HwWaMs9PrqhstK/RW+oNKnc=;
-        b=hs5mKGQpv5TsD2uWcnCEtb68+6p7Vb0iJ9soH+KInBz2DkiwXXGiMMyzmxEuTezF59IB7s
-        NzKvcgmK4uk4xf/OgHdDbJSu345ctVu81KX5aeKfVjDP8zxP5CgeJu6HkPp6w2FifeeEcS
-        FBC+Voqe8KEFsSQeEtOI9pB0ktv0XLs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-yY6d50MPNzqq9ntTG_In9g-1; Wed, 29 Sep 2021 10:43:25 -0400
-X-MC-Unique: yY6d50MPNzqq9ntTG_In9g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7065518414A6;
-        Wed, 29 Sep 2021 14:43:24 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.195.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B69319C59;
-        Wed, 29 Sep 2021 14:43:22 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v1] x86/Kconfig: select ARCH_SELECT_MEMORY_MODEL only if FLATMEM and SPARSEMEM are possible
-Date:   Wed, 29 Sep 2021 16:43:21 +0200
-Message-Id: <20210929144321.50411-1-david@redhat.com>
+        Wed, 29 Sep 2021 10:46:36 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CDCC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:44:55 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id b15so11623696lfe.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kTJI15TCa8PAJGREAVnlDqsgyEszgn+j2lBqSs/nVF0=;
+        b=xjHGKhxmbOSwTYwP271sLTO9oAiUoZ1W9eRARmkGYniBQ9Iode2KysP8Y+R1/qrENH
+         D4GcddGAx0EMpPJZS1yVFuPI9UfThPUJ+oTtadU/RVB1xTtdtFwuAV4/YrqwaRRasOyR
+         cQtVpV7VHJGWTJ/3J3uq5I6jSGoPiEW2ZsV3Zi8rHtcvpt9GriIa8ru2R7VPwBub9e5B
+         Xa5DKbNNtdUoKsfYJzx5mxopxO2ptvGkEx1qo4NV/8cG5RVhsEoLtaRbwavs3XoqIh6q
+         8A5JSVl53OfMF8hdzjcxS62cO/mbuD/5Y+AjI04QdDEm77epsia0HhfOs6tPAjrTzE8X
+         AKYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kTJI15TCa8PAJGREAVnlDqsgyEszgn+j2lBqSs/nVF0=;
+        b=DC1E/rZOx8XxIRh/jDfM93xx1OifWmvG7fWzp91W5fPlmmOFiZxNIc0sYBE5krTidc
+         KY2Z43sfrjq63tTuX7DJEfsblXdGu6nOXK9PZurKWVrvph/XqqT4asrXBNz+tr3pUt+h
+         auDhzh3nrFnerx1yNgFzeyR6/T/E2ee4Sk8/sEfOcKfsjK1u3/HZv7l14IC47JRMg4I6
+         miLcyYqDVh4Dxbkv2Wq7fjmSft+XpAkLMi/4tGTos9IBt/sw6RU6wPjJLUgIj3lIQ3xq
+         lj0n85dGGBezud94dTTHnEm57TuwnuOlVSC6KTskmKZHAd/HiQ3SA7vba4H7QfGqx36u
+         aDLg==
+X-Gm-Message-State: AOAM533ASFmKQd8axrrfc5w5/+RF8ZXDSk5aK9U3AOu5XSWFB4WgReM9
+        G076IvD5xFG5HVgk6A4c6tin7g==
+X-Google-Smtp-Source: ABdhPJwZhrATzdfeTww9AAP3rRlwJsNaFFlYmAtnf+adqoXn44vYQElWo1YizMdPPsmTDNLUooDT0g==
+X-Received: by 2002:a2e:8881:: with SMTP id k1mr262703lji.443.1632926693693;
+        Wed, 29 Sep 2021 07:44:53 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id g4sm9863ljk.64.2021.09.29.07.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 07:44:53 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Maulik Shah <mkshah@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] cpuidle: Fix runtime PM based cpuidle for s2idle
+Date:   Wed, 29 Sep 2021 16:44:49 +0200
+Message-Id: <20210929144451.113334-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On x86-64 we really only support CONFIG_SPARSEMEM; there is nothing users
-can select. So enable the memory model selection (via
-CONFIG_ARCH_SELECT_MEMORY_MODEL) only if both, SPARSEMEM and FLATMEM are
-possible, which isn't the case on x86-64.
+Maulik Shah reported problems to me around the s2idle support in the
+cpuidle-psci driver. More precisely, calls to pm_runtime_get|put fails during
+system wide suspend, because runtime PM gets disabled by the PM core.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: linux-mm@kvack.org
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/x86/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This small series intends to fix the problem. More details in the commit
+messages.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ab83c22d274e..50f98dc02ad4 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1611,7 +1611,7 @@ config ARCH_SPARSEMEM_DEFAULT
- 
- config ARCH_SELECT_MEMORY_MODEL
- 	def_bool y
--	depends on ARCH_SPARSEMEM_ENABLE
-+	depends on ARCH_SPARSEMEM_ENABLE && ARCH_FLATMEM_ENABLE
- 
- config ARCH_MEMORY_PROBE
- 	bool "Enable sysfs memory/probe interface"
+Kind regards
+Ulf Hansson
+
+
+Ulf Hansson (2):
+  cpuidle: Avoid calls to cpuidle_resume|pause() for s2idle
+  PM: sleep: Fix runtime PM based cpuidle support
+
+ drivers/base/power/main.c |  6 ++----
+ drivers/cpuidle/cpuidle.c |  7 ++++++-
+ include/linux/cpuidle.h   |  2 ++
+ kernel/power/suspend.c    |  2 --
+ kernel/sched/idle.c       | 40 ++++++++++++++++++++++-----------------
+ 5 files changed, 33 insertions(+), 24 deletions(-)
+
 -- 
-2.31.1
+2.25.1
 
