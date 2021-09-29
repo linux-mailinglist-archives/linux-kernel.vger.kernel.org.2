@@ -2,209 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5534941CCDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9C941CCE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345366AbhI2TuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345142AbhI2TuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:50:00 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF65DC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:48:17 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id x7so12653968edd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3th2hUjvmiLPXNLmRnZX/EchQR6aXc4YsFVE304670Q=;
-        b=IaYLjPbFd6hwOEKnD3borADXZUAdBFhcU7NQsIc83/Kmivk0MUFZHiLULqzAcZwoYH
-         qgly0aAYe4/jrm2dq+AAqH7xrXWTyOu873UoXqA9WMnouuXtrzKdnoLmt/25r2KCYSmy
-         JlExGC4JrIen5ukSpZnE5amYh6LCDJ0KQ1XpqVsmk2ejUkv8+jPHPVjKyAOC5Cz4qgpY
-         6bT2hVDCBfl9XAYzeR2N0NKYwspYQ9NwfPoMneZu0g8DOzqtaKxaOPwB9oJPa4keQvv2
-         2kdnMxrbE2qa97FpIqy4/AppfVkBDN2apsainGdq2uZcZchTkzZ+wH5+vQ5O50wkEC4u
-         CZqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3th2hUjvmiLPXNLmRnZX/EchQR6aXc4YsFVE304670Q=;
-        b=AlPQmZu8l5y944Pus9nLQYHPZk83Vb94NlggcOyxSmzi/g5NxShDzCJ6hgc5/RSm8d
-         2JEF4j6kU2GQHlRxlxvGlpR3WfRsTsewfB4ovN46WjQ3RuCGIF52uEv/Whz0+7TrnwPi
-         4oy5WkULe2CDKg8wG/jPXyhAbaBd5USesbl4uP4kOg69HFrLiqul/+Zs3GNoZJQD/4yy
-         khtMuZHRI09nmwcr22fnW/TMqBFWZqVqTyAqGjWY4IiL/5SwCUdavzRY82Y6Awhh5vA9
-         JUXlYXGDBeeVEpUHvJqpl5axOhHkhmGPHkEpsdGkPckI3qcXDpqrP64eMn5krCk+AExO
-         9oFA==
-X-Gm-Message-State: AOAM533TelzKX0de72lKL4s9RBshghrnLbodDM+9gdzsJopyoRZqtZcI
-        n7v47ViVnZ3TpgWksxEQVG7FH0t2sgikJesq84GbDw==
-X-Google-Smtp-Source: ABdhPJzXsuFmp5jw2/gm+EE7SK7HrZyR0YkqtXCspdsR4fqquN6AoJLxVqpUYBYuw+OkilrsfXKcWu9Sh8ae4M6O/gs=
-X-Received: by 2002:a17:906:fa8c:: with SMTP id lt12mr1832859ejb.204.1632944896124;
- Wed, 29 Sep 2021 12:48:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com> <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
-In-Reply-To: <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
-From:   Will McVicker <willmcvicker@google.com>
-Date:   Wed, 29 Sep 2021 12:48:00 -0700
-Message-ID: <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
+        id S1345511AbhI2TvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:51:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345056AbhI2TvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:51:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D32613DA;
+        Wed, 29 Sep 2021 19:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632944964;
+        bh=RCKQpg6aiz4Y9fPYcSghXnoRac3MFMpvYTPY8Mo6PQg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qMRZEt6iSy2H7y+pvJRvlJW+JjzXzQNPxL6gVS71pais8DGDEILD6LmrDGMxrL8f0
+         ZbrWnvez97yhBGwmmAWpSxZkQzAveqPKNirHZjoJOiBrS1gPo7hTKS9eEC3ZNBnqGj
+         SUCZONbIx9PVl1YveGfKCurZ5IuRTELe4zXuUW8F0Umy9xPjD5TPQlhF4stNJhD22d
+         Nzw9IJb71BImaaZL42CuuJRKVqyePwHhgXm3L81iN7ih4Onsm82BlZZxrh29lWoA9d
+         tEpNokDFUKxgWjrat20JzW5Es9aZikeWXsnDD43mqTo3URGnqp2ZFOf3hvRzEkpmD9
+         cRJa0HFNj8vSA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7B84A5C1309; Wed, 29 Sep 2021 12:49:24 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 12:49:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Garnier <thgarnie@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Laura Abbott <labbott@redhat.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, notify@kernel.org
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+Message-ID: <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210929185823.499268-1-alex.popov@linux.com>
+ <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 29/09/2021 01:56, Will McVicker wrote:
-> > This is v2 of the series of patches that modularizes a number of core
-> > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
-> > modularized all of the drivers that are removed from the ARCH_EXYNOS
-> > series of "select XXX". This includes setting the following configs as
-> > tristate:
-> >
-> >  * COMMON_CLK_SAMSUNG
-> >  * EXYNOS_ARM64_COMMON_CLK
-> >  * PINCTRL_SAMSUNG
-> >  * PINCTRL_EXYNOS
-> >  * EXYNOS_PMU_ARM64
-> >  * EXYNOS_PM_DOMAINS
-> >
-> > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
-> > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
-> > The reason for these new configs is because we are not able to easily
-> > modularize the ARMv7 PMU driver due to built-in arch dependencies on
-> > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
-> > the ARM and ARM64 portions into two separate configs.
-> >
-> > Overall, these drivers didn't require much refactoring and converted to
-> > modules relatively easily. However, due to my lack of exynos hardware, I
-> > was not able to boot test these changes. I'm mostly concerned about the
-> > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
-> > requesting help for testing these changes on the respective hardware.
-> >
->
-> These are all not tested at all? In such case, since these are not
-> trivial changes, please mark the series as RFT.
->
-> I will not be able to test these for some days, so it must wait.
->
->
+On Wed, Sep 29, 2021 at 10:01:33PM +0300, Alexander Popov wrote:
+> On 29.09.2021 21:58, Alexander Popov wrote:
+> > Currently, the Linux kernel provides two types of reaction to kernel
+> > warnings:
+> >  1. Do nothing (by default),
+> >  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
+> >     so panic_on_warn is usually disabled on production systems.
+> > 
+> > From a safety point of view, the Linux kernel misses a middle way of
+> > handling kernel warnings:
+> >  - The kernel should stop the activity that provokes a warning,
+> >  - But the kernel should avoid complete denial of service.
+> > 
+> > From a security point of view, kernel warning messages provide a lot of
+> > useful information for attackers. Many GNU/Linux distributions allow
+> > unprivileged users to read the kernel log, so attackers use kernel
+> > warning infoleak in vulnerability exploits. See the examples:
+> >   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+> >   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
+> > 
+> > Let's introduce the pkill_on_warn boot parameter.
+> > If this parameter is set, the kernel kills all threads in a process
+> > that provoked a kernel warning. This behavior is reasonable from a safety
+> > point of view described above. It is also useful for kernel security
+> > hardening because the system kills an exploit process that hits a
+> > kernel warning.
+> > 
+> > Signed-off-by: Alexander Popov <alex.popov@linux.com>
+> 
+> This patch was tested using CONFIG_LKDTM.
+> The kernel kills a process that performs this:
+>   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
+> 
+> If you are fine with this approach, I will prepare a patch adding the
+> pkill_on_warn sysctl.
+
+I suspect that you need a list of kthreads for which you are better
+off just invoking panic().  RCU's various kthreads, for but one set
+of examples.
+
+							Thanx, Paul
+
 > Best regards,
-> Krzysztof
-
-+Cc Arnd and Olof,
-
-Hi Krzysztof,
-
-To avoid the scrambled conversation from the first patchset, I'm going
-to address all your general questions here in the cover letter thread
-so that it's easier for everyone to follow and reference in the
-future.
-
->What is more, it seems you entirely ignored Geert's comments. I pointed
->attention to it last time and you just said you will send v2 instead of
->joining discussion.
->
->It's a NAK for this reason - ignoring what Geert brought: you just broke
->distro configs for Exynos.
-
-First off I did want to chime into the discussion from the previous
-patchset, but I felt that Lee and Saravana addressed all your concerns
-regarding the intent and feasibility. You also made it clear what the
-next steps were that I needed to take.
-
->Please also explain why Exynos is so special that we deviate from the
->policy for all SoC that critical SoC-related drivers have to be enabled
->(built-in or as module).
-
-I am not actually changing ANY default build configurations here and
-I'm not removing any existing configuration. I tried to make it pretty
-clear in my original patch series commit messages that none of my
-changes modify the default behavior. The .config is the same with and
-without my patches. All of these drivers remain enabled as built-in.
-So if there is a distro that requires all of these drivers to be
-built-in, then they can continue as is without noticing any
-difference. IOW, all of these changes are/should be backwards
-compatible.
-
-I really appreciate yours and John Stultz's comments regarding
-including the "why" in my commit message wording. I will spend more
-time on the next series on trying to write a more meaningful commit
-message, but before that we can surely discuss the "why" here.
-
-As mentioned by Lee and Saravana, our common goal is to make it easier
-for everyone to contribute upstream. In particular, this series of
-patches is laying the ground work for distros to have more flexibility
-in supporting a wider range of platforms without forcing everyone to
-include unnecessary drivers. You said that upstream supports a generic
-kernel, but I argue that the upstream "generic" arm64 kernel can't be
-considered generic if it builds in SoC specific drivers that can be
-modules. This patch series is addressing exactly that -- allow distros
-to move SoC specific drivers out of the core kernel and into modules.
-Ultimately, our goal is to be able to directly develop with the
-upstream kernel on new and old SoCs by not including SoC specific
-drivers in our generic kernel distro. This helps the upstream
-community in a number of ways:
-
-(1) It makes the ARM64 generic kernel smaller by converting more
-drivers into modules
-(2) It makes it a lot easier for everyone to develop upstream if they
-can directly use the upstream kernel without carrying downstream
-changes.
-
->Even if there was, I think it is good to have dependencies like
->ARCH_EXYNOS, as they let us partition the (19000, as Arnd said recently)
->Kconfig symbols into better manageable groups.  Without these, we cannot
->do better than "depends on ARM || ARM64 || COMPILE_TEST".
-
-My patch series still keeps the dependencies on ARCH_EXYNOS. I am
-totally fine with "depends on ARCH_EXYNOS" and totally fine with
-"default ARCH_EXYNOS". The problem we have is that ARCH_EXYNOS
-forcefully selects SoC specific drivers to be built-in because it just
-adds more and more SoC-specific drivers to a generic kernel.
-
-I know you are asking for me to only push changes that have proven to
-work. The theory behind these changes has been proven downstream on
-other devices and I'm more than willing to help debug any issues that
-arise out of this patch series, but since I don't have the hardware
-myself I do need help with device testing these changes. We are not
-trying to trick upstream in anyway to accept something that is not
-functional or going to hurt the upstream community. I am more than
-willing to help upstream and am totally willing to work with upstream
-to verify all of these changes before they are accepted (feel free to
-send me any dusty, unused hardware lying around if you want the extra
-help with device testing).
-
-I hope that helps clarifies things! I will address other patch
-specific comments in those threads as well.
-
-Thanks,
-Will
+> Alexander
+> 
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt | 4 ++++
+> >  kernel/panic.c                                  | 5 +++++
+> >  2 files changed, 9 insertions(+)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 91ba391f9b32..86c748907666 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -4112,6 +4112,10 @@
+> >  	pirq=		[SMP,APIC] Manual mp-table setup
+> >  			See Documentation/x86/i386/IO-APIC.rst.
+> >  
+> > +	pkill_on_warn=	Kill all threads in a process that provoked a
+> > +			kernel warning.
+> > +			Format: { "0" | "1" }
+> > +
+> >  	plip=		[PPT,NET] Parallel port network link
+> >  			Format: { parport<nr> | timid | 0 }
+> >  			See also Documentation/admin-guide/parport.rst.
+> > diff --git a/kernel/panic.c b/kernel/panic.c
+> > index cefd7d82366f..47b728bfb1d3 100644
+> > --- a/kernel/panic.c
+> > +++ b/kernel/panic.c
+> > @@ -53,6 +53,7 @@ static int pause_on_oops_flag;
+> >  static DEFINE_SPINLOCK(pause_on_oops_lock);
+> >  bool crash_kexec_post_notifiers;
+> >  int panic_on_warn __read_mostly;
+> > +int pkill_on_warn __read_mostly;
+> >  unsigned long panic_on_taint;
+> >  bool panic_on_taint_nousertaint = false;
+> >  
+> > @@ -610,6 +611,9 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+> >  
+> >  	print_oops_end_marker();
+> >  
+> > +	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
+> > +		do_group_exit(SIGKILL);
+> > +
+> >  	/* Just a warning, don't kill lockdep. */
+> >  	add_taint(taint, LOCKDEP_STILL_OK);
+> >  }
+> > @@ -694,6 +698,7 @@ core_param(panic, panic_timeout, int, 0644);
+> >  core_param(panic_print, panic_print, ulong, 0644);
+> >  core_param(pause_on_oops, pause_on_oops, int, 0644);
+> >  core_param(panic_on_warn, panic_on_warn, int, 0644);
+> > +core_param(pkill_on_warn, pkill_on_warn, int, 0644);
+> >  core_param(crash_kexec_post_notifiers, crash_kexec_post_notifiers, bool, 0644);
+> >  
+> >  static int __init oops_setup(char *s)
+> > 
+> 
