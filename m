@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6687941C136
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8236B41C13C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244958AbhI2JCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244764AbhI2JC3 (ORCPT
+        id S244972AbhI2JE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:04:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244898AbhI2JEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:02:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC28C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pHipk2Cz3G9EnP66HxC1PEdxlMMCy85ylZCusFz7JX8=; b=L2xBKMCBCbqkPhULXQnAf/DB/B
-        bROMSR+f43tHOq/eYeFHLkKZn1Pk/y5gW3IrCVfl7d6eN4psA+tO/5zk5f6KFbGjDxVOU+fN6MVY9
-        +uCWD0iwIlzcIMeEqIylwygihyu/69yJlPiF/7DoovPPq5tws71ZfddvLvr7I6KMu//PQuXXUiKYZ
-        3SeOrI0MoGwFyYPSltKq8xVFNlaI8W1mKyE91ZVyi9vagKB4SbAezx4crOIMzohhzv6twbfoxL+98
-        mZ1Bp5eC48Jte5ZUkraixWMamffwPKDEPZhM1SOK6mnP3LusiK/LfUUSaggTQrThqws3VSMxUG6Wx
-        y7jpSh/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVVS5-006g5d-O5; Wed, 29 Sep 2021 09:00:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0128E30029A;
-        Wed, 29 Sep 2021 11:00:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9DC2D2DC92D0A; Wed, 29 Sep 2021 11:00:32 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 11:00:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Wed, 29 Sep 2021 05:04:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632906193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7W9Fc0fF86WyXYecPV/lI8dmSptGKk8vSEWO1VbX84s=;
+        b=VgUT5Wkwz6V88ZQWns3PibHMln4HGhgp//Lqv9xtWWLTUU31B+jaqn1HXLjgQC/QydaJh8
+        NDkadZGDpMr/7/xCagBYELPHCNxaXtcFe2exkJT+esc+RwifmAL59hZ6W7hNVbT8JgYUIs
+        S8u2Og2LtVssz/7JezgZKEYnn+I6IDY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-j5gX-FlrNEa_X-s5qUg9ww-1; Wed, 29 Sep 2021 05:03:12 -0400
+X-MC-Unique: j5gX-FlrNEa_X-s5qUg9ww-1
+Received: by mail-wr1-f70.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso383514wrb.20
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:03:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7W9Fc0fF86WyXYecPV/lI8dmSptGKk8vSEWO1VbX84s=;
+        b=EqQmJS2a/7hfAJAiMG9GQax3whgIM4iHbaBRgyA8wPMTQNidhQ9UIqPlC5T9KdxWVL
+         sGL3Zcq2elmrgXuYYI70DfRjCHsWL/6UiVjZoAmAq/mkc5C1WA1rHLAKMNoGHqf2TeTP
+         K3MRjEJ717hmh4xlbrkm6Gt3rRHbo03gOkM1bsuMPcHxlMua5TajVaTvCrzZaOKdZNbl
+         lv4qvXXeVN/QcWRQLgkYVFflIKtwLQC3+s8810r81K86A9zV6c6lWSHzg0gcLRYD81F7
+         JMI57rmoq+9BaU0qTK+swm3mvYTC3CRpJXCST8sW/Z4qJea2ZrzunxdqTtCJC2picqQz
+         vjQQ==
+X-Gm-Message-State: AOAM531xMPLc3cAwXbbs3G+oxYB7hkfKZwwcAzUgyZwOIaW0TfwcMn64
+        KZpSIcnaVn1hDBXO8aM+LwFL4rKLCf52m0eBtlYKhrDHDh9Z3X2EBK8f/7+6Gm0iKA5xjE2nfl8
+        IP0bHdAEf2JVDSe0jevZn43od
+X-Received: by 2002:a7b:c219:: with SMTP id x25mr9238899wmi.125.1632906190953;
+        Wed, 29 Sep 2021 02:03:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAVvczz8jUTCdMNZ0BC5qvezoqKUBOcf5OajF0CWmKLmPAPf0K3OR8WEfpMUG5vsV5dclhgg==
+X-Received: by 2002:a7b:c219:: with SMTP id x25mr9238872wmi.125.1632906190770;
+        Wed, 29 Sep 2021 02:03:10 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id t11sm1548498wrz.65.2021.09.29.02.03.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 02:03:10 -0700 (PDT)
+Subject: Re: [PATCH v1 2/8] x86/xen: simplify xen_oldmem_pfn_is_ram()
+From:   David Hildenbrand <david@redhat.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
-Message-ID: <YVQrMHXBzEpJmqRy@hirez.programming.kicks-ass.net>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-5-fenghua.yu@intel.com>
- <20210922210722.GV4323@worktop.programming.kicks-ass.net>
- <YUy2AmabA4ODOgAC@agluck-desk2.amr.corp.intel.com>
- <YU3UkvNdzCqAANSY@hirez.programming.kicks-ass.net>
- <YU3xLNJsSjIEpocT@agluck-desk2.amr.corp.intel.com>
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        virtualization@lists.linux-foundation.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210928182258.12451-1-david@redhat.com>
+ <20210928182258.12451-3-david@redhat.com>
+ <4ab2f8c2-c3d5-30b3-a670-a8b38e218b6e@oracle.com>
+ <bfe72f46-9a0d-1a87-64bd-4b03999edd1e@redhat.com>
+Organization: Red Hat
+Message-ID: <e9a230f9-85cb-d4c1-8027-508b7c344d94@redhat.com>
+Date:   Wed, 29 Sep 2021 11:03:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YU3xLNJsSjIEpocT@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <bfe72f46-9a0d-1a87-64bd-4b03999edd1e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 08:39:24AM -0700, Luck, Tony wrote:
-
-> If you have ctags installed then a ctrl-] on that
-> __fixup_pasid_exception() will take you to the function with
-> the comments. No electron microscope needed.
-
-I to use ctags, but when reading the #GP handler, this is a whole
-different file. Also, I don't find any of those comments explaining the
-not-our-#GP-but-harmless-cycle issue.
-
-The current->has_valid_pasid one comes close, but just misses it. But
-really the place to put this is in the #GP handler itself so we don't
-have to dig through every call there to figure out how it's supposed to
-work.
-
-> +
-> +/*
-> + * Try to figure out if there is a PASID MSR value to propagate to the
-> + * thread taking the #GP.
-> + */
-> +bool __fixup_pasid_exception(void)
-> +{
-> +       u32 pasid;
-> +
-> +       /*
-> +        * This function is called only when this #GP was triggered from user
-> +        * space. So the mm cannot be NULL.
-> +        */
-> +       pasid = current->mm->pasid;
-> +
-> +       /* If no PASID is allocated, there is nothing to propagate. */
-> +       if (pasid == PASID_DISABLED)
-> +               return false;
-> +
-> +       /*
-> +        * If the current task already has a valid PASID MSR, then the #GP
-> +        * fault must be for some non-ENQCMD related reason.
-> +        */
-> +       if (current->has_valid_pasid)
-> +               return false;
-> +
-> +       /* Fix up the MSR by the PASID in the mm. */
-> +       fpu__pasid_write(pasid);
-> +       current->has_valid_pasid = 1;
-> +
-> +       return true;
-> +}
+On 29.09.21 10:45, David Hildenbrand wrote:
+>>
+>> How about
+>>
+>>       return a.mem_type != HVMMEM_mmio_dm;
+>>
 > 
-> -Tony
+> Ha, how could I have missed that :)
+> 
+>>
+>> Result should be promoted to int and this has added benefit of not requiring changes in patch 4.
+>>
+> 
+> Can we go one step further and do
+> 
+> 
+> @@ -20,24 +20,11 @@ static int xen_oldmem_pfn_is_ram(unsigned long pfn)
+>           struct xen_hvm_get_mem_type a = {
+>                   .domid = DOMID_SELF,
+>                   .pfn = pfn,
+> +               .mem_type = HVMMEM_ram_rw,
+>           };
+> -       int ram;
+>    
+> -       if (HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a))
+> -               return -ENXIO;
+> -
+> -       switch (a.mem_type) {
+> -       case HVMMEM_mmio_dm:
+> -               ram = 0;
+> -               break;
+> -       case HVMMEM_ram_rw:
+> -       case HVMMEM_ram_ro:
+> -       default:
+> -               ram = 1;
+> -               break;
+> -       }
+> -
+> -       return ram;
+> +       HYPERVISOR_hvm_op(HVMOP_get_mem_type, &a);
+> +       return a.mem_type != HVMMEM_mmio_dm;
+>    }
+>    #endif
+> 
+> 
+> Assuming that if HYPERVISOR_hvm_op() fails that
+> .mem_type is not set to HVMMEM_mmio_dm.
+> 
+
+Okay we can't, due to "__must_check" ...
+
+-- 
+Thanks,
+
+David / dhildenb
+
