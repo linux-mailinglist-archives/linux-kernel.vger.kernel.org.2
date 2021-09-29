@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3F641C325
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9F141C324
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245636AbhI2LHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:07:17 -0400
-Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:44074 "EHLO
-        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244363AbhI2LHQ (ORCPT
+        id S245629AbhI2LG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244363AbhI2LG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:07:16 -0400
-Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
-        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 789C21008CBC0;
-        Wed, 29 Sep 2021 19:05:34 +0800 (CST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 8CD3F200B5753;
-        Wed, 29 Sep 2021 19:05:31 +0800 (CST)
-X-Virus-Scanned: amavisd-new at 
-Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Rn75ASWTZkzI; Wed, 29 Sep 2021 19:05:31 +0800 (CST)
-Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
-        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 84914200C02CB;
-        Wed, 29 Sep 2021 19:05:14 +0800 (CST)
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-To:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Guo Zhi <qtxuning1999@sjtu.edu.cn>, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clockresource/npcm: Fix kernel pointer leak
-Date:   Wed, 29 Sep 2021 19:04:29 +0800
-Message-Id: <20210929110431.1113708-1-qtxuning1999@sjtu.edu.cn>
-X-Mailer: git-send-email 2.33.0
+        Wed, 29 Sep 2021 07:06:26 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6018DC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:04:45 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id h129so2581578iof.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=XLPZ73sO9dhVT2bbwHwMCvXSPeNtSy62+mZkkR1QY/Zbxrch90BJWL9KQJoB51crZH
+         ZNXtL/bVO1eNNkZdi180BqbYvMl9kmbF6KI2Q0Dj80ny6jV0gnJDMHBUeOqDcZiOS5lI
+         hJq/SMlk1YnOT5oQBVcuRxxMQt3u4JyZPUlAQlfho/FGIudGW7Maaz21VgazUth/LZnk
+         Lk3ShCeaImzxdi/zOrCR7lPuq2W44ytat4X2ZTG/kHiWDBqPK86rGj7wPbQ0BN7UQ2tb
+         tF+tUbDnikpbJFm1Zcc4b+UEej3qciw0GNR48DICYBtd9LY4iTUtyCJczUtkO4PkZWR+
+         yo2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=qNDARxTp89wcuZxDK88qgEmZQkp/qQshc+xP1Au69GfnomBHiuQtPgurhnERCwLK35
+         hTrZHFqvg6bJmd6XzU+Gk47XxnSyiMtQ/cRk/pSfPn1idLFezd/fQGkKALUr4SJ9oHyP
+         unwIIIRpjZ9xHL4IBH1qzTeCVID7D4lhGPNIZ9mZkN60/0b5bH4juLzNgnz4HrCUVZ0N
+         HtIur6wzvdaYVj83ut6PjcD9QeCPB9Rw77xVt5bwTlGFOwfQg5u+BpPlW2lNA9ehw2HZ
+         Tcsm9v/YDKK2lBU/QaBn1MWmbpnZEIKdlakhCqgRJFz8RQa2C1nS60Zn3oGJBmT8kzhO
+         jAkg==
+X-Gm-Message-State: AOAM533qNus3C0vqHvktrZ02V7lRQUHwxMurhGjLhxrKLk1C+r8/pW2A
+        s32Qw7gK649zCV9+uCtF+74BCeUccdVZLhpR+LM=
+X-Google-Smtp-Source: ABdhPJw+lmE1MggRj1GoWe5/x9aSm+DUzhVW4qaoHkJNpFXrm7JuNWGO4uOd4NO1RUPpl4y4eK8+v6m7A2a//hr8iXU=
+X-Received: by 2002:a02:aa8e:: with SMTP id u14mr9078817jai.24.1632913484777;
+ Wed, 29 Sep 2021 04:04:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6602:13c8:0:0:0:0 with HTTP; Wed, 29 Sep 2021 04:04:44
+ -0700 (PDT)
+Reply-To: mrschantelhermans@gmail.com
+From:   Mrs Chantel Hermans <mrs.chantalhermans2002@gmail.com>
+Date:   Wed, 29 Sep 2021 04:04:44 -0700
+Message-ID: <CA+YEVv9NLRr0hUsRA2uX=AAQW4ZAkf7dCbCv5fKc_3V7yvUR=g@mail.gmail.com>
+Subject: ATTENTION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointers should be printed with %p rather than %px
-which printed kernel pointer directly.
-Change %px to %p to print the secured pointer.
-
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
----
- drivers/clocksource/timer-npcm7xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/timer-npcm7xx.c b/drivers/clocksource/timer-npcm7xx.c
-index a00520cbb660..bf477685d545 100644
---- a/drivers/clocksource/timer-npcm7xx.c
-+++ b/drivers/clocksource/timer-npcm7xx.c
-@@ -202,7 +202,7 @@ static int __init npcm7xx_timer_init(struct device_node *np)
- 	npcm7xx_clocksource_init();
- 	npcm7xx_clockevents_init();
- 
--	pr_info("Enabling NPCM7xx clocksource timer base: %px, IRQ: %d ",
-+	pr_info("Enabling NPCM7xx clocksource timer base: %p, IRQ: %d ",
- 		timer_of_base(&npcm7xx_to), timer_of_irq(&npcm7xx_to));
- 
- 	return 0;
 -- 
-2.33.0
 
+
+ATTENTION
+
+
+
+You have been compensated with the sum of 6.9 million dollars in this
+United Nation the payment will be issue into ATM Visa Card,
+
+
+
+and send to you from the Santander Bank of Spain we need your
+Address,Passport and your whatsapp number.
+
+
+
+THANKS
+
+*Mrs Chantel Hermans*
