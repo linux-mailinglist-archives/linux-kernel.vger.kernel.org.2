@@ -2,72 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E8741CD43
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09D241CD4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346597AbhI2UPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S1346636AbhI2USN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346434AbhI2UPa (ORCPT
+        with ESMTP id S1346513AbhI2USM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:15:30 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1463DC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:13:49 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id i30so4450970vsj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:13:49 -0700 (PDT)
+        Wed, 29 Sep 2021 16:18:12 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C0EC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:16:30 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m3so15471496lfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:16:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=X9zg5EGTn4Y0Q2ysEnfXXwSkcPVWnWS35aJnz4+nFKM=;
-        b=gLRKkB3iCQjeHDpBYytp2IM0FFa3sbuYIYfGD6qgHCR9qoMdjurXOupe5mEjqWnAGn
-         qzkGgrxFE8C5vRmpjl9RGp3Q7mwHy9xdyGh0D3ZHteGPvsXV4LVZgLFvIyXrPNSVuucr
-         ZPKz197EFxHKnwdD05F29cP/KozImCuwlfwC8QT5QVUKVmbE24XzzsK3XVGLo28+48nb
-         7+RatnzoYqAQ4BYhF5U+M3gcvJavEThRowgz1u3ea83wmQOMfXkyWZSiEs2Q58ARJ1//
-         /xSHJuhKXB4e7QvMJCbW6H/QPJtp+v9/LUWDSZhbjnEvMGtyZf46xfaQL7tiKK80er2K
-         5NsQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dXMsl02ir9gZe15hXtiBjL0oNEGYPzQSwMubAcb7BYw=;
+        b=hLqJUzWkLdIyKSt44xdZNe3K6Z8zqSML/DRC5qqOOA9zb2RVFgywUZrsfgfdCnwar7
+         jy6xYOZfutwWImpkURGChQ/P+HVK7hu799iFnnPC6yzVRDHmC6SuIiLkYe2cp89Itan+
+         /4JXq6/566+QDWiPUga8/i8OxBdjDp+KWTEfG2dG46azCn3zeB53IM9oGfNCcVQgilME
+         jRbz9eGlMfrx1RI2SkO6EWQ01jdq2no5Z571SYgeHYEq1VuZuRaMQWmYVrO5F6HuVE0n
+         /kyf38nTBojYdxulniLlbSR6zo5Ob/GzZvZXVC4x/WCpCdqpSCydIN5CHQvdc75P+f5r
+         7HuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=X9zg5EGTn4Y0Q2ysEnfXXwSkcPVWnWS35aJnz4+nFKM=;
-        b=m1pE3ur3h6+BXQP0hay2JiyD29Y6vH0S+JfAKhLLdUwtYn3wAtoS270yp8aIQLFQ68
-         /D5NMdIUYei0z/uuluVemBIWLcS91fcpXCEiWgdGldTl6Lj5+8fjwJw6cxMe7p+uBxW6
-         NSegd5pImDQxGPmogitvB3FEh41SXTBaiDbz/E7ZYeF1Se6S79L+sC1xILwpF72QrgRb
-         cF5JJzwuxgTT5cfruwoRaadnuY0IwSMR/r/5KCI6+RDx9t/vW2rEko9e5ZrkcB1FzzNW
-         QqoCosmQx2ppNg4VXgbJSlHv4sti8RNQYPgBNgpXr6L97BJnSnL0/L0DXOESCuvTJ2Zf
-         zifQ==
-X-Gm-Message-State: AOAM530A1A7XztvpaED2iNdAsoyoREcotXWzTSElAEfj0sWyQVqCR31K
-        glQujrX8E+7e+tb3v7jBuhs4LlL/8et8CIzynZA=
-X-Google-Smtp-Source: ABdhPJwkaXVKCpudMLe7yBRyNU1xKfXUyxYQEMh0QIeUxBCUBQPboN/UMiY4EWjJC08lnTqd3Ag+N6RZBfsRmba8O3E=
-X-Received: by 2002:a05:6102:1350:: with SMTP id j16mr2119009vsl.54.1632946427503;
- Wed, 29 Sep 2021 13:13:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dXMsl02ir9gZe15hXtiBjL0oNEGYPzQSwMubAcb7BYw=;
+        b=vJ1nGfDbO2XdoDk7whxL8fTbhExcy4Vic5hctn7+7FlOsArHCltX+DRtzvOHaPJeN/
+         roJcJJlisPy7XI3E3RHxuse8J2sWInJE4O9m9XYfLEyveY8nTBcBBM+3tdtpZ0Sub3DN
+         0ErsAOBi8ClNEiCBXjZFuHsmM70QmujtaCUzJcndmlkraaisc9X5krWUZpI2/JGHdC8V
+         KTSVU7hIfkCXoAWdU5k1nMykwHTht26m/ZQGnS4JkGv9T1PxQ7i2ZT/l8lh+x39DPUTx
+         Psla+EeGFaQXHaOza8A5KUKbl7KUskwNohNJaD86oHFKSJ+aOKPdLkxIDn9bWaFE2YLX
+         Ze7w==
+X-Gm-Message-State: AOAM5301o+Gf1WHEXxN/JlKZzHnVpMhGoSW4RzamkkwhVqG3Bq2BGPh7
+        gRgJuLbCKW7mxgzxfGQ6MYMPUBKBXrvgG5olMhBNmw==
+X-Google-Smtp-Source: ABdhPJyMCijvghXPMHxRTIkwCi5TSR0fl4vAeXD5GcOIlYdzZ658wKRP3E/Q9D6+tLnC0Q3tZSSI+o1OBxmgLLmrvvg=
+X-Received: by 2002:a2e:b892:: with SMTP id r18mr1992643ljp.220.1632946588318;
+ Wed, 29 Sep 2021 13:16:28 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:612c:10c5:b0:235:5ea8:dec0 with HTTP; Wed, 29 Sep 2021
- 13:13:46 -0700 (PDT)
-Reply-To: robertblackettesq1@gmail.com
-From:   Robert Blackett <innocentobeji@gmail.com>
-Date:   Wed, 29 Sep 2021 21:13:46 +0100
-Message-ID: <CA+P_rvUJ19+4uqT4caWtyBtjkxHxzPN1hevaOqW45u+L81vjvw@mail.gmail.com>
-Subject: Awaiting your response
-To:     undisclosed-recipients:;
+References: <20210920232533.4092046-1-ndesaulniers@google.com>
+In-Reply-To: <20210920232533.4092046-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 29 Sep 2021 13:16:16 -0700
+Message-ID: <CAKwvOdkkwOB3v34Tx_8akVR3BSR_R7eD8BDBPbJyH=74wLB3dw@mail.gmail.com>
+Subject: Re: [PATCH] nbd: use shifts rather than multiplies
+To:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--This is a personal email directed to you and I request that it=E2=80=99s
-been treated as such.
+On Mon, Sep 20, 2021 at 4:25 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> commit fad7cd3310db ("nbd: add the check to prevent overflow in
+> __nbd_ioctl()") raised an issue from the fallback helpers added in
+> commit f0907827a8a9 ("compiler.h: enable builtin overflow checkers and
+> add fallback code")
+>
+> ERROR: modpost: "__divdi3" [drivers/block/nbd.ko] undefined!
+>
+> As Stephen Rothwell notes:
+>   The added check_mul_overflow() call is being passed 64 bit values.
+>   COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW is not set for this build (see
+>   include/linux/overflow.h).
+>
+> Specifically, the helpers for checking whether the results of a
+> multiplication overflowed (__unsigned_mul_overflow,
+> __signed_add_overflow) use the division operator when
+> !COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW.  This is problematic for 64b
+> operands on 32b hosts.
+>
+> This was fixed upstream by
+> commit 76ae847497bc ("Documentation: raise minimum supported version of
+> GCC to 5.1")
+> which is not suitable to be backported to stable.
+>
+> Further, __builtin_mul_overflow() would emit a libcall to a
+> compiler-rt-only symbol when compiling with clang < 14 for 32b targets.
+>
+> ld.lld: error: undefined symbol: __mulodi4
+>
+> In order to keep stable buildable with GCC 4.9 and clang < 14, modify
+> struct nbd_config to instead track the number of bits of the block size;
+> reconstructing the block size using runtime checked shifts that are not
+> problematic for those compilers and in a ways that can be backported to
+> stable.
+>
+> In nbd_set_size, we do validate that the value of blksize must be a
+> power of two (POT) and is in the range of [512, PAGE_SIZE] (both
+> inclusive).
+>
+> This does modify the debugfs interface.
+>
+> Cc: stable@vger.kernel.org
+> Cc: Arnd Bergmann <arnd@kernel.org>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1438
+> Link: https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
+> Link: https://lore.kernel.org/stable/CAHk-=whiQBofgis_rkniz8GBP9wZtSZdcDEffgSLO62BUGV3gg@mail.gmail.com/
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Suggested-by: Pavel Machek <pavel@ucw.cz>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-I got your email from online directory; I would need your assistance
-in re-profiling
-funds belonging to my late client who shares similar surnames with you.
+Hi Josef,
+Do you have cycles to review this patch, or is this something I should
+ask Jens or Linus about picking up?
 
-Contact me for more detailed information.
+> ---
+> This patch is kind of a v3 for solving this problem.
+> v2: https://lore.kernel.org/stable/20210914002318.2298583-1-ndesaulniers@google.com/
+> v1: https://lore.kernel.org/stable/20210913203201.1844253-1-ndesaulniers@google.com/
+> But is quite different in approach. Instead of trying to fix up the
+> overflow routines in stable, we amend the code in nbd.c as per Linus
+> (against mainline) with fixes from Kees to use the named overflow
+> checker.
+>
+>  drivers/block/nbd.c | 29 +++++++++++++++++------------
+>  1 file changed, 17 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 5170a630778d..1183f7872b71 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -97,13 +97,18 @@ struct nbd_config {
+>
+>         atomic_t recv_threads;
+>         wait_queue_head_t recv_wq;
+> -       loff_t blksize;
+> +       unsigned int blksize_bits;
+>         loff_t bytesize;
+>  #if IS_ENABLED(CONFIG_DEBUG_FS)
+>         struct dentry *dbg_dir;
+>  #endif
+>  };
+>
+> +static inline unsigned int nbd_blksize(struct nbd_config *config)
+> +{
+> +       return 1u << config->blksize_bits;
+> +}
+> +
+>  struct nbd_device {
+>         struct blk_mq_tag_set tag_set;
+>
+> @@ -146,7 +151,7 @@ static struct dentry *nbd_dbg_dir;
+>
+>  #define NBD_MAGIC 0x68797548
+>
+> -#define NBD_DEF_BLKSIZE 1024
+> +#define NBD_DEF_BLKSIZE_BITS 10
+>
+>  static unsigned int nbds_max = 16;
+>  static int max_part = 16;
+> @@ -317,12 +322,12 @@ static int nbd_set_size(struct nbd_device *nbd, loff_t bytesize,
+>                 loff_t blksize)
+>  {
+>         if (!blksize)
+> -               blksize = NBD_DEF_BLKSIZE;
+> +               blksize = 1u << NBD_DEF_BLKSIZE_BITS;
+>         if (blksize < 512 || blksize > PAGE_SIZE || !is_power_of_2(blksize))
+>                 return -EINVAL;
+>
+>         nbd->config->bytesize = bytesize;
+> -       nbd->config->blksize = blksize;
+> +       nbd->config->blksize_bits = __ffs(blksize);
+>
+>         if (!nbd->task_recv)
+>                 return 0;
+> @@ -1337,7 +1342,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+>                 args->index = i;
+>                 queue_work(nbd->recv_workq, &args->work);
+>         }
+> -       return nbd_set_size(nbd, config->bytesize, config->blksize);
+> +       return nbd_set_size(nbd, config->bytesize, nbd_blksize(config));
+>  }
+>
+>  static int nbd_start_device_ioctl(struct nbd_device *nbd, struct block_device *bdev)
+> @@ -1406,11 +1411,11 @@ static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
+>         case NBD_SET_BLKSIZE:
+>                 return nbd_set_size(nbd, config->bytesize, arg);
+>         case NBD_SET_SIZE:
+> -               return nbd_set_size(nbd, arg, config->blksize);
+> +               return nbd_set_size(nbd, arg, nbd_blksize(config));
+>         case NBD_SET_SIZE_BLOCKS:
+> -               if (check_mul_overflow((loff_t)arg, config->blksize, &bytesize))
+> +               if (check_shl_overflow(arg, config->blksize_bits, &bytesize))
+>                         return -EINVAL;
+> -               return nbd_set_size(nbd, bytesize, config->blksize);
+> +               return nbd_set_size(nbd, bytesize, nbd_blksize(config));
+>         case NBD_SET_TIMEOUT:
+>                 nbd_set_cmd_timeout(nbd, arg);
+>                 return 0;
+> @@ -1476,7 +1481,7 @@ static struct nbd_config *nbd_alloc_config(void)
+>         atomic_set(&config->recv_threads, 0);
+>         init_waitqueue_head(&config->recv_wq);
+>         init_waitqueue_head(&config->conn_wait);
+> -       config->blksize = NBD_DEF_BLKSIZE;
+> +       config->blksize_bits = NBD_DEF_BLKSIZE_BITS;
+>         atomic_set(&config->live_connections, 0);
+>         try_module_get(THIS_MODULE);
+>         return config;
+> @@ -1604,7 +1609,7 @@ static int nbd_dev_dbg_init(struct nbd_device *nbd)
+>         debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_fops);
+>         debugfs_create_u64("size_bytes", 0444, dir, &config->bytesize);
+>         debugfs_create_u32("timeout", 0444, dir, &nbd->tag_set.timeout);
+> -       debugfs_create_u64("blocksize", 0444, dir, &config->blksize);
+> +       debugfs_create_u32("blocksize_bits", 0444, dir, &config->blksize_bits);
+>         debugfs_create_file("flags", 0444, dir, nbd, &nbd_dbg_flags_fops);
+>
+>         return 0;
+> @@ -1826,7 +1831,7 @@ nbd_device_policy[NBD_DEVICE_ATTR_MAX + 1] = {
+>  static int nbd_genl_size_set(struct genl_info *info, struct nbd_device *nbd)
+>  {
+>         struct nbd_config *config = nbd->config;
+> -       u64 bsize = config->blksize;
+> +       u64 bsize = nbd_blksize(config);
+>         u64 bytes = config->bytesize;
+>
+>         if (info->attrs[NBD_ATTR_SIZE_BYTES])
+> @@ -1835,7 +1840,7 @@ static int nbd_genl_size_set(struct genl_info *info, struct nbd_device *nbd)
+>         if (info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES])
+>                 bsize = nla_get_u64(info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES]);
+>
+> -       if (bytes != config->bytesize || bsize != config->blksize)
+> +       if (bytes != config->bytesize || bsize != nbd_blksize(config))
+>                 return nbd_set_size(nbd, bytes, bsize);
+>         return 0;
+>  }
+>
+> base-commit: 4c17ca27923c16fd73bbb9ad033c7d749c3bcfcc
+> --
+> 2.33.0.464.g1972c5931b-goog
+>
 
-Regards,
-Robert Blackett ESQ
-robertblackettesq1@gmail.com
+
+-- 
+Thanks,
+~Nick Desaulniers
