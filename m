@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CE441C1CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440B741C1B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245298AbhI2JmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:42:16 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24123 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245103AbhI2Jlw (ORCPT
+        id S245083AbhI2JjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245070AbhI2JjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:41:52 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HKBCH1sxgz1DHPd;
-        Wed, 29 Sep 2021 17:38:51 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 17:40:10 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 29 Sep 2021 17:40:09 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net 8/8] net: hns3: disable firmware compatible features when uninstall PF
-Date:   Wed, 29 Sep 2021 17:35:56 +0800
-Message-ID: <20210929093556.9146-9-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210929093556.9146-1-huangguangbin2@huawei.com>
-References: <20210929093556.9146-1-huangguangbin2@huawei.com>
+        Wed, 29 Sep 2021 05:39:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9408BC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:37:35 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632908253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B89tcA2zIRUY38M29xvDCozhHJ1KXo9Xns8L/CZPgPo=;
+        b=AJaLgDEF+x/Oan8EDhS8+LxyufOs4g4u2wkXyIx/S8ZQ4Gh3vJ7UzCD6JoxnZlUWl/RGRf
+        IhBKYYdATUBgz3ZWFCOBNaouGdvvnnucbgN7ttmHu17FqBvY754ETqJz2ut6KiL4gr6m/0
+        UrWoGQcjU5A3fiak9ZlS2uHSARRhvDa2w3pFs/CAoDUfZR7301zQ/RbgtxDsmQ9MIiDugM
+        M1/fq43iDFMiMjxMtrFvUE6WZNYMWbf5gS/JsNOwCwnT5AwD8076vyfej0Dgn5erveYY7q
+        qmbZATY5Pscpf6LAC3ZPSvSsq5corQIdMH7gs7rtw7oxr9aCuO1EMUkF7ZijAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632908253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B89tcA2zIRUY38M29xvDCozhHJ1KXo9Xns8L/CZPgPo=;
+        b=BzWzpf3f7t3kFOU9KaIRf/+RcLbSUZY25bz2BdcE8TnIuET/cQW0I2UfFqHI7agzkC1lfy
+        rQNp5ReX6pfBKUCA==
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Peter Oskolkov <posk@posk.io>,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v2] sched: Remove pointless preemption disable in
+ sched_submit_work()
+In-Reply-To: <CAJhGHyBwVLpcWoizJaMvQUFhAO_rz4CBQ1=D8hZ2iAadruh7WQ@mail.gmail.com>
+References: <87sfxoai2l.ffs@tglx>
+ <CAJhGHyBwVLpcWoizJaMvQUFhAO_rz4CBQ1=D8hZ2iAadruh7WQ@mail.gmail.com>
+Date:   Wed, 29 Sep 2021 11:37:32 +0200
+Message-ID: <8735pnafj7.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the firmware compatible features are enabled in PF driver
-initialization process, but they are not disabled in PF driver
-deinitialization process and firmware keeps these features in enabled
-status.
+Neither wq_worker_sleeping() nor io_wq_worker_sleeping() require to be invoked
+with preemption disabled:
 
-In this case, if load an old PF driver (for example, in VM) which not
-support the firmware compatible features, firmware will still send mailbox
-message to PF when link status changed and PF will print
-"un-supported mailbox message, code = 201".
+  - The worker flag checks operations only need to be serialized against
+    the worker thread itself.
 
-To fix this problem, disable these firmware compatible features in PF
-driver deinitialization process.
+  - The accounting and worker pool operations are serialized with locks.
 
-Fixes: ed8fb4b262ae ("net: hns3: add link change event report")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+which means that disabling preemption has neither a reason nor a
+value. Remove it and update the stale comment.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 ---
- .../hisilicon/hns3/hns3pf/hclge_cmd.c         | 21 ++++++++++++-------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+V2: Update comment as pointed out by Lai
+---
+ kernel/sched/core.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
-index ac9b69513332..9c2eeaa82294 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
-@@ -467,7 +467,7 @@ int hclge_cmd_queue_init(struct hclge_dev *hdev)
- 	return ret;
- }
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6319,20 +6319,14 @@ static inline void sched_submit_work(str
  
--static int hclge_firmware_compat_config(struct hclge_dev *hdev)
-+static int hclge_firmware_compat_config(struct hclge_dev *hdev, bool en)
- {
- 	struct hclge_firmware_compat_cmd *req;
- 	struct hclge_desc desc;
-@@ -475,13 +475,16 @@ static int hclge_firmware_compat_config(struct hclge_dev *hdev)
- 
- 	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_IMP_COMPAT_CFG, false);
- 
--	req = (struct hclge_firmware_compat_cmd *)desc.data;
-+	if (en) {
-+		req = (struct hclge_firmware_compat_cmd *)desc.data;
- 
--	hnae3_set_bit(compat, HCLGE_LINK_EVENT_REPORT_EN_B, 1);
--	hnae3_set_bit(compat, HCLGE_NCSI_ERROR_REPORT_EN_B, 1);
--	if (hnae3_dev_phy_imp_supported(hdev))
--		hnae3_set_bit(compat, HCLGE_PHY_IMP_EN_B, 1);
--	req->compat = cpu_to_le32(compat);
-+		hnae3_set_bit(compat, HCLGE_LINK_EVENT_REPORT_EN_B, 1);
-+		hnae3_set_bit(compat, HCLGE_NCSI_ERROR_REPORT_EN_B, 1);
-+		if (hnae3_dev_phy_imp_supported(hdev))
-+			hnae3_set_bit(compat, HCLGE_PHY_IMP_EN_B, 1);
-+
-+		req->compat = cpu_to_le32(compat);
-+	}
- 
- 	return hclge_cmd_send(&hdev->hw, &desc, 1);
- }
-@@ -538,7 +541,7 @@ int hclge_cmd_init(struct hclge_dev *hdev)
- 	/* ask the firmware to enable some features, driver can work without
- 	 * it.
+ 	task_flags = tsk->flags;
+ 	/*
+-	 * If a worker went to sleep, notify and ask workqueue whether
+-	 * it wants to wake up a task to maintain concurrency.
+-	 * As this function is called inside the schedule() context,
+-	 * we disable preemption to avoid it calling schedule() again
+-	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
+-	 * requires it.
++	 * If a worker goes to sleep, notify and ask workqueue whether it
++	 * wants to wake up a task to maintain concurrency.
  	 */
--	ret = hclge_firmware_compat_config(hdev);
-+	ret = hclge_firmware_compat_config(hdev, true);
- 	if (ret)
- 		dev_warn(&hdev->pdev->dev,
- 			 "Firmware compatible features not enabled(%d).\n",
-@@ -568,6 +571,8 @@ static void hclge_cmd_uninit_regs(struct hclge_hw *hw)
+ 	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+-		preempt_disable();
+ 		if (task_flags & PF_WQ_WORKER)
+ 			wq_worker_sleeping(tsk);
+ 		else
+ 			io_wq_worker_sleeping(tsk);
+-		preempt_enable_no_resched();
+ 	}
  
- void hclge_cmd_uninit(struct hclge_dev *hdev)
- {
-+	hclge_firmware_compat_config(hdev, false);
-+
- 	set_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state);
- 	/* wait to ensure that the firmware completes the possible left
- 	 * over commands.
--- 
-2.33.0
-
+ 	if (tsk_is_pi_blocked(tsk))
