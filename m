@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD21141C30E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4FF41C311
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245619AbhI2K4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:56:18 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47820 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245599AbhI2K4N (ORCPT
+        id S245621AbhI2K4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:56:41 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34036
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245599AbhI2K4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:56:13 -0400
-Received: from localhost.localdomain (unknown [IPv6:2401:4900:1c20:3124:6d32:b2f4:daed:4666])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Wed, 29 Sep 2021 06:56:40 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 126401F43FB5;
-        Wed, 29 Sep 2021 11:54:29 +0100 (BST)
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-To:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        krisman@collabora.com
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Shreeya Patel <shreeya.patel@collabora.com>
-Subject: [PATCH 2/2] fs: ext4: Fix the inconsistent name exposed by /proc/self/cwd
-Date:   Wed, 29 Sep 2021 16:23:39 +0530
-Message-Id: <8402d1c99877a4fcb152de71005fa9cfb25d86a8.1632909358.git.shreeya.patel@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1632909358.git.shreeya.patel@collabora.com>
-References: <cover.1632909358.git.shreeya.patel@collabora.com>
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 47D6540658;
+        Wed, 29 Sep 2021 10:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632912898;
+        bh=YOZiyetPPMC5PNnyBKeg3t/QdWNAhWHiGFM/sM4glVM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=wANz101VligmwN3KD5B2T1VyV0Dpv8QeSwMCuZDnMOFdTcimpF511kYoFEVB2mYVV
+         8o8iAqesljHE8T81NfGebrU0G3JYsEZSjhRAXMysBns6c7Y6fbhGe4TEtw0a85yY2l
+         jsH9He1ISdV7InwNUpmb1PupzIFXj7hb3DVZbmnUiSrWqkYFWWFQ9TAw1Tx3clZZ+X
+         +LI8D+xaPkppvtZ3wlGEMi2OLwqNAXvp9QEyQfx0oqi7BU9V7IODDuVfrHmoisiIp7
+         y1UDaXfonsK5NiqEDFChN/qStpCksFcGC/xCyxYpM/aZ89bGMMHZDdRnRcrEUOJxgs
+         9kmgkxX0UwgVg==
+From:   Colin King <colin.king@canonical.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: Remove redundant initialization of variable bpp
+Date:   Wed, 29 Sep 2021 11:54:58 +0100
+Message-Id: <20210929105458.209895-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-/proc/self/cwd is a symlink created by the kernel that uses whatever
-name the dentry has in the dcache. Since the dcache is populated only
-on the first lookup, with the string used in that lookup, cwd will
-have an unexpected case, depending on how the data was first looked-up
-in a case-insesitive filesystem.
+From: Colin Ian King <colin.king@canonical.com>
 
-Steps to reproduce :-
+The variable bpp is being initialized with a value that is never
+read, it is being updated later on in both paths of an if statement.
+The assignment is redundant and can be removed.
 
-root@test-box:/src# mkdir insensitive/foo
-root@test-box:/src# cd insensitive/FOO
-root@test-box:/src/insensitive/FOO# ls -l /proc/self/cwd
-lrwxrwxrwx 1 root root /proc/self/cwd -> /src/insensitive/FOO
-
-root@test-box:/src/insensitive/FOO# cd ../fOo
-root@test-box:/src/insensitive/fOo# ls -l /proc/self/cwd
-lrwxrwxrwx 1 root root /proc/self/cwd -> /src/insensitive/FOO
-
-Above example shows that 'FOO' was the name used on first lookup here and
-it is stored in dcache instead of the original name 'foo'. This results
-in inconsistent name exposed by /proc/self/cwd since it uses the name
-stored in dcache.
-
-To avoid the above inconsistent name issue, handle the inexact-match string
-( a string which is not a byte to byte match, but is an equivalent
-unicode string ) case in ext4_lookup which would store the original name
-in dcache using d_add_ci instead of the inexact-match string name.
-
-Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- fs/ext4/namei.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/gpu/drm/msm/dp/dp_panel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index da7698341d7d..3598f0e47067 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1801,6 +1801,19 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
- 	}
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+index 2181b60e1d1d..71db10c0f262 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.c
++++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+@@ -234,7 +234,7 @@ u32 dp_panel_get_mode_bpp(struct dp_panel *dp_panel,
+ 		u32 mode_edid_bpp, u32 mode_pclk_khz)
+ {
+ 	struct dp_panel_private *panel;
+-	u32 bpp = mode_edid_bpp;
++	u32 bpp;
  
- #ifdef CONFIG_UNICODE
-+	if (inode && IS_CASEFOLDED(dir))
-+		if (dentry && strcmp(dentry->d_name.name, de->name)) {
-+			struct dentry *new;
-+			struct qstr ciname;
-+
-+			ciname.len = de->name_len;
-+			ciname.name = kstrndup(de->name, ciname.len, GFP_NOFS);
-+			if (!ciname.name)
-+				return ERR_PTR(-ENOMEM);
-+			new = d_add_ci(dentry, inode, &ciname);
-+			kfree(ciname.name);
-+			return new;
-+	}
- 	if (!inode && IS_CASEFOLDED(dir)) {
- 		/* Eventually we want to call d_add_ci(dentry, NULL)
- 		 * for negative dentries in the encoding case as
+ 	if (!dp_panel || !mode_edid_bpp || !mode_pclk_khz) {
+ 		DRM_ERROR("invalid input\n");
 -- 
-2.30.2
+2.32.0
 
