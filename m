@@ -2,74 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAE441C030
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F13241C02D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244472AbhI2H7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 03:59:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31610 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244268AbhI2H72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 03:59:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632902267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=80pWgN3KKsrMm8H11ftmkOTPTDACzxOkzP/ByHdpMSI=;
-        b=UgxkV29EIqGQwAVn9hF8g82oEF32gL0UCasjnCRkuonmK2c2+4gDn6jD4hzo1QMPXty+44
-        mOpvA24z5t7GB/ULT5jPuCLmeeYzbrG25U3Nibkcf4F3XZUq0L5eup0QrXhel6EGGlFRCg
-        nFJunFA8TsM4OYopPRmz8kgV8yQENOQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-UCm1cZDQPwK7iKF0Lnxicw-1; Wed, 29 Sep 2021 03:57:43 -0400
-X-MC-Unique: UCm1cZDQPwK7iKF0Lnxicw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S244389AbhI2H6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 03:58:48 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:59725 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244268AbhI2H6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 03:58:21 -0400
+Received: from [192.168.0.3] (ip5f5aef97.dynamic.kabel-deutschland.de [95.90.239.151])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B94684A5E0;
-        Wed, 29 Sep 2021 07:57:42 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-13-131.pek2.redhat.com [10.72.13.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E2F060583;
-        Wed, 29 Sep 2021 07:57:25 +0000 (UTC)
-From:   Cindy Lu <lulu@redhat.com>
-To:     lulu@redhat.com, mst@redhat.com, jasowang@redhat.com,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] vhost-vdpa:fix the worng input in config_cb
-Date:   Wed, 29 Sep 2021 15:54:37 +0800
-Message-Id: <20210929075437.12985-1-lulu@redhat.com>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A473961E64761;
+        Wed, 29 Sep 2021 09:56:34 +0200 (CEST)
+Subject: Re: [smartpqi updates PATCH V2 05/11] smartpqi: add tur check for
+ sanitize operation
+To:     Don Brace <don.brace@microchip.com>
+Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
+        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
+        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
+        mike.mcgowen@microchip.com, murthy.bhat@microchip.com,
+        balsundar.p@microchip.com, joseph.szczypek@hpe.com,
+        jeff@canonical.com, POSWALD@suse.com, john.p.donnelly@oracle.com,
+        mwilck@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
+        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
+        linux-scsi@vger.kernel.org
+References: <20210928235442.201875-1-don.brace@microchip.com>
+ <20210928235442.201875-6-don.brace@microchip.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <c50efe26-2ee2-e880-3bb1-dd0ba60d2ec5@molgen.mpg.de>
+Date:   Wed, 29 Sep 2021 09:56:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20210928235442.201875-6-don.brace@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the worng input in for config_cb,
-in function vhost_vdpa_config_cb, the input
-cb.private was used as struct vhost_vdpa,
-So the inuput was worng here, fix this issue
+Dear Don,
 
-Signed-off-by: Cindy Lu <lulu@redhat.com>
----
- drivers/vhost/vdpa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 942666425a45..e532cbe3d2f7 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -322,7 +322,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
- 	struct eventfd_ctx *ctx;
- 
- 	cb.callback = vhost_vdpa_config_cb;
--	cb.private = v->vdpa;
-+	cb.private = v;
- 	if (copy_from_user(&fd, argp, sizeof(fd)))
- 		return  -EFAULT;
- 
--- 
-2.21.3
+Thank you for the patch. Maybe rephrase the summary:
 
+ > Check TUR for sanitize operation
+
+
+Am 29.09.21 um 01:54 schrieb Don Brace:
+> Add in a TUR to HBA disks and do not present them to the OS if
+
+Maybe add what TUR means: Test Unit Ready.
+
+> 0x02/0x04/0x1b (sanitize in progress) is returned.
+> 
+> During boot-up, some OSes appear to hang when there are one or
+> more disks undergoing sanitize.
+
+It’d be great, if you gave at least one concrete test setup, where the 
+hang occurred.
+
+> According to SCSI SBC4 specification
+> section 4.11.2 Commands allowed during sanitize,
+> some SCSI commands are permitted, but read/write operations are not.
+> 
+> When the OS attempts to read the disk partition table a
+> CHECK CONDITION ASC 0x04 ASCQ 0x1b is returned which causes the OS
+> to retry the read until sanitize has completed. This can take hours.
+> 
+> Note: According to document HPE Smart Storage Administrator User Guide
+> Link: https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=c03909334
+> 
+> During the sanitize erase operation, the drive is unusable.
+> I.E.
+>        The expected behavior for sanitize is the that disk remains
+>        offline even after sanitize has completed. The customer is
+>        expected to re-enable the disk using the management utility.
+> 
+> Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+> Reviewed-by: Scott Teel <scott.teel@microchip.com>
+> Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
+> Signed-off-by: Don Brace <don.brace@microchip.com>
+> ---
+>   drivers/scsi/smartpqi/smartpqi_init.c | 87 +++++++++++++++++++++++++++
+>   1 file changed, 87 insertions(+)
+> 
+> diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+> index 01330fd67500..838274d8fadf 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_init.c
+> +++ b/drivers/scsi/smartpqi/smartpqi_init.c
+> @@ -555,6 +555,10 @@ static int pqi_build_raid_path_request(struct pqi_ctrl_info *ctrl_info,
+>   	cdb = request->cdb;
+>   
+>   	switch (cmd) {
+> +	case TEST_UNIT_READY:
+> +		request->data_direction = SOP_READ_FLAG;
+> +		cdb[0] = TEST_UNIT_READY;
+> +		break;
+>   	case INQUIRY:
+>   		request->data_direction = SOP_READ_FLAG;
+>   		cdb[0] = INQUIRY;
+> @@ -1575,6 +1579,85 @@ static int pqi_get_logical_device_info(struct pqi_ctrl_info *ctrl_info,
+>   	return rc;
+>   }
+>   
+> +/*
+> + * Prevent adding drive to OS for some corner cases such as a drive
+> + * undergoing a sanitize operation. Some OSes will continue to poll
+> + * the drive until the sanitize completes, which can take hours,
+> + * resulting in long bootup delays. Commands such as TUR, READ_CAP
+> + * are allowed, but READ/WRITE cause check condition. So the OS
+> + * cannot check/read the partition table.
+> + * Note: devices that have completed sanitize must be re-enabled
+> + *       using the management utility.
+> + */
+> +static bool pqi_keep_device_offline(struct pqi_ctrl_info *ctrl_info,
+> +	struct pqi_scsi_dev *device)
+> +{
+> +	u8 scsi_status;
+> +	int rc;
+> +	enum dma_data_direction dir;
+> +	char *buffer;
+> +	int buffer_length = 64;
+
+Use size_t? And could be made const?
+
+> +	size_t sense_data_length;
+> +	struct scsi_sense_hdr sshdr;
+> +	struct pqi_raid_path_request request;
+> +	struct pqi_raid_error_info error_info;
+> +	bool offline = false; /* Assume keep online */
+> +
+> +	/* Do not check controllers. */
+
+I’d remove the dot/period at the end of the short comments.
+
+> +	if (pqi_is_hba_lunid(device->scsi3addr))
+> +		return false;
+> +
+> +	/* Do not check LVs. */
+> +	if (pqi_is_logical_device(device))
+> +		return false;
+> +
+> +	buffer = kmalloc(buffer_length, GFP_KERNEL);
+> +	if (!buffer)
+> +		return false; /* Assume not offline */
+> +
+> +	/* Check for SANITIZE in progress using TUR */
+> +	rc = pqi_build_raid_path_request(ctrl_info, &request,
+> +		TEST_UNIT_READY, RAID_CTLR_LUNID, buffer,
+> +		buffer_length, 0, &dir);
+> +	if (rc)
+> +		goto out; /* Assume not offline */
+> +
+> +	memcpy(request.lun_number, device->scsi3addr, sizeof(request.lun_number));
+> +
+> +	rc = pqi_submit_raid_request_synchronous(ctrl_info, &request.header, 0, &error_info);
+> +
+> +	if (rc)
+> +		goto out; /* Assume not offline */
+> +
+> +	scsi_status = error_info.status;
+> +	sense_data_length = get_unaligned_le16(&error_info.sense_data_length);
+> +	if (sense_data_length == 0)
+> +		sense_data_length =
+> +			get_unaligned_le16(&error_info.response_data_length);
+
+As the variable is named `sense_data_length`, for an outsider like me, 
+it’s suprising that `response_date_length` is stored in there.
+
+> +	if (sense_data_length) {
+> +		if (sense_data_length > sizeof(error_info.data))
+> +			sense_data_length = sizeof(error_info.data);
+> +
+> +		/*
+> +		 * Check for sanitize in progress: asc:0x04, ascq: 0x1b
+
+Add a space after the second colon?
+
+> +		 */
+> +		if (scsi_status == SAM_STAT_CHECK_CONDITION &&
+> +			scsi_normalize_sense(error_info.data,
+> +				sense_data_length, &sshdr) &&
+> +				sshdr.sense_key == NOT_READY &&
+> +				sshdr.asc == 0x04 &&
+> +				sshdr.ascq == 0x1b) {
+> +			device->device_offline = true;
+> +			offline = true;
+> +			goto out; /* Keep device offline */
+> +		}
+> +	}
+
+Should a error, warning, or debug message be printed, when 
+`sense_data_length = 0` again?
+
+> +
+> +out:
+> +	kfree(buffer);
+> +	return offline;
+> +}
+> +
+>   static int pqi_get_device_info(struct pqi_ctrl_info *ctrl_info,
+>   	struct pqi_scsi_dev *device,
+>   	struct bmic_identify_physical_device *id_phys)
+> @@ -2296,6 +2379,10 @@ static int pqi_update_scsi_devices(struct pqi_ctrl_info *ctrl_info)
+>   		if (!pqi_is_supported_device(device))
+>   			continue;
+>   
+> +		/* Do not present disks that the OS cannot fully probe */
+> +		if (pqi_keep_device_offline(ctrl_info, device))
+
+I’d use the positive `!pqi_get_device_online()`, but it’s subjective.
+
+> +			continue;
+> +
+>   		/* Gather information about the device. */
+>   		rc = pqi_get_device_info(ctrl_info, device, id_phys);
+>   		if (rc == -ENOMEM) {
+> 
+
+
+Kind regards,
+
+Paul
