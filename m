@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABD541C4C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B986B41C4C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343736AbhI2Ma3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:30:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54480 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343631AbhI2Ma2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:30:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632918527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YOJEA2l7ndawO0L20I9DTw6V5oi9LOOOa8cUEjA/x4o=;
-        b=eTC/y5jEuRuX5ID2ly4u9Hb633hD2+R/VesegvccvSBaYaN9nJlv/h0LzPYPgqvfegef/k
-        D4J9ppgptOKrvcP7CqI1WfKR4v54uiRNT+D5unq2diLuZPR/xa3AjBoQ2wwvFta4fOTu8K
-        uke7eca3uB6t/c76Gn6gx1h3rSwXTv8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-QBok8GuBO5OtnjGuMK9O5Q-1; Wed, 29 Sep 2021 08:28:46 -0400
-X-MC-Unique: QBok8GuBO5OtnjGuMK9O5Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A8B0802936;
-        Wed, 29 Sep 2021 12:28:43 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3194160854;
-        Wed, 29 Sep 2021 12:28:38 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     will@kernel.org, paulmck@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
-Date:   Wed, 29 Sep 2021 14:28:37 +0200
-In-Reply-To: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> (Mathieu
-        Desnoyers's message of "Tue, 28 Sep 2021 17:15:07 -0400")
-Message-ID: <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S1343751AbhI2Mbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:31:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343531AbhI2Mbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:31:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A483613A0;
+        Wed, 29 Sep 2021 12:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632918602;
+        bh=FTNDmUlvMT5ZqQ/Z2KvcauJAJmdd+/ztjAw1kxwI6z4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eyrq5jvoebysBxaZXASykBblpjG3GOfzan58gaYSwlbbRA+OZrfHEXoSYjonTQmB3
+         z11Sotsg9T8gxq94qfQ5lVG2GtpJtlVefQicADpdfGkaiVPqP62z8l5LTjzYhXs7FE
+         KQKmbXXnbD+ox36a487aQM5Lt5gFrkZiTCYX9rguNcdBojv7tA2ptiWw7hgkTSmyUe
+         Tonh5pB3opo3Y247zLkoPrruf4lvd6Avw18+igb/g8LPOFPN54BqeDaBFd8xgjYJxU
+         KNX1sz5pQOoq44GXfM3t8gOcoLqw97ElFHzbVvUUOQJRgU4DK7GLwKXMQJ5gKa6QNN
+         AldWqEGZ7o6ZA==
+Date:   Wed, 29 Sep 2021 13:29:12 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] regulator: Add Unisoc's SC2730 regulator driver
+Message-ID: <20210929122912.GO4199@sirena.org.uk>
+References: <20210928073609.198975-1-zhang.lyra@gmail.com>
+ <20210928113057.GJ4199@sirena.org.uk>
+ <CAAfSe-vM8iG1OtQeVR1CxQtpvA8kqSs3pJ78RQQOL7GcWcTwSw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hOh8F6DNH/RZBSFD"
+Content-Disposition: inline
+In-Reply-To: <CAAfSe-vM8iG1OtQeVR1CxQtpvA8kqSs3pJ78RQQOL7GcWcTwSw@mail.gmail.com>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
 
-> + * will ensure that the STORE to B happens after the LOAD of A. Normally a
-> + * control dependency relies on a conditional branch having a data dependency
-> + * on the LOAD and an architecture's inability to speculate STOREs. IOW, this
-> + * provides a LOAD->STORE order.
-> + *
-> + * Due to optimizing compilers, extra care is needed; as per the example above
-> + * the LOAD must be 'volatile' qualified in order to ensure the compiler
-> + * actually emits the load, such that the data-dependency to the conditional
-> + * branch can be formed.
-> + *
-> + * Secondly, the compiler must be prohibited from lifting anything out of the
-> + * selection statement, as this would obviously also break the ordering.
-> + *
-> + * Thirdly, architectures that allow the LOAD->STORE reorder must ensure
-> + * the compiler actually emits the conditional branch instruction.
+--hOh8F6DNH/RZBSFD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If you need a specific instruction emitted, you need a compiler
-intrinsic or inline assembly.
+On Wed, Sep 29, 2021 at 04:20:37PM +0800, Chunyan Zhang wrote:
+> On Tue, 28 Sept 2021 at 19:31, Mark Brown <broonie@kernel.org> wrote:
 
-So something like this:
+> > Since this is a part of a MFD I'd not expect it to have a compatible
+> > string?
 
-#define control_dep(x)                          \
-  ({                                            \
-    __typeof(x) x__ = (x);                      \
-    __asm__("test $0, %0\n\t"                   \
-            "jnz 1f\n\t"                        \
-            "1:"                                \
-            :: "r"(x__) : "cc");                \
-  })
+> Since we switched to use devm_of_platform_populate() [1] to register
+> MFD subdevices, compatible is required, IIUC.
 
-with an appropriate instruction sequence for each architecture.
+I'm not sure that's a good fit for these regulators, we don't gain any
+extra information from the compatible here.
 
-I don't think it's possible to piggy-back this on something else.
+--hOh8F6DNH/RZBSFD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Florian
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFUXBcACgkQJNaLcl1U
+h9AS7gf/Y9ZY1fjRz+eP/5LZIskshRKmSZlQJ4lfJeCRxczaRp3TycTxCFvMVcZg
+Q88ZKfEJ7vR3JoO00LFqXal38XAlx7X5GPh1SYa7cF8UGmWmU2lwELfTMSnU8dRD
+jL7PJZGas/d2vXXwyuvZ2YxzrUN6BHMA0YwU2EdK85z+4hNeSCQ84UKAVX4DPRMV
+S4RwAo6RWQTC+gyYS+oDR2Mv3S47A724sX7sAYJbEMdLvZMpMplNqG0f/xVEfMqx
+rf6iP2EQ7o1krLR6SAdH5ZshmvNovy/1OcYc5WzOydIvHjjcnVTnIDQFTCYGn5tm
+Abs5ShUfbg352yF0fiUuQKAouXRk4g==
+=pmbW
+-----END PGP SIGNATURE-----
+
+--hOh8F6DNH/RZBSFD--
