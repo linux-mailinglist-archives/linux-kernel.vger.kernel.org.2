@@ -2,264 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C90741D034
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1C441D036
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347267AbhI2Xyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:54:45 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:45701 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347189AbhI2Xyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:54:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HKY8s0qLVz4xbL;
-        Thu, 30 Sep 2021 09:53:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632959581;
-        bh=PnJijGDdKuT9E1lBjViMVlj0jt+9hPzVlSeQjhASvG0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QknSj+Kh/43GsvHbnIkZWJsyw9XdHhXdHZCqBtsdbqvlE910XrNCfHlQ7Fksr8VYa
-         FZtlzkah1g322Le1j8DuW6SiV2ew1frmJOX7OwmfqOoyYTlFaE8+3cOd9NoESy/zN9
-         c9mHy/My3spopSfWucxzL/9SMpxEOQzT05rNbC+GQVYrddUiSIHs1hM6pYXPgNqQ3x
-         iq8GQKDop0r7ermeg7NsMAjRQbdsOWa0ssjqogXTcGYMAsgOMXI5romYGCdFwinZjM
-         J7gjrYg7m22widJKPZNq/aBNYIKxrVIrMI4TzxgKoVBmC9cjILhwwszo95T+rkc6tx
-         L8jyE9d3VaScw==
-Date:   Thu, 30 Sep 2021 09:53:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kspp-gustavo tree
-Message-ID: <20210930095300.73be1555@canb.auug.org.au>
+        id S1347755AbhI2X6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:58:30 -0400
+Received: from mail-bn8nam11on2063.outbound.protection.outlook.com ([40.107.236.63]:32898
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1347184AbhI2X63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 19:58:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jrQoouJ3pLRTenAB8ORV/RZ3EELXGVNtxmFWCz3w7Y4CrciDRtAOrTMBdHSLjjdcly0q4kQv8ZU4euOGTFmJYImuUoeUk33r5wJhH13ynnaQ7AmCrODmspj9/CVbBJf2Y37Eyd4rMNLU/mfzcsfUs9CkzrTWJ6xfXm7nL+49hFjqI5VhVQYyqK22lvSiTNM3fSEZrwHLSzaYb3/JiM7IAOLf1+Y5tDRMJDRsXZmT6rQwEfooQ9EZFme2px8Jp3ZzI/2hTU2CAslCLQqwurTA9xAgpV0cTFJJ9Nl2ZS3NfuCX6oj5TxnnFhOb06AAWelz+xQRqU7gXu5G7n1KWelWFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=n5ecuy6gJHU/5InFpJeKsXOCg825jYAfWrwgKu/0t2Y=;
+ b=EYAy/+DGApK7MIxhxE3R6QPfB3dHSAotd6z7eoHK1BpOAx+2ZjcAfTnobKI6+ub2pW5kDgjai89AVGghQtQa5bLLC9xhlcliS1/4FCkZT7ar1/tYbd7ZW4VX9O5qMJvXvYJGVCZ7W3xcBgG9QPisTCCxtRZ5lQzqB/ATt0N9rtIun7z1I3VS/4i6qq9H8gUpMIKBAbHLEtp060qASWzKeT2ZF75l6DjOhhocV52WSUp5JQKBzJaymxPwl0TySdUDZ/5FF/VcqecGJvLJfN7fIAOSHSuTZltnKcMG6smeiwETI3nbJ1i1VBCp/bcRRSh0lY9Jnp+fgQch3W6tr5Ujnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n5ecuy6gJHU/5InFpJeKsXOCg825jYAfWrwgKu/0t2Y=;
+ b=Yy9+lEhiq9z6crzK3RcOt6pYsKn4MxwqcDC+V92ujjTPQic42mKK2tdsHfswV3IvO6ptg3FHJbW5GMru7mH95DHr44PGnzQ5rLCgePkRxB6TKTOU3/mHV0p06x0pvI2LkvCe7/88EGVvAqdbu8OTF6NVFNSnZV+F3T+usN4OMNULeagMu4FYfAlFQHmmHR3HMgw0fAVVTwpH0Lbh3izkYF3JXuaJWwsaMOygkHYAGcX3I+/Aq5muxGAFrT3Ft8zqGhWZ9JFmZVvRa6VrCGWo6DqWjMYnBKJqqeprLap5lM5y2DSqK+msuqT+PhN12/5mWFO/T/3jscHr8Arg0TcBgQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5079.namprd12.prod.outlook.com (2603:10b6:208:31a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
+ 2021 23:56:45 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
+ 23:56:45 +0000
+Date:   Wed, 29 Sep 2021 20:56:43 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Mark Zhang <markzhang@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 06/11] RDMA/nldev: Add support to get status
+ of all counters
+Message-ID: <20210929235643.GD964074@nvidia.com>
+References: <cover.1631660727.git.leonro@nvidia.com>
+ <86b8a508d7e782b003d60acb06536681f0d4c721.1631660727.git.leonro@nvidia.com>
+ <20210927173001.GD1529966@nvidia.com>
+ <d812f553-1fc5-f228-18cb-07dce02eeb85@nvidia.com>
+ <20210928115217.GI964074@nvidia.com>
+ <YVRbcXJL/LBaSLLJ@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVRbcXJL/LBaSLLJ@unreal>
+X-ClientProxiedBy: MN2PR22CA0016.namprd22.prod.outlook.com
+ (2603:10b6:208:238::21) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR22CA0016.namprd22.prod.outlook.com (2603:10b6:208:238::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 23:56:45 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVjRL-007jGd-Ef; Wed, 29 Sep 2021 20:56:43 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3886cbff-0e68-4406-9423-08d983a4cae0
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5079:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5079858FD5A56B15F7D4EE6EC2A99@BL1PR12MB5079.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BE1kujPgoKCWnjodTN60ruu1Rl4RDpSv0o1nXIF08PUDNf5TFqTdNLkwexlP8hwMeaFpEri/2z16eKQdXjrAeBvfgP/2w0VXlgeCrcZ+EX45KUIrLyWdp+5THB5VDzEVAa5FGdqkT0YP1LEVqThv7wgnAB4HTN+xD+Q9PVCT/JLo9JEERrdYHC0skuC5+aGouhjnSge6unLuF7HOhl1Ln7epITWjqZUkca7THOKzusJStx5O54lzPn5LOckBUL/VV+R/onynLucLRszkxSTE0EgCGFwZm+PpO2+iYpUJ9tnlyRYxsOFbV+2XPBwBWf2fZep7UqmEg8Qwg6wtutOZikV40PgE6iODtFZtD6mcU58nQRQLfeZqxac1gTdymNA2wD3VdjZ7Fj75nG+0C2ZMIQleyLpOju21/+DLgDb4bNRCz5Y7cGrHoUnb+U2ARH7tILeJS+GPx7OVylaJCU8G+MvfY9nQRSTyGQYp+ZY9TFnemVW4H78+aWcvS9NAUC/+wXoMbVnN/rt3Wm8XN+9jhy+fTQ3+g5BZyftHsbG2BxLAFsHttkSjwcpUOvMuAnhcAtDOllXsmfb/QR/VBUo+ugD2qxSlGSCfw+vWxWpsQwdTkY62qNpoHQ8lWCZ0GAjqv0drssmzYEgT1QHBqo+mWnm4AdhST0fAM2YJyS6oE1FmXkNSDzFE6v+iC7la9Tm2+iIFu96Ay0L3YVs7cXElaQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(1076003)(426003)(7416002)(54906003)(186003)(53546011)(8676002)(316002)(6916009)(9786002)(9746002)(2616005)(4326008)(26005)(2906002)(8936002)(66556008)(66476007)(86362001)(66946007)(33656002)(36756003)(38100700002)(5660300002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hrVRN/n+XQy8OtiL9V+74NcX4nsxjftWp7EjarjpPZvwrtisRc0O2hrRFJUW?=
+ =?us-ascii?Q?+PWJwYJ2jLZ8C76jJeAW8ilzDs/eYZVmBw5qh0xIZ8MiL0qoOEIqZInDh5tM?=
+ =?us-ascii?Q?By5B8br4lJRmZug2msCtpXl2DBe5IejzSu97OiWb3fe9RYQetArgUTZRA8Xm?=
+ =?us-ascii?Q?rdo7qhlolnhT/5iDo9CcdzcEtU48LnDzXMMeRnqSZQkkXURXcNOAWMWzUgbc?=
+ =?us-ascii?Q?2mZ37OMzPJV4In7FYFTRmoF8Utl2SEzOo6okYg3fQBW3MwO8kQtJtIG6XnJf?=
+ =?us-ascii?Q?/q8zG8vTerby/ei/UbBcK4w7NgY2exjlB9MMjxRX6wqDvTZEPGvNhmtJ4bfw?=
+ =?us-ascii?Q?NSTty8u0Zj4u5F3EH4FyseuIASJu3trBv0AYg3FyRoCfHdbMVf3l32i0+v5E?=
+ =?us-ascii?Q?a4zi9tf+i8DCPma3RG9cOYvBIu59T2jm3FELzbBlPNYPoGJyTrR2HAd5mz9P?=
+ =?us-ascii?Q?Bjbtxhau26FOqtdznI7yQ1jHIdq/aPPl5OBsdARKsS22ZlfBwL6mmLXZn/Vz?=
+ =?us-ascii?Q?0fxuKBLbEG7W1hoRP/V1F51WkUzTYZ93DetJhSnL18S9N9HCglDYfUYrpdn3?=
+ =?us-ascii?Q?06VjmO4W5uZ/ddSwyoDjM6h18Bi3Nq1vHLz6hSH57Jc93aNNGH+dSDTE9N2s?=
+ =?us-ascii?Q?AzHA5hiP+CCjfXI7oys4e9Tf1yW3ZQ2Cy3OAwLMQg2McZaFa3F6Ivxeng5Wd?=
+ =?us-ascii?Q?9EBCfLskDXisGsno72dOAnJDefoEDUBPngMbXrlLQU66NFalXMhNDY0Z6nns?=
+ =?us-ascii?Q?/7hwZxSanGBnSQ0cJhllcH0jPTJjGCF3yV0ovwh0JoyowZLnd2kCVmd+2In4?=
+ =?us-ascii?Q?HRztSzteevroJjbqq6PzFHPRLb/Lj7pHlknEmcnwrouPQkK/G2lPoJKUH6V3?=
+ =?us-ascii?Q?+VAlpkxiEqWMjJBjf/Bpjr3MYlTgeKZdVDfKzfVwtp7rCMsyc+y4PW3aLikw?=
+ =?us-ascii?Q?y6lh9PaxBScjSUVkLSD7QKMEImj1fWWycUMqP6x9PJApMo+1O4rz8UJ2HI0r?=
+ =?us-ascii?Q?1Ryw+zwRwl70wcFQOyxuK22gs4belPdb0CYAN7jYAMEZKtjd8SYau4GjfA3G?=
+ =?us-ascii?Q?2NxQRfrfsCIv8LKQCKWEzpIe4vgC8H4l6cLeMGvbRwWxXeal0mPunqaYjfz1?=
+ =?us-ascii?Q?TXd4tWZOjBSzVLymyLhtpQc+s3Ba1fTBOczuDo3I57lU+QW4y+pOGl25c/Th?=
+ =?us-ascii?Q?lOKeSAFVJckAapULk7Ia1IT3QepfoCc7xzJRVR80mA9hv6107xEmu6ZjdbCa?=
+ =?us-ascii?Q?PYJAXTB/lkmBf0/Hvo2cjKHN4b3/6z8fM9/CbR2BmukoWv8xfa9mgFNZqQAw?=
+ =?us-ascii?Q?p1t6ZMnoA1bFmmpzbX9XKDxD?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3886cbff-0e68-4406-9423-08d983a4cae0
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 23:56:45.3078
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0Rp9yyufKGMxRMq73d7I9JP7HsaC1vKxLv/WsoIdNKigvsCOFAkNfiiiSrUYilnH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 29, 2021 at 03:26:25PM +0300, Leon Romanovsky wrote:
+> On Tue, Sep 28, 2021 at 08:52:17AM -0300, Jason Gunthorpe wrote:
+> > On Tue, Sep 28, 2021 at 05:12:39PM +0800, Mark Zhang wrote:
+> > > On 9/28/2021 1:30 AM, Jason Gunthorpe wrote:
+> > > > On Wed, Sep 15, 2021 at 02:07:25AM +0300, Leon Romanovsky wrote:
+> > > > > +static int stat_get_doit_default_counter(struct sk_buff *skb,
+> > > > > +					 struct nlmsghdr *nlh,
+> > > > > +					 struct netlink_ext_ack *extack,
+> > > > > +					 struct nlattr *tb[])
+> > > > > +{
+> > > > > +	struct rdma_hw_stats *stats;
+> > > > > +	struct ib_device *device;
+> > > > > +	u32 index, port;
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
+> > > > > +	device = ib_device_get_by_index(sock_net(skb->sk), index);
+> > > > > +	if (!device)
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > > +	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
+> > > > > +	if (!rdma_is_port_valid(device, port)) {
+> > > > > +		ret = -EINVAL;
+> > > > > +		goto end;
+> > > > > +	}
+> > > > > +
+> > > > > +	stats = ib_get_hw_stats_port(device, port);
+> > > > > +	if (!stats) {
+> > > > > +		ret = -EINVAL;
+> > > > > +		goto end;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
+> > > > > +		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
+> > > > > +					       device, port, stats);
+> > > > > +	else
+> > > > > +		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
+> > > > > +						 port, stats);
+> > > > 
+> > > > This seems strange, why is the output of a get contingent on a ignored
+> > > > input attribute? Shouldn't the HWCOUNTER_DYNAMIC just always be
+> > > > emitted?
+> > > 
+> > > The CMD_STAT_GET is originally used to get the default hwcounter statistic
+> > > (the value of all hwstats), now we also want to use this command to get a
+> > > list of counters (just name and status), so kernel differentiates these 2
+> > > cases based on HWCOUNTER_DYNAMIC attr.
+> > 
+> > Don't do that, it is not how netlink works. Either the whole attribute
+> > should be returned or you need a new get command
+> 
+> The netlink way is to be independent on returned parameter, if it not
+> supported, this parameter won't be available at all. This makes HWCOUNTER_DYNAMIC
+> to work exactly as netlink would do.
 
-Hi all,
+The issue is making the output dependent on the input:
 
-After merging the kspp-gustavo tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+ +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
 
-kernel/trace/ftrace.c: In function 'ftrace_ops_get_list_func':
-kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
-ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
-ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
-gs *)' [-Wcast-function-type]
-  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
-      |                               ^
-kernel/trace/ftrace.c:174:10: note: in expansion of macro 'ftrace_ops_list_=
-func'
-  174 |   return ftrace_ops_list_func;
-      |          ^~~~~~~~~~~~~~~~~~~~
-kernel/trace/ftrace.c: In function 'update_ftrace_function':
-kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
-ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
-ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
-gs *)' [-Wcast-function-type]
-  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
-      |                               ^
-kernel/trace/ftrace.c:207:10: note: in expansion of macro 'ftrace_ops_list_=
-func'
-  207 |   func =3D ftrace_ops_list_func;
-      |          ^~~~~~~~~~~~~~~~~~~~
-kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
-ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
-ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
-gs *)' [-Wcast-function-type]
-  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
-      |                               ^
-kernel/trace/ftrace.c:220:14: note: in expansion of macro 'ftrace_ops_list_=
-func'
-  220 |  if (func =3D=3D ftrace_ops_list_func) {
-      |              ^~~~~~~~~~~~~~~~~~~~
-kernel/trace/ftrace.c: In function 'ftrace_modify_all_code':
-kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
-ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
-ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
-gs *)' [-Wcast-function-type]
-  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
-      |                               ^
-kernel/trace/ftrace.c:2698:35: note: in expansion of macro 'ftrace_ops_list=
-_func'
- 2698 |   err =3D ftrace_update_ftrace_func(ftrace_ops_list_func);
-      |                                   ^~~~~~~~~~~~~~~~~~~~
-kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
-ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
-ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
-gs *)' [-Wcast-function-type]
-  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
-      |                               ^
-kernel/trace/ftrace.c:2708:41: note: in expansion of macro 'ftrace_ops_list=
-_func'
- 2708 |  if (update && ftrace_trace_function !=3D ftrace_ops_list_func) {
-      |                                         ^~~~~~~~~~~~~~~~~~~~
-In file included from kernel/bpf/hashtab.c:8:
-kernel/bpf/hashtab.c: In function 'htab_map_gen_lookup':
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u6=
-4,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  l=
-ong long unsigned int,  long long unsigned int,  long long unsigned int,  l=
-ong long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
-  374 |   .imm   =3D ((FUNC) - __bpf_call_base) })
-      |              ^~~~
-kernel/bpf/hashtab.c:671:26: note: in expansion of macro 'BPF_CAST_CALL'
-  671 |  *insn++ =3D BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
-      |                          ^~~~~~~~~~~~~
-kernel/bpf/hashtab.c: In function 'htab_lru_map_gen_lookup':
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u6=
-4,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  l=
-ong long unsigned int,  long long unsigned int,  long long unsigned int,  l=
-ong long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
-  374 |   .imm   =3D ((FUNC) - __bpf_call_base) })
-      |              ^~~~
-kernel/bpf/hashtab.c:712:26: note: in expansion of macro 'BPF_CAST_CALL'
-  712 |  *insn++ =3D BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
-      |                          ^~~~~~~~~~~~~
-kernel/bpf/hashtab.c: In function 'htab_of_map_gen_lookup':
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u6=
-4,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  l=
-ong long unsigned int,  long long unsigned int,  long long unsigned int,  l=
-ong long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
-  374 |   .imm   =3D ((FUNC) - __bpf_call_base) })
-      |              ^~~~
-kernel/bpf/hashtab.c:2400:26: note: in expansion of macro 'BPF_CAST_CALL'
- 2400 |  *insn++ =3D BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
-      |                          ^~~~~~~~~~~~~
-In file included from include/linux/bpf_verifier.h:9,
-                 from kernel/bpf/verifier.c:12:
-kernel/bpf/verifier.c: In function 'jit_subprogs':
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'unsigned int (*)(const void *, const struct bpf_insn *)' to 'u64=
- (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long lo=
-ng unsigned int,  long long unsigned int,  long long unsigned int,  long lo=
-ng unsigned int,  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12472:16: note: in expansion of macro 'BPF_CAST_CALL'
-12472 |    insn->imm =3D BPF_CAST_CALL(func[subprog]->bpf_func) -
-      |                ^~~~~~~~~~~~~
-kernel/bpf/verifier.c: In function 'do_misc_fixups':
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'void * (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u6=
-4,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned i=
-nt,  long long unsigned int,  long long unsigned int,  long long unsigned i=
-nt,  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12953:17: note: in expansion of macro 'BPF_CAST_CALL'
-12953 |     insn->imm =3D BPF_CAST_CALL(ops->map_lookup_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'int (* const)(struct bpf_map *, void *, void *, u64)' {aka 'int =
-(* const)(struct bpf_map *, void *, void *, long long unsigned int)'} to 'u=
-64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long =
-long unsigned int,  long long unsigned int,  long long unsigned int,  long =
-long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12957:17: note: in expansion of macro 'BPF_CAST_CALL'
-12957 |     insn->imm =3D BPF_CAST_CALL(ops->map_update_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64, =
- u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
-  long long unsigned int,  long long unsigned int,  long long unsigned int,=
-  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12961:17: note: in expansion of macro 'BPF_CAST_CALL'
-12961 |     insn->imm =3D BPF_CAST_CALL(ops->map_delete_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'int (* const)(struct bpf_map *, void *, u64)' {aka 'int (* const=
-)(struct bpf_map *, void *, long long unsigned int)'} to 'u64 (*)(u64,  u64=
-,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned in=
-t,  long long unsigned int,  long long unsigned int,  long long unsigned in=
-t,  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12965:17: note: in expansion of macro 'BPF_CAST_CALL'
-12965 |     insn->imm =3D BPF_CAST_CALL(ops->map_push_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64, =
- u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
-  long long unsigned int,  long long unsigned int,  long long unsigned int,=
-  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12969:17: note: in expansion of macro 'BPF_CAST_CALL'
-12969 |     insn->imm =3D BPF_CAST_CALL(ops->map_pop_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64, =
- u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
-  long long unsigned int,  long long unsigned int,  long long unsigned int,=
-  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12973:17: note: in expansion of macro 'BPF_CAST_CALL'
-12973 |     insn->imm =3D BPF_CAST_CALL(ops->map_peek_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: warning: cast between incompatible function t=
-ypes from 'int (* const)(struct bpf_map *, u32,  u64)' {aka 'int (* const)(=
-struct bpf_map *, unsigned int,  long long unsigned int)'} to 'u64 (*)(u64,=
-  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsign=
-ed int,  long long unsigned int,  long long unsigned int,  long long unsign=
-ed int,  long long unsigned int)'} [-Wcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12977:17: note: in expansion of macro 'BPF_CAST_CALL'
-12977 |     insn->imm =3D BPF_CAST_CALL(ops->map_redirect) -
-      |                 ^~~~~~~~~~~~~
+Setting HWCOUNTER_DYNAMIC as an input flag to get the GET to return a
+completely different output format is not netlinky
 
-Introduced by commit
+Either always return HWCOUNTER_DYNAMIC or make another query to get it
 
-  ffea83dd8823 ("Makefile: Enable -Wcast-function-type")
-
-Please either fix all these or revert that commit for now.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFU/FwACgkQAVBC80lX
-0GwAdwf/XsiWe8ECMf8QdhFhLGZ71VMoF/1LzGqIP3uaf9sUyfvDojmJtNdy/TJw
-jfYMR8Ioe8WqLtMJy+a09KtmrbWdLg+1YK4d75Sq6iTs+YNxcTMDzhuYObqJA18R
-mWaxe8xb2RdRRZDCJeGVXAF8L/kLv8hb3WS6sogbMZzQbGiRjdg7H0/ITh4JixZd
-efbmykJ4cttIEa2/AYynqfcrKbXYDRrrqFyO/7Eb3AgNGxYdi7dkH+iBa8XG3CIl
-c2ktfls2XGH7LNmOSCYqlD3oTCX0zM1k8ss9eZynlYdEy0bnrOVCZTjpuTJIeL4Q
-NqPlqwVXft0yYKnJe33bwC0tv4Qapw==
-=6m+J
------END PGP SIGNATURE-----
-
---Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw--
+Jason
