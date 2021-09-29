@@ -2,86 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7739241CF79
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBC341CF7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347353AbhI2WvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345332AbhI2WvV (ORCPT
+        id S244732AbhI2Wwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:52:47 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39731 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346417AbhI2Wwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:51:21 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B617DC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:49:39 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id k11-20020a4abd8b000000b002b5c622a4ddso1257573oop.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e2OTP9/Iaal3kA6JcGQMsrbP+LXgzXaNrRHpdP8nXFo=;
-        b=G28j7WE82ccu1R0Oh+3pL1ssp6lEJumdTGsQ3x7h/CpuqpyWf8R+WjqiopNkB1NB4/
-         Zra/3R/RSSJZllQnqZu1Xj+YQ0FxpcgBvNwEkTau1kpz6b68svJZ50NRQ//U0PLJUdQR
-         DkUQeMxkcoKtyVm2uxaqrjOAY9i3fC4SerMzZdZVZ9b0XAcmZpL1q6MC3nsv+g3i/jJs
-         KUGbfDfWoHVGdrsjpnAkUfMu6i7V5EoF5AJ9nKytt9GVAuQ6+mCdlkFiRcjc4VXFL2Od
-         WJfs3bsK32BycM4a0wL1xW5yBug97qJvppkZLkNMUAP6kdwie83+7r/nG3EqS7rGSwvI
-         i4/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e2OTP9/Iaal3kA6JcGQMsrbP+LXgzXaNrRHpdP8nXFo=;
-        b=VgVeIzQCO73TLRHijlHiH3mQGhLTncfDupLFCYklM7WRpYRdyDqhzfWm9fjjYV7gRe
-         fpW2tpynkxZ23+BKAiCYtHt6HLniLtF7lDVx6WDH3ZhX4mqjnz0iEHgCkb1batCP+g7d
-         0SXuUNEdw+kz4B81BFZ6gcJYlaUfBfajYbnABoCGycMnoWJdhcWfbo94vR3/kYjEQvk1
-         89qrt2GtFYjpXaPBbfzGTsB/srrDkzCyvHT6flVAYTVGMXZ3ygvd4peQBCpvnYat/8uJ
-         gUWZba+SrHqjqFInOpLAlZ2hAD1oIeDmAk93QHa/fGRqIiBuWvquyANn4IzpS/P7J9QT
-         dreQ==
-X-Gm-Message-State: AOAM532dtRp1vyq2yxu/06SzO3Z3oRVF+P4FzSNiVKJsEuh+j/U6BsOj
-        zd3TO2M2qi+59TyiNYN26xsIMs/iINrVJtp7CXoKqw==
-X-Google-Smtp-Source: ABdhPJwfYZYVoJIZCIZZ0IzxjW4zfiQ4Yzrk0WBLtD+ahAtcf/rqByhKxVhje9lfN/nkWtK0vc3A9WW0Qv7Q8g8YFGM=
-X-Received: by 2002:a4a:de57:: with SMTP id z23mr2042527oot.70.1632955778679;
- Wed, 29 Sep 2021 15:49:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929222426.1855730-1-seanjc@google.com> <20210929222426.1855730-3-seanjc@google.com>
-In-Reply-To: <20210929222426.1855730-3-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 29 Sep 2021 15:49:27 -0700
-Message-ID: <CALMp9eQZH80_vWEz26OGr8cwhLEP4yoSt2UdSC_75Fy9sMxhhQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Manually retrieve CPUID.0x1 when getting
- FMS for RESET/INIT
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com,
-        Alexander Potapenko <glider@google.com>
+        Wed, 29 Sep 2021 18:52:45 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7DC5D5C00ED;
+        Wed, 29 Sep 2021 18:51:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 29 Sep 2021 18:51:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
+        /SmpU8+zuhfCdM1F4tBy43UJVJESbBMrVSDv8V0+hsM=; b=ZooT6Wo17uDeqWhA
+        JzZvdNwHGFCwnBtwMSFoHQWa2+ibDLx3MgQIvebs8DLPyHa98ts1xdA6WrJF7LtJ
+        oPKuFdO+OkBUKk10+uVAq9ocUpFZx9dfONzK0ndhLrRyOJaipCUbrlpU3RzGvrDi
+        kYJDesiqb4eGfB4KfCHTpoztPUqB9OVNis+dEaGUU8vJWVpMtT5ciB7ZwJZHnvpI
+        GWNFRfxE9izpSRLRKAi8Jqshevhoiq1BS7g1u1PEw0b4LjWoo5FrJfsaRfyV9jSr
+        SLYPpLBNz6jjt7egqhZo28GA2iX1d0Rx12VANvrCKC5iZJQFhUiDH0tf+l+toEdS
+        j+eoiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=/SmpU8+zuhfCdM1F4tBy43UJVJESbBMrVSDv8V0+h
+        sM=; b=K1rX6rFqOT4VP4yUORHS9r9Ohu15BQWLde3fiLqJnCQWCgncTNcv5Q7OF
+        lVN5ZpujXdBtWjWLqTafjaDWDgNzOTTxiJsIsBtAVoKmtLXGRASvUuBOLMFAkZCb
+        0FM9L3PyWqGDa/efrYCY0iETk6ivr1jWZS1mceSN2Z5kckpAi6FaeMIgtbfOH9dz
+        9h+/4bJ7oAVj+NqxSXczIO7pSttZQvqXpqeTwPHtSRe8M4cUC7JlAfKaI8ZgqW7f
+        8++zX4gHR/alP1SHUn/v+PAH2vgVm4Lu0xW8rnj73yBr3Lmh4CFMWa3BMzqwWyOu
+        DvsGCeZLgoRvX8tcGxMRGo/ANwXiQ==
+X-ME-Sender: <xms:1-1UYbLB4ykPLFZRHxSI1FmLclt-Hfx2XwHZlPGHdlAenYW4H8RVuQ>
+    <xme:1-1UYfKADao8vDauuWssRZg2_hgz-mrrVKXiAlgUJbZmwWd5nakDzfDf9G1Whq_49
+    zwY-44by6r0>
+X-ME-Received: <xmr:1-1UYTurETxYWSckYoMq7EmFgFbDuI03vrde9ZpFCtj9m1luLCK7p-4NGENmZxq_Xrgp5M8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekfedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:1-1UYUZWpLyimArHZ4Zx2OFmaln-u9Zb9CAYHfx3V74M0-dKWo_BIA>
+    <xmx:1-1UYSZkR3A-QwTiAV1ojrqbGGKhX6OL2scxeomtmQo1qv2GEiwcKw>
+    <xmx:1-1UYYBkTroxpqGPUVqjIdtS94GmwmB3hJRqSikdsVR6PNqMOYcFgw>
+    <xmx:1-1UYa4rgWiuIFb77e1qv3IHxxEXk9T7yJ6W6v3BmFuIXCik28-WzA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 29 Sep 2021 18:50:59 -0400 (EDT)
+Message-ID: <32c970d1f93a02207cb1746852e51bae4b2691c8.camel@themaw.net>
+Subject: Re: [PATCH] kernfs: don't create a negative dentry if inactive node
+ exists
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Hou Tao <houtao1@huawei.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 30 Sep 2021 06:50:56 +0800
+In-Reply-To: <d54d122a7267eddbdcdeb4cb4fad6630e9e0ffe3.camel@themaw.net>
+References: <163288467430.30015.16308604689059471602.stgit@mickey.themaw.net>
+         <YVQCE3vhK8z33Na2@kroah.com>
+         <d54d122a7267eddbdcdeb4cb4fad6630e9e0ffe3.camel@themaw.net>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 3:24 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Manually look for a CPUID.0x1 entry instead of bouncing through
-> kvm_cpuid() when retrieving the Family-Model-Stepping information for
-> vCPU RESET/INIT.  This fixes a potential undefined behavior bug due to
-> kvm_cpuid() using the uninitialized "dummy" param as the ECX _input_,
-> a.k.a. the index.
->
-> A more minimal fix would be to simply zero "dummy", but the extra work in
-> kvm_cpuid() is wasteful, and KVM should be treating the FMS retrieval as
-> an out-of-band access, e.g. same as how KVM computes guest.MAXPHYADDR.
-> Both Intel's SDM and AMD's APM describe the RDX value at RESET/INIT as
-> holding the CPU's FMS information, not as holding CPUID.0x1.EAX.  KVM's
-> usage of CPUID entries to get FMS is simply a pragmatic approach to avoid
-> having yet another way for userspace to provide inconsistent data.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+On Thu, 2021-09-30 at 06:28 +0800, Ian Kent wrote:
+> On Wed, 2021-09-29 at 08:05 +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 29, 2021 at 11:04:34AM +0800, Ian Kent wrote:
+> > > In kernfs_iop_lookup() a negative dentry is created if there's no
+> > > kernfs
+> > > node associated with the dentry or the node is inactive.
+> > > 
+> > > But inactive kernfs nodes are meant to be invisible to the VFS
+> > > and
+> > > creating a negative dentry for these can have unexpected side
+> > > effects
+> > > when the node transitions to an active state.
+> > > 
+> > > The point of creating negative dentries is to avoid the expensive
+> > > alloc/free cycle that occurs if there are frequent lookups for
+> > > kernfs
+> > > attributes that don't exist. So kernfs nodes that are not yet
+> > > active
+> > > should not result in a negative dentry being created so when they
+> > > transition to an active state VFS lookups can create an
+> > > associated
+> > > dentry is a natural way.
+> > > 
+> > > Signed-off-by: Ian Kent <raven@themaw.net>
+> > > ---
+> > >  fs/kernfs/dir.c |    9 ++++++++-
+> > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > Does this fix a specific commit and need a "Fixes:" tag?
+> 
+> Oh, of course yes, apologies, my bad.
+> I re-post it.
+
+But in case your ok to add it on my behalf it should be:
+Fixes: c7e7c04274b1 ("kernfs: use VFS negative dentry caching")
+
+> 
+> 
+> Ian
+
+
