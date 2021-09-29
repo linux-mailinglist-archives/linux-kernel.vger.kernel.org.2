@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84A441BDBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F1241BDC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244207AbhI2Dpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
+        id S244049AbhI2Dz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244115AbhI2DpN (ORCPT
+        with ESMTP id S239845AbhI2Dzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:45:13 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39BFC06177F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:43:29 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 133so1331768pgb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 20:43:29 -0700 (PDT)
+        Tue, 28 Sep 2021 23:55:55 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EBBC06161C;
+        Tue, 28 Sep 2021 20:54:15 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b20so5096878lfv.3;
+        Tue, 28 Sep 2021 20:54:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FYXdO9hJvhFltLYbg/A8prSsur4Hc5VN104uh+rlA1o=;
-        b=VOBqEd74mVR9Y+lhOSmIztFfoJmPWTu7mP445QOv9cgjUnontrVnGc+EfpbzmbuB05
-         W/k4Lj/fd6Olb4muOd06V6Si8QV0Ft1iYCxM46WvEbRfccp9NrMHLrxiUKvqxoZuJdpS
-         HPjCSv3b/L3WCgEPsYxci0743LdgOAmyge42cN8S0WNixC6Fy/P9saTORPTNh0kDe5KA
-         WvTc4SPsXEtYjlBW/W2v0dumVL+vKuwGY91go5qPATPPPGSGDP6ypU7CmMMw2O0rCT/+
-         XSJcBs3u++amTRYkUvXAYGNyX9eSjRZ9ZchdMFLcZNNlRNRvx6BIiitP4OgfjYMp0cd6
-         IRkA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/p6DGmnC7B0nWD9+vlgj0QVMsJ4q8uTVTskxGseDyEI=;
+        b=DQKEchpuEgrr0m9GIPyBIZZJb7OreDvHtj4IRDcszBVgwMRa9fj6xXeUw+l+pUB3Xb
+         RbfFq16hoTsRTw476ryh/gD4nUKfaosFupj/zEPUcoK/geh1+Ior0CRcix78o63G2Xlz
+         KByRYxar13m9i/XTbvOiGByjzzc3yMh5PAW0IGHFKK1xZ0OmRt+D3/daOGuG8iUR2FF5
+         dxAQs3M1Z2FjBWTaq2X2BN0Gw7owrB8WGxKFrIh5Ya6Pqz0FHfh5vr7wulILUuSwwaGT
+         5x1X3I+r6pYi/ioxGWcqFICSPnOb7GvnFIc6964Xbf5eWjTXdUDRhiY74DoNonB3DUt/
+         2v/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=FYXdO9hJvhFltLYbg/A8prSsur4Hc5VN104uh+rlA1o=;
-        b=bQPamr2gldfQF2I+VK2Qt3btEYspm6+xaQbsl99/FZOg2MzU2bQKf5MiJDedlE+KfP
-         x4u2kzlHxNPexsyKfxi71TEeBXpGQfn5IZpaTvYp4/IqBojtj076HB3penu4mi5/J/zN
-         5XbeFAtVcVTnlf1OtHv2x/ehS3X1gd6Bwhvsmhtgxnv/KrxmvDMsZ+/Q4yAl9QAYleb+
-         2nTPtzPLJ93u5pWz0wPF0Uckns9O7hpW7tIeYf9OHQOhQ8TyK2e4U+Zyl4ZrXSB8gfyK
-         nXkCqoKiyfophrcRjwf3WEleOXHnUhhEyp59Y0Cma+OVBxZT6R5AHz98txzPJKtvGMUQ
-         ZCSQ==
-X-Gm-Message-State: AOAM5313g9eYQzSEQvEazZIp6W6WUJQJBDQclNksbnKYcdBQGu7DmTpH
-        eZFarnrXpuJIAx8x4tEPqqjetQ==
-X-Google-Smtp-Source: ABdhPJxDn6uBmUa9SlWbpmR7EUFl7Ur07P+cgOttjL5zAM5eauFC2MUQEDyDL2Ou3akJ0ia+q/zMrA==
-X-Received: by 2002:a62:84d7:0:b0:438:af8:87ac with SMTP id k206-20020a6284d7000000b004380af887acmr9255549pfd.56.1632887009510;
-        Tue, 28 Sep 2021 20:43:29 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id b7sm533032pfb.20.2021.09.28.20.43.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 20:43:29 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 10/10] ARM: dts: qcom: sdx55: Drop '#clock-cells' from QMP PHY node
-Date:   Wed, 29 Sep 2021 11:42:53 +0800
-Message-Id: <20210929034253.24570-11-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210929034253.24570-1-shawn.guo@linaro.org>
-References: <20210929034253.24570-1-shawn.guo@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/p6DGmnC7B0nWD9+vlgj0QVMsJ4q8uTVTskxGseDyEI=;
+        b=uJK9lU2AUVHNq4gfVuW43yydqizovZQJOyUbAu39UK68zGD2EW+wCDCaiIh/AGMq3l
+         L4tPB4cz+GOXSftU6bHXO9RdqaV/2nvGY73sy0WIDxUlcJjK9sZVJ92OnROT7xe2nODb
+         1jQzq7vPMijh/TCv9r272wKqr94X5moCoJQioOIwpcoB/OgEH6BVCZbu4o09Xaur4lRh
+         qyyLCJnEJQFPHFZh4pJbXnk904TEJtDMqAf6S1yKNTezsaYhr2mxSMnLC1KghZhZ/FPV
+         hwzUJDr/a7tRLjYLqWL8ZsfTKZ3unrPI9c51ZI5MZC89v8ZmKB8npxFgXVKHg1dAKzR4
+         5Qtw==
+X-Gm-Message-State: AOAM5313EcCF6Ebn+147nnQupV+kUq3KIzdgQ7lgt9y/KkCt3He2lry4
+        QqyIQwsHZ6Ue330XHvHsCJ8lKmDWEowNkWY5jzM=
+X-Google-Smtp-Source: ABdhPJwakKU+DVlfOB/GlGLsAIc3BTBvu7tf98MJiucp+U52Tqx0EmdnvCyePRKZLuuOcd6hSH+zFZjzdw7/iz4jBUM=
+X-Received: by 2002:a2e:1548:: with SMTP id 8mr3800257ljv.229.1632887653293;
+ Tue, 28 Sep 2021 20:54:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210928225634.28432-1-ematsumiya@suse.de> <CAKYAXd82wCtdNOSzPu7LaivkGVga5QoXcHsU-z5KEGDd8R+o2A@mail.gmail.com>
+In-Reply-To: <CAKYAXd82wCtdNOSzPu7LaivkGVga5QoXcHsU-z5KEGDd8R+o2A@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 28 Sep 2021 22:54:02 -0500
+Message-ID: <CAH2r5muxv7XyGQAERuYAk=6TxYJVs_Lj+G0pmuiGr5HwDiUNAQ@mail.gmail.com>
+Subject: Re: [PATCH] ksmbd: fix documentation for 2 functions
+To:     Namjae Jeon <linkinjeon@kernel.org>
+Cc:     Enzo Matsumiya <ematsumiya@suse.de>,
+        CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@cjr.nz>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'#clock-cells' is a required property of QMP PHY child node, not itself.
-Drop it to fix the dtbs_check warnings below.
+merged into cifsd-for-next
 
-qcom-sdx55-t55.dt.yaml: phy@ff6000: '#clock-cells' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
-qcom-sdx55-mtp.dt.yaml: phy@ff6000: '#clock-cells' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
-qcom-sdx55-telit-fn980-tlb.dt.yaml: phy@ff6000: '#clock-cells' does not match any of the regexes: '^phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+On Tue, Sep 28, 2021 at 7:10 PM Namjae Jeon <linkinjeon@kernel.org> wrote:
+>
+> 2021-09-29 7:56 GMT+09:00, Enzo Matsumiya <ematsumiya@suse.de>:
+> > ksmbd_kthread_fn() and create_socket() returns 0 or error code, and not
+> > task_struct/ERR_PTR.
+> >
+> > Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+> Acked-by: Namjae Jeon <linkinjeon@kernel.org>
+>
+> Thanks for your patch!
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- arch/arm/boot/dts/qcom-sdx55.dtsi | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-index 1e6ce035f76a..44526ad9d210 100644
---- a/arch/arm/boot/dts/qcom-sdx55.dtsi
-+++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-@@ -228,7 +228,6 @@
- 			compatible = "qcom,sdx55-qmp-usb3-uni-phy";
- 			reg = <0x00ff6000 0x1c0>;
- 			status = "disabled";
--			#clock-cells = <1>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges;
+
 -- 
-2.17.1
+Thanks,
 
+Steve
