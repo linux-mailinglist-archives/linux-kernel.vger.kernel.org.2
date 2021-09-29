@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF64D41BCCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7373641BCCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243839AbhI2CfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 22:35:11 -0400
+        id S243813AbhI2CfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 22:35:14 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243838AbhI2CfI (ORCPT
+        with ESMTP id S243815AbhI2CfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 22:35:08 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FB6C061753
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 19:33:26 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id m26so687013pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 19:33:26 -0700 (PDT)
+        Tue, 28 Sep 2021 22:35:10 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B00C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 19:33:30 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so693915pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 19:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iUall3U24zYRMxZTLu8QMiLAqNLbI9ECfniKcDwoTIk=;
-        b=U6WCe0JD5h2qhkJ++CB96pGEtGWB1/F87pkVQv21QiLs3xgSNc3aRewG0x/j3yWuQg
-         yFY8/CtwyaDGgWdL2NN3UQMcUh/wWNnpYPRzzCx16GuzK9uoLeQ60BVKh7il8hYXZloN
-         q+zVwprx99aqCYhM2jrLu3qaiB1yAo4tOxtc4=
+        bh=Avq5RbT/lx2fFWwn1+oBZcpxY4DeWLbxCwAyQKZBr6Q=;
+        b=RsreUQtZHkHMdFYzbWrJEWkO7v8DByvMn1Cm55K01vrJ1BdE5FqMiOk5XvGjmjn13/
+         wSIaJmMt0JynoNYnAzFDSVZrdZYO3yC+c5NuctFmkYv98pT7ka6WOlQwreGFcPNdDx0z
+         s0hS+MgpU3CYbpJ+OckbEQsOtASV0wdfMOErM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iUall3U24zYRMxZTLu8QMiLAqNLbI9ECfniKcDwoTIk=;
-        b=J+hMcC7zXZwJxVTaPICwEwzAGmn9mf/tcFn/GYxRdLnD+dbGf0HccVMZOV4g+4mvs3
-         2tzsE4JL8/12tMevQ4JSVvpZajpR8jU4vYIFBO0PHUKrg/slGacD1Crcp61BtEo94gaO
-         Sal+FhMfLFwBHlVcotDEiO1D5RFzGDj2r01HQy2oNQ5+0g2ZbKAwnq7DxdE0ERvdGTjW
-         2fr2I+PpeeXmEiRyskm32SGlqcOhKYW62IxRNNRNSTVx37DF93k1eogLg9rSB0rYGYhD
-         w2dkD70V8+z1woa6TSl8YGRnDDROuW/JCQUeXcjzdeWRDLdIZXz+B0qoCFji61pDdSAy
-         PgeA==
-X-Gm-Message-State: AOAM533dTCf2XncOFW76uSNWeLZ0GY8Gm6Q04qGOrkmp7xA7JfamAwFv
-        3tU9MoX2vR406/j8Lakf0DqaKQ==
-X-Google-Smtp-Source: ABdhPJyaRXccGofSKYzMfOoRR3mP9Rg9/ZlL1e4fiIrckBhZWP0W8hFkn/6q2YxueaVpOnj1RhIArQ==
-X-Received: by 2002:a63:b54b:: with SMTP id u11mr7492398pgo.163.1632882806082;
-        Tue, 28 Sep 2021 19:33:26 -0700 (PDT)
+        bh=Avq5RbT/lx2fFWwn1+oBZcpxY4DeWLbxCwAyQKZBr6Q=;
+        b=pDMW5NzQ23Bhoi26OlJRFb1tPF0QUHaNcWIsF4SybxplE8OBDrPQRYDTOa8CEtmXUD
+         xg0ubP6yRF8nt1SIxmK9z8LbSFemVPZ7utw6hkYJogHU8Hmd6U2xncu3cY9e81vEx+V4
+         dFa8ndbkXewb/ARCf3V0YfdJVUyAJVmnmK9/6+X5PhynKP788cux4HTWXKJAylvOqz3l
+         Xc/9SopkPWYp5wAI9K6kF9imRQuPNMnD8tksDUlHIz/zZ/t7lYuOpWzP7MXxSc6leobp
+         x6TSABBaSYyGrFQXAT2+i6EevjRa2hKxzclIOWxdaliP+1slBd19Baqinz7XzpFZeY4e
+         BsqA==
+X-Gm-Message-State: AOAM533PgcEVLmpe4GzhrYKYl7N3dnNojYetEEtWpjYPDTZqhrroeriB
+        NmHWK5TaWwvGL0Zo/HJtFnJECg==
+X-Google-Smtp-Source: ABdhPJyoSPNVeVmBl31+olu0YXEa5foZN5sfKsQOK+2mvMYcLDsnB8Wy+WaCIoBB0kmqTaWZjrbMdw==
+X-Received: by 2002:a17:90a:49:: with SMTP id 9mr3654873pjb.80.1632882810263;
+        Tue, 28 Sep 2021 19:33:30 -0700 (PDT)
 Received: from localhost ([2401:fa00:8f:203:f818:368:93ef:fa36])
-        by smtp.gmail.com with UTF8SMTPSA id y15sm415897pfq.32.2021.09.28.19.33.23
+        by smtp.gmail.com with UTF8SMTPSA id k3sm27354pjg.43.2021.09.28.19.33.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Sep 2021 19:33:25 -0700 (PDT)
+        Tue, 28 Sep 2021 19:33:30 -0700 (PDT)
 From:   David Stevens <stevensd@chromium.org>
 X-Google-Original-From: David Stevens <stevensd@google.com>
 To:     Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>
@@ -53,9 +53,9 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Tom Murphy <murphyt7@tcd.ie>, Rajat Jain <rajatja@google.com>,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         David Stevens <stevensd@chromium.org>
-Subject: [PATCH v8 4/7] dma-iommu: fold _swiotlb helpers into callers
-Date:   Wed, 29 Sep 2021 11:32:57 +0900
-Message-Id: <20210929023300.335969-5-stevensd@google.com>
+Subject: [PATCH v8 5/7] dma-iommu: Check CONFIG_SWIOTLB more broadly
+Date:   Wed, 29 Sep 2021 11:32:58 +0900
+Message-Id: <20210929023300.335969-6-stevensd@google.com>
 X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 In-Reply-To: <20210929023300.335969-1-stevensd@google.com>
 References: <20210929023300.335969-1-stevensd@google.com>
@@ -67,197 +67,98 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: David Stevens <stevensd@chromium.org>
 
-Fold the _swiotlb helper functions into the respective _page functions,
-since recent fixes have moved all logic from the _page functions to the
-_swiotlb functions.
+Introduce a new dev_use_swiotlb function to guard swiotlb code, instead
+of overloading dev_is_untrusted. This allows CONFIG_SWIOTLB to be
+checked more broadly, so the swiotlb related code can be removed more
+aggressively.
 
 Signed-off-by: David Stevens <stevensd@chromium.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/iommu/dma-iommu.c | 135 +++++++++++++++++---------------------
- 1 file changed, 59 insertions(+), 76 deletions(-)
+ drivers/iommu/dma-iommu.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 027b489714b7..4f77c44eaf14 100644
+index 4f77c44eaf14..85a005b268f6 100644
 --- a/drivers/iommu/dma-iommu.c
 +++ b/drivers/iommu/dma-iommu.c
-@@ -510,26 +510,6 @@ static void __iommu_dma_unmap(struct device *dev, dma_addr_t dma_addr,
- 	iommu_dma_free_iova(cookie, dma_addr, size, &iotlb_gather);
+@@ -317,6 +317,11 @@ static bool dev_is_untrusted(struct device *dev)
+ 	return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
  }
  
--static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
--		size_t size, enum dma_data_direction dir,
--		unsigned long attrs)
--{
--	struct iommu_domain *domain = iommu_get_dma_domain(dev);
--	phys_addr_t phys;
--
--	phys = iommu_iova_to_phys(domain, dma_addr);
--	if (WARN_ON(!phys))
--		return;
--
--	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) && !dev_is_dma_coherent(dev))
--		arch_sync_dma_for_cpu(phys, size, dir);
--
--	__iommu_dma_unmap(dev, dma_addr, size);
--
--	if (unlikely(is_swiotlb_buffer(dev, phys)))
--		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
--}
--
- static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
- 		size_t size, int prot, u64 dma_mask)
++static bool dev_use_swiotlb(struct device *dev)
++{
++	return IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev);
++}
++
+ /* sysfs updates are serialised by the mutex of the group owning @domain */
+ int iommu_dma_init_fq(struct iommu_domain *domain)
  {
-@@ -556,55 +536,6 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
- 	return iova + iova_off;
- }
+@@ -731,7 +736,7 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
+ {
+ 	phys_addr_t phys;
  
--static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
--		size_t org_size, dma_addr_t dma_mask, bool coherent,
--		enum dma_data_direction dir, unsigned long attrs)
--{
--	int prot = dma_info_to_prot(dir, coherent, attrs);
--	struct iommu_domain *domain = iommu_get_dma_domain(dev);
--	struct iommu_dma_cookie *cookie = domain->iova_cookie;
--	struct iova_domain *iovad = &cookie->iovad;
--	size_t aligned_size = org_size;
--	void *padding_start;
--	size_t padding_size;
--	dma_addr_t iova;
--
--	/*
--	 * If both the physical buffer start address and size are
--	 * page aligned, we don't need to use a bounce page.
--	 */
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
++	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
+ 		return;
+ 
+ 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
+@@ -747,7 +752,7 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
+ {
+ 	phys_addr_t phys;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
++	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
+ 		return;
+ 
+ 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
+@@ -765,7 +770,7 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	if (dev_is_untrusted(dev))
++	if (dev_use_swiotlb(dev))
+ 		for_each_sg(sgl, sg, nelems, i)
+ 			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
+ 						      sg->length, dir);
+@@ -781,7 +786,7 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	if (dev_is_untrusted(dev))
++	if (dev_use_swiotlb(dev))
+ 		for_each_sg(sgl, sg, nelems, i)
+ 			iommu_dma_sync_single_for_device(dev,
+ 							 sg_dma_address(sg),
+@@ -808,8 +813,7 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+ 	 * If both the physical buffer start address and size are
+ 	 * page aligned, we don't need to use a bounce page.
+ 	 */
 -	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
--	    iova_offset(iovad, phys | org_size)) {
--		aligned_size = iova_align(iovad, org_size);
--		phys = swiotlb_tbl_map_single(dev, phys, org_size,
--					      aligned_size, dir, attrs);
--
--		if (phys == DMA_MAPPING_ERROR)
--			return DMA_MAPPING_ERROR;
--
--		/* Cleanup the padding area. */
--		padding_start = phys_to_virt(phys);
--		padding_size = aligned_size;
--
--		if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
--		    (dir == DMA_TO_DEVICE ||
--		     dir == DMA_BIDIRECTIONAL)) {
--			padding_start += org_size;
--			padding_size -= org_size;
--		}
--
--		memset(padding_start, 0, padding_size);
--	}
--
--	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
--		arch_sync_dma_for_device(phys, org_size, dir);
--
--	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
--	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(dev, phys))
--		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
--	return iova;
--}
--
- static void __iommu_dma_free_pages(struct page **pages, int count)
- {
- 	while (count--)
-@@ -866,15 +797,68 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
- {
- 	phys_addr_t phys = page_to_phys(page) + offset;
- 	bool coherent = dev_is_dma_coherent(dev);
-+	int prot = dma_info_to_prot(dir, coherent, attrs);
-+	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-+	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-+	struct iova_domain *iovad = &cookie->iovad;
-+	size_t aligned_size = size;
-+	dma_addr_t iova, dma_mask = dma_get_mask(dev);
-+
-+	/*
-+	 * If both the physical buffer start address and size are
-+	 * page aligned, we don't need to use a bounce page.
-+	 */
-+	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
-+	    iova_offset(iovad, phys | size)) {
-+		void *padding_start;
-+		size_t padding_size;
-+
-+		aligned_size = iova_align(iovad, size);
-+		phys = swiotlb_tbl_map_single(dev, phys, size,
-+					      aligned_size, dir, attrs);
-+
-+		if (phys == DMA_MAPPING_ERROR)
-+			return DMA_MAPPING_ERROR;
+-	    iova_offset(iovad, phys | size)) {
++	if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | size)) {
+ 		void *padding_start;
+ 		size_t padding_size;
  
--	return __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
--			coherent, dir, attrs);
-+		/* Cleanup the padding area. */
-+		padding_start = phys_to_virt(phys);
-+		padding_size = aligned_size;
-+
-+		if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-+		    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)) {
-+			padding_start += size;
-+			padding_size -= size;
-+		}
-+
-+		memset(padding_start, 0, padding_size);
-+	}
-+
-+	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-+		arch_sync_dma_for_device(phys, size, dir);
-+
-+	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
-+	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(dev, phys))
-+		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-+	return iova;
- }
+@@ -994,7 +998,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 		goto out;
+ 	}
  
- static void iommu_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
- 		size_t size, enum dma_data_direction dir, unsigned long attrs)
- {
--	__iommu_dma_unmap_swiotlb(dev, dma_handle, size, dir, attrs);
-+	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-+	phys_addr_t phys;
-+
-+	phys = iommu_iova_to_phys(domain, dma_handle);
-+	if (WARN_ON(!phys))
-+		return;
-+
-+	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) && !dev_is_dma_coherent(dev))
-+		arch_sync_dma_for_cpu(phys, size, dir);
-+
-+	__iommu_dma_unmap(dev, dma_handle, size);
-+
-+	if (unlikely(is_swiotlb_buffer(dev, phys)))
-+		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
- }
+-	if (dev_is_untrusted(dev))
++	if (dev_use_swiotlb(dev))
+ 		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
  
- /*
-@@ -959,7 +943,7 @@ static void iommu_dma_unmap_sg_swiotlb(struct device *dev, struct scatterlist *s
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+@@ -1072,7 +1076,7 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+ 	struct scatterlist *tmp;
  	int i;
  
- 	for_each_sg(sg, s, nents, i)
--		__iommu_dma_unmap_swiotlb(dev, sg_dma_address(s),
-+		iommu_dma_unmap_page(dev, sg_dma_address(s),
- 				sg_dma_len(s), dir, attrs);
- }
- 
-@@ -970,9 +954,8 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
- 	int i;
- 
- 	for_each_sg(sg, s, nents, i) {
--		sg_dma_address(s) = __iommu_dma_map_swiotlb(dev, sg_phys(s),
--				s->length, dma_get_mask(dev),
--				dev_is_dma_coherent(dev), dir, attrs);
-+		sg_dma_address(s) = iommu_dma_map_page(dev, sg_page(s),
-+				s->offset, s->length, dir, attrs);
- 		if (sg_dma_address(s) == DMA_MAPPING_ERROR)
- 			goto out_unmap;
- 		sg_dma_len(s) = s->length;
+-	if (dev_is_untrusted(dev)) {
++	if (dev_use_swiotlb(dev)) {
+ 		iommu_dma_unmap_sg_swiotlb(dev, sg, nents, dir, attrs);
+ 		return;
+ 	}
 -- 
 2.33.0.685.g46640cef36-goog
 
