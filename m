@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BB641C4FF
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEC141C500
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343947AbhI2M5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:57:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42462 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343940AbhI2M5k (ORCPT
+        id S1343951AbhI2M6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343919AbhI2M6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:57:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632920155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oHHoz5hSfSYkAdHIHrMpSEd2w0Wf9S7kBxpqY6OLo4c=;
-        b=GjTMWOGfnnTEoU7HlpYXbY35QnE6qqWWwPHDh1GfCfFpYcAx2E2ZIH2MEvucbMWS2CUTRo
-        urwO+CvN0HvZBsi/FdHAPbJqaw3ZZhRQShXu0a8dLFtkkAPP0GvoZNeYvFt8nFHU+LseXE
-        fYmz8aPqbVdtJRTKbBW3S7K2swcDq9M=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-Kc-FvtodMuWyNB2Yo-fh7g-1; Wed, 29 Sep 2021 08:55:52 -0400
-X-MC-Unique: Kc-FvtodMuWyNB2Yo-fh7g-1
-Received: by mail-ed1-f72.google.com with SMTP id a7-20020a509e87000000b003da71d1b065so2332225edf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:55:52 -0700 (PDT)
+        Wed, 29 Sep 2021 08:58:03 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52A1C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:56:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id b192-20020a1c1bc9000000b0030cfaf18864so1677701wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 05:56:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mg6RB6XzRIgaMR9CfScmPcuVXy1LoHJbNrKAbn6MCsY=;
+        b=MtVf2W8kwLE5Dz9Kf5OkM9iCCBei4ivfvf5La+0PZPrtKmbQuYCA1Dp44QAXDMojW4
+         Qt4JJMsd7EDCWEpXVENve3dmOZD13QP1g3H3pPA9sPkxPXeO3ZExyYGA0OLM+uykZghb
+         1Yg01Arq4dN4/q+pY0QWgTbqEALts1FHZdSxqDthtE84AncFWVDhNRIQlGaIbgussQ3w
+         fXT0qBVwTll6Dt/jQKjEBXjIi35fjPBd+lsvb/34mzL10dHvZymQLoGbe02qyZ6JwT1i
+         RtketO83OdzoBwHqMFwEWPLV5AjIoOzVQ+lI/owVQIfaDMefebXql/h7zyfJ3+3J3r40
+         jA1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=oHHoz5hSfSYkAdHIHrMpSEd2w0Wf9S7kBxpqY6OLo4c=;
-        b=doUuxWHQTH1xkV9VvTM2ecmFl73r1N82jkgVFjbDxrl1D8hXrBLblmIvtrMrWzo17h
-         chJiUovvIZqUfJDnPPV+4A6kKwq74zN4mkndYKywPuKnZd22nY8yXT+ZQXB/5P54TSkS
-         hPR5ie5vPECSIbUOa+VZ5L85GQDHkgEIegCeJ+69yMm5A3L8Cr/wBFLEuqIN1HgrlLwd
-         pKBFrdAsPrnCNN6UnvbkCrzxCbuPYeMjZzdYZHjDLkn+YyOZ7yPIVEUL+x3yZNqhp6oy
-         YUHE1ZuVJVlM7zz6f3YaWQifZScfNzNDd8IcVQqqVh1A0nTMjZvXgUpAzpQ5cN1cimrG
-         MQAA==
-X-Gm-Message-State: AOAM533WQPxhNrDH/7yzvuPO7vQVfZX1lLJyrNxXpF4iuYfCxp5b63rB
-        s6J9Zjn5Rd4/TVCwqEjEZWzqiMibEtB9Dga2xydfFGzgXaM0pnUlJJNCFhDlJygB3mMjVcTveGS
-        ZH08H95RkeYQL/ReMgtsoG++h
-X-Received: by 2002:a50:da07:: with SMTP id z7mr14803663edj.301.1632920151488;
-        Wed, 29 Sep 2021 05:55:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnijlA+Suv1yZ7nvg6/PmlavVog5wCQhvw8hN3J1hEM8QAnQNFWgkO9hGUcLAsv1xKMPFzOQ==
-X-Received: by 2002:a50:da07:: with SMTP id z7mr14803641edj.301.1632920151269;
-        Wed, 29 Sep 2021 05:55:51 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id dc8sm1518212edb.28.2021.09.29.05.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 05:55:50 -0700 (PDT)
-Message-ID: <3721a326-b728-787e-0ef7-a1925941b17b@redhat.com>
-Date:   Wed, 29 Sep 2021 14:55:49 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mg6RB6XzRIgaMR9CfScmPcuVXy1LoHJbNrKAbn6MCsY=;
+        b=cPpndb637DYAG5FNz6HkwOi10FCxknKQ/cc5gayelwZGBDbwVKgWbbbVaSnx1c0B/m
+         NPAVH1V98hvuOI0XQPFFuipX9opBspmwtbSNiWO0xjPJUBC2lEJsummh0sR9cOLqMYVQ
+         hG1KsTLWG2eN/JEWHkLaiBoo0Gd6elG81wOkWHAkGgiJYHC4P2oZUJ7/noG+TN+nW318
+         GNMHdI1I59p30WiP1biDHUp5kHKgww+acIEX3r8w2j7N7z+/1Go+62U5m0I8leFy1le6
+         xD3kVfYaHK7g0itZVV9aMQ4Tdz9t6jrFdHTAG+0Jqv8xS9yBcNIB8GHeIzkaAZ4X1iGC
+         R9gw==
+X-Gm-Message-State: AOAM5300bwhbKIypWu44K4JageJ4z3YJF1UJ+I5fYM+7hvIeOAeJiLmK
+        e9YutMiAbTWI5TX8kMlqbE1wX/KLzzE=
+X-Google-Smtp-Source: ABdhPJyxXw64vUsBC6VyXIlZjSl1yjAsifsos4VgKTenYweIS80dZ21biXOB7E+RZppcLXdwwgeKaQ==
+X-Received: by 2002:a1c:4e16:: with SMTP id g22mr9744201wmh.171.1632920180560;
+        Wed, 29 Sep 2021 05:56:20 -0700 (PDT)
+Received: from tom-ThinkBook-14-G2-ARE ([89.42.6.254])
+        by smtp.gmail.com with ESMTPSA id k11sm2197539wrn.84.2021.09.29.05.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 05:56:19 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 14:56:17 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] staging: vt6655: fix camelcase in ldBmThreshold
+Message-ID: <20210929125617.GA213077@tom-ThinkBook-14-G2-ARE>
+References: <20210926162527.21462-1-tomm.merciai@gmail.com>
+ <20210926162527.21462-3-tomm.merciai@gmail.com>
+ <YVHirHixyOIgvqKB@kroah.com>
+ <20210927214624.GB6953@tom-desktop>
+ <YVKdJdTxlNJ55zCy@kroah.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 0/2] Cleanups for pointer usages in nVMX.
-Content-Language: en-US
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com,
-        vkuznets@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
-References: <20210929175154.11396-1-yu.c.zhang@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210929175154.11396-1-yu.c.zhang@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVKdJdTxlNJ55zCy@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/21 19:51, Yu Zhang wrote:
-> Replace usages of "-1ull" with INVALID_GPA. And reset the vmxon_ptr
-> when emulating vmxoff.
+On Tue, Sep 28, 2021 at 06:42:13AM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Sep 27, 2021 at 11:46:24PM +0200, Tommaso Merciai wrote:
+> > On Mon, Sep 27, 2021 at 05:26:36PM +0200, Greg Kroah-Hartman wrote:
+> > > On Sun, Sep 26, 2021 at 06:25:19PM +0200, Tommaso Merciai wrote:
+> > > > Replace camel case variable ldBmThreshold with snake case
+> > > > variable ld_bm_threshold.
+> > > 
+> > > Same here, what exactly does this name mean and why did you pick it?
+> > >
+> >   You are right the same here. What do you think about "bm_threshold"?
 > 
-> v2:
->    Added patch to replace usages of "-1ull" with INVALID_GPA.
-> 
-> Vitaly Kuznetsov (1):
->    KVM: nVMX: Reset vmxon_ptr upon VMXOFF emulation.
-> 
-> Yu Zhang (1):
->    KVM: nVMX: Use INVALID_GPA for pointers used in nVMX.
-> 
->   arch/x86/kvm/vmx/nested.c | 61 ++++++++++++++++++++-------------------
->   arch/x86/kvm/vmx/vmx.c    |  5 ++--
->   2 files changed, 34 insertions(+), 32 deletions(-)
-> 
+> What does "bm" stand for?
 
-Queued, thanks.
+  Got it, thank you.
+  The right traslation could be "dbm_threshold"? In the original
+  variable name "l_" is for long (hungarian notation), "dbm" is for 
+  decibels relative to a milliwatt, signal_strenght.
 
-Paolo
-
+  Tommaso
+> 
+> thanks,
+> 
+> greg k-h
