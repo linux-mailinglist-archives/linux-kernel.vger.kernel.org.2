@@ -2,177 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72DB41CC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C54941CC39
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344685AbhI2S5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:57:39 -0400
-Received: from mail-co1nam11on2068.outbound.protection.outlook.com ([40.107.220.68]:51297
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1344526AbhI2S50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:57:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bvfEOkr4zvOa4vl1vthN54iEgMaNOjjI7TyNvR5n1uPq48J2MHYR2tp9BcSgJgZfqEoKui01AtuwKX6697FqkOcF8Yg72O1xZW926x/DGDeE4U9X7xDmq7OLQY4URAJzPoSVvOF32I/MQ3LIdyS9gmUtSKjAc4A2zYr0sdKWgfXg3LBUA3gC74Pf3lmlqxkjYcNilLJn5TphhzA65t5HyqU71g3ykFG96ep8DkMZazYzmufCThdycKZSvHbiz56ht32U1RC6phZRauPEeT346fXMaGx0N1ZqsFhdiJrFSGwhrqsRbOf17j78xBpN58nybLSt4XIqan8zyYVmlg38zA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=YvwwBJqJxbCSUrMjIoXJYVRepxBaK1dYcnPDEjaDFEw=;
- b=S1L8JGgZ784DNv10/+nzIkp2iib3P56h8N+l5UFWu3TGGVypOvHREHKkFG24JzR7yBkE9ZSkzfs2IqT2hWVY1Vy85VfnaBYsxQw2tCQ/VcZhtpXtxmwfns6fXmjozQfZtdkDGT4K/6zf3hyc5LwiuuauXXAtDVWRL8gdEAH3zYSylwbKhQm7bdi6DS413fDYjCj9JcjtQbzNUZXeQYbQvyUSigDYPlfl77AMVX27MdPvMC3VuWOFzy0oPFco07pXR8NkahKGi33gl84idlOrwBXDM4QiR4vkVSMqoYUx5/sUHI88VhTZcnMH2NMYlJ+4OWe/EHKOmYFKz85JelwQgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YvwwBJqJxbCSUrMjIoXJYVRepxBaK1dYcnPDEjaDFEw=;
- b=jyUJtjZAeOpjVNmBiwtKdJUtR/7ZXp6J3w6qC1Q3owKkkfe7D/nSehi9ulYoYYIMtYrPuvId64cEMEDE3dR25QXIA3OyblVehX0mK1u9JS1b0rAgG+b17sGGJKYtG1k6KTnxotL1lgigpd+lumLLUrgEPDx5Mx1wvFtQpe02bR1QDmQf6e3Q2zbG9f0uw/BlStf3qaUm7E3vEKcfithQDkwW4mpsgwkcC8rj9oXvgAk3x/Jp7g8cRZl+YjJbaEZ3JPvWexIvFmD98X6EnTkPpw4quNW5yWZ8Ebum4f9snMdbiJWLz/zHCl3+PtxU6eyWu9+oc94ros1LIGvElRGNnw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5158.namprd12.prod.outlook.com (2603:10b6:208:31c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
- 2021 18:55:43 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 18:55:42 +0000
-Date:   Wed, 29 Sep 2021 15:55:41 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Wang, Zhi A" <zhi.a.wang@intel.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Nikula, Jani" <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210929185541.GW964074@nvidia.com>
-References: <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <20210820141724.GA29034@lst.de>
- <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
- <20210826061219.GD9942@zhen-hp.sh.intel.com>
- <55c11f22-99e5-6109-3be3-a04b06b3336e@intel.com>
- <YVMgGKk1K4gO8ls6@bombadil.infradead.org>
- <af40291a-de36-b39f-9ded-aaf4ddba641f@intel.com>
- <20210928150507.GM964074@nvidia.com>
- <24c7bbec-b425-52fb-d3f9-539a0a391dfa@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24c7bbec-b425-52fb-d3f9-539a0a391dfa@intel.com>
-X-ClientProxiedBy: BL1PR13CA0301.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::6) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S1345763AbhI2TAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345545AbhI2TAe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:00:34 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F858C061764;
+        Wed, 29 Sep 2021 11:58:53 -0700 (PDT)
+Received: from groot.intra.skream.org (mobile-user-c1d306-252.dhcp.inet.fi [193.211.6.252])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pekka.korpinen)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 130E11B0030E;
+        Wed, 29 Sep 2021 21:58:49 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1632941929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q8+w7okSOx/BOQbKgOezP2IcqpFc5kkNNTtE4GU2tNM=;
+        b=H6Gg6oppKtqB6daVI5wijl1SO9wUfpUNmO56KdK1lBxz/3/PD+zbYwkC4ysPk19AAUFkj5
+        hN7gOkGJ+cq1ZG0l2h7qQ5NblX7v7tTo4q9q2LqiE6Si7M+39UfNpX8I9fRgGrkOPqJTVa
+        /uzJMyTbv84ctCTVdATwm5POYi61lKqrglJuOhEqvaDBN4vG6a4NI6cHqfxyO6xeDziTqM
+        Vv4KOHzTVXkPPZQ3C/7OYfkVRR9XLb7m5k1b8Y/975oJLwr5mGFaL+dO5OO9gGMHpgCdtb
+        9YGu8Zomb//WRgbr5DStAG8ngBvrp+AW7/yvce1rBlvs6bcyVSgy+nwvQWbaeA==
+From:   Pekka Korpinen <pekka.korpinen@iki.fi>
+Cc:     ardeleanalex@gmail.com, Pekka Korpinen <pekka.korpinen@iki.fi>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iio: dac: ad5446: Fix ad5622_write() return value
+Date:   Wed, 29 Sep 2021 21:57:55 +0300
+Message-Id: <20210929185755.2384-1-pekka.korpinen@iki.fi>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20d11fbb-ba93-802c-1abc-60d7f5ec0c0c@metafoo.de>
+References: <20d11fbb-ba93-802c-1abc-60d7f5ec0c0c@metafoo.de>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0301.namprd13.prod.outlook.com (2603:10b6:208:2c1::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.12 via Frontend Transport; Wed, 29 Sep 2021 18:55:42 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mVek1-007eNP-Vj; Wed, 29 Sep 2021 15:55:42 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c6b1b814-fe1f-4f62-bfa7-08d9837abcdd
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5158:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5158FD829BEA36AC25C78E1DC2A99@BL1PR12MB5158.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DD9MMc6IK4IpGpX73nGBj3hG84kQR/JBZc0GklsBjLGoEjfh7Hu8KvAdiv6qRuV47U7e8IUjkC/gpMEq2Si5CFsyCV0AEtUZhWQ5KhnHUMR4T1wC/y6BizukvdMw9XiJ3lOAcSHp2E86EThvPt/KIosU+d3zHFlPdCVEPmtw+UrgkL5UI+zFgn3bYCur5Sw5AFfdar24K8hKKa9F229BPxs913Qf1Dk9nJoLXLriBdOgMcp1cQd6cVmxJjv6Ftvn3DPntJwuFWX5s1Z0qZEJu6+WTGUPMS1hy4+uAFvxp6PlSwkKTZoQTMTc1rEWu3BAG/l+8I42++biE6oEp5VgTo40DFGMd5Rzv04bZaFbrzDnn7zchgBQ+QxMoQvtPAJ0ijMV3zqvJU7ZOh3zNueYMH0z5qrqXUXd7e6jYdRdXr8PpXKFDnB1ZL1y6g3vNtcZiUVf7oprW86IFdIiq7k3aKjx5moPjOxwT/vXOLRBNoEIm0+xKroqs7ZGJ+Awrb9ITv6oML9iEQshdcqSZvus2F7I9Do2aMlbIWfepmuIGXC0EwwJrJzEPI7q3vDBw9FCsjrL1zf1hx0kXbKJ8cm3w2mVXtTTMWI/To8IcGD+iIKz+JuKczJpSoTtBWwmtVdzdYakwaANmlU8MaggmqRAAwr911f5a8ku0fHQNGj96Sp9ZTrB017FK4iHshDbx1VSzqEd/8dGxDeiO4dSNc/sGg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(54906003)(53546011)(508600001)(5660300002)(316002)(1076003)(2906002)(66556008)(186003)(9786002)(36756003)(4326008)(8936002)(8676002)(66946007)(33656002)(2616005)(7416002)(6916009)(83380400001)(66476007)(426003)(86362001)(38100700002)(9746002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FPXaFNRgGk7n+jhy3PjT0+xLZr+gHD2teAQ1dTYJZk5zsrsb3yFm8Rao7Riw?=
- =?us-ascii?Q?2qDJ9nNTrR3x87cZsPYXaD/tcWY/En6b0SfTVWWQk4WSkkicy9NEJxPT0kfA?=
- =?us-ascii?Q?K4FNBI73iIYn5qBPLD+yGMQVcOtpdXXFhOy2W/Kphr9pedI34QOkSG9Hti27?=
- =?us-ascii?Q?OB41PhOMMxQXm64bXehLbY3LtIAv/kUr4OAvcR0+KCRKQjKb5mEoDRb/MZ03?=
- =?us-ascii?Q?A1r1jRgkDP6ULUdgKlpDObb8ZNTsTEcRbwRTHSF1kYm1Np8d+sRAdHm3R4uS?=
- =?us-ascii?Q?Rbvyu5yqmOBNVpOYqKO75aEH7XMncAe7fWyCF/Ey5g6/Dt/mppLChUrolICY?=
- =?us-ascii?Q?LKFJLinJngRezRn8gdyJBJtmHKXvFOJ26Nz2E7boFoAAFfLlXHXSIlcN0wqK?=
- =?us-ascii?Q?5eGG4tyb4Hlg4s54Owyqw/f2/VIC1i2tVU5b9KqQ2t9sGnMiPpFWpHRTo9dV?=
- =?us-ascii?Q?hzypliLrrfwyoy0rnos07dLlYVnUGqHqg0H51NB8rMVrY4iXlZGIxUdj52HO?=
- =?us-ascii?Q?tglCv+/8OlZxbHak3iIRYzQBvYcgr5HvLw5GzGLjJ1JcDsi1rlVaC/qgIJFC?=
- =?us-ascii?Q?7vOEas8oyfBUKXL9PC0FrgYiUzLuZqzcMziq+DY7Ab0b4ff1H4iGIPqVMCJW?=
- =?us-ascii?Q?YTEGQmqrQsvF/ytO8CQEZR7XpXit1VlJ9W9fwVwmNNe7lpawAHZrX/+vioA0?=
- =?us-ascii?Q?W2Wl5WhNJcS3FUu1F5iTkyaObK4m2McvCWqxf2VTovfYh6R5I1hgWmyW9e6M?=
- =?us-ascii?Q?SLPoHQS8QheOeoYzZQVs8/bEJxpvFZsrOZ5EpMdj10K6cu3LAsmXz7iNv7FZ?=
- =?us-ascii?Q?8dh8zq++faHmsTC5lWfinag4CD5YpYFYR/7/64xw1kld3YCFyRW2g8qk9ocB?=
- =?us-ascii?Q?wnTE8iRGzUoBK6ynGpXRkiReFJv53ldDd5nABhbZb+iG3azVzZ/prGR1sbYX?=
- =?us-ascii?Q?h18bypSZIA+klZNESoplMIN4YnOIC89/fNGTDdMK/3kFTsxa931fgsqU15uq?=
- =?us-ascii?Q?brZsX39Rh9kgEM9Vhb2w+8/JVju/wGr4L/zK7TzhfmWrPW3wMGzVMSQw7MkK?=
- =?us-ascii?Q?2QBPACTlZjDkoVNsWpDoFcFFuDETXKxbvL32PAY9PIiwq+BZcUoFjh+S+O+8?=
- =?us-ascii?Q?ZFgBC6riawGsNy0LSIQyHlAlfhD2jY6QVU6MbbzKABRTEzvPXE17cJUxXIX5?=
- =?us-ascii?Q?dz4TGCeq6c+/gyTe4hdRh3TCHdsTIck4uq9sspuykXjSowUST+Q81wvahkzY?=
- =?us-ascii?Q?VYQzwcMKpCbIiY1NadSnt7AZd8Xq+aS2R0gAGmEnBafULTA8eryQxUuEwAzS?=
- =?us-ascii?Q?BxQib5alCvo6sBc55DEI5SCY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6b1b814-fe1f-4f62-bfa7-08d9837abcdd
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 18:55:42.9007
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q5r0wJpETa3q69/4wUDgC8u9zu7YK7n7yd0rP+MxR2TyXNIBiPUpjwri2Fahv6tK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5158
+Content-Transfer-Encoding: 8bit
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1632941929; a=rsa-sha256;
+        cv=none;
+        b=gRK6Mj6XPgfueCre46YyQpkrTNdwGWfXt0cm6WROwxUF0ktQ/UXEwxM9emBkIBQSG7GsWl
+        XkccYQSdMFVnBb+czSFeUudOTnsAPTxkrHUG5rQdzFHbB3neMJ47lR1JcmQ15Qd5aNJ/6h
+        hD1iytgM8vHMqgJAH789MjA9xQ6vlb8OA516EUEpBtDEv66ELZKi0OH9FkejnGCuuvHfPw
+        Djm1JpZPkdmAWkd8fe7FT1twV3HxJV+jfF37riFmSWbaITtWZRUv8964gEnZkqlsrndk8s
+        Uv2Nmwu/vOjKZ3p0hzFSoFVh7MQnLdiDK+8S2zH2aIf3QTEUnyzKlIRR8+ebRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1632941929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q8+w7okSOx/BOQbKgOezP2IcqpFc5kkNNTtE4GU2tNM=;
+        b=eqe3BqIuuauGAf9HJLzxwnA8m3dWpQqU78+6ETjvPv4o+RSjcMIAwWnXh0g+mrZuUq8pAU
+        seAiJ87VCdxaIPRrZwEpYmvOJ5pM+M0pp8wdrzVEIIC6A9CxuOynjfFv9aiYVtC3xEf+5m
+        VVEvclqvV4yDXz7uirwjHZ5S8U4fge52dpFnooWRzZ95MXlw9SZBQ7k+jU2x+DlC5/d9Sk
+        46Vj4Qcw1/2f9p/6h6NMGAWpv9W60gIeTQ95YSJrUxhJwUxf2wJABBsgIJKsmK1tjXqwsl
+        C2glSjNjK9qHpyiEWIfQuWC8XaRHarR799Q+p38y05LaTvYVhQMoVhnIrn25yA==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=pekka.korpinen smtp.mailfrom=pekka.korpinen@iki.fi
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 06:27:16PM +0000, Wang, Zhi A wrote:
-> On 9/28/21 3:05 PM, Jason Gunthorpe wrote:
-> > On Tue, Sep 28, 2021 at 02:35:06PM +0000, Wang, Zhi A wrote:
-> >
-> >> Yes. I was thinking of the possibility of putting off some work later so
-> >> that we don't need to make a lot of changes. GVT-g needs to take a
-> >> snapshot of GPU registers as the initial virtual states for other vGPUs,
-> >> which requires the initialization happens at a certain early time of
-> >> initialization of i915. I was thinking maybe we can take other patches
-> >> from Christoph like "de-virtualize*" except this one because currently
-> >> we have to maintain a TEST-ONLY patch on our tree to prevent i915 built
-> >> as kernel module.
-> > How about just capture these registers in the main module/device and
-> > not try so hard to isolate it to the gvt stuff?
-> 
-> Hi Jason:
-> 
-> Thanks for the idea. I am not sure i915 guys would take this idea since 
-> that it's only for GVT-g, i915 doesn't use this at all. We need to take 
-> a snapshot of both PCI configuration space and MMIO registers before 
-> i915 driver starts to touch the HW.
+On success i2c_master_send() returns the number of bytes written. The
+call from iio_write_channel_info(), however, expects the return value to
+be zero on success.
 
-Given the code is already linked into i915 I don't see there is much
-to object to here. It can remain conditional on the kernel parameter
-as today.
+This bug causes incorrect consumption of the sysfs buffer in
+iio_write_channel_info(). When writing more than two characters to
+out_voltage0_raw, the ad5446 write handler is called multiple times
+causing unexpected behavior.
 
-As a general philosophy this would all be much less strange if the
-mdev .ko is truely optional. It should be cleanly seperate from its
-base device and never request_module'd..
+Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
+Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+---
+v1->v2: Check against expected result, otherwise -EIO. Add Fixes tag.
 
-In this case auxiliary device might be a good option, have i915 create
-one and the mdev module be loaded against it.
+A similar bug was fixed for ad5064.c in 2015 - commit 03fe472ef33b
+("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
 
-In the mean time is there some shortcut to get this series to move
-ahead? Is patch 4 essential to the rest of the series?
+ drivers/iio/dac/ad5446.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-A really awful hack would be to push the pci_driver_register into a
-WQ so that the request_module is guarenteed to not be part of the
-module_init callchain.
+diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+index 488ec69967d6..e50718422411 100644
+--- a/drivers/iio/dac/ad5446.c
++++ b/drivers/iio/dac/ad5446.c
+@@ -531,8 +531,15 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
+ {
+ 	struct i2c_client *client = to_i2c_client(st->dev);
+ 	__be16 data = cpu_to_be16(val);
++	int ret;
++
++	ret = i2c_master_send(client, (char *)&data, sizeof(data));
++	if (ret < 0)
++		return ret;
++	if (ret != sizeof(data))
++		return -EIO;
+ 
+-	return i2c_master_send(client, (char *)&data, sizeof(data));
++	return 0;
+ }
+ 
+ /*
+-- 
+2.33.0
 
-> Also I was thinking if moving gvt into kvmgt.ko is the right direction. 
-> It seems the module loading system in kernel is not designed for "module 
-> A loading module B, which needs symbols from module A, in the 
-> initialization path of module A".
-
-Of course not, that is a circular module dependency, it should not be
-that way. The SW layers need to be clean and orderly - meaning the
-i915 module needs to have the minimal amount of code to support the
-mdev module.
-
-Jason
