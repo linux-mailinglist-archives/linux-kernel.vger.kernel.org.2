@@ -2,219 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C1141CC05
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC6D41CC0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346335AbhI2SkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S1346288AbhI2SmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346286AbhI2SkS (ORCPT
+        with ESMTP id S244341AbhI2SmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:40:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DF4C06161C;
-        Wed, 29 Sep 2021 11:38:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bd10085b5178de8b08a0e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:d100:85b5:178d:e8b0:8a0e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2F3AD1EC0136;
-        Wed, 29 Sep 2021 20:38:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632940715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Bo+gAEaB3c3ilgMX8OgreD8PMGNiwY4UFgAUH1GnA0M=;
-        b=BX2CAl3ohCbYKJL64okCa2H8GmBJcotMMGimHp4e44UXgDWZIafY5Ao8UiKadDFMQALdAS
-        gIdU97e8g1oAMrREVviFDVlwyhtq/V1wr/uhEtNyNGYdP92oJjJPdwINQnMqgBCa8WEObR
-        NziEBHyhnhpkYJ/9PGQskFQSTwbjg00=
-Date:   Wed, 29 Sep 2021 20:38:31 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 09/45] x86/fault: Add support to dump RMP entry
- on fault
-Message-ID: <YVSyp0emhzQeMzI4@zn.tnic>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-10-brijesh.singh@amd.com>
+        Wed, 29 Sep 2021 14:42:21 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45168C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:40:40 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id h12so2342867pjj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4jwM7sobvyC/yr53MKLR0xpqrIrHAxpL22WbxQS8Ssk=;
+        b=BO4+2wrBhpWuCNj60xpuPgO7J50jiinFUZAkXTz6DPCNbk/I5aD11OhFxHjNtyFxYf
+         RvbtY17gJxHrUyr27wF6UBUJhxcBqQjmphC31JZ64+fNg3H8Bwg86zMp615PKpLSaL3v
+         mAQ9BTwki3iV5apUvUPYwTeH/26Af/6eh1ChA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4jwM7sobvyC/yr53MKLR0xpqrIrHAxpL22WbxQS8Ssk=;
+        b=8FJZ5J0FlfHn/QpYhl/0fOPtZo88iUeP/fi3TojKftRYI2+t942a1yA4Io/qMdCujI
+         VklU3ir87s1r5BEcag0uJ8UROu2lmjar8nZKykOuNuHdObPJ87eTrhdKsSGnx0GLI533
+         auz4eSk51LJBJdNH1Bex5e5P92xiNNcLnW1nGS8O+RKTEHetPmqwcdS4DKsYQecxHY2t
+         MxwJcqt9NBdvTCNWxUbLikZ5e+akIqBM5Gy7ZrWNcKCHRuI27MCmiIBjFRsooQ1r7HbH
+         oaPE02eePriS3BRY0Ezq5px47cx/lm1typh9e/cU04qjQgHoVlWi1rECTxitGkRtLQTN
+         kHQA==
+X-Gm-Message-State: AOAM5332INLso5PetcZ4z3hRHmjFRYgYKtWhZLX7BbKaTv4+6OVuK1AI
+        voZ1ESs2fEtfTlJqvw8/q7H/OQ==
+X-Google-Smtp-Source: ABdhPJyU6YGAnOeNMh7OS1RrgoT3QJ2xKwQz0u5IBYHVhIbWpHqBeKoWjIxxse5LTwLah0AAs5Kibw==
+X-Received: by 2002:a17:90b:2385:: with SMTP id mr5mr1478243pjb.189.1632940839770;
+        Wed, 29 Sep 2021 11:40:39 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:2f10:2763:4825:1f01])
+        by smtp.gmail.com with UTF8SMTPSA id c9sm425983pfi.212.2021.09.29.11.40.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 11:40:39 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 11:40:37 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sdm845: mtp: Add vadc channels
+ and thermal zones
+Message-ID: <YVSzJZ8G43CLml3L@google.com>
+References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
+ <20210923212311.2877048-5-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-10-brijesh.singh@amd.com>
+In-Reply-To: <20210923212311.2877048-5-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:58:42AM -0500, Brijesh Singh wrote:
-> When SEV-SNP is enabled globally, a write from the host goes through the
-> RMP check. If the hardware encounters the check failure, then it raises
-> the #PF (with RMP set). Dump the RMP entry at the faulting pfn to help
-> the debug.
+On Thu, Sep 23, 2021 at 02:23:11PM -0700, Bjorn Andersson wrote:
+> Downstream defines four ADC channels related to thermal sensors external
+> to the PM8998 and two channels for internal voltage measurements.
 > 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Add these to the upstream SDM845 MTP, describe the thermal monitor
+> channels and add thermal_zones for these.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  arch/x86/include/asm/sev.h |  7 +++++++
->  arch/x86/kernel/sev.c      | 43 ++++++++++++++++++++++++++++++++++++++
->  arch/x86/mm/fault.c        | 17 +++++++++++----
->  include/linux/sev.h        |  2 ++
->  4 files changed, 65 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index 92ced9626e95..569294f687e6 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -106,6 +106,11 @@ struct __packed rmpentry {
+> In addition to the iio channels exposed by v1, Daniel wanted thermal_zones...
+> 
+> Changes since v1:
+> - Enable the pm8998_adc_tm and describe the ADC channels
+> - Add thermal-zones for the new channels
+> 
+>  arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 128 ++++++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> index 52dd7a858231..e3b40daef801 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> @@ -10,6 +10,8 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "sdm845.dtsi"
+> +#include "pm8998.dtsi"
+> +#include "pmi8998.dtsi"
 >  
->  #define rmpentry_assigned(x)	((x)->info.assigned)
->  #define rmpentry_pagesize(x)	((x)->info.pagesize)
-> +#define rmpentry_vmsa(x)	((x)->info.vmsa)
-> +#define rmpentry_asid(x)	((x)->info.asid)
-> +#define rmpentry_validated(x)	((x)->info.validated)
-> +#define rmpentry_gpa(x)		((unsigned long)(x)->info.gpa)
-> +#define rmpentry_immutable(x)	((x)->info.immutable)
-
-If some of those accessors are going to be used only in dump_rmpentry(),
-then you don't really need them.
-
+>  / {
+>  	model = "Qualcomm Technologies, Inc. SDM845 MTP";
+> @@ -46,6 +48,68 @@ vreg_s4a_1p8: pm8998-smps4 {
 >  
->  #define RMPADJUST_VMSA_PAGE_BIT		BIT(16)
+>  		vin-supply = <&vph_pwr>;
+>  	};
+> +
+> +	thermal-zones {
+> +		xo_thermal: xo-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&pm8998_adc_tm 1>;
+> +
+> +			trips {
+> +				trip-point {
+> +					temperature = <125000>;
+> +					hysteresis = <10000>;
+> +					type = "passive";
+> +				};
+> +			};
+> +		};
+> +
+> +		msm_thermal: msm-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&pm8998_adc_tm 2>;
+> +
+> +			trips {
+> +				trip-point {
+> +					temperature = <125000>;
+> +					hysteresis = <10000>;
+> +					type = "passive";
+> +				};
+> +			};
+> +		};
+> +
+> +		pa_thermal: pa-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&pm8998_adc_tm 3>;
+> +
+> +			trips {
+> +				trip-point {
+> +					temperature = <125000>;
+> +					hysteresis = <10000>;
+> +					type = "passive";
+> +				};
+> +			};
+> +		};
+> +
+> +		quiet_thermal: quiet-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&pm8998_adc_tm 4>;
+> +
+> +			trips {
+> +				trip-point {
+> +					temperature = <125000>;
+> +					hysteresis = <10000>;
+> +					type = "passive";
+> +				};
+> +			};
+> +		};
+> +	};
+>  };
 >  
-> @@ -165,6 +170,7 @@ void __init snp_prep_memory(unsigned long paddr, unsigned int sz, enum psc_op op
->  void snp_set_memory_shared(unsigned long vaddr, unsigned int npages);
->  void snp_set_memory_private(unsigned long vaddr, unsigned int npages);
->  void snp_set_wakeup_secondary_cpu(void);
-> +void dump_rmpentry(u64 pfn);
->  #ifdef __BOOT_COMPRESSED
->  bool sev_snp_enabled(void);
->  #else
-> @@ -188,6 +194,7 @@ static inline void snp_set_memory_shared(unsigned long vaddr, unsigned int npage
->  static inline void snp_set_memory_private(unsigned long vaddr, unsigned int npages) { }
->  static inline void snp_set_wakeup_secondary_cpu(void) { }
->  static inline void sev_snp_cpuid_init(struct boot_params *bp) { }
-> +static inline void dump_rmpentry(u64 pfn) {}
->  #ifdef __BOOT_COMPRESSED
->  static inline bool sev_snp_enabled { return false; }
->  #else
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index bad41deb8335..8b3e83e50468 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2404,6 +2404,49 @@ static struct rmpentry *__snp_lookup_rmpentry(u64 pfn, int *level)
->  	return entry;
->  }
+>  &adsp_pas {
+> @@ -469,6 +533,70 @@ &mss_pil {
+>  	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
+>  };
 >  
-> +void dump_rmpentry(u64 pfn)
-
-snp_dump_rmpentry()
-
-> +{
-> +	unsigned long pfn_end;
-> +	struct rmpentry *e;
-> +	int level;
+> +&pm8998_adc {
+> +	adc-chan@4c {
+> +		reg = <ADC5_XO_THERM_100K_PU>;
+> +		label = "xo_therm";
+> +	};
 > +
-> +	e = __snp_lookup_rmpentry(pfn, &level);
-> +	if (!e) {
-> +		pr_alert("failed to read RMP entry pfn 0x%llx\n", pfn);
-> +		return;
-> +	}
+> +	adc-chan@4d {
+> +		reg = <ADC5_AMUX_THM1_100K_PU>;
+> +		label = "msm_therm";
+> +	};
 > +
-> +	if (rmpentry_assigned(e)) {
-> +		pr_alert("RMPEntry paddr 0x%llx [assigned=%d immutable=%d pagesize=%d gpa=0x%lx"
-> +			" asid=%d vmsa=%d validated=%d]\n", pfn << PAGE_SHIFT,
-
-WARNING: quoted string split across lines
-#174: FILE: arch/x86/kernel/sev.c:2421:
-+		pr_alert("RMPEntry paddr 0x%llx [assigned=%d immutable=%d pagesize=%d gpa=0x%lx"
-+			" asid=%d vmsa=%d validated=%d]\n", pfn << PAGE_SHIFT,
-
-> +			rmpentry_assigned(e), rmpentry_immutable(e), rmpentry_pagesize(e),
-> +			rmpentry_gpa(e), rmpentry_asid(e), rmpentry_vmsa(e),
-> +			rmpentry_validated(e));
-> +		return;
-> +	}
+> +	adc-chan@4f {
+> +		reg = <ADC5_AMUX_THM3_100K_PU>;
+> +		label = "pa_therm1";
+> +	};
 > +
-> +	/*
-> +	 * If the RMP entry at the faulting pfn was not assigned, then we do not
-> +	 * know what caused the RMP violation. To get some useful debug information,
-> +	 * let iterate through the entire 2MB region, and dump the RMP entries if
-> +	 * one of the bit in the RMP entry is set.
-> +	 */
-> +	pfn = pfn & ~(PTRS_PER_PMD - 1);
-> +	pfn_end = pfn + PTRS_PER_PMD;
+> +	adc-chan@51 {
+> +		reg = <ADC5_AMUX_THM5_100K_PU>;
+> +		label = "quiet_therm";
+> +	};
 > +
-> +	while (pfn < pfn_end) {
-> +		e = __snp_lookup_rmpentry(pfn, &level);
-> +		if (!e)
-> +			return;
-
-return? You mean "continue;" ?
-
+> +	adc-chan@83 {
+> +		reg = <ADC5_VPH_PWR>;
+> +		label = "vph_pwr";
+> +	};
 > +
-> +		if (e->low || e->high)
-> +			pr_alert("RMPEntry paddr 0x%llx: [high=0x%016llx low=0x%016llx]\n",
-> +				 pfn << PAGE_SHIFT, e->high, e->low);
-> +		pfn++;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(dump_rmpentry);
-
-Why is that exported? Some module will be calling it too?
-
+> +	adc-chan@85 {
+> +		reg = <ADC5_VCOIN>;
+> +		label = "vcoin";
+> +	};
+> +};
 > +
->  /*
->   * Return 1 if the RMP entry is assigned, 0 if it exists but is not assigned,
->   * and -errno if there is no corresponding RMP entry.
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index f2d543b92f43..9cd33169dfb5 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -33,6 +33,7 @@
->  #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
->  #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
->  #include <asm/vdso.h>			/* fixup_vdso_exception()	*/
-> +#include <asm/sev.h>			/* dump_rmpentry()		*/
->  
->  #define CREATE_TRACE_POINTS
->  #include <asm/trace/exceptions.h>
-> @@ -289,7 +290,7 @@ static bool low_pfn(unsigned long pfn)
->  	return pfn < max_low_pfn;
->  }
->  
-> -static void dump_pagetable(unsigned long address)
-> +static void dump_pagetable(unsigned long address, bool show_rmpentry)
+> +&pm8998_adc_tm {
+> +	status = "okay";
+> +
+> +	xo-thermistor@1 {
+> +		reg = <1>;
+> +		io-channels = <&pm8998_adc ADC5_XO_THERM_100K_PU>;
+> +		qcom,ratiometric;
+> +		qcom,hw-settle-time-us = <200>;
+> +	};
+> +
+> +	msm-thermistor@2 {
+> +		reg = <2>;
+> +		io-channels = <&pm8998_adc ADC5_AMUX_THM1_100K_PU>;
+> +		qcom,ratiometric;
+> +		qcom,hw-settle-time-us = <200>;
+> +	};
+> +
+> +	pa-thermistor@3 {
+> +		reg = <3>;
+> +		io-channels = <&pm8998_adc ADC5_AMUX_THM3_100K_PU>;
+> +		qcom,ratiometric;
+> +		qcom,hw-settle-time-us = <200>;
+> +	};
+> +
+> +	quiet-thermistor@4 {
+> +		reg = <4>;
+> +		io-channels = <&pm8998_adc ADC5_AMUX_THM5_100K_PU>;
+> +		qcom,ratiometric;
+> +		qcom,hw-settle-time-us = <200>;
+> +	};
+> +};
+> +
 
-I think passing in error_code and testing X86_PF_RMP inside should
-make this a bit more palatable than simply "grafting" SNP-specific
-functionality to generic paths.
-
-Thx. 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+The example in the 'qcom,spmi-adc-tm5' binding specifies 'qcom,ratiometric'
+and 'qcom,hw-settle-time-us' for both the ADC and the thermal monitor, so do
+several board files (e.g. sm8250-mtp.dts and qrb5165-rb5.dts). This apparent
+redundancy bothered me earlier, it's not really clear to me whether it's
+needed/recommended or not. Do you happen to have any insights on this?
