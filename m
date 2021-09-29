@@ -2,148 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A804741CF5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693FB41CF63
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347316AbhI2WqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:46:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345988AbhI2Wp6 (ORCPT
+        id S1347131AbhI2Wr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346734AbhI2Wr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:45:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632955453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yDnZg0/6giW9XllEqIndueSNzorfdQE2gNriGLCrs+s=;
-        b=PV7kY0JHbqRzJy5V0K5Y6wpr/SmJ8JQ6BKg+AaHZzxnKSNIyerDzyvf4JUWHX0FRRY2C9m
-        XfFMQHEIiz8XOyOpexXqszNUETFKD9z0aktvP0z8HwVHlAW7vYD2Lu+D6vuOsyKlwzgfO/
-        O0vHw6yfCNXELo9Pm5OpytuVaEPzzOE=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-H6HA30YbN-qtpXbn9wxV4w-1; Wed, 29 Sep 2021 18:44:12 -0400
-X-MC-Unique: H6HA30YbN-qtpXbn9wxV4w-1
-Received: by mail-oo1-f72.google.com with SMTP id p82-20020a4a2f55000000b002b584670618so3333774oop.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 15:44:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yDnZg0/6giW9XllEqIndueSNzorfdQE2gNriGLCrs+s=;
-        b=1m3xI99Bf1fu23zHqBCCH7/SXyO9hvxQGC4XGkZKOPJ5hwacpBV27z93bSwqVbCoRM
-         ldmMSe6B5ZAf8CU/uj8jUJAQIYDCRlNkOLjr+nR/A1qTwJEzwCB+n6xYg1GnLIlxTKDd
-         B/I+kEVt7aOoMIHa+F5AgmkjhFYhRIovxFhP3FuyApud+X1zzEhUB/dEHNEGOr9JF/dm
-         P5gVdJTONV0TZeQTSFvl6hZ5Yw0kBjbi/ph1uCvWHTAF7orzt7TcjkAm3YgyeyyrNawG
-         ZnqnZO1WbiPIPoF8ptbCmQBpvQDMLTXWuOP3H2EI39jRmtJ9rPdiPugZcq4CzCzPdLRe
-         Aiig==
-X-Gm-Message-State: AOAM530Pp1O4AfOkAd6ZkVExoksrksbeDQYxRJrrcxem6fCpe2Gp0ljm
-        XEdTq4+A7E0YQiC+avt+H/RUTwvfcitve2ShwvD28gCIrl0t6x9VeS+JE/WsbTPXm5t74XCKAKV
-        ooRqwUXAXC6LDXURsCVlHPVM3
-X-Received: by 2002:a05:6808:1595:: with SMTP id t21mr78459oiw.98.1632955451615;
-        Wed, 29 Sep 2021 15:44:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVU6jEU+ZG3AcZVTtnnVZT8dq+yX76s5pQMOm4ir4e1zUDW6chJsiIv463tHWR/ZUtQthMIQ==
-X-Received: by 2002:a05:6808:1595:: with SMTP id t21mr78446oiw.98.1632955451416;
-        Wed, 29 Sep 2021 15:44:11 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id d21sm229884ooh.43.2021.09.29.15.44.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 15:44:10 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 16:44:09 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <20210929164409.3c33e311.alex.williamson@redhat.com>
-In-Reply-To: <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
-References: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
-        <20210927164648.1e2d49ac.alex.williamson@redhat.com>
-        <20210927231239.GE3544071@ziepe.ca>
-        <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
-        <20210929063551.47590fbb.alex.williamson@redhat.com>
-        <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
-        <20210929075019.48d07deb.alex.williamson@redhat.com>
-        <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
-        <20210929091712.6390141c.alex.williamson@redhat.com>
-        <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
-        <20210929161433.GA1808627@ziepe.ca>
-        <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 29 Sep 2021 18:47:57 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C033C06161C;
+        Wed, 29 Sep 2021 15:46:15 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HKWgd3pfqz4xLs;
+        Thu, 30 Sep 2021 08:46:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1632955572;
+        bh=mpz+ka0h5K/JeORjuWrldvkBfYvvKVxRrDGCbb8QaxM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=YxATzawCxVN5sXizjsSK6S7RmonpLlF9oJF/MzCwKjaqGOkxQU+wrsp9Aihb7q6f4
+         8GmMB7JxN87gLBhYVK3Zsr6oocxO4D034AESqrL36bmLJBQR0VbKEMX1PrJ8h9V2He
+         DvukSjI/bK0ghU5kui/5Qg3bKETueRQFs2qi67vi7D8p6Ikua4ZqAn+UP1pJNfYJWc
+         ekBRWmi8RgDX2UCqKpuyvfscHtaX9JBMajmNaoWRV+nv1fRnYpP3UbHtKtmkepjmwr
+         qKNthuRrkZuaeD0FFBoveGtnBDBa4N7MgTnXupxaZSaye1CcxW6kdWE+BJK8lh64qY
+         v6XnWxPI6wDDQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
+In-Reply-To: <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
+References: <20210914121036.3975026-1-ardb@kernel.org>
+ <20210914121036.3975026-5-ardb@kernel.org>
+ <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
+ <87ee99lii7.fsf@mpe.ellerman.id.au> <87pmst1rn9.fsf@mpe.ellerman.id.au>
+ <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
+Date:   Thu, 30 Sep 2021 08:46:04 +1000
+Message-ID: <878rzf0zmb.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 00:48:55 +0300
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+Ard Biesheuvel <ardb@kernel.org> writes:
+> On Tue, 28 Sept 2021 at 02:16, Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> Michael Ellerman <mpe@ellerman.id.au> writes:
+>> > Ard Biesheuvel <ardb@kernel.org> writes:
+>> >> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+>> >>>
+>> >>> The CPU field will be moved back into thread_info even when
+>> >>> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
+>> >>> of struct thread_info.
+>> >>>
+>> >>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>> >>
+>> >> Michael,
+>> >>
+>> >> Do you have any objections or issues with this patch or the subsequent
+>> >> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
+>> >> that he was happy with it.
+>> >
+>> > No objections, it looks good to me, thanks for cleaning up that horror :)
+>> >
+>> > It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
+>> > git tree with the dependencies I'd be happy to run some tests over it.
+>>
+>> Actually I realised I can just drop the last patch.
+>>
+>> So that looks fine, passes my standard quick build & boot on qemu tests,
+>> and builds with/without stack protector enabled.
+>>
+>
+> Thanks.
+>
+> Do you have any opinion on how this series should be merged? Kees Cook
+> is willing to take them via his cross-arch tree, or you could carry
+> them if you prefer. Taking it via multiple trees at the same time is
+> going to be tricky, or take two cycles, with I'd prefer to avoid.
 
-> On 9/29/2021 7:14 PM, Jason Gunthorpe wrote:
-> > On Wed, Sep 29, 2021 at 06:28:44PM +0300, Max Gurtovoy wrote:
-> >  
-> >>> So you have a device that's actively modifying its internal state,
-> >>> performing I/O, including DMA (thereby dirtying VM memory), all while
-> >>> in the _STOP state?  And you don't see this as a problem?  
-> >> I don't see how is it different from vfio-pci situation.  
-> > vfio-pci provides no way to observe the migration state. It isn't
-> > "000b"  
-> 
-> Alex said that there is a problem of compatibility.
-> 
-> I migration SW is not involved, nobody will read this migration state.
+I don't really mind. If Kees is happy to take it then that's OK by me.
 
-The _STOP state has a specific meaning regardless of whether userspace
-reads the device state value.  I think what you're suggesting is that
-the device reports itself as _STOP'd but it's actually _RUNNING.  Is
-that the compatibility workaround, create a self inconsistency?
+If Kees put the series in a topic branch based off rc2 then I could
+merge that, and avoid any conflicts.
 
-We cannot impose on userspace to move a device from _STOP to _RUNNING
-simply because the device supports the migration region, nor should we
-report a device state that is inconsistent with the actual device state.
-
-> >> Maybe we need to rename STOP state. We can call it READY or LIVE or
-> >> NON_MIGRATION_STATE.  
-> > It was a poor choice to use 000b as stop, but it doesn't really
-> > matter. The mlx5 driver should just pre-init this readable to running.  
-> 
-> I guess we can do it for this reason. There is no functional problem nor 
-> compatibility issue here as was mentioned.
-> 
-> But still we need the kernel to track transitions. We don't want to 
-> allow moving from RESUMING to SAVING state for example. How this 
-> transition can be allowed ?
-> 
-> In this case we need to fail the request from the migration SW...
-
-_RESUMING to _SAVING seems like a good way to test round trip migration
-without running the device to modify the state.  Potentially it's a
-means to update a saved device migration data stream to a newer format
-using an intermediate driver version.
-
-If a driver is written such that it simply sees clearing the _RESUME
-bit as an indicator to de-serialize the data stream to the device, and
-setting the _SAVING flag as an indicator to re-serialize that data
-stream from the device, then this is just a means to make use of
-existing data paths.
-
-The uAPI specifies a means for drivers to reject a state change, but
-that risks failing to support a transition which might find mainstream
-use cases.  I don't think common code should be responsible for
-filtering out viable transitions.  Thanks,
-
-Alex
-
+cheers
