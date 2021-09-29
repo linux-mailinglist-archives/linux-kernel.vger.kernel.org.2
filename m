@@ -2,133 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC0D41D031
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C90741D034
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346875AbhI2Xya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:54:30 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:60894 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbhI2Xy3 (ORCPT
+        id S1347267AbhI2Xyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:54:45 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:45701 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347189AbhI2Xyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=EbaHldIfmljK2aAsHQqeoY1Qg/19dgw063FCWj78kIA=; b=BYOpvsO/6zfK/zmuM4LPBTGkEY
-        IX+IV00ne55Vn0YfEDps7ZCSwEilHH8U02Q33wf4MlxPdQ0UWL6DzmjorF0O9tl0Jsm4uIASf2Ene
-        aM4efeOMiejklMT3X3x4u5ceMHI9es5C0nZcATdnazTQGIO6GnDxU0gRZUpRLY04BYWJRwGKwIzlM
-        MsiSqwPDnK66YxcCdj+o8uhP8jg1uNPzO6/t6Cb0JyUhdXEqKBgV0BT6H0WJz9/AKmbztTCYQsoOP
-        zcbO+BgjsyCmu9TditfVdrlL1UcCemw3a1G6PSim8Gk2mjPDqAMmHRRC5zbBXFVy2p6sr5VqIlFuw
-        E0w7Az4Q==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mVjNK-0008VW-LI; Wed, 29 Sep 2021 17:52:35 -0600
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210928200216.GW3544071@ziepe.ca>
- <06d75fcb-ce8b-30a5-db36-b6c108460d3d@deltatee.com>
- <20210929232147.GD3544071@ziepe.ca>
- <93f56919-03ee-8326-10ee-8fbd9078b8e0@deltatee.com>
- <20210929233624.GG3544071@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <142badec-f6f5-e471-698e-8a386aae3c2b@deltatee.com>
-Date:   Wed, 29 Sep 2021 17:52:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 29 Sep 2021 19:54:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HKY8s0qLVz4xbL;
+        Thu, 30 Sep 2021 09:53:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632959581;
+        bh=PnJijGDdKuT9E1lBjViMVlj0jt+9hPzVlSeQjhASvG0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QknSj+Kh/43GsvHbnIkZWJsyw9XdHhXdHZCqBtsdbqvlE910XrNCfHlQ7Fksr8VYa
+         FZtlzkah1g322Le1j8DuW6SiV2ew1frmJOX7OwmfqOoyYTlFaE8+3cOd9NoESy/zN9
+         c9mHy/My3spopSfWucxzL/9SMpxEOQzT05rNbC+GQVYrddUiSIHs1hM6pYXPgNqQ3x
+         iq8GQKDop0r7ermeg7NsMAjRQbdsOWa0ssjqogXTcGYMAsgOMXI5romYGCdFwinZjM
+         J7gjrYg7m22widJKPZNq/aBNYIKxrVIrMI4TzxgKoVBmC9cjILhwwszo95T+rkc6tx
+         L8jyE9d3VaScw==
+Date:   Thu, 30 Sep 2021 09:53:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the kspp-gustavo tree
+Message-ID: <20210930095300.73be1555@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210929233624.GG3544071@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v3 00/20] Userspace P2PDMA with O_DIRECT NVMe devices
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: multipart/signed; boundary="Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2021-09-29 5:36 p.m., Jason Gunthorpe wrote:
-> On Wed, Sep 29, 2021 at 05:28:38PM -0600, Logan Gunthorpe wrote:
->>
->>
->> On 2021-09-29 5:21 p.m., Jason Gunthorpe wrote:
->>> On Wed, Sep 29, 2021 at 03:50:02PM -0600, Logan Gunthorpe wrote:
->>>>
->>>>
->>>> On 2021-09-28 2:02 p.m., Jason Gunthorpe wrote:
->>>>> On Thu, Sep 16, 2021 at 05:40:40PM -0600, Logan Gunthorpe wrote:
->>>>>> Hi,
->>>>>>
->>>>>> This patchset continues my work to add userspace P2PDMA access using
->>>>>> O_DIRECT NVMe devices. My last posting[1] just included the first 13
->>>>>> patches in this series, but the early P2PDMA cleanup and map_sg error
->>>>>> changes from that series have been merged into v5.15-rc1. To address
->>>>>> concerns that that series did not add any new functionality, I've added
->>>>>> back the userspcae functionality from the original RFC[2] (but improved
->>>>>> based on the original feedback).
->>>>>
->>>>> I really think this is the best series yet, it really looks nice
->>>>> overall. I know the sg flag was a bit of a debate at the start, but it
->>>>> serves an undeniable purpose and the resulting standard DMA APIs 'just
->>>>> working' is really clean.
->>>>
->>>> Actually, so far, nobody has said anything negative about using the SG flag.
->>>>
->>>>> There is more possible here, we could also pass the new GUP flag in the
->>>>> ib_umem code..
->>>>
->>>> Yes, that would be very useful.
->>>
->>> You might actually prefer to do that then the bio changes to get the
->>> infrastructur merged as it seems less "core"
->>
->> I'm a little bit more concerned about my patch set growing too large.
->> It's already at 20 patches and I think I'll need to add a couple more
->> based on the feedback you've already provided. So I'm leaning toward
->> pushing more functionality as future work.
-> 
-> I mean you could postpone the three block related patches and use a
-> single ib_umem patch instead as the consumer.
+After merging the kspp-gustavo tree, today's linux-next build (powerpc
+ppc64_defconfig) produced this warning:
 
-I think that's not a very compelling use case given the only provider of
-these VMAs is an NVMe block device. My patch set enables a real world
-use (copying data between NVMe devices P2P through the CMB with O_DIRECT).
+kernel/trace/ftrace.c: In function 'ftrace_ops_get_list_func':
+kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
+ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
+ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
+gs *)' [-Wcast-function-type]
+  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+      |                               ^
+kernel/trace/ftrace.c:174:10: note: in expansion of macro 'ftrace_ops_list_=
+func'
+  174 |   return ftrace_ops_list_func;
+      |          ^~~~~~~~~~~~~~~~~~~~
+kernel/trace/ftrace.c: In function 'update_ftrace_function':
+kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
+ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
+ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
+gs *)' [-Wcast-function-type]
+  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+      |                               ^
+kernel/trace/ftrace.c:207:10: note: in expansion of macro 'ftrace_ops_list_=
+func'
+  207 |   func =3D ftrace_ops_list_func;
+      |          ^~~~~~~~~~~~~~~~~~~~
+kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
+ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
+ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
+gs *)' [-Wcast-function-type]
+  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+      |                               ^
+kernel/trace/ftrace.c:220:14: note: in expansion of macro 'ftrace_ops_list_=
+func'
+  220 |  if (func =3D=3D ftrace_ops_list_func) {
+      |              ^~~~~~~~~~~~~~~~~~~~
+kernel/trace/ftrace.c: In function 'ftrace_modify_all_code':
+kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
+ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
+ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
+gs *)' [-Wcast-function-type]
+  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+      |                               ^
+kernel/trace/ftrace.c:2698:35: note: in expansion of macro 'ftrace_ops_list=
+_func'
+ 2698 |   err =3D ftrace_update_ftrace_func(ftrace_ops_list_func);
+      |                                   ^~~~~~~~~~~~~~~~~~~~
+kernel/trace/ftrace.c:128:31: warning: cast between incompatible function t=
+ypes from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(lo=
+ng unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_re=
+gs *)' [-Wcast-function-type]
+  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+      |                               ^
+kernel/trace/ftrace.c:2708:41: note: in expansion of macro 'ftrace_ops_list=
+_func'
+ 2708 |  if (update && ftrace_trace_function !=3D ftrace_ops_list_func) {
+      |                                         ^~~~~~~~~~~~~~~~~~~~
+In file included from kernel/bpf/hashtab.c:8:
+kernel/bpf/hashtab.c: In function 'htab_map_gen_lookup':
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u6=
+4,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  l=
+ong long unsigned int,  long long unsigned int,  long long unsigned int,  l=
+ong long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
+  374 |   .imm   =3D ((FUNC) - __bpf_call_base) })
+      |              ^~~~
+kernel/bpf/hashtab.c:671:26: note: in expansion of macro 'BPF_CAST_CALL'
+  671 |  *insn++ =3D BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
+      |                          ^~~~~~~~~~~~~
+kernel/bpf/hashtab.c: In function 'htab_lru_map_gen_lookup':
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u6=
+4,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  l=
+ong long unsigned int,  long long unsigned int,  long long unsigned int,  l=
+ong long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
+  374 |   .imm   =3D ((FUNC) - __bpf_call_base) })
+      |              ^~~~
+kernel/bpf/hashtab.c:712:26: note: in expansion of macro 'BPF_CAST_CALL'
+  712 |  *insn++ =3D BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
+      |                          ^~~~~~~~~~~~~
+kernel/bpf/hashtab.c: In function 'htab_of_map_gen_lookup':
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u6=
+4,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  l=
+ong long unsigned int,  long long unsigned int,  long long unsigned int,  l=
+ong long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
+  374 |   .imm   =3D ((FUNC) - __bpf_call_base) })
+      |              ^~~~
+kernel/bpf/hashtab.c:2400:26: note: in expansion of macro 'BPF_CAST_CALL'
+ 2400 |  *insn++ =3D BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
+      |                          ^~~~~~~~~~~~~
+In file included from include/linux/bpf_verifier.h:9,
+                 from kernel/bpf/verifier.c:12:
+kernel/bpf/verifier.c: In function 'jit_subprogs':
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'unsigned int (*)(const void *, const struct bpf_insn *)' to 'u64=
+ (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long lo=
+ng unsigned int,  long long unsigned int,  long long unsigned int,  long lo=
+ng unsigned int,  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12472:16: note: in expansion of macro 'BPF_CAST_CALL'
+12472 |    insn->imm =3D BPF_CAST_CALL(func[subprog]->bpf_func) -
+      |                ^~~~~~~~~~~~~
+kernel/bpf/verifier.c: In function 'do_misc_fixups':
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'void * (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u6=
+4,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned i=
+nt,  long long unsigned int,  long long unsigned int,  long long unsigned i=
+nt,  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12953:17: note: in expansion of macro 'BPF_CAST_CALL'
+12953 |     insn->imm =3D BPF_CAST_CALL(ops->map_lookup_elem) -
+      |                 ^~~~~~~~~~~~~
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'int (* const)(struct bpf_map *, void *, void *, u64)' {aka 'int =
+(* const)(struct bpf_map *, void *, void *, long long unsigned int)'} to 'u=
+64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long =
+long unsigned int,  long long unsigned int,  long long unsigned int,  long =
+long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12957:17: note: in expansion of macro 'BPF_CAST_CALL'
+12957 |     insn->imm =3D BPF_CAST_CALL(ops->map_update_elem) -
+      |                 ^~~~~~~~~~~~~
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64, =
+ u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
+  long long unsigned int,  long long unsigned int,  long long unsigned int,=
+  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12961:17: note: in expansion of macro 'BPF_CAST_CALL'
+12961 |     insn->imm =3D BPF_CAST_CALL(ops->map_delete_elem) -
+      |                 ^~~~~~~~~~~~~
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'int (* const)(struct bpf_map *, void *, u64)' {aka 'int (* const=
+)(struct bpf_map *, void *, long long unsigned int)'} to 'u64 (*)(u64,  u64=
+,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned in=
+t,  long long unsigned int,  long long unsigned int,  long long unsigned in=
+t,  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12965:17: note: in expansion of macro 'BPF_CAST_CALL'
+12965 |     insn->imm =3D BPF_CAST_CALL(ops->map_push_elem) -
+      |                 ^~~~~~~~~~~~~
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64, =
+ u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
+  long long unsigned int,  long long unsigned int,  long long unsigned int,=
+  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12969:17: note: in expansion of macro 'BPF_CAST_CALL'
+12969 |     insn->imm =3D BPF_CAST_CALL(ops->map_pop_elem) -
+      |                 ^~~~~~~~~~~~~
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64, =
+ u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
+  long long unsigned int,  long long unsigned int,  long long unsigned int,=
+  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12973:17: note: in expansion of macro 'BPF_CAST_CALL'
+12973 |     insn->imm =3D BPF_CAST_CALL(ops->map_peek_elem) -
+      |                 ^~~~~~~~~~~~~
+include/linux/filter.h:366:4: warning: cast between incompatible function t=
+ypes from 'int (* const)(struct bpf_map *, u32,  u64)' {aka 'int (* const)(=
+struct bpf_map *, unsigned int,  long long unsigned int)'} to 'u64 (*)(u64,=
+  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsign=
+ed int,  long long unsigned int,  long long unsigned int,  long long unsign=
+ed int,  long long unsigned int)'} [-Wcast-function-type]
+  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:12977:17: note: in expansion of macro 'BPF_CAST_CALL'
+12977 |     insn->imm =3D BPF_CAST_CALL(ops->map_redirect) -
+      |                 ^~~~~~~~~~~~~
 
-Being able to read or write a CMB with RDMA and only RDMA is not very
-compelling.
+Introduced by commit
 
-Logan
+  ffea83dd8823 ("Makefile: Enable -Wcast-function-type")
+
+Please either fix all these or revert that commit for now.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFU/FwACgkQAVBC80lX
+0GwAdwf/XsiWe8ECMf8QdhFhLGZ71VMoF/1LzGqIP3uaf9sUyfvDojmJtNdy/TJw
+jfYMR8Ioe8WqLtMJy+a09KtmrbWdLg+1YK4d75Sq6iTs+YNxcTMDzhuYObqJA18R
+mWaxe8xb2RdRRZDCJeGVXAF8L/kLv8hb3WS6sogbMZzQbGiRjdg7H0/ITh4JixZd
+efbmykJ4cttIEa2/AYynqfcrKbXYDRrrqFyO/7Eb3AgNGxYdi7dkH+iBa8XG3CIl
+c2ktfls2XGH7LNmOSCYqlD3oTCX0zM1k8ss9eZynlYdEy0bnrOVCZTjpuTJIeL4Q
+NqPlqwVXft0yYKnJe33bwC0tv4Qapw==
+=6m+J
+-----END PGP SIGNATURE-----
+
+--Sig_/+Q1Zs3egvfWq8.nlaVy2_Yw--
