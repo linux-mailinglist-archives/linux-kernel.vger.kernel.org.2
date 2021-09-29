@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CF241C69F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76A341C69D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344432AbhI2O2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:28:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+        id S1344426AbhI2O2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:28:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344142AbhI2O2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:28:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FF1A613A7;
-        Wed, 29 Sep 2021 14:26:54 +0000 (UTC)
+        id S1344142AbhI2O2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E40860ED4;
+        Wed, 29 Sep 2021 14:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632925614;
-        bh=L4/gUbMB7IXW/+mE5sg2yvzrsdvg/AxRJNdmEImmNm4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LFW54fO7AUdG0exWC/NgjDiA4Nt98dn5yg0hPo3EdvdC/yPNIU47XEiwzYG8CA3BF
-         0SNFSR6r2SyIYtkfpzI4LAfwTbTG3DBrFJ5qzRxSS/y+WJJbxgkf49SzQfVT3nyNPB
-         9PNRPsZLeUoBBMb3mPdxloLfnyshGTbxNl4rp4JwCqgZq+g0aLnHChxSFXBBXTOGsb
-         wfqT3eYHAdisIEprDGJ4H3K1Tjo8GIQX8bf9duGS5vbKKof+zhR+gGolnhRupHx9ON
-         Lmk2TH0udml8MKxicJ+4dx20E74mu7RFB1yt8THg5eycDrx7gP2qtlXLGLePaDu6r3
-         tJ1l6JW4OhIxw==
-Received: by mail-ed1-f45.google.com with SMTP id v18so9294167edc.11;
-        Wed, 29 Sep 2021 07:26:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530AWTYw6wGELTRpFM0qU68auhQ9t52+FgqKS5KPPvEHvYzJnmh7
-        VodpMrl9xpILhfs2+Nc2NDdOK1x+BG4ijKIJoQ==
-X-Google-Smtp-Source: ABdhPJxriq+CXUfPdOMlH7SB1VYujcInai/2OpHBeIfsE62+e+avssLCYStnCY2EoBU4Vg3HIl9TOl81k2gGXrsCBvg=
-X-Received: by 2002:a50:d887:: with SMTP id p7mr232004edj.164.1632925576614;
- Wed, 29 Sep 2021 07:26:16 -0700 (PDT)
+        s=k20201202; t=1632925594;
+        bh=QZUqLW+rrVYjG2fzvS4fRKLH6cZniCvIXXWbYdcka0w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mb78hnsNs4SNcPw8fEhqyXKvPGc3zCK/a99lx3QDAbg5UyOq/Rlf/LLhrDXhJVFRk
+         Jz2Co8cuiZ4aHX6s2P3mCTRNDgvjoDeHnnk/Jh99AlKHYkMhnzpGCJ3plvD7/cJkJx
+         uN0E1hagBwcQEKjG5TeHyQHmOxOudPFOFCYPq1NXI5mit2JZXve2AWDI5JgpdvU09A
+         ffGQCg1Kkp8c0txxGH2UXOHctPqSnJsAMKTvYviu1uQbU1MryEaFsLG7RPT7JL0wYg
+         wE0MHR5mFXxfeeuOyN3ZxskdmVgwuVI2JE21E3NhYRnkBK3RHggdakhx8Xh+AAIBHa
+         qxHr8dOPnKtAg==
+Date:   Wed, 29 Sep 2021 07:26:31 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 4/5] net/mlx5: Register separate reload
+ devlink ops for multiport device
+Message-ID: <20210929072631.437ffad9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YVR1PKQjsBfvUTPU@unreal>
+References: <cover.1632916329.git.leonro@nvidia.com>
+        <a8bf9a036fe0a590df830a77a31cc81c355f525d.1632916329.git.leonro@nvidia.com>
+        <20210929065549.43b13203@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVR1PKQjsBfvUTPU@unreal>
 MIME-Version: 1.0
-References: <20210928201214.294737-1-trix@redhat.com>
-In-Reply-To: <20210928201214.294737-1-trix@redhat.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 29 Sep 2021 09:26:05 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKMLu1Vm1x0rVGXf-RD2Mw65f3YPY3QL1mEB8=CQ9GMGw@mail.gmail.com>
-Message-ID: <CAL_JsqKMLu1Vm1x0rVGXf-RD2Mw65f3YPY3QL1mEB8=CQ9GMGw@mail.gmail.com>
-Subject: Re: [PATCH] of: remove duplicate declaration of of_iomap()
-To:     trix@redhat.com
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 3:12 PM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> A ranconfig produces this linker error
-> irq-al-fic.c:252: undefined reference to `of_iomap'
->
-> The declaration of of_iomap() is dependent on OF
-> The definition of of_iomap() is dependent on OF_ADDRESS
-> These should match.  There are duplicate declarations
-> of of_iomap(), remove of_iomap() and the
-> of_address_to_resource() duplicate.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  include/linux/of_address.h | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/include/linux/of_address.h b/include/linux/of_address.h
-> index 45598dbec269..a190996b4b0b 100644
-> --- a/include/linux/of_address.h
-> +++ b/include/linux/of_address.h
-> @@ -122,13 +122,7 @@ static inline bool of_dma_is_coherent(struct device_node *np)
->  {
->         return false;
->  }
-> -#endif /* CONFIG_OF_ADDRESS */
->
-> -#ifdef CONFIG_OF
-> -extern int of_address_to_resource(struct device_node *dev, int index,
-> -                                 struct resource *r);
-> -void __iomem *of_iomap(struct device_node *node, int index);
+On Wed, 29 Sep 2021 17:16:28 +0300 Leon Romanovsky wrote:
+> > > @@ -808,6 +812,9 @@ int mlx5_devlink_register(struct devlink *devlink)
+> > >  	if (err)
+> > >  		goto traps_reg_err;
+> > > =20
+> > > +	if (!mlx5_core_is_mp_slave(dev))
+> > > +		devlink_set_ops(devlink, &mlx5_devlink_reload); =20
+> >=20
+> > Does this work? Where do you make a copy of the ops? =F0=9F=A4=94 You c=
+an't modify
+> > the driver-global ops, to state the obvious. =20
+>=20
+> devlink_ops pointer is not constant at this stage, so why can't I copy
+> reload_* pointers to the "main" devlink ops?
+>=20
+> I wanted to avoid to copy all pointers.
 
-This is going to break sparc which has !OF_ADDRESS and its own
-of_iomap and of_address_to_resource implementations. I don't want to
-add CONFIG_SPARC in here, so I think we should solve this in kconfig.
-OF and !OF_ADDRESS is supposed to mean the arch provides these
-functions.
+Hm. I must be missing a key piece here. IIUC you want to have different
+ops based on some device property. But there is only one
 
-I'd really like to do away with HAS_IOMEM. It doesn't serve much
-purpose other than disabling a bunch of drivers.
+static struct devlink_ops mlx5_devlink_ops;
 
-> -#else
->  static inline int of_address_to_resource(struct device_node *dev, int index,
->                                          struct resource *r)
->  {
-> @@ -139,7 +133,7 @@ static inline void __iomem *of_iomap(struct device_node *device, int index)
->  {
->         return NULL;
->  }
-> -#endif
-> +#endif /* CONFIG_OF_ADDRESS */
->  #define of_range_parser_init of_pci_range_parser_init
->
->  static inline const __be32 *of_get_address(struct device_node *dev, int index,
-> --
-> 2.26.3
->
+so how can two devlink instances in the system use that and have
+different ops without a copy?
