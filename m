@@ -2,249 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5CB41C137
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6687941C136
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244965AbhI2JDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:03:40 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:46446 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244764AbhI2JDj (ORCPT
+        id S244958AbhI2JCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244764AbhI2JC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:03:39 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18T8f6v8036259;
-        Wed, 29 Sep 2021 16:41:06 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 29 Sep
- 2021 17:01:52 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH v2] media: aspeed: add debugfs
-Date:   Wed, 29 Sep 2021 17:00:25 +0800
-Message-ID: <20210929090024.8499-1-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 29 Sep 2021 05:02:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC28C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 02:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pHipk2Cz3G9EnP66HxC1PEdxlMMCy85ylZCusFz7JX8=; b=L2xBKMCBCbqkPhULXQnAf/DB/B
+        bROMSR+f43tHOq/eYeFHLkKZn1Pk/y5gW3IrCVfl7d6eN4psA+tO/5zk5f6KFbGjDxVOU+fN6MVY9
+        +uCWD0iwIlzcIMeEqIylwygihyu/69yJlPiF/7DoovPPq5tws71ZfddvLvr7I6KMu//PQuXXUiKYZ
+        3SeOrI0MoGwFyYPSltKq8xVFNlaI8W1mKyE91ZVyi9vagKB4SbAezx4crOIMzohhzv6twbfoxL+98
+        mZ1Bp5eC48Jte5ZUkraixWMamffwPKDEPZhM1SOK6mnP3LusiK/LfUUSaggTQrThqws3VSMxUG6Wx
+        y7jpSh/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVVS5-006g5d-O5; Wed, 29 Sep 2021 09:00:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0128E30029A;
+        Wed, 29 Sep 2021 11:00:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9DC2D2DC92D0A; Wed, 29 Sep 2021 11:00:32 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 11:00:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Message-ID: <YVQrMHXBzEpJmqRy@hirez.programming.kicks-ass.net>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-5-fenghua.yu@intel.com>
+ <20210922210722.GV4323@worktop.programming.kicks-ass.net>
+ <YUy2AmabA4ODOgAC@agluck-desk2.amr.corp.intel.com>
+ <YU3UkvNdzCqAANSY@hirez.programming.kicks-ass.net>
+ <YU3xLNJsSjIEpocT@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18T8f6v8036259
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YU3xLNJsSjIEpocT@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To show video real-time information as below:
+On Fri, Sep 24, 2021 at 08:39:24AM -0700, Luck, Tony wrote:
 
-Caputre:
-  Signal              : Unlock
-  Width               : 1920
-  Height              : 1080
-  FRC                 : 30
+> If you have ctags installed then a ctrl-] on that
+> __fixup_pasid_exception() will take you to the function with
+> the comments. No electron microscope needed.
 
-Performance:
-  Frame#              : 0
-  Frame Duration      :
-    Now               : 0
-    Min               : 0
-    Max               : 0
-  FPS(ms)             : 0
+I to use ctags, but when reading the #GP handler, this is a whole
+different file. Also, I don't find any of those comments explaining the
+not-our-#GP-but-harmless-cycle issue.
 
-Change-Id: I483740c4df6db07a9261c18440472a0356512bb7
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
----
- drivers/media/platform/aspeed-video.c | 101 ++++++++++++++++++++++++++
- 1 file changed, 101 insertions(+)
+The current->has_valid_pasid one comes close, but just misses it. But
+really the place to put this is in the #GP handler itself so we don't
+have to dig through every call there to figure out how it's supposed to
+work.
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 8b3939b8052d..c5c413844441 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -21,6 +21,8 @@
- #include <linux/videodev2.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-+#include <linux/debugfs.h>
-+#include <linux/ktime.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-dev.h>
- #include <media/v4l2-device.h>
-@@ -203,6 +205,14 @@ struct aspeed_video_buffer {
- 	struct list_head link;
- };
- 
-+struct aspeed_video_perf {
-+	ktime_t last_sample;
-+	u32 totaltime;
-+	u32 duration;
-+	u32 duration_min;
-+	u32 duration_max;
-+};
-+
- #define to_aspeed_video_buffer(x) \
- 	container_of((x), struct aspeed_video_buffer, vb)
- 
-@@ -241,6 +251,8 @@ struct aspeed_video {
- 	unsigned int frame_left;
- 	unsigned int frame_right;
- 	unsigned int frame_top;
-+
-+	struct aspeed_video_perf perf;
- };
- 
- #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
-@@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
- 		readl(video->base + reg));
- }
- 
-+static void update_perf(struct aspeed_video_perf *p)
-+{
-+	p->duration =
-+		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
-+	p->totaltime += p->duration;
-+
-+	p->duration_max = max(p->duration, p->duration_max);
-+	p->duration_min = min(p->duration, p->duration_min);
-+}
-+
- static int aspeed_video_start_frame(struct aspeed_video *video)
- {
- 	dma_addr_t addr;
-@@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
- 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
- 			    VE_INTERRUPT_COMP_COMPLETE);
- 
-+	video->perf.last_sample = ktime_get();
-+
- 	aspeed_video_update(video, VE_SEQ_CTRL, 0,
- 			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
- 
-@@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
- 		u32 frame_size = aspeed_video_read(video,
- 						   VE_JPEG_COMP_SIZE_READ_BACK);
- 
-+		update_perf(&video->perf);
-+
- 		spin_lock(&video->lock);
- 		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
- 		buf = list_first_entry_or_null(&video->buffers,
-@@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
- 	det->width = MIN_WIDTH;
- 	det->height = MIN_HEIGHT;
- 	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
-+	memset(&video->perf, 0, sizeof(video->perf));
- 
- 	do {
- 		if (tries) {
-@@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
- 	struct aspeed_video *video = vb2_get_drv_priv(q);
- 
- 	video->sequence = 0;
-+	video->perf.duration_max = 0;
-+	video->perf.duration_min = 0xffffffff;
- 
- 	rc = aspeed_video_start_frame(video);
- 	if (rc) {
-@@ -1517,6 +1546,72 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
- 	.buf_queue =  aspeed_video_buf_queue,
- };
- 
-+#ifdef CONFIG_DEBUG_FS
-+static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
-+{
-+	struct aspeed_video *v = s->private;
-+
-+	seq_puts(s, "\n");
-+
-+	seq_printf(s, "  %-20s:\t%s\n", "Signal",
-+		   v->v4l2_input_status ? "Unlock" : "Lock");
-+	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-+	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
-+	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
-+
-+	seq_puts(s, "\n");
-+
-+	seq_puts(s, "Performance:\n");
-+	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
-+	seq_printf(s, "  %-20s:\n", "Frame Duration");
-+	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
-+	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
-+	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
-+	seq_printf(s, "  %-20s:\t%d\n", "FPS(ms)", 1000/(v->perf.totaltime/v->sequence));
-+
-+
-+	return 0;
-+}
-+
-+int aspeed_video_proc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
-+}
-+
-+static struct file_operations aspeed_video_debugfs_ops = {
-+	.owner   = THIS_MODULE,
-+	.open    = aspeed_video_proc_open,
-+	.read    = seq_read,
-+	.llseek  = seq_lseek,
-+	.release = single_release,
-+};
-+
-+static struct dentry *debugfs_entry;
-+
-+static void aspeed_video_debugfs_remove(struct aspeed_video *video)
-+{
-+	debugfs_remove_recursive(debugfs_entry);
-+	debugfs_entry = NULL;
-+}
-+
-+static int aspeed_video_debugfs_create(struct aspeed_video *video)
-+{
-+	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
-+						   video,
-+						   &aspeed_video_debugfs_ops);
-+	if (!debugfs_entry)
-+		aspeed_video_debugfs_remove(video);
-+
-+	return debugfs_entry == NULL ? -EIO : 0;
-+}
-+#else
-+static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
-+static int aspeed_video_debugfs_create(struct aspeed_video *video)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int aspeed_video_setup_video(struct aspeed_video *video)
- {
- 	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
-@@ -1708,6 +1803,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
- 		return rc;
- 	}
- 
-+	rc = aspeed_video_debugfs_create(video);
-+	if (rc)
-+		dev_err(video->dev, "debugfs create failed\n");
-+
- 	return 0;
- }
- 
-@@ -1719,6 +1818,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
- 
- 	aspeed_video_off(video);
- 
-+	aspeed_video_debugfs_remove(video);
-+
- 	clk_unprepare(video->vclk);
- 	clk_unprepare(video->eclk);
- 
--- 
-2.25.1
-
+> +
+> +/*
+> + * Try to figure out if there is a PASID MSR value to propagate to the
+> + * thread taking the #GP.
+> + */
+> +bool __fixup_pasid_exception(void)
+> +{
+> +       u32 pasid;
+> +
+> +       /*
+> +        * This function is called only when this #GP was triggered from user
+> +        * space. So the mm cannot be NULL.
+> +        */
+> +       pasid = current->mm->pasid;
+> +
+> +       /* If no PASID is allocated, there is nothing to propagate. */
+> +       if (pasid == PASID_DISABLED)
+> +               return false;
+> +
+> +       /*
+> +        * If the current task already has a valid PASID MSR, then the #GP
+> +        * fault must be for some non-ENQCMD related reason.
+> +        */
+> +       if (current->has_valid_pasid)
+> +               return false;
+> +
+> +       /* Fix up the MSR by the PASID in the mm. */
+> +       fpu__pasid_write(pasid);
+> +       current->has_valid_pasid = 1;
+> +
+> +       return true;
+> +}
+> 
+> -Tony
