@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA1F41CC0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB54B41CC0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 20:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346292AbhI2Snj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 14:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244341AbhI2Sni (ORCPT
+        id S1346311AbhI2SoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 14:44:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49533 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244341AbhI2SoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:43:38 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12B1C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:41:56 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id z5so7563066ybj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SFBNphSzefupqMOU/FsZmobfn4DHEGh119C5ZxnfiGU=;
-        b=oMLjATvPGSpioTo7Narm2EOrCji/7AFatopBvAuzGkFWwdEXXNuZ1hZbw5aONHH3Tj
-         LLzhzQ8GV75CJj5F0TS7kJu2urizG6ykARntXihNeOyWRlHzmO76u4TRMJirLvNjpJjq
-         PMQ2U9icPf23CzpmrsroakFFWWnssLXJjTaM6uCeYmoRZ00VamCh7RQM8F0YMhybPDPl
-         drN/2bFYh7ofR/j/0AZK5q0cGHa2NNaYzIPcKUK+AZxS8cYOYvXQ/Jwlr9PmjthptdHU
-         W7QjCMgV3pxrefEXRXJqlWzbItMAPEJ6cd0DVOeogFLqjmqCHoKeFNDlwBYmZzdHwHci
-         WAvw==
+        Wed, 29 Sep 2021 14:44:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632940947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AE5fljvyYNG+Yl+9MBrwwlc+KGiDiGbxgTld+BD8ecY=;
+        b=IBdfMdzPKZ7dEWDkJZ9jziwZHcwMp8MiBlcAujEtIEzNp0RKXjdz8XuSevL8mbcBj9L+Zd
+        T4J9p0bEPdRec10/9Rr+eFPYNPiLjZ2MIS9VwXdsJkoBtttJ3z1hoAND/dE3gKlrAyrG7Z
+        XOH2s7JbdisrKsy0YjmlqPJ0d0GvlmQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-R1IgoRytNZ2qChn3BTtMqA-1; Wed, 29 Sep 2021 14:42:26 -0400
+X-MC-Unique: R1IgoRytNZ2qChn3BTtMqA-1
+Received: by mail-ed1-f70.google.com with SMTP id a7-20020a509e87000000b003da71d1b065so3446378edf.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 11:42:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SFBNphSzefupqMOU/FsZmobfn4DHEGh119C5ZxnfiGU=;
-        b=72K7yiB+bB/lL4gj1vDxxkE1eIozcurcKZ/v9qJJnV85pjW/WMoNFK1vkFMvCgp2wD
-         3D17W9DZ4Z4upXsysgcBBZSGAh7QsaVq0sgFr4uM1deBhl/lhLXQQ+exDmueMvO071dy
-         ZgofxN5CpU6jqhbo4s8culefLarnUzSB16QPdo0ldiWGcdd/fEbFieGV6jGyPfAhyv05
-         1FddyhvhsvCpRG4PPulUabPkrgee6D4LWwkBHyt0BAHkw19ISmsR9xJYc6cVyD6cXkwb
-         A9bFg7kZY4jN7pu4J/g7W1pPmkpJEsBUBi9lqlK6TLePMybDmKJjG3v1nFJuCZAFeEnz
-         4rNg==
-X-Gm-Message-State: AOAM532UInDoBnqdHNKUI+Mvp4SE3+MZjZyMS/FqM6SHqimQd2QdYQST
-        Nsfs7PGeGTMrf88kXcrgVe/Kbo7eDPQNr9xSOERCIo1S9jk=
-X-Google-Smtp-Source: ABdhPJwNmyLL1Vwcs1z7Otw9xiAbBHCqdUBRaIm6Ff1TN2FnEmGLp4rH35K82AHKVwUCmUznS8VNwGyvHPzRqlWGD78=
-X-Received: by 2002:a25:14d6:: with SMTP id 205mr1568573ybu.93.1632940915963;
- Wed, 29 Sep 2021 11:41:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AE5fljvyYNG+Yl+9MBrwwlc+KGiDiGbxgTld+BD8ecY=;
+        b=eYX6OpOAfLIu6dOz5ZDmoxoVLB/zGLYljDUwY0NTd9em0kVN72aSYa67pQt0IVOdJw
+         OfOS5Bfrf9qUezFxky5wc260IvUmJr8uqgW50scm9iKpxg7+Rss3Epzhn0DixE/sgFoa
+         hxspa8Q8Xq0jifR7mZHqkx6Fu2tPN/vDM32zWn+7fAUQdeBVqenLCHFkZcFTkX3TEjGZ
+         vADkTOYzzLgBdydQoTym4memcTx8G1M9eThSAA/GNgdE6f+UDPSSiDJTfwA9WnZDkqaL
+         1x4vK97Qy+mJOSmYKnDLjWz8biCwJ2qhwpEaeX56kUbP3yyuJC75D1klQC1ZfTTNW9qq
+         QQHQ==
+X-Gm-Message-State: AOAM532Ts0B/xxIUsZhL+5ZPGGhJwR7UQFNUxHXlyieZNIhWeJ+BhdO3
+        HgWSy58h+NEz8qI6G0VqcZDDpc/wmAy0H8Xx+JLvzevoKo+wAAFo3D0xdj2lAIaMVgjx0hriLHm
+        NInmCdyodIqdXnxhBYAHfvBlN
+X-Received: by 2002:a50:8147:: with SMTP id 65mr1798816edc.60.1632940945093;
+        Wed, 29 Sep 2021 11:42:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXOVvaFkMpe9KAE6UjBWZE2jS8+3X63yqX8oZPY5DZ8E27Npd1ezc4LB1XiOt51mpWJ5wUSQ==
+X-Received: by 2002:a50:8147:: with SMTP id 65mr1798793edc.60.1632940944885;
+        Wed, 29 Sep 2021 11:42:24 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id di4sm389079edb.34.2021.09.29.11.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 11:42:24 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 20:42:23 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Joe Mario <jmario@redhat.com>, kan.liang@linux.intel.com,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 1/2] perf script: Fix PERF_SAMPLE_WEIGHT_STRUCT support
+Message-ID: <YVSzjzV+Jb7loGxI@krava>
+References: <1632929894-102778-1-git-send-email-kan.liang@linux.intel.com>
+ <YVSaT54dsMjJV4dF@kernel.org>
 MIME-Version: 1.0
-References: <20210923172215.18376-1-nikita.yoush@cogentembedded.com>
-In-Reply-To: <20210923172215.18376-1-nikita.yoush@cogentembedded.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 29 Sep 2021 20:41:45 +0200
-Message-ID: <CAMpxmJUy6_Yb_2622TAjTxD1bged25LsOOkvafCzj-e1d=UTTg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: pca953x: do not ignore i2c errors
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVSaT54dsMjJV4dF@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 7:22 PM Nikita Yushchenko
-<nikita.yoush@cogentembedded.com> wrote:
->
-> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
->
-> Per gpio_chip interface, error shall be proparated to the caller.
->
-> Attempt to silent diagnostics by returning zero (as written in the
-> comment) is plain wrong, because the zero return can be interpreted by
-> the caller as the gpio value.
->
-> Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-> ---
->  drivers/gpio/gpio-pca953x.c | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-> index f5cfc0698799..8ebf369b3ba0 100644
-> --- a/drivers/gpio/gpio-pca953x.c
-> +++ b/drivers/gpio/gpio-pca953x.c
-> @@ -468,15 +468,8 @@ static int pca953x_gpio_get_value(struct gpio_chip *gc, unsigned off)
->         mutex_lock(&chip->i2c_lock);
->         ret = regmap_read(chip->regmap, inreg, &reg_val);
->         mutex_unlock(&chip->i2c_lock);
-> -       if (ret < 0) {
-> -               /*
-> -                * NOTE:
-> -                * diagnostic already emitted; that's all we should
-> -                * do unless gpio_*_value_cansleep() calls become different
-> -                * from their nonsleeping siblings (and report faults).
-> -                */
-> -               return 0;
-> -       }
-> +       if (ret < 0)
-> +               return ret;
->
->         return !!(reg_val & bit);
->  }
-> --
-> 2.30.2
->
+On Wed, Sep 29, 2021 at 01:54:39PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Sep 29, 2021 at 08:38:13AM -0700, kan.liang@linux.intel.com escreveu:
+> > From: Kan Liang <kan.liang@linux.intel.com>
+> > 
+> > -F weight in perf script is broken.
+> > 
+> >   # ./perf mem record
+> >   # ./perf script -F weight
+> >   Samples for 'dummy:HG' event do not have WEIGHT attribute set. Cannot
+> > print 'weight' field.
+> > 
+> > The sample type, PERF_SAMPLE_WEIGHT_STRUCT, is an alternative of the
+> > PERF_SAMPLE_WEIGHT sample type. They share the same space, weight. The
+> > lower 32 bits are exactly the same for both sample type. The higher 32
+> > bits may be different for different architecture. For a new kernel on
+> > x86, the PERF_SAMPLE_WEIGHT_STRUCT is used. For an old kernel or other
+> > ARCHs, the PERF_SAMPLE_WEIGHT is used.
+> > 
+> > With -F weight, current perf script will only check the input string
+> > "weight" with the PERF_SAMPLE_WEIGHT sample type. Because the commit
+> > ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT") didn't
+> > update the PERF_SAMPLE_WEIGHT_STRUCT sample type for perf script. For a
+> > new kernel on x86, the check fails.
+> > 
+> > Use PERF_SAMPLE_WEIGHT_TYPE, which supports both sample types, to
+> > replace PERF_SAMPLE_WEIGHT.
+> > 
+> > Reported-by: Joe Mario <jmario@redhat.com>
+> > Fixes: ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT")
+> 
+> Hey Joe, Jiri,
+> 
+> 	Can I have your Tested-by?
 
-Applied, thanks!
+Acked/Tested-by: Jiri Olsa <jolsa@redhat.com>
 
-Bart
+thanks,
+jirka
+
+> 
+> Thanks,
+> 
+> - Arnaldo
+> 
+> > Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> > ---
+> >  tools/perf/builtin-script.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> > index 6211d0b..9f62ac6 100644
+> > --- a/tools/perf/builtin-script.c
+> > +++ b/tools/perf/builtin-script.c
+> > @@ -459,7 +459,7 @@ static int evsel__check_attr(struct evsel *evsel, struct perf_session *session)
+> >  		return -EINVAL;
+> >  
+> >  	if (PRINT_FIELD(WEIGHT) &&
+> > -	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT, "WEIGHT", PERF_OUTPUT_WEIGHT))
+> > +	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT_TYPE, "WEIGHT", PERF_OUTPUT_WEIGHT))
+> >  		return -EINVAL;
+> >  
+> >  	if (PRINT_FIELD(SYM) &&
+> > -- 
+> > 2.7.4
+> 
+> -- 
+> 
+> - Arnaldo
+> 
+
