@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3D241C494
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA9A41C498
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343609AbhI2MSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:18:46 -0400
-Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:44758 "EHLO
-        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343797AbhI2MSP (ORCPT
+        id S1343603AbhI2MUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:20:41 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:52580
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245563AbhI2MUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:18:15 -0400
-Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
-        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 1BD701008CBC1;
-        Wed, 29 Sep 2021 20:16:32 +0800 (CST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 03F25200B5751;
-        Wed, 29 Sep 2021 20:16:32 +0800 (CST)
-X-Virus-Scanned: amavisd-new at 
-Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cjxdomTFHRWG; Wed, 29 Sep 2021 20:16:31 +0800 (CST)
-Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
-        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 17801200B574E;
-        Wed, 29 Sep 2021 20:16:25 +0800 (CST)
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     Guo Zhi <qtxuning1999@sjtu.edu.cn>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/ata: Fix kernel pointer leak
-Date:   Wed, 29 Sep 2021 20:16:17 +0800
-Message-Id: <20210929121618.1157415-1-qtxuning1999@sjtu.edu.cn>
-X-Mailer: git-send-email 2.33.0
+        Wed, 29 Sep 2021 08:20:40 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 6160C40184;
+        Wed, 29 Sep 2021 12:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632917938;
+        bh=Bhi6AHpfy+Ej7XA03LLA3tQ3s3CRWpWh6aY3VL7zg6I=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=VFhT8s8l9BI3n5pbmMC9WNLBYSQ8vlH2EBQOf5Z4inyh3DmyXaTEgfqieq0KKCjxp
+         HQqVKwJgvhGhewcIyYqANQko+pBIsXUlj4yf5061PKjdIJZ02hESR8oWvMmg7qg7dM
+         iCHVmhKZRmcgaFENb+JaHrki7H5Iuc+VcmgqnUCadtF3wlK4nyCEBY1lbeGUGTxKcs
+         n60IQb+8b6H0urKz99HuzUwS4xBbZXxVwcuHc21hhBAz7BrM1bvBjg10HcitJhZFo8
+         dVab1JfknUC6IrTUjjk4DWkIDM4B80Sdsg07TK3ri5f0ND+2fF5KTfGgDC1EyWnqur
+         6jaBmlXOwW5Mw==
+From:   Colin King <colin.king@canonical.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm: Fix null pointer dereference on pointer edp
+Date:   Wed, 29 Sep 2021 13:18:57 +0100
+Message-Id: <20210929121857.213922-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointers should be printed with %p or %px rather than cast to
-'unsigned long' and pinted with %lx
-Change %lx to %p to print the secured pointer.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+The initialization of pointer dev dereferences pointer edp before
+edp is null checked, so there is a potential null pointer deference
+issue. Fix this by only dereferencing edp after edp has been null
+checked.
+
+Addresses-Coverity: ("Dereference before null check")
+Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/ata/pata_atp867x.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/msm/edp/edp_ctrl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/pata_atp867x.c b/drivers/ata/pata_atp867x.c
-index 2bc5fc81efe3..c32b95f48e50 100644
---- a/drivers/ata/pata_atp867x.c
-+++ b/drivers/ata/pata_atp867x.c
-@@ -447,11 +447,11 @@ static int atp867x_ata_pci_sff_init_host(struct ata_host *host)
- #ifdef	ATP867X_DEBUG
- 		atp867x_check_ports(ap, i);
- #endif
--		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
--			(unsigned long)ioaddr->cmd_addr,
--			(unsigned long)ioaddr->ctl_addr);
--		ata_port_desc(ap, "bmdma 0x%lx",
--			(unsigned long)ioaddr->bmdma_addr);
-+		ata_port_desc(ap, "cmd 0x%p ctl 0x%p",
-+			ioaddr->cmd_addr,
-+			ioaddr->ctl_addr);
-+		ata_port_desc(ap, "bmdma 0x%p",
-+			ioaddr->bmdma_addr);
+diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+index 4fb397ee7c84..fe1366b4c49f 100644
+--- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
++++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+@@ -1116,7 +1116,7 @@ void msm_edp_ctrl_power(struct edp_ctrl *ctrl, bool on)
+ int msm_edp_ctrl_init(struct msm_edp *edp)
+ {
+ 	struct edp_ctrl *ctrl = NULL;
+-	struct device *dev = &edp->pdev->dev;
++	struct device *dev;
+ 	int ret;
  
- 		mask |= 1 << i;
+ 	if (!edp) {
+@@ -1124,6 +1124,7 @@ int msm_edp_ctrl_init(struct msm_edp *edp)
+ 		return -EINVAL;
  	}
+ 
++	dev = &edp->pdev->dev;
+ 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ 	if (!ctrl)
+ 		return -ENOMEM;
 -- 
-2.33.0
+2.32.0
 
