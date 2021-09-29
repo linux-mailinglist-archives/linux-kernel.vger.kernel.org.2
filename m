@@ -2,158 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA90941CE4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABF341CE50
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346925AbhI2Vk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:40:57 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:54028 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345909AbhI2Vkx (ORCPT
+        id S1346901AbhI2Vnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345966AbhI2Vnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:40:53 -0400
-Date:   Wed, 29 Sep 2021 21:39:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=protonmail; t=1632951548;
-        bh=duxvwEonJV5YH8ELj8pJraEhvFw6SsRoN7ixGjyQf98=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=CuZxNca6xwHMoL5SlccHTzsDCFpIYs0b9U5cuWgpV24XiphzEuSrfi7/7m25G2aw2
-         FYk30e3ZbKshhnY/wsQCj2pjZPtgJw3CcWWPBu4v0hqk0PuGL3AQmkBmyzkJKviBNr
-         b77joSpce32h6UcPgcDlMfKEBhYh7myQcC1q1trg=
-To:     Alexey Gladkov <legion@kernel.org>
-From:   Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     ebiederm@xmission.com, LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm\\\\@kvack.org" <linux-mm@kvack.org>,
-        "containers\\\\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>
-Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
-Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
-Message-ID: <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
-In-Reply-To: <20210929173611.fo5traia77o63gpw@example.org>
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch> <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch> <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch> <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch> <20210929173611.fo5traia77o63gpw@example.org>
+        Wed, 29 Sep 2021 17:43:40 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288B5C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:41:59 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id s11so4066373pgr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:41:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=abMqKB2u9rMv7oTMhh3m+4tF/IOseMheczHvshPya7I=;
+        b=m2TpfLPcLu9QNlpl9HdlKoBc8s1yHlw4a109KsDKLctrx7o8muqZD1eHvNnSMFttA4
+         fG/Qr03uUF4rZlyD2y5we7iu/kBHcB7kAcgNqqFQxqqdqXM4LcSJU7E1Kk2EQDquxze3
+         ukoem9hVnnoq3QW4dNuZ5rJ+R/K06pjADNQPM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=abMqKB2u9rMv7oTMhh3m+4tF/IOseMheczHvshPya7I=;
+        b=rnPuugXiy85OFHOsN0CxvR+p9KJneSiUYh4WauVc/0IiBM/00974WdOpAx6lT2FAvX
+         NJkcwuqZP9NFfJLAv6vQrn0trWK0r50GajSPKXn2xZZn7pSDhWs5oC7s0/6RWZFIx7M8
+         FP5oJ2shhfhuQ3sMoMTR9PHYquXDUgQ2xDAm98Ee679+8+3BYWCwXhHfRWkpffRpEuOj
+         l3+iACbiglerxrUmNQf1gezhCvl6p6c2dKEd2hSQSIq/yrrjhJRBBn1W4adOC7+5HfQc
+         nlRpsazKOiLOScOQoZoMjFyCz5mfbHdiJ6i3VjRkf2X0REvim6OKz1R85u0dBgNQ1eOi
+         TXZw==
+X-Gm-Message-State: AOAM533LBT/fq1uYSQGspLGfQ4LbFbovI5rb9VPgau3U9KP6FjxrjtXQ
+        T/TpRgdCu4ND0vMtaK0MYVSI2w==
+X-Google-Smtp-Source: ABdhPJz6ktUCSGWMztTH+AFVhmEQXYShJtqGc2SK/UWNTJBqVnMthbvvG3CKCGzYVePbkfPuK8YC7Q==
+X-Received: by 2002:a63:1d5c:: with SMTP id d28mr1797415pgm.143.1632951718606;
+        Wed, 29 Sep 2021 14:41:58 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:1bde:f4ad:4338:e765])
+        by smtp.gmail.com with UTF8SMTPSA id p9sm698691pfo.153.2021.09.29.14.41.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 14:41:57 -0700 (PDT)
+From:   Brian Norris <briannorris@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        stable@vger.kernel.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Subject: [PATCH] drm/brdige: analogix_dp: Grab runtime PM reference for DP-AUX
+Date:   Wed, 29 Sep 2021 14:41:03 -0700
+Message-Id: <20210929144010.1.I773a08785666ebb236917b0c8e6c05e3de471e75@changeid>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 29th, 2021 at 5:36 PM, Alexey Gladkov <legion@kerne=
-l.org> wrote:
+If the display is not enable()d, then we aren't holding a runtime PM
+reference here. Thus, it's easy to accidentally cause a hang, if user
+space is poking around at /dev/drm_dp_aux0 at the "wrong" time.
 
-> On Tue, Sep 28, 2021 at 01:40:48PM +0000, Jordan Glover wrote:
->
-> > On Thursday, September 16th, 2021 at 5:30 PM, ebiederm@xmission.com wro=
-te:
-> >
-> > > Jordan Glover Golden_Miller83@protonmail.ch writes:
-> > >
-> > > > On Wednesday, September 15th, 2021 at 10:42 PM, Jordan Glover Golde=
-n_Miller83@protonmail.ch wrote:
-> > > >
-> > > > > I had about 2 containerized (flatpak/bubblewrap) apps (browser + =
-music player) running . I quickly closed them with intent to shutdown the s=
-ystem but instead get the freeze and had to use magic sysrq to reboot. Syst=
-em logs end with what I posted and before there is nothing suspicious.
-> > > > >
-> > > > > Maybe it's some random fluke. I'll reply if I hit it again.
-> > > >
-> > > > Heh, it jut happened again. This time closing firefox alone had suc=
-h
-> > > >
-> > > > effect:
-> > >
-> > > Ok. It looks like he have a couple of folks seeing issues here.
-> > >
-> > > I thought we had all of the issues sorted out for the release of v5.1=
-4,
-> > >
-> > > but it looks like there is still some little bug left.
-> > >
-> > > If Alex doesn't beat me to it I will see if I can come up with a
-> > >
-> > > debugging patch to make it easy to help track down where the referenc=
-e
-> > >
-> > > count is going wrong. It will be a little bit as my brain is mush at
-> > >
-> > > the moment.
-> > >
-> > > Eric
-> >
-> > As the issue persist in 5.14.7 I would be very interested in such patch=
-.
-> >
-> > For now the thing is mostly reproducible when I close several tabs in f=
-f then
-> >
-> > close the browser in short period of time. When I close tabs then wait =
-out
-> >
-> > a bit then close the browser it doesn't happen so I guess some interrup=
-ted
-> >
-> > cleanup triggers it.
->
-> I'm still investigating, but I would like to rule out one option.
->
-> Could you check out the patch?
+Let's get the panel and PM state right before trying to talk AUX.
 
+Fixes: 0d97ad03f422 ("drm/bridge: analogix_dp: Remove duplicated code")
+Cc: <stable@vger.kernel.org>
+Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
 
-Thx, I added it to my kernel and will report in few days.
-Does this patch try to fix the issue or make it easier to track?
+ .../gpu/drm/bridge/analogix/analogix_dp_core.c  | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-Jordan
+diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+index b7d2e4449cfa..a1b553904b85 100644
+--- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
++++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+@@ -1632,8 +1632,23 @@ static ssize_t analogix_dpaux_transfer(struct drm_dp_aux *aux,
+ 				       struct drm_dp_aux_msg *msg)
+ {
+ 	struct analogix_dp_device *dp = to_dp(aux);
++	int ret, ret2;
+ 
+-	return analogix_dp_transfer(dp, msg);
++	ret = analogix_dp_prepare_panel(dp, true, false);
++	if (ret) {
++		DRM_DEV_ERROR(dp->dev, "Failed to prepare panel (%d)\n", ret);
++		return ret;
++	}
++
++	pm_runtime_get_sync(dp->dev);
++	ret = analogix_dp_transfer(dp, msg);
++	pm_runtime_put(dp->dev);
++
++	ret2 = analogix_dp_prepare_panel(dp, false, false);
++	if (ret2)
++		DRM_DEV_ERROR(dp->dev, "Failed to unprepare panel (%d)\n", ret2);
++
++	return ret;
+ }
+ 
+ struct analogix_dp_device *
+-- 
+2.33.0.685.g46640cef36-goog
 
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
->
-> index bb51849e6375..f23f906f4f62 100644
->
-> --- a/kernel/ucount.c
->
-> +++ b/kernel/ucount.c
->
-> @@ -201,11 +201,14 @@ void put_ucounts(struct ucounts *ucounts)
->
-> {
->
-> unsigned long flags;
->
-> -         if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock,=
- flags)) {
->
->
->
-> -         spin_lock_irqsave(&ucounts_lock, flags);
->
->
-> -         if (atomic_dec_and_test(&ucounts->count)) {
->
->                   hlist_del_init(&ucounts->node);
->
->                   spin_unlock_irqrestore(&ucounts_lock, flags);
->                   kfree(ucounts);
->
->
-> -                 return;
->           }
->
->
-> -         spin_unlock_irqrestore(&ucounts_lock, flags);
->
->
->
-> }
->
-> static inline bool atomic_long_inc_below(atomic_long_t *v, int u)
->
-> ---------------------------------------------------------------------
->
-> Rgrds, legion
