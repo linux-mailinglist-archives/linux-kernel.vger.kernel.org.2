@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E3B41CFDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4985941CFD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 01:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347544AbhI2XXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 19:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S1347480AbhI2XWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 19:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347536AbhI2XXb (ORCPT
+        with ESMTP id S1347372AbhI2XWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 19:23:31 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7515BC061768
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:21:49 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id i132so4060756qke.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:21:49 -0700 (PDT)
+        Wed, 29 Sep 2021 19:22:13 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04163C06161C;
+        Wed, 29 Sep 2021 16:20:31 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id d21so6814975wra.12;
+        Wed, 29 Sep 2021 16:20:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1Hmlahc/i9658U3YzBDCjabD8lk1Mv+/ZOzt2omk2Ho=;
-        b=SJtWHdnGo9L4mdll+qKaZsmtvpn7ds7Jqf9UErLrQmOsqRP3sxU8o3aw5o2MvhL5Mj
-         lM03toh8ImPud8H7vh/AGGkl+3vURvGKxRBh5yeP3iqYJ3RXD4HkzTzjBF6Mgc3CyYL4
-         NPwaDU2c+i54bQ4atNBSa63XnbDUvexvPwjoCQkmNEdCUAl1T+QvgnRV98lCDddMEe7S
-         LVFALRCv3M02kPjD9ocMpxen45b3XXJIbEyj72HfycWLiBpEdaWRxZc5TzgjO4IW95ia
-         6tYGEjCfhjevDUh3QKMgzT1YEh/Dp9tLfgFk0cHBocInRv2rBNOuuogJ3/Vn3OANJNLH
-         kWlw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yD9KIs5WhcUAcouIPcbObX4XZu0b5Wq+aztQ8omFaBY=;
+        b=Xal4ZxNdQjY83Bv3VlqbzOdOphBYrpGyeegEA+/yfeeQJJq0jgG0ttY/YfFt9cd2zn
+         eSl/LeSYS1Dk3MNwdHeLFtleZ+d94rjs62suXI+j2ogM0VXI0yjSyrOFSOzyLxs/Vr9s
+         Qizp2VGNID3KTu7OoPV3jkB1ZofJE6NtH1yzVGEYeGt+t3b8rRFLkkEOUFR/wc7ec86h
+         3HWAHZV8CDfKRVyW78L3YDMTL5GlvpaBh/gBxZ1qh8kNXqzOLdQbvUvKvbJBaJhK1+5H
+         omXJ4ccfiWB33GLjKKBPM6V2GcXdsfNShE61bAnm+ImSg0MuY1nOlm54fZ/X+gCnDCAk
+         NEOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Hmlahc/i9658U3YzBDCjabD8lk1Mv+/ZOzt2omk2Ho=;
-        b=f7NtMPKHjjKPbcCOnxAHG2Xd9zlwR78qDuoequm/l/CV3eKT3Tsydz/ZEeh1nnlITx
-         f2SLKb8XzhZwV3aJOlJmvxH0rCP1ceMwhQCX1oeYWFj9+VgOv4AsHHW0QXhnJ7jiALsr
-         aEzzUtmmkc4Fem16FdS+3KFuAQsBjxGqtVWFyqK4JxaJ/O5Ysb6cW2cVGde6JlvgWwo/
-         FpKJE189EgC5Jus9O5FDSS8ZHXRJJcPjl26O6Ryn278PMM3QiyvXKDDARJbfB5e9nJcx
-         O+rWoGTmvY0jrxPa4UFuVLorWl8a0gAAELYAeePTzxY2MjT5aQLZQKaSyk0gXEjijVhL
-         aDAg==
-X-Gm-Message-State: AOAM532iX4wpwxoGyh/cPozoHpvAW0J8/AfpJw4nfmzmXTlDdhNs4zPX
-        14XpDgFHDeQXOMoxW68VR+ZiMg==
-X-Google-Smtp-Source: ABdhPJxjfksXX9RBzjsealxa+5cO5Ph50HuUSNxxHRV+6R5kI7btDIJAlC0cqyNxWaWuBVsQ1jP8wA==
-X-Received: by 2002:a37:b386:: with SMTP id c128mr2193672qkf.426.1632957708587;
-        Wed, 29 Sep 2021 16:21:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id x3sm631017qkl.107.2021.09.29.16.21.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 16:21:48 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVitX-007ii8-Gm; Wed, 29 Sep 2021 20:21:47 -0300
-Date:   Wed, 29 Sep 2021 20:21:47 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 00/20] Userspace P2PDMA with O_DIRECT NVMe devices
-Message-ID: <20210929232147.GD3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210928200216.GW3544071@ziepe.ca>
- <06d75fcb-ce8b-30a5-db36-b6c108460d3d@deltatee.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yD9KIs5WhcUAcouIPcbObX4XZu0b5Wq+aztQ8omFaBY=;
+        b=w0B8N0/JoiJ0GDRAY8ytwQfcOgmAHjRebbDoLvxgZslSFj7xnS+Axv08c0rqg0v5k1
+         mN7he3viaID9l3p5Sfz/4Tx0vpAhlybV/mTEeIy3cV1T33H5AFZJz39voW22XtPVkczr
+         ao8vAvRDNzTg1KXpDLT2KqID1NqQUAftAap0Je7TVGzqSQLJxX1n1yzvTBNT7U8YB/1W
+         jL3QpaAnU8C6z9rQL5Kd1pbmSsNzScYgy4eF1imgFJSJy1GK7SnxS6nEn+FyQ1cl9jF3
+         sBjg1T15WYp08HZ9jKgCn0B9jCfeDPh5g7bvszlE0be3fff5urKlc4QgqEylZ+xLkSyc
+         C7xw==
+X-Gm-Message-State: AOAM531heNyBDKbh7baF/lTDGmzeskBEO9Yr0VBboLGE5dUuOMmaIF60
+        JpXIxJdY+o5QcCmD7ZQMlRRefzrdVr0+/7YVguo=
+X-Google-Smtp-Source: ABdhPJx4hkgU/5JuFbaRQKkdhd2WKVk0EEBfYFPYbaLnSHn8BrdlJpViE+yCNsi8fnhScSIq6nnSOYzhPQM3Fht3fAw=
+X-Received: by 2002:a5d:544c:: with SMTP id w12mr2853476wrv.398.1632957630423;
+ Wed, 29 Sep 2021 16:20:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <06d75fcb-ce8b-30a5-db36-b6c108460d3d@deltatee.com>
+References: <20210910101218.1632297-1-maxime@cerno.tech> <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+ <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com> <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+In-Reply-To: <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 29 Sep 2021 16:25:04 -0700
+Message-ID: <CAF6AEGuJgrYrg7FXpVj8P_qf73CXb4=0KysSYQaobJuheDeUSA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order consistent
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:50:02PM -0600, Logan Gunthorpe wrote:
-> 
-> 
-> On 2021-09-28 2:02 p.m., Jason Gunthorpe wrote:
-> > On Thu, Sep 16, 2021 at 05:40:40PM -0600, Logan Gunthorpe wrote:
-> >> Hi,
-> >>
-> >> This patchset continues my work to add userspace P2PDMA access using
-> >> O_DIRECT NVMe devices. My last posting[1] just included the first 13
-> >> patches in this series, but the early P2PDMA cleanup and map_sg error
-> >> changes from that series have been merged into v5.15-rc1. To address
-> >> concerns that that series did not add any new functionality, I've added
-> >> back the userspcae functionality from the original RFC[2] (but improved
-> >> based on the original feedback).
-> > 
-> > I really think this is the best series yet, it really looks nice
-> > overall. I know the sg flag was a bit of a debate at the start, but it
-> > serves an undeniable purpose and the resulting standard DMA APIs 'just
-> > working' is really clean.
-> 
-> Actually, so far, nobody has said anything negative about using the SG flag.
-> 
-> > There is more possible here, we could also pass the new GUP flag in the
-> > ib_umem code..
-> 
-> Yes, that would be very useful.
+On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org> wrote:
+> > On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.org> wrote:
+> > > On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > The best practice to avoid those issues is to register its functions only after
+> > > > all its dependencies are live. We also shouldn't wait any longer than we should
+> > > > to play nice with the other components that are waiting for us, so in our case
+> > > > that would mean moving the DSI device registration to the bridge probe.
+> > > >
+> > > > I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
+> > > > would be affected by this and wouldn't probe anymore after those changes.
+> > > > Exynos and kirin seems to be simple enough for a mechanical change (that still
+> > > > requires to be tested), but the changes in msm seemed to be far more important
+> > > > and I wasn't confortable doing them.
+> > >
+> > >
+> > > Hey Maxime,
+> > >   Sorry for taking so long to get to this, but now that plumbers is
+> > > over I've had a chance to check it out on kirin
+> > >
+> > > Rob Clark pointed me to his branch with some fixups here:
+> > >    https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
+> > >
+> > > But trying to boot hikey with that, I see the following loop indefinitely:
+> > > [    4.632132] adv7511 2-0039: supply avdd not found, using dummy regulator
+> > > [    4.638961] adv7511 2-0039: supply dvdd not found, using dummy regulator
+> > > [    4.645741] adv7511 2-0039: supply pvdd not found, using dummy regulator
+> > > [    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy regulator
+> > > [    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy regulator
+> > > [    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy regulator
+> > > [    4.681898] adv7511 2-0039: failed to find dsi host
+> >
+> > I just realized Rob's tree is missing the kirin patch. My apologies!
+> > I'll retest and let you know.
+>
+> Ok, just retested including the kirin patch and unfortunately I'm
+> still seeing the same thing.  :(
+>
+> Will dig a bit and let you know when I find more.
 
-You might actually prefer to do that then the bio changes to get the
-infrastructur merged as it seems less "core"
+Did you have a chance to test it on anything using drm/msm with DSI
+panels?  That would at least confirm that I didn't miss anything in
+the drm/msm patch to swap the dsi-host vs bridge ordering..
 
-Jason
+BR,
+-R
