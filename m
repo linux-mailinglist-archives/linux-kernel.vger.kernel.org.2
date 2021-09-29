@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70CA41CD32
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B3D41CD35
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346625AbhI2UJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:09:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45192 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346400AbhI2UIs (ORCPT
+        id S1346469AbhI2UJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346412AbhI2UJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:08:48 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632946025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tlsVknWTVdSlZTHHBhOHbdQ8+OQgty9cJuZLKmK8P4Q=;
-        b=gvDSGy6EoQ/SGIQIZFDmJHsfEB7eJkkPqMOISO+qHnFj07TZ3W58Un23BsrO2SJOP5oI/M
-        aJO6guQUBAH8/Bk3qH6nN/ewix1KG2QJPceX0aA6/YB23G/6szPYeahrHYodGiUTa4sJw3
-        /FZWsXw6mEh7VhBM6VWjUtpfmJ1MyBQ8gH/Kr4jh+xX9i1jTFxiEtMvT5ITfqV2Zdl2iut
-        hDO+T4lF0i5fNNlgiuPwCsI0IT4sX4rI8ZFOy5cT5/HIqRV+vFvuNtSUEuzm/YJTXjGs+b
-        b7pZjQr/eDgA9a/2lygRLPEDQUzWaXs9+DASg2sA1gUEIKFp2AwCtM3qayMPgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632946025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tlsVknWTVdSlZTHHBhOHbdQ8+OQgty9cJuZLKmK8P4Q=;
-        b=icQDdrktOulCIkwKp/cwu1bpceb+vYu4ltjmHgN1zZFbMrIXdWbqAISaG/oKDVP8Nru7Uq
-        HTEWYV63v6AU54Cg==
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
-In-Reply-To: <YVSw/6BAFvh9C+ct@agluck-desk2.amr.corp.intel.com>
-References: <87o88jfajo.ffs@tglx> <87k0j6dsdn.ffs@tglx>
- <YU3414QT0J7EN4w9@agluck-desk2.amr.corp.intel.com>
- <a77ee33c-6fa7-468c-8fc0-a0a2ce725e75@www.fastmail.com>
- <YVQ3wc/XjeOHpGCX@hirez.programming.kicks-ass.net> <87r1d78t2e.ffs@tglx>
- <75e95acc-6730-ddcf-d722-66e575076256@kernel.org> <877dez8fqu.ffs@tglx>
- <YVSlVv/j+WKftUU5@agluck-desk2.amr.corp.intel.com>
- <YVSrWouhMo2JxRCC@otcwcpicx3.sc.intel.com>
- <YVSw/6BAFvh9C+ct@agluck-desk2.amr.corp.intel.com>
-Date:   Wed, 29 Sep 2021 22:07:04 +0200
-Message-ID: <874ka387tj.ffs@tglx>
+        Wed, 29 Sep 2021 16:09:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17624C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:08:02 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVfrr-0006o2-DC; Wed, 29 Sep 2021 22:07:51 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVfrn-0005oh-9u; Wed, 29 Sep 2021 22:07:47 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mVfrn-00030S-8f; Wed, 29 Sep 2021 22:07:47 +0200
+Date:   Wed, 29 Sep 2021 22:07:47 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Eric Tremblay <etremblay@distech-controls.com>,
+        gregkh@linuxfoundation.org, jslaby@suse.com,
+        matwey.kornilov@gmail.com, giulio.benetti@micronovasrl.com,
+        lukas@wunner.de, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com, heiko@sntech.de,
+        heiko.stuebner@theobroma-systems.com
+Subject: Re: [PATCH v2 0/3] Handle UART without interrupt on TEMT using em485
+Message-ID: <20210929200747.vpymjmq6ssvltmh4@pengutronix.de>
+References: <20210204161158.643-1-etremblay@distech-controls.com>
+ <YB1UEHEPVQCAjsMO@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t3hgl3lpu4nlbuht"
+Content-Disposition: inline
+In-Reply-To: <YB1UEHEPVQCAjsMO@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29 2021 at 11:31, Tony Luck wrote:
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index a58800973aed..5a3c87fd65de 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -528,6 +528,32 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
->  
->  #define GPFSTR "general protection fault"
->  
-> +/*
-> + * When a user executes the ENQCMD instruction it will #GP
-> + * fault if the IA32_PASID MSR has not been set up with a
-> + * valid PASID.
-> + * So if the process has been allocated a PASID (mm->pasid)
-> + * AND the IA32_PASID MSR has not been initialized, try to
-> + * fix this #GP by initializing the IA32_PASID MSR.
-> + * If the #GP was for some other reason, it will trigger
-> + * again, but this routine will return false and the #GP
-> + * will be processed.
-> + */
-> +static void try_fixup_pasid(void)
-> +{
-> +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> +		return false;
-> +
-> +#ifdef CONFIG_IOMMU_SUPPORT
-> +	if (current->mm->pasid && !current->pasid_activated) {
-> +		current->pasid_activated = 1;
-> +		wrmsrl(MSR_IA32_PASID, current->mm->pasid);
-> +		return true;
-> +	}
-> +#endif
-> +	return false;
-> +}
-> +
->  DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->  {
->  	char desc[sizeof(GPFSTR) + 50 + 2*sizeof(unsigned long) + 1] = GPFSTR;
-> @@ -536,6 +562,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->  	unsigned long gp_addr;
->  	int ret;
->  
-> +	if (user_mode(regs) && try_fixup_pasid())
-> +		return;
-> +
->  	cond_local_irq_enable(regs);
->  
->  	if (static_cpu_has(X86_FEATURE_UMIP)) {
 
-Amen.
+--t3hgl3lpu4nlbuht
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Fri, Feb 05, 2021 at 04:20:00PM +0200, Andy Shevchenko wrote:
+> On Thu, Feb 04, 2021 at 11:11:55AM -0500, Eric Tremblay wrote:
+> > Thanks everyone for the comments. I apply most of the comments on versi=
+on 1
+> > but there is still a pending point with the Jiri comment about the safe=
+ty of:
+> > struct tty_struct *tty =3D p->port.state->port.tty;
+> > I thought about adding a check with tty_port_initialized() before acces=
+sing
+> > the pointer, but I saw some other places where that same pointer is acc=
+essed
+> > without further protection, at least from what I see.
+>=20
+> Thanks for the update. Unfortunately I'm a bit busy with other prioritized
+> stuff, but I will review this next week.
+
+I assume this fell through the cracks as "next week" is already over ...?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--t3hgl3lpu4nlbuht
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFUx40ACgkQwfwUeK3K
+7AkodggAoY+CelIz/suqEOF7jym9eQcdHO3wgmNhoA5A3z+B7LfLqBWt2QB35q3X
+nl6xJeMttbCcMWkZLC0IpfzpOY6NUmmDK6VFhZ1DaOBFRSxje/HYb8OxhyL5af3V
+NRYZmnKAu25D5X/TG26BqG2dkgwBbb8qMqSnz+RBP2iuvjLCjX/IggUVgHpBXgvl
+PmSQeAE/H/NC1hsOgjKLBE1723dzQ7GOaWkYac1fiOnoWJgvGRIMV7Dwv53DcYKf
+4D+MYFrXEBdI0kTGCAWpqN0SzBcWl/iEYstw9rwb+4XXD4ECJ+s7FAq8VsMWWy36
+n7oXgeYy0On2l702iiyp6O7mHFPV3A==
+=oPdo
+-----END PGP SIGNATURE-----
+
+--t3hgl3lpu4nlbuht--
