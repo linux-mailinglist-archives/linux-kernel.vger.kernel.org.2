@@ -2,58 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A260541C1AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7751041C1BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245091AbhI2Jgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:36:40 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:47859 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229487AbhI2Jgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:36:39 -0400
-Received: from [192.168.0.3] (ip5f5aef97.dynamic.kabel-deutschland.de [95.90.239.151])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 037D961E64761;
-        Wed, 29 Sep 2021 11:34:57 +0200 (CEST)
-Subject: Re: [smartpqi updates PATCH V2 00/11] smartpqi updates
-To:     Don Brace <don.brace@microchip.com>
-Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
-        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
-        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
-        mike.mcgowen@microchip.com, murthy.bhat@microchip.com,
-        balsundar.p@microchip.com, joseph.szczypek@hpe.com,
-        jeff@canonical.com, POSWALD@suse.com, john.p.donnelly@oracle.com,
-        mwilck@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
-        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        linux-scsi@vger.kernel.org
-References: <20210928235442.201875-1-don.brace@microchip.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <dfea334a-5d37-bb14-1959-51bf7287197b@molgen.mpg.de>
-Date:   Wed, 29 Sep 2021 11:34:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S245070AbhI2Jlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:41:53 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:24122 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232113AbhI2Jlv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:41:51 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HKBCD4vgLz1DHFR;
+        Wed, 29 Sep 2021 17:38:48 +0800 (CST)
+Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 29 Sep 2021 17:40:07 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 29 Sep 2021 17:40:06 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
+Subject: [PATCH net 0/8] net: hns3: add some fixes for -net
+Date:   Wed, 29 Sep 2021 17:35:48 +0800
+Message-ID: <20210929093556.9146-1-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210928235442.201875-1-don.brace@microchip.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Don,
+This series adds some fixes for the HNS3 ethernet driver.
 
+Guangbin Huang (3):
+  net: hns3: PF enable promisc for VF when mac table is overflow
+  net: hns3: fix always enable rx vlan filter problem after selftest
+  net: hns3: disable firmware compatible features when uninstall PF
 
-Just a small nit regarding most patches in the patch queue.
+Jian Shen (5):
+  net: hns3: do not allow call hns3_nic_net_open repeatedly
+  net: hns3: remove tc enable checking
+  net: hns3: don't rollback when destroy mqprio fail
+  net: hns3: fix mixed flag HCLGE_FLAG_MQPRIO_ENABLE and
+    HCLGE_FLAG_DCB_ENABLE
+  net: hns3: fix show wrong state when add existing uc mac address
 
-It’d be great if the full text width of 75 characters could be used in 
-the commit message bodies. Currently they are well below that, and 
-therefore take more lines than necessary and are harder to read for me.
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  1 -
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 16 ++++-----
+ .../ethernet/hisilicon/hns3/hns3_ethtool.c    |  6 ++--
+ .../hisilicon/hns3/hns3pf/hclge_cmd.c         | 21 +++++++-----
+ .../hisilicon/hns3/hns3pf/hclge_dcb.c         | 29 ++++++++--------
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 27 ++++++++-------
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_tm.c | 33 +++----------------
+ 7 files changed, 60 insertions(+), 73 deletions(-)
 
+-- 
+2.33.0
 
-Kind regards,
-
-Paul
