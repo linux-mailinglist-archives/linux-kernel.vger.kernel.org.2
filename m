@@ -2,212 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFF141CF68
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA6941CF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 00:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347172AbhI2Wsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 18:48:40 -0400
-Received: from mail-mw2nam10on2081.outbound.protection.outlook.com ([40.107.94.81]:24570
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346734AbhI2Wsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:48:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ChD1BCuurnMQ61llboNRMK3lAtyuVwAuq045CJjXZ++N3nAs/XLUdUh0PvN/zwxE60vLo50bEBqEgrDsVIg0dJuA9RxNRaKBRVIz1T+STfhQeI9nrQxUudloyEOztktGpUO71wLqC/OtoTpiKPhXqndOX0azoFOpp8oTjQh/STUcZvBSV3d8LfGk5ZvH9q/sDqyEK388i5pljitkp3wsFLZrWyNV+V9Na/Ad7XU+2uJyNGtM2BgmefdZKstA8F+NMz7u+n0sf5WLFWl1pXc8ayeY31WZ2vj8HIkLi1L8ELxpYzzShq6Nc4xE4///SWqX2weJWgG+IPas8gRdUVjzJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=39hkb7d82Oah1HBIAxb7+aO9nkxSWCSKn8ZZmqRbEvM=;
- b=GFwhAABN0LvQid/wkIH8bKZcNb6+T+XXlI/qKHNiDOqoxVLnxbLAjoCBHJ5rhcvUu9/QY9kIHGlzahgECbkBRr7RnfCMdbqCMWf6v80LTeTz6CMEY6V19sgh6pCpzX5ZWU3Vlhk1tiMmURId0nO0+/J4O8H+S+gITj4ME0Z6Uh8hfWooe0MBt4VHnSx2s4Ks95I4R2Uf0pVFG4jRJAQQG6ZKHBE5fCSz8rX5sAzopB0d/GwFZ67hNq5ktCaYgmzkiaGN5ukmcplRLKQHy8MwA0UzeYX3TuFudVBBey6tQ8kd+bGxGnydumzAjP+1vJqaLyysRjyXINROfBf792D5zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=39hkb7d82Oah1HBIAxb7+aO9nkxSWCSKn8ZZmqRbEvM=;
- b=JWR3uLYRE/3DeWezsZlSd8XZlUsZddvZoyLTLJ1fr/orVH8zsubYuOpdk+Y8kgOaRq5jDWDS+R3twq9nd1swcRlAynvmcVFcQYtgBsqvuZidX6W7jafgLSQZNnVmus+KU3hNAGptRa5S+gctjcAboUSHuJJqjrD36X2qY5G8SFW3sYOEec0v11TXEarNQEK1ks3OnbRwPM+ZDETIsWYaBljpCqx7YKEV6pM5tG05THd8z/fEy19t7VnEAPQ+bpG9EpEb3uLQHWNZjz7QM7nQrC+tr9h5ulvip0gWlzYgjk2mcatVLQEbPfDkvffHiPbRQfpIVraxsCJ1WU3ZnNdUjg==
-Authentication-Results: deltatee.com; dkim=none (message not signed)
- header.d=none;deltatee.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5157.namprd12.prod.outlook.com (2603:10b6:208:308::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Wed, 29 Sep
- 2021 22:46:55 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.015; Wed, 29 Sep 2021
- 22:46:55 +0000
-Date:   Wed, 29 Sep 2021 19:46:53 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 4/20] PCI/P2PDMA: introduce helpers for dma_map_sg
- implementations
-Message-ID: <20210929224653.GZ964074@nvidia.com>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-5-logang@deltatee.com>
- <20210928220502.GA1738588@nvidia.com>
- <91469404-fd20-effa-2e01-aa79d9d4b9b5@deltatee.com>
+        id S1347326AbhI2Wts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 18:49:48 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:34629 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346734AbhI2Wtr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 18:49:47 -0400
+Received: by mail-ot1-f54.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4915818otb.1;
+        Wed, 29 Sep 2021 15:48:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=shfM0Gn8zgyYVL/FnZNF/jkJCbWOPO9r39+5gY9cxes=;
+        b=OmfgnufpIHFh9AvN+zR5HdE6xVb6WQBRVJkOXqvH6tDQH5XQsnrimoXEtBefRUo+bN
+         l+CUN/YBAJKDcg2fZdp1Fn2Eml6wxrh6lYhAcTyBDrTHqsDpaZZopqdDJxrTdal+9cWy
+         EQ8uhdb3iI298yOZx2jGLwaUwHhP56YyqWv4kTx2LZxo/SH2sk/Ob7mpXXBSNOW8dqIT
+         dKRXMQBvLx6DLWsuuFG4mzE7GFh4sMamo0tFArnPSG4rx8J/lO2SJCd2ghyViOLoeg9F
+         mQTWg7tEQNTeRWxSOmq2GDBjZp/cqIWrvMQS6TSgHZz/lJMBvQGDMzVohJSJRjoi9xRp
+         BOZQ==
+X-Gm-Message-State: AOAM531fKvrqUD8soT7uSe4hOf9FExe2aE44SXA+M971IAIwqK7PjKY8
+        FwPZ2VhmFP1bKFLNRCHHpUB58TbhEA==
+X-Google-Smtp-Source: ABdhPJwZXdGj4A8TZZRum6z9AlWxNQasmvEUN7nXHnCtM/wp0s/0Q7fiSCk1b0NBzUBLTd7uYhjNEA==
+X-Received: by 2002:a9d:3e15:: with SMTP id a21mr2296327otd.60.1632955685428;
+        Wed, 29 Sep 2021 15:48:05 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id a3sm220222oie.3.2021.09.29.15.48.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 15:48:04 -0700 (PDT)
+Received: (nullmailer pid 370631 invoked by uid 1000);
+        Wed, 29 Sep 2021 22:48:03 -0000
+Date:   Wed, 29 Sep 2021 17:48:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: clk: qcom: Document MSM8976 Global
+ Clock Controller
+Message-ID: <YVTtI2X9b6hoUhYl@robh.at.kernel.org>
+References: <20210927215828.52357-1-marijn.suijten@somainline.org>
+ <20210927215828.52357-2-marijn.suijten@somainline.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <91469404-fd20-effa-2e01-aa79d9d4b9b5@deltatee.com>
-X-ClientProxiedBy: MN2PR10CA0020.namprd10.prod.outlook.com
- (2603:10b6:208:120::33) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR10CA0020.namprd10.prod.outlook.com (2603:10b6:208:120::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 22:46:54 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mViLm-007i5Y-04; Wed, 29 Sep 2021 19:46:54 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 86646f6c-c955-45f7-e900-08d9839b0949
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5157:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51571279ADB2ADD84B5C9884C2A99@BL1PR12MB5157.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: szMCIkVvPV6YaCm20ltVLy9ZbbM6N+ebTlQaq0EcIABKILrhF/iF9hLYS4Nmh5k06AYZoQo8cFRnV0BEMdZuyEvnuorcHomLglTWCBGGSESse/Lu2m/OJC3FnZGc8at6EDard0s0h2xAtjLirdpCu9zi6DU3rqQIln9A2p8iTBFVQed9T1MS2HnP5FlrvilqAIxUthJXKSuJOy1a/C988soUfWM3+bOI0mj/8W+jkMiANOc7IqOtZ36rCeAjyb2ANX0Tw4XtS6p5WbutNNnVX7vydPxQUjccXTLBBW9bpFKJHx9I4vDIL9WfUASjqkPSkc8vCNbQ5A4YnNQ30TVbVkcX2jd6omtFLovLH72+jHhhsu7Gp2qh6OsBizx3pKlLFXcVkuPQ8wDriUux0Odb/OEJtwSC0USL2nVvSCOe9iTJJxgUxAeKt/1P+2w8urjsPc0wmYe/gyrNzdCottnzThIuC07DrRvS3OeiSoiM7/4fL0cFDqeQvOEmclh+WJPapEGvi/Cq/NhliG4Nk6H6kWwXrajCNt1OqXh06q31jytzGMkVxGnwkUmCNqy+PQ+sCzksJQJ/G6zM8KOI2nZDOyYh7cMxsjJtZA6BcCbvuafZclaoBMQLy3XK/yqbJXwjAexUrs5h42cE5DdEwPme84efvvgsC3rndUra5GQRQbSh1MkWBKqNkM1Pek+rVq6g
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(86362001)(83380400001)(186003)(53546011)(8936002)(5660300002)(8676002)(7416002)(2906002)(6916009)(66476007)(2616005)(9746002)(9786002)(36756003)(54906003)(33656002)(4326008)(66946007)(1076003)(66556008)(38100700002)(426003)(316002)(26005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zAKSAGwOF/+LXcf4KA8i8AVc8xa4Jqrwwju9dHHATNug4j3UPBhs5KB5PXKX?=
- =?us-ascii?Q?pZGSOnqP0+/+vZNM3BAhMdGIDu2I/91rk22YlWNZ7JaQx9u9H3CnN2pAi1if?=
- =?us-ascii?Q?C3VVwo7JaDTcbpS6tSbPq5XUXpsfpUvs1ecDY2Hg7BddRJ3i/CD6XYaGcjmd?=
- =?us-ascii?Q?shR13ESMQaaosqUbGgDIYXdGwp7BzeSqp6cWuFCYrsIcZM5p5BC9DAU01x6B?=
- =?us-ascii?Q?gV2vFrPe5mHXqr3KYmAyxWIzgTmooRLhuhBXeCluSACk5UWT9If4RSZH8mev?=
- =?us-ascii?Q?cp9x4eZHrb7Jax0rotty+dR1tcEsRlC5zZwILIeORVBdWlhlEVWh/sSL2srd?=
- =?us-ascii?Q?wsbquuwIMdlTIHaAjI9jvQSOL+R+a2YsoftlvP/LbnlRVhioC9tfQtZJNyVc?=
- =?us-ascii?Q?k3JsZ1+z/PpVurhFmvieDcz878cPNEL5Fl7p1SVw+pCoSjpXOslFQc3ZeAsL?=
- =?us-ascii?Q?yrzxwp8CQYjsL2ho8rU4caP6HP8CIHNSPhkSYPruYKi0LNl3Cln+WU8rHEyv?=
- =?us-ascii?Q?/v5PMXi+YPt2zQuIUOfkf/HUQq2slOHaHJqu2NClcZ7ru5rW8goG0mOJ239t?=
- =?us-ascii?Q?v/BngBMhEQjtP4CkKajORFMkF1xXRvCAvFBGPA0+xMA+4IAp1BsPjMFUB11y?=
- =?us-ascii?Q?wSpsrICRUB5+L09AtoOuWGv0r7grgeho38xTpPbimtyC8ckmuyVLtW6DlPno?=
- =?us-ascii?Q?YUJ25A6yIh/jekmp4JDxOCAAB3OHgdWxNlKM0UnWyEFR8tVoksww6T24MPO7?=
- =?us-ascii?Q?6Wu5Y7Ih5CbWU0dHtIhezJiOe43PZgvLbkI+QCpoTpC376IrD0cyel0ni7Dd?=
- =?us-ascii?Q?loeeiN7nXBsbFfgcdMJWWTBHjKgxAo1WNgqNg+Sy28fP3XNo5Kr/j+z5DY4S?=
- =?us-ascii?Q?QK+qoCB2QcjQisAImek7k9q9Y4taPbTe0i544yCHcx94e5Z21nOfenMDrJfr?=
- =?us-ascii?Q?WXPO8NEzKLYzkqPCPNZfoh/0vO6IMAWY7E1PUvHMmQyCYaIEtGvgmcrGzitU?=
- =?us-ascii?Q?zbFVciDi2nC2UDBpuLbWsJ9f3qBbM/sLs5colTR+fSBj0Wll2JwnhJt6XeHI?=
- =?us-ascii?Q?k3TKk3hbeXSQA8KKaZ8GFZdVa9S1GA/GLASZq5cAqMqG7D2GaZis/isZurCJ?=
- =?us-ascii?Q?fa5YW4fzWaCGOtTRI4tx8gd4SvFWvfscZlRWduOhklzs+VdnFr3conYBJ6sr?=
- =?us-ascii?Q?psxND7BjeuxleHra6pyS188jXUxlHMG+RpYQMAnq9OexxgIRQ1OCLv0TQlrm?=
- =?us-ascii?Q?X4yGrg9wCs3wKivwQ7I8Bdb4Z31wv4EHqSYqh4DeeCtnq6iYmPJ865OG9+Aq?=
- =?us-ascii?Q?GNw/ruqwiL9z1qc3XR/qHn3h?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86646f6c-c955-45f7-e900-08d9839b0949
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 22:46:55.0844
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 43/FGkTgZXWuO3F5uG4GQReo5Is3MkCg2Tv+zIOVk9Eeo0+gT1HsqIzoi3s1qxKC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5157
+In-Reply-To: <20210927215828.52357-2-marijn.suijten@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:30:42PM -0600, Logan Gunthorpe wrote:
+On Mon, Sep 27, 2021 at 11:58:27PM +0200, Marijn Suijten wrote:
+> Document the required properties and firmware clocks for gcc-msm8976 to
+> operate nominally, and add header definitions for referencing the clocks
+> from firmware.
+> 
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../bindings/clock/qcom,gcc-msm8976.yaml      |  90 +++++++
+>  include/dt-bindings/clock/qcom,gcc-msm8976.h  | 240 ++++++++++++++++++
+>  2 files changed, 330 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8976.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-msm8976.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8976.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8976.yaml
+> new file mode 100644
+> index 000000000000..b3c8e5dfc719
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8976.yaml
+> @@ -0,0 +1,90 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+
+Dual license.
+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,gcc-msm8976.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Global Clock & Reset Controller Binding for MSM8976
+> +
+> +maintainers:
+> +  - Stephen Boyd <sboyd@kernel.org>
+> +  - Taniya Das <tdas@codeaurora.org>
+> +
+> +description: |
+> +  Qualcomm global clock control module which supports the clocks, resets and
+> +  power domains on MSM8976.
+> +
+> +  See also:
+> +  - dt-bindings/clock/qcom,gcc-msm8976.h
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,gcc-msm8976
+> +      - qcom,gcc-msm8976-v1.1
+> +
+> +  clocks:
+> +    items:
+> +      - description: XO source
+> +      - description: Always-on XO source
+> +      - description: Pixel clock from DSI PHY0
+> +      - description: Byte clock from DSI PHY0
+> +      - description: Pixel clock from DSI PHY1
+> +      - description: Byte clock from DSI PHY1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: xo
+> +      - const: xo_a
+> +      - const: dsi0pll
+> +      - const: dsi0pllbyte
+> +      - const: dsi1pll
+> +      - const: dsi1pllbyte
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +
+> +  '#power-domain-cells':
+> +    const: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +  - '#reset-cells'
+> +  - '#power-domain-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    clock-controller@1800000 {
+> +      compatible = "qcom,gcc-msm8976";
+> +      #clock-cells = <1>;
+> +      #reset-cells = <1>;
+> +      #power-domain-cells = <1>;
+> +      reg = <0x1800000 0x80000>;
+> +
+> +      clocks = <&xo_board>,
+> +               <&xo_board>,
+> +               <&dsi0_phy 1>,
+> +               <&dsi0_phy 0>,
+> +               <&dsi1_phy 1>,
+> +               <&dsi1_phy 0>;
+> +
+> +      clock-names = "xo",
+> +                    "xo_a",
+> +                    "dsi0pll",
+> +                    "dsi0pllbyte",
+> +                    "dsi1pll",
+> +                    "dsi1pllbyte";
+> +    };
+> +...
+> diff --git a/include/dt-bindings/clock/qcom,gcc-msm8976.h b/include/dt-bindings/clock/qcom,gcc-msm8976.h
+> new file mode 100644
+> index 000000000000..d28dc0234b4c
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/qcom,gcc-msm8976.h
+> @@ -0,0 +1,240 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+
+Dual license.
+
+> +/*
+> + * Copyright (C) 2016, The Linux Foundation. All rights reserved.
+> + * Copyright (C) 2016-2021, AngeloGioacchino Del Regno
+> + *                     <angelogioacchino.delregno@somainline.org>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_CLK_MSM_GCC_8976_H
+> +#define _DT_BINDINGS_CLK_MSM_GCC_8976_H
+> +
+> +#define GPLL0					0
+> +#define GPLL2					1
+> +#define GPLL3					2
+> +#define GPLL4					3
+> +#define GPLL6					4
+> +#define GPLL0_CLK_SRC				5
+> +#define GPLL2_CLK_SRC				6
+> +#define GPLL3_CLK_SRC				7
+> +#define GPLL4_CLK_SRC				8
+> +#define GPLL6_CLK_SRC				9
+> +#define GCC_BLSP1_QUP1_SPI_APPS_CLK		10
+> +#define GCC_BLSP1_QUP1_I2C_APPS_CLK		11
+> +#define GCC_BLSP1_QUP2_I2C_APPS_CLK		12
+> +#define GCC_BLSP1_QUP2_SPI_APPS_CLK		13
+> +#define GCC_BLSP1_QUP3_I2C_APPS_CLK		14
+> +#define GCC_BLSP1_QUP3_SPI_APPS_CLK		15
+> +#define GCC_BLSP1_QUP4_I2C_APPS_CLK		16
+> +#define GCC_BLSP1_QUP4_SPI_APPS_CLK		17
+> +#define GCC_BLSP1_UART1_APPS_CLK		18
+> +#define GCC_BLSP1_UART2_APPS_CLK		19
+> +#define GCC_BLSP2_QUP1_I2C_APPS_CLK		20
+> +#define GCC_BLSP2_QUP1_SPI_APPS_CLK		21
+> +#define GCC_BLSP2_QUP2_I2C_APPS_CLK		22
+> +#define GCC_BLSP2_QUP2_SPI_APPS_CLK		23
+> +#define GCC_BLSP2_QUP3_I2C_APPS_CLK		24
+> +#define GCC_BLSP2_QUP3_SPI_APPS_CLK		25
+> +#define GCC_BLSP2_QUP4_I2C_APPS_CLK		26
+> +#define GCC_BLSP2_QUP4_SPI_APPS_CLK		27
+> +#define GCC_BLSP2_UART1_APPS_CLK		28
+> +#define GCC_BLSP2_UART2_APPS_CLK		29
+> +#define GCC_CAMSS_CCI_AHB_CLK			30
+> +#define GCC_CAMSS_CCI_CLK			31
+> +#define GCC_CAMSS_CPP_AHB_CLK			32
+> +#define GCC_CAMSS_CPP_AXI_CLK			33
+> +#define GCC_CAMSS_CPP_CLK			34
+> +#define GCC_CAMSS_CSI0_AHB_CLK			35
+> +#define GCC_CAMSS_CSI0_CLK			36
+> +#define GCC_CAMSS_CSI0PHY_CLK			37
+> +#define GCC_CAMSS_CSI0PIX_CLK			38
+> +#define GCC_CAMSS_CSI0RDI_CLK			39
+> +#define GCC_CAMSS_CSI1_AHB_CLK			40
+> +#define GCC_CAMSS_CSI1_CLK			41
+> +#define GCC_CAMSS_CSI1PHY_CLK			42
+> +#define GCC_CAMSS_CSI1PIX_CLK			43
+> +#define GCC_CAMSS_CSI1RDI_CLK			44
+> +#define GCC_CAMSS_CSI2_AHB_CLK			45
+> +#define GCC_CAMSS_CSI2_CLK			46
+> +#define GCC_CAMSS_CSI2PHY_CLK			47
+> +#define GCC_CAMSS_CSI2PIX_CLK			48
+> +#define GCC_CAMSS_CSI2RDI_CLK			49
+> +#define GCC_CAMSS_CSI_VFE0_CLK			50
+> +#define GCC_CAMSS_CSI_VFE1_CLK			51
+> +#define GCC_CAMSS_GP0_CLK			52
+> +#define GCC_CAMSS_GP1_CLK			53
+> +#define GCC_CAMSS_ISPIF_AHB_CLK			54
+> +#define GCC_CAMSS_JPEG0_CLK			55
+> +#define GCC_CAMSS_JPEG_AHB_CLK			56
+> +#define GCC_CAMSS_JPEG_AXI_CLK			57
+> +#define GCC_CAMSS_MCLK0_CLK			58
+> +#define GCC_CAMSS_MCLK1_CLK			59
+> +#define GCC_CAMSS_MCLK2_CLK			60
+> +#define GCC_CAMSS_MICRO_AHB_CLK			61
+> +#define GCC_CAMSS_CSI0PHYTIMER_CLK		62
+> +#define GCC_CAMSS_CSI1PHYTIMER_CLK		63
+> +#define GCC_CAMSS_AHB_CLK			64
+> +#define GCC_CAMSS_TOP_AHB_CLK			65
+> +#define GCC_CAMSS_VFE0_CLK			66
+> +#define GCC_CAMSS_VFE_AHB_CLK			67
+> +#define GCC_CAMSS_VFE_AXI_CLK			68
+> +#define GCC_CAMSS_VFE1_AHB_CLK			69
+> +#define GCC_CAMSS_VFE1_AXI_CLK			70
+> +#define GCC_CAMSS_VFE1_CLK			71
+> +#define GCC_DCC_CLK				72
+> +#define GCC_GP1_CLK				73
+> +#define GCC_GP2_CLK				74
+> +#define GCC_GP3_CLK				75
+> +#define GCC_MDSS_AHB_CLK			76
+> +#define GCC_MDSS_AXI_CLK			77
+> +#define GCC_MDSS_ESC0_CLK			78
+> +#define GCC_MDSS_ESC1_CLK			79
+> +#define GCC_MDSS_MDP_CLK			80
+> +#define GCC_MDSS_VSYNC_CLK			81
+> +#define GCC_MSS_CFG_AHB_CLK			82
+> +#define GCC_MSS_Q6_BIMC_AXI_CLK			83
+> +#define GCC_PDM2_CLK				84
+> +#define GCC_PRNG_AHB_CLK			85
+> +#define GCC_PDM_AHB_CLK				86
+> +#define GCC_RBCPR_GFX_AHB_CLK			87
+> +#define GCC_RBCPR_GFX_CLK			88
+> +#define GCC_SDCC1_AHB_CLK			89
+> +#define GCC_SDCC1_APPS_CLK			90
+> +#define GCC_SDCC1_ICE_CORE_CLK			91
+> +#define GCC_SDCC2_AHB_CLK			92
+> +#define GCC_SDCC2_APPS_CLK			93
+> +#define GCC_SDCC3_AHB_CLK			94
+> +#define GCC_SDCC3_APPS_CLK			95
+> +#define GCC_USB2A_PHY_SLEEP_CLK			96
+> +#define GCC_USB_HS_PHY_CFG_AHB_CLK		97
+> +#define GCC_USB_FS_AHB_CLK			98
+> +#define GCC_USB_FS_IC_CLK			99
+> +#define GCC_USB_FS_SYSTEM_CLK			100
+> +#define GCC_USB_HS_AHB_CLK			101
+> +#define GCC_USB_HS_SYSTEM_CLK			102
+> +#define GCC_VENUS0_AHB_CLK			103
+> +#define GCC_VENUS0_AXI_CLK			104
+> +#define GCC_VENUS0_CORE0_VCODEC0_CLK		105
+> +#define GCC_VENUS0_CORE1_VCODEC0_CLK		106
+> +#define GCC_VENUS0_VCODEC0_CLK			107
+> +#define GCC_APSS_AHB_CLK			108
+> +#define GCC_APSS_AXI_CLK			109
+> +#define GCC_BLSP1_AHB_CLK			110
+> +#define GCC_BLSP2_AHB_CLK			111
+> +#define GCC_BOOT_ROM_AHB_CLK			112
+> +#define GCC_CRYPTO_AHB_CLK			113
+> +#define GCC_CRYPTO_AXI_CLK			114
+> +#define GCC_CRYPTO_CLK				115
+> +#define GCC_CPP_TBU_CLK				116
+> +#define GCC_APSS_TCU_CLK			117
+> +#define GCC_JPEG_TBU_CLK			118
+> +#define GCC_MDP_RT_TBU_CLK			119
+> +#define GCC_MDP_TBU_CLK				120
+> +#define GCC_SMMU_CFG_CLK			121
+> +#define GCC_VENUS_1_TBU_CLK			122
+> +#define GCC_VENUS_TBU_CLK			123
+> +#define GCC_VFE1_TBU_CLK			124
+> +#define GCC_VFE_TBU_CLK				125
+> +#define GCC_APS_0_CLK				126
+> +#define GCC_APS_1_CLK				127
+> +#define APS_0_CLK_SRC				128
+> +#define APS_1_CLK_SRC				129
+> +#define APSS_AHB_CLK_SRC			130
+> +#define BLSP1_QUP1_I2C_APPS_CLK_SRC		131
+> +#define BLSP1_QUP1_SPI_APPS_CLK_SRC		132
+> +#define BLSP1_QUP2_I2C_APPS_CLK_SRC		133
+> +#define BLSP1_QUP2_SPI_APPS_CLK_SRC		134
+> +#define BLSP1_QUP3_I2C_APPS_CLK_SRC		135
+> +#define BLSP1_QUP3_SPI_APPS_CLK_SRC		136
+> +#define BLSP1_QUP4_I2C_APPS_CLK_SRC		137
+> +#define BLSP1_QUP4_SPI_APPS_CLK_SRC		138
+> +#define BLSP1_UART1_APPS_CLK_SRC		139
+> +#define BLSP1_UART2_APPS_CLK_SRC		140
+> +#define BLSP2_QUP1_I2C_APPS_CLK_SRC		141
+> +#define BLSP2_QUP1_SPI_APPS_CLK_SRC		142
+> +#define BLSP2_QUP2_I2C_APPS_CLK_SRC		143
+> +#define BLSP2_QUP2_SPI_APPS_CLK_SRC		144
+> +#define BLSP2_QUP3_I2C_APPS_CLK_SRC		145
+> +#define BLSP2_QUP3_SPI_APPS_CLK_SRC		146
+> +#define BLSP2_QUP4_I2C_APPS_CLK_SRC		147
+> +#define BLSP2_QUP4_SPI_APPS_CLK_SRC		148
+> +#define BLSP2_UART1_APPS_CLK_SRC		149
+> +#define BLSP2_UART2_APPS_CLK_SRC		150
+> +#define CCI_CLK_SRC				151
+> +#define CPP_CLK_SRC				152
+> +#define CSI0_CLK_SRC				153
+> +#define CSI1_CLK_SRC				154
+> +#define CSI2_CLK_SRC				155
+> +#define CAMSS_GP0_CLK_SRC			156
+> +#define CAMSS_GP1_CLK_SRC			157
+> +#define JPEG0_CLK_SRC				158
+> +#define MCLK0_CLK_SRC				159
+> +#define MCLK1_CLK_SRC				160
+> +#define MCLK2_CLK_SRC				161
+> +#define CSI0PHYTIMER_CLK_SRC			162
+> +#define CSI1PHYTIMER_CLK_SRC			163
+> +#define CAMSS_TOP_AHB_CLK_SRC			164
+> +#define VFE0_CLK_SRC				165
+> +#define VFE1_CLK_SRC				166
+> +#define CRYPTO_CLK_SRC				167
+> +#define GP1_CLK_SRC				168
+> +#define GP2_CLK_SRC				169
+> +#define GP3_CLK_SRC				170
+> +#define ESC0_CLK_SRC				171
+> +#define ESC1_CLK_SRC				172
+> +#define MDP_CLK_SRC				173
+> +#define VSYNC_CLK_SRC				174
+> +#define PDM2_CLK_SRC				175
+> +#define RBCPR_GFX_CLK_SRC			176
+> +#define SDCC1_APPS_CLK_SRC			177
+> +#define SDCC1_ICE_CORE_CLK_SRC			178
+> +#define SDCC2_APPS_CLK_SRC			179
+> +#define SDCC3_APPS_CLK_SRC			180
+> +#define USB_FS_IC_CLK_SRC			181
+> +#define USB_FS_SYSTEM_CLK_SRC			182
+> +#define USB_HS_SYSTEM_CLK_SRC			183
+> +#define VCODEC0_CLK_SRC				184
+> +#define GCC_MDSS_BYTE0_CLK_SRC			185
+> +#define GCC_MDSS_BYTE1_CLK_SRC			186
+> +#define GCC_MDSS_BYTE0_CLK			187
+> +#define GCC_MDSS_BYTE1_CLK			188
+> +#define GCC_MDSS_PCLK0_CLK_SRC			189
+> +#define GCC_MDSS_PCLK1_CLK_SRC			190
+> +#define GCC_MDSS_PCLK0_CLK			191
+> +#define GCC_MDSS_PCLK1_CLK			192
+> +#define GCC_GFX3D_CLK_SRC			193
+> +#define GCC_GFX3D_OXILI_CLK			194
+> +#define GCC_GFX3D_BIMC_CLK			195
+> +#define GCC_GFX3D_OXILI_AHB_CLK			196
+> +#define GCC_GFX3D_OXILI_AON_CLK			197
+> +#define GCC_GFX3D_OXILI_GMEM_CLK		198
+> +#define GCC_GFX3D_OXILI_TIMER_CLK		199
+> +#define GCC_GFX3D_TBU0_CLK			200
+> +#define GCC_GFX3D_TBU1_CLK			201
+> +#define GCC_GFX3D_TCU_CLK			202
+> +#define GCC_GFX3D_GTCU_AHB_CLK			203
+> +
+> +/* GCC block resets */
+> +#define RST_CAMSS_MICRO_BCR			0
+> +#define RST_USB_HS_BCR				1
+> +#define RST_QUSB2_PHY_BCR			2
+> +#define RST_USB2_HS_PHY_ONLY_BCR		3
+> +#define RST_USB_HS_PHY_CFG_AHB_BCR		4
+> +#define RST_USB_FS_BCR				5
+> +#define RST_CAMSS_CSI1PIX_BCR			6
+> +#define RST_CAMSS_CSI_VFE1_BCR			7
+> +#define RST_CAMSS_VFE1_BCR			8
+> +#define RST_CAMSS_CPP_BCR			9
+> +
+> +/* GDSCs */
+> +#define VENUS_GDSC				0
+> +#define VENUS_CORE0_GDSC			1
+> +#define VENUS_CORE1_GDSC			2
+> +#define MDSS_GDSC				3
+> +#define JPEG_GDSC				4
+> +#define VFE0_GDSC				5
+> +#define VFE1_GDSC				6
+> +#define CPP_GDSC				7
+> +#define OXILI_GX_GDSC				8
+> +#define OXILI_CX_GDSC				9
+> +
+> +#endif /* _DT_BINDINGS_CLK_MSM_GCC_8976_H */
+> --
+> 2.33.0
 > 
 > 
-> 
-> On 2021-09-28 4:05 p.m., Jason Gunthorpe wrote:
-> > On Thu, Sep 16, 2021 at 05:40:44PM -0600, Logan Gunthorpe wrote:
-> > 
-> >> +enum pci_p2pdma_map_type
-> >> +pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state, struct device *dev,
-> >> +		       struct scatterlist *sg)
-> >> +{
-> >> +	if (state->pgmap != sg_page(sg)->pgmap) {
-> >> +		state->pgmap = sg_page(sg)->pgmap;
-> > 
-> > This has built into it an assumption that every page in the sg element
-> > has the same pgmap, but AFAIK nothing enforces this rule? There is no
-> > requirement that the HW has pfn gaps between the pgmaps linux decides
-> > to create over it.
-> 
-> No, that's not a correct reading of the code. Every time there is a new
-> pagemap, this code calculates the mapping type and bus offset. If a page
-> comes along with a different page map,f it recalculates. This just
-> reduces the overhead so that the calculation is done only every time a
-> page with a different pgmap comes along and not doing it for every
-> single page.
-
-Each 'struct scatterlist *sg' refers to a range of contiguous pfns
-starting at page_to_pfn(sg_page()) and going for approx sg->length/PAGE_SIZE
-pfns long.
-
-sg_page() returns the first page, but nothing says that sg_page()+1
-has the same pgmap.
-
-The code in this patch does check the first page of each sg in a
-larger sgl.
-
-> > At least sg_alloc_append_table_from_pages() and probably something in
-> > the block world should be updated to not combine struct pages with
-> > different pgmaps, and this should be documented in scatterlist.*
-> > someplace.
-> 
-> There's no sane place to do this check. The code is designed to support
-> mappings with different pgmaps.
-
-All places that generate compound sg's by aggregating multiple pages
-need to include this check along side the check for physical
-contiguity. There are not that many places but
-sg_alloc_append_table_from_pages() is one of them:
-
-@@ -470,7 +470,8 @@ int sg_alloc_append_table_from_pages(struct sg_append_table *sgt_append,
- 
-                /* Merge contiguous pages into the last SG */
-                prv_len = sgt_append->prv->length;
--               while (n_pages && page_to_pfn(pages[0]) == paddr) {
-+               while (n_pages && page_to_pfn(pages[0]) == paddr &&
-+                      sg_page(sgt_append->prv)->pgmap == pages[0]->pgmap) {
-                        if (sgt_append->prv->length + PAGE_SIZE > max_segment)
-                                break;
-                        sgt_append->prv->length += PAGE_SIZE;
-@@ -488,7 +489,8 @@ int sg_alloc_append_table_from_pages(struct sg_append_table *sgt_append,
-        for (i = 1; i < n_pages; i++) {
-                seg_len += PAGE_SIZE;
-                if (seg_len >= max_segment ||
--                   page_to_pfn(pages[i]) != page_to_pfn(pages[i - 1]) + 1) {
-+                   page_to_pfn(pages[i]) != page_to_pfn(pages[i - 1]) + 1 ||
-+                   pages[i]->pgmap != pages[i - 1]->pgmap) {
-                        chunks++;
-                        seg_len = 0;
-                }
-@@ -505,9 +507,10 @@ int sg_alloc_append_table_from_pages(struct sg_append_table *sgt_append,
-                        seg_len += PAGE_SIZE;
-                        if (seg_len >= max_segment ||
-                            page_to_pfn(pages[j]) !=
--                           page_to_pfn(pages[j - 1]) + 1)
-+                                   page_to_pfn(pages[j - 1]) + 1 ||
-+                           pages[i]->pgmap != pages[i - 1]->pgmap) {
-                                break;
--               }
-+                       }
- 
-                /* Pass how many chunks might be left */
-                s = get_next_sg(sgt_append, s, chunks - i + left_pages,
-
-
