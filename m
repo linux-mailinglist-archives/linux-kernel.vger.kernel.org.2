@@ -2,316 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7244F41CDE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33D641CDE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 23:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346870AbhI2VQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 17:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346862AbhI2VQJ (ORCPT
+        id S1346879AbhI2VR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 17:17:58 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:58738 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232258AbhI2VR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 17:16:09 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96872C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:14:27 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y26so16272006lfa.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 14:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JxVIPgVfpVqL0JfwpZSNVlN3XKjnqM3iLuF/UiuxfNg=;
-        b=QWuUJRCPI6/ss+u52Phgc67pCpjXKROsuUB+fzeV8jd6vsELEYp31wShUQMasDSFwE
-         j2JchLAV0HF0J4dq0D847gi2gDQrMz+ju/3z26rNlaQnGBNQDqpRwo+UykT1Rhp0m6po
-         yYlIU+uIazyeU+lNWoOEd0uMvQB9QC3bN6NuaUHfiqeQ4Qvxj4ng0VhOh8hGROe07o2X
-         Qj843skXa+9hLXGycl/tigfsga9BemGyUMgT0arI6XCp8Aew+UWlpv4bIMh4DRhoSBdx
-         RhQ4c2/O88209PI7KBxDB3dCyBfG3HczwY7ePluAHAQUv21QhqiO3KWfsPyxuZel3RQv
-         CcAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JxVIPgVfpVqL0JfwpZSNVlN3XKjnqM3iLuF/UiuxfNg=;
-        b=WEvdZXNM4fNTs5nOwBgNS34KWtXZzkg8DZkfmVfKG2GM9K62i0bYL6PR3I459qSkbW
-         VyBZv1PqqwuSagu3TlD8raQUL5yihzvc0ERtnnoVDjLKHwPdJa4Aonli3gT0myM0H+3f
-         slcPrJ+ErU0vNpcZU/7mxbEEzyr27NGYh0bzkR387i9ttuCZkUJPE15mzjG5JjucxFNZ
-         BuDkBOBLn671u5sd6H+PO5KoKnqH8DI4+sYb2EJV5az2Z3iUf5J5W4HXro3JG4aPheSs
-         UEZRSjmUv7WF6kv9wELek+9qJHD2aaI08rXOGHUzm18waXUkgenUVQbwlk02HC5L/kRu
-         eJ7g==
-X-Gm-Message-State: AOAM532eT1Eey3JA9bCBxjwc/PH8gU/U0Ly5VS4zprLoJOM8h5vBKWk1
-        cpYTb0TaZTyRshWEJM36IJFNRQ==
-X-Google-Smtp-Source: ABdhPJzoQkLWL5uVQdbdIwZYJI4THZavHlyTpU33uxrPlGHHU9/zByUu3AjQTOsjBcTPdcv6FDn7Ew==
-X-Received: by 2002:a2e:6c14:: with SMTP id h20mr2051476ljc.519.1632950065819;
-        Wed, 29 Sep 2021 14:14:25 -0700 (PDT)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id l26sm115884lfh.247.2021.09.29.14.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 14:14:25 -0700 (PDT)
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        LUU HOAI <hoai.luu.ub@renesas.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] pinctrl: renesas: r8a779[56]x: add MediaLB pins
-Date:   Thu, 30 Sep 2021 00:13:51 +0300
-Message-Id: <20210929211350.4226-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 29 Sep 2021 17:17:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=RfrWfjCRN+UowtRVbNA3b2L6enFhSnjdcCuQt0d3QdI=; b=sx8iDLgZqm9oV/jPtvYl6hWxOJ
+        izKJEIZpDyBIKLWz8FDerUW5k2MT7pPtfUTyZiEU6bE7HoV7pneW/CZR2zMIxsytGbyq8vFegsKGv
+        49LSCi3qE6cFcuu3ANDMzF0wHUfqas6dQodjbfxt/8zHWnBhP9N8kOEENBNUjLrsTXNl90Sahn8H0
+        HAUhhk1jLu1tfiA5AYOXEg4lkZh0pmHiPlunotwWT39n20HVUlZzMB6xXhNwz+2qZPfnc/8Ia0J5E
+        FZIAlxHcWmAecE99N9j4B2rg3AG9XIO/VHcG1DdeZNocY4lVPpt+WxirDMZKAHuss1OBzFQ0yFB23
+        svZcaJZQ==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mVgvW-0006Bq-H1; Wed, 29 Sep 2021 15:15:43 -0600
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-2-logang@deltatee.com>
+ <20210928183219.GJ3544071@ziepe.ca>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <3f3abc6b-0a80-dbb6-f9dc-8a4cc33c975c@deltatee.com>
+Date:   Wed, 29 Sep 2021 15:15:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20210928183219.GJ3544071@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: ckulkarnilinux@gmail.com, martin.oliveira@eideticom.com, robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jgg@ziepe.ca
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-11.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v3 01/20] lib/scatterlist: add flag for indicating P2PDMA
+ segments in an SGL
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
 
-This adds pins, groups, and functions for MediaLB device on Renesas
-H3 and M3.
 
-Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Signed-off-by: LUU HOAI <hoai.luu.ub@renesas.com>
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/pinctrl/renesas/pfc-r8a77950.c | 14 ++++++++++++++
- drivers/pinctrl/renesas/pfc-r8a77951.c | 18 ++++++++++++++++--
- drivers/pinctrl/renesas/pfc-r8a7796.c  | 16 +++++++++++++++-
- drivers/pinctrl/renesas/pfc-r8a77965.c | 18 ++++++++++++++++--
- 4 files changed, 61 insertions(+), 5 deletions(-)
+On 2021-09-28 12:32 p.m., Jason Gunthorpe wrote:
+> On Thu, Sep 16, 2021 at 05:40:41PM -0600, Logan Gunthorpe wrote:
+>>  config PCI_P2PDMA
+>>  	bool "PCI peer-to-peer transfer support"
+>> -	depends on ZONE_DEVICE
+>> +	depends on ZONE_DEVICE && 64BIT
+> 
+> Perhaps a comment to explain what the 64bit is doing?
 
-diff --git a/drivers/pinctrl/renesas/pfc-r8a77950.c b/drivers/pinctrl/renesas/pfc-r8a77950.c
-index ee4ce9349aae..c86064900c6e 100644
---- a/drivers/pinctrl/renesas/pfc-r8a77950.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a77950.c
-@@ -2369,6 +2369,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -3987,6 +3995,7 @@ static const struct sh_pfc_pin_group pinmux_groups[] = {
- 	SH_PFC_PIN_GROUP(intc_ex_irq3),
- 	SH_PFC_PIN_GROUP(intc_ex_irq4),
- 	SH_PFC_PIN_GROUP(intc_ex_irq5),
-+	SH_PFC_PIN_GROUP(mlb_3pin),
- 	SH_PFC_PIN_GROUP(msiof0_clk),
- 	SH_PFC_PIN_GROUP(msiof0_sync),
- 	SH_PFC_PIN_GROUP(msiof0_ss1),
-@@ -4380,6 +4389,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -4709,6 +4722,7 @@ static const struct sh_pfc_function pinmux_functions[] = {
- 	SH_PFC_FUNCTION(i2c5),
- 	SH_PFC_FUNCTION(i2c6),
- 	SH_PFC_FUNCTION(intc_ex),
-+	SH_PFC_FUNCTION(mlb_3pin),
- 	SH_PFC_FUNCTION(msiof0),
- 	SH_PFC_FUNCTION(msiof1),
- 	SH_PFC_FUNCTION(msiof2),
-diff --git a/drivers/pinctrl/renesas/pfc-r8a77951.c b/drivers/pinctrl/renesas/pfc-r8a77951.c
-index 84c0ea5d59c1..4e4e39640df4 100644
---- a/drivers/pinctrl/renesas/pfc-r8a77951.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a77951.c
-@@ -2453,6 +2453,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -4233,7 +4241,7 @@ static const unsigned int vin5_clk_mux[] = {
- };
- 
- static const struct {
--	struct sh_pfc_pin_group common[328];
-+	struct sh_pfc_pin_group common[329];
- #ifdef CONFIG_PINCTRL_PFC_R8A77951
- 	struct sh_pfc_pin_group automotive[30];
- #endif
-@@ -4326,6 +4334,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(intc_ex_irq3),
- 		SH_PFC_PIN_GROUP(intc_ex_irq4),
- 		SH_PFC_PIN_GROUP(intc_ex_irq5),
-+		SH_PFC_PIN_GROUP(mlb_3pin),
- 		SH_PFC_PIN_GROUP(msiof0_clk),
- 		SH_PFC_PIN_GROUP(msiof0_sync),
- 		SH_PFC_PIN_GROUP(msiof0_ss1),
-@@ -4795,6 +4804,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -5142,7 +5155,7 @@ static const char * const vin5_groups[] = {
- };
- 
- static const struct {
--	struct sh_pfc_function common[55];
-+	struct sh_pfc_function common[56];
- #ifdef CONFIG_PINCTRL_PFC_R8A77951
- 	struct sh_pfc_function automotive[4];
- #endif
-@@ -5168,6 +5181,7 @@ static const struct {
- 		SH_PFC_FUNCTION(i2c5),
- 		SH_PFC_FUNCTION(i2c6),
- 		SH_PFC_FUNCTION(intc_ex),
-+		SH_PFC_FUNCTION(mlb_3pin),
- 		SH_PFC_FUNCTION(msiof0),
- 		SH_PFC_FUNCTION(msiof1),
- 		SH_PFC_FUNCTION(msiof2),
-diff --git a/drivers/pinctrl/renesas/pfc-r8a7796.c b/drivers/pinctrl/renesas/pfc-r8a7796.c
-index a4d74df3d201..bfbe2529ff9c 100644
---- a/drivers/pinctrl/renesas/pfc-r8a7796.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a7796.c
-@@ -2458,6 +2458,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -4301,6 +4309,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(intc_ex_irq3),
- 		SH_PFC_PIN_GROUP(intc_ex_irq4),
- 		SH_PFC_PIN_GROUP(intc_ex_irq5),
-+		SH_PFC_PIN_GROUP(mlb_3pin),
- 		SH_PFC_PIN_GROUP(msiof0_clk),
- 		SH_PFC_PIN_GROUP(msiof0_sync),
- 		SH_PFC_PIN_GROUP(msiof0_ss1),
-@@ -4766,6 +4775,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -5100,7 +5113,7 @@ static const char * const vin5_groups[] = {
- };
- 
- static const struct {
--	struct sh_pfc_function common[52];
-+	struct sh_pfc_function common[53];
- #if defined(CONFIG_PINCTRL_PFC_R8A77960) || defined(CONFIG_PINCTRL_PFC_R8A77961)
- 	struct sh_pfc_function automotive[4];
- #endif
-@@ -5126,6 +5139,7 @@ static const struct {
- 		SH_PFC_FUNCTION(i2c5),
- 		SH_PFC_FUNCTION(i2c6),
- 		SH_PFC_FUNCTION(intc_ex),
-+		SH_PFC_FUNCTION(mlb_3pin),
- 		SH_PFC_FUNCTION(msiof0),
- 		SH_PFC_FUNCTION(msiof1),
- 		SH_PFC_FUNCTION(msiof2),
-diff --git a/drivers/pinctrl/renesas/pfc-r8a77965.c b/drivers/pinctrl/renesas/pfc-r8a77965.c
-index a7607a679886..dcde4edc309b 100644
---- a/drivers/pinctrl/renesas/pfc-r8a77965.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a77965.c
-@@ -2609,6 +2609,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -4458,7 +4466,7 @@ static const unsigned int vin5_clk_mux[] = {
- };
- 
- static const struct {
--	struct sh_pfc_pin_group common[326];
-+	struct sh_pfc_pin_group common[327];
- #ifdef CONFIG_PINCTRL_PFC_R8A77965
- 	struct sh_pfc_pin_group automotive[30];
- #endif
-@@ -4551,6 +4559,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(intc_ex_irq3),
- 		SH_PFC_PIN_GROUP(intc_ex_irq4),
- 		SH_PFC_PIN_GROUP(intc_ex_irq5),
-+		SH_PFC_PIN_GROUP(mlb_3pin),
- 		SH_PFC_PIN_GROUP(msiof0_clk),
- 		SH_PFC_PIN_GROUP(msiof0_sync),
- 		SH_PFC_PIN_GROUP(msiof0_ss1),
-@@ -5018,6 +5027,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -5356,7 +5369,7 @@ static const char * const vin5_groups[] = {
- };
- 
- static const struct {
--	struct sh_pfc_function common[53];
-+	struct sh_pfc_function common[54];
- #ifdef CONFIG_PINCTRL_PFC_R8A77965
- 	struct sh_pfc_function automotive[4];
- #endif
-@@ -5382,6 +5395,7 @@ static const struct {
- 		SH_PFC_FUNCTION(i2c5),
- 		SH_PFC_FUNCTION(i2c6),
- 		SH_PFC_FUNCTION(intc_ex),
-+		SH_PFC_FUNCTION(mlb_3pin),
- 		SH_PFC_FUNCTION(msiof0),
- 		SH_PFC_FUNCTION(msiof1),
- 		SH_PFC_FUNCTION(msiof2),
--- 
-2.30.2
+Added.
 
+>>  	select GENERIC_ALLOCATOR
+>>  	help
+>>  	  Enableѕ drivers to do PCI peer-to-peer transactions to and from
+>> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+>> index 266754a55327..e62b1cf6386f 100644
+>> +++ b/include/linux/scatterlist.h
+>> @@ -64,6 +64,21 @@ struct sg_append_table {
+>>  #define SG_CHAIN	0x01UL
+>>  #define SG_END		0x02UL
+>>  
+>> +/*
+>> + * bit 2 is the third free bit in the page_link on 64bit systems which
+>> + * is used by dma_unmap_sg() to determine if the dma_address is a PCI
+>> + * bus address when doing P2PDMA.
+>> + * Note: CONFIG_PCI_P2PDMA depends on CONFIG_64BIT because of this.
+>> + */
+>> +
+>> +#ifdef CONFIG_PCI_P2PDMA
+>> +#define SG_DMA_PCI_P2PDMA	0x04UL
+> 
+> Add a 
+> 	static_assert(__alignof__(void *) == 8);
+> 
+> ?
+
+Good idea. Though, I think your line isn't quite correct. I've added:
+
+static_assert(__alignof__(struct page) >= 8);
+
+>> +#define sg_is_dma_pci_p2pdma(sg) ((sg)->page_link & SG_DMA_PCI_P2PDMA)
+> 
+> I've been encouraging people to use static inlines more..
+
+I also prefer static inlines, but I usually follow the style of the code
+I'm changing. In any case, I've changed to static inlines similar to
+your example.
+
+>>  /**
+>>   * sg_assign_page - Assign a given page to an SG entry
+>> @@ -86,13 +103,13 @@ struct sg_append_table {
+>>   **/
+>>  static inline void sg_assign_page(struct scatterlist *sg, struct page *page)
+>>  {
+>> -	unsigned long page_link = sg->page_link & (SG_CHAIN | SG_END);
+>> +	unsigned long page_link = sg->page_link & SG_PAGE_LINK_MASK;
+> 
+> I think this should just be '& SG_END', sg_assign_page() doesn't look
+> like it should ever be used on a sg_chain entry, so this is just
+> trying to preserve the end stamp.
+
+Perhaps, but I'm not comfortable making that change in this patch or
+series. Though, I've reverted this specific change in my patch so
+sg_assign_page() will clear SG_DMA_PCI_P2PDMA.
+
+Logan
