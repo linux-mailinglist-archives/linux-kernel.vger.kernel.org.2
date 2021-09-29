@@ -2,121 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A893741BDC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B3241BDBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244079AbhI2D5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:57:06 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:43713 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243788AbhI2D5F (ORCPT
+        id S244038AbhI2Drg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 23:47:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:12967 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239845AbhI2Dre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:57:05 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9798C580E5F;
-        Tue, 28 Sep 2021 23:55:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 28 Sep 2021 23:55:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=f
-        +KFVJLO4WVRmj/HTHjGnTK+KP5rTnlcIHm18veFkRI=; b=m+HXJv6/jdqHeg6Vr
-        lPZwV7tYpGmF/eWHXZJrqqXunRbH98Aimzm7PF6g7o7J7gR2+hAbqHPXMsmMCcMd
-        GXuU1T5ZoF04NDHtTLMJuiO4ho8+RcCCrB9BRRiKHKw1+6Sjb3uN2XlIF+N50ldr
-        t1djvAOlwMMzmpPZPy130gv9HziVBg7Jdb5fBEFzWXml3MkROpzMpqxUxRDVDkd1
-        V7xbl6GcYl2mwyWW14WBTgcfK4UzXSooZrCbrlToYfDp/B79iJyOvluZxX/Rvh2t
-        22tqHOZoqGvhV80Ll5zDZy5lAntiw64KP0/Z5zDgG9/ExOASkl9bAOwLoFp9yMLR
-        im3FQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=f+KFVJLO4WVRmj/HTHjGnTK+KP5rTnlcIHm18veFk
-        RI=; b=rqtHne48tOJpbGUUmnjX53hsDhMfm8ZQRHdQrGDQPNe/zd3OTMwK1EghK
-        ay2HlGnnA8FADp0VASaUsG/wz1vhSAjBhKtSDvFEFrnxbV2yTqqccCARwp/u9em/
-        nmwns7Km3JIuvXdWE46vi3xQUSHkpjBz52/31XfGVfalj08OhLByay/j44KZ3mEj
-        jaV9qgkikk4eUJbab6y/hXMKqUEcq4QdrvZa5RKT6Q+MPpI+gA5+3/KG7oLcM03k
-        4mwiCk/B+dFLlyRts83ZQwkpqa29rJbCL0TXrZbm8+GJgAm5FfnCAzbWxl+L+Q9O
-        LswREis7KWPefrv9Sy501GqkC0sQQ==
-X-ME-Sender: <xms:rONTYaECJA2UWWfWV57upeU_cHzpVKvfgVp-1Z7xghZBcrgMZEgIeg>
-    <xme:rONTYbXgE0UYDnkmUOQGkDWgB8VuqQ-ew4YQOQDBh2-q0y6mXjpSsdCC7isIfFjxf
-    kqkVUxZif482zibAg>
-X-ME-Received: <xmr:rONTYUKjlVnwsDVPEywzb5hYlS0y2TDQegJy2Ie6hsHqrfsNO4oicnRtBP98MIXoL0J1USwMMg_4dQsGWrF-GGviI3_oqPp8w2Sy0aJ9_oehD7AXaBaU9iCHmQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekuddgjeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:rONTYUE7H5d2Eqzo4jKRouGBpAWLhCfDnJXCUlAJD6TnooKaCgiwcA>
-    <xmx:rONTYQVluKHkdMah2xyT8K7Z6mTsK2HPWAJwumlH9149PzDKk4k5Ag>
-    <xmx:rONTYXMdyH31Hs9c_LQHkyrufSfYORWmUdulDeppD9YRWIVa_Kavug>
-    <xmx:rONTYRWE-dQ1utt4PqjrNlZUFTTYt3cmCr1yUD1zmJR4SOiJV5KiCA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 23:55:23 -0400 (EDT)
-Subject: Re: [PATCH v2 2/9] dt-bindings: rtc: sun6i: Add H616, R329, and D1
- support
-To:     Rob Herring <robh@kernel.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Chen-Yu Tsai <wens@csie.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-rtc@vger.kernel.org
-References: <20210928080335.36706-1-samuel@sholland.org>
- <20210928080335.36706-3-samuel@sholland.org>
- <1632832098.554951.963815.nullmailer@robh.at.kernel.org>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <6ae69109-d26b-f6b5-85a6-4ecca4133dfe@sholland.org>
-Date:   Tue, 28 Sep 2021 22:55:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Tue, 28 Sep 2021 23:47:34 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HK2LV0CvnzWVgX;
+        Wed, 29 Sep 2021 11:44:34 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 29
+ Sep 2021 11:45:52 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] jbd2: discard last transaction when commit block checksum broken in v2v3
+Date:   Wed, 29 Sep 2021 11:55:28 +0800
+Message-ID: <20210929035528.1990993-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <1632832098.554951.963815.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 7:28 AM, Rob Herring wrote:
-> On Tue, 28 Sep 2021 03:03:28 -0500, Samuel Holland wrote:
->> These new RTC variants all have a single alarm, like the R40 variant.
->>
->> For the new SoCs, start requiring a complete list of input clocks. The
->> H616 has three required clocks. The R329 also has three required clocks
->> (but one is different), plus an optional crystal oscillator input. The
->> D1 RTC is identical to the one in the R329.
->>
->> And since these new SoCs will have a well-defined output clock order as
->> well, they do not need the clock-output-names property.
->>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
->> ---
->> Changes since v1:
->>   - Properly update the DT binding clocks and clock-names properties.
->>
->>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 72 ++++++++++++++++++-
->>  include/dt-bindings/clock/sun6i-rtc.h         | 10 +++
->>  2 files changed, 79 insertions(+), 3 deletions(-)
->>  create mode 100644 include/dt-bindings/clock/sun6i-rtc.h
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:122:9: [error] duplication of key "minItems" in mapping (key-duplicates)
-> ./Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:150:9: [error] duplication of key "minItems" in mapping (key-duplicates)
+Now, we meet an issue that commit block has broken checksum when cold reboot
+device, that lead to mount failed.
+The reason maybe only some sector store on disk, and then device power off.
+But we calculate checksum with whole logic block.The data stored on disk can
+only ensure the atomicity of sector level.
+Actually, we already replay previous transactions. We can just discard last
+transaction. As now, descriptor/revocation/commit/superblock has it's own
+checksum.
 
-Whoops, I have a couple of minItems where I meant maxItems. Sorry, will
-fix for v3.
+Fixes:80b3767fbe15("jbd2: don't wipe the journal on a failed journal checksum")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/jbd2/journal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Samuel
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 35302bc192eb..a3dd7b757b3d 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2080,7 +2080,7 @@ int jbd2_journal_load(journal_t *journal)
+ 	if (jbd2_journal_recover(journal))
+ 		goto recovery_error;
+ 
+-	if (journal->j_failed_commit) {
++	if (journal->j_failed_commit && !jbd2_journal_has_csum_v2or3(journal)) {
+ 		printk(KERN_ERR "JBD2: journal transaction %u on %s "
+ 		       "is corrupt.\n", journal->j_failed_commit,
+ 		       journal->j_devname);
+-- 
+2.31.1
+
