@@ -2,117 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8C341C0F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF56841C0FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 10:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244875AbhI2Iwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 04:52:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:51244 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244640AbhI2Iwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:52:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8B60101E;
-        Wed, 29 Sep 2021 01:50:57 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.21.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 639C83F793;
-        Wed, 29 Sep 2021 01:50:55 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 09:50:45 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        will@kernel.org, x86@kernel.org
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
- __entry_tramp_text_end
-Message-ID: <20210929085035.GA33284@C02TD0UTHF1T.local>
-References: <000000000000a3cf8605cb2a1ec0@google.com>
- <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
- <20210921165134.GE35846@C02TD0UTHF1T.local>
- <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
- <20210927170122.GA9201@C02TD0UTHF1T.local>
- <20210927171812.GB9201@C02TD0UTHF1T.local>
- <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
- <20210928103543.GF1924@C02TD0UTHF1T.local>
- <20210929013637.bcarm56e4mqo3ndt@treble>
- <YVQYQzP/vqNWm/hO@hirez.programming.kicks-ass.net>
+        id S244911AbhI2Ixw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 04:53:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40169 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244897AbhI2Ixv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 04:53:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632905530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2IuDph5pgXKhZLx55AOzdRIaR0YtM8hQePA5+y0Dae8=;
+        b=PY1sbZAkUKZ2kHeGD2/NDQeHtIb2yfD988eNhXZ2F4X+FCCy/+7uVFYKh9uZsazFChywEQ
+        tEDVhjcME3ZwTJgxFzD8RcqGXIBQCaXZh5YghnlpnadTKfHpjfRkGCr2MnfjLAuYsql8iP
+        EW68D+Rs2s+U9KaAiUjc9pDcqE0x3Ko=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-uMwxyBWgMcuBZQfkDYTaMQ-1; Wed, 29 Sep 2021 04:52:08 -0400
+X-MC-Unique: uMwxyBWgMcuBZQfkDYTaMQ-1
+Received: by mail-ed1-f71.google.com with SMTP id e7-20020a50d4c7000000b003d871ecccd8so1628670edj.18
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 01:52:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2IuDph5pgXKhZLx55AOzdRIaR0YtM8hQePA5+y0Dae8=;
+        b=Oiqkps0Pf0RFxkINAEGkk65GT1ay1410lwCLkPILQj9EyoxfDhP5v+WUqpxA37n5pb
+         A1TD7jbpu1AHdENHk3tHzOnyQqbWNlUopvpkEKnYCTVTmemkj1eP/zIe7D3Sg8ntDhL9
+         0mNKFb0o6ZvLtDlgshvmm+LUieaR28pW+5aNjj+vrB2wMRhEnV7ExUb7Xu2v0iRWRMjg
+         JMl/YHyBzcMIQF0VSHc0oJ2bEm0PkWKEUpkVqk0eMfZkLyftua+QUtqitTJnyTi2LWB8
+         qVRzLBhf/2Qvvex73qapcIK6RH1+mEIYBsoIsntzgDURTLPx5ch7nbcYe5O4kL0+fHYd
+         XeUQ==
+X-Gm-Message-State: AOAM531wO6vO53qlOnL/fKpsnNAdXsK8RV5KyK4esKpZc/l9KM23OZn7
+        1ylr9xKY2fjVzc0g/eK5BkE21mL+EdfdvnhNzuEhtOTjyy3Y6N/In0tcE5gQkjMxTQRgEfWCPuM
+        cMKIkj2ZovgZ/wHU/TJtVcXBM37BqvpVL1zVMbzTb
+X-Received: by 2002:a17:906:840f:: with SMTP id n15mr12381701ejx.336.1632905527363;
+        Wed, 29 Sep 2021 01:52:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxtqxbpW9CaUe0Zk3O9ATbb6SACyGDKbqk1vQT4Q7fBlmtOJCKDORBVyAo1j/qBryhevc0gJzRnOU81x+LCRFw=
+X-Received: by 2002:a17:906:840f:: with SMTP id n15mr12381683ejx.336.1632905527171;
+ Wed, 29 Sep 2021 01:52:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVQYQzP/vqNWm/hO@hirez.programming.kicks-ass.net>
+References: <20210929075437.12985-1-lulu@redhat.com> <20210929043142-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210929043142-mutt-send-email-mst@kernel.org>
+From:   Cindy Lu <lulu@redhat.com>
+Date:   Wed, 29 Sep 2021 16:51:29 +0800
+Message-ID: <CACLfguX3TPD0VOUngNVDzB_JYPY6AnPP+Jd7bAKTq5egXw93sA@mail.gmail.com>
+Subject: Re: [PATCH] vhost-vdpa:fix the worng input in config_cb
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:39:47AM +0200, Peter Zijlstra wrote:
-> On Tue, Sep 28, 2021 at 06:36:37PM -0700, Josh Poimboeuf wrote:
-> > On Tue, Sep 28, 2021 at 11:35:43AM +0100, Mark Rutland wrote:
-> > > > In the other x86 thread Josh Poimboeuf suggested to use asm goto to a
-> > > > cold part of the function instead of .fixup:
-> > > > https://lore.kernel.org/lkml/20210927234543.6waods7rraxseind@treble/
-> > > > This sounds like a more reliable solution that will cause less
-> > > > maintenance burden. Would it work for arm64 as well?
-> > > 
-> > > Maybe we can use that when CC_HAS_ASM_GOTO_OUTPUT is avaiable, but in
-> > > general we can't rely on asm goto supporting output arguments (and IIRC
-> > > GCC doesn't support that at all), so we'd still have to support the
-> > > current fixup scheme.
-> 
-> gcc-11 has it
+On Wed, Sep 29, 2021 at 4:32 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Wed, Sep 29, 2021 at 03:54:37PM +0800, Cindy Lu wrote:
+> > Fix the worng input in for config_cb,
+> > in function vhost_vdpa_config_cb, the input
+> > cb.private was used as struct vhost_vdpa,
+> > So the inuput was worng here, fix this issue
+> >
+> > Signed-off-by: Cindy Lu <lulu@redhat.com>
+>
+> Maybe add
+>
+> Fixes: 776f395004d8 ("vhost_vdpa: Support config interrupt in vdpa")
+>
+> and fix typos in the commit log.
+>
+thanks Michael, I will post a new version
+> > ---
+> >  drivers/vhost/vdpa.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> > index 942666425a45..e532cbe3d2f7 100644
+> > --- a/drivers/vhost/vdpa.c
+> > +++ b/drivers/vhost/vdpa.c
+> > @@ -322,7 +322,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+> >       struct eventfd_ctx *ctx;
+> >
+> >       cb.callback = vhost_vdpa_config_cb;
+> > -     cb.private = v->vdpa;
+> > +     cb.private = v;
+> >       if (copy_from_user(&fd, argp, sizeof(fd)))
+> >               return  -EFAULT;
+> >
+> > --
+> > 2.21.3
+>
 
-Neat. Worth looking at for future, then.
-
-> > Even without CC_HAS_ASM_GOTO_OUTPUT it should still be possible to hack
-> > something together if you split the original insn asm and the extable
-> > asm into separate statements, like:
-> > 
-> > diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-> > index 6b52182e178a..8f62469f2027 100644
-> > --- a/arch/x86/include/asm/msr.h
-> > +++ b/arch/x86/include/asm/msr.h
-> > @@ -137,20 +139,21 @@ static inline unsigned long long native_read_msr_safe(unsigned int msr,
-> >  {
-> >  	DECLARE_ARGS(val, low, high);
-> >  
-> > +	*err = 0;
-> > +	asm volatile("417: rdmsr\n"
-> > +		     : EAX_EDX_RET(val, low, high)
-> > +		     : "c" (msr));
-> > +	asm_volatile_goto(_ASM_EXTABLE(417b, %l[Efault]) :::: Efault);
-> 
-> That's terrible :-) Could probably do with a comment, but might just
-> work..
-
-The compiler is well within its rights to spill/restore/copy/shuffle
-registers or modify memory between the two asm blocks (which it's liable
-to do that when optimizing this after a few layers of inlining), and
-skipping that would cause all sorts of undefined behaviour.
-
-It's akin to trying to do an asm goto without the compiler supporting
-asm goto.
-
-This would probably happen to work in the common case, but it'd cause
-nightmarish bugs in others...
-
-Thanks,
-Mark.
-
-
-> > +
-> > +done:
-> >  	if (tracepoint_enabled(read_msr))
-> >  		do_trace_read_msr(msr, EAX_EDX_VAL(val, low, high), *err);
-> >  	return EAX_EDX_VAL(val, low, high);
-> > +
-> > +Efault:
-> > +	*err = -EIO;
-> > +	ZERO_ARGS(val, low, high);
-> > +	goto done;
-> >  }
-> >  
-> >  /* Can be uninlined because referenced by paravirt */
-> > 
