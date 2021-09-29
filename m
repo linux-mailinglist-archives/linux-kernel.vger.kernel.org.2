@@ -2,137 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBD141C718
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FC441C71A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344603AbhI2Oqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344572AbhI2Oqk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344595AbhI2Oqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:46:46 -0400
+Received: from mail-bn1nam07on2055.outbound.protection.outlook.com ([40.107.212.55]:36320
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344562AbhI2Oqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 29 Sep 2021 10:46:40 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C18C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:44:59 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id m3so11692568lfu.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jI512TbeQgh2FYrW2/MewJZ0e3lJuCvLMPJwgkXNatc=;
-        b=uJy2BNUqQw+BJyvO/Zh9fJeegstwdqNEGh1Ckjo/E3TaoDaiOXk7emJ0v4f2cq+KdJ
-         1hyllL8m7Na7397VPTNeTYOUN0JKOnBSQqT8PXNvL6fvPM4etcvF3talSs1L4MuEOYIj
-         ORbd+bs0RKplK3xfdWSlb2bNOVOOhgZlrmF3MBoh6zbhvqaDRNoirQ0dVCw478a/gPTD
-         KhW6uj0uMsO19BubBS9i5MCUcjN5XHuFbSpOq8pmIR/xbQklgT2g0XgE6YslcomcAmF8
-         SbfkwV8g5cZcKPss9NjFJKsGNXUvNfYCRCd6i4kNP2AOIoRfLTgQ8MhZFmR4KoGMb274
-         b/sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jI512TbeQgh2FYrW2/MewJZ0e3lJuCvLMPJwgkXNatc=;
-        b=aajyKyJpAwmKKcdpnkiCQt6iuc+JSid0lvwOI/eVotc4nS3bJ+yjCwKXORerBkVKYC
-         N0mnhz7ievVxLDqd/8O+BEAh7nrE3iGGEeqADQfZVpa/0r0oJ6G4mgbJZT879u09urHj
-         njIATzTM7oLBqtEMz6i3hSFDJF/LdX/m6+TC2dNLAL2DwDeSshHiLyiG+GV1NE2i9oda
-         FDG2JAsJob7VCyrtFy7mQOk252xzBX9E6tbX6mimqbHjVT3NBKlDGEegEbh4WOvvOdIf
-         0CRFSsnr7/0IRvQSFCi28tJ9HpUfS3miPhHaah5XMhzexRZZElDOjRx8TuhE5HxlhEai
-         5ITg==
-X-Gm-Message-State: AOAM531V/RT+v6V2E1MHf/1ZM8IBB6ad56LcZQWD2uoo3HHPD+MltBIS
-        4tb93nc3m8tuB955EnJKl9zIKg==
-X-Google-Smtp-Source: ABdhPJz81MaqezsB00jcBTdcVIWyNKeqSu5DcUQ8vyT5t7reV63l4XQLO+5zErmsmpzlDbBEZrvCpw==
-X-Received: by 2002:a2e:9a07:: with SMTP id o7mr302931lji.125.1632926696590;
-        Wed, 29 Sep 2021 07:44:56 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id g4sm9863ljk.64.2021.09.29.07.44.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 07:44:55 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-Date:   Wed, 29 Sep 2021 16:44:51 +0200
-Message-Id: <20210929144451.113334-3-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210929144451.113334-1-ulf.hansson@linaro.org>
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TJUgtKrqz8oSWF4pNVyIPuqp5h7VEnuNcY8koxeYvNKJzmN/6w5yBQdlbAQnXJesWGXJtkBcmRvnzhLVh67CJOiDW8hzJT2EJ+BN196bCgzTLmVEkP7/Yr2mmyE+f6lR3jbdkrcv03PqjB6UxG8zG7KAJCFWbYq36LXeQs/hUeZaXYcK02yN1r8+Ig/H+Cn8LwzMYjEmFZAJaIqXg0dxbEsHfQMfUgJ6VtL5/J8FGzTu9VnqfxNzsgWXSPe/OkZrG4mtQqTcBNoeF5ufQcQYuGZSyQ9OyeB+MKiSFROdM+gOMGJLHB4LJ91tslKE0OqTEvMW+wp4KzKn1hxzOWRfjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ZYeW3Ri8eUu3hTK0UHDDxm+umkJ6sbQYE5YEOGT5H64=;
+ b=KQu2f+8ZsDXJPc51VDh0BcSC18lmWuWJEwq+MQbXepS8De5Ax6hpWohwt9ZgKLUXqqijC/ms+vdbWLz+Z5nfVDrB5pz+K4pA4sOsLlF2jdzsZlrSXIZWuHri4l6CKjKYO6ae0JLXuaF/cQUNpYaPlEGVSPFqq+OTQodnn8f8D+xSNFwmlV5hxkdjcZ7a38i7WlMBZTS7io+WsKEvwiPC/Qw9TRrBGsrErG8HkngLigp0Xni10saLBEoNmqqtwcsj+xCqICnuB0A8J7/GibQSL4jr7+9sDBCOWdnYj3OmehvcL4NTKOfPEiXNNAaBfz/PGBdDfArKPd6kbH1FUiMbKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=pengutronix.de smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZYeW3Ri8eUu3hTK0UHDDxm+umkJ6sbQYE5YEOGT5H64=;
+ b=ooHaE4+EtWRYNKy9b7ZBz+Ikj3kmZwGgrKw8ZnaMhwxI36TTlGrB/CS9E3VUMtnf6Kyj/VYakf9xx+/EWLLhzkBx60rJZWhlvZcF1l7x59aMYyzsKbXVKPH6takE8pX3wIhBeCueoVSkYmXQuo+JOA141j2UaA2vuMl6smE56WzoVpScv5L43Q6HURg2P+/WMeU4WYSGvXYiFd6/CRlE3hV5rYYwBufuTDS5+JumTZmlN6502dO0/DU+ZPbH6qzAnP6kr9/2HiUS/oAotjDKOhOUPbdjsslx5xLJoheBvzy6k9mqhxMJ1fk1jh1nlfR0Q5bDbNUV4GPWaDAJr1kJXw==
+Received: from DM3PR11CA0003.namprd11.prod.outlook.com (2603:10b6:0:54::13) by
+ SJ0PR12MB5502.namprd12.prod.outlook.com (2603:10b6:a03:300::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4544.13; Wed, 29 Sep 2021 14:44:57 +0000
+Received: from DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:0:54:cafe::9d) by DM3PR11CA0003.outlook.office365.com
+ (2603:10b6:0:54::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend
+ Transport; Wed, 29 Sep 2021 14:44:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ DM6NAM11FT024.mail.protection.outlook.com (10.13.172.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 14:44:56 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep
+ 2021 14:44:55 +0000
+Received: from localhost (172.20.187.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep 2021 14:44:55
+ +0000
+Date:   Wed, 29 Sep 2021 17:44:51 +0300
+From:   Ido Schimmel <idosch@nvidia.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     Bjorn Helgaas <helgaas@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        <linux-pci@vger.kernel.org>, <kernel@pengutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Yisen Zhuang" <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Michael Buesch <m@bues.ch>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Alexander Duyck" <alexanderduyck@fb.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <oss-drivers@corigine.com>
+Subject: Re: [PATCH v5 07/11] PCI: Replace pci_dev::driver usage that gets
+ the driver name
+Message-ID: <YVR74+8Rw6XmTqDD@shredder>
+References: <20210929085306.2203850-1-u.kleine-koenig@pengutronix.de>
+ <20210929085306.2203850-8-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210929085306.2203850-8-u.kleine-koenig@pengutronix.de>
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bbc8531f-ebbc-4d27-834c-08d98357b4df
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB5502:
+X-Microsoft-Antispam-PRVS: <SJ0PR12MB55025627DE95DC92EB9E51B9B2A99@SJ0PR12MB5502.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:751;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0BR+8ElyoKaO3+g2ZEPI7C3QlEytSvEmUDjy7n0W9y39UOp0Jg7Lzn3bHSUNGuA7AbAqxoewWssncw0J8Z1lKWwwJwjYyUUswq0Us1jfEsHit8ODiXqQLUgLu4vyPA4lNtPkmgHRw/ks/6kIWmHbjy0ZmAlykDbKw0c5p0eUGsAV6S3gGbivoMF1LvNVILVL2oKK0quaYeXd3E8dHfBTUU1ywvpwWKeIqncnV8CfLGSgIZODwmofeZxgnm2i5ZgTsEZLWB7XDbYPSqQuW925+zDLmgc0z+7uOgiFuD/wpudiYPPUKB3yx5CijzGU/PEwnHh+EFxkqpc0+KHEJ6smEfSGxyhxJC+r56O11+lvP0odDAWkmltZP2ikzW/y//gdTkAJNA/R6qWheoti+tOdh8UfXTxU51QQ4Z0xswSZVW9hOtYBB5dzr1AG+Ea/yBbF/XV3/4KHzlkSEMknzTqiVX0e4wcftXcT525n+HJw6v3bWLwrj+swwSp+aG2MkeU8H0wnc1qa70znSPGbfkSOVUodAwj4cBvzyhXpB3JA/mYCS+0XfJDKH/KsGIpf54eFp8gh1WxL1tWqpOWSV/YslR2nKWSjpbLuvgeunoEpJxwIxjOuwmfexoEzPT6kjpBZQeUg8WX06CJYi4W9DAVMSEGKvgeHKijX5qr8pKaTB/hPBPM9Xjvrtkz8P9rTjnnn04TTvbaVFjW+lzb9sFI93yFQUP17jI+4XchDaR/IX7A=
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(7916004)(36840700001)(46966006)(426003)(16526019)(82310400003)(86362001)(508600001)(8936002)(6916009)(26005)(6666004)(336012)(2906002)(186003)(8676002)(54906003)(356005)(70206006)(7636003)(7416002)(70586007)(5660300002)(4326008)(4744005)(9686003)(36860700001)(36906005)(316002)(33716001)(47076005)(67856001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 14:44:56.8237
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbc8531f-ebbc-4d27-834c-08d98357b4df
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5502
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the cpuidle-psci case, runtime PM in combination with the generic PM
-domain (genpd), may be used when entering/exiting an idlestate. More
-precisely, genpd relies on runtime PM to be enabled for the attached device
-(in this case it belongs to a CPU), to properly manage the reference
-counting of its PM domain.
+On Wed, Sep 29, 2021 at 10:53:02AM +0200, Uwe Kleine-König wrote:
+> struct pci_dev::driver holds (apart from a constant offset) the same
+> data as struct pci_dev::dev->driver. With the goal to remove struct
+> pci_dev::driver to get rid of data duplication replace getting the
+> driver name by dev_driver_string() which implicitly makes use of struct
+> pci_dev::dev->driver.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-This works fine most of the time, but during system suspend in the
-dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
-Beyond this point and until runtime PM becomes re-enabled in the
-dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
+For mlxsw:
 
-To make sure the reference counting in genpd becomes correct, we need to
-prevent cpuidle-psci from using runtime PM when it has been disabled for
-the device. Therefore, let's move the call to cpuidle_pause() from
-dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
-dpm_resume_noirq() into dpm_resume_early().
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Tested-by: Ido Schimmel <idosch@nvidia.com>
 
-Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-Suggested-by: Maulik Shah <mkshah@codeaurora.org>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/base/power/main.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index cbea78e79f3d..1c753b651272 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
- 
- 	resume_device_irqs();
- 	device_wakeup_disarm_wake_irqs();
--
--	cpuidle_resume();
- }
- 
- /**
-@@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
- 	}
- 	mutex_unlock(&dpm_list_mtx);
- 	async_synchronize_full();
-+	cpuidle_resume();
- 	dpm_show_time(starttime, state, 0, "early");
- 	trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
- }
-@@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
- {
- 	int ret;
- 
--	cpuidle_pause();
--
- 	device_wakeup_arm_wake_irqs();
- 	suspend_device_irqs();
- 
-@@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
- 	int error = 0;
- 
- 	trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-+	cpuidle_pause();
- 	mutex_lock(&dpm_list_mtx);
- 	pm_transition = state;
- 	async_error = 0;
--- 
-2.25.1
-
+Thanks
