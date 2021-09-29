@@ -2,139 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3762041BF0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19641BF25
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 08:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244269AbhI2GSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 02:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243585AbhI2GSC (ORCPT
+        id S244226AbhI2G3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 02:29:33 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:54775 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244100AbhI2G3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 02:18:02 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D1EC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 23:16:21 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id 134so1675026iou.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Sep 2021 23:16:21 -0700 (PDT)
+        Wed, 29 Sep 2021 02:29:30 -0400
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HK5yr30DVz4xZJ; Wed, 29 Sep 2021 16:27:48 +1000 (AEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ue2L72Yfa5y6ge63nlG9vKeGiwu3moJ7Urp0CKfDZT0=;
-        b=ngmZOUK7gUzxHkbE4NjGhdHnB1ja0k9VeSYIzbC4VTlKX/5aNtROcQLvSMsiAN8fDS
-         votmpw4/M0pwqwLET5us7zujCPvMuiZ+gY5KgAy+LEXdr/zDkRl2RjbaQMtCYktRmh1p
-         nfg0BBkIKvVjc0R7aD/LeB6N+b31sSpO38nAGf41Gzpnb3LYOXh8YYN7uX8zp58ok2jc
-         SPlJSPSmHocAwC+kPPW5xarFzPglrEZRphwvg1xwXYnmqyAdtc4HRbUnzRFYRMdcauJT
-         QWNbJSR5qfqi3yn8nmTTKCBdqqkr6L/ZSOjmVPzllZNFTosZSN0BTTXjg5e2y9AAaT5+
-         Rr5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ue2L72Yfa5y6ge63nlG9vKeGiwu3moJ7Urp0CKfDZT0=;
-        b=aEuA2bbU8slVnIZUjVBibUL6jnOLKumcOXJr0FsxfHMJE9//gKqHU2eOd31gRT6yVU
-         m2MLfihamal8ASA5ymgOW1DQ+M2MMdKEtyprrhajtJ3trgmkwCl65Jvfspu3rzYk9MjS
-         aTmgTkiLLU4BGvtbkWyldKNoD125/ArwoLgetbCSGhnq3TZYtto15pUVrmUKhSfLe28h
-         iKU3hCEConCpTyH9TGgCvZueyyfhGtrofrmd2eqbFegpKZg0TA+GUdTGNNps+2MN9IPd
-         jLhtyqX54Cvy4FMMgNdKPuvlcGrNqdHFhpzvy5OGyi3wQ2hQBgaVP1hTUIgVd6EhXdQI
-         LcqQ==
-X-Gm-Message-State: AOAM5326EdABe7+D9V3CaO9p7/YXVa5WphkhX9BZMBaBSGOUe7ELWdNw
-        ZXi4d0cB9kZiuCeH6JL4kavJZsUcXIyOBBWoVBI=
-X-Google-Smtp-Source: ABdhPJyI+Ic2qBPRcopqrZ34ZMTuw7uTPBjY9+UwnwywG2bCSxm8ounk7mWOZpCjxJn5a1+eSbTQWUknvws5N+qH5+k=
-X-Received: by 2002:a05:6638:d0e:: with SMTP id q14mr7867836jaj.139.1632896180981;
- Tue, 28 Sep 2021 23:16:20 -0700 (PDT)
+        d=gibson.dropbear.id.au; s=201602; t=1632896868;
+        bh=nW9WwB4krc4OXpzxcuXzAt9baC6o0ghnIlnPDB1Xd1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dzMvEezuJqaNXvc6p9R9PekRSEZPKDJLmyBFe5iPlbl7WM+U48X2/7TNxFUIJe0iT
+         ZBH8X4JWaE9lnwOQmhvTPuRimhY7Ef7t3zCXnigRgV2cBvGwwsKzGQYiIjyRyXJqFL
+         n3NyZ5fOSQeT7eoVP+Lyf1cA5NZWTAY29Fy+kLk8=
+Date:   Wed, 29 Sep 2021 16:18:34 +1000
+From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Message-ID: <YVQFOun0Ae3/V2Y4@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-11-yi.l.liu@intel.com>
+ <20210921174049.GV327412@nvidia.com>
+ <BN9PR11MB5433D26EFA94F59756AF91838CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922124150.GK327412@nvidia.com>
 MIME-Version: 1.0
-References: <1632831797-32192-1-git-send-email-liangcaifan19@gmail.com> <20210928152919.df87f6c8194316ff1407cdc7@linux-foundation.org>
-In-Reply-To: <20210928152919.df87f6c8194316ff1407cdc7@linux-foundation.org>
-From:   Fan Liangcai <liangcaifan19@gmail.com>
-Date:   Wed, 29 Sep 2021 14:15:53 +0800
-Message-ID: <CAEc3SeA8eyMjfrA8Q9UY3knvNwrn68wC7kVn10QZf=X0te5Vsg@mail.gmail.com>
-Subject: Re: [PATCH] mm: Set min_free_kbytes with user_min_free_kbytes when
- user_min_free_kbytes is preferred
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     liangcai.fan@unisoc.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Chunyan Zhang <zhang.lyra@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9KkT761rRKdNuQHa"
+Content-Disposition: inline
+In-Reply-To: <20210922124150.GK327412@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Morton <akpm@linux-foundation.org> =E4=BA=8E2021=E5=B9=B49=E6=9C=882=
-9=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=886:29=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On Tue, 28 Sep 2021 20:23:17 +0800 Liangcai Fan <liangcaifan19@gmail.com>=
- wrote:
->
-> > The 'min_free_kbytes' and 'user_min_free_kbytes' maybe inconsistent
-> > after a few times of memory hotplug.
->
-> What does "inconsistent" mean here?
->
-> Please describe the problem in more detail, perhaps with examples.
->
-example:
-1. Turn on the device with 1G memory, and the calculated 'new_min_free_kbyt=
-es'
-is 3452kb, at this time 'min_free_kbytes' =3D 'new_min_free_kbytes' =3D 345=
-2kb,
-'user_min_free_kbytes' is the initial value -1.
 
-2. The user sets 'min_free_kbytes' to 4096kb through the node,
-at this time 'user_min_free_kbytes' =3D 'min_free_kbytes' =3D 4096kb.
+--9KkT761rRKdNuQHa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-3. The memory has increased by 2G, and the memory has become 3G.
-Recalculate 'new_min_free_kbytes' to be 6568kb, which is greater than
-'user_min_free_kbytes'(4096kb), at this time
-'min_free_kbytes' =3D 'new_min_free_kbytes' =3D 6568kb,
-'user_min_free_kbytes' =3D 4096kb.
+On Wed, Sep 22, 2021 at 09:41:50AM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 22, 2021 at 03:30:09AM +0000, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Wednesday, September 22, 2021 1:41 AM
+> > >=20
+> > > On Sun, Sep 19, 2021 at 02:38:38PM +0800, Liu Yi L wrote:
+> > > > After a device is bound to the iommufd, userspace can use this inte=
+rface
+> > > > to query the underlying iommu capability and format info for this d=
+evice.
+> > > > Based on this information the user then creates I/O address space i=
+n a
+> > > > compatible format with the to-be-attached devices.
+> > > >
+> > > > Device cookie which is registered at binding time is used to mark t=
+he
+> > > > device which is being queried here.
+> > > >
+> > > > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> > > >  drivers/iommu/iommufd/iommufd.c | 68
+> > > +++++++++++++++++++++++++++++++++
+> > > >  include/uapi/linux/iommu.h      | 49 ++++++++++++++++++++++++
+> > > >  2 files changed, 117 insertions(+)
+> > > >
+> > > > diff --git a/drivers/iommu/iommufd/iommufd.c
+> > > b/drivers/iommu/iommufd/iommufd.c
+> > > > index e16ca21e4534..641f199f2d41 100644
+> > > > +++ b/drivers/iommu/iommufd/iommufd.c
+> > > > @@ -117,6 +117,71 @@ static int iommufd_fops_release(struct inode
+> > > *inode, struct file *filep)
+> > > >  	return 0;
+> > > >  }
+> > > >
+> > > > +static struct device *
+> > > > +iommu_find_device_from_cookie(struct iommufd_ctx *ictx, u64
+> > > dev_cookie)
+> > > > +{
+> > >=20
+> > > We have an xarray ID for the device, why are we allowing userspace to
+> > > use the dev_cookie as input?
+> > >=20
+> > > Userspace should always pass in the ID. The only place dev_cookie
+> > > should appear is if the kernel generates an event back to
+> > > userspace. Then the kernel should return both the ID and the
+> > > dev_cookie in the event to allow userspace to correlate it.
+> > >=20
+> >=20
+> > A little background.
+> >=20
+> > In earlier design proposal we discussed two options. One is to return
+> > an kernel-allocated ID (label) to userspace. The other is to have user
+> > register a cookie and use it in iommufd uAPI. At that time the two
+> > options were discussed exclusively and the cookie one is preferred.
+> >=20
+> > Now you instead recommended a mixed option. We can follow it for
+> > sure if nobody objects.
+>=20
+> Either or for the return is fine, I'd return both just because it is
+> more flexable
+>=20
+> But the cookie should never be an input from userspace, and the kernel
+> should never search for it. Locating the kernel object is what the ID
+> and xarray is for.
 
-4. The memory has been reduced by 2G, and now the memory has become 1G.
-Recalculate 'new_min_free_kbytes' to be 3452kb, which is less than
-'user_min_free_kbytes'(4096kb). The original logic does not modify
-'min_free_kbytes'.
-At this time, 'min_free_kbytes' is the last 'new_min_free_kbytes'(6568kb).
-The memory is 1G ,'min_free_kbytes' should be equal to
-'user_min_free_kbytes'(4096kb)
-set by the user.
+Why do we need two IDs at all?  Can't we just use the cookie as the
+sole ID?
 
-> > When 'new_min_free_kbytes' is not larger than 'user_min_free_kbytes',
-> > set 'min_free_kbytes' with 'user_min_free_kbytes' rather than leave
-> > it as the 'new_min_free_kbytes' calculated for the last time.
-> >
-> > Signed-off-by: Liangcai Fan <liangcaifan19@gmail.com>
-> > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > ---
-> >  mm/page_alloc.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index b37435c..ddf9dc1 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -8467,6 +8467,12 @@ int __meminit init_per_zone_wmark_min(void)
-> >               if (min_free_kbytes > 262144)
-> >                       min_free_kbytes =3D 262144;
-> >       } else {
-> > +             /*
-> > +              * Set 'min_free_kbytes' with 'user_min_free_kbytes' rath=
-er than
-> > +              * leave it as the 'new_min_free_kbytes' calculated for t=
-he last
-> > +              * time.
-> > +              */
->
-> This comment explains what the code is doing, which is almost always
-> obvious from reading the code!  A better comment will describe *why*
-> the code is doing whatever is does.   "why, not what", please.
->
-I think this comment is redundant and will be deleted.
-> > +             min_free_kbytes =3D user_min_free_kbytes;
-> >               pr_warn("min_free_kbytes is not updated to %d because use=
-r defined value %d is preferred\n",
-> >                               new_min_free_kbytes, user_min_free_kbytes=
-);
-> >       }
->
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--9KkT761rRKdNuQHa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFUBTgACgkQbDjKyiDZ
+s5K4CQ//ZP7Vd8mpipNUS/AWU7c4/szaCvt/v2he80AMrFlcUx0PojUtRabS9Rg2
+2auIXhqeFqWUUyCVzQ60/f5L+v0VSosRphUA0yG0QZcVjvKeOFXScIBHadS1xELL
+j6XaydocIV/EUeGlUkMC2bPeJpeEEu5oN4SBu28yw2cJdIDeI8mtLotdPtYEHtai
+HSPjBt+38dmgUGGXlDpnBwrTs9sHb4BHgbMIM0ExcL8+GC0nzdWVxA0bV1C6Z4bD
+vaDKQXGoj3Vjw69+tSAhLluI44nIHL7zcXeXols27ly2RP7XIeygkS6/6Jtx2zAv
+dNBYSYWJ1KiGRF/5UrWmAOF9pWt4X+6seHSee60SKnb1sEl17i/MUZYMdE2cQSAe
+R7L9aEagtEfTGaDLVL6O1MuP1uo+RFgUz83b+JawOe7K0d4G32rh6uqicsaVhh5E
+k8hGjb7XdU+zqJmNj+eva5nuk/ocOsKoshp5nJ6dNwZB3og09ctk/6Yas6lO1t/1
+vPi7Z6XsRUMsqvyc/D7Xzsira7wC6OkrR4aZGez5PjibC9WlLZyZ4XD1E/H2+rCY
+u+W4Kvy2++kJZ5kBrU0li+DMQvuEy7uWwMYqmlsmqGLqRta2+Fdl7OpmBA7Lm0VK
+sV/FGvMX1N5t7yNzChqAqDps4uSA6pHtKuIjJOcNuK3BAD6powQ=
+=VX0E
+-----END PGP SIGNATURE-----
+
+--9KkT761rRKdNuQHa--
