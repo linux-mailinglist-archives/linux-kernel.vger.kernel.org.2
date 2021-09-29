@@ -2,137 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04D841C895
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853CB41C89D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345333AbhI2PkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:40:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38796 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1345251AbhI2PkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:40:09 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TFIXuJ021894;
-        Wed, 29 Sep 2021 11:38:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ni6fW0e6udKKS09xxpVAxi6YbZN4f06i9VJgZGlNL+o=;
- b=UGQmqc3Qrujy+vHPBI9cxcojAJJSe3ADiTp0mgHqDypQ6QckY8MT0LEtqCvXTXK4HSKX
- C8KSdz5TsaR6FEP/iuDlXiFbXXCC1hKmH8Kl5Uc4aU25QvCQU4eE3klnLqezSMeV657Y
- gbPcSRNFFfbmr8zd8TW7P/WiHssO3RJLIjEFgztFac2sbbI35FbC3TdHWFHjAqfRw6L0
- A4Ic7ZZAz3nJ/IcN7AsIbAtpgwJAD32wmcFQkreOcdLDhwIK8CjHztGHEWNe5+EGC3ti
- pXNFJ/vQSA/X8rnwQeOkATORLo8unrdpkWkNpmINS4ketcjLl1ocXdAD1jR4Mo2HL2RF VA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bcspg2f83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Sep 2021 11:38:07 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18TFJUBW025629;
-        Wed, 29 Sep 2021 11:38:07 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bcspg2f7j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Sep 2021 11:38:07 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18TFI0DU016321;
-        Wed, 29 Sep 2021 15:38:06 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma04dal.us.ibm.com with ESMTP id 3b9udc6c0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Sep 2021 15:38:06 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18TFc5ku28115358
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 15:38:05 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 77637124052;
-        Wed, 29 Sep 2021 15:38:05 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B45D7124058;
-        Wed, 29 Sep 2021 15:38:04 +0000 (GMT)
-Received: from [9.163.24.144] (unknown [9.163.24.144])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Sep 2021 15:38:04 +0000 (GMT)
-Subject: Re: [PATCH v2] hwmon: (pmbus/ibm-cffps) max_power_out swap changes
-To:     Brandon Wyman <bjwyman@gmail.com>, Joel Stanley <joel@jms.id.au>,
-        openbmc@lists.ozlabs.org, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        id S1345328AbhI2Pok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:44:40 -0400
+Received: from mga17.intel.com ([192.55.52.151]:27517 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345157AbhI2Poi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:44:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205117292"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="205117292"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:42:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="617567209"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2021 08:42:57 -0700
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, jolsa@redhat.com, jmario@redhat.com,
         linux-kernel@vger.kernel.org
-References: <20210928205051.1222815-1-bjwyman@gmail.com>
-From:   Eddie James <eajames@linux.ibm.com>
-Message-ID: <2a3e0a3c-c256-92e6-7b1f-e80d56ee5b2c@linux.ibm.com>
-Date:   Wed, 29 Sep 2021 10:38:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210928205051.1222815-1-bjwyman@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FJaFGjauPgaFMsF0btOQzpV-JpIOZ3N0
-X-Proofpoint-GUID: j6qtbYT6SRxz1Hj-T9E5wORoo20Akb_X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-29_06,2021-09-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109290092
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 1/2] perf script: Fix PERF_SAMPLE_WEIGHT_STRUCT support
+Date:   Wed, 29 Sep 2021 08:38:13 -0700
+Message-Id: <1632929894-102778-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kan Liang <kan.liang@linux.intel.com>
 
-On 9/28/21 3:50 PM, Brandon Wyman wrote:
-> The bytes for max_power_out from the ibm-cffps devices differ in byte
-> order for some power supplies.
->
-> The Witherspoon power supply returns the bytes in MSB/LSB order.
->
-> The Rainier power supply returns the bytes in LSB/MSB order.
->
-> The Witherspoon power supply uses version cffps1. The Rainier power
-> supply should use version cffps2. If version is cffps1, swap the bytes
-> before output to max_power_out.
+-F weight in perf script is broken.
 
+  # ./perf mem record
+  # ./perf script -F weight
+  Samples for 'dummy:HG' event do not have WEIGHT attribute set. Cannot
+print 'weight' field.
 
-Looks fine, thanks Brandon!
+The sample type, PERF_SAMPLE_WEIGHT_STRUCT, is an alternative of the
+PERF_SAMPLE_WEIGHT sample type. They share the same space, weight. The
+lower 32 bits are exactly the same for both sample type. The higher 32
+bits may be different for different architecture. For a new kernel on
+x86, the PERF_SAMPLE_WEIGHT_STRUCT is used. For an old kernel or other
+ARCHs, the PERF_SAMPLE_WEIGHT is used.
 
-Reviewed-by: Eddie James <eajames@linux.ibm.com>
+With -F weight, current perf script will only check the input string
+"weight" with the PERF_SAMPLE_WEIGHT sample type. Because the commit
+ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT") didn't
+update the PERF_SAMPLE_WEIGHT_STRUCT sample type for perf script. For a
+new kernel on x86, the check fails.
 
+Use PERF_SAMPLE_WEIGHT_TYPE, which supports both sample types, to
+replace PERF_SAMPLE_WEIGHT.
 
->
-> Tested:
->      Witherspoon before: 3148. Witherspoon after: 3148.
->      Rainier before: 53255. Rainier after: 2000.
->
-> Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
-> ---
->   drivers/hwmon/pmbus/ibm-cffps.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-> index df712ce4b164..79bfcd2749a6 100644
-> --- a/drivers/hwmon/pmbus/ibm-cffps.c
-> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
-> @@ -171,8 +171,14 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
->   		cmd = CFFPS_SN_CMD;
->   		break;
->   	case CFFPS_DEBUGFS_MAX_POWER_OUT:
-> -		rc = i2c_smbus_read_word_swapped(psu->client,
-> -						 CFFPS_MAX_POWER_OUT_CMD);
-> +		if (cffps1 == psu->version) {
-> +			rc = i2c_smbus_read_word_swapped(psu->client,
-> +					CFFPS_MAX_POWER_OUT_CMD);
-> +		} else {
-> +			rc = i2c_smbus_read_word_data(psu->client,
-> +					CFFPS_MAX_POWER_OUT_CMD);
-> +		}
-> +
->   		if (rc < 0)
->   			return rc;
->   
+Reported-by: Joe Mario <jmario@redhat.com>
+Fixes: ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ tools/perf/builtin-script.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 6211d0b..9f62ac6 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -459,7 +459,7 @@ static int evsel__check_attr(struct evsel *evsel, struct perf_session *session)
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(WEIGHT) &&
+-	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT, "WEIGHT", PERF_OUTPUT_WEIGHT))
++	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT_TYPE, "WEIGHT", PERF_OUTPUT_WEIGHT))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(SYM) &&
+-- 
+2.7.4
+
