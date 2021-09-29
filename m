@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4AE41C43C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADD941C402
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343691AbhI2MDt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Sep 2021 08:03:49 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:45788 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343879AbhI2MDe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:03:34 -0400
-Received: by mail-oi1-f182.google.com with SMTP id v10so2528900oic.12;
-        Wed, 29 Sep 2021 05:01:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DPTFjBNMYZsH/LoF0h0iC/ghN40ymuV4zkUVlZxxnn4=;
-        b=nFsj8U7fsXNHpID73JvNvKeoev19i8s8Qc6aNmtgTy4h1ZJ12fo5OJUqFMeydby5q0
-         r3XQ7gk6BdmgTayJGmj3OyjutX1cSdGR/9YXDA5f17ybkj5kFXCPQPkLWTw3rYB6rv3Y
-         iNFiyBdnY3VeTOtAgRQ7En8pQ9R7A2VaJgosggcZ6kwzxei42AbsyRBPJNyRx9EBLpV6
-         YMmTzSIANmULQNsnM/KuSRWkBxSyF2qaoWJkbXbvJ1YYHqBsPwA38xxUGPCy/yinc9dX
-         0pzHmsuW3qvFMDCjRoUazXbzN70F9YgiBNkZUJtlQCrG4yUG3a+uT8RfHJTNi9GdXIoy
-         h+0Q==
-X-Gm-Message-State: AOAM53072xOp1CuP/KX0hGBdNG+WNiiKjgOCXHTI4QRyyIjuOYC8iu8h
-        tPxUw9OvakhznHTsJjBA5Db86C9UKnZNLZfnqHMy1GKc
-X-Google-Smtp-Source: ABdhPJxoNw5TPiy7tXyGhRFCBqyoslPg2WsTrtX+8FsVJTpHKJufbkxvO43p83wgr2KyAiyOScD/EBdm7rFq04tgduc=
-X-Received: by 2002:a05:6808:178c:: with SMTP id bg12mr8017044oib.157.1632916913639;
- Wed, 29 Sep 2021 05:01:53 -0700 (PDT)
+        id S1343578AbhI2MBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:01:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:62642 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244864AbhI2MBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:01:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224578364"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="224578364"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 04:59:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
+   d="scan'208";a="617472835"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2021 04:59:30 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id 491AA580223;
+        Wed, 29 Sep 2021 04:59:27 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Wong Vee Khee <veekhee@gmail.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net v2 1/1] net: pcs: xpcs: fix incorrect CL37 AN sequence
+Date:   Wed, 29 Sep 2021 20:05:34 +0800
+Message-Id: <20210929120534.411157-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210927121338.938994-1-arnd@kernel.org> <92b02547-3aa5-537f-a782-7a25854d88fe@intel.com>
- <BYAPR11MB32560CEAC6CC3C2E93FBBF9387A89@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB32560CEAC6CC3C2E93FBBF9387A89@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 29 Sep 2021 14:01:41 +0200
-Message-ID: <CAJZ5v0gHgMVjKzKUnJ0HkE+Bz7-1Rav3FnLA+ycF94JTw5V=ww@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: avoid NULL pointer arithmetic
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:39 PM Moore, Robert <robert.moore@intel.com> wrote:
->
-> I can take this patch as-is, I think. I'll try for the next acpica release later this week.
+According to Synopsys DesignWare Cores Ethernet PCS databook, it is
+required to disable Clause 37 auto-negotiation by programming bit-12
+(AN_ENABLE) to 0 if it is already enabled, before programming various
+fields of VR_MII_AN_CTRL registers.
 
-Thanks!
+After all these programming are done, it is then required to enable
+Clause 37 auto-negotiation by programming bit-12 (AN_ENABLE) to 1.
 
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+v1 -> v2:
+ - Removed use of xpcs_modify() helper function.
+ - Add conditional check on inband auto-negotiation.
 
-> -----Original Message-----
-> From: Wysocki, Rafael J <rafael.j.wysocki@intel.com>
-> Sent: Tuesday, September 28, 2021 10:44 AM
-> To: Arnd Bergmann <arnd@kernel.org>; Moore, Robert <robert.moore@intel.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>; Nathan Chancellor <nathan@kernel.org>; Nick Desaulniers <ndesaulniers@google.com>; Erik Kaneda <erik.kaneda@intel.com>; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org; llvm@lists.linux.dev; Len Brown <lenb@kernel.org>; Rafael J. Wysocki <rafael@kernel.org>
-> Subject: Re: [PATCH] ACPI: avoid NULL pointer arithmetic
->
-> Bob, this is ACPICA material.
->
-> Would it be possible to apply this to the upstream from the patch or do you need  a PR for this?
->
-> On 9/27/2021 2:13 PM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are some very old macros for doing an open-coded offsetof() and
-> > cast between pointer and integer in ACPI headers. clang-14 now
-> > complains about these:
-> >
-> > drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
-> >           ACPI_FADT_OFFSET(pm_timer_block),
-> >           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSET'
-> >   #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi_table_fadt, f)
-> >
-> > ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
-> >   #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
-> >
-> > ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
-> >   #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u8, (a)) - ACPI_CAST_PTR (u8, (b))))
-> >
-> > ^ ~~~~~~~~~~~~~~~~~~~~~~~ Convert them to the modern equivalents.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >   include/acpi/actypes.h | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h index
-> > 92c71dfce0d5..285bc7b73de3 100644
-> > --- a/include/acpi/actypes.h
-> > +++ b/include/acpi/actypes.h
-> > @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
-> >   /* Pointer/Integer type conversions */
-> >
-> >   #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_size) (i))
-> > -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
-> > -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
-> > +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
-> > +#define ACPI_OFFSET(d, f)               offsetof(d, f)
-> >   #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
-> >   #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
-> >
->
->
+ drivers/net/pcs/pcs-xpcs.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index fb0a83dc09ac..f34d5caeaba1 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -700,11 +700,14 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
+ 	int ret;
+ 
+ 	/* For AN for C37 SGMII mode, the settings are :-
+-	 * 1) VR_MII_AN_CTRL Bit(2:1)[PCS_MODE] = 10b (SGMII AN)
+-	 * 2) VR_MII_AN_CTRL Bit(3) [TX_CONFIG] = 0b (MAC side SGMII)
++	 * 1) VR_MII_MMD_CTRL Bit(12) [AN_ENABLE] = 0b (Disable SGMII AN in case
++	      it is already enabled)
++	 * 2) VR_MII_AN_CTRL Bit(2:1)[PCS_MODE] = 10b (SGMII AN)
++	 * 3) VR_MII_AN_CTRL Bit(3) [TX_CONFIG] = 0b (MAC side SGMII)
+ 	 *    DW xPCS used with DW EQoS MAC is always MAC side SGMII.
+-	 * 3) VR_MII_DIG_CTRL1 Bit(9) [MAC_AUTO_SW] = 1b (Automatic
++	 * 4) VR_MII_DIG_CTRL1 Bit(9) [MAC_AUTO_SW] = 1b (Automatic
+ 	 *    speed/duplex mode change by HW after SGMII AN complete)
++	 * 5) VR_MII_MMD_CTRL Bit(12) [AN_ENABLE] = 1b (Enable SGMII AN)
+ 	 *
+ 	 * Note: Since it is MAC side SGMII, there is no need to set
+ 	 *	 SR_MII_AN_ADV. MAC side SGMII receives AN Tx Config from
+@@ -712,6 +715,12 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
+ 	 *	 between PHY and Link Partner. There is also no need to
+ 	 *	 trigger AN restart for MAC-side SGMII.
+ 	 */
++	ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
++	if (ret < 0)
++		return ret;
++	ret &= ~AN_CL37_EN;
++	xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
++
+ 	ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_AN_CTRL);
+ 	if (ret < 0)
+ 		return ret;
+@@ -736,7 +745,20 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
+ 	else
+ 		ret &= ~DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
+ 
+-	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
++	ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
++	if (ret < 0)
++		return ret;
++
++	ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
++	if (ret < 0)
++		return ret;
++
++	if (phylink_autoneg_inband(mode))
++		ret |= AN_CL37_EN;
++	else
++		ret &= ~AN_CL37_EN;
++
++	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
+ }
+ 
+ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
+-- 
+2.25.1
+
