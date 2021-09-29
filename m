@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240BD41BF8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B106441BF93
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 09:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244521AbhI2HGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 03:06:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244488AbhI2HGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 03:06:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E66F60F6E;
-        Wed, 29 Sep 2021 07:04:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632899097;
-        bh=g6BUe7enuFI4kxDLyFSJFYsLRLSx3gM/vt9+PUIBkDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FL95RGHa44BF5B5Lw0VjAdsdqvfpo2q0UvdkB+Vinf8wyAX9PChuuIEVvwkwDn+jv
-         cHAPhXvSG3PCDo3LllmIRJ4uDW//iCy0QwgbT2R8ZoD95K893CqSr/m+h03pGjNlCX
-         whBEcMccL8T1rkHyyqSkCJuZ2+CP5GrdBQhuRgls=
-Date:   Wed, 29 Sep 2021 09:04:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sohil Mehta <sohil.mehta@intel.com>
-Cc:     x86@kernel.org, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 10/13] x86/uintr: Introduce user IPI sender syscalls
-Message-ID: <YVQQFs4HC3tn2GiG@kroah.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-11-sohil.mehta@intel.com>
- <YUxy6XqMB1+DYJtP@kroah.com>
- <4704e81d-a3d2-aedf-1c79-e45cc86826a5@intel.com>
+        id S244525AbhI2HLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 03:11:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38273 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244495AbhI2HLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 03:11:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632899355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HT5SZ0TnRfXLHpISWqHTNLhMm8Om7aNvjCr5xAmuCp4=;
+        b=DAebnpOjo0v1GV7941C05zP4Su31p4e/7bCeAFBlG64dT+SbxQ2tWyyZsupNr33FKkVnps
+        PUvsiBA3ImHBpSXIsy/GLcYeOd1EXchcyrSlWOFPdMYF8S8vPxbB1Dh5UPA+krcru02JWo
+        w8fS04MQgQ4EINdQcPEdvEOgYpB2jXY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-t-ZNd9F0MOCWSQSe2aDP4w-1; Wed, 29 Sep 2021 03:09:11 -0400
+X-MC-Unique: t-ZNd9F0MOCWSQSe2aDP4w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3109F100C661;
+        Wed, 29 Sep 2021 07:09:08 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.252])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFDBD6B55A;
+        Wed, 29 Sep 2021 07:08:26 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>, "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: RE: [RFC 03/20] vfio: Add vfio_[un]register_device()
+In-Reply-To: <BN9PR11MB543356CD7AD9F45793D1ED118CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+Organization: Red Hat GmbH
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-4-yi.l.liu@intel.com> <YVPS43bNjvzdxdiM@yekko>
+ <BN9PR11MB543356CD7AD9F45793D1ED118CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Wed, 29 Sep 2021 09:08:25 +0200
+Message-ID: <871r576eqe.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4704e81d-a3d2-aedf-1c79-e45cc86826a5@intel.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 11:01:54AM -0700, Sohil Mehta wrote:
-> On 9/23/2021 5:28 AM, Greg KH wrote:
-> > On Mon, Sep 13, 2021 at 01:01:29PM -0700, Sohil Mehta wrote:
-> > > +/* User Interrupt Target Table Entry (UITTE) */
-> > > +struct uintr_uitt_entry {
-> > > +	u8	valid;			/* bit 0: valid, bit 1-7: reserved */
-> > Do you check that the other bits are set to 0?
-> 
-> I don't have a check but kzalloc() in alloc_uitt() should set it to 0.
-> 
-> > > +	u8	user_vec;
-> > > +	u8	reserved[6];
-> > What is this reserved for?
-> 
-> This is hardware defined structure as well. I should probably mention this
-> it in the comment above.
-> 
-> > > +	u64	target_upid_addr;
-> > If this is a pointer, why not say it is a pointer?
-> 
-> I used a u64 to get the size and alignment of this structure as required by
-> the hardware. I wasn't sure if using a struct upid * would complicate that.
-> 
-> Also this field is never used as a pointer by the kernel. It is only used to
-> program an entry that is read by the hardware.
-> 
-> Is this reasonable or would you still prefer a pointer?
+On Wed, Sep 29 2021, "Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-Ok, just document it really well that this is NOT a real address used by
-the kernel.  As it is, that's not obvious at all.
+>> From: David Gibson <david@gibson.dropbear.id.au>
+>> Sent: Wednesday, September 29, 2021 10:44 AM
+>> 
+>> > One alternative option is to arrange device nodes in sub-directories based
+>> > on the device type. But doing so also adds one trouble to userspace. The
+>> > current vfio uAPI is designed to have the user query device type via
+>> > VFIO_DEVICE_GET_INFO after opening the device. With this option the user
+>> > instead needs to figure out the device type before opening the device, to
+>> > identify the sub-directory.
+>> 
+>> Wouldn't this be up to the operator / configuration, rather than the
+>> actual software though?  I would assume that typically the VFIO
+>> program would be pointed at a specific vfio device node file to use,
+>> e.g.
+>> 	my-vfio-prog -d /dev/vfio/pci/0000:0a:03.1
+>> 
+>> Or more generally, if you're expecting userspace to know a name in a
+>> uniqu pattern, they can equally well know a "type/name" pair.
+>> 
+>
+> You are correct. Currently:
+>
+> -device, vfio-pci,host=DDDD:BB:DD.F
+> -device, vfio-pci,sysfdev=/sys/bus/pci/devices/ DDDD:BB:DD.F
+> -device, vfio-platform,sysdev=/sys/bus/platform/devices/PNP0103:00
+>
+> above is definitely type/name information to find the related node. 
+>
+> Actually even for Jason's proposal we still need such information to
+> identify the sysfs path.
+>
+> Then I feel type-based sub-directory does work. Adding another link
+> to sysfs sounds unnecessary now. But I'm not sure whether we still
+> want to create /dev/vfio/devices/vfio0 thing and related udev rule
+> thing that you pointed out in another mail.
 
-And if this crosses the user/kernel boundry, it needs to be __u64 right?
+Still reading through this whole thread, but type-based subdirectories
+also make the most sense to me. I don't really see userspace wanting to
+grab just any device and then figure out whether it is the device it was
+looking for, but rather immediately go to a specific device or at least
+a device of a specific type.
 
-thanks,
+Sequentially-numbered devices tend to become really unwieldy in my
+experience if you are working on a system with loads of devices.
 
-greg k-h
