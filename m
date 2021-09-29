@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF7A41CAB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05B141CACB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346163AbhI2Q6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346221AbhI2Q6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:58:16 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8C7C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
-        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
-        :Content-Description; bh=ysDSBYfH+9lnSZYNya7VTHwC5qwPkWB2y4lW2wuez0U=; b=cAt/
-        13l1UFAw8RgU6FSzt4+Cz85KwL81LYREyzxwZImjp+4LKn6cd9RKlhgP7dHY8btPe1OvMZ2U4rPlV
-        IAdgZ5N4BqTDFA5PgmJ3DRvLPmDlkapvVrUzsIGgMejzGLXDDCw89CapH0tghCM5i4gSVZSd4Hoo8
-        m88hzHtZBTviFSMA5TfVQxgzycF7LcKuDxDlQKxlqyFma8UUbb+0c/jNAhKoXKi4GhdRJBckGwZeR
-        Z6uwk0hceUleiobObKqmog/J2IwNk1h4R4Yxjwsfv+H+639BjID8Hz4F1V7IkEWw7IR3Z06MGyn0I
-        tTXpUOiPPL4N5G4Ws+drad9vtZof8Q==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mVcsi-000733-P6; Wed, 29 Sep 2021 17:56:32 +0100
-Date:   Wed, 29 Sep 2021 17:56:32 +0100
-From:   John Keeping <john@metanate.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ALSA: rawmidi: Fix potential UAF from sequencer
- destruction
-Message-ID: <20210929175632.50b78be8.john@metanate.com>
-In-Reply-To: <s5hv92jl7t2.wl-tiwai@suse.de>
-References: <20210929113620.2194847-1-john@metanate.com>
-        <s5hzgrvl9j0.wl-tiwai@suse.de>
-        <20210929161758.49ce947f.john@metanate.com>
-        <s5hv92jl7t2.wl-tiwai@suse.de>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1344781AbhI2RAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344809AbhI2RAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:00:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5ACF613DA;
+        Wed, 29 Sep 2021 16:58:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632934704;
+        bh=q4dgtgHH+SOQqblaZiTZK7wKV7b2yiFarg51sd83ckI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JcY9Y8FqBZERBzXPm3S4fXyN6inna8kb+CnU5IpBO0rxpRiFjiv3r65E/tMIEUrY2
+         LqMxp5k8j2KAyf5NIHvM6jcpCVkjhto8pBaq7kQI2j2scrj8vKcywTGw428dJi3STO
+         vbwVmDgF8Uz7X6NWclc/SiTRwi22WKwM4zkVc0mtAsJB9dP84lXxnmo4V8g5N5abjE
+         asN1CEN8yku11KWfT/n/0NkVl8Hf9pZQDU4cByXDROlTPmCZQGngn82j2s0o6dHW6L
+         YIaij5UxY5T/ugctGR5WzTcQOEGk+dzMci29bxBUqMmk338T2axaQJsC9DeanwKCSA
+         cfBPVnZ+aDpkQ==
+Message-ID: <308a72e4-6aa9-0c84-21e6-ee613eea35a8@kernel.org>
+Date:   Wed, 29 Sep 2021 09:58:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Content-Language: en-US
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-5-fenghua.yu@intel.com>
+ <1aae375d-3cd4-4ab8-9c64-9e387916e6c0@www.fastmail.com>
+ <YVIxeBh3IKYYK711@agluck-desk2.amr.corp.intel.com>
+ <035290e6-d914-a113-ea6c-e845d71069cf@intel.com>
+ <YVNj8sm8iectc6iU@agluck-desk2.amr.corp.intel.com>
+ <3f97b77e-a609-997b-3be7-f44ff7312b0d@intel.com>
+ <YVN652x14dMgyE85@agluck-desk2.amr.corp.intel.com>
+ <f6014b16-7b4c-cbb6-c975-1ec34092956f@intel.com>
+ <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+In-Reply-To: <YVOg7zgpdQlc7Zjt@agluck-desk2.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 17:28:57 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Wed, 29 Sep 2021 17:17:58 +0200,
-> John Keeping wrote:
-> > 
-> > On Wed, 29 Sep 2021 16:51:47 +0200
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> >   
-> > > On Wed, 29 Sep 2021 13:36:20 +0200,
-> > > John Keeping wrote:  
-> > > > 
-> > > > If the sequencer device outlives the rawmidi device, then
-> > > > snd_rawmidi_dev_seq_free() will run after release_rawmidi_device() has
-> > > > freed the snd_rawmidi structure.
-> > > > 
-> > > > This can easily be reproduced with CONFIG_DEBUG_KOBJECT_RELEASE.
-> > > > 
-> > > > Keep a reference to the rawmidi device until the sequencer has been
-> > > > destroyed in order to avoid this.
-> > > > 
-> > > > Signed-off-by: John Keeping <john@metanate.com>    
-> > > 
-> > > Thanks for the patch.  I wonder, though, how this could be triggered.
-> > > Is this the case where the connected sequencer device is being used
-> > > while the sound card gets released?  Or is it something else?  
-> > 
-> > I'm not sure if it's possible to trigger via the ALSA API; I haven't
-> > found a route that can trigger it, but that doesn't mean there isn't
-> > one :-)
-> > 
-> > Mostly this is useful to make CONFIG_DEBUG_KOBJECT_RELEASE cleaner.  
+On 9/28/21 16:10, Luck, Tony wrote:
+> Moving beyond pseudo-code and into compiles-but-probably-broken-code.
 > 
-> Hm, then could you check whether the patch below papers over it
-> instead?
+> 
+> The intent of the functions below is that Fenghua should be able to
+> do:
+> 
+> void fpu__pasid_write(u32 pasid)
+> {
+> 	u64 msr_val = pasid | MSR_IA32_PASID_VALID;
+> 	struct ia32_pasid_state *addr;
+> 
+> 	addr = begin_update_one_xsave_feature(current, XFEATURE_PASID, true);
+> 	addr->pasid = msr_val;
+> 	finish_update_one_xsave_feature(current);
+> }
+> 
 
-No, this patch doesn't solve it.  The issue is that the effect of the
-final device_put() is delayed from the time it is called and there is no
-way to guarantee the ordering without ensuring the sequencer has been
-destroyed before the final reference to the rawmidi device is put.
+This gets gnarly because we would presumably like to optimize the case 
+where we can do the update directly in registers.  I wonder if we can do 
+it with a bit of macro magic in a somewhat generic way:
 
-Both of the functions involved are called from the core
-device::release() hook.
+typedef fpu__pasid_type u32;
 
-I'm using the patch below to easily check that the sequencer has been
-freed before the rawmidi data.  This can easily be triggered by
-unplugging a USB MIDI device (it's not 100% since the kobject release
-delays are random).
+static inline void fpu__set_pasid_in_register(const u32 *value)
+{
+	wrmsr(...);
+}
 
--- >8 --
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -1571,7 +1571,10 @@ static int snd_rawmidi_alloc_substreams(struct snd_rawmidi *rmidi,
- 
- static void release_rawmidi_device(struct device *dev)
- {
--       kfree(container_of(dev, struct snd_rawmidi, dev));
-+       struct snd_rawmidi *rmidi = container_of(dev, struct snd_rawmidi, dev);
-+
-+       WARN_ON(rmidi->seq_dev);
-+       kfree(rmidi);
- }
- 
- /**
--- 8< --
-
-> --- a/sound/core/seq/seq_ports.c
-> +++ b/sound/core/seq/seq_ports.c
-> @@ -415,11 +415,16 @@ static int subscribe_port(struct snd_seq_client *client,
->  			grp->count--;
->  		}
->  	}
-> -	if (err >= 0 && send_ack && client->type == USER_CLIENT)
-> +	if (err < 0)
-> +		return err;
-> +
-> +	if (send_ack && client->type == USER_CLIENT)
->  		snd_seq_client_notify_subscription(port->addr.client, port->addr.port,
->  						   info, SNDRV_SEQ_EVENT_PORT_SUBSCRIBED);
-> +	else if (client->type == KERNEL_CLIENT)
-> +		get_device(&client->data.kernel.card->card_dev);
->  
-> -	return err;
-> +	return 0;
->  }
->  
->  static int unsubscribe_port(struct snd_seq_client *client,
-> @@ -439,6 +444,8 @@ static int unsubscribe_port(struct snd_seq_client *client,
->  		snd_seq_client_notify_subscription(port->addr.client, port->addr.port,
->  						   info, SNDRV_SEQ_EVENT_PORT_UNSUBSCRIBED);
->  	module_put(port->owner);
-> +	if (client->type == KERNEL_CLIENT)
-> +		snd_card_unref(client->data.kernel.card);
->  	return err;
->  }
->  
-
+#define DEFINE_FPU_HELPER(name) \
+static inline void fpu__set_##name(const fpu__##name##_type *val) \
+{ \
+	fpregs_lock(); \
+	if (should write in memory) { \
+		->xfeatures |= XFEATURE_##name; \
+		ptr = get_xsave_addr(...); \
+		memcpy(ptr, val, sizeof(*val)); \
+		__fpu_invalidate_fpregs_state(...); \
+	} else { \
+		fpu__set_##name##_in_register(val); \
+	} \
+}
