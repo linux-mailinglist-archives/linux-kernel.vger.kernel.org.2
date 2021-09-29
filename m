@@ -2,123 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939D641C190
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD5741C196
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 11:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245066AbhI2JZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 05:25:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:53442 "EHLO foss.arm.com"
+        id S245070AbhI2J1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 05:27:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:60796 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhI2JZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 05:25:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A63E8D6E;
-        Wed, 29 Sep 2021 02:24:04 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.21.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F328C3F793;
-        Wed, 29 Sep 2021 02:24:01 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 10:23:58 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pingfan Liu <piliu@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Pingfan Liu <kernelfans@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <julien.thierry@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yuichi Ito <ito-yuichi@fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 4/5] irqchip/GICv3: let gic_handle_irq() utilize
- irqentry on arm64
-Message-ID: <20210929092358.GB33284@C02TD0UTHF1T.local>
-References: <20210924132837.45994-1-kernelfans@gmail.com>
- <20210924132837.45994-5-kernelfans@gmail.com>
- <20210928091053.GD1924@C02TD0UTHF1T.local>
- <YVPZEwfi8OFkzcd1@piliu.users.ipa.redhat.com>
- <87mtnvu9to.wl-maz@kernel.org>
- <YVQjX7GfuFKdW9hm@piliu.users.ipa.redhat.com>
+        id S229487AbhI2J1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:27:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10121"; a="224940094"
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="224940094"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 02:25:27 -0700
+X-IronPort-AV: E=Sophos;i="5.85,331,1624345200"; 
+   d="scan'208";a="563136465"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.53]) ([10.254.210.53])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 02:25:21 -0700
+Cc:     baolu.lu@linux.intel.com, alex.williamson@redhat.com,
+        jgg@nvidia.com, hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
+        jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
+        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
+        eric.auger@redhat.com, corbet@lwn.net, ashok.raj@intel.com,
+        yi.l.liu@linux.intel.com, jun.j.tian@intel.com, hao.wu@intel.com,
+        dave.jiang@intel.com, jacob.jun.pan@linux.intel.com,
+        kwankhede@nvidia.com, robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, nicolinc@nvidia.com
+Subject: Re: [RFC 04/20] iommu: Add iommu_device_get_info interface
+To:     David Gibson <david@gibson.dropbear.id.au>,
+        Liu Yi L <yi.l.liu@intel.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-5-yi.l.liu@intel.com> <YVPU89utk3JFPzS7@yekko>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <21cd618b-3ea6-dc89-cc79-e0927dece927@linux.intel.com>
+Date:   Wed, 29 Sep 2021 17:25:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVQjX7GfuFKdW9hm@piliu.users.ipa.redhat.com>
+In-Reply-To: <YVPU89utk3JFPzS7@yekko>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:27:11PM +0800, Pingfan Liu wrote:
-> On Wed, Sep 29, 2021 at 08:20:35AM +0100, Marc Zyngier wrote:
-> > On Wed, 29 Sep 2021 04:10:11 +0100,
-> > Pingfan Liu <piliu@redhat.com> wrote:
-> > > 
-> > > On Tue, Sep 28, 2021 at 10:10:53AM +0100, Mark Rutland wrote:
-> > > > On Fri, Sep 24, 2021 at 09:28:36PM +0800, Pingfan Liu wrote:
-> > > > > The call to rcu_irq_enter() originated from gic_handle_irq() is
-> > > > > redundant now, since arm64 has enter_from_kernel_mode() akin to
-> > > > > irqenter_entry(), which has already called rcu_irq_enter().
-> > > > 
-> > > > Here I think you're referring to the call in handle_domain_irq(), but
-> > > > that isn't clear from the commit message.
-> > > > 
-> > > Yes, and I will make it clear in V2.
-> > > 
-> > > > > Based on code analysis, the redundant can raise some mistake, e.g.
-> > > > > rcu_data->dynticks_nmi_nesting inc 2, which causes
-> > > > > rcu_is_cpu_rrupt_from_idle() unexpected.
-> > > > > 
-> > > > > So eliminate the call to irq_enter() in handle_domain_irq(). And
-> > > > > accordingly supplementing irq_enter_rcu().
-> > > > 
-> > > > We support many more irqchips on arm64, and GICv3 can be used on regular
-> > > > 32-bit arm, so this isn't right. Moving the irq_enter_rcu() call
-> > > > into the GICv3 driver specifically breaks other drivers on arm64 by
-> > > > removing the call, and breaks the GICv3 driver on arm by adding a
-> > > > duplicate call.
-> > > > 
-> > > Oops. I forgot to protect the code in GICv3 with CONFIG_HAVE_ARCH_IRQENTRY
-> > > 
-> > > > It looks like this should live in do_interrupt_handler() in
-> > > > arch/arm64/kernel/entry-common.c, e.g.
-> > > > 
-> > > > | static void do_interrupt_handler(struct pt_regs *regs,
-> > > > | 				 void (*handler)(struct pt_regs *)) 
-> > > > | {
-> > > > | 	irq_enter_rcu();
-> > > > | 	if (on_thread_stack())
-> > > > | 		call_on_irq_stack(regs, handler);
-> > > > | 	else
-> > > > | 		handler(regs);
-> > > > | 	irq_exit_rcu();
-> > > > | }
-> > > > 
-> > > > ... unless there's some problem with that?
-> > > > 
-> > > Yeah, do_interrupt_handler() is a more suitable place. But to resolve
-> > > the performance regression of rescheduling IPI [1], it is badly demanded to
-> > > distinguish irqnr before calling irq_enter_rcu() (please see 5/5 and [2]
-> > > for the context). So it is a compromise to host the code in GICv3.
-> > > 
-> > > Any good idea?
-> > 
-> > There is no way we are going to single out a particular interrupt
-> > controller. As for the "regression", we'll have to look at the numbers
-> > once we have fixed the whole infrastructure.
-> > 
-> But I just realize that at present, gic_handle_nmi() sits behind
-> gic_handle_irq().  So it will make an mistaken for accounting of normal
-> interrupt if calling irq_enter_rcu() in do_interrupt_handler().
+Hi David,
 
-We can restructure entry-common.c to avoid that if necessary.
+On 2021/9/29 10:52, David Gibson wrote:
+> On Sun, Sep 19, 2021 at 02:38:32PM +0800, Liu Yi L wrote:
+>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>>
+>> This provides an interface for upper layers to get the per-device iommu
+>> attributes.
+>>
+>>      int iommu_device_get_info(struct device *dev,
+>>                                enum iommu_devattr attr, void *data);
+> That fact that this interface doesn't let you know how to size the
+> data buffer, other than by just knowing the right size for each attr
+> concerns me.
+> 
 
-TBH, the more I see problems in this area the more I want to rip out the
-pNMI bits...
+We plan to address this by following the comments here.
 
-> And going through drivers/irqchip/irq-chip-gic*, I think there are only
-> two files should be handled: irq-gic.c and irq-gic-v3.c.
+https://lore.kernel.org/linux-iommu/20210921161930.GP327412@nvidia.com/
 
-That are irqchips other than GICv2 and GICv3 that are used as the root
-irqchip on arm64. For example, Raspberry Pi 3 uses
-drivers/irqchip/irq-bcm2836.c as its root irqchip.
-
-Thanks,
-Mark.
+Best regards,
+baolu
