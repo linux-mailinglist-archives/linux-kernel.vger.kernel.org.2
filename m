@@ -2,139 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37C841CAA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CE541CAAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344225AbhI2Qxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:53:49 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:54942 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245180AbhI2Qxr (ORCPT
+        id S1344221AbhI2Qzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:55:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245180AbhI2Qzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:53:47 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id E0238439;
-        Wed, 29 Sep 2021 19:52:03 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632934323;
-        bh=2mXerm+ntjAzyd/w9co5vN3ZT9BXIi3I1zZtobTYYQ4=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=uf3kBVLwEAZjl9qX9C6WSvBN5qv0M6MAA59Bm+a7eX2085/7/RpN+fSAmfgLKtu89
-         ckAkM7IyHZZHTCm1wDaLN62i51xsoJAxWsvc94ltB8xn2yHjc7YtoMRS7HMNBPr6sh
-         Utb4AnWyk6QwWrAFhWC6ATgtX4k8ItXsoB5k5FAI=
-Received: from [192.168.211.131] (192.168.211.131) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 29 Sep 2021 19:52:03 +0300
-Message-ID: <36fd67ba-bb05-890d-3ace-f75a8d5d2c64@paragon-software.com>
-Date:   Wed, 29 Sep 2021 19:52:02 +0300
+        Wed, 29 Sep 2021 12:55:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632934448;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wz7/LCBNzU2qEx/p5MvqtYMtlnh6TSWHAxM6fGc3vyI=;
+        b=AZI0/QgFD2B5O6XPH6sEgh7RXjoFSpaESNqU0i6Mib7FolWxBW4P9xqfLct23zR3aZ1pFS
+        H7FfQckMsvb0LRmacL8ZNaVH/HddSA2CYjjQaB5gfn1dx2tAbxb4t58oH09xBtpikyWNMB
+        qJlZi6GqnkxEeTRX/y+eKfH70hbNVD4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-IXz4ke1JNqa8C9WC8138GQ-1; Wed, 29 Sep 2021 12:54:05 -0400
+X-MC-Unique: IXz4ke1JNqa8C9WC8138GQ-1
+Received: by mail-wm1-f70.google.com with SMTP id m2-20020a05600c3b0200b0030cd1310631so1052786wms.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:54:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wz7/LCBNzU2qEx/p5MvqtYMtlnh6TSWHAxM6fGc3vyI=;
+        b=3cApjoHPZelox7c3X6HX8SbVWJKgODz+vXEm/Ed9JyBr8QqNo3vNdvXzbpKTAuNzi0
+         l0ESe35MxPZ+2mNVeqXTPGrfkqx1vulpNju5UMcxuSZmhTY/BAS1I5wcMQEQDHX0Wu8C
+         TDGHYFT8q1daxeBR16FXKJx5/JVtm+KPvLKMW8lKiR9O/TM8NZ5JXKBzLdxUQp2/eKkk
+         3GicfRVqYI/QON24wr8xGS6ZmMObruJjkw7ngX4wafz1y/9Hf0JaeOyxg5ofOOZNa0Dy
+         8AfT8lejdUVqPAQ+kvgntVMytZ/5/SRoyhAWL9lUhezlz+/LGDTHIyW/yY0LUtheX0dv
+         +WIA==
+X-Gm-Message-State: AOAM531rBlSxLfMVD9vEQoP0CxOKfYozBcFwX59nojX637HXilQowGLl
+        kKiH3aAplTcrQVGqmI8ppjO3e2xF/S9QKd6p66SHB/u87iHcIJQIxFvCxc7jgRnkIhV0HefGLED
+        qO3FrKTbcLeqQT0pxB1rPYK+b
+X-Received: by 2002:adf:de86:: with SMTP id w6mr1061895wrl.287.1632934443883;
+        Wed, 29 Sep 2021 09:54:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGkSiAZ0xz7kEyNo1HVkBwp/AkS+PaM+h+PvcslevGOtwequrlIC8Rb0h3s3NmIdNpczjkgw==
+X-Received: by 2002:adf:de86:: with SMTP id w6mr1061866wrl.287.1632934443713;
+        Wed, 29 Sep 2021 09:54:03 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id m4sm465862wrx.81.2021.09.29.09.54.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 09:54:03 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+References: <20210927150518.8607-1-david@redhat.com>
+ <20210927150518.8607-4-david@redhat.com> <YVSW3uuu7mIcJMm3@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 3/4] memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
+ IORESOURCE_SYSRAM_DRIVER_MANAGED
+Message-ID: <830c1670-378b-0fb6-bd5e-208e545fa126@redhat.com>
+Date:   Wed, 29 Sep 2021 18:54:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: [PATCH v3 3/3] fs/ntfs3: Refactoring of ntfs_set_ea
+In-Reply-To: <YVSW3uuu7mIcJMm3@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <kari.argillander@gmail.com>
-References: <1514c7ce-9b2c-fc12-75c4-3b4cfd2639a5@paragon-software.com>
-In-Reply-To: <1514c7ce-9b2c-fc12-75c4-3b4cfd2639a5@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.131]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make code more readable.
-Don't try to read zero bytes.
-Add warning when size of exteneded attribute exceeds limit.
+On 29.09.21 18:39, Mike Rapoport wrote:
+> Hi,
+> 
+> On Mon, Sep 27, 2021 at 05:05:17PM +0200, David Hildenbrand wrote:
+>> Let's add a flag that corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED.
+>> Similar to MEMBLOCK_HOTPLUG, most infrastructure has to treat such memory
+>> like ordinary MEMBLOCK_NONE memory -- for example, when selecting memory
+>> regions to add to the vmcore for dumping in the crashkernel via
+>> for_each_mem_range().
+>   
+> Can you please elaborate on the difference in semantics of MEMBLOCK_HOTPLUG
+> and MEMBLOCK_DRIVER_MANAGED?
+> Unless I'm missing something they both mark memory that can be unplugged
+> anytime and so it should not be used in certain cases. Why is there a need
+> for a new flag?
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/xattr.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+In the cover letter I have "Alternative B: Reuse MEMBLOCK_HOTPLUG. 
+MEMBLOCK_HOTPLUG serves a different purpose, though.", but looking into 
+the details it won't work as is.
 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 29f571b53083..cdc01877227a 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -75,6 +75,7 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 			size_t add_bytes, const struct EA_INFO **info)
- {
- 	int err;
-+	struct ntfs_sb_info *sbi = ni->mi.sbi;
- 	struct ATTR_LIST_ENTRY *le = NULL;
- 	struct ATTRIB *attr_info, *attr_ea;
- 	void *ea_p;
-@@ -99,10 +100,10 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 
- 	/* Check Ea limit. */
- 	size = le32_to_cpu((*info)->size);
--	if (size > ni->mi.sbi->ea_max_size)
-+	if (size > sbi->ea_max_size)
- 		return -EFBIG;
- 
--	if (attr_size(attr_ea) > ni->mi.sbi->ea_max_size)
-+	if (attr_size(attr_ea) > sbi->ea_max_size)
- 		return -EFBIG;
- 
- 	/* Allocate memory for packed Ea. */
-@@ -110,15 +111,16 @@ static int ntfs_read_ea(struct ntfs_inode *ni, struct EA_FULL **ea,
- 	if (!ea_p)
- 		return -ENOMEM;
- 
--	if (attr_ea->non_res) {
-+	if (!size) {
-+		;
-+	} else if (attr_ea->non_res) {
- 		struct runs_tree run;
- 
- 		run_init(&run);
- 
- 		err = attr_load_runs(attr_ea, ni, &run, NULL);
- 		if (!err)
--			err = ntfs_read_run_nb(ni->mi.sbi, &run, 0, ea_p, size,
--					       NULL);
-+			err = ntfs_read_run_nb(sbi, &run, 0, ea_p, size, NULL);
- 		run_close(&run);
- 
- 		if (err)
-@@ -366,21 +368,22 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 	new_ea->name[name_len] = 0;
- 	memcpy(new_ea->name + name_len + 1, value, val_size);
- 	new_pack = le16_to_cpu(ea_info.size_pack) + packed_ea_size(new_ea);
--
--	/* Should fit into 16 bits. */
--	if (new_pack > 0xffff) {
--		err = -EFBIG; // -EINVAL?
--		goto out;
--	}
- 	ea_info.size_pack = cpu_to_le16(new_pack);
--
- 	/* New size of ATTR_EA. */
- 	size += add;
--	if (size > sbi->ea_max_size) {
-+	ea_info.size = cpu_to_le32(size);
-+
-+	/*
-+	 * 1. Check ea_info.size_pack for overflow.
-+	 * 2. New attibute size must fit value from $AttrDef
-+	 */
-+	if (new_pack > 0xffff || size > sbi->ea_max_size) {
-+		ntfs_inode_warn(
-+			inode,
-+			"The size of extended attributes must not exceed 64KiB");
- 		err = -EFBIG; // -EINVAL?
- 		goto out;
- 	}
--	ea_info.size = cpu_to_le32(size);
- 
- update_ea:
- 
+MEMBLOCK_HOTPLUG is used to mark memory early during boot that can later 
+get hotunplugged again and should be placed into ZONE_MOVABLE if the 
+"movable_node" kernel parameter is set.
+
+The confusing part is that we talk about "hotpluggable" but really mean 
+"hotunpluggable": the reason is that HW flags DIMM slots that can later 
+be hotplugged as "hotpluggable" even though there is already something 
+hotplugged.
+
+For example, ranges in the ACPI SRAT that are marked as 
+ACPI_SRAT_MEM_HOT_PLUGGABLE will be marked MEMBLOCK_HOTPLUG early during 
+boot (drivers/acpi/numa/srat.c:acpi_numa_memory_affinity_init()). Later, 
+we use that information to size ZONE_MOVABLE 
+(mm/page_alloc.c:find_zone_movable_pfns_for_nodes()). This will make 
+sure that these "hotpluggable" DIMMs can later get hotunplugged.
+
+Also, see should_skip_region() how this relates to the "movable_node" 
+kernel parameter:
+
+	/* skip hotpluggable memory regions if needed */
+	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
+	    (flags & MEMBLOCK_HOTPLUG))
+		return true;
+
+Long story short: MEMBLOCK_HOTPLUG has different semantics and is a 
+special case for "movable_node".
+
 -- 
-2.33.0
+Thanks,
 
+David / dhildenb
 
