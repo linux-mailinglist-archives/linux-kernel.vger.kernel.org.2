@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E64C41C7E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54D641C7E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 17:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345060AbhI2PLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 11:11:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24159 "EHLO mga17.intel.com"
+        id S1345074AbhI2PNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 11:13:04 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:8923 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344834AbhI2PLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:11:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205109534"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="205109534"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:09:39 -0700
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="655526170"
-Received: from andrewds-mobl1.amr.corp.intel.com (HELO [10.212.171.7]) ([10.212.171.7])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 08:09:38 -0700
-Subject: Re: [PATCH v2 2/4] x86/mm/64: Flush global TLB on AP bringup
-To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org
-References: <20210929145501.4612-1-joro@8bytes.org>
- <20210929145501.4612-3-joro@8bytes.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <9d1d3000-d4eb-eb6d-1a34-4b58fb0322e3@intel.com>
-Date:   Wed, 29 Sep 2021 08:09:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1344991AbhI2PND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 11:13:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1632928283;
+  x=1664464283;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=chXe7LowbepFp9WcjiVKhwfFPB4CO+NsYBHetH4uz4g=;
+  b=b/5+vH33d24lwVt3EJz/6DVYEm5jFTCCdb6K+X7aEupA45a+QDIf7QRU
+   OUUq2TvgeH9tMJhkgqk9HtkLaSK8qalwjTEl1osTd552KLJ0i658uvN9o
+   0LdsN5i9TDF+aRDGGQRSdUuzeki0nsSSvxftm8fEing9tbQfLXKzB1+BB
+   RQoR4XY/eMXw9uUTs9EJZZsAebQW2FBUDpyK5lL9wdaTvlkK9jWyYCo18
+   aH2zU5EwXrxrQflG+KWEOXvsKcHhCdCgiQZa231l/c5pjdIqiLk2lNlYb
+   dSIEfj/wYSdvwMExmGsM7gt60+m+k9MsvOkzUUujttu/27udHCp7VFkPd
+   g==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>
+CC:     <kernel@axis.com>, <kvm@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pbonzini@redhat.com>, <stefanha@redhat.com>,
+        <sgarzare@redhat.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [RFC PATCH 00/10] Support kernel buffers in vhost
+Date:   Wed, 29 Sep 2021 17:11:09 +0200
+Message-ID: <20210929151119.14778-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20210929145501.4612-3-joro@8bytes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/21 7:54 AM, Joerg Roedel wrote:
-> The AP bringup code uses the trampoline_pgd page-table, which
-> establishes global mappings in the user range of the address space.
-> Flush the global TLB entries after CR4 is setup for the AP to make sure
-> no stale entries remain in the TLB.
-...
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 0f8885949e8c..0f71ea2e5680 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -436,6 +436,12 @@ void cr4_init(void)
->  
->  	/* Initialize cr4 shadow for this CPU. */
->  	this_cpu_write(cpu_tlbstate.cr4, cr4);
-> +
-> +	/*
-> +	 * Flush any global TLB entries that might be left from the
-> +	 * trampline_pgd.
-> +	 */
-> +	__flush_tlb_all();
->  }
+vhost currently expects that the virtqueues and the queued buffers are
+accessible from a userspace process' address space.  However, when using vhost
+to communicate between two Linux systems running on two physical CPUs in an AMP
+configuration (on a single SoC or via something like PCIe), it is undesirable
+from a security perspective to make the entire kernel memory of the other Linux
+system accessible from userspace.
 
-Is there a reason to do this flush here as opposed to doing it closer to
-the CR3 write where we switch away from trampoline_pgd?  cr4_init()
-seems like an odd place.
+To remedy this, this series adds support to vhost for placing the virtqueues
+and queued buffers in kernel memory.  Since userspace should not be allowed to
+control the placement and attributes of these virtqueues, a mechanism to do
+this from kernel space is added.  A vDPA-based test driver is added which uses
+this support to allow virtio-net and vhost-net to communicate with each other
+on the same system without exposing kernel memory to userspace via /dev/mem or
+similar.
+
+This vDPA-based test driver is intended to be used as the basis for the
+implementation of driver which will allow Linux-Linux communication between
+physical CPUs on SoCs using virtio and vhost, for instance by using information
+from the device tree to indicate the location of shared memory, and the mailbox
+API to trigger interrupts between the CPUs.
+
+This patchset is also available at:
+
+ https://github.com/vwax/linux/tree/vhost/rfc
+
+Vincent Whitchurch (10):
+  vhost: scsi: use copy_to_iter()
+  vhost: push virtqueue area pointers into a user struct
+  vhost: add iov wrapper
+  vhost: add support for kernel buffers
+  vhost: extract common code for file_operations handling
+  vhost: extract ioctl locking to common code
+  vhost: add support for kernel control
+  vhost: net: add support for kernel control
+  vdpa: add test driver for kernel buffers in vhost
+  selftests: add vhost_kernel tests
+
+ drivers/vdpa/Kconfig                          |   8 +
+ drivers/vdpa/Makefile                         |   1 +
+ drivers/vdpa/vhost_kernel_test/Makefile       |   2 +
+ .../vhost_kernel_test/vhost_kernel_test.c     | 575 ++++++++++++++++++
+ drivers/vhost/Kconfig                         |   6 +
+ drivers/vhost/Makefile                        |   3 +
+ drivers/vhost/common.c                        | 340 +++++++++++
+ drivers/vhost/net.c                           | 212 ++++---
+ drivers/vhost/scsi.c                          |  50 +-
+ drivers/vhost/test.c                          |   2 +-
+ drivers/vhost/vdpa.c                          |   6 +-
+ drivers/vhost/vhost.c                         | 437 ++++++++++---
+ drivers/vhost/vhost.h                         | 109 +++-
+ drivers/vhost/vsock.c                         |  95 +--
+ include/linux/vhost.h                         |  23 +
+ tools/testing/selftests/Makefile              |   1 +
+ .../vhost_kernel/vhost_kernel_test.c          | 287 +++++++++
+ .../vhost_kernel/vhost_kernel_test.sh         | 125 ++++
+ 18 files changed, 2020 insertions(+), 262 deletions(-)
+ create mode 100644 drivers/vdpa/vhost_kernel_test/Makefile
+ create mode 100644 drivers/vdpa/vhost_kernel_test/vhost_kernel_test.c
+ create mode 100644 drivers/vhost/common.c
+ create mode 100644 include/linux/vhost.h
+ create mode 100644 tools/testing/selftests/vhost_kernel/vhost_kernel_test.c
+ create mode 100755 tools/testing/selftests/vhost_kernel/vhost_kernel_test.sh
+
+-- 
+2.28.0
+
