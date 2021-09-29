@@ -2,140 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFF841CC62
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF3141CC66
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346457AbhI2TMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:12:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346459AbhI2TMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:12:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEB456152B;
-        Wed, 29 Sep 2021 19:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632942665;
-        bh=KLrloZPzLW18c3xvNXLpZsRmlo/8Db+xpwDUJ6mpspw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g/Y6B1hsAFTG9hM7y/eREJP0dV2b20GYaTs3YeZ4KaTMtiHknXZf3ADcL0bTTnWPC
-         Kc76CU3P4x3ye3SQjW+Pz7UeT6FmOn/m5jNHrqgZ560+HE8bsAQ8BBtbm9rDGctA43
-         z4EuglKmsLwW9FSKlZXsxGNWqFa9pmBQpUbVw/3cgO1TEMKo1I+QBzUgSkcyDYGWYt
-         3pE7btqaH0EXIoQ5/Zo3bI28GzOczDegU7PsSamKO0GVRCuqOObO+AxpPsm56Ko141
-         MrQS2LRnvXbbElRArzKioa6wZC6QSjnirE8DucXayN16mJfNEc1BpHjXI3nFBMB9Lc
-         kXMFaYz3zTNMw==
-Date:   Wed, 29 Sep 2021 22:11:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <YVS6RQfcp2YVxrv3@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR0iKIRYDXQbD+o@unreal>
- <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVSG55i75awUpAmn@unreal>
- <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1346492AbhI2TN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346519AbhI2TNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:13:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2834C061764;
+        Wed, 29 Sep 2021 12:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VB8BEkWYk8ipFDdF2QL3GxbUNqMFCHrHcxXp4+kJ8gc=; b=UVKcdtzsXUv2MstXbvKPcOGKJQ
+        0H44svCOKks+sKDJ9L9dO30Fe2ILlQxucStp9wUuOjPV+n7BkUGNjikmV0B4LqMbIZzwGXHWziHZ8
+        OCHHUSN8WFY1ZD/z07smErug4PT8cksxGEaQjtrWjWYTHQFpb+gy0Ux2YkWRCDCu14KhCd2//nn+m
+        mj73PdcQ4LKh86QbkzgOmTghHKvK4Ej9c8KgDTRWEQh18RDXD8afRy6g45xMaOlIMafuL002Kx755
+        ZIUd8TV8AXGTx6q86SxyHYbBG1YfPqpI99LPaXifwxSluEHLPOnyN6X5O8+xLVh/dvwNaG2tF05dz
+        zycFYneQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVez6-006mGU-6n; Wed, 29 Sep 2021 19:11:16 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AA389981431; Wed, 29 Sep 2021 21:11:15 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 21:11:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 08/11] context_tracking,rcu: Replace RCU dynticks
+ counter with context_tracking
+Message-ID: <20210929191115.GY4323@worktop.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.007420590@infradead.org>
+ <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:55:37AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 18:31:51 +0300 Leon Romanovsky wrote:
-> > On Wed, Sep 29, 2021 at 07:39:40AM -0700, Jakub Kicinski wrote:
-> > > On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:  
-> > > > We don't need to advertise counters for feature that is not supported.
-> > > > In multiport mlx5 devices, the reload functionality is not supported, so
-> > > > this change at least make that device to behave like all other netdev
-> > > > devices that don't support devlink reload.
-> > > > 
-> > > > The ops structure is set very early to make sure that internal devlink
-> > > > routines will be able access driver back during initialization (btw very
-> > > > questionable design choice)  
-> > > 
-> > > Indeed, is this fixable? Or now that devlink_register() was moved to 
-> > > the end of probe netdev can call ops before instance is registered?
-> > >   
-> > > > and at that stage the driver doesn't know
-> > > > yet which device type it is going to drive.
-> > > > 
-> > > > So the answer is:
-> > > > 1. Can't have two structures.  
-> > > 
-> > > I still don't understand why. To be clear - swapping full op structures
-> > > is probably acceptable if it's a pure upgrade (existing pointers match).
-> > > Poking new ops into a structure (in alphabetical order if I understand
-> > > your reply to Greg, not destructor-before-contructor) is what I deem
-> > > questionable.  
-> > 
-> > It is sorted simply for readability and not for any other technical
-> > reason.
-> > 
-> > Regarding new ops, this is how we are setting callbacks in RDMA based on
-> > actual device support. It works like a charm.
-> > 
-> > > > 2. Same behaviour across all netdev devices.  
-> > > 
-> > > Unclear what this is referring to.  
-> > 
-> > If your device doesn't support devlink reload, it won't print any
-> > reload counters at all. It is not the case for the multiport mlx5
-> > device. It doesn't support, but still present these counters.
+On Wed, Sep 29, 2021 at 11:37:01AM -0700, Paul E. McKenney wrote:
+
+> > +void context_tracking_idle(void)
+> > +{
+> > +	atomic_add_return(CT_SEQ, &raw_cpu_ptr(&context_tracking)->seq);
 > 
-> There's myriad ways you can hide features.
-> 
-> Swapping ops is heavy handed and prone to data races, I don't like it.
+> This is presumably a momentary idle.
 
-I'm not swapping, but setting only in supported devices.
+> >  notrace void rcu_momentary_dyntick_idle(void)
+> >  {
+> > -	int seq;
+> > -
+> >  	raw_cpu_write(rcu_data.rcu_need_heavy_qs, false);
+> > -	seq = rcu_dynticks_inc(2);
+> > -	/* It is illegal to call this from idle state. */
+> > -	WARN_ON_ONCE(!(seq & 0x1));
+> > +	context_tracking_idle();
+> >  	rcu_preempt_deferred_qs(current);
+> >  }
 
-Anyway, please give me a chance to present improved version of this
-mechanism and we will continue from there.
-
-Thanks
+It's whatever that is. It increments the actual sequence count without
+modifying the state.
