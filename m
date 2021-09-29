@@ -2,121 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DFC41C6C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4210741C6B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344499AbhI2OhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 10:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
+        id S1344486AbhI2Oc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344505AbhI2OdR (ORCPT
+        with ESMTP id S1344493AbhI2Oc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:33:17 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC06C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:31:36 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id x7so9262391edd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:31:35 -0700 (PDT)
+        Wed, 29 Sep 2021 10:32:57 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB7AC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:31:16 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id r11-20020ac86d2b000000b002a688ea1f4bso8705326qtu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=WsCHCHxDakoTG9Y2g1K3Qe4rx6KtRBr1u+T1pzACydY=;
-        b=BtiXOGYER9YrYAItEdOx0vNMy5uSTK/hX3RVgLSZ3uQrBewz42OlOQXLZszFMwonC6
-         2CnMtHZIq9XG8Nt1q8iLw4zDw8rRX+a5W8qSx3KVzHKVnyy0V0CXnzWlBcMzwQ+rM5vx
-         ZnhnWV6a7A4lj9HnXH//5QhKS9VPUzFZ5MLVKxk99FpaWTNfwt18rxzzmrjP8yw2Yv9p
-         SyhZ3h5uoIOSVKmYPwYTcX3MFAxdzRAyi8OjHFmsJAHjzreZOVFiM5cNBzLDjegyptdm
-         Di5UKwwORMBZimUezYaBz4lknCBuyWkvm9Jn919e75jLHolpEnzUADr0B1MMEFK9UX6x
-         RvXQ==
+        bh=rWICg8z18y6VVMgB2+FBawlhY9BT8cZzUVXfBU/5MDc=;
+        b=lDmFatJxse2Wln+jGfebmXhp7ycDVxpvCtDN5lXIJGK6Cqt2tWheN/OsgOdlMKRBn3
+         nUxGAmetg2Xz+ITdJ9SZKNJfMh3K1TV+RTJD7NtJAT3S0kEXXjbnWbZVRDi7I26Gw+pA
+         if5ye7gfxc4hg/zbooMFmMgNyOvTDMfrx3DIO3HEzzx/lkeO+wqXumwFJHc4fl+9R3oa
+         ILTW5xhoS3B4B4qYePulahGaD7oxojtUVWeolSwhNCj9jEffJ15zn8MOJO6TDQiG5Z8C
+         JbAshmkT9/7neyVISnTlS9aGiexK4t1ibOVGuNmYhDEBaWxngYutYMXW7lquprr+bUDS
+         xITg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WsCHCHxDakoTG9Y2g1K3Qe4rx6KtRBr1u+T1pzACydY=;
-        b=aRLwv4r0hG5pLK7NO6cSSse3R2es4MmAKkHz1E4Nweub6RXLypQbgCfGinFxZP9zmw
-         qmly3tyqDxOi3jmRRltTupP0Pli1tBEThqJOaGraweAcjFexl41DzxmrBSuam5dvybKg
-         hCj/EcDhL/5wQdqmlUVVOKlEgYJGfSa1J570WOZiMCRa94u197208UCGMjmgfaiiQbGG
-         FZHFOnzVoXOsCb35KrJt+55lynJFFYzDbQp2JRagwkxqk75NswxnpwgmB/REml20ayJs
-         qYPrWSTDxA3+m90noYb84m8k2TCOlTXmDntPpl94Xh8/eZdUVu77IrHQA3S3LwqpExYa
-         1Ywg==
-X-Gm-Message-State: AOAM532HLX3c2/JWloTwasu0n89VulOP6jMLL8IioHJxEpMlVsLbFylx
-        hGM9oB9bH62hoOBGbKpTrPJfCzj+oGkdZzAYRgUFTow5dniCQw==
-X-Google-Smtp-Source: ABdhPJxZxYvDMm2YqTW1OjhvnqIVaBbe/F7hJ78SGcL9elgVQbdIzJFG1E61pzl9QLo4Znd0OxJJWvujOsMAvjgeCg0=
-X-Received: by 2002:a05:6402:142e:: with SMTP id c14mr207037edx.209.1632925850454;
- Wed, 29 Sep 2021 07:30:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210908132727.16165-1-david@redhat.com> <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
- <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
- <ea75df96-f381-6949-5627-1382a370dc71@redhat.com> <20210916193403.GA1940@pc638.lan>
- <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com> <20210921221337.GA60191@pc638.lan>
- <7f62d710-ca85-7d33-332a-25ff88b5452f@redhat.com> <20210922104141.GA27011@pc638.lan>
- <e378e60a-319b-e9aa-7e30-3e280c4431da@redhat.com>
-In-Reply-To: <e378e60a-319b-e9aa-7e30-3e280c4431da@redhat.com>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Wed, 29 Sep 2021 16:30:39 +0200
-Message-ID: <CA+KHdyWZ9T2GEuUENXD_OYHX1JxKfZuW5YzmDtqXUYSgkQd8fQ@mail.gmail.com>
-Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment > 1
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Ping Fang <pifang@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=rWICg8z18y6VVMgB2+FBawlhY9BT8cZzUVXfBU/5MDc=;
+        b=zRNA16ig/qzEZhdkBsgfdK65pIPx9Kvuz2lb1LfM5jS1uxRa+fdDnHwWa+ojGzSQEd
+         Fl5v3r5Izhe3ez1+onqcNguw/sGwMDxtfKOnPFd1AEipQSd11FCs9dMXhehFufRKSVzZ
+         BYZ8xRyCAb13XxjmS/GbgR1xXnqwXqYZ6hOAM9dHAh8wtruoiNiezqkIBHagbcXmlvFu
+         5q2qQcknqLtAlts3dBoMeGRzD41dtsfidhcpmFQCFobwAb8Lzwr2jF0XuH4Ym7juH7RD
+         YQX6+varpV8y72eShKaG0TZ08tskTGeUiHPHVVmdrJRDvGoNF6dthx5IUmC+4exlZp6B
+         tHnA==
+X-Gm-Message-State: AOAM533201Cm+MVlJmpOrKVGSCc5e+tNLeiTB4svifIQHMqKD3tH0TXL
+        9x0v1WTEpKgfDwtSbTQqCQPq/9HOQ7gS
+X-Google-Smtp-Source: ABdhPJwDV7ClEvzTaenTx9rrvJz3xctvGcdzsJSql0k1qJNvj4+7OO3EWhHwlFTBoaVZ+/f8jCZSYTGTNTbo
+X-Received: from bg.sfo.corp.google.com ([2620:15c:11a:202:d5dd:2dee:3cc9:114])
+ (user=bgeffon job=sendgmr) by 2002:a05:6214:1046:: with SMTP id
+ l6mr11763064qvr.6.1632925875212; Wed, 29 Sep 2021 07:31:15 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 07:30:56 -0700
+In-Reply-To: <20210917210640.214211-1-bgeffon@google.com>
+Message-Id: <20210929143056.13067-1-bgeffon@google.com>
+Mime-Version: 1.0
+References: <20210917210640.214211-1-bgeffon@google.com>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
+Subject: [PATCH v6] zram: Introduce an aged idle interface
+From:   Brian Geffon <bgeffon@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Brian Geffon <bgeffon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> So the idea is that once we run into a dead end because we took a left
-> subtree, we rollback to the next possible rigth subtree and try again.
-> If we run into another dead end, we repeat ... thus, this can now happen
-> more than once.
->
-> I assume the only implication is that this can now be slower in some
-> corner cases with larger alignment, because it might take longer to find
-> something suitable. Fair enough.
->
-Yep, your understanding is correct regarding the tree traversal. If no
-suitable block
-is found in left sub-tree we roll-back and check right one. So it can
-be(the scanning)
-more than one time.
+This change introduces an aged idle interface to the existing
+idle sysfs file for zram.
 
-I did some performance analyzing using vmalloc test suite to figure
-out a performance
-loss for allocations with specific alignment. On that syntactic test i
-see approx. 30%
-of degradation:
+When CONFIG_ZRAM_MEMORY_TRACKING is enabled the idle file
+now also accepts an integer argument. This integer is the
+age (in seconds) of pages to mark as idle. The idle file
+still supports 'all' as it always has. This new approach
+allows for much more control over which pages get marked
+as idle.
 
-2.225 microseconds vs 1.496 microseconds. That time includes both
-vmalloc() and vfree()
-calls. I do not consider it as a big degrade, but from the other hand
-we can still adjust the
-search length for alignments > one page:
+  v5 -> v6:
+        - Sergey's cleanup suggestions.
 
-# add it on top of previous proposal and search length instead of size
-length = align > PAGE_SIZE ? size + align:size;
+  v4 -> v5:
+        - Andrew's suggestions to use IS_ENABLED and
+          cleanup comment.
 
-in that case we solve a KASAN issue + do not introduce a degrade. For
-the PAGE_SIZE
-alignment all free blocks are aligned to it anyway. As for users which
-uses a fixed range
-that is same as a requested size and at the same time want to apply a
-special alignment
-is not considered as a common case, also we do not have such users.
+  v3 -> v4:
+        - Remove base10 restriction.
 
-Thoughts?
+  v2 -> v3:
+        - Correct unused variable warning when
+          CONFIG_ZRAM_MEMORY_TRACKING is not enabled.
+  v1 -> v2:
+        - Switch to using existing idle file.
+        - Dont compare ktime directly.
 
-> >
-> > Could you please help and test the KASAN use case?
->
-> Just tried it, works just fine with KASAN and makes sense in general,
-> thanks!
->
-Good!
+Signed-off-by: Brian Geffon <bgeffon@google.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+---
+ Documentation/admin-guide/blockdev/zram.rst |  8 +++
+ drivers/block/zram/zram_drv.c               | 62 +++++++++++++++------
+ 2 files changed, 54 insertions(+), 16 deletions(-)
 
-Sorry for the delay.
+diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
+index 700329d25f57..3e11926a4df9 100644
+--- a/Documentation/admin-guide/blockdev/zram.rst
++++ b/Documentation/admin-guide/blockdev/zram.rst
+@@ -328,6 +328,14 @@ as idle::
+ From now on, any pages on zram are idle pages. The idle mark
+ will be removed until someone requests access of the block.
+ IOW, unless there is access request, those pages are still idle pages.
++Additionally, when CONFIG_ZRAM_MEMORY_TRACKING is enabled pages can be
++marked as idle based on how long (in seconds) it's been since they were
++last accessed::
++
++        echo 86400 > /sys/block/zramX/idle
++
++In this example all pages which haven't been accessed in more than 86400
++seconds (one day) will be marked idle.
+ 
+ Admin can request writeback of those idle pages at right timing via::
+ 
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index fcaf2750f68f..4e76a75a7840 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -291,22 +291,16 @@ static ssize_t mem_used_max_store(struct device *dev,
+ 	return len;
+ }
+ 
+-static ssize_t idle_store(struct device *dev,
+-		struct device_attribute *attr, const char *buf, size_t len)
++/*
++ * Mark all pages which are older than or equal to cutoff as IDLE.
++ * Callers should hold the zram init lock in read mode
++ */
++static void mark_idle(struct zram *zram, ktime_t cutoff)
+ {
+-	struct zram *zram = dev_to_zram(dev);
++	int is_idle = 1;
+ 	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
+ 	int index;
+ 
+-	if (!sysfs_streq(buf, "all"))
+-		return -EINVAL;
+-
+-	down_read(&zram->init_lock);
+-	if (!init_done(zram)) {
+-		up_read(&zram->init_lock);
+-		return -EINVAL;
+-	}
+-
+ 	for (index = 0; index < nr_pages; index++) {
+ 		/*
+ 		 * Do not mark ZRAM_UNDER_WB slot as ZRAM_IDLE to close race.
+@@ -314,14 +308,50 @@ static ssize_t idle_store(struct device *dev,
+ 		 */
+ 		zram_slot_lock(zram, index);
+ 		if (zram_allocated(zram, index) &&
+-				!zram_test_flag(zram, index, ZRAM_UNDER_WB))
+-			zram_set_flag(zram, index, ZRAM_IDLE);
++				!zram_test_flag(zram, index, ZRAM_UNDER_WB)) {
++#ifdef CONFIG_ZRAM_MEMORY_TRACKING
++			is_idle = !cutoff || ktime_after(cutoff, zram->table[index].ac_time);
++#endif
++			if (is_idle)
++				zram_set_flag(zram, index, ZRAM_IDLE);
++		}
+ 		zram_slot_unlock(zram, index);
+ 	}
++}
+ 
+-	up_read(&zram->init_lock);
++static ssize_t idle_store(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t len)
++{
++	struct zram *zram = dev_to_zram(dev);
++	ktime_t cutoff_time = 0;
++	ssize_t rv = -EINVAL;
+ 
+-	return len;
++	if (!sysfs_streq(buf, "all")) {
++		/*
++		 * If it did not parse as 'all' try to treat it as an integer when
++		 * we have memory tracking enabled.
++		 */
++		u64 age_sec;
++
++		if (IS_ENABLED(CONFIG_ZRAM_MEMORY_TRACKING) && !kstrtoull(buf, 0, &age_sec))
++			cutoff_time = ktime_sub(ktime_get_boottime(),
++					ns_to_ktime(age_sec * NSEC_PER_SEC));
++		else
++			goto out;
++	}
++
++	down_read(&zram->init_lock);
++	if (!init_done(zram))
++		goto out_unlock;
++
++	/* A cutoff_time of 0 marks everything as idle, this is the "all" behavior */
++	mark_idle(zram, cutoff_time);
++	rv = len;
++
++out_unlock:
++	up_read(&zram->init_lock);
++out:
++	return rv;
+ }
+ 
+ #ifdef CONFIG_ZRAM_WRITEBACK
+-- 
+2.33.0.685.g46640cef36-goog
 
---
-Uladzislau Rezki
