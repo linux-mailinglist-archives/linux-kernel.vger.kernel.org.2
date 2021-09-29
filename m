@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0076741CAD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5370F41CAD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344895AbhI2RB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344809AbhI2RBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:01:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40053613D1;
-        Wed, 29 Sep 2021 16:59:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632934783;
-        bh=NIb8p1udmU2cyyxgdKTASy2CHdIukYGs/zoSTQfFkTo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JUXaf/PU8zljz7WC6Nq05HvgArXrLqToUQ1ZwS6h6AisXMXNfCYy1rRmH/E9gILcm
-         fBe8b58GTWuoDqSGlWgsbKMZAX0BSNwQBPuQgZ+yIlXKCSA7MUZkL1fqld8f8nY3JK
-         72grjrOBGxS4d74bnNQ2kyZR8nSEZ9PmcUSts6Janc2AADE1d/g/ZcZ8MNvkxc4OuX
-         lIFCscyzIf6jaD200C6wFbHJ9qEUj/lzukmjwSpfBAdRsZmrko55fyRgg62RhP/0no
-         AHV/HzoAzi8A/LxCNU+iYq3GB2898pCWft87k/IL9O5AGmVIyiZlwXLhUeUxjs2Gtp
-         QcK7gWdplJdNw==
-Message-ID: <75e95acc-6730-ddcf-d722-66e575076256@kernel.org>
-Date:   Wed, 29 Sep 2021 09:59:42 -0700
+        id S1344939AbhI2RFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:05:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28198 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243396AbhI2RFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 13:05:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632935034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hTE5zFleGLnTuyLrFqdFPMU22BAwoJNwUb4warb1Xi4=;
+        b=XCmS5QXOna/fo3c3BLu8WIZZAC60SDfXCdspTe1Cy6nJLp0zaYqrFPPy9ewcOOYR/SesJa
+        7tu3u9X92YzNotctq5CCEY8jWFjGkzI7IlBCbrMj30LzfsdJOdJSsCv8SB+q8TInSfUjE0
+        E6YLGIGmTt0dQeiFIOsfW4oCp0YaFHw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-_UBuHAyHOVyAKFnFjKEe0A-1; Wed, 29 Sep 2021 13:03:53 -0400
+X-MC-Unique: _UBuHAyHOVyAKFnFjKEe0A-1
+Received: by mail-wm1-f69.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so1514928wmj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 10:03:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=hTE5zFleGLnTuyLrFqdFPMU22BAwoJNwUb4warb1Xi4=;
+        b=zbXT6C8+tuVBF3G9cONPWUt6kV38BiTvaZ58iYSrN64LyY6FGNi4JPEuEcP4e5eesJ
+         qu5UZriTIukixQjSTCya1bxu+8/Foplh5h5Dixk5cUMU7i4/ew2TqWAy0P6lCHSbdoir
+         buav95/5ixueYbKrW7+jPA4nULJCmEZLFMUmR6Z8UL/QSRn2DKL1WwhN6aSSLIot8r19
+         BLkl09UNR2wraXBcysLqVwUdzAlKdS+8Sa0MoH4UyINeI8CXynpweKG3dSlM0ZElzoyO
+         FIYUWbHKrLUAjPwSFKgbjQzhCvhUlva+aSmXgt9TvguZrJByUyxs2Ldbk3n6PKeo8zz7
+         6itQ==
+X-Gm-Message-State: AOAM530OT/yfvYU2JQUhZAXR4lOGedcLvGkXl9PHI3BDsOoJUd2dAkeA
+        pRoXI1W1RqTs04NaJz/ksPTLzjkQmMgPEXmWJZfhc9q+PfBXyAUkN+ITF0v4c3POwv82y1VYFhf
+        ot1hr4EzHM3zRlHH5YgetNFFR
+X-Received: by 2002:a05:600c:3b26:: with SMTP id m38mr1065215wms.176.1632935031977;
+        Wed, 29 Sep 2021 10:03:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFT3c0vb/qzy1G4SkbQIPZPlSnrPV+5jondgwEWp4VtQKpRxeIjZOjfnGgAlQfz4Cp6i/4Yw==
+X-Received: by 2002:a05:600c:3b26:: with SMTP id m38mr1065198wms.176.1632935031786;
+        Wed, 29 Sep 2021 10:03:51 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id o15sm372589wmc.21.2021.09.29.10.03.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 10:03:51 -0700 (PDT)
+Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
+ <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
+ <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+ <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+ <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
+Date:   Wed, 29 Sep 2021 19:03:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
+In-Reply-To: <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-6-fenghua.yu@intel.com> <87y27nfjel.ffs@tglx>
- <YUyuEjlrcOeCp4qQ@agluck-desk2.amr.corp.intel.com> <87o88jfajo.ffs@tglx>
- <87k0j6dsdn.ffs@tglx> <YU3414QT0J7EN4w9@agluck-desk2.amr.corp.intel.com>
- <a77ee33c-6fa7-468c-8fc0-a0a2ce725e75@www.fastmail.com>
- <YVQ3wc/XjeOHpGCX@hirez.programming.kicks-ass.net> <87r1d78t2e.ffs@tglx>
-From:   Andy Lutomirski <luto@kernel.org>
-In-Reply-To: <87r1d78t2e.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/21 05:28, Thomas Gleixner wrote:
-> On Wed, Sep 29 2021 at 11:54, Peter Zijlstra wrote:
->> On Fri, Sep 24, 2021 at 04:03:53PM -0700, Andy Lutomirski wrote:
->>> I think the perfect and the good are a bit confused here. If we go for
->>> "good", then we have an mm owning a PASID for its entire lifetime.  If
->>> we want "perfect", then we should actually do it right: teach the
->>> kernel to update an entire mm's PASID setting all at once.  This isn't
->>> *that* hard -- it involves two things:
+On 29.09.21 10:58, Faiyaz Mohammed wrote:
+> 
+> 
+> On 9/28/2021 4:46 PM, David Hildenbrand wrote:
+>> On 28.09.21 12:53, Faiyaz Mohammed wrote:
 >>>
->>> 1. The context switch code needs to resync PASID.  Unfortunately, this
->>> adds some overhead to every context switch, although a static_branch
->>> could minimize it for non-PASID users.
+>>>
+>>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
+>>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
+>>>>> For INITRD and initmem memory is reserved through "memblock_reserve"
+>>>>> during boot up but it is free via "free_reserved_area" instead
+>>>>> of "memblock_free".
+>>>>> For example:
+>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>
+>>>>> To get the start and end address of the above freed memory and to
+>>>>> account
+>>>>> proper memblock added memblock_dbg log in "free_reserved_area".
+>>>>> After adding log:
+>>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
+>>>>> free_initrd_mem+0x20/0x28
+>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
+>>>>> free_initmem+0x70/0xc8
+>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>
+>>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>>>>> ---
+>>>>>     mm/page_alloc.c | 5 +++++
+>>>>>     1 file changed, 5 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>> index b37435c..f85c3b2 100644
+>>>>> --- a/mm/page_alloc.c
+>>>>> +++ b/mm/page_alloc.c
+>>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start,
+>>>>> void *end, int poison, const char
+>>>>>             pr_info("Freeing %s memory: %ldK\n",
+>>>>>                 s, pages << (PAGE_SHIFT - 10));
+>>>>>     +#ifdef CONFIG_HAVE_MEMBLOCK
+>>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
+>>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>>>>> +#endif
+>>>>
+>>>> IMHO, the "memblock_free" part is misleading. Something was allocated
+>>>> early via memblock, then we transitioned to the buddy, now we're freeing
+>>>> that early allocation via the buddy.
+>>>> Yes, we're freeing the early allocation via buddy, but for proper
+>>> memblock accounting we need this debug print.
+>>>
 >>
->>> 2. A change to an mm's PASID needs to sent an IPI, but that IPI can't
->>> touch FPU state.  So instead the IPI should use task_work_add() to
->>> make sure PASID gets resynced.
+>> What do you mean with "accounting" ? These are debug statements.
 >>
->> What do we need 1 for? Any PASID change can be achieved using 2 no?
 >>
->> Basically, call task_work_add() on all relevant tasks [1], then IPI
->> spray the current running of those and presto.
->>
->> [1] it is nigh on impossible to find all tasks sharing an mm in any sane
->> way due to CLONE_MM && !CLONE_THREAD.
-> 
-> Why would we want any of that at all?
-> 
->    Process starts, no PASID assigned.
-> 
->    bind to device -> PASID is allocated and assigned to the mm
-> 
->    some task of the process issues ENQCMD -> #GP -> write PASID MSR
-> 
->    After that the PASID is saved and restored as part of the XSTATE and
->    there is no extra overhead in context switch or return to user space.
-> 
->    All tasks of the process which did never use ENQCMD don't care and their
->    PASID xstate is in init state.
-> 
-> There is absolutely no point in enforcing that all tasks of the process
-> have the PASID activated immediately when it is assigned. If they need
-> it they get it via the #GP fixup and everything just works.
-> 
-> Looking at that patch again, none of this muck in fpu__pasid_write() is
-> required at all. The whole exception fixup is:
-> 
->      if (!user_mode(regs))
->               return false;
-> 
->      if (!current->mm->pasid)
->               return false;
-> 
->      if (current->pasid_activated)
->      	     return false;
+> Yes, these are debug statements, which help to know the a-b address
+> belongs to x callsite. This info is required when memblock=debug is
+> passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
 
-<-- preemption or BH here: kaboom.
+The issue I'm having is talking in the name of memblock "memblock_dbg, 
+memblock_free", when memblock might no longer be around. We have other 
+places where we free early memblock allocations back to the buddy.
 
-> 
->      wrmsrl(MSR_IA32_PASID, current->mm->pasid);
+-- 
+Thanks,
 
-This needs the actual sane fpstate writing helper -- see other email.
+David / dhildenb
+
