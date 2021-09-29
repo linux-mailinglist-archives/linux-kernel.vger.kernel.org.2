@@ -2,116 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A35D41C388
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EE641C392
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 13:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245695AbhI2LiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 07:38:12 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:38720 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245664AbhI2LiI (ORCPT
+        id S245710AbhI2Lm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 07:42:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38771 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245647AbhI2Lm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 07:38:08 -0400
-Received: by mail-io1-f72.google.com with SMTP id s21-20020a6bdc15000000b005db56ae6275so2199122ioc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 04:36:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PKgKN2Eqt15tt78hRikEq7x2wz37kMe0a24grKmsqGc=;
-        b=zcjiXygQhujzHAmdmzuNiGOVERE5PVuoDG5cK3R2mQclnGOMgMUjgUOIl5DzR5glbu
-         KE2i4kqTbVTyrFRTaLZWpRfyV99CxBGv73i1LzQ8ZEll18/+Q+2OvnVypRgS58ZGHM92
-         blfopr0Ll4Q4ClwJbqjJE6Ixeo1TgkEM8A1SPqzhbkiUBMnZ8lUt2ADf7XJzV0Ci+EdF
-         FhsSpgMuaIPEIEYhVRc7OpBGC3O3PXVtI4+CWH41TWrPKaJEEpYbbaQpOILbvxFsfnpN
-         6cmwQU4+ZDkB+V1IH2rJoqe8zPuekJIXwrXmE0PFW4rjxs/eAJJErckzMOHjQOAc9heR
-         LA3w==
-X-Gm-Message-State: AOAM530LvoU8EQJ3jXMVyf8Gl33qv6smmW6wfxj4MiBoFFFxd9S8wRbb
-        l0yxnI7eyFuOAdPYunK/kDeJuHKKbI/FXJC/YOn/2sTFlQzf
-X-Google-Smtp-Source: ABdhPJwJZigqwhPrbwsTToPjubhdPdxpYMZTeDtSJkWxb2Ekxj2J+XcE+Cr4RKu+5qdgekb7ei8zIS8k853GY5rphaRCykV2j6gw
+        Wed, 29 Sep 2021 07:42:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632915677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bmzmDk9yn4uyiLffmbomlcu4SQVXSZNR4VUc4kZeVC0=;
+        b=e4juIcHLgOPxo/ZbfqZCgS0hcQqJfZaICMbQ7hXO5/tLyCZZ5IlmX109G6+OJVWhdNV48/
+        b7fbErTd4oFlpNgOcpQB838v5ovla5mqZxSlLwjgtzcFQ1vcIONu1FZ5IKxcc4wa23o2Ct
+        xaTs/r/ol6fFoI5C9X8eQTVqBB9gq48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-EudIvpAdMaaVbSzhU0xZOw-1; Wed, 29 Sep 2021 07:41:13 -0400
+X-MC-Unique: EudIvpAdMaaVbSzhU0xZOw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F8AE19200CB;
+        Wed, 29 Sep 2021 11:41:12 +0000 (UTC)
+Received: from piliu.users.ipa.redhat.com (ovpn-8-24.pek2.redhat.com [10.72.8.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C1FC15E255;
+        Wed, 29 Sep 2021 11:41:05 +0000 (UTC)
+Date:   Wed, 29 Sep 2021 19:40:58 +0800
+From:   Pingfan Liu <piliu@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Pingfan Liu <kernelfans@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 4/5] irqchip/GICv3: let gic_handle_irq() utilize
+ irqentry on arm64
+Message-ID: <YVRQyvUa+JCVxxr0@piliu.users.ipa.redhat.com>
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924132837.45994-5-kernelfans@gmail.com>
+ <20210928091053.GD1924@C02TD0UTHF1T.local>
+ <YVPZEwfi8OFkzcd1@piliu.users.ipa.redhat.com>
+ <87mtnvu9to.wl-maz@kernel.org>
+ <YVQjX7GfuFKdW9hm@piliu.users.ipa.redhat.com>
+ <20210929092358.GB33284@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1709:: with SMTP id u9mr7696896ill.202.1632915387399;
- Wed, 29 Sep 2021 04:36:27 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 04:36:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d466d05cd20bdbe@google.com>
-Subject: [syzbot] INFO: trying to register non-static key in sco_conn_del
-From:   syzbot <syzbot+44e9ca14eedcbe453eca@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929092358.GB33284@C02TD0UTHF1T.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 29, 2021 at 10:23:58AM +0100, Mark Rutland wrote:
+> On Wed, Sep 29, 2021 at 04:27:11PM +0800, Pingfan Liu wrote:
+> > On Wed, Sep 29, 2021 at 08:20:35AM +0100, Marc Zyngier wrote:
+> > > On Wed, 29 Sep 2021 04:10:11 +0100,
+> > > Pingfan Liu <piliu@redhat.com> wrote:
+> > > > 
+> > > > On Tue, Sep 28, 2021 at 10:10:53AM +0100, Mark Rutland wrote:
+> > > > > On Fri, Sep 24, 2021 at 09:28:36PM +0800, Pingfan Liu wrote:
+> > > > > > The call to rcu_irq_enter() originated from gic_handle_irq() is
+> > > > > > redundant now, since arm64 has enter_from_kernel_mode() akin to
+> > > > > > irqenter_entry(), which has already called rcu_irq_enter().
+> > > > > 
+> > > > > Here I think you're referring to the call in handle_domain_irq(), but
+> > > > > that isn't clear from the commit message.
+> > > > > 
+> > > > Yes, and I will make it clear in V2.
+> > > > 
+> > > > > > Based on code analysis, the redundant can raise some mistake, e.g.
+> > > > > > rcu_data->dynticks_nmi_nesting inc 2, which causes
+> > > > > > rcu_is_cpu_rrupt_from_idle() unexpected.
+> > > > > > 
+> > > > > > So eliminate the call to irq_enter() in handle_domain_irq(). And
+> > > > > > accordingly supplementing irq_enter_rcu().
+> > > > > 
+> > > > > We support many more irqchips on arm64, and GICv3 can be used on regular
+> > > > > 32-bit arm, so this isn't right. Moving the irq_enter_rcu() call
+> > > > > into the GICv3 driver specifically breaks other drivers on arm64 by
+> > > > > removing the call, and breaks the GICv3 driver on arm by adding a
+> > > > > duplicate call.
+> > > > > 
+> > > > Oops. I forgot to protect the code in GICv3 with CONFIG_HAVE_ARCH_IRQENTRY
+> > > > 
+> > > > > It looks like this should live in do_interrupt_handler() in
+> > > > > arch/arm64/kernel/entry-common.c, e.g.
+> > > > > 
+> > > > > | static void do_interrupt_handler(struct pt_regs *regs,
+> > > > > | 				 void (*handler)(struct pt_regs *)) 
+> > > > > | {
+> > > > > | 	irq_enter_rcu();
+> > > > > | 	if (on_thread_stack())
+> > > > > | 		call_on_irq_stack(regs, handler);
+> > > > > | 	else
+> > > > > | 		handler(regs);
+> > > > > | 	irq_exit_rcu();
+> > > > > | }
+> > > > > 
+> > > > > ... unless there's some problem with that?
+> > > > > 
+> > > > Yeah, do_interrupt_handler() is a more suitable place. But to resolve
+> > > > the performance regression of rescheduling IPI [1], it is badly demanded to
+> > > > distinguish irqnr before calling irq_enter_rcu() (please see 5/5 and [2]
+> > > > for the context). So it is a compromise to host the code in GICv3.
+> > > > 
+> > > > Any good idea?
+> > > 
+> > > There is no way we are going to single out a particular interrupt
+> > > controller. As for the "regression", we'll have to look at the numbers
+> > > once we have fixed the whole infrastructure.
+> > > 
+> > But I just realize that at present, gic_handle_nmi() sits behind
+> > gic_handle_irq().  So it will make an mistaken for accounting of normal
+> > interrupt if calling irq_enter_rcu() in do_interrupt_handler().
+> 
+> We can restructure entry-common.c to avoid that if necessary.
+> 
+> TBH, the more I see problems in this area the more I want to rip out the
+> pNMI bits...
+> 
+Could you give further comments and some guide to my reply to [1/5],
+which can help to decide pNMI at this earlier stage? If things can go
+that way, then everything can be fixed easier.
 
-syzbot found the following issue on:
+I think they abstract the ability of irqchip by exporting two
+interfaces:
+  void (*handle_arch_nmi)(struct pt_regs *regs);
+  bool (*interrupt_is_nmi)(void);
+And each irqchip can select whether to implement or not.
 
-HEAD commit:    7d42e9818258 Merge tag 'gpio-fixes-for-v5.15-rc3' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=107c5ff7300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e917f3dfc452c977
-dashboard link: https://syzkaller.appspot.com/bug?extid=44e9ca14eedcbe453eca
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > And going through drivers/irqchip/irq-chip-gic*, I think there are only
+> > two files should be handled: irq-gic.c and irq-gic-v3.c.
+> 
+> That are irqchips other than GICv2 and GICv3 that are used as the root
+> irqchip on arm64. For example, Raspberry Pi 3 uses
+> drivers/irqchip/irq-bcm2836.c as its root irqchip.
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+44e9ca14eedcbe453eca@syzkaller.appspotmail.com
-
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 1 PID: 23193 Comm: syz-executor.2 Not tainted 5.15.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- assign_lock_key kernel/locking/lockdep.c:939 [inline]
- register_lock_class+0xf79/0x10c0 kernel/locking/lockdep.c:1251
- __lock_acquire+0x105/0x54a0 kernel/locking/lockdep.c:4894
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- lock_sock_nested+0x2f/0xf0 net/core/sock.c:3183
- lock_sock include/net/sock.h:1612 [inline]
- sco_conn_del+0x12a/0x2b0 net/bluetooth/sco.c:194
- sco_disconn_cfm+0x71/0xb0 net/bluetooth/sco.c:1205
- hci_disconn_cfm include/net/bluetooth/hci_core.h:1518 [inline]
- hci_conn_hash_flush+0x127/0x260 net/bluetooth/hci_conn.c:1608
- hci_dev_do_close+0x57d/0x1130 net/bluetooth/hci_core.c:1793
- hci_unregister_dev+0x1c0/0x5a0 net/bluetooth/hci_core.c:4029
- vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
- __fput+0x288/0x9f0 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbae/0x2a30 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2868
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f51377a1709
-Code: Unable to access opcode bytes at RIP 0x7f51377a16df.
-RSP: 002b:00007f5134d18218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00007f51378a5f68 RCX: 00007f51377a1709
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f51378a5f68
-RBP: 00007f51378a5f60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f51378a5f6c
-R13: 00007fffbbb2087f R14: 00007f5134d18300 R15: 0000000000022000
+Thanks for the explanation. The situation is worse than I had thought. And
+no way out in that direction.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks,
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+	Pingfan
+
