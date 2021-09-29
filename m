@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EAD41C2E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDBF41C2E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244509AbhI2Ko3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:44:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
+        id S244713AbhI2Kox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243396AbhI2Ko1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 815A4613D1;
-        Wed, 29 Sep 2021 10:42:45 +0000 (UTC)
+        id S243396AbhI2Kov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 06:44:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A563161159;
+        Wed, 29 Sep 2021 10:43:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632912166;
-        bh=nGDQTfZDv9CExyFJB0RbsDORgscyoxeg39JI2IBhJwo=;
+        s=k20201202; t=1632912190;
+        bh=+dWbv6MK792jqAAiE3Iu+92XjoDmSSphFkEX4olyN/k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bfqdw00CNoSOGG5ZjlW9e8wvAbgKJOOqw1oxJbvmzsY+Pm12ZHpB/GpgjhkFFdzli
-         5icVN9aBABzGOAtkdpr7keKO5Wl3ZZvGKGVKtLcVYYbead4OO2emVRCBhHj0gW4DGB
-         Qj71oW+JlwZdOrEP3OmLEmrdhRru4efXBTVyitAz2gUFWvF18VS2LzxPcatySh6Jg8
-         ntnmDWE2wtVy1gqRdsiPABenYfNGJdc14369dQlhh1P4Rqz26gbSq3kl0GSQDaY4bS
-         7FkmBQedVJYCHBfAWxfDKI3X8Davt2iKTi1lRGrlKNlYoOgAUDbAdwOId0N6NZtWrT
-         i1Obz7xf72kVA==
-Date:   Wed, 29 Sep 2021 11:42:42 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-Subject: Re: [RFC] arm64: mm: update max_pfn after memory hotplug
-Message-ID: <20210929104241.GA21395@willie-the-truck>
-References: <cover.1632437225.git.quic_cgoldswo@quicinc.com>
- <595d09279824faf1f54961cef52b745609b05d97.1632437225.git.quic_cgoldswo@quicinc.com>
- <20210929101028.GB21057@willie-the-truck>
- <13f56b37-afc7-bf6f-d544-8d6433588bf9@redhat.com>
+        b=kkT0wJpXtOU1jKHLvTLEHDcFzyGsaTW2KbNFDDkSceiRF44orOxlmvEdUXPiAg1ne
+         T9iBP5MvAqpqlvvpT2eQB5LUHDWmHoBVhcaxAgfyBZK3m0dp5WUM2VzbZTPT1Q2vDn
+         TGpnO6rLO17kCzczJQTqNS6nN6cJkMUC9kAhjLV2CX+gL4IkIfAtJuTnHOB4GnObl5
+         f6AOUTYLHsTOjT+xKpBB8WraodAp0Rvr8Ol2OtCxF+vGeaZ48SswJ/7MMLvV00Wto8
+         70Uen1mLSDQS6ubpjqE94UZnhj+4JQMmVTwAgxMEhyVRUvZkuZ0qdZEMSs6jN352r7
+         LTzEfohSacJDQ==
+Date:   Wed, 29 Sep 2021 13:43:06 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next 3/5] devlink: Allow set specific ops callbacks
+ dynamically
+Message-ID: <YVRDOijPHji2vg82@unreal>
+References: <cover.1632909221.git.leonro@nvidia.com>
+ <4e99e3996118ce0e2da5367b8fc2a427095dfffd.1632909221.git.leonro@nvidia.com>
+ <20210929103823.GK2048@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <13f56b37-afc7-bf6f-d544-8d6433588bf9@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210929103823.GK2048@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 12:29:32PM +0200, David Hildenbrand wrote:
-> On 29.09.21 12:10, Will Deacon wrote:
-> > On Thu, Sep 23, 2021 at 03:54:48PM -0700, Chris Goldsworthy wrote:
-> > > From: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-> > > 
-> > > After new memory blocks have been hotplugged, max_pfn and max_low_pfn
-> > > needs updating to reflect on new PFNs being hot added to system.
-> > > 
-> > > Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
-> > > Signed-off-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
-> > > ---
-> > >   arch/arm64/mm/mmu.c | 5 +++++
-> > >   1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> > > index cfd9deb..fd85b51 100644
-> > > --- a/arch/arm64/mm/mmu.c
-> > > +++ b/arch/arm64/mm/mmu.c
-> > > @@ -1499,6 +1499,11 @@ int arch_add_memory(int nid, u64 start, u64 size,
-> > >   	if (ret)
-> > >   		__remove_pgd_mapping(swapper_pg_dir,
-> > >   				     __phys_to_virt(start), size);
-> > > +	else {
-> > > +		max_pfn = PFN_UP(start + size);
-> > > +		max_low_pfn = max_pfn;
-> > > +	}
-> > 
-> > We use 'max_pfn' as part of the argument to set_max_mapnr(). Does that need
-> > updating as well?
-> > 
-> > Do we have sufficient locking to ensure nobody is looking at max_pfn or
-> > max_low_pfn while we update them?
+On Wed, Sep 29, 2021 at 01:38:23PM +0300, Dan Carpenter wrote:
+> On Wed, Sep 29, 2021 at 01:16:37PM +0300, Leon Romanovsky wrote:
+> > +void devlink_set_ops(struct devlink *devlink, struct devlink_ops *ops)
+> > +{
+> > +	struct devlink_ops *dev_ops = devlink->ops;
+> > +
+> > +	WARN_ON(!devlink_reload_actions_valid(ops));
+> > +
+> > +#define SET_DEVICE_OP(ptr, name)                                               \
+> > +	do {                                                                   \
+> > +		if (ops->name)                                                 \
 > 
-> Only the write side is protected by memory hotplug locking. The read side is
-> lockless -- just like all of the other pfn_to_online_page() machinery.
+> Could you make "ops" a parameter of the macro instead of hard coding it?
 
-Hmm. So the readers can see one of the variables updated but the other one
-stale?
+Sure
 
-Will
+> 
+> regards,
+> dan carpenter
+> 
+> > +			if (!((ptr)->name))				       \
+> > +				(ptr)->name = ops->name;                       \
+> > +	} while (0)
+> > +
+> > +	/* Keep sorted */
+> > +	SET_DEVICE_OP(dev_ops, reload_actions);
+> > +	SET_DEVICE_OP(dev_ops, reload_down);
+> > +	SET_DEVICE_OP(dev_ops, reload_limits);
+> > +	SET_DEVICE_OP(dev_ops, reload_up);
+> > +
+> > +#undef SET_DEVICE_OP
+> > +}
+> > +EXPORT_SYMBOL_GPL(devlink_set_ops);
+> 
