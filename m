@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4762B41CD11
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A876441CD15
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 22:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344600AbhI2UDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 16:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
+        id S1346081AbhI2UED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 16:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245133AbhI2UDb (ORCPT
+        with ESMTP id S1345747AbhI2UEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:03:31 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE0FC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:01:49 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dn26so12980588edb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QVoV53fmEUeXJCW4y56wBFPMYAfyeaHxeC0GyF+IsHY=;
-        b=WFb2peLCM29bT5fbZcRB1U1qwkmqtZpPMoiIUeVEM+cFVB1Pqfaa7JcXjT4vRxCxaE
-         JMZ+Y6UbyxD+/o6VARqaK7WDFv6cdUhWIDwb4YSQTVV4Xd4qJ1++jl7QlH3R3cN4Hhda
-         CMd3R4O/jkL8PK5rvcU5Sc8JC/tYvGThln9yHqwTqZ8MgExUKyFBya7UOiSX9fnjXNs/
-         3oQms6XsgLw5dZkH4QZ9aWd32To0Xf/9lPgvK2dRN1LZCdAULaNBTjcl+lpZ2sd75vff
-         fS0VJb3UJy4PvbIjpXj5Lrqinvu4UVhNYmfBmILb9ieH3ZIbeBqkCCcydiKrjYnKe0pZ
-         UIqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QVoV53fmEUeXJCW4y56wBFPMYAfyeaHxeC0GyF+IsHY=;
-        b=V5/AdYUPJDKXdHOKm8gRoA/otDn5Rfv8d5L5eie6g88sPDUhUlSunS5XJLkokK4Hh6
-         JbI1ut3Ni6WDc2AU76MBunwOPfhn+ANpm+2EKWngc8ncoIz2iW7Q6PT1h7HtcPKwQMga
-         OeVn/Q9qdL8RhtfFT5qAcOFKLHx7zTbBIJbxxnjV1yN57AbfrRtFEVEQuNmHjUX9idOT
-         S/1mrROxihAyHdxjUuwRIn6L0IjzM/GyaPWNhR9+pEf83HDn7p1rJe9BB1Sa2O7b488T
-         OmnO8LscLq8lD/FKPK5j7m+divj1PnTEjmuG0WgMzJJuxgAqE5m/1uWdjAwXVgjI8M6a
-         tQkg==
-X-Gm-Message-State: AOAM531F1KBRDZeXXuezKZy7l4XH6KK6aq9rFmyrAQ5hus+YH/50XOXH
-        l/8m3/S/wsbDvLaLtVmM7i9grOTvn3vIs0ho08NSGA==
-X-Google-Smtp-Source: ABdhPJxW/5c5Zm0f6VzlmAE5ubXryikV3fZZQv6MmG3s5nD+j3ke3SZ3s5Of1FQgOZu0GnjUf+fda8e2ZNlPw37L3uQ=
-X-Received: by 2002:a05:6402:1b8d:: with SMTP id cc13mr2169435edb.235.1632945707418;
- Wed, 29 Sep 2021 13:01:47 -0700 (PDT)
+        Wed, 29 Sep 2021 16:04:00 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25630C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 13:02:15 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id F3EB4C12FBA;
+        Wed, 29 Sep 2021 22:02:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1632945733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uhwnfm7FGdJ2X1fzJ7L3xdSLvxeTNMz3KuUDMpv1jQU=;
+        b=E/ny+w0/vb+GGx8ZVCrQ5o9IX/Zq0JeUBcwE4Dd9ttFJ3ZJf58rnl+TIQmqMAvY3yJCNgE
+        aVGKCUez5zUjTGq1tdRa21HDvalbO4CKi8+XDELHOwtqcU6NhQc2YAAfpG5itEGFQOX4+P
+        r+I7Xv+k4ZPCiQOGvbUSKrNjlHKTFLQ=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     "B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com" 
+        <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>,
+        Nick Terrell <terrelln@fb.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+Date:   Wed, 29 Sep 2021 22:02:11 +0200
+Message-ID: <2877513.20NpC2ByLZ@natalenko.name>
+In-Reply-To: <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
+References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com> <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <20210928235635.1348330-3-willmcvicker@google.com> <CALAqxLUju1Bw0dDpi_oK6-eOiP6B2Xm1MV19G53WaRFm3Z_AWw@mail.gmail.com>
-In-Reply-To: <CALAqxLUju1Bw0dDpi_oK6-eOiP6B2Xm1MV19G53WaRFm3Z_AWw@mail.gmail.com>
-From:   Will McVicker <willmcvicker@google.com>
-Date:   Wed, 29 Sep 2021 13:01:31 -0700
-Message-ID: <CABYd82Z4pgJpYVhJEGjgbWgSQp7if_=Rf03VmTu+U9D3b=dVzA@mail.gmail.com>
-Subject: Re: [PATCH v2 02/12] timekeeping: add API for getting timekeeping_suspended
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 8:42 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> On Tue, Sep 28, 2021 at 4:56 PM Will McVicker <willmcvicker@google.com> wrote:
-> >
-> > This allows modules to access the value of timekeeping_suspended without
-> > giving them write access to the variable.
-> >
->
-> It's important to cover "the why" not "the what" in these commit
-> messages, so you might add a note as to what code will be the user of
-> this (the samsung/clk-pll.c code changed later in this series).
->
-> thanks
-> -john
+Hello.
 
-Thanks John for the tip. I will try to be better at that in the followup.
+On st=C5=99eda 29. z=C3=A1=C5=99=C3=AD 2021 3:30:26 CEST Nick Terrell wrote:
+> Sorry for the lack of action, but this has not been abandoned. I=E2=80=99=
+ve just
+> been
+> preparing a rebased patch-set last week, so expect to see some action
+> soon. Since we=E2=80=99re not in a merge window, I=E2=80=99m unsure if it=
+ is best to send
+> out the updated patches now, or wait until the merge window is open, but
+> I=E2=80=99m about to pose that question to the LKML.
+>=20
+> This work has been on my back burner, because I=E2=80=99ve been busy with=
+ work on
+> Zstd and other projects, and have had a hard time justifying to myself
+> spending
+> too much time on this, since progress has been so slow.
 
-For this specific patch, I am adding this new API because the Samsung
-PLL driver (drivers/clk/samsung/clk-pll.c) currently is using the
-variable 'timekeeping_suspended' to detect timeouts before the
-clocksource is initialized or timekeeping itself is suspended. My
-patch series aims to modularize the Samsung PLL driver. So to keep the
-driver's functionality intact, I need to add this additional API.
+Mind Cc'ing me on your new submission again please? I'm still running your =
+old=20
+one with 5.14 and 5.15, and it works flawlessly for me.
 
---Will
+Thanks.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
