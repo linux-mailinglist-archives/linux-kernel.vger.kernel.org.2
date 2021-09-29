@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044D641CA01
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7A341CA21
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345129AbhI2QYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 12:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344369AbhI2QYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:24:19 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 275C461246;
-        Wed, 29 Sep 2021 16:22:32 +0000 (UTC)
-Date:   Wed, 29 Sep 2021 17:26:27 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "Neil Armstrong" <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH v3 2/9] iio: adc: imx7d_adc: Make use of the helper
- function dev_err_probe()
-Message-ID: <20210929172627.1dfd4f17@jic23-huawei>
-In-Reply-To: <20210928141956.2148-2-caihuoqing@baidu.com>
-References: <20210928141956.2148-1-caihuoqing@baidu.com>
-        <20210928141956.2148-2-caihuoqing@baidu.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1345849AbhI2Qb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:31:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56440 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345687AbhI2Qbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:31:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632933014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LzEA/AMsDC+zBVogDRmix14O9ZRH28vVpD1t8BFMOTQ=;
+        b=OHBmXcXFal572r+La62x/Pn62V3aPieYOB7wpdnX+fdQtLC0NoStUv+jiupRblcNaL3ueG
+        KAyzB/qmCFYPkPzJ99/RNGLkOgQmgI6ENjA0Hl59ZGewjTj0IjWYZ6sXmWRuGDsqkZZI1A
+        WaMksgp254vi7iOLDxJkYraotUwtBZw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-axm7TcP3OvOWmhsUEMTxHQ-1; Wed, 29 Sep 2021 12:30:12 -0400
+X-MC-Unique: axm7TcP3OvOWmhsUEMTxHQ-1
+Received: by mail-wm1-f69.google.com with SMTP id j21-20020a05600c1c1500b0030ccce95837so1031703wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 09:30:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LzEA/AMsDC+zBVogDRmix14O9ZRH28vVpD1t8BFMOTQ=;
+        b=CbIUd+YJarP5E2NEvWJTkPuukBJBPcbIxBN0X4FHMAIuolntrmBG2x9PpREyIJ9mIQ
+         ifwBzbxhN5K2Xeyg3HMFKUVtXjifhSFVlzyW/mEXDGsePk4jA+hSsl0G/cRL3XAKNy+w
+         2rUV2NPVo+UQtY81Ll7kjvphW2RwoabfIE6tMgG9ej9yJNtGEEPkRSqdHTbaJF4qiynI
+         f44mOhZpdiMsqaIxdgWl2QOykxbK+YuCQnsjPVYfFpjWkIwDqPUpv6VZn/nD+llLbcae
+         a7jfWlGBxvk04EmBq/2Q4g4S91gx4FW8aPBiW8qK5CRzITqGJjXZ5oh/LkFLTM+MTiHj
+         Vwow==
+X-Gm-Message-State: AOAM533UtO6yyXlXfQLZ2uKgnVge0y7rQ5CCWAgWx908+lkIJ+pMo4B3
+        NB3dRbSXgi9tLBEJbxxXwtYB1/QYw67C8i28dZHZ82JN8HoSIgkA37U4bxdR0BtkocTD/Q6XP1P
+        xO9BkxKMl92JAcVHoA5/fF/2c
+X-Received: by 2002:a05:6000:184c:: with SMTP id c12mr1026243wri.150.1632933011555;
+        Wed, 29 Sep 2021 09:30:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWpbhPpbSmBcJNqivlDLJZ/UTUefLQTk4gKa/CcEn6HHHOoDfx1bOgZbQtRoI/dHj6OAlJWg==
+X-Received: by 2002:a05:6000:184c:: with SMTP id c12mr1026220wri.150.1632933011388;
+        Wed, 29 Sep 2021 09:30:11 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c3b.dip0.t-ipconnect.de. [79.242.60.59])
+        by smtp.gmail.com with ESMTPSA id m21sm354405wmq.37.2021.09.29.09.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 09:30:10 -0700 (PDT)
+Subject: Re: [PATCH v1 2/4] memblock: allow to specify flags with
+ memblock_add_node()
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+References: <20210927150518.8607-1-david@redhat.com>
+ <20210927150518.8607-3-david@redhat.com> <YVSTkGdh2nQWQp+U@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <3651c7d0-f7b6-63ff-216a-b74176623a6f@redhat.com>
+Date:   Wed, 29 Sep 2021 18:30:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YVSTkGdh2nQWQp+U@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 22:19:48 +0800
-Cai Huoqing <caihuoqing@baidu.com> wrote:
-
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
+On 29.09.21 18:25, Mike Rapoport wrote:
+> On Mon, Sep 27, 2021 at 05:05:16PM +0200, David Hildenbrand wrote:
+>> We want to specify flags when hotplugging memory. Let's prepare to pass
+>> flags to memblock_add_node() by adjusting all existing users.
+>>
+>> Note that when hotplugging memory the system is already up and running
+>> and we don't want to add the memory first and apply flags later: it
+>> should happen within one memblock call.
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-Hi Cai,
+> Why is it important that the system is up and why it should happen in a
+> single call?
+> I don't mind adding flags parameter to memblock_add_node() but this
+> changelog does not really explain the reasons to do it.
 
-It is currently not printing a message, but should we handle the same
-for platform_get_irq?
+"After memblock_add_node(), we could race with anybody performing a 
+search for MEMBLOCK_NONE, like kexec_file -- and that only happens once 
+the system is already up and running. So we want both steps to happen 
+atomically."
 
-One other minor comment inline.  Actual change here is fine.
+I can add that to the patch description.
 
+(I think it still won't be completely atomic because memblock isn't 
+properly implementing locking yet, but that's a different story)
+
+-- 
 Thanks,
 
-Jonathan
-
-> ---
->  drivers/iio/adc/imx7d_adc.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/imx7d_adc.c b/drivers/iio/adc/imx7d_adc.c
-> index 4969a5f941e3..f47360cbff3b 100644
-> --- a/drivers/iio/adc/imx7d_adc.c
-> +++ b/drivers/iio/adc/imx7d_adc.c
-> @@ -496,19 +496,13 @@ static int imx7d_adc_probe(struct platform_device *pdev)
->  		return irq;
->  
->  	info->clk = devm_clk_get(dev, "adc");
-> -	if (IS_ERR(info->clk)) {
-> -		ret = PTR_ERR(info->clk);
-> -		dev_err(dev, "Failed getting clock, err = %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(info->clk))
-> +		return dev_err_probe(dev, PTR_ERR(info->clk), "Failed getting clock\n");
-
-Where it doesn't hurt readabilty preferred to keep below 80 chars.
-
->  
->  	info->vref = devm_regulator_get(dev, "vref");
-> -	if (IS_ERR(info->vref)) {
-> -		ret = PTR_ERR(info->vref);
-> -		dev_err(dev,
-> -			"Failed getting reference voltage, err = %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(info->vref))
-> +		return dev_err_probe(dev, PTR_ERR(info->vref),
-> +				     "Failed getting reference voltage\n");
->  
->  	platform_set_drvdata(pdev, indio_dev);
->  
+David / dhildenb
 
