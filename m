@@ -2,165 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7E341BD69
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 05:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29DD41BCF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 04:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244055AbhI2D34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Sep 2021 23:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
+        id S243841AbhI2Csl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Sep 2021 22:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243941AbhI2D3n (ORCPT
+        with ESMTP id S243785AbhI2Csk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Sep 2021 23:29:43 -0400
+        Tue, 28 Sep 2021 22:48:40 -0400
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5752C061745;
-        Tue, 28 Sep 2021 20:28:02 -0700 (PDT)
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HK1zN6cnQz4xbT; Wed, 29 Sep 2021 13:28:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1632886080;
-        bh=qzQIQZ4QRhIcmilmBeomTPiSlLs3WETVdIoKH8ljR5I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5e2lRrXkAIwbSxkG3qdFSqNl4eS0ICYpOq4Hcu5VnMPhSadYB0m7dyvRiC++N3Lg
-         8arvLC3O7qOMZjze+SPIHfiKcZWeSnfEeejTsR98qNOzIYVzQKTVZTraACX8JjPnVJ
-         bBLKwH+HMNsXDmQWOS8SMuMsqAS3TnSMGTxZrasU=
-Date:   Wed, 29 Sep 2021 12:46:14 +1000
-From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Message-ID: <YVPTdqWw6or3mK/h@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-4-yi.l.liu@intel.com>
- <20210921160108.GO327412@nvidia.com>
- <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922010014.GE327412@nvidia.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD16FC06161C;
+        Tue, 28 Sep 2021 19:46:59 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HK1420C64z4xZJ;
+        Wed, 29 Sep 2021 12:46:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632883618;
+        bh=HW7aZHEjXEKf/hUK5nFDRQoDLHpYNFTTn5wGUb+Ev60=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JuitIWmHavKjRXShW9xsgZbtiqyw3sQUaD3Qj+Mu/Mu829RYEwfCC93lFgtz8GrIa
+         ixxqCY8DxXirqweXb1vkLStb9qUw/Xvl8kEf3/8JqWKwQTwo0ufIK/95P6qPZ6Zu2g
+         tr8laJ9+ITtFYCBk8btzqd0DqViHc4GUV2wZdp5XUzWWoAzAxHUi5o98u4akCwYAWl
+         kmv4wVAXLNbd1AKJ4z/mPDqzm+kUvu8brpDorLnbLjURmV65LC/Vo/9U/p+dYCk7qJ
+         snfl4queSWMWezXFML0W8S3igcEKVrmEUbW2Eym9OdoH2Bewe7abA4JC3juJOyWByx
+         ctQiZPGFT5R3w==
+Date:   Wed, 29 Sep 2021 12:46:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Krupa Ramakrishnan <krupa.ramakrishnan@amd.com>,
+        Sadagopan Srinivasan <Sadagopan.Srinivasan@amd.com>,
+        Bharata B Rao <bharata@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the akpm-current tree
+Message-ID: <20210929124657.51ef9f53@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="M1+gRInfuzVDe7lG"
-Content-Disposition: inline
-In-Reply-To: <20210922010014.GE327412@nvidia.com>
+Content-Type: multipart/signed; boundary="Sig_/BRf/Nkn5L7bPXvFZWUA+N+H";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---M1+gRInfuzVDe7lG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/BRf/Nkn5L7bPXvFZWUA+N+H
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 21, 2021 at 10:00:14PM -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 22, 2021 at 12:54:02AM +0000, Tian, Kevin wrote:
-> > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > Sent: Wednesday, September 22, 2021 12:01 AM
-> > >=20
-> > > >  One open about how to organize the device nodes under
-> > > /dev/vfio/devices/.
-> > > > This RFC adopts a simple policy by keeping a flat layout with mixed
-> > > devname
-> > > > from all kinds of devices. The prerequisite of this model is that d=
-evnames
-> > > > from different bus types are unique formats:
-> > >=20
-> > > This isn't reliable, the devname should just be vfio0, vfio1, etc
-> > >=20
-> > > The userspace can learn the correct major/minor by inspecting the
-> > > sysfs.
-> > >=20
-> > > This whole concept should disappear into the prior patch that adds the
-> > > struct device in the first place, and I think most of the code here
-> > > can be deleted once the struct device is used properly.
-> > >=20
-> >=20
-> > Can you help elaborate above flow? This is one area where we need
-> > more guidance.
-> >=20
-> > When Qemu accepts an option "-device vfio-pci,host=3DDDDD:BB:DD.F",
-> > how does Qemu identify which vifo0/1/... is associated with the specifi=
-ed=20
-> > DDDD:BB:DD.F?=20
->=20
-> When done properly in the kernel the file:
->=20
-> /sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
->=20
-> Will contain the major:minor of the VFIO device.
->=20
-> Userspace then opens the /dev/vfio/devices/vfioX and checks with fstat
-> that the major:minor matches.
->=20
-> in the above pattern "pci" and "DDDD:BB:DD.FF" are the arguments passed
-> to qemu.
+Hi all,
 
-I thought part of the appeal of the device centric model was less
-grovelling around in sysfs for information.  Using type/address
-directly in /dev seems simpler than having to dig around matching
-things here.
+In commit
 
-Note that this doesn't have to be done in kernel: you could have the
-kernel just call them /dev/vfio/devices/vfio0, ... but add udev rules
-that create symlinks from say /dev/vfio/pci/DDDD:BB:SS.F - >
-=2E./devices/vfioXX based on the sysfs information.
+  976cd8d1b9f6 ("mm/page_alloc: use accumulated load when building node fal=
+lback list")
 
->=20
-> You can look at this for some general over engineered code to handle
-> opening from a sysfs handle like above:
->=20
-> https://github.com/linux-rdma/rdma-core/blob/master/util/open_cdev.c
->=20
-> Jason
->=20
+Fixes tag
+
+  Fixes: f0c0b2b808f2 ("change zonelist order: zonelist order selection
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Please no not split Fixes tags over more than one line.
 
 --=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Cheers,
+Stephen Rothwell
 
---M1+gRInfuzVDe7lG
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/BRf/Nkn5L7bPXvFZWUA+N+H
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFT03YACgkQbDjKyiDZ
-s5L5+RAA2E2lYOOD4bTHuC/PsiWELLG1eQQa3Jb4G+sT+fOVdbBmt8zME8lEAiXb
-iKIx7FlKDY1YCkr3fHedUDTXNRKphIvtkJYkHS43zI2KaRkqn20pxvps6kjA0MvV
-IMdk+8ZiUyA806bldQ6iEYhk7K888zeHPhSBhdZ6tSiWi5Yg6llD0A+WTGVmI9vx
-pm6Cu3r80UouuTm2JY37yyYamFsGAGs0iVNiFxA/zhtGjJ5soKUOcqZSx4P8MfHD
-2GOsiRGlwRx2peP+yrqAw9CutaR4jphP2ehVoqjyKq4wzMZ7PQCkuoUiFo3fNFjs
-J8lUiY9PxisD+0rStds1WF1oPHocq2B/ALXzDlHPxFTitdH/OiDKZ0p86jHZcNVN
-QdqipuJH4bXo4iyqWg0ksf3ECdekPJo0xfN4aMmDLHst4mhjSslQz/0WPZlQJKCe
-cOiG2I6akTADkQR65q1bKyr2gZR0fZTZp0AwBGQ6Nj1I2iHKHOI05+/pQC9NCVkn
-pkWc6WL12WGybyo/GyDblf5h1bfZTDJFLxS16uymh/MT+LPjGtik1I4KQezl1IA5
-rAy5LpQ11dBOizN6dCO7XhmGLeRGXLXGxhe676t9fix+bibSYU0pvZUnffYHOxZw
-pOv6wsRFvaM4ZhTBIB8PcbgNZHreiWAoFGdvfjHVRVR1Xl9Kx2A=
-=JS/Z
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFT06EACgkQAVBC80lX
+0GwUOwf/ZSTi1D/eqxLwsIYGKc4SI/mNdEXOi3E/PPubOBbse2dj3xT+49rEyW3f
+qtpIW/yiliepUJBX0VkbVRP2YQfb46ODrKYydFYUnwQ3XJBlWnOGSX0eJl5aam6q
+ooZxjCKTdkA56wudIv6lp5IbdFVXU5RusixX2IfrssIdJiaqoHbb01W6X7U513zw
+D3PDI3yWhOuKiB5aHpd+npwnyj9cs1FQOlSKsL0u0SxOCtnHRWYTbKrAMj+Vauck
+slHBCYLtKW09hF+t0Npjsi5IcyIU6YGruN17LZxcT20BPrpsUZtJ/J7bHCNl/Ir1
+FK86zX8WxNl/jxTsYkNImcdJ0g9Buw==
+=z2Va
 -----END PGP SIGNATURE-----
 
---M1+gRInfuzVDe7lG--
+--Sig_/BRf/Nkn5L7bPXvFZWUA+N+H--
