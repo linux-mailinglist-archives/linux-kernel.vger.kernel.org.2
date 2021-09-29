@@ -2,96 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE58941CC75
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A010041CC85
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346503AbhI2TPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:15:04 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:33343 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344094AbhI2TPA (ORCPT
+        id S1346542AbhI2TUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245131AbhI2TUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:15:00 -0400
-Received: by mail-ot1-f49.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so4257682otu.0;
-        Wed, 29 Sep 2021 12:13:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q/WQwciV4kH9qlmumlGivjLJN6ySXaV6TVusvL35OKM=;
-        b=b0KEneFP+dlfGWWgMlkP2/m21k3LzxutLjZW3VYRZ4+oJjvwj8nFKndDKiM8jcEAxj
-         O2Ari7sidU296ywOQ+DLvdJHr5ST7+engwT5bAJMihCguCgkSlBJ9oKWK+Q4TFOZW354
-         LqxeUoFDApkZlE5N/zeO7X+0J2ixoNSS5yNfzlK7+hxeG9r7SPQV9+LYgVrn/BKsWpd9
-         Wgux9+HlnTEljULevIvS8uyg28TuIugLYMqC4kjdeixnZcKsdRk9+90IZUkFCL/dFiXh
-         8ZOsczrZWbnbW/4c+y9DSbsMeFVsHTSmwv2r0FCQKorlU/Yjei5PSga75fizkV1TXgq8
-         D+Ng==
-X-Gm-Message-State: AOAM531z2XyJAC16BbKlj6hyhNsRjA8/mshEOLWnTFnb7WhvepXpGPhH
-        Qm16TgpvYUkYJRw8MqXTGrs0Fo4ux3gN2Nd7HUA=
-X-Google-Smtp-Source: ABdhPJw0vt/bBZzouEmyLqdC0Zbn+/cKmyfJ3LuVcgYM2+N3TpHoEbktUk4VmZemtq4x3GdAFWsDqmWJgpw4C6e1cbw=
-X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr1450970otr.301.1632942798995;
- Wed, 29 Sep 2021 12:13:18 -0700 (PDT)
+        Wed, 29 Sep 2021 15:20:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BBEC06161C;
+        Wed, 29 Sep 2021 12:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rDlIUYjTm39b2Z8IS0wdVZ3JLOJjy6yOyLpknJOI2Nk=; b=lGmQZw71exQWPBnjdWDupYTtpl
+        D8qQqLKPHK023bQNN4tNkbfBTffbADEjCZunnGWQjBOwSS4aH9ij8l17t7tgIHwTbWcOhMh4MIr3E
+        31ancIfRMc6e+1OsxQ7gr9KDO+NX5DZv1+ra8fgd0SHhILuuYvmrRsDLqbXKJiTv/cHM/Ji+qNpLX
+        T7dT5w11uy0lerIvt9/KXJ5F47+TRayB+rvQoKngfgfKIB/YgASU0ULQT871sOocBWjQUwdK9R9my
+        /NdHjyGL3C0S16BTc7GW1p7Xtu9+tO7VkULafumTPIxUNOsmvXXqHwyJ0WfNTsGl1PkYYUtwspuYI
+        z/HXk/+Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVf1D-00C9dK-Am; Wed, 29 Sep 2021 19:14:09 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D1E8A981431; Wed, 29 Sep 2021 21:13:26 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 21:13:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 08/11] context_tracking,rcu: Replace RCU dynticks
+ counter with context_tracking
+Message-ID: <20210929191326.GZ4323@worktop.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.007420590@infradead.org>
+ <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <1800633.tdWV9SEqCh@kreacher> <8879480.rMLUfLXkoz@kreacher> <YVS5k1H8KyVAk/h8@archlinux-ax161>
-In-Reply-To: <YVS5k1H8KyVAk/h8@archlinux-ax161>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 29 Sep 2021 21:13:07 +0200
-Message-ID: <CAJZ5v0jSOpBbt8C5ema1t7h8Fb49F7DSyrUfht5xUXibVBU2Qw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] PCI: ACPI: PM: Do not use pci_platform_pm_ops for ACPI
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 9:08 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Mon, Sep 20, 2021 at 09:17:08PM +0200, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Using struct pci_platform_pm_ops for ACPI adds unnecessary
-> > indirection to the interactions between the PCI core and ACPI PM,
-> > which is also subject to retpolines.
-> >
-> > Moreover, it is not particularly clear from the current code that,
-> > as far as PCI PM is concerned, "platform" really means just ACPI
-> > except for the special casess when Intel MID PCI PM is used or when
-> > ACPI support is disabled (through the kernel config or command line,
-> > or because there are no usable ACPI tables on the system).
-> >
-> > To address the above, rework the PCI PM code to invoke ACPI PM
-> > functions directly as needed and drop the acpi_pci_platform_pm
-> > object that is not necessary any more.
-> >
-> > Accordingly, update some of the ACPI PM functions in question to do
-> > extra checks in case the ACPI support is disabled (which previously
-> > was taken care of by avoiding to set the pci_platform_ops pointer
-> > in those cases).
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> This patch as commit 9896a58cdd59 ("PCI: ACPI: PM: Do not use
-> pci_platform_pm_ops for ACPI") in -next causes the following build error
-> when compiling x86_64 allmodconfig with clang:
->
-> drivers/pci/pci-acpi.c:1125:7: error: variable 'adev' is uninitialized when used here [-Werror,-Wuninitialized]
->         if (!adev || !acpi_device_power_manageable(adev))
->              ^~~~
-> drivers/pci/pci-acpi.c:1110:26: note: initialize the variable 'adev' to silence this warning
->         struct acpi_device *adev;
->                                 ^
->                                  = NULL
-> 1 error generated.
->
-> Should the adev assignment be moved up
+On Wed, Sep 29, 2021 at 11:37:01AM -0700, Paul E. McKenney wrote:
 
-Yes, thanks!
+> And what happens to all of this in !CONFIG_CONTEXT_TRACKING kernels?
+> Of course, RCU needs it unconditionally.  (There appear to be at least
+> parts of it that are unconditionally available, but I figured that I
+> should ask.  Especially given the !CONFIG_CONTEXT_TRACKING definition
+> of the __context_tracking_cpu_seq() function.)
 
-I'll fix it up in the tree.
+For !CONFIG_CONTEXT_TRACKING it goes *poof*.
+
+Since the thing was called dynticks, I presumed it was actually dynticks
+only, silly me (also, I didn't see any obvious !context_tracking usage
+of it, i'll go audit it more carefully.
