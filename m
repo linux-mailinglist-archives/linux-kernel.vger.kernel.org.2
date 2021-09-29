@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC6441CAF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115D141CAFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 19:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245733AbhI2RRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 13:17:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44244 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244648AbhI2RRg (ORCPT
+        id S244451AbhI2RXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 13:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343753AbhI2RXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:17:36 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632935754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sWWcnqFRj6zAdMYEtH1XJ/oTMuUhVW1AUdTmaVur7iM=;
-        b=I+VUN/NO1vuxg+Pjaj8NRFrhYq8XGcu1jaIKvk85LuwNRoAx/Coz54CjHgN3arWWAj3bNg
-        +GjgtYsxpX+j8gP3aNjsx16XhaDNcCEdikGgs87YD4sMWRm4V/mjNkOZry8//CVn1gp2zJ
-        wEbK1WfQmideZAl0wwjvCcf/JMa1dtnF+TJc/mWR7+u8mDadL9shQ8EfosbIMFv5J+Tuye
-        rmn5G44VX+ujVE7tjF5yY3PkKVBFpK2sBdh1NEMDZEuClioQsr0xtrXRExLZRN13IDWN4D
-        nrpi/DSXSNZEI0nUQcARd1/FnAz+ZbmpTbmhEu+0Xmu3oZTxrLHC2bn/gNhjaQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632935754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sWWcnqFRj6zAdMYEtH1XJ/oTMuUhVW1AUdTmaVur7iM=;
-        b=bQbMHfGUYpufXmcUgOg7LH/S9ywiZ5cAMhdRpm4DuazNhhpeW0HP/J4ta6RZJtsEj/+oHg
-        PICI3Mv2scapi+CQ==
-To:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
-In-Reply-To: <75e95acc-6730-ddcf-d722-66e575076256@kernel.org>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-6-fenghua.yu@intel.com> <87y27nfjel.ffs@tglx>
- <YUyuEjlrcOeCp4qQ@agluck-desk2.amr.corp.intel.com> <87o88jfajo.ffs@tglx>
- <87k0j6dsdn.ffs@tglx> <YU3414QT0J7EN4w9@agluck-desk2.amr.corp.intel.com>
- <a77ee33c-6fa7-468c-8fc0-a0a2ce725e75@www.fastmail.com>
- <YVQ3wc/XjeOHpGCX@hirez.programming.kicks-ass.net> <87r1d78t2e.ffs@tglx>
- <75e95acc-6730-ddcf-d722-66e575076256@kernel.org>
-Date:   Wed, 29 Sep 2021 19:15:53 +0200
-Message-ID: <877dez8fqu.ffs@tglx>
+        Wed, 29 Sep 2021 13:23:19 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9469C06161C;
+        Wed, 29 Sep 2021 10:21:30 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id w19so2516308pfn.12;
+        Wed, 29 Sep 2021 10:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LDYxmYqsjSSaY5qNEcKRB1CAbNpq6pKRJ2FH76OopzQ=;
+        b=SL08n0GYQgtLYfC8OeMRTPwz4kyFIBgH5vGSrXVasHm4qVTLleyDxys5Rs66XsHY4l
+         SHYNvDh9nPLfvQCq35o3c637USllorz1K/qgpzlwjz5CXtay3Ot2+hq0ww/+4D1uIGRX
+         Q/Ivgpr6NxxyOzouZ+NJi80Aw2qCYz1WsP6COSLgtPoAnb+Kn8n4q2GoWBcIykUXwybF
+         IDSSPQBOoRc8uMEQ3/ZVG3L6gHwWbzWPjtwLALdLcn5ZTABTMC7DTLhQUU1A1BLpXf6l
+         q0N94Rl4hLdZJ+gkRvhq+gjs8LNt0mWO21e1B5YtB9wjYxWPg9xfuybFUlASvK2DEIaw
+         pH6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LDYxmYqsjSSaY5qNEcKRB1CAbNpq6pKRJ2FH76OopzQ=;
+        b=fgTzSZJ5AX+mX3912gi5pV9qeZ/AJS9lV3YrGWXf9ncoX40kwEK9XzNaQFOerb+vc6
+         NdgBUY4zza7MHEw2fNOuAhyKKgFU2iQBUjfUlpMszaGKBk63niTMDb8ERhzrLK5TwJBZ
+         a7xiCjmR7LzhMTBwPY6HgObI7bLwWNELWihogdkRWRwPwNA3Hmub3WTMJZ8VY0hvypCS
+         0pSW/SqKbflTfrDrAYGPqGT7qOTy4SDzpBFuy21+ImbwQHGFsNmyGQdT7W2R0YBkTYR2
+         2d5jqzhl0UO7h5jmVU7z47GyNMS+mIzdkWruEXGQYe9Mb6k/QNqOD9ntL6kqmHS2IUuc
+         AKfg==
+X-Gm-Message-State: AOAM531aBS+/ukKBjfy/ms+zndpUNcKLkkSNfpMNdVfOsbuvQdW2/tWD
+        lHBU0DGERPPQGMwuFZ3QdmHgT4AwIa4=
+X-Google-Smtp-Source: ABdhPJzQ+G9aJM6HWNTbSxWaxo4SVk2CvZqbVEM2uqRjF5z+NdsvkVidWhSOGRVrANMeeNy0/PMuUA==
+X-Received: by 2002:a63:2b4b:: with SMTP id r72mr931484pgr.57.1632936090207;
+        Wed, 29 Sep 2021 10:21:30 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id b7sm386900pfb.20.2021.09.29.10.21.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 10:21:29 -0700 (PDT)
+Subject: Re: [PATCH][net-next] net/mlx4: Use array_size() helper in
+ copy_to_user()
+To:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210928201733.GA268467@embeddedor>
+ <283d239b-9af9-d3a3-72be-9138c032ef63@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <16ae2d2d-3aba-82b2-0bd8-90f7d0367a62@gmail.com>
+Date:   Wed, 29 Sep 2021 10:21:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <283d239b-9af9-d3a3-72be-9138c032ef63@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29 2021 at 09:59, Andy Lutomirski wrote:
-> On 9/29/21 05:28, Thomas Gleixner wrote:
->> Looking at that patch again, none of this muck in fpu__pasid_write() is
->> required at all. The whole exception fixup is:
->> 
->>      if (!user_mode(regs))
->>               return false;
->> 
->>      if (!current->mm->pasid)
->>               return false;
->> 
->>      if (current->pasid_activated)
->>      	     return false;
->
-> <-- preemption or BH here: kaboom.
 
-Sigh, this had obviously to run in the early portion of #GP, i.e. before
-enabling interrupts.
 
-For me that's more than obvious and I apologize that I failed to mention
-it.
+On 9/29/21 3:24 AM, Tariq Toukan wrote:
+> 
+> 
+> On 9/28/2021 11:17 PM, Gustavo A. R. Silva wrote:
+>> Use array_size() helper instead of the open-coded version in
+>> copy_to_user(). These sorts of multiplication factors need
+>> to be wrapped in array_size().
+>>
+>> Link: https://github.com/KSPP/linux/issues/160
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx4/cq.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+>> index f7053a74e6a8..4d4f9cf9facb 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx4/cq.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+>> @@ -314,7 +314,8 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+>>               buf += PAGE_SIZE;
+>>           }
+>>       } else {
+>> -        err = copy_to_user((void __user *)buf, init_ents, entries * cqe_size) ?
+>> +        err = copy_to_user((void __user *)buf, init_ents,
+>> +                   array_size(entries, cqe_size)) ?
+>>               -EFAULT : 0;
+>>       }
+>>  
+> 
+> Thanks for your patch.
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
->> 
->>      wrmsrl(MSR_IA32_PASID, current->mm->pasid);
->
-> This needs the actual sane fpstate writing helper -- see other email.
+Not sure why avoiding size_t overflows would make this code safer.
+init_ents contains PAGE_SIZE bytes...
 
-And with that there is no fpstate write helper required at all.
+BTW
 
-Stop this overengineering madness already.
+Is @entries guaranteed to be a power of two ?
 
-Thanks,
+This function seems to either copy one chunk ( <= PAGE_SIZE),
+or a number of full pages.
 
-        tglx
