@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E2941CC9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD1141CCA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346637AbhI2T24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346463AbhI2T2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:28:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F696C061765;
-        Wed, 29 Sep 2021 12:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WLQ1UteiuDxr5zMvOLEeFqf+m7DpN8OCufh9KBGNF3k=; b=lkXSqcXkuHl1H/ITAFrfgQe1P8
-        axZYThYtS+M8ROnfB/Nham1m61DeilgiEyW0VRh/9/h+bify1RjSZmIYYhZuOiqHeCPRSF8QiYtqC
-        ABtb7GXWx1Gq7wilJuEwvkuml4wpD6XlalwaPTCdr82OehK7VReeLI9zwxcjprgH73HfWUU/WO9HL
-        D37GTgtHrbODZgH2+YX74FJhvvUCV5Va9i3a2tzZ9r8w2kIW9hUDHTS402U9eABPbyCm7Xw2U9XE0
-        5Hxkk2Te5j52vz6eos4q3IaHDfWaiDnyIaW/lTaA2J8FlDf9jcpLldEFHVWKYc4mNAiw+65Eui2sU
-        RG3aV7kw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVfBw-00CA3k-2n; Wed, 29 Sep 2021 19:24:38 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A298C981431; Wed, 29 Sep 2021 21:24:31 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 21:24:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 08/11] context_tracking,rcu: Replace RCU dynticks
- counter with context_tracking
-Message-ID: <20210929192431.GG5106@worktop.programming.kicks-ass.net>
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.007420590@infradead.org>
- <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
- <20210929191326.GZ4323@worktop.programming.kicks-ass.net>
+        id S1346582AbhI2T3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:29:33 -0400
+Received: from ixit.cz ([94.230.151.217]:53750 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345777AbhI2T3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:29:24 -0400
+Received: from localhost.localdomain (78-80-97-115.customers.tmcz.cz [78.80.97.115])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 7F62923B26;
+        Wed, 29 Sep 2021 21:27:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1632943659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=smqJeai++84lIx3j61RKU9Plmcg9oU9OFGLfsn+FhS4=;
+        b=oZ7uaMlycNmJAPulR1aXTcbw9hE1MUgD97v/aU36uWN9oIqwHBw28alRL+YJpWkK6rymw1
+        8kSEeCTbYsZ6K4NGOmijpaG4H7+agRHhE8i3ze0PlfT97aaM+tmie/+tdBuK1R9VJTXsfE
+        eRR1McBbDz+3AOm3j1yVNBsrGbdlCns=
+From:   David Heidelberg <david@ixit.cz>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH] dt-bindings: add vendor prefix for asix
+Date:   Wed, 29 Sep 2021 21:26:19 +0200
+Message-Id: <20210929192619.111098-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929191326.GZ4323@worktop.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:13:26PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 29, 2021 at 11:37:01AM -0700, Paul E. McKenney wrote:
-> 
-> > And what happens to all of this in !CONFIG_CONTEXT_TRACKING kernels?
-> > Of course, RCU needs it unconditionally.  (There appear to be at least
-> > parts of it that are unconditionally available, but I figured that I
-> > should ask.  Especially given the !CONFIG_CONTEXT_TRACKING definition
-> > of the __context_tracking_cpu_seq() function.)
-> 
-> For !CONFIG_CONTEXT_TRACKING it goes *poof*.
-> 
-> Since the thing was called dynticks, I presumed it was actually dynticks
-> only, silly me (also, I didn't see any obvious !context_tracking usage
-> of it, i'll go audit it more carefully.
+Add vendor prefix for ASIX Electronics Corp.
 
-Oh argh, it does idle too... damn. And I don't suppose having 2 counters
-is going to be nice :/
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I'll go back to thinking about this.
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 18f3f3b286b7..a69fb7dc07d1 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -131,6 +131,8 @@ patternProperties:
+     description: Asahi Kasei Corp.
+   "^asc,.*":
+     description: All Sensors Corporation
++  "^asix,.*":
++    desription: ASIX Electronics Corp.
+   "^aspeed,.*":
+     description: ASPEED Technology Inc.
+   "^asus,.*":
+-- 
+2.33.0
+
