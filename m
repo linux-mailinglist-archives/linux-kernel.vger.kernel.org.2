@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA7941C231
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75D541C22D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 12:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245255AbhI2KDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 06:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243962AbhI2KDp (ORCPT
+        id S245259AbhI2KBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 06:01:49 -0400
+Received: from www381.your-server.de ([78.46.137.84]:52692 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245245AbhI2KBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:03:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F91C06161C;
-        Wed, 29 Sep 2021 03:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y/myciqa/Ii7kvQkDckQ0UnF342MIwILYQStokAXlmk=; b=Ap1iixLQB+oxVlqgXgINkzdr20
-        SaXiRwb42MeC84kvZqqpWg8wVxSk+JRxrUx4dZCyMO92h+r/76LCYH7ksq4/DDTojdIBPJgQJIfM2
-        no+6xg5HiSXno/JHm5PZQJbpDWxa4XRRQC7rqWqZK5KzRA6yadi1KuZQMSJRKnGosMmA47J4qEnuG
-        RvL/2V0eDkwdN7K2DXfp/q4GTCNVKPiMizvxyeu+wQvVmeelUom7G5aS3u+YZAQ2VbtSYkwFduwDL
-        lrxgn55TgBQjtQK3UrchFF1wiqBQf2CHz/h7BPHP3zeuy3gNPTF4KAbpAFChYDpCiwKrIYQ5DW+aA
-        hej3ItRg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVWNU-00Bi8j-H6; Wed, 29 Sep 2021 10:00:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 12908300056;
-        Wed, 29 Sep 2021 11:59:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C1B5D2DC92D0B; Wed, 29 Sep 2021 11:59:51 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 11:59:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        will@kernel.org, x86@kernel.org
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
- __entry_tramp_text_end
-Message-ID: <YVQ5F9aT7oSEKenh@hirez.programming.kicks-ass.net>
-References: <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
- <20210921165134.GE35846@C02TD0UTHF1T.local>
- <CACT4Y+ZjRgb57EV6mvC-bVK0uT0aPXUjtZJabuWasYcshKNcgw@mail.gmail.com>
- <20210927170122.GA9201@C02TD0UTHF1T.local>
- <20210927171812.GB9201@C02TD0UTHF1T.local>
- <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
- <20210928103543.GF1924@C02TD0UTHF1T.local>
- <20210929013637.bcarm56e4mqo3ndt@treble>
- <YVQYQzP/vqNWm/hO@hirez.programming.kicks-ass.net>
- <20210929085035.GA33284@C02TD0UTHF1T.local>
+        Wed, 29 Sep 2021 06:01:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=1WjBcHbtUHWwynb8HCYwJabWRtgbg4lrsK8hlGVcLMI=; b=f1evM4TI1bcX9clqH5czWYaIgd
+        k3LQLnxdvJqhmvWCfCXt/ioxAOA67GoC/wZe4uYWHgV7J2qIm8uvGa3mD3wiafscpj9losoih54I3
+        LA1qT6bOilB5TFWLsAhFwG5UOt6IOK/ngiwVUCD3qovwoJhBNhiTUZvVsgRWrQDisBWBD1fW9UAMi
+        VfNLNgnnVJ0fTyJyOkaC9Q+J0pESTGkMpYM+Kx354SulHYCnHhT3odFfDPfs0GxYkNy5fgVe0FBYh
+        tiyna+k21z9SGlIkpexEn31zzoF4e8zv7Ht25jIX7B3mnJv7zbrS5KvWAuIEQOc5NToBf/TeQ1ulh
+        b/2RDeiw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1mVWNc-0001Nh-Ev; Wed, 29 Sep 2021 12:00:00 +0200
+Received: from [82.135.83.152] (helo=[192.168.178.20])
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1mVWNc-000Rpa-55; Wed, 29 Sep 2021 12:00:00 +0200
+Subject: Re: [PATCH] iio: dac: ad5446: Fix ad5622_write() return value
+To:     Pekka Korpinen <pekka.korpinen@iki.fi>
+Cc:     Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210928195548.17846-1-pekka.korpinen@iki.fi>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <20d11fbb-ba93-802c-1abc-60d7f5ec0c0c@metafoo.de>
+Date:   Wed, 29 Sep 2021 11:59:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929085035.GA33284@C02TD0UTHF1T.local>
+In-Reply-To: <20210928195548.17846-1-pekka.korpinen@iki.fi>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26306/Tue Sep 28 11:05:37 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:50:45AM +0100, Mark Rutland wrote:
-> On Wed, Sep 29, 2021 at 09:39:47AM +0200, Peter Zijlstra wrote:
-> > On Tue, Sep 28, 2021 at 06:36:37PM -0700, Josh Poimboeuf wrote:
+On 9/28/21 9:55 PM, Pekka Korpinen wrote:
+> On success i2c_master_send() returns the number of bytes written. The
+> call from iio_write_channel_info(), however, expects the return value to
+> be zero on success.
+>
+> Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+> ---
+> This bug causes incorrect consumption of the sysfs buffer in
+> iio_write_channel_info(). When writing more than two characters to
+> out_voltage0_raw, the ad5446 write handler is called multiple times
+> causing unexpected behavior.
 
-> > > +	asm volatile("417: rdmsr\n"
-> > > +		     : EAX_EDX_RET(val, low, high)
-> > > +		     : "c" (msr));
-> > > +	asm_volatile_goto(_ASM_EXTABLE(417b, %l[Efault]) :::: Efault);
-> > 
-> > That's terrible :-) Could probably do with a comment, but might just
-> > work..
-> 
-> The compiler is well within its rights to spill/restore/copy/shuffle
-> registers or modify memory between the two asm blocks (which it's liable
-> to do that when optimizing this after a few layers of inlining), and
-> skipping that would cause all sorts of undefined behaviour.
+I'd put this into the commit message itself. This is useful information 
+that should be part of the commit log.
 
-Ah, but in this case it'll work irrespective of that (which is why we
-needs a comment!).
+>
+> A similar fix was applied for ad5064.c in 2015 - commit 03fe472ef33b
+> ("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
+>
+>   drivers/iio/dac/ad5446.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+> index 488ec69967d6..dfd541bbde5b 100644
+> --- a/drivers/iio/dac/ad5446.c
+> +++ b/drivers/iio/dac/ad5446.c
+> @@ -531,8 +531,13 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
+>   {
+>   	struct i2c_client *client = to_i2c_client(st->dev);
+>   	__be16 data = cpu_to_be16(val);
+> +	int ret;
+> +
+> +	ret = i2c_master_send(client, (char *)&data, sizeof(data));
+> +	if (ret < 0)
+> +		return ret;
+Like you wrote in the commit message the function returns the number of 
+bytes written. We should check that this matches the number of bytes we 
+wanted to send and return an error (EIO) otherwise.
+>   
+> -	return i2c_master_send(client, (char *)&data, sizeof(data));
+> +	return 0;
+>   }
+>   
+>   /*
 
-This is because _ASM_EXTABLE only generates data for another section.
-There doesn't need to be code continuity between these two asm
-statements.
 
-As I said, this is terrible :-)
