@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F149B41CC57
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B576E41CC6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346441AbhI2TKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        id S1346497AbhI2TOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346427AbhI2TKc (ORCPT
+        with ESMTP id S1346491AbhI2TN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:10:32 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A182C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:08:51 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id y26so14972704lfa.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 12:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VBYU8n7CLuL5ISZ7YVzVYftRMAh3jmE6h48MQAUZtSs=;
-        b=dR94fBH+OLb1qKX+5HSy+etBw1vnPp1wSd0WJbc5T5gU6kPP6X+g5Nyh/r0fX++Jd6
-         4y8q+Tue0RprXaCXMnQ2uv8ptG1DAcmXf/gWw5aBqqos0V2EAoX84o6PXn2FMzKADoA5
-         Lqfb0iZQBG8lS4qByxA2M22N1yAw9Up8UyzbQeX4E8Nzl+bkyc7ekyLAsQiHbnqiscMq
-         3G1ezN2Q3BIbwh2nK8WnBbt9qY7bnVsbH4EWDR6Q6wVuZauPKtfUOSbX3oLAaXf6XpAZ
-         b03LrveKsiNy/HKZRCKXfonjwYz+LFbXOxXxi5BUvBvKmoUOzo3ZwCBelGcbSME5avVc
-         AqFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VBYU8n7CLuL5ISZ7YVzVYftRMAh3jmE6h48MQAUZtSs=;
-        b=5l+5luJ7vyokir5wGgKJWWANu97eBYsf/oqp5vnWjLnsuVh62JWetEajZzae8sowW7
-         tFniaObLnRj+MD177caUd95m+XPeGw606hbWV9mZZGNt8ndhWjyLyKPvlkv6sGapXUZV
-         dL8PEDMG2ARwO6ObxzvKmlVnOEtwLaiCIiyzO3pMf1L7XBic4H6mE3DhxSQz/gyponqJ
-         NKBRZ8Pn0hwVCksXmWrW1l8oHZzI2xFELx1HP9YXpjr2ykiJdcKhIYYyBYzkVMIb55nK
-         peOV3vG5DDTICkl6coZjyWDUlIMEFTAg63ZUwV/sq/NcSA8b3Qutu76zj0fKYmV3Eh9j
-         VKYg==
-X-Gm-Message-State: AOAM533eAawvzHDKMoqxm2TnC4bM5Lin5DeWwKIUZPibohEVv0ZlZpo1
-        5en1xDiJF7oUA1nUX3LdWPRgKACrMXAVv4LNg3N3AA==
-X-Google-Smtp-Source: ABdhPJzEIuzGBUbnBRvR3xhvpFgrST4xl+MNgEA9NbIXIIbX5nfTtscUcl6Ifyt5DxQEfaSznEwV74+0uuYIc0FFgrk=
-X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr1330576lfd.584.1632942529419;
- Wed, 29 Sep 2021 12:08:49 -0700 (PDT)
+        Wed, 29 Sep 2021 15:13:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18975C06161C;
+        Wed, 29 Sep 2021 12:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8/woToWXwl+2dOjjt6TDxk1idEoF1XMtSstAROXdXrs=; b=hZAQ+lLct0B9S3W6o72fvNY7lL
+        DGkzWPKuoRwcZcBRrlVuExJOPIJQ7GorhcbNfnih+lMaqvsCTRWECBOeOalUUml6P0q9teFNmTmlk
+        2pO/rPPbZZAwjBLbTfwAnBPw+GbNg+pPx9jFlvQE32Y6dunSUYVPmhjbyHUVDj5nm3vgvNFVHLSJf
+        6MoKD5kBcTAh4RtdyyUXle3gIBu0rhud8GSh3AqDPxHckUwbsWhVWa9y8jmmHM4jJWUNu4IEG20rO
+        NyXc66+DoMMWZUCzjw8MK44iAiZL35f1OJRIZmuwqoOEu0jkxNnSVmFTif1ONNKd6WruatUnC6Nt/
+        mz7zYtDg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVexU-00C9Ps-RJ; Wed, 29 Sep 2021 19:09:52 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C6501981431; Wed, 29 Sep 2021 21:09:35 +0200 (CEST)
+Date:   Wed, 29 Sep 2021 21:09:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 08/11] context_tracking,rcu: Replace RCU dynticks
+ counter with context_tracking
+Message-ID: <20210929190935.GX4323@worktop.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.007420590@infradead.org>
+ <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20210929181645.21855-1-clabbe.montjoie@gmail.com>
-In-Reply-To: <20210929181645.21855-1-clabbe.montjoie@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 29 Sep 2021 21:08:38 +0200
-Message-ID: <CACRpkdZgXW4HOTsiw30-oncfiU54Jr_nDvZL-ZznRp8Tym=TmQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: handle CONFIG_CPU_ENDIAN_BE32 in arch/arm/kernel/head.S
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 8:19 PM Corentin Labbe
-<clabbe.montjoie@gmail.com> wrote:
+On Wed, Sep 29, 2021 at 11:37:01AM -0700, Paul E. McKenney wrote:
+> On Wed, Sep 29, 2021 at 05:17:31PM +0200, Peter Zijlstra wrote:
+> The CT_SEQ_WORK bit means neither idle nor nohz_full user, correct?
 
-> My intel-ixp42x-welltech-epbx100 no longer boot since 4.14.
-> This is due to commit 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel
-> mapping regression")
-> which forgot to handle CONFIG_CPU_ENDIAN_BE32 as possible BE config.
->
-> Suggested-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
-> Fixes: 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel mapping regressi=
-on")
-> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+That bit is indeed independent, it can get set remotely by cmpxchg when
+in user/eqs state and will be tested and (eventually) cleared when
+leaving user/eqs state.
 
-Good catch!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> So let's see if I intuited the decoder ring, where "kernel" means that
+> portion of the kernel that is non-noinstr...
+> 
+> CT_SEQ_WORK	CT_SEQ_NMI	CT_SEQ_USER	Description?
+> 0		0		0		Idle or non-nohz_full user
+> 0		0		1		nohz_full user
+> 0		1		0		NMI from 0,0,0
+> 0		1		1		NMI from 0,0,1
+> 1		0		0		Non-idle kernel
+> 1		0		1		Cannot happen?
+> 1		1		0		NMI from 1,0,1
+> 1		1		1		NMI from cannot happen
+> 
+> And of course if a state cannot happen, Murphy says that you will take
+> an NMI in that state.
 
-Please put this into Russell's patch tracker.
+Urgh, you have the bits the 'wrong' way around :-)
 
-Yours,
-Linus Walleij
+MSB     3210
+|-------||||
+
+Where [MSB-3] is the actual sequence number, [21] is the state and [0]
+is the work-pending bit.
+
+The table for [21] is like:
+
+USER NMI
+ 0    0		kernel
+ 0    1		kernel took nmi
+ 1    0		user
+ 1    1		user took nmi
+
+So effectively EQS is 10 only, the other 3 states are kernel.
+
