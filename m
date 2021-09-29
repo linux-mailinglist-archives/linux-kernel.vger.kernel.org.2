@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFDF41CA9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611D541CAA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 18:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245627AbhI2QxE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Sep 2021 12:53:04 -0400
-Received: from mga18.intel.com ([134.134.136.126]:13848 "EHLO mga18.intel.com"
+        id S1343687AbhI2QxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 12:53:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243893AbhI2QxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 12:53:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212071487"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="212071487"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 09:51:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; 
-   d="scan'208";a="476702306"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga007.jf.intel.com with ESMTP; 29 Sep 2021 09:51:18 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 29 Sep 2021 09:51:17 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 29 Sep 2021 09:51:15 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Wed, 29 Sep 2021 09:51:15 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
+        id S245753AbhI2QxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 12:53:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 710FA6142A;
+        Wed, 29 Sep 2021 16:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632934286;
+        bh=emBPpoiw27wreF76TyqicFzW982o12rjgMyP5kO42rQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pxwKyz8gPmIzOLiLqCVhtLRuZhUFLFpuejkT2FSar8qtdo+EOspSUF6MFYjbP1cEU
+         9OrAuvMhv5RmFhegeZNdChTObQDdNTil49ty6Fpc9RTM6GnJ4M8VSeWBjUB1g/rnOm
+         jaPuyn1fc2pEVGBoojpnBbKctDtxAVUGahfFa2ggmSM3XiZlgQCjNKNuxywJbdJgWm
+         a2xNdAhonrkQeEG45Dg6sTEwrqIag4oVl69TI4lmNdzgF4srBD4lFiqaU0DM33LVeF
+         wQK9rNgbNzyFG1UbBU83rWoTi+hAGJFw0TOlCoTW7eO8SVISPK+lCUr0Ly+3z+lmuc
+         DeNksLN6t8dCg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 66EAD410A1; Wed, 29 Sep 2021 13:51:23 -0300 (-03)
+Date:   Wed, 29 Sep 2021 13:51:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     John Garry <john.garry@huawei.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Josh Poimboeuf" <jpoimboe@redhat.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
-Thread-Topic: [PATCH 5/8] x86/mmu: Add mm-based PASID refcounting
-Thread-Index: AQHXrlppKq1JNDzwUU2jIMumR+OY2auyKYcA//+tUICAAIgmgIABRuYA//+7QwCAAOhhgIAG/wKAgAArB4D//9OUcA==
-Date:   Wed, 29 Sep 2021 16:51:15 +0000
-Message-ID: <57d0e4efcf2d4e9abb91801520a3f386@intel.com>
-References: <20210920192349.2602141-1-fenghua.yu@intel.com>
- <20210920192349.2602141-6-fenghua.yu@intel.com> <87y27nfjel.ffs@tglx>
- <YUyuEjlrcOeCp4qQ@agluck-desk2.amr.corp.intel.com> <87o88jfajo.ffs@tglx>
- <87k0j6dsdn.ffs@tglx> <YU3414QT0J7EN4w9@agluck-desk2.amr.corp.intel.com>
- <a77ee33c-6fa7-468c-8fc0-a0a2ce725e75@www.fastmail.com>
- <YVQ3wc/XjeOHpGCX@hirez.programming.kicks-ass.net> <87r1d78t2e.ffs@tglx>
-In-Reply-To: <87r1d78t2e.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>, Paul Clarke <pc@us.ibm.com>,
+        kajoljain <kjain@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>
+Subject: Re: [PATCH v9 00/13] Don't compute events that won't be used in a
+ metric.
+Message-ID: <YVSZi3PhwsNl3LdE@kernel.org>
+References: <20210923074616.674826-1-irogers@google.com>
+ <00eb6280-fad0-66c4-b957-a4d27dffd0da@huawei.com>
+ <CAP-5=fXcq6Npio0n9y8znknNUGJ4ovtbi=hHr4jWG6H38=BzSA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fXcq6Npio0n9y8znknNUGJ4ovtbi=hHr4jWG6H38=BzSA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> There is zero requirement to look at TIF_NEED_FPU_LOAD or
-> fpregs_state_valid() simply because the #GP comes straight from user
-> space which means the FPU registers contain the current tasks user space
-> state.
+Em Wed, Sep 29, 2021 at 09:09:24AM -0700, Ian Rogers escreveu:
+> On Wed, Sep 29, 2021 at 8:16 AM John Garry <john.garry@huawei.com> wrote:
+> >
+> > On 23/09/2021 08:46, Ian Rogers wrote:
+> > > For a metric like:
+> > >    EVENT1 if #smt_on else EVENT2
+> > >
+> > > currently EVENT1 and EVENT2 will be measured and then when the metric
+> > > is reported EVENT1 or EVENT2 will be printed depending on the value
+> > > from smt_on() during the expr parsing. Computing both events is
+> > > unnecessary and can lead to multiplexing as discussed in this thread:
+> > > https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
+> > >
+> > > This change modifies expression parsing so that constants are
+> > > considered when building the set of ids (events) and only events not
+> > > contributing to a constant value are measured.
+> >
+> > Based on some testing on my arm64 platform, no regression seen, so:
+> >
+> > Tested-by: John Garry <john.garry@huawei.com>
+> 
+> Awesome, much thanks Jiri, John, Andi for the reviews and testing!
 
-Just to double confirm ... there is no point in the #GP handler up to this point
-where pre-emption can occur?
+Thanks, applied.
 
--Tony
+- Arnaldo
+
