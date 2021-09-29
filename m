@@ -2,132 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7129541C4CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8968541C4CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 14:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343843AbhI2MeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 08:34:22 -0400
-Received: from mail-eopbgr1310124.outbound.protection.outlook.com ([40.107.131.124]:24370
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1343839AbhI2MeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:34:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HpaEcd8U1058vDJ9QMch/LaKUE7G5EZKirt+dcSOGMEbczJyH6erarYIOHzs6vxV2kM4g0zRJoiemyx8kyGfa/inaPCcCRnrNjEMy6Vp+cSPHnrLn/1LnLRMZsE2Q1LoWl6rJlg65US8AftHaMoXEwgZe3Iv03mTyHaCrjwNBdmhj7rTNEHg8oV2nWLCmgwvmtY8gXOR7bXkmNO9YFXlcMElxYPfEsFcMyss8PJcBO9QrPH1HzNozEAJRFQeNK0KiSyrE6MZ1gquVq5TE1f92+QQJnKaOGlVT+NQi0lhwksa5fQ5VoIBz3mw099OTAY/qPeTwnD+GhcKNSsei9diRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=nQ7h0dUFMgNwmTWPuSgrJRwTaGumITXenfdhbjo10PI=;
- b=LiDJuGhjRfRxYOUmLa9prmIgIkhH1352st/NFXOHeN8ZpBa8A81BaG9QdEaiaBOdI3p9LiEWzdHOBr7qJtjUeadAP4sRuSxIiMpc9ibxJSzHc2Gn4Q7MhKqDHPW7MQ3aeoEcXhu3SonJlN7J+lDATeo2K7StXAIdaiooZ2SAHEYV08hwfP3SQa731Ct2Hmzt9XfD67akpAhCH0rp5y4ZDjsNLuaMkwDnmsx6WsNqFhOJFKqoTIPxEYVU6VljGNQEd54Byc01ic8H6ksz9DUWBUvQtW0HMo+Iu5XS2XeahNMe2BzrT5Qzx+a2R5sKaJeaAEnM5o4b9FNEZQ+EA+KUwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nQ7h0dUFMgNwmTWPuSgrJRwTaGumITXenfdhbjo10PI=;
- b=kLUWpHby1WTw3BqoqFRYlFjcK57t/FrkDO2U9Af23n1IAlkcTZUbrhjMHjUxVNosigfatSq/NXG2HcWB6nTiRTO2WqvsSliOhNKzqPqi8zv09KQdvsU5+oIiyS/8cHr80PUt1VWw6kiFMiCoQIf1nzYkKQLOnLC+Vm7N/Oebz98=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
-Received: from HK2PR06MB3492.apcprd06.prod.outlook.com (2603:1096:202:2f::10)
- by HK2PR06MB3283.apcprd06.prod.outlook.com (2603:1096:202:3c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Wed, 29 Sep
- 2021 12:32:36 +0000
-Received: from HK2PR06MB3492.apcprd06.prod.outlook.com
- ([fe80::80d9:d4e4:300f:3156]) by HK2PR06MB3492.apcprd06.prod.outlook.com
- ([fe80::80d9:d4e4:300f:3156%5]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
- 12:32:35 +0000
-From:   Guo Zhengkui <guozhengkui@vivo.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, Guo Zhengkui <guozhengkui@vivo.com>
-Subject: [PATCH] ASoC: wm_adsp: remove a repeated including
-Date:   Wed, 29 Sep 2021 20:32:15 +0800
-Message-Id: <20210929123217.5240-1-guozhengkui@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0185.apcprd02.prod.outlook.com
- (2603:1096:201:21::21) To HK2PR06MB3492.apcprd06.prod.outlook.com
- (2603:1096:202:2f::10)
+        id S1343846AbhI2MhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 08:37:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343735AbhI2MhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:37:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D7B613A0;
+        Wed, 29 Sep 2021 12:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632918920;
+        bh=Hu/yKy3l7uo79+zSzWlyiDToH/uMoO95d8UxPVr/d/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e9vbIvX6E9RClEiNdzxtftrYOJcEyZMx6jMKfHWdFwCQhFgx0kCFN4oGOCagdnzL2
+         4oYFs1pBNVH8O6LfR38zGFX1bpF9quWSn9pnnkJKw+Ix2ynGt68d99PJwBm1yMP7HC
+         25Y+kExEggSfnsq3MIv93/TvQCceT0xr8da/W4KjRRQkxGx32ACJB/MH8Mi8qT90Lk
+         aROC9lx9p18/2rN7NmvJHDYlVeCu4dT35vFBDamYv28FnX4cZEuIl+Cl9nkm7m1tes
+         WWVOlRO4C660OGaZyhDOhzpMgMYpIUCX1l2WIzVd2CzqRD92w44Mu3HNfbGO9G81PG
+         h3ArF1z58qEaA==
+Date:   Wed, 29 Sep 2021 13:35:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        james.morse@arm.com, vladimir.murzin@arm.com,
+        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
+        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
+        selindag@gmail.com, tyhicks@linux.microsoft.com,
+        kernelfans@gmail.com, akpm@linux-foundation.org,
+        madvenka@linux.microsoft.com
+Subject: Re: [PATCH v17 08/15] arm64: kexec: configure EL2 vectors for kexec
+Message-ID: <20210929123513.GC21631@willie-the-truck>
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+ <20210916231325.125533-9-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HK2PR02CA0185.apcprd02.prod.outlook.com (2603:1096:201:21::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend Transport; Wed, 29 Sep 2021 12:32:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 52bddf69-36d3-4dfd-7048-08d98345377e
-X-MS-TrafficTypeDiagnostic: HK2PR06MB3283:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HK2PR06MB3283625D3EAA48D06C3BAA83C7A99@HK2PR06MB3283.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:207;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XsOoUw/AV+naxZUq8rgMIaBK0shzCqNXQfsiPg3txwPPUCeEIXEqN49gc6IFYHBXvwayvIFjKKRdXGnzt9DjiF4vperQaG7J6imrJoY571jexExH/qbLIvUEdtFGBl1c3EkrAcVdtvqawPCfAM7QBWumVoMeU6+miCrBq/B+UwXa4NYd+UmU27bfaDFeU/9NqFVNiDvnl/HNp7yLb+F7jrgU/+aIRZF3V9p0bEFQLNd/ZNPp8fX3bs1mr1d2Sggn+NYjMZC1svAvpQyqFCIbMVqy3k7kz9WMAij5xbiM38RG8iaP/f2nMrnpa0tHnWEwdwxuprsxIIULnlwuwDEza2o4A6bInwXAYUsuiHklZk3Kc5mRHrV0OpTzQDsHnm4jr9j1igKuiuAmljqomBnTQJHRYwVqKsCkCsVknd7Y9Iwt4se4mS/Ma7ZF0l1Fst65K+YcqyHjnXxZQ/DoAsCCYFQrZBGf6X2vtB8d0ODBAjxIqMWhbsuGqBz1EGtYAp0Y8cYjkuXayZ4Vw+Aegx4wloDYw/y5/hQwX99ggO6R0v8NMsA1jQ/hIYOraLQQF5vuPI2bR9adKXpqQ9AFBgb9iEPijrvJT5aIFFsfoo5GBsyuLni1ez4EP1natymz3peBTUFJEkxluRmg1GyqAjjaT+6/acvFLRB4vggGWqyg6e7VraZ/MrA02YWJzdX+Kt5pe1t0fgzBHK5SrPsS8HtUfpFEKV08Taz6pSEiwz/LZKc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3492.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(316002)(4744005)(110136005)(1076003)(2906002)(7416002)(36756003)(4326008)(508600001)(5660300002)(66476007)(66556008)(38350700002)(38100700002)(921005)(186003)(956004)(6486002)(107886003)(26005)(2616005)(86362001)(6506007)(8676002)(83380400001)(52116002)(6512007)(8936002)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qplReyKVEKw9flKppKQbG/Xs7IvOYFI6P3kcw29GqX0zU3HQKB/7BJR+1CLy?=
- =?us-ascii?Q?jv7J8zNVvt4aBGAHUGbn+LcAPgNzWDK29/9hJdvzz3TQ1JrZG63kEMDG4MnD?=
- =?us-ascii?Q?cHmSY9E2DGOqWWQZKkjo8auwbP7R6FcpXsqR886RR2usU1COCyuNsPl2C0lM?=
- =?us-ascii?Q?cGzU8gWTZwAP1uBF5qS0HQE4YRVB8quW5RvdMpkJN4xBRAdC03cH6/jV7E2u?=
- =?us-ascii?Q?xsXlMl0cCJcYx6RObrlYCta1IBlyLVXDDE2jOw+JPLaEpu0bfWTNDHalghTN?=
- =?us-ascii?Q?jW0kbakKlIgyu+137tkuvSXuNjAf6dRZI/+QUd9DueCd97Fa6/J/rugwspyZ?=
- =?us-ascii?Q?re/fkc0hYFbuvQaHWBDXikV8IeA8lF/uMwMF/Oq03/GGYWtGgxN4N/chSeep?=
- =?us-ascii?Q?0BhXBh+ijFOmQD7BoKvaIUk6fbUllKuaccKD7Qnzkl0aJtPNJjfq74ed+A/H?=
- =?us-ascii?Q?V+FliTDZo2CZBOBLLYNGjTckB0RfX/qInnjK8tw0PiAuRniXl/hUa7lWjMXe?=
- =?us-ascii?Q?IJXFU9sH8eUOiO2AW0Q5ZVhMEeaaEMJY7o+bzKjXixSpn6uTYItDYwFZFKyj?=
- =?us-ascii?Q?pQo/xgCvkqWSZThTri1lVQDaSBrKgIQt5HoVVMbJIBE0Qy1YkWIBEPqtrMQ/?=
- =?us-ascii?Q?RWvR1A1zYhIgll2au9TLABJ4yxX59ubEJ/YNjz+HgeuVyv1XE2J/xVZzh5Vs?=
- =?us-ascii?Q?z87KS1ln4lTkAsDGw9FPkkoUZLk4EEyRmXD85qFux50ywWQki3VzcoVKMvfk?=
- =?us-ascii?Q?bYn7M3Pzk+eNMWqqtdim/GyaP51c1TLpy/NcV78CvIeZT2M7JlZHrSDvxidI?=
- =?us-ascii?Q?tM09h3XTOsJYL82yM6h+ITiCqoKfDkxEM9jkQ5iyHUYgrwQPaUZDErXdsQZx?=
- =?us-ascii?Q?yTz3jCTwnBMg10Hew+ZzaNQrnksAzh5eDmieqWg2SvBz2FvUtIMqHzGm65Xn?=
- =?us-ascii?Q?p4ns0acY+A7J/DhDLALBwpaUcuJemQFogdaHC9zFcazwLAgp7K8xf8tfmHYc?=
- =?us-ascii?Q?K5xnWgoqUE94BqdIzNj0+yvASemeAz2MTQwpo6XO1kyc2lXyt/Sr/f8d7y7f?=
- =?us-ascii?Q?pYaKcX2JZT6OnAxP6PL37eTO0dGM9jeC/7oFQ0ND1YsqkTVFyJfUabuy7TnW?=
- =?us-ascii?Q?YooG4GRpzXX6ILLC2ajqyHOPHa4IWoJ7J/nGG/h/Qih94ruhiky1jNAAWiBb?=
- =?us-ascii?Q?A9wkrQsp2831X8MEBsnVtt87lKoCKnxHiBh9QYPfx4Gb0Gmf6xkWfDy0MdcB?=
- =?us-ascii?Q?2vykZKRsDnQwFbWUwE8iSQTWqYIa6XF/+oEy+58Moc4kNeTdCpcETS+ePnxf?=
- =?us-ascii?Q?riziTBdL1XnRpQTA5mXkWzyB?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52bddf69-36d3-4dfd-7048-08d98345377e
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3492.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 12:32:35.8310
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q1YRF9aL7XFtzdwc4FeePPFVTh6YcUNpodU0sb/V6KsXuFvwQxORlSEOpUzw90Umjmyrzr1NN7Di2EG+kSge2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3283
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916231325.125533-9-pasha.tatashin@soleen.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove a repeated "#include <linux/firmware.h>" in line 32.
+On Thu, Sep 16, 2021 at 07:13:18PM -0400, Pasha Tatashin wrote:
+> If we have a EL2 mode without VHE, the EL2 vectors are needed in order
+> to switch to EL2 and jump to new world with hypervisor privileges.
+> 
+> In preparation to MMU enabled relocation, configure our EL2 table now.
+> 
+> Kexec uses #HVC_SOFT_RESTART to branch to the new world, so extend
+> el1_sync vector that is provided by trans_pgd_copy_el2_vectors() to
+> support this case.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  arch/arm64/Kconfig                |  2 +-
+>  arch/arm64/include/asm/kexec.h    |  1 +
+>  arch/arm64/kernel/asm-offsets.c   |  1 +
+>  arch/arm64/kernel/machine_kexec.c | 31 +++++++++++++++++++++++++++++++
+>  arch/arm64/mm/trans_pgd-asm.S     |  9 ++++++++-
+>  5 files changed, 42 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 5c7ae4c3954b..552a057b40af 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1135,7 +1135,7 @@ config CRASH_DUMP
+>  
+>  config TRANS_TABLE
+>  	def_bool y
+> -	depends on HIBERNATION
+> +	depends on HIBERNATION || KEXEC_CORE
+>  
+>  config XEN_DOM0
+>  	def_bool y
+> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+> index 00dbcc71aeb2..753a1c398898 100644
+> --- a/arch/arm64/include/asm/kexec.h
+> +++ b/arch/arm64/include/asm/kexec.h
+> @@ -96,6 +96,7 @@ struct kimage_arch {
+>  	void *dtb;
+>  	phys_addr_t dtb_mem;
+>  	phys_addr_t kern_reloc;
+> +	phys_addr_t el2_vectors;
+>  };
+>  
+>  #ifdef CONFIG_KEXEC_FILE
+> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> index 1d3319c7518e..6a2b8b1a4872 100644
+> --- a/arch/arm64/kernel/asm-offsets.c
+> +++ b/arch/arm64/kernel/asm-offsets.c
+> @@ -174,6 +174,7 @@ int main(void)
+>  #endif
+>  #ifdef CONFIG_KEXEC_CORE
+>    DEFINE(KIMAGE_ARCH_DTB_MEM,		offsetof(struct kimage, arch.dtb_mem));
+> +  DEFINE(KIMAGE_ARCH_EL2_VECTORS,	offsetof(struct kimage, arch.el2_vectors));
+>    DEFINE(KIMAGE_HEAD,			offsetof(struct kimage, head));
+>    DEFINE(KIMAGE_START,			offsetof(struct kimage, start));
+>    BLANK();
+> diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+> index e210b19592c6..59a4b4172b68 100644
+> --- a/arch/arm64/kernel/machine_kexec.c
+> +++ b/arch/arm64/kernel/machine_kexec.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/mmu.h>
+>  #include <asm/mmu_context.h>
+>  #include <asm/page.h>
+> +#include <asm/trans_pgd.h>
+>  
+>  #include "cpu-reset.h"
+>  
+> @@ -43,7 +44,9 @@ static void _kexec_image_info(const char *func, int line,
+>  	pr_debug("    start:       %lx\n", kimage->start);
+>  	pr_debug("    head:        %lx\n", kimage->head);
+>  	pr_debug("    nr_segments: %lu\n", kimage->nr_segments);
+> +	pr_debug("    dtb_mem: %pa\n", &kimage->arch.dtb_mem);
+>  	pr_debug("    kern_reloc: %pa\n", &kimage->arch.kern_reloc);
+> +	pr_debug("    el2_vectors: %pa\n", &kimage->arch.el2_vectors);
+>  
+>  	for (i = 0; i < kimage->nr_segments; i++) {
+>  		pr_debug("      segment[%lu]: %016lx - %016lx, 0x%lx bytes, %lu pages\n",
+> @@ -143,9 +146,27 @@ static void kexec_segment_flush(const struct kimage *kimage)
+>  	}
+>  }
+>  
+> +/* Allocates pages for kexec page table */
+> +static void *kexec_page_alloc(void *arg)
+> +{
+> +	struct kimage *kimage = (struct kimage *)arg;
+> +	struct page *page = kimage_alloc_control_pages(kimage, 0);
+> +
+> +	if (!page)
+> +		return NULL;
+> +
+> +	memset(page_address(page), 0, PAGE_SIZE);
 
-Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
----
- sound/soc/codecs/wm_adsp.c | 1 -
- 1 file changed, 1 deletion(-)
+Hmm, I think we might be missing barriers here to ensure that the zeroes
+are visible to the page-table walker before we plumb the page into the
+page-table.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 6c5d55b3b311..b9fb4f547d5e 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -29,7 +29,6 @@
- #include <sound/jack.h>
- #include <sound/initval.h>
- #include <sound/tlv.h>
--#include <linux/firmware.h>
- 
- #include "wm_adsp.h"
- 
--- 
-2.20.1
+Usually, that's taken care of by the smp_wmb() in __pXX_alloc() but I
+can't see that here. Is it hiding?
 
+Will
