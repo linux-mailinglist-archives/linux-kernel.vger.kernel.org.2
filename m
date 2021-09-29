@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE01841CCC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8246241CCCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 21:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344425AbhI2TrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 15:47:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244887AbhI2TrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:47:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 754AA613DA;
-        Wed, 29 Sep 2021 19:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632944740;
-        bh=SSBizUwzU7P1hfnNjMjgmannJ7niY7VHv9x1ZCMas4k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tpxxHwv9+B6xIRrrjrAA+VD6FGEUE+E/hPXl0STStgtE+sqgCeJSK14WYNeaHKS9I
-         9mpg92OrfybCRFoiqbm+c7AY7jKAzBfdaa7AWCTaNMNcd9YlTkt4c6+hl+X2uOPhFb
-         ifijczsbJ4tnHu2EcwGAlFPXhdCBUmTOwHdDqV298HapBXB0W9lPw7gwx4plz9yadt
-         VmcImQYaNfxUgtAEsQX84CO/KUT3MlbfajqTtahgWHt2p1RG5MFhPKmGHKv0+XQpW4
-         lTwJC4ttuTOhXJ3TXcdLriNH4CwjpHBZUFrB0uv7rTOxBJ+73Dnb5JSHIGaRSOd8GB
-         b0imnaJ1WSSwg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4A3A55C1309; Wed, 29 Sep 2021 12:45:40 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 12:45:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 08/11] context_tracking,rcu: Replace RCU dynticks
- counter with context_tracking
-Message-ID: <20210929194540.GZ880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.007420590@infradead.org>
- <20210929183701.GY880162@paulmck-ThinkPad-P17-Gen-1>
- <20210929191326.GZ4323@worktop.programming.kicks-ass.net>
- <20210929192431.GG5106@worktop.programming.kicks-ass.net>
+        id S1344562AbhI2Trh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 15:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244887AbhI2Trg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:47:36 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81280C06161C;
+        Wed, 29 Sep 2021 12:45:54 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j5so10523386lfg.8;
+        Wed, 29 Sep 2021 12:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rqW9hhkISxwuGactI1ttFa+vzsKk4Z1qN+Hs81UQtqw=;
+        b=NV/2IMlvCGKizUEH17J7x22FC9cOI/SmQP7u3nxMIDl4lZjr/isDvPyQHDes+owjDB
+         NnStzNjllRqQRa8KXNbUlEP56y3pPlzvt5jHUl5cGnhzGK2k/+7R739scKUmuGjKzP+Q
+         RiLn16d7F/iHeukFm5vtJXEfqJ8o1o8ppBtBk5M8PcVFd1Lxd9Dfh2cOONs4wtogPkRV
+         AxgcPPHTvNR5dU9EHZ91lIc8fjgkd2to2VwAhfG3xKPH7nmFuwheXdb/967q1eEwJKdx
+         2031wy/y4UgiOyCFBrz/Pi9p/N7egCfefcNAZl1DgA6QjrzAcjYiW+iVM/plPCm0Zzxg
+         ha2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rqW9hhkISxwuGactI1ttFa+vzsKk4Z1qN+Hs81UQtqw=;
+        b=tdrgXQJGMDx0vwR6R0F8+wDN0BN3nh6NUZnd2UZYAdyIrDtpXe+d952kPyxj6Tc5ki
+         qUNBKeoNVCe+SRaIxQxVhyaupAlcxF/hrAHZgB9LRGaULiDv5uuM9OiHHYMy68YIFSe3
+         7pF/UU6zfZPBvBThxEUn9dQJ5osLxo47ajeEuwW3yNPCtWxoGGEGrGCLvZ4LAZO8ndst
+         QRuQQ3EvjSCJjX5NvtcgaYjK1rWJtg/ru4aJ2RS8FMpaXF4EekgU4q57jHZ4J3Ssxk+q
+         8yepcbk39oQFjRR8LfjCSjkZC+NYTVDi71ngurfFtYHEgMzXEPtpCyXlLUmMIciwJ8Qr
+         KcQg==
+X-Gm-Message-State: AOAM5311kTtKFjyPAGu+xmb6O44RQIiCsK72cF4bQ7UOEbDZ1cUowMDQ
+        7O2BCdY+P4v7j1yv0rY5aTQ=
+X-Google-Smtp-Source: ABdhPJyts3aNlfy2il1lBQlk5FeVxuJAsyZxkNt6bW6cPgTy7SYGw7q5TH9KI98x3HmgVLVXu/IX0Q==
+X-Received: by 2002:a2e:8584:: with SMTP id b4mr1856451lji.477.1632944752950;
+        Wed, 29 Sep 2021 12:45:52 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id v27sm104607lfp.0.2021.09.29.12.45.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 12:45:52 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Junlin Yang <yangjunlin@yulong.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH V2 0/2] usb: cdc-wdm: Fix config and constify
+Date:   Wed, 29 Sep 2021 21:45:45 +0200
+Message-Id: <20210929194547.46954-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929192431.GG5106@worktop.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:24:31PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 29, 2021 at 09:13:26PM +0200, Peter Zijlstra wrote:
-> > On Wed, Sep 29, 2021 at 11:37:01AM -0700, Paul E. McKenney wrote:
-> > 
-> > > And what happens to all of this in !CONFIG_CONTEXT_TRACKING kernels?
-> > > Of course, RCU needs it unconditionally.  (There appear to be at least
-> > > parts of it that are unconditionally available, but I figured that I
-> > > should ask.  Especially given the !CONFIG_CONTEXT_TRACKING definition
-> > > of the __context_tracking_cpu_seq() function.)
-> > 
-> > For !CONFIG_CONTEXT_TRACKING it goes *poof*.
-> > 
-> > Since the thing was called dynticks, I presumed it was actually dynticks
-> > only, silly me (also, I didn't see any obvious !context_tracking usage
-> > of it, i'll go audit it more carefully.
-> 
-> Oh argh, it does idle too... damn. And I don't suppose having 2 counters
-> is going to be nice :/
-> 
-> I'll go back to thinking about this.
+This series fixes an ifdef of a renamed Kconfig option.
 
-Glad I could help?  For some definition of "help"?  ;-)
+While at it, constify a static struct full of function pointers.
 
-							Thanx, Paul
+V1: https://lore.kernel.org/lkml/20210929132143.36822-1-rikard.falkeborn@gmail.com/
+
+Changes
+V2: Use ifdef instead of IS_ENABLED()
+
+Rikard Falkeborn (2):
+  usb: cdc-wdm: Fix check for WWAN
+  usb: cdc-wdm: Constify static struct wwan_port_ops
+
+ drivers/usb/class/cdc-wdm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.33.0
+
