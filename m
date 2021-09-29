@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185A541C6B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DFC41C6C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Sep 2021 16:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344452AbhI2Ocf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Sep 2021 10:32:35 -0400
-Received: from aposti.net ([89.234.176.197]:43458 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245167AbhI2Oce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 10:32:34 -0400
-Date:   Wed, 29 Sep 2021 15:30:31 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v4 02/10] drm/ingenic: Add support for JZ4780 and HDMI
- output
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Message-Id: <VM970R.TLCBMNA67DOI2@crapouillou.net>
-In-Reply-To: <17BF1D7A-2057-448B-9FD2-907DE0EFD281@goldelico.com>
-References: <cover.1632761067.git.hns@goldelico.com>
-        <68cca888be1894ce45f1a93cfabeb5aa1f88c20a.1632761067.git.hns@goldelico.com>
-        <OA150R.JLKJBJP8V7FJ2@crapouillou.net>
-        <1E10A04A-4A78-4B47-B0FB-1E8C99456DA1@goldelico.com>
-        <17BF1D7A-2057-448B-9FD2-907DE0EFD281@goldelico.com>
+        id S1344499AbhI2OhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 10:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344505AbhI2OdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 10:33:17 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC06C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:31:36 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id x7so9262391edd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 07:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WsCHCHxDakoTG9Y2g1K3Qe4rx6KtRBr1u+T1pzACydY=;
+        b=BtiXOGYER9YrYAItEdOx0vNMy5uSTK/hX3RVgLSZ3uQrBewz42OlOQXLZszFMwonC6
+         2CnMtHZIq9XG8Nt1q8iLw4zDw8rRX+a5W8qSx3KVzHKVnyy0V0CXnzWlBcMzwQ+rM5vx
+         ZnhnWV6a7A4lj9HnXH//5QhKS9VPUzFZ5MLVKxk99FpaWTNfwt18rxzzmrjP8yw2Yv9p
+         SyhZ3h5uoIOSVKmYPwYTcX3MFAxdzRAyi8OjHFmsJAHjzreZOVFiM5cNBzLDjegyptdm
+         Di5UKwwORMBZimUezYaBz4lknCBuyWkvm9Jn919e75jLHolpEnzUADr0B1MMEFK9UX6x
+         RvXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WsCHCHxDakoTG9Y2g1K3Qe4rx6KtRBr1u+T1pzACydY=;
+        b=aRLwv4r0hG5pLK7NO6cSSse3R2es4MmAKkHz1E4Nweub6RXLypQbgCfGinFxZP9zmw
+         qmly3tyqDxOi3jmRRltTupP0Pli1tBEThqJOaGraweAcjFexl41DzxmrBSuam5dvybKg
+         hCj/EcDhL/5wQdqmlUVVOKlEgYJGfSa1J570WOZiMCRa94u197208UCGMjmgfaiiQbGG
+         FZHFOnzVoXOsCb35KrJt+55lynJFFYzDbQp2JRagwkxqk75NswxnpwgmB/REml20ayJs
+         qYPrWSTDxA3+m90noYb84m8k2TCOlTXmDntPpl94Xh8/eZdUVu77IrHQA3S3LwqpExYa
+         1Ywg==
+X-Gm-Message-State: AOAM532HLX3c2/JWloTwasu0n89VulOP6jMLL8IioHJxEpMlVsLbFylx
+        hGM9oB9bH62hoOBGbKpTrPJfCzj+oGkdZzAYRgUFTow5dniCQw==
+X-Google-Smtp-Source: ABdhPJxZxYvDMm2YqTW1OjhvnqIVaBbe/F7hJ78SGcL9elgVQbdIzJFG1E61pzl9QLo4Znd0OxJJWvujOsMAvjgeCg0=
+X-Received: by 2002:a05:6402:142e:: with SMTP id c14mr207037edx.209.1632925850454;
+ Wed, 29 Sep 2021 07:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210908132727.16165-1-david@redhat.com> <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
+ <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
+ <ea75df96-f381-6949-5627-1382a370dc71@redhat.com> <20210916193403.GA1940@pc638.lan>
+ <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com> <20210921221337.GA60191@pc638.lan>
+ <7f62d710-ca85-7d33-332a-25ff88b5452f@redhat.com> <20210922104141.GA27011@pc638.lan>
+ <e378e60a-319b-e9aa-7e30-3e280c4431da@redhat.com>
+In-Reply-To: <e378e60a-319b-e9aa-7e30-3e280c4431da@redhat.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Wed, 29 Sep 2021 16:30:39 +0200
+Message-ID: <CA+KHdyWZ9T2GEuUENXD_OYHX1JxKfZuW5YzmDtqXUYSgkQd8fQ@mail.gmail.com>
+Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment > 1
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ping Fang <pifang@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+>
+> So the idea is that once we run into a dead end because we took a left
+> subtree, we rollback to the next possible rigth subtree and try again.
+> If we run into another dead end, we repeat ... thus, this can now happen
+> more than once.
+>
+> I assume the only implication is that this can now be slower in some
+> corner cases with larger alignment, because it might take longer to find
+> something suitable. Fair enough.
+>
+Yep, your understanding is correct regarding the tree traversal. If no
+suitable block
+is found in left sub-tree we roll-back and check right one. So it can
+be(the scanning)
+more than one time.
 
-Le mar., sept. 28 2021 at 14:06:03 +0200, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> Hi Paul,
-> 
->>  Am 28.09.2021 um 12:21 schrieb H. Nikolaus Schaller 
->> <hns@goldelico.com>:
->> 
->>>>  @@ -1492,10 +1555,16 @@ static int ingenic_drm_init(void)
->>>>  {
->>>>  	int err;
->>>>  +	if (IS_ENABLED(CONFIG_DRM_INGENIC_DW_HDMI)) {
->>>>  +		err = platform_driver_register(ingenic_dw_hdmi_driver_ptr);
->>>>  +		if (err)
->>>>  +			return err;
->>>>  +	}
->>> 
->>>  I don't see why you need to register the ingenic-dw-hdmi driver 
->>> here. Just register it in the ingenic-dw-hdmi driver.
->> 
->>  Ok, I never though about this (as the code was not from me). We 
->> apparently just followed the IPU code pattern (learning by example).
->> 
->>  It indeed looks not necessary and would also avoid the 
->> ingenic_dw_hdmi_driver_ptr dependency.
->> 
->>  But: what is ingenic_ipu_driver_ptr then good for?
->> 
+I did some performance analyzing using vmalloc test suite to figure
+out a performance
+loss for allocations with specific alignment. On that syntactic test i
+see approx. 30%
+of degradation:
 
-It's done this way because ingenic-drm-drv.c and ingenic-ipu.c are both 
-compiled within the same module ingenic-drm.
+2.225 microseconds vs 1.496 microseconds. That time includes both
+vmalloc() and vfree()
+calls. I do not consider it as a big degrade, but from the other hand
+we can still adjust the
+search length for alignments > one page:
 
-I'm not sure this is still required, maybe ingenic-ipu.c can be its own 
-module now.
+# add it on top of previous proposal and search length instead of size
+length = align > PAGE_SIZE ? size + align:size;
 
->> 
->>  If we can get rid of this as well, we can drop patch 1/10 
->> ("drm/ingenic: Fix drm_init error path if IPU was registered") 
->> completely.
-> 
-> A quick test shows that it *is* required. At least if I configure 
-> everything as modules.
-> But like you I can't explain why.
+in that case we solve a KASAN issue + do not introduce a degrade. For
+the PAGE_SIZE
+alignment all free blocks are aligned to it anyway. As for users which
+uses a fixed range
+that is same as a requested size and at the same time want to apply a
+special alignment
+is not considered as a common case, also we do not have such users.
 
-Well, a quick test here shows that it is not required, at least when 
-configuring with everything built-in.
+Thoughts?
 
--Paul
+> >
+> > Could you please help and test the KASAN use case?
+>
+> Just tried it, works just fine with KASAN and makes sense in general,
+> thanks!
+>
+Good!
 
-> Well, just a very rough idea (may be wrong): the bridge chain is not 
-> like an i2c bus and
-> clients are not automatically loaded/probed if linked in the device 
-> tree. Therefore the
-> consumer (ingenic_drm_drv) must register the "clients" like IPU and 
-> HDMI.
-> 
-> BR,
-> Nikolaus
-> 
+Sorry for the delay.
 
-
+--
+Uladzislau Rezki
