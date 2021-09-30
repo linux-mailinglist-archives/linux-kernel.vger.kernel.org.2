@@ -2,122 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E3B41D184
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B8D41D188
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347873AbhI3Cje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 22:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347849AbhI3Cjd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:39:33 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8995EC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:37:51 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id o124so5508261vsc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FsYqypxg/dr8c8wkXcAf7I6Hd0FSlf0rtrIdWKourdU=;
-        b=SaeqEH6gjhtWTbbPlvjvhTi0o4fUIWYNq0JW65SJw7siu39S0ZbRgRH0GVO3MAIXDX
-         OVCLvjIO2Thku8+ZEgx/nJpEi+FylTNXWvk4enKtDlDFZ6qMQ9GYYwXYkR1ih/5e8FN9
-         Mlzhb4qYw8Dt2N0Rl4u5aI7rN5QLi4x7+S8u9q0UpRZX0sxEZO6KrqlbYVNoCeePZ96G
-         VJoqkdMuAhk3ztVa5+SoPpgzXF8orXYDa+WtJTYv7v7xCQx/36rBM63ga2sdP71uUeI6
-         rROgxmQy5/Obuo1dWAE9XmrMaZbu0QedLkwAKDzDGke+ctKx60fE5mRVMtVl5vCdrKfT
-         5lkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FsYqypxg/dr8c8wkXcAf7I6Hd0FSlf0rtrIdWKourdU=;
-        b=bIPX8Rd1mU5BIYVE6Ea2l3xkPE6gL1xFMwfvZ6W6nydQj/kHTFKjKsJjeXv/CgVZ3U
-         rRgzgHRXl/oiWQeJcFxJS7/x3i7/T/07OUaAc6OSgrzSLyuqA+3JK+NwhtWd5xirgj21
-         hWcUVSeJPlH6nBJRb8zabQ3ShAt6NllRprFvxG38nvR7J1cUxJJTw/htSE1WCXMETVyS
-         RmUoV+V3rcek3+RkjjOerQt1ci+I5zwFOwe6b4nUeAtmbYEPCoTDKkSHvhIVbvxrfayy
-         GF26eVoDmsaztgEVpbZ7aEJVxHPFDcF+hoPNiwHO2CHGBn1k0ZTIhrQwcYCqAOXTyktB
-         +FYA==
-X-Gm-Message-State: AOAM532GheDSTi0Xzwul4C/3M2Z/6XGQIMkAbmegV5JQNqh7vcKN32vh
-        PiMSdJwhWtIqLwqM5zHO4CSQIbm94rC6eZvJJScUqe2WRbyOyA==
-X-Google-Smtp-Source: ABdhPJyL/1fwFO+VYZjrC4XLhQoSFULZrxT2hJ7vv0nhIyQq1/A3zN0JWW/oay21otY+mUGk75mzScSuK2rdFkxrolE=
-X-Received: by 2002:a67:f251:: with SMTP id y17mr2073492vsm.22.1632969470752;
- Wed, 29 Sep 2021 19:37:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1631121222.git.greentime.hu@sifive.com> <82fe07af09d223b33c8d4b8986939bcc0d7180a1.1631121222.git.greentime.hu@sifive.com>
-In-Reply-To: <82fe07af09d223b33c8d4b8986939bcc0d7180a1.1631121222.git.greentime.hu@sifive.com>
-From:   Ley Foon Tan <lftan.linux@gmail.com>
-Date:   Thu, 30 Sep 2021 10:37:39 +0800
-Message-ID: <CAFiDJ5_Lp8ejFiNpZw=YvneyEFRj-PD9667Jv_hHy_-7xGf+FQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v8 11/21] riscv: Add sigcontext save/restore for vector
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     linux-riscv@lists.infradead.org,
+        id S1347883AbhI3Cke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 22:40:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:59232 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347849AbhI3Ckd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 22:40:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212341575"
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="212341575"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 19:38:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="555319477"
+Received: from pgupadra-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.0.91])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 19:38:49 -0700
+Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
+ USB/Thunderbolt to core
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        aou@eecs.berkeley.edu, Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        vincent.chen@sifive.com
-Content-Type: text/plain; charset="UTF-8"
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930014229.GA447956@rowland.harvard.edu>
+ <CAPcyv4iiEC3B2i81evZpLP+XHa8dLkfgWmrY7HocORwP8FMPZQ@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <f9b7cf97-0a14-1c80-12ab-23213ec2f4f2@linux.intel.com>
+Date:   Wed, 29 Sep 2021 19:38:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CAPcyv4iiEC3B2i81evZpLP+XHa8dLkfgWmrY7HocORwP8FMPZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 1:49 AM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> This patch adds sigcontext save/restore for vector. The vector registers
-> will be saved in datap pointer. The datap pointer will be allocated
-> dynamically when the task needs in kernel space. The datap pointer will
-> be set right after the __riscv_v_state data structure to save all the
-> vector registers in the signal handler stack.
->
-> Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> ---
->  arch/riscv/include/uapi/asm/sigcontext.h |  24 ++++
->  arch/riscv/kernel/asm-offsets.c          |   2 +
->  arch/riscv/kernel/setup.c                |   4 +
->  arch/riscv/kernel/signal.c               | 164 ++++++++++++++++++++++-
->  4 files changed, 190 insertions(+), 4 deletions(-)
->
-
-[....]
 
 
-> +
-> +static size_t cal_rt_frame_size(void)
-> +{
-> +       struct rt_sigframe __user *frame;
-> +       static size_t frame_size;
-> +       size_t total_context_size = 0;
-> +       size_t sc_reserved_size = sizeof(frame->uc.uc_mcontext.__reserved);
-> +
-> +       if (frame_size)
-> +               goto done;
-> +
-> +       frame_size = sizeof(*frame);
-> +
-> +       if (has_vector)
-> +               total_context_size += rvv_sc_size;
-> +       /* Preserved a __riscv_ctx_hdr for END signal context header. */
-> +       total_context_size += sizeof(struct __riscv_ctx_hdr);
-> +
-> +       if (total_context_size > sc_reserved_size)
-> +               frame_size += (total_context_size - sc_reserved_size);
-> +
-> +done:
-> +       return round_up(frame_size, 16);
+On 9/29/21 6:55 PM, Dan Williams wrote:
+>> Also, you ignored the usb_[de]authorize_interface() functions and
+>> their friends.
+> Ugh, yes.
 
-Hi Greentime,
+I did not change it because I am not sure about the interface vs device
+dependency.
 
-frame_size is static variable here, so it will preserve the value for
-the next calling to cal_rt_frame_size().
+I think following change should work.
 
-I think we need update frame_size before return, example:
+diff --git a/drivers/usb/core/driver.c b/drivers/usb/core/driver.c
+index f57b5a7a90ca..84969732d09c 100644
+--- a/drivers/usb/core/driver.c
++++ b/drivers/usb/core/driver.c
+@@ -334,7 +334,7 @@ static int usb_probe_interface(struct device *dev)
+  	if (udev->dev.authorized == false) {
+  		dev_err(&intf->dev, "Device is not authorized for usage\n");
+  		return error;
+-	} else if (intf->authorized == 0) {
++	} else if (intf->dev.authorized == 0) {
+  		dev_err(&intf->dev, "Interface %d is not authorized for usage\n",
+  				intf->altsetting->desc.bInterfaceNumber);
+  		return error;
+@@ -546,7 +546,7 @@ int usb_driver_claim_interface(struct usb_driver *driver,
+  		return -EBUSY;
 
-frame_size =  round_up(frame_size, 16);
-return frame_size;
+  	/* reject claim if interface is not authorized */
+-	if (!iface->authorized)
++	if (!iface->dev.authorized)
+  		return -ENODEV;
 
+  	dev->driver = &driver->drvwrap.driver;
+diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
+index 47548ce1cfb1..ab3c8d1e4db9 100644
+--- a/drivers/usb/core/message.c
++++ b/drivers/usb/core/message.c
+@@ -1791,9 +1791,9 @@ void usb_deauthorize_interface(struct usb_interface *intf)
 
-Regards
-Ley Foon
+  	device_lock(dev->parent);
+
+-	if (intf->authorized) {
++	if (intf->dev.authorized) {
+  		device_lock(dev);
+-		intf->authorized = 0;
++		intf->dev.authorized = 0;
+  		device_unlock(dev);
+
+  		usb_forced_unbind_intf(intf);
+@@ -1811,9 +1811,9 @@ void usb_authorize_interface(struct usb_interface *intf)
+  {
+  	struct device *dev = &intf->dev;
+
+-	if (!intf->authorized) {
++	if (!intf->dev.authorized) {
+  		device_lock(dev);
+-		intf->authorized = 1; /* authorize interface */
++		intf->dev.authorized = 1; /* authorize interface */
+  		device_unlock(dev);
+  	}
+  }
+@@ -2069,7 +2069,6 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
+  		intfc = cp->intf_cache[i];
+  		intf->altsetting = intfc->altsetting;
+  		intf->num_altsetting = intfc->num_altsetting;
+-		intf->authorized = !!HCD_INTF_AUTHORIZED(hcd);
+  		kref_get(&intfc->ref);
+
+  		alt = usb_altnum_to_altsetting(intf, 0);
+@@ -2101,6 +2100,7 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
+  		INIT_WORK(&intf->reset_ws, __usb_queue_reset_device);
+  		intf->minor = -1;
+  		device_initialize(&intf->dev);
++		intf->dev.authorized = !!HCD_INTF_AUTHORIZED(hcd);
+  		pm_runtime_no_callbacks(&intf->dev);
+  		dev_set_name(&intf->dev, "%d-%s:%d.%d", dev->bus->busnum,
+  				dev->devpath, configuration, ifnum);
+diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+index 3d63e345d0a0..666eeb80ff29 100644
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -1160,9 +1160,7 @@ static DEVICE_ATTR_RO(supports_autosuspend);
+  static ssize_t interface_authorized_show(struct device *dev,
+  		struct device_attribute *attr, char *buf)
+  {
+-	struct usb_interface *intf = to_usb_interface(dev);
+-
+-	return sprintf(buf, "%u\n", intf->authorized);
++	return sprintf(buf, "%u\n", dev->authorized);
+  }
+
+  /*
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index 796df4068e94..1e41453c63cb 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -195,8 +195,6 @@ usb_find_last_int_out_endpoint(struct usb_host_interface *alt,
+   *	has been deferred.
+   * @needs_binding: flag set when the driver should be re-probed or unbound
+   *	following a reset or suspend operation it doesn't support.
+- * @authorized: This allows to (de)authorize individual interfaces instead
+- *	a whole device in contrast to the device authorization.
+   * @dev: driver model's view of this device
+   * @usb_dev: if an interface is bound to the USB major, this will point
+   *	to the sysfs representation for that device.
+@@ -252,7 +250,6 @@ struct usb_interface {
+  	unsigned needs_altsetting0:1;	/* switch to altsetting 0 is pending */
+  	unsigned needs_binding:1;	/* needs delayed unbind/rebind */
+  	unsigned resetting_device:1;	/* true: bandwidth alloc after reset */
+-	unsigned authorized:1;		/* used for interface authorization */
+
+  	struct device dev;		/* interface specific device info */
+  	struct device *usb_dev;
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
