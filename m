@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804D941DEB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AE241DE9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349614AbhI3QTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349624AbhI3QTU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:19:20 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42B2C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:17:37 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i25so27536569lfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9AydplMO/OhchranFJNxsujjEB+Eo9pfrveqj6lBlFg=;
-        b=qUffUWOuFP3/0X04i77M7wE7tr9M3z9zUShjb3xRJsb7HIXmRnl2l3AxGvVjar7aFA
-         unF5eCBPPT8czCY8/I4w32GSWCvamltkC677hJ2bFllO97iK036m/SlqreWhRTvmPLHQ
-         4s2kSLW1ppCmS1NeQY3xYj2+0YKirmOPQhblVrGWGe+t4ZjIGZIP7wSWoJrRdXG7wSuW
-         xL48DAlsGwZkwhAl3NEq4/XTb8i9C/M9x0JWQZw1pJ2ii6viWDd/GD+dghS7TTzjTKGa
-         cPHyik+7LLS2fCB3XJkPyzqyg53L8yltVZITOkM4M/zR9KPrXiSqbMWZD9JeST//3i11
-         9rSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9AydplMO/OhchranFJNxsujjEB+Eo9pfrveqj6lBlFg=;
-        b=HDFvo+wIDllJvXbfjkb0HunE0WTlzQ5cPsf3vwNZbiHVUk2C+iMs//ORPBG1XVxbQS
-         YECD0fUmOan38HEHTuyxdPB3Sh3uACrYEgkrpPUtq5JCegqSiyhP59s5GvfTwazYC3xS
-         oVUZS5NzQGtUhETim8XQr1/qfrQ8nQD0dBiMSW4bs0CWAJvrsji0UAb1x0TtcTdTQX8Q
-         PPlXMVOrpeLmVgv7hAqI+Rug5pPKyeAI1E1YSEMdDWbtjN8vT0gtHOlYIuWuWdYX3BX8
-         fVo7Jo3/HTOl10ofbk7/nkDPjzK0LtA0FuHUg6fHo/x1VVbhiK+QswubPVe4okCnpi6i
-         GpgQ==
-X-Gm-Message-State: AOAM530/XZHuk3CazqYOqYd0EIqZoTen/O+j98QZUvfobz5SM4MpEUCZ
-        l45bIGDvYFUS9vKS6ZAePNQyI3CvlLzONY5nEetzIA==
-X-Google-Smtp-Source: ABdhPJy+kwam2qnCIJA421Yva4o4+CPlZrt6f87kDQGjhOta3fQWnFUPvQVO3ABPx0RiMmhb2e/ysCCV5bMgqrYfB1A=
-X-Received: by 2002:a2e:4e11:: with SMTP id c17mr6598678ljb.19.1633018656196;
- Thu, 30 Sep 2021 09:17:36 -0700 (PDT)
+        id S1349393AbhI3QQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:16:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349188AbhI3QQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:16:35 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D94ED613CD;
+        Thu, 30 Sep 2021 16:14:49 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 17:18:44 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Iain Hunter <drhunter95@gmail.com>, lothar.felten@gmail.com,
+        iain@hunterembedded.co.uk, Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zeng Tao <prime.zeng@hisilicon.com>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] workaround regression in ina2xx introduced by
+ cb47755725da("time: Prevent undefined behaviour in timespec64_to_ns()")
+Message-ID: <20210930171844.0c67b0ff@jic23-huawei>
+In-Reply-To: <87o88favd9.ffs@tglx>
+References: <20210926171711.194901-1-drhunter95@gmail.com>
+        <87o88favd9.ffs@tglx>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210930095225.9718-1-jbx6244@gmail.com> <20210930095225.9718-3-jbx6244@gmail.com>
-In-Reply-To: <20210930095225.9718-3-jbx6244@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 30 Sep 2021 18:17:24 +0200
-Message-ID: <CACRpkdZfzQK4LcwkwY-AbfXUaMssfUpKSa4VOSnuVLQPdapCYg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: rockchip: change gpio nodenames
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:52 AM Johan Jonker <jbx6244@gmail.com> wrote:
+On Sun, 26 Sep 2021 23:18:42 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-> Currently all gpio nodenames are sort of identical to there label.
-> Nodenames should be of a generic type, so change them all.
->
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> On Sun, Sep 26 2021 at 18:16, Iain Hunter wrote:
+> > --- a/drivers/iio/adc/ina2xx-adc.c
+> > +++ b/drivers/iio/adc/ina2xx-adc.c
+> > @@ -817,10 +817,10 @@ static int ina2xx_capture_thread(void *data)
+> >  		 */
+> >  		do {
+> >  			timespec64_add_ns(&next, 1000 * sampling_us);
+> > -			delta = timespec64_sub(next, now);
+> > -			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
+> > -		} while (delay_us <= 0);
+> > +		} while (timespec64_compare(&next, &now) < 0);
+> >  
+> > +		delta = timespec64_sub(next, now);
+> > +		delay_us = div_s64(timespec64_to_ns(&delta), 1000);  
+> 
+> This whole timespec dance does not make any sense and can be completely
+> avoided by using just scalar nanoseconds. Untested patch below.
+> 
+> Thanks,
+> 
+>         tglx
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks Thomas.
 
-Please funnel this through the SoC tree.
+Iain could you test this approach?
 
-Yours,
-Linus Walleij
+Thanks,
+
+Jonathan
+
+> ---
+> --- a/drivers/iio/adc/ina2xx-adc.c
+> +++ b/drivers/iio/adc/ina2xx-adc.c
+> @@ -775,7 +775,7 @@ static int ina2xx_capture_thread(void *d
+>  	struct ina2xx_chip_info *chip = iio_priv(indio_dev);
+>  	int sampling_us = SAMPLING_PERIOD(chip);
+>  	int ret;
+> -	struct timespec64 next, now, delta;
+> +	ktime_t next, now, delta;
+>  	s64 delay_us;
+>  
+>  	/*
+> @@ -785,7 +785,7 @@ static int ina2xx_capture_thread(void *d
+>  	if (!chip->allow_async_readout)
+>  		sampling_us -= 200;
+>  
+> -	ktime_get_ts64(&next);
+> +	next = ktime_get();
+>  
+>  	do {
+>  		while (!chip->allow_async_readout) {
+> @@ -798,7 +798,7 @@ static int ina2xx_capture_thread(void *d
+>  			 * reset the reference timestamp.
+>  			 */
+>  			if (ret == 0)
+> -				ktime_get_ts64(&next);
+> +				next = ktime_get();
+>  			else
+>  				break;
+>  		}
+> @@ -807,7 +807,7 @@ static int ina2xx_capture_thread(void *d
+>  		if (ret < 0)
+>  			return ret;
+>  
+> -		ktime_get_ts64(&now);
+> +		now = ktime_get();
+>  
+>  		/*
+>  		 * Advance the timestamp for the next poll by one sampling
+> @@ -816,11 +816,10 @@ static int ina2xx_capture_thread(void *d
+>  		 * multiple times, i.e. samples are dropped.
+>  		 */
+>  		do {
+> -			timespec64_add_ns(&next, 1000 * sampling_us);
+> -			delta = timespec64_sub(next, now);
+> -			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
+> -		} while (delay_us <= 0);
+> +			next = ktime_add_us(next, sampling_us);
+> +		} while (next <= now);
+>  
+> +		delay_us = ktime_to_us(ktime_sub(next, now));
+>  		usleep_range(delay_us, (delay_us * 3) >> 1);
+>  
+>  	} while (!kthread_should_stop());
+> 
+> 
+
