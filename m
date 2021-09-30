@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424DD41E161
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA50641E163
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344771AbhI3Sty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
+        id S1344820AbhI3SuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237166AbhI3Stv (ORCPT
+        with ESMTP id S1344777AbhI3SuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:49:51 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF47CC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:48:08 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id q205so8849607iod.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:48:08 -0700 (PDT)
+        Thu, 30 Sep 2021 14:50:02 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B45C06176A;
+        Thu, 30 Sep 2021 11:48:19 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m21so7132806pgu.13;
+        Thu, 30 Sep 2021 11:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ev+xmyKh52SVBl+xJOLXhCxYSiB9U59vNgyG8V24HnU=;
-        b=OPTtuRSKSBmCu8TqisU23ynxmBFjszT3rmpIFJJsmxwfVf6uMtydWkscvBwkwn92nm
-         CgOAzuLb6zbRvsvLsCSUrH7xTp8otC09+1ZnQ1V6XPm59RpR6Ip95dvlgxPFeWL3RMHf
-         rKdmh23aMo8xJalNLcFNcyYOd4Tkxv2d3q4zLZ6DuNvvKh4tMvvsDq8Vfydx+PdL4xZu
-         l5dhwHEVY9T+nK3XUQ0WtpFSmrtU4SKiLb3r9lJdKQkB5PWfUcOEloIr6ACi4vSdaqpf
-         dyOoFHld/zgtRRCeRa9e6J+QqNkAg4rcr3ph6HVMPUXvKjAD8NfMPQIjPsIiUaWhBoEu
-         xkkg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sJFF8/1GlPuEUwN0VlLL/s/A+hGOPfTSgKTAVipRj/o=;
+        b=QyFfNne9PMK7JPGenPXu/J4Ppw33qKynidqLdq9XPGDpBjfCxfcSeRZRUrBq0roF+A
+         cCqEyUFm6FvgCUolg7SbTvYmHL25eZINm68Ya7z+PgS458fAl2U4qnoN+YWS4Cgn6Rpc
+         yZxfoGN4go2HiDKvvjExJIiVFOdZOtImg0Z3gLUCE6XZZRnhOUePMlGIOP4UMYicgT+t
+         Pf/kHavzNlZG3IFIzaRhqyscXxsAPs6iyNOAQxfoqiDmiGPgaQ9PaD73sMN5CXpeFWUp
+         yFPVF2t+DtW0GhIVgIFXqu3J4MLtgfrzj0WjKfqGbEOwqeU5jpvqNt8HfodWIuLa3EbM
+         GWFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ev+xmyKh52SVBl+xJOLXhCxYSiB9U59vNgyG8V24HnU=;
-        b=d44J+pvbuH+q6hg2tVctjHD7H93jVJ3jhI4pjzo5bd9HJ/p0Ic6LyD7UhefrLzncKO
-         7Z0miWkq7At1lLmplfMAEmwjhlnqgTfXzqgAwWJn0o17FByHSsJynDvTOKWQuL4aO/9Z
-         uo/4HJLtxPV5lpZgmyDlgeMme9YCdOijDIdo3B+jXBu2luVNIMWNuZP5YLHKhULxQied
-         ppkD4DIsxkc8M2oxLff1snEywN1yTyxuq30KwQOu3IrQ0BMb7KmSM4HYifHUOB6PwBQV
-         hdwh5In/T1Zdu70u9N90+TKpeAXR62de67kZSE344kRlmEdQF4AWwGjOY4UVDOuQBq/6
-         ss2Q==
-X-Gm-Message-State: AOAM532ioi6YflrGBrgdWMV8kKYTFbeXVhRBa7FZfDFpuRp2/NZR1/C8
-        HEbf0hgAcKlVd+WoTGeBwgvl4cUwX5F2NAAsEniv3g==
-X-Google-Smtp-Source: ABdhPJzdrS19ptuJ9EfdM4woASby4yjdFbwgDH0IA35mriyKk/c+u/pM1hy5J5e5Mqk9FjCDJ17sZiWmjgep/6F8lvY=
-X-Received: by 2002:a05:6602:345:: with SMTP id w5mr4953077iou.49.1633027687730;
- Thu, 30 Sep 2021 11:48:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sJFF8/1GlPuEUwN0VlLL/s/A+hGOPfTSgKTAVipRj/o=;
+        b=7+zfrUm6dnht482iesXhBdTm1cYUiTIRDoygBoL1vTY/Ns9AyUL9XAtUyvOnm1EPN4
+         8C1Xgfin9uKAgCin+CskX57v2pWqhxYM+vSbELbbn/XapuKl2/hJTRiGdgkvgQX+LjZH
+         K7LjidGiFFaZBqN/2AqwJAXVklZOC8MaZnnFpz0lt9kSSJo66adOESDT6q9lpmfumnSj
+         cl9MBeWF+PQ6rucGTSu2S7HAX2Uhm2b7hCpQxR/ydFcqduzUCUM5LEknJcMrgSOb1zGD
+         0Tv6HFoaRQjMvuRrmizSgjbqpYiW+KgLdtrSQybppa9yiKUmWIxN+AoWjdEt3mRLGJez
+         DjPQ==
+X-Gm-Message-State: AOAM5333sqFM7WdK5u8Hq0lZoFJbKil/kOjMfVFnMkz7ecYSvLWCzlJR
+        kluBdb/TSra/fiPXusZH0SK5C0kq30Fke2jo
+X-Google-Smtp-Source: ABdhPJzkJgaUuPXajizt5X6cfj7CNftU7P/7jMjamgEoLqx3JTN3GqJ3g243nMinTfvVwOBY6ulkVw==
+X-Received: by 2002:a63:af4b:: with SMTP id s11mr6208016pgo.185.1633027698467;
+        Thu, 30 Sep 2021 11:48:18 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id d24sm3652910pfn.62.2021.09.30.11.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 11:48:18 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 11:48:16 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+        linux-xfs@vger.kernel.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Message-ID: <YVYGcLbu/aDKXkag@nuc10>
+References: <20210929212347.1139666-1-rkovhaev@gmail.com>
+ <20210930044202.GP2361455@dread.disaster.area>
+ <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
 MIME-Version: 1.0
-References: <20210916001748.1525291-1-namhyung@kernel.org> <20210916135418.GA383600@leoy-ThinkPad-X240s>
- <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
- <20210923142305.GA603008@leoy-ThinkPad-X240s> <CAM9d7cixyD6ZmXnBnoB8Zg-JN-tWYXUdqURHGn+2ZMD5x9evew@mail.gmail.com>
-In-Reply-To: <CAM9d7cixyD6ZmXnBnoB8Zg-JN-tWYXUdqURHGn+2ZMD5x9evew@mail.gmail.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Thu, 30 Sep 2021 11:47:56 -0700
-Message-ID: <CABPqkBTW9dnfSz1KrtiGNzbOf7QfzB6ga+EQvK28J+3-SzBsgQ@mail.gmail.com>
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        James Clark <james.clark@arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 9:02 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Leo,
->
-> On Thu, Sep 23, 2021 at 7:23 AM Leo Yan <leo.yan@linaro.org> wrote:
-> >
-> > Hi Namhyung,
-> >
-> > On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
-> >
-> > [...]
-> >
-> > > > Before we had discussion for enabling PID/TID for SPE samples; in the patch
-> > > > set [1], patches 07, 08 set sample's pid/tid based on the Arm SPE context
-> > > > packets.  To enable hardware tracing context ID, you also needs to enable
-> > > > kernel config CONFIG_PID_IN_CONTEXTIDR.
-> > >
-> > > Thanks for sharing this.
-> > >
-> > > Yeah I also look at the context info but having a dependency on a kconfig
-> > > looks limiting its functionality.  Also the kconfig says it has some overhead
-> > > in the critical path (even if perf is not running, right?) - but not sure how
-> > > much it can add.
-> >
-> > Yes, after enabled config PID_IN_CONTEXTIDR, the kernel will always
-> > write PID into the system register CONTEXTIDR during process context
-> > switching.  Please see the flow:
-> >
-> >   __switch_to() (arch/arm64/kernel/process.c)
-> >     `-> contextidr_thread_switch(next)
->
-> Thanks for the info.  I assume it's a light-weight operation.
->
->
-I'd like to understand why it was believed that having SPE record to
-PID could be too expensive
-vs. what I am seeing with all the tracking of context switches and the
-volume of data this generates.
+On Thu, Sep 30, 2021 at 10:13:40AM +0200, Vlastimil Babka wrote:
+> On 9/30/21 06:42, Dave Chinner wrote:
+> > On Wed, Sep 29, 2021 at 02:23:47PM -0700, Rustam Kovhaev wrote:
+> >> For kmalloc() allocations SLOB prepends the blocks with a 4-byte header,
+> >> and it puts the size of the allocated blocks in that header.
+> >> Blocks allocated with kmem_cache_alloc() allocations do not have that
+> >> header.
+> >> 
+> >> SLOB explodes when you allocate memory with kmem_cache_alloc() and then
+> >> try to free it with kfree() instead of kmem_cache_free().
+> >> SLOB will assume that there is a header when there is none, read some
+> >> garbage to size variable and corrupt the adjacent objects, which
+> >> eventually leads to hang or panic.
+> >> 
+> >> Let's make XFS work with SLOB by using proper free function.
+> >> 
+> >> Fixes: 9749fee83f38 ("xfs: enable the xfs_defer mechanism to process extents to free")
+> >> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> > 
+> > IOWs, XFS has been broken on SLOB for over 5 years and nobody
+> > anywhere has noticed.
+> > 
+> > And we've just had a discussion where the very best solution was to
+> > use kfree() on kmem_cache_alloc() objects so we didn't ahve to spend
+> > CPU doing global type table lookups or use an extra 8 bytes of
+> > memory per object to track the slab cache just so we could call
+> > kmem_cache_free() with the correct slab cache.
+> > 
+> > But, of course, SLOB doesn't allow this and I was really tempted to
+> > solve that by adding a Kconfig "depends on SLAB|SLUB" option so that
+> > we don't have to care about SLOB not working.
+> > 
+> > However, as it turns out that XFS on SLOB has already been broken
+> > for so long, maybe we should just not care about SLOB code and
+> > seriously consider just adding a specific dependency on SLAB|SLUB...
+> 
+> I think it's fair if something like XFS (not meant for tiny systems AFAIK?)
+> excludes SLOB (meant for tiny systems). Clearly nobody tried to use these
+> two together last 5 years anyway.
+
++1 for adding Kconfig option, it seems like some things are not meant to
+be together.
+
+> Maybe we could also just add the 4 bytes to all SLOB objects, declare
+> kfree() is always fine and be done with it. Yes, it will make SLOB footprint
+> somewhat less tiny, but even whan we added kmalloc power of two alignment
+> guarantees, the impact on SLOB was negligible.
+
+I'll send a patch to add a 4-byte header for kmem_cache_alloc()
+allocations.
+
+> > Thoughts?
+> > 
+> > Cheers,
+> > 
+> > Dave.
+> > 
+> 
