@@ -2,151 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC03541D471
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0632241D475
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348668AbhI3HWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:22:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59172 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348577AbhI3HWq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:22:46 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 38D042254D;
-        Thu, 30 Sep 2021 07:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632986463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ohtw71D/SZFC/rCiPJIhBg3kcraaLwFE1Ziv/+j83O0=;
-        b=t/7YpZRKNI4UEF4yalDPK5UC1ijQH9j9U5eZmWO96OIZGhx9TJabmrkyt0psZbTlw3O4rP
-        a7AF9Y1qT6dt14FNf/tFDsh6SliQp9pyKv3BO+wAE1A/Z05XFQg1VE1oIzim78sqide9Xh
-        r3k0f2U697Gsy2/mlRFeYhyd33Iv3Uw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632986463;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ohtw71D/SZFC/rCiPJIhBg3kcraaLwFE1Ziv/+j83O0=;
-        b=KkhFuzjpX84RHAddboBqYwJOGZ5a+F4HZovh1cWCGKSsMiqf2FC7USvyWnEcu8OrydjBRZ
-        h4nkToBg0PNP94Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CCB213B05;
-        Thu, 30 Sep 2021 07:21:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fljwAV9lVWFICgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 30 Sep 2021 07:21:03 +0000
-Message-ID: <17d63b06-d1bd-85ab-92d3-71fa236b9493@suse.de>
-Date:   Thu, 30 Sep 2021 09:21:02 +0200
+        id S1348690AbhI3HXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348577AbhI3HXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:23:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7411361242;
+        Thu, 30 Sep 2021 07:21:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632986518;
+        bh=4j4qOttJx5l+/qKXLDHbRCWD4XE/N8LaFsjbbuu2rsQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jwFg/895RuUhWERS1imfC1lnOAeZw0dLJFe5DB0O8bZy4nDkKIGobN43U2SznZx1Y
+         lNitu3jaWWqRNc9gTZ9UMpoPzuAY8R8bS2zPyAnuuHrvDenITCM197por5X/8fy3kp
+         wXIf1kFr60UxJraCRzRgq800UD9q/dPwCxLrCnGKPR9WdsJofu5pX3uHJSbSshBipa
+         CwjLHaoT9alWbG6Z9gxgfvfR44FR7RpUpwTlIufThCXUY4zRWMNO2wCx+7Keb6lHie
+         xKljeAr7PBtakYpbgMxme/mnJ7knnZILoy47lO1NzIDlavRpWfZg18e/+ro2GtPCuZ
+         ziA/8N1EI6tUA==
+Received: by mail-wr1-f52.google.com with SMTP id w29so8358944wra.8;
+        Thu, 30 Sep 2021 00:21:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530gYuexscJJhfF354a9g/umUTaDWvhIEo0AHyY8Cz4kYVkF6Kef
+        edrggAKrffISUFPImXFVrY3NdxfBmGwtnh+rGCg=
+X-Google-Smtp-Source: ABdhPJyIqDCpAPNyCZSQJ+mGxiy60RU5uthBQ+7IWWfFetKjjZQQsrln5rUXBrSwvZrIgzTuD9A4y0knnFJS3zl+6oA=
+X-Received: by 2002:a5d:564f:: with SMTP id j15mr4315506wrw.336.1632986517097;
+ Thu, 30 Sep 2021 00:21:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] drm/prime: Fix use after free in mmap with
- drm_gem_ttm_mmap
-Content-Language: en-US
-To:     Anand K Mistry <amistry@google.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     nartemiev@google.com, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0utDXCvW7w9ymaxy0zW0SDtJ"
+References: <1631696835-136198-1-git-send-email-john.garry@huawei.com> <1631696835-136198-3-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1631696835-136198-3-git-send-email-john.garry@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 30 Sep 2021 09:21:40 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3U+yaRe+P68DMQy_37jog=9gz7-dkHT10Vev3FrvMYyg@mail.gmail.com>
+Message-ID: <CAK8P3a3U+yaRe+P68DMQy_37jog=9gz7-dkHT10Vev3FrvMYyg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] acornscsi: remove tagged queuing vestiges
+To:     John Garry <john.garry@huawei.com>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0utDXCvW7w9ymaxy0zW0SDtJ
-Content-Type: multipart/mixed; boundary="------------Krt3fYeAV1ojHjyEd0FV0P3B";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Anand K Mistry <amistry@google.com>, dri-devel@lists.freedesktop.org
-Cc: nartemiev@google.com, Daniel Vetter <daniel@ffwll.ch>,
- David Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org
-Message-ID: <17d63b06-d1bd-85ab-92d3-71fa236b9493@suse.de>
-Subject: Re: [PATCH] drm/prime: Fix use after free in mmap with
- drm_gem_ttm_mmap
-References: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
-In-Reply-To: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
+On Wed, Sep 15, 2021 at 11:16 AM John Garry <john.garry@huawei.com> wrote:
+>
+> From: Hannes Reinecke <hare@suse.de>
+>
+> The acornscsi driver has a config option to enable tagged queuing,
+> but this option gets disabled in the driver itself with the comment
+> 'needs to be debugged'.
+> As this is a _really_ old driver I doubt anyone will be wanting to
+> invest time here, so remove the tagged queue vestiges and make
+> our live easier.
+>
+> Signed-off-by: Hannes Reinecke <hare@suse.de>
+> jpg: Use scsi_cmd_to_rq()
+> Signed-off-by: John Garry <john.garry@huawei.com>
 
---------------Krt3fYeAV1ojHjyEd0FV0P3B
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+A few thousand randconfig builds later, I actually came across
+building this driver.
 
-SGkNCg0KQW0gMzAuMDkuMjEgdW0gMDE6MDAgc2NocmllYiBBbmFuZCBLIE1pc3RyeToNCj4g
-ZHJtX2dlbV90dG1fbW1hcCgpIGRyb3BzIGEgcmVmZXJlbmNlIHRvIHRoZSBnZW0gb2JqZWN0
-IG9uIHN1Y2Nlc3MuIElmDQo+IHRoZSBnZW0gb2JqZWN0J3MgcmVmY291bnQgPT0gMSBvbiBl
-bnRyeSB0byBkcm1fZ2VtX3ByaW1lX21tYXAoKSwgdGhhdA0KPiBkcm9wIHdpbGwgZnJlZSB0
-aGUgZ2VtIG9iamVjdCwgYW5kIHRoZSBzdWJzZXF1ZW50IGRybV9nZW1fb2JqZWN0X2dldCgp
-DQo+IHdpbGwgYmUgYSBVQUYuIEZpeCBieSBncmFiYmluZyBhIHJlZmVyZW5jZSBiZWZvcmUg
-Y2FsbGluZyB0aGUgbW1hcA0KPiBoZWxwZXIuDQo+IA0KPiBUaGlzIGlzc3VlIHdhcyBmb3Jz
-ZWVuIHdoZW4gdGhlIHJlZmVyZW5jZSBkcm9wcGluZyB3YXMgYWRkaW5nIGluDQo+IGNvbW1p
-dCA5Nzg2YjY1YmM2MWFjICgiZHJtL3R0bTogZml4IG1tYXAgcmVmY291bnRpbmciKToNCj4g
-ICAgIkZvciB0aGF0IHRvIHdvcmsgcHJvcGVybHkgdGhlIGRybV9nZW1fb2JqZWN0X2dldCgp
-IGNhbGwgaW4NCj4gICAgZHJtX2dlbV90dG1fbW1hcCgpIG11c3QgYmUgbW92ZWQgc28gaXQg
-aGFwcGVucyBiZWZvcmUgY2FsbGluZw0KPiAgICBvYmotPmZ1bmNzLT5tbWFwKCksIG90aGVy
-d2lzZSB0aGUgZ2VtIHJlZmNvdW50IHdvdWxkIGdvIGRvd24NCj4gICAgdG8gemVyby4iDQo+
-IA0KPiBTaWduZWQtb2ZmLWJ5OiBBbmFuZCBLIE1pc3RyeSA8YW1pc3RyeUBnb29nbGUuY29t
-Pg0KDQpBY2tlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+
-DQoNClRoaXMgbG9va3MgZmluZSB0byBtZSwgYnV0IGl0IGFmZmVjdHMgbWFueSBkcml2ZXJz
-LiBMZXQncyBtYXliZSB3YWl0IGEgDQpiaXQgaWYgbW9yZSByZXZpZXdzIGNvbWUgaXQuDQoN
-CkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gLS0tDQo+IA0KPiAgIGRyaXZlcnMvZ3B1L2Ry
-bS9kcm1fcHJpbWUuYyB8IDYgKysrKy0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0
-aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
-dS9kcm0vZHJtX3ByaW1lLmMgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX3ByaW1lLmMNCj4gaW5k
-ZXggMmE1NGY4Njg1NmFmLi5lMTg1NGZkMjRiYjAgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
-Z3B1L2RybS9kcm1fcHJpbWUuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX3ByaW1l
-LmMNCj4gQEAgLTcxOSwxMSArNzE5LDEzIEBAIGludCBkcm1fZ2VtX3ByaW1lX21tYXAoc3Ry
-dWN0IGRybV9nZW1fb2JqZWN0ICpvYmosIHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1hKQ0K
-PiAgIAlpZiAob2JqLT5mdW5jcyAmJiBvYmotPmZ1bmNzLT5tbWFwKSB7DQo+ICAgCQl2bWEt
-PnZtX29wcyA9IG9iai0+ZnVuY3MtPnZtX29wczsNCj4gICANCj4gKwkJZHJtX2dlbV9vYmpl
-Y3RfZ2V0KG9iaik7DQo+ICAgCQlyZXQgPSBvYmotPmZ1bmNzLT5tbWFwKG9iaiwgdm1hKTsN
-Cj4gLQkJaWYgKHJldCkNCj4gKwkJaWYgKHJldCkgew0KPiArCQkJZHJtX2dlbV9vYmplY3Rf
-cHV0KG9iaik7DQo+ICAgCQkJcmV0dXJuIHJldDsNCj4gKwkJfQ0KPiAgIAkJdm1hLT52bV9w
-cml2YXRlX2RhdGEgPSBvYmo7DQo+IC0JCWRybV9nZW1fb2JqZWN0X2dldChvYmopOw0KPiAg
-IAkJcmV0dXJuIDA7DQo+ICAgCX0NCj4gICANCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1h
-bm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25z
-IEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55
-DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogRmVsaXgg
-SW1lbmTDtnJmZmVyDQo=
+> @@ -1821,7 +1776,7 @@ int acornscsi_reconnect_finish(AS_Host *host)
+>         host->scsi.disconnectable = 0;
+>         if (host->SCpnt->device->id  == host->scsi.reconnected.target &&
+>             host->SCpnt->device->lun == host->scsi.reconnected.lun &&
+> -           host->SCpnt->tag         == host->scsi.reconnected.tag) {
+> +           scsi_cmd_to_tag(host->SCpnt) == host->scsi.reconnected.tag) {
+>  #if (DEBUG & (DEBUG_QUEUES|DEBUG_DISCON))
+>             DBG(host->SCpnt, printk("scsi%d.%c: reconnected",
+>                     host->host->host_no, acornscsi_target(host)));
 
---------------Krt3fYeAV1ojHjyEd0FV0P3B--
+drivers/scsi/arm/acornscsi.c: In function 'acornscsi_reconnect_finish':
+drivers/scsi/arm/acornscsi.c:1779:6: error: implicit declaration of
+function 'scsi_cmd_to_tag'; did you mean 'scsi_cmd_to_rq'?
+[-Werror=implicit-function-declaration]
+      scsi_cmd_to_tag(host->SCpnt) == host->scsi.reconnected.tag) {
+      ^~~~~~~~~~~~~~~
+      scsi_cmd_to_rq
 
---------------0utDXCvW7w9ymaxy0zW0SDtJ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+I have no idea what this is meant to do instead, but scsi_cmd_to_tag()
+does not appear to be defined in any kernel I can find.
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFVZV4FAwAAAAAACgkQlh/E3EQov+B5
-sA/9EcKCov8QvBVWpbDdG9FI2VbIBTcj8UGmHJB73mJ/uJqHdZ4QsXuMDdXleGNS0oiP+vfjUHuX
-oVNQBy4h4mYRjc0bmmVVg7Yo6OnzNOZhdb8ep3gUa6SvAncNB/WSnW0wO35VGEtGBop56X/M+4ba
-VE0nMSoAukqdAVA2KNrNNny5QNYmsaDMMYCVUju6i+OgPxvUUQoiPx5hH92v+exsqzzOmLioQFRY
-LKQLB4qAnw6NWAcg2DHYqFZOvNdOvfWrkUUH1FrbBXdzZMPA147j/lGaQ7A0ShMN4l7AI4RrMseQ
-3YTnoeJF2bGbEhahMwTFFhxkty8CnreEqbGY77Hx1Z8RYmXi0QWzzRdb8YD4H36yusT7Yz8mo11J
-ERpXktFIM8YBcbJyOBm/eo5KSsuXG5x+XqKqLUKjWnSNNjUCnZhcM3m6jU/6xsfpFMpR08FjDknT
-6oCF3ys9gPF6OTr7/BwcY1+oABqXxU2+OBTysd6VPfACMN6rDTWEY2NFNtt+2l4e0MNenzwJOG/2
-k6OK3Ttj0yRKA/ZcsMz68RWFi12iOj7Nz/rVRNrRJuQguPfB6ZY/87A0qHiRVk82hvGWQSSs0V07
-9GDdU8tG7WjM+tbYAgRwz9SFNaA8kNEhmiW1lA2nSx/JbXW1BUF2XpeNTikPgzhEzd3kdviDFinx
-M9E=
-=bCeJ
------END PGP SIGNATURE-----
-
---------------0utDXCvW7w9ymaxy0zW0SDtJ--
+       Arnd
