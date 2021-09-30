@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD8041E09E
+	by mail.lfdr.de (Postfix) with ESMTP id B1FC441E09F
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353108AbhI3SH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        id S1353071AbhI3SID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353091AbhI3SHn (ORCPT
+        with ESMTP id S1353103AbhI3SHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:07:43 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F63C06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso9568668ybq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:05:59 -0700 (PDT)
+        Thu, 30 Sep 2021 14:07:45 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515B8C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:02 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id e5-20020ac84905000000b002a69dc43859so12493784qtq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ED+/GzZlK6Ch13ba2R4bfh465Q8WBKVR8XLcZW0S8Fc=;
-        b=a4wIEk16Yi3WBVYxNj/u51ELotSd+Td/UHu5Z2iCoJjh7G9jRGSdAmVPqtg7kE8Moe
-         I4F+ko0NAisazC4HsQaML3NwV2zmrg9GU8RMTzl4nNV0YQZGmSlwHt67AOxxn0feNH3F
-         nQZUM2xnZ/CZVNrQn9LgEvChc7hWBZ0Bu8GusDtqOg/P6nNDmjVzBfhQiA41rlfFFdt1
-         uio94UCFZ4s7qAecfPVlGTyQcFmmy2BmWsE8b+uKB7X+mRvERwX512m9RWqmmcbA7p7m
-         BtC11Cog4hGglHVBuwF6TI8qFMjDv0NG8yTE62Oqgj9Ec0mcPRwdgMiO3dqPzNKINnMk
-         bwYA==
+        bh=36JGoOQwhp84OMbqBWPfqbJksyq4Ee1GRSA1czJSFhs=;
+        b=cB77Vb/CwICfRwD2mkh0raoM//6noNAFP5BtwePcoVGM1nyAlCfVJtKF35wL1pMwev
+         D2GqltNZ1bhq+hRH8UnFSweflcXsS95Ir8dZ3rY6OVAjnMt/R0W1UR6ctQPtg/gcIBa9
+         y8KQaYC2G05aBR5jrnIWIZ3huUYLx77QQT5hlGs/UVeG0GqNpK2l8DTtd4cNHYI81Vw3
+         zwyXCy6a/HqwSqBa9p+Vi89JXE5Vy18KuamIGkTDlZ/7kQWptK+0iRY5d9Fkqgkci/3a
+         srPd+GRRzz57/fZCNOzWknSmGYqJ1fzF0HmWIqUaS3MZQa3RmMT3xGN54NzMRyKTJiRj
+         eUqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ED+/GzZlK6Ch13ba2R4bfh465Q8WBKVR8XLcZW0S8Fc=;
-        b=4EsBypJN5MIrzO4AzfGDPBwGkWt0B627UOLmQYnXR21u40r+xxM/G7vHDZT01C4QZk
-         bVAktGuezvioXf23RQjw3SKAfEoxOnIWCsiwA+vuhOuw28ulzkoWwzwv89ReuuIsv/HA
-         8LiQ4x9YmkTKQGv9Z97JwE+2Os0bTn/d3BmVm9q6NqvgesItoIPq1qkUW3CUUiwqQfKa
-         P7tN3+U23AILA3I5EqkyYiLF1Alyiao4pcrS5wzV6ljeMkoi4JDak4ifG0u2J5LceB/P
-         UwfR43zXJLChTV7IRHPqNU6zh6huB8dfOAJajcAi65sKUs3uw0Iek9O8uKBcihQROX+0
-         Tejw==
-X-Gm-Message-State: AOAM530xj0p8h9No9c58RSZC/tSUdql0VSnvlCFmNCn/RTARiaexvbHp
-        wLM6J0wjGYql0NzMFxW/rL+4O76IaxUyYbhYpSQ=
-X-Google-Smtp-Source: ABdhPJyvNbwNfpOpt6OxAXYurh0/xz6gRjcukdf9v0nRCwRueYu27FjQKWVhrCW4pcvTUYbPjtDzmue7U+ITV+Khz+c=
+        bh=36JGoOQwhp84OMbqBWPfqbJksyq4Ee1GRSA1czJSFhs=;
+        b=kkFP0X7wJm9TCwhqnscrlxgVPobKBqSHXM/2ls2aw2jOqcIkU5aW6VbWGkztOu87pP
+         fzGjRZUKnATfqs662lDVU67atJ18blCDSj6HELUZUFFYxL8WOU9C79/ELlc3mxL4PzXL
+         vacRp7dg7BfGCc//2F8gbInViUVPA04GxwJYfEdl+KmifndxkIkUpAdvuwZQYdeJjE1/
+         aS+VMnbw+ZaIZmZ/GnTHoznbnE1YkTrEou4GxL2FTbfvvwYjVQiW3XwOBaIb4Z5A+nOl
+         suIUOfyAR7qcQo4nYw+DBo+KUelGRjkAexx7rOSuUolSimJil0oZ5zCRz26Nxno8JKk7
+         BLnQ==
+X-Gm-Message-State: AOAM532AnabzCab7h0xQrUweJ3urZQDC2Wk80Hy3cWAxFRRr8oDwBd7/
+        wX5kvh653xjwDHdvTtU8ogiOhUES9+wNfAa3YyU=
+X-Google-Smtp-Source: ABdhPJzH+nWTE6A+qxvqzNs/xyKJE6Qfj8m4/ETPnnzMgQrPSxiF3nkVfaZaM0P8d+oy0XInEzgoA4qs0F4Eos30P9A=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:ce43:4366:95ca:d6e9])
- (user=samitolvanen job=sendgmr) by 2002:a05:6902:1106:: with SMTP id
- o6mr823986ybu.201.1633025159268; Thu, 30 Sep 2021 11:05:59 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:05:26 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a05:6214:1022:: with SMTP id
+ k2mr5344731qvr.53.1633025161554; Thu, 30 Sep 2021 11:06:01 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 11:05:27 -0700
 In-Reply-To: <20210930180531.1190642-1-samitolvanen@google.com>
-Message-Id: <20210930180531.1190642-11-samitolvanen@google.com>
+Message-Id: <20210930180531.1190642-12-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210930180531.1190642-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v4 10/15] x86/purgatory: Disable CFI
+Subject: [PATCH v4 11/15] x86, relocs: Ignore __typeid__ relocations
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -67,28 +67,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable CONFIG_CFI_CLANG for the stand-alone purgatory.ro.
+From: Kees Cook <keescook@chromium.org>
 
+The __typeid__* symbols aren't actually relocations, so they can be
+ignored during relocation generation.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- arch/x86/purgatory/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/tools/relocs.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index 95ea17a9d20c..911954fec31c 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -55,6 +55,10 @@ ifdef CONFIG_RETPOLINE
- PURGATORY_CFLAGS_REMOVE		+= $(RETPOLINE_CFLAGS)
- endif
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index 27c82207d387..5304a6037924 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -51,6 +51,7 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
+ 	"^(xen_irq_disable_direct_reloc$|"
+ 	"xen_save_fl_direct_reloc$|"
+ 	"VDSO|"
++	"__typeid__|"
+ 	"__crc_)",
  
-+ifdef CONFIG_CFI_CLANG
-+PURGATORY_CFLAGS_REMOVE		+= $(CC_FLAGS_CFI)
-+endif
+ /*
+@@ -811,6 +812,12 @@ static int do_reloc64(struct section *sec, Elf_Rel *rel, ElfW(Sym) *sym,
+ 			    symname);
+ 		break;
+ 
++	case R_X86_64_8:
++		if (!shn_abs || !is_reloc(S_ABS, symname))
++			die("Non-whitelisted %s relocation: %s\n",
++				rel_type(r_type), symname);
++		break;
 +
- CFLAGS_REMOVE_purgatory.o	+= $(PURGATORY_CFLAGS_REMOVE)
- CFLAGS_purgatory.o		+= $(PURGATORY_CFLAGS)
- 
+ 	case R_X86_64_32:
+ 	case R_X86_64_32S:
+ 	case R_X86_64_64:
 -- 
 2.33.0.800.g4c38ced690-goog
 
