@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3754F41D5A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A5641D5A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348711AbhI3ItK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 04:49:10 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:36473 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348339AbhI3ItJ (ORCPT
+        id S1348725AbhI3Itw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:49:52 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:52650 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348339AbhI3Itt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:49:09 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 0C60A200007;
-        Thu, 30 Sep 2021 08:47:21 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 10:47:21 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: add MEMREAD ioctl
-Message-ID: <20210930104721.03dc45bb@xps13>
-In-Reply-To: <20210930085133.13b5a228@collabora.com>
-References: <20210920070221.10173-1-kernel@kempniu.pl>
-        <20210928155859.433844cb@xps13>
-        <20210928162402.6bb64fcf@collabora.com>
-        <20210928163519.08cd1138@xps13>
-        <YVTBoAnQKYLNpOPc@larwa.hq.kempniu.pl>
-        <20210930085133.13b5a228@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 30 Sep 2021 04:49:49 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18U7NYEa006694;
+        Thu, 30 Sep 2021 10:47:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=LuzvPakSGeIgrzpUBElZTEkeMxrFYfaFwh7HewqAPWs=;
+ b=riU96bxiu2IzHgCfubE5+yFhTdT736xfd0meWSqb2gaJS2XmyWat0RfGl2RGKDTEHmlR
+ ze9stPzbdnU5EUIQdfbuHNICLIxlVly6nrxN8Z8PlWp8ykgpDUITyNi3MxS1Nt1lurdO
+ Twklu1Bj3gEnXNsyaV8KqA9p9dxTQdjbSCnoWxS1+fP2m4cs9hF5XVAqrPGjdH8ub6Md
+ LvQIpOTAHW7FzTSwIMaVKytHkg4kSauknczwzA54RL/nRrtbIHwPDm/MOA9jttm82/MQ
+ SofjMEslDFLc23WvJp8x4sd2tsrM0jFlTzGg9fNM0wPupj9AO71CHsBBQftiTA0qbniD Aw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bd0gg2ts3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 10:47:53 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EC68B10002A;
+        Thu, 30 Sep 2021 10:47:52 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C708A233C97;
+        Thu, 30 Sep 2021 10:47:52 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep
+ 2021 10:47:51 +0200
+Subject: Re: [PATCH 1/1] ARM: dts: stm32: fix AV96 board SAI2B pin muxing on
+ stm32mp15
+To:     Marek Vasut <marex@denx.de>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210927114553.21843-1-olivier.moysan@foss.st.com>
+ <beb6e7c8-f3c8-fc4e-6017-fea5690b9f33@denx.de>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <e8d40be8-045c-096a-f079-d9f6364254e9@foss.st.com>
+Date:   Thu, 30 Sep 2021 10:47:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <beb6e7c8-f3c8-fc4e-6017-fea5690b9f33@denx.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-30_02,2021-09-29_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marek
 
-boris.brezillon@collabora.com wrote on Thu, 30 Sep 2021 08:51:33 +0200:
+On 9/29/21 1:18 PM, Marek Vasut wrote:
+> On 9/27/21 1:45 PM, Olivier Moysan wrote:
+>> Fix SAI2B pin muxing for AV96 board on STM32MP15.
+>> The label "sai2a-4" is defined twice. Change redundant label to 
+>> "sai2b-4".
+>>
+>> Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 
+>> pins on stm32mp15")
+>>
+>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+>> ---
+>>   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi 
+>> b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>> index 5b60ecbd718f..b9cc9e0dd4fc 100644
+>> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>> @@ -1235,7 +1235,7 @@
+>>           };
+>>       };
+>> -    sai2b_pins_c: sai2a-4 {
+>> +    sai2b_pins_c: sai2b-4 {
+>>           pins1 {
+>>               pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+>>               bias-disable;
+> 
+> This mp1 pinmuxing is a total mess, sigh.
 
-> Hu Michal,
-> 
-> On Wed, 29 Sep 2021 21:42:24 +0200
-> Michał Kępień <kernel@kempniu.pl> wrote:
-> 
-> > Miquel, Boris,
-> > 
-> > Thank you both for your input.
-> >   
-> > > > I do agree that a new interface is needed, but if we're adding a new
-> > > > entry point, let's make sure it covers all possible use cases we have
-> > > > now. At the very least, I think we're missing info about the maximum
-> > > > number of corrected bits per ECC region on the portion being read.
-> > > > Propagating EUCLEAN errors is nice, but it's not precise enough IMHO.
-> > > > 
-> > > > I remember discussing search a new READ ioctl with Sascha Hauer a few
-> > > > years back, but I can't find the discussion...    
-> > 
-> > I think this is the thread in question:
-> > 
-> >     https://www.infradead.org/pipermail/linux-mtd/2016-April/thread.html#67085
-> > 
-> > In fact, it looks like Boris beat me to preparing a draft patch adding a
-> > MEMREAD ioctl by some five years:
-> > 
-> >     https://www.infradead.org/pipermail/linux-mtd/2016-April/067187.html  
-> 
-> Exactly the one I was referring to. Note that this patch still contains
-> the unbounded malloc which I think is worth fixing, but other than
-> that and the addition of ECC stats, it looks pretty similar to yours.
-> 
-> > 
-> > It is apparently true that "everything that can be invented has been
-> > invented"... :-)  I did search the web for existing mentions of a
-> > MEMREAD ioctl before submitting my patch, but this thread did not turn
-> > up in the results :(
-> > 
-> > Anyway, back in 2016, Sascha hinted that he might move forward with the
-> > draft prepared by Boris:
-> > 
-> >     https://www.infradead.org/pipermail/linux-mtd/2016-April/067215.html
-> > 
-> > but I cannot find any related submissions from Sascha in linux-mtd's
-> > Patchwork.
-> >   
-> > > We also discussed a mtd_io_op some time ago, which would equivalently
-> > > replace mtd_oob_ops at some point, including more information such as
-> > > the bitflips which happened on every chunk instead of the information
-> > > regarding the maximum number of bitflips in one of the chunks only.    
-> > 
-> > Is that discussion available online?  Search engines seem to be
-> > oblivious to that term, which makes it hard for me to get acquainted
-> > with that idea and/or to comment on it ;)  
-> 
-> Not sure this has been discussed publicly, but I remember suggesting
-> that to Miquel a while ago to simplify the in-kernel MTD interface.
+What is the issue here ?
 
-It certainly happened on IRC indeed.
-
-> > > IIRC the point was to get rid of the mtd_{read,write}{,_oob} hooks and
-> > > structures in favor of a more robust and complete set of operations.    
-> > 
-> > That sounds like a major overhaul, right?
-> > 
-> > I guess the big question from my perspective is: should I revive Boris'
-> > original effort on the MEMREAD ioctl (which returns more detailed
-> > bitflip stats in the structure passed by user space) or would that be a
-> > waste of time because the subsystem will be switched over wholesale to a
-> > new way of doing I/O (mtd_io_op) in the foreseeable future and therefore
-> > exposing yet another ioctl to user space today would be frowned upon?
-> >   
+> Can you please also fix sai1a-4 and sai1a-5, which should really be 
+> sai1a-2 and sai1a-sleep-2 ? Same as the sai2b-4 and sai2b-5 should be 
+> sai2b-2 and sai2b-sleep-2 .
 > 
-> That's not my call to make, but I think those 2 things are orthogonal
-> and can be addressed separately.
+> With that, it would be perfect, thank you.
+> 
+> [...]
 
-Agreed.
-
-Thanks,
-Miquèl
