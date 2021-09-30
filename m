@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A738141D0AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19CA41D0B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347212AbhI3Alq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244341AbhI3Alp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:41:45 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FADC06161C;
-        Wed, 29 Sep 2021 17:40:03 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x27so18133551lfu.5;
-        Wed, 29 Sep 2021 17:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xEzZC82rqk2En9Ed7KsQn1FTg8FAxs/dG3UWgw54VAY=;
-        b=O8dP8YX3oMg9WnbDyZu1hmO2h68+60K+lapykwVro5Dm9ppn/F9/NcbISMG5UgjbC1
-         Gl65W0faHrgnuG4Ivm1ZPA//iIglFIfYes3pHap406XwsMqh6ze54KPK6G1G3O5UlV3H
-         OpAwEnFC47Abzp/TQ4SNOauFELwfHEFZLL20Xt+YDmW+i0BdpaHAE8kOe1R0ZwvSJ88R
-         vse5HwrZKesjEBIM+g1FgoFyiPN/TBhtT+YBZZx+rRc0POYrOrKJZ64TomxVC2KqUNKa
-         /E+/csDF4DZh2HAhhjUkvllNeyvgxTMBlt9VzUAWKm/iPV4qw7A2k9Nqntk6VvZaM2tE
-         WgAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xEzZC82rqk2En9Ed7KsQn1FTg8FAxs/dG3UWgw54VAY=;
-        b=iymX/5SeA5DZoS7QTiNcTck0k4lQuLG208oKGYpoY+Vukmhs6+MCFWgkcQbWxSA6hy
-         WL0RMICq/vbSIjUN7LM3exUZ4d/mk6GlLqRPdqchk9O8GMrhh18392BEqL+BECJpgzDp
-         ylWytHSHo09KN4TmWm9fTqx1Mbwdvce0bbmixpFm6qsbaWfxYCbGlDlYUoUOue2Yga8j
-         6+NS0ANr5zz2ZztZnu+bNXrHTAoJ0CN18uGKOZXp0AxaJSOe2CI63485YufEr/2n7cns
-         EYA4vF+F6YPBJxs6oxmyudszfbMdbsxhCS+AfRjGgIn1ZZIYpx46GwmLEK3B3mTTZDah
-         BZAA==
-X-Gm-Message-State: AOAM530rE5xVj4kfItluG/hdUBXtE6fLdilnMM4D6RRnCnmROoT8yJZG
-        t/UTDQ4FeTV7a7zDRkr7w97Y9IeI7ug=
-X-Google-Smtp-Source: ABdhPJwR5F7TvblD+2tTvq+HxgGw1yddafN9WyTWe+FiqhsLFgixz8gInIIfk3R5GKlFeUDsI4kXHw==
-X-Received: by 2002:a05:651c:150a:: with SMTP id e10mr2955411ljf.287.1632962401591;
-        Wed, 29 Sep 2021 17:40:01 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
-        by smtp.googlemail.com with ESMTPSA id l23sm163024ljg.99.2021.09.29.17.40.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 17:40:01 -0700 (PDT)
-Subject: Re: [PATCH v13 16/35] usb: chipidea: tegra: Add runtime PM and OPP
- support
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-17-digetx@gmail.com>
-Message-ID: <e8f778b0-816f-3273-2c46-5d2460545610@gmail.com>
-Date:   Thu, 30 Sep 2021 03:40:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1347527AbhI3AmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:42:18 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59879 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244341AbhI3AmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 20:42:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="310618244"
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="310618244"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 17:40:35 -0700
+X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
+   d="scan'208";a="555162139"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 17:40:35 -0700
+Date:   Thu, 30 Sep 2021 00:40:28 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/8] iommu/vt-d: Clean up unused PASID updating functions
+Message-ID: <YVUHfPA2mMXR9CJo@otcwcpicx3.sc.intel.com>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-2-fenghua.yu@intel.com>
+ <2f2ab378-9967-ff84-18f1-c48ddeb0ceb6@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210926224058.1252-17-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f2ab378-9967-ff84-18f1-c48ddeb0ceb6@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.09.2021 01:40, Dmitry Osipenko пишет:
-> The Tegra USB controller belongs to the core power domain and we're going
-> to enable GENPD support for the core domain. Now USB controller must be
-> resumed using runtime PM API in order to initialize the USB power state.
-> We already support runtime PM for the CI device, but CI's PM is separated
-> from the RPM managed by tegra-usb driver. Add runtime PM and OPP support
-> to the driver.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/usb/chipidea/ci_hdrc_tegra.c | 53 ++++++++++++++++++++++++----
->  1 file changed, 46 insertions(+), 7 deletions(-)
+Hi, Baolu,
 
-Peter Chen, could you please ack this patch? Thanks in advance!
+On Wed, Sep 29, 2021 at 03:34:51PM +0800, Lu Baolu wrote:
+> On 2021/9/21 3:23, Fenghua Yu wrote:
+> > update_pasid() and its call chain are currently unused in the tree because
+> > Thomas disabled the ENQCMD feature. The feature will be re-enabled shortly
+> > using a different approach and update_pasid() and its call chain will not
+> > be used in the new approach.
+> > 
+> > Remove the useless functions.
+> > 
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > Reviewed-by: Tony Luck <tony.luck@intel.com>
+> 
+> Thanks for this cleanup. I have queued it for v5.16.
+
+Thank you for pushing this patch to 5.16!
+
+-Fenghua
