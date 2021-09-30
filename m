@@ -2,197 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B341DB06
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF1741DAF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351408AbhI3NaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:30:20 -0400
-Received: from mail-mw2nam12on2081.outbound.protection.outlook.com ([40.107.244.81]:38688
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1351392AbhI3NaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:30:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a8AfbyCTLiMzDSoZsV/gKSy0oJko+OX5KMr1GrPRF3Xsxr2ksBwfn8NP5IDBw3WooKHC/W8tE4p/DnWDWHmva8OwhMJHSRneEQ/0ehhgL8ehj8N9YLPaXRpBVELApAGqqJYpOjYfQ74UjRXKJ1KhULKdzIGK5AhdQjEGKYUt/ZPwmDX7u0+gZwZ6yjxiKaAIyypHm4DOuHxDBrXMeaHR1OXk5Xdouqwz888tqyxbgpT2jnvKpPF/ZcfQLQtecfLCokN376FzrXz7dy+T3UWLWwrkQt4fqO7Tp/9iOJ9Z3Yp1Uqlk7+IYaQbFfsIIB6SeRWpkDf20NSSlFWxNKAiZLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=YGc/M2kPkVFVjdyBos2jQI8YoDlq5vyFMwnORr8mqbQ=;
- b=RJXObrx1swNpZWhEwqIXnA2ptioVy9zWteg8y0/v1K62Z+JOFonZIBaDEQ37qeYLal/WMoLDAsYS/AjRHpZED8gFz7UV0T5VgebDPRjSbXoE/zt7be+1rPh5rXdvQqTGF8/yNiivCXNmBO+lC08kLFE3KgcnPXIMW+ZioHdNQCGY4O2qnKGg8zKhyRtZrj/RrmTbXh639+ZsDpZRGByvE+QCA7OkLqEVIykTkP3tscdf8KLGdTw9D02TYoKWxz+OKgMwBdbTseDTtMwa8N7YuGZjZFc6iuZeXzoQoT4hRwT4dBrOwNr+Qb+bBnjCanCd1oi1d9971X0PETHFF7sXEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YGc/M2kPkVFVjdyBos2jQI8YoDlq5vyFMwnORr8mqbQ=;
- b=POMy67VsZGF5jugabsXVq6HvXtg33GrvbrURhZvnzCb/D+kZKnhb+MG8h6D5ouVdl0Hen9W1eIEnoyX1xwbgTOpAQZjaSb5fY8aa6YebQsXD8i14Obv2GdiBxNfG6jIr+Vlr24rQW3GrCk7xKHYEclxyUHXWA2ihlzvEQjH8K9M=
-Received: from BN6PR1201CA0010.namprd12.prod.outlook.com
- (2603:10b6:405:4c::20) by BY5PR12MB4195.namprd12.prod.outlook.com
- (2603:10b6:a03:200::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Thu, 30 Sep
- 2021 13:28:32 +0000
-Received: from BN8NAM11FT013.eop-nam11.prod.protection.outlook.com
- (2603:10b6:405:4c:cafe::db) by BN6PR1201CA0010.outlook.office365.com
- (2603:10b6:405:4c::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend
- Transport; Thu, 30 Sep 2021 13:28:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT013.mail.protection.outlook.com (10.13.176.182) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 13:28:31 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 30 Sep
- 2021 08:28:30 -0500
-Received: from chrome.amd.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Thu, 30 Sep 2021 08:28:26 -0500
-From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>, <Alexander.Deucher@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH 8/8] ASoC: amd: acp: Add support for RT5682-VS codec
-Date:   Thu, 30 Sep 2021 18:54:18 +0530
-Message-ID: <20210930132418.14077-9-AjitKumar.Pandey@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210930132418.14077-1-AjitKumar.Pandey@amd.com>
-References: <20210930132418.14077-1-AjitKumar.Pandey@amd.com>
+        id S1351403AbhI3N2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349521AbhI3N2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:28:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA8FC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ez29o44AkkIcsIcpdmWWUPUZ2+d7FSmDVQK2AMmcXLw=; b=S3LmsDuYnxS+tZIRX1bRzGoYAx
+        TMAcwU5HDThAlYAiW38Iwwc+c9wCb9YvNQ9kUB+B7AQJnJIKv3JDFNiFa4bxJkHihaxYyTt6JUJeE
+        uW1QnMPsTRhI0QwFShZiYASVmv9MBgg4iDulUbh0c5P7WOChH8vRcJ+l4iNH/GewxTdw9Nmxc8pjf
+        4An8/V8zOpcFYio2uEO146TPDieUhml7LGcIHO84e/dQ2Yvk+c6+eZ4aVUuYLWbRSk0/v7M2JGwln
+        hzu6ShUdFwp7GLv4yNOMpjC3M135qenGzQ4ijSuC9CapdzVBqi4v+AYqVQ/O+W9sou5cNUmwJ35JB
+        W92nW5Dw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVw5E-006xfE-5P; Thu, 30 Sep 2021 13:26:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8387D300268;
+        Thu, 30 Sep 2021 15:26:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 486822C907DB9; Thu, 30 Sep 2021 15:26:42 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 15:26:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        arjan@linux.intel.com, srikar@linux.vnet.ibm.com,
+        maddy@linux.vnet.ibm.com, kjain@linux.ibm.com
+Subject: Re: [RFC] hrtimer: Fix the hrtimer_forward to use correct delta for
+ expiry time
+Message-ID: <YVW7Eob25KYhooMN@hirez.programming.kicks-ass.net>
+References: <20210930125219.1658-1-atrajeev@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 75f62235-d46b-471d-53ec-08d984163254
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4195:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB419517D9010010E75E25B6D382AA9@BY5PR12MB4195.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: buzWa7mh8FUPndaSWZJCvgsCpGWjkyKv/KEazxvRHYTI7JUSw5jObX9plfSUFXrd1CpkuPoLzjz51Cvc8qezwsw3DcgBmWsX2v+fDBNb0IrXRWEJIccEsDVJyM2EGdUuo/ipEzb7aikwpVtiawfSXtAZqQDGJG88bxxBvjIUhwVYEqJOJ7iI8GD9aaETEStNGfvsy9eet6ekIAf1Hzw92ZgoE8sYuuPcoB7GIiXLbXjkIJ8oLQWLwXy1v7eq9gJR1aCldnEi1h+HCy095aCHJGsQa970Vq4KReHrGrRx1x9XZqVpNRblBZV4/LPbov+NFzZ2T5313TSJO8rHOW1ST/zsTjmf6ZyqaX0ovo+YJqsvQFKbfniw2pXLjC24vA0KaXMGyrxPIcreIUPB/ov6ixK4HWVP6P5hBX2KtWklBZmv9nDSAZ2GX/JVQur4mc5lqQp0IjTPOypaBFLhrSTweea1JkqJHW+dqPWRcJusY/qlb/jks6kCs+Zf/pRWg1Pi2h31qVrzdPQYUsBlgIY8k8w8r3m+xHQaaitqSRylGcQ+9ZvJbXgcpgO9891ypeI2j+T/vuq6LMHjenkLnExFPWDnafhjhcnIEiDoaaLB81MULBg8mGKbubualCX5qRSyO9aIb7WFIsVszbzoqEKOiUqoxt5Eq017VWvaboHQdB7HA96//XWJr+obuJzpgcleo10dc7zIt7LGK/G7yYqJp8jaF3xzV/EvRVdbIiAH1Vw=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(86362001)(356005)(508600001)(47076005)(1076003)(316002)(6666004)(82310400003)(81166007)(36860700001)(26005)(7696005)(186003)(5660300002)(2906002)(8676002)(426003)(36756003)(110136005)(54906003)(8936002)(336012)(70206006)(2616005)(4326008)(70586007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 13:28:31.7735
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75f62235-d46b-471d-53ec-08d984163254
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT013.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4195
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930125219.1658-1-atrajeev@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new codec endpoints and define components to support RT5682-VS
-variants of codec with ACP machines.
+On Thu, Sep 30, 2021 at 06:22:19PM +0530, Athira Rajeev wrote:
+> Hrtimer uses "hrtimer_forward" function to forward the timer
+> expiry. This function takes the "time" from when to forward
+> and how much "interval" to forward as inputs. In some cases, it
+> is observed that though correct interval is given to forward the
+> timer, the expiry time is set to value less than expected interval.
+> This will cause the timer to expire ahead of expected expiry time.
+> Before updating the timer expiry value, hrtimer_forward checks to
+> see if there is any delta between the time from when to forwad
+> and previously set expiry. And this behaviiour is observed when
+> delta is large value.
+> 
+> For example, consider case where we want to forward the expiry
+> from "now" to 10 milliseconds. Below is trace prints captured by
+> dumping the values used in "hrtimer_forward". And this instance is
+> captured while forwarding timer from perf event multiplexing code
+> which uses hrtimer.
+> 
+> <<>>
+> [001] d....   304.118944: perf_mux_hrtimer_restart: Restarting timer from perf_mux_hrtimer_restart
+> [001] d....   304.118945: hrtimer_forward: In nanoseconds, now is 303938589749, delta is 52868589749, hrtimer_get_expires(timer) is 251070000000, interval is 10000000
+> [001] d....   304.118945: hrtimer_forward: Caller is perf_mux_hrtimer_restart+0xb0/0x120
+> [001] d....   304.118946: hrtimer_forward: Caller's caller is merge_sched_in+0x268/0x4e0
+> [001] d....   304.118946: hrtimer_forward: orun is 5286
+> [001] d....   304.118947: hrtimer_forward: In hrtimer_add_expires_ns, before ktime_add_ns timer->node.expires in ns is 251070000000, timer->_softexpires is 251070000000,  ns is 52860000000
+> [001] d....   304.118948: hrtimer_forward: In hrtimer_add_expires_ns, after ktime_add_ns timer->node.expires in ns is 303930000000, timer->_softexpires is 303930000000
+> [001] d....   304.118948: hrtimer_forward: In hrtimer_add_expires, in nanoseconds, before ktime_add_safe, timer->node.expires in ns is 303930000000, timer->_softexpires is 303930000000
+> [001] d....   304.118949: hrtimer_forward: In hrtimer_add_expires, in nanoseconds, after ktime_add_safe, timer->node.expires in ns is 303940000000, timer->_softexpires is 303940000000
+> [001] d....   304.118949: hrtimer_forward: After hrtimer_add_expires, hrtimer_get_remaining in nanoseconds is 1405169
+> 
+> <<>>
+> 
+> In this example,
+> timer->node.expires = 251070000000 ns ( previously set expiry )
+> now = 303938589749 ns
+> delta = 52868589749 ns
+> 
+> Here delta is "52868589749" which is greater than the interval to
+> forward ( ie 10000000 ns ). Hence hrtimer_forwards adds this difference
+> to present timer->node.expires in hrtimer_add_expires_ns() function. But
+> instead of using actual "delta", code is using (delta/interval * interval)
+> as below:
+> 
+> <<>>
+> s64 incr = ktime_to_ns(interval);
+> orun = ktime_divns(delta, incr);
+> hrtimer_add_expires_ns(timer, incr * orun);
+> <<>>
+> 
+> Hence we are actually using "orun * 10000000". In this example, it will be
+> "52860000000" since "orun" does not include the mod value. Here we are
+> missing "8589749" nanoseconds in the timer expiry. Hence, the final expiry
+> time will be set to "303940000000".
+> 
+> Since we are not using exact delta, the hrtime remaining will be
+> around 1405169 nanoseconds and will cause the timer to expire in 1.4 ms
+> instead of 10 ms. Fix this by using "delta" instead of using the divided
+> value.
+> 
 
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
----
- sound/soc/amd/acp/Kconfig           |  1 +
- sound/soc/amd/acp/acp-mach-common.c | 25 +++++++++++++++++++++++++
- sound/soc/amd/acp/acp-mach.h        |  1 +
- 3 files changed, 27 insertions(+)
+You misunderstand, the behaviour is correct and expected. What
+hrtimer_forward_now() does is guarantee the expiry time ends up on an
+integer multiple of @interval.
 
-diff --git a/sound/soc/amd/acp/Kconfig b/sound/soc/amd/acp/Kconfig
-index 8257b8e1e7cc..7e3c32f5b982 100644
---- a/sound/soc/amd/acp/Kconfig
-+++ b/sound/soc/amd/acp/Kconfig
-@@ -31,6 +31,7 @@ config SND_SOC_AMD_MACH_COMMON
- 	select SND_SOC_DMIC
- 	select SND_SOC_RT1019
- 	select SND_SOC_MAX98357A
-+	select SND_SOC_RT5682S
- 	depends on X86 && PCI && I2C
- 	help
- 	 This option enables common Machine driver module for ACP
-diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
-index 80c6cd220674..5e7da4515e5e 100644
---- a/sound/soc/amd/acp/acp-mach-common.c
-+++ b/sound/soc/amd/acp/acp-mach-common.c
-@@ -23,6 +23,7 @@
- 
- #include "../../codecs/rt5682.h"
- #include "../../codecs/rt1019.h"
-+#include "../../codecs/rt5682s.h"
- #include "acp-mach.h"
- 
- #define PCO_PLAT_CLK 48000000
-@@ -64,6 +65,9 @@ static int acp_clk_enable(struct acp_card_drvdata *drvdata)
- SND_SOC_DAILINK_DEF(rt5682,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00", "rt5682-aif1")));
- 
-+SND_SOC_DAILINK_DEF(rt5682s,
-+		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RTL5682:00", "rt5682s-aif1")));
-+
- static const struct snd_soc_dapm_route rt5682_map[] = {
- 	{ "Headphone Jack", NULL, "HPOL" },
- 	{ "Headphone Jack", NULL, "HPOR" },
-@@ -135,6 +139,19 @@ static int acp_asoc_hs_init(struct snd_soc_pcm_runtime *rtd)
- 				   | SND_SOC_DAIFMT_CBP_CFP;
- 		snd_soc_dapm_add_routes(&rtd->card->dapm, rt5682_map, ARRAY_SIZE(rt5682_map));
- 		break;
-+	case RT5682S:
-+		pll_id = RT5682S_PLL2;
-+		pll_src = RT5682S_PLL_S_MCLK;
-+		freq_in = PCO_PLAT_CLK;
-+		freq_out = RT5682_PLL_FREQ;
-+		clk_id = RT5682S_SCLK_S_PLL2;
-+		clk_freq = RT5682_PLL_FREQ;
-+		wclk_name = "rt5682-dai-wclk";
-+		bclk_name = "rt5682-dai-bclk";
-+		drvdata->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+				   | SND_SOC_DAIFMT_CBM_CFM;
-+		snd_soc_dapm_add_routes(&rtd->card->dapm, rt5682_map, ARRAY_SIZE(rt5682_map));
-+		break;
- 	default:
- 		dev_err(rtd->dev, "Invalid codec id %d\n", drvdata->hs_codec_id);
- 		return -EINVAL;
-@@ -401,6 +418,10 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
- 			links[i].codecs = rt5682;
- 			links[i].num_codecs = ARRAY_SIZE(rt5682);
- 		}
-+		if (drv_data->hs_codec_id == RT5682S) {
-+			links[i].codecs = rt5682s;
-+			links[i].num_codecs = ARRAY_SIZE(rt5682s);
-+		}
- 		i++;
- 	}
- 
-@@ -492,6 +513,10 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
- 			links[i].codecs = rt5682;
- 			links[i].num_codecs = ARRAY_SIZE(rt5682);
- 		}
-+		if (drv_data->hs_codec_id == RT5682S) {
-+			links[i].codecs = rt5682s;
-+			links[i].num_codecs = ARRAY_SIZE(rt5682s);
-+		}
- 		i++;
- 	}
- 
-diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
-index b6a43d1b9ad4..5dc47cfbff10 100644
---- a/sound/soc/amd/acp/acp-mach.h
-+++ b/sound/soc/amd/acp/acp-mach.h
-@@ -36,6 +36,7 @@ enum codec_endpoints {
- 	RT5682,
- 	RT1019,
- 	MAX98360A,
-+	RT5682S,
- };
- 
- struct acp_card_drvdata {
--- 
-2.25.1
-
+This is important to achieve periodic timers. Your patch would cause
+period drift.
