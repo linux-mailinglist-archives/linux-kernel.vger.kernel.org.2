@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BBD41E249
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5007341E24C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344125AbhI3Tf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:35:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52178 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhI3Tf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:35:56 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633030452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ZfbBNzbHkVIuhKwqguJTGfq6DIYa0jFVn7ger7Nk3o=;
-        b=UgvdBcoZxu6zM9MhSomMAxnWcA6voy0PN6zz1Y2Yp9NQK6kYzrOOxWXgTbiKBj3Mzy8moS
-        PnmZEFKkdU6vHtrQRhUxCsjLrphUcV95EZgl5cGLxpJiEBVeQ5Y5vEUUsSi+sKGGVPruIU
-        v1Xc/+xthGkZyFvXUCgxWpMlDbpFCSPOBA06W7QpSF5HpSnsXxf/LV8sbY6Ft0A5RNk5vu
-        jfUrpNrADXubRjx3TxHsIuENg4etf/a1MdYjbTPMJPO92HbcP04+kn9h4GsEI3/0aP6zq5
-        zkykvqzhLiujFutRqDsIr1xjR91n9tyEJFFcjfLKd1xYXEU4FggPLemZleg8QA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633030452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ZfbBNzbHkVIuhKwqguJTGfq6DIYa0jFVn7ger7Nk3o=;
-        b=v/q2/MEs8/p0mkkofLr+c2XttjUlmVrbxnbSWYCNNciv+d5QhXJgbKJuunhKUv/gAx+xSG
-        OOTN/I8QxoOYjMCw==
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
- on x86
-In-Reply-To: <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-References: <163163030719.489837.2236069935502195491.stgit@devnote2>
- <20210929112408.35b0ffe06b372533455d890d@kernel.org>
- <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-Date:   Thu, 30 Sep 2021 21:34:11 +0200
-Message-ID: <874ka17t8s.ffs@tglx>
+        id S1344781AbhI3TkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:40:22 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:41798 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhI3TkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:40:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=w6t0kKZoMiYbydZxW60i6D+JDdmXM6i9cbCc5bRw9+A=; b=hFq5itmWQqlwT+7Y9DIGp1R+pc
+        9ATbmdlcdK4QCzOdhrKvuFSiXMmpZtxHtAaCwhC//v4GxJkgCiJ2cQD8wYqI50oMQdyrRA1EuI2Bp
+        +z8/ubzqIHj1PwafUZqWOMrmP6BZxA1ejh8EVfhJg5yofN5TZlwYaofO2lVkQGLiQPIk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mW1su-008zyB-2t; Thu, 30 Sep 2021 21:38:24 +0200
+Date:   Thu, 30 Sep 2021 21:38:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <YVYSMMMkmHQn6n2+@lunn.ch>
+References: <YS4rw7NQcpRmkO/K@lunn.ch>
+ <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch>
+ <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch>
+ <20210831231804.zozyenear45ljemd@skbuf>
+ <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
+ <20210930134343.ztq3hgianm34dvqb@skbuf>
+ <YVXDAQc6RMvDjjFu@lunn.ch>
+ <CAGETcx8emDg1rojU=_rrQJ3ezpx=wTukFdbBV-uXiu1EQ87=wQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx8emDg1rojU=_rrQJ3ezpx=wTukFdbBV-uXiu1EQ87=wQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30 2021 at 11:17, Alexei Starovoitov wrote:
+> Btw, do we have non-DSA networking devices where fw_devlink=on
+> delaying PHY probes is causing an issue?
 
-> On Tue, Sep 28, 2021 at 7:24 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->>
->> Hi Ingo,
->>
->> Can you merge this series to -tip tree since if I understand correctly,
->> all kprobes patches still should be merged via -tip tree.
->> If you don't think so anymore, I would like to handle the kprobe related
->> patches on my tree. Since many kprobes fixes/cleanups have not been
->> merged these months, it seems unhealthy now.
->>
->> Thank you,
->
-> Linus,
->
-> please suggest how to move these patches forward.
-> We've been waiting for this fix for months now.
+I don't know if issues have been reported, but the realtek driver has
+had problems in the past when the generic driver is used. Take a look
+at r8169_mdio_register(), it does something similar to DSA.
 
-Sorry, I've not paying attention to those as they are usually handled by
-Ingo who seems to be lost in space.
+What is going to make things interesting is that phy_attach_direct()
+is called in two different contexts. During the MAC drivers probe, it
+is O.K. to return EPROBE_DEFER, and let the MAC driver try again
+later, if we know there is a specific PHY driver for it. But when
+called during the MAC drivers open() op, -EPROBE_DEFER is not
+allowed. What to do then is an interesting question.
 
-Masami, feel free to merge them over your tree. If not, let me know and
-I'll pick them up tomorrow morning.
-
-Thanks,
-
-        tglx
+     Andrew
